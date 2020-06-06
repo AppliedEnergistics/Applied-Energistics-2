@@ -23,8 +23,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import appeng.api.config.SecurityPermissions;
+import appeng.container.ContainerLocator;
+import appeng.container.helper.PartOrTileContainerHelper;
+import appeng.container.helper.TileContainerHelper;
 import com.google.common.collect.ImmutableSet;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.api.networking.crafting.ICraftingCPU;
@@ -33,10 +38,24 @@ import appeng.api.storage.ITerminalHost;
 import appeng.container.guisync.GuiSync;
 import appeng.util.Platform;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 
 
 public class ContainerCraftingStatus extends ContainerCraftingCPU
 {
+
+	public static ContainerType<ContainerCraftingStatus> TYPE;
+
+	private static final PartOrTileContainerHelper<ContainerCraftingStatus, ITerminalHost> helper
+			= new PartOrTileContainerHelper<>(ContainerCraftingStatus::new, ITerminalHost.class, SecurityPermissions.CRAFT);
+
+	public static ContainerCraftingStatus fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
+	}
 
 	private final List<CraftingCPURecord> cpus = new ArrayList<>();
 	@GuiSync( 5 )
@@ -46,9 +65,9 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 	@GuiSync( 7 )
 	public String myName = "";
 
-	public ContainerCraftingStatus(ContainerType<?> containerType, int id, final PlayerInventory ip, final ITerminalHost te )
+	public ContainerCraftingStatus(int id, final PlayerInventory ip, final ITerminalHost te )
 	{
-		super( containerType, id, ip, te );
+		super( TYPE, id, ip, te );
 	}
 
 	@Override

@@ -21,12 +21,15 @@ package appeng.container.implementations;
 
 import javax.annotation.Nonnull;
 
+import appeng.container.ContainerLocator;
+import appeng.container.helper.PartOrTileContainerHelper;
 import appeng.core.Api;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.items.IItemHandler;
@@ -42,14 +45,27 @@ import appeng.util.Platform;
 public class ContainerQuartzKnife extends AEBaseContainer
 {
 
+public static ContainerType<ContainerQuartzKnife> TYPE;
+
+	private static final PartOrTileContainerHelper<ContainerQuartzKnife, QuartzKnifeObj> helper
+			= new PartOrTileContainerHelper<>(ContainerQuartzKnife::new, QuartzKnifeObj.class);
+
+	public static ContainerQuartzKnife fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
+	}
+
 	private final QuartzKnifeObj toolInv;
 
 	private final IItemHandler inSlot = new AppEngInternalInventory( null, 1, 1 );
 	private String myName = "";
 
-	public ContainerQuartzKnife(ContainerType<?> containerType, int id, final PlayerInventory ip, final QuartzKnifeObj te )
+	public ContainerQuartzKnife(int id, final PlayerInventory ip, final QuartzKnifeObj te )
 	{
-		super( containerType, id, ip, null, null );
+		super( TYPE, id, ip, null, null );
 		this.toolInv = te;
 
 		this.addSlot( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.METAL_INGOTS, this.inSlot, 0, 94, 44, ip ) );

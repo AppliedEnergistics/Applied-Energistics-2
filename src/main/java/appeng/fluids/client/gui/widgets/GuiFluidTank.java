@@ -19,36 +19,36 @@
 package appeng.fluids.client.gui.widgets;
 
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.util.AEColor;
 import appeng.client.gui.widgets.ITooltip;
 import appeng.fluids.util.IAEFluidTank;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.fluid.Fluid;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.FluidAttributes;
 
 
 @OnlyIn( Dist.CLIENT )
-public class GuiFluidTank extends GuiButton implements ITooltip
+public class GuiFluidTank extends Widget implements ITooltip
 {
 	private final IAEFluidTank tank;
 	private final int slot;
 
-	public GuiFluidTank( IAEFluidTank tank, int slot, int id, int x, int y, int w, int h )
+	public GuiFluidTank(IAEFluidTank tank, int slot, int x, int y, int w, int h)
 	{
-		super( id, x, y, w, h, "" );
+		super( x, y, w, h, "" );
 		this.tank = tank;
 		this.slot = slot;
 	}
 
 	@Override
-	public void drawButton( final Minecraft mc, final int mouseX, final int mouseY, final float partialTicks )
-	{
+	public void renderButton(int mouseX, int mouseY, float partialTicks) {
 		if( this.visible )
 		{
 			RenderSystem.disableBlend();
@@ -56,27 +56,31 @@ public class GuiFluidTank extends GuiButton implements ITooltip
 
 			fill( this.x, this.y, this.x + this.width, this.y + this.height, AEColor.GRAY.blackVariant | 0xFF000000 );
 
-			final IAEFluidStack fluid = this.tank.getFluidInSlot( this.slot );
-			if( fluid != null && fluid.getStackSize() > 0 )
+			final IAEFluidStack fluidStack = this.tank.getFluidInSlot( this.slot );
+			if( fluidStack != null && fluidStack.getStackSize() > 0 )
 			{
+				Fluid fluid = fluidStack.getFluid();
+				FluidAttributes attributes = fluid.getAttributes();
+
+				float red = ( attributes.getColor() >> 16 & 255 ) / 255.0F;
+				float green = ( attributes.getColor() >> 8 & 255 ) / 255.0F;
+				float blue = ( attributes.getColor() & 255 ) / 255.0F;
+				RenderSystem.color3f( red, green, blue );
+
+				Minecraft mc = Minecraft.getInstance();
 				mc.getTextureManager().bindTexture( AtlasTexture.LOCATION_BLOCKS_TEXTURE );
+				final TextureAtlasSprite sprite = mc.getAtlasSpriteGetter( AtlasTexture.LOCATION_BLOCKS_TEXTURE ).apply( attributes.getStillTexture(fluidStack.getFluidStack()) );
 
-				float red = ( fluid.getFluid().getColor() >> 16 & 255 ) / 255.0F;
-				float green = ( fluid.getFluid().getColor() >> 8 & 255 ) / 255.0F;
-				float blue = ( fluid.getFluid().getColor() & 255 ) / 255.0F;
-				RenderSystem.color4f( red, green, blue );
-
-				TextureAtlasSprite sprite = mc.getTextureMapBlocks().getAtlasSprite( fluid.getFluid().getStill().toString() );
-				final int scaledHeight = (int) ( this.height * ( (float) fluid.getStackSize() / this.tank.getTankProperties()[this.slot].getCapacity() ) );
+				final int scaledHeight = (int) ( this.height * ( (float) fluidStack.getStackSize() / this.tank.getTankCapacity(this.slot) ) );
 
 				int iconHeightRemainder = scaledHeight % 16;
 				if( iconHeightRemainder > 0 )
 				{
-					this.drawTexturedModalRect( this.x, this.y + this.height - iconHeightRemainder, sprite, 16, iconHeightRemainder );
+					blit(this.x, this.y + this.height - iconHeightRemainder, getBlitOffset(), 16, iconHeightRemainder, sprite );
 				}
 				for( int i = 0; i < scaledHeight / 16; i++ )
 				{
-					this.drawTexturedModalRect( this.x, this.y + this.height - iconHeightRemainder - ( i + 1 ) * 16, sprite, 16, 16 );
+					blit( this.x, this.y + this.height - iconHeightRemainder - ( i + 1 ) * 16, getBlitOffset(), 16, 16, sprite );
 				}
 			}
 
@@ -89,7 +93,7 @@ public class GuiFluidTank extends GuiButton implements ITooltip
 		final IAEFluidStack fluid = this.tank.getFluidInSlot( this.slot );
 		if( fluid != null && fluid.getStackSize() > 0 )
 		{
-			String desc = fluid.getFluid().getLocalizedName( fluid.getFluidStack() );
+			String desc = fluid.getFluid().getAttributes().getDisplayName( fluid.getFluidStack() ).getFormattedText();
 			String amountToText = fluid.getStackSize() + "mB";
 
 			return desc + "\n" + amountToText;

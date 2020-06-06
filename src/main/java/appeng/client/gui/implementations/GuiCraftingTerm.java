@@ -19,14 +19,10 @@
 package appeng.client.gui.implementations;
 
 
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
 
 import appeng.api.config.ActionItems;
 import appeng.api.config.Settings;
-import appeng.api.storage.ITerminalHost;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.container.implementations.ContainerCraftingTerm;
 import appeng.container.slot.SlotCraftingMatrix;
@@ -41,34 +37,25 @@ import net.minecraft.util.text.ITextComponent;
 public class GuiCraftingTerm extends GuiMEMonitorable<ContainerCraftingTerm>
 {
 
-	private GuiImgButton clearBtn;
-
 	public GuiCraftingTerm(ContainerCraftingTerm container, PlayerInventory playerInventory, ITextComponent title) {
 		super(container, playerInventory, title);
 		this.setReservedSpace( 73 );
 	}
 
-	@Override
-	protected void actionPerformed( final GuiButton btn )
-	{
-		super.actionPerformed( btn );
-
-		if( this.clearBtn == btn )
+	private void clear() {
+		Slot s = null;
+		for( final Object j : this.container.inventorySlots )
 		{
-			Slot s = null;
-			for( final Object j : this.container.inventorySlots )
+			if( j instanceof SlotCraftingMatrix )
 			{
-				if( j instanceof SlotCraftingMatrix )
-				{
-					s = (Slot) j;
-				}
+				s = (Slot) j;
 			}
+		}
 
-			if( s != null )
-			{
-				final PacketInventoryAction p = new PacketInventoryAction( InventoryAction.MOVE_REGION, s.slotNumber, 0 );
-				NetworkHandler.instance().sendToServer( p );
-			}
+		if( s != null )
+		{
+			final PacketInventoryAction p = new PacketInventoryAction( InventoryAction.MOVE_REGION, s.slotNumber, 0 );
+			NetworkHandler.instance().sendToServer( p );
 		}
 	}
 
@@ -76,8 +63,8 @@ public class GuiCraftingTerm extends GuiMEMonitorable<ContainerCraftingTerm>
 	public void init()
 	{
 		super.init();
-		this.addButton( this.clearBtn = new GuiImgButton( this.guiLeft + 92, this.guiTop + this.ySize - 156, Settings.ACTIONS, ActionItems.STASH ) );
-		this.clearBtn.setHalfSize( true );
+		GuiImgButton clearBtn = this.addButton( new GuiImgButton( this.guiLeft + 92, this.guiTop + this.ySize - 156, Settings.ACTIONS, ActionItems.STASH, btn -> clear() ));
+		clearBtn.setHalfSize( true );
 	}
 
 	@Override

@@ -19,6 +19,10 @@
 package appeng.fluids.registries;
 
 
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerFormationPlane;
+import appeng.fluids.container.ContainerFluidTerminal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -48,6 +52,6 @@ public class BasicFluidCellGuiHandler implements ICellGuiHandler
 	@Override
 	public void openChestGui( final PlayerEntity player, final IChestOrDrive chest, final ICellHandler cellHandler, final IMEInventoryHandler inv, final ItemStack is, final IStorageChannel chan )
 	{
-		// FIXME Platform.openGUI( player, (TileEntity) chest, AEPartLocation.fromFacing( chest.getUp() ), GuiBridge.GUI_FLUID_TERMINAL );
+		ContainerOpener.openContainer(ContainerFluidTerminal.TYPE, player, ContainerLocator.forTileEntitySide((TileEntity) chest, chest.getUp()));
 	}
 }

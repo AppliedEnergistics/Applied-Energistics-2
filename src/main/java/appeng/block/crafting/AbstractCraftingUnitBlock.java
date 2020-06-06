@@ -18,8 +18,12 @@
 
 package appeng.block.crafting;
 
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerCraftingCPU;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.StateContainer;
@@ -83,7 +87,7 @@ public abstract class AbstractCraftingUnitBlock<T extends TileCraftingTile> exte
 		{
 			if ( !w.isRemote() )
 			{
-				// FIXME Platform.openGUI( p, tg, AEPartLocation.fromFacing( side ), GuiBridge.GUI_CRAFTING_CPU );
+				ContainerOpener.openContainer(ContainerCraftingCPU.TYPE, p, ContainerLocator.forTileEntitySide(tg, hit.getFace()));
 			}
 
 			return ActionResultType.SUCCESS;

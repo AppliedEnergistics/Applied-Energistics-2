@@ -21,6 +21,10 @@ package appeng.block.misc;
 
 import appeng.api.util.IOrientable;
 import appeng.block.AEBaseTileBlock;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerDrive;
+import appeng.container.implementations.ContainerInterface;
 import appeng.tile.misc.TileInterface;
 import appeng.util.Platform;
 import net.minecraft.block.Block;
@@ -83,7 +87,7 @@ public class BlockInterface extends AEBaseTileBlock<TileInterface>
 		{
 			if( Platform.isServer() )
 			{
-				// FIXME Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit), GuiBridge.GUI_INTERFACE );
+				ContainerOpener.openContainer(ContainerInterface.TYPE, p, ContainerLocator.forTileEntitySide(tg, hit.getFace()));
 			}
 			return ActionResultType.SUCCESS;
 		}

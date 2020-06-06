@@ -33,10 +33,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.inventory.container.Slot;
+import net.minecraft.inventory.container.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.IItemHandler;
@@ -89,7 +86,7 @@ public abstract class AEBaseContainer extends Container
 	private final HashMap<Integer, SyncData> syncData = new HashMap<>();
 	private boolean isContainerValid = true;
 	private String customName;
-	private ContainerOpenContext openContext;
+	private ContainerLocator locator;
 	private IMEInventoryHandler<IAEItemStack> cellInv;
 	private IEnergySource powerSrc;
 	private boolean sentCustomName;
@@ -1060,6 +1057,7 @@ public abstract class AEBaseContainer extends Container
 
 	private void sendCustomName()
 	{
+		// FIXME: Trash this, this is handled by NamedContainerProvider now
 		if( !this.sentCustomName )
 		{
 			this.sentCustomName = true;
@@ -1096,16 +1094,9 @@ public abstract class AEBaseContainer extends Container
 
 					if( this.getCustomName() != null )
 					{
-						try
-						{
-							NetworkHandler.instance()
-									.sendTo( new PacketValueConfig( "CustomName", this.getCustomName() ),
-											(ServerPlayerEntity) this.getPlayerInventory().player );
-						}
-						catch( final IOException e )
-						{
-							AELog.debug( e );
-						}
+						NetworkHandler.instance()
+								.sendTo( new PacketValueConfig( "CustomName", this.getCustomName() ),
+										(ServerPlayerEntity) this.getPlayerInventory().player );
 					}
 				}
 			}
@@ -1242,14 +1233,14 @@ public abstract class AEBaseContainer extends Container
 		this.isContainerValid = isContainerValid;
 	}
 
-	public ContainerOpenContext getOpenContext()
+	public ContainerLocator getLocator()
 	{
-		return this.openContext;
+		return this.locator;
 	}
 
-	public void setOpenContext( final ContainerOpenContext openContext )
+	public void setLocator(final ContainerLocator locator)
 	{
-		this.openContext = openContext;
+		this.locator = locator;
 	}
 
 	public IEnergySource getPowerSource()
@@ -1261,4 +1252,5 @@ public abstract class AEBaseContainer extends Container
 	{
 		this.powerSrc = powerSrc;
 	}
+
 }

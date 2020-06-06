@@ -24,6 +24,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketFluidSlot;
 import appeng.fluids.util.AEFluidStack;
 import appeng.fluids.util.IAEFluidTank;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 
 public class GuiFluidSlot extends GuiCustomSlot
@@ -49,7 +50,7 @@ public class GuiFluidSlot extends GuiCustomSlot
 			final Fluid fluid = fs.getFluid();
 			final FluidAttributes attributes = fluid.getAttributes();
 			mc.getTextureManager().bindTexture( AtlasTexture.LOCATION_BLOCKS_TEXTURE );
-			final TextureAtlasSprite sprite = mc.getAtlasSpriteGetter( AtlasTexture.LOCATION_BLOCKS_TEXTURE ).apply( attributes.getStillTexture() );
+			final TextureAtlasSprite sprite = mc.getAtlasSpriteGetter( AtlasTexture.LOCATION_BLOCKS_TEXTURE ).apply( attributes.getStillTexture(fs.getFluidStack()) );
 
 			// Set color for dynamic fluids
 			// Convert int color to RGB
@@ -58,7 +59,7 @@ public class GuiFluidSlot extends GuiCustomSlot
 			final float blue = ( attributes.getColor() & 255 ) / 255.0F;
 			RenderSystem.color3f( red, green, blue );
 
-			this.drawTexturedModalRect( this.xPos(), this.yPos(), sprite, this.getWidth(), this.getHeight() );
+			blit(xPos(), yPos(), this.getBlitOffset(), getWidth(), getHeight(), sprite);
 		}
 	}
 

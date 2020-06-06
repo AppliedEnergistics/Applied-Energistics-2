@@ -21,7 +21,11 @@ package appeng.fluids.parts;
 
 import java.util.EnumSet;
 
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.fluids.container.ContainerFluidInterface;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -139,7 +143,7 @@ public class PartFluidInterface extends PartBasicState implements IGridTickable,
 	{
 		if( Platform.isServer() )
 		{
-			// FIXME Platform.openGUI( p, this.getTileEntity(), this.getSide(), GuiBridge.GUI_FLUID_INTERFACE );
+			ContainerOpener.openContainer(ContainerFluidInterface.TYPE, p, ContainerLocator.forPart(this));
 		}
 
 		return true;
@@ -234,9 +238,9 @@ public class PartFluidInterface extends PartBasicState implements IGridTickable,
 		return Api.INSTANCE.definitions().parts().fluidIface().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 	}
 
-// FIXME	@Override
-// FIXME	public GuiBridge getGuiBridge()
-// FIXME	{
-// FIXME		return GuiBridge.GUI_FLUID_INTERFACE;
-// FIXME	}
+	@Override
+	public ContainerType<?> getContainerType()
+	{
+		return ContainerFluidInterface.TYPE;
+	}
 }

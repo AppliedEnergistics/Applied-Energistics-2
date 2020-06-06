@@ -21,6 +21,8 @@ package appeng.block.misc;
 
 import javax.annotation.Nullable;
 
+import appeng.container.ContainerLocator;
+import appeng.container.implementations.ContainerCellWorkbench;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -30,7 +32,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
-import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
 
 import appeng.tile.misc.TileCellWorkbench;
@@ -58,7 +59,7 @@ public class BlockCellWorkbench extends AEBaseTileBlock<TileCellWorkbench>
 		{
 			if( Platform.isServer() )
 			{
-				// FIXME Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit.getFace()), GuiBridge.GUI_CELL_WORKBENCH );
+				ContainerCellWorkbench.open(p, ContainerLocator.forTileEntity(tg));
 			}
 			return ActionResultType.SUCCESS;
 		}

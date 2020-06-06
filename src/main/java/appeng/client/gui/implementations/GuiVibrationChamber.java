@@ -71,7 +71,7 @@ public class GuiVibrationChamber extends AEBaseGui<ContainerVibrationChamber>
 	}
 
 	@Override
-	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
+	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
 	{
 		this.bindTexture( "guis/vibchamber.png" );
 		this.pb.x = 99 + this.guiLeft;

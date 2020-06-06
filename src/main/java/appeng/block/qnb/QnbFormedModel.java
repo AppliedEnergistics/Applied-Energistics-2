@@ -2,63 +2,33 @@
 package appeng.block.qnb;
 
 
+import appeng.core.AppEng;
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.client.renderer.model.*;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.IModelConfiguration;
+import net.minecraftforge.client.model.geometry.IModelGeometry;
+
 import java.util.Collection;
+import java.util.Set;
 import java.util.function.Function;
 
-import com.google.common.collect.ImmutableList;
 
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.common.model.IModelState;
-import net.minecraftforge.common.model.TRSRTransformation;
-
-import appeng.core.AppEng;
-
-
-public class QnbFormedModel implements IModel
+public class QnbFormedModel implements IModelGeometry<QnbFormedModel>
 {
 
 	private static final ResourceLocation MODEL_RING = new ResourceLocation( AppEng.MOD_ID, "block/qnb/ring" );
 
 	@Override
-	public Collection<ResourceLocation> getDependencies()
-	{
-		return ImmutableList.of( MODEL_RING );
+	public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {
+		IBakedModel ringModel = bakery.getBakedModel(MODEL_RING, modelTransform, spriteGetter);
+		return new QnbFormedBakedModel( ringModel, spriteGetter );
 	}
 
 	@Override
-	public Collection<ResourceLocation> getTextures()
-	{
+	public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
 		return QnbFormedBakedModel.getRequiredTextures();
 	}
 
-	@Override
-	public IBakedModel bake( IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
-	{
-		IBakedModel ringModel = this.getBaseModel( MODEL_RING, state, format, bakedTextureGetter );
-		return new QnbFormedBakedModel( format, ringModel, bakedTextureGetter );
-	}
-
-	@Override
-	public IModelState getDefaultState()
-	{
-		return TRSRTransformation.identity();
-	}
-
-	private IBakedModel getBaseModel( ResourceLocation model, IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
-	{
-		// Load the base model
-		try
-		{
-			return ModelLoaderRegistry.getModel( model ).bake( state, format, bakedTextureGetter );
-		}
-		catch( Exception e )
-		{
-			throw new RuntimeException( e );
-		}
-	}
 }

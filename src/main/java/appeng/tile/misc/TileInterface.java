@@ -25,10 +25,12 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import appeng.container.implementations.ContainerInterface;
 import appeng.core.Api;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -360,9 +362,9 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, II
 		return Api.INSTANCE.definitions().blocks().iface().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 	}
 
-// FIXME	@Override
-// FIXME	public GuiBridge getGuiBridge()
-// FIXME	{
-// FIXME		return GuiBridge.GUI_INTERFACE;
-// FIXME	}
+	@Override
+	public ContainerType<?> getContainerType()
+	{
+		return ContainerInterface.TYPE;
+	}
 }

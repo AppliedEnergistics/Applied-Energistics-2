@@ -19,23 +19,16 @@
 package appeng.client.gui.implementations;
 
 
-import java.io.IOException;
-
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
-import org.lwjgl.input.Mouse;
-
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.PlayerInventory;
-
 import appeng.api.config.Settings;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.container.implementations.ContainerSpatialIOPort;
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
-import appeng.tile.spatial.TileSpatialIOPort;
 import appeng.util.Platform;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 
 public class GuiSpatialIOPort extends AEBaseGui<ContainerSpatialIOPort>
@@ -49,26 +42,18 @@ public class GuiSpatialIOPort extends AEBaseGui<ContainerSpatialIOPort>
 	}
 
 	@Override
-	protected void actionPerformed( final GuiButton btn ) throws IOException
-	{
-		super.actionPerformed( btn );
-
-		final boolean backwards = Mouse.isButtonDown( 1 );
-
-		if( btn == this.units )
-		{
-			AEConfig.instance().nextPowerUnit( backwards );
-			this.units.set( AEConfig.instance().selectedPowerUnit() );
-		}
-	}
-
-	@Override
 	public void init()
 	{
 		super.init();
 
-		this.units = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.POWER_UNITS, AEConfig.instance().selectedPowerUnit() );
+		this.units = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.POWER_UNITS, AEConfig.instance().selectedPowerUnit(), btn -> selectNextUnit() );
 		this.addButton( this.units );
+	}
+
+	private void selectNextUnit() {
+		final boolean backwards = minecraft.mouseHelper.isRightDown();
+		AEConfig.instance().nextPowerUnit( backwards );
+		this.units.set( AEConfig.instance().selectedPowerUnit() );
 	}
 
 	@Override
@@ -97,7 +82,7 @@ public class GuiSpatialIOPort extends AEBaseGui<ContainerSpatialIOPort>
 	}
 
 	@Override
-	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
+	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
 	{
 		this.bindTexture( "guis/spatialio.png" );
 		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );

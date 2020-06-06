@@ -19,17 +19,13 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
-
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
+import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
+import appeng.container.helper.TileContainerHelper;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.SlotMACPattern;
 import appeng.container.slot.SlotOutput;
@@ -37,19 +33,39 @@ import appeng.container.slot.SlotRestrictedInput;
 import appeng.items.misc.ItemEncodedPattern;
 import appeng.tile.crafting.TileMolecularAssembler;
 import appeng.util.Platform;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandler;
 
 
 public class ContainerMAC extends ContainerUpgradeable implements IProgressProvider
 {
+
+	public static ContainerType<ContainerMAC> TYPE;
+
+	private static final TileContainerHelper<ContainerMAC, TileMolecularAssembler> helper
+			= new TileContainerHelper<>(ContainerMAC::new, TileMolecularAssembler.class);
+
+	public static ContainerMAC fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
+	}
 
 	private static final int MAX_CRAFT_PROGRESS = 100;
 	private final TileMolecularAssembler tma;
 	@GuiSync( 4 )
 	public int craftProgress = 0;
 
-	public ContainerMAC(ContainerType<?> containerType, int id, final PlayerInventory ip, final TileMolecularAssembler te )
+	public ContainerMAC(int id, final PlayerInventory ip, final TileMolecularAssembler te )
 	{
-		super( containerType, id, ip, te );
+		super( TYPE, id, ip, te );
 		this.tma = te;
 	}
 

@@ -23,7 +23,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerStorageBus;
+import appeng.fluids.container.ContainerFluidInterface;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -316,7 +321,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	{
 		if( Platform.isServer() )
 		{
-			// FIXME Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_STORAGEBUS );
+			ContainerOpener.openContainer(ContainerStorageBus.TYPE, player, ContainerLocator.forPart(this));
 		}
 		return true;
 	}
@@ -646,9 +651,9 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		return Api.INSTANCE.definitions().parts().storageBus().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 	}
 
-// FIXME	@Override
-// FIXME	public GuiBridge getGuiBridge()
-// FIXME	{
-// FIXME		return GuiBridge.GUI_STORAGEBUS;
-// FIXME	}
+	@Override
+	public ContainerType<?> getContainerType()
+	{
+		return ContainerStorageBus.TYPE;
+	}
 }

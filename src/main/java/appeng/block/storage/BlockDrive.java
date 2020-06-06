@@ -20,6 +20,10 @@ package appeng.block.storage;
 
 
 import appeng.block.AEBaseTileBlock;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerDrive;
+import appeng.container.implementations.ContainerQuartzKnife;
 import appeng.tile.storage.TileDrive;
 import appeng.util.Platform;
 import net.minecraft.block.material.Material;
@@ -55,7 +59,7 @@ public class BlockDrive extends AEBaseTileBlock<TileDrive>
 		{
 			if( Platform.isServer() )
 			{
-				// FIXME Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit), GuiBridge.GUI_DRIVE );
+				ContainerOpener.openContainer(ContainerDrive.TYPE, p, ContainerLocator.forTileEntity(tg));
 			}
 			return ActionResultType.SUCCESS;
 		}

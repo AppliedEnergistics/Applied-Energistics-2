@@ -21,6 +21,10 @@ package appeng.block.misc;
 
 import javax.annotation.Nullable;
 
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerFormationPlane;
+import appeng.container.implementations.ContainerSecurityStation;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 
@@ -92,7 +96,7 @@ public class BlockSecurityStation extends AEBaseTileBlock<TileSecurityStation>
 				return ActionResultType.SUCCESS;
 			}
 
-			// FIXME Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit), GuiBridge.GUI_SECURITY );
+			ContainerOpener.openContainer(ContainerSecurityStation.TYPE, p, ContainerLocator.forTileEntitySide(tg, hit.getFace()));
 			return ActionResultType.SUCCESS;
 		}
 		return ActionResultType.PASS;

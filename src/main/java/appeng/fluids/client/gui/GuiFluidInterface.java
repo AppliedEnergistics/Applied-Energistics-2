@@ -19,37 +19,27 @@
 package appeng.fluids.client.gui;
 
 
-import java.io.IOException;
-
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.PlayerInventory;
-
 import appeng.client.gui.implementations.GuiUpgradeable;
 import appeng.client.gui.widgets.GuiTabButton;
+import appeng.container.implementations.ContainerPriority;
 import appeng.core.localization.GuiText;
-
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.fluids.client.gui.widgets.GuiFluidSlot;
 import appeng.fluids.client.gui.widgets.GuiFluidTank;
 import appeng.fluids.container.ContainerFluidInterface;
 import appeng.fluids.helper.DualityFluidInterface;
-import appeng.fluids.helper.IFluidInterfaceHost;
 import appeng.fluids.util.IAEFluidTank;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
-
-public class GuiFluidInterface extends GuiUpgradeable
+public class GuiFluidInterface extends GuiUpgradeable<ContainerFluidInterface>
 {
-	public final static int ID_BUTTON_TANK = 222;
-
-	private final IFluidInterfaceHost host;
-	private GuiTabButton priority;
-
-	public GuiFluidInterface( final PlayerInventory ip, final IFluidInterfaceHost te )
+	public GuiFluidInterface(ContainerFluidInterface container, PlayerInventory playerInventory, ITextComponent title)
 	{
-		super( new ContainerFluidInterface( ip, te ) );
+		super(container, playerInventory, title);
 		this.ySize = 231;
-		this.host = te;
 	}
 
 	@Override
@@ -57,19 +47,18 @@ public class GuiFluidInterface extends GuiUpgradeable
 	{
 		super.init();
 
-		final IAEFluidTank configFluids = this.host.getDualityFluidInterface().getConfig();
-		final IAEFluidTank fluidTank = this.host.getDualityFluidInterface().getTanks();
+		final IAEFluidTank configFluids = this.container.getFluidConfigInventory();
+		final IAEFluidTank fluidTank = this.container.getTanks();
 
 		for( int i = 0; i < DualityFluidInterface.NUMBER_OF_TANKS; ++i )
 		{
-			final GuiFluidTank guiTank = new GuiFluidTank( fluidTank, i, DualityFluidInterface.NUMBER_OF_TANKS + i, this.getGuiLeft() + 35 + 18 * i, this
+			final GuiFluidTank guiTank = new GuiFluidTank( fluidTank, i, this.getGuiLeft() + 35 + 18 * i, this
 					.getGuiTop() + 53, 16, 68 );
 			this.addButton( guiTank );
 			this.guiSlots.add( new GuiFluidSlot( configFluids, i, i, 35 + 18 * i, 35 ) );
 		}
 
-		this.priority = new GuiTabButton( this.getGuiLeft() + 154, this.getGuiTop(), 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRenderer );
-		this.addButton( this.priority );
+		this.addButton( new GuiTabButton( this.getGuiLeft() + 154, this.getGuiTop(), 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRenderer, btn -> openPriorityGui() ) );
 	}
 
 	@Override
@@ -87,21 +76,14 @@ public class GuiFluidInterface extends GuiUpgradeable
 	}
 
 	@Override
-	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks)
 	{
 		this.bindTexture( "guis/interfacefluid.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME ZINDEX */ );
 	}
 
-	@Override
-	protected void actionPerformed( final GuiButton btn ) throws IOException
-	{
-		super.actionPerformed( btn );
-
-		if( btn == this.priority )
-		{
-			NetworkHandler.instance().sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
-		}
+	private void openPriorityGui() {
+		NetworkHandler.instance().sendToServer( new PacketSwitchGuis( ContainerPriority.TYPE ) );
 	}
 
 	@Override

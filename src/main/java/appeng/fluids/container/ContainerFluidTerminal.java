@@ -23,24 +23,23 @@ import java.io.IOException;
 import java.nio.BufferOverflowException;
 import javax.annotation.Nonnull;
 
+import appeng.api.config.*;
+import appeng.container.ContainerLocator;
+import appeng.container.helper.PartContainerHelper;
+import appeng.fluids.parts.PartFluidFormationPlane;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.config.Settings;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.ViewItems;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -81,6 +80,20 @@ import appeng.util.Platform;
  */
 public class ContainerFluidTerminal extends AEBaseContainer implements IConfigManagerHost, IConfigurableObject, IMEMonitorHandlerReceiver<IAEFluidStack>
 {
+
+	public static ContainerType<ContainerFluidFormationPlane> TYPE;
+
+	private static final PartContainerHelper<ContainerFluidFormationPlane, PartFluidFormationPlane> helper
+			= new PartContainerHelper<>(ContainerFluidFormationPlane::new, PartFluidFormationPlane.class, SecurityPermissions.BUILD);
+
+	public static ContainerFluidFormationPlane fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
+	}
+
 	private final IConfigManager clientCM;
 	private final IMEMonitor<IAEFluidStack> monitor;
 	private final IItemList<IAEFluidStack> fluids = Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ).createList();
@@ -284,14 +297,7 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 					{
 						if( crafter instanceof ServerPlayerEntity )
 						{
-							try
-							{
-								NetworkHandler.instance().sendTo( new PacketValueConfig( set.name(), sideLocal.name() ), (ServerPlayerEntity) crafter );
-							}
-							catch( final IOException e )
-							{
-								AELog.debug( e );
-							}
+							NetworkHandler.instance().sendTo( new PacketValueConfig( set.name(), sideLocal.name() ), (ServerPlayerEntity) crafter );
 						}
 					}
 				}

@@ -20,14 +20,16 @@ package appeng.client.gui.widgets;
 
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
 
 import appeng.container.interfaces.IProgressProvider;
 import appeng.core.localization.GuiText;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 
-public class GuiProgressBar extends Button implements ITooltip
+public class GuiProgressBar extends Widget implements ITooltip
 {
 
 	private final IProgressProvider source;
@@ -45,13 +47,9 @@ public class GuiProgressBar extends Button implements ITooltip
 
 	public GuiProgressBar( final IProgressProvider source, final String texture, final int posX, final int posY, final int u, final int y, final int width, final int height, final Direction dir, final String title )
 	{
-		super( posX, posY, width, "" );
+		super( posX, posY, width, height, "" );
 		this.source = source;
-		this.x = posX;
-		this.y = posY;
 		this.texture = new ResourceLocation( "appliedenergistics2", "textures/" + texture );
-		this.width = width;
-		this.height = height;
 		this.fill_u = u;
 		this.fill_v = y;
 		this.layout = dir;
@@ -59,26 +57,24 @@ public class GuiProgressBar extends Button implements ITooltip
 	}
 
 	@Override
-	public void drawButton( final Minecraft par1Minecraft, final int par2, final int par3, final float partial )
+	public void renderButton( final int par2, final int par3, final float partial )
 	{
 		if( this.visible )
 		{
-			par1Minecraft.getTextureManager().bindTexture( this.texture );
+			Minecraft.getInstance().getTextureManager().bindTexture( this.texture );
 			final int max = this.source.getMaxProgress();
 			final int current = this.source.getCurrentProgress();
 
 			if( this.layout == Direction.VERTICAL )
 			{
 				final int diff = this.height - ( max > 0 ? ( this.height * current ) / max : 0 );
-				this.drawTexturedModalRect( this.x, this.y + diff, this.fill_u, this.fill_v + diff, this.width, this.height - diff );
+				GuiUtils.drawTexturedModalRect( this.x, this.y + diff, this.fill_u, this.fill_v + diff, this.width, this.height - diff, 0 );
 			}
 			else
 			{
 				final int diff = this.width - ( max > 0 ? ( this.width * current ) / max : 0 );
-				this.drawTexturedModalRect( this.x, this.y, this.fill_u + diff, this.fill_v, this.width - diff, this.height );
+				GuiUtils.drawTexturedModalRect( this.x, this.y, this.fill_u + diff, this.fill_v, this.width - diff, this.height, 0 );
 			}
-
-			this.mouseDragged( par1Minecraft, par2, par3 );
 		}
 	}
 

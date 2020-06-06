@@ -5,26 +5,31 @@ package appeng.block.paint;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.function.Function;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.tile.misc.TilePaint;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.property.IExtendedBlockState;
 
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.core.AppEng;
 import appeng.helpers.Splotch;
+import net.minecraftforge.client.model.data.IDynamicBakedModel;
+import net.minecraftforge.client.model.data.IModelData;
 
 
 /**
@@ -32,20 +37,17 @@ import appeng.helpers.Splotch;
  * a
  * matter cannon with paint balls.
  */
-class PaintBakedModel implements IBakedModel
+class PaintSplotchesBakedModel implements IDynamicBakedModel
 {
 
-	private static final ResourceLocation TEXTURE_PAINT1 = new ResourceLocation( AppEng.MOD_ID, "blocks/paint1" );
-	private static final ResourceLocation TEXTURE_PAINT2 = new ResourceLocation( AppEng.MOD_ID, "blocks/paint2" );
-	private static final ResourceLocation TEXTURE_PAINT3 = new ResourceLocation( AppEng.MOD_ID, "blocks/paint3" );
-
-	private final VertexFormat vertexFormat;
+	private static final Material TEXTURE_PAINT1 = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(AppEng.MOD_ID, "blocks/paint1" ));
+	private static final Material TEXTURE_PAINT2 = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "blocks/paint2" ));
+	private static final Material TEXTURE_PAINT3 = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "blocks/paint3" ));
 
 	private final TextureAtlasSprite[] textures;
 
-	PaintBakedModel( VertexFormat vertexFormat, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
+	PaintSplotchesBakedModel(Function<Material, TextureAtlasSprite> bakedTextureGetter )
 	{
-		this.vertexFormat = vertexFormat;
 		this.textures = new TextureAtlasSprite[] {
 				bakedTextureGetter.apply( TEXTURE_PAINT1 ),
 				bakedTextureGetter.apply( TEXTURE_PAINT2 ),
@@ -53,35 +55,30 @@ class PaintBakedModel implements IBakedModel
 		};
 	}
 
+	@Nonnull
 	@Override
-	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, long rand )
-	{
+	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData) {
+
 		if( side != null )
 		{
 			return Collections.emptyList();
 		}
 
-		if( !( state instanceof IExtendedBlockState ) )
+		PaintSplotches splotchesState = extraData.getData(TilePaint.SPLOTCHES);
+
+		if( splotchesState == null )
 		{
 			// This is the inventory model which should usually not be used other than in special cases
 			List<BakedQuad> quads = new ArrayList<>( 1 );
-			CubeBuilder builder = new CubeBuilder( this.vertexFormat, quads );
+			CubeBuilder builder = new CubeBuilder( quads );
 			builder.setTexture( this.textures[0] );
 			builder.addCube( 0, 0, 0, 16, 16, 16 );
 			return quads;
 		}
 
-		IExtendedBlockState extendedBlockState = (IExtendedBlockState) state;
-		PaintSplotches splotchesState = extendedBlockState.getValue( BlockPaint.SPLOTCHES );
-
-		if( splotchesState == null )
-		{
-			return Collections.emptyList();
-		}
-
 		List<Splotch> splotches = splotchesState.getSplotches();
 
-		CubeBuilder builder = new CubeBuilder( this.vertexFormat );
+		CubeBuilder builder = new CubeBuilder( );
 
 		float offsetConstant = 0.001f;
 		for( final Splotch s : splotches )
@@ -180,18 +177,17 @@ class PaintBakedModel implements IBakedModel
 	}
 
 	@Override
-	public ItemCameraTransforms getItemCameraTransforms()
-	{
-		return ItemCameraTransforms.DEFAULT;
-	}
-
-	@Override
 	public ItemOverrideList getOverrides()
 	{
 		return ItemOverrideList.EMPTY;
 	}
 
-	static List<ResourceLocation> getRequiredTextures()
+	@Override
+	public boolean func_230044_c_() {
+		return false;
+	}
+
+	static List<Material> getRequiredTextures()
 	{
 		return ImmutableList.of(
 				TEXTURE_PAINT1, TEXTURE_PAINT2, TEXTURE_PAINT3 );

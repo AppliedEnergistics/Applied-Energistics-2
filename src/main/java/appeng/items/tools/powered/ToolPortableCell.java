@@ -22,6 +22,9 @@ package appeng.items.tools.powered;
 import java.util.List;
 import java.util.Set;
 
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerMEPortableCell;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -69,7 +72,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell<
 	@Override
 	public ActionResult<ItemStack> onItemRightClick( final World w, final PlayerEntity player, final Hand hand )
 	{
-		// FIXME Platform.openGUI( player, null, AEPartLocation.INTERNAL, GuiBridge.GUI_PORTABLE_CELL );
+		ContainerOpener.openContainer(ContainerMEPortableCell.TYPE, player, ContainerLocator.forHand(hand));
 		return new ActionResult<>( ActionResultType.SUCCESS, player.getHeldItem( hand ) );
 	}
 

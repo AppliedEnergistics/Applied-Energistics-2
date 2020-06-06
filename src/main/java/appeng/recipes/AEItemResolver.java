@@ -129,13 +129,14 @@ public class AEItemResolver implements ISubItemResolver
 
 			if( itemName.startsWith( "material." ) )
 			{
-				final String materialName = itemName.substring( itemName.indexOf( '.' ) + 1 );
-				final MaterialType mt = MaterialType.valueOf( materialName.toUpperCase() );
-				// itemName = itemName.substring( 0, itemName.indexOf( "." ) );
-				if( mt.getItemInstance() == ItemMaterial.instance && mt.getDamageValue() >= 0 && mt.isRegistered() )
-				{
-					return new ResolverResult( "material", mt.getDamageValue() );
-				}
+				// FIXME entire class is redundant i think
+// FIXME				final String materialName = itemName.substring( itemName.indexOf( '.' ) + 1 );
+// FIXME				final MaterialType mt = MaterialType.valueOf( materialName.toUpperCase() );
+// FIXME				// itemName = itemName.substring( 0, itemName.indexOf( "." ) );
+// FIXME				if( mt.getItemInstance() == ItemMaterial.instance && mt.getDamageValue() >= 0 && mt.isRegistered() )
+// FIXME				{
+// FIXME					return new ResolverResult( "material", mt.getDamageValue() );
+// FIXME				}
 			}
 
 			if( itemName.startsWith( "part." ) )

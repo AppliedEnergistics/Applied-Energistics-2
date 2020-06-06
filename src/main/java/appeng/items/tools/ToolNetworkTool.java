@@ -19,6 +19,10 @@
 package appeng.items.tools;
 
 
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerNetworkStatus;
+import appeng.container.implementations.ContainerNetworkTool;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -161,11 +165,11 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench
 
 				if( te instanceof IGridHost )
 				{
-					// FIXME Platform.openGUI( p, te, AEPartLocation.fromFacing( side ), GuiBridge.GUI_NETWORK_STATUS );
+					ContainerOpener.openContainer(ContainerNetworkStatus.TYPE, p, ContainerLocator.forTileEntitySide(te, side));
 				}
 				else
 				{
-					// FIXME Platform.openGUI( p, null, AEPartLocation.INTERNAL, GuiBridge.GUI_NETWORK_TOOL );
+					ContainerOpener.openContainer(ContainerNetworkTool.TYPE, p, ContainerLocator.forHand(hand));
 				}
 
 				return true;
@@ -178,7 +182,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench
 		}
 		else
 		{
-			// FIXME Platform.openGUI( p, null, AEPartLocation.INTERNAL, GuiBridge.GUI_NETWORK_TOOL );
+			ContainerOpener.openContainer(ContainerNetworkTool.TYPE, p, ContainerLocator.forHand(hand));
 		}
 
 		return false;

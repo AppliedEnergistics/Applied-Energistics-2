@@ -19,6 +19,9 @@
 package appeng.container.implementations;
 
 
+import appeng.container.ContainerLocator;
+import appeng.container.helper.TileContainerHelper;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.container.AEBaseContainer;
@@ -28,19 +31,34 @@ import appeng.container.slot.SlotRestrictedInput;
 import appeng.tile.misc.TileVibrationChamber;
 import appeng.util.Platform;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 
 
 public class ContainerVibrationChamber extends AEBaseContainer implements IProgressProvider
 {
+
+public static ContainerType<ContainerVibrationChamber> TYPE;
+
+	private static final TileContainerHelper<ContainerVibrationChamber, TileVibrationChamber> helper
+			= new TileContainerHelper<>(ContainerVibrationChamber::new, TileVibrationChamber.class);
+
+	public static ContainerVibrationChamber fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
+	}
+
 	private final TileVibrationChamber vibrationChamber;
 	@GuiSync( 0 )
 	public int burnSpeed = 0;
 	@GuiSync( 1 )
 	public int remainingBurnTime = 0;
 
-	public ContainerVibrationChamber(ContainerType<?> containerType, int id, final PlayerInventory ip, final TileVibrationChamber vibrationChamber )
+	public ContainerVibrationChamber(int id, final PlayerInventory ip, final TileVibrationChamber vibrationChamber )
 	{
-		super( containerType, id, ip, vibrationChamber, null );
+		super( TYPE, id, ip, vibrationChamber, null );
 		this.vibrationChamber = vibrationChamber;
 
 		this.addSlot( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.FUEL, vibrationChamber.getInternalInventory(), 0, 80, 37, this

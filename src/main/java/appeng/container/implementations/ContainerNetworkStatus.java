@@ -21,7 +21,9 @@ package appeng.container.implementations;
 
 import java.io.IOException;
 
-import appeng.api.parts.IPart;
+import appeng.container.ContainerLocator;
+import appeng.container.helper.PartOrTileContainerHelper;
+import appeng.container.helper.TileContainerHelper;
 import appeng.core.Api;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -29,7 +31,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 
-import appeng.api.AEApi;
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridBlock;
@@ -46,11 +47,24 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.network.PacketBuffer;
 
 
 public class ContainerNetworkStatus extends AEBaseContainer
 {
+
+	public static ContainerType<ContainerNetworkStatus> TYPE;
+
+	private static final PartOrTileContainerHelper<ContainerNetworkStatus, INetworkTool> helper
+			= new PartOrTileContainerHelper<>(ContainerNetworkStatus::new, INetworkTool.class);
+
+	public static ContainerNetworkStatus fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
+	}
 
 	@GuiSync( 0 )
 	public long avgAddition;
@@ -63,8 +77,8 @@ public class ContainerNetworkStatus extends AEBaseContainer
 	private IGrid network;
 	private int delay = 40;
 
-	public ContainerNetworkStatus(ContainerType<?> containerType, int id, PlayerInventory ip, final INetworkTool te) {
-		super(containerType, id, ip, null, null);
+	public ContainerNetworkStatus(int id, PlayerInventory ip, final INetworkTool te) {
+		super(TYPE, id, ip, null, null);
 		final IGridHost host = te.getGridHost();
 
 		if( host != null )

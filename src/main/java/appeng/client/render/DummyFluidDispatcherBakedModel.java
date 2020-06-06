@@ -32,6 +32,8 @@ import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.Fluids;
@@ -53,9 +55,9 @@ import appeng.fluids.items.FluidDummyItem;
  */
 public class DummyFluidDispatcherBakedModel extends DelegateBakedModel
 {
-	private final Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter;
+	private final Function<Material, TextureAtlasSprite> bakedTextureGetter;
 
-	public DummyFluidDispatcherBakedModel( IBakedModel baseModel, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
+	public DummyFluidDispatcherBakedModel( IBakedModel baseModel, Function<Material, TextureAtlasSprite> bakedTextureGetter )
 	{
 		super( baseModel );
 		this.bakedTextureGetter = bakedTextureGetter;
@@ -108,7 +110,9 @@ public class DummyFluidDispatcherBakedModel extends DelegateBakedModel
 				}
 
 				FluidAttributes attributes = fluidStack.getFluid().getAttributes();
-				TextureAtlasSprite sprite = DummyFluidDispatcherBakedModel.this.bakedTextureGetter.apply( attributes.getStillTexture( fluidStack ) );
+				ResourceLocation stillTexture = attributes.getStillTexture(fluidStack);
+				Material stillMaterial = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, stillTexture);
+				TextureAtlasSprite sprite = DummyFluidDispatcherBakedModel.this.bakedTextureGetter.apply(stillMaterial);
 				if( sprite == null )
 				{
 					return new DummyFluidBakedModel( ImmutableList.of() );

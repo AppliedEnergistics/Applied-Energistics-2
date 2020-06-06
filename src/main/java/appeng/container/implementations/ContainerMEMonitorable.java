@@ -24,6 +24,8 @@ import java.nio.BufferOverflowException;
 
 import javax.annotation.Nonnull;
 
+import appeng.container.ContainerLocator;
+import appeng.container.helper.PartOrTileContainerHelper;
 import appeng.core.Api;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -31,6 +33,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 
 import appeng.api.config.Actionable;
@@ -77,6 +80,19 @@ import appeng.util.Platform;
 public class ContainerMEMonitorable extends AEBaseContainer implements IConfigManagerHost, IConfigurableObject, IMEMonitorHandlerReceiver<IAEItemStack>
 {
 
+	public static ContainerType<ContainerMEMonitorable> TYPE;
+
+	private static final PartOrTileContainerHelper<ContainerMEMonitorable, ITerminalHost> helper
+			= new PartOrTileContainerHelper<>(ContainerMEMonitorable::new, ITerminalHost.class);
+
+	public static ContainerMEMonitorable fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
+	}
+
 	private final SlotRestrictedInput[] cellView = new SlotRestrictedInput[5];
 	private final IMEMonitor<IAEItemStack> monitor;
 	private final IItemList<IAEItemStack> items = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
@@ -90,10 +106,9 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	private IConfigManager serverCM;
 	private IGridNode networkNode;
 
-
-	public ContainerMEMonitorable( ContainerType<?> containerType, int id, final PlayerInventory ip, final ITerminalHost monitorable )
+	public ContainerMEMonitorable( int id, final PlayerInventory ip, final ITerminalHost monitorable )
 	{
-		this( containerType, id, ip, monitorable, true );
+		this( TYPE, id, ip, monitorable, true );
 	}
 
 	public ContainerMEMonitorable(ContainerType<?> containerType, int id, PlayerInventory ip, final ITerminalHost monitorable, final boolean bindInventory ) {
@@ -211,14 +226,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 					{
 						if( crafter instanceof ServerPlayerEntity )
 						{
-							try
-							{
-								NetworkHandler.instance().sendTo( new PacketValueConfig( set.name(), sideLocal.name() ), (ServerPlayerEntity) crafter );
-							}
-							catch( final IOException e )
-							{
-								AELog.debug( e );
-							}
+							NetworkHandler.instance().sendTo( new PacketValueConfig( set.name(), sideLocal.name() ), (ServerPlayerEntity) crafter );
 						}
 					}
 				}

@@ -21,13 +21,15 @@ package appeng.container.implementations;
 
 import java.util.Iterator;
 
+import appeng.container.ContainerLocator;
+import appeng.container.helper.TileContainerHelper;
 import appeng.core.Api;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.inventory.container.Slot;
+import net.minecraft.inventory.container.*;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
@@ -54,16 +56,30 @@ import appeng.util.iterators.NullIterator;
 
 public class ContainerCellWorkbench extends ContainerUpgradeable
 {
+
+	public static ContainerType<ContainerCellWorkbench> TYPE;
+
+	private static final TileContainerHelper<ContainerCellWorkbench, TileCellWorkbench> helper
+			= new TileContainerHelper<>(ContainerCellWorkbench::new, TileCellWorkbench.class);
+
 	private final TileCellWorkbench workBench;
 	@GuiSync( 2 )
 	public CopyMode copyMode = CopyMode.CLEAR_ON_REMOVE;
 	private ItemStack prevStack = ItemStack.EMPTY;
 	private int lastUpgrades = 0;
 
-	public ContainerCellWorkbench(ContainerType<?> containerType, int id, final PlayerInventory ip, final TileCellWorkbench te )
+	public ContainerCellWorkbench(int id, final PlayerInventory ip, final TileCellWorkbench te )
 	{
-		super( containerType, id, ip, te );
+		super( TYPE, id, ip, te );
 		this.workBench = te;
+	}
+
+	public static ContainerCellWorkbench fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
 	}
 
 	public void setFuzzy( final FuzzyMode valueOf )

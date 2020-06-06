@@ -20,6 +20,10 @@ package appeng.block.storage;
 
 
 import appeng.block.AEBaseTileBlock;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerChest;
+import appeng.container.implementations.ContainerQNB;
 import appeng.core.localization.PlayerMessages;
 import appeng.tile.storage.TileChest;
 import appeng.util.Platform;
@@ -94,7 +98,7 @@ public class BlockChest extends AEBaseTileBlock<TileChest>
 
 			if( hit.getFace() != tg.getUp() )
 			{
-				// FIXME Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit), GuiBridge.GUI_CHEST );
+				ContainerOpener.openContainer(ContainerChest.TYPE, p, ContainerLocator.forTileEntitySide(tg, hit.getFace()));
 			}
 			else
 			{

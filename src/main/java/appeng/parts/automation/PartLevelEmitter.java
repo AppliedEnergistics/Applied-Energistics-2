@@ -22,6 +22,9 @@ package appeng.parts.automation;
 import java.util.Collection;
 import java.util.Random;
 
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerLevelEmitter;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
@@ -461,7 +464,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	{
 		if( Platform.isServer() )
 		{
-			// FIXME Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_LEVEL_EMITTER );
+			ContainerOpener.openContainer(ContainerLevelEmitter.TYPE, player, ContainerLocator.forPart(this));
 		}
 		return true;
 	}

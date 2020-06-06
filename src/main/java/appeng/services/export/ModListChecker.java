@@ -27,7 +27,7 @@ import com.google.common.base.Preconditions;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
-import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.commons.ModContainer;
 
 
 /**

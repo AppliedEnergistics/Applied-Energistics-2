@@ -6,9 +6,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerFormationPlane;
+import appeng.fluids.container.ContainerFluidFormationPlane;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -188,7 +193,7 @@ public class PartFluidFormationPlane extends PartAbstractFormationPlane<IAEFluid
 	{
 		if( Platform.isServer() )
 		{
-			// FIXME Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_FLUID_FORMATION_PLANE );
+			ContainerOpener.openContainer(ContainerFluidFormationPlane.TYPE, player, ContainerLocator.forPart(this));
 		}
 
 		return true;
@@ -229,9 +234,9 @@ public class PartFluidFormationPlane extends PartAbstractFormationPlane<IAEFluid
 		return Api.INSTANCE.definitions().parts().fluidFormationnPlane().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 	}
 
-// FIXME	@Override
-// FIXME	public GuiBridge getGuiBridge()
-// FIXME	{
-// FIXME		return GuiBridge.GUI_FLUID_FORMATION_PLANE;
-// FIXME	}
+	@Override
+	public ContainerType<?> getContainerType()
+	{
+		return ContainerFluidFormationPlane.TYPE;
+	}
 }

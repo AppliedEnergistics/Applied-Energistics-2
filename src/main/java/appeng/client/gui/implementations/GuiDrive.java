@@ -19,19 +19,14 @@
 package appeng.client.gui.implementations;
 
 
-import java.io.IOException;
-
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.PlayerInventory;
-
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.container.implementations.ContainerDrive;
+import appeng.container.implementations.ContainerPriority;
 import appeng.core.localization.GuiText;
-
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketSwitchGuis;
-import appeng.tile.storage.TileDrive;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
@@ -39,22 +34,9 @@ import net.minecraftforge.fml.client.gui.GuiUtils;
 public class GuiDrive extends AEBaseGui<ContainerDrive>
 {
 
-	private GuiTabButton priority;
-
 	public GuiDrive(ContainerDrive container, PlayerInventory playerInventory, ITextComponent title) {
 		super(container, playerInventory, title);
 		this.ySize = 199;
-	}
-
-	@Override
-	protected void actionPerformed( final GuiButton par1GuiButton ) throws IOException
-	{
-		super.actionPerformed( par1GuiButton );
-
-		if( par1GuiButton == this.priority )
-		{
-			NetworkHandler.instance().sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
-		}
 	}
 
 	@Override
@@ -62,7 +44,11 @@ public class GuiDrive extends AEBaseGui<ContainerDrive>
 	{
 		super.init();
 
-		this.addButton( this.priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRender ) );
+		this.addButton( new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRenderer, btn -> openPriorityGui() ) );
+	}
+
+	private void openPriorityGui() {
+		NetworkHandler.instance().sendToServer( new PacketSwitchGuis( ContainerPriority.TYPE ) );
 	}
 
 	@Override
@@ -73,7 +59,7 @@ public class GuiDrive extends AEBaseGui<ContainerDrive>
 	}
 
 	@Override
-	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
+	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
 	{
 		this.bindTexture( "guis/drive.png" );
 		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );

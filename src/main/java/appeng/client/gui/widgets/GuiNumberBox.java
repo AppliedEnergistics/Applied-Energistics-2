@@ -22,7 +22,7 @@ package appeng.client.gui.widgets;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 
-
+// FIXME: Fix this piece of crap (i.e. onChange listener)
 public class GuiNumberBox extends TextFieldWidget
 {
 
@@ -30,7 +30,7 @@ public class GuiNumberBox extends TextFieldWidget
 
 	public GuiNumberBox( final FontRenderer fontRenderer, final int x, final int y, final int width, final int height, final Class type )
 	{
-		super( 0, fontRenderer, x, y, width, height );
+		super( fontRenderer, x, y, width, height, "0" );
 		this.type = type;
 	}
 

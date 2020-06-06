@@ -20,6 +20,10 @@ package appeng.block.storage;
 
 
 import appeng.block.AEBaseTileBlock;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerIOPort;
+import appeng.fluids.container.ContainerFluidInterface;
 import appeng.tile.storage.TileIOPort;
 import appeng.util.Platform;
 import net.minecraft.block.Block;
@@ -67,7 +71,7 @@ public class BlockIOPort extends AEBaseTileBlock<TileIOPort>
 		{
 			if( Platform.isServer() )
 			{
-				// FIXME Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit), GuiBridge.GUI_IOPORT );
+				ContainerOpener.openContainer(ContainerIOPort.TYPE, p, ContainerLocator.forTileEntitySide(tg, hit.getFace()));
 			}
 			return ActionResultType.SUCCESS;
 		}

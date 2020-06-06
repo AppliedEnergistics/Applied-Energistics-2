@@ -26,6 +26,7 @@ package appeng.api.features;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Hand;
 import net.minecraft.world.IBlockReader;
 
 
@@ -61,5 +62,5 @@ public interface IWirelessTermRegistry
 	 * opens the wireless terminal gui, the wireless terminal item, must be in
 	 * the active slot on the tool bar.
 	 */
-	void openWirelessTerminalGui( ItemStack item, IBlockReader world, PlayerEntity player );
+	void openWirelessTerminalGui( ItemStack item, IBlockReader world, PlayerEntity player, Hand hand );
 }

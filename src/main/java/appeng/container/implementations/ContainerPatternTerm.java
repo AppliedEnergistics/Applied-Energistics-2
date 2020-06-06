@@ -20,14 +20,18 @@ package appeng.container.implementations;
 
 
 import appeng.api.config.Actionable;
+import appeng.api.config.SecurityPermissions;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.container.ContainerLocator;
 import appeng.container.ContainerNull;
 import appeng.container.guisync.GuiSync;
+import appeng.container.helper.PartOrTileContainerHelper;
+import appeng.container.helper.TileContainerHelper;
 import appeng.container.slot.*;
 import appeng.core.Api;
 import appeng.core.sync.packets.PacketPatternSlot;
@@ -58,6 +62,7 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
@@ -69,6 +74,19 @@ import java.util.Optional;
 
 public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEAppEngInventory, IOptionalSlotHost, IContainerCraftingPacket
 {
+
+	public static ContainerType<ContainerPatternTerm> TYPE;
+
+	private static final PartOrTileContainerHelper<ContainerPatternTerm, ITerminalHost> helper
+			= new PartOrTileContainerHelper<>(ContainerPatternTerm::new, ITerminalHost.class, SecurityPermissions.CRAFT);
+
+	public static ContainerPatternTerm fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
+	}
 
 	private final PartPatternTerminal patternTerminal;
 	private final AppEngInternalInventory cOut = new AppEngInternalInventory( null, 1 );
@@ -85,9 +103,9 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	@GuiSync( 96 )
 	public boolean substitute = false;
 
-	public ContainerPatternTerm(ContainerType<?> type, int id, final PlayerInventory ip, final ITerminalHost monitorable )
+	public ContainerPatternTerm(int id, final PlayerInventory ip, final ITerminalHost monitorable )
 	{
-		super( type, id, ip, monitorable, false );
+		super( TYPE, id, ip, monitorable, false );
 		this.patternTerminal = (PartPatternTerminal) monitorable;
 
 		final IItemHandler patternInv = this.getPatternTerminal().getInventoryByName( "pattern" );

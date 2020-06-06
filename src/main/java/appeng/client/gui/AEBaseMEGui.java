@@ -45,7 +45,7 @@ public abstract class AEBaseMEGui<T extends AEBaseContainer> extends AEBaseGui<T
 	}
 
 	@Override
-	protected void renderToolTip( final ItemStack stack, final int x, final int y )
+	protected void renderTooltip( final ItemStack stack, final int x, final int y )
 	{
 		final Slot s = this.getSlot( x, y );
 
@@ -54,7 +54,7 @@ public abstract class AEBaseMEGui<T extends AEBaseContainer> extends AEBaseGui<T
 			final int bigNumber = AEConfig.instance().useTerminalUseLargeFont() ? 999 : 9999;
 
 			IAEItemStack myStack = null;
-			final List<String> currentToolTip = this.getItemToolTip( stack );
+			final List<String> currentToolTip = this.getTooltipFromItem( stack );
 
 			try
 			{
@@ -67,7 +67,7 @@ public abstract class AEBaseMEGui<T extends AEBaseContainer> extends AEBaseGui<T
 
 			if( myStack != null )
 			{
-				if( myStack.getStackSize() > bigNumber || ( myStack.getStackSize() > 1 && stack.isItemDamaged() ) )
+				if( myStack.getStackSize() > bigNumber || ( myStack.getStackSize() > 1 && stack.isDamaged() ) )
 				{
 					final String local = ButtonToolTips.ItemsStored.getLocal();
 					final String formattedAmount = NumberFormat.getNumberInstance( Locale.US ).format( myStack.getStackSize() );
@@ -84,8 +84,7 @@ public abstract class AEBaseMEGui<T extends AEBaseContainer> extends AEBaseGui<T
 
 					currentToolTip.add( format );
 				}
-
-				this.drawHoveringText( currentToolTip, x, y, this.font );
+				this.renderTooltip( currentToolTip, x, y, this.font );
 
 				return;
 			}
@@ -97,12 +96,12 @@ public abstract class AEBaseMEGui<T extends AEBaseContainer> extends AEBaseGui<T
 
 				currentToolTip.add( TextFormatting.GRAY + format );
 
-				this.drawHoveringText( currentToolTip, x, y, this.font );
+				this.renderTooltip( currentToolTip, x, y, this.font );
 
 				return;
 			}
 		}
 
-		super.renderToolTip( stack, x, y );
+		super.renderTooltip( stack, x, y );
 	}
 }

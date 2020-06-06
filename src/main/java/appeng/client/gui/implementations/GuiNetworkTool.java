@@ -19,19 +19,13 @@
 package appeng.client.gui.implementations;
 
 
-import java.io.IOException;
-
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.PlayerInventory;
-
-import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiToggleButton;
 import appeng.container.implementations.ContainerNetworkTool;
-import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
@@ -47,32 +41,18 @@ public class GuiNetworkTool extends AEBaseGui<ContainerNetworkTool>
 	}
 
 	@Override
-	protected void actionPerformed( final GuiButton btn ) throws IOException
-	{
-		super.actionPerformed( btn );
-
-		try
-		{
-			if( btn == this.tFacades )
-			{
-				NetworkHandler.instance().sendToServer( new PacketValueConfig( "NetworkTool", "Toggle" ) );
-			}
-		}
-		catch( final IOException e )
-		{
-			AELog.debug( e );
-		}
-	}
-
-	@Override
 	public void init()
 	{
 		super.init();
 
 		this.tFacades = new GuiToggleButton( this.guiLeft - 18, this.guiTop + 8, 23, 22, GuiText.TransparentFacades.getLocal(), GuiText.TransparentFacadesHint
-				.getLocal() );
+				.getLocal(), btn -> toggleFacades() );
 
 		this.addButton( this.tFacades );
+	}
+
+	private void toggleFacades() {
+		NetworkHandler.instance().sendToServer( new PacketValueConfig( "NetworkTool", "Toggle" ) );
 	}
 
 	@Override
@@ -88,7 +68,7 @@ public class GuiNetworkTool extends AEBaseGui<ContainerNetworkTool>
 	}
 
 	@Override
-	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
+	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
 	{
 		this.bindTexture( "guis/toolbox.png" );
 		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );

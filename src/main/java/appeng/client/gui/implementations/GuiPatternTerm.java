@@ -19,25 +19,19 @@
 package appeng.client.gui.implementations;
 
 
-import java.io.IOException;
-
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.ItemStack;
-
 import appeng.api.config.ActionItems;
 import appeng.api.config.ItemSubstitution;
 import appeng.api.config.Settings;
-import appeng.api.storage.ITerminalHost;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.container.implementations.ContainerPatternTerm;
 import appeng.container.slot.AppEngSlot;
-import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
 
@@ -57,50 +51,10 @@ public class GuiPatternTerm extends GuiMEMonitorable<ContainerPatternTerm>
 	private GuiTabButton tabProcessButton;
 	private GuiImgButton substitutionsEnabledBtn;
 	private GuiImgButton substitutionsDisabledBtn;
-	private GuiImgButton encodeBtn;
-	private GuiImgButton clearBtn;
 
 	public GuiPatternTerm(ContainerPatternTerm container, PlayerInventory playerInventory, ITextComponent title) {
 		super(container, playerInventory, title);
 		this.setReservedSpace( 81 );
-	}
-
-	@Override
-	protected void actionPerformed( final GuiButton btn )
-	{
-		super.actionPerformed( btn );
-
-		try
-		{
-
-			if( this.tabCraftButton == btn || this.tabProcessButton == btn )
-			{
-				NetworkHandler.instance()
-						.sendToServer(
-								new PacketValueConfig( "PatternTerminal.CraftMode", this.tabProcessButton == btn ? CRAFTMODE_CRFTING : CRAFTMODE_PROCESSING ) );
-			}
-
-			if( this.encodeBtn == btn )
-			{
-				NetworkHandler.instance().sendToServer( new PacketValueConfig( "PatternTerminal.Encode", "1" ) );
-			}
-
-			if( this.clearBtn == btn )
-			{
-				NetworkHandler.instance().sendToServer( new PacketValueConfig( "PatternTerminal.Clear", "1" ) );
-			}
-
-			if( this.substitutionsEnabledBtn == btn || this.substitutionsDisabledBtn == btn )
-			{
-				NetworkHandler.instance()
-						.sendToServer(
-								new PacketValueConfig( "PatternTerminal.Substitute", this.substitutionsEnabledBtn == btn ? SUBSITUTION_DISABLE : SUBSITUTION_ENABLE ) );
-			}
-		}
-		catch( final IOException e )
-		{
-			AELog.error( e );
-		}
 	}
 
 	@Override
@@ -109,27 +63,43 @@ public class GuiPatternTerm extends GuiMEMonitorable<ContainerPatternTerm>
 		super.init();
 
 		this.tabCraftButton = new GuiTabButton( this.guiLeft + 173, this.guiTop + this.ySize - 177, new ItemStack( Blocks.CRAFTING_TABLE ), GuiText.CraftingPattern
-				.getLocal(), this.itemRender );
+				.getLocal(), this.itemRenderer, btn -> toggleCraftMode(CRAFTMODE_PROCESSING) );
 		this.addButton( this.tabCraftButton );
 
 		this.tabProcessButton = new GuiTabButton( this.guiLeft + 173, this.guiTop + this.ySize - 177, new ItemStack( Blocks.FURNACE ), GuiText.ProcessingPattern
-				.getLocal(), this.itemRender );
+				.getLocal(), this.itemRenderer, btn -> toggleCraftMode(CRAFTMODE_CRFTING) );
 		this.addButton( this.tabProcessButton );
 
-		this.substitutionsEnabledBtn = new GuiImgButton( this.guiLeft + 84, this.guiTop + this.ySize - 163, Settings.ACTIONS, ItemSubstitution.ENABLED );
+		this.substitutionsEnabledBtn = new GuiImgButton( this.guiLeft + 84, this.guiTop + this.ySize - 163, Settings.ACTIONS, ItemSubstitution.ENABLED, btn -> toggleSubstitutions(SUBSITUTION_DISABLE) );
 		this.substitutionsEnabledBtn.setHalfSize( true );
 		this.addButton( this.substitutionsEnabledBtn );
 
-		this.substitutionsDisabledBtn = new GuiImgButton( this.guiLeft + 84, this.guiTop + this.ySize - 163, Settings.ACTIONS, ItemSubstitution.DISABLED );
+		this.substitutionsDisabledBtn = new GuiImgButton( this.guiLeft + 84, this.guiTop + this.ySize - 163, Settings.ACTIONS, ItemSubstitution.DISABLED, btn -> toggleSubstitutions(SUBSITUTION_ENABLE) );
 		this.substitutionsDisabledBtn.setHalfSize( true );
 		this.addButton( this.substitutionsDisabledBtn );
 
-		this.clearBtn = new GuiImgButton( this.guiLeft + 74, this.guiTop + this.ySize - 163, Settings.ACTIONS, ActionItems.CLOSE );
-		this.clearBtn.setHalfSize( true );
-		this.addButton( this.clearBtn );
+		GuiImgButton clearBtn = new GuiImgButton(this.guiLeft + 74, this.guiTop + this.ySize - 163, Settings.ACTIONS, ActionItems.CLOSE, btn -> clear());
+		clearBtn.setHalfSize( true );
+		this.addButton(clearBtn);
 
-		this.encodeBtn = new GuiImgButton( this.guiLeft + 147, this.guiTop + this.ySize - 142, Settings.ACTIONS, ActionItems.ENCODE );
-		this.addButton( this.encodeBtn );
+		GuiImgButton encodeBtn = new GuiImgButton(this.guiLeft + 147, this.guiTop + this.ySize - 142, Settings.ACTIONS, ActionItems.ENCODE, btn -> encode());
+		this.addButton(encodeBtn);
+	}
+
+	private void toggleCraftMode(String mode) {
+		NetworkHandler.instance().sendToServer(new PacketValueConfig( "PatternTerminal.CraftMode", mode ) );
+	}
+
+	private void toggleSubstitutions(String mode) {
+		NetworkHandler.instance().sendToServer(new PacketValueConfig( "PatternTerminal.Substitute", mode ) );
+	}
+
+	private void encode() {
+		NetworkHandler.instance().sendToServer( new PacketValueConfig( "PatternTerminal.Encode", "1" ) );
+	}
+
+	private void clear() {
+		NetworkHandler.instance().sendToServer( new PacketValueConfig( "PatternTerminal.Clear", "1" ) );
 	}
 
 	@Override
@@ -179,6 +149,6 @@ public class GuiPatternTerm extends GuiMEMonitorable<ContainerPatternTerm>
 	{
 		final int offsetPlayerSide = s.isPlayerSide() ? 5 : 3;
 
-		s.yPos = s.getY() + this.ySize - 78 - offsetPlayerSide;
+		// FIXME OH NOOOOO WE CANNOT, ITS FINAL s.yPos = s.getY() + this.ySize - 78 - offsetPlayerSide;
 	}
 }

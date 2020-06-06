@@ -19,6 +19,9 @@
 package appeng.container.implementations;
 
 
+import appeng.container.ContainerLocator;
+import appeng.container.helper.PartOrTileContainerHelper;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
@@ -27,10 +30,24 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.container.interfaces.IInventorySlotAware;
+import net.minecraft.network.PacketBuffer;
 
 
 public class ContainerMEPortableCell extends ContainerMEMonitorable
 {
+
+	public static ContainerType<ContainerMEPortableCell> TYPE;
+
+	private static final PartOrTileContainerHelper<ContainerMEPortableCell, IPortableCell> helper
+			= new PartOrTileContainerHelper<>(ContainerMEPortableCell::new, IPortableCell.class);
+
+	public static ContainerMEPortableCell fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
+	}
 
 	private double powerMultiplier = 0.5;
 
@@ -38,9 +55,14 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable
 	private int ticks = 0;
 	private final int slot;
 
-	public ContainerMEPortableCell(ContainerType<?> containerType, int id, final PlayerInventory ip, final IPortableCell monitorable )
+	public ContainerMEPortableCell(int id, final PlayerInventory ip, final IPortableCell monitorable )
 	{
-		super( containerType, id, ip, monitorable, false );
+		this(TYPE, id, ip, monitorable);
+	}
+
+	protected ContainerMEPortableCell(ContainerType<? extends ContainerMEPortableCell> type, int id, final PlayerInventory ip, final IPortableCell monitorable )
+	{
+		super( type, id, ip, monitorable, false );
 		if( monitorable instanceof IInventorySlotAware )
 		{
 			final int slotIndex = ( (IInventorySlotAware) monitorable ).getInventorySlot();

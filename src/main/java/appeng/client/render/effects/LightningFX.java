@@ -62,7 +62,7 @@ public class LightningFX extends SpriteTexturedParticle
 		this.regen();
 	}
 
-	private LightningFX( final World w, final double x, final double y, final double z, final double r, final double g, final double b, final int maxAge )
+	protected LightningFX( final World w, final double x, final double y, final double z, final double r, final double g, final double b, final int maxAge )
 	{
 		super( w, x, y, z, r, g, b );
 		this.precomputedSteps = new double[LightningFX.STEPS][3];

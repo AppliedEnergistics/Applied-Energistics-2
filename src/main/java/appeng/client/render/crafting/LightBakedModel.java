@@ -26,6 +26,7 @@ import net.minecraft.util.Direction;
 
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.client.render.cablebus.CubeBuilder;
+import net.minecraftforge.client.model.data.IModelData;
 
 
 /**
@@ -39,15 +40,15 @@ class LightBakedModel extends CraftingCubeBakedModel
 
 	private final TextureAtlasSprite lightTexture;
 
-	LightBakedModel( VertexFormat format, TextureAtlasSprite ringCorner, TextureAtlasSprite ringHor, TextureAtlasSprite ringVer, TextureAtlasSprite baseTexture, TextureAtlasSprite lightTexture )
+	LightBakedModel( TextureAtlasSprite ringCorner, TextureAtlasSprite ringHor, TextureAtlasSprite ringVer, TextureAtlasSprite baseTexture, TextureAtlasSprite lightTexture )
 	{
-		super( format, ringCorner, ringHor, ringVer );
+		super( ringCorner, ringHor, ringVer );
 		this.baseTexture = baseTexture;
 		this.lightTexture = lightTexture;
 	}
 
 	@Override
-	protected void addInnerCube( Direction facing, BlockState state, CubeBuilder builder, float x1, float y1, float z1, float x2, float y2, float z2 )
+	protected void addInnerCube(Direction facing, BlockState state, IModelData modelData, CubeBuilder builder, float x1, float y1, float z1, float x2, float y2, float z2)
 	{
 		builder.setTexture( this.baseTexture );
 		builder.addCube( x1, y1, z1, x2, y2, z2 );

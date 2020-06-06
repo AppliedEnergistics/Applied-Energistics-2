@@ -19,6 +19,11 @@
 package appeng.container.implementations;
 
 
+import appeng.api.config.SecurityPermissions;
+import appeng.container.ContainerLocator;
+import appeng.container.helper.PartOrTileContainerHelper;
+import appeng.container.helper.TileContainerHelper;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.CraftingInventory;
@@ -26,6 +31,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
@@ -45,15 +51,28 @@ import appeng.util.inv.WrapperInvItemHandler;
 public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAEAppEngInventory, IContainerCraftingPacket
 {
 
+	public static ContainerType<ContainerCraftingTerm> TYPE;
+
+	private static final PartOrTileContainerHelper<ContainerCraftingTerm, ITerminalHost> helper
+			= new PartOrTileContainerHelper<>(ContainerCraftingTerm::new, ITerminalHost.class, SecurityPermissions.CRAFT);
+
+	public static ContainerCraftingTerm fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
+	}
+
 	private final PartCraftingTerminal ct;
 	private final AppEngInternalInventory output = new AppEngInternalInventory( this, 1 );
 	private final SlotCraftingMatrix[] craftingSlots = new SlotCraftingMatrix[9];
 	private final SlotCraftingTerm outputSlot;
 	private IRecipe<CraftingInventory> currentRecipe;
 
-	public ContainerCraftingTerm(ContainerType<?> containerType, int id, final PlayerInventory ip, final ITerminalHost monitorable )
+	public ContainerCraftingTerm(int id, final PlayerInventory ip, final ITerminalHost monitorable )
 	{
-		super( containerType, id, ip, monitorable, false );
+		super( TYPE, id, ip, monitorable, false );
 		this.ct = (PartCraftingTerminal) monitorable;
 
 		final IItemHandler crafting = this.ct.getInventoryByName( "crafting" );

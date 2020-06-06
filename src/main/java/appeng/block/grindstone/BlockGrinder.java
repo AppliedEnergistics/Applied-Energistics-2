@@ -20,6 +20,8 @@ package appeng.block.grindstone;
 
 
 import appeng.block.AEBaseTileBlock;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
 import appeng.container.implementations.ContainerGrinder;
 import appeng.tile.grindstone.TileGrinder;
 import net.minecraft.entity.player.PlayerEntity;
@@ -48,7 +50,7 @@ public class BlockGrinder extends AEBaseTileBlock<TileGrinder>
 		if( tg != null && !p.isCrouching() )
 		{
 			if (p instanceof ServerPlayerEntity) {
-				ContainerGrinder.open((ServerPlayerEntity) p, tg, getNameTextComponent());
+				ContainerOpener.openContainer(ContainerGrinder.TYPE, p, ContainerLocator.forTileEntitySide(tg, hit.getFace()));
 			}
 			return ActionResultType.SUCCESS;
 		}

@@ -19,6 +19,10 @@
 package appeng.parts.automation;
 
 
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerUpgradeable;
+import appeng.fluids.container.ContainerFluidInterface;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
@@ -220,7 +224,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	{
 		if( Platform.isServer() )
 		{
-			// FIXME Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_BUS );
+			ContainerOpener.openContainer(ContainerUpgradeable.TYPE, player, ContainerLocator.forPart(this));
 		}
 		return true;
 	}

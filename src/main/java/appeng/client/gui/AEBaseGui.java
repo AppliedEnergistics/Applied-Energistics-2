@@ -68,7 +68,6 @@ import net.minecraftforge.fml.client.gui.GuiUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.*;
@@ -266,7 +265,7 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 		final int ox = this.guiLeft; // (width - xSize) / 2;
 		final int oy = this.guiTop; // (height - ySize) / 2;
 		RenderSystem.color4f( 1.0F, 1.0F, 1.0F, 1.0F );
-		this.drawBG( ox, oy, x, y );
+		this.drawBG( ox, oy, x, y, f );
 
 		final List<Slot> slots = this.getInventorySlots();
 		for( final Slot slot : slots )
@@ -655,7 +654,7 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 		return null;
 	}
 
-	public abstract void drawBG( int offsetX, int offsetY, int mouseX, int mouseY );
+	public abstract void drawBG(int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks);
 
 	@Override
 	public boolean mouseScrolled(double x, double y, double wheelDelta) {

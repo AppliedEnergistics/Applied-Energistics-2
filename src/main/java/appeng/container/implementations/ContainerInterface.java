@@ -19,6 +19,9 @@
 package appeng.container.implementations;
 
 
+import appeng.container.ContainerLocator;
+import appeng.container.helper.PartOrTileContainerHelper;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.api.config.SecurityPermissions;
@@ -32,10 +35,24 @@ import appeng.container.slot.SlotRestrictedInput;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 
 
 public class ContainerInterface extends ContainerUpgradeable
 {
+
+	public static ContainerType<ContainerInterface> TYPE;
+
+	private static final PartOrTileContainerHelper<ContainerInterface, IInterfaceHost> helper
+			= new PartOrTileContainerHelper<>(ContainerInterface::new, IInterfaceHost.class, SecurityPermissions.BUILD);
+
+	public static ContainerInterface fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
+	}
 
 	private final DualityInterface myDuality;
 
@@ -45,9 +62,9 @@ public class ContainerInterface extends ContainerUpgradeable
 	@GuiSync( 4 )
 	public YesNo iTermMode = YesNo.YES;
 
-	public ContainerInterface(ContainerType<?> containerType, int id, final PlayerInventory ip, final IInterfaceHost te )
+	public ContainerInterface(int id, final PlayerInventory ip, final IInterfaceHost te )
 	{
-		super( containerType, id, ip, te.getInterfaceDuality().getHost() );
+		super( TYPE, id, ip, te.getInterfaceDuality().getHost() );
 
 		this.myDuality = te.getInterfaceDuality();
 

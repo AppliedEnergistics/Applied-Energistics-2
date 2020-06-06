@@ -19,9 +19,8 @@
 package appeng.client.gui.implementations;
 
 
-import java.io.IOException;
-
-import net.minecraft.client.gui.GuiButton;
+import appeng.container.implementations.ContainerPriority;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.client.gui.AEBaseGui;
@@ -31,7 +30,6 @@ import appeng.core.localization.GuiText;
 
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketSwitchGuis;
-import appeng.tile.storage.TileChest;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
@@ -46,14 +44,11 @@ public class GuiChest extends AEBaseGui<ContainerChest>
 		this.ySize = 166;
 	}
 
-	@Override
-	protected void actionPerformed( final GuiButton par1GuiButton ) throws IOException
+	protected void actionPerformed( final Button button )
 	{
-		super.actionPerformed( par1GuiButton );
-
-		if( par1GuiButton == this.priority )
+		if( button == this.priority )
 		{
-			NetworkHandler.instance().sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
+			NetworkHandler.instance().sendToServer( new PacketSwitchGuis( ContainerPriority.TYPE ) );
 		}
 	}
 
@@ -62,7 +57,7 @@ public class GuiChest extends AEBaseGui<ContainerChest>
 	{
 		super.init();
 
-		this.addButton( this.priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRender ) );
+		this.addButton( this.priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRenderer, this::actionPerformed ) );
 	}
 
 	@Override
@@ -73,7 +68,7 @@ public class GuiChest extends AEBaseGui<ContainerChest>
 	}
 
 	@Override
-	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
+	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
 	{
 		this.bindTexture( "guis/chest.png" );
 		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );

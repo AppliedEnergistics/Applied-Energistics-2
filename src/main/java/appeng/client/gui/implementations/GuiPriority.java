@@ -19,47 +19,33 @@
 package appeng.client.gui.implementations;
 
 
-import java.io.IOException;
-
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiNumberBox;
-import appeng.client.gui.widgets.GuiTabButton;
 import appeng.container.implementations.ContainerPriority;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
-
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.core.sync.packets.PacketValueConfig;
-import appeng.helpers.IPriorityHost;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.util.InputMappings;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
+
+import java.io.IOException;
 
 
 public class GuiPriority extends AEBaseGui<ContainerPriority>
 {
 
+	private final AESubGui subGui;
+
 	private GuiNumberBox priority;
-	private GuiTabButton originalGuiBtn;
-
-	private GuiButton plus1;
-	private GuiButton plus10;
-	private GuiButton plus100;
-	private GuiButton plus1000;
-	private GuiButton minus1;
-	private GuiButton minus10;
-	private GuiButton minus100;
-	private GuiButton minus1000;
-
-	private GuiBridge OriginalGui;
 
 	public GuiPriority(ContainerPriority container, PlayerInventory playerInventory, ITextComponent title) {
 		super(container, playerInventory, title);
+		this.subGui = new AESubGui(this, container.getPriorityHost());
 	}
 
 	@Override
@@ -72,23 +58,17 @@ public class GuiPriority extends AEBaseGui<ContainerPriority>
 		final int c = AEConfig.instance().priorityByStacksAmounts( 2 );
 		final int d = AEConfig.instance().priorityByStacksAmounts( 3 );
 
-		this.addButton( this.plus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 32, 22, 20, "+" + a ) );
-		this.addButton( this.plus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 32, 28, 20, "+" + b ) );
-		this.addButton( this.plus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 32, 32, 20, "+" + c ) );
-		this.addButton( this.plus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 32, 38, 20, "+" + d ) );
+		this.addButton( new Button(this.guiLeft + 20, this.guiTop + 32, 22, 20, "+" + a, btn -> addQty(a) ) );
+		this.addButton( new Button(this.guiLeft + 48, this.guiTop + 32, 28, 20, "+" + b, btn -> addQty(b) ) );
+		this.addButton( new Button(this.guiLeft + 82, this.guiTop + 32, 32, 20, "+" + c, btn -> addQty(c) ) );
+		this.addButton( new Button(this.guiLeft + 120, this.guiTop + 32, 38, 20, "+" + d, btn -> addQty(d) ) );
 
-		this.addButton( this.minus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 69, 22, 20, "-" + a ) );
-		this.addButton( this.minus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 69, 28, 20, "-" + b ) );
-		this.addButton( this.minus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 69, 32, 20, "-" + c ) );
-		this.addButton( this.minus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 69, 38, 20, "-" + d ) );
+		this.addButton( new Button(this.guiLeft + 20, this.guiTop + 69, 22, 20, "-" + a, btn -> addQty(-a) ) );
+		this.addButton( new Button(this.guiLeft + 48, this.guiTop + 69, 28, 20, "-" + b, btn -> addQty(-b) ) );
+		this.addButton( new Button(this.guiLeft + 82, this.guiTop + 69, 32, 20, "-" + c, btn -> addQty(-c) ) );
+		this.addButton( new Button(this.guiLeft + 120, this.guiTop + 69, 38, 20, "-" + d, btn -> addQty(-d) ) );
 
-		final ItemStack myIcon = container.getPriorityHost().getItemStackRepresentation();
-		this.OriginalGui = container.getPriorityHost().getGuiBridge();
-
-		if( this.OriginalGui != null && !myIcon.isEmpty() )
-		{
-			this.addButton( this.originalGuiBtn = new GuiTabButton( this.guiLeft + 154, this.guiTop, myIcon, myIcon.getDisplayName(), this.itemRender ) );
-		}
+		this.subGui.addBackButton(this::addButton, 154, 0);
 
 		this.priority = new GuiNumberBox( this.font, this.guiLeft + 62, this.guiTop + 57, 59, this.font.FONT_HEIGHT, Long.class );
 		this.priority.setEnableBackgroundDrawing( false );
@@ -106,31 +86,12 @@ public class GuiPriority extends AEBaseGui<ContainerPriority>
 	}
 
 	@Override
-	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
+	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
 	{
 		this.bindTexture( "guis/priority.png" );
 		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );
 
-		this.priority.drawTextBox();
-	}
-
-	@Override
-	protected void actionPerformed( final GuiButton btn ) throws IOException
-	{
-		super.actionPerformed( btn );
-
-		if( btn == this.originalGuiBtn )
-		{
-			NetworkHandler.instance().sendToServer( new PacketSwitchGuis( this.OriginalGui ) );
-		}
-
-		final boolean isPlus = btn == this.plus1 || btn == this.plus10 || btn == this.plus100 || btn == this.plus1000;
-		final boolean isMinus = btn == this.minus1 || btn == this.minus10 || btn == this.minus100 || btn == this.minus1000;
-
-		if( isPlus || isMinus )
-		{
-			this.addQty( this.getQty( btn ) );
-		}
+		this.priority.render(mouseX, mouseY, partialTicks);
 	}
 
 	private void addQty( final int i )
@@ -168,53 +129,69 @@ public class GuiPriority extends AEBaseGui<ContainerPriority>
 			// nope..
 			this.priority.setText( "0" );
 		}
-		catch( final IOException e )
-		{
-			AELog.debug( e );
-		}
 	}
 
 	@Override
-	protected void keyTyped( final char character, final int key ) throws IOException
-	{
-		if( !this.checkHotbarKeys( key ) )
-		{
-			if( ( key == 211 || key == 205 || key == 203 || key == 14 || character == '-' || Character.isDigit( character ) ) && this.priority
-					.textboxKeyTyped( character, key ) )
+	public boolean charTyped(char character, int key) {
+		if (priority.charTyped(character, key)) {
+			String out = this.priority.getText();
+
+			boolean fixed = false;
+			while( out.startsWith( "0" ) && out.length() > 1 )
 			{
-				try
-				{
-					String out = this.priority.getText();
-
-					boolean fixed = false;
-					while( out.startsWith( "0" ) && out.length() > 1 )
-					{
-						out = out.substring( 1 );
-						fixed = true;
-					}
-
-					if( fixed )
-					{
-						this.priority.setText( out );
-					}
-
-					if( out.isEmpty() )
-					{
-						out = "0";
-					}
-
-					NetworkHandler.instance().sendToServer( new PacketValueConfig( "PriorityHost.Priority", out ) );
-				}
-				catch( final IOException e )
-				{
-					AELog.debug( e );
-				}
+				out = out.substring( 1 );
+				fixed = true;
 			}
-			else
+
+			if( fixed )
 			{
-				super.keyTyped( character, key );
+				this.priority.setText( out );
+			}
+
+			if( out.isEmpty() )
+			{
+				out = "0";
+			}
+
+			NetworkHandler.instance().sendToServer( new PacketValueConfig( "PriorityHost.Priority", out ) );
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_)
+	{
+		if( !this.checkHotbarKeys( InputMappings.getInputByCode(keyCode, scanCode) ) )
+		{
+			if( ( keyCode == 211 || keyCode == 205 || keyCode == 203 || keyCode == 14 ) && this.priority
+					.keyPressed( keyCode, scanCode, p_keyPressed_3_ ) )
+			{
+				String out = this.priority.getText();
+
+				boolean fixed = false;
+				while( out.startsWith( "0" ) && out.length() > 1 )
+				{
+					out = out.substring( 1 );
+					fixed = true;
+				}
+
+				if( fixed )
+				{
+					this.priority.setText( out );
+				}
+
+				if( out.isEmpty() )
+				{
+					out = "0";
+				}
+
+				NetworkHandler.instance().sendToServer( new PacketValueConfig( "PriorityHost.Priority", out ) );
+				return true;
 			}
 		}
+
+		return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);
 	}
 
 	protected String getBackground()

@@ -19,16 +19,15 @@
 package appeng.fluids.client.gui;
 
 
-import net.minecraft.entity.player.PlayerInventory;
-
 import appeng.client.gui.implementations.GuiUpgradeable;
 import appeng.core.localization.GuiText;
 import appeng.fluids.client.gui.widgets.GuiFluidSlot;
 import appeng.fluids.client.gui.widgets.GuiOptionalFluidSlot;
 import appeng.fluids.container.ContainerFluidIO;
 import appeng.fluids.parts.PartFluidImportBus;
-import appeng.fluids.parts.PartSharedFluidBus;
 import appeng.fluids.util.IAEFluidTank;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 
 
 /**
@@ -36,14 +35,12 @@ import appeng.fluids.util.IAEFluidTank;
  * @version rv5 - 1/05/2018
  * @since rv5 1/05/2018
  */
-public class GuiFluidIO extends GuiUpgradeable
+public class GuiFluidIO extends GuiUpgradeable<ContainerFluidIO>
 {
-	private final PartSharedFluidBus bus;
 
-	public GuiFluidIO( PlayerInventory PlayerInventory, PartSharedFluidBus te )
+	public GuiFluidIO(ContainerFluidIO container, PlayerInventory playerInventory, ITextComponent title)
 	{
-		super( new ContainerFluidIO( PlayerInventory, te ) );
-		this.bus = te;
+		super(container, playerInventory, title);
 	}
 
 	@Override
@@ -51,8 +48,7 @@ public class GuiFluidIO extends GuiUpgradeable
 	{
 		super.init();
 
-		final ContainerFluidIO container = (ContainerFluidIO) this.container;
-		final IAEFluidTank inv = this.bus.getConfig();
+		final IAEFluidTank inv = this.container.getFluidConfigInventory();
 		final int y = 40;
 		final int x = 80;
 

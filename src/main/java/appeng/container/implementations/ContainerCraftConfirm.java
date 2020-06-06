@@ -35,12 +35,20 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.AEBaseContainer;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
 import appeng.container.guisync.GuiSync;
+import appeng.container.helper.PartOrTileContainerHelper;
+import appeng.container.helper.TileContainerHelper;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
+import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.me.helpers.PlayerSource;
+import appeng.parts.reporting.PartCraftingTerminal;
+import appeng.parts.reporting.PartPatternTerminal;
+import appeng.parts.reporting.PartTerminal;
 import appeng.util.Platform;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.entity.player.PlayerEntity;
@@ -48,6 +56,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
@@ -61,6 +70,19 @@ import java.util.concurrent.Future;
 
 public class ContainerCraftConfirm extends AEBaseContainer
 {
+
+	public static ContainerType<ContainerCraftConfirm> TYPE;
+
+	private static final PartOrTileContainerHelper<ContainerCraftConfirm, ITerminalHost> helper
+			= new PartOrTileContainerHelper<>(ContainerCraftConfirm::new, ITerminalHost.class, SecurityPermissions.CRAFT);
+
+	public static ContainerCraftConfirm fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
+	}
 
 	private final ArrayList<CraftingCPURecord> cpus = new ArrayList<>();
 	private Future<ICraftingJob> job;
@@ -82,8 +104,8 @@ public class ContainerCraftConfirm extends AEBaseContainer
 	@GuiSync( 7 )
 	public String myName = "";
 
-	public ContainerCraftConfirm(ContainerType<?> containerType, int id, PlayerInventory ip, ITerminalHost te) {
-		super(containerType, id, ip, te);
+	public ContainerCraftConfirm(int id, PlayerInventory ip, ITerminalHost te) {
+		super(TYPE, id, ip, te);
 	}
 
 	public void cycleCpu( final boolean next )
@@ -314,28 +336,28 @@ public class ContainerCraftConfirm extends AEBaseContainer
 
 	public void startJob()
 	{
-		/* FIXME GuiBridge */ Object originalGui = null;
+		ContainerType<?> originalGui = null;
 
 		final IActionHost ah = this.getActionHost();
-		// FIXME if( ah instanceof WirelessTerminalGuiObject )
-		// FIXME {
-		// FIXME 	originalGui = GuiBridge.GUI_WIRELESS_TERM;
-		// FIXME }
-// FIXME
-		// FIXME if( ah instanceof PartTerminal )
-		// FIXME {
-		// FIXME 	originalGui = GuiBridge.GUI_ME;
-		// FIXME }
-// FIXME
-		// FIXME if( ah instanceof PartCraftingTerminal )
-		// FIXME {
-		// FIXME 	originalGui = GuiBridge.GUI_CRAFTING_TERMINAL;
-		// FIXME }
-// FIXME
-		// FIXME if( ah instanceof PartPatternTerminal )
-		// FIXME {
-		// FIXME 	originalGui = GuiBridge.GUI_PATTERN_TERMINAL;
-		// FIXME }
+		if( ah instanceof WirelessTerminalGuiObject)
+		{
+			originalGui = ContainerWirelessTerm.TYPE;
+		}
+
+		if( ah instanceof PartTerminal)
+		{
+			originalGui = ContainerMEMonitorable.TYPE;
+		}
+
+		if( ah instanceof PartCraftingTerminal)
+		{
+			originalGui = ContainerCraftingTerm.TYPE;
+		}
+
+		if( ah instanceof PartPatternTerminal)
+		{
+			originalGui = ContainerPatternTerm.TYPE;
+		}
 
 		if( this.result != null && !this.isSimulation() )
 		{
@@ -343,10 +365,9 @@ public class ContainerCraftConfirm extends AEBaseContainer
 			final ICraftingLink g = cc.submitJob( this.result, null, this.getSelectedCpu() == -1 ? null : this.cpus.get( this.getSelectedCpu() ).getCpu(), true,
 					this.getActionSrc() );
 			this.setAutoStart( false );
-			if( g != null && originalGui != null && this.getOpenContext() != null )
+			if( g != null && originalGui != null && this.getLocator() != null )
 			{
-				final TileEntity te = this.getOpenContext().getTile();
-				// FIXME Platform.openGUI( this.getPlayerInventory().player, te, this.getOpenContext().getSide(), originalGui );
+				ContainerOpener.openContainer(originalGui, getPlayerInventory().player, getLocator());
 			}
 		}
 	}

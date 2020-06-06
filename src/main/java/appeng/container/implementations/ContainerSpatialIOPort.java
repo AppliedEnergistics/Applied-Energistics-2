@@ -19,6 +19,9 @@
 package appeng.container.implementations;
 
 
+import appeng.container.ContainerLocator;
+import appeng.container.helper.TileContainerHelper;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.api.config.SecurityPermissions;
@@ -34,10 +37,16 @@ import appeng.container.slot.SlotRestrictedInput;
 import appeng.tile.spatial.TileSpatialIOPort;
 import appeng.util.Platform;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 
 
 public class ContainerSpatialIOPort extends AEBaseContainer
 {
+
+public static ContainerType<ContainerSpatialIOPort> TYPE;
+
+	private static final TileContainerHelper<ContainerSpatialIOPort, TileSpatialIOPort> helper
+			= new TileContainerHelper<>(ContainerSpatialIOPort::new, TileSpatialIOPort.class, SecurityPermissions.BUILD);
 
 	@GuiSync( 0 )
 	public long currentPower;
@@ -57,9 +66,9 @@ public class ContainerSpatialIOPort extends AEBaseContainer
 	@GuiSync( 33 )
 	public int zSize;
 
-	public ContainerSpatialIOPort(ContainerType<?> containerType, int id, final PlayerInventory ip, final TileSpatialIOPort spatialIOPort )
+	public ContainerSpatialIOPort(int id, final PlayerInventory ip, final TileSpatialIOPort spatialIOPort )
 	{
-		super( containerType, id, ip, spatialIOPort, null );
+		super( TYPE, id, ip, spatialIOPort, null );
 
 		if( Platform.isServer() )
 		{
@@ -72,6 +81,14 @@ public class ContainerSpatialIOPort extends AEBaseContainer
 				new SlotOutput( spatialIOPort.getInternalInventory(), 1, 113, 48, SlotRestrictedInput.PlacableItemType.SPATIAL_STORAGE_CELLS.IIcon ) );
 
 		this.bindPlayerInventory( ip, 0, 197 - /* height of player inventory */82 );
+	}
+
+	public static ContainerSpatialIOPort fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
 	}
 
 	@Override

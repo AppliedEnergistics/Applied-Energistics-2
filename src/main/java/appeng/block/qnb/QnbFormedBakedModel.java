@@ -2,41 +2,37 @@
 package appeng.block.qnb;
 
 
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Function;
-
-import javax.annotation.Nullable;
-
+import appeng.client.render.cablebus.CubeBuilder;
+import appeng.core.Api;
+import appeng.core.AppEng;
+import appeng.tile.qnb.TileQuantumBridge;
 import com.google.common.collect.ImmutableList;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.client.model.data.IDynamicBakedModel;
+import net.minecraftforge.client.model.data.IModelData;
 
-import appeng.api.AEApi;
-import appeng.client.render.cablebus.CubeBuilder;
-import appeng.core.AppEng;
+import javax.annotation.Nullable;
+import java.util.*;
+import java.util.function.Function;
 
-
-class QnbFormedBakedModel implements IBakedModel
+class QnbFormedBakedModel implements IDynamicBakedModel
 {
 
-	private static final ResourceLocation TEXTURE_LINK = new ResourceLocation( AppEng.MOD_ID, "blocks/quantum_link" );
-	private static final ResourceLocation TEXTURE_RING = new ResourceLocation( AppEng.MOD_ID, "blocks/quantum_ring" );
-	private static final ResourceLocation TEXTURE_RING_LIGHT = new ResourceLocation( AppEng.MOD_ID, "blocks/quantum_ring_light" );
-	private static final ResourceLocation TEXTURE_RING_LIGHT_CORNER = new ResourceLocation( AppEng.MOD_ID, "blocks/quantum_ring_light_corner" );
-	private static final ResourceLocation TEXTURE_CABLE_GLASS = new ResourceLocation( AppEng.MOD_ID, "parts/cable/glass/transparent" );
-	private static final ResourceLocation TEXTURE_COVERED_CABLE = new ResourceLocation( AppEng.MOD_ID, "parts/cable/covered/transparent" );
+	private static final Material TEXTURE_LINK = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(AppEng.MOD_ID, "blocks/quantum_link" ));
+	private static final Material TEXTURE_RING = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "blocks/quantum_ring" ));
+	private static final Material TEXTURE_RING_LIGHT = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "blocks/quantum_ring_light" ));
+	private static final Material TEXTURE_RING_LIGHT_CORNER = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "blocks/quantum_ring_light_corner" ));
+	private static final Material TEXTURE_CABLE_GLASS = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "parts/cable/glass/transparent" ));
+	private static final Material TEXTURE_COVERED_CABLE = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "parts/cable/covered/transparent" ));
 
 	private static final float DEFAULT_RENDER_MIN = 2.0f;
 	private static final float DEFAULT_RENDER_MAX = 14.0f;
@@ -46,8 +42,6 @@ class QnbFormedBakedModel implements IBakedModel
 
 	private static final float CENTER_POWERED_RENDER_MIN = -0.01f;
 	private static final float CENTER_POWERED_RENDER_MAX = 16.01f;
-
-	private final VertexFormat vertexFormat;
 
 	private final IBakedModel baseModel;
 
@@ -60,9 +54,8 @@ class QnbFormedBakedModel implements IBakedModel
 	private final TextureAtlasSprite lightTexture;
 	private final TextureAtlasSprite lightCornerTexture;
 
-	public QnbFormedBakedModel( VertexFormat vertexFormat, IBakedModel baseModel, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
+	public QnbFormedBakedModel( IBakedModel baseModel, Function<Material, TextureAtlasSprite> bakedTextureGetter )
 	{
-		this.vertexFormat = vertexFormat;
 		this.baseModel = baseModel;
 		this.linkTexture = bakedTextureGetter.apply( TEXTURE_LINK );
 		this.ringTexture = bakedTextureGetter.apply( TEXTURE_RING );
@@ -74,23 +67,25 @@ class QnbFormedBakedModel implements IBakedModel
 	}
 
 	@Override
-	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, long rand )
+	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand, IModelData modelData)
 	{
-		// Get the correct base model
-		if( !( state instanceof IExtendedBlockState ) )
+		QnbFormedState formedState = modelData.getData(TileQuantumBridge.FORMED_STATE);
+
+		if( formedState == null )
 		{
 			return this.baseModel.getQuads( state, side, rand );
 		}
 
-		IExtendedBlockState extendedBlockState = (IExtendedBlockState) state;
-		QnbFormedState formedState = extendedBlockState.getValue( BlockQuantumBase.FORMED_STATE );
+		if (side != null) {
+			return Collections.emptyList();
+		}
 
-		return this.getQuads( formedState, state, side, rand );
+		return this.getQuads( formedState, state );
 	}
 
-	private List<BakedQuad> getQuads( QnbFormedState formedState, BlockState state, Direction side, long rand )
+	private List<BakedQuad> getQuads( QnbFormedState formedState, BlockState state )
 	{
-		CubeBuilder builder = new CubeBuilder( this.vertexFormat );
+		CubeBuilder builder = new CubeBuilder( );
 
 		if( state.getBlock() == this.linkBlock )
 		{
@@ -213,6 +208,11 @@ class QnbFormedBakedModel implements IBakedModel
 	}
 
 	@Override
+	public boolean func_230044_c_() {
+		return false;
+	}
+
+	@Override
 	public boolean isBuiltInRenderer()
 	{
 		return false;
@@ -225,18 +225,12 @@ class QnbFormedBakedModel implements IBakedModel
 	}
 
 	@Override
-	public ItemCameraTransforms getItemCameraTransforms()
-	{
-		return this.baseModel.getItemCameraTransforms();
-	}
-
-	@Override
 	public ItemOverrideList getOverrides()
 	{
 		return this.baseModel.getOverrides();
 	}
 
-	public static List<ResourceLocation> getRequiredTextures()
+	public static List<Material> getRequiredTextures()
 	{
 		return ImmutableList.of(
 				TEXTURE_LINK, TEXTURE_RING, TEXTURE_CABLE_GLASS, TEXTURE_COVERED_CABLE, TEXTURE_RING_LIGHT, TEXTURE_RING_LIGHT_CORNER );

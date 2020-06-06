@@ -19,16 +19,12 @@
 package appeng.container.implementations;
 
 
+import appeng.container.ContainerLocator;
+import appeng.container.helper.TileContainerHelper;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.container.AEBaseContainer;
@@ -41,6 +37,17 @@ public class ContainerGrinder extends AEBaseContainer
 {
 
 	public static ContainerType<ContainerGrinder> TYPE;
+
+	private static final TileContainerHelper<ContainerGrinder, TileGrinder> helper
+			= new TileContainerHelper<>(ContainerGrinder::new, TileGrinder.class);
+
+	public static ContainerGrinder fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
+	}
 
 	public ContainerGrinder(int id, final PlayerInventory ip, final TileGrinder grinder )
 	{
@@ -59,23 +66,6 @@ public class ContainerGrinder extends AEBaseContainer
 		this.addSlot( new SlotOutput( inv, 5, 112 + 36, 63, 2 * 16 + 15 ) );
 
 		this.bindPlayerInventory( ip, 0, 176 - /* height of player inventory */82 );
-	}
-
-	public static ContainerGrinder fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-		BlockPos pos = buf.readBlockPos();
-		TileEntity te = inv.player.world.getTileEntity(pos);
-		if (te instanceof TileGrinder) {
-			return new ContainerGrinder(windowId, inv, (TileGrinder) te);
-		}
-		return null;
-	}
-
-	public static void open(ServerPlayerEntity player, TileGrinder tile, ITextComponent title) {
-		BlockPos pos = tile.getPos();
-		INamedContainerProvider container = new SimpleNamedContainerProvider(
-				(wnd, p, pl) -> new ContainerGrinder(wnd, p, tile), title
-		);
-		NetworkHooks.openGui(player, container, pos);
 	}
 
 }

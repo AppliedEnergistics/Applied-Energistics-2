@@ -19,62 +19,45 @@
 package appeng.client.render.spatial;
 
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.Map;
+import appeng.core.AppEng;
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.client.renderer.model.*;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.IModelConfiguration;
+import net.minecraftforge.client.model.geometry.IModelGeometry;
+
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.common.model.IModelState;
-import net.minecraftforge.common.model.TRSRTransformation;
 
-import appeng.core.AppEng;
-
-
-class SpatialPylonModel implements IModel
+public class SpatialPylonModel implements IModelGeometry<SpatialPylonModel>
 {
 
 	@Override
-	public Collection<ResourceLocation> getDependencies()
-	{
-		return Collections.emptyList();
-	}
-
-	@Override
-	public Collection<ResourceLocation> getTextures()
-	{
-		return Arrays.stream( SpatialPylonTextureType.values() ).map( SpatialPylonModel::getTexturePath ).collect( Collectors.toList() );
-	}
-
-	@Override
-	public IBakedModel bake( IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
-	{
+	public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {
 		Map<SpatialPylonTextureType, TextureAtlasSprite> textures = new EnumMap<>( SpatialPylonTextureType.class );
 
 		for( SpatialPylonTextureType type : SpatialPylonTextureType.values() )
 		{
-			ResourceLocation loc = getTexturePath( type );
-			textures.put( type, bakedTextureGetter.apply( loc ) );
+			textures.put( type, spriteGetter.apply(getTexturePath( type )) );
 		}
 
-		return new SpatialPylonBakedModel( format, textures );
+		return new SpatialPylonBakedModel( textures );
 	}
 
 	@Override
-	public IModelState getDefaultState()
-	{
-		return TRSRTransformation.identity();
+	public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+		return Arrays.stream( SpatialPylonTextureType.values() )
+				.map( SpatialPylonModel::getTexturePath )
+				.collect( Collectors.toList() );
 	}
 
-	private static ResourceLocation getTexturePath( SpatialPylonTextureType type )
+	private static Material getTexturePath( SpatialPylonTextureType type )
 	{
-		return new ResourceLocation( AppEng.MOD_ID, "blocks/spatial_pylon/" + type.name().toLowerCase() );
+		return new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "blocks/spatial_pylon/" + type.name().toLowerCase() ) );
 	}
+
 }

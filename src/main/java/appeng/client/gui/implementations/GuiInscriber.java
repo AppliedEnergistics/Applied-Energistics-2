@@ -25,9 +25,7 @@ import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiProgressBar;
 import appeng.client.gui.widgets.GuiProgressBar.Direction;
 import appeng.container.implementations.ContainerInscriber;
-import appeng.container.implementations.ContainerUpgradeable;
 import appeng.core.localization.GuiText;
-import appeng.tile.misc.TileInscriber;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
@@ -67,7 +65,7 @@ public class GuiInscriber extends AEBaseGui<ContainerInscriber>
 	}
 
 	@Override
-	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
+	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
 	{
 		this.bindTexture( "guis/inscriber.png" );
 		this.pb.x = 135 + this.guiLeft;

@@ -24,9 +24,8 @@ import appeng.api.definitions.IItems;
 import appeng.api.util.AEColoredItemDefinition;
 import appeng.bootstrap.FeatureFactory;
 import appeng.api.features.AEFeature;
-import appeng.bootstrap.components.IEntityRegistrationComponent;
+import appeng.client.render.crafting.EncodedPatternRenderer;
 import appeng.client.render.crafting.ItemEncodedPatternRendering;
-import appeng.core.Api;
 import appeng.core.CreativeTabFacade;
 import appeng.debug.ToolDebugCard;
 import appeng.debug.ToolEraser;
@@ -50,11 +49,9 @@ import appeng.items.tools.*;
 import appeng.items.tools.powered.*;
 import appeng.items.tools.quartz.*;
 import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraftforge.common.ToolType;
-import org.lwjgl.system.APIUtil;
 
 import java.util.function.Consumer;
 
@@ -293,7 +290,8 @@ public final class ApiItems implements IItems
 
 		// rv1
 		this.encodedPattern = registry.item( "encoded_pattern", ItemEncodedPattern::new )
-				.props(props -> props.maxStackSize(1))
+				.props(props -> props.maxStackSize(1)
+					.setISTER(() -> EncodedPatternRenderer::new))
 				.features( AEFeature.PATTERNS )
 				.rendering( new ItemEncodedPatternRendering() )
 				.build();

@@ -19,12 +19,21 @@
 package appeng.container.implementations;
 
 
+import appeng.container.ContainerLocator;
+import appeng.container.helper.PartContainerHelper;
+import appeng.container.helper.PartOrTileContainerHelper;
+import appeng.parts.misc.PartStorageBus;
+import appeng.tile.misc.TileCellWorkbench;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 
@@ -55,6 +64,19 @@ import appeng.util.Platform;
 public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSlotHost
 {
 
+	public static ContainerType<ContainerUpgradeable> TYPE;
+
+	private static final PartOrTileContainerHelper<ContainerUpgradeable, IUpgradeableHost> helper
+			= new PartOrTileContainerHelper<>(ContainerUpgradeable::new, IUpgradeableHost.class, SecurityPermissions.BUILD);
+
+	public static ContainerUpgradeable fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
+	}
+
 	private final IUpgradeableHost upgradeable;
 	@GuiSync( 0 )
 	public RedstoneMode rsMode = RedstoneMode.IGNORE;
@@ -66,6 +88,11 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 	public SchedulingMode schedulingMode = SchedulingMode.DEFAULT;
 	private int tbSlot;
 	private NetworkToolViewer tbInventory;
+
+	public ContainerUpgradeable(int id, final PlayerInventory ip, final IUpgradeableHost te )
+	{
+		this(TYPE, id, ip, te);
+	}
 
 	public ContainerUpgradeable(ContainerType<?> containerType, int id, final PlayerInventory ip, final IUpgradeableHost te )
 	{

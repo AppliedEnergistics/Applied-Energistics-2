@@ -19,59 +19,39 @@
 package appeng.client.gui.widgets;
 
 
+import appeng.api.config.*;
+import appeng.core.localization.ButtonToolTips;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.client.resources.I18n;
-
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.ActionItems;
-import appeng.api.config.CondenserOutput;
-import appeng.api.config.FullnessMode;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.ItemSubstitution;
-import appeng.api.config.LevelType;
-import appeng.api.config.OperationMode;
-import appeng.api.config.PowerUnits;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.RelativeDirection;
-import appeng.api.config.SchedulingMode;
-import appeng.api.config.SearchBoxMode;
-import appeng.api.config.Settings;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.StorageFilter;
-import appeng.api.config.TerminalStyle;
-import appeng.api.config.ViewItems;
-import appeng.api.config.YesNo;
-import appeng.core.localization.ButtonToolTips;
 
 
 public class GuiImgButton extends Button implements ITooltip
 {
 	private static final Pattern COMPILE = Pattern.compile( "%s" );
 	private static final Pattern PATTERN_NEW_LINE = Pattern.compile( "\\n", Pattern.LITERAL );
+	public static final ResourceLocation TEXTURE_STATES = new ResourceLocation("appliedenergistics2", "textures/guis/states.png");
 	private static Map<EnumPair, ButtonAppearance> appearances;
 	private final Enum buttonSetting;
 	private boolean halfSize = false;
 	private String fillVar;
 	private Enum currentValue;
 
-	public GuiImgButton( final int x, final int y, final Enum idx, final Enum val )
+	public GuiImgButton( final int x, final int y, final Enum idx, final Enum val, IPressable onPress )
 	{
-		super( 0, 0, 16, "" );
+		super( x, y, 16, 16, "", onPress );
 
 		this.buttonSetting = idx;
 		this.currentValue = val;
-		this.x = x;
-		this.y = y;
-		this.width = 16;
-		this.height = 16;
 
 		if( appearances == null )
 		{
@@ -84,9 +64,9 @@ public class GuiImgButton extends Button implements ITooltip
 			this.registerApp( 16 * 9, Settings.ACCESS, AccessRestriction.WRITE, ButtonToolTips.IOMode, ButtonToolTips.Write );
 			this.registerApp( 16 * 9 + 2, Settings.ACCESS, AccessRestriction.READ_WRITE, ButtonToolTips.IOMode, ButtonToolTips.ReadWrite );
 
-			this.registerApp( 16 * 10, Settings.POWER_UNITS, PowerUnits.AE, ButtonToolTips.PowerUnits, PowerUnits.AE.unlocalizedName );
-			this.registerApp( 16 * 10 + 1, Settings.POWER_UNITS, PowerUnits.EU, ButtonToolTips.PowerUnits, PowerUnits.EU.unlocalizedName );
-			this.registerApp( 16 * 10 + 4, Settings.POWER_UNITS, PowerUnits.RF, ButtonToolTips.PowerUnits, PowerUnits.RF.unlocalizedName );
+			this.registerApp( 16 * 10, Settings.POWER_UNITS, PowerUnits.AE, ButtonToolTips.PowerUnits, PowerUnits.AE.textComponent() );
+			this.registerApp( 16 * 10 + 1, Settings.POWER_UNITS, PowerUnits.EU, ButtonToolTips.PowerUnits, PowerUnits.EU.textComponent() );
+			this.registerApp( 16 * 10 + 4, Settings.POWER_UNITS, PowerUnits.RF, ButtonToolTips.PowerUnits, PowerUnits.RF.textComponent() );
 
 			this.registerApp( 3, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE, ButtonToolTips.RedstoneMode, ButtonToolTips.AlwaysActive );
 			this.registerApp( 0, Settings.REDSTONE_CONTROLLED, RedstoneMode.LOW_SIGNAL, ButtonToolTips.RedstoneMode, ButtonToolTips.ActiveWithoutSignal );
@@ -177,38 +157,48 @@ public class GuiImgButton extends Button implements ITooltip
 		}
 	}
 
-	private void registerApp( final int iconIndex, final Settings setting, final Enum val, final ButtonToolTips title, final Object hint )
+	private void registerApp( final int iconIndex, final Settings setting, final Enum val, final ButtonToolTips title, final ITextComponent hint )
 	{
 		final ButtonAppearance a = new ButtonAppearance();
-		a.displayName = title.getUnlocalized();
-		a.displayValue = (String) ( hint instanceof String ? hint : ( (ButtonToolTips) hint ).getUnlocalized() );
+		a.displayName = title.getTranslationKey();
+		a.displayValue = hint;
 		a.index = iconIndex;
 		appearances.put( new EnumPair( setting, val ), a );
+	}
+
+	private void registerApp( final int iconIndex, final Settings setting, final Enum val, final ButtonToolTips title, final ButtonToolTips hint )
+	{
+		registerApp(iconIndex, setting, val, title, hint.getTranslationKey());
 	}
 
 	public void setVisibility( final boolean vis )
 	{
 		this.visible = vis;
-		this.enabled = vis;
+		this.active = vis;
 	}
 
 	@Override
-	public void drawButton( final Minecraft par1Minecraft, final int par2, final int par3, float partial )
-	{
+	public void renderButton(final int mouseX, final int mouseY, float partial) {
+
+		Minecraft minecraft = Minecraft.getInstance();
+
 		if( this.visible )
 		{
 			final int iconIndex = this.getIconIndex();
 
+			TextureManager textureManager = minecraft.getTextureManager();
+			textureManager.bindTexture(TEXTURE_STATES);
+			RenderSystem.disableDepthTest();
 			if( this.halfSize )
 			{
 				this.width = 8;
 				this.height = 8;
 
-				GlStateManager.pushMatrix();
-				GlStateManager.translate( this.x, this.y, 0.0F );
-				GlStateManager.scale( 0.5f, 0.5f, 0.5f );
+				RenderSystem.pushMatrix();
+				RenderSystem.translatef( this.x, this.y, 0.0F );
+				RenderSystem.scalef( 0.5f, 0.5f, 0.5f );
 
-				if( this.enabled )
+				if( this.active )
 				{
 					RenderSystem.color4f( 1.0f, 1.0f, 1.0f, 1.0f );
 				}
@@ -217,21 +207,16 @@ public class GuiImgButton extends Button implements ITooltip
 					RenderSystem.color4f( 0.5f, 0.5f, 0.5f, 1.0f );
 				}
 
-				par1Minecraft.renderEngine.bindTexture( new ResourceLocation( "appliedenergistics2", "textures/guis/states.png" ) );
-				this.hovered = par2 >= this.x && par3 >= this.y && par2 < this.x + this.width && par3 < this.y + this.height;
-
-				final int uv_y = (int) Math.floor( iconIndex / 16 );
+				final int uv_y = (int) Math.floor( iconIndex / 16.0f );
 				final int uv_x = iconIndex - uv_y * 16;
 
-				this.drawTexturedModalRect( 0, 0, 256 - 16, 256 - 16, 16, 16 );
-				this.drawTexturedModalRect( 0, 0, uv_x * 16, uv_y * 16, 16, 16 );
-				this.mouseDragged( par1Minecraft, par2, par3 );
-
-				GlStateManager.popMatrix();
+				GuiUtils.drawTexturedModalRect( 0, 0, 256 - 16, 256 - 16, 16, 16, 0 );
+				GuiUtils.drawTexturedModalRect( 0, 0, uv_x * 16, uv_y * 16, 16, 16, 0 );
+				RenderSystem.popMatrix();
 			}
 			else
 			{
-				if( this.enabled )
+				if( this.active )
 				{
 					RenderSystem.color4f( 1.0f, 1.0f, 1.0f, 1.0f );
 				}
@@ -240,16 +225,13 @@ public class GuiImgButton extends Button implements ITooltip
 					RenderSystem.color4f( 0.5f, 0.5f, 0.5f, 1.0f );
 				}
 
-				par1Minecraft.renderEngine.bindTexture( new ResourceLocation( "appliedenergistics2", "textures/guis/states.png" ) );
-				this.hovered = par2 >= this.x && par3 >= this.y && par2 < this.x + this.width && par3 < this.y + this.height;
-
 				final int uv_y = (int) Math.floor( iconIndex / 16 );
 				final int uv_x = iconIndex - uv_y * 16;
 
-				this.drawTexturedModalRect( this.x, this.y, 256 - 16, 256 - 16, 16, 16 );
-				this.drawTexturedModalRect( this.x, this.y, uv_x * 16, uv_y * 16, 16, 16 );
-				this.mouseDragged( par1Minecraft, par2, par3 );
+				GuiUtils.drawTexturedModalRect( this.x, this.y, 256 - 16, 256 - 16, 16, 16, 0 );
+				GuiUtils.drawTexturedModalRect( this.x, this.y, uv_x * 16, uv_y * 16, 16, 16, 0 );
 			}
+			RenderSystem.enableDepthTest();
 		}
 		RenderSystem.color4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	}
@@ -281,8 +263,8 @@ public class GuiImgButton extends Button implements ITooltip
 	@Override
 	public String getMessage()
 	{
-		String displayName = null;
-		String displayValue = null;
+		ITextComponent displayName = null;
+		ITextComponent displayValue = null;
 
 		if( this.buttonSetting != null && this.currentValue != null )
 		{
@@ -298,17 +280,8 @@ public class GuiImgButton extends Button implements ITooltip
 
 		if( displayName != null )
 		{
-			String name = I18n.format( displayName );
-			String value = I18n.format( displayValue );
-
-			if( name == null || name.isEmpty() )
-			{
-				name = displayName;
-			}
-			if( value == null || value.isEmpty() )
-			{
-				value = displayValue;
-			}
+			String name = displayName.getString();
+			String value = displayValue.getString();
 
 			if( this.fillVar != null )
 			{
@@ -428,7 +401,7 @@ public class GuiImgButton extends Button implements ITooltip
 	private static class ButtonAppearance
 	{
 		public int index;
-		public String displayName;
-		public String displayValue;
+		public ITextComponent displayName;
+		public ITextComponent displayValue;
 	}
 }

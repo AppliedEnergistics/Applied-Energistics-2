@@ -2,11 +2,11 @@
 package appeng.fluids.client.gui.widgets;
 
 
-import net.minecraft.client.renderer.GlStateManager;
-
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.container.slot.IOptionalSlotHost;
 import appeng.fluids.util.IAEFluidTank;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 
 public class GuiOptionalFluidSlot extends GuiFluidSlot
@@ -57,7 +57,7 @@ public class GuiOptionalFluidSlot extends GuiFluidSlot
 		{
 			RenderSystem.color4f( 1.0F, 1.0F, 1.0F, 0.4F );
 		}
-		this.drawTexturedModalRect( guileft + this.xPos() - 1, guitop + this.yPos() - 1, this.srcX - 1, this.srcY - 1, this.getWidth() + 2,
-				this.getHeight() + 2 );
+		GuiUtils.drawTexturedModalRect( guileft + this.xPos() - 1, guitop + this.yPos() - 1, this.srcX - 1, this.srcY - 1, this.getWidth() + 2,
+				this.getHeight() + 2, 0 /* FIXME ZINDEX */ );
 	}
 }

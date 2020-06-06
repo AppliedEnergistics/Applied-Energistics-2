@@ -22,12 +22,12 @@ package appeng.container.implementations;
 import javax.annotation.Nonnull;
 
 import appeng.api.networking.crafting.ICraftingCPU;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.util.text.ITextComponent;
 
 
 public class CraftingCPURecord implements Comparable<CraftingCPURecord>
 {
-
 	private final ITextComponent myName;
 	private final ICraftingCPU cpu;
 	private final long size;

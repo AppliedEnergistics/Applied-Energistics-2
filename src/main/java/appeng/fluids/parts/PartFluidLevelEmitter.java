@@ -4,6 +4,10 @@ package appeng.fluids.parts;
 
 import java.util.Random;
 
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerLevelEmitter;
+import appeng.fluids.container.ContainerFluidLevelEmitter;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -327,7 +331,7 @@ public class PartFluidLevelEmitter extends PartUpgradeable implements IStackWatc
 	{
 		if( Platform.isServer() )
 		{
-			// FIXME Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_FLUID_LEVEL_EMITTER );
+			ContainerOpener.openContainer(ContainerFluidLevelEmitter.TYPE, player, ContainerLocator.forPart(this));
 		}
 		return true;
 	}

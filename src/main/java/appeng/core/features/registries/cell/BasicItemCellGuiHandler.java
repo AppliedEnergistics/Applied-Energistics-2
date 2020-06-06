@@ -2,6 +2,9 @@
 package appeng.core.features.registries.cell;
 
 
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerWireless;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -31,6 +34,6 @@ public class BasicItemCellGuiHandler implements ICellGuiHandler
 	@Override
 	public void openChestGui( final PlayerEntity player, final IChestOrDrive chest, final ICellHandler cellHandler, final IMEInventoryHandler inv, final ItemStack is, final IStorageChannel chan )
 	{
-		// FIXME Platform.openGUI( player, (TileEntity) chest, AEPartLocation.fromFacing( chest.getUp() ), GuiBridge.GUI_ME );
+		ContainerOpener.openContainer(ContainerWireless.TYPE, player, ContainerLocator.forTileEntitySide((TileEntity) chest, chest.getUp()));
 	}
 }

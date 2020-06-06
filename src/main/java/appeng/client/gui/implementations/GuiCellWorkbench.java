@@ -21,12 +21,10 @@ package appeng.client.gui.implementations;
 
 import java.io.IOException;
 
-import appeng.api.implementations.IUpgradeableHost;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
-import org.lwjgl.input.Mouse;
 
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
@@ -43,7 +41,6 @@ import appeng.container.implementations.ContainerCellWorkbench;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
-import appeng.tile.misc.TileCellWorkbench;
 import appeng.util.Platform;
 
 
@@ -62,11 +59,11 @@ public class GuiCellWorkbench extends GuiUpgradeable<ContainerCellWorkbench>
 	@Override
 	protected void addButtons()
 	{
-		this.clear = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.ACTIONS, ActionItems.CLOSE );
-		this.partition = new GuiImgButton( this.guiLeft - 18, this.guiTop + 28, Settings.ACTIONS, ActionItems.WRENCH );
+		this.clear = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.ACTIONS, ActionItems.CLOSE, this::actionPerformed );
+		this.partition = new GuiImgButton( this.guiLeft - 18, this.guiTop + 28, Settings.ACTIONS, ActionItems.WRENCH, this::actionPerformed );
 		this.copyMode = new GuiToggleButton( this.guiLeft - 18, this.guiTop + 48, 11 * 16 + 5, 12 * 16 + 5, GuiText.CopyMode.getLocal(), GuiText.CopyModeDesc
-				.getLocal() );
-		this.fuzzyMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 68, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+				.getLocal(), this::actionPerformed );
+		this.fuzzyMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 68, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL, this::actionPerformed );
 
 		this.addButton( this.fuzzyMode );
 		this.addButton( this.partition );
@@ -75,7 +72,7 @@ public class GuiCellWorkbench extends GuiUpgradeable<ContainerCellWorkbench>
 	}
 
 	@Override
-	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
+	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
 	{
 		this.handleButtonVisibility();
 
@@ -86,7 +83,7 @@ public class GuiCellWorkbench extends GuiUpgradeable<ContainerCellWorkbench>
 			if( this.container.availableUpgrades() <= 8 )
 			{
 				GuiUtils.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 7 + this.container.availableUpgrades() * 18, 0 /* FIXME this.zlevel was used */ );
-				GuiUtilsGuiUtils.drawTexturedModalRect( offsetX + 177, offsetY + ( 7 + ( this.container.availableUpgrades() ) * 18 ), 177, 151, 35, 7, 0 /* FIXME this.zlevel was used */ );
+				GuiUtils.drawTexturedModalRect( offsetX + 177, offsetY + ( 7 + ( this.container.availableUpgrades() ) * 18 ), 177, 151, 35, 7, 0 /* FIXME this.zlevel was used */ );
 			}
 			else if( this.container.availableUpgrades() <= 16 )
 			{
@@ -170,38 +167,32 @@ public class GuiCellWorkbench extends GuiUpgradeable<ContainerCellWorkbench>
 	}
 
 	@Override
-	protected void actionPerformed( final GuiButton btn )
+	protected void actionPerformed( final Button btn )
 	{
-		try
+		if( btn == this.copyMode )
 		{
-			if( btn == this.copyMode )
-			{
-				NetworkHandler.instance().sendToServer( new PacketValueConfig( "CellWorkbench.Action", "CopyMode" ) );
-			}
-			else if( btn == this.partition )
-			{
-				NetworkHandler.instance().sendToServer( new PacketValueConfig( "CellWorkbench.Action", "Partition" ) );
-			}
-			else if( btn == this.clear )
-			{
-				NetworkHandler.instance().sendToServer( new PacketValueConfig( "CellWorkbench.Action", "Clear" ) );
-			}
-			else if( btn == this.fuzzyMode )
-			{
-				final boolean backwards = Mouse.isButtonDown( 1 );
-
-				FuzzyMode fz = (FuzzyMode) this.fuzzyMode.getCurrentValue();
-				fz = Platform.rotateEnum( fz, backwards, Settings.FUZZY_MODE.getPossibleValues() );
-
-				NetworkHandler.instance().sendToServer( new PacketValueConfig( "CellWorkbench.Fuzzy", fz.name() ) );
-			}
-			else
-			{
-				super.actionPerformed( btn );
-			}
+			NetworkHandler.instance().sendToServer( new PacketValueConfig( "CellWorkbench.Action", "CopyMode" ) );
 		}
-		catch( final IOException ignored )
+		else if( btn == this.partition )
 		{
+			NetworkHandler.instance().sendToServer( new PacketValueConfig( "CellWorkbench.Action", "Partition" ) );
+		}
+		else if( btn == this.clear )
+		{
+			NetworkHandler.instance().sendToServer( new PacketValueConfig( "CellWorkbench.Action", "Clear" ) );
+		}
+		else if( btn == this.fuzzyMode )
+		{
+			final boolean backwards = minecraft.mouseHelper.isRightDown();
+
+			FuzzyMode fz = (FuzzyMode) this.fuzzyMode.getCurrentValue();
+			fz = Platform.rotateEnum( fz, backwards, Settings.FUZZY_MODE.getPossibleValues() );
+
+			NetworkHandler.instance().sendToServer( new PacketValueConfig( "CellWorkbench.Fuzzy", fz.name() ) );
+		}
+		else
+		{
+			super.actionPerformed( btn );
 		}
 	}
 }

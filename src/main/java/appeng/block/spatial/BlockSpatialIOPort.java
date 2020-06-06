@@ -21,6 +21,10 @@ package appeng.block.spatial;
 
 import javax.annotation.Nullable;
 
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerSpatialIOPort;
+import appeng.fluids.container.ContainerFluidLevelEmitter;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.BlockState;
@@ -70,7 +74,7 @@ public class BlockSpatialIOPort extends AEBaseTileBlock<TileSpatialIOPort>
 		{
 			if( Platform.isServer() )
 			{
-				// FIXME Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit), GuiBridge.GUI_SPATIAL_IO_PORT );
+				ContainerOpener.openContainer(ContainerSpatialIOPort.TYPE, p, ContainerLocator.forTileEntitySide(tg, hit.getFace()));
 			}
 			return ActionResultType.SUCCESS;
 		}

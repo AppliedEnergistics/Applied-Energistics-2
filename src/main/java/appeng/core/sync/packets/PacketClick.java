@@ -20,6 +20,8 @@ package appeng.core.sync.packets;
 
 
 import appeng.block.networking.BlockCableBus;
+import appeng.items.tools.ToolNetworkTool;
+import appeng.items.tools.powered.ToolColorApplicator;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.block.Block;
@@ -126,25 +128,25 @@ public class PacketClick extends AppEngPacket
 		{
 			if( !is.isEmpty() )
 			{
-				// FIXME if( is.getItem() instanceof ToolNetworkTool )
-				// FIXME {
-				// FIXME 	final ToolNetworkTool tnt = (ToolNetworkTool) is.getItem();
-				// FIXME 	tnt.serverSideToolLogic( is, player, this.hand, player.world, pos, this.side, this.hitX, this.hitY,
-				// FIXME 			this.hitZ );
-				// FIXME }
+				if( is.getItem() instanceof ToolNetworkTool)
+				{
+					final ToolNetworkTool tnt = (ToolNetworkTool) is.getItem();
+					tnt.serverSideToolLogic( is, player, this.hand, player.world, pos, this.side, this.hitX, this.hitY,
+							this.hitZ );
+				}
 
-				/* FIXME else */ if( maybeMemoryCard.isSameAs( is ) )
+				if( maybeMemoryCard.isSameAs( is ) )
 				{
 					final IMemoryCard mem = (IMemoryCard) is.getItem();
 					mem.notifyUser( player, MemoryCardMessages.SETTINGS_CLEARED );
 					is.setTag( null );
 				}
 
-				// FIXME else if( maybeColorApplicator.isSameAs( is ) )
-				// FIXME {
-				// FIXME 	final ToolColorApplicator mem = (ToolColorApplicator) is.getItem();
-				// FIXME 	mem.cycleColors( is, mem.getColor( is ), 1 );
-				// FIXME }
+				else if( maybeColorApplicator.isSameAs( is ) )
+				{
+					final ToolColorApplicator mem = (ToolColorApplicator) is.getItem();
+					mem.cycleColors( is, mem.getColor( is ), 1 );
+				}
 			}
 		}
 	}

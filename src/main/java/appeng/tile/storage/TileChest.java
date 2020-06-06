@@ -26,8 +26,11 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.container.implementations.ContainerMEMonitorable;
 import appeng.core.Api;
+import appeng.fluids.container.ContainerFluidTerminal;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -943,22 +946,22 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 		return Api.INSTANCE.definitions().blocks().chest().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 	}
 
-// FIXME	@Override
-// FIXME	public GuiBridge getGuiBridge()
-// FIXME	{
-// FIXME		this.updateHandler();
-// FIXME		if( this.cellHandler != null )
-// FIXME		{
-// FIXME			if( this.cellHandler.getChannel() == Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) )
-// FIXME			{
-// FIXME				return GuiBridge.GUI_ME;
-// FIXME			}
-// FIXME			if( this.cellHandler.getChannel() == Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ) )
-// FIXME			{
-// FIXME				return GuiBridge.GUI_FLUID_TERMINAL;
-// FIXME			}
-// FIXME		}
-// FIXME		return null;
-// FIXME	}
+	@Override
+	public ContainerType<?> getContainerType()
+	{
+		this.updateHandler();
+		if( this.cellHandler != null )
+		{
+			if( this.cellHandler.getChannel() == Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) )
+			{
+				return ContainerMEMonitorable.TYPE;
+			}
+			if( this.cellHandler.getChannel() == Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ) )
+			{
+				return ContainerFluidTerminal.TYPE;
+			}
+		}
+		return null;
+	}
 
 }

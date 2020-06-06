@@ -20,6 +20,10 @@ package appeng.block.misc;
 
 
 import appeng.block.AEBaseTileBlock;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerDrive;
+import appeng.container.implementations.ContainerVibrationChamber;
 import appeng.core.AEConfig;
 import appeng.tile.AEBaseTile;
 import appeng.tile.misc.TileVibrationChamber;
@@ -85,7 +89,7 @@ public final class BlockVibrationChamber extends AEBaseTileBlock<TileVibrationCh
 			final TileVibrationChamber tc = this.getTileEntity( w, pos );
 			if( tc != null && !player.isCrouching() )
 			{
-				// FIXME Platform.openGUI( player, tc, AEPartLocation.fromFacing(hit), GuiBridge.GUI_VIBRATION_CHAMBER );
+				ContainerOpener.openContainer(ContainerVibrationChamber.TYPE, player, ContainerLocator.forTileEntitySide(tc, hit.getFace()));
 				return ActionResultType.SUCCESS;
 			}
 		}

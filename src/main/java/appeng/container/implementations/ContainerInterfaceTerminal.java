@@ -24,11 +24,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import appeng.api.config.SecurityPermissions;
+import appeng.container.ContainerLocator;
+import appeng.container.helper.PartContainerHelper;
+import appeng.container.helper.TileContainerHelper;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Settings;
@@ -60,6 +66,19 @@ import appeng.util.inv.filter.IAEItemFilter;
 public final class ContainerInterfaceTerminal extends AEBaseContainer
 {
 
+	public static ContainerType<ContainerInterfaceTerminal> TYPE;
+
+	private static final PartContainerHelper<ContainerInterfaceTerminal, PartInterfaceTerminal> helper
+			= new PartContainerHelper<>(ContainerInterfaceTerminal::new, PartInterfaceTerminal.class, SecurityPermissions.BUILD);
+
+	public static ContainerInterfaceTerminal fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
+	}
+
 	/**
 	 * this stuff is all server side..
 	 */
@@ -70,9 +89,9 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 	private IGrid grid;
 	private CompoundNBT data = new CompoundNBT();
 
-	public ContainerInterfaceTerminal(ContainerType<?> containerType, int id, final PlayerInventory ip, final PartInterfaceTerminal anchor )
+	public ContainerInterfaceTerminal(int id, final PlayerInventory ip, final PartInterfaceTerminal anchor )
 	{
-		super( containerType, id, ip, anchor );
+		super( TYPE, id, ip, anchor );
 
 		if( Platform.isServer() )
 		{

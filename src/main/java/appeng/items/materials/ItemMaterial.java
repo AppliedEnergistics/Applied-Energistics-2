@@ -30,6 +30,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import appeng.entity.EntitySingularity;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.client.util.ITooltipFlag;

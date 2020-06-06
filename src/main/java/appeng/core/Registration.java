@@ -32,36 +32,35 @@ import appeng.bootstrap.IModelRegistry;
 import appeng.bootstrap.components.*;
 import appeng.client.gui.implementations.GuiGrinder;
 import appeng.client.gui.implementations.GuiSkyChest;
-import appeng.client.render.effects.ChargedOreFX;
-import appeng.client.render.effects.LightningFX;
-import appeng.client.render.effects.VibrantFX;
-import appeng.client.render.model.GlassModelLoader;
-import appeng.client.render.model.SkyCompassBakedModel;
+import appeng.client.render.effects.*;
 import appeng.client.render.model.SkyCompassModel;
 import appeng.client.render.tesr.SkyChestTESR;
-import appeng.container.implementations.ContainerGrinder;
-import appeng.container.implementations.ContainerSkyChest;
+import appeng.container.AEBaseContainer;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.*;
 import appeng.core.features.registries.cell.BasicCellHandler;
 import appeng.core.features.registries.cell.BasicItemCellGuiHandler;
 import appeng.core.features.registries.cell.CreativeCellHandler;
 import appeng.core.stats.AeStats;
 import appeng.core.stats.PartItemPredicate;
+import appeng.fluids.container.*;
 import appeng.fluids.registries.BasicFluidCellGuiHandler;
 import appeng.me.cache.*;
 import appeng.recipes.conditions.FeaturesEnabled;
 import appeng.recipes.game.DisassembleRecipe;
 import appeng.recipes.ingredients.PartIngredientSerializer;
+import appeng.server.AECommand;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.entity.EntityType;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.particles.ParticleType;
-import net.minecraft.stats.Stats;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -70,17 +69,14 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.GenericEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.registries.ForgeRegistryEntry;
+import net.minecraftforge.fml.network.IContainerFactory;
 import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.ObjectHolder;
 
 
 final class Registration
@@ -258,16 +254,257 @@ final class Registration
 	public void registerContainerTypes( RegistryEvent.Register<ContainerType<?>> event ) {
 		final IForgeRegistry<ContainerType<?>> registry = event.getRegistry();
 
-		ContainerSkyChest.TYPE = IForgeContainerType.create(ContainerSkyChest::fromNetwork);
-		registry.register(ContainerSkyChest.TYPE.setRegistryName(AppEng.MOD_ID, "sky_chest"));
+		ContainerCellWorkbench.TYPE = registerContainer(
+				registry,
+				"cellworkbench",
+				ContainerCellWorkbench::fromNetwork,
+				ContainerCellWorkbench::open
+		);
+		ContainerChest.TYPE = registerContainer(
+				registry,
+				"chest",
+				ContainerChest::fromNetwork,
+				ContainerChest::open
+		);
+		ContainerCondenser.TYPE = registerContainer(
+				registry,
+				"condenser",
+				ContainerCondenser::fromNetwork,
+				ContainerCondenser::open
+		);
+		ContainerCraftAmount.TYPE = registerContainer(
+				registry,
+				"craftamount",
+				ContainerCraftAmount::fromNetwork,
+				ContainerCraftAmount::open
+		);
+		ContainerCraftConfirm.TYPE = registerContainer(
+				registry,
+				"craftconfirm",
+				ContainerCraftConfirm::fromNetwork,
+				ContainerCraftConfirm::open
+		);
+		ContainerCraftingCPU.TYPE = registerContainer(
+				registry,
+				"craftingcpu",
+				ContainerCraftingCPU::fromNetwork,
+				ContainerCraftingCPU::open
+		);
+		ContainerCraftingStatus.TYPE = registerContainer(
+				registry,
+				"craftingstatus",
+				ContainerCraftingStatus::fromNetwork,
+				ContainerCraftingStatus::open
+		);
+		ContainerCraftingTerm.TYPE = registerContainer(
+				registry,
+				"craftingterm",
+				ContainerCraftingTerm::fromNetwork,
+				ContainerCraftingTerm::open
+		);
+		ContainerDrive.TYPE = registerContainer(
+				registry,
+				"drive",
+				ContainerDrive::fromNetwork,
+				ContainerDrive::open
+		);
+		ContainerFormationPlane.TYPE = registerContainer(
+				registry,
+				"formationplane",
+				ContainerFormationPlane::fromNetwork,
+				ContainerFormationPlane::open
+		);
+		ContainerGrinder.TYPE = registerContainer(
+				registry,
+				"grinder",
+				ContainerGrinder::fromNetwork,
+				ContainerGrinder::open
+		);
+		ContainerInscriber.TYPE = registerContainer(
+				registry,
+				"inscriber",
+				ContainerInscriber::fromNetwork,
+				ContainerInscriber::open
+		);
+		ContainerInterface.TYPE = registerContainer(
+				registry,
+				"interface",
+				ContainerInterface::fromNetwork,
+				ContainerInterface::open
+		);
+		ContainerInterfaceTerminal.TYPE = registerContainer(
+				registry,
+				"interfaceterminal",
+				ContainerInterfaceTerminal::fromNetwork,
+				ContainerInterfaceTerminal::open
+		);
+		ContainerIOPort.TYPE = registerContainer(
+				registry,
+				"ioport",
+				ContainerIOPort::fromNetwork,
+				ContainerIOPort::open
+		);
+		ContainerLevelEmitter.TYPE = registerContainer(
+				registry,
+				"levelemitter",
+				ContainerLevelEmitter::fromNetwork,
+				ContainerLevelEmitter::open
+		);
+		ContainerMAC.TYPE = registerContainer(
+				registry,
+				"mac",
+				ContainerMAC::fromNetwork,
+				ContainerMAC::open
+		);
+		ContainerMEMonitorable.TYPE = registerContainer(
+				registry,
+				"memonitorable",
+				ContainerMEMonitorable::fromNetwork,
+				ContainerMEMonitorable::open
+		);
+		ContainerMEPortableCell.TYPE = registerContainer(
+				registry,
+				"meportablecell",
+				ContainerMEPortableCell::fromNetwork,
+				ContainerMEPortableCell::open
+		);
+		ContainerNetworkStatus.TYPE = registerContainer(
+				registry,
+				"networkstatus",
+				ContainerNetworkStatus::fromNetwork,
+				ContainerNetworkStatus::open
+		);
+		ContainerNetworkTool.TYPE = registerContainer(
+				registry,
+				"networktool",
+				ContainerNetworkTool::fromNetwork,
+				ContainerNetworkTool::open
+		);
+		ContainerPatternTerm.TYPE = registerContainer(
+				registry,
+				"patternterm",
+				ContainerPatternTerm::fromNetwork,
+				ContainerPatternTerm::open
+		);
+		ContainerPriority.TYPE = registerContainer(
+				registry,
+				"priority",
+				ContainerPriority::fromNetwork,
+				ContainerPriority::open
+		);
+		ContainerQNB.TYPE = registerContainer(
+				registry,
+				"qnb",
+				ContainerQNB::fromNetwork,
+				ContainerQNB::open
+		);
+		ContainerQuartzKnife.TYPE = registerContainer(
+				registry,
+				"quartzknife",
+				ContainerQuartzKnife::fromNetwork,
+				ContainerQuartzKnife::open
+		);
+		ContainerSecurityStation.TYPE = registerContainer(
+				registry,
+				"securitystation",
+				ContainerSecurityStation::fromNetwork,
+				ContainerSecurityStation::open
+		);
+		ContainerSkyChest.TYPE = registerContainer(
+				registry,
+				"skychest",
+				ContainerSkyChest::fromNetwork,
+				ContainerSkyChest::open
+		);
+		ContainerSpatialIOPort.TYPE = registerContainer(
+				registry,
+				"spatialioport",
+				ContainerSpatialIOPort::fromNetwork,
+				ContainerSpatialIOPort::open
+		);
+		ContainerStorageBus.TYPE = registerContainer(
+				registry,
+				"storagebus",
+				ContainerStorageBus::fromNetwork,
+				ContainerStorageBus::open
+		);
+		ContainerUpgradeable.TYPE = registerContainer(
+				registry,
+				"upgradeable",
+				ContainerUpgradeable::fromNetwork,
+				ContainerUpgradeable::open
+		);
+		ContainerVibrationChamber.TYPE = registerContainer(
+				registry,
+				"vibrationchamber",
+				ContainerVibrationChamber::fromNetwork,
+				ContainerVibrationChamber::open
+		);
+		ContainerWireless.TYPE = registerContainer(
+				registry,
+				"wireless",
+				ContainerWireless::fromNetwork,
+				ContainerWireless::open
+		);
+		ContainerWirelessTerm.TYPE = registerContainer(
+				registry,
+				"wirelessterm",
+				ContainerWirelessTerm::fromNetwork,
+				ContainerWirelessTerm::open
+		);
 
-		ContainerGrinder.TYPE = IForgeContainerType.create(ContainerGrinder::fromNetwork);
-		registry.register(ContainerGrinder.TYPE.setRegistryName(AppEng.MOD_ID, "grinder"));
+		ContainerFluidFormationPlane.TYPE = registerContainer(
+				registry,
+				"fluid_formation_plane",
+				ContainerFluidFormationPlane::fromNetwork,
+				ContainerFluidFormationPlane::open
+		);
+		ContainerFluidIO.TYPE = registerContainer(
+				registry,
+				"fluid_io",
+				ContainerFluidIO::fromNetwork,
+				ContainerFluidIO::open
+		);
+		ContainerFluidInterface.TYPE = registerContainer(
+				registry,
+				"fluid_interface",
+				ContainerFluidInterface::fromNetwork,
+				ContainerFluidInterface::open
+		);
+		ContainerFluidLevelEmitter.TYPE = registerContainer(
+				registry,
+				"fluid_level_emitter",
+				ContainerFluidLevelEmitter::fromNetwork,
+				ContainerFluidLevelEmitter::open
+		);
+		ContainerFluidStorageBus.TYPE = registerContainer(
+				registry,
+				"fluid_storage_bus",
+				ContainerFluidStorageBus::fromNetwork,
+				ContainerFluidStorageBus::open
+		);
+		ContainerFluidTerminal.TYPE = registerContainer(
+				registry,
+				"fluid_terminal",
+				ContainerFluidTerminal::fromNetwork,
+				ContainerFluidTerminal::open
+		);
 
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			ScreenManager.registerFactory(ContainerSkyChest.TYPE, GuiSkyChest::new);
 			ScreenManager.registerFactory(ContainerGrinder.TYPE, GuiGrinder::new);
 		});
+	}
+
+	private <T extends AEBaseContainer> ContainerType<T> registerContainer(IForgeRegistry<ContainerType<?>> registry,
+																		   String id,
+																		   IContainerFactory<T> factory,
+																		   ContainerOpener.Opener<T> opener) {
+		ContainerType<T> type = IForgeContainerType.create(factory);
+		type.setRegistryName(AppEng.MOD_ID, id);
+		registry.register(type);
+		ContainerOpener.addOpener(type, opener);
+		return type;
 	}
 
 	public void registerRecipeSerializers( RegistryEvent.Register<IRecipeSerializer<?>> event )
@@ -306,9 +543,14 @@ final class Registration
 	}
 
 	public void registerParticleFactories(ParticleFactoryRegisterEvent event) {
+		Minecraft.getInstance().particles.registerFactory(AssemblerFX.TYPE, AssemblerFX.Factory::new);
 		Minecraft.getInstance().particles.registerFactory(ChargedOreFX.TYPE, ChargedOreFX.Factory::new);
-		Minecraft.getInstance().particles.registerFactory(VibrantFX.TYPE, VibrantFX.Factory::new);
+		Minecraft.getInstance().particles.registerFactory(CraftingFx.TYPE, CraftingFx.Factory::new);
+		Minecraft.getInstance().particles.registerFactory(EnergyFx.TYPE, EnergyFx.Factory::new);
+		Minecraft.getInstance().particles.registerFactory(LightningArcFX.TYPE, LightningArcFX.Factory::new);
 		Minecraft.getInstance().particles.registerFactory(LightningFX.TYPE, LightningFX.Factory::new);
+		Minecraft.getInstance().particles.registerFactory(MatterCannonFX.TYPE, MatterCannonFX.Factory::new);
+		Minecraft.getInstance().particles.registerFactory(VibrantFX.TYPE, VibrantFX.Factory::new);
 	}
 
 //
@@ -561,6 +803,11 @@ final class Registration
 
 	public void registerTextures(TextureStitchEvent.Pre event) {
 		SkyChestTESR.registerTextures(event);
+	}
+
+	public void registerCommands( final FMLServerStartingEvent evt )
+	{
+		new AECommand().register(evt.getCommandDispatcher());
 	}
 
 }

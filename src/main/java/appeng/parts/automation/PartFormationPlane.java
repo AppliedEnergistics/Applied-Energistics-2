@@ -23,9 +23,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerFormationPlane;
+import appeng.fluids.container.ContainerFluidInterface;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -195,7 +200,7 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 	{
 		if( Platform.isServer() )
 		{
-			// FIXME Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_FORMATION_PLANE );
+			ContainerOpener.openContainer(ContainerFormationPlane.TYPE, player, ContainerLocator.forPart(this));
 		}
 		return true;
 	}
@@ -378,11 +383,11 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 		return Api.INSTANCE.definitions().parts().formationPlane().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 	}
 
-// FIXME	@Override
-// FIXME	public GuiBridge getGuiBridge()
-// FIXME	{
-// FIXME		return GuiBridge.GUI_FORMATION_PLANE;
-// FIXME	}
+	@Override
+	public ContainerType<?> getContainerType()
+	{
+		return ContainerFormationPlane.TYPE;
+	}
 
 	private int countEntitesAround( World world, BlockPos pos )
 	{

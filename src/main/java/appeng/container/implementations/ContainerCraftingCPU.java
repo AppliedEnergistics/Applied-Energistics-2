@@ -21,6 +21,9 @@ package appeng.container.implementations;
 
 import java.io.IOException;
 
+import appeng.api.config.SecurityPermissions;
+import appeng.container.ContainerLocator;
+import appeng.container.helper.TileContainerHelper;
 import appeng.core.Api;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -49,11 +52,17 @@ import appeng.tile.crafting.TileCraftingTile;
 import appeng.util.Platform;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
 
 
 public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorHandlerReceiver<IAEItemStack>, ICustomNameObject
 {
+
+	public static ContainerType<ContainerCraftingCPU> TYPE;
+
+	private static final TileContainerHelper<ContainerCraftingCPU, TileCraftingTile> helper
+			= new TileContainerHelper<>(ContainerCraftingCPU::new, TileCraftingTile.class, SecurityPermissions.CRAFT);
 
 	private final IItemList<IAEItemStack> list = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
 	private IGrid network;
@@ -62,6 +71,11 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 
 	@GuiSync( 0 )
 	public long eta = -1;
+
+	private ContainerCraftingCPU(int id, final PlayerInventory ip, final TileCraftingTile te )
+	{
+		this( TYPE, id, ip, te );
+	}
 
 	public ContainerCraftingCPU(ContainerType<?> containerType, int id, final PlayerInventory ip, final Object te )
 	{
@@ -84,6 +98,14 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 		}
 	}
 
+	public static ContainerCraftingCPU fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
+	}
+
 	protected void setCPU( final ICraftingCPU c )
 	{
 		if( c == this.getMonitor() )
@@ -100,14 +122,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 		{
 			if( g instanceof PlayerEntity )
 			{
-				try
-				{
-					NetworkHandler.instance().sendTo( new PacketValueConfig( "CraftingStatus", "Clear" ), (ServerPlayerEntity) g );
-				}
-				catch( final IOException e )
-				{
-					AELog.debug( e );
-				}
+				NetworkHandler.instance().sendTo( new PacketValueConfig( "CraftingStatus", "Clear" ), (ServerPlayerEntity) g );
 			}
 		}
 

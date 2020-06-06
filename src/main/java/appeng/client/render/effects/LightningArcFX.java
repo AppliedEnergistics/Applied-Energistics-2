@@ -21,11 +21,23 @@ package appeng.client.render.effects;
 
 import java.util.Random;
 
+import appeng.core.AppEng;
+import net.minecraft.client.particle.*;
+import net.minecraft.particles.BasicParticleType;
+import net.minecraft.particles.ParticleType;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 
 public class LightningArcFX extends LightningFX
 {
+	public static final ParticleType<LightningArcParticleData> TYPE = new ParticleType<>(false, LightningArcParticleData.DESERIALIZER);
+
+	static {
+		TYPE.setRegistryName(AppEng.MOD_ID, "lightning_arc_fx");
+	}
+
 	private static final Random RANDOM_GENERATOR = new Random();
 
 	private final double rx;
@@ -61,4 +73,20 @@ public class LightningArcFX extends LightningFX
 			localSteps[s][2] = ( lastDirectionZ + ( RANDOM_GENERATOR.nextDouble() - 0.5 ) * len * 1.2 ) / 2.0;
 		}
 	}
+
+	@OnlyIn(Dist.CLIENT)
+	public static class Factory implements IParticleFactory<LightningArcParticleData> {
+		private final IAnimatedSprite spriteSet;
+
+		public Factory(IAnimatedSprite spriteSet) {
+			this.spriteSet = spriteSet;
+		}
+
+		public Particle makeParticle(LightningArcParticleData data, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+			SpriteTexturedParticle lightningFX = new LightningArcFX(worldIn, x, y, z, data.target.x, data.target.y, data.target.z, 0, 0, 0);
+			lightningFX.selectSpriteRandomly(this.spriteSet);
+			return lightningFX;
+		}
+	}
+
 }

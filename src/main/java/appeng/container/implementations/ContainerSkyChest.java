@@ -19,28 +19,26 @@
 package appeng.container.implementations;
 
 
-import appeng.core.AppEng;
-import net.minecraft.client.Minecraft;
+import appeng.container.ContainerLocator;
+import appeng.container.helper.TileContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.SlotNormal;
 import appeng.tile.storage.TileSkyChest;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.network.NetworkHooks;
 
 
 public class ContainerSkyChest extends AEBaseContainer
 {
-	public static ContainerType<ContainerSkyChest> TYPE;
+
+public static ContainerType<ContainerSkyChest> TYPE;
+
+	private static final TileContainerHelper<ContainerSkyChest, TileSkyChest> helper
+			= new TileContainerHelper<>(ContainerSkyChest::new, TileSkyChest.class);
+
 
 	private final TileSkyChest chest;
 
@@ -63,20 +61,11 @@ public class ContainerSkyChest extends AEBaseContainer
 	}
 
 	public static ContainerSkyChest fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-		BlockPos pos = buf.readBlockPos();
-		TileEntity te = inv.player.world.getTileEntity(pos);
-		if (te instanceof TileSkyChest) {
-			return new ContainerSkyChest(windowId, inv, (TileSkyChest) te);
-		}
-		return null;
+		return helper.fromNetwork(windowId, inv, buf);
 	}
 
-	public static void open(ServerPlayerEntity player, TileSkyChest tile, ITextComponent title) {
-		BlockPos pos = tile.getPos();
-		INamedContainerProvider container = new SimpleNamedContainerProvider(
-				(wnd, p, pl) -> new ContainerSkyChest(wnd, p, tile), title
-		);
-		NetworkHooks.openGui(player, container, pos);
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
 	}
 
 	@Override

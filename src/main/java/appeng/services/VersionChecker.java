@@ -26,8 +26,6 @@ import javax.annotation.Nonnull;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.event.FMLInterModComms;
 
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -39,6 +37,8 @@ import appeng.services.version.VersionFetcher;
 import appeng.services.version.VersionParser;
 import appeng.services.version.github.FormattedRelease;
 import appeng.services.version.github.ReleaseFetcher;
+import net.minecraftforge.fml.InterModComms;
+import net.minecraftforge.fml.ModList;
 
 
 /**
@@ -63,6 +63,7 @@ import appeng.services.version.github.ReleaseFetcher;
  * Only after all that cases, if the external version is higher than the local,
  * use Version Checker Mod and post several information needed for it to update the mod.
  */
+// FIXME: VersionChecker doesn't actually exist in 1.15
 public final class VersionChecker implements Runnable
 {
 	private static final int SEC_TO_HOUR = 3600;
@@ -86,11 +87,8 @@ public final class VersionChecker implements Runnable
 			// persist the config
 			this.config.save();
 
-			// retrieve data
-			final String rawLastCheck = this.config.lastCheck();
-
 			// process data
-			final long lastCheck = Long.parseLong( rawLastCheck );
+			final long lastCheck = this.config.lastCheck();
 			final Date now = new Date();
 			final long nowInMs = now.getTime();
 			final long intervalInMs = this.config.interval() * SEC_TO_HOUR * MS_TO_SEC;
@@ -177,7 +175,7 @@ public final class VersionChecker implements Runnable
 	 */
 	private void interactWithVersionCheckerMod( @Nonnull final String modFormatted, @Nonnull final String ghFormatted, @Nonnull final String changelog )
 	{
-		if( Loader.isModLoaded( "VersionChecker" ) )
+		if( ModList.get().isLoaded( "VersionChecker" ) )
 		{
 			final CompoundNBT versionInf = new CompoundNBT();
 			versionInf.putString("modDisplayName", AppEng.MOD_NAME);
@@ -192,7 +190,7 @@ public final class VersionChecker implements Runnable
 			}
 
 			versionInf.putString("newFileName", "appliedenergistics2-" + ghFormatted + ".jar");
-			FMLInterModComms.sendRuntimeMessage( AppEng.instance(), "VersionChecker", "addUpdate", versionInf );
+			InterModComms.sendTo( "VersionChecker", "addUpdate", () -> versionInf );
 
 			AELog.info( "Reported new version to VersionChecker mod." );
 		}

@@ -22,8 +22,13 @@ package appeng.core.features.registries;
 import java.util.ArrayList;
 import java.util.List;
 
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerMEPortableCell;
+import appeng.container.implementations.ContainerWirelessTerm;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Hand;
 import net.minecraft.world.IBlockReader;
 
 import appeng.api.AEApi;
@@ -81,7 +86,7 @@ public final class WirelessRegistry implements IWirelessTermRegistry
 	}
 
 	@Override
-	public void openWirelessTerminalGui( ItemStack item, IBlockReader world, PlayerEntity player )
+	public void openWirelessTerminalGui( ItemStack item, IBlockReader world, PlayerEntity player, Hand hand )
 	{
 		if( Platform.isClient() )
 		{
@@ -112,7 +117,7 @@ public final class WirelessRegistry implements IWirelessTermRegistry
 
 		if( handler.hasPower( player, 0.5, item ) )
 		{
-			// FIXME Platform.openGUI( player, null, null, GuiBridge.GUI_WIRELESS_TERM );
+			ContainerOpener.openContainer(ContainerWirelessTerm.TYPE, player, ContainerLocator.forHand(hand));
 		}
 		else
 		{

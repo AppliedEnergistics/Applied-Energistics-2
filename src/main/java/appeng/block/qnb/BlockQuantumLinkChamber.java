@@ -25,6 +25,9 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerQNB;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -94,7 +97,7 @@ public class BlockQuantumLinkChamber extends BlockQuantumBase
 		{
 			if( Platform.isServer() )
 			{
-				// FIXME Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit), GuiBridge.GUI_QNB );
+				ContainerOpener.openContainer(ContainerQNB.TYPE, p, ContainerLocator.forTileEntity(tg));
 			}
 			return ActionResultType.SUCCESS;
 		}

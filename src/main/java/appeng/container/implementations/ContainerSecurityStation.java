@@ -19,12 +19,16 @@
 package appeng.container.implementations;
 
 
+import appeng.container.ContainerLocator;
+import appeng.container.helper.PartOrTileContainerHelper;
+import appeng.container.helper.TileContainerHelper;
 import appeng.core.Api;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.SecurityPermissions;
@@ -44,6 +48,11 @@ import appeng.util.inv.InvOperation;
 public class ContainerSecurityStation extends ContainerMEMonitorable implements IAEAppEngInventory
 {
 
+public static ContainerType<ContainerSecurityStation> TYPE;
+
+	private static final PartOrTileContainerHelper<ContainerSecurityStation, ITerminalHost> helper
+			= new PartOrTileContainerHelper<>(ContainerSecurityStation::new, ITerminalHost.class, SecurityPermissions.SECURITY);
+
 	private final SlotRestrictedInput configSlot;
 
 	private final AppEngInternalInventory wirelessEncoder = new AppEngInternalInventory( this, 2 );
@@ -55,9 +64,9 @@ public class ContainerSecurityStation extends ContainerMEMonitorable implements 
 	@GuiSync( 0 )
 	public int permissionMode = 0;
 
-	public ContainerSecurityStation(ContainerType<?> containerType, int id, final PlayerInventory ip, final ITerminalHost monitorable )
+	public ContainerSecurityStation(int id, final PlayerInventory ip, final ITerminalHost monitorable )
 	{
-		super( containerType, id, ip, monitorable, false );
+		super( TYPE, id, ip, monitorable, false );
 
 		this.securityBox = (TileSecurityStation) monitorable;
 
@@ -69,6 +78,14 @@ public class ContainerSecurityStation extends ContainerMEMonitorable implements 
 		this.addSlot( this.wirelessOut = new SlotOutput( this.wirelessEncoder, 1, 212, 68, -1 ) );
 
 		this.bindPlayerInventory( ip, 0, 0 );
+	}
+
+	public static ContainerSecurityStation fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
 	}
 
 	public void toggleSetting( final String value, final PlayerEntity player )

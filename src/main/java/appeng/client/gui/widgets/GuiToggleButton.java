@@ -21,15 +21,17 @@ package appeng.client.gui.widgets;
 
 import java.util.regex.Pattern;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.client.resources.I18n;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 
 public class GuiToggleButton extends Button implements ITooltip
 {
+	public static final ResourceLocation TEXTURE_STATES = new ResourceLocation("appliedenergistics2", "textures/guis/states.png");
 	private static final Pattern PATTERN_NEW_LINE = Pattern.compile( "\\n", Pattern.LITERAL );
 	private final int iconIdxOn;
 	private final int iconIdxOff;
@@ -39,17 +41,13 @@ public class GuiToggleButton extends Button implements ITooltip
 
 	private boolean isActive;
 
-	public GuiToggleButton( final int x, final int y, final int on, final int off, final String displayName, final String displayHint )
+	public GuiToggleButton( final int x, final int y, final int on, final int off, final String displayName, final String displayHint, IPressable onPress )
 	{
-		super( 0, 0, 16, "" );
+		super( x, y, 16, 16, "", onPress );
 		this.iconIdxOn = on;
 		this.iconIdxOff = off;
 		this.displayName = displayName;
 		this.displayHint = displayHint;
-		this.x = x;
-		this.y = y;
-		this.width = 16;
-		this.height = 16;
 	}
 
 	public void setState( final boolean isOn )
@@ -58,22 +56,20 @@ public class GuiToggleButton extends Button implements ITooltip
 	}
 
 	@Override
-	public void drawButton( final Minecraft par1Minecraft, final int par2, final int par3, final float partial )
+	public void renderButton( final int mouseX, final int mouseY, final float partial )
 	{
 		if( this.visible )
 		{
 			final int iconIndex = this.getIconIndex();
 
 			RenderSystem.color4f( 1.0f, 1.0f, 1.0f, 1.0f );
-			par1Minecraft.renderEngine.bindTexture( new ResourceLocation( "appliedenergistics2", "textures/guis/states.png" ) );
-			this.hovered = par2 >= this.x && par3 >= this.y && par2 < this.x + this.width && par3 < this.y + this.height;
+			Minecraft.getInstance().textureManager.bindTexture( TEXTURE_STATES );
 
 			final int uv_y = (int) Math.floor( iconIndex / 16 );
 			final int uv_x = iconIndex - uv_y * 16;
 
-			this.drawTexturedModalRect( this.x, this.y, 256 - 16, 256 - 16, 16, 16 );
-			this.drawTexturedModalRect( this.x, this.y, uv_x * 16, uv_y * 16, 16, 16 );
-			this.mouseDragged( par1Minecraft, par2, par3 );
+			GuiUtils.drawTexturedModalRect( this.x, this.y, 256 - 16, 256 - 16, 16, 16, 0 );
+			GuiUtils.drawTexturedModalRect( this.x, this.y, uv_x * 16, uv_y * 16, 16, 16, 0 );
 		}
 	}
 

@@ -20,6 +20,8 @@ package appeng.block.storage;
 
 
 import appeng.block.AEBaseTileBlock;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
 import appeng.container.implementations.ContainerSkyChest;
 import appeng.tile.storage.TileSkyChest;
 import appeng.util.Platform;
@@ -83,7 +85,7 @@ public class BlockSkyChest extends AEBaseTileBlock<TileSkyChest>
 				return ActionResultType.PASS;
 			}
 
-			ContainerSkyChest.open((ServerPlayerEntity) player, tile, getNameTextComponent());
+			ContainerOpener.openContainer(ContainerSkyChest.TYPE, player, ContainerLocator.forTileEntity(tile));
 		}
 
 		return ActionResultType.SUCCESS;

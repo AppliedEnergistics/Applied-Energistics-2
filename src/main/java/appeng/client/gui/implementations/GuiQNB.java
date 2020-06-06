@@ -24,7 +24,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import appeng.client.gui.AEBaseGui;
 import appeng.container.implementations.ContainerQNB;
 import appeng.core.localization.GuiText;
-import appeng.tile.qnb.TileQuantumBridge;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
@@ -45,7 +44,7 @@ public class GuiQNB extends AEBaseGui<ContainerQNB>
 	}
 
 	@Override
-	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
+	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
 	{
 		this.bindTexture( "guis/chest.png" );
 		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );

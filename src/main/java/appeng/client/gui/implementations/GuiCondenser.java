@@ -19,13 +19,9 @@
 package appeng.client.gui.implementations;
 
 
-import java.io.IOException;
-
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
-import org.lwjgl.input.Mouse;
 
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.api.config.Settings;
@@ -37,7 +33,6 @@ import appeng.container.implementations.ContainerCondenser;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketConfigButton;
-import appeng.tile.misc.TileCondenser;
 
 
 public class GuiCondenser extends AEBaseGui<ContainerCondenser>
@@ -52,19 +47,6 @@ public class GuiCondenser extends AEBaseGui<ContainerCondenser>
 	}
 
 	@Override
-	protected void actionPerformed( final GuiButton btn ) throws IOException
-	{
-		super.actionPerformed( btn );
-
-		final boolean backwards = Mouse.isButtonDown( 1 );
-
-		if( this.mode == btn )
-		{
-			NetworkHandler.instance().sendToServer( new PacketConfigButton( Settings.CONDENSER_OUTPUT, backwards ) );
-		}
-	}
-
-	@Override
 	public void init()
 	{
 		super.init();
@@ -72,7 +54,10 @@ public class GuiCondenser extends AEBaseGui<ContainerCondenser>
 		this.pb = new GuiProgressBar( this.container, "guis/condenser.png", 120 + this.guiLeft, 25 + this.guiTop, 178, 25, 6, 18, Direction.VERTICAL, GuiText.StoredEnergy
 				.getLocal() );
 
-		this.mode = new GuiImgButton( 128 + this.guiLeft, 52 + this.guiTop, Settings.CONDENSER_OUTPUT, this.container.getOutput() );
+		this.mode = new GuiImgButton( 128 + this.guiLeft, 52 + this.guiTop, Settings.CONDENSER_OUTPUT, this.container.getOutput(), btn -> {
+			final boolean backwards = minecraft.mouseHelper.isRightDown();
+			NetworkHandler.instance().sendToServer( new PacketConfigButton( Settings.CONDENSER_OUTPUT, backwards ) );
+		} );
 
 		this.addButton( this.pb );
 		this.addButton( this.mode );
@@ -89,7 +74,7 @@ public class GuiCondenser extends AEBaseGui<ContainerCondenser>
 	}
 
 	@Override
-	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
+	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
 	{
 		this.bindTexture( "guis/condenser.png" );
 

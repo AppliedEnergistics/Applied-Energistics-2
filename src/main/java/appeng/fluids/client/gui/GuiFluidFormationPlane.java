@@ -2,34 +2,26 @@
 package appeng.fluids.client.gui;
 
 
-import java.io.IOException;
-
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.PlayerInventory;
-
 import appeng.client.gui.implementations.GuiUpgradeable;
 import appeng.client.gui.widgets.GuiTabButton;
+import appeng.container.implementations.ContainerPriority;
 import appeng.core.localization.GuiText;
-
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.fluids.client.gui.widgets.GuiFluidSlot;
 import appeng.fluids.client.gui.widgets.GuiOptionalFluidSlot;
 import appeng.fluids.container.ContainerFluidFormationPlane;
-import appeng.fluids.parts.PartFluidFormationPlane;
 import appeng.fluids.util.IAEFluidTank;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 
 
-public class GuiFluidFormationPlane extends GuiUpgradeable
+public class GuiFluidFormationPlane extends GuiUpgradeable<ContainerFluidFormationPlane>
 {
-	private final PartFluidFormationPlane plane;
-	private GuiTabButton priority;
-
-	public GuiFluidFormationPlane( PlayerInventory PlayerInventory, PartFluidFormationPlane te )
+	public GuiFluidFormationPlane(ContainerFluidFormationPlane container, PlayerInventory playerInventory, ITextComponent title)
 	{
-		super( new ContainerFluidFormationPlane( PlayerInventory, te ) );
+		super(container, playerInventory, title);
 		this.ySize = 251;
-		this.plane = te;
 	}
 
 	@Override
@@ -40,8 +32,7 @@ public class GuiFluidFormationPlane extends GuiUpgradeable
 		final int xo = 8;
 		final int yo = 23 + 6;
 
-		final IAEFluidTank config = this.plane.getConfig();
-		final ContainerFluidFormationPlane container = (ContainerFluidFormationPlane) this.container;
+		final IAEFluidTank config = container.getFluidConfigInventory();
 
 		for( int y = 0; y < 7; y++ )
 		{
@@ -63,23 +54,17 @@ public class GuiFluidFormationPlane extends GuiUpgradeable
 	@Override
 	protected void addButtons()
 	{
-		this.addButton( this.priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRenderer ) );
+		this.addButton( new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRenderer, btn -> openPriorityGui() ) );
+	}
+
+	private void openPriorityGui() {
+		NetworkHandler.instance().sendToServer( new PacketSwitchGuis( ContainerPriority.TYPE ) );
 	}
 
 	@Override
 	protected String getBackground()
 	{
 		return "guis/storagebus.png";
-	}
-
-	@Override
-	protected void actionPerformed( final GuiButton btn ) throws IOException
-	{
-		super.actionPerformed( btn );
-		if( btn == this.priority )
-		{
-			NetworkHandler.instance().sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
-		}
 	}
 
 	@Override

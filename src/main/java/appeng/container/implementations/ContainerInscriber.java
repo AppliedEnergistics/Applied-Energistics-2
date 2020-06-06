@@ -19,21 +19,24 @@
 package appeng.container.implementations;
 
 
+import appeng.api.definitions.IItemDefinition;
+import appeng.api.features.IInscriberRecipe;
+import appeng.container.ContainerLocator;
+import appeng.container.guisync.GuiSync;
+import appeng.container.helper.TileContainerHelper;
+import appeng.container.interfaces.IProgressProvider;
+import appeng.container.slot.SlotOutput;
+import appeng.container.slot.SlotRestrictedInput;
 import appeng.core.Api;
+import appeng.tile.misc.TileInscriber;
+import appeng.util.Platform;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
-
-import appeng.api.definitions.IItemDefinition;
-import appeng.api.features.IInscriberRecipe;
-import appeng.container.guisync.GuiSync;
-import appeng.container.interfaces.IProgressProvider;
-import appeng.container.slot.SlotOutput;
-import appeng.container.slot.SlotRestrictedInput;
-import appeng.tile.misc.TileInscriber;
-import appeng.util.Platform;
 
 
 /**
@@ -44,6 +47,19 @@ import appeng.util.Platform;
  */
 public class ContainerInscriber extends ContainerUpgradeable implements IProgressProvider
 {
+
+	public static ContainerType<ContainerInscriber> TYPE;
+
+	private static final TileContainerHelper<ContainerInscriber, TileInscriber> helper
+			= new TileContainerHelper<>(ContainerInscriber::new, TileInscriber.class);
+
+	public static ContainerInscriber fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
+	}
 
 	private final TileInscriber ti;
 
@@ -57,9 +73,9 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 	@GuiSync( 3 )
 	public int processingTime = -1;
 
-	public ContainerInscriber(ContainerType<?> containerType, int id, final PlayerInventory ip, final TileInscriber te )
+	public ContainerInscriber(int id, final PlayerInventory ip, final TileInscriber te )
 	{
-		super( containerType, id, ip, te );
+		super( TYPE, id, ip, te );
 		this.ti = te;
 
 		IItemHandler inv = te.getInternalInventory();

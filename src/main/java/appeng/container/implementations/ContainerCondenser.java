@@ -19,23 +19,31 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraftforge.items.IItemHandler;
-
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
 import appeng.container.AEBaseContainer;
+import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
+import appeng.container.helper.TileContainerHelper;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.tile.misc.TileCondenser;
 import appeng.util.Platform;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.items.IItemHandler;
 
 
 public class ContainerCondenser extends AEBaseContainer implements IProgressProvider
 {
+
+	public static ContainerType<ContainerCondenser> TYPE;
+
+	private static final TileContainerHelper<ContainerCondenser, TileCondenser> helper
+			= new TileContainerHelper<>(ContainerCondenser::new, TileCondenser.class);
 
 	private final TileCondenser condenser;
 	@GuiSync( 0 )
@@ -45,9 +53,9 @@ public class ContainerCondenser extends AEBaseContainer implements IProgressProv
 	@GuiSync( 2 )
 	public CondenserOutput output = CondenserOutput.TRASH;
 
-	public ContainerCondenser(ContainerType<?> containerType, int id, final PlayerInventory ip, final TileCondenser condenser )
+	public ContainerCondenser(int id, final PlayerInventory ip, final TileCondenser condenser )
 	{
-		super( containerType, id, ip, condenser, null );
+		super( TYPE, id, ip, condenser, null );
 		this.condenser = condenser;
 
 		IItemHandler inv = condenser.getInternalInventory();
@@ -58,6 +66,14 @@ public class ContainerCondenser extends AEBaseContainer implements IProgressProv
 				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_COMPONENT, inv, 2, 101, 26, ip ) ).setStackLimit( 1 ) );
 
 		this.bindPlayerInventory( ip, 0, 197 - /* height of player inventory */82 );
+	}
+
+	public static ContainerCondenser fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
 	}
 
 	@Override

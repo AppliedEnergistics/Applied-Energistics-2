@@ -19,50 +19,43 @@
 package appeng.client.render.spatial;
 
 
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nullable;
-
-import com.google.common.collect.ImmutableMap;
-
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.Direction;
-import net.minecraftforge.common.property.IExtendedBlockState;
-
-import appeng.block.spatial.BlockSpatialPylon;
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.tile.spatial.TileSpatialPylon;
+import com.google.common.collect.ImmutableMap;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.Direction;
+import net.minecraftforge.client.model.data.IDynamicBakedModel;
+import net.minecraftforge.client.model.data.IModelData;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 
 /**
  * The baked model that will be used for rendering the spatial pylon.
  */
-class SpatialPylonBakedModel implements IBakedModel
+class SpatialPylonBakedModel implements IDynamicBakedModel
 {
 
 	private final Map<SpatialPylonTextureType, TextureAtlasSprite> textures;
 
-	private final VertexFormat format;
-
-	SpatialPylonBakedModel( VertexFormat format, Map<SpatialPylonTextureType, TextureAtlasSprite> textures )
+	SpatialPylonBakedModel( Map<SpatialPylonTextureType, TextureAtlasSprite> textures )
 	{
 		this.textures = ImmutableMap.copyOf( textures );
-		this.format = format;
 	}
 
+	@Nonnull
 	@Override
-	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, long rand )
-	{
-		int flags = this.getFlags( state );
+	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData) {
+		int flags = this.getFlags( extraData );
 
-		CubeBuilder builder = new CubeBuilder( this.format );
+		CubeBuilder builder = new CubeBuilder();
 
 		if( flags != 0 )
 		{
@@ -162,16 +155,10 @@ class SpatialPylonBakedModel implements IBakedModel
 		return builder.getOutput();
 	}
 
-	private int getFlags( BlockState state )
+	private int getFlags( IModelData modelData )
 	{
-		if( !( state instanceof IExtendedBlockState ) )
-		{
-			return 0;
-		}
-
-		IExtendedBlockState extState = (IExtendedBlockState) state;
-
-		return extState.getValue( BlockSpatialPylon.STATE );
+		Integer flags = modelData.getData(TileSpatialPylon.STATE);
+		return flags != null ? flags : 0;
 	}
 
 	private static SpatialPylonTextureType getTextureTypeFromSideOutside( int flags, Direction ori, Direction dir )
@@ -223,6 +210,11 @@ class SpatialPylonBakedModel implements IBakedModel
 	}
 
 	@Override
+	public boolean func_230044_c_() {
+		return false;
+	}
+
+	@Override
 	public boolean isAmbientOcclusion()
 	{
 		return true;
@@ -244,12 +236,6 @@ class SpatialPylonBakedModel implements IBakedModel
 	public TextureAtlasSprite getParticleTexture()
 	{
 		return this.textures.get( SpatialPylonTextureType.DIM );
-	}
-
-	@Override
-	public ItemCameraTransforms getItemCameraTransforms()
-	{
-		return ItemCameraTransforms.DEFAULT;
 	}
 
 	@Override

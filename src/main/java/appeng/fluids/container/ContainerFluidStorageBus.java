@@ -21,8 +21,12 @@ package appeng.fluids.container;
 
 import java.util.Iterator;
 
+import appeng.container.ContainerLocator;
+import appeng.container.helper.PartContainerHelper;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.AccessRestriction;
@@ -52,6 +56,19 @@ import appeng.util.iterators.NullIterator;
 public class ContainerFluidStorageBus extends ContainerFluidConfigurable
 {
 
+	public static ContainerType<ContainerFluidStorageBus> TYPE;
+
+	private static final PartContainerHelper<ContainerFluidStorageBus, PartFluidStorageBus> helper
+			= new PartContainerHelper<>(ContainerFluidStorageBus::new, PartFluidStorageBus.class);
+
+	public static ContainerFluidStorageBus fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
+	}
+
 	private final PartFluidStorageBus storageBus;
 
 	@GuiSync( 3 )
@@ -60,9 +77,9 @@ public class ContainerFluidStorageBus extends ContainerFluidConfigurable
 	@GuiSync( 4 )
 	public StorageFilter storageFilter = StorageFilter.EXTRACTABLE_ONLY;
 
-	public ContainerFluidStorageBus(ContainerType<?> containerType, int id, PlayerInventory ip, PartFluidStorageBus te )
+	public ContainerFluidStorageBus(int id, PlayerInventory ip, PartFluidStorageBus te )
 	{
-		super( containerType, id,ip, te );
+		super( TYPE, id,ip, te );
 		this.storageBus = te;
 	}
 

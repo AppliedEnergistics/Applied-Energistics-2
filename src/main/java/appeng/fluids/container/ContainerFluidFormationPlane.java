@@ -2,8 +2,12 @@
 package appeng.fluids.container;
 
 
+import appeng.container.ContainerLocator;
+import appeng.container.helper.PartContainerHelper;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.SecurityPermissions;
@@ -16,11 +20,25 @@ import appeng.fluids.util.IAEFluidTank;
 
 public class ContainerFluidFormationPlane extends ContainerFluidConfigurable
 {
+
+	public static ContainerType<ContainerFluidFormationPlane> TYPE;
+
+	private static final PartContainerHelper<ContainerFluidFormationPlane, PartFluidFormationPlane> helper
+			= new PartContainerHelper<>(ContainerFluidFormationPlane::new, PartFluidFormationPlane.class, SecurityPermissions.BUILD);
+
+	public static ContainerFluidFormationPlane fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
+	}
+
 	private final PartFluidFormationPlane plane;
 
-	public ContainerFluidFormationPlane(ContainerType<?> containerType, int id, final PlayerInventory ip, final PartFluidFormationPlane te )
+	public ContainerFluidFormationPlane(int id, final PlayerInventory ip, final PartFluidFormationPlane te )
 	{
-		super( containerType, id,ip, te );
+		super( TYPE, id,ip, te );
 		this.plane = te;
 	}
 

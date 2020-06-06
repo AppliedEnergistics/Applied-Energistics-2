@@ -19,33 +19,25 @@
 package appeng.client.gui.implementations;
 
 
-import java.io.IOException;
-
-import net.minecraft.util.text.ITextComponent;
-import org.lwjgl.input.Mouse;
-
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.PlayerInventory;
-
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.client.gui.widgets.GuiToggleButton;
 import appeng.container.implementations.ContainerInterface;
+import appeng.container.implementations.ContainerPriority;
 import appeng.core.localization.GuiText;
-
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketConfigButton;
 import appeng.core.sync.packets.PacketSwitchGuis;
-import appeng.helpers.IInterfaceHost;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 
 
 public class GuiInterface extends GuiUpgradeable<ContainerInterface>
 {
 
-	private GuiTabButton priority;
-	private GuiImgButton BlockMode;
+	private GuiImgButton blockMode;
 	private GuiToggleButton interfaceMode;
 
 	public GuiInterface(ContainerInterface container, PlayerInventory playerInventory, ITextComponent title) {
@@ -56,23 +48,22 @@ public class GuiInterface extends GuiUpgradeable<ContainerInterface>
 	@Override
 	protected void addButtons()
 	{
-		this.priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRender );
-		this.addButton( this.priority );
+		this.addButton( new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRenderer, btn -> openPriorityGui() ) );
 
-		this.BlockMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.BLOCK, YesNo.NO );
-		this.addButton( this.BlockMode );
+		this.blockMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.BLOCK, YesNo.NO, btn -> selectNextBlockMode() );
+		this.addButton( this.blockMode);
 
 		this.interfaceMode = new GuiToggleButton( this.guiLeft - 18, this.guiTop + 26, 84, 85, GuiText.InterfaceTerminal
-				.getLocal(), GuiText.InterfaceTerminalHint.getLocal() );
+				.getLocal(), GuiText.InterfaceTerminalHint.getLocal(), btn -> selectNextInterfaceMode() );
 		this.addButton( this.interfaceMode );
 	}
 
 	@Override
 	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
-		if( this.BlockMode != null )
+		if( this.blockMode != null )
 		{
-			this.BlockMode.set( ( (ContainerInterface) this.cvb ).getBlockingMode() );
+			this.blockMode.set( ( (ContainerInterface) this.cvb ).getBlockingMode() );
 		}
 
 		if( this.interfaceMode != null )
@@ -95,26 +86,18 @@ public class GuiInterface extends GuiUpgradeable<ContainerInterface>
 		return "guis/interface.png";
 	}
 
-	@Override
-	protected void actionPerformed( final GuiButton btn ) throws IOException
-	{
-		super.actionPerformed( btn );
-
-		final boolean backwards = Mouse.isButtonDown( 1 );
-
-		if( btn == this.priority )
-		{
-			NetworkHandler.instance().sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
-		}
-
-		if( btn == this.interfaceMode )
-		{
-			NetworkHandler.instance().sendToServer( new PacketConfigButton( Settings.INTERFACE_TERMINAL, backwards ) );
-		}
-
-		if( btn == this.BlockMode )
-		{
-			NetworkHandler.instance().sendToServer( new PacketConfigButton( this.BlockMode.getSetting(), backwards ) );
-		}
+	private void openPriorityGui() {
+		NetworkHandler.instance().sendToServer( new PacketSwitchGuis( ContainerPriority.TYPE ) );
 	}
+
+	private void selectNextBlockMode() {
+		final boolean backwards = minecraft.mouseHelper.isRightDown();
+		NetworkHandler.instance().sendToServer( new PacketConfigButton( this.blockMode.getSetting(), backwards ) );
+	}
+
+	private void selectNextInterfaceMode() {
+		final boolean backwards = minecraft.mouseHelper.isRightDown();
+		NetworkHandler.instance().sendToServer( new PacketConfigButton( Settings.INTERFACE_TERMINAL, backwards ) );
+	}
+
 }

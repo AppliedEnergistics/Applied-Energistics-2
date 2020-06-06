@@ -2,9 +2,9 @@
 package appeng.fluids.client.gui;
 
 
-import java.io.IOException;
 
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.api.config.RedstoneMode;
@@ -13,33 +13,20 @@ import appeng.client.gui.implementations.GuiUpgradeable;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiNumberBox;
 import appeng.core.AEConfig;
-import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.fluids.client.gui.widgets.GuiFluidSlot;
 import appeng.fluids.container.ContainerFluidLevelEmitter;
-import appeng.fluids.parts.PartFluidLevelEmitter;
+import net.minecraft.util.text.ITextComponent;
 
 
-public class GuiFluidLevelEmitter extends GuiUpgradeable
+public class GuiFluidLevelEmitter extends GuiUpgradeable<ContainerFluidLevelEmitter>
 {
-	private final PartFluidLevelEmitter levelEmitter;
 	private GuiNumberBox level;
 
-	private GuiButton plus1;
-	private GuiButton plus10;
-	private GuiButton plus100;
-	private GuiButton plus1000;
-	private GuiButton minus1;
-	private GuiButton minus10;
-	private GuiButton minus100;
-	private GuiButton minus1000;
-
-	public GuiFluidLevelEmitter( final PlayerInventory PlayerInventory, final PartFluidLevelEmitter te )
-	{
-		super( new ContainerFluidLevelEmitter( PlayerInventory, te ) );
-		this.levelEmitter = te;
+	public GuiFluidLevelEmitter(ContainerFluidLevelEmitter container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 	}
 
 	@Override
@@ -53,41 +40,41 @@ public class GuiFluidLevelEmitter extends GuiUpgradeable
 		this.level.setTextColor( 0xFFFFFF );
 		this.level.setVisible( true );
 		this.level.changeFocus( true );
-		( (ContainerFluidLevelEmitter) this.inventorySlots ).setTextField( this.level );
+		container.setTextField( this.level );
 
 		final int y = 40;
 		final int x = 80 + 44;
-		this.guiSlots.add( new GuiFluidSlot( this.levelEmitter.getConfig(), 0, 0, x, y ) );
+		this.guiSlots.add( new GuiFluidSlot( this.container.getFluidConfigInventory(), 0, 0, x, y ) );
 	}
 
 	@Override
 	protected void addButtons()
 	{
-		this.redstoneMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 28, Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL );
+		this.redstoneMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 28, Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL, this::actionPerformed );
 
 		final int a = AEConfig.instance().levelByMillyBuckets( 0 );
 		final int b = AEConfig.instance().levelByMillyBuckets( 1 );
 		final int c = AEConfig.instance().levelByMillyBuckets( 2 );
 		final int d = AEConfig.instance().levelByMillyBuckets( 3 );
 
-		this.addButton( this.plus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 17, 22, 20, "+" + a ) );
-		this.addButton( this.plus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 17, 28, 20, "+" + b ) );
-		this.addButton( this.plus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 17, 32, 20, "+" + c ) );
-		this.addButton( this.plus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 17, 38, 20, "+" + d ) );
+		this.addButton( new Button(this.guiLeft + 20, this.guiTop + 17, 22, 20, "+" + a, btn -> addQty(a) ) );
+		this.addButton( new Button(this.guiLeft + 48, this.guiTop + 17, 28, 20, "+" + b, btn -> addQty(b) ) );
+		this.addButton( new Button(this.guiLeft + 82, this.guiTop + 17, 32, 20, "+" + c, btn -> addQty(c) ) );
+		this.addButton( new Button(this.guiLeft + 120, this.guiTop + 17, 38, 20, "+" + d, btn -> addQty(d) ) );
 
-		this.addButton( this.minus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 59, 22, 20, "-" + a ) );
-		this.addButton( this.minus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 59, 28, 20, "-" + b ) );
-		this.addButton( this.minus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 59, 32, 20, "-" + c ) );
-		this.addButton( this.minus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 59, 38, 20, "-" + d ) );
+		this.addButton( new Button(this.guiLeft + 20, this.guiTop + 59, 22, 20, "-" + a, btn -> addQty(-a) ) );
+		this.addButton( new Button(this.guiLeft + 48, this.guiTop + 59, 28, 20, "-" + b, btn -> addQty(-b) ) );
+		this.addButton( new Button(this.guiLeft + 82, this.guiTop + 59, 32, 20, "-" + c, btn -> addQty(-c) ) );
+		this.addButton( new Button(this.guiLeft + 120, this.guiTop + 59, 38, 20, "-" + d, btn -> addQty(-d) ) );
 
 		this.addButton( this.redstoneMode );
 	}
 
 	@Override
-	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
+	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
 	{
-		super.drawBG( offsetX, offsetY, mouseX, mouseY );
-		this.level.drawTextBox();
+		super.drawBG( offsetX, offsetY, mouseX, mouseY, partialTicks);
+		this.level.render(mouseX, mouseY, partialTicks);
 	}
 
 	@Override
@@ -111,20 +98,6 @@ public class GuiFluidLevelEmitter extends GuiUpgradeable
 	@Override
 	protected void handleButtonVisibility()
 	{
-	}
-
-	@Override
-	protected void actionPerformed( final GuiButton btn ) throws IOException
-	{
-		super.actionPerformed( btn );
-
-		final boolean isPlus = btn == this.plus1 || btn == this.plus10 || btn == this.plus100 || btn == this.plus1000;
-		final boolean isMinus = btn == this.minus1 || btn == this.minus10 || btn == this.minus100 || btn == this.minus1000;
-
-		if( isPlus || isMinus )
-		{
-			this.addQty( this.getQty( btn ) );
-		}
 	}
 
 	private void addQty( final long i )
@@ -166,51 +139,66 @@ public class GuiFluidLevelEmitter extends GuiUpgradeable
 			// nope..
 			this.level.setText( "0" );
 		}
-		catch( final IOException e )
-		{
-			AELog.debug( e );
-		}
 	}
 
 	@Override
-	protected void keyTyped( final char character, final int key ) throws IOException
-	{
-		if( !this.checkHotbarKeys( key ) )
-		{
-			if( ( key == 211 || key == 205 || key == 203 || key == 14 || Character.isDigit( character ) ) && this.level.textboxKeyTyped( character, key ) )
+	public boolean charTyped(char character, int keyCode) {
+		if (level.charTyped(character, keyCode)) {
+			String Out = this.level.getText();
+
+			boolean Fixed = false;
+			while( Out.startsWith( "0" ) && Out.length() > 1 )
 			{
-				try
-				{
-					String Out = this.level.getText();
-
-					boolean Fixed = false;
-					while( Out.startsWith( "0" ) && Out.length() > 1 )
-					{
-						Out = Out.substring( 1 );
-						Fixed = true;
-					}
-
-					if( Fixed )
-					{
-						this.level.setText( Out );
-					}
-
-					if( Out.isEmpty() )
-					{
-						Out = "0";
-					}
-
-					NetworkHandler.instance().sendToServer( new PacketValueConfig( "FluidLevelEmitter.Value", Out ) );
-				}
-				catch( final IOException e )
-				{
-					AELog.debug( e );
-				}
+				Out = Out.substring( 1 );
+				Fixed = true;
 			}
-			else
+
+			if( Fixed )
 			{
-				super.keyTyped( character, key );
+				this.level.setText( Out );
+			}
+
+			if( Out.isEmpty() )
+			{
+				Out = "0";
+			}
+
+			NetworkHandler.instance().sendToServer( new PacketValueConfig( "FluidLevelEmitter.Value", Out ) );
+			return true;
+		}
+		return super.charTyped(character, keyCode);
+	}
+
+	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_)
+	{
+		if( !this.checkHotbarKeys( InputMappings.getInputByCode(keyCode, scanCode) ) )
+		{
+			if( ( keyCode == 211 || keyCode == 205 || keyCode == 203 || keyCode == 14 ) && this.level.keyPressed( keyCode, scanCode, p_keyPressed_3_ ) )
+			{
+				String Out = this.level.getText();
+
+				boolean Fixed = false;
+				while( Out.startsWith( "0" ) && Out.length() > 1 )
+				{
+					Out = Out.substring( 1 );
+					Fixed = true;
+				}
+
+				if( Fixed )
+				{
+					this.level.setText( Out );
+				}
+
+				if( Out.isEmpty() )
+				{
+					Out = "0";
+				}
+
+				NetworkHandler.instance().sendToServer( new PacketValueConfig( "FluidLevelEmitter.Value", Out ) );
+				return true;
 			}
 		}
+		return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);
 	}
 }

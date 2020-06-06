@@ -100,6 +100,11 @@ public class WorldCoord
 		return this;
 	}
 
+	public BlockPos getBlockPos()
+	{
+		return new BlockPos(x, y, z);
+	}
+
 	/**
 	 * Will Return NULL if it's at some diagonal!
 	 */

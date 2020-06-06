@@ -21,6 +21,10 @@ package appeng.block.misc;
 
 import javax.annotation.Nullable;
 
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerCondenser;
+import appeng.container.implementations.ContainerDrive;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -58,7 +62,7 @@ public class BlockCondenser extends AEBaseTileBlock<TileCondenser>
 			final TileCondenser tc = this.getTileEntity( w, pos );
 			if( tc != null && !player.isCrouching() )
 			{
-				// FIXME Platform.openGUI( player, tc, AEPartLocation.fromFacing(hit), GuiBridge.GUI_CONDENSER );
+				ContainerOpener.openContainer(ContainerCondenser.TYPE, player, ContainerLocator.forTileEntitySide(tc, hit.getFace()));
 				return ActionResultType.SUCCESS;
 			}
 		}

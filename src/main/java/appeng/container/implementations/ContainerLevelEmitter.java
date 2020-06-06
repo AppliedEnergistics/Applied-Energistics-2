@@ -19,10 +19,14 @@
 package appeng.container.implementations;
 
 
+import appeng.container.ContainerLocator;
+import appeng.container.helper.PartContainerHelper;
+import appeng.container.helper.TileContainerHelper;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
@@ -43,6 +47,19 @@ import appeng.util.Platform;
 public class ContainerLevelEmitter extends ContainerUpgradeable
 {
 
+	public static ContainerType<ContainerLevelEmitter> TYPE;
+
+	private static final PartContainerHelper<ContainerLevelEmitter, PartLevelEmitter> helper
+			= new PartContainerHelper<>(ContainerLevelEmitter::new, PartLevelEmitter.class, SecurityPermissions.BUILD);
+
+	public static ContainerLevelEmitter fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
+	}
+
 	private final PartLevelEmitter lvlEmitter;
 
 	@OnlyIn( Dist.CLIENT )
@@ -54,9 +71,9 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 	@GuiSync( 4 )
 	public YesNo cmType;
 
-	public ContainerLevelEmitter( ContainerType<?> containerType, int id, final PlayerInventory ip, final PartLevelEmitter te )
+	public ContainerLevelEmitter( int id, final PlayerInventory ip, final PartLevelEmitter te )
 	{
-		super( containerType, id, ip, te );
+		super( TYPE, id, ip, te );
 		this.lvlEmitter = te;
 	}
 

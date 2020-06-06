@@ -49,6 +49,8 @@ import appeng.me.cache.helpers.TunnelCollection;
 import appeng.util.Platform;
 import appeng.util.inv.WrapperChainedItemHandler;
 
+import javax.annotation.Nonnull;
+
 
 public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IItemHandler, IGridTickable
 {
@@ -133,9 +135,10 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IItemHa
 				final Direction facing = this.getSide().getFacing();
 				final TileEntity te = this.getTile().getWorld().getTileEntity( this.getTile().getPos().offset( facing ) );
 
-				if( te != null && te.hasCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, facing.getOpposite() ) )
+				if( te != null )
 				{
-					ret = te.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, facing.getOpposite() );
+					ret = te.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, facing.getOpposite() )
+							.orElse(ret);
 				}
 			}
 			this.partVisited = false;
@@ -247,6 +250,11 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IItemHa
 	public int getSlots()
 	{
 		return this.getDestination().getSlots();
+	}
+
+	@Override
+	public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+		return this.getDestination().isItemValid(slot, stack);
 	}
 
 	@Override

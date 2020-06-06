@@ -19,6 +19,9 @@
 package appeng.items.tools.quartz;
 
 
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerQuartzKnife;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -53,7 +56,7 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	{
 		if( Platform.isServer() )
 		{
-// FIXME			Platform.openGUI( p, null, AEPartLocation.INTERNAL, GuiBridge.GUI_QUARTZ_KNIFE );
+			ContainerOpener.openContainer(ContainerQuartzKnife.TYPE, context.getPlayer(), ContainerLocator.forHand(context.getHand()));
 		}
 		return ActionResultType.SUCCESS;
 	}
@@ -63,7 +66,7 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	{
 		if( Platform.isServer() )
 		{
-// FIXME			Platform.openGUI( p, null, AEPartLocation.INTERNAL, GuiBridge.GUI_QUARTZ_KNIFE );
+			ContainerOpener.openContainer(ContainerQuartzKnife.TYPE, p, ContainerLocator.forHand(hand));
 		}
 		p.swingArm( hand );
 		return new ActionResult<>( ActionResultType.SUCCESS, p.getHeldItem( hand ) );

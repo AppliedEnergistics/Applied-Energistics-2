@@ -19,16 +19,6 @@
 package appeng.client.gui.implementations;
 
 
-import java.io.IOException;
-
-import appeng.core.Api;
-import net.minecraft.util.text.ITextComponent;
-import org.lwjgl.input.Mouse;
-
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.PlayerInventory;
-
-import appeng.api.AEApi;
 import appeng.api.config.FullnessMode;
 import appeng.api.config.OperationMode;
 import appeng.api.config.RedstoneMode;
@@ -36,10 +26,12 @@ import appeng.api.config.Settings;
 import appeng.api.definitions.IDefinitions;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.container.implementations.ContainerIOPort;
+import appeng.core.Api;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketConfigButton;
-import appeng.tile.storage.TileIOPort;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 
 
 public class GuiIOPort extends GuiUpgradeable<ContainerIOPort>
@@ -56,9 +48,9 @@ public class GuiIOPort extends GuiUpgradeable<ContainerIOPort>
 	@Override
 	protected void addButtons()
 	{
-		this.redstoneMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 28, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
-		this.fullMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.FULLNESS_MODE, FullnessMode.EMPTY );
-		this.operationMode = new GuiImgButton( this.guiLeft + 80, this.guiTop + 17, Settings.OPERATION_MODE, OperationMode.EMPTY );
+		this.redstoneMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 28, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE, this::actionPerformed);
+		this.fullMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.FULLNESS_MODE, FullnessMode.EMPTY, btn -> selectNextFullMode() );
+		this.operationMode = new GuiImgButton( this.guiLeft + 80, this.guiTop + 17, Settings.OPERATION_MODE, OperationMode.EMPTY, btn -> selectNextOperationMode() );
 
 		this.addButton( this.operationMode );
 		this.addButton( this.redstoneMode );
@@ -88,9 +80,9 @@ public class GuiIOPort extends GuiUpgradeable<ContainerIOPort>
 	}
 
 	@Override
-	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
+	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
 	{
-		super.drawBG( offsetX, offsetY, mouseX, mouseY );
+		super.drawBG( offsetX, offsetY, mouseX, mouseY, partialTicks);
 
 		final IDefinitions definitions = Api.INSTANCE.definitions();
 
@@ -105,21 +97,14 @@ public class GuiIOPort extends GuiUpgradeable<ContainerIOPort>
 		return "guis/io_port.png";
 	}
 
-	@Override
-	protected void actionPerformed( final GuiButton btn ) throws IOException
-	{
-		super.actionPerformed( btn );
-
-		final boolean backwards = Mouse.isButtonDown( 1 );
-
-		if( btn == this.fullMode )
-		{
-			NetworkHandler.instance().sendToServer( new PacketConfigButton( this.fullMode.getSetting(), backwards ) );
-		}
-
-		if( btn == this.operationMode )
-		{
-			NetworkHandler.instance().sendToServer( new PacketConfigButton( this.operationMode.getSetting(), backwards ) );
-		}
+	private void selectNextFullMode() {
+		final boolean backwards = minecraft.mouseHelper.isRightDown();
+		NetworkHandler.instance().sendToServer( new PacketConfigButton( this.fullMode.getSetting(), backwards ) );
 	}
+
+	private void selectNextOperationMode() {
+		final boolean backwards = minecraft.mouseHelper.isRightDown();
+		NetworkHandler.instance().sendToServer( new PacketConfigButton( this.operationMode.getSetting(), backwards ) );
+	}
+
 }

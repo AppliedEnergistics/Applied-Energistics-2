@@ -23,6 +23,8 @@ import java.util.EnumSet;
 
 import javax.annotation.Nullable;
 
+import appeng.fluids.container.ContainerFluidInterface;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -182,9 +184,9 @@ public class TileFluidInterface extends AENetworkTile implements IGridTickable, 
 		return Api.INSTANCE.definitions().blocks().fluidIface().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 	}
 
-// FIXME	@Override
-// FIXME	public GuiBridge getGuiBridge()
-// FIXME	{
-// FIXME		return GuiBridge.GUI_FLUID_INTERFACE;
-// FIXME	}
+	@Override
+	public ContainerType<?> getContainerType()
+	{
+		return ContainerFluidInterface.TYPE;
+	}
 }

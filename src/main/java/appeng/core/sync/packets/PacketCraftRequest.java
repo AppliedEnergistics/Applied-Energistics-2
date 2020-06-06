@@ -21,6 +21,8 @@ package appeng.core.sync.packets;
 
 import java.util.concurrent.Future;
 
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerInscriber;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -32,7 +34,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingJob;
 import appeng.api.networking.security.IActionHost;
-import appeng.container.ContainerOpenContext;
+import appeng.container.ContainerLocator;
 import appeng.container.implementations.ContainerCraftAmount;
 import appeng.container.implementations.ContainerCraftConfirm;
 import appeng.core.AELog;
@@ -96,11 +98,10 @@ public class PacketCraftRequest extends AppEngPacket
 					final ICraftingGrid cg = g.getCache( ICraftingGrid.class );
 					futureJob = cg.beginCraftingJob( cca.getWorld(), cca.getGrid(), cca.getActionSrc(), cca.getItemToCraft(), null );
 
-					final ContainerOpenContext context = cca.getOpenContext();
-					if( context != null )
+					final ContainerLocator locator = cca.getLocator();
+					if( locator != null )
 					{
-						final TileEntity te = context.getTile();
-						// FIXME Platform.openGUI( player, te, cca.getOpenContext().getSide(), GuiBridge.GUI_CRAFTING_CONFIRM );
+						ContainerOpener.openContainer(ContainerCraftConfirm.TYPE, player, locator);
 
 						if( player.openContainer instanceof ContainerCraftConfirm )
 						{

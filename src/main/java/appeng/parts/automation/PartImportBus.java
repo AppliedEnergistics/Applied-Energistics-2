@@ -19,6 +19,10 @@
 package appeng.parts.automation;
 
 
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerUpgradeable;
+import appeng.fluids.container.ContainerFluidInterface;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
@@ -131,7 +135,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	{
 		if( Platform.isServer() )
 		{
-			// FIXME Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_BUS );
+			ContainerOpener.openContainer(ContainerUpgradeable.TYPE, player, ContainerLocator.forPart(this));
 		}
 		return true;
 	}

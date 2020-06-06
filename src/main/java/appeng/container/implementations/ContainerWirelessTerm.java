@@ -19,6 +19,10 @@
 package appeng.container.implementations;
 
 
+import appeng.container.ContainerLocator;
+import appeng.container.helper.PartContainerHelper;
+import appeng.container.helper.PartOrTileContainerHelper;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.core.AEConfig;
@@ -26,16 +30,30 @@ import appeng.core.localization.PlayerMessages;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.util.Platform;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 
 
 public class ContainerWirelessTerm extends ContainerMEPortableCell
 {
 
+	public static ContainerType<ContainerWirelessTerm> TYPE;
+
+	private static final PartOrTileContainerHelper<ContainerWirelessTerm, WirelessTerminalGuiObject> helper
+			= new PartOrTileContainerHelper<>(ContainerWirelessTerm::new, WirelessTerminalGuiObject.class);
+
+	public static ContainerWirelessTerm fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
+	}
+
 	private final WirelessTerminalGuiObject wirelessTerminalGUIObject;
 
-	public ContainerWirelessTerm(ContainerType<?> containerType, int id, final PlayerInventory ip, final WirelessTerminalGuiObject gui )
+	public ContainerWirelessTerm(int id, final PlayerInventory ip, final WirelessTerminalGuiObject gui )
 	{
-		super( containerType, id, ip, gui );
+		super( TYPE, id, ip, gui );
 		this.wirelessTerminalGUIObject = gui;
 	}
 

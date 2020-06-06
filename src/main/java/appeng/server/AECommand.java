@@ -19,94 +19,35 @@
 package appeng.server;
 
 
-import com.google.common.base.Joiner;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import net.minecraft.command.CommandSource;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
-import net.minecraft.server.MinecraftServer;
+import static net.minecraft.command.Commands.literal;
 
 
-public final class AECommand extends CommandBase
-{
-	private final MinecraftServer srv;
+public final class AECommand {
 
-	public AECommand( final MinecraftServer server )
-	{
-		this.srv = server;
-	}
+    public void register(CommandDispatcher<CommandSource> dispatcher) {
 
-	@Override
-	public int getRequiredPermissionLevel()
-	{
-		return 0;
-	}
+        LiteralArgumentBuilder<CommandSource> builder = literal("ae2");
+        for (Commands command : Commands.values()) {
+            add(builder, command);
+        }
 
-	@Override
-	public String getName()
-	{
-		return "ae2";
-	}
+        dispatcher.register(builder);
+    }
 
-	@Override
-	public String getUsage( final ICommandSender icommandsender )
-	{
-		return "commands.ae2.usage";
-	}
+    private void add(LiteralArgumentBuilder<net.minecraft.command.CommandSource> builder, Commands subCommand) {
 
-	@Override
-	public void execute( final MinecraftServer server, final ICommandSender sender, final String[] args ) throws CommandException
-	{
-		if( args.length == 0 )
-		{
-			throw new WrongUsageException( "commands.ae2.usage" );
-		}
-		else if( "help".equals( args[0] ) )
-		{
-			try
-			{
-				if( args.length > 1 )
-				{
-					final Commands c = Commands.valueOf( args[1] );
-					throw new WrongUsageException( c.command.getHelp( this.srv ) );
-				}
-			}
-			catch( final WrongUsageException wrong )
-			{
-				throw wrong;
-			}
-			catch( final Throwable er )
-			{
-				throw new WrongUsageException( "commands.ae2.usage" );
-			}
-		}
-		else if( "list".equals( args[0] ) )
-		{
-			throw new WrongUsageException( Joiner.on( ", " ).join( Commands.values() ) );
-		}
-		else
-		{
-			try
-			{
-				final Commands c = Commands.valueOf( args[0] );
-				if( sender.canUseCommand( c.level, this.getName() ) )
-				{
-					c.command.call( this.srv, args, sender );
-				}
-				else
-				{
-					throw new WrongUsageException( "commands.ae2.permissions" );
-				}
-			}
-			catch( final WrongUsageException wrong )
-			{
-				throw wrong;
-			}
-			catch( final Throwable er )
-			{
-				throw new WrongUsageException( "commands.ae2.usage" );
-			}
-		}
-	}
+        builder.then(literal(subCommand.name().toLowerCase())
+                .requires(src -> src.hasPermissionLevel(subCommand.level))
+                .executes(ctx -> {
+                    subCommand.command.call(ServerLifecycleHooks.getCurrentServer(), new String[0], ctx.getSource());
+                    return 1;
+                }));
+
+    }
+
 }

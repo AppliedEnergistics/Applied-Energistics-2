@@ -21,7 +21,7 @@ package appeng.server.subcommands;
 
 import com.google.common.base.Joiner;
 
-import net.minecraft.command.ICommandSender;
+import net.minecraft.command.CommandSource;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.StringTextComponent;
 
@@ -38,9 +38,9 @@ public class Supporters implements ISubCommand
 	}
 
 	@Override
-	public void call( final MinecraftServer srv, final String[] data, final ICommandSender sender )
+	public void call( final MinecraftServer srv, final String[] data, final CommandSource sender )
 	{
 		final String[] who = { "Stig Halvorsen", "Josh Ricker", "Jenny \"Othlon\" Sutherland", "Hristo Bogdanov", "BevoLJ" };
-		sender.sendMessage( new StringTextComponent( "Special thanks to " + Joiner.on( ", " ).join( who ) ) );
+		sender.sendFeedback( new StringTextComponent( "Special thanks to " + Joiner.on( ", " ).join( who ) ), true );
 	}
 }

@@ -21,9 +21,13 @@ package appeng.container.implementations;
 
 import javax.annotation.Nonnull;
 
+import appeng.container.ContainerLocator;
+import appeng.container.helper.PartOrTileContainerHelper;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 
 import appeng.api.config.SecurityPermissions;
@@ -41,14 +45,27 @@ import appeng.tile.inventory.AppEngInternalInventory;
 public class ContainerCraftAmount extends AEBaseContainer
 {
 
+	public static ContainerType<ContainerCraftAmount> TYPE;
+
+	private static final PartOrTileContainerHelper<ContainerCraftAmount, ITerminalHost> helper
+			= new PartOrTileContainerHelper<>(ContainerCraftAmount::new, ITerminalHost.class, SecurityPermissions.CRAFT);
+
 	private final Slot craftingItem;
 	private IAEItemStack itemToCreate;
 
-	public ContainerCraftAmount(ContainerType<?> containerType, int id, PlayerInventory ip, final ITerminalHost te) {
-		super(containerType, id, ip, te);
+	public ContainerCraftAmount(int id, PlayerInventory ip, final ITerminalHost te) {
+		super(TYPE, id, ip, te);
 
 		this.craftingItem = new SlotInaccessible( new AppEngInternalInventory( null, 1 ), 0, 34, 53 );
 		this.addSlot( this.getCraftingItem() );
+	}
+
+	public static ContainerCraftAmount fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
 	}
 
 	@Override

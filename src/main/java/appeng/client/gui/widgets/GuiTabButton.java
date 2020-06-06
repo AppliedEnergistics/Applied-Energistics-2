@@ -19,34 +19,31 @@
 package appeng.client.gui.widgets;
 
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 
 public class GuiTabButton extends Button implements ITooltip
 {
+	public static final ResourceLocation TEXTURE_STATES = new ResourceLocation("appliedenergistics2", "textures/guis/states.png");
 	private final ItemRenderer itemRenderer;
-	private final String message;
 	private int hideEdge = 0;
 	private int myIcon = -1;
 	private ItemStack myItem;
 
-	public GuiTabButton( final int x, final int y, final int ico, final String message, final ItemRenderer ir )
+	public GuiTabButton( final int x, final int y, final int ico, final String message, final ItemRenderer ir, IPressable onPress )
 	{
-		super( 0, 0, 16, "" );
+		super( x, y, 22, 22, message, onPress );
 
-		this.x = x;
-		this.y = y;
-		this.width = 22;
-		this.height = 22;
 		this.myIcon = ico;
-		this.message = message;
 		this.itemRenderer = ir;
 	}
 
@@ -59,63 +56,49 @@ public class GuiTabButton extends Button implements ITooltip
 	 * @param message mouse over message
 	 * @param ir renderer
 	 */
-	public GuiTabButton( final int x, final int y, final ItemStack ico, final String message, final ItemRenderer ir )
+	public GuiTabButton( final int x, final int y, final ItemStack ico, final String message, final ItemRenderer ir, IPressable onPress )
 	{
-		super( 0, 0, 16, "" );
-		this.x = x;
-		this.y = y;
-		this.width = 22;
-		this.height = 22;
+		super( x, y, 22, 22, message, onPress );
 		this.myItem = ico;
-		this.message = message;
 		this.itemRenderer = ir;
 	}
 
 	@Override
-	public void drawButton( final Minecraft minecraft, final int x, final int y, float partial )
+	public void renderButton( final int x, final int y, float partial )
 	{
+		final Minecraft minecraft = Minecraft.getInstance();
+
 		if( this.visible )
 		{
 			RenderSystem.color4f( 1.0f, 1.0f, 1.0f, 1.0f );
-			minecraft.renderEngine.bindTexture( new ResourceLocation( "appliedenergistics2", "textures/guis/states.png" ) );
-			this.hovered = x >= this.x && y >= this.y && x < this.x + this.width && y < this.y + this.height;
+			minecraft.textureManager.bindTexture(TEXTURE_STATES);
 
 			int uv_x = ( this.hideEdge > 0 ? 11 : 13 );
 
 			final int offsetX = this.hideEdge > 0 ? 1 : 0;
 
-			this.drawTexturedModalRect( this.x, this.y, uv_x * 16, 0, 25, 22 );
+			GuiUtils.drawTexturedModalRect( this.x, this.y, uv_x * 16, 0, 25, 22, 0 );
 
 			if( this.myIcon >= 0 )
 			{
 				final int uv_y = (int) Math.floor( this.myIcon / 16 );
 				uv_x = this.myIcon - uv_y * 16;
 
-				this.drawTexturedModalRect( offsetX + this.x + 3, this.y + 3, uv_x * 16, uv_y * 16, 16, 16 );
+				GuiUtils.drawTexturedModalRect( offsetX + this.x + 3, this.y + 3, uv_x * 16, uv_y * 16, 16, 16, 0 );
 			}
-
-			this.mouseDragged( minecraft, x, y );
 
 			if( this.myItem != null )
 			{
-				this.zLevel = 100.0F;
 				this.itemRenderer.zLevel = 100.0F;
 
 				RenderSystem.enableDepthTest();
-				RenderHelper.enableGUIStandardItemLighting();
+//	FIXME			RenderHelper.enableGUIStandardItemLighting();
 				this.itemRenderer.renderItemAndEffectIntoGUI( this.myItem, offsetX + this.x + 3, this.y + 3 );
 				RenderSystem.disableDepthTest();
 
 				this.itemRenderer.zLevel = 0.0F;
-				this.zLevel = 0.0F;
 			}
 		}
-	}
-
-	@Override
-	public String getMessage()
-	{
-		return this.message;
 	}
 
 	@Override

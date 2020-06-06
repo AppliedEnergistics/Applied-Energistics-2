@@ -19,28 +19,45 @@
 package appeng.container.implementations;
 
 
+import appeng.api.implementations.guiobjects.INetworkTool;
+import appeng.container.AEBaseContainer;
+import appeng.container.ContainerLocator;
+import appeng.container.guisync.GuiSync;
+import appeng.container.helper.PartOrTileContainerHelper;
+import appeng.container.helper.TileContainerHelper;
+import appeng.container.slot.SlotRestrictedInput;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-
-import appeng.api.implementations.guiobjects.INetworkTool;
-import appeng.container.AEBaseContainer;
-import appeng.container.guisync.GuiSync;
-import appeng.container.slot.SlotRestrictedInput;
+import net.minecraft.network.PacketBuffer;
 
 
 public class ContainerNetworkTool extends AEBaseContainer
 {
+
+	public static ContainerType<ContainerNetworkTool> TYPE;
+
+	private static final PartOrTileContainerHelper<ContainerNetworkTool, INetworkTool> helper
+			= new PartOrTileContainerHelper<>(ContainerNetworkTool::new, INetworkTool.class);
+
+	public static ContainerNetworkTool fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
+	}
 
 	private final INetworkTool toolInv;
 
 	@GuiSync( 1 )
 	public boolean facadeMode;
 
-	public ContainerNetworkTool(ContainerType<?> containerType, int id, final PlayerInventory ip, final INetworkTool te )
+	public ContainerNetworkTool(int id, final PlayerInventory ip, final INetworkTool te )
 	{
-		super( containerType, id, ip, null, null );
+		super( TYPE, id, ip, null, null );
 		this.toolInv = te;
 
 		this.lockPlayerInventorySlot( ip.currentItem );

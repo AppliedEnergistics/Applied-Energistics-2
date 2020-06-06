@@ -19,53 +19,48 @@
 package appeng.client.render.model;
 
 
+import appeng.block.storage.DriveSlotState;
+import appeng.block.storage.DriveSlotsState;
+import appeng.client.render.DelegateBakedModel;
+import appeng.tile.storage.TileDrive;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.util.Direction;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import javax.annotation.Nullable;
-
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.Matrix4f;
-import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.Direction;
-import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
-import net.minecraftforge.common.property.IExtendedBlockState;
-
-import appeng.block.storage.BlockDrive;
-import appeng.block.storage.DriveSlotState;
-import appeng.block.storage.DriveSlotsState;
+import java.util.Random;
 
 
-public class DriveBakedModel implements IBakedModel
+public class DriveBakedModel extends DelegateBakedModel
 {
 	private final IBakedModel bakedBase;
 	private final Map<DriveSlotState, IBakedModel> bakedCells;
 
 	public DriveBakedModel( IBakedModel bakedBase, Map<DriveSlotState, IBakedModel> bakedCells )
 	{
+		super(bakedBase);
 		this.bakedBase = bakedBase;
 		this.bakedCells = bakedCells;
 	}
 
+	@Nonnull
 	@Override
-	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, long rand )
-	{
+	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData) {
 
-		List<BakedQuad> result = new ArrayList<>();
+		List<BakedQuad> result = new ArrayList<>(this.bakedBase.getQuads(state, side, rand, extraData));
 
-		result.addAll( this.bakedBase.getQuads( state, side, rand ) );
+		DriveSlotsState slotsState = extraData.getData( TileDrive.SLOTS_STATE );
 
-		if( side == null && state instanceof IExtendedBlockState )
+		if( side == null && slotsState != null )
 		{
-			IExtendedBlockState extState = (IExtendedBlockState) state;
-			DriveSlotsState slotsState = extState.getValue( BlockDrive.SLOTS_STATE );
-
 			for( int row = 0; row < 5; row++ )
 			{
 				for( int col = 0; col < 2; col++ )
@@ -82,12 +77,12 @@ public class DriveBakedModel implements IBakedModel
 					float xOffset = -col * 7 / 16.0f;
 					float yOffset = -row * 3 / 16.0f;
 
-					transform.setTranslation( new Vector3f( xOffset, yOffset, 0 ) );
+					transform.setTranslation( xOffset, yOffset, 0 );
 
 					MatrixVertexTransformer transformer = new MatrixVertexTransformer( transform );
-					for( BakedQuad bakedQuad : bakedCell.getQuads( state, null, rand ) )
+					for( BakedQuad bakedQuad : bakedCell.getQuads( state, null, rand, extraData ) )
 					{
-						UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder( bakedQuad.getFormat() );
+						BakedQuadBuilder builder = new BakedQuadBuilder();
 						transformer.setParent( builder );
 						transformer.setVertexFormat( builder.getVertexFormat() );
 						bakedQuad.pipe( transformer );
@@ -100,39 +95,4 @@ public class DriveBakedModel implements IBakedModel
 		return result;
 	}
 
-	@Override
-	public boolean isAmbientOcclusion()
-	{
-		return this.bakedBase.isAmbientOcclusion();
-	}
-
-	@Override
-	public boolean isGui3d()
-	{
-		return this.bakedBase.isGui3d();
-	}
-
-	@Override
-	public boolean isBuiltInRenderer()
-	{
-		return this.bakedBase.isGui3d();
-	}
-
-	@Override
-	public TextureAtlasSprite getParticleTexture()
-	{
-		return this.bakedBase.getParticleTexture();
-	}
-
-	@Override
-	public ItemCameraTransforms getItemCameraTransforms()
-	{
-		return this.bakedBase.getItemCameraTransforms();
-	}
-
-	@Override
-	public ItemOverrideList getOverrides()
-	{
-		return this.bakedBase.getOverrides();
-	}
 }

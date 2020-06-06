@@ -19,12 +19,12 @@
 package appeng.server.subcommands;
 
 
-import net.minecraft.command.ICommandSender;
+import net.minecraft.command.CommandSource;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ChunkEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -36,16 +36,6 @@ public class ChunkLogger implements ISubCommand
 {
 
 	private boolean enabled = false;
-
-	@SubscribeEvent
-	public void onChunkLoadEvent( final ChunkEvent.Load event )
-	{
-		if( !event.getWorld().isRemote )
-		{
-			AELog.info( "Chunk Loaded:   " + event.getChunk().x + ", " + event.getChunk().z );
-			this.displayStack();
-		}
-	}
 
 	private void displayStack()
 	{
@@ -67,11 +57,21 @@ public class ChunkLogger implements ISubCommand
 	}
 
 	@SubscribeEvent
+	public void onChunkLoadEvent( final ChunkEvent.Load event )
+	{
+		if( !event.getWorld().isRemote() )
+		{
+			AELog.info( "Chunk Loaded:   " + event.getChunk().getPos().x + ", " + event.getChunk().getPos().z );
+			this.displayStack();
+		}
+	}
+
+	@SubscribeEvent
 	public void onChunkUnloadEvent( final ChunkEvent.Unload unload )
 	{
-		if( !unload.getWorld().isRemote )
+		if( !unload.getWorld().isRemote() )
 		{
-			AELog.info( "Chunk Unloaded: " + unload.getChunk().x + ", " + unload.getChunk().z );
+			AELog.info( "Chunk Unloaded: " + unload.getChunk().getPos().x + ", " + unload.getChunk().getPos().z );
 			this.displayStack();
 		}
 	}
@@ -83,19 +83,19 @@ public class ChunkLogger implements ISubCommand
 	}
 
 	@Override
-	public void call( final MinecraftServer srv, final String[] data, final ICommandSender sender )
+	public void call( final MinecraftServer srv, final String[] data, final CommandSource sender )
 	{
 		this.enabled = !this.enabled;
 
 		if( this.enabled )
 		{
 			MinecraftForge.EVENT_BUS.register( this );
-			sender.sendMessage( new TranslationTextComponent( "commands.ae2.ChunkLoggerOn" ) );
+			sender.sendFeedback( new TranslationTextComponent( "commands.ae2.ChunkLoggerOn" ), true );
 		}
 		else
 		{
 			MinecraftForge.EVENT_BUS.unregister( this );
-			sender.sendMessage( new TranslationTextComponent( "commands.ae2.ChunkLoggerOff" ) );
+			sender.sendFeedback( new TranslationTextComponent( "commands.ae2.ChunkLoggerOff" ), true );
 		}
 	}
 }

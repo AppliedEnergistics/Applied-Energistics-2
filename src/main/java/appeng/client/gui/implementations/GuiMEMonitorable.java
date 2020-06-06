@@ -22,14 +22,14 @@ package appeng.client.gui.implementations;
 import java.io.IOException;
 import java.util.List;
 
+import appeng.container.implementations.ContainerCraftingStatus;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.util.InputMappings;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.config.SearchBoxMode;
@@ -38,7 +38,6 @@ import appeng.api.config.TerminalStyle;
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.implementations.tiles.IMEChest;
 import appeng.api.implementations.tiles.IViewCellStorage;
-import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
@@ -64,11 +63,11 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.helpers.WirelessTerminalGuiObject;
-import appeng.integration.Integrations;
 import appeng.parts.reporting.AbstractPartTerminal;
 import appeng.tile.misc.TileSecurityStation;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
+import org.lwjgl.glfw.GLFW;
 
 
 public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseMEGui<T> implements ISortSource, IConfigManagerHost
@@ -164,17 +163,15 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 		this.getScrollBar().setRange( 0, ( this.repo.size() + this.perRow - 1 ) / this.perRow - this.rows, Math.max( 1, this.rows / 6 ) );
 	}
 
-	@Override
-	protected void actionPerformed( final GuiButton btn )
-	{
-		if( btn == this.craftingStatusBtn )
-		{
-			NetworkHandler.instance().sendToServer( new PacketSwitchGuis( GuiBridge.GUI_CRAFTING_STATUS ) );
-		}
+	private void showCraftingStatus() {
+		NetworkHandler.instance().sendToServer( new PacketSwitchGuis(ContainerCraftingStatus.TYPE) );
+	}
 
+	protected void actionPerformed( final Button btn )
+	{
 		if( btn instanceof GuiImgButton )
 		{
-			final boolean backwards = Mouse.isButtonDown( 1 );
+			final boolean backwards = minecraft.mouseHelper.isRightDown();
 
 			final GuiImgButton iBtn = (GuiImgButton) btn;
 			if( iBtn.getSetting() != Settings.ACTIONS )
@@ -192,14 +189,7 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 				}
 				else
 				{
-					try
-					{
-						NetworkHandler.instance().sendToServer( new PacketValueConfig( iBtn.getSetting().name(), next.name() ) );
-					}
-					catch( final IOException e )
-					{
-						AELog.debug( e );
-					}
+					NetworkHandler.instance().sendToServer( new PacketValueConfig( iBtn.getSetting().name(), next.name() ) );
 				}
 
 				iBtn.set( next );
@@ -221,7 +211,7 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 	@Override
 	public void init()
 	{
-		Keyboard.enableRepeatEvents( true );
+		minecraft.keyboardListener.enableRepeatEvents( true );
 
 		this.maxRows = this.getMaxRows();
 		this.perRow = AEConfig.instance()
@@ -275,27 +265,25 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 
 		if( this.customSortOrder )
 		{
-			this.buttonList
-					.add( this.SortByBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_BY, this.configSrc.getSetting( Settings.SORT_BY ) ) );
+			this.SortByBox = this.addButton( new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_BY, this.configSrc.getSetting( Settings.SORT_BY ), this::actionPerformed ) );
 			offset += 20;
 		}
 
 		if( this.viewCell || this instanceof GuiWirelessTerm )
 		{
-			this.buttonList
-					.add( this.ViewBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.VIEW_MODE, this.configSrc.getSetting( Settings.VIEW_MODE ) ) );
+			this.ViewBox = this.addButton( new GuiImgButton( this.guiLeft - 18, offset, Settings.VIEW_MODE, this.configSrc.getSetting( Settings.VIEW_MODE ), this::actionPerformed ) );
 			offset += 20;
 		}
 
 		this.addButton( this.SortDirBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_DIRECTION, this.configSrc
-				.getSetting( Settings.SORT_DIRECTION ) ) );
+				.getSetting( Settings.SORT_DIRECTION ), this::actionPerformed ) );
 		offset += 20;
 
 		this.addButton(
 				this.searchBoxSettings = new GuiImgButton( this.guiLeft - 18, offset, Settings.SEARCH_MODE, AEConfig.instance()
 						.getConfigManager()
 						.getSetting(
-								Settings.SEARCH_MODE ) ) );
+								Settings.SEARCH_MODE ), this::actionPerformed ) );
 
 		offset += 20;
 
@@ -303,7 +291,7 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 		{
 			this.addButton( this.terminalStyleBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.TERMINAL_STYLE, AEConfig.instance()
 					.getConfigManager()
-					.getSetting( Settings.TERMINAL_STYLE ) ) );
+					.getSetting( Settings.TERMINAL_STYLE ), this::actionPerformed ) );
 		}
 
 		this.searchField = new MEGuiTextField( this.font, this.guiLeft + Math.max( 80, this.offsetX ), this.guiTop + 4, 90, 12 );
@@ -315,8 +303,8 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 
 		if( this.viewCell || this instanceof GuiWirelessTerm )
 		{
-			this.addButton( this.craftingStatusBtn = new GuiTabButton( this.guiLeft + 170, this.guiTop - 4, 2 + 11 * 16, GuiText.CraftingStatus
-					.getLocal(), this.itemRender ) );
+			this.craftingStatusBtn = this.addButton( new GuiTabButton( this.guiLeft + 170, this.guiTop - 4, 2 + 11 * 16, GuiText.CraftingStatus
+					.getLocal(), this.itemRenderer, btn -> showCraftingStatus() ) );
 			this.craftingStatusBtn.setHideEdge( 13 );
 		}
 
@@ -326,11 +314,11 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 		final boolean isKeepFilter = SearchBoxMode.AUTOSEARCH_KEEP == searchModeSetting || SearchBoxMode.JEI_AUTOSEARCH_KEEP == searchModeSetting || SearchBoxMode.MANUAL_SEARCH_KEEP == searchModeSetting || SearchBoxMode.JEI_MANUAL_SEARCH_KEEP == searchModeSetting;
 		final boolean isJEIEnabled = SearchBoxMode.JEI_AUTOSEARCH == searchModeSetting || SearchBoxMode.JEI_MANUAL_SEARCH == searchModeSetting;
 
-		this.searchField.setFocused( this.isAutoFocus );
+		this.searchField.setFocused2( this.isAutoFocus );
 
 		if( isJEIEnabled )
 		{
-			memoryText = Integrations.jei().getSearchText();
+			memoryText = null; // FIXME Integrations.jei().getSearchText();
 		}
 
 		if( isKeepFilter && memoryText != null && !memoryText.isEmpty() )
@@ -382,31 +370,31 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 	}
 
 	@Override
-	protected void mouseClicked( final int xCoord, final int yCoord, final int btn ) throws IOException
+	public boolean mouseClicked( final double xCoord, final double yCoord, final int btn )
 	{
-		this.searchField.mouseClicked( xCoord, yCoord, btn );
-
-		if( btn == 1 && this.searchField.isMouseIn( xCoord, yCoord ) )
-		{
-			this.searchField.setText( "" );
-			this.repo.setSearchString( "" );
-			this.repo.updateView();
-			this.setScrollBar();
+		if (this.searchField.mouseClicked( xCoord, yCoord, btn )) {
+			if (btn == 1 && this.searchField.isMouseOver(xCoord, yCoord)) {
+				this.searchField.setText("");
+				this.repo.setSearchString("");
+				this.repo.updateView();
+				this.setScrollBar();
+			}
+			return true;
 		}
 
-		super.mouseClicked( xCoord, yCoord, btn );
+		return super.mouseClicked( xCoord, yCoord, btn );
 	}
 
 	@Override
 	public void removed()
 	{
 		super.removed();
-		Keyboard.enableRepeatEvents( false );
+		minecraft.keyboardListener.enableRepeatEvents( false );
 		memoryText = this.searchField.getText();
 	}
 
 	@Override
-	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
+	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
 	{
 
 		this.bindTexture( this.getBackground() );
@@ -447,7 +435,7 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 
 		if( this.searchField != null )
 		{
-			this.searchField.drawTextBox();
+			this.searchField.render(mouseX, mouseY, partialTicks);
 		}
 	}
 
@@ -469,59 +457,71 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 
 	protected void repositionSlot( final AppEngSlot s )
 	{
-		s.yPos = s.getY() + this.ySize - 78 - 5;
+		// FIXME .... it's final now, WHAT DO WE DO ARGH
+		//  s.yPos = s.getY() + this.ySize - 78 - 5;
 	}
 
 	@Override
-	protected void keyTyped( final char character, final int key ) throws IOException
+	public boolean charTyped(char character, int p_charTyped_2_) {
+		if( character == ' ' && this.searchField.getText().isEmpty() )
+		{
+			return true;
+		}
+
+		final boolean mouseInGui = this.isMouseOver( this.currentMouseX, this.currentMouseY );
+		if( this.isAutoFocus && !this.searchField.isFocused() && mouseInGui )
+		{
+			this.searchField.setFocused2( true );
+		}
+
+		if (this.searchField.charTyped(character, p_charTyped_2_)) {
+			this.repo.setSearchString( this.searchField.getText() );
+			this.repo.updateView();
+			this.setScrollBar();
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_)
 	{
 
-		if( !this.checkHotbarKeys( key ) )
+		InputMappings.Input input = InputMappings.getInputByCode(keyCode, scanCode);
+
+		if( !this.checkHotbarKeys(input) )
 		{
-			if( AppEng.proxy.isActionKey( ActionKey.TOGGLE_FOCUS, key ) )
+			if( AppEng.proxy.isActionKey( ActionKey.TOGGLE_FOCUS, input ) )
 			{
-				this.searchField.setFocused( !this.searchField.isFocused() );
-				return;
+				this.searchField.setFocused2( !this.searchField.isFocused() );
+				return true;
 			}
 
-			if( this.searchField.isFocused() && key == Keyboard.KEY_RETURN )
+			if( this.searchField.isFocused() && keyCode == GLFW.GLFW_KEY_ENTER )
 			{
-				this.searchField.setFocused( false );
-				return;
+				this.searchField.setFocused2( false );
+				return true;
 			}
 
-			if( character == ' ' && this.searchField.getText().isEmpty() )
-			{
-				return;
-			}
-
-			final boolean mouseInGui = this.isPointInRegion( 0, 0, this.xSize, this.ySize, this.currentMouseX, this.currentMouseY );
-
-			if( this.isAutoFocus && !this.searchField.isFocused() && mouseInGui )
-			{
-				this.searchField.setFocused( true );
-			}
-
-			if( this.searchField.textboxKeyTyped( character, key ) )
+			if( this.searchField.keyPressed( keyCode, scanCode, p_keyPressed_3_ ) )
 			{
 				this.repo.setSearchString( this.searchField.getText() );
 				this.repo.updateView();
 				this.setScrollBar();
 				// tell forge the key event is handled and should not be sent out
-				this.keyHandled = mouseInGui;
-			}
-			else
-			{
-				super.keyTyped( character, key );
+				return true;
 			}
 		}
+
+		return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);
 	}
 
 	@Override
-	public void updateScreen()
+	public void tick()
 	{
 		this.repo.setPower( this.container.isPowered() );
-		super.updateScreen();
+		super.tick();
 	}
 
 	@Override

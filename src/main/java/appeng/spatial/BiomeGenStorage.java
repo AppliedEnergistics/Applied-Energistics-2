@@ -20,6 +20,8 @@ package appeng.spatial;
 
 
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 
 public class BiomeGenStorage extends Biome
@@ -27,15 +29,20 @@ public class BiomeGenStorage extends Biome
 
 	public BiomeGenStorage()
 	{
-		super( new BiomeProperties( "Storage Cell" ).setBaseBiome( "void" ).setRainDisabled().setTemperature( -100 ) );
-
-		this.decorator.treesPerChunk = 0;
-		this.decorator.flowersPerChunk = 0;
-		this.decorator.grassPerChunk = 0;
-
-		this.spawnableMonsterList.clear();
-		this.spawnableCreatureList.clear();
-		this.spawnableWaterCreatureList.clear();
-		this.spawnableCaveCreatureList.clear();
+		super( new Biome.Builder().precipitation(RainType.NONE).temperature(-100).parent(null) );
+// FIXME		this.decorator.treesPerChunk = 0;
+// FIXME		this.decorator.flowersPerChunk = 0;
+// FIXME		this.decorator.grassPerChunk = 0;
+// FIXME
+// FIXME		this.spawnableMonsterList.clear();
+// FIXME		this.spawnableCreatureList.clear();
+// FIXME		this.spawnableWaterCreatureList.clear();
+// FIXME		this.spawnableCaveCreatureList.clear();
 	}
+
+	@OnlyIn(Dist.CLIENT)
+	public int getSkyColor() {
+		return 0;
+	}
+
 }

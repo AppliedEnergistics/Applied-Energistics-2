@@ -21,6 +21,8 @@ package appeng.core.sync.packets;
 
 import java.io.IOException;
 
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerInscriber;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -31,7 +33,7 @@ import net.minecraft.tileentity.TileEntity;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.AEBaseContainer;
-import appeng.container.ContainerOpenContext;
+import appeng.container.ContainerLocator;
 import appeng.container.implementations.ContainerCraftAmount;
 import appeng.core.AppEng;
 import appeng.core.sync.AppEngPacket;
@@ -127,11 +129,10 @@ public class PacketInventoryAction extends AppEngPacket
 			final AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
 			if( this.action == InventoryAction.AUTO_CRAFT )
 			{
-				final ContainerOpenContext context = baseContainer.getOpenContext();
-				if( context != null )
+				final ContainerLocator locator = baseContainer.getLocator();
+				if( locator != null )
 				{
-					final TileEntity te = context.getTile();
-					// FIXME Platform.openGUI( sender, te, baseContainer.getOpenContext().getSide(), GuiBridge.GUI_CRAFTING_AMOUNT );
+					ContainerOpener.openContainer(ContainerCraftAmount.TYPE, player, locator);
 
 					if( sender.openContainer instanceof ContainerCraftAmount )
 					{

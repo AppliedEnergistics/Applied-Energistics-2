@@ -21,6 +21,9 @@ package appeng.fluids.block;
 
 import javax.annotation.Nullable;
 
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.fluids.container.ContainerFluidInterface;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -57,7 +60,7 @@ public class BlockFluidInterface extends AEBaseTileBlock<TileFluidInterface>
 		{
 			if( Platform.isServer() )
 			{
-				// FIXME Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit), GuiBridge.GUI_FLUID_INTERFACE );
+				ContainerOpener.openContainer(ContainerFluidInterface.TYPE, p, ContainerLocator.forTileEntitySide(tg, hit.getFace()));
 			}
 			return ActionResultType.SUCCESS;
 		}

@@ -24,7 +24,12 @@ import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.fluids.container.ContainerFluidInterface;
+import appeng.fluids.container.ContainerFluidStorageBus;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -224,7 +229,7 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 	{
 		if( Platform.isServer() )
 		{
-			// FIXME Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_STORAGEBUS_FLUID );
+			ContainerOpener.openContainer(ContainerFluidStorageBus.TYPE, player, ContainerLocator.forPart(this));
 		}
 		return true;
 	}
@@ -489,9 +494,9 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 		return Api.INSTANCE.definitions().parts().fluidStorageBus().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 	}
 
-// FIXME	@Override
-// FIXME	public GuiBridge getGuiBridge()
-// FIXME	{
-// FIXME		return GuiBridge.GUI_STORAGEBUS_FLUID;
-// FIXME	}
+	@Override
+	public ContainerType<?> getContainerType()
+	{
+		return ContainerFluidStorageBus.TYPE;
+	}
 }

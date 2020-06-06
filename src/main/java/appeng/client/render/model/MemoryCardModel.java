@@ -9,47 +9,40 @@ import javax.annotation.Nullable;
 
 import com.mojang.datafixers.util.Pair;
 
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.client.renderer.model.IUnbakedModel;
-import net.minecraft.client.renderer.model.Material;
-import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 
 import appeng.core.AppEng;
+import net.minecraftforge.client.model.IModelConfiguration;
+import net.minecraftforge.client.model.geometry.IModelGeometry;
 
 
 /**
  * Model wrapper for the memory card item model, which combines a base card layer with a "visual hash" of the part/tile.
  */
-public class MemoryCardModel implements IUnbakedModel
+public class MemoryCardModel implements IModelGeometry<MemoryCardModel>
 {
 
 	private static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "item/memory_card" );
 	private static final Material TEXTURE = new Material( AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "items/memory_card_hash" ) );
 
 	@Override
-	public Collection<ResourceLocation> getDependencies()
-	{
-		return Collections.singletonList( MODEL_BASE );
-	}
-
-	@Override
-	public Collection<Material> getTextures( Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors )
+	public Collection<Material> getTextures( IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors )
 	{
 		return Collections.singleton( TEXTURE );
 	}
 
 	@Nullable
 	@Override
-	public IBakedModel bakeModel( ModelBakery modelBakeryIn, Function<Material, TextureAtlasSprite> spriteGetterIn, IModelTransform transformIn, ResourceLocation locationIn )
+	public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation)
 	{
-		TextureAtlasSprite texture = spriteGetterIn.apply( TEXTURE );
+		TextureAtlasSprite texture = spriteGetter.apply( TEXTURE );
 
-		IBakedModel baseModel = modelBakeryIn.getBakedModel( MODEL_BASE, transformIn, spriteGetterIn );
+		IBakedModel baseModel = bakery.getBakedModel( MODEL_BASE, modelTransform, spriteGetter );
 
 		return new MemoryCardBakedModel( baseModel, texture );
 	}
+
 }

@@ -28,7 +28,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.exceptions.AppEngException;
 import appeng.api.features.IWirelessTermHandler;
@@ -47,10 +46,9 @@ import appeng.api.storage.ITerminalHost;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.client.gui.AEBaseGui;
-import appeng.client.gui.GuiNull;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerNull;
-import appeng.container.ContainerOpenContext;
+import appeng.container.ContainerLocator;
 import appeng.container.implementations.ContainerCellWorkbench;
 import appeng.container.implementations.ContainerChest;
 import appeng.container.implementations.ContainerCondenser;
@@ -245,7 +243,7 @@ public enum GuiBridge
 			{
 				throw new IllegalStateException( "Unable to find gui class" );
 			}
-			this.guiClass = ReflectionHelper.getClass( this.getClass().getClassLoader(), guiClass );
+			this.guiClass = null; // FIXME ReflectionHelper.getClass( this.getClass().getClassLoader(), guiClass );
 			if( this.guiClass == null )
 			{
 				throw new IllegalStateException( "Cannot Load class: " + guiClass );
@@ -262,7 +260,6 @@ public enum GuiBridge
 		this.getGui();
 	}
 
-	@Override
 	public Object getServerGuiElement( final int ordinal, final PlayerEntity player, final World w, final int x, final int y, final int z )
 	{
 		final AEPartLocation side = AEPartLocation.fromOrdinal( ordinal & 0x07 );
@@ -341,13 +338,13 @@ public enum GuiBridge
 	{
 		if( newContainer instanceof AEBaseContainer )
 		{
-			final AEBaseContainer bc = (AEBaseContainer) newContainer;
-			bc.setOpenContext( new ContainerOpenContext( myItem ) );
-			bc.getOpenContext().setWorld( w );
-			bc.getOpenContext().setX( x );
-			bc.getOpenContext().setY( y );
-			bc.getOpenContext().setZ( z );
-			bc.getOpenContext().setSide( side );
+			// FIXME final AEBaseContainer bc = (AEBaseContainer) newContainer;
+			// FIXME bc.setLocator( new ContainerLocator( myItem ) );
+			// FIXME bc.getLocator().setWorld( w );
+			// FIXME bc.getLocator().setX( x );
+			// FIXME bc.getLocator().setY( y );
+			// FIXME bc.getLocator().setZ( z );
+			// FIXME bc.getLocator().setSide( side );
 		}
 
 		return newContainer;
@@ -405,7 +402,6 @@ public enum GuiBridge
 		return inventory.getClass().getName();
 	}
 
-	@Override
 	public Object getClientGuiElement( final int ordinal, final PlayerEntity player, final World w, final int x, final int y, final int z )
 	{
 		final AEPartLocation side = AEPartLocation.fromOrdinal( ordinal & 0x07 );
@@ -448,7 +444,7 @@ public enum GuiBridge
 				}
 			}
 		}
-		return new GuiNull( new ContainerNull() );
+		return null; // FIXME
 	}
 
 	public Object ConstructGui( final PlayerInventory inventory, final AEPartLocation side, final Object tE )

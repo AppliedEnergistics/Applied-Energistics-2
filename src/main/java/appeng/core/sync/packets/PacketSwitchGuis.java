@@ -19,40 +19,43 @@
 package appeng.core.sync.packets;
 
 
+import appeng.container.ContainerOpener;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 
 import appeng.container.AEBaseContainer;
-import appeng.container.ContainerOpenContext;
+import appeng.container.ContainerLocator;
 import appeng.core.sync.AppEngPacket;
 
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.Platform;
+import net.minecraftforge.registries.ForgeRegistries;
 
 
 public class PacketSwitchGuis extends AppEngPacket
 {
 
-	private final GuiBridge newGui;
+	private final ContainerType<?> newGui;
 
 	public PacketSwitchGuis( final PacketBuffer stream )
 	{
-		this.newGui = GuiBridge.values()[stream.readInt()];
+		this.newGui = ForgeRegistries.CONTAINERS.getValue(stream.readResourceLocation());
 	}
 
 	// api
-	public PacketSwitchGuis( final GuiBridge newGui )
+	public PacketSwitchGuis( final ContainerType<?> newGui )
 	{
 		this.newGui = newGui;
 
 		final PacketBuffer data = new PacketBuffer( Unpooled.buffer() );
 
 		data.writeInt( this.getPacketID() );
-		data.writeInt( newGui.ordinal() );
+		data.writeResourceLocation(newGui.getRegistryName());
 
 		this.configureWrite( data );
 	}
@@ -64,11 +67,10 @@ public class PacketSwitchGuis extends AppEngPacket
 		if( c instanceof AEBaseContainer )
 		{
 			final AEBaseContainer bc = (AEBaseContainer) c;
-			final ContainerOpenContext context = bc.getOpenContext();
-			if( context != null )
+			final ContainerLocator locator = bc.getLocator();
+			if( locator != null )
 			{
-				final TileEntity te = context.getTile();
-				Platform.openGUI( player, te, context.getSide(), this.newGui );
+				ContainerOpener.openContainer(newGui, player, locator);
 			}
 		}
 	}

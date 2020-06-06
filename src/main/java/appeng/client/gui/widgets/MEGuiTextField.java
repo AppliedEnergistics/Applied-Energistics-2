@@ -19,10 +19,11 @@
 package appeng.client.gui.widgets;
 
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
@@ -39,10 +40,6 @@ public class MEGuiTextField extends TextFieldWidget
 {
 	private static final int PADDING = 2;
 
-	private final int _xPos;
-	private final int _yPos;
-	private final int _width;
-	private final int _height;
 	private final int _fontPad;
 	private int selectionColor = 0xFF00FF00;
 
@@ -58,43 +55,25 @@ public class MEGuiTextField extends TextFieldWidget
 	 */
 	public MEGuiTextField( final FontRenderer fontRenderer, final int xPos, final int yPos, final int width, final int height )
 	{
-		super( 0, fontRenderer, xPos + PADDING, yPos + PADDING, width - 2 * PADDING - fontRenderer.getCharWidth( '_' ), height - 2 * PADDING );
+		super( fontRenderer, xPos + PADDING, yPos + PADDING, width - 2 * PADDING - (int) fontRenderer.getCharWidth( '_' ), height - 2 * PADDING, "" );
 
-		this._fontPad = fontRenderer.getCharWidth( '_' );
-		this._xPos = xPos;
-		this._yPos = yPos;
-		this._width = width;
-		this._height = height;
+		this._fontPad = (int) fontRenderer.getCharWidth( '_' );
 	}
 
 	@Override
-	public boolean mouseClicked( final int xPos, final int yPos, final int button )
+	public boolean mouseClicked( final double xPos, final double yPos, final int button )
 	{
-		super.mouseClicked( xPos, yPos, button );
+		if (!super.mouseClicked( xPos, yPos, button )) {
+			return false;
+		}
 
-		final boolean requiresFocus = this.isMouseIn( xPos, yPos );
+		final boolean requiresFocus = this.isMouseOver( xPos, yPos );
 		if( !this.isFocused() )
 		{
 			this.setFocused2( requiresFocus );
 		}
 
 		return true;
-	}
-
-	/**
-	 * Checks if the mouse is within the element
-	 *
-	 * @param xCoord current x coord of the mouse
-	 * @param yCoord current y coord of the mouse
-	 *
-	 * @return true if mouse position is within the text field area
-	 */
-	public boolean isMouseIn( final int xCoord, final int yCoord )
-	{
-		final boolean withinXRange = this._xPos <= xCoord && xCoord < this._xPos + this._width;
-		final boolean withinYRange = this._yPos <= yCoord && yCoord < this._yPos + this._height;
-
-		return withinXRange && withinYRange;
 	}
 
 	public void selectAll()
@@ -109,7 +88,7 @@ public class MEGuiTextField extends TextFieldWidget
 	}
 
 	@Override
-	public void drawTextBox()
+	public void renderButton(int mouseX, int mouseY, float partial)
 	{
 		if( this.getVisible() )
 		{
@@ -123,7 +102,7 @@ public class MEGuiTextField extends TextFieldWidget
 				fill( this.x - PADDING + 1, this.y - PADDING + 1, this.x + this.width + this._fontPad + PADDING - 1, this.y + this.height + PADDING - 1,
 						0xFFA8A8A8 );
 			}
-			super.drawTextBox();
+			super.renderButton(mouseX, mouseY, partial);
 		}
 	}
 
@@ -173,16 +152,16 @@ public class MEGuiTextField extends TextFieldWidget
 		float alpha = ( this.selectionColor >> 24 & 255 ) / 255.0F;
 
 		RenderSystem.color4f( red, green, blue, alpha );
-		GlStateManager.disableTexture2D();
-		GlStateManager.enableColorLogic();
-		GlStateManager.colorLogicOp( GlStateManager.LogicOp.OR_REVERSE );
+		RenderSystem.disableTexture();
+		RenderSystem.enableColorLogicOp();
+		RenderSystem.logicOp( GlStateManager.LogicOp.OR_REVERSE );
 		bufferbuilder.begin( 7, DefaultVertexFormats.POSITION );
 		bufferbuilder.pos( startX, endY, 0.0D ).endVertex();
 		bufferbuilder.pos( endX, endY, 0.0D ).endVertex();
 		bufferbuilder.pos( endX, startY, 0.0D ).endVertex();
 		bufferbuilder.pos( startX, startY, 0.0D ).endVertex();
 		tessellator.draw();
-		GlStateManager.disableColorLogic();
+		RenderSystem.disableColorLogicOp();
 		RenderSystem.enableTexture();
 	}
 

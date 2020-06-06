@@ -19,8 +19,7 @@
 package appeng.client.gui.implementations;
 
 
-import java.io.IOException;
-
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.api.config.FuzzyMode;
@@ -64,7 +63,7 @@ public class GuiUpgradeable<T extends ContainerUpgradeable> extends AEBaseGui<T>
 
 	protected boolean hasToolbox()
 	{
-		return ( (ContainerUpgradeable) this.container ).hasToolbox();
+		return ( this.container ).hasToolbox();
 	}
 
 	@Override
@@ -76,10 +75,10 @@ public class GuiUpgradeable<T extends ContainerUpgradeable> extends AEBaseGui<T>
 
 	protected void addButtons()
 	{
-		this.redstoneMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
-		this.fuzzyMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 28, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
-		this.craftMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 48, Settings.CRAFT_ONLY, YesNo.NO );
-		this.schedulingMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 68, Settings.SCHEDULING_MODE, SchedulingMode.DEFAULT );
+		this.redstoneMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE, this::actionPerformed );
+		this.fuzzyMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 28, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL, this::actionPerformed );
+		this.craftMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 48, Settings.CRAFT_ONLY, YesNo.NO, this::actionPerformed );
+		this.schedulingMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 68, Settings.SCHEDULING_MODE, SchedulingMode.DEFAULT, this::actionPerformed );
 
 		this.addButton( this.craftMode );
 		this.addButton( this.redstoneMode );
@@ -115,7 +114,7 @@ public class GuiUpgradeable<T extends ContainerUpgradeable> extends AEBaseGui<T>
 	}
 
 	@Override
-	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
+	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
 	{
 		this.handleButtonVisibility();
 
@@ -166,12 +165,11 @@ public class GuiUpgradeable<T extends ContainerUpgradeable> extends AEBaseGui<T>
 		return this.bc instanceof PartImportBus ? GuiText.ImportBus : GuiText.ExportBus;
 	}
 
-	@Override
-	protected void actionPerformed( final GuiButton btn ) throws IOException
+	// FIXME: replace with individual methods
+	protected void actionPerformed( final Button btn )
 	{
-		super.actionPerformed( btn );
-
-		final boolean backwards = Mouse.isButtonDown( 1 );
+		// Detect right-clicks
+		final boolean backwards = minecraft.mouseHelper.isRightDown();
 
 		if( btn == this.redstoneMode )
 		{

@@ -19,56 +19,31 @@
 package appeng.client.gui.implementations;
 
 
-import java.io.IOException;
-
-import appeng.core.Api;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-
-import appeng.api.definitions.IDefinitions;
-import appeng.api.definitions.IParts;
-import appeng.api.storage.ITerminalHost;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiNumberBox;
-import appeng.client.gui.widgets.GuiTabButton;
-import appeng.container.AEBaseContainer;
 import appeng.container.implementations.ContainerCraftAmount;
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
-
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketCraftRequest;
-import appeng.core.sync.packets.PacketSwitchGuis;
-import appeng.helpers.Reflected;
-import appeng.helpers.WirelessTerminalGuiObject;
-import appeng.parts.reporting.PartCraftingTerminal;
-import appeng.parts.reporting.PartPatternTerminal;
-import appeng.parts.reporting.PartTerminal;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.util.InputMappings;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 
 public class GuiCraftAmount extends AEBaseGui<ContainerCraftAmount>
 {
+	private final AESubGui subGui;
+
 	private GuiNumberBox amountToCraft;
-	private GuiTabButton originalGuiBtn;
 
-	private GuiButton next;
-
-	private GuiButton plus1;
-	private GuiButton plus10;
-	private GuiButton plus100;
-	private GuiButton plus1000;
-	private GuiButton minus1;
-	private GuiButton minus10;
-	private GuiButton minus100;
-	private GuiButton minus1000;
-
-	private GuiBridge originalGui;
+	private Button next;
 
 	public GuiCraftAmount(ContainerCraftAmount container, PlayerInventory playerInventory, ITextComponent title) {
 		super(container, playerInventory, title);
+		this.subGui = new AESubGui(this, container.getTarget());
 	}
 
 	@Override
@@ -81,52 +56,19 @@ public class GuiCraftAmount extends AEBaseGui<ContainerCraftAmount>
 		final int c = AEConfig.instance().craftItemsByStackAmounts( 2 );
 		final int d = AEConfig.instance().craftItemsByStackAmounts( 3 );
 
-		this.addButton( this.plus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 26, 22, 20, "+" + a ) );
-		this.addButton( this.plus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 26, 28, 20, "+" + b ) );
-		this.addButton( this.plus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 26, 32, 20, "+" + c ) );
-		this.addButton( this.plus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 26, 38, 20, "+" + d ) );
+		this.addButton( new Button(this.guiLeft + 20, this.guiTop + 26, 22, 20, "+" + a, btn -> addQty(a) ) );
+		this.addButton( new Button(this.guiLeft + 48, this.guiTop + 26, 28, 20, "+" + b, btn -> addQty(b) ) );
+		this.addButton( new Button(this.guiLeft + 82, this.guiTop + 26, 32, 20, "+" + c, btn -> addQty(c) ) );
+		this.addButton( new Button(this.guiLeft + 120, this.guiTop + 26, 38, 20, "+" + d, btn -> addQty(d) ) );
 
-		this.addButton( this.minus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 75, 22, 20, "-" + a ) );
-		this.addButton( this.minus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 75, 28, 20, "-" + b ) );
-		this.addButton( this.minus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 75, 32, 20, "-" + c ) );
-		this.addButton( this.minus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 75, 38, 20, "-" + d ) );
+		this.addButton( new Button(this.guiLeft + 20, this.guiTop + 75, 22, 20, "-" + a, btn -> addQty(-a) ) );
+		this.addButton( new Button(this.guiLeft + 48, this.guiTop + 75, 28, 20, "-" + b, btn -> addQty(-b) ) );
+		this.addButton( new Button(this.guiLeft + 82, this.guiTop + 75, 32, 20, "-" + c, btn -> addQty(-c) ) );
+		this.addButton( new Button(this.guiLeft + 120, this.guiTop + 75, 38, 20, "-" + d, btn -> addQty(-d) ) );
 
-		this.addButton( this.next = new GuiButton( 0, this.guiLeft + 128, this.guiTop + 51, 38, 20, GuiText.Next.getLocal() ) );
+		this.next = this.addButton(new Button(this.guiLeft + 128, this.guiTop + 51, 38, 20, GuiText.Next.getLocal(), this::confirm ));
 
-		ItemStack myIcon = null;
-		final Object target = this.container.getTarget();
-		final IDefinitions definitions = Api.INSTANCE.definitions();
-		final IParts parts = definitions.parts();
-
-		if( target instanceof WirelessTerminalGuiObject )
-		{
-			myIcon = definitions.items().wirelessTerminal().maybeStack( 1 ).orElse( myIcon );
-
-			this.originalGui = GuiBridge.GUI_WIRELESS_TERM;
-		}
-
-		if( target instanceof PartTerminal )
-		{
-			myIcon = parts.terminal().maybeStack( 1 ).orElse( ItemStack.EMPTY );
-			this.originalGui = GuiBridge.GUI_ME;
-		}
-
-		if( target instanceof PartCraftingTerminal )
-		{
-			myIcon = parts.craftingTerminal().maybeStack( 1 ).orElse( ItemStack.EMPTY );
-			this.originalGui = GuiBridge.GUI_CRAFTING_TERMINAL;
-		}
-
-		if( target instanceof PartPatternTerminal )
-		{
-			myIcon = parts.patternTerminal().maybeStack( 1 ).orElse( ItemStack.EMPTY );
-			this.originalGui = GuiBridge.GUI_PATTERN_TERMINAL;
-		}
-
-		if( this.originalGui != null && !myIcon.isEmpty() )
-		{
-			this.addButton( this.originalGuiBtn = new GuiTabButton( this.guiLeft + 154, this.guiTop, myIcon, myIcon.getDisplayName(), this.itemRender ) );
-		}
+		subGui.addBackButton(this::addButton, 154, 0);
 
 		this.amountToCraft = new GuiNumberBox( this.font, this.guiLeft + 62, this.guiTop + 57, 59, this.font.FONT_HEIGHT, Integer.class );
 		this.amountToCraft.setEnableBackgroundDrawing( false );
@@ -137,6 +79,10 @@ public class GuiCraftAmount extends AEBaseGui<ContainerCraftAmount>
 		this.amountToCraft.setText( "1" );
 	}
 
+	private void confirm(Button button) {
+		NetworkHandler.instance().sendToServer( new PacketCraftRequest( Integer.parseInt( this.amountToCraft.getText() ), hasShiftDown() ) );
+	}
+
 	@Override
 	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
@@ -144,9 +90,9 @@ public class GuiCraftAmount extends AEBaseGui<ContainerCraftAmount>
 	}
 
 	@Override
-	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
+	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
 	{
-		this.next.displayString = hasShiftDown() ? GuiText.Start.getLocal() : GuiText.Next.getLocal();
+		this.next.setMessage(hasShiftDown() ? GuiText.Start.getLocal() : GuiText.Next.getLocal());
 
 		this.bindTexture( "guis/craft_amt.png" );
 		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );
@@ -154,27 +100,32 @@ public class GuiCraftAmount extends AEBaseGui<ContainerCraftAmount>
 		try
 		{
 			Long.parseLong( this.amountToCraft.getText() );
-			this.next.enabled = !this.amountToCraft.getText().isEmpty();
+			this.next.active = !this.amountToCraft.getText().isEmpty();
 		}
 		catch( final NumberFormatException e )
 		{
-			this.next.enabled = false;
+			this.next.active = false;
 		}
 
-		this.amountToCraft.drawTextBox();
+		this.amountToCraft.render(offsetX, offsetY, partialTicks);
 	}
 
 	@Override
-	protected void keyTyped( final char character, final int key ) throws IOException
-	{
-		if( !this.checkHotbarKeys( key ) )
+	public boolean charTyped(char ch, int p_charTyped_2_) {
+		// Forward entered text to the craft amount text-field
+		return this.amountToCraft.charTyped(ch, p_charTyped_2_);
+	}
+
+	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
+		if( !this.checkHotbarKeys( InputMappings.getInputByCode(keyCode, scanCode) ) )
 		{
-			if( key == 28 )
+			if( keyCode == 28 )
 			{
-				this.actionPerformed( this.next );
+				this.next.onPress();
 			}
-			if( ( key == 211 || key == 205 || key == 203 || key == 14 || character == '-' || Character.isDigit( character ) ) && this.amountToCraft
-					.textboxKeyTyped( character, key ) )
+			if( ( keyCode == 211 || keyCode == 205 || keyCode == 203 || keyCode == 14 )
+					&& this.amountToCraft.keyPressed( keyCode, scanCode, p_keyPressed_3_ ) )
 			{
 				try
 				{
@@ -207,45 +158,11 @@ public class GuiCraftAmount extends AEBaseGui<ContainerCraftAmount>
 				{
 					// :P
 				}
-			}
-			else
-			{
-				super.keyTyped( character, key );
+				return true;
 			}
 		}
-	}
 
-	@Override
-	protected void actionPerformed( final GuiButton btn ) throws IOException
-	{
-		super.actionPerformed( btn );
-
-		try
-		{
-
-			if( btn == this.originalGuiBtn )
-			{
-				NetworkHandler.instance().sendToServer( new PacketSwitchGuis( this.originalGui ) );
-			}
-
-			if( btn == this.next )
-			{
-				NetworkHandler.instance().sendToServer( new PacketCraftRequest( Integer.parseInt( this.amountToCraft.getText() ), hasShiftDown() ) );
-			}
-		}
-		catch( final NumberFormatException e )
-		{
-			// nope..
-			this.amountToCraft.setText( "1" );
-		}
-
-		final boolean isPlus = btn == this.plus1 || btn == this.plus10 || btn == this.plus100 || btn == this.plus1000;
-		final boolean isMinus = btn == this.minus1 || btn == this.minus10 || btn == this.minus100 || btn == this.minus1000;
-
-		if( isPlus || isMinus )
-		{
-			this.addQty( this.getQty( btn ) );
-		}
+		return super.keyPressed( keyCode, scanCode, p_keyPressed_3_ );
 	}
 
 	private void addQty( final int i )

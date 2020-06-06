@@ -19,10 +19,7 @@
 package appeng.util;
 
 
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.config.SecurityPermissions;
+import appeng.api.config.*;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.features.AEFeature;
 import appeng.api.implementations.items.IAEItemPowerStorage;
@@ -69,6 +66,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -88,9 +86,12 @@ import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.thread.SidedThreadGroups;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.text.DecimalFormat;
 import java.util.*;
 
 
@@ -141,36 +142,36 @@ public class Platform
 		return RANDOM_GENERATOR.nextFloat();
 	}
 
-//	/**
-//	 * This displays the value for encoded longs ( double *100 )
-//	 *
-//	 * @param n to be formatted long value
-//	 * @param isRate if true it adds a /t to the formatted string
-//	 *
-//	 * @return formatted long value
-//	 */
-//	public static String formatPowerLong( final long n, final boolean isRate )
-//	{
-//		double p = ( (double) n ) / 100;
-//
-//		final PowerUnits displayUnits = AEConfig.instance().selectedPowerUnit();
-//		p = PowerUnits.AE.convertTo( displayUnits, p );
-//
-//		final String[] preFixes = { "k", "M", "G", "T", "P", "T", "P", "E", "Z", "Y" };
-//		String unitName = displayUnits.name();
-//
-//		String level = "";
-//		int offset = 0;
-//		while( p > 1000 && offset < preFixes.length )
-//		{
-//			p /= 1000;
-//			level = preFixes[offset];
-//			offset++;
-//		}
-//
-//		final DecimalFormat df = new DecimalFormat( "#.##" );
-//		return df.format( p ) + ' ' + level + unitName + ( isRate ? "/t" : "" );
-//	}
+	/**
+	 * This displays the value for encoded longs ( double *100 )
+	 *
+	 * @param n to be formatted long value
+	 * @param isRate if true it adds a /t to the formatted string
+	 *
+	 * @return formatted long value
+	 */
+	public static String formatPowerLong( final long n, final boolean isRate )
+	{
+		double p = ( (double) n ) / 100;
+
+		final PowerUnits displayUnits = AEConfig.instance().selectedPowerUnit();
+		p = PowerUnits.AE.convertTo( displayUnits, p );
+
+		final String[] preFixes = { "k", "M", "G", "T", "P", "T", "P", "E", "Z", "Y" };
+		String unitName = displayUnits.name();
+
+		String level = "";
+		int offset = 0;
+		while( p > 1000 && offset < preFixes.length )
+		{
+			p /= 1000;
+			level = preFixes[offset];
+			offset++;
+		}
+
+		final DecimalFormat df = new DecimalFormat( "#.##" );
+		return df.format( p ) + ' ' + level + unitName + ( isRate ? "/t" : "" );
+	}
 
 	public static AEPartLocation crossProduct( final AEPartLocation forward, final AEPartLocation up )
 	{
@@ -324,14 +325,12 @@ public class Platform
 		return false;
 	}
 
-//	public static void openGUI(@Nonnull final PlayerEntity p, @Nullable final TileEntity tile, @Nullable final AEPartLocation side, @Nonnull final GuiBridge type )
+//	public static void openGUI(@Nonnull final PlayerEntity p, @Nullable final TileEntity tile, @Nullable final AEPartLocation side, @Nonnull final ContainerType<?> type )
 //	{
 //		if( isClient() )
 //		{
 //			return;
 //		}
-//
-//		tile.getCapability(AEProtectedGui.class, side.getFacing())
 //
 //		int x = (int) p.getPosX();
 //		int y = (int) p.getPosY();
@@ -347,6 +346,7 @@ public class Platform
 //		{
 //			if( tile == null && type.getType() == GuiHostType.ITEM )
 //			{
+//				NetworkHooks.openGui(p, );
 //				// FIXME NetworkHooks.openGui
 //				// p.openGui( AppEng.instance(), type.ordinal() << 4, p.getEntityWorld(), p.inventory.currentItem, 0, 0 );
 //			}

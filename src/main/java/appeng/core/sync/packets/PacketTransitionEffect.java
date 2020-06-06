@@ -25,6 +25,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -92,21 +93,19 @@ public class PacketTransitionEffect extends AppEngPacket
 		{
 			if( AppEng.proxy.shouldAddParticles( Platform.getRandom() ) )
 			{
-				final EnergyFx fx = new EnergyFx( world, this.x + ( this.mode ? ( Platform
-						.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), this.y + ( this.mode ? ( Platform
-								.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), this.z + ( this.mode ? ( Platform
-										.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), new ItemStack(Items.DIAMOND, 1) );
+				double x = this.x + ( this.mode ? ( Platform.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 );
+				double y = this.y + ( this.mode ? ( Platform.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 );
+				double z = this.z + ( this.mode ? ( Platform.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 );
+				double speedX = -0.1f * this.d.xOffset;
+				double speedY = -0.1f * this.d.yOffset;
+				double speedZ = -0.1f * this.d.zOffset;
 
+				EnergyFx fx = (EnergyFx) Minecraft.getInstance().particles.addParticle(EnergyFx.TYPE, x, y, z, speedX, speedY, speedZ);
+				// FIXME: *sigh* custom particle data for this one thing :|
 				if( !this.mode )
 				{
-					fx.fromItem( this.d );
+				 	fx.fromItem( this.d );
 				}
-
-				fx.setMotionX( -0.1f * this.d.xOffset );
-				fx.setMotionY( -0.1f * this.d.yOffset );
-				fx.setMotionZ( -0.1f * this.d.zOffset );
-
-				Minecraft.getInstance().particles.addEffect( fx );
 			}
 		}
 

@@ -21,9 +21,7 @@ package appeng.fluids.client.gui;
 
 import java.io.IOException;
 
-import org.lwjgl.input.Mouse;
-
-import net.minecraft.client.gui.GuiButton;
+import appeng.container.implementations.ContainerPriority;
 import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.api.config.AccessRestriction;
@@ -46,6 +44,7 @@ import appeng.fluids.client.gui.widgets.GuiOptionalFluidSlot;
 import appeng.fluids.container.ContainerFluidStorageBus;
 import appeng.fluids.parts.PartFluidStorageBus;
 import appeng.fluids.util.IAEFluidTank;
+import net.minecraft.util.text.ITextComponent;
 
 
 /**
@@ -53,20 +52,14 @@ import appeng.fluids.util.IAEFluidTank;
  * @version rv6 - 22/05/2018
  * @since rv6 22/05/2018
  */
-public class GuiFluidStorageBus extends GuiUpgradeable
+public class GuiFluidStorageBus extends GuiUpgradeable<ContainerFluidStorageBus>
 {
 	private GuiImgButton rwMode;
 	private GuiImgButton storageFilter;
-	private GuiTabButton priority;
-	private GuiImgButton partition;
-	private GuiImgButton clear;
-	private final PartFluidStorageBus bus;
 
-	public GuiFluidStorageBus( PlayerInventory PlayerInventory, PartFluidStorageBus te )
-	{
-		super( new ContainerFluidStorageBus( PlayerInventory, te ) );
+	public GuiFluidStorageBus(ContainerFluidStorageBus container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 		this.ySize = 251;
-		this.bus = te;
 	}
 
 	@Override
@@ -77,8 +70,7 @@ public class GuiFluidStorageBus extends GuiUpgradeable
 		final int xo = 8;
 		final int yo = 23 + 6;
 
-		final IAEFluidTank config = this.bus.getConfig();
-		final ContainerFluidStorageBus container = (ContainerFluidStorageBus) this.inventorySlots;
+		final IAEFluidTank config = this.container.getFluidConfigInventory();
 
 		for( int y = 0; y < 7; y++ )
 		{
@@ -100,19 +92,17 @@ public class GuiFluidStorageBus extends GuiUpgradeable
 	@Override
 	protected void addButtons()
 	{
-		this.clear = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.ACTIONS, ActionItems.CLOSE );
-		this.partition = new GuiImgButton( this.guiLeft - 18, this.guiTop + 28, Settings.ACTIONS, ActionItems.WRENCH );
-		this.rwMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 48, Settings.ACCESS, AccessRestriction.READ_WRITE );
-		this.storageFilter = new GuiImgButton( this.guiLeft - 18, this.guiTop + 68, Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY );
-		this.fuzzyMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 88, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		addButton( new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.ACTIONS, ActionItems.CLOSE, btn -> clear() ) );
+		addButton( new GuiImgButton( this.guiLeft - 18, this.guiTop + 28, Settings.ACTIONS, ActionItems.WRENCH, btn -> partition() ) );
+		this.rwMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 48, Settings.ACCESS, AccessRestriction.READ_WRITE, btn -> toggleReadWriteMode() );
+		this.storageFilter = new GuiImgButton( this.guiLeft - 18, this.guiTop + 68, Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY, btn -> toggleStorageFilter() );
+		this.fuzzyMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 88, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL, this::actionPerformed );
 
-		this.addButton( this.priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRender ) );
+		addButton( this.addButton( new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRenderer, btn -> openPriorityGui() ) ) );
 
 		this.addButton( this.storageFilter );
 		this.addButton( this.fuzzyMode );
 		this.addButton( this.rwMode );
-		this.addButton( this.partition );
-		this.addButton( this.clear );
 	}
 
 	@Override
@@ -143,40 +133,26 @@ public class GuiFluidStorageBus extends GuiUpgradeable
 		return "guis/storagebus.png";
 	}
 
-	@Override
-	protected void actionPerformed( final GuiButton btn ) throws IOException
-	{
-		super.actionPerformed( btn );
+	private void partition() {
+		NetworkHandler.instance().sendToServer( new PacketValueConfig( "StorageBus.Action", "Partition" ) );
+	}
 
-		final boolean backwards = Mouse.isButtonDown( 1 );
+	private void clear() {
+		NetworkHandler.instance().sendToServer( new PacketValueConfig( "StorageBus.Action", "Clear" ) );
+	}
 
-		try
-		{
-			if( btn == this.partition )
-			{
-				NetworkHandler.instance().sendToServer( new PacketValueConfig( "StorageBus.Action", "Partition" ) );
-			}
-			else if( btn == this.clear )
-			{
-				NetworkHandler.instance().sendToServer( new PacketValueConfig( "StorageBus.Action", "Clear" ) );
-			}
-			else if( btn == this.priority )
-			{
-				NetworkHandler.instance().sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
-			}
-			else if( btn == this.rwMode )
-			{
-				NetworkHandler.instance().sendToServer( new PacketConfigButton( this.rwMode.getSetting(), backwards ) );
-			}
-			else if( btn == this.storageFilter )
-			{
-				NetworkHandler.instance().sendToServer( new PacketConfigButton( this.storageFilter.getSetting(), backwards ) );
-			}
-		}
-		catch( final IOException e )
-		{
-			AELog.debug( e );
-		}
+	private void openPriorityGui() {
+		NetworkHandler.instance().sendToServer( new PacketSwitchGuis( ContainerPriority.TYPE ) );
+	}
+
+	private void toggleReadWriteMode() {
+		final boolean backwards = minecraft.mouseHelper.isRightDown();
+		NetworkHandler.instance().sendToServer( new PacketConfigButton( this.rwMode.getSetting(), backwards ) );
+	}
+
+	private void toggleStorageFilter() {
+		final boolean backwards = minecraft.mouseHelper.isRightDown();
+		NetworkHandler.instance().sendToServer( new PacketConfigButton( this.storageFilter.getSetting(), backwards ) );
 	}
 
 	@Override

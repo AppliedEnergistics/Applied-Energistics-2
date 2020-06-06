@@ -20,6 +20,10 @@ package appeng.block.crafting;
 
 
 import appeng.block.AEBaseTileBlock;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerInscriber;
+import appeng.container.implementations.ContainerMAC;
 import appeng.tile.crafting.TileMolecularAssembler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -69,7 +73,7 @@ public class BlockMolecularAssembler extends AEBaseTileBlock<TileMolecularAssemb
 		if( tg != null && !p.isCrouching() )
 		{
 			if (!tg.isRemote()) {
-				// FIXME Platform.openGUI(p, tg, AEPartLocation.fromFacing(side), GuiBridge.GUI_MAC);
+				ContainerOpener.openContainer(ContainerMAC.TYPE, p, ContainerLocator.forTileEntitySide(tg, hit.getFace()));
 			}
 			return ActionResultType.SUCCESS;
 		}

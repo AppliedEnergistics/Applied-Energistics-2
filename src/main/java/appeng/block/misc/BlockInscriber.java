@@ -20,6 +20,11 @@ package appeng.block.misc;
 
 
 import appeng.block.AEBaseTileBlock;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerInscriber;
+import appeng.container.implementations.ContainerInterface;
+import appeng.fluids.container.ContainerFluidLevelEmitter;
 import appeng.tile.misc.TileInscriber;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -50,7 +55,7 @@ public class BlockInscriber extends AEBaseTileBlock<TileInscriber> {
             final TileInscriber tg = this.getTileEntity(w, pos);
             if (tg != null) {
 				if (!tg.isRemote()) {
-					//	FIXME			Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit.getFace()), GuiBridge.GUI_INSCRIBER );
+                    ContainerOpener.openContainer(ContainerInscriber.TYPE, p, ContainerLocator.forTileEntitySide(tg, hit.getFace()));
 				}
                 return ActionResultType.SUCCESS;
             }

@@ -20,6 +20,9 @@ package appeng.block.networking;
 
 
 import appeng.block.AEBaseTileBlock;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerWireless;
 import appeng.helpers.AEGlassMaterial;
 import appeng.tile.networking.TileWireless;
 import appeng.util.Platform;
@@ -104,7 +107,7 @@ public class BlockWireless extends AEBaseTileBlock<TileWireless>
 		{
 			if( Platform.isServer() )
 			{
-				// FIXME Platform.openGUI( player, tg, AEPartLocation.fromFacing( side ), GuiBridge.GUI_WIRELESS );
+				ContainerOpener.openContainer(ContainerWireless.TYPE, player, ContainerLocator.forTileEntitySide(tg, hit.getFace()));
 			}
 			return ActionResultType.SUCCESS;
 		}

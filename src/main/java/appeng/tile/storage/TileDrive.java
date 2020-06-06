@@ -29,7 +29,9 @@ import java.util.Map;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.block.storage.DriveSlotsState;
+import appeng.container.implementations.ContainerDrive;
 import appeng.core.Api;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -426,9 +428,9 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 
 	}
 
-	// FIXME	@Override
-// FIXME	public GuiBridge getGuiBridge()
-// FIXME	{
-// FIXME		return GuiBridge.GUI_DRIVE;
-// FIXME	}
+	@Override
+	public ContainerType<?> getContainerType()
+	{
+		return ContainerDrive.TYPE;
+	}
 }

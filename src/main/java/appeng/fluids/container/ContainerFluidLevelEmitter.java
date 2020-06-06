@@ -1,10 +1,13 @@
 package appeng.fluids.container;
 
 
+import appeng.container.ContainerLocator;
+import appeng.container.helper.PartContainerHelper;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -19,6 +22,19 @@ import appeng.util.Platform;
 
 public class ContainerFluidLevelEmitter extends ContainerFluidConfigurable
 {
+	public static ContainerType<ContainerFluidLevelEmitter> TYPE;
+
+	private static final PartContainerHelper<ContainerFluidLevelEmitter, PartFluidLevelEmitter> helper
+			= new PartContainerHelper<>(ContainerFluidLevelEmitter::new, PartFluidLevelEmitter.class, SecurityPermissions.BUILD);
+
+	public static ContainerFluidLevelEmitter fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
+	}
+
 	private final PartFluidLevelEmitter lvlEmitter;
 
 	@OnlyIn( Dist.CLIENT )
@@ -26,9 +42,9 @@ public class ContainerFluidLevelEmitter extends ContainerFluidConfigurable
 	@GuiSync( 3 )
 	public long EmitterValue = -1;
 
-	public ContainerFluidLevelEmitter(ContainerType<?> containerType, int id, final PlayerInventory ip, final PartFluidLevelEmitter te )
+	public ContainerFluidLevelEmitter(int id, final PlayerInventory ip, final PartFluidLevelEmitter te )
 	{
-		super( containerType, id,ip, te );
+		super( TYPE, id,ip, te );
 		this.lvlEmitter = te;
 	}
 

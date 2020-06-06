@@ -20,25 +20,27 @@ package appeng.core;
 
 
 import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+import java.util.function.Supplier;
 
+import appeng.block.paint.PaintSplotchesModel;
+import appeng.block.qnb.QnbFormedModel;
 import appeng.bootstrap.components.IClientSetupComponent;
 import appeng.bootstrap.components.IInitComponent;
 import appeng.client.ClientHelper;
-import appeng.client.render.model.AutoRotatingModel;
-import appeng.client.render.model.AutoRotatingModelLoader;
-import appeng.client.render.model.GlassModelLoader;
-import appeng.client.render.model.SkyCompassModelLoader;
+import appeng.client.render.DummyFluidItemModel;
+import appeng.client.render.SimpleModelLoader;
+import appeng.client.render.crafting.CraftingCubeModelLoader;
+import appeng.client.render.model.*;
+import appeng.client.render.spatial.SpatialPylonModel;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.core.worlddata.WorldData;
 import appeng.hooks.TickHandler;
 import appeng.parts.PartPlacement;
+import appeng.server.AECommand;
 import appeng.server.ServerHelper;
-import com.google.gson.Gson;
+import appeng.services.VersionChecker;
+import appeng.services.version.VersionCheckerConfig;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.model.BlockModelDefinition;
-import net.minecraft.client.renderer.model.ModelBakery;
 import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
@@ -49,6 +51,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.client.model.geometry.IModelGeometry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.CrashReportExtender;
@@ -56,15 +59,13 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.config.ModConfig;
 
 import appeng.core.crash.ModCrashEnhancement;
-import appeng.services.export.ExportConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -91,12 +92,12 @@ public final class AppEng
 
 //FIXME	private final Registration registration;
 
-	private File configDirectory;
+	private VersionCheckerConfig versionCheckerConfig = VersionCheckerConfig.create();
 
 	/**
 	 * determined in pre-init but used in init
 	 */
-	private ExportConfig exportConfig;
+	// FIXME private ExportConfig exportConfig;
 
 	public AppEng()
 	{
@@ -128,6 +129,7 @@ public final class AppEng
 		modEventBus.addGenericListener(IRecipeSerializer.class, registration::registerRecipeSerializers);
 		modEventBus.addListener(registration::registerParticleFactories);
 		modEventBus.addListener(registration::registerTextures);
+		modEventBus.addListener(registration::registerCommands);
 
 		modEventBus.addListener(this::commonSetup);
 
@@ -150,15 +152,38 @@ public final class AppEng
 		definitions.getRegistry().getBootstrapComponents( IInitComponent.class ).forEachRemaining(IInitComponent::initialize);
 
 		Registration.setupInternalRegistries();
+
+		if( versionCheckerConfig.isVersionCheckingEnabled() )
+		{
+			final VersionChecker versionChecker = new VersionChecker( versionCheckerConfig );
+			final Thread versionCheckerThread = new Thread( versionChecker );
+
+			this.startService( "AE2 VersionChecker", versionCheckerThread );
+		}
+
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	private void clientSetup(FMLClientSetupEvent event) {
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();
 		definitions.getRegistry().getBootstrapComponents( IClientSetupComponent.class ).forEachRemaining(IClientSetupComponent::setup);
-		ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "glass"), GlassModelLoader.INSTANCE);
-		ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "sky_compass"), SkyCompassModelLoader.INSTANCE);
+
+		addBuiltInModel("glass", GlassModel::new);
+		addBuiltInModel("sky_compass", SkyCompassModel::new);
+		addBuiltInModel("dummy_fluid_item", DummyFluidItemModel::new);
+		addBuiltInModel("memory_card", MemoryCardModel::new);
+		addBuiltInModel("biometric_card", BiometricCardModel::new);
+		addBuiltInModel("drive", DriveModel::new);
+		addBuiltInModel("color_applicator", ColorApplicatorModel::new);
+		addBuiltInModel("spatial_pylon", SpatialPylonModel::new);
+		addBuiltInModel("paint_splotches", PaintSplotchesModel::new);
+		addBuiltInModel("quantum_bridge_formed", QnbFormedModel::new);
+		ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "crafting_cube"), CraftingCubeModelLoader.INSTANCE);
 		ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "auto_rotating"), AutoRotatingModelLoader.INSTANCE);
+	}
+
+	private static <T extends IModelGeometry<T>> void addBuiltInModel(String id, Supplier<T> modelFactory) {
+		ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, id), new SimpleModelLoader<T>(modelFactory));
 	}
 
 	@Nonnull
@@ -205,7 +230,6 @@ public final class AppEng
 //		AEConfig.init( configFile );
 //		FacadeConfig.init( facadeFile );
 //
-//		final VersionCheckerConfig versionCheckerConfig = new VersionCheckerConfig( versionFile );
 //		this.exportConfig = new ForgeExportConfig( recipeConfiguration );
 //
 //		AELog.info( "Pre Initialization ( started )" );
@@ -225,14 +249,6 @@ public final class AppEng
 //
 //		IntegrationRegistry.INSTANCE.preInit();
 //
-//		if( versionCheckerConfig.isVersionCheckingEnabled() )
-//		{
-//			final VersionChecker versionChecker = new VersionChecker( versionCheckerConfig );
-//			final Thread versionCheckerThread = new Thread( versionChecker );
-//
-//			this.startService( "AE2 VersionChecker", versionCheckerThread );
-//		}
-//
 //		AELog.info( "Pre Initialization ( ended after " + watch.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
 //
 //		// Instantiate all Plugins
@@ -240,16 +256,16 @@ public final class AppEng
 //				Api.INSTANCE );
 //		new PluginLoader().loadPlugins( injectables, event.getAsmData() );
 //	}
-//
-//	private void startService( final String serviceName, final Thread thread )
-//	{
-//		thread.setName( serviceName );
-//		thread.setPriority( Thread.MIN_PRIORITY );
-//
-//		AELog.info( "Starting " + serviceName );
-//		thread.start();
-//	}
-//
+
+	private void startService( final String serviceName, final Thread thread )
+	{
+		thread.setName( serviceName );
+		thread.setPriority( Thread.MIN_PRIORITY );
+
+		AELog.info( "Starting " + serviceName );
+		thread.start();
+	}
+
 //	@EventHandler
 //	private void init( final FMLCommonSetupEvent event )
 //	{
@@ -322,9 +338,4 @@ public final class AppEng
 		TickHandler.INSTANCE.shutdown();
 	}
 
-//	@EventHandler
-//	private void serverStarting( final FMLServerStartingEvent evt )
-//	{
-//		evt.registerServerCommand( new AECommand( evt.getServer() ) );
-//	}
 }

@@ -19,27 +19,9 @@
 package appeng.fluids.client.gui;
 
 
-import java.io.IOException;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-
-import org.lwjgl.input.Mouse;
-
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Slot;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.common.Loader;
-
 import appeng.api.config.Settings;
-import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.util.IConfigManager;
-import appeng.api.util.IConfigurableObject;
 import appeng.client.gui.AEBaseMEGui;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiScrollbar;
@@ -58,6 +40,21 @@ import appeng.fluids.container.slots.IMEFluidSlot;
 import appeng.helpers.InventoryAction;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.util.InputMappings;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.client.gui.GuiUtils;
+
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -65,44 +62,33 @@ import appeng.util.Platform;
  * @version rv6 - 12/05/2018
  * @since rv6 12/05/2018
  */
-public class GuiFluidTerminal extends AEBaseMEGui implements ISortSource, IConfigManagerHost
+public class GuiFluidTerminal extends AEBaseMEGui<ContainerFluidTerminal> implements ISortSource, IConfigManagerHost
 {
 	private final List<SlotFluidME> meFluidSlots = new LinkedList<>();
 	private final FluidRepo repo;
 	private final IConfigManager configSrc;
-	private final ContainerFluidTerminal container;
 	private final int offsetX = 9;
 	private int rows = 6;
 	private int perRow = 9;
-
-	protected ITerminalHost terminal;
 
 	private MEGuiTextField searchField;
 	private GuiImgButton sortByBox;
 	private GuiImgButton sortDirBox;
 
-	public GuiFluidTerminal( final PlayerInventory PlayerInventory, final ITerminalHost te )
-	{
-		this( PlayerInventory, te, new ContainerFluidTerminal( PlayerInventory, te ) );
-	}
-
-	public GuiFluidTerminal( PlayerInventory PlayerInventory, final ITerminalHost te, final ContainerFluidTerminal c )
-	{
-		super( c );
-		this.terminal = te;
+	public GuiFluidTerminal(ContainerFluidTerminal container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 		this.xSize = 185;
 		this.ySize = 222;
 		final GuiScrollbar scrollbar = new GuiScrollbar();
 		this.setScrollBar( scrollbar );
 		this.repo = new FluidRepo( scrollbar, this );
-		this.configSrc = ( (IConfigurableObject) this.inventorySlots ).getConfigManager();
-		( this.container = (ContainerFluidTerminal) this.inventorySlots ).setGui( this );
+		this.configSrc = container.getConfigManager();
+		this.container.setGui( this );
 	}
 
 	@Override
 	public void init()
 	{
-		this.minecraft.player.openContainer = this.inventorySlots;
 		this.guiLeft = ( this.width - this.xSize ) / 2;
 		this.guiTop = ( this.height - this.ySize ) / 2;
 
@@ -115,11 +101,11 @@ public class GuiFluidTerminal extends AEBaseMEGui implements ISortSource, IConfi
 
 		int offset = this.guiTop;
 
-		this.addButton( this.sortByBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_BY, this.configSrc.getSetting( Settings.SORT_BY ) ) );
+		this.sortByBox = this.addButton( new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_BY, this.configSrc.getSetting( Settings.SORT_BY ), this::actionPerformed ) );
 		offset += 20;
 
-		this.addButton( this.sortDirBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_DIRECTION, this.configSrc
-				.getSetting( Settings.SORT_DIRECTION ) ) );
+		this.sortDirBox = this.addButton( new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_DIRECTION, this.configSrc
+				.getSetting( Settings.SORT_DIRECTION ), this::actionPerformed ) );
 
 		for( int y = 0; y < this.rows; y++ )
 		{
@@ -127,7 +113,7 @@ public class GuiFluidTerminal extends AEBaseMEGui implements ISortSource, IConfi
 			{
 				SlotFluidME slot = new SlotFluidME( new InternalFluidSlotME( this.repo, x + y * this.perRow, this.offsetX + x * 18, 18 + y * 18 ) );
 				this.getMeFluidSlots().add( slot );
-				this.inventorySlots.inventorySlots.add( slot );
+				this.container.inventorySlots.add( slot );
 			}
 		}
 		this.setScrollBar();
@@ -141,30 +127,30 @@ public class GuiFluidTerminal extends AEBaseMEGui implements ISortSource, IConfi
 	}
 
 	@Override
-	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
+	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks)
 	{
 		this.bindTexture( this.getBackground() );
 		final int x_width = 197;
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, x_width, 18 );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, x_width, 18, 0 /* FIXME ZINDEX */ );
 
 		for( int x = 0; x < 6; x++ )
 		{
-			this.drawTexturedModalRect( offsetX, offsetY + 18 + x * 18, 0, 18, x_width, 18 );
+			GuiUtils.drawTexturedModalRect( offsetX, offsetY + 18 + x * 18, 0, 18, x_width, 18, 0 /* FIXME ZINDEX */ );
 		}
 
-		this.drawTexturedModalRect( offsetX, offsetY + 16 + 6 * 18, 0, 106 - 18 - 18, x_width, 99 + 77 );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY + 16 + 6 * 18, 0, 106 - 18 - 18, x_width, 99 + 77, 0 /* FIXME ZINDEX */ );
 
 		if( this.searchField != null )
 		{
-			this.searchField.drawTextBox();
+			this.searchField.render(mouseX, mouseY, partialTicks);
 		}
 	}
 
 	@Override
-	public void updateScreen()
+	public void tick()
 	{
 		this.repo.setPower( this.container.isPowered() );
-		super.updateScreen();
+		super.tick();
 	}
 
 	@Override
@@ -172,7 +158,7 @@ public class GuiFluidTerminal extends AEBaseMEGui implements ISortSource, IConfi
 	{
 		final Slot slot = this.getSlot( mouseX, mouseY );
 
-		if( slot != null && slot instanceof IMEFluidSlot && slot.isEnabled() )
+		if( slot instanceof IMEFluidSlot && slot.isEnabled() )
 		{
 			final IMEFluidSlot fluidSlot = (IMEFluidSlot) slot;
 
@@ -181,18 +167,19 @@ public class GuiFluidTerminal extends AEBaseMEGui implements ISortSource, IConfi
 				final IAEFluidStack fluidStack = fluidSlot.getAEFluidStack();
 				final String formattedAmount = NumberFormat.getNumberInstance( Locale.US ).format( fluidStack.getStackSize() / 1000.0 ) + " B";
 
-				final String modName = "" + TextFormatting.BLUE + TextFormatting.ITALIC + Loader.instance()
-						.getIndexedModList()
-						.get( Platform.getModId( fluidStack ) )
-						.getName();
+				// FIXME: Move getting the mod name to platform
+				final String modName = "" + TextFormatting.BLUE + TextFormatting.ITALIC + ModList.get()
+						.getModContainerById( Platform.getModId( fluidStack ) )
+						.map(mc -> mc.getModInfo().getDisplayName())
+						.orElse(null);
 
 				final List<String> list = new ArrayList<>();
 
-				list.add( fluidStack.getFluidStack().getLocalizedName() );
+				list.add( fluidStack.getFluidStack().getDisplayName().getFormattedText() );
 				list.add( formattedAmount );
 				list.add( modName );
 
-				this.drawHoveringText( list, mouseX, mouseY );
+				this.renderTooltip( list, mouseX, mouseY );
 
 				return;
 			}
@@ -200,12 +187,11 @@ public class GuiFluidTerminal extends AEBaseMEGui implements ISortSource, IConfi
 		super.renderHoveredToolTip( mouseX, mouseY );
 	}
 
-	@Override
-	protected void actionPerformed( GuiButton btn ) throws IOException
+	protected void actionPerformed( Button btn )
 	{
 		if( btn instanceof GuiImgButton )
 		{
-			final boolean backwards = Mouse.isButtonDown( 1 );
+			final boolean backwards = minecraft.mouseHelper.isRightDown();
 			final GuiImgButton iBtn = (GuiImgButton) btn;
 
 			if( iBtn.getSetting() != Settings.ACTIONS )
@@ -213,14 +199,7 @@ public class GuiFluidTerminal extends AEBaseMEGui implements ISortSource, IConfi
 				final Enum cv = iBtn.getCurrentValue();
 				final Enum next = Platform.rotateEnum( cv, backwards, iBtn.getSetting().getPossibleValues() );
 
-				try
-				{
-					NetworkHandler.instance().sendToServer( new PacketValueConfig( iBtn.getSetting().name(), next.name() ) );
-				}
-				catch( final IOException e )
-				{
-					AELog.debug( e );
-				}
+				NetworkHandler.instance().sendToServer( new PacketValueConfig( iBtn.getSetting().name(), next.name() ) );
 
 				iBtn.set( next );
 			}
@@ -259,42 +238,55 @@ public class GuiFluidTerminal extends AEBaseMEGui implements ISortSource, IConfi
 	}
 
 	@Override
-	protected void keyTyped( final char character, final int key ) throws IOException
-	{
-		if( !this.checkHotbarKeys( key ) )
+	public boolean charTyped(char character, int keyCode) {
+		if (character == ' ' && this.searchField.getText().isEmpty())
 		{
-			if( character == ' ' && this.searchField.getText().isEmpty() )
-			{
-				return;
-			}
+			// Swallow spaces if the text field is still empty
+			return true;
+		}
 
-			if( this.searchField.textboxKeyTyped( character, key ) )
+		if (this.searchField.charTyped(character, keyCode)) {
+			this.repo.setSearchString( this.searchField.getText() );
+			this.repo.updateView();
+			this.setScrollBar();
+			return true;
+		}
+
+		return super.charTyped(character, keyCode);
+	}
+
+	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_)
+	{
+		InputMappings.Input input = InputMappings.getInputByCode(keyCode, scanCode);
+		if( !this.checkHotbarKeys(input) )
+		{
+			if( this.searchField.keyPressed( keyCode, scanCode, p_keyPressed_3_ ) )
 			{
 				this.repo.setSearchString( this.searchField.getText() );
 				this.repo.updateView();
 				this.setScrollBar();
-			}
-			else
-			{
-				super.keyTyped( character, key );
+				return true;
 			}
 		}
+
+		return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);
 	}
 
 	@Override
-	protected void mouseClicked( final int xCoord, final int yCoord, final int btn ) throws IOException
+	public boolean mouseClicked( final double xCoord, final double yCoord, final int btn )
 	{
-		this.searchField.mouseClicked( xCoord, yCoord, btn );
-
-		if( btn == 1 && this.searchField.isMouseIn( xCoord, yCoord ) )
-		{
-			this.searchField.setText( "" );
-			this.repo.setSearchString( "" );
-			this.repo.updateView();
-			this.setScrollBar();
+		if (this.searchField.mouseClicked( xCoord, yCoord, btn )) {
+			if (btn == 1 && this.searchField.isMouseOver(xCoord, yCoord)) {
+				this.searchField.setText("");
+				this.repo.setSearchString("");
+				this.repo.updateView();
+				this.setScrollBar();
+			}
+			return true;
 		}
 
-		super.mouseClicked( xCoord, yCoord, btn );
+		return super.mouseClicked( xCoord, yCoord, btn );
 	}
 
 	public void postUpdate( final List<IAEFluidStack> list )

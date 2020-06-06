@@ -19,24 +19,6 @@
 package appeng.client.gui.implementations;
 
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import appeng.core.Api;
-import com.google.common.base.Joiner;
-
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
-import org.apache.commons.lang3.time.DurationFormatUtils;
-
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
@@ -50,11 +32,26 @@ import appeng.client.gui.widgets.ISortSource;
 import appeng.container.implementations.ContainerCraftingCPU;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
+import appeng.core.Api;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.util.Platform;
 import appeng.util.ReadableNumberConverter;
+import com.google.common.base.Joiner;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
+import org.apache.commons.lang3.time.DurationFormatUtils;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 public class GuiCraftingCPU extends AEBaseGui<ContainerCraftingCPU> implements ISortSource
@@ -89,7 +86,7 @@ public class GuiCraftingCPU extends AEBaseGui<ContainerCraftingCPU> implements I
 	private IItemList<IAEItemStack> pending = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
 
 	private List<IAEItemStack> visual = new ArrayList<>();
-	private GuiButton cancel;
+	private Button cancel;
 	private int tooltip = -1;
 
 	public GuiCraftingCPU(ContainerCraftingCPU container, PlayerInventory playerInventory, ITextComponent title) {
@@ -109,22 +106,8 @@ public class GuiCraftingCPU extends AEBaseGui<ContainerCraftingCPU> implements I
 		this.visual = new ArrayList<>();
 	}
 
-	@Override
-	protected void actionPerformed( final GuiButton btn ) throws IOException
-	{
-		super.actionPerformed( btn );
-
-		if( this.cancel == btn )
-		{
-			try
-			{
-				NetworkHandler.instance().sendToServer( new PacketValueConfig( "TileCrafting.Cancel", "Cancel" ) );
-			}
-			catch( final IOException e )
-			{
-				AELog.debug( e );
-			}
-		}
+	private void cancel() {
+		NetworkHandler.instance().sendToServer( new PacketValueConfig( "TileCrafting.Cancel", "Cancel" ) );
 	}
 
 	@Override
@@ -132,8 +115,8 @@ public class GuiCraftingCPU extends AEBaseGui<ContainerCraftingCPU> implements I
 	{
 		super.init();
 		this.setScrollBar();
-		this.cancel = new GuiButton( 0, this.guiLeft + CANCEL_LEFT_OFFSET, this.guiTop + this.ySize - CANCEL_TOP_OFFSET, CANCEL_WIDTH, CANCEL_HEIGHT, GuiText.Cancel
-				.getLocal() );
+		this.cancel = new Button(this.guiLeft + CANCEL_LEFT_OFFSET, this.guiTop + this.ySize - CANCEL_TOP_OFFSET, CANCEL_WIDTH, CANCEL_HEIGHT, GuiText.Cancel
+				.getLocal(), btn -> cancel() );
 		this.addButton( this.cancel );
 	}
 
@@ -148,7 +131,7 @@ public class GuiCraftingCPU extends AEBaseGui<ContainerCraftingCPU> implements I
 	@Override
 	public void render(final int mouseX, final int mouseY, final float btn )
 	{
-		this.cancel.enabled = !this.visual.isEmpty();
+		this.cancel.active = !this.visual.isEmpty();
 
 		final int gx = ( this.width - this.xSize ) / 2;
 		final int gy = ( this.height - this.ySize ) / 2;
@@ -216,8 +199,8 @@ public class GuiCraftingCPU extends AEBaseGui<ContainerCraftingCPU> implements I
 			final IAEItemStack refStack = this.visual.get( z );// repo.getReferenceItem( z );
 			if( refStack != null )
 			{
-				GlStateManager.pushMatrix();
-				GlStateManager.scale( 0.5, 0.5, 0.5 );
+				RenderSystem.pushMatrix();
+				RenderSystem.scalef( 0.5f, 0.5f, 0.5f );
 
 				final IAEItemStack stored = this.storage.findPrecise( refStack );
 				final IAEItemStack activeStack = this.active.findPrecise( refStack );
@@ -298,7 +281,7 @@ public class GuiCraftingCPU extends AEBaseGui<ContainerCraftingCPU> implements I
 					}
 				}
 
-				GlStateManager.popMatrix();
+				RenderSystem.popMatrix();
 				final int posX = x * ( 1 + SECTION_LENGTH ) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 19;
 				final int posY = y * offY + ITEMSTACK_TOP_OFFSET;
 
@@ -306,7 +289,7 @@ public class GuiCraftingCPU extends AEBaseGui<ContainerCraftingCPU> implements I
 
 				if( this.tooltip == z - viewStart )
 				{
-					dspToolTip = Platform.getItemDisplayName( refStack );
+					dspToolTip = Platform.getItemDisplayName( refStack ).getFormattedText();
 
 					if( lineList.size() > 0 )
 					{
@@ -336,7 +319,7 @@ public class GuiCraftingCPU extends AEBaseGui<ContainerCraftingCPU> implements I
 	}
 
 	@Override
-	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
+	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
 	{
 		this.bindTexture( "guis/craftingcpu.png" );
 		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );

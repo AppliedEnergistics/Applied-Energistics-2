@@ -19,8 +19,12 @@
 package appeng.container.implementations;
 
 
+import appeng.container.ContainerLocator;
+import appeng.container.helper.PartContainerHelper;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
@@ -39,12 +43,25 @@ import appeng.util.Platform;
 public class ContainerFormationPlane extends ContainerUpgradeable
 {
 
+	public static ContainerType<ContainerFormationPlane> TYPE;
+
+	private static final PartContainerHelper<ContainerFormationPlane, PartFormationPlane> helper
+			= new PartContainerHelper<>(ContainerFormationPlane::new, PartFormationPlane.class, SecurityPermissions.BUILD);
+
+	public static ContainerFormationPlane fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
+	}
+
 	@GuiSync( 6 )
 	public YesNo placeMode;
 
-	public ContainerFormationPlane(ContainerType<?> containerType, int id, final PlayerInventory ip, final PartFormationPlane te )
+	public ContainerFormationPlane(int id, final PlayerInventory ip, final PartFormationPlane te )
 	{
-		super( containerType, id, ip, te );
+		super( TYPE, id, ip, te );
 	}
 
 	@Override

@@ -19,6 +19,10 @@
 package appeng.parts.reporting;
 
 
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerInscriber;
+import appeng.container.implementations.ContainerInterfaceTerminal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
@@ -57,7 +61,7 @@ public class PartInterfaceTerminal extends AbstractPartDisplay
 		{
 			if( Platform.isServer() )
 			{
-				// FIXME Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_INTERFACE_TERMINAL );
+				ContainerOpener.openContainer(ContainerInterfaceTerminal.TYPE, player, ContainerLocator.forPart(this));
 			}
 		}
 		return true;

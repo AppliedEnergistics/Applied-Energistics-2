@@ -19,10 +19,13 @@
 package appeng.container.implementations;
 
 
+import appeng.container.ContainerLocator;
+import appeng.container.helper.PartOrTileContainerHelper;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -38,6 +41,19 @@ import appeng.util.Platform;
 public class ContainerPriority extends AEBaseContainer
 {
 
+public static ContainerType<ContainerPriority> TYPE;
+
+	private static final PartOrTileContainerHelper<ContainerPriority, IPriorityHost> helper
+			= new PartOrTileContainerHelper<>(ContainerPriority::new, IPriorityHost.class, SecurityPermissions.BUILD);
+
+	public static ContainerPriority fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
+	}
+
 	private final IPriorityHost priHost;
 
 	@OnlyIn( Dist.CLIENT )
@@ -45,9 +61,9 @@ public class ContainerPriority extends AEBaseContainer
 	@GuiSync( 2 )
 	public long PriorityValue = -1;
 
-	public ContainerPriority(ContainerType<?> containerType, int id, final PlayerInventory ip, final IPriorityHost te )
+	public ContainerPriority(int id, final PlayerInventory ip, final IPriorityHost te )
 	{
-		super( containerType, id, ip, (TileEntity) ( te instanceof TileEntity ? te : null ), (IPart) ( te instanceof IPart ? te : null ) );
+		super( TYPE, id, ip, (TileEntity) ( te instanceof TileEntity ? te : null ), (IPart) ( te instanceof IPart ? te : null ) );
 		this.priHost = te;
 	}
 

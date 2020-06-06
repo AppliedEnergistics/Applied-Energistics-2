@@ -19,25 +19,10 @@
 package appeng.client.gui.implementations;
 
 
-import java.io.IOException;
-import java.util.List;
-
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
-import org.lwjgl.input.Mouse;
-
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
-
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
-import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiImgButton;
@@ -49,6 +34,14 @@ import appeng.container.implementations.ContainerNetworkStatus;
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
+
+import java.util.List;
 
 
 public class GuiNetworkStatus extends AEBaseGui<ContainerNetworkStatus> implements ISortSource
@@ -71,26 +64,18 @@ public class GuiNetworkStatus extends AEBaseGui<ContainerNetworkStatus> implemen
 	}
 
 	@Override
-	protected void actionPerformed( final GuiButton btn ) throws IOException
-	{
-		super.actionPerformed( btn );
-
-		final boolean backwards = Mouse.isButtonDown( 1 );
-
-		if( btn == this.units )
-		{
-			AEConfig.instance().nextPowerUnit( backwards );
-			this.units.set( AEConfig.instance().selectedPowerUnit() );
-		}
-	}
-
-	@Override
 	public void init()
 	{
 		super.init();
 
-		this.units = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.POWER_UNITS, AEConfig.instance().selectedPowerUnit() );
+		this.units = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.POWER_UNITS, AEConfig.instance().selectedPowerUnit(), btn -> selectNextUnit() );
 		this.addButton( this.units );
+	}
+
+	private void selectNextUnit() {
+		final boolean backwards = minecraft.mouseHelper.isRightDown();
+		AEConfig.instance().nextPowerUnit( backwards );
+		this.units.set( AEConfig.instance().selectedPowerUnit() );
 	}
 
 	@Override
@@ -160,8 +145,8 @@ public class GuiNetworkStatus extends AEBaseGui<ContainerNetworkStatus> implemen
 			final IAEItemStack refStack = this.repo.getReferenceItem( z );
 			if( refStack != null )
 			{
-				GlStateManager.pushMatrix();
-				GlStateManager.scale( 0.5, 0.5, 0.5 );
+				RenderSystem.pushMatrix();
+				RenderSystem.scalef( 0.5f, 0.5f, 0.5f );
 
 				String str = Long.toString( refStack.getStackSize() );
 				if( refStack.getStackSize() >= 10000 )
@@ -173,13 +158,13 @@ public class GuiNetworkStatus extends AEBaseGui<ContainerNetworkStatus> implemen
 				this.font.drawString( str, (int) ( ( x * sectionLength + xo + sectionLength - 19 - ( w * 0.5 ) ) * 2 ), ( y * 18 + yo + 6 ) * 2,
 						4210752 );
 
-				GlStateManager.popMatrix();
+				RenderSystem.popMatrix();
 				final int posX = x * sectionLength + xo + sectionLength - 18;
 				final int posY = y * 18 + yo;
 
 				if( this.tooltip == z - viewStart )
 				{
-					toolTip = Platform.getItemDisplayName( refStack );
+					toolTip = Platform.getItemDisplayName( refStack ).getFormattedText();
 
 					toolTip += ( '\n' + GuiText.Installed.getLocal() + ": " + ( refStack.getStackSize() ) );
 					if( refStack.getCountRequestable() > 0 )
@@ -210,7 +195,7 @@ public class GuiNetworkStatus extends AEBaseGui<ContainerNetworkStatus> implemen
 	}
 
 	@Override
-	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
+	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
 	{
 		this.bindTexture( "guis/networkstatus.png" );
 		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );
@@ -237,11 +222,11 @@ public class GuiNetworkStatus extends AEBaseGui<ContainerNetworkStatus> implemen
 	}
 
 	@Override
-	protected void renderToolTip( final ItemStack stack, final int x, final int y )
+	protected void renderTooltip( final ItemStack stack, final int x, final int y )
 	{
 		final Slot s = this.getSlot( x, y );
 
-		if( s instanceof SlotME && stack != null )
+		if( s instanceof SlotME && !stack.isEmpty() )
 		{
 			IAEItemStack myStack = null;
 
@@ -256,8 +241,7 @@ public class GuiNetworkStatus extends AEBaseGui<ContainerNetworkStatus> implemen
 
 			if( myStack != null )
 			{
-				ITooltipFlag.TooltipFlags tooltipFlag = this.minecraft.gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL;
-				List<String> currentToolTip = stack.getTooltip( this.minecraft.player, tooltipFlag );
+				List<String> currentToolTip = getTooltipFromItem(stack);
 
 				while( currentToolTip.size() > 1 )
 				{
@@ -271,7 +255,7 @@ public class GuiNetworkStatus extends AEBaseGui<ContainerNetworkStatus> implemen
 			}
 		}
 
-		super.renderToolTip( stack, x, y );
+		super.renderTooltip( stack, x, y );
 	}
 
 	@Override

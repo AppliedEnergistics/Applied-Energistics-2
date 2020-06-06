@@ -19,8 +19,12 @@
 package appeng.container.implementations;
 
 
+import appeng.container.ContainerLocator;
+import appeng.container.helper.TileContainerHelper;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FullnessMode;
@@ -38,14 +42,27 @@ import appeng.util.Platform;
 public class ContainerIOPort extends ContainerUpgradeable
 {
 
+public static ContainerType<ContainerIOPort> TYPE;
+
+	private static final TileContainerHelper<ContainerIOPort, TileIOPort> helper
+			= new TileContainerHelper<>(ContainerIOPort::new, TileIOPort.class, SecurityPermissions.BUILD);
+
+	public static ContainerIOPort fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		return helper.fromNetwork(windowId, inv, buf);
+	}
+
+	public static boolean open(PlayerEntity player, ContainerLocator locator) {
+		return helper.open(player, locator);
+	}
+
 	@GuiSync( 2 )
 	public FullnessMode fMode = FullnessMode.EMPTY;
 	@GuiSync( 3 )
 	public OperationMode opMode = OperationMode.EMPTY;
 
-	public ContainerIOPort(ContainerType<?> containerType, int id, final PlayerInventory ip, final TileIOPort te )
+	public ContainerIOPort(int id, final PlayerInventory ip, final TileIOPort te )
 	{
-		super( containerType, id, ip, te );
+		super( TYPE, id, ip, te );
 	}
 
 	@Override

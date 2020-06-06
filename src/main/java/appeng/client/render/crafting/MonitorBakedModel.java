@@ -19,15 +19,14 @@
 package appeng.client.render.crafting;
 
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.Direction;
-import net.minecraftforge.common.property.IExtendedBlockState;
-
 import appeng.api.util.AEColor;
 import appeng.block.crafting.BlockCraftingMonitor;
 import appeng.client.render.cablebus.CubeBuilder;
+import appeng.tile.crafting.TileCraftingMonitorTile;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.Direction;
+import net.minecraftforge.client.model.data.IModelData;
 
 
 /**
@@ -50,9 +49,9 @@ class MonitorBakedModel extends CraftingCubeBakedModel
 
 	private final TextureAtlasSprite lightBrightTexture;
 
-	MonitorBakedModel( VertexFormat format, TextureAtlasSprite ringCorner, TextureAtlasSprite ringHor, TextureAtlasSprite ringVer, TextureAtlasSprite chassisTexture, TextureAtlasSprite baseTexture, TextureAtlasSprite lightDarkTexture, TextureAtlasSprite lightMediumTexture, TextureAtlasSprite lightBrightTexture )
+	MonitorBakedModel( TextureAtlasSprite ringCorner, TextureAtlasSprite ringHor, TextureAtlasSprite ringVer, TextureAtlasSprite chassisTexture, TextureAtlasSprite baseTexture, TextureAtlasSprite lightDarkTexture, TextureAtlasSprite lightMediumTexture, TextureAtlasSprite lightBrightTexture )
 	{
-		super( format, ringCorner, ringHor, ringVer );
+		super( ringCorner, ringHor, ringVer );
 		this.chassisTexture = chassisTexture;
 		this.baseTexture = baseTexture;
 		this.lightDarkTexture = lightDarkTexture;
@@ -61,9 +60,9 @@ class MonitorBakedModel extends CraftingCubeBakedModel
 	}
 
 	@Override
-	protected void addInnerCube( Direction side, BlockState state, CubeBuilder builder, float x1, float y1, float z1, float x2, float y2, float z2 )
+	protected void addInnerCube(Direction side, BlockState state, IModelData modelData, CubeBuilder builder, float x1, float y1, float z1, float x2, float y2, float z2)
 	{
-		Direction forward = getForward( state );
+		Direction forward = getForward( modelData );
 
 		// For sides other than the front, use the chassis texture
 		if( side != forward )
@@ -77,7 +76,7 @@ class MonitorBakedModel extends CraftingCubeBakedModel
 		builder.addCube( x1, y1, z1, x2, y2, z2 );
 
 		// Now add the three layered light textures
-		AEColor color = getColor( state );
+		AEColor color = getColor( modelData );
 		boolean powered = state.get( BlockCraftingMonitor.POWERED );
 
 		builder.setRenderFullBright( powered );
@@ -96,31 +95,20 @@ class MonitorBakedModel extends CraftingCubeBakedModel
 
 	}
 
-	private static AEColor getColor( BlockState state )
-	{
-		if( state instanceof IExtendedBlockState )
-		{
-			IExtendedBlockState extState = (IExtendedBlockState) state;
-			AEColor color = extState.getValue( BlockCraftingMonitor.COLOR );
-			if( color != null )
-			{
-				return color;
-			}
+	private static AEColor getColor(IModelData modelData) {
+
+		AEColor color = modelData.getData(TileCraftingMonitorTile.COLOR);
+		if (color != null) {
+			return color;
 		}
 
 		return AEColor.TRANSPARENT;
 	}
 
-	private static Direction getForward( BlockState state )
-	{
-		if( state instanceof IExtendedBlockState )
-		{
-			IExtendedBlockState extState = (IExtendedBlockState) state;
-			Direction forward = extState.getValue( BlockCraftingMonitor.FORWARD );
-			if( forward != null )
-			{
-				return forward;
-			}
+	private static Direction getForward(IModelData modelData) {
+		Direction forward = modelData.getData(BlockCraftingMonitor.FORWARD);
+		if (forward != null) {
+			return forward;
 		}
 
 		return Direction.NORTH;

@@ -23,102 +23,31 @@
 package appeng.client.gui.implementations;
 
 
-import java.io.IOException;
-
-import appeng.container.implementations.ContainerCraftingCPU;
-import appeng.core.Api;
-import net.minecraft.util.text.ITextComponent;
-import org.lwjgl.input.Mouse;
-
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-
-import appeng.api.definitions.IDefinitions;
-import appeng.api.definitions.IParts;
-import appeng.api.storage.ITerminalHost;
-import appeng.client.gui.widgets.GuiTabButton;
 import appeng.container.implementations.ContainerCraftingStatus;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
-
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.core.sync.packets.PacketValueConfig;
-import appeng.helpers.WirelessTerminalGuiObject;
-import appeng.parts.reporting.PartCraftingTerminal;
-import appeng.parts.reporting.PartPatternTerminal;
-import appeng.parts.reporting.PartTerminal;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+
+import java.io.IOException;
 
 
 public class GuiCraftingStatus extends GuiCraftingCPU
 {
 
-	private GuiButton selectCPU;
+	private final ContainerCraftingStatus craftingStatus;
 
-	private GuiTabButton originalGuiBtn;
-	private GuiBridge originalGui;
-	private ItemStack myIcon = ItemStack.EMPTY;
+	private final AESubGui subGui;
 
-	public GuiCraftingStatus(ContainerCraftingCPU container, PlayerInventory playerInventory, ITextComponent title) {
+	private Button selectCPU;
+
+	public GuiCraftingStatus(ContainerCraftingStatus container, PlayerInventory playerInventory, ITextComponent title) {
 		super(container, playerInventory, title);
-
-		final Object target = this.container.getTarget();
-		final IDefinitions definitions = Api.INSTANCE.definitions();
-		final IParts parts = definitions.parts();
-
-		if( target instanceof WirelessTerminalGuiObject )
-		{
-			this.myIcon = definitions.items().wirelessTerminal().maybeStack( 1 ).orElse( ItemStack.EMPTY );
-
-			this.originalGui = GuiBridge.GUI_WIRELESS_TERM;
-		}
-
-		if( target instanceof PartTerminal )
-		{
-			this.myIcon = parts.terminal().maybeStack( 1 ).orElse( ItemStack.EMPTY );
-
-			this.originalGui = GuiBridge.GUI_ME;
-		}
-
-		if( target instanceof PartCraftingTerminal )
-		{
-			this.myIcon = parts.craftingTerminal().maybeStack( 1 ).orElse( ItemStack.EMPTY );
-
-			this.originalGui = GuiBridge.GUI_CRAFTING_TERMINAL;
-		}
-
-		if( target instanceof PartPatternTerminal )
-		{
-			this.myIcon = parts.patternTerminal().maybeStack( 1 ).orElse( ItemStack.EMPTY );
-
-			this.originalGui = GuiBridge.GUI_PATTERN_TERMINAL;
-		}
-	}
-
-	@Override
-	protected void actionPerformed( final GuiButton btn ) throws IOException
-	{
-		super.actionPerformed( btn );
-
-		final boolean backwards = Mouse.isButtonDown( 1 );
-
-		if( btn == this.selectCPU )
-		{
-			try
-			{
-				NetworkHandler.instance().sendToServer( new PacketValueConfig( "Terminal.Cpu", backwards ? "Prev" : "Next" ) );
-			}
-			catch( final IOException e )
-			{
-				AELog.debug( e );
-			}
-		}
-
-		if( btn == this.originalGuiBtn )
-		{
-			NetworkHandler.instance().sendToServer( new PacketSwitchGuis( this.originalGui ) );
-		}
+		this.craftingStatus = container;
+		this.subGui = new AESubGui(this, container.getTarget());
 	}
 
 	@Override
@@ -126,17 +55,14 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 	{
 		super.init();
 
-		this.selectCPU = new GuiButton( 0, this.guiLeft + 8, this.guiTop + this.ySize - 25, 150, 20, GuiText.CraftingCPU
-				.getLocal() + ": " + GuiText.NoCraftingCPUs );
-		// selectCPU.enabled = false;
+		this.selectCPU = new Button(this.guiLeft + 8, this.guiTop + this.ySize - 25, 150, 20, GuiText.CraftingCPU
+				.getLocal() + ": " + GuiText.NoCraftingCPUs, btn -> selectNextCpu() );
 		this.addButton( this.selectCPU );
 
-		if( !this.myIcon.isEmpty() )
-		{
-			this.addButton(
-					this.originalGuiBtn = new GuiTabButton( this.guiLeft + 213, this.guiTop - 4, this.myIcon, this.myIcon.getDisplayName(), this.itemRender ) );
-			this.originalGuiBtn.setHideEdge( 13 );
-		}
+		subGui.addBackButton(btn -> {
+			addButton(btn);
+			btn.setHideEdge( 13 );
+		}, 213, -4);
 	}
 
 	@Override
@@ -150,25 +76,25 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 	{
 		String btnTextText = GuiText.NoCraftingJobs.getLocal();
 
-		if( this.container.selectedCpu >= 0 )// && status.selectedCpu < status.cpus.size() )
+		if( this.craftingStatus.selectedCpu >= 0 )// && status.selectedCpu < status.cpus.size() )
 		{
-			if( this.container.myName.length() > 0 )
+			if( this.craftingStatus.myName.length() > 0 )
 			{
-				final String name = this.container.myName.substring( 0, Math.min( 20, this.container.myName.length() ) );
+				final String name = this.craftingStatus.myName.substring( 0, Math.min( 20, this.craftingStatus.myName.length() ) );
 				btnTextText = GuiText.CPUs.getLocal() + ": " + name;
 			}
 			else
 			{
-				btnTextText = GuiText.CPUs.getLocal() + ": #" + this.container.selectedCpu;
+				btnTextText = GuiText.CPUs.getLocal() + ": #" + this.craftingStatus.selectedCpu;
 			}
 		}
 
-		if( this.container.noCPU )
+		if( this.craftingStatus.noCPU )
 		{
 			btnTextText = GuiText.NoCraftingJobs.getLocal();
 		}
 
-		this.selectCPU.displayString = btnTextText;
+		this.selectCPU.setMessage(btnTextText);
 	}
 
 	@Override
@@ -176,4 +102,11 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 	{
 		return in; // the cup name is on the button
 	}
+
+	// FIXME: Extract to separate class? Shared with GuiCraftConfirm
+	private void selectNextCpu() {
+		final boolean backwards = minecraft.mouseHelper.isRightDown();
+		NetworkHandler.instance().sendToServer( new PacketValueConfig( "Terminal.Cpu", backwards ? "Prev" : "Next" ) );
+	}
+
 }

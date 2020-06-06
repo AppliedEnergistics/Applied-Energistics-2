@@ -19,27 +19,6 @@
 package appeng.client.gui.implementations;
 
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
-
-import com.google.common.collect.HashMultimap;
-
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiScrollbar;
@@ -47,11 +26,20 @@ import appeng.client.gui.widgets.MEGuiTextField;
 import appeng.client.me.ClientDCInternalInv;
 import appeng.client.me.SlotDisconnected;
 import appeng.container.implementations.ContainerInterfaceTerminal;
+import appeng.core.Api;
 import appeng.core.localization.GuiText;
-import appeng.parts.reporting.PartInterfaceTerminal;
 import appeng.util.Platform;
+import com.google.common.collect.HashMultimap;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
+
+import java.util.*;
 
 
 public class GuiInterfaceTerminal extends AEBaseGui<ContainerInterfaceTerminal>
@@ -147,21 +135,21 @@ public class GuiInterfaceTerminal extends AEBaseGui<ContainerInterfaceTerminal>
 	}
 
 	@Override
-	protected void mouseClicked( final int xCoord, final int yCoord, final int btn ) throws IOException
+	public boolean mouseClicked( final double xCoord, final double yCoord, final int btn )
 	{
-		this.searchField.mouseClicked( xCoord, yCoord, btn );
-
-		if( btn == 1 && this.searchField.isMouseIn( xCoord, yCoord ) )
-		{
-			this.searchField.setText( "" );
-			this.refreshList();
+		if (this.searchField.mouseClicked( xCoord, yCoord, btn )) {
+			if (btn == 1 && this.searchField.isMouseOver(xCoord, yCoord)) {
+				this.searchField.setText("");
+				this.refreshList();
+			}
+			return true;
 		}
 
-		super.mouseClicked( xCoord, yCoord, btn );
+		return super.mouseClicked( xCoord, yCoord, btn );
 	}
 
 	@Override
-	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
+	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
 	{
 		this.bindTexture( "guis/interfaceterminal.png" );
 		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );
@@ -185,29 +173,22 @@ public class GuiInterfaceTerminal extends AEBaseGui<ContainerInterfaceTerminal>
 
 		if( this.searchField != null )
 		{
-			this.searchField.drawTextBox();
+			this.searchField.render(mouseX, mouseY, partialTicks);
 		}
 	}
 
 	@Override
-	protected void keyTyped( final char character, final int key ) throws IOException
-	{
-		if( !this.checkHotbarKeys( key ) )
+	public boolean charTyped(char character, int key) {
+		if( character == ' ' && this.searchField.getText().isEmpty() )
 		{
-			if( character == ' ' && this.searchField.getText().isEmpty() )
-			{
-				return;
-			}
-
-			if( this.searchField.textboxKeyTyped( character, key ) )
-			{
-				this.refreshList();
-			}
-			else
-			{
-				super.keyTyped( character, key );
-			}
+			return true;
 		}
+		if( this.searchField.charTyped( character, key ) )
+		{
+			this.refreshList();
+			return true;
+		}
+		return false;
 	}
 
 	public void postUpdate( final CompoundNBT in )
@@ -341,16 +322,17 @@ public class GuiInterfaceTerminal extends AEBaseGui<ContainerInterfaceTerminal>
 
 		// Potential later use to filter by input
 		// ListNBT inTag = encodedValue.getTagList( "in", 10 );
-		final ListNBT outTag = encodedValue.getTagList( "out", 10 );
+		final ListNBT outTag = encodedValue.getList( "out", 10 );
 
-		for( int i = 0; i < outTag.tagCount(); i++ )
+		for( int i = 0; i < outTag.size(); i++ )
 		{
 
-			final ItemStack parsedItemStack = new ItemStack( outTag.getCompoundTagAt( i ) );
+			final ItemStack parsedItemStack = ItemStack.read( outTag.getCompound( i ) );
 			if( !parsedItemStack.isEmpty() )
 			{
 				final String displayName = Platform
 						.getItemDisplayName( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( parsedItemStack ) )
+						.getString()
 						.toLowerCase();
 				if( displayName.contains( searchTerm ) )
 				{

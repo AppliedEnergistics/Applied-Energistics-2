@@ -21,6 +21,7 @@ package appeng.client.gui.implementations;
 
 import java.io.IOException;
 
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.api.config.SecurityPermissions;
@@ -54,45 +55,8 @@ public class GuiSecurityStation extends GuiMEMonitorable<ContainerSecurityStatio
 		this.setStandardSize( this.xSize );
 	}
 
-	@Override
-	protected void actionPerformed( final net.minecraft.client.gui.GuiButton btn )
-	{
-		super.actionPerformed( btn );
-
-		SecurityPermissions toggleSetting = null;
-
-		if( btn == this.inject )
-		{
-			toggleSetting = SecurityPermissions.INJECT;
-		}
-		if( btn == this.extract )
-		{
-			toggleSetting = SecurityPermissions.EXTRACT;
-		}
-		if( btn == this.craft )
-		{
-			toggleSetting = SecurityPermissions.CRAFT;
-		}
-		if( btn == this.build )
-		{
-			toggleSetting = SecurityPermissions.BUILD;
-		}
-		if( btn == this.security )
-		{
-			toggleSetting = SecurityPermissions.SECURITY;
-		}
-
-		if( toggleSetting != null )
-		{
-			try
-			{
-				NetworkHandler.instance().sendToServer( new PacketValueConfig( "TileSecurityStation.ToggleOption", toggleSetting.name() ) );
-			}
-			catch( final IOException e )
-			{
-				AELog.debug( e );
-			}
-		}
+	private void toggleOption(SecurityPermissions permission) {
+		NetworkHandler.instance().sendToServer( new PacketValueConfig( "TileSecurityStation.ToggleOption", permission.name() ) );
 	}
 
 	@Override
@@ -101,20 +65,20 @@ public class GuiSecurityStation extends GuiMEMonitorable<ContainerSecurityStatio
 		super.init();
 
 		final int top = this.guiTop + this.ySize - 116;
-		this.addButton( this.inject = new GuiToggleButton( this.guiLeft + 56, top, 11 * 16, 12 * 16, SecurityPermissions.INJECT
-				.getTranslationKey(), SecurityPermissions.INJECT.getUnlocalizedTip() ) );
+		this.inject = this.addButton( new GuiToggleButton( this.guiLeft + 56, top, 11 * 16, 12 * 16, SecurityPermissions.INJECT
+				.getTranslatedName(), SecurityPermissions.INJECT.getTranslatedTip(), btn -> toggleOption(SecurityPermissions.INJECT) ) );
 
-		this.addButton( this.extract = new GuiToggleButton( this.guiLeft + 56 + 18, top, 11 * 16 + 1, 12 * 16 + 1, SecurityPermissions.EXTRACT
-				.getTranslationKey(), SecurityPermissions.EXTRACT.getUnlocalizedTip() ) );
+		this.extract = this.addButton( new GuiToggleButton( this.guiLeft + 56 + 18, top, 11 * 16 + 1, 12 * 16 + 1, SecurityPermissions.EXTRACT
+				.getTranslatedName(), SecurityPermissions.EXTRACT.getTranslatedTip(), btn -> toggleOption(SecurityPermissions.EXTRACT ) ) );
 
-		this.addButton( this.craft = new GuiToggleButton( this.guiLeft + 56 + 18 * 2, top, 11 * 16 + 2, 12 * 16 + 2, SecurityPermissions.CRAFT
-				.getTranslationKey(), SecurityPermissions.CRAFT.getUnlocalizedTip() ) );
+		this.craft = this.addButton( new GuiToggleButton( this.guiLeft + 56 + 18 * 2, top, 11 * 16 + 2, 12 * 16 + 2, SecurityPermissions.CRAFT
+				.getTranslatedName(), SecurityPermissions.CRAFT.getTranslatedTip(), btn -> toggleOption(SecurityPermissions.CRAFT ) ) );
 
-		this.addButton( this.build = new GuiToggleButton( this.guiLeft + 56 + 18 * 3, top, 11 * 16 + 3, 12 * 16 + 3, SecurityPermissions.BUILD
-				.getTranslationKey(), SecurityPermissions.BUILD.getUnlocalizedTip() ) );
+		this.build = this.addButton( new GuiToggleButton( this.guiLeft + 56 + 18 * 3, top, 11 * 16 + 3, 12 * 16 + 3, SecurityPermissions.BUILD
+				.getTranslatedName(), SecurityPermissions.BUILD.getTranslatedTip(), btn -> toggleOption(SecurityPermissions.BUILD ) ) );
 
-		this.addButton( this.security = new GuiToggleButton( this.guiLeft + 56 + 18 * 4, top, 11 * 16 + 4, 12 * 16 + 4, SecurityPermissions.SECURITY
-				.getTranslationKey(), SecurityPermissions.SECURITY.getUnlocalizedTip() ) );
+		this.security = this.addButton( new GuiToggleButton( this.guiLeft + 56 + 18 * 4, top, 11 * 16 + 4, 12 * 16 + 4, SecurityPermissions.SECURITY
+				.getTranslatedName(), SecurityPermissions.SECURITY.getTranslatedTip(), btn -> toggleOption(SecurityPermissions.SECURITY ) ) );
 	}
 
 	@Override

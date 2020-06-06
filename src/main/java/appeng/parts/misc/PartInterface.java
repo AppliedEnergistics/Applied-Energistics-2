@@ -22,10 +22,14 @@ package appeng.parts.misc;
 import java.util.EnumSet;
 import java.util.List;
 
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerInterface;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -177,7 +181,7 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	{
 		if( Platform.isServer() )
 		{
-			// FIXME Platform.openGUI( p, this.getTileEntity(), this.getSide(), GuiBridge.GUI_INTERFACE );
+			ContainerOpener.openContainer(ContainerInterface.TYPE, p, ContainerLocator.forPart(this));
 		}
 		return true;
 	}
@@ -307,9 +311,9 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 		return Api.INSTANCE.definitions().parts().iface().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 	}
 
-// FIXME	@Override
-// FIXME	public GuiBridge getGuiBridge()
-// FIXME	{
-// FIXME		return GuiBridge.GUI_INTERFACE;
-// FIXME	}
+	@Override
+	public ContainerType<?> getContainerType()
+	{
+		return ContainerInterface.TYPE;
+	}
 }

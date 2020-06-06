@@ -28,7 +28,6 @@ import appeng.client.gui.widgets.GuiProgressBar;
 import appeng.client.gui.widgets.GuiProgressBar.Direction;
 import appeng.container.implementations.ContainerMAC;
 import appeng.core.localization.GuiText;
-import appeng.tile.crafting.TileMolecularAssembler;
 import net.minecraft.util.text.ITextComponent;
 
 
@@ -54,7 +53,7 @@ public class GuiMAC extends GuiUpgradeable<ContainerMAC>
 	@Override
 	protected void addButtons()
 	{
-		this.redstoneMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
+		this.redstoneMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE, this::actionPerformed );
 		this.addButton( this.redstoneMode );
 	}
 
@@ -66,11 +65,11 @@ public class GuiMAC extends GuiUpgradeable<ContainerMAC>
 	}
 
 	@Override
-	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
+	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
 	{
 		this.pb.x = 148 + this.guiLeft;
 		this.pb.y = 48 + this.guiTop;
-		super.drawBG( offsetX, offsetY, mouseX, mouseY );
+		super.drawBG( offsetX, offsetY, mouseX, mouseY, partialTicks);
 	}
 
 	@Override

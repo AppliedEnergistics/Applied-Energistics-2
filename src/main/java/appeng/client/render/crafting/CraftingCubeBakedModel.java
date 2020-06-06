@@ -19,25 +19,20 @@
 package appeng.client.render.crafting;
 
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
+import appeng.client.render.cablebus.CubeBuilder;
+import appeng.tile.crafting.TileCraftingTile;
+import appeng.util.Platform;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
+import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.Direction;
-import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.client.model.data.IDynamicBakedModel;
+import net.minecraftforge.client.model.data.IModelData;
 
-import appeng.block.crafting.AbstractCraftingUnitBlock;
-import appeng.client.render.cablebus.CubeBuilder;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
 
 
 /**
@@ -45,10 +40,8 @@ import appeng.client.render.cablebus.CubeBuilder;
  * Primarily this base class handles adding the "ring" that frames the multi-block structure and delegates
  * rendering of the "inner" part of each block to the subclasses of this class.
  */
-abstract class CraftingCubeBakedModel implements IBakedModel
+abstract class CraftingCubeBakedModel implements IDynamicBakedModel
 {
-
-	private final VertexFormat format;
 
 	private final TextureAtlasSprite ringCorner;
 
@@ -56,27 +49,25 @@ abstract class CraftingCubeBakedModel implements IBakedModel
 
 	private final TextureAtlasSprite ringVer;
 
-	CraftingCubeBakedModel( VertexFormat format, TextureAtlasSprite ringCorner, TextureAtlasSprite ringHor, TextureAtlasSprite ringVer )
+	CraftingCubeBakedModel( TextureAtlasSprite ringCorner, TextureAtlasSprite ringHor, TextureAtlasSprite ringVer )
 	{
-		this.format = format;
 		this.ringCorner = ringCorner;
 		this.ringHor = ringHor;
 		this.ringVer = ringVer;
 	}
 
+	@Nonnull
 	@Override
-	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, long rand )
-	{
-
+	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData) {
 		if( side == null )
 		{
 			return Collections.emptyList(); // No generic quads for this model
 		}
 
-		EnumSet<Direction> connections = getConnections( state );
+		EnumSet<Direction> connections = getConnections( extraData );
 
 		List<BakedQuad> quads = new ArrayList<>();
-		CubeBuilder builder = new CubeBuilder( this.format, quads );
+		CubeBuilder builder = new CubeBuilder( quads );
 
 		builder.setDrawFaces( EnumSet.of( side ) );
 
@@ -114,7 +105,7 @@ abstract class CraftingCubeBakedModel implements IBakedModel
 				break;
 		}
 
-		this.addInnerCube( side, state, builder, x1, y1, z1, x2, y2, z2 );
+		this.addInnerCube( side, state, extraData, builder, x1, y1, z1, x2, y2, z2 );
 
 		return quads;
 	}
@@ -194,7 +185,7 @@ abstract class CraftingCubeBakedModel implements IBakedModel
 				// drawn in those directions. Since a corner is drawn if the three touching faces dont have adjacent
 				// crafting cube blocks, we'd have to check for a, side, and the perpendicular direction. But in this
 				// block, we've already checked for side (due to face culling) and a (see above).
-				Direction perpendicular = a.rotateAround( side.getAxis() );
+				Direction perpendicular = Platform.rotateAround( a, side );
 				for( Direction cornerCandidate : EnumSet.of( perpendicular, perpendicular.getOpposite() ) )
 				{
 					if( !connections.contains( cornerCandidate ) )
@@ -256,15 +247,9 @@ abstract class CraftingCubeBakedModel implements IBakedModel
 
 	// Retrieve the cube connection state from the block state
 	// If none is present, just assume there are no adjacent crafting cube blocks
-	private static EnumSet<Direction> getConnections( @Nullable BlockState state )
+	private static EnumSet<Direction> getConnections( IModelData modelData )
 	{
-		if( !( state instanceof IExtendedBlockState ) )
-		{
-			return EnumSet.noneOf( Direction.class );
-		}
-
-		IExtendedBlockState extState = (IExtendedBlockState) state;
-		CraftingCubeState cubeState = extState.getValue( AbstractCraftingUnitBlock.STATE );
+		CraftingCubeState cubeState = modelData.getData( TileCraftingTile.STATE );
 		if( cubeState == null )
 		{
 			return EnumSet.noneOf( Direction.class );
@@ -273,7 +258,7 @@ abstract class CraftingCubeBakedModel implements IBakedModel
 		return cubeState.getConnections();
 	}
 
-	protected abstract void addInnerCube( Direction facing, BlockState state, CubeBuilder builder, float x1, float y1, float z1, float x2, float y2, float z2 );
+	protected abstract void addInnerCube(Direction facing, BlockState state, IModelData modelData, CubeBuilder builder, float x1, float y1, float z1, float x2, float y2, float z2);
 
 	@Override
 	public boolean isAmbientOcclusion()
@@ -300,14 +285,13 @@ abstract class CraftingCubeBakedModel implements IBakedModel
 	}
 
 	@Override
-	public ItemCameraTransforms getItemCameraTransforms()
-	{
-		return ItemCameraTransforms.DEFAULT;
+	public boolean func_230044_c_() {
+		return false;
 	}
 
 	@Override
-	public ItemOverrideList getOverrides()
-	{
+	public ItemOverrideList getOverrides() {
 		return ItemOverrideList.EMPTY;
 	}
+
 }

@@ -19,26 +19,6 @@
 package appeng.client.gui.implementations;
 
 
-import java.io.IOException;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import appeng.core.Api;
-import com.google.common.base.Joiner;
-
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
-import org.lwjgl.input.Mouse;
-
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-
-import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
@@ -46,20 +26,31 @@ import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiScrollbar;
 import appeng.container.implementations.ContainerCraftConfirm;
 import appeng.core.AELog;
+import appeng.core.Api;
 import appeng.core.localization.GuiText;
-
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.core.sync.packets.PacketValueConfig;
-import appeng.helpers.WirelessTerminalGuiObject;
-import appeng.parts.reporting.PartCraftingTerminal;
-import appeng.parts.reporting.PartPatternTerminal;
-import appeng.parts.reporting.PartTerminal;
 import appeng.util.Platform;
+import com.google.common.base.Joiner;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.util.InputMappings;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
+
+import java.io.IOException;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 
 public class GuiCraftConfirm extends AEBaseGui<ContainerCraftConfirm>
 {
+
+	private final AESubGui subGui;
 
 	private final int rows = 5;
 
@@ -69,45 +60,24 @@ public class GuiCraftConfirm extends AEBaseGui<ContainerCraftConfirm>
 
 	private final List<IAEItemStack> visual = new ArrayList<>();
 
-	private GuiBridge OriginalGui;
-	private GuiButton cancel;
-	private GuiButton start;
-	private GuiButton selectCPU;
+	private Button cancel;
+	private Button start;
+	private Button selectCPU;
 	private int tooltip = -1;
 
 	public GuiCraftConfirm(ContainerCraftConfirm container, PlayerInventory playerInventory, ITextComponent title) {
 		super(container, playerInventory, title);
+		this.subGui = new AESubGui(this, container.getTarget());
 		this.xSize = 238;
 		this.ySize = 206;
 
 		final GuiScrollbar scrollbar = new GuiScrollbar();
 		this.setScrollBar( scrollbar );
-
-		Object te = container.getTarget();
-		if( te instanceof WirelessTerminalGuiObject )
-		{
-			this.OriginalGui = GuiBridge.GUI_WIRELESS_TERM;
-		}
-
-		if( te instanceof PartTerminal )
-		{
-			this.OriginalGui = GuiBridge.GUI_ME;
-		}
-
-		if( te instanceof PartCraftingTerminal )
-		{
-			this.OriginalGui = GuiBridge.GUI_CRAFTING_TERMINAL;
-		}
-
-		if( te instanceof PartPatternTerminal )
-		{
-			this.OriginalGui = GuiBridge.GUI_PATTERN_TERMINAL;
-		}
 	}
 
 	boolean isAutoStart()
 	{
-		return ( (ContainerCraftConfirm) this.container ).isAutoStart();
+		return this.container.isAutoStart();
 	}
 
 	@Override
@@ -115,30 +85,26 @@ public class GuiCraftConfirm extends AEBaseGui<ContainerCraftConfirm>
 	{
 		super.init();
 
-		this.start = new GuiButton( 0, this.guiLeft + 162, this.guiTop + this.ySize - 25, 50, 20, GuiText.Start.getLocal() );
-		this.start.enabled = false;
+		this.start = new Button(this.guiLeft + 162, this.guiTop + this.ySize - 25, 50, 20, GuiText.Start.getLocal(), btn -> start() );
+		this.start.active = false;
 		this.addButton( this.start );
 
-		this.selectCPU = new GuiButton( 0, this.guiLeft + ( 219 - 180 ) / 2, this.guiTop + this.ySize - 68, 180, 20, GuiText.CraftingCPU
-				.getLocal() + ": " + GuiText.Automatic );
-		this.selectCPU.enabled = false;
+		this.selectCPU = new Button(this.guiLeft + ( 219 - 180 ) / 2, this.guiTop + this.ySize - 68, 180, 20, GuiText.CraftingCPU
+				.getLocal() + ": " + GuiText.Automatic, btn -> selectNextCpu() );
+		this.selectCPU.active = false;
 		this.addButton( this.selectCPU );
 
-		if( this.OriginalGui != null )
-		{
-			this.cancel = new GuiButton( 0, this.guiLeft + 6, this.guiTop + this.ySize - 25, 50, 20, GuiText.Cancel.getLocal() );
-		}
+		subGui.addBackButton(this::addButton, 6, this.ySize - 25, GuiText.Cancel.getLocal());
 
 		this.addButton( this.cancel );
 	}
-
 	@Override
 	public void render(final int mouseX, final int mouseY, final float btn )
 	{
 		this.updateCPUButtonText();
 
-		this.start.enabled = !( this.container.hasNoCPU() || this.isSimulation() );
-		this.selectCPU.enabled = !this.isSimulation();
+		this.start.active = !( this.container.hasNoCPU() || this.isSimulation() );
+		this.selectCPU.active = !this.isSimulation();
 
 		final int gx = ( this.width - this.xSize ) / 2;
 		final int gy = ( this.height - this.ySize ) / 2;
@@ -195,12 +161,12 @@ public class GuiCraftConfirm extends AEBaseGui<ContainerCraftConfirm>
 			btnTextText = GuiText.NoCraftingCPUs.getLocal();
 		}
 
-		this.selectCPU.displayString = btnTextText;
+		this.selectCPU.setMessage(btnTextText);
 	}
 
 	private boolean isSimulation()
 	{
-		return ( (ContainerCraftConfirm) this.container ).isSimulation();
+		return this.container.isSimulation();
 	}
 
 	@Override
@@ -247,8 +213,8 @@ public class GuiCraftConfirm extends AEBaseGui<ContainerCraftConfirm>
 			final IAEItemStack refStack = this.visual.get( z );// repo.getReferenceItem( z );
 			if( refStack != null )
 			{
-				GlStateManager.pushMatrix();
-				GlStateManager.scale( 0.5, 0.5, 0.5 );
+				RenderSystem.pushMatrix();
+				RenderSystem.scalef( 0.5f, 0.5f, 0.5f );
 
 				final IAEItemStack stored = this.storage.findPrecise( refStack );
 				final IAEItemStack pendingStack = this.pending.findPrecise( refStack );
@@ -347,7 +313,7 @@ public class GuiCraftConfirm extends AEBaseGui<ContainerCraftConfirm>
 					}
 				}
 
-				GlStateManager.popMatrix();
+				RenderSystem.popMatrix();
 				final int posX = x * ( 1 + sectionLength ) + xo + sectionLength - 19;
 				final int posY = y * offY + yo;
 
@@ -355,7 +321,7 @@ public class GuiCraftConfirm extends AEBaseGui<ContainerCraftConfirm>
 
 				if( this.tooltip == z - viewStart )
 				{
-					dspToolTip = Platform.getItemDisplayName( refStack );
+					dspToolTip = Platform.getItemDisplayName( refStack ).getFormattedText();
 
 					if( lineList.size() > 0 )
 					{
@@ -392,7 +358,7 @@ public class GuiCraftConfirm extends AEBaseGui<ContainerCraftConfirm>
 	}
 
 	@Override
-	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
+	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
 	{
 		this.setScrollBar();
 		this.bindTexture( "guis/craftingreport.png" );
@@ -533,52 +499,25 @@ public class GuiCraftConfirm extends AEBaseGui<ContainerCraftConfirm>
 	}
 
 	@Override
-	protected void keyTyped( final char character, final int key ) throws IOException
-	{
-		if( !this.checkHotbarKeys( key ) )
+	public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
+		if( !this.checkHotbarKeys( InputMappings.getInputByCode(keyCode, scanCode) ) )
 		{
-			if( key == 28 )
+			if( keyCode == 28 )
 			{
-				this.actionPerformed( this.start );
+				this.start();
+				return true;
 			}
-			super.keyTyped( character, key );
 		}
+		return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);
 	}
 
-	@Override
-	protected void actionPerformed( final GuiButton btn ) throws IOException
-	{
-		super.actionPerformed( btn );
-
-		final boolean backwards = Mouse.isButtonDown( 1 );
-
-		if( btn == this.selectCPU )
-		{
-			try
-			{
-				NetworkHandler.instance().sendToServer( new PacketValueConfig( "Terminal.Cpu", backwards ? "Prev" : "Next" ) );
-			}
-			catch( final IOException e )
-			{
-				AELog.debug( e );
-			}
-		}
-
-		if( btn == this.cancel )
-		{
-			NetworkHandler.instance().sendToServer( new PacketSwitchGuis( this.OriginalGui ) );
-		}
-
-		if( btn == this.start )
-		{
-			try
-			{
-				NetworkHandler.instance().sendToServer( new PacketValueConfig( "Terminal.Start", "Start" ) );
-			}
-			catch( final Throwable e )
-			{
-				AELog.debug( e );
-			}
-		}
+	private void selectNextCpu() {
+		final boolean backwards = minecraft.mouseHelper.isRightDown();
+		NetworkHandler.instance().sendToServer( new PacketValueConfig( "Terminal.Cpu", backwards ? "Prev" : "Next" ) );
 	}
+
+	private void start() {
+		NetworkHandler.instance().sendToServer( new PacketValueConfig( "Terminal.Start", "Start" ) );
+	}
+
 }

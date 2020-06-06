@@ -22,6 +22,11 @@ package appeng.client;
 import java.io.IOException;
 import java.util.*;
 
+import appeng.client.render.effects.*;
+import appeng.core.AEConfig;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketAssemblerAnimation;
+import appeng.core.sync.packets.PacketValueConfig;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -49,6 +54,7 @@ import appeng.server.ServerHelper;
 import appeng.util.Platform;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
 
 
 public class ClientHelper extends ServerHelper
@@ -115,34 +121,35 @@ public class ClientHelper extends ServerHelper
 		}
 	}
 
+	// FIXME: Instead of doing a custom packet and this dispatcher, we can use the vanilla particle system
 	@Override
 	public void spawnEffect( final EffectType effect, final World world, final double posX, final double posY, final double posZ, final Object o )
 	{
-		// FIXME if( AEConfig.instance().isEnableEffects() )
-		// FIXME {
-		// FIXME 	switch( effect )
-		// FIXME 	{
-		// FIXME 		case Assembler:
-		// FIXME 			this.spawnAssembler( world, posX, posY, posZ, o );
-		// FIXME 			return;
-		// FIXME 		case Vibrant:
-		// FIXME 			this.spawnVibrant( world, posX, posY, posZ );
-		// FIXME 			return;
-		// FIXME 		case Crafting:
-		// FIXME 			this.spawnCrafting( world, posX, posY, posZ );
-		// FIXME 			return;
-		// FIXME 		case Energy:
-		// FIXME 			this.spawnEnergy( world, posX, posY, posZ );
-		// FIXME 			return;
-		// FIXME 		case Lightning:
-		// FIXME 			this.spawnLightning( world, posX, posY, posZ );
-		// FIXME 			return;
-		// FIXME 		case LightningArc:
-		// FIXME 			this.spawnLightningArc( world, posX, posY, posZ, (Vec3d) o );
-		// FIXME 			return;
-		// FIXME 		default:
-		// FIXME 	}
-		// FIXME }
+		if( AEConfig.instance().isEnableEffects() )
+		{
+			switch( effect )
+			{
+				case Assembler:
+					this.spawnAssembler( world, posX, posY, posZ, o );
+					return;
+				case Vibrant:
+					this.spawnVibrant( world, posX, posY, posZ );
+					return;
+				case Crafting:
+					this.spawnCrafting( world, posX, posY, posZ );
+					return;
+				case Energy:
+					this.spawnEnergy( world, posX, posY, posZ );
+					return;
+				case Lightning:
+					this.spawnLightning( world, posX, posY, posZ );
+					return;
+				case LightningArc:
+					this.spawnLightningArc( world, posX, posY, posZ, (Vec3d) o );
+					return;
+				default:
+			}
+		}
 	}
 
 	@Override
@@ -218,12 +225,13 @@ public class ClientHelper extends ServerHelper
 //	FIXME	}
 	}
 
+	// FIXME: double check all of these particle spawns, also move any of these that are triggered as part of a packet to the vanilla way of spawning particles from the server directly
 	private void spawnAssembler( final World world, final double posX, final double posY, final double posZ, final Object o )
 	{
-		// FIXME final PacketAssemblerAnimation paa = (PacketAssemblerAnimation) o;
+		final PacketAssemblerAnimation paa = (PacketAssemblerAnimation) o;
 
-		// FIXME final AssemblerFX fx = new AssemblerFX( world, posX, posY, posZ, 0.0D, 0.0D, 0.0D, paa.rate, paa.is );
-		// FIXME Minecraft.getInstance().particles.addEffect( fx );
+		final AssemblerFX fx = new AssemblerFX( world, posX, posY, posZ, 0.0D, 0.0D, 0.0D, paa.rate, paa.is.asItemStackRepresentation() );
+		Minecraft.getInstance().particles.addEffect( fx );
 	}
 
 	private void spawnVibrant( final World w, final double x, final double y, final double z )
@@ -234,8 +242,7 @@ public class ClientHelper extends ServerHelper
 			final double d1 = ( Platform.getRandomFloat() - 0.5F ) * 0.26D;
 			final double d2 = ( Platform.getRandomFloat() - 0.5F ) * 0.26D;
 
-			// FIXME final VibrantFX fx = new VibrantFX( w, x + d0, y + d1, z + d2, 0.0D, 0.0D, 0.0D );
-			// FIXME Minecraft.getInstance().particles.addEffect( fx );
+			Minecraft.getInstance().particles.addParticle(VibrantFX.TYPE, x + d0, y + d1, z + d2, 0.0D, 0.0D, 0.0D);
 		}
 	}
 
@@ -245,13 +252,7 @@ public class ClientHelper extends ServerHelper
 		final float y = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
 		final float z = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
 
-		// FIXME final CraftingFx fx = new CraftingFx( w, posX + x, posY + y, posZ + z, Items.DIAMOND );
-
-		// FIXME fx.setMotionX( -x * 0.2f );
-		// FIXME fx.setMotionY( -y * 0.2f );
-		// FIXME fx.setMotionZ( -z * 0.2f );
-
-		// FIXME Minecraft.getInstance().particles.addEffect( fx );
+		Minecraft.getInstance().particles.addParticle(CraftingFx.TYPE, posX + x, posY + y, posZ + z, -x * 0.2, -y * 0.2, -z * 0.2);
 	}
 
 	private void spawnEnergy( final World w, final double posX, final double posY, final double posZ )
@@ -260,25 +261,18 @@ public class ClientHelper extends ServerHelper
 		final float y = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
 		final float z = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
 
-		// FIXME final EnergyFx fx = new EnergyFx( w, posX + x, posY + y, posZ + z, Items.DIAMOND );
-
-		// FIXME fx.setMotionX( -x * 0.1f );
-		// FIXME fx.setMotionY( -y * 0.1f );
-		// FIXME fx.setMotionZ( -z * 0.1f );
-
-		// FIXME Minecraft.getInstance().particles.addEffect( fx );
+		Minecraft.getInstance().particles.addParticle(EnergyFx.TYPE, posX + x, posY + y, posZ + z, -x * 0.1, -y * 0.1, -z * 0.1);
 	}
 
 	private void spawnLightning( final World world, final double posX, final double posY, final double posZ )
 	{
-		// FIXME final LightningFX fx = new LightningFX( world, posX, posY + 0.3f, posZ, 0.0f, 0.0f, 0.0f );
-		// FIXME Minecraft.getInstance().particles.addEffect( fx );
+		Minecraft.getInstance().particles.addParticle(LightningFX.TYPE, posX, posY + 0.3f, posZ, 0.0f, 0.0f, 0.0f);
 	}
 
 	private void spawnLightningArc( final World world, final double posX, final double posY, final double posZ, final Vec3d second )
 	{
-		// FIXME final LightningFX fx = new LightningArcFX( world, posX, posY, posZ, second.x, second.y, second.z, 0.0f, 0.0f, 0.0f );
-		// FIXME Minecraft.getInstance().particles.addEffect( fx );
+		final LightningFX fx = new LightningArcFX( world, posX, posY, posZ, second.x, second.y, second.z, 0.0f, 0.0f, 0.0f );
+		Minecraft.getInstance().particles.addEffect( fx );
 	}
 
 	private void wheelEvent( final InputEvent.MouseScrollEvent me )
@@ -297,24 +291,10 @@ public class ClientHelper extends ServerHelper
 
 			if( mainHand || offHand )
 			{
-//	FIXME			try
-//	FIXME			{
-//	FIXME				NetworkHandler.instance().sendToServer( new PacketValueConfig( "Item", me.getScrollDelta() > 0 ? "WheelUp" : "WheelDown" ) );
-//	FIXME				me.setCanceled( true );
-//	FIXME			}
-//	FIXME			catch( final IOException e )
-//	FIXME			{
-//	FIXME				AELog.debug( e );
-//	FIXME			}
+				NetworkHandler.instance().sendToServer( new PacketValueConfig( "Item", me.getScrollDelta() > 0 ? "WheelUp" : "WheelDown" ) );
+				me.setCanceled( true );
 			}
 		}
-	}
-
-	@SubscribeEvent
-	public void onTextureStitch( final TextureStitchEvent.Pre event )
-	{
-//		 FIXME ParticleTextures.registerSprite( event );
-//		 FIXME InscriberTESR.registerTexture( event );
 	}
 
 	@Override

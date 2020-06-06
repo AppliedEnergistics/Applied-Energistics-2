@@ -19,6 +19,7 @@
 package appeng.helpers;
 
 
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 
 
@@ -39,6 +40,9 @@ public interface IPriorityHost
 
 	ItemStack getItemStackRepresentation();
 
-	// FIXME Needs to be wired up to the static method in containers somehow
-	// FIXME GuiBridge getGuiBridge();
+	/**
+	 * Used to show the user interface of this part when returning from the priority GUI.
+	 */
+	ContainerType<?> getContainerType();
+
 }

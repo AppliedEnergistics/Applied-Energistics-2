@@ -19,75 +19,44 @@
 package appeng.services.version;
 
 
-import java.io.File;
 import java.util.Date;
 
-import javax.annotation.Nonnull;
-
-import com.google.common.base.Preconditions;
-
-import net.minecraftforge.common.config.Configuration;
-
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.config.ModConfig;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Separate config file to handle the version checker
  */
 public final class VersionCheckerConfig
 {
+
 	private static final int DEFAULT_INTERVAL_HOURS = 24;
 	private static final int MIN_INTERVAL_HOURS = 0;
 	private static final int MAX_INTERVAL_HOURS = 7 * 24;
 
-	@Nonnull
-	private final Configuration config;
+	private final Config config;
 
-	private final boolean isEnabled;
+	private final ForgeConfigSpec spec;
 
-	@Nonnull
-	private final String lastCheck;
-	private final int interval;
-
-	@Nonnull
-	private final String level;
-
-	private final boolean shouldNotifyPlayer;
-	private final boolean shouldPostChangelog;
-
-	/**
-	 * @param file requires fully qualified file in which the config is saved
-	 */
-	public VersionCheckerConfig( @Nonnull final File file )
+	private VersionCheckerConfig(final Config config, ForgeConfigSpec spec)
 	{
-		Preconditions.checkNotNull( file );
-		Preconditions.checkState( !file.isDirectory() );
-
-		this.config = new Configuration( file );
-
-		// initializes default values by caching
-		this.isEnabled = this.config.getBoolean( "enabled", "general", true, "If true, the version checker is enabled. Acts as a master switch." );
-
-		this.lastCheck = this.config.getString( "lastCheck", "cache", "0",
-				"The number of milliseconds since January 1, 1970, 00:00:00 GMT of the last successful check." );
-		this.interval = this.config.getInt( "interval", "cache", DEFAULT_INTERVAL_HOURS, MIN_INTERVAL_HOURS, MAX_INTERVAL_HOURS,
-				"Waits as many hours, until it checks again." );
-
-		this.level = this.config.getString( "level", "channel", "Beta",
-				"Determines the channel level which should be checked for updates. Can be either Stable, Beta or Alpha." );
-
-		this.shouldNotifyPlayer = this.config.getBoolean( "notify", "client", true,
-				"If true, the player is getting a notification, that a new version is available." );
-		this.shouldPostChangelog = this.config.getBoolean( "changelog", "client", true,
-				"If true, the player is getting a notification including changelog. Only happens if notification are enabled." );
+		this.config = config;
+		this.spec = spec;
 	}
 
 	public boolean isVersionCheckingEnabled()
 	{
-		return this.isEnabled;
+		return config.isEnabled.get();
 	}
 
-	public String lastCheck()
+	public long lastCheck()
 	{
-		return this.lastCheck;
+		return config.lastCheck.get();
 	}
 
 	/**
@@ -97,38 +66,93 @@ public final class VersionCheckerConfig
 	{
 		final Date now = new Date();
 		final long nowInMs = now.getTime();
-		final String nowAsString = Long.toString( nowInMs );
-
-		this.config.get( "cache", "lastCheck", "0" ).set( nowAsString );
-
-		this.config.save();
+		this.config.lastCheck.set(nowInMs);
 	}
 
 	public int interval()
 	{
-		return this.interval;
+		return config.interval.get();
 	}
 
 	public String level()
 	{
-		return this.level;
+		return config.level.get();
 	}
 
 	public boolean shouldNotifyPlayer()
 	{
-		return this.shouldNotifyPlayer;
+		return config.shouldNotifyPlayer.get();
 	}
 
 	public boolean shouldPostChangelog()
 	{
-		return this.shouldPostChangelog;
+		return config.shouldPostChangelog.get();
 	}
 
 	public void save()
 	{
-		if( this.config.hasChanged() )
-		{
-			this.config.save();
+		spec.save();
+	}
+
+	public static VersionCheckerConfig create() {
+		final Pair<Config, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Config::new);
+		Config config = specPair.getLeft();
+		ForgeConfigSpec spec = specPair.getRight();
+
+		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, spec);
+
+		return new VersionCheckerConfig(config, spec);
+	}
+
+	private static class Config {
+
+		final ConfigValue<Boolean> isEnabled;
+
+		final ConfigValue<Long> lastCheck;
+
+		final ConfigValue<Integer> interval;
+
+		final ConfigValue<String> level;
+
+		final ForgeConfigSpec.BooleanValue shouldNotifyPlayer;
+
+		final ForgeConfigSpec.BooleanValue shouldPostChangelog;
+
+		public Config(ForgeConfigSpec.Builder builder) {
+			// initializes default values by caching
+			builder.push("general");
+			this.isEnabled = builder
+					.comment("If true, the version checker is enabled. Acts as a master switch.")
+					.define("enabled", true);
+			builder.pop();
+
+			builder.push("cache");
+			this.lastCheck = builder
+					.comment("The number of milliseconds since January 1, 1970, 00:00:00 GMT of the last successful check.")
+					.define("lastCheck", 0L);
+			this.interval = builder
+					.comment("Waits as many hours, until it checks again.")
+					.define( "interval", DEFAULT_INTERVAL_HOURS, val -> {
+						if (!(val instanceof Integer)) {
+							return false;
+						}
+						int intVal = (Integer) val;
+						return (intVal >= MIN_INTERVAL_HOURS) && (intVal <= MAX_INTERVAL_HOURS);
+					});
+			builder.pop();
+
+			builder.push("channel");
+			this.level = builder.comment("Determines the channel level which should be checked for updates. Can be either Stable, Beta or Alpha.")
+					.define("level", "Beta");
+			builder.pop();
+
+			builder.push("client");
+			this.shouldNotifyPlayer = builder.comment("If true, the player is getting a notification, that a new version is available.")
+					.define("notify", true);
+			this.shouldPostChangelog = builder.comment("If true, the player is getting a notification including changelog. Only happens if notification are enabled.")
+					.define("changelog", true);
+			builder.pop();
 		}
 	}
+
 }

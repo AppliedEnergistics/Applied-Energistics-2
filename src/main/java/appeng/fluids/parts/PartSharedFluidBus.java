@@ -19,6 +19,10 @@
 package appeng.fluids.parts;
 
 
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.fluids.container.ContainerFluidIO;
+import appeng.fluids.container.ContainerFluidInterface;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -107,7 +111,7 @@ public abstract class PartSharedFluidBus extends PartUpgradeable implements IGri
 	{
 		if( Platform.isServer() )
 		{
-			// FIXME Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_BUS_FLUID );
+			ContainerOpener.openContainer(ContainerFluidIO.TYPE, player, ContainerLocator.forPart(this));
 		}
 
 		return true;
