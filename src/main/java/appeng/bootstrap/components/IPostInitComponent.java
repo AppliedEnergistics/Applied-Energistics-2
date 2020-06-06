@@ -19,13 +19,11 @@
 package appeng.bootstrap.components;
 
 
-import net.minecraftforge.api.distmarker.Dist;
-
 import appeng.bootstrap.IBootstrapComponent;
 
 
 @FunctionalInterface
 public interface IPostInitComponent extends IBootstrapComponent
 {
-	void postInitialize( Dist dist );
+	void postInitialize();
 }

@@ -27,6 +27,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import appeng.bootstrap.components.IInitComponent;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.IDispenseItemBehavior;
 import net.minecraft.item.Item;
@@ -152,7 +153,7 @@ class ItemDefinitionBuilder implements IItemBuilder
 		// Register custom dispenser behavior if requested
 		if( this.dispenserBehaviorSupplier != null )
 		{
-			this.factory.addBootstrapComponent( (IPostInitComponent) side ->
+			this.factory.addBootstrapComponent( (IInitComponent) () ->
 			{
 				IDispenseItemBehavior behavior = this.dispenserBehaviorSupplier.get();
 				DispenserBlock.registerDispenseBehavior( item, behavior );

@@ -22,6 +22,7 @@ package appeng.core.api.definitions;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.ITileDefinition;
+import appeng.api.features.AEFeature;
 import appeng.block.AEBaseBlockItemChargeable;
 import appeng.block.crafting.*;
 import appeng.block.grindstone.BlockCrank;
@@ -38,14 +39,12 @@ import appeng.block.spatial.BlockSpatialPylon;
 import appeng.block.storage.*;
 import appeng.bootstrap.*;
 import appeng.bootstrap.components.IEntityRegistrationComponent;
-import appeng.bootstrap.components.IPostInitComponent;
-import appeng.bootstrap.components.IPreInitComponent;
+import appeng.bootstrap.components.IInitComponent;
 import appeng.bootstrap.definitions.TileEntityDefinition;
 import appeng.client.render.crafting.CraftingCubeRendering;
 import appeng.client.render.spatial.SpatialPylonRendering;
 import appeng.client.render.tesr.CrankTESR;
 import appeng.client.render.tesr.SkyChestTESR;
-import appeng.api.features.AEFeature;
 import appeng.core.AppEng;
 import appeng.core.features.registries.PartModels;
 import appeng.debug.*;
@@ -79,6 +78,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ToolType;
+
 import static appeng.block.crafting.AbstractCraftingUnitBlock.CraftingUnitType;
 import static appeng.decorative.solid.BlockSkyStone.SkystoneType;
 
@@ -309,7 +309,7 @@ public final class ApiBlocks implements IBlocks
 				.build();
 		this.tinyTNT = registry.block( "tiny_tnt", BlockTinyTNT::new )
 				.features( AEFeature.TINY_TNT )
-				.bootstrap( ( block, item ) -> (IPreInitComponent) side -> DispenserBlock.registerDispenseBehavior( item,
+				.bootstrap( ( block, item ) -> (IInitComponent) () -> DispenserBlock.registerDispenseBehavior( item,
 						new DispenserBehaviorTinyTNT() ) )
 				.bootstrap( ( block, item ) -> (IEntityRegistrationComponent) r ->
 				{
@@ -528,7 +528,7 @@ public final class ApiBlocks implements IBlocks
 				// (handled in BlockCableBus.java and its setupTile())
 				// .tileEntity( TileCableBus.class )
 				// TODO: why the custom registration?
-				.bootstrap( ( block, item ) -> (IPostInitComponent) side -> ( (BlockCableBus) block ).setupTile() )
+				.bootstrap( ( block, item ) -> (IInitComponent) ((BlockCableBus) block)::setupTile)
 				.build();
 
 		this.skyStoneSlab = deco.block( "sky_stone_slab", () -> new SlabBlock( SKYSTONE_PROPERTIES ) )

@@ -19,7 +19,13 @@
 package appeng.core;
 
 
+import appeng.api.config.Upgrades;
+import appeng.api.definitions.IBlocks;
+import appeng.api.definitions.IItems;
+import appeng.api.definitions.IParts;
 import appeng.api.features.IRegistryContainer;
+import appeng.api.features.IWirelessTermHandler;
+import appeng.api.movable.IMovableRegistry;
 import appeng.api.networking.IGridCacheRegistry;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.energy.IEnergyGrid;
@@ -41,7 +47,6 @@ import appeng.client.gui.implementations.GuiCraftingTerm;
 import appeng.client.gui.implementations.GuiDrive;
 import appeng.client.gui.implementations.GuiFormationPlane;
 import appeng.client.gui.implementations.GuiGrinder;
-import appeng.client.gui.implementations.GuiGrinder;
 import appeng.client.gui.implementations.GuiIOPort;
 import appeng.client.gui.implementations.GuiInscriber;
 import appeng.client.gui.implementations.GuiInterface;
@@ -55,10 +60,8 @@ import appeng.client.gui.implementations.GuiNetworkTool;
 import appeng.client.gui.implementations.GuiPatternTerm;
 import appeng.client.gui.implementations.GuiPriority;
 import appeng.client.gui.implementations.GuiQNB;
-import appeng.client.gui.implementations.GuiQNB;
 import appeng.client.gui.implementations.GuiQuartzKnife;
 import appeng.client.gui.implementations.GuiSecurityStation;
-import appeng.client.gui.implementations.GuiSkyChest;
 import appeng.client.gui.implementations.GuiSkyChest;
 import appeng.client.gui.implementations.GuiSpatialIOPort;
 import appeng.client.gui.implementations.GuiStorageBus;
@@ -72,6 +75,7 @@ import appeng.client.render.tesr.SkyChestTESR;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.*;
+import appeng.core.features.registries.P2PTunnelRegistry;
 import appeng.core.features.registries.cell.BasicCellHandler;
 import appeng.core.features.registries.cell.BasicItemCellGuiHandler;
 import appeng.core.features.registries.cell.CreativeCellHandler;
@@ -85,13 +89,13 @@ import appeng.recipes.conditions.FeaturesEnabled;
 import appeng.recipes.game.DisassembleRecipe;
 import appeng.recipes.ingredients.PartIngredientSerializer;
 import appeng.server.AECommand;
+import appeng.tile.AEBaseTile;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.entity.EntityType;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -635,191 +639,186 @@ final class Registration
 //			event.addCapability( new ResourceLocation( "appliedenergistics2:spatial_dimension_manager" ), new SpatialDimensionManager( event.getObject() ) );
 //		}
 //	}
-//
-//	void postInit( final FMLPostInitializationEvent event )
-//	{
-//		final IRegistryContainer registries = Api.INSTANCE.registries();
-//		ApiDefinitions definitions = Api.INSTANCE.definitions();
-//		final IParts parts = definitions.parts();
-//		final IBlocks blocks = definitions.blocks();
-//		final IItems items = definitions.items();
-//
-//		this.registerSpatialDimension();
-//
-//		// default settings..
-//		( (P2PTunnelRegistry) registries.p2pTunnel() ).configure();
-//
-//		// add to localization..
-//		PlayerMessages.values();
-//		GuiText.values();
-//
-//		definitions.getRegistry().getBootstrapComponents( IPostInitComponent.class ).forEachRemaining( b -> b.postInitialize( event.getSide() ) );
-//
-//		// Interface
-//		Upgrades.CRAFTING.registerItem( parts.iface(), 1 );
-//		Upgrades.CRAFTING.registerItem( blocks.iface(), 1 );
-//
-//		// IO Port!
-//		Upgrades.SPEED.registerItem( blocks.iOPort(), 3 );
-//		Upgrades.REDSTONE.registerItem( blocks.iOPort(), 1 );
-//
-//		// Level Emitter!
-//		Upgrades.FUZZY.registerItem( parts.levelEmitter(), 1 );
-//		Upgrades.CRAFTING.registerItem( parts.levelEmitter(), 1 );
-//
-//		// Import Bus
-//		Upgrades.FUZZY.registerItem( parts.importBus(), 1 );
-//		Upgrades.REDSTONE.registerItem( parts.importBus(), 1 );
-//		Upgrades.CAPACITY.registerItem( parts.importBus(), 2 );
-//		Upgrades.SPEED.registerItem( parts.importBus(), 4 );
-//
-//		// Fluid Import Bus
-//		Upgrades.CAPACITY.registerItem( parts.fluidImportBus(), 2 );
-//		Upgrades.REDSTONE.registerItem( parts.fluidImportBus(), 1 );
-//		Upgrades.SPEED.registerItem( parts.fluidImportBus(), 4 );
-//
-//		// Export Bus
-//		Upgrades.FUZZY.registerItem( parts.exportBus(), 1 );
-//		Upgrades.REDSTONE.registerItem( parts.exportBus(), 1 );
-//		Upgrades.CAPACITY.registerItem( parts.exportBus(), 2 );
-//		Upgrades.SPEED.registerItem( parts.exportBus(), 4 );
-//		Upgrades.CRAFTING.registerItem( parts.exportBus(), 1 );
-//
-//		// Fluid Export Bus
-//		Upgrades.CAPACITY.registerItem( parts.fluidExportBus(), 2 );
-//		Upgrades.REDSTONE.registerItem( parts.fluidExportBus(), 1 );
-//		Upgrades.SPEED.registerItem( parts.fluidExportBus(), 4 );
-//
-//		// Storage Cells
-//		Upgrades.FUZZY.registerItem( items.cell1k(), 1 );
-//		Upgrades.INVERTER.registerItem( items.cell1k(), 1 );
-//
-//		Upgrades.FUZZY.registerItem( items.cell4k(), 1 );
-//		Upgrades.INVERTER.registerItem( items.cell4k(), 1 );
-//
-//		Upgrades.FUZZY.registerItem( items.cell16k(), 1 );
-//		Upgrades.INVERTER.registerItem( items.cell16k(), 1 );
-//
-//		Upgrades.FUZZY.registerItem( items.cell64k(), 1 );
-//		Upgrades.INVERTER.registerItem( items.cell64k(), 1 );
-//
-//		Upgrades.FUZZY.registerItem( items.portableCell(), 1 );
-//		Upgrades.INVERTER.registerItem( items.portableCell(), 1 );
-//
-//		Upgrades.FUZZY.registerItem( items.viewCell(), 1 );
-//		Upgrades.INVERTER.registerItem( items.viewCell(), 1 );
-//
-//		// Storage Bus
-//		Upgrades.FUZZY.registerItem( parts.storageBus(), 1 );
-//		Upgrades.INVERTER.registerItem( parts.storageBus(), 1 );
-//		Upgrades.CAPACITY.registerItem( parts.storageBus(), 5 );
-//
-//		// Storage Bus Fluids
-//		Upgrades.INVERTER.registerItem( parts.fluidStorageBus(), 1 );
-//		Upgrades.CAPACITY.registerItem( parts.fluidStorageBus(), 5 );
-//
-//		// Formation Plane
-//		Upgrades.FUZZY.registerItem( parts.formationPlane(), 1 );
-//		Upgrades.INVERTER.registerItem( parts.formationPlane(), 1 );
-//		Upgrades.CAPACITY.registerItem( parts.formationPlane(), 5 );
-//
-//		// Matter Cannon
-//		Upgrades.FUZZY.registerItem( items.massCannon(), 1 );
-//		Upgrades.INVERTER.registerItem( items.massCannon(), 1 );
-//		Upgrades.SPEED.registerItem( items.massCannon(), 4 );
-//
-//		// Molecular Assembler
-//		Upgrades.SPEED.registerItem( blocks.molecularAssembler(), 5 );
-//
-//		// Inscriber
-//		Upgrades.SPEED.registerItem( blocks.inscriber(), 3 );
-//
-//		// Wireless Terminal Handler
-//		items.wirelessTerminal().maybeItem().ifPresent( terminal -> registries.wireless().registerWirelessHandler( (IWirelessTermHandler) terminal ) );
-//
-//		// Charge Rates
-//		items.chargedStaff().maybeItem().ifPresent( chargedStaff -> registries.charger().addChargeRate( chargedStaff, 320d ) );
-//		items.portableCell().maybeItem().ifPresent( chargedStaff -> registries.charger().addChargeRate( chargedStaff, 800d ) );
-//		items.colorApplicator().maybeItem().ifPresent( colorApplicator -> registries.charger().addChargeRate( colorApplicator, 800d ) );
-//		items.wirelessTerminal().maybeItem().ifPresent( terminal -> registries.charger().addChargeRate( terminal, 8000d ) );
-//		items.entropyManipulator().maybeItem().ifPresent( entropyManipulator -> registries.charger().addChargeRate( entropyManipulator, 8000d ) );
-//		items.massCannon().maybeItem().ifPresent( massCannon -> registries.charger().addChargeRate( massCannon, 8000d ) );
-//		blocks.energyCell().maybeItem().ifPresent( cell -> registries.charger().addChargeRate( cell, 8000d ) );
-//		blocks.energyCellDense().maybeItem().ifPresent( cell -> registries.charger().addChargeRate( cell, 16000d ) );
-//
-//		// add villager trading to black smiths for a few basic materials
-//		if( AEConfig.instance().isFeatureEnabled( AEFeature.VILLAGER_TRADING ) )
-//		{
-//			// TODO: VILLAGER TRADING
-//			// VillagerRegistry.instance().getRegisteredVillagers().registerVillageTradeHandler( 3, new AETrading() );
-//		}
-//
-//		if( AEConfig.instance().isFeatureEnabled( AEFeature.CERTUS_QUARTZ_WORLD_GEN ) )
-//		{
-//			GameRegistry.registerWorldGenerator( new QuartzWorldGen(), 0 );
-//		}
-//
-//		if( AEConfig.instance().isFeatureEnabled( AEFeature.METEORITE_WORLD_GEN ) )
-//		{
-//			GameRegistry.registerWorldGenerator( new MeteoriteWorldGen(), 0 );
-//		}
-//
-//		final IMovableRegistry mr = registries.movable();
-//
-//		/*
-//		 * You can't move bed rock.
-//		 */
-//		mr.blacklistBlock( net.minecraft.block.Blocks.BEDROCK );
-//
-//		/*
-//		 * White List Vanilla...
-//		 */
-//		mr.whiteListTileEntity( net.minecraft.tileentity.BannerTileEntity.class );
-//		mr.whiteListTileEntity( net.minecraft.tileentity.BeaconTileEntity.class );
-//		mr.whiteListTileEntity( net.minecraft.tileentity.BrewingStandTileEntity.class );
-//		mr.whiteListTileEntity( net.minecraft.tileentity.ChestTileEntity.class );
-//		mr.whiteListTileEntity( net.minecraft.tileentity.CommandBlockTileEntity.class );
-//		mr.whiteListTileEntity( net.minecraft.tileentity.ComparatorTileEntity.class );
-//		mr.whiteListTileEntity( net.minecraft.tileentity.DaylightDetectorTileEntity.class );
-//		mr.whiteListTileEntity( net.minecraft.tileentity.DispenserTileEntity.class );
-//		mr.whiteListTileEntity( net.minecraft.tileentity.DropperTileEntity.class );
-//		mr.whiteListTileEntity( net.minecraft.tileentity.EnchantingTableTileEntity.class );
-//		mr.whiteListTileEntity( net.minecraft.tileentity.EnderChestTileEntity.class );
-//		mr.whiteListTileEntity( net.minecraft.tileentity.EndPortalTileEntity.class );
-//		mr.whiteListTileEntity( net.minecraft.tileentity.FurnaceTileEntity.class );
-//		mr.whiteListTileEntity( net.minecraft.tileentity.HopperTileEntity.class );
-//		mr.whiteListTileEntity( net.minecraft.tileentity.MobSpawnerTileEntity.class );
-//		mr.whiteListTileEntity( net.minecraft.tileentity.PistonTileEntity.class );
-//		mr.whiteListTileEntity( net.minecraft.tileentity.ShulkerBoxTileEntity.class );
-//		mr.whiteListTileEntity( net.minecraft.tileentity.SignTileEntity.class );
-//		mr.whiteListTileEntity( net.minecraft.tileentity.SkullTileEntity.class );
-//
-//		/*
-//		 * Whitelist AE2
-//		 */
-//		mr.whiteListTileEntity( AEBaseTile.class );
-//
-//		/*
-//		 * world gen
-//		 */
-//		for( final WorldGenType type : WorldGenType.values() )
-//		{
-//			registries.worldgen().disableWorldGenForProviderID( type, StorageWorldProvider.class );
-//
-//			// nether
-//			registries.worldgen().disableWorldGenForDimension( type, -1 );
-//
-//			// end
-//			registries.worldgen().disableWorldGenForDimension( type, 1 );
-//		}
-//
-//		// whitelist from config
-//		for( final int dimension : AEConfig.instance().getMeteoriteDimensionWhitelist() )
-//		{
-//			registries.worldgen().enableWorldGenForDimension( WorldGenType.METEORITES, dimension );
-//		}
-//	}
-//
+
+	// FIXME LATER
+	public static void postInit()
+	{
+		final IRegistryContainer registries = Api.INSTANCE.registries();
+		ApiDefinitions definitions = Api.INSTANCE.definitions();
+		final IParts parts = definitions.parts();
+		final IBlocks blocks = definitions.blocks();
+		final IItems items = definitions.items();
+
+		// FIXME this.registerSpatialDimension();
+
+		// default settings..
+		( (P2PTunnelRegistry) registries.p2pTunnel() ).configure();
+
+		// Interface
+		Upgrades.CRAFTING.registerItem( parts.iface(), 1 );
+		Upgrades.CRAFTING.registerItem( blocks.iface(), 1 );
+
+		// IO Port!
+		Upgrades.SPEED.registerItem( blocks.iOPort(), 3 );
+		Upgrades.REDSTONE.registerItem( blocks.iOPort(), 1 );
+
+		// Level Emitter!
+		Upgrades.FUZZY.registerItem( parts.levelEmitter(), 1 );
+		Upgrades.CRAFTING.registerItem( parts.levelEmitter(), 1 );
+
+		// Import Bus
+		Upgrades.FUZZY.registerItem( parts.importBus(), 1 );
+		Upgrades.REDSTONE.registerItem( parts.importBus(), 1 );
+		Upgrades.CAPACITY.registerItem( parts.importBus(), 2 );
+		Upgrades.SPEED.registerItem( parts.importBus(), 4 );
+
+		// Fluid Import Bus
+		Upgrades.CAPACITY.registerItem( parts.fluidImportBus(), 2 );
+		Upgrades.REDSTONE.registerItem( parts.fluidImportBus(), 1 );
+		Upgrades.SPEED.registerItem( parts.fluidImportBus(), 4 );
+
+		// Export Bus
+		Upgrades.FUZZY.registerItem( parts.exportBus(), 1 );
+		Upgrades.REDSTONE.registerItem( parts.exportBus(), 1 );
+		Upgrades.CAPACITY.registerItem( parts.exportBus(), 2 );
+		Upgrades.SPEED.registerItem( parts.exportBus(), 4 );
+		Upgrades.CRAFTING.registerItem( parts.exportBus(), 1 );
+
+		// Fluid Export Bus
+		Upgrades.CAPACITY.registerItem( parts.fluidExportBus(), 2 );
+		Upgrades.REDSTONE.registerItem( parts.fluidExportBus(), 1 );
+		Upgrades.SPEED.registerItem( parts.fluidExportBus(), 4 );
+
+		// Storage Cells
+		Upgrades.FUZZY.registerItem( items.cell1k(), 1 );
+		Upgrades.INVERTER.registerItem( items.cell1k(), 1 );
+
+		Upgrades.FUZZY.registerItem( items.cell4k(), 1 );
+		Upgrades.INVERTER.registerItem( items.cell4k(), 1 );
+
+		Upgrades.FUZZY.registerItem( items.cell16k(), 1 );
+		Upgrades.INVERTER.registerItem( items.cell16k(), 1 );
+
+		Upgrades.FUZZY.registerItem( items.cell64k(), 1 );
+		Upgrades.INVERTER.registerItem( items.cell64k(), 1 );
+
+		Upgrades.FUZZY.registerItem( items.portableCell(), 1 );
+		Upgrades.INVERTER.registerItem( items.portableCell(), 1 );
+
+		Upgrades.FUZZY.registerItem( items.viewCell(), 1 );
+		Upgrades.INVERTER.registerItem( items.viewCell(), 1 );
+
+		// Storage Bus
+		Upgrades.FUZZY.registerItem( parts.storageBus(), 1 );
+		Upgrades.INVERTER.registerItem( parts.storageBus(), 1 );
+		Upgrades.CAPACITY.registerItem( parts.storageBus(), 5 );
+
+		// Storage Bus Fluids
+		Upgrades.INVERTER.registerItem( parts.fluidStorageBus(), 1 );
+		Upgrades.CAPACITY.registerItem( parts.fluidStorageBus(), 5 );
+
+		// Formation Plane
+		Upgrades.FUZZY.registerItem( parts.formationPlane(), 1 );
+		Upgrades.INVERTER.registerItem( parts.formationPlane(), 1 );
+		Upgrades.CAPACITY.registerItem( parts.formationPlane(), 5 );
+
+		// Matter Cannon
+		Upgrades.FUZZY.registerItem( items.massCannon(), 1 );
+		Upgrades.INVERTER.registerItem( items.massCannon(), 1 );
+		Upgrades.SPEED.registerItem( items.massCannon(), 4 );
+
+		// Molecular Assembler
+		Upgrades.SPEED.registerItem( blocks.molecularAssembler(), 5 );
+
+		// Inscriber
+		Upgrades.SPEED.registerItem( blocks.inscriber(), 3 );
+
+		// Wireless Terminal Handler
+		items.wirelessTerminal().maybeItem().ifPresent( terminal -> registries.wireless().registerWirelessHandler( (IWirelessTermHandler) terminal ) );
+
+		// Charge Rates
+		items.chargedStaff().maybeItem().ifPresent( chargedStaff -> registries.charger().addChargeRate( chargedStaff, 320d ) );
+		items.portableCell().maybeItem().ifPresent( chargedStaff -> registries.charger().addChargeRate( chargedStaff, 800d ) );
+		items.colorApplicator().maybeItem().ifPresent( colorApplicator -> registries.charger().addChargeRate( colorApplicator, 800d ) );
+		items.wirelessTerminal().maybeItem().ifPresent( terminal -> registries.charger().addChargeRate( terminal, 8000d ) );
+		items.entropyManipulator().maybeItem().ifPresent( entropyManipulator -> registries.charger().addChargeRate( entropyManipulator, 8000d ) );
+		items.massCannon().maybeItem().ifPresent( massCannon -> registries.charger().addChargeRate( massCannon, 8000d ) );
+		blocks.energyCell().maybeItem().ifPresent( cell -> registries.charger().addChargeRate( cell, 8000d ) );
+		blocks.energyCellDense().maybeItem().ifPresent( cell -> registries.charger().addChargeRate( cell, 16000d ) );
+
+// FIXME		// add villager trading to black smiths for a few basic materials
+// FIXME		if( AEConfig.instance().isFeatureEnabled( AEFeature.VILLAGER_TRADING ) )
+// FIXME		{
+// FIXME			// TODO: VILLAGER TRADING
+// FIXME			// VillagerRegistry.instance().getRegisteredVillagers().registerVillageTradeHandler( 3, new AETrading() );
+// FIXME		}
+
+// FIXME		if( AEConfig.instance().isFeatureEnabled( AEFeature.CERTUS_QUARTZ_WORLD_GEN ) )
+// FIXME		{
+// FIXME			GameRegistry.registerWorldGenerator( new QuartzWorldGen(), 0 );
+// FIXME		}
+// FIXME
+// FIXME		if( AEConfig.instance().isFeatureEnabled( AEFeature.METEORITE_WORLD_GEN ) )
+// FIXME		{
+// FIXME			GameRegistry.registerWorldGenerator( new MeteoriteWorldGen(), 0 );
+// FIXME		}
+
+		final IMovableRegistry mr = registries.movable();
+
+		/*
+		 * You can't move bed rock.
+		 */
+		mr.blacklistBlock( net.minecraft.block.Blocks.BEDROCK );
+
+		/*
+		 * White List Vanilla...
+		 */
+		mr.whiteListTileEntity( net.minecraft.tileentity.BannerTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.BeaconTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.BrewingStandTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.ChestTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.CommandBlockTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.ComparatorTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.DaylightDetectorTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.DispenserTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.DropperTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.EnchantingTableTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.EnderChestTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.EndPortalTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.FurnaceTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.HopperTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.MobSpawnerTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.PistonTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.ShulkerBoxTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.SignTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.SkullTileEntity.class );
+
+		/*
+		 * Whitelist AE2
+		 */
+		mr.whiteListTileEntity( AEBaseTile.class );
+
+// FIXME		/*
+// FIXME		 * world gen
+// FIXME		 */
+// FIXME		for( final WorldGenType type : WorldGenType.values() )
+// FIXME		{
+// FIXME			registries.worldgen().disableWorldGenForProviderID( type, StorageWorldProvider.class );
+// FIXME
+// FIXME			// nether
+// FIXME			registries.worldgen().disableWorldGenForDimension( type, -1 );
+// FIXME
+// FIXME			// end
+// FIXME			registries.worldgen().disableWorldGenForDimension( type, 1 );
+// FIXME		}
+// FIXME
+// FIXME		// whitelist from config
+// FIXME		for( final int dimension : AEConfig.instance().getMeteoriteDimensionWhitelist() )
+// FIXME		{
+// FIXME			registries.worldgen().enableWorldGenForDimension( WorldGenType.METEORITES, dimension );
+// FIXME		}
+	}
+
 //	private static class ModelLoaderWrapper implements IModelRegistry
 //	{
 //

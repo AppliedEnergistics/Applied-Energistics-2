@@ -26,6 +26,7 @@ import appeng.block.paint.PaintSplotchesModel;
 import appeng.block.qnb.QnbFormedModel;
 import appeng.bootstrap.components.IClientSetupComponent;
 import appeng.bootstrap.components.IInitComponent;
+import appeng.bootstrap.components.IPostInitComponent;
 import appeng.client.ClientHelper;
 import appeng.client.render.DummyFluidItemModel;
 import appeng.client.render.SimpleModelLoader;
@@ -150,8 +151,10 @@ public final class AppEng
 
 		ApiDefinitions definitions = Api.INSTANCE.definitions();
 		definitions.getRegistry().getBootstrapComponents( IInitComponent.class ).forEachRemaining(IInitComponent::initialize);
+		definitions.getRegistry().getBootstrapComponents( IPostInitComponent.class ).forEachRemaining(IPostInitComponent::postInitialize);
 
 		Registration.setupInternalRegistries();
+		Registration.postInit();
 
 		if( versionCheckerConfig.isVersionCheckingEnabled() )
 		{
