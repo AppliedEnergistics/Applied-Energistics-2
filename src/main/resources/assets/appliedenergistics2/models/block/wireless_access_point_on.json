@@ -1,5 +1,5 @@
 {
-    "ae2_uvl_marker": true,
+    "loader": "appliedenergistics2:uvlightmap",
     "ambientocclusion": false,
     "textures": {
         "torch": "appliedenergistics2:block/wireless_access_point_on"

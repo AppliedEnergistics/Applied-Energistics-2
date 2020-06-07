@@ -194,6 +194,7 @@ public final class AppEng
 		addBuiltInModel("paint_splotches", PaintSplotchesModel::new);
 		addBuiltInModel("quantum_bridge_formed", QnbFormedModel::new);
 		ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "crafting_cube"), CraftingCubeModelLoader.INSTANCE);
+		ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "uvlightmap"), UVLModelLoader.INSTANCE);
 	}
 
 	private static <T extends IModelGeometry<T>> void addBuiltInModel(String id, Supplier<T> modelFactory) {

@@ -1,5 +1,5 @@
 {
-    "ae2_uvl_marker": true,
+    "loader": "appliedenergistics2:uvlightmap",
     "textures": {
         "lights": "appliedenergistics2:parts/monitor_light"
     },

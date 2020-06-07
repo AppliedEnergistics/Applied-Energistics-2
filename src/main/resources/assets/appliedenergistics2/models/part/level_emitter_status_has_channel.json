@@ -1,5 +1,5 @@
 {
-    "ae2_uvl_marker": true,
+    "loader": "appliedenergistics2:uvlightmap",
     "textures": {
         "indicator": "appliedenergistics2:parts/monitor_sides_status_has_channel"
     },

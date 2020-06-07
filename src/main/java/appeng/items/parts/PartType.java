@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import appeng.fluids.parts.*;
+import appeng.parts.p2p.*;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.client.renderer.model.ModelResourceLocation;
@@ -59,10 +60,6 @@ import appeng.parts.networking.PartCableSmart;
 import appeng.parts.networking.PartDenseCableCovered;
 import appeng.parts.networking.PartDenseCableSmart;
 import appeng.parts.networking.PartQuartzFiber;
-import appeng.parts.p2p.PartP2PFEPower;
-import appeng.parts.p2p.PartP2PLight;
-import appeng.parts.p2p.PartP2PRedstone;
-import appeng.parts.p2p.PartP2PTunnelME;
 import appeng.parts.reporting.PartConversionMonitor;
 import appeng.parts.reporting.PartCraftingTerminal;
 import appeng.parts.reporting.PartDarkPanel;
@@ -251,35 +248,35 @@ public enum PartType
 		}
 	},
 
-// FIXME	P2P_TUNNEL_ITEMS( 462, "p2p_tunnel_items", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_ITEMS ), EnumSet
-// FIXME			.noneOf( IntegrationType.class ), PartP2PItems.class, GuiText.ItemTunnel )
-// FIXME	{
-// FIXME		@Override
-// FIXME		String getTranslationKey()
-// FIXME		{
-// FIXME			return "p2p_tunnel";
-// FIXME		}
-// FIXME	},
-// FIXME
-// FIXME	P2P_TUNNEL_FLUIDS( 463, "p2p_tunnel_fluids", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_FLUIDS ), EnumSet
-// FIXME			.noneOf( IntegrationType.class ), PartP2PFluids.class, GuiText.FluidTunnel )
-// FIXME	{
-// FIXME		@Override
-// FIXME		String getTranslationKey()
-// FIXME		{
-// FIXME			return "p2p_tunnel";
-// FIXME		}
-// FIXME	},
-// FIXME
-// FIXME	P2P_TUNNEL_IC2( 465, "p2p_tunnel_ic2", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_EU ), EnumSet
-// FIXME			.of( IntegrationType.IC2 ), PartP2PIC2Power.class, GuiText.EUTunnel )
-// FIXME	{
-// FIXME		@Override
-// FIXME		String getTranslationKey()
-// FIXME		{
-// FIXME			return "p2p_tunnel";
-// FIXME		}
-// FIXME	},
+	P2P_TUNNEL_ITEMS( 462, "p2p_tunnel_items", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_ITEMS ), EnumSet
+			.noneOf( IntegrationType.class ), PartP2PItems.class, GuiText.ItemTunnel )
+	{
+		@Override
+		String getTranslationKey()
+		{
+			return "p2p_tunnel";
+		}
+	},
+
+	P2P_TUNNEL_FLUIDS( 463, "p2p_tunnel_fluids", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_FLUIDS ), EnumSet
+			.noneOf( IntegrationType.class ), PartP2PFluids.class, GuiText.FluidTunnel )
+	{
+		@Override
+		String getTranslationKey()
+		{
+			return "p2p_tunnel";
+		}
+	},
+
+//FIXME	P2P_TUNNEL_IC2( 465, "p2p_tunnel_ic2", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_EU ), EnumSet
+//FIXME			.of( IntegrationType.IC2 ), PartP2PIC2Power.class, GuiText.EUTunnel )
+//FIXME	{
+//FIXME		@Override
+//FIXME		String getTranslationKey()
+//FIXME		{
+//FIXME			return "p2p_tunnel";
+//FIXME		}
+//FIXME	},
 
 	P2P_TUNNEL_LIGHT( 467, "p2p_tunnel_light", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_LIGHT ), EnumSet
 			.noneOf( IntegrationType.class ), PartP2PLight.class, GuiText.LightTunnel )

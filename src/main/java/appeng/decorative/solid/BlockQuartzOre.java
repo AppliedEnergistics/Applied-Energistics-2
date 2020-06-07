@@ -31,12 +31,6 @@ public class BlockQuartzOre extends AEBaseBlock
 		super(props);
 	}
 
-// FIXME	@Override
-//	public BlockRenderLayer getBlockLayer()
-//	{
-//		return BlockRenderLayer.CUTOUT;
-//	}
-
 	// FIXME: Loot Tables
 //	@Override
 //	public int quantityDropped( BlockState state, int fortune, Random rand )

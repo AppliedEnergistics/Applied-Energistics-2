@@ -1,5 +1,5 @@
 {
-    "ae2_uvl_marker": true,
+    "loader": "appliedenergistics2:uvlightmap",
     "parent": "block/block",
     "textures": {
         "block": "block/stone",
@@ -95,7 +95,7 @@
                 0,
                 0
             ],
-            "shade": false,
+            "shade": true,
             "to": [
                 16,
                 16,

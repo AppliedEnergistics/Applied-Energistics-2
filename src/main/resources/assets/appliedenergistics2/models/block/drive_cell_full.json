@@ -1,5 +1,5 @@
 {
-    "ae2_uvl_marker": true,
+    "loader": "appliedenergistics2:uvlightmap",
     "textures": {
         "front": "appliedenergistics2:block/drive_cell_states"
     },

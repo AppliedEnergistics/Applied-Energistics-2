@@ -60,17 +60,12 @@ sourceSets {
     api
     main {
         java {
-            exclude 'appeng/client/render/model/UVLModelLoader.java'
-            exclude 'appeng/client/core/api/imc/**'
-            exclude 'appeng/core/IMCHandler.java'
             exclude 'appeng/recipes/handlers/**'
             exclude 'appeng/worldgen/**'
-            exclude 'appeng/services/export/**'
             exclude 'appeng/spatial/StorageChunkProvider.java'
             exclude 'appeng/spatial/StorageHelper.java'
             exclude 'appeng/spatial/CachedPlane.java'
             exclude 'appeng/spatial/StorageWorldProvider.java'
-            exclude 'appeng/parts/p2p/PartP2PFluids.java'
         }
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output

@@ -19,378 +19,181 @@
 package appeng.client.render.model;
 
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+import com.google.gson.*;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.TransformationMatrix;
+import net.minecraft.client.renderer.model.*;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.resources.IResourceManager;
+import net.minecraft.util.Direction;
+import net.minecraft.util.JSONUtils;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.IModelBuilder;
+import net.minecraftforge.client.model.IModelConfiguration;
+import net.minecraftforge.client.model.IModelLoader;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.client.model.geometry.IModelGeometry;
+import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
+import net.minecraftforge.client.model.pipeline.VertexLighterFlat;
+import net.minecraftforge.common.model.TransformationHelper;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
+import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
-import javax.annotation.Nullable;
 
-import com.google.common.base.Charsets;
-import com.google.common.base.Throwables;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.block.model.ModelBlock;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.BlockFaceUV;
-import net.minecraft.client.renderer.model.BlockPart;
-import net.minecraft.client.renderer.model.BlockPartFace;
-import net.minecraft.client.renderer.model.BlockPartRotation;
-import net.minecraft.client.renderer.model.FaceBakery;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.model.ItemOverride;
-import net.minecraft.client.renderer.model.ItemTransformVec3f;
-import net.minecraft.client.renderer.model.ModelBakery;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.resources.IResource;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.ICustomModelLoader;
-import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.client.model.animation.ModelBlockAnimation;
-import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
-import net.minecraftforge.client.model.pipeline.VertexLighterFlat;
-import net.minecraftforge.common.model.IModelState;
-import net.minecraftforge.common.model.ITransformation;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
-
-import appeng.client.render.VertexFormats;
-
-
-public enum UVLModelLoader implements ICustomModelLoader
+public class UVLModelLoader implements IModelLoader<UVLModelLoader.UVLModelWrapper>
 {
-	INSTANCE;
 
-	private static final Gson gson = new Gson();
+	public static final UVLModelLoader INSTANCE = new UVLModelLoader();
 
-	private static final Constructor<? extends IModel> vanillaModelWrapper;
-	private static final Field faceBakery;
-	private static final Object vanillaLoader;
-	private static final MethodHandle loaderGetter;
-
-	static
-	{
-		try
-		{
-			Field modifiers = Field.class.getDeclaredField( "modifiers" );
-			modifiers.setAccessible( true );
-
-			faceBakery = ReflectionHelper.findField( ModelBakery.class, "faceBakery", "field_177607_l" );
-			modifiers.set( faceBakery, faceBakery.getModifiers() & ( ~Modifier.FINAL ) );
-
-			Class clas = Class.forName( ModelLoader.class.getName() + "$VanillaModelWrapper" );
-			vanillaModelWrapper = clas.getDeclaredConstructor( ModelLoader.class, ResourceLocation.class, ModelBlock.class, boolean.class,
-					ModelBlockAnimation.class );
-			vanillaModelWrapper.setAccessible( true );
-
-			Class<?> vanillaLoaderClass = Class.forName( ModelLoader.class.getName() + "$VanillaLoader" );
-			Field instanceField = vanillaLoaderClass.getField( "INSTANCE" );
-			// Static field
-			vanillaLoader = instanceField.get( null );
-			Field loaderField = vanillaLoaderClass.getDeclaredField( "loader" );
-			loaderField.setAccessible( true );
-			loaderGetter = MethodHandles.lookup().unreflectGetter( loaderField );
-		}
-		catch( Exception e )
-		{
-			throw Throwables.propagate( e );
-		}
-	}
-
-	private static Object deserializer( Class clas )
-	{
-		try
-		{
-			clas = Class.forName( clas.getName() + "$Deserializer" );
-			Constructor constr = clas.getDeclaredConstructor();
-			constr.setAccessible( true );
-			return constr.newInstance();
-		}
-		catch( Exception e )
-		{
-			throw Throwables.propagate( e );
-		}
-	}
-
-	private static <M extends IModel> M vanillaModelWrapper( ModelLoader loader, ResourceLocation location, ModelBlock model, boolean uvlock, ModelBlockAnimation animation )
-	{
-		try
-		{
-			return (M) vanillaModelWrapper.newInstance( loader, location, model, uvlock, animation );
-		}
-		catch( Exception e )
-		{
-			throw Throwables.propagate( e );
-		}
-	}
-
-	private static void setFaceBakery( ModelBakery modelBakery, FaceBakery faceBakery )
-	{
-		try
-		{
-			UVLModelLoader.faceBakery.set( modelBakery, faceBakery );
-		}
-		catch( Exception e )
-		{
-			throw Throwables.propagate( e );
-		}
-	}
-
-	private IResourceManager resourceManager;
-
-	public ModelLoader getLoader()
-	{
-		try
-		{
-			return (ModelLoader) loaderGetter.invoke( vanillaLoader );
-		}
-		catch( Throwable throwable )
-		{
-			throw new RuntimeException( throwable );
-		}
+	@Override
+	public void onResourceManagerReload(IResourceManager resourceManager) {
 	}
 
 	@Override
-	public void onResourceManagerReload( IResourceManager resourceManager )
-	{
-		this.resourceManager = resourceManager;
+	public UVLModelWrapper read(JsonDeserializationContext deserializationContext, JsonObject modelContents) {
+		modelContents.remove("loader");
+		BlockModel blockModel = UVLSERIALIZER.fromJson(modelContents, BlockModel.class);
+		return new UVLModelWrapper(blockModel);
 	}
 
-	@Override
-	public boolean accepts( ResourceLocation modelLocation )
+	final Gson UVLSERIALIZER = (new GsonBuilder())
+			.registerTypeAdapter(BlockModel.class, new ModelLoaderRegistry.ExpandedBlockModelDeserializer())
+			.registerTypeAdapter(BlockPart.class, new BlockPart.Deserializer())
+			.registerTypeAdapter(BlockPartFace.class, new BlockPartFaceOverrideSerializer())
+			.registerTypeAdapter(BlockFaceUV.class, new BlockFaceUV.Deserializer())
+			.registerTypeAdapter(ItemTransformVec3f.class, new ItemTransformVec3f.Deserializer())
+			.registerTypeAdapter(ItemCameraTransforms.class, new ItemCameraTransforms.Deserializer())
+			.registerTypeAdapter(ItemOverride.class, new ItemOverride.Deserializer())
+			.registerTypeAdapter(TransformationMatrix.class, new TransformationHelper.Deserializer())
+			.create();
+
+	private static class BlockPartFaceOverrideSerializer extends BlockPartFace.Deserializer
 	{
-		String modelPath = modelLocation.getResourcePath();
-		if( modelLocation.getResourcePath().startsWith( "models/" ) )
+		@Override
+		public BlockPartFace deserialize( JsonElement p_deserialize_1_, Type p_deserialize_2_, JsonDeserializationContext p_deserialize_3_ ) throws JsonParseException
 		{
-			modelPath = modelPath.substring( "models/".length() );
+			BlockPartFace blockFace = super.deserialize(p_deserialize_1_, p_deserialize_2_, p_deserialize_3_);
+			Pair<Float, Float> uvl = this.parseUVL(p_deserialize_1_.getAsJsonObject());
+			if (uvl != null) {
+				return new BlockPartFaceWithUVL(blockFace.cullFace, blockFace.tintIndex, blockFace.texture, blockFace.blockFaceUV, uvl.getLeft(), uvl.getRight());
+			}
+			return blockFace;
 		}
 
-		try( InputStreamReader io = new InputStreamReader( Minecraft.getInstance()
-				.getResourceManager()
-				.getResource( new ResourceLocation( modelLocation.getResourceDomain(), "models/" + modelPath + ".json" ) )
-				.getInputStream() ) )
+		protected Pair<Float, Float> parseUVL( JsonObject object )
 		{
-			return gson.fromJson( io, UVLMarker.class ).ae2_uvl_marker;
+			if( !object.has( "uvlightmap" ) )
+			{
+				return null;
+			}
+			object = object.get( "uvlightmap" ).getAsJsonObject();
+			return new ImmutablePair<>( JSONUtils.getFloat( object, "sky", 0 ), JSONUtils.getFloat( object, "block", 0 ) );
 		}
-		catch( Exception e )
-		{
-			// Catch-all in case of any JSON parser issues.
-		}
-
-		return false;
 	}
 
-	@Override
-	public IModel loadModel( ResourceLocation modelLocation ) throws Exception
-	{
-		return new UVLModelWrapper( modelLocation );
+	private static class BlockPartFaceWithUVL extends BlockPartFace {
+
+		private final float sky;
+		private final float block;
+
+		public BlockPartFaceWithUVL(@Nullable Direction cullFaceIn, int tintIndexIn, String textureIn, BlockFaceUV blockFaceUVIn, float sky, float block) {
+			super(cullFaceIn, tintIndexIn, textureIn, blockFaceUVIn);
+			this.sky = sky;
+			this.block = block;
+		}
+
+		public float getSky() {
+			return sky;
+		}
+
+		public float getBlock() {
+			return block;
+		}
 	}
 
-	public class UVLModelWrapper implements IModel
+	public static class UVLModelWrapper implements IModelGeometry<UVLModelWrapper>
 	{
-		final Gson UVLSERIALIZER = ( new GsonBuilder() ).registerTypeAdapter( ModelBlock.class, deserializer( ModelBlock.class ) )
-				.registerTypeAdapter( BlockPart.class, deserializer( BlockPart.class ) )
-				.registerTypeAdapter( BlockPartFace.class, new BlockPartFaceOverrideSerializer() )
-				.registerTypeAdapter( BlockFaceUV.class, deserializer( BlockFaceUV.class ) )
-				.registerTypeAdapter( ItemTransformVec3f.class, deserializer( ItemTransformVec3f.class ) )
-				.registerTypeAdapter( ItemCameraTransforms.class, deserializer( ItemCameraTransforms.class ) )
-				.registerTypeAdapter( ItemOverride.class, deserializer( ItemOverride.class ) )
-				.create();
+		private final BlockModel parent;
 
-		private Map<BlockPartFace, Pair<Float, Float>> uvlightmap = new HashMap<>();
-
-		private final IModel parent;
-
-		public UVLModelWrapper( ResourceLocation modelLocation )
+		public UVLModelWrapper( BlockModel parent )
 		{
-			String modelPath = modelLocation.getResourcePath();
-			if( modelLocation.getResourcePath().startsWith( "models/" ) )
-			{
-				modelPath = modelPath.substring( "models/".length() );
-			}
-			ResourceLocation armatureLocation = new ResourceLocation( modelLocation.getResourceDomain(), "armatures/" + modelPath + ".json" );
-			ModelBlockAnimation animation = ModelBlockAnimation.loadVanillaAnimation( UVLModelLoader.this.resourceManager, armatureLocation );
-			ModelBlock model;
-			{
-				Reader reader = null;
-				IResource iresource = null;
-				ModelBlock lvt_5_1_ = null;
-
-				try
-				{
-					String s = modelLocation.getResourcePath();
-
-					iresource = Minecraft.getInstance()
-							.getResourceManager()
-							.getResource(
-									new ResourceLocation( modelLocation.getResourceDomain(), "models/" + modelPath + ".json" ) );
-					reader = new InputStreamReader( iresource.getInputStream(), Charsets.UTF_8 );
-
-					lvt_5_1_ = JsonUtils.gsonDeserialize( this.UVLSERIALIZER, reader, ModelBlock.class, false );
-					lvt_5_1_.name = modelLocation.toString();
-				}
-				catch( IOException e )
-				{
-					e.printStackTrace();
-				}
-				finally
-				{
-					IOUtils.closeQuietly( reader );
-					IOUtils.closeQuietly( iresource );
-				}
-
-				model = lvt_5_1_;
-			}
-
-			this.parent = vanillaModelWrapper( UVLModelLoader.this.getLoader(), modelLocation, model, false, animation );
+			this.parent = parent;
 		}
 
 		@Override
-		public Collection<ResourceLocation> getDependencies()
-		{
-			return this.parent.getDependencies();
-		}
+		public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {
+			TextureAtlasSprite particle = spriteGetter.apply(owner.resolveTexture("particle"));
 
-		@Override
-		public Collection<ResourceLocation> getTextures()
-		{
-			return this.parent.getTextures();
-		}
+			IModelBuilder<?> builder = IModelBuilder.of(owner, overrides, particle);
+			for(BlockPart blockpart : parent.getElements()) {
+				for(Direction direction : blockpart.mapFaces.keySet()) {
+					BlockPartFace blockpartface = blockpart.mapFaces.get(direction);
+					TextureAtlasSprite textureatlassprite1 = spriteGetter.apply(owner.resolveTexture(blockpartface.texture));
+					BakedQuad quad = BlockModel.makeBakedQuad(blockpart, blockpartface, textureatlassprite1, direction, modelTransform, modelLocation);
 
-		@Override
-		public IBakedModel bake( IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
-		{
-			setFaceBakery( UVLModelLoader.this.getLoader(), new FaceBakeryOverride() );
-			IBakedModel model = this.parent.bake( state, format, bakedTextureGetter );
-			setFaceBakery( UVLModelLoader.this.getLoader(), new FaceBakery() );
-			return model;
-		}
+					if (blockpartface instanceof BlockPartFaceWithUVL) {
+						BlockPartFaceWithUVL uvlFace = (BlockPartFaceWithUVL) blockpartface;
+						quad = applyPreBakedLighting(quad, textureatlassprite1, uvlFace.sky, uvlFace.block);
+					}
 
-		@Override
-		public IModelState getDefaultState()
-		{
-			return this.parent.getDefaultState();
-		}
-
-		public class BlockPartFaceOverrideSerializer implements JsonDeserializer<BlockPartFace>
-		{
-			@Override
-			public BlockPartFace deserialize( JsonElement p_deserialize_1_, Type p_deserialize_2_, JsonDeserializationContext p_deserialize_3_ ) throws JsonParseException
-			{
-				JsonObject jsonobject = p_deserialize_1_.getAsJsonObject();
-				Direction Direction = this.parseCullFace( jsonobject );
-				int i = this.parseTintIndex( jsonobject );
-				String s = this.parseTexture( jsonobject );
-				BlockFaceUV blockfaceuv = (BlockFaceUV) p_deserialize_3_.deserialize( jsonobject, BlockFaceUV.class );
-				BlockPartFace blockFace = new BlockPartFace( Direction, i, s, blockfaceuv );
-				UVLModelWrapper.this.uvlightmap.put( blockFace, this.parseUVL( jsonobject ) );
-				return blockFace;
-			}
-
-			protected int parseTintIndex( JsonObject object )
-			{
-				return JsonUtils.getInt( object, "tintindex", -1 );
-			}
-
-			private String parseTexture( JsonObject object )
-			{
-				return JsonUtils.getString( object, "texture" );
-			}
-
-			@Nullable
-			private Direction parseCullFace( JsonObject object )
-			{
-				String s = JsonUtils.getString( object, "cullface", "" );
-				return Direction.byName( s );
-			}
-
-			protected Pair<Float, Float> parseUVL( JsonObject object )
-			{
-				if( !object.has( "uvlightmap" ) )
-				{
-					return null;
+					if (blockpartface.cullFace == null) {
+						builder.addGeneralQuad(quad);
+					} else {
+						builder.addFaceQuad(
+								modelTransform.getRotation().rotateTransform(blockpartface.cullFace),
+								quad);
+					}
 				}
-				object = object.get( "uvlightmap" ).getAsJsonObject();
-				return new ImmutablePair<>( JsonUtils.getFloat( object, "sky", 0 ), JsonUtils.getFloat( object, "block", 0 ) );
 			}
+			return builder.build();
 		}
 
-		public class FaceBakeryOverride extends FaceBakery
-		{
-
-			@Override
-			public BakedQuad makeBakedQuad( Vector3f posFrom, Vector3f posTo, BlockPartFace face, TextureAtlasSprite sprite, Direction facing, ITransformation modelRotationIn, BlockPartRotation partRotation, boolean uvLocked, boolean shade )
-			{
-				BakedQuad quad = super.makeBakedQuad( posFrom, posTo, face, sprite, facing, modelRotationIn, partRotation, uvLocked, shade );
-
-				Pair<Float, Float> brightness = UVLModelWrapper.this.uvlightmap.get( face );
-				if( brightness != null )
+		private BakedQuad applyPreBakedLighting(BakedQuad quad, TextureAtlasSprite sprite, float sky, float block) {
+				// FIXME: just piping through the quads and manipulating uv index 2 directly seems way easier than this
+				BakedQuadBuilder builder = new BakedQuadBuilder(sprite);
+				VertexLighterFlat trans = new VertexLighterFlat( Minecraft.getInstance().getBlockColors() )
 				{
-					VertexFormat newFormat = DefaultVertexFormats.BLOCK;
-					UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder( newFormat );
-					VertexLighterFlat trans = new VertexLighterFlat( Minecraft.getInstance().getBlockColors() )
+
+					@Override
+					protected void updateLightmap( float[] normal, float[] lightmap, float x, float y, float z )
 					{
+						lightmap[0] = block;
+						lightmap[1] = sky;
+					}
 
-						@Override
-						protected void updateLightmap( float[] normal, float[] lightmap, float x, float y, float z )
-						{
-							lightmap[0] = brightness.getRight();
-							lightmap[1] = brightness.getLeft();
-						}
-
-						@Override
-						public void setQuadTint( int tint )
-						{
-							// Tint requires a block state which we don't have at this point
-						}
-					};
-					trans.setParent( builder );
-					quad.pipe( trans );
-					builder.setQuadTint( quad.getTintIndex() );
-					builder.setQuadOrientation( quad.getFace() );
-					builder.setTexture( quad.getSprite() );
-					builder.setApplyDiffuseLighting( false );
-					return builder.build();
-				}
-				else
-				{
-					return quad;
-				}
-			}
-
+					@Override
+					public void setQuadTint( int tint )
+					{
+						// Tint requires a block state which we don't have at this point
+					}
+				};
+				MatrixStack identity = new MatrixStack();
+				trans.setTransform(identity.getLast());
+				trans.setParent( builder );
+				quad.pipe( trans );
+				builder.setQuadTint( quad.getTintIndex() );
+				builder.setQuadOrientation( quad.getFace() );
+				builder.setApplyDiffuseLighting( false );
+				return builder.build();
 		}
 
-	}
+		@Override
+		public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<com.mojang.datafixers.util.Pair<String, String>> missingTextureErrors) {
+			return parent.getTextures(modelGetter, missingTextureErrors);
+		}
 
-	class UVLMarker
-	{
-		boolean ae2_uvl_marker = false;
 	}
 
 }

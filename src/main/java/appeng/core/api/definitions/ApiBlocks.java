@@ -179,6 +179,13 @@ public final class ApiBlocks implements IBlocks
 				.build();
 		this.quartzOreCharged = registry.block( "charged_quartz_ore", () -> new BlockChargedQuartzOre(QUARTZ_PROPERTIES) )
 				.features( AEFeature.CERTUS_ORE, AEFeature.CHARGED_CERTUS_ORE )
+				.rendering(new BlockRenderingCustomizer() {
+					@Override
+					@OnlyIn(Dist.CLIENT)
+					public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
+						rendering.renderType(RenderType.getCutout());
+					}
+				})
 				.build();
 		this.matrixFrame = registry.block( "matrix_frame", BlockMatrixFrame::new )
 				.features( AEFeature.SPATIAL_IO )

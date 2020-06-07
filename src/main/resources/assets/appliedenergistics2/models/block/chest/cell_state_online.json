@@ -1,5 +1,5 @@
 {
-    "ae2_uvl_marker": true,
+    "loader": "appliedenergistics2:uvlightmap",
     "textures": {
         "backdrop": "appliedenergistics2:block/chest/cell_state_backdrop",
         "state": "appliedenergistics2:block/chest/cell_state_online"

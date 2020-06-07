@@ -19,17 +19,12 @@
 package appeng.core;
 
 
-import java.util.Optional;
-
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IDefinitions;
-import appeng.api.definitions.IItemDefinition;
-import appeng.api.definitions.IItems;
-import appeng.api.definitions.IMaterials;
 
 
 public final class CreativeTab
@@ -44,35 +39,11 @@ public final class CreativeTab
 			@Override
 			public ItemStack createIcon()
 			{
-				return this.getIconItemStack();
-			}
-
-			private ItemStack getIconItemStack()
-			{
 				final IDefinitions definitions = AEApi.instance().definitions();
 				final IBlocks blocks = definitions.blocks();
-				final IItems items = definitions.items();
-				final IMaterials materials = definitions.materials();
-
-				return findFirst(blocks.quartzOre());
-
-				// FIXME return this.findFirst( blocks.controller(), blocks.chest(), blocks.cellWorkbench(), blocks.fluixBlock(), items.cell1k(), items.networkTool(),
-				// FIXME 		materials.fluixCrystal(), materials.certusQuartzCrystal(), materials.skyDust() );
+				return blocks.controller().stack(1);
 			}
 
-			private ItemStack findFirst( final IItemDefinition... choices )
-			{
-				for( final IItemDefinition definition : choices )
-				{
-					Optional<ItemStack> maybeIs = definition.maybeStack( 1 );
-					if( maybeIs.isPresent() )
-					{
-						return maybeIs.get();
-					}
-				}
-
-				return new ItemStack( net.minecraft.block.Blocks.CHEST );
-			}
 		};
 	}
 }

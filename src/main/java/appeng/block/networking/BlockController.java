@@ -144,12 +144,6 @@ public class BlockController extends AEBaseTileBlock<TileController>
 	}
 
 	@Override
-	public BlockState getExtendedState( BlockState state, IBlockReader world, BlockPos pos )
-	{
-		return state;
-	}
-
-	@Override
 	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving )
 	{
 		final TileController tc = this.getTileEntity( world, pos );
