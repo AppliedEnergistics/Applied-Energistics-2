@@ -25,6 +25,8 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -34,9 +36,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
@@ -48,11 +48,9 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 
 	private static final P2PModels MODELS = new P2PModels( "part/p2p/p2p_tunnel_fluids" );
 
-	private static final ThreadLocal<Deque<PartP2PFluids>> DEPTH = new ThreadLocal<>();
-	private static final FluidTankProperties[] ACTIVE_TANK = { new FluidTankProperties( null, 10000, true, false ) };
-	private static final FluidTankProperties[] INACTIVE_TANK = { new FluidTankProperties( null, 0, false, false ) };
+	private static final ThreadLocal<Deque<PartP2PFluids>> DEPTH = new ThreadLocal<>();;
 
-	private IFluidHandler cachedTank;
+	private LazyOptional<IFluidHandler> cachedTank;
 	private int tmpUsed;
 
 	public PartP2PFluids( final ItemStack is )
@@ -111,23 +109,34 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 	}
 
 	@Override
-	public IFluidTankProperties[] getTankProperties()
+	public int getTanks()
 	{
-		if( !this.isOutput() )
-		{
-			final PartP2PFluids tun = this.getInput();
-			if( tun != null )
-			{
-				return ACTIVE_TANK;
-			}
-		}
-
-		return INACTIVE_TANK;
+		return 0;
 	}
 
 	@Override
-	public int fill( FluidStack resource, boolean doFill )
+	@Nonnull
+	public FluidStack getFluidInTank( int tank )
 	{
+		return FluidStack.EMPTY;
+	}
+
+	@Override
+	public int getTankCapacity( int tank )
+	{
+		return 1000;
+	}
+
+	@Override
+	public boolean isFluidValid( int tank, @Nonnull FluidStack stack )
+	{
+		return false;
+	}
+
+	@Override
+	public int fill( FluidStack resource, FluidAction action )
+	{
+
 		final Deque<PartP2PFluids> stack = this.getDepth();
 
 		for( final PartP2PFluids t : stack )
@@ -148,10 +157,10 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 		while( i.hasNext() )
 		{
 			final PartP2PFluids l = i.next();
-			final IFluidHandler tank = l.getTarget();
+			final IFluidHandler tank = l.getTarget().orElse( null );
 			if( tank != null )
 			{
-				l.tmpUsed = tank.fill( resource.copy(), false );
+				l.tmpUsed = tank.fill( resource.copy(), FluidAction.SIMULATE );
 			}
 			else
 			{
@@ -178,7 +187,7 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 			return 0;
 		}
 
-		if( !doFill )
+		if( action == FluidAction.EXECUTE )
 		{
 			if( stack.pop() != this )
 			{
@@ -204,10 +213,10 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 				insert.setAmount( available );
 			}
 
-			final IFluidHandler tank = l.getTarget();
+			final IFluidHandler tank = l.getTarget().orElse( null );
 			if( tank != null )
 			{
-				l.tmpUsed = tank.fill( insert.copy(), true );
+				l.tmpUsed = tank.fill( insert.copy(), action );
 			}
 			else
 			{
@@ -227,15 +236,17 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 	}
 
 	@Override
-	public FluidStack drain( FluidStack resource, boolean doDrain )
+	@Nonnull
+	public FluidStack drain( FluidStack resource, FluidAction action )
 	{
-		return null;
+		return FluidStack.EMPTY;
 	}
 
 	@Override
-	public FluidStack drain( int maxDrain, boolean doDrain )
+	@Nonnull
+	public FluidStack drain( int maxDrain, FluidAction action )
 	{
-		return null;
+		return FluidStack.EMPTY;
 	}
 
 	private Deque<PartP2PFluids> getDepth()
@@ -258,7 +269,7 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 		{
 			for( final PartP2PFluids l : this.getOutputs() )
 			{
-				final IFluidHandler handler = l.getTarget();
+				final IFluidHandler handler = l.getTarget().orElse( null );
 
 				if( handler != null )
 				{
@@ -274,7 +285,7 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 		return outs;
 	}
 
-	private IFluidHandler getTarget()
+	private LazyOptional<IFluidHandler> getTarget()
 	{
 		if( !this.getProxy().isActive() )
 		{
@@ -288,7 +299,7 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 
 		final TileEntity te = this.getTile().getWorld().getTileEntity( this.getTile().getPos().offset( this.getSide().getFacing() ) );
 
-		if( te != null && te.hasCapability( CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, this.getSide().getFacing().getOpposite() ) )
+		if( te != null && te.getCapability( CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, this.getSide().getFacing().getOpposite() ).isPresent() )
 		{
 			return this.cachedTank = te.getCapability( CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
 					this.getSide().getFacing().getOpposite() );
@@ -296,5 +307,7 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 
 		return null;
 	}
+
+
 
 }
