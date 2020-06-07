@@ -42,8 +42,6 @@ import appeng.hooks.TickHandler;
 import appeng.parts.PartPlacement;
 import appeng.server.AECommand;
 import appeng.server.ServerHelper;
-import appeng.services.VersionChecker;
-import appeng.services.version.VersionCheckerConfig;
 import com.google.common.base.Stopwatch;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
@@ -98,8 +96,6 @@ public final class AppEng
 	private static AppEng INSTANCE;
 
 //FIXME	private final Registration registration;
-
-	private VersionCheckerConfig versionCheckerConfig = VersionCheckerConfig.create();
 
 	/**
 	 * determined in pre-init but used in init
@@ -163,14 +159,6 @@ public final class AppEng
 
 		Registration.setupInternalRegistries();
 		Registration.postInit();
-
-		if( versionCheckerConfig.isVersionCheckingEnabled() )
-		{
-			final VersionChecker versionChecker = new VersionChecker( versionCheckerConfig );
-			final Thread versionCheckerThread = new Thread( versionChecker );
-
-			this.startService( "AE2 VersionChecker", versionCheckerThread );
-		}
 
 		registerNetworkHandler();
 
