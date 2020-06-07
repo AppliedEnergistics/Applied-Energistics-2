@@ -92,26 +92,6 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 		super(container, playerInventory, title);
 	}
 
-	protected static String join( final Collection<String> toolTip, final String delimiter )
-	{
-		final Joiner joiner = Joiner.on( delimiter );
-
-		return joiner.join( toolTip );
-	}
-
-	protected int getQty( final Button btn )
-	{
-		try
-		{
-			final DecimalFormat df = new DecimalFormat( "+#;-#" );
-			return df.parse( btn.getMessage() ).intValue();
-		}
-		catch( final ParseException e )
-		{
-			return 0;
-		}
-	}
-
 	@Override
 	public void init()
 	{
@@ -157,6 +137,7 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 			this.drawTooltip( c, mouseX - this.guiLeft, mouseY - this.guiTop );
 		}
 		RenderSystem.popMatrix();
+		RenderSystem.enableDepthTest();
 
 		this.renderHoveredToolTip( mouseX, mouseY );
 
@@ -182,11 +163,9 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 
 			if( this.isPointInRegion( left, top, slot.getWidth(), slot.getHeight(), mouseX, mouseY ) && slot.canClick( this.minecraft.player ) )
 			{
-				RenderSystem.disableLighting();
 				RenderSystem.colorMask( true, true, true, false );
 				this.fillGradient( left, top, right, bottom, -2130706433, -2130706433 );
 				RenderSystem.colorMask( true, true, true, true );
-				RenderSystem.enableLighting();
 			}
 		}
 	}
@@ -390,45 +369,38 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 			return;
 		}
 
-// FIXME		if( slot instanceof SlotPatternTerm )
-// FIXME		{
-// FIXME			if( mouseButton == 6 )
-// FIXME			{
-// FIXME				return; // prevent weird double clicks..
-// FIXME			}
-// FIXME
-// FIXME			try
-// FIXME			{
-// FIXME				NetworkHandler.instance().sendToServer( ( (SlotPatternTerm) slot ).getRequest( hasShiftDown() ) );
-// FIXME			}
-// FIXME			catch( final IOException e )
-// FIXME			{
-// FIXME				AELog.debug( e );
-// FIXME			}
-// FIXME		}
-// FIXME		else if( slot instanceof SlotCraftingTerm )
-// FIXME		{
-// FIXME			if( mouseButton == 6 )
-// FIXME			{
-// FIXME				return; // prevent weird double clicks..
-// FIXME			}
-// FIXME
-// FIXME			InventoryAction action = null;
-// FIXME			if( hasShiftDown() )
-// FIXME			{
-// FIXME				action = InventoryAction.CRAFT_SHIFT;
-// FIXME			}
-// FIXME			else
-// FIXME			{
-// FIXME				// Craft stack on right-click, craft single on left-click
-// FIXME				action = ( mouseButton == 1 ) ? InventoryAction.CRAFT_STACK : InventoryAction.CRAFT_ITEM;
-// FIXME			}
-// FIXME
-// FIXME			final PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, 0 );
-// FIXME			NetworkHandler.instance().sendToServer( p );
-// FIXME
-// FIXME			return;
-// FIXME		}
+		if( slot instanceof SlotPatternTerm )
+		{
+			if( mouseButton == 6 )
+			{
+				return; // prevent weird double clicks..
+			}
+
+			NetworkHandler.instance().sendToServer( ( (SlotPatternTerm) slot ).getRequest( hasShiftDown() ) );
+		}
+		else if( slot instanceof SlotCraftingTerm )
+		{
+			if( mouseButton == 6 )
+			{
+				return; // prevent weird double clicks..
+			}
+
+			InventoryAction action = null;
+			if( hasShiftDown() )
+			{
+				action = InventoryAction.CRAFT_SHIFT;
+			}
+			else
+			{
+				// Craft stack on right-click, craft single on left-click
+				action = ( mouseButton == 1 ) ? InventoryAction.CRAFT_STACK : InventoryAction.CRAFT_ITEM;
+			}
+
+			final PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, 0 );
+			NetworkHandler.instance().sendToServer( p );
+
+			return;
+		}
 
 		if( InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_KEY_SPACE) )
 		{
@@ -777,7 +749,6 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 
 			if( fs != null && this.isPowered() )
 			{
-				RenderSystem.disableLighting();
 				RenderSystem.disableBlend();
 				final Fluid fluid = fs.getFluid();
 				FluidAttributes fluidAttributes = fluid.getAttributes();
@@ -793,7 +764,6 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 				RenderSystem.color3f( red, green, blue );
 
 				blit(s.xPos, s.yPos, 0 /* FIXME: Validate this was previous the controls zindex */, 16, 16, sprite);
-				RenderSystem.enableLighting();
 				RenderSystem.enableBlend();
 
 				this.fluidStackSizeRenderer.renderStackSize( this.font, fs, s.xPos, s.yPos );
@@ -823,7 +793,6 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 							final int uv_x = aes.getIcon() - uv_y * 16;
 
 							RenderSystem.enableBlend();
-							RenderSystem.disableLighting();
 							RenderSystem.enableTexture();
 							RenderSystem.blendFunc( GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA );
 							RenderSystem.color4f( 1.0f, 1.0f, 1.0f, 1.0f );
@@ -897,9 +866,7 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 						// FIXME this.zLevel = 100.0F;
 						this.itemRenderer.zLevel = 100.0F;
 
-						RenderSystem.disableLighting();
 						fill( s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66ff6666 );
-						RenderSystem.enableLighting();
 
 						// FIXME this.zLevel = 0.0F;
 						this.itemRenderer.zLevel = 0.0F;

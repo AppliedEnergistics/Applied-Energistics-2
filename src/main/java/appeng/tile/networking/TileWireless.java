@@ -178,7 +178,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	@Override
 	public boolean isActive()
 	{
-		if( Platform.isClient() )
+		if( isRemote() )
 		{
 			return this.isPowered() && ( CHANNEL_FLAG == ( this.getClientFlags() & CHANNEL_FLAG ) );
 		}

@@ -112,7 +112,6 @@ public final class ApiItems implements IItems
 	private final IItemDefinition encodedPattern;
 	private final IItemDefinition colorApplicator;
 
-	private final IItemDefinition paintBall;
 	private final AEColoredItemDefinition coloredPaintBall;
 	private final AEColoredItemDefinition coloredLumenPaintBall;
 
@@ -296,12 +295,13 @@ public final class ApiItems implements IItems
 				.rendering( new ItemEncodedPatternRendering() )
 				.build();
 
-		this.paintBall = registry.item( "paint_ball", ItemPaintBall::new )
+		IItemDefinition paintBall = registry.item( "paint_ball", ItemPaintBall::new )
 				.features( AEFeature.PAINT_BALLS )
 				.rendering( new ItemPaintBallRendering() )
 				.build();
-		this.coloredPaintBall = registry.colored( this.paintBall, 0 );
-		this.coloredLumenPaintBall = registry.colored( this.paintBall, 20 );
+		// FIXME these are both wrong
+		this.coloredPaintBall = registry.colored( paintBall, 0 );
+		this.coloredLumenPaintBall = registry.colored( paintBall, 20 );
 
 		FeatureFactory debugTools = registry.features( AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE );
 		this.toolEraser = debugTools.item( "debug_eraser", ToolEraser::new ).build();
@@ -565,11 +565,6 @@ public final class ApiItems implements IItems
 	public AEColoredItemDefinition coloredLumenPaintBall()
 	{
 		return this.coloredLumenPaintBall;
-	}
-
-	public IItemDefinition paintBall()
-	{
-		return this.paintBall;
 	}
 
 	public IItemDefinition toolEraser()

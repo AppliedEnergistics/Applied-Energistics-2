@@ -160,7 +160,7 @@ public class ApiStorage implements IStorageHelper
 		}
 
 		@Override
-		public IAEItemStack readFromPacket( PacketBuffer input ) throws IOException
+		public IAEItemStack readFromPacket( PacketBuffer input )
 		{
 			Preconditions.checkNotNull( input );
 
@@ -215,7 +215,7 @@ public class ApiStorage implements IStorageHelper
 		}
 
 		@Override
-		public IAEFluidStack readFromPacket( PacketBuffer input ) throws IOException
+		public IAEFluidStack readFromPacket( PacketBuffer input )
 		{
 			Preconditions.checkNotNull( input );
 

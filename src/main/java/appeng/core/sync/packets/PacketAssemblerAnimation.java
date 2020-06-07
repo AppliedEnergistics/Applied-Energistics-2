@@ -56,7 +56,7 @@ public class PacketAssemblerAnimation extends AppEngPacket
 	}
 
 	// api
-	public PacketAssemblerAnimation( final BlockPos pos, final byte rate, final IAEItemStack is ) throws IOException
+	public PacketAssemblerAnimation( final BlockPos pos, final byte rate, final IAEItemStack is )
 	{
 
 		final PacketBuffer data = new PacketBuffer( Unpooled.buffer() );

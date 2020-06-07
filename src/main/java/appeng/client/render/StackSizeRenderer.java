@@ -53,7 +53,6 @@ public class StackSizeRenderer
 			{
 				final String craftLabelText = AEConfig.instance().useTerminalUseLargeFont() ? GuiText.LargeFontCraft.getLocal() : GuiText.SmallFontCraft
 						.getLocal();
-				RenderSystem.disableLighting();
 				RenderSystem.disableDepthTest();
 				RenderSystem.disableBlend();
 				RenderSystem.pushMatrix();
@@ -62,7 +61,6 @@ public class StackSizeRenderer
 				final int Y = (int) ( ( (float) yPos + offset + 16.0f - 7.0f * scaleFactor ) * inverseScaleFactor );
 				fontRenderer.drawStringWithShadow( craftLabelText, X, Y, 16777215 );
 				RenderSystem.popMatrix();
-				RenderSystem.enableLighting();
 				RenderSystem.enableDepthTest();
 				RenderSystem.enableBlend();
 			}
@@ -71,7 +69,6 @@ public class StackSizeRenderer
 			{
 				final String stackSize = this.getToBeRenderedStackSize( aeStack.getStackSize() );
 
-				RenderSystem.disableLighting();
 				RenderSystem.disableDepthTest();
 				RenderSystem.disableBlend();
 				RenderSystem.pushMatrix();
@@ -80,7 +77,6 @@ public class StackSizeRenderer
 				final int Y = (int) ( ( (float) yPos + offset + 16.0f - 7.0f * scaleFactor ) * inverseScaleFactor );
 				fontRenderer.drawStringWithShadow( stackSize, X, Y, 16777215 );
 				RenderSystem.popMatrix();
-				RenderSystem.enableLighting();
 				RenderSystem.enableDepthTest();
 				RenderSystem.enableBlend();
 			}

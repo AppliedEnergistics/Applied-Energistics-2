@@ -19,13 +19,13 @@
 package appeng.items.misc;
 
 
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-
 import appeng.api.util.AEColor;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
@@ -33,14 +33,14 @@ import net.minecraft.util.text.TranslationTextComponent;
 public class ItemPaintBall extends AEBaseItem
 {
 
+	private static final String TAG_COLOR = "c";
+	private static final String TAG_LUMEN = "l";
+
 	private static final ITextComponent LUMEN_PREFIX = new TranslationTextComponent(GuiText.Lumen.getTranslationKey())
 			.appendText(" ");
 
-	private static final int DAMAGE_THRESHOLD = 20;
-
 	public ItemPaintBall(Properties properties) {
 		super(properties);
-		// FIXME this.setHasSubtypes( true );
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class ItemPaintBall extends AEBaseItem
 	private ITextComponent getExtraName( final ItemStack is )
 	{
 		ITextComponent colorText = new TranslationTextComponent(this.getColor(is).translationKey);
-		if (is.getDamage() >= DAMAGE_THRESHOLD) {
+		if (isLumen(is)) {
 			return LUMEN_PREFIX.shallowCopy().appendSibling(colorText);
 		} else {
 			return colorText;
@@ -63,18 +63,33 @@ public class ItemPaintBall extends AEBaseItem
 
 	public AEColor getColor( final ItemStack is )
 	{
-		int dmg = is.getDamage();
-		if( dmg >= DAMAGE_THRESHOLD )
-		{
-			dmg -= DAMAGE_THRESHOLD;
-		}
-
-		if( dmg >= AEColor.values().length )
-		{
+		CompoundNBT tag = is.getTag();
+		if (tag == null || !tag.contains(TAG_COLOR)) {
 			return AEColor.TRANSPARENT;
 		}
+		int c = tag.getInt(TAG_COLOR);
+		if (c < 0 || c >= AEColor.values().length) {
+			return AEColor.TRANSPARENT;
+		}
+		return AEColor.values()[c];
+	}
 
-		return AEColor.values()[dmg];
+	public ItemStack setColor( final ItemStack is, AEColor color )
+	{
+		is.getOrCreateTag().putInt(TAG_COLOR, color.ordinal());
+		return is;
+	}
+
+	public boolean isLumen( final ItemStack is )
+	{
+		CompoundNBT tag = is.getTag();
+		return tag != null && tag.getBoolean(TAG_LUMEN);
+	}
+
+	public ItemStack setLumen( final ItemStack is, boolean lumen )
+	{
+		is.getOrCreateTag().putBoolean(TAG_LUMEN, lumen);
+		return is;
 	}
 
 	@Override
@@ -84,7 +99,7 @@ public class ItemPaintBall extends AEBaseItem
 		{
 			if( c != AEColor.TRANSPARENT )
 			{
-				itemStacks.add( new ItemStack( this, 1 /* FIXME, c.ordinal() */ ) );
+				itemStacks.add( setColor(new ItemStack( this ), c) );
 			}
 		}
 
@@ -92,15 +107,9 @@ public class ItemPaintBall extends AEBaseItem
 		{
 			if( c != AEColor.TRANSPARENT )
 			{
-				itemStacks.add( new ItemStack( this, 1 /* FIXME , DAMAGE_THRESHOLD + c.ordinal() */ ) );
+				itemStacks.add( setLumen(setColor(new ItemStack( this ), c), true) );
 			}
 		}
-	}
-
-	public static boolean isLumen( final ItemStack is )
-	{
-		final int dmg = is.getDamage();
-		return dmg >= DAMAGE_THRESHOLD;
 	}
 
 }

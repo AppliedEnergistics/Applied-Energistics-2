@@ -29,6 +29,10 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import javax.annotation.Nullable;
 
+import appeng.client.gui.implementations.GuiCraftConfirm;
+import appeng.client.gui.implementations.GuiCraftingCPU;
+import appeng.client.gui.implementations.GuiMEMonitorable;
+import appeng.client.gui.implementations.GuiNetworkStatus;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
@@ -80,7 +84,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 		try( GZIPInputStream gzReader = new GZIPInputStream( new InputStream()
 		{
 			@Override
-			public int read() throws IOException
+			public int read()
 			{
 				if( stream.readableBytes() <= 0 )
 				{
@@ -134,7 +138,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 		this.compressFrame = new GZIPOutputStream( new OutputStream()
 		{
 			@Override
-			public void write( final int value ) throws IOException
+			public void write( final int value )
 			{
 				PacketMEInventoryUpdate.this.data.writeByte( value );
 			}
@@ -149,25 +153,25 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 	{
 		final Screen gs = Minecraft.getInstance().currentScreen;
 
-// FIXME		if( gs instanceof GuiCraftConfirm )
-// FIXME		{
-// FIXME			( (GuiCraftConfirm) gs ).postUpdate( this.list, this.ref );
-// FIXME		}
-// FIXME
-// FIXME		if( gs instanceof GuiCraftingCPU )
-// FIXME		{
-// FIXME			( (GuiCraftingCPU) gs ).postUpdate( this.list, this.ref );
-// FIXME		}
-// FIXME
-// FIXME		if( gs instanceof GuiMEMonitorable )
-// FIXME		{
-// FIXME			( (GuiMEMonitorable) gs ).postUpdate( this.list );
-// FIXME		}
-// FIXME
-// FIXME		if( gs instanceof GuiNetworkStatus )
-// FIXME		{
-// FIXME			( (GuiNetworkStatus) gs ).postUpdate( this.list );
-// FIXME		}
+		if( gs instanceof GuiCraftConfirm)
+		{
+			( (GuiCraftConfirm) gs ).postUpdate( this.list, this.ref );
+		}
+
+		if( gs instanceof GuiCraftingCPU)
+		{
+			( (GuiCraftingCPU<?>) gs ).postUpdate( this.list, this.ref );
+		}
+
+		if( gs instanceof GuiMEMonitorable)
+		{
+			( (GuiMEMonitorable<?>) gs ).postUpdate( this.list );
+		}
+
+		if( gs instanceof GuiNetworkStatus)
+		{
+			( (GuiNetworkStatus) gs ).postUpdate( this.list );
+		}
 	}
 
 	@Nullable

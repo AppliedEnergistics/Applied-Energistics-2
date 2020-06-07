@@ -375,7 +375,7 @@ public class Platform
 	 */
 	public static boolean isClient()
 	{
-		return Thread.currentThread().getThreadGroup() == SidedThreadGroups.CLIENT;
+		return Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER;
 	}
 
 	/*

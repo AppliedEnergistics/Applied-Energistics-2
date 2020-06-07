@@ -19,6 +19,7 @@
 package appeng.client.me;
 
 
+import appeng.items.misc.ItemEncodedPattern;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -62,15 +63,15 @@ public class SlotDisconnected extends AppEngSlot
 		if( Platform.isClient() )
 		{
 			final ItemStack is = super.getStack();
-			// FIXME if( !is.isEmpty() && is.getItem() instanceof ItemEncodedPattern )
-			// FIXME {
-			// FIXME 	final ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
-			// FIXME 	final ItemStack out = iep.getOutput( is );
-			// FIXME 	if( !out.isEmpty() )
-			// FIXME 	{
-			// FIXME 		return out;
-			// FIXME 	}
-			// FIXME }
+			if( !is.isEmpty() && is.getItem() instanceof ItemEncodedPattern)
+			{
+				final ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
+				final ItemStack out = iep.getOutput( is );
+				if( !out.isEmpty() )
+				{
+					return out;
+				}
+			}
 		}
 		return super.getStack();
 	}

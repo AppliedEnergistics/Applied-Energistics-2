@@ -40,8 +40,6 @@ import appeng.core.sync.AppEngPacket;
 public abstract class CommonHelper
 {
 
-	public abstract void preinit();
-
 	public abstract World getWorld();
 
 	public abstract void bindTileEntitySpecialRenderer( Class<? extends TileEntity> tile, AEBaseBlock blk );

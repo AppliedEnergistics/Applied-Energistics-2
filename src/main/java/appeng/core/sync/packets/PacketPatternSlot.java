@@ -72,7 +72,7 @@ public class PacketPatternSlot extends AppEngPacket
 	}
 
 	// api
-	public PacketPatternSlot( final IItemHandler pat, final IAEItemStack slotItem, final boolean shift ) throws IOException
+	public PacketPatternSlot( final IItemHandler pat, final IAEItemStack slotItem, final boolean shift )
 	{
 
 		this.slotItem = slotItem;
@@ -94,7 +94,7 @@ public class PacketPatternSlot extends AppEngPacket
 		this.configureWrite( data );
 	}
 
-	private void writeItem( final IAEItemStack slotItem, final PacketBuffer data ) throws IOException
+	private void writeItem( final IAEItemStack slotItem, final PacketBuffer data )
 	{
 		if( slotItem == null )
 		{

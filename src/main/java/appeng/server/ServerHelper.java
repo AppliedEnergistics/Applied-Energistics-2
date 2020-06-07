@@ -23,11 +23,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import appeng.core.sync.network.NetworkHandler;
+import appeng.items.tools.ToolNetworkTool;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.RayTraceResult;
@@ -47,12 +50,6 @@ public class ServerHelper extends CommonHelper
 {
 
 	private PlayerEntity renderModeBased;
-
-	@Override
-	public void preinit()
-	{
-
-	}
 
 	@Override
 	public World getWorld()
@@ -99,7 +96,7 @@ public class ServerHelper extends CommonHelper
 				final double dZ = z - entityplayermp.getPosZ();
 				if( dX * dX + dY * dY + dZ * dZ < dist * dist )
 				{
-					// FIXME NetworkHandler.instance().sendTo( packet, entityplayermp );
+					NetworkHandler.instance().sendTo( packet, entityplayermp );
 				}
 			}
 		}
@@ -160,14 +157,14 @@ public class ServerHelper extends CommonHelper
 			{
 				final ItemStack is = player.inventory.getStackInSlot( x );
 
-//	FIXME			if( !is.isEmpty() && is.getItem() instanceof ToolNetworkTool )
-//	FIXME			{
-//	FIXME				final CompoundNBT c = is.getTag();
-//	FIXME				if( c != null && c.getBoolean( "hideFacades" ) )
-//	FIXME				{
-//	FIXME					return CableRenderMode.CABLE_VIEW;
-//	FIXME				}
-//	FIXME			}
+			if( !is.isEmpty() && is.getItem() instanceof ToolNetworkTool)
+			{
+				final CompoundNBT c = is.getTag();
+				if( c != null && c.getBoolean( "hideFacades" ) )
+				{
+					return CableRenderMode.CABLE_VIEW;
+				}
+			}
 			}
 		}
 

@@ -50,7 +50,7 @@ public class SlotPatternTerm extends SlotCraftingTerm
 		this.groupNum = groupNumber;
 	}
 
-	public AppEngPacket getRequest( final boolean shift ) throws IOException
+	public AppEngPacket getRequest( final boolean shift )
 	{
 		return new PacketPatternSlot( this
 				.getPattern(), Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( this.getStack() ), shift );

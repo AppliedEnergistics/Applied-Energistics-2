@@ -70,6 +70,10 @@ public abstract class AbstractCraftingUnitBlock<T extends TileCraftingTile> exte
 	@Override
 	public void onReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving)
 	{
+		if (newState.getBlock() == state.getBlock()) {
+			return; // Just a block state change
+		}
+
 		final TileCraftingTile cp = this.getTileEntity( w, pos );
 		if( cp != null )
 		{

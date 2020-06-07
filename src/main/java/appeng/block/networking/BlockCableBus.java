@@ -339,7 +339,7 @@ public class BlockCableBus extends AEBaseTileBlock<TileCableBus> /* FIXME implem
 
 	@Override
 	public void onBlockClicked(BlockState state, World worldIn, BlockPos pos, PlayerEntity player) {
-		if( Platform.isClient() )
+		if( worldIn.isRemote() )
 		{
 			final RayTraceResult rtr = Minecraft.getInstance().objectMouseOver;
 			if( rtr instanceof BlockRayTraceResult)

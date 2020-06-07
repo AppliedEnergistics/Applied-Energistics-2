@@ -297,7 +297,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 	public boolean isPowered()
 	{
-		if( Platform.isClient() )
+		if( isRemote() )
 		{
 			return ( this.constructed & this.powered ) == this.powered && this.constructed != -1;
 		}

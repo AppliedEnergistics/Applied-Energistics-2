@@ -83,7 +83,7 @@ public class PacketJEIRecipe extends AppEngPacket
 	}
 
 	// api
-	public PacketJEIRecipe( final CompoundNBT recipe ) throws IOException
+	public PacketJEIRecipe( final CompoundNBT recipe )
 	{
 		final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 

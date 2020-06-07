@@ -27,6 +27,7 @@ import java.io.OutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import appeng.client.gui.implementations.GuiInterfaceTerminal;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
@@ -61,7 +62,7 @@ public class PacketCompressedNBT extends AppEngPacket
 		{
 
 			@Override
-			public int read() throws IOException
+			public int read()
 			{
 				if( stream.readableBytes() <= 0 )
 				{
@@ -80,6 +81,7 @@ public class PacketCompressedNBT extends AppEngPacket
 		}
 	}
 
+	// FIXME: this is pointless, PacketBuffer.writeNBT will already compress
 	// api
 	public PacketCompressedNBT( final CompoundNBT din ) throws IOException
 	{
@@ -93,7 +95,7 @@ public class PacketCompressedNBT extends AppEngPacket
 		{
 
 			@Override
-			public void write( final int value ) throws IOException
+			public void write( final int value )
 			{
 				PacketCompressedNBT.this.data.writeByte( value );
 			}
@@ -111,9 +113,9 @@ public class PacketCompressedNBT extends AppEngPacket
 	{
 		final Screen gs = Minecraft.getInstance().currentScreen;
 
-		// FIXME if( gs instanceof GuiInterfaceTerminal )
-		// FIXME {
-		// FIXME 	( (GuiInterfaceTerminal) gs ).postUpdate( this.in );
-		// FIXME }
+		if( gs instanceof GuiInterfaceTerminal)
+		{
+			( (GuiInterfaceTerminal) gs ).postUpdate( this.in );
+		}
 	}
 }

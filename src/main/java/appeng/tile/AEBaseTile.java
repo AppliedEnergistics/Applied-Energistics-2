@@ -19,6 +19,7 @@
 package appeng.tile;
 
 
+import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.util.ICommonTile;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
@@ -28,6 +29,9 @@ import appeng.client.render.FacingToRotation;
 import appeng.core.AELog;
 import appeng.core.features.IStackSrc;
 import appeng.helpers.ICustomNameObject;
+import appeng.helpers.IPriorityHost;
+import appeng.hooks.TickHandler;
+import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 import io.netty.buffer.Unpooled;
@@ -47,6 +51,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -293,8 +298,14 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 			// TODO: Optimize Network Load
 			if( this.world != null )
 			{
-				AELog.blockUpdate( this.pos, this );
-				this.world.notifyBlockUpdate( this.pos, this.getBlockState(), this.getBlockState(), 3 );
+				// Let the block update
+				BlockState currentState = getBlockState();
+				BlockState newState = currentState.updatePostPlacement(Direction.EAST, currentState, world, pos, pos);
+
+				AELog.blockUpdate( this.pos, currentState, newState, this );
+				if (currentState != newState) {
+					this.world.setBlockState(pos, newState);
+				}
 				this.requestModelDataUpdate();
 			}
 		}
@@ -357,27 +368,27 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 				cm.readFromNBT( compound );
 			}
 		}
-// FIXME
-//		if( this instanceof IPriorityHost )
-//		{
-//			final IPriorityHost pHost = (IPriorityHost) this;
-//			pHost.setPriority( compound.getInt( "priority" ) );
-//		}
-//
-//		if( this instanceof ISegmentedInventory )
-//		{
-//			final IItemHandler inv = ( (ISegmentedInventory) this ).getInventoryByName( "config" );
-//			if( inv instanceof AppEngInternalAEInventory )
-//			{
-//				final AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
-//				final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory( null, target.getSlots() );
-//				tmp.readFromNBT( compound, "config" );
-//				for( int x = 0; x < tmp.getSlots(); x++ )
-//				{
-//					target.setStackInSlot( x, tmp.getStackInSlot( x ) );
-//				}
-//			}
-//		}
+
+		if( this instanceof IPriorityHost )
+		{
+			final IPriorityHost pHost = (IPriorityHost) this;
+			pHost.setPriority( compound.getInt( "priority" ) );
+		}
+
+		if( this instanceof ISegmentedInventory )
+		{
+			final IItemHandler inv = ( (ISegmentedInventory) this ).getInventoryByName( "config" );
+			if( inv instanceof AppEngInternalAEInventory )
+			{
+				final AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
+				final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory( null, target.getSlots() );
+				tmp.readFromNBT( compound, "config" );
+				for( int x = 0; x < tmp.getSlots(); x++ )
+				{
+					target.setStackInSlot( x, tmp.getStackInSlot( x ) );
+				}
+			}
+		}
 	}
 
 	/**
@@ -425,21 +436,20 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 			}
 		}
 
-// FIXME
-//		if( this instanceof IPriorityHost )
-//		{
-//			final IPriorityHost pHost = (IPriorityHost) this;
-//			output.putInt( "priority", pHost.getPriority() );
-//		}
-//
-//		if( this instanceof ISegmentedInventory )
-//		{
-//			final IItemHandler inv = ( (ISegmentedInventory) this ).getInventoryByName( "config" );
-//			if( inv instanceof AppEngInternalAEInventory )
-//			{
-//				( (AppEngInternalAEInventory) inv ).writeToNBT( output, "config" );
-//			}
-//		}
+		if( this instanceof IPriorityHost)
+		{
+			final IPriorityHost pHost = (IPriorityHost) this;
+			output.putInt( "priority", pHost.getPriority() );
+		}
+
+		if( this instanceof ISegmentedInventory)
+		{
+			final IItemHandler inv = ( (ISegmentedInventory) this ).getInventoryByName( "config" );
+			if( inv instanceof AppEngInternalAEInventory)
+			{
+				( (AppEngInternalAEInventory) inv ).writeToNBT( output, "config" );
+			}
+		}
 
 		return output.isEmpty() ? null : output;
 	}
@@ -482,7 +492,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 			this.world.markChunkDirty( this.pos, this );
 			if( !this.markDirtyQueued )
 			{
-				// FIXME TickHandler.INSTANCE.addCallable( null, this::markDirtyAtEndOfTick );
+				TickHandler.INSTANCE.addCallable( null, this::markDirtyAtEndOfTick );
 				this.markDirtyQueued = true;
 			}
 		}

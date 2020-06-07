@@ -476,16 +476,9 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 
 				this.ejectHeldItems();
 
-				try
-				{
-					final TargetPoint where = new TargetPoint( this.pos.getX(), this.pos.getY(), this.pos.getZ(), 32, this.world.getDimension().getType() );
-					final IAEItemStack item = AEItemStack.fromItemStack( output );
-					NetworkHandler.instance().sendToAllAround( new PacketAssemblerAnimation( this.pos, (byte) speed, item ), where );
-				}
-				catch( final IOException e )
-				{
-					// ;P
-				}
+				final TargetPoint where = new TargetPoint( this.pos.getX(), this.pos.getY(), this.pos.getZ(), 32, this.world.getDimension().getType() );
+				final IAEItemStack item = AEItemStack.fromItemStack( output );
+				NetworkHandler.instance().sendToAllAround( new PacketAssemblerAnimation( this.pos, (byte) speed, item ), where );
 
 				this.saveChanges();
 				this.updateSleepiness();

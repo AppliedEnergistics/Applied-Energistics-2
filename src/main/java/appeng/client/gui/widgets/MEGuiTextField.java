@@ -163,6 +163,7 @@ public class MEGuiTextField extends TextFieldWidget
 		tessellator.draw();
 		RenderSystem.disableColorLogicOp();
 		RenderSystem.enableTexture();
+		RenderSystem.color4f( 1, 1, 1, 1 );
 	}
 
 }

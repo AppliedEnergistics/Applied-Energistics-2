@@ -19,7 +19,6 @@
 package appeng.client;
 
 
-import java.io.IOException;
 import java.util.*;
 
 import appeng.client.render.effects.*;
@@ -27,7 +26,6 @@ import appeng.core.AEConfig;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketAssemblerAnimation;
 import appeng.core.sync.packets.PacketValueConfig;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
@@ -39,22 +37,17 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import appeng.api.parts.CableRenderMode;
-import appeng.api.util.AEColor;
 import appeng.block.AEBaseBlock;
-import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.helpers.IMouseWheelItem;
 import appeng.server.ServerHelper;
 import appeng.util.Platform;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.ForgeRegistries;
 
 
 public class ClientHelper extends ServerHelper
@@ -63,24 +56,11 @@ public class ClientHelper extends ServerHelper
 
 	private final EnumMap<ActionKey, KeyBinding> bindings = new EnumMap<>( ActionKey.class );
 
-	@Override
-	public void preinit()
+	public void clientInit()
 	{
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientInit);
 		MinecraftForge.EVENT_BUS.addListener(this::postPlayerRender);
 		MinecraftForge.EVENT_BUS.addListener(this::wheelEvent);
-		// Do not register the Fullbright hacks if Optifine is present or if the Forge lighting is disabled
-		// FIXME if( !FMLClientHandler.instance().hasOptifine() && ForgeModContainer.forgeLightPipelineEnabled )
-		// FIXME {
-		// FIXME 	ModelLoaderRegistry.registerLoader( UVLModelLoader.INSTANCE );
-		// FIXME }
 
-		// FIXME RenderingRegistry.registerEntityRenderingHandler( EntityTinyTNTPrimed.class, manager -> new RenderTinyTNTPrimed( manager ) );
-		// FIXME RenderingRegistry.registerEntityRenderingHandler( EntityFloatingItem.class, manager -> new RenderFloatingItem( manager ) );
-	}
-
-	private void clientInit(FMLClientSetupEvent event)
-	{
 		for( ActionKey key : ActionKey.values() )
 		{
 			final KeyBinding binding = new KeyBinding( key.getTranslationKey(), key.getDefaultKey(), KEY_CATEGORY );

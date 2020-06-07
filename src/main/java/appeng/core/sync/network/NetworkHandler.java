@@ -72,8 +72,7 @@ public class NetworkHandler
 	{
 		try
 		{
-			// FIXME return new AppEngClientPacketHandler();
-			return null;
+			return new AppEngClientPacketHandler();
 		}
 		catch( final Throwable t )
 		{
@@ -85,8 +84,7 @@ public class NetworkHandler
 	{
 		try
 		{
-			// FIXME return new AppEngServerPacketHandler();
-			return null;
+			return new AppEngServerPacketHandler();
 		}
 		catch( final Throwable t )
 		{

@@ -67,7 +67,7 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 			return;
 		}
 
-		if( Platform.isClient() && this.delay > 30 && AEConfig.instance().isEnableEffects() )
+		if( world.isRemote && this.delay > 30 && AEConfig.instance().isEnableEffects() )
 		{
 			AppEng.proxy.spawnEffect( EffectType.Lightning, this.world, this.getPosX(), this.getPosY(), this.getPosZ(), null );
 			this.delay = 0;

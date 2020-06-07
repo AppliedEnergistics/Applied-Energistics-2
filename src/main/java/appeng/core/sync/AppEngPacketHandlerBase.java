@@ -61,70 +61,63 @@ public class AppEngPacketHandlerBase
 
 	public enum PacketTypes
 	{
-		PACKET_COMPASS_REQUEST( PacketCompassRequest::new ),
+		PACKET_COMPASS_REQUEST( PacketCompassRequest.class, PacketCompassRequest::new ),
 
-		PACKET_COMPASS_RESPONSE( PacketCompassResponse::new ),
+		PACKET_COMPASS_RESPONSE( PacketCompassResponse.class, PacketCompassResponse::new ),
 
-		PACKET_INVENTORY_ACTION( PacketInventoryAction::new ),
+		PACKET_INVENTORY_ACTION( PacketInventoryAction.class, PacketInventoryAction::new ),
 
-		PACKET_ME_INVENTORY_UPDATE( PacketMEInventoryUpdate::new ),
+		PACKET_ME_INVENTORY_UPDATE( PacketMEInventoryUpdate.class, PacketMEInventoryUpdate::new ),
 
-		PACKET_ME_FLUID_INVENTORY_UPDATE( PacketMEFluidInventoryUpdate::new ),
+		PACKET_ME_FLUID_INVENTORY_UPDATE( PacketMEFluidInventoryUpdate.class, PacketMEFluidInventoryUpdate::new ),
 
-		PACKET_CONFIG_BUTTON( PacketConfigButton::new ),
+		PACKET_CONFIG_BUTTON( PacketConfigButton.class, PacketConfigButton::new ),
 
-		PACKET_PART_PLACEMENT( PacketPartPlacement::new ),
+		PACKET_PART_PLACEMENT( PacketPartPlacement.class, PacketPartPlacement::new ),
 
-		PACKET_LIGHTNING( PacketLightning::new ),
+		PACKET_LIGHTNING( PacketLightning.class, PacketLightning::new ),
 
-		PACKET_MATTER_CANNON( PacketMatterCannon::new ),
+		PACKET_MATTER_CANNON( PacketMatterCannon.class, PacketMatterCannon::new ),
 
-		PACKET_MOCK_EXPLOSION( PacketMockExplosion::new ),
+		PACKET_MOCK_EXPLOSION( PacketMockExplosion.class, PacketMockExplosion::new ),
 
-		PACKET_VALUE_CONFIG( PacketValueConfig::new ),
+		PACKET_VALUE_CONFIG( PacketValueConfig.class, PacketValueConfig::new ),
 
-		PACKET_TRANSITION_EFFECT( PacketTransitionEffect::new ),
+		PACKET_TRANSITION_EFFECT( PacketTransitionEffect.class, PacketTransitionEffect::new ),
 
-		PACKET_PROGRESS_VALUE( PacketProgressBar::new ),
+		PACKET_PROGRESS_VALUE( PacketProgressBar.class, PacketProgressBar::new ),
 
-		PACKET_CLICK( PacketClick::new ),
+		PACKET_CLICK( PacketClick.class, PacketClick::new ),
 
-		PACKET_SWITCH_GUIS( PacketSwitchGuis::new ),
+		PACKET_SWITCH_GUIS( PacketSwitchGuis.class, PacketSwitchGuis::new ),
 
-		PACKET_SWAP_SLOTS( PacketSwapSlots::new ),
+		PACKET_SWAP_SLOTS( PacketSwapSlots.class, PacketSwapSlots::new ),
 
-		PACKET_PATTERN_SLOT( PacketPatternSlot::new ),
+		PACKET_PATTERN_SLOT( PacketPatternSlot.class, PacketPatternSlot::new ),
 
-		PACKET_RECIPE_JEI( PacketJEIRecipe::new ),
+		PACKET_RECIPE_JEI( PacketJEIRecipe.class, PacketJEIRecipe::new ),
 
-		PACKET_TARGET_ITEM( PacketTargetItemStack::new ),
+		PACKET_TARGET_ITEM( PacketTargetItemStack.class, PacketTargetItemStack::new ),
 
-		PACKET_TARGET_FLUID( PacketTargetFluidStack::new ),
+		PACKET_TARGET_FLUID( PacketTargetFluidStack.class, PacketTargetFluidStack::new ),
 
-		PACKET_CRAFTING_REQUEST( PacketCraftRequest::new ),
+		PACKET_CRAFTING_REQUEST( PacketCraftRequest.class, PacketCraftRequest::new ),
 
-		PACKET_ASSEMBLER_ANIMATION( PacketAssemblerAnimation::new ),
+		PACKET_ASSEMBLER_ANIMATION( PacketAssemblerAnimation.class, PacketAssemblerAnimation::new ),
 
-		PACKET_COMPRESSED_NBT( PacketCompressedNBT::new ),
+		PACKET_COMPRESSED_NBT( PacketCompressedNBT.class, PacketCompressedNBT::new ),
 
-		PACKET_PAINTED_ENTITY( PacketPaintedEntity::new ),
+		PACKET_PAINTED_ENTITY( PacketPaintedEntity.class, PacketPaintedEntity::new ),
 
-		PACKET_FLUID_TANK( PacketFluidSlot::new );
+		PACKET_FLUID_TANK( PacketFluidSlot.class, PacketFluidSlot::new );
 
-		private final Class<? extends AppEngPacket> packetClass;
 		private final Function<PacketBuffer, AppEngPacket> factory;
 
-		PacketTypes( Function<PacketBuffer, AppEngPacket> factory )
+		PacketTypes( Class<? extends AppEngPacket> packetClass, Function<PacketBuffer, AppEngPacket> factory )
 		{
-			Type c = TypeResolver.resolveGenericType( Function.class, factory.getClass() );
-			if( c == TypeResolver.Unknown.class )
-			{
-				throw new IllegalStateException("Failed to resolve type for AE packet type: " + factory.toString());
-			}
-			this.packetClass = (Class<? extends AppEngPacket>) c;
 			this.factory = factory;
 
-			REVERSE_LOOKUP.put( this.packetClass, this );
+			REVERSE_LOOKUP.put(packetClass, this );
 		}
 
 		public static PacketTypes getPacket( final int id )

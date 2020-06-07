@@ -86,6 +86,10 @@ public abstract class BlockQuantumBase extends AEBaseTileBlock<TileQuantumBridge
 
 	@Override
 	public void onReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
+		if (newState.getBlock() == state.getBlock()) {
+			return; // Just a block state change
+		}
+
 		final TileQuantumBridge bridge = this.getTileEntity( w, pos );
 		if( bridge != null )
 		{

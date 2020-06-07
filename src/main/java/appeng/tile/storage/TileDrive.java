@@ -168,7 +168,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	@Override
 	public boolean isPowered()
 	{
-		if( Platform.isClient() )
+		if( isRemote() )
 		{
 			return ( this.state & BIT_POWER_MASK ) == BIT_POWER_MASK;
 		}

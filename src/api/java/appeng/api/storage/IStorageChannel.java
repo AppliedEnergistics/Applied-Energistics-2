@@ -95,7 +95,7 @@ public interface IStorageChannel<T extends IAEStack<T>>
 	 * @throws IOException
 	 */
 	@Nullable
-	T readFromPacket( @Nonnull PacketBuffer input ) throws IOException;
+	T readFromPacket( @Nonnull PacketBuffer input );
 
 	/**
 	 * create from nbt data

@@ -45,7 +45,6 @@ public class GuiFluidSlot extends GuiCustomSlot
 		final IAEFluidStack fs = this.getFluidStack();
 		if( fs != null )
 		{
-			RenderSystem.disableLighting();
 			RenderSystem.disableBlend();
 			final Fluid fluid = fs.getFluid();
 			final FluidAttributes attributes = fluid.getAttributes();

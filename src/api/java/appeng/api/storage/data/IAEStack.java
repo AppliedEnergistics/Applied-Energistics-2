@@ -164,7 +164,7 @@ public interface IAEStack<T extends IAEStack<T>>
 	 *
 	 * @throws IOException
 	 */
-	void writeToPacket( PacketBuffer data ) throws IOException;
+	void writeToPacket( PacketBuffer data );
 
 	/**
 	 * Clone the Item / Fluid Stack

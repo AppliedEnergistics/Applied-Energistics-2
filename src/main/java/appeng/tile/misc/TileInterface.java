@@ -96,7 +96,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, II
 
 	public void setSide( final Direction facing )
 	{
-		if( Platform.isClient() )
+		if( isRemote() )
 		{
 			return;
 		}

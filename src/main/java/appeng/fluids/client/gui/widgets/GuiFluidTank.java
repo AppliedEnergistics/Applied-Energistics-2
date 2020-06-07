@@ -52,7 +52,6 @@ public class GuiFluidTank extends Widget implements ITooltip
 		if( this.visible )
 		{
 			RenderSystem.disableBlend();
-			RenderSystem.disableLighting();
 
 			fill( this.x, this.y, this.x + this.width, this.y + this.height, AEColor.GRAY.blackVariant | 0xFF000000 );
 

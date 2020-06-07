@@ -104,6 +104,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -879,6 +880,12 @@ final class Registration
 	public void registerCommands( final FMLServerStartingEvent evt )
 	{
 		new AECommand().register(evt.getCommandDispatcher());
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public void registerItemColors(ColorHandlerEvent.Item event) {
+		final ApiDefinitions definitions = Api.INSTANCE.definitions();
+		definitions.getRegistry().getBootstrapComponents( IItemColorRegistrationComponent.class ).forEachRemaining(c -> c.register(event.getItemColors(), event.getBlockColors()));
 	}
 
 }

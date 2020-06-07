@@ -20,6 +20,7 @@ package appeng.core;
 
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import appeng.block.paint.PaintSplotchesModel;
@@ -27,6 +28,7 @@ import appeng.block.qnb.QnbFormedModel;
 import appeng.bootstrap.components.IClientSetupComponent;
 import appeng.bootstrap.components.IInitComponent;
 import appeng.bootstrap.components.IPostInitComponent;
+import appeng.bootstrap.components.ItemColorComponent;
 import appeng.client.ClientHelper;
 import appeng.client.render.DummyFluidItemModel;
 import appeng.client.render.SimpleModelLoader;
@@ -34,6 +36,7 @@ import appeng.client.render.crafting.CraftingCubeModelLoader;
 import appeng.client.render.model.*;
 import appeng.client.render.spatial.SpatialPylonModel;
 import appeng.core.stats.AdvancementTriggers;
+import appeng.core.sync.network.NetworkHandler;
 import appeng.core.worlddata.WorldData;
 import appeng.hooks.TickHandler;
 import appeng.parts.PartPlacement;
@@ -41,6 +44,7 @@ import appeng.server.AECommand;
 import appeng.server.ServerHelper;
 import appeng.services.VersionChecker;
 import appeng.services.version.VersionCheckerConfig;
+import com.google.common.base.Stopwatch;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.container.ContainerType;
@@ -51,6 +55,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 import net.minecraftforge.common.MinecraftForge;
@@ -70,6 +75,7 @@ import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.network.NetworkRegistry;
 
 import javax.annotation.Nonnull;
 
@@ -137,6 +143,7 @@ public final class AppEng
 		// Register client-only events
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> modEventBus.addListener(this::clientSetup));
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> modEventBus.addListener(registration::modelRegistryEvent));
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> modEventBus.addListener(registration::registerItemColors));
 
 		MinecraftForge.EVENT_BUS.addListener( TickHandler.INSTANCE::unloadWorld );
 		MinecraftForge.EVENT_BUS.addListener( TickHandler.INSTANCE::onTick );
@@ -164,10 +171,24 @@ public final class AppEng
 			this.startService( "AE2 VersionChecker", versionCheckerThread );
 		}
 
+		registerNetworkHandler();
+
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	private void clientSetup(FMLClientSetupEvent event) {
+
+		((ClientHelper) proxy).clientInit();
+
+		// Do not register the Fullbright hacks if Optifine is present or if the Forge lighting is disabled
+		// FIXME if( !FMLClientHandler.instance().hasOptifine() && ForgeModContainer.forgeLightPipelineEnabled )
+		// FIXME {
+		// FIXME 	ModelLoaderRegistry.registerLoader( UVLModelLoader.INSTANCE );
+		// FIXME }
+
+		// FIXME RenderingRegistry.registerEntityRenderingHandler( EntityTinyTNTPrimed.class, manager -> new RenderTinyTNTPrimed( manager ) );
+		// FIXME RenderingRegistry.registerEntityRenderingHandler( EntityFloatingItem.class, manager -> new RenderFloatingItem( manager ) );
+
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();
 		definitions.getRegistry().getBootstrapComponents( IClientSetupComponent.class ).forEachRemaining(IClientSetupComponent::setup);
 
@@ -297,26 +318,23 @@ public final class AppEng
 //
 //		AELog.info( "Initialization ( ended after " + start.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
 //	}
-//
-//	@EventHandler
-//	private void postInit( final FMLPostInitializationEvent event )
-//	{
-//		final Stopwatch start = Stopwatch.createStarted();
-//		AELog.info( "Post Initialization ( started )" );
-//
-//		this.registration.postInit( event );
-//		IntegrationRegistry.INSTANCE.postInit();
-//		CrashReportExtender.registerCrashCallable( new IntegrationCrashEnhancement() );
-//
-//		AppEng.proxy.postInit();
-//		AEConfig.instance().save();
-//
-//		NetworkRegistry.INSTANCE.registerGuiHandler( this, GuiBridge.GUI_Handler );
-//		NetworkHandler.init( "AE2" );
-//
-//		AELog.info( "Post Initialization ( ended after " + start.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
-//	}
-//
+
+	private void registerNetworkHandler()
+	{
+		final Stopwatch start = Stopwatch.createStarted();
+		AELog.info( "Post Initialization ( started )" );
+
+		// FIXME IntegrationRegistry.INSTANCE.postInit();
+		// FIXME CrashReportExtender.registerCrashCallable( new IntegrationCrashEnhancement() );
+
+		AppEng.proxy.postInit();
+		AEConfig.instance().save();
+
+		NetworkHandler.init( new ResourceLocation(MOD_ID, "main") );
+
+		AELog.info( "Post Initialization ( ended after " + start.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
+	}
+
 //	@EventHandler
 //	private void handleIMCEvent( final FMLInterModComms.IMCEvent event )
 //	{

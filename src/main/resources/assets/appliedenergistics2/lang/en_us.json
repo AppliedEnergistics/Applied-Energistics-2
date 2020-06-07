@@ -113,6 +113,8 @@
   "gui.appliedenergistics2.security.build.tip": "User can modify the physical structure of the network, and make configuration changes.",
   "gui.appliedenergistics2.security.security.tip": "User can access and modify the security terminal of the network.",
 
+  "appliedenergistics2.permission_denied": "You lack permission to access this.",
+
   "gui.appliedenergistics2.Efficiency": "Efficiency",
   "gui.appliedenergistics2.SCSSize": "SCS Size",
   "gui.appliedenergistics2.SCSInvalid": "Invalid",

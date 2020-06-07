@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
+import net.minecraft.block.BlockState;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,7 +43,7 @@ public final class AELog
 	private static final Logger SERVER = LogManager.getFormatterLogger( LOGGER_PREFIX + SERVER_SUFFIX );
 	private static final Logger CLIENT = LogManager.getFormatterLogger( LOGGER_PREFIX + CLIENT_SUFFIX );
 
-	private static final String BLOCK_UPDATE = "Block Update of %s @ ( %s )";
+	private static final String BLOCK_UPDATE = "Block Update of %s @ ( %s ). State %s -> %s";
 
 	private static final String DEFAULT_EXCEPTION_MESSAGE = "Exception: ";
 
@@ -318,13 +319,15 @@ public final class AELog
 	 *
 	 * @see AELog#log(Level, String, Object...)
 	 * @param pos
+	 * @param currentState
+	 * @param newState
 	 * @param aeBaseTile
 	 */
-	public static void blockUpdate( @Nonnull final BlockPos pos, @Nonnull final AEBaseTile aeBaseTile )
+	public static void blockUpdate(@Nonnull final BlockPos pos, @Nonnull BlockState currentState, @Nonnull BlockState newState, @Nonnull final AEBaseTile aeBaseTile)
 	{
 		if( AEConfig.instance().isFeatureEnabled( AEFeature.UPDATE_LOGGING ) )
 		{
-			info( BLOCK_UPDATE, aeBaseTile.getClass().getName(), pos );
+			info( BLOCK_UPDATE, aeBaseTile.getClass().getName(), pos, currentState, newState );
 		}
 	}
 

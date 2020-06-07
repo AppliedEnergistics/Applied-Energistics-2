@@ -202,7 +202,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 
 	public boolean isFormed()
 	{
-		if( Platform.isClient() )
+		if( isRemote() )
 		{
 			return this.world.getBlockState( this.pos ).get( AbstractCraftingUnitBlock.FORMED );
 		}
@@ -357,7 +357,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	@Override
 	public boolean isPowered()
 	{
-		if( Platform.isClient() )
+		if( isRemote() )
 		{
 			return this.world.getBlockState( this.pos ).get( AbstractCraftingUnitBlock.POWERED );
 		}

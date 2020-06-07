@@ -1,0 +1,15 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "appliedenergistics2:item/color_applicator"
+    },
+    "overrides": [
+        {
+            "predicate": {
+                "appliedenergistics2:colored": 1
+            },
+            "model": "appliedenergistics2:item/color_applicator_colored"
+        }
+    ]
+
+}

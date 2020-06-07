@@ -19,21 +19,10 @@
 package appeng.core.sync.packets;
 
 
-import java.io.IOException;
-
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.ContainerInscriber;
-import io.netty.buffer.Unpooled;
-
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
 import appeng.container.implementations.ContainerCraftAmount;
 import appeng.core.AppEng;
 import appeng.core.sync.AppEngPacket;
@@ -41,6 +30,11 @@ import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.InventoryAction;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
+import io.netty.buffer.Unpooled;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 
 
 public class PacketInventoryAction extends AppEngPacket
@@ -68,7 +62,7 @@ public class PacketInventoryAction extends AppEngPacket
 	}
 
 	// api
-	public PacketInventoryAction( final InventoryAction action, final int slot, final IAEItemStack slotItem ) throws IOException
+	public PacketInventoryAction( final InventoryAction action, final int slot, final IAEItemStack slotItem )
 	{
 
 		if( Platform.isClient() )

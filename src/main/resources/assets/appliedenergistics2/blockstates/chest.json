@@ -1,60 +1,65 @@
 {
-    "forge_marker": 1,
-    "defaults": {
+  "multipart": [
+    {
+      "apply": {
         "model": "appliedenergistics2:block/chest/base"
+      }
     },
-    "variants": {
-        "slot_state": {
-            "empty": {
-                "submodel": {
-                    "lights": {
-                        "model": "appliedenergistics2:block/chest/lights_off"
-                    },
-                    "state": {
-                        "model": "appliedenergistics2:block/chest/cell_state_empty"
-                    }
-                }
-            },
-            "offline": {
-                "submodel": {
-                    "lights": {
-                        "model": "appliedenergistics2:block/chest/lights_off"
-                    },
-                    "state": {
-                        "model": "appliedenergistics2:block/chest/cell_state_offline"
-                    }
-                }
-            },
-            "online": {
-                "submodel": {
-                    "lights": {
-                        "model": "appliedenergistics2:block/chest/lights_on"
-                    },
-                    "state": {
-                        "model": "appliedenergistics2:block/chest/cell_state_online"
-                    }
-                }
-            },
-            "types_full": {
-                "submodel": {
-                    "lights": {
-                        "model": "appliedenergistics2:block/chest/lights_on"
-                    },
-                    "state": {
-                        "model": "appliedenergistics2:block/chest/cell_state_types_full"
-                    }
-                }
-            },
-            "full": {
-                "submodel": {
-                    "lights": {
-                        "model": "appliedenergistics2:block/chest/lights_on"
-                    },
-                    "state": {
-                        "model": "appliedenergistics2:block/chest/cell_state_full"
-                    }
-                }
-            }
-        }
+    {
+      "when": {
+        "slot_state": "empty|offline"
+      },
+      "apply": {
+        "model": "appliedenergistics2:block/chest/lights_off"
+      }
+    },
+    {
+      "when": {
+        "slot_state": "online|types_full|full"
+      },
+      "apply": {
+        "model": "appliedenergistics2:block/chest/lights_on"
+      }
+    },
+    {
+      "when": {
+        "slot_state": "empty"
+      },
+      "apply": {
+        "model": "appliedenergistics2:block/chest/cell_state_empty"
+      }
+    },
+    {
+      "when": {
+        "slot_state": "offline"
+      },
+      "apply": {
+        "model": "appliedenergistics2:block/chest/cell_state_offline"
+      }
+    },
+    {
+      "when": {
+        "slot_state": "online"
+      },
+      "apply": {
+        "model": "appliedenergistics2:block/chest/cell_state_online"
+      }
+    },
+    {
+      "when": {
+        "slot_state": "types_full"
+      },
+      "apply": {
+        "model": "appliedenergistics2:block/chest/cell_state_types_full"
+      }
+    },
+    {
+      "when": {
+        "slot_state": "full"
+      },
+      "apply": {
+        "model": "appliedenergistics2:block/chest/cell_state_full"
+      }
     }
+  ]
 }

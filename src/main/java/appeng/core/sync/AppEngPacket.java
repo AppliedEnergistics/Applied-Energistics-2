@@ -19,6 +19,7 @@
 package appeng.core.sync;
 
 
+import appeng.core.sync.network.NetworkHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
@@ -28,6 +29,7 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.api.features.AEFeature;
 import appeng.core.sync.network.INetworkInfo;
+import org.apache.commons.lang3.tuple.Pair;
 
 
 public abstract class AppEngPacket
@@ -41,8 +43,7 @@ public abstract class AppEngPacket
 
 	public final int getPacketID()
 	{
-		throw new IllegalStateException();
-		// FIXME return AppEngPacketHandlerBase.PacketTypes.getID( this.getClass() ).ordinal();
+		return AppEngPacketHandlerBase.PacketTypes.getID( this.getClass() ).ordinal();
 	}
 
 	public void clientPacketData( final INetworkInfo network, final PlayerEntity player )
@@ -68,7 +69,6 @@ public abstract class AppEngPacket
 			AELog.info( this.getClass().getName() + " : " + p.readableBytes() );
 		}
 
-		// FIXME  return direction.buildPacket( Pair.of( p, 0 ), NetworkHandler.instance().getChannel() ).getThis();
-		return null;
+		return direction.buildPacket( Pair.of( p, 0 ), NetworkHandler.instance().getChannel() ).getThis();
 	}
 }

@@ -19,7 +19,6 @@
 package appeng.client.gui.implementations;
 
 
-import java.io.IOException;
 import java.util.List;
 
 import appeng.container.implementations.ContainerCraftingStatus;
@@ -107,6 +106,7 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 		final GuiScrollbar scrollbar = new GuiScrollbar();
 		this.setScrollBar( scrollbar );
 		this.repo = new ItemRepo( scrollbar, this );
+		setScrollBar();
 
 		this.xSize = 185;
 		this.ySize = 204;
@@ -333,11 +333,11 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 		craftingGridOffsetX = Integer.MAX_VALUE;
 		craftingGridOffsetY = Integer.MAX_VALUE;
 
-		for( final Object s : this.container.inventorySlots )
+		for( final Slot s : this.container.inventorySlots )
 		{
 			if( s instanceof AppEngSlot )
 			{
-				if( ( (Slot) s ).xPos < 197 )
+				if( s.xPos < 197 )
 				{
 					this.repositionSlot( (AppEngSlot) s );
 				}
@@ -345,11 +345,10 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 
 			if( s instanceof SlotCraftingMatrix || s instanceof SlotFakeCraftingMatrix )
 			{
-				final Slot g = (Slot) s;
-				if( g.xPos > 0 && g.yPos > 0 )
+				if( s.xPos > 0 && s.yPos > 0 )
 				{
-					craftingGridOffsetX = Math.min( craftingGridOffsetX, g.xPos );
-					craftingGridOffsetY = Math.min( craftingGridOffsetY, g.yPos );
+					craftingGridOffsetX = Math.min( craftingGridOffsetX, s.xPos );
+					craftingGridOffsetY = Math.min( craftingGridOffsetY, s.yPos );
 				}
 			}
 		}
@@ -457,8 +456,7 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 
 	protected void repositionSlot( final AppEngSlot s )
 	{
-		// FIXME .... it's final now, WHAT DO WE DO ARGH
-		//  s.yPos = s.getY() + this.ySize - 78 - 5;
+		s.yPos = s.getY() + this.ySize - 78 - 5;
 	}
 
 	@Override

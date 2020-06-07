@@ -91,7 +91,7 @@ public class BlockChest extends AEBaseTileBlock<TileChest>
 		final TileChest tg = this.getTileEntity( w, pos );
 		if( tg != null && !p.isCrouching() )
 		{
-			if( Platform.isClient() )
+			if( w.isRemote() )
 			{
 				return ActionResultType.SUCCESS;
 			}

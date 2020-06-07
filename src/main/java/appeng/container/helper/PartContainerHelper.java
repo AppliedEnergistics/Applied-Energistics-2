@@ -23,7 +23,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
  * @param <C>
  * @param <P> The type of part this container is for.
  */
-public final class PartContainerHelper<C extends AEBaseContainer, P extends IPart> {
+public final class PartContainerHelper<C extends AEBaseContainer, P extends IPart> extends AbstractContainerHelper {
 
     private final Class<P> partClass;
 
@@ -36,6 +36,7 @@ public final class PartContainerHelper<C extends AEBaseContainer, P extends IPar
     }
 
     public PartContainerHelper(ContainerFactory<P, C> factory, Class<P> partClass, SecurityPermissions requiredPermission) {
+        super(requiredPermission);
         this.partClass = partClass;
         this.factory = factory;
         this.requiredPermission = requiredPermission;
@@ -78,6 +79,10 @@ public final class PartContainerHelper<C extends AEBaseContainer, P extends IPar
             return false;
         }
         P actualPart = partClass.cast(tileEntity);
+
+        if (!checkPermission(player, actualPart)) {
+            return false;
+        }
 
         // Use block name at position
         // FIXME: this is not right, we'd need to check the part's item stack, or custom naming interface impl

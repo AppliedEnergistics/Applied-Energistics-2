@@ -80,6 +80,10 @@ public class BlockSkyStone extends AEBaseBlock
 
 	@Override
 	public void onReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
+		if (newState.getBlock() == state.getBlock()) {
+			return; // Just a block state change
+		}
+
 		super.onReplaced(state, w, pos, newState, isMoving);
 
 		if( Platform.isServer() )

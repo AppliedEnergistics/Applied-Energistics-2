@@ -26,7 +26,10 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.block.networking.BlockCableBus;
 import appeng.client.render.FacingToRotation;
+import appeng.tile.networking.TileCableBus;
+import appeng.tile.storage.TileSkyChest;
 import com.google.common.collect.Lists;
 
 import net.minecraft.block.Block;
@@ -134,7 +137,15 @@ public abstract class AEBaseTileBlock<T extends AEBaseTile> extends AEBaseBlock
 	}
 
 	@Override
+	public void dropXpOnBlockBreak(World worldIn, BlockPos pos, int amount) {
+		super.dropXpOnBlockBreak(worldIn, pos, amount);
+	}
+
+	@Override
 	public void onReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
+		if (newState.getBlock() == state.getBlock()) {
+			return; // Just a block state change
+		}
 
 		final AEBaseTile te = this.getTileEntity( w, pos );
 		if( te != null )
@@ -236,10 +247,10 @@ public abstract class AEBaseTileBlock<T extends AEBaseTile> extends AEBaseBlock
 					return ActionResultType.FAIL;
 				}
 
-				// FIXME if( tile instanceof TileCableBus || tile instanceof TileSkyChest )
-				// {
-				// 	return ActionResultType.FAIL;
-				// }
+				if( tile instanceof TileCableBus || tile instanceof TileSkyChest)
+				{
+					return ActionResultType.FAIL;
+				}
 
 				final ItemStack[] itemDropCandidates = Platform.getBlockDrops( world, pos );
 				final ItemStack op = new ItemStack( this );
@@ -266,7 +277,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTile> extends AEBaseBlock
 				return ActionResultType.FAIL;
 			}
 
-			if( heldItem.getItem() instanceof IMemoryCard /* FIXME && !( this instanceof BlockCableBus ) */ )
+			if( heldItem.getItem() instanceof IMemoryCard && !( this instanceof BlockCableBus) )
 			{
 				final IMemoryCard memoryCard = (IMemoryCard) heldItem.getItem();
 				final AEBaseTile tileEntity = this.getTileEntity( world, pos );

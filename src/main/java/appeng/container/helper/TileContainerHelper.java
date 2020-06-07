@@ -14,7 +14,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public final class TileContainerHelper<C extends AEBaseContainer, T extends TileEntity> {
+public final class TileContainerHelper<C extends AEBaseContainer, T extends TileEntity> extends AbstractContainerHelper {
 
     private final Class<T> tileEntityClass;
 
@@ -27,6 +27,7 @@ public final class TileContainerHelper<C extends AEBaseContainer, T extends Tile
     }
 
     public TileContainerHelper(ContainerFactory<T, C> factory, Class<T> tileEntityClass, SecurityPermissions requiredPermission) {
+        super(requiredPermission);
         this.tileEntityClass = tileEntityClass;
         this.factory = factory;
         this.requiredPermission = requiredPermission;
@@ -61,13 +62,12 @@ public final class TileContainerHelper<C extends AEBaseContainer, T extends Tile
         }
         T te = tileEntityClass.cast(tileEntity);
 
+        if (!checkPermission(player, te)) {
+            return false;
+        }
+
         // Use block name at position
         ITextComponent title = player.world.getBlockState(locator.getBlockPos()).getBlock().getNameTextComponent();
-
-        // FIXME: Check permissions...
-        if (requiredPermission != null) {
-            throw new IllegalStateException(); // NOT YET IMPLEMENTED
-        }
 
         INamedContainerProvider container = new SimpleNamedContainerProvider(
                 (wnd, p, pl) -> {

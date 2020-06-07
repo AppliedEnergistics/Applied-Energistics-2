@@ -19,6 +19,7 @@
 package appeng.util.item;
 
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -137,10 +138,10 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	public void writeToPacket( final PacketBuffer i )
 	{
 		final byte mask = (byte) ( ( this.getType( this.getStackSize() ) << 2 ) | ( this
-				.getType( this.getCountRequestable() ) << 4 ) | ( (byte) ( this.isCraftable() ? 1 : 0 ) << 6 ) | ( this.hasTagCompound() ? 1 : 0 ) << 7 );
+				.getType( this.getCountRequestable() ) << 4 ) | ( (byte) ( this.isCraftable() ? 1 : 0 ) << 6 ) );
 
 		i.writeByte( mask );
-		i.writeCompoundTag( this.getDefinition().serializeNBT() );
+		i.writeItemStack(getDefinition());
 		this.putPacketValue( i, this.getStackSize() );
 		this.putPacketValue( i, this.getCountRequestable() );
 	}

@@ -80,12 +80,10 @@ public class PacketMEFluidInventoryUpdate extends AppEngPacket
 		this.list = new LinkedList<>();
 		this.ref = stream.readByte();
 
-		// int originalBytes = stream.readableBytes();
-
 		try( final GZIPInputStream gzReader = new GZIPInputStream( new InputStream()
 		{
 			@Override
-			public int read() throws IOException
+			public int read()
 			{
 				if( stream.readableBytes() <= 0 )
 				{
@@ -140,7 +138,7 @@ public class PacketMEFluidInventoryUpdate extends AppEngPacket
 		this.compressFrame = new GZIPOutputStream( new OutputStream()
 		{
 			@Override
-			public void write( final int value ) throws IOException
+			public void write( final int value )
 			{
 				PacketMEFluidInventoryUpdate.this.data.writeByte( value );
 			}

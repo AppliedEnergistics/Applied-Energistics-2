@@ -110,43 +110,6 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		return fluid;
 	}
 
-	public static IAEFluidStack fromPacket( final PacketBuffer buffer ) throws IOException
-	{
-		final byte mask = buffer.readByte();
-		final byte stackType = (byte) ( ( mask & 0x0C ) >> 2 );
-		final byte countReqType = (byte) ( ( mask & 0x30 ) >> 4 );
-		final boolean isCraftable = ( mask & 0x40 ) > 0;
-		final boolean hasTagCompound = ( mask & 0x80 ) > 0;
-
-		// don't send this...
-		final CompoundNBT d = new CompoundNBT();
-
-		d.putString( "FluidName", buffer.readString() );
-		d.putByte( "Amount", (byte) 0 );
-
-		if( hasTagCompound )
-		{
-			d.put( "Tag", buffer.readCompoundTag() );
-		}
-
-		final long stackSize = getPacketValue( stackType, buffer );
-		final long countRequestable = getPacketValue( countReqType, buffer );
-
-		final FluidStack fluidStack = FluidStack.loadFluidStackFromNBT( d );
-
-		if( fluidStack == null )
-		{
-			return null;
-		}
-
-		final AEFluidStack fluid = AEFluidStack.fromFluidStack( fluidStack );
-		// fluid.priority = (int) priority;
-		fluid.setStackSize( stackSize );
-		fluid.setCountRequestable( countRequestable );
-		fluid.setCraftable( isCraftable );
-		return fluid;
-	}
-
 	@Override
 	public void add( final IAEFluidStack option )
 	{
@@ -299,8 +262,45 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		return ItemStack.EMPTY;
 	}
 
+	public static IAEFluidStack fromPacket( final PacketBuffer buffer )
+	{
+		final byte mask = buffer.readByte();
+		final byte stackType = (byte) ( ( mask & 0x0C ) >> 2 );
+		final byte countReqType = (byte) ( ( mask & 0x30 ) >> 4 );
+		final boolean isCraftable = ( mask & 0x40 ) > 0;
+		final boolean hasTagCompound = ( mask & 0x80 ) > 0;
+
+		// don't send this...
+		final CompoundNBT d = new CompoundNBT();
+
+		d.putString( "FluidName", buffer.readString() );
+		d.putByte( "Amount", (byte) 0 );
+
+		if( hasTagCompound )
+		{
+			d.put( "Tag", buffer.readCompoundTag() );
+		}
+
+		final long stackSize = getPacketValue( stackType, buffer );
+		final long countRequestable = getPacketValue( countReqType, buffer );
+
+		final FluidStack fluidStack = FluidStack.loadFluidStackFromNBT( d );
+
+		if( fluidStack == null )
+		{
+			return null;
+		}
+
+		final AEFluidStack fluid = AEFluidStack.fromFluidStack( fluidStack );
+		// fluid.priority = (int) priority;
+		fluid.setStackSize( stackSize );
+		fluid.setCountRequestable( countRequestable );
+		fluid.setCraftable( isCraftable );
+		return fluid;
+	}
+
 	@Override
-	public void writeToPacket( final PacketBuffer buffer ) throws IOException
+	public void writeToPacket( final PacketBuffer buffer )
 	{
 		final byte mask = (byte) ( ( this.getType( this.getStackSize() ) << 2 ) | ( this
 				.getType( this.getCountRequestable() ) << 4 ) | ( (byte) ( this.isCraftable() ? 1 : 0 ) << 6 ) | ( this.hasTagCompound() ? 1 : 0 ) << 7 );
@@ -313,7 +313,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		this.putPacketValue( buffer, this.getCountRequestable() );
 	}
 
-	private void writeToStream( final PacketBuffer buffer ) throws IOException
+	private void writeToStream( final PacketBuffer buffer )
 	{
 		buffer.writeString( fluid.getRegistryName().toString() );
 		if( this.hasTagCompound() )

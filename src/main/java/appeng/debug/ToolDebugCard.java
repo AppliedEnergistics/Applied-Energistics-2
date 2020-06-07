@@ -62,7 +62,7 @@ public class ToolDebugCard extends AEBaseItem
 
 	@Override
 	public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-		if( Platform.isClient() )
+		if( context.getWorld().isRemote() )
 		{
 			return ActionResultType.PASS;
 		}

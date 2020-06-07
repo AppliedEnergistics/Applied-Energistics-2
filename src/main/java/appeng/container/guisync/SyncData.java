@@ -27,6 +27,7 @@ import appeng.container.AEBaseContainer;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketProgressBar;
+import appeng.core.sync.packets.PacketValueConfig;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.IContainerListener;
 
@@ -66,27 +67,20 @@ public class SyncData
 				this.send( c, val );
 			}
 		}
-		catch( final IllegalArgumentException e )
+		catch( final IllegalArgumentException | IllegalAccessException e )
 		{
 			AELog.debug( e );
 		}
-		catch( final IllegalAccessException e )
-		{
-			AELog.debug( e );
-		}
-		catch( final IOException e )
-		{
-			AELog.debug( e );
-		}
+
 	}
 
-	private void send( final IContainerListener o, final Object val ) throws IOException
+	private void send( final IContainerListener o, final Object val )
 	{
 		if( val instanceof String )
 		{
 			if( o instanceof ServerPlayerEntity)
 			{
-				// FIXME NetworkHandler.instance().sendTo( new PacketValueConfig( "SyncDat." + this.channel, (String) val ), (ServerPlayerEntity) o );
+				NetworkHandler.instance().sendTo( new PacketValueConfig( "SyncDat." + this.channel, (String) val ), (ServerPlayerEntity) o );
 			}
 		}
 		else if( this.field.getType().isEnum() )

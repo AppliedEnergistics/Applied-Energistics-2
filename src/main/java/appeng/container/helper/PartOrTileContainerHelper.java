@@ -1,10 +1,16 @@
 package appeng.container.helper;
 
 import appeng.api.config.SecurityPermissions;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.security.IActionHost;
+import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
+import appeng.core.AELog;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -13,6 +19,8 @@ import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 /**
@@ -22,7 +30,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
  * @param <C>
  */
 // FIXME: This is also used in contexts where access is via an item that implements I or exposes I via IGuiItemObject
-public final class PartOrTileContainerHelper<C extends AEBaseContainer, I> {
+public final class PartOrTileContainerHelper<C extends AEBaseContainer, I> extends AbstractContainerHelper {
 
     private final Class<I> interfaceClass;
 
@@ -35,6 +43,7 @@ public final class PartOrTileContainerHelper<C extends AEBaseContainer, I> {
     }
 
     public PartOrTileContainerHelper(ContainerFactory<C, I> factory, Class<I> interfaceClass, SecurityPermissions requiredPermission) {
+        super(requiredPermission);
         this.interfaceClass = interfaceClass;
         this.factory = factory;
         this.requiredPermission = requiredPermission;
@@ -61,15 +70,18 @@ public final class PartOrTileContainerHelper<C extends AEBaseContainer, I> {
 
         I accessInterface = getHostFromLocator(player, locator);
 
+        if (accessInterface == null) {
+            return false;
+        }
+
+        if (!checkPermission(player, accessInterface)) {
+            return false;
+        }
+
         // Use block name at position
         // FIXME: this is not right, we'd need to check the part's item stack, or custom naming interface impl
         // FIXME: Should move this up, because at this point, it's hard to know where the terminal host came from (part or tile)
         ITextComponent title = player.world.getBlockState(locator.getBlockPos()).getBlock().getNameTextComponent();
-
-        // FIXME: Check permissions...
-        if (requiredPermission != null) {
-            throw new IllegalStateException(); // NOT YET IMPLEMENTED
-        }
 
         INamedContainerProvider container = new SimpleNamedContainerProvider(
                 (wnd, p, pl) -> {
@@ -80,7 +92,7 @@ public final class PartOrTileContainerHelper<C extends AEBaseContainer, I> {
                     return c;
                 }, title
         );
-        NetworkHooks.openGui((ServerPlayerEntity) player, container, locator.getBlockPos());
+        NetworkHooks.openGui((ServerPlayerEntity) player, container, locator::write);
 
         return true;
     }
@@ -92,6 +104,7 @@ public final class PartOrTileContainerHelper<C extends AEBaseContainer, I> {
         }
 
         TileEntity tileEntity = player.world.getTileEntity(locator.getBlockPos());
+
         // The tile entity itself can host a terminal (i.e. Chest!)
         if (interfaceClass.isInstance(tileEntity)) {
             return interfaceClass.cast(tileEntity);
@@ -99,10 +112,15 @@ public final class PartOrTileContainerHelper<C extends AEBaseContainer, I> {
             // But it could also be a part attached to the tile entity
             IPartHost partHost = (IPartHost) tileEntity;
             IPart part = partHost.getPart(locator.getSide());
+            if (part == null) {
+                return null;
+            }
+
             if (interfaceClass.isInstance(part)) {
                 return interfaceClass.cast(part);
             } else {
-                // FIXME: Logging?
+                AELog.debug("Trying to open a container @ {} for a {}, but the container requires {}",
+                        locator, part.getClass(), interfaceClass);
                 return null;
             }
         } else {

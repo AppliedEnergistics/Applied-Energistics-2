@@ -91,7 +91,7 @@ public class BlockSecurityStation extends AEBaseTileBlock<TileSecurityStation>
 		final TileSecurityStation tg = this.getTileEntity( w, pos );
 		if( tg != null )
 		{
-			if( Platform.isClient() )
+			if( w.isRemote() )
 			{
 				return ActionResultType.SUCCESS;
 			}

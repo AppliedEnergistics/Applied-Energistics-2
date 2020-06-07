@@ -149,6 +149,6 @@ public class GuiPatternTerm extends GuiMEMonitorable<ContainerPatternTerm>
 	{
 		final int offsetPlayerSide = s.isPlayerSide() ? 5 : 3;
 
-		// FIXME OH NOOOOO WE CANNOT, ITS FINAL s.yPos = s.getY() + this.ySize - 78 - offsetPlayerSide;
+		s.yPos = s.getY() + this.ySize - 78 - offsetPlayerSide;
 	}
 }

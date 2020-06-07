@@ -26,9 +26,12 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.block.storage.BlockChest;
+import appeng.block.storage.DriveSlotState;
 import appeng.container.implementations.ContainerMEMonitorable;
 import appeng.core.Api;
 import appeng.fluids.container.ContainerFluidTerminal;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
@@ -37,6 +40,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -139,7 +143,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 		this.setInternalPowerFlow( AccessRestriction.WRITE );
 
 		this.inputInventory.setFilter( new InputInventoryFilter() );
-		this.cellInventory.setFilter( new CellInventoryFilter() );
+		this.cellInventory.setFilter(new CellInventoryFilter());
 	}
 
 	public ItemStack getCell()
@@ -272,7 +276,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	@Override
 	public int getCellStatus( final int slot )
 	{
-		if( Platform.isClient() )
+		if( isRemote() )
 		{
 			return ( this.state >> ( slot * 3 ) ) & 3;
 		}
@@ -293,7 +297,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	@Override
 	public boolean isPowered()
 	{
-		if( Platform.isClient() )
+		if( isRemote() )
 		{
 			return ( this.state & 0x40 ) == 0x40;
 		}
@@ -923,7 +927,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 		}
 	}
 
-	private class CellInventoryFilter implements IAEItemFilter
+	private static class CellInventoryFilter implements IAEItemFilter
 	{
 
 		@Override

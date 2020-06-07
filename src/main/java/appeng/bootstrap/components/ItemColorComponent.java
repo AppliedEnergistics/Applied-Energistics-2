@@ -19,15 +19,14 @@
 package appeng.bootstrap.components;
 
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.item.Item;
-import net.minecraftforge.api.distmarker.Dist;
 
 
-public class ItemColorComponent implements IInitComponent
+public class ItemColorComponent implements IItemColorRegistrationComponent
 {
-
 	private final Item item;
 
 	private final IItemColor itemColor;
@@ -39,8 +38,8 @@ public class ItemColorComponent implements IInitComponent
 	}
 
 	@Override
-	public void initialize()
+	public void register(ItemColors itemColors, BlockColors blockColors)
 	{
-		Minecraft.getInstance().getItemColors().register( this.itemColor, this.item );
+		itemColors.register( this.itemColor, this.item );
 	}
 }

@@ -36,6 +36,7 @@ import appeng.block.networking.BlockCableBus;
 import appeng.block.paint.BlockPaint;
 import appeng.core.AEConfig;
 import appeng.core.Api;
+import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.helpers.IMouseWheelItem;
 import appeng.hooks.IBlockTool;
@@ -59,6 +60,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -76,6 +78,8 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 	private static final Map<Integer, AEColor> ORE_TO_COLOR = new HashMap<>();
 
+	private static final String TAG_COLOR = "color";
+
 	static
 	{
 		for( final AEColor color : AEColor.VALID_COLORS )
@@ -91,6 +95,16 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	public ToolColorApplicator(Item.Properties props)
 	{
 		super( AEConfig.instance().getColorApplicatorBattery(), props );
+		addPropertyOverride(
+				new ResourceLocation(AppEng.MOD_ID, "colored"),
+				(itemStack, world, entity) -> {
+					// If the stack has no color, don't use the colored model since the impact of calling getColor
+					// for every quad is extremely high, if the stack tries to re-search its inventory for a new
+					// paintball everytime
+					AEColor col = getActiveColor( itemStack );
+					return ( col != null ) ? 1 : 0;
+				}
+		);
 	}
 
 	@Override
@@ -239,9 +253,9 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	public ItemStack getColor( final ItemStack is )
 	{
 		final CompoundNBT c = is.getTag();
-		if( c != null && c.contains("color") )
+		if( c != null && c.contains(TAG_COLOR) )
 		{
-			final CompoundNBT color = c.getCompound( "color" );
+			final CompoundNBT color = c.getCompound( TAG_COLOR );
 			final ItemStack oldColor = ItemStack.read(color);
 			if( !oldColor.isEmpty() )
 			{
@@ -326,13 +340,13 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
         final CompoundNBT data = is.getOrCreateTag();
 		if( newColor.isEmpty() )
 		{
-			data.remove( "color" );
+			data.remove( TAG_COLOR );
 		}
 		else
 		{
 			final CompoundNBT color = new CompoundNBT();
 			newColor.write(color);
-			data.put( "color", color );
+			data.put( TAG_COLOR, color );
 		}
 	}
 
@@ -447,25 +461,25 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	@Override
 	public boolean isBlackListed( final ItemStack cellItem, final IAEItemStack requestedAddition )
 	{
-// FIXME		if( requestedAddition != null )
-// FIXME		{
-// FIXME			final int[] id = OreDictionary.getOreIDs( requestedAddition.getDefinition() );
-// FIXME
-// FIXME			for( final int x : id )
-// FIXME			{
-// FIXME				if( ORE_TO_COLOR.containsKey( x ) )
-// FIXME				{
-// FIXME					return false;
-// FIXME				}
-// FIXME			}
-// FIXME
-// FIXME			if( requestedAddition.getItem() instanceof SnowballItem )
-// FIXME			{
-// FIXME				return false;
-// FIXME			}
-// FIXME
-// FIXME			return !( requestedAddition.getItem() instanceof ItemPaintBall && requestedAddition.getItemDamage() < 20 );
-// FIXME		}
+		if( requestedAddition != null )
+		{
+			// FIXME final int[] id = OreDictionary.getOreIDs( requestedAddition.getDefinition() );
+
+			// FIXME for( final int x : id )
+			// FIXME {
+			// FIXME 	if( ORE_TO_COLOR.containsKey( x ) )
+			// FIXME 	{
+			// FIXME 		return false;
+			// FIXME 	}
+			// FIXME }
+
+			if( requestedAddition.getItem() instanceof SnowballItem )
+			{
+				return false;
+			}
+
+			return !( requestedAddition.getItem() instanceof ItemPaintBall && requestedAddition.getItemDamage() < 20 );
+		}
 		return true;
 	}
 
@@ -542,4 +556,5 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	{
 		this.cycleColors( is, this.getColor( is ), up ? 1 : -1 );
 	}
+
 }

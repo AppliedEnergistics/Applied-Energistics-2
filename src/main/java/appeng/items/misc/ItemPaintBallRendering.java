@@ -44,14 +44,16 @@ public class ItemPaintBallRendering extends ItemRenderingCustomizer
 
 	private static int getColorFromItemstack( ItemStack stack, int tintIndex )
 	{
-		final AEColor col = ( (ItemPaintBall) stack.getItem() ).getColor( stack );
+		ItemPaintBall item = (ItemPaintBall) stack.getItem();
+		final AEColor col = item.getColor( stack );
 
-		final int colorValue = stack.getDamage() >= 20 ? col.mediumVariant : col.mediumVariant;
+		boolean lumen = item.isLumen(stack);
+		final int colorValue = lumen ? col.mediumVariant : col.mediumVariant;
 		final int r = ( colorValue >> 16 ) & 0xff;
 		final int g = ( colorValue >> 8 ) & 0xff;
 		final int b = ( colorValue ) & 0xff;
 
-		if( stack.getDamage() >= 20 )
+		if( lumen )
 		{
 			final float fail = 0.7f;
 			final int full = (int) ( 255 * 0.3 );
