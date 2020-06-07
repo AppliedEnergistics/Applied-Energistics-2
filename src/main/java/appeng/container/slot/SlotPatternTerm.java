@@ -21,7 +21,6 @@ package appeng.container.slot;
 
 import java.io.IOException;
 
-import appeng.core.Api;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
@@ -53,7 +52,7 @@ public class SlotPatternTerm extends SlotCraftingTerm
 	public AppEngPacket getRequest( final boolean shift )
 	{
 		return new PacketPatternSlot( this
-				.getPattern(), Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( this.getStack() ), shift );
+				.getPattern(), AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( this.getStack() ), shift );
 	}
 
 	@Override

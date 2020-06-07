@@ -41,7 +41,7 @@ public final class CreativeTabFacade
 			public ItemStack createIcon()
 			{
 
-				// FIXME final Optional<Item> maybeFacade = Api.INSTANCE.definitions().items().facade().maybeItem();
+				// FIXME final Optional<Item> maybeFacade = AEApi.instance().definitions().items().facade().maybeItem();
 				// FIXME if( maybeFacade.isPresent() )
 				{
 					// FIXME return ( (ItemFacade) maybeFacade.get() ).getCreativeTabIcon();

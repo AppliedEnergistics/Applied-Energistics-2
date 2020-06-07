@@ -37,6 +37,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkChannelsChanged;
@@ -53,7 +54,6 @@ import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
-import appeng.core.Api;
 import appeng.core.AppEng;
 
 import appeng.fluids.helper.DualityFluidInterface;
@@ -235,7 +235,7 @@ public class PartFluidInterface extends PartBasicState implements IGridTickable,
 	@Override
 	public ItemStack getItemStackRepresentation()
 	{
-		return Api.INSTANCE.definitions().parts().fluidIface().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+		return AEApi.instance().definitions().parts().fluidIface().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 	}
 
 	@Override

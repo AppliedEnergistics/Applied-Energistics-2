@@ -21,10 +21,10 @@ package appeng.container.implementations;
 
 import java.io.IOException;
 
+import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
 import appeng.container.ContainerLocator;
 import appeng.container.helper.TileContainerHelper;
-import appeng.core.Api;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -64,7 +64,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 	private static final TileContainerHelper<ContainerCraftingCPU, TileCraftingTile> helper
 			= new TileContainerHelper<>(ContainerCraftingCPU::new, TileCraftingTile.class, SecurityPermissions.CRAFT);
 
-	private final IItemList<IAEItemStack> list = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
+	private final IItemList<IAEItemStack> list = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 	private IGrid network;
 	private CraftingCPUCluster monitor = null;
 	private ITextComponent cpuName = null;

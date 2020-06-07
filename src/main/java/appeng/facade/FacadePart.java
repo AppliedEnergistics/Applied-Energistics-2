@@ -32,7 +32,6 @@ import appeng.api.parts.IBoxProvider;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.util.AEPartLocation;
-import appeng.core.Api;
 
 
 public class FacadePart implements IFacadePart, IBoxProvider
@@ -104,7 +103,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	@Override
 	public boolean isTransparent()
 	{
-		if( Api.INSTANCE.partHelper().getCableRenderMode().transparentFacades )
+		if( AEApi.instance().partHelper().getCableRenderMode().transparentFacades )
 		{
 			return true;
 		}

@@ -59,7 +59,7 @@ public class StorageChunkProvider extends ChunkGeneratorOverworld
 			biomes[k] = biomeId;
 		}
 
-		Api.INSTANCE.definitions().blocks().matrixFrame().maybeBlock().ifPresent( block -> this.fillChunk( chunk, block.getDefaultState() ) );
+		AEApi.instance().definitions().blocks().matrixFrame().maybeBlock().ifPresent( block -> this.fillChunk( chunk, block.getDefaultState() ) );
 
 		chunk.setModified( false );
 

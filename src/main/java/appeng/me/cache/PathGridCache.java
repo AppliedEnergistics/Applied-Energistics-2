@@ -46,8 +46,8 @@ import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
-import appeng.core.Api;
 import appeng.core.AppEng;
+import appeng.api.AEApi;
 import appeng.api.features.AEFeature;
 import appeng.core.stats.IAdvancementTrigger;
 import appeng.me.GridConnection;
@@ -351,7 +351,7 @@ public class PathGridCache implements IPathingGrid
 			{
 				for( final IGridNode n : this.requireChannels )
 				{
-					PlayerEntity player = Api.INSTANCE.registries().players().findPlayer( n.getPlayerID() );
+					PlayerEntity player = AEApi.instance().registries().players().findPlayer( n.getPlayerID() );
 					if( player instanceof ServerPlayerEntity )
 					{
 						currentBracket.trigger( (ServerPlayerEntity) player );

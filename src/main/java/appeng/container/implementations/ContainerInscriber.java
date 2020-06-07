@@ -19,6 +19,7 @@
 package appeng.container.implementations;
 
 
+import appeng.api.AEApi;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.features.IInscriberRecipe;
 import appeng.container.ContainerLocator;
@@ -27,7 +28,6 @@ import appeng.container.helper.TileContainerHelper;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
-import appeng.core.Api;
 import appeng.tile.misc.TileInscriber;
 import appeng.util.Platform;
 import net.minecraft.entity.player.PlayerEntity;
@@ -137,14 +137,14 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 
 		if( s == this.middle )
 		{
-			IItemDefinition press = Api.INSTANCE.definitions().materials().namePress();
+			IItemDefinition press = AEApi.instance().definitions().materials().namePress();
 			if( press.isSameAs( top ) || press.isSameAs( bot ) )
 			{
 				return !press.isSameAs( is );
 			}
 
 			boolean matches = false;
-			for( final IInscriberRecipe recipe : Api.INSTANCE.registries().inscriber().getRecipes() )
+			for( final IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
 			{
 				final boolean matchA = !top
 						.isEmpty() && ( Platform.itemComparisons().isSameItem( top, recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) || Platform
@@ -185,14 +185,14 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 			}
 
 			// name presses
-			final IItemDefinition namePress = Api.INSTANCE.definitions().materials().namePress();
+			final IItemDefinition namePress = AEApi.instance().definitions().materials().namePress();
 			if( namePress.isSameAs( otherSlot ) )
 			{
 				return namePress.isSameAs( is );
 			}
 
 			// everything else
-			for( final IInscriberRecipe recipe : Api.INSTANCE.registries().inscriber().getRecipes() )
+			for( final IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
 			{
 				boolean isValid = false;
 				if( Platform.itemComparisons().isSameItem( otherSlot, recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) )

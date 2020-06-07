@@ -19,12 +19,12 @@
 package appeng.block;
 
 
+import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerUnits;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.implementations.items.IAEItemPowerStorage;
-import appeng.core.Api;
 import appeng.core.localization.GuiText;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
@@ -134,7 +134,7 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
 	private double getMaxEnergyCapacity()
 	{
 		final Block blockID = Block.getBlockFromItem( this );
-		final IBlockDefinition energyCell = Api.INSTANCE.definitions().blocks().energyCell();
+		final IBlockDefinition energyCell = AEApi.instance().definitions().blocks().energyCell();
 
 		return energyCell.maybeBlock().map( block ->
 		{

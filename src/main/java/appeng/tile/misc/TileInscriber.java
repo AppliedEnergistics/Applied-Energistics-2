@@ -26,7 +26,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import appeng.core.Api;
 import com.google.common.collect.Lists;
 
 import net.minecraft.item.ItemStack;
@@ -39,6 +38,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.Upgrades;
@@ -110,7 +110,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		this.getProxy().setIdlePowerUsage( 0 );
 		this.settings = new ConfigManager( this );
 
-		final ITileDefinition inscriberDefinition = Api.INSTANCE.definitions().blocks().inscriber();
+		final ITileDefinition inscriberDefinition = AEApi.instance().definitions().blocks().inscriber();
 		this.upgrades = new DefinitionUpgradeInventory( inscriberDefinition, this, this.getUpgradeSlots() );
 
 		this.sideItemHandler.setMaxStackSize( 1, 64 );
@@ -306,7 +306,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			return null;
 		}
 
-		final IComparableDefinition namePress = Api.INSTANCE.definitions().materials().namePress();
+		final IComparableDefinition namePress = AEApi.instance().definitions().materials().namePress();
 		final boolean isNameA = namePress.isSameAs( plateA );
 		final boolean isNameB = namePress.isSameAs( plateB );
 
@@ -319,7 +319,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			return this.makeNamePressRecipe( input, plateB, plateA );
 		}
 
-		for( final IInscriberRecipe recipe : Api.INSTANCE.registries().inscriber().getRecipes() )
+		for( final IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
 		{
 
 			final boolean matchA = ( plateA.isEmpty() && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons()
@@ -559,7 +559,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		final List<ItemStack> inputs = Lists.newArrayList( startingItem );
 		final InscriberProcessType type = InscriberProcessType.INSCRIBE;
 
-		final IInscriberRecipeBuilder builder = Api.INSTANCE.registries().inscriber().builder();
+		final IInscriberRecipeBuilder builder = AEApi.instance().registries().inscriber().builder();
 		builder.withInputs( inputs ).withOutput( renamedItem ).withProcessType( type );
 
 		if( !plateA.isEmpty() )
@@ -609,11 +609,11 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 
 			if( inv == TileInscriber.this.topItemHandler || inv == TileInscriber.this.bottomItemHandler )
 			{
-				if( Api.INSTANCE.definitions().materials().namePress().isSameAs( stack ) )
+				if( AEApi.instance().definitions().materials().namePress().isSameAs( stack ) )
 				{
 					return true;
 				}
-				for( final ItemStack optionals : Api.INSTANCE.registries().inscriber().getOptionals() )
+				for( final ItemStack optionals : AEApi.instance().registries().inscriber().getOptionals() )
 				{
 					if( Platform.itemComparisons().isSameItem( stack, optionals ) )
 					{

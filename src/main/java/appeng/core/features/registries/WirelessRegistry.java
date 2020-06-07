@@ -35,7 +35,6 @@ import appeng.api.AEApi;
 import appeng.api.features.ILocatable;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.features.IWirelessTermRegistry;
-import appeng.core.Api;
 import appeng.core.localization.PlayerMessages;
 
 import appeng.util.Platform;
@@ -108,7 +107,7 @@ public final class WirelessRegistry implements IWirelessTermRegistry
 		}
 
 		final long parsedKey = Long.parseLong( unparsedKey );
-		final ILocatable securityStation = Api.INSTANCE.registries().locatable().getLocatableBy( parsedKey );
+		final ILocatable securityStation = AEApi.instance().registries().locatable().getLocatableBy( parsedKey );
 		if( securityStation == null )
 		{
 			player.sendMessage( PlayerMessages.StationCanNotBeLocated.get() );

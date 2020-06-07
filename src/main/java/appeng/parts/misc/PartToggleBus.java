@@ -30,6 +30,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 
+import appeng.api.AEApi;
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
@@ -39,7 +40,6 @@ import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AELog;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
@@ -188,7 +188,7 @@ public class PartToggleBus extends PartBasicState
 				{
 					try
 					{
-						this.connection = Api.INSTANCE.grid().createGridConnection( this.getProxy().getNode(), this.getOuterProxy().getNode() );
+						this.connection = AEApi.instance().grid().createGridConnection( this.getProxy().getNode(), this.getOuterProxy().getNode() );
 					}
 					catch( final FailedConnectionException e )
 					{

@@ -19,6 +19,7 @@
 package appeng.container.implementations;
 
 
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.definitions.IDefinitions;
@@ -33,7 +34,6 @@ import appeng.container.guisync.GuiSync;
 import appeng.container.helper.PartOrTileContainerHelper;
 import appeng.container.helper.TileContainerHelper;
 import appeng.container.slot.*;
-import appeng.core.Api;
 import appeng.core.sync.packets.PacketPatternSlot;
 import appeng.helpers.IContainerCraftingPacket;
 import appeng.items.storage.ItemViewCell;
@@ -250,7 +250,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			}
 
 			// add a new encoded pattern.
-			Optional<ItemStack> maybePattern = Api.INSTANCE.definitions().items().encodedPattern().maybeStack( 1 );
+			Optional<ItemStack> maybePattern = AEApi.instance().definitions().items().encodedPattern().maybeStack( 1 );
 			if( maybePattern.isPresent() )
 			{
 				output = maybePattern.get();
@@ -347,7 +347,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			return false;
 		}
 
-		final IDefinitions definitions = Api.INSTANCE.definitions();
+		final IDefinitions definitions = AEApi.instance().definitions();
 
 		boolean isPattern = definitions.items().encodedPattern().isSameAs( output );
 		isPattern |= definitions.materials().blankPattern().isSameAs( output );
@@ -432,7 +432,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			}
 
 			final IMEMonitor<IAEItemStack> storage = this.getPatternTerminal()
-					.getInventory( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
+					.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 			final IItemList<IAEItemStack> all = storage.getStorageList();
 
 			final ItemStack is = r.getCraftingResult( ic );

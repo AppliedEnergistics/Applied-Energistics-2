@@ -22,7 +22,6 @@ package appeng.helpers;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import appeng.core.Api;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.nbt.CompoundNBT;
@@ -62,7 +61,7 @@ public class MultiCraftingTracker
 
 			if( link != null && !link.isEmpty() )
 			{
-				this.setLink( x, Api.INSTANCE.storage().loadCraftingLink( link, this.owner ) );
+				this.setLink( x, AEApi.instance().storage().loadCraftingLink( link, this.owner ) );
 			}
 		}
 	}

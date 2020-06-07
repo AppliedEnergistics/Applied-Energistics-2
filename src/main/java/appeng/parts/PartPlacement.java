@@ -19,12 +19,12 @@
 package appeng.parts;
 
 
+import appeng.api.AEApi;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IItems;
 import appeng.api.parts.*;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketClick;
@@ -219,7 +219,7 @@ public class PartPlacement
 
 		BlockPos te_pos = pos;
 
-		final IBlockDefinition multiPart = Api.INSTANCE.definitions().blocks().multiPart();
+		final IBlockDefinition multiPart = AEApi.instance().definitions().blocks().multiPart();
 		if( host == null && pass == PlaceType.PLACE_ITEM )
 		{
 			Direction offset = null;
@@ -425,7 +425,7 @@ public class PartPlacement
 			else
 			{
 				final ItemStack held = event.getPlayer().getHeldItem( event.getHand() );
-				final IItems items = Api.INSTANCE.definitions().items();
+				final IItems items = AEApi.instance().definitions().items();
 
 				boolean supportedItem = items.memoryCard().isSameAs( held );
 				supportedItem |= items.colorApplicator().isSameAs( held );

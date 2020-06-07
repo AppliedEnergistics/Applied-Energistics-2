@@ -19,6 +19,7 @@
 package appeng.items.tools.powered;
 
 
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.items.IItemGroup;
@@ -35,7 +36,6 @@ import appeng.api.util.DimensionalCoord;
 import appeng.block.networking.BlockCableBus;
 import appeng.block.paint.BlockPaint;
 import appeng.core.AEConfig;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.helpers.IMouseWheelItem;
@@ -120,11 +120,11 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 		ItemStack paintBall = this.getColor( is );
 
-		final IMEInventory<IAEItemStack> inv = Api.INSTANCE
+		final IMEInventory<IAEItemStack> inv = AEApi.instance()
 				.registries()
 				.cell()
 				.getCellInventory( is, null,
-						Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
+						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 		if( inv != null )
 		{
 			final IAEItemStack option = inv.extractItems( AEItemStack.fromItemStack( paintBall ), Actionable.SIMULATE, new BaseActionSource() );
@@ -270,15 +270,15 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	{
 		ItemStack newColor = ItemStack.EMPTY;
 
-		final IMEInventory<IAEItemStack> inv = Api.INSTANCE
+		final IMEInventory<IAEItemStack> inv = AEApi.instance()
 				.registries()
 				.cell()
 				.getCellInventory( is, null,
-						Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
+						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 		if( inv != null )
 		{
 			final IItemList<IAEItemStack> itemList = inv
-					.getAvailableItems( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList() );
+					.getAvailableItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() );
 			if( anchor.isEmpty() )
 			{
 				final IAEItemStack firstItem = itemList.getFirstItem();
@@ -431,13 +431,13 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	{
 		super.addInformation( stack, world, lines, advancedTooltips );
 
-		final ICellInventoryHandler<IAEItemStack> cdi = Api.INSTANCE
+		final ICellInventoryHandler<IAEItemStack> cdi = AEApi.instance()
 				.registries()
 				.cell()
 				.getCellInventory( stack, null,
-						Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
+						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
-		Api.INSTANCE.client().addCellInformation( cdi, lines );
+		AEApi.instance().client().addCellInformation( cdi, lines );
 	}
 
 	@Override
@@ -504,7 +504,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	@Override
 	public IStorageChannel<IAEItemStack> getChannel()
 	{
-		return Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class );
+		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	@Override

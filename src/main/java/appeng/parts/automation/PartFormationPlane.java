@@ -46,6 +46,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -67,7 +68,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AEConfig;
-import appeng.core.Api;
 
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
@@ -92,7 +92,7 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 		return MODELS.getModels();
 	}
 
-	private final MEInventoryHandler<IAEItemStack> myHandler = new MEInventoryHandler<>( this, Api.INSTANCE
+	private final MEInventoryHandler<IAEItemStack> myHandler = new MEInventoryHandler<>( this, AEApi.instance()
 			.storage()
 			.getStorageChannel( IItemStorageChannel.class ) );
 	private final AppEngInternalAEInventory Config = new AppEngInternalAEInventory( this, 63 );
@@ -113,7 +113,7 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 		this.myHandler.setWhitelist( this.getInstalledUpgrades( Upgrades.INVERTER ) > 0 ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST );
 		this.myHandler.setPriority( this.getPriority() );
 
-		final IItemList<IAEItemStack> priorityList = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
+		final IItemList<IAEItemStack> priorityList = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 
 		final int slotsToUse = 18 + this.getInstalledUpgrades( Upgrades.CAPACITY ) * 9;
 		for( int x = 0; x < this.Config.getSlots() && x < slotsToUse; x++ )
@@ -208,7 +208,7 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 	@Override
 	public List<IMEInventoryHandler> getCellArray( final IStorageChannel channel )
 	{
-		if( this.getProxy().isActive() && channel == Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) )
+		if( this.getProxy().isActive() && channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
 		{
 			final List<IMEInventoryHandler> handler = new ArrayList<>( 1 );
 			handler.add( this.myHandler );
@@ -368,7 +368,7 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 	@Override
 	public IStorageChannel<IAEItemStack> getChannel()
 	{
-		return Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class );
+		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	@Override
@@ -380,7 +380,7 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 	@Override
 	public ItemStack getItemStackRepresentation()
 	{
-		return Api.INSTANCE.definitions().parts().formationPlane().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+		return AEApi.instance().definitions().parts().formationPlane().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 	}
 
 	@Override

@@ -24,7 +24,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
-import appeng.core.Api;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -38,6 +37,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
@@ -278,7 +278,7 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 	@Override
 	public <T extends IAEStack<T>> IMEMonitor<T> getInventory( IStorageChannel<T> channel )
 	{
-		if( channel == Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) )
+		if( channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
 		{
 			return (IMEMonitor<T>) this.securityMonitor;
 		}
@@ -318,7 +318,7 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 	@Override
 	public void readPermissions( final Map<Integer, EnumSet<SecurityPermissions>> playerPerms )
 	{
-		final IPlayerRegistry pr = Api.INSTANCE.registries().players();
+		final IPlayerRegistry pr = AEApi.instance().registries().players();
 
 		// read permissions
 		for( final IAEItemStack ais : this.inventory.getStoredItems() )

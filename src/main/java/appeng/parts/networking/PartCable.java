@@ -30,6 +30,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 
+import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.definitions.IParts;
 import appeng.api.implementations.parts.IPartCable;
@@ -45,7 +46,6 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IReadOnlyCollection;
-import appeng.core.Api;
 import appeng.items.parts.ItemPart;
 import appeng.me.GridAccessException;
 import appeng.parts.AEBasePart;
@@ -113,7 +113,7 @@ public class PartCable extends AEBasePart implements IPartCable
 		{
 			ItemStack newPart = null;
 
-			final IParts parts = Api.INSTANCE.definitions().parts();
+			final IParts parts = AEApi.instance().definitions().parts();
 
 			if( this.getCableConnectionType() == AECableType.GLASS )
 			{

@@ -19,6 +19,7 @@
 package appeng.recipes;
 
 
+import appeng.api.AEApi;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItems;
 import appeng.api.definitions.IParts;
@@ -27,7 +28,6 @@ import appeng.api.recipes.ResolverResult;
 import appeng.api.recipes.ResolverResultSet;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.items.materials.ItemMaterial;
 import appeng.items.materials.MaterialType;
@@ -45,7 +45,7 @@ public class AEItemResolver implements ISubItemResolver
 
 		if( nameSpace.equals( AppEng.MOD_ID ) )
 		{
-			final IDefinitions definitions = Api.INSTANCE.definitions();
+			final IDefinitions definitions = AEApi.instance().definitions();
 			final IItems items = definitions.items();
 			final IParts parts = definitions.parts();
 

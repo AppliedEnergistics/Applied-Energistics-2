@@ -19,10 +19,10 @@
 package appeng.items.misc;
 
 
+import appeng.api.AEApi;
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.helpers.InvalidPatternHelper;
@@ -85,7 +85,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 
 			final PlayerInventory inv = player.inventory;
 
-			ItemStack is = Api.INSTANCE.definitions().materials().blankPattern().maybeStack( stack.getCount() ).orElse( ItemStack.EMPTY );
+			ItemStack is = AEApi.instance().definitions().materials().blankPattern().maybeStack( stack.getCount() ).orElse( ItemStack.EMPTY );
 			if( !is.isEmpty() )
 			{
 				for( int s = 0; s < player.inventory.getSizeInventory(); s++ )

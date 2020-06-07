@@ -52,7 +52,6 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AEConfig;
-import appeng.core.Api;
 import appeng.core.localization.GuiText;
 
 import appeng.items.contents.CellConfig;
@@ -82,13 +81,13 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell<
 	{
 		super.addInformation( stack, world, lines, advancedTooltips );
 
-		final ICellInventoryHandler<IAEItemStack> cdi = Api.INSTANCE
+		final ICellInventoryHandler<IAEItemStack> cdi = AEApi.instance()
 				.registries()
 				.cell()
 				.getCellInventory( stack, null,
-						Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
+						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
-		Api.INSTANCE.client().addCellInformation( cdi, lines );
+		AEApi.instance().client().addCellInformation( cdi, lines );
 	}
 
 	@Override
@@ -136,7 +135,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell<
 	@Override
 	public IStorageChannel<IAEItemStack> getChannel()
 	{
-		return Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class );
+		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	@Override

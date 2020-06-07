@@ -60,7 +60,6 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.capabilities.Capabilities;
-import appeng.core.Api;
 import appeng.core.settings.TickRates;
 import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.IAEFluidInventory;
@@ -94,10 +93,10 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 	private int isWorking = -1;
 	private int priority;
 
-	private final MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<>( new NullInventory<IAEItemStack>(), Api.INSTANCE
+	private final MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<>( new NullInventory<IAEItemStack>(), AEApi.instance()
 			.storage()
 			.getStorageChannel( IItemStorageChannel.class ) );
-	private final MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<>( new NullInventory<IAEFluidStack>(), Api.INSTANCE
+	private final MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<>( new NullInventory<IAEFluidStack>(), AEApi.instance()
 			.storage()
 			.getStorageChannel( IFluidStorageChannel.class ) );
 
@@ -136,7 +135,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 	@Override
 	public <T extends IAEStack<T>> IMEMonitor<T> getInventory( IStorageChannel<T> channel )
 	{
-		if( channel == Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) )
+		if( channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
 		{
 			if( this.hasConfig() )
 			{
@@ -145,7 +144,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 
 			return (IMEMonitor<T>) this.items;
 		}
-		else if( channel == Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ) )
+		else if( channel == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) )
 		{
 			if( this.hasConfig() )
 			{
@@ -211,8 +210,8 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 	{
 		try
 		{
-			this.items.setInternal( this.gridProxy.getStorage().getInventory( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) ) );
-			this.fluids.setInternal( this.gridProxy.getStorage().getInventory( Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ) ) );
+			this.items.setInternal( this.gridProxy.getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ) );
+			this.fluids.setInternal( this.gridProxy.getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) ) );
 		}
 		catch( final GridAccessException gae )
 		{
@@ -371,7 +370,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 		try
 		{
 			final IMEInventory<IAEFluidStack> dest = this.gridProxy.getStorage()
-					.getInventory( Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ) );
+					.getInventory( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
 			final IEnergySource src = this.gridProxy.getEnergy();
 
 			if( work.getStackSize() > 0 )

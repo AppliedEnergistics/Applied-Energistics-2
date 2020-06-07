@@ -46,6 +46,10 @@ public final class TileDefinition extends BlockDefinition implements ITileDefini
 	@Override
 	public Optional<? extends Class<? extends TileEntity>> maybeEntity()
 	{
-		return this.block.map( AEBaseTileBlock::getTileEntityClass );
+		if (this.block.isPresent()) {
+			
+		}
+			
+		return this.block.map( block -> block.getTileEntityClass() );
 	}
 }

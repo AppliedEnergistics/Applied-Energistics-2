@@ -23,7 +23,6 @@ import javax.annotation.Nonnull;
 
 import appeng.container.ContainerLocator;
 import appeng.container.helper.PartOrTileContainerHelper;
-import appeng.core.Api;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -34,6 +33,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
@@ -138,7 +138,7 @@ public static ContainerType<ContainerQuartzKnife> TYPE;
 			{
 				if( ContainerQuartzKnife.this.myName.length() > 0 )
 				{
-					return Api.INSTANCE.definitions().materials().namePress().maybeStack( 1 ).map(namePressStack ->
+					return AEApi.instance().definitions().materials().namePress().maybeStack( 1 ).map(namePressStack ->
 					{
                         final CompoundNBT compound = namePressStack.getOrCreateTag();
 						compound.putString("InscribeName", ContainerQuartzKnife.this.myName);

@@ -50,7 +50,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.AEConfig;
-import appeng.core.Api;
 import appeng.api.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
@@ -82,9 +81,9 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 	@Override
 	public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
 	{
-		Api.INSTANCE
+		AEApi.instance()
 				.client()
-				.addCellInformation( Api.INSTANCE.registries().cell().getCellInventory( stack, null, this.getChannel() ), lines );
+				.addCellInformation( AEApi.instance().registries().cell().getCellInventory( stack, null, this.getChannel() ), lines );
 	}
 
 	@Override
@@ -178,7 +177,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 			}
 
 			final PlayerInventory playerInventory = player.inventory;
-			final IMEInventoryHandler inv = Api.INSTANCE.registries().cell().getCellInventory( stack, null, this.getChannel() );
+			final IMEInventoryHandler inv = AEApi.instance().registries().cell().getCellInventory( stack, null, this.getChannel() );
 			if( inv != null && playerInventory.getCurrentItem() == stack )
 			{
 				final InventoryAdaptor ia = InventoryAdaptor.getAdaptor( player );
@@ -232,7 +231,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 	@Override
 	public ItemStack getContainerItem( final ItemStack itemStack )
 	{
-		return Api.INSTANCE
+		return AEApi.instance()
 				.definitions()
 				.materials()
 				.emptyStorageCell()

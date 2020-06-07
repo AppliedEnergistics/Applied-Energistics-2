@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-import appeng.core.Api;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.crash.CrashReportCategory;
@@ -48,6 +47,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.implementations.IUpgradeableHost;
@@ -434,7 +434,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 			ItemStack is = this.getItemStack( PartItemStack.NETWORK );
 
 			// Blocks and parts share the same soul!
-			final IDefinitions definitions = Api.INSTANCE.definitions();
+			final IDefinitions definitions = AEApi.instance().definitions();
 			if( definitions.parts().iface().isSameAs( is ) )
 			{
 				Optional<ItemStack> iface = definitions.blocks().iface().maybeStack( 1 );

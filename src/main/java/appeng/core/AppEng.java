@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+import appeng.api.AEApi;
 import appeng.block.paint.PaintSplotchesModel;
 import appeng.block.qnb.QnbFormedModel;
 import appeng.bootstrap.components.IClientSetupComponent;
@@ -178,6 +179,7 @@ public final class AppEng
 		// FIXME RenderingRegistry.registerEntityRenderingHandler( EntityTinyTNTPrimed.class, manager -> new RenderTinyTNTPrimed( manager ) );
 		// FIXME RenderingRegistry.registerEntityRenderingHandler( EntityFloatingItem.class, manager -> new RenderFloatingItem( manager ) );
 
+		// TODO: Do not use the internal API
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();
 		definitions.getRegistry().getBootstrapComponents( IClientSetupComponent.class ).forEachRemaining(IClientSetupComponent::setup);
 
@@ -265,7 +267,7 @@ public final class AppEng
 //
 //		// Instantiate all Plugins
 //		List<Object> injectables = Lists.newArrayList(
-//				Api.INSTANCE );
+//				AEApi.instance() );
 //		new PluginLoader().loadPlugins( injectables, event.getAsmData() );
 //	}
 

@@ -26,7 +26,6 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import appeng.container.implementations.ContainerInterface;
-import appeng.core.Api;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.inventory.CraftingInventory;
@@ -43,6 +42,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
@@ -359,7 +359,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, II
 	@Override
 	public ItemStack getItemStackRepresentation()
 	{
-		return Api.INSTANCE.definitions().blocks().iface().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+		return AEApi.instance().definitions().blocks().iface().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 	}
 
 	@Override

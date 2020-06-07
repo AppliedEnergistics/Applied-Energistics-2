@@ -29,6 +29,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.SecurityPermissions;
@@ -41,7 +42,6 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.SlotRestrictedInput;
-import appeng.core.Api;
 import appeng.fluids.parts.PartFluidStorageBus;
 import appeng.fluids.util.IAEFluidTank;
 import appeng.util.Platform;
@@ -182,7 +182,7 @@ public class ContainerFluidStorageBus extends ContainerFluidConfigurable
 		if( cellInv != null )
 		{
 			final IItemList<IAEFluidStack> list = cellInv
-					.getAvailableItems( Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ).createList() );
+					.getAvailableItems( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createList() );
 			i = list.iterator();
 		}
 

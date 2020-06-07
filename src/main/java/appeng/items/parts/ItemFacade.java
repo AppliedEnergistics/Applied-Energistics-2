@@ -37,11 +37,11 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import appeng.api.AEApi;
 import appeng.api.exceptions.MissingDefinitionException;
 import appeng.api.parts.IAlphaPassItem;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AELog;
-import appeng.core.Api;
 import appeng.core.FacadeConfig;
 import appeng.facade.FacadePart;
 import appeng.facade.IFacadeItem;
@@ -63,7 +63,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	@Override
 	public ActionResultType onItemUseFirst( ItemStack stack, ItemUseContext context )
 	{
-		return Api.INSTANCE.partHelper().placeBus( stack, context.getPos(), context.getFace(), context.getPlayer(), context.getHand(), context.getWorld() );
+		return AEApi.instance().partHelper().placeBus( stack, context.getPos(), context.getFace(), context.getPlayer(), context.getHand(), context.getWorld() );
 	}
 
 	@Override
@@ -286,7 +286,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 	public ItemStack createFromID( final int id )
 	{
-		ItemStack facadeStack = Api.INSTANCE
+		ItemStack facadeStack = AEApi.instance()
 				.definitions()
 				.items()
 				.facade()

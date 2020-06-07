@@ -22,13 +22,13 @@ package appeng.tile.networking;
 import java.io.IOException;
 import java.util.EnumSet;
 
-import appeng.core.Api;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.tiles.IWirelessAccessPoint;
 import appeng.api.networking.GridFlags;
@@ -60,7 +60,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 
 	public TileWireless(TileEntityType<?> tileEntityTypeIn) {
 		super(tileEntityTypeIn);
-		this.inv.setFilter( new AEItemDefinitionFilter( Api.INSTANCE.definitions().materials().wirelessBooster() ) );
+		this.inv.setFilter( new AEItemDefinitionFilter( AEApi.instance().definitions().materials().wirelessBooster() ) );
 		this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
 		this.getProxy().setValidSides( EnumSet.noneOf( Direction.class ) );
 	}

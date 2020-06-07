@@ -19,6 +19,7 @@
 package appeng.util;
 
 
+import appeng.api.AEApi;
 import appeng.api.config.*;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.features.AEFeature;
@@ -44,7 +45,6 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.core.Api;
 import appeng.core.stats.AeStats;
 import appeng.fluids.util.AEFluidStack;
 import appeng.hooks.TickHandler;
@@ -1180,13 +1180,13 @@ public class Platform
 	@SuppressWarnings( { "rawtypes", "unchecked" } )
 	public static void postChanges(final IStorageGrid gs, final ItemStack removed, final ItemStack added, final IActionSource src )
 	{
-		for( final IStorageChannel<?> chan : Api.INSTANCE.storage().storageChannels() )
+		for( final IStorageChannel<?> chan : AEApi.instance().storage().storageChannels() )
 		{
 			final IItemList<?> myChanges = chan.createList();
 
 			if( !removed.isEmpty() )
 			{
-				final IMEInventory myInv = Api.INSTANCE.registries().cell().getCellInventory( removed, null, chan );
+				final IMEInventory myInv = AEApi.instance().registries().cell().getCellInventory( removed, null, chan );
 				if( myInv != null )
 				{
 					myInv.getAvailableItems( myChanges );
@@ -1198,7 +1198,7 @@ public class Platform
 			}
 			if( !added.isEmpty() )
 			{
-				final IMEInventory myInv = Api.INSTANCE.registries().cell().getCellInventory( added, null, chan );
+				final IMEInventory myInv = AEApi.instance().registries().cell().getCellInventory( added, null, chan );
 				if( myInv != null )
 				{
 					myInv.getAvailableItems( myChanges );
@@ -1490,7 +1490,7 @@ public class Platform
 
 		if( type == AEFeature.CERTUS_QUARTZ_TOOLS )
 		{
-			final IItemDefinition certusQuartzCrystal = Api.INSTANCE.definitions().materials().certusQuartzCrystal();
+			final IItemDefinition certusQuartzCrystal = AEApi.instance().definitions().materials().certusQuartzCrystal();
 
 			return certusQuartzCrystal.isSameAs( b );
 		}
@@ -1505,7 +1505,7 @@ public class Platform
 
 //	public static List<ItemStack> findPreferred( final ItemStack[] is )
 //	{
-//		final IParts parts = Api.INSTANCE.definitions().parts();
+//		final IParts parts = AEApi.instance().definitions().parts();
 //
 //		for( final ItemStack stack : is )
 //		{
@@ -1561,7 +1561,7 @@ public class Platform
 //
 //	// public static void addStat( final int playerID, final Achievement achievement )
 //	// {
-//	// final EntityPlayer p = Api.INSTANCE.registries().players().findPlayer( playerID );
+//	// final EntityPlayer p = AEApi.instance().registries().players().findPlayer( playerID );
 //	// if( p != null )
 //	// {
 //	// p.addStat( achievement, 1 );
@@ -1570,7 +1570,7 @@ public class Platform
 //
 //	public static boolean isRecipePrioritized( final ItemStack what )
 //	{
-//		final IMaterials materials = Api.INSTANCE.definitions().materials();
+//		final IMaterials materials = AEApi.instance().definitions().materials();
 //
 //		boolean isPurified = materials.purifiedCertusQuartzCrystal().isSameAs( what );
 //		isPurified |= materials.purifiedFluixCrystal().isSameAs( what );

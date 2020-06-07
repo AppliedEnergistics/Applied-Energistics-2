@@ -35,7 +35,6 @@ import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.ICellWorkbenchItem;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.channels.IItemStorageChannel;
-import appeng.core.Api;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
 
@@ -82,11 +81,11 @@ public class ItemCreativeStorageCell extends AEBaseItem implements ICellWorkbenc
 	@Override
 	public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
 	{
-		final IMEInventoryHandler<?> inventory = Api.INSTANCE
+		final IMEInventoryHandler<?> inventory = AEApi.instance()
 				.registries()
 				.cell()
 				.getCellInventory( stack, null,
-						Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
+						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
 		if( inventory instanceof ICellInventoryHandler )
 		{

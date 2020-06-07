@@ -19,6 +19,7 @@
 package appeng.client.gui.implementations;
 
 
+import appeng.api.AEApi;
 import appeng.api.config.FullnessMode;
 import appeng.api.config.OperationMode;
 import appeng.api.config.RedstoneMode;
@@ -26,7 +27,6 @@ import appeng.api.config.Settings;
 import appeng.api.definitions.IDefinitions;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.container.implementations.ContainerIOPort;
-import appeng.core.Api;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketConfigButton;
@@ -84,7 +84,7 @@ public class GuiIOPort extends GuiUpgradeable<ContainerIOPort>
 	{
 		super.drawBG( offsetX, offsetY, mouseX, mouseY, partialTicks);
 
-		final IDefinitions definitions = Api.INSTANCE.definitions();
+		final IDefinitions definitions = AEApi.instance().definitions();
 
 		definitions.items().cell1k().maybeStack( 1 ).ifPresent( cell1kStack -> this.drawItem( offsetX + 66 - 8, offsetY + 17, cell1kStack ) );
 

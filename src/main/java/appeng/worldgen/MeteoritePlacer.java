@@ -24,7 +24,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-import appeng.core.Api;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -37,6 +36,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
+import appeng.api.AEApi;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IMaterials;
@@ -71,7 +71,7 @@ public final class MeteoritePlacer
 
 	public MeteoritePlacer()
 	{
-		final IBlocks blocks = Api.INSTANCE.definitions().blocks();
+		final IBlocks blocks = AEApi.instance().definitions().blocks();
 
 		this.skyChestDefinition = blocks.skyStoneChest();
 		this.skyStoneDefinition = blocks.skyStoneBlock();
@@ -246,7 +246,7 @@ public final class MeteoritePlacer
 						}
 
 						ItemStack toAdd = ItemStack.EMPTY;
-						final IMaterials materials = Api.INSTANCE.definitions().materials();
+						final IMaterials materials = AEApi.instance().definitions().materials();
 
 						switch( r % 4 )
 						{

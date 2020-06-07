@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import appeng.core.Api;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
@@ -35,6 +34,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
@@ -107,7 +107,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 			return;
 		}
 
-		final IMEMonitor<IAEItemStack> inv = this.storage.getInventory( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
+		final IMEMonitor<IAEItemStack> inv = this.storage.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 		final int howManyPerCraft = this.getStack().getCount();
 		int maxTimesToCraft = 0;
 

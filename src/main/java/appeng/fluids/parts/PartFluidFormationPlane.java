@@ -45,7 +45,6 @@ import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
-import appeng.core.Api;
 
 import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.IAEFluidInventory;
@@ -69,7 +68,7 @@ public class PartFluidFormationPlane extends PartAbstractFormationPlane<IAEFluid
 		return MODELS.getModels();
 	}
 
-	private final MEInventoryHandler<IAEFluidStack> myHandler = new MEInventoryHandler<>( this, Api.INSTANCE
+	private final MEInventoryHandler<IAEFluidStack> myHandler = new MEInventoryHandler<>( this, AEApi.instance()
 			.storage()
 			.getStorageChannel( IFluidStorageChannel.class ) );
 	private final AEFluidInventory config = new AEFluidInventory( this, 63 );
@@ -87,7 +86,7 @@ public class PartFluidFormationPlane extends PartAbstractFormationPlane<IAEFluid
 		this.myHandler.setWhitelist( this.getInstalledUpgrades( Upgrades.INVERTER ) > 0 ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST );
 		this.myHandler.setPriority( this.getPriority() );
 
-		final IItemList<IAEFluidStack> priorityList = Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ).createList();
+		final IItemList<IAEFluidStack> priorityList = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createList();
 
 		final int slotsToUse = 18 + this.getInstalledUpgrades( Upgrades.CAPACITY ) * 9;
 		for( int x = 0; x < this.config.getSlots() && x < slotsToUse; x++ )
@@ -202,13 +201,13 @@ public class PartFluidFormationPlane extends PartAbstractFormationPlane<IAEFluid
 	@Override
 	public IStorageChannel<IAEFluidStack> getChannel()
 	{
-		return Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class );
+		return AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class );
 	}
 
 	@Override
 	public List<IMEInventoryHandler> getCellArray( final IStorageChannel channel )
 	{
-		if( this.getProxy().isActive() && channel == Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ) )
+		if( this.getProxy().isActive() && channel == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) )
 		{
 			final List<IMEInventoryHandler> handler = new ArrayList<>( 1 );
 			handler.add( this.myHandler );
@@ -231,7 +230,7 @@ public class PartFluidFormationPlane extends PartAbstractFormationPlane<IAEFluid
 	@Override
 	public ItemStack getItemStackRepresentation()
 	{
-		return Api.INSTANCE.definitions().parts().fluidFormationnPlane().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+		return AEApi.instance().definitions().parts().fluidFormationnPlane().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 	}
 
 	@Override

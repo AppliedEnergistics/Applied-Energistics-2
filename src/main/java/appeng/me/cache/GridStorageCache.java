@@ -50,7 +50,6 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
-import appeng.core.Api;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.GenericInterestManager;
 import appeng.me.helpers.MachineSource;
@@ -76,7 +75,7 @@ public class GridStorageCache implements IStorageGrid
 		this.storageNetworks = new IdentityHashMap<>();
 		this.storageMonitors = new IdentityHashMap<>();
 
-		Api.INSTANCE.storage().storageChannels().forEach( channel -> this.storageMonitors.put( channel, new NetworkMonitor<>( this, channel ) ) );
+		AEApi.instance().storage().storageChannels().forEach( channel -> this.storageMonitors.put( channel, new NetworkMonitor<>( this, channel ) ) );
 	}
 
 	@Override

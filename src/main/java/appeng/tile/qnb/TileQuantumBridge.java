@@ -24,7 +24,6 @@ import java.util.EnumSet;
 import java.util.Optional;
 
 import appeng.block.qnb.QnbFormedState;
-import appeng.core.Api;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -39,6 +38,7 @@ import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
+import appeng.api.AEApi;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkEventSubscribe;
@@ -150,7 +150,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 	private boolean isCenter()
 	{
-		return Api.INSTANCE
+		return AEApi.instance()
 				.definitions()
 				.blocks()
 				.quantumLink()
@@ -177,7 +177,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	{
 		super.onReady();
 
-		final IBlockDefinition quantumRing = Api.INSTANCE.definitions().blocks().quantumRing();
+		final IBlockDefinition quantumRing = AEApi.instance().definitions().blocks().quantumRing();
 		final Optional<Block> maybeLinkBlock = quantumRing.maybeBlock();
 		final Optional<ItemStack> maybeLinkStack = quantumRing.maybeStack( 1 );
 

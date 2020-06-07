@@ -23,7 +23,6 @@ import java.util.Iterator;
 
 import javax.annotation.Nonnull;
 
-import appeng.core.Api;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -178,7 +177,7 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
 		{
 			if( existing.isEmpty() )
 			{
-				this.inv[slot] = Api.INSTANCE
+				this.inv[slot] = AEApi.instance()
 						.storage()
 						.getStorageChannel( IItemStorageChannel.class )
 						.createStack(
@@ -227,7 +226,7 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
 	public void setStackInSlot( final int slot, final ItemStack newItemStack )
 	{
 		ItemStack oldStack = this.getStackInSlot( slot ).copy();
-		this.inv[slot] = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( newItemStack );
+		this.inv[slot] = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( newItemStack );
 
 		if( this.te != null && Platform.isServer() )
 		{

@@ -27,7 +27,6 @@ import appeng.api.AEApi;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.core.Api;
 import appeng.fluids.helper.FluidCellConfig;
 import appeng.items.materials.MaterialType;
 import appeng.items.storage.AbstractStorageCell;
@@ -88,7 +87,7 @@ public final class BasicFluidStorageCell extends AbstractStorageCell<IAEFluidSta
 	@Override
 	public IStorageChannel<IAEFluidStack> getChannel()
 	{
-		return Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class );
+		return AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class );
 	}
 
 	@Override
@@ -106,7 +105,7 @@ public final class BasicFluidStorageCell extends AbstractStorageCell<IAEFluidSta
 	@Override
 	protected void dropEmptyStorageCellCase( final InventoryAdaptor ia, final PlayerEntity player )
 	{
-		Api.INSTANCE.definitions().materials().emptyStorageCell().maybeStack( 1 ).ifPresent( is ->
+		AEApi.instance().definitions().materials().emptyStorageCell().maybeStack( 1 ).ifPresent( is ->
 		{
 			final ItemStack extraA = ia.addItems( is );
 			if( !extraA.isEmpty() )

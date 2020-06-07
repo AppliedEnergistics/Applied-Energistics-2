@@ -38,6 +38,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.hooks.BasicEventHooks;
 
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.PowerMultiplier;
@@ -65,7 +66,6 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.WorldCoord;
 import appeng.container.ContainerNull;
 import appeng.core.AELog;
-import appeng.core.Api;
 import appeng.crafting.CraftBranchFailure;
 import appeng.crafting.CraftingJob;
 import appeng.crafting.CraftingLink;
@@ -103,7 +103,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	private MECraftingInventory inventory = new MECraftingInventory();
 	private IAEItemStack finalOutput;
 	private boolean waiting = false;
-	private IItemList<IAEItemStack> waitingFor = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
+	private IItemList<IAEItemStack> waitingFor = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 	private long availableStorage = 0;
 	private MachineSource machineSrc = null;
 	private int accelerator = 0;
@@ -546,7 +546,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		}
 
 		final IItemList<IAEItemStack> list;
-		this.getListOfItem( list = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList(), CraftingItemList.ALL );
+		this.getListOfItem( list = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList(), CraftingItemList.ALL );
 		for( final IAEItemStack is : list )
 		{
 			this.postChange( is, this.machineSrc );
@@ -837,7 +837,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		}
 
 		final IStorageGrid sg = g.getCache( IStorageGrid.class );
-		final IMEInventory<IAEItemStack> ii = sg.getInventory( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
+		final IMEInventory<IAEItemStack> ii = sg.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
 		for( IAEItemStack is : this.inventory.getItemList() )
 		{
@@ -881,7 +881,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		}
 
 		final IStorageGrid sg = g.getCache( IStorageGrid.class );
-		final IMEInventory<IAEItemStack> storage = sg.getInventory( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
+		final IMEInventory<IAEItemStack> storage = sg.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 		final MECraftingInventory ci = new MECraftingInventory( storage, true, false, false );
 
 		try
@@ -912,7 +912,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 				this.submitLink( this.myLastLink );
 				this.submitLink( whatLink );
 
-				final IItemList<IAEItemStack> list = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
+				final IItemList<IAEItemStack> list = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 				this.getListOfItem( list, CraftingItemList.ALL );
 				for( final IAEItemStack ge : list )
 				{
@@ -1279,7 +1279,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	private IItemList<IAEItemStack> readList( final ListNBT tag )
 	{
-		final IItemList<IAEItemStack> out = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
+		final IItemList<IAEItemStack> out = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 
 		if( tag == null )
 		{
@@ -1323,7 +1323,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		this.lastTime = System.nanoTime();
 		this.elapsedTime = 0;
 
-		final IItemList<IAEItemStack> list = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
+		final IItemList<IAEItemStack> list = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 
 		this.getListOfItem( list, CraftingItemList.ACTIVE );
 		this.getListOfItem( list, CraftingItemList.PENDING );

@@ -36,7 +36,6 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.core.Api;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 
 
@@ -46,7 +45,7 @@ public class CraftingTreeNode
 	// what slot!
 	private final int slot;
 	private final CraftingJob job;
-	private final IItemList<IAEItemStack> used = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
+	private final IItemList<IAEItemStack> used = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 	// parent node.
 	private final CraftingTreeProcess parent;
 	private final World world;

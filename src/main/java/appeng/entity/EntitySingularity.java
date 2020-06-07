@@ -31,9 +31,9 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 
+import appeng.api.AEApi;
 import appeng.api.definitions.IMaterials;
 import appeng.core.AEConfig;
-import appeng.core.Api;
 import appeng.api.features.AEFeature;
 import appeng.helpers.Reflected;
 import appeng.util.Platform;
@@ -80,7 +80,7 @@ public final class EntitySingularity extends AEBaseEntityItem
 
 		final ItemStack item = this.getItem();
 
-		final IMaterials materials = Api.INSTANCE.definitions().materials();
+		final IMaterials materials = AEApi.instance().definitions().materials();
 
 		if( materials.singularity().isSameAs( item ) )
 		{

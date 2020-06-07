@@ -19,11 +19,11 @@
 package appeng.items.parts;
 
 
+import appeng.api.AEApi;
 import appeng.api.implementations.items.IItemGroup;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
 import appeng.api.util.AEColor;
-import appeng.core.Api;
 import appeng.core.features.ActivityState;
 import appeng.core.features.ItemStackSrc;
 import appeng.core.localization.GuiText;
@@ -151,7 +151,7 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 			return ActionResultType.FAIL;
 		}
 
-		return Api.INSTANCE.partHelper().placeBus( held, context.getPos(), context.getFace(), player, context.getHand(), context.getWorld() );
+		return AEApi.instance().partHelper().placeBus( held, context.getPos(), context.getFace(), player, context.getHand(), context.getWorld() );
 	}
 
 	@Override

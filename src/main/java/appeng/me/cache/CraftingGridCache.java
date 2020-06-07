@@ -77,7 +77,6 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
-import appeng.core.Api;
 import appeng.crafting.CraftingJob;
 import appeng.crafting.CraftingLink;
 import appeng.crafting.CraftingLinkNexus;
@@ -251,7 +250,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		this.emitableItems.clear();
 
 		// update the stuff that was in the list...
-		this.storageGrid.postAlterationOfStoredItems( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ), oldItems.keySet(),
+		this.storageGrid.postAlterationOfStoredItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ), oldItems.keySet(),
 				new BaseActionSource() );
 
 		// re-create list..
@@ -288,7 +287,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 			this.craftableItems.put( e.getKey(), ImmutableList.copyOf( e.getValue() ) );
 		}
 
-		this.storageGrid.postAlterationOfStoredItems( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ), this.craftableItems.keySet(),
+		this.storageGrid.postAlterationOfStoredItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ), this.craftableItems.keySet(),
 				new BaseActionSource() );
 	}
 
@@ -368,7 +367,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	{
 		final List<IMEInventoryHandler> list = new ArrayList<>( 1 );
 
-		if( channel == Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) )
+		if( channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
 		{
 			list.add( this );
 		}
@@ -457,7 +456,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	@Override
 	public IStorageChannel<IAEItemStack> getChannel()
 	{
-		return Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class );
+		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	@Override

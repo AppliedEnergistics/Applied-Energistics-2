@@ -22,7 +22,6 @@ package appeng.tile.crafting;
 import java.io.IOException;
 import java.util.List;
 
-import appeng.core.Api;
 import appeng.core.sync.network.TargetPoint;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
@@ -37,6 +36,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.hooks.BasicEventHooks;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.RedstoneMode;
@@ -99,7 +99,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 
 	public TileMolecularAssembler(TileEntityType<?> tileEntityTypeIn) {
 		super(tileEntityTypeIn);
-		final ITileDefinition assembler = Api.INSTANCE.definitions().blocks().molecularAssembler();
+		final ITileDefinition assembler = AEApi.instance().definitions().blocks().molecularAssembler();
 
 		this.settings = new ConfigManager( this );
 		this.settings.registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );

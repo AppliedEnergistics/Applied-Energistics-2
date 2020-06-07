@@ -22,7 +22,6 @@ package appeng.parts.reporting;
 import java.util.Collections;
 import java.util.List;
 
-import appeng.core.Api;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -180,7 +179,7 @@ public class PartConversionMonitor extends AbstractPartMonitor
 			final IEnergySource energy = this.getProxy().getEnergy();
 			final IMEMonitor<IAEItemStack> cell = this.getProxy()
 					.getStorage()
-					.getInventory( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
+					.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
 			if( allItems )
 			{
@@ -236,7 +235,7 @@ public class PartConversionMonitor extends AbstractPartMonitor
 				final IMEMonitor<IAEItemStack> cell = this.getProxy()
 						.getStorage()
 						.getInventory(
-								Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
+								AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
 				input.setStackSize( count );
 

@@ -19,6 +19,7 @@
 package appeng.client.gui.implementations;
 
 
+import appeng.api.AEApi;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiScrollbar;
@@ -26,7 +27,6 @@ import appeng.client.gui.widgets.MEGuiTextField;
 import appeng.client.me.ClientDCInternalInv;
 import appeng.client.me.SlotDisconnected;
 import appeng.container.implementations.ContainerInterfaceTerminal;
-import appeng.core.Api;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
 import com.google.common.collect.HashMultimap;
@@ -331,7 +331,7 @@ public class GuiInterfaceTerminal extends AEBaseGui<ContainerInterfaceTerminal>
 			if( !parsedItemStack.isEmpty() )
 			{
 				final String displayName = Platform
-						.getItemDisplayName( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( parsedItemStack ) )
+						.getItemDisplayName( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( parsedItemStack ) )
 						.getString()
 						.toLowerCase();
 				if( displayName.contains( searchTerm ) )

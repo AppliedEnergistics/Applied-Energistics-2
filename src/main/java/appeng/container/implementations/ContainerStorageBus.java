@@ -24,7 +24,6 @@ import java.util.Iterator;
 import appeng.container.ContainerLocator;
 import appeng.container.helper.PartContainerHelper;
 import appeng.container.helper.TileContainerHelper;
-import appeng.core.Api;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -32,6 +31,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.SecurityPermissions;
@@ -178,7 +178,7 @@ public class ContainerStorageBus extends ContainerUpgradeable
 		if( cellInv != null )
 		{
 			final IItemList<IAEItemStack> list = cellInv
-					.getAvailableItems( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList() );
+					.getAvailableItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() );
 			i = list.iterator();
 		}
 

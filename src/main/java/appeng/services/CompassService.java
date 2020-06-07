@@ -31,7 +31,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
-import appeng.core.Api;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.block.Block;
@@ -138,7 +137,7 @@ public final class CompassService
 		// lower level...
 		final IChunk c = w.getChunk( cx, cz );
 
-		Optional<Block> maybeBlock = Api.INSTANCE.definitions().blocks().skyStoneBlock().maybeBlock();
+		Optional<Block> maybeBlock = AEApi.instance().definitions().blocks().skyStoneBlock().maybeBlock();
 		if( maybeBlock.isPresent() )
 		{
 			Block skyStoneBlock = maybeBlock.get();

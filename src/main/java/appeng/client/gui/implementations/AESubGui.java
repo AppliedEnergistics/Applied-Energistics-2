@@ -1,5 +1,6 @@
 package appeng.client.gui.implementations;
 
+import appeng.api.AEApi;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IParts;
 import appeng.client.gui.AEBaseGui;
@@ -8,7 +9,6 @@ import appeng.container.implementations.ContainerCraftingTerm;
 import appeng.container.implementations.ContainerMEMonitorable;
 import appeng.container.implementations.ContainerPatternTerm;
 import appeng.container.implementations.ContainerWirelessTerm;
-import appeng.core.Api;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.helpers.IPriorityHost;
@@ -36,7 +36,7 @@ final class AESubGui {
     public AESubGui(AEBaseGui<?> gui, Object containerTarget) {
         this.gui = gui;
 
-        final IDefinitions definitions = Api.INSTANCE.definitions();
+        final IDefinitions definitions = AEApi.instance().definitions();
         final IParts parts = definitions.parts();
 
         if (containerTarget instanceof IPriorityHost) {

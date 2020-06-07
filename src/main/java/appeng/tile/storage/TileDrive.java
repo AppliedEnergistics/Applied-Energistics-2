@@ -30,7 +30,6 @@ import java.util.Map;
 import appeng.block.AEBaseTileBlock;
 import appeng.block.storage.DriveSlotsState;
 import appeng.container.implementations.ContainerDrive;
-import appeng.core.Api;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -41,6 +40,7 @@ import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
@@ -290,7 +290,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	{
 		if( !this.isCached )
 		{
-			final Collection<IStorageChannel<? extends IAEStack<?>>> storageChannels = Api.INSTANCE.storage().storageChannels();
+			final Collection<IStorageChannel<? extends IAEStack<?>>> storageChannels = AEApi.instance().storage().storageChannels();
 			storageChannels.forEach( channel -> this.inventoryHandlers.put( channel, new ArrayList<>( 10 ) ) );
 
 			double power = 2.0;
@@ -303,7 +303,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 
 				if( !is.isEmpty() )
 				{
-					this.handlersBySlot[x] = Api.INSTANCE.registries().cell().getHandler( is );
+					this.handlersBySlot[x] = AEApi.instance().registries().cell().getHandler( is );
 
 					if( this.handlersBySlot[x] != null )
 					{
@@ -405,7 +405,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 		@Override
 		public boolean allowInsert( IItemHandler inv, int slot, ItemStack stack )
 		{
-			return !stack.isEmpty() && Api.INSTANCE.registries().cell().isCellHandled( stack );
+			return !stack.isEmpty() && AEApi.instance().registries().cell().isCellHandled( stack );
 		}
 
 	}
@@ -413,7 +413,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	@Override
 	public ItemStack getItemStackRepresentation()
 	{
-		return Api.INSTANCE.definitions().blocks().drive().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+		return AEApi.instance().definitions().blocks().drive().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 	}
 
 	@Nonnull

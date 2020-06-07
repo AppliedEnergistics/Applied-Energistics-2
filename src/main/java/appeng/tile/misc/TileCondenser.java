@@ -22,7 +22,6 @@ package appeng.tile.misc;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import appeng.core.Api;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
@@ -167,7 +166,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 
 	private ItemStack getOutput()
 	{
-		final IMaterials materials = Api.INSTANCE.definitions().materials();
+		final IMaterials materials = AEApi.instance().definitions().materials();
 
 		switch( (CondenserOutput) this.cm.getSetting( Settings.CONDENSER_OUTPUT ) )
 		{
@@ -325,7 +324,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		public int fill(FluidStack resource, FluidAction action) {
 			if( action == FluidAction.EXECUTE )
 			{
-				final IStorageChannel<IAEFluidStack> chan = Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class );
+				final IStorageChannel<IAEFluidStack> chan = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class );
 				TileCondenser.this.addPower( ( resource == null ? 0.0 : (double) resource.getAmount() ) / chan.transferFactor() );
 			}
 
@@ -392,7 +391,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		@Override
 		public <T extends IAEStack<T>> IMEMonitor<T> getInventory( IStorageChannel<T> channel )
 		{
-			if( channel == Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) )
+			if( channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
 			{
 				return (IMEMonitor<T>) this.itemInventory;
 			}

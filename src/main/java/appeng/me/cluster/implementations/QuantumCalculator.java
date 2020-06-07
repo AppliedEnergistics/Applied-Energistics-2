@@ -28,7 +28,6 @@ import appeng.api.AEApi;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
 import appeng.api.util.WorldCoord;
-import appeng.core.Api;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
@@ -88,7 +87,7 @@ public class QuantumCalculator extends MBCalculator
 					}
 
 					num++;
-					final IBlocks blocks = Api.INSTANCE.definitions().blocks();
+					final IBlocks blocks = AEApi.instance().definitions().blocks();
 					if( num == 5 )
 					{
 						if( !this.isBlockAtLocation( w, p, blocks.quantumLink() ) )

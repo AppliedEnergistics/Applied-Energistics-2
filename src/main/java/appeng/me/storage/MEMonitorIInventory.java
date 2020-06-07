@@ -41,7 +41,6 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.core.Api;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.ItemSlot;
@@ -51,7 +50,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 {
 
 	private final InventoryAdaptor adaptor;
-	private final IItemList<IAEItemStack> list = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
+	private final IItemList<IAEItemStack> list = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 	private final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<>();
 	private final NavigableMap<Integer, CachedItemStack> memory;
 	private IActionSource mySource;
@@ -139,7 +138,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 	@Override
 	public IStorageChannel getChannel()
 	{
-		return Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class );
+		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	@Override
@@ -183,7 +182,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 				final int newSize = ( newIS.isEmpty() ? 0 : newIS.getCount() );
 				final int diff = newSize - ( oldIS.isEmpty() ? 0 : oldIS.getCount() );
 
-				final IAEItemStack stack = ( old == null || old.aeStack == null ? Api.INSTANCE
+				final IAEItemStack stack = ( old == null || old.aeStack == null ? AEApi.instance()
 						.storage()
 						.getStorageChannel( IItemStorageChannel.class )
 						.createStack( newIS ) : old.aeStack.copy() );
@@ -358,7 +357,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 			else
 			{
 				this.itemStack = is.copy();
-				this.aeStack = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( is );
+				this.aeStack = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( is );
 			}
 		}
 	}

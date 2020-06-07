@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.util.Optional;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.core.Api;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -33,6 +32,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
@@ -196,7 +196,7 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 	@Override
 	protected ItemStack getItemFromTile( final Object obj )
 	{
-		final Optional<ItemStack> is = Api.INSTANCE.definitions().blocks().craftingMonitor().maybeStack( 1 );
+		final Optional<ItemStack> is = AEApi.instance().definitions().blocks().craftingMonitor().maybeStack( 1 );
 
 		return is.orElseGet( () -> super.getItemFromTile( obj ) );
 	}

@@ -24,7 +24,6 @@ import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
-import appeng.core.Api;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -50,6 +49,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import appeng.api.AEApi;
 import appeng.api.util.AEAxisAlignedBB;
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.renderable.ItemRenderable;
@@ -115,7 +115,7 @@ public class BlockCharger extends AEBaseTileBlock<TileCharger>
 		{
 			final TileCharger tc = (TileCharger) tile;
 
-			if( Api.INSTANCE.definitions().materials().certusQuartzCrystalCharged().isSameAs( tc.getInternalInventory().getStackInSlot( 0 ) ) )
+			if( AEApi.instance().definitions().materials().certusQuartzCrystalCharged().isSameAs( tc.getInternalInventory().getStackInSlot( 0 ) ) )
 			{
 				final double xOff = 0.0;
 				final double yOff = 0.0;

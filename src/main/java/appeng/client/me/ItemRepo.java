@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 
-import appeng.core.Api;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
@@ -51,7 +50,7 @@ import net.minecraft.util.text.ITextComponent;
 public class ItemRepo
 {
 
-	private final IItemList<IAEItemStack> list = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
+	private final IItemList<IAEItemStack> list = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 	private final ArrayList<IAEItemStack> view = new ArrayList<>();
 	private final IScrollSource src;
 	private final ISortSource sortSrc;

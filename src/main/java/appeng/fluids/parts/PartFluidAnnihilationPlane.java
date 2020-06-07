@@ -4,7 +4,6 @@ package appeng.fluids.parts;
 
 import java.util.List;
 
-import appeng.core.Api;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -306,7 +305,7 @@ public class PartFluidAnnihilationPlane extends PartBasicState implements IGridT
 		try
 		{
 			final IStorageGrid storage = this.getProxy().getStorage();
-			final IMEInventory<IAEFluidStack> inv = storage.getInventory( Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ) );
+			final IMEInventory<IAEFluidStack> inv = storage.getInventory( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
 
 			if( modulate )
 			{

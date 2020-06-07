@@ -22,7 +22,6 @@ package appeng.spatial;
 import java.util.ArrayList;
 import java.util.List;
 
-import appeng.core.Api;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -163,7 +162,7 @@ public class StorageHelper
 
 	public void swapRegions( final World srcWorld, final int srcX, final int srcY, final int srcZ, final World dstWorld, final int dstX, final int dstY, final int dstZ, final int scaleX, final int scaleY, final int scaleZ )
 	{
-		Api.INSTANCE
+		AEApi.instance()
 				.definitions()
 				.blocks()
 				.matrixFrame()

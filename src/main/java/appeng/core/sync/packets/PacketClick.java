@@ -32,11 +32,11 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 
+import appeng.api.AEApi;
 import appeng.api.definitions.IComparableDefinition;
 import appeng.api.definitions.IItems;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
-import appeng.core.Api;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import net.minecraft.util.math.Vec3d;
@@ -112,7 +112,7 @@ public class PacketClick extends AppEngPacket
 	public void serverPacketData( final INetworkInfo manager, final PlayerEntity player )
 	{
 		final ItemStack is = player.inventory.getCurrentItem();
-		final IItems items = Api.INSTANCE.definitions().items();
+		final IItems items = AEApi.instance().definitions().items();
 		final IComparableDefinition maybeMemoryCard = items.memoryCard();
 		final IComparableDefinition maybeColorApplicator = items.colorApplicator();
 		final BlockPos pos = new BlockPos( this.x, this.y, this.z );

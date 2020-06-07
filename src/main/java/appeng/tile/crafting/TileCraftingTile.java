@@ -26,7 +26,6 @@ import java.util.LinkedList;
 import java.util.Optional;
 
 import appeng.client.render.crafting.CraftingCubeState;
-import appeng.core.Api;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -34,6 +33,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
@@ -95,11 +95,11 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 
 		if( ( (TileCraftingTile) obj ).isAccelerator() )
 		{
-			is = Api.INSTANCE.definitions().blocks().craftingAccelerator().maybeStack( 1 );
+			is = AEApi.instance().definitions().blocks().craftingAccelerator().maybeStack( 1 );
 		}
 		else
 		{
-			is = Api.INSTANCE.definitions().blocks().craftingUnit().maybeStack( 1 );
+			is = AEApi.instance().definitions().blocks().craftingUnit().maybeStack( 1 );
 		}
 
 		return is.orElseGet( () -> super.getItemFromTile( obj ) );
@@ -331,7 +331,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 				throw new IllegalStateException( this.cluster + " does not contain any kind of blocks, which were destroyed." );
 			}
 
-			for( IAEItemStack ais : inv.getAvailableItems( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList() ) )
+			for( IAEItemStack ais : inv.getAvailableItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() ) )
 			{
 				ais = ais.copy();
 				ais.setStackSize( ais.getDefinition().getMaxStackSize() );

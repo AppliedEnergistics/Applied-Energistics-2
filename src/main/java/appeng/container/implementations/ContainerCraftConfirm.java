@@ -19,6 +19,7 @@
 package appeng.container.implementations;
 
 
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
@@ -41,7 +42,6 @@ import appeng.container.guisync.GuiSync;
 import appeng.container.helper.PartOrTileContainerHelper;
 import appeng.container.helper.TileContainerHelper;
 import appeng.core.AELog;
-import appeng.core.Api;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
 import appeng.helpers.WirelessTerminalGuiObject;
@@ -223,7 +223,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 					final PacketMEInventoryUpdate b = new PacketMEInventoryUpdate( (byte) 1 );
 					final PacketMEInventoryUpdate c = this.result.isSimulation() ? new PacketMEInventoryUpdate( (byte) 2 ) : null;
 
-					final IItemList<IAEItemStack> plan = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
+					final IItemList<IAEItemStack> plan = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 					this.result.populatePlan( plan );
 
 					this.setUsedBytes( this.result.getByteTotal() );
@@ -240,7 +240,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 						p.setStackSize( out.getCountRequestable() );
 
 						final IStorageGrid sg = this.getGrid().getCache( IStorageGrid.class );
-						final IMEInventory<IAEItemStack> items = sg.getInventory( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
+						final IMEInventory<IAEItemStack> items = sg.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
 						IAEItemStack m = null;
 						if( c != null && this.result.isSimulation() )

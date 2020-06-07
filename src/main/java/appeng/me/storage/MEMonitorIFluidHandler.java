@@ -31,6 +31,7 @@ import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.StorageFilter;
@@ -42,13 +43,12 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
-import appeng.core.Api;
 
 
 public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITickingMonitor
 {
 	private final IFluidHandler handler;
-	private final IItemList<IAEFluidStack> list = Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ).createList();
+	private final IItemList<IAEFluidStack> list = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createList();
 	private final HashMap<IMEMonitorHandlerReceiver<IAEFluidStack>, Object> listeners = new HashMap<>();
 	private final NavigableMap<Integer, CachedFluidStack> memory;
 	private IActionSource mySource;
@@ -120,7 +120,7 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
 	@Override
 	public IStorageChannel getChannel()
 	{
-		return Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class );
+		return AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class );
 	}
 
 	@Override
@@ -178,7 +178,7 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
 
 				if( !newIS.isEmpty() )
 				{
-					stack = ( old == null || old.aeStack == null ? Api.INSTANCE
+					stack = ( old == null || old.aeStack == null ? AEApi.instance()
 							.storage()
 							.getStorageChannel( IFluidStorageChannel.class )
 							.createStack( newIS ) : old.aeStack.copy() );
@@ -351,7 +351,7 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
 			else
 			{
 				this.fluidStack = is.copy();
-				this.aeStack = Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ).createStack( is );
+				this.aeStack = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createStack( is );
 			}
 		}
 	}

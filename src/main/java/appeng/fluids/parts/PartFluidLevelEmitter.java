@@ -40,7 +40,6 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
-import appeng.core.Api;
 import appeng.core.AppEng;
 
 import appeng.fluids.util.AEFluidInventory;
@@ -116,7 +115,7 @@ public class PartFluidLevelEmitter extends PartUpgradeable implements IStackWatc
 	@Override
 	public void onStackChange( IItemList<?> o, IAEStack<?> fullStack, IAEStack<?> diffStack, IActionSource src, IStorageChannel<?> chan )
 	{
-		if( chan == Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ) && fullStack.equals( this.config.getFluidInSlot( 0 ) ) )
+		if( chan == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) && fullStack.equals( this.config.getFluidInSlot( 0 ) ) )
 		{
 			this.lastReportedValue = fullStack.getStackSize();
 			this.updateState();
@@ -183,7 +182,7 @@ public class PartFluidLevelEmitter extends PartUpgradeable implements IStackWatc
 	{
 		try
 		{
-			final IStorageChannel<IAEFluidStack> channel = Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class );
+			final IStorageChannel<IAEFluidStack> channel = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class );
 			final IMEMonitor<IAEFluidStack> inventory = this.getProxy().getStorage().getInventory( channel );
 
 			this.updateReportingValue( inventory );
@@ -209,7 +208,7 @@ public class PartFluidLevelEmitter extends PartUpgradeable implements IStackWatc
 
 	private void configureWatchers()
 	{
-		final IFluidStorageChannel channel = Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class );
+		final IFluidStorageChannel channel = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class );
 
 		if( this.stackWatcher != null )
 		{

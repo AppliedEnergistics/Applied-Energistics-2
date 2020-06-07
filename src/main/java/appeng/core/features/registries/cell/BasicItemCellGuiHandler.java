@@ -19,7 +19,6 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AEPartLocation;
-import appeng.core.Api;
 
 import appeng.util.Platform;
 
@@ -29,7 +28,7 @@ public class BasicItemCellGuiHandler implements ICellGuiHandler
 	@Override
 	public <T extends IAEStack<T>> boolean isHandlerFor( final IStorageChannel<T> channel )
 	{
-		return channel == Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class );
+		return channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	@Override

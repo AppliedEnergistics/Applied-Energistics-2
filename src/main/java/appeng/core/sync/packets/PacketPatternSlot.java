@@ -28,10 +28,10 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.implementations.ContainerPatternTerm;
-import appeng.core.Api;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.item.AEItemStack;
@@ -87,7 +87,7 @@ public class PacketPatternSlot extends AppEngPacket
 		this.writeItem( slotItem, data );
 		for( int x = 0; x < 9; x++ )
 		{
-			this.pattern[x] = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( pat.getStackInSlot( x ) );
+			this.pattern[x] = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( pat.getStackInSlot( x ) );
 			this.writeItem( this.pattern[x], data );
 		}
 

@@ -38,7 +38,6 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.ContainerNull;
-import appeng.core.Api;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.util.Platform;
 
@@ -209,7 +208,7 @@ public class CraftingTreeProcess
 				ItemStack is = ic.getStackInSlot( x );
 				is = Platform.getContainerItem( is );
 
-				final IAEItemStack o = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( is );
+				final IAEItemStack o = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( is );
 				if( o != null )
 				{
 					this.bytes++;
@@ -228,7 +227,7 @@ public class CraftingTreeProcess
 				if( this.containerItems )
 				{
 					final ItemStack is = Platform.getContainerItem( stack.createItemStack() );
-					final IAEItemStack o = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( is );
+					final IAEItemStack o = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( is );
 					if( o != null )
 					{
 						this.bytes++;

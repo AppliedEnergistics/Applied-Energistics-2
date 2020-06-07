@@ -21,9 +21,9 @@ package appeng.tile.crafting;
 
 import java.util.Optional;
 
-import appeng.core.Api;
 import net.minecraft.item.ItemStack;
 
+import appeng.api.AEApi;
 import appeng.api.definitions.IBlocks;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import net.minecraft.tileentity.TileEntityType;
@@ -40,7 +40,7 @@ public class TileCraftingStorageTile extends TileCraftingTile
 	@Override
 	protected ItemStack getItemFromTile( final Object obj )
 	{
-		final IBlocks blocks = Api.INSTANCE.definitions().blocks();
+		final IBlocks blocks = AEApi.instance().definitions().blocks();
 		final int storage = ( (TileCraftingTile) obj ).getStorageBytes() / KILO_SCALAR;
 
 		Optional<ItemStack> is;

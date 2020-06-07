@@ -39,6 +39,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.IGridNode;
@@ -59,7 +60,6 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.core.sync.packets.PacketTransitionEffect;
@@ -337,7 +337,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		{
 			final IStorageGrid storage = this.getProxy().getStorage();
 			final IEnergyGrid energy = this.getProxy().getEnergy();
-			final IAEItemStack overflow = Platform.poweredInsert( energy, storage.getInventory( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) ), itemToStore, this.mySrc );
+			final IAEItemStack overflow = Platform.poweredInsert( energy, storage.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ), itemToStore, this.mySrc );
 
 			this.isAccepting = overflow == null;
 
@@ -541,7 +541,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 			for( final ItemStack itemStack : itemStacks )
 			{
 				final IAEItemStack itemToTest = AEItemStack.fromItemStack( itemStack );
-				final IAEItemStack overflow = storage.getInventory( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) ).injectItems( itemToTest, Actionable.SIMULATE, this.mySrc );
+				final IAEItemStack overflow = storage.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ).injectItems( itemToTest, Actionable.SIMULATE, this.mySrc );
 				if( overflow == null || itemToTest.getStackSize() > overflow.getStackSize() )
 				{
 					canStore = true;

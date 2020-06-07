@@ -2,8 +2,8 @@
 package appeng.block.qnb;
 
 
+import appeng.api.AEApi;
 import appeng.client.render.cablebus.CubeBuilder;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.tile.qnb.TileQuantumBridge;
 import com.google.common.collect.ImmutableList;
@@ -63,7 +63,7 @@ class QnbFormedBakedModel implements IDynamicBakedModel
 		this.coveredCableTexture = bakedTextureGetter.apply( TEXTURE_COVERED_CABLE );
 		this.lightTexture = bakedTextureGetter.apply( TEXTURE_RING_LIGHT );
 		this.lightCornerTexture = bakedTextureGetter.apply( TEXTURE_RING_LIGHT_CORNER );
-		this.linkBlock = Api.INSTANCE.definitions().blocks().quantumLink().maybeBlock().orElse( null );
+		this.linkBlock = AEApi.instance().definitions().blocks().quantumLink().maybeBlock().orElse( null );
 	}
 
 	@Override

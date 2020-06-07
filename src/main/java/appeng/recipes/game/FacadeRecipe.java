@@ -19,9 +19,9 @@
 package appeng.recipes.game;
 
 
+import appeng.api.AEApi;
 import appeng.api.definitions.IComparableDefinition;
 import appeng.api.definitions.IDefinitions;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.items.parts.ItemFacade;
 import net.minecraft.inventory.CraftingInventory;
@@ -47,7 +47,7 @@ public final class FacadeRecipe extends SpecialRecipe
 	{
 		super( id );
 		this.facade = facade;
-		final IDefinitions definitions = Api.INSTANCE.definitions();
+		final IDefinitions definitions = AEApi.instance().definitions();
 
 		this.anchor = definitions.parts().cableAnchor();
 	}

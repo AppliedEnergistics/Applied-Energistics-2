@@ -49,7 +49,7 @@ public final class CreativeTab
 
 			private ItemStack getIconItemStack()
 			{
-				final IDefinitions definitions = Api.INSTANCE.definitions();
+				final IDefinitions definitions = AEApi.instance().definitions();
 				final IBlocks blocks = definitions.blocks();
 				final IItems items = definitions.items();
 				final IMaterials materials = definitions.materials();

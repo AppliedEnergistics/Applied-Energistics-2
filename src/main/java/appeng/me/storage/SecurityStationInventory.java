@@ -32,7 +32,6 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.core.Api;
 import appeng.me.GridAccessException;
 import appeng.tile.misc.TileSecurityStation;
 
@@ -40,7 +39,7 @@ import appeng.tile.misc.TileSecurityStation;
 public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStack>
 {
 
-	private final IItemList<IAEItemStack> storedItems = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
+	private final IItemList<IAEItemStack> storedItems = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 	private final TileSecurityStation securityTile;
 
 	public SecurityStationInventory( final TileSecurityStation ts )
@@ -53,7 +52,7 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
 	{
 		if( this.hasPermission( src ) )
 		{
-			if( Api.INSTANCE.definitions().items().biometricCard().isSameAs( input.createItemStack() ) )
+			if( AEApi.instance().definitions().items().biometricCard().isSameAs( input.createItemStack() ) )
 			{
 				if( this.canAccept( input ) )
 				{
@@ -124,7 +123,7 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
 	@Override
 	public IStorageChannel getChannel()
 	{
-		return Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class );
+		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	@Override
@@ -147,7 +146,7 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
 			final IBiometricCard tbc = (IBiometricCard) input.getItem();
 			final GameProfile newUser = tbc.getProfile( input.createItemStack() );
 
-			final int PlayerID = Api.INSTANCE.registries().players().getID( newUser );
+			final int PlayerID = AEApi.instance().registries().players().getID( newUser );
 			if( this.securityTile.getOwner() == PlayerID )
 			{
 				return false;

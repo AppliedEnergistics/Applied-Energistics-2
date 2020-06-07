@@ -74,7 +74,7 @@ public class BlockQuartzOre extends AEBaseBlock
 //	@Override
 //	public Item getItemDropped( final BlockState state, final Random rand, final int fortune )
 //	{
-//		return Api.INSTANCE
+//		return AEApi.instance()
 //				.definitions()
 //				.materials()
 //				.certusQuartzCrystal()
@@ -86,7 +86,7 @@ public class BlockQuartzOre extends AEBaseBlock
 //	@Override
 //	public int damageDropped( final BlockState state )
 //	{
-//		return Api.INSTANCE
+//		return AEApi.instance()
 //				.definitions()
 //				.materials()
 //				.certusQuartzCrystal()

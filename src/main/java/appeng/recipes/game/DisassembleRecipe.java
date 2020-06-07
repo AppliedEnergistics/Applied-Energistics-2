@@ -19,12 +19,12 @@
 package appeng.recipes.game;
 
 
+import appeng.api.AEApi;
 import appeng.api.definitions.*;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
@@ -59,7 +59,7 @@ public final class DisassembleRecipe extends SpecialRecipe
 	{
 		super( id );
 
-		final IDefinitions definitions = Api.INSTANCE.definitions();
+		final IDefinitions definitions = AEApi.instance().definitions();
 		final IBlocks blocks = definitions.blocks();
 		final IItems items = definitions.items();
 		final IMaterials mats = definitions.materials();
@@ -109,15 +109,15 @@ public final class DisassembleRecipe extends SpecialRecipe
 				{
 					ItemStack storageCellStack = maybeCellOutput.get();
 					// make sure the storage cell stackInSlot empty...
-					final IMEInventory<IAEItemStack> cellInv = Api.INSTANCE
+					final IMEInventory<IAEItemStack> cellInv = AEApi.instance()
 							.registries()
 							.cell()
 							.getCellInventory( stackInSlot, null,
-									Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
+									AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 					if( cellInv != null )
 					{
 						final IItemList<IAEItemStack> list = cellInv
-								.getAvailableItems( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList() );
+								.getAvailableItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() );
 						if( !list.isEmpty() )
 						{
 							return ItemStack.EMPTY;

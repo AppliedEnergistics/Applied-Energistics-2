@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import appeng.core.Api;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
@@ -105,7 +104,7 @@ class CondenserItemInventory implements IMEMonitor<IAEItemStack>, ITickingMonito
 	@Override
 	public IStorageChannel<IAEItemStack> getChannel()
 	{
-		return Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class );
+		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	@Override

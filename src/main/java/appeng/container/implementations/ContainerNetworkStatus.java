@@ -24,13 +24,13 @@ import java.io.IOException;
 import appeng.container.ContainerLocator;
 import appeng.container.helper.PartOrTileContainerHelper;
 import appeng.container.helper.TileContainerHelper;
-import appeng.core.Api;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 
+import appeng.api.AEApi;
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridBlock;
@@ -131,7 +131,7 @@ public class ContainerNetworkStatus extends AEBaseContainer
 
 				for( final Class<? extends IGridHost> machineClass : this.network.getMachinesClasses() )
 				{
-					final IItemList<IAEItemStack> list = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
+					final IItemList<IAEItemStack> list = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 					for( final IGridNode machine : this.network.getMachines( machineClass ) )
 					{
 						final IGridBlock blk = machine.getGridBlock();

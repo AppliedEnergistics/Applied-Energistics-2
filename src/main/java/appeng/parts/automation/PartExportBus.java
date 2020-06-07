@@ -58,7 +58,6 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.core.AELog;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 
@@ -138,7 +137,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 			final IMEMonitor<IAEItemStack> inv = this.getProxy()
 					.getStorage()
 					.getInventory(
-							Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
+							AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 			final IEnergyGrid energy = this.getProxy().getEnergy();
 			final ICraftingGrid cg = this.getProxy().getCrafting();
 			final FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE );

@@ -28,6 +28,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.exceptions.AppEngException;
 import appeng.api.features.IWirelessTermHandler;
@@ -82,7 +83,6 @@ import appeng.container.implementations.ContainerUpgradeable;
 import appeng.container.implementations.ContainerVibrationChamber;
 import appeng.container.implementations.ContainerWireless;
 import appeng.container.implementations.ContainerWirelessTerm;
-import appeng.core.Api;
 import appeng.fluids.container.ContainerFluidFormationPlane;
 import appeng.fluids.container.ContainerFluidIO;
 import appeng.fluids.container.ContainerFluidInterface;
@@ -314,7 +314,7 @@ public enum GuiBridge
 				return ( (IGuiItem) it.getItem() ).getGuiObject( it, w, new BlockPos( x, y, z ) );
 			}
 
-			final IWirelessTermHandler wh = Api.INSTANCE.registries().wireless().getWirelessTerminalHandler( it );
+			final IWirelessTermHandler wh = AEApi.instance().registries().wireless().getWirelessTerminalHandler( it );
 			if( wh != null )
 			{
 				return new WirelessTerminalGuiObject( wh, it, player, w, x, y, z );

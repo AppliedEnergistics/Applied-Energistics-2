@@ -19,7 +19,6 @@
 package appeng.container.slot;
 
 
-import appeng.core.Api;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
@@ -29,6 +28,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItems;
 import appeng.api.definitions.IMaterials;
@@ -120,7 +120,7 @@ public class SlotRestrictedInput extends AppEngSlot
 			return false;
 		}
 
-		final IDefinitions definitions = Api.INSTANCE.definitions();
+		final IDefinitions definitions = AEApi.instance().definitions();
 		final IMaterials materials = definitions.materials();
 		final IItems items = definitions.items();
 
@@ -168,7 +168,7 @@ public class SlotRestrictedInput extends AppEngSlot
 					return true;
 				}
 
-				for( final ItemStack optional : Api.INSTANCE.registries().inscriber().getOptionals() )
+				for( final ItemStack optional : AEApi.instance().registries().inscriber().getOptionals() )
 				{
 					if( Platform.itemComparisons().isSameItem( i, optional ) )
 					{
@@ -192,7 +192,7 @@ public class SlotRestrictedInput extends AppEngSlot
 			case VIEW_CELL:
 				return items.viewCell().isSameAs( i );
 			case ORE:
-				return Api.INSTANCE.registries().grinder().getRecipeForInput( i ) != null;
+				return AEApi.instance().registries().grinder().getRecipeForInput( i ) != null;
 			case FUEL:
 				return ForgeHooks.getBurnTime( i ) > 0;
 			case POWERED_TOOL:
@@ -206,20 +206,20 @@ public class SlotRestrictedInput extends AppEngSlot
 			case SPATIAL_STORAGE_CELLS:
 				return i.getItem() instanceof ISpatialStorageCell && ( (ISpatialStorageCell) i.getItem() ).isSpatialStorage( i );
 			case STORAGE_CELLS:
-				return Api.INSTANCE.registries().cell().isCellHandled( i );
+				return AEApi.instance().registries().cell().isCellHandled( i );
 			case WORKBENCH_CELL:
 				return i.getItem() instanceof ICellWorkbenchItem && ( (ICellWorkbenchItem) i.getItem() ).isEditable( i );
 			case STORAGE_COMPONENT:
 				return i.getItem() instanceof IStorageComponent && ( (IStorageComponent) i.getItem() ).isStorageComponent( i );
 			case TRASH:
-				if( Api.INSTANCE.registries().cell().isCellHandled( i ) )
+				if( AEApi.instance().registries().cell().isCellHandled( i ) )
 				{
 					return false;
 				}
 
 				return !( i.getItem() instanceof IStorageComponent && ( (IStorageComponent) i.getItem() ).isStorageComponent( i ) );
 			case ENCODABLE_ITEM:
-				return i.getItem() instanceof INetworkEncodable || Api.INSTANCE.registries().wireless().isWirelessTerminal( i );
+				return i.getItem() instanceof INetworkEncodable || AEApi.instance().registries().wireless().isWirelessTerminal( i );
 			case BIOMETRIC_CARD:
 				return i.getItem() instanceof IBiometricCard;
 			case UPGRADES:

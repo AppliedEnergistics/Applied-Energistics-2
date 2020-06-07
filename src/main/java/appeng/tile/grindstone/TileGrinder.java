@@ -22,7 +22,6 @@ package appeng.tile.grindstone;
 import java.util.ArrayList;
 import java.util.List;
 
-import appeng.core.Api;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
@@ -97,7 +96,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 					continue;
 				}
 
-				final IGrinderRecipe r = Api.INSTANCE.registries().grinder().getRecipeForInput( item );
+				final IGrinderRecipe r = AEApi.instance().registries().grinder().getRecipeForInput( item );
 				if( r != null )
 				{
 					if( item.getCount() >= r.getInput().getCount() )
@@ -133,7 +132,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 		this.points++;
 
 		final ItemStack processing = this.inv.getStackInSlot( 6 );
-		final IGrinderRecipe r = Api.INSTANCE.registries().grinder().getRecipeForInput( processing );
+		final IGrinderRecipe r = AEApi.instance().registries().grinder().getRecipeForInput( processing );
 		if( r != null )
 		{
 			if( r.getRequiredTurns() > this.points )
@@ -204,7 +203,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 		@Override
 		public boolean allowInsert( IItemHandler inv, int slotIndex, ItemStack stack )
 		{
-			if( Api.INSTANCE.registries().grinder().getRecipeForInput( stack ) == null )
+			if( AEApi.instance().registries().grinder().getRecipeForInput( stack ) == null )
 			{
 				return false;
 			}

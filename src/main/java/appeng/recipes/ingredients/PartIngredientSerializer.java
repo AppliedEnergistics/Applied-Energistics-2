@@ -19,10 +19,10 @@
 package appeng.recipes.ingredients;
 
 
+import appeng.api.AEApi;
 import appeng.api.recipes.ResolverResult;
 import appeng.api.recipes.ResolverResultSet;
 import appeng.core.AELog;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import com.google.gson.JsonObject;
 import net.minecraft.item.Item;
@@ -66,7 +66,7 @@ public class PartIngredientSerializer implements IIngredientSerializer<PartIngre
 
 	private PartIngredient getPart( String partName )
 	{
-		final Object result = Api.INSTANCE.registries().recipes().resolveItem( AppEng.MOD_ID, partName );
+		final Object result = AEApi.instance().registries().recipes().resolveItem( AppEng.MOD_ID, partName );
 
 		if( result instanceof ResolverResultSet )
 		{

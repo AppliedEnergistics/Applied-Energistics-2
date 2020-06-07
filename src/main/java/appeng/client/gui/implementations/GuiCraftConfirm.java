@@ -19,6 +19,7 @@
 package appeng.client.gui.implementations;
 
 
+import appeng.api.AEApi;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
@@ -26,7 +27,6 @@ import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiScrollbar;
 import appeng.container.implementations.ContainerCraftConfirm;
 import appeng.core.AELog;
-import appeng.core.Api;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
@@ -54,9 +54,9 @@ public class GuiCraftConfirm extends AEBaseGui<ContainerCraftConfirm>
 
 	private final int rows = 5;
 
-	private final IItemList<IAEItemStack> storage = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
-	private final IItemList<IAEItemStack> pending = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
-	private final IItemList<IAEItemStack> missing = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
+	private final IItemList<IAEItemStack> storage = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+	private final IItemList<IAEItemStack> pending = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+	private final IItemList<IAEItemStack> missing = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 
 	private final List<IAEItemStack> visual = new ArrayList<>();
 

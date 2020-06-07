@@ -41,7 +41,6 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
-import appeng.core.Api;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
 import appeng.parts.automation.PartUpgradeable;
@@ -93,7 +92,7 @@ public abstract class PartSharedStorageBus extends PartUpgradeable implements IG
 	 */
 	public IStorageChannel getStorageChannel()
 	{
-		return Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class );
+		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	protected abstract void resetCache();

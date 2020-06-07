@@ -27,7 +27,6 @@ import java.util.HashSet;
 import java.util.List;
 
 import appeng.container.slot.*;
-import appeng.core.Api;
 import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.core.sync.packets.PacketValueConfig;
 import net.minecraft.entity.player.PlayerEntity;
@@ -40,6 +39,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
@@ -799,7 +799,7 @@ public abstract class AEBaseContainer extends Container
 
 				if( !isg.isEmpty() && releaseQty > 0 )
 				{
-					IAEItemStack ais = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( isg );
+					IAEItemStack ais = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( isg );
 					ais.setStackSize( 1 );
 					final IAEItemStack extracted = ais.copy();
 
@@ -889,7 +889,7 @@ public abstract class AEBaseContainer extends Container
 				}
 				else
 				{
-					IAEItemStack ais = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( player.inventory.getItemStack() );
+					IAEItemStack ais = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( player.inventory.getItemStack() );
 					ais = Platform.poweredInsert( this.getPowerSource(), this.getCellInventory(), ais, this.getActionSource() );
 					if( ais != null )
 					{
@@ -938,7 +938,7 @@ public abstract class AEBaseContainer extends Container
 				}
 				else
 				{
-					IAEItemStack ais = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( player.inventory.getItemStack() );
+					IAEItemStack ais = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( player.inventory.getItemStack() );
 					ais.setStackSize( 1 );
 					ais = Platform.poweredInsert( this.getPowerSource(), this.getCellInventory(), ais, this.getActionSource() );
 					if( ais == null )
@@ -1030,7 +1030,7 @@ public abstract class AEBaseContainer extends Container
 			return input;
 		}
 		final IAEItemStack ais = Platform.poweredInsert( this.getPowerSource(), this.getCellInventory(),
-				Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( input ),
+				AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( input ),
 				this.getActionSource() );
 		if( ais == null )
 		{

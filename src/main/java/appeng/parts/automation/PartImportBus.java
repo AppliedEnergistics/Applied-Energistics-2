@@ -30,6 +30,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
@@ -47,7 +48,6 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.helpers.Reflected;
@@ -99,9 +99,9 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 			final IMEMonitor<IAEItemStack> inv = this.getProxy()
 					.getStorage()
 					.getInventory(
-							Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
+							AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
-			final IAEItemStack out = inv.injectItems( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( stack ),
+			final IAEItemStack out = inv.injectItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( stack ),
 					Actionable.SIMULATE,
 					this.source );
 			if( out == null )
@@ -174,7 +174,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 				final IMEMonitor<IAEItemStack> inv = this.getProxy()
 						.getStorage()
 						.getInventory(
-								Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
+								AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 				final IEnergyGrid energy = this.getProxy().getEnergy();
 
 				boolean Configured = false;
@@ -234,7 +234,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 
 		if( !newItems.isEmpty() )
 		{
-			final IAEItemStack aeStack = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( newItems );
+			final IAEItemStack aeStack = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( newItems );
 			final IAEItemStack failed = Platform.poweredInsert( energy, inv, aeStack, this.source );
 
 			if( failed != null )

@@ -37,7 +37,6 @@ import appeng.api.storage.data.IItemList;
 import appeng.client.gui.widgets.IScrollSource;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.core.AEConfig;
-import appeng.core.Api;
 import appeng.fluids.util.FluidSorters;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
@@ -51,7 +50,7 @@ import net.minecraft.util.text.ITextComponent;
  */
 public class FluidRepo
 {
-	private final IItemList<IAEFluidStack> list = Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ).createList();
+	private final IItemList<IAEFluidStack> list = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createList();
 	private final ArrayList<IAEFluidStack> view = new ArrayList<>();
 	private final IScrollSource src;
 	private final ISortSource sortSrc;

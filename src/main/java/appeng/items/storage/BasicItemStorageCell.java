@@ -26,7 +26,6 @@ import appeng.api.AEApi;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.core.Api;
 import appeng.items.materials.MaterialType;
 import appeng.util.InventoryAdaptor;
 
@@ -80,13 +79,13 @@ public final class BasicItemStorageCell extends AbstractStorageCell<IAEItemStack
 	@Override
 	public IStorageChannel<IAEItemStack> getChannel()
 	{
-		return Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class );
+		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	@Override
 	protected void dropEmptyStorageCellCase( final InventoryAdaptor ia, final PlayerEntity player )
 	{
-		Api.INSTANCE.definitions().materials().emptyStorageCell().maybeStack( 1 ).ifPresent( is ->
+		AEApi.instance().definitions().materials().emptyStorageCell().maybeStack( 1 ).ifPresent( is ->
 		{
 			final ItemStack extraA = ia.addItems( is );
 			if( !extraA.isEmpty() )

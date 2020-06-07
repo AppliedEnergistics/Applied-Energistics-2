@@ -43,8 +43,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 import appeng.core.AEConfig;
-import appeng.core.Api;
 import appeng.core.AppEng;
+import appeng.api.AEApi;
 import appeng.api.features.AEFeature;
 import appeng.core.sync.packets.PacketMockExplosion;
 import appeng.helpers.Reflected;
@@ -87,7 +87,7 @@ public final class EntityTinyTNTPrimed extends TNTEntity implements IEntityAddit
 
 		if( this.isInWater() && Platform.isServer() ) // put out the fuse.
 		{
-			Api.INSTANCE.definitions().blocks().tinyTNT().maybeStack( 1 ).ifPresent( tntStack ->
+			AEApi.instance().definitions().blocks().tinyTNT().maybeStack( 1 ).ifPresent( tntStack ->
 			{
 				final ItemEntity item = new ItemEntity( this.world, this.getPosX(), this.getPosY(), this.getPosZ(), tntStack );
 

@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
 
-import appeng.core.Api;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -43,6 +42,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.container.ContainerNull;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
+import appeng.api.AEApi;
 import appeng.api.features.AEFeature;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
@@ -104,7 +104,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 				this.markItemAs( x, gs, TestStatus.ACCEPT );
 			}
 
-			in.add( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( gs ) );
+			in.add( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( gs ) );
 			this.testFrame.setInventorySlotContents( x, gs );
 		}
 
@@ -115,7 +115,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			if( this.standardRecipe != null )
 			{
 				this.correctOutput = this.standardRecipe.getCraftingResult( this.crafting );
-				out.add( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( this.correctOutput ) );
+				out.add( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( this.correctOutput ) );
 			}
 			else
 			{
@@ -139,7 +139,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
 				if( !gs.isEmpty() )
 				{
-					out.add( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( gs ) );
+					out.add( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( gs ) );
 				}
 			}
 		}

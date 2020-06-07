@@ -31,6 +31,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
 
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
@@ -46,7 +47,6 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AEConfig;
-import appeng.core.Api;
 import appeng.me.GridAccessException;
 import appeng.me.cache.P2PCache;
 import appeng.me.cache.helpers.TunnelCollection;
@@ -123,7 +123,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 			return super.getItemStack( type );
 		}
 
-		final Optional<ItemStack> maybeMEStack = Api.INSTANCE.definitions().parts().p2PTunnelME().maybeStack( 1 );
+		final Optional<ItemStack> maybeMEStack = AEApi.instance().definitions().parts().p2PTunnelME().maybeStack( 1 );
 		if( maybeMEStack.isPresent() )
 		{
 			return maybeMEStack.get();
@@ -194,7 +194,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 		// UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor( is.getItem() );
 		// AELog.info( "ID:" + id.toString() + " : " + is.getItemDamage() );
 
-		final TunnelType tt = Api.INSTANCE.registries().p2pTunnel().getTunnelTypeByItem( is );
+		final TunnelType tt = AEApi.instance().registries().p2pTunnel().getTunnelTypeByItem( is );
 		if( !is.isEmpty() && is.getItem() instanceof IMemoryCard )
 		{
 			final IMemoryCard mc = (IMemoryCard) is.getItem();
@@ -243,7 +243,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 		{
 			final ItemStack newType;
 
-			final IParts parts = Api.INSTANCE.definitions().parts();
+			final IParts parts = AEApi.instance().definitions().parts();
 
 			switch( tt )
 			{

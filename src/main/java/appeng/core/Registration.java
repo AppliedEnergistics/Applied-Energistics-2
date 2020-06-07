@@ -19,8 +19,10 @@
 package appeng.core;
 
 
+import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
 import appeng.api.definitions.IBlocks;
+import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItems;
 import appeng.api.definitions.IParts;
 import appeng.api.features.IRegistryContainer;
@@ -133,7 +135,7 @@ final class Registration
 //	{
 //		Capabilities.register();
 //
-//		final Api api = Api.INSTANCE;
+//		final Api api = AEApi.instance();
 //		final IRecipeHandlerRegistry recipeRegistry = api.registries().recipes();
 //		this.registerCraftHandlers( recipeRegistry );
 //
@@ -203,6 +205,7 @@ final class Registration
 
 	public static void setupInternalRegistries()
 	{
+		// TODO: Do not use the internal API
 		final Api api = Api.INSTANCE;
 		final IRegistryContainer registries = api.registries();
 
@@ -248,6 +251,7 @@ final class Registration
 			ModelLoader.addSpecialModel(dependency);
 		}
 
+		// TODO: Do not use the internal API
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();
 		final IModelRegistry registry = new IModelRegistry() {
 			@Override
@@ -269,6 +273,7 @@ final class Registration
 	public void registerBlocks( RegistryEvent.Register<Block> event )
 	{
 		final IForgeRegistry<Block> registry = event.getRegistry();
+		// TODO: Do not use the internal API
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();
 		final Dist dist = FMLEnvironment.dist;
 		definitions.getRegistry().getBootstrapComponents( IBlockRegistrationComponent.class ).forEachRemaining( b -> b.blockRegistration( dist, registry ) );
@@ -277,6 +282,7 @@ final class Registration
 	public void registerItems( RegistryEvent.Register<Item> event )
 	{
 		final IForgeRegistry<Item> registry = event.getRegistry();
+		// TODO: Do not use the internal API
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();
 		final Dist dist = FMLEnvironment.dist;
 		definitions.getRegistry().getBootstrapComponents( IItemRegistrationComponent.class ).forEachRemaining( b -> b.itemRegistration( dist, registry ) );
@@ -285,6 +291,7 @@ final class Registration
 	public void registerTileEntities( RegistryEvent.Register<TileEntityType<?>> event )
 	{
 		final IForgeRegistry<TileEntityType<?>> registry = event.getRegistry();
+		// TODO: Do not use the internal API
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();
 		definitions.getRegistry().getBootstrapComponents( ITileEntityRegistrationComponent.class ).forEachRemaining(b -> b.register( registry ) );
 	}
@@ -586,6 +593,7 @@ final class Registration
 	{
 		IForgeRegistry<IRecipeSerializer<?>> r = event.getRegistry();
 
+		// TODO: Do not use the internal API
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();
 
 		r.registerAll(
@@ -605,6 +613,7 @@ final class Registration
 	public void registerEntities( RegistryEvent.Register<EntityType<?>> event )
 	{
 		final IForgeRegistry<EntityType<?>> registry = event.getRegistry();
+		// TODO: Do not use the internal API
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();
 		definitions.getRegistry().getBootstrapComponents( IEntityRegistrationComponent.class ).forEachRemaining(b -> b.entityRegistration( registry ) );
 	}
@@ -642,7 +651,8 @@ final class Registration
 	// FIXME LATER
 	public static void postInit()
 	{
-		final IRegistryContainer registries = Api.INSTANCE.registries();
+		final IRegistryContainer registries = AEApi.instance().registries();
+		// TODO: Do not use the internal API
 		ApiDefinitions definitions = Api.INSTANCE.definitions();
 		final IParts parts = definitions.parts();
 		final IBlocks blocks = definitions.blocks();
@@ -882,12 +892,14 @@ final class Registration
 
 	@OnlyIn(Dist.CLIENT)
 	public void registerItemColors(ColorHandlerEvent.Item event) {
+		// TODO: Do not use the internal API
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();
 		definitions.getRegistry().getBootstrapComponents( IItemColorRegistrationComponent.class ).forEachRemaining(c -> c.register(event.getItemColors(), event.getBlockColors()));
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public void handleModelBake(ModelBakeEvent event) {
+		// TODO: Do not use the internal API
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();
 		definitions.getRegistry().getBootstrapComponents( IModelBakeComponent.class ).forEachRemaining(c -> c.onModelBakeEvent(event));
 	}

@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.nio.BufferOverflowException;
 import javax.annotation.Nonnull;
 
+import appeng.api.AEApi;
 import appeng.api.config.*;
 import appeng.container.ContainerLocator;
 import appeng.container.helper.PartContainerHelper;
@@ -61,7 +62,6 @@ import appeng.api.util.IConfigurableObject;
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
 import appeng.core.AELog;
-import appeng.core.Api;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEFluidInventoryUpdate;
 import appeng.core.sync.packets.PacketTargetFluidStack;
@@ -97,7 +97,7 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 
 	private final IConfigManager clientCM;
 	private final IMEMonitor<IAEFluidStack> monitor;
-	private final IItemList<IAEFluidStack> fluids = Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ).createList();
+	private final IItemList<IAEFluidStack> fluids = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createList();
 	@GuiSync( 99 )
 	public boolean hasPower = false;
 	private ITerminalHost terminal;
@@ -118,7 +118,7 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 		if( Platform.isServer() )
 		{
 			this.serverCM = terminal.getConfigManager();
-			this.monitor = terminal.getInventory( Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ) );
+			this.monitor = terminal.getInventory( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
 
 			if( this.monitor != null )
 			{
@@ -281,7 +281,7 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 	{
 		if( Platform.isServer() )
 		{
-			if( this.monitor != this.terminal.getInventory( Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ) ) )
+			if( this.monitor != this.terminal.getInventory( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) ) )
 			{
 				this.setValidContainer( false );
 			}

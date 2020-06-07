@@ -44,6 +44,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
+import appeng.api.AEApi;
 import appeng.api.config.YesNo;
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.implementations.parts.IPartCable;
@@ -66,7 +67,6 @@ import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.client.render.cablebus.CableCoreType;
 import appeng.client.render.cablebus.FacadeRenderState;
 import appeng.core.AELog;
-import appeng.core.Api;
 import appeng.facade.FacadeContainer;
 import appeng.helpers.AEMultiTile;
 import appeng.me.GridConnection;
@@ -425,7 +425,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			}
 		}
 
-		if( Api.INSTANCE.partHelper().getCableRenderMode().opaqueFacades )
+		if( AEApi.instance().partHelper().getCableRenderMode().opaqueFacades )
 		{
 			final IFacadeContainer fc = this.getFacadeContainer();
 			for( final AEPartLocation side : AEPartLocation.SIDE_LOCATIONS )
@@ -630,7 +630,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 							{
 								try
 								{
-									Api.INSTANCE.grid().createGridConnection( cn, sn );
+									AEApi.instance().grid().createGridConnection( cn, sn );
 								}
 								catch( final FailedConnectionException e )
 								{
@@ -753,7 +753,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 				}
 			}
 
-			if( Api.INSTANCE.partHelper().getCableRenderMode().opaqueFacades || !visual )
+			if( AEApi.instance().partHelper().getCableRenderMode().opaqueFacades || !visual )
 			{
 				if( includeFacades && s != null && s != AEPartLocation.INTERNAL )
 				{

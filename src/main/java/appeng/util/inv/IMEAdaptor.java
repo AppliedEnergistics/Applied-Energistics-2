@@ -21,7 +21,6 @@ package appeng.util.inv;
 
 import java.util.Iterator;
 
-import appeng.core.Api;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.item.ItemStack;
@@ -65,7 +64,7 @@ public class IMEAdaptor extends InventoryAdaptor
 
 	private IItemList<IAEItemStack> getList()
 	{
-		return this.target.getAvailableItems( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList() );
+		return this.target.getAvailableItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() );
 	}
 
 	@Override
