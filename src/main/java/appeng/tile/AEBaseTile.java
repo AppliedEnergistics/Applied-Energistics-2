@@ -25,7 +25,6 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.api.util.IOrientable;
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.FacingToRotation;
 import appeng.core.AELog;
 import appeng.core.features.IStackSrc;
 import appeng.helpers.ICustomNameObject;
@@ -298,14 +297,17 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 			// TODO: Optimize Network Load
 			if( this.world != null )
 			{
-				// Let the block update
+				// Let the block update it's own state with our internal state changes
 				BlockState currentState = getBlockState();
-				BlockState newState = currentState.updatePostPlacement(Direction.EAST, currentState, world, pos, pos);
-
-				AELog.blockUpdate( this.pos, currentState, newState, this );
-				if (currentState != newState) {
-					this.world.setBlockState(pos, newState);
+				if (currentState.getBlock() instanceof AEBaseTileBlock) {
+					AEBaseTileBlock<?> tileBlock = (AEBaseTileBlock<?>) currentState.getBlock();
+					BlockState newState = tileBlock.getTileEntityBlockState(currentState, this);
+					if (currentState != newState) {
+						AELog.blockUpdate(this.pos, currentState, newState, this);
+						this.world.setBlockState(pos, newState);
+					}
 				}
+
 				this.requestModelDataUpdate();
 			}
 		}

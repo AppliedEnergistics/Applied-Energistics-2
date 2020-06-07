@@ -62,27 +62,20 @@ public class BlockChest extends AEBaseTileBlock<TileChest>
 	}
 
 	@Override
-	public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld worldIn, BlockPos pos, BlockPos facingPos) {
-		// FIXME Check tile-entity updated prop
-
+	protected BlockState updateBlockStateFromTileEntity(BlockState currentState, TileChest te) {
 		DriveSlotState slotState = DriveSlotState.EMPTY;
 
-		TileChest te = this.getTileEntity( worldIn, pos );
-
-		if( te != null )
+		if( te.getCellCount() >= 1 )
 		{
-			if( te.getCellCount() >= 1 )
-			{
-				slotState = DriveSlotState.fromCellStatus( te.getCellStatus( 0 ) );
-			}
-			// Power-state has to be checked separately
-			if( !te.isPowered() && slotState != DriveSlotState.EMPTY )
-			{
-				slotState = DriveSlotState.OFFLINE;
-			}
+			slotState = DriveSlotState.fromCellStatus( te.getCellStatus( 0 ) );
+		}
+		// Power-state has to be checked separately
+		if( !te.isPowered() && slotState != DriveSlotState.EMPTY )
+		{
+			slotState = DriveSlotState.OFFLINE;
 		}
 
-		return state.with( SLOT_STATE, slotState );
+		return currentState.with( SLOT_STATE, slotState );
 	}
 
 	@Override
