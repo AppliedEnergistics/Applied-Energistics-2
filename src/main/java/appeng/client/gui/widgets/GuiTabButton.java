@@ -91,10 +91,9 @@ public class GuiTabButton extends Button implements ITooltip
 			{
 				this.itemRenderer.zLevel = 100.0F;
 
-				RenderSystem.enableDepthTest();
-//	FIXME			RenderHelper.enableGUIStandardItemLighting();
+				RenderHelper.enableStandardItemLighting();
 				this.itemRenderer.renderItemAndEffectIntoGUI( this.myItem, offsetX + this.x + 3, this.y + 3 );
-				RenderSystem.disableDepthTest();
+				RenderHelper.disableStandardItemLighting();
 
 				this.itemRenderer.zLevel = 0.0F;
 			}

@@ -48,6 +48,7 @@ import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -679,11 +680,10 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 	{
 		this.itemRenderer.zLevel = 100.0F;
 
-// FIXME: Check if this is actually required, vanilla doesnt have it anymore
-// FIXME	RenderHelper.enableGUIStandardItemLighting();
-		RenderSystem.enableDepthTest();
+		// FIXME I dont think this is needed anymore...
+		RenderHelper.enableStandardItemLighting();
 		this.itemRenderer.renderItemAndEffectIntoGUI( is, x, y );
-		RenderSystem.disableDepthTest();
+		RenderHelper.disableStandardItemLighting();
 
 		this.itemRenderer.zLevel = 0.0F;
 	}
