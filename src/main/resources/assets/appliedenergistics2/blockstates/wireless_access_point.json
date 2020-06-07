@@ -1,41 +1,55 @@
 {
-    "forge_marker": 1,
-    "defaults": {
-        "model": "appliedenergistics2:block/wireless_access_point_chassis",
-        "y": 180
-    },
-    "variants": {
-        "state": {
-            "off": {
-                "submodel": {
-                    "state": {
-                        "model": "appliedenergistics2:block/wireless_access_point_status_off"
-                    },
-                    "torch": {
-                        "model": "appliedenergistics2:block/wireless_access_point_off"
-                    }
-                }
+    "multipart": [
+        {
+            "apply": {
+                "model": "appliedenergistics2:block/wireless_access_point_chassis",
+                "y": 180
+            }
+        },
+        {
+            "when": {
+                "state": "off"
             },
-            "on": {
-                "submodel": {
-                    "state": {
-                        "model": "appliedenergistics2:block/wireless_access_point_status_on"
-                    },
-                    "torch": {
-                        "model": "appliedenergistics2:block/wireless_access_point_off"
-                    }
-                }
+            "apply": {
+                "model": "appliedenergistics2:block/wireless_access_point_status_off",
+                "y": 180
+            }
+        },
+        {
+            "when": {
+                "state": "off|on"
             },
-            "has_channel": {
-                "submodel": {
-                    "state": {
-                        "model": "appliedenergistics2:block/wireless_access_point_status_has_channel"
-                    },
-                    "torch": {
-                        "model": "appliedenergistics2:block/wireless_access_point_on"
-                    }
-                }
+            "apply": {
+                "model": "appliedenergistics2:block/wireless_access_point_off",
+                "y": 180
+            }
+        },
+        {
+            "when": {
+                "state": "on"
+            },
+            "apply": {
+                "model": "appliedenergistics2:block/wireless_access_point_status_on",
+                "y": 180
+            }
+        },
+        {
+            "when": {
+                "state": "has_channel"
+            },
+            "apply": {
+                "model": "appliedenergistics2:block/wireless_access_point_on",
+                "y": 180
+            }
+        },
+        {
+            "when": {
+                "state": "has_channel"
+            },
+            "apply": {
+                "model": "appliedenergistics2:block/wireless_access_point_status_has_channel",
+                "y": 180
             }
         }
-    }
+    ]
 }

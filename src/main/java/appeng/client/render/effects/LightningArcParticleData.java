@@ -2,10 +2,10 @@ package appeng.client.render.effects;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.sun.javafx.geom.Vec3f;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
+import net.minecraft.util.math.Vec3d;
 
 import java.util.Locale;
 
@@ -14,9 +14,9 @@ import java.util.Locale;
  */
 public class LightningArcParticleData implements IParticleData {
 
-    public final Vec3f target;
+    public final Vec3d target;
 
-    public LightningArcParticleData(Vec3f target) {
+    public LightningArcParticleData(Vec3d target) {
         this.target = target;
     }
 
@@ -29,7 +29,7 @@ public class LightningArcParticleData implements IParticleData {
             float y = reader.readFloat();
             reader.expect(' ');
             float z = reader.readFloat();
-            return new LightningArcParticleData(new Vec3f(x, y, z));
+            return new LightningArcParticleData(new Vec3d(x, y, z));
         }
 
         @Override
@@ -37,7 +37,7 @@ public class LightningArcParticleData implements IParticleData {
             float x = buffer.readFloat();
             float y = buffer.readFloat();
             float z = buffer.readFloat();
-            return new LightningArcParticleData(new Vec3f(x, y, z));
+            return new LightningArcParticleData(new Vec3d(x, y, z));
         }
     };
 
@@ -48,9 +48,9 @@ public class LightningArcParticleData implements IParticleData {
 
     @Override
     public void write(PacketBuffer buffer) {
-        buffer.writeFloat(target.x);
-        buffer.writeFloat(target.y);
-        buffer.writeFloat(target.z);
+        buffer.writeFloat((float) target.x);
+        buffer.writeFloat((float) target.y);
+        buffer.writeFloat((float) target.z);
     }
 
     @Override

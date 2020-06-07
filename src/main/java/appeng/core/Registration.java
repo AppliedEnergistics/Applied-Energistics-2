@@ -104,14 +104,12 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ColorHandlerEvent;
-import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -888,4 +886,9 @@ final class Registration
 		definitions.getRegistry().getBootstrapComponents( IItemColorRegistrationComponent.class ).forEachRemaining(c -> c.register(event.getItemColors(), event.getBlockColors()));
 	}
 
+	@OnlyIn(Dist.CLIENT)
+	public void handleModelBake(ModelBakeEvent event) {
+		final ApiDefinitions definitions = Api.INSTANCE.definitions();
+		definitions.getRegistry().getBootstrapComponents( IModelBakeComponent.class ).forEachRemaining(c -> c.onModelBakeEvent(event));
+	}
 }

@@ -66,7 +66,7 @@ public class BlockCharger extends AEBaseTileBlock<TileCharger>
 
 	public BlockCharger()
 	{
-		super( Properties.create(Material.IRON) );
+		super( Properties.create(Material.IRON).notSolid() );
 
 		this.setFullSize( this.setOpaque( false ) );
 	}

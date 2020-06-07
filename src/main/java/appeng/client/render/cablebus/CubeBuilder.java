@@ -408,6 +408,7 @@ public class CubeBuilder
 					if( e.getIndex() == 0 )
 					{
 						builder.put( i, u, v );
+						break;
 					}
 					else if( e.getIndex() == 2 && renderFullBright )
 					{
@@ -416,8 +417,8 @@ public class CubeBuilder
 						final float lightMapU = (float) ( 15 * 0x20 ) / 0xFFFF;
 						final float lightMapV = (float) ( 15 * 0x20 ) / 0xFFFF;
 						builder.put( i, lightMapU, lightMapV );
+						break;
 					}
-					break;
 				default:
 					builder.put( i );
 					break;

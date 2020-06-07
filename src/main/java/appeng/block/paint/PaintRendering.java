@@ -19,7 +19,6 @@ public class PaintRendering extends BlockRenderingCustomizer
 	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 	{
 		rendering.renderType(RenderType.getCutout());
-		// FIXME rendering.builtInModel( "models/block/paint", new PaintModel() );
 		// Disable auto rotation
 		rendering.modelCustomizer( ( location, model ) -> model );
 	}

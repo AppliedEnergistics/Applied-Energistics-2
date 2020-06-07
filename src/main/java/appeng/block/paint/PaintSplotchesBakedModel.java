@@ -40,9 +40,9 @@ import net.minecraftforge.client.model.data.IModelData;
 class PaintSplotchesBakedModel implements IDynamicBakedModel
 {
 
-	private static final Material TEXTURE_PAINT1 = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(AppEng.MOD_ID, "blocks/paint1" ));
-	private static final Material TEXTURE_PAINT2 = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "blocks/paint2" ));
-	private static final Material TEXTURE_PAINT3 = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "blocks/paint3" ));
+	private static final Material TEXTURE_PAINT1 = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(AppEng.MOD_ID, "block/paint1" ));
+	private static final Material TEXTURE_PAINT2 = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "block/paint2" ));
+	private static final Material TEXTURE_PAINT3 = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "block/paint3" ));
 
 	private final TextureAtlasSprite[] textures;
 

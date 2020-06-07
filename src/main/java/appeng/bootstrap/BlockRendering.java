@@ -22,7 +22,7 @@ package appeng.bootstrap;
 import appeng.block.AEBaseTileBlock;
 import appeng.bootstrap.components.BlockColorComponent;
 import appeng.bootstrap.components.RenderTypeComponent;
-import appeng.bootstrap.components.TileEntityRendererComponent;
+import appeng.client.render.model.AutoRotatingBakedModel;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.color.IBlockColor;
@@ -105,12 +105,12 @@ class BlockRendering implements IBlockRendering
 		{
 			// This is a default rotating model if the base-block uses an AE tile entity which exposes UP/FRONT as
 			// extended props
-			// FIXME factory.addModelOverride( block.getRegistryName().getPath(), ( l, m ) -> new AutoRotatingModel( m ) );
+			factory.addModelOverride( block.getRegistryName().getPath(), ( l, m ) -> new AutoRotatingBakedModel( m ) );
 		}
 
-		// TODO : 1.12
 		this.builtInModels.forEach( factory::addBuiltInModel );
 
+		// TODO : 1.12
 		if( this.blockColor != null )
 		{
 			factory.addBootstrapComponent( new BlockColorComponent( block, this.blockColor ) );

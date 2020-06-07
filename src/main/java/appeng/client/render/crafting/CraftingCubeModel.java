@@ -117,6 +117,6 @@ class CraftingCubeModel implements IModelGeometry<CraftingCubeModel>
 
 	private static Material texture( String name )
 	{
-		return new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(AppEng.MOD_ID, "blocks/crafting/" + name));
+		return new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(AppEng.MOD_ID, "block/crafting/" + name));
 	}
 }

@@ -29,15 +29,12 @@ import com.google.common.collect.Sets;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ModelBakery;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import appeng.core.AppEng;
 
 
-public class ModelOverrideComponent implements IPreInitComponent
+public class ModelOverrideComponent implements IModelBakeComponent
 {
 
 	// Maps from resource path to customizer
@@ -48,13 +45,6 @@ public class ModelOverrideComponent implements IPreInitComponent
 		this.customizer.put( resourcePath, customizer );
 	}
 
-	@Override
-	public void preInitialize( Dist dist )
-	{
-		MinecraftForge.EVENT_BUS.register( this );
-	}
-
-	@SubscribeEvent
 	public void onModelBakeEvent( final ModelBakeEvent event )
 	{
 		Map<ResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();

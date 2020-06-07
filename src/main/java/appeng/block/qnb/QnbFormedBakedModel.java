@@ -27,10 +27,10 @@ import java.util.function.Function;
 class QnbFormedBakedModel implements IDynamicBakedModel
 {
 
-	private static final Material TEXTURE_LINK = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(AppEng.MOD_ID, "blocks/quantum_link" ));
-	private static final Material TEXTURE_RING = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "blocks/quantum_ring" ));
-	private static final Material TEXTURE_RING_LIGHT = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "blocks/quantum_ring_light" ));
-	private static final Material TEXTURE_RING_LIGHT_CORNER = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "blocks/quantum_ring_light_corner" ));
+	private static final Material TEXTURE_LINK = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(AppEng.MOD_ID, "block/quantum_link" ));
+	private static final Material TEXTURE_RING = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "block/quantum_ring" ));
+	private static final Material TEXTURE_RING_LIGHT = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "block/quantum_ring_light" ));
+	private static final Material TEXTURE_RING_LIGHT_CORNER = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "block/quantum_ring_light_corner" ));
 	private static final Material TEXTURE_CABLE_GLASS = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "parts/cable/glass/transparent" ));
 	private static final Material TEXTURE_COVERED_CABLE = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "parts/cable/covered/transparent" ));
 

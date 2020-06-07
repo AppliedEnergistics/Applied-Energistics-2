@@ -1,7 +1,7 @@
 {
     "ae2_uvl_marker": true,
     "textures": {
-        "0": "blocks/obsidian",
+        "0": "block/obsidian",
         "1": "uvlightmapjsontest:blocks/BlockControllerLights"
     },
     "elements": [

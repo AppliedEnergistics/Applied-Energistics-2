@@ -297,6 +297,9 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 			// TODO: Optimize Network Load
 			if( this.world != null )
 			{
+				this.requestModelDataUpdate();
+
+				boolean alreadyUpdated = false;
 				// Let the block update it's own state with our internal state changes
 				BlockState currentState = getBlockState();
 				if (currentState.getBlock() instanceof AEBaseTileBlock) {
@@ -305,10 +308,13 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 					if (currentState != newState) {
 						AELog.blockUpdate(this.pos, currentState, newState, this);
 						this.world.setBlockState(pos, newState);
+						alreadyUpdated = true;
 					}
 				}
 
-				this.requestModelDataUpdate();
+				if (!alreadyUpdated) {
+					this.world.notifyBlockUpdate(this.pos, currentState, currentState, 1);
+				}
 			}
 		}
 	}

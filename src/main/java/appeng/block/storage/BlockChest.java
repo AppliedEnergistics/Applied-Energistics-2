@@ -27,6 +27,7 @@ import appeng.container.implementations.ContainerQNB;
 import appeng.core.localization.PlayerMessages;
 import appeng.tile.storage.TileChest;
 import appeng.util.Platform;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
@@ -56,7 +57,7 @@ public class BlockChest extends AEBaseTileBlock<TileChest>
 	}
 
 	@Override
-	protected void fillStateContainer(StateContainer.Builder builder) {
+	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
 		super.fillStateContainer(builder);
 		builder.add(SLOT_STATE);
 	}

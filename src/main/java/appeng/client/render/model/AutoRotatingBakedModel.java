@@ -160,7 +160,7 @@ public class AutoRotatingBakedModel implements IBakedModel
 
 		if( forward == null || up == null )
 		{
-			return this.parent.getQuads( state, side, rand );
+			return this.parent.getQuads( state, side, rand, extraData );
 		}
 
 		// The model has other properties than just forward/up, so it would cause our cache to inadvertendly also cache

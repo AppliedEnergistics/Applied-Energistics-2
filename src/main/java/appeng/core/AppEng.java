@@ -144,6 +144,7 @@ public final class AppEng
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> modEventBus.addListener(this::clientSetup));
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> modEventBus.addListener(registration::modelRegistryEvent));
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> modEventBus.addListener(registration::registerItemColors));
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> modEventBus.addListener(registration::handleModelBake));
 
 		MinecraftForge.EVENT_BUS.addListener( TickHandler.INSTANCE::unloadWorld );
 		MinecraftForge.EVENT_BUS.addListener( TickHandler.INSTANCE::onTick );
@@ -203,7 +204,6 @@ public final class AppEng
 		addBuiltInModel("paint_splotches", PaintSplotchesModel::new);
 		addBuiltInModel("quantum_bridge_formed", QnbFormedModel::new);
 		ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "crafting_cube"), CraftingCubeModelLoader.INSTANCE);
-		ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "auto_rotating"), AutoRotatingModelLoader.INSTANCE);
 	}
 
 	private static <T extends IModelGeometry<T>> void addBuiltInModel(String id, Supplier<T> modelFactory) {

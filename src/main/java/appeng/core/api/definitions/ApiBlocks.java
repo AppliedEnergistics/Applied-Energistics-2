@@ -30,6 +30,7 @@ import appeng.block.grindstone.BlockGrinder;
 import appeng.block.misc.*;
 import appeng.block.networking.*;
 import appeng.block.paint.BlockPaint;
+import appeng.block.paint.PaintRendering;
 import appeng.block.qnb.BlockQuantumLinkChamber;
 import appeng.block.qnb.BlockQuantumRing;
 import appeng.block.qnb.QuantumBridgeRendering;
@@ -494,7 +495,7 @@ public final class ApiBlocks implements IBlocks
 		this.paint = registry.block( "paint", BlockPaint::new )
 				.features( AEFeature.PAINT_BALLS )
 				.tileEntity( registry.tileEntity("paint", TilePaint.class, TilePaint::new).build() )
-// FIXME				.rendering( new PaintRendering() )
+				.rendering( new PaintRendering() )
 				.build();
 
   		this.skyStoneStairs = deco.block( "sky_stone_stairs", () -> new StairsBlock(this.skyStoneBlock().block()::getDefaultState, SKYSTONE_PROPERTIES ) )

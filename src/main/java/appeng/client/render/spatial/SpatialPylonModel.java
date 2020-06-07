@@ -57,7 +57,7 @@ public class SpatialPylonModel implements IModelGeometry<SpatialPylonModel>
 
 	private static Material getTexturePath( SpatialPylonTextureType type )
 	{
-		return new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "blocks/spatial_pylon/" + type.name().toLowerCase() ) );
+		return new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "block/spatial_pylon/" + type.name().toLowerCase() ) );
 	}
 
 }

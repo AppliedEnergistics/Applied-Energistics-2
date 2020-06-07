@@ -32,7 +32,7 @@ public final class InscriberTESR extends TileEntityRenderer<TileInscriber>
 
 	private static final float ITEM_RENDER_SCALE = 1.0f / 1.2f;
 
-	private static final ResourceLocation TEXTURE_INSIDE = new ResourceLocation( AppEng.MOD_ID, "blocks/inscriber_inside" );
+	private static final ResourceLocation TEXTURE_INSIDE = new ResourceLocation( AppEng.MOD_ID, "block/inscriber_inside" );
 
 	private static TextureAtlasSprite textureInside;
 

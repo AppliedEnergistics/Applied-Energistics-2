@@ -26,10 +26,12 @@ import appeng.container.implementations.ContainerWireless;
 import appeng.helpers.AEGlassMaterial;
 import appeng.tile.networking.TileWireless;
 import appeng.util.Platform;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -65,36 +67,30 @@ public class BlockWireless extends AEBaseTileBlock<TileWireless>
 
 	public BlockWireless()
 	{
-		super( Properties.create(AEGlassMaterial.INSTANCE) );
+		super( Properties.create(AEGlassMaterial.INSTANCE).notSolid() );
 		this.setFullSize( false );
 		this.setOpaque( false );
 		this.setDefaultState( this.getDefaultState().with( STATE, State.OFF ) );
 	}
 
-	// FIXME This has to be triggered by the tile entity's state changing directly
 	@Override
-	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld world, BlockPos pos, BlockPos facingPos) {
+	protected BlockState updateBlockStateFromTileEntity(BlockState currentState, TileWireless te) {
 		State teState = State.OFF;
 
-		TileWireless te = this.getTileEntity( world, pos );
-		if( te != null )
+		if( te.isActive() )
 		{
-			if( te.isActive() )
-			{
-				teState = State.HAS_CHANNEL;
-			}
-			else if( te.isPowered() )
-			{
-				teState = State.ON;
-			}
+			teState = State.HAS_CHANNEL;
+		}
+		else if( te.isPowered() )
+		{
+			teState = State.ON;
 		}
 
-		return super.updatePostPlacement(stateIn, facing, facingState, world, pos, facingPos)
-				.with( STATE, teState );
+		return currentState.with(STATE, teState);
 	}
 
 	@Override
-	protected void fillStateContainer(StateContainer.Builder builder) {
+	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
 		super.fillStateContainer(builder);
 		builder.add(STATE);
 	}
@@ -173,7 +169,7 @@ public class BlockWireless extends AEBaseTileBlock<TileWireless>
 
 			return VoxelShapes.create( new AxisAlignedBB( minX, minY, minZ, maxX, maxY, maxZ ) );
 		}
-		return VoxelShapes.fullCube();
+		return VoxelShapes.empty();
 	}
 
 	@Override
@@ -237,7 +233,7 @@ public class BlockWireless extends AEBaseTileBlock<TileWireless>
 		}
 		else
 		{
-			return VoxelShapes.fullCube();
+			return VoxelShapes.empty();
 		}
 	}
 
