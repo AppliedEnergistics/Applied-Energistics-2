@@ -31,8 +31,6 @@ import appeng.api.exceptions.CoreInaccessibleException;
 
 /**
  * Entry point for api.
- *
- * Available IMCs:
  */
 public enum AEApi
 {

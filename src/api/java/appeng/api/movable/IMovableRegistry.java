@@ -33,12 +33,10 @@ import net.minecraft.tileentity.TileEntity;
  *
  * 1. The Tile or its super classes have been white listed with whiteListTileEntity.
  *
- * 2. The Tile has been register with the IMC ( which basically calls whiteListTileEntity. )
+ * 2. The Tile implements IMovableTile
  *
- * 3. The Tile implements IMovableTile 4. A IMovableHandler is register that returns canHandle = true for the Tile
- * Entity Class
+ * 3. A IMovableHandler is register that returns canHandle = true for the {@link TileEntity} subclass
  *
- * IMC Example: FMLInterModComms.sendMessage( "appliedenergistics2", "movabletile", "appeng.common.AppEngTile" );
  *
  * The movement process is as follows,
  *
@@ -61,18 +59,12 @@ public interface IMovableRegistry
 	/**
 	 * Black list a block from movement, please only use this to prevent exploits.
 	 *
-	 * You can also use the IMC, FMLInterModComms.sendMessage( "appliedenergistics2", "whitelist-spatial",
-	 * "appeng.common.AppEngTile" );
-	 *
 	 * @param blk block
 	 */
 	void blacklistBlock( Block blk );
 
 	/**
 	 * White list your tile entity with the registry.
-	 *
-	 * You can also use the IMC, FMLInterModComms.sendMessage( "appliedenergistics2", "blacklist-block-spatial", new
-	 * ItemStack(...) );
 	 *
 	 * If you tile is handled with IMovableHandler or IMovableTile you do not need to white list it.
 	 */

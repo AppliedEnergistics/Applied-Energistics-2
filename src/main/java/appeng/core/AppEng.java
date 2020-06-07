@@ -323,14 +323,6 @@ public final class AppEng
 		AELog.info( "Post Initialization ( ended after " + start.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
 	}
 
-//	@EventHandler
-//	private void handleIMCEvent( final FMLInterModComms.IMCEvent event )
-//	{
-//		final IMCHandler imcHandler = new IMCHandler();
-//
-//		imcHandler.handleIMCEvent( event );
-//	}
-
 	private void serverAboutToStart( final FMLServerStartedEvent evt )
 	{
 		WorldData.onServerAboutToStart( evt.getServer() );
