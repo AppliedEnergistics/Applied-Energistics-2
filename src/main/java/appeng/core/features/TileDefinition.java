@@ -34,22 +34,17 @@ import appeng.block.AEBaseTileBlock;
 
 public final class TileDefinition extends BlockDefinition implements ITileDefinition
 {
+	private final AEBaseTileBlock<?> block;
 
-	private final Optional<AEBaseTileBlock> block;
-
-	public TileDefinition( @Nonnull String registryName, AEBaseTileBlock block, BlockItem item, Set<AEFeature> features )
+	public TileDefinition( @Nonnull String registryName, AEBaseTileBlock<?> block, BlockItem item, Set<AEFeature> features )
 	{
 		super( registryName, block, item, features );
-		this.block = Optional.ofNullable( block );
+		this.block = block;
 	}
 
 	@Override
 	public Optional<? extends Class<? extends TileEntity>> maybeEntity()
 	{
-		if (this.block.isPresent()) {
-			
-		}
-			
-		return this.block.map( block -> block.getTileEntityClass() );
+		return Optional.of(this.block.getTileEntityClass());
 	}
 }

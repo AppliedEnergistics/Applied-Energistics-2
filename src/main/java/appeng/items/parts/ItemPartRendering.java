@@ -66,15 +66,15 @@ public class ItemPartRendering extends ItemRenderingCustomizer
 				.collect( Collectors.toList() ) );
 
 		// Register the built-in models for annihilation planes
-		ResourceLocation annihilationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "items/part/annihilation_plane" );
+		ResourceLocation annihilationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "item/part/annihilation_plane" );
 		ResourceLocation annihilationPlaneOnTexture = new ResourceLocation( AppEng.MOD_ID, "parts/annihilation_plane_on" );
-		ResourceLocation fluidAnnihilationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "items/part/fluid_annihilation_plane" );
+		ResourceLocation fluidAnnihilationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "item/part/fluid_annihilation_plane" );
 		ResourceLocation fluidAnnihilationPlaneOnTexture = new ResourceLocation( AppEng.MOD_ID, "parts/fluid_annihilation_plane_on" );
-		ResourceLocation identityAnnihilationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "items/part/identity_annihilation_plane" );
+		ResourceLocation identityAnnihilationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "item/part/identity_annihilation_plane" );
 		ResourceLocation identityAnnihilationPlaneOnTexture = new ResourceLocation( AppEng.MOD_ID, "parts/identity_annihilation_plane_on" );
-		ResourceLocation formationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "items/part/formation_plane" );
+		ResourceLocation formationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "item/part/formation_plane" );
 		ResourceLocation formationPlaneOnTexture = new ResourceLocation( AppEng.MOD_ID, "parts/formation_plane_on" );
-		ResourceLocation fluidFormationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "items/part/fluid_formation_plane" );
+		ResourceLocation fluidFormationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "item/part/fluid_formation_plane" );
 		ResourceLocation fluidFormationPlaneOnTexture = new ResourceLocation( AppEng.MOD_ID, "parts/fluid_formation_plane_on" );
 		ResourceLocation sidesTexture = new ResourceLocation( AppEng.MOD_ID, "parts/plane_sides" );
 		ResourceLocation backTexture = new ResourceLocation( AppEng.MOD_ID, "parts/transition_plane_back" );

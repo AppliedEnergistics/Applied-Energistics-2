@@ -227,12 +227,10 @@ public final class ApiItems implements IItems
 
 		this.biometricCard = registry.item( "biometric_card", ToolBiometricCard::new )
 				.props(props -> props.maxStackSize( 1 ))
-				.rendering( new ToolBiometricCardRendering() )
 				.features( AEFeature.SECURITY )
 				.build();
 		this.memoryCard = registry.item( "memory_card", ToolMemoryCard::new )
 				.props(props -> props.maxStackSize( 1 ))
-				.rendering( new ToolMemoryCardRendering() )
 				.features( AEFeature.MEMORY_CARD )
 				.build();
 		this.networkTool = registry.item( "network_tool", ToolNetworkTool::new )
@@ -295,13 +293,17 @@ public final class ApiItems implements IItems
 				.rendering( new ItemEncodedPatternRendering() )
 				.build();
 
-		IItemDefinition paintBall = registry.item( "paint_ball", ItemPaintBall::new )
+		IItemDefinition paintBall = registry.item( "paint_ball", props -> new ItemPaintBall(props, false) )
 				.features( AEFeature.PAINT_BALLS )
 				.rendering( new ItemPaintBallRendering() )
 				.build();
 		// FIXME these are both wrong
-		this.coloredPaintBall = registry.colored( paintBall, 0 );
-		this.coloredLumenPaintBall = registry.colored( paintBall, 20 );
+		this.coloredPaintBall = registry.colored( paintBall );
+		IItemDefinition lumenPaintBall = registry.item( "lumen_paint_ball", props -> new ItemPaintBall(props, true) )
+				.features( AEFeature.PAINT_BALLS )
+				.rendering( new ItemPaintBallRendering() )
+				.build();
+		this.coloredLumenPaintBall = registry.colored( lumenPaintBall );
 
 		FeatureFactory debugTools = registry.features( AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE );
 		this.toolEraser = debugTools.item( "debug_eraser", ToolEraser::new ).build();

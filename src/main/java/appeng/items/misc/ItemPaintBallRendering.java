@@ -31,14 +31,10 @@ import appeng.bootstrap.ItemRenderingCustomizer;
 public class ItemPaintBallRendering extends ItemRenderingCustomizer
 {
 
-	private static final ModelResourceLocation MODEL_NORMAL = new ModelResourceLocation( "appliedenergistics2:paint_ball" );
-	private static final ModelResourceLocation MODEL_SHIMMER = new ModelResourceLocation( "appliedenergistics2:paint_ball_shimmer" );
-
 	@Override
 	public void customize( IItemRendering rendering )
 	{
 		rendering.color( ItemPaintBallRendering::getColorFromItemstack );
-		rendering.variants( MODEL_NORMAL, MODEL_SHIMMER );
 		// FIXME rendering.meshDefinition( is -> ItemPaintBall.isLumen( is ) ? MODEL_SHIMMER : MODEL_NORMAL );
 	}
 
@@ -47,7 +43,7 @@ public class ItemPaintBallRendering extends ItemRenderingCustomizer
 		ItemPaintBall item = (ItemPaintBall) stack.getItem();
 		final AEColor col = item.getColor( stack );
 
-		boolean lumen = item.isLumen(stack);
+		boolean lumen = item.isLumen();
 		final int colorValue = lumen ? col.mediumVariant : col.mediumVariant;
 		final int r = ( colorValue >> 16 ) & 0xff;
 		final int g = ( colorValue >> 8 ) & 0xff;

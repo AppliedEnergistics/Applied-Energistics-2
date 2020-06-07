@@ -20,7 +20,6 @@ package appeng.items.misc;
 
 
 import appeng.api.util.AEColor;
-import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -34,13 +33,12 @@ public class ItemPaintBall extends AEBaseItem
 {
 
 	private static final String TAG_COLOR = "c";
-	private static final String TAG_LUMEN = "l";
 
-	private static final ITextComponent LUMEN_PREFIX = new TranslationTextComponent(GuiText.Lumen.getTranslationKey())
-			.appendText(" ");
+	private final boolean lumen;
 
-	public ItemPaintBall(Properties properties) {
+	public ItemPaintBall(Properties properties, boolean lumen) {
 		super(properties);
+		this.lumen = lumen;
 	}
 
 	@Override
@@ -53,12 +51,7 @@ public class ItemPaintBall extends AEBaseItem
 
 	private ITextComponent getExtraName( final ItemStack is )
 	{
-		ITextComponent colorText = new TranslationTextComponent(this.getColor(is).translationKey);
-		if (isLumen(is)) {
-			return LUMEN_PREFIX.shallowCopy().appendSibling(colorText);
-		} else {
-			return colorText;
-		}
+		return new TranslationTextComponent(this.getColor(is).translationKey);
 	}
 
 	public AEColor getColor( final ItemStack is )
@@ -80,16 +73,9 @@ public class ItemPaintBall extends AEBaseItem
 		return is;
 	}
 
-	public boolean isLumen( final ItemStack is )
+	public boolean isLumen()
 	{
-		CompoundNBT tag = is.getTag();
-		return tag != null && tag.getBoolean(TAG_LUMEN);
-	}
-
-	public ItemStack setLumen( final ItemStack is, boolean lumen )
-	{
-		is.getOrCreateTag().putBoolean(TAG_LUMEN, lumen);
-		return is;
+		return lumen;
 	}
 
 	@Override
@@ -100,14 +86,6 @@ public class ItemPaintBall extends AEBaseItem
 			if( c != AEColor.TRANSPARENT )
 			{
 				itemStacks.add( setColor(new ItemStack( this ), c) );
-			}
-		}
-
-		for( final AEColor c : AEColor.values() )
-		{
-			if( c != AEColor.TRANSPARENT )
-			{
-				itemStacks.add( setLumen(setColor(new ItemStack( this ), c), true) );
 			}
 		}
 	}

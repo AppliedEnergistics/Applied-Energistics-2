@@ -20,6 +20,7 @@ package appeng.items.misc;
 
 
 import appeng.api.implementations.items.IGrowableCrystal;
+import appeng.core.AppEng;
 import appeng.core.localization.ButtonToolTips;
 import appeng.entity.EntityGrowingCrystal;
 import appeng.items.AEBaseItem;
@@ -33,6 +34,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -68,6 +70,9 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	public ItemCrystalSeed(Properties properties, IItemProvider grownItem) {
 		super(properties);
 		this.grownItem = Preconditions.checkNotNull(grownItem);
+		// Expose the growth of the seed to the model system
+		addPropertyOverride(new ResourceLocation("appliedenergistics2:growth"),
+				(is, w, p) -> getGrowthTicks(is) / (float) GROWTH_TICKS_REQUIRED);
 	}
 
 	@Nullable

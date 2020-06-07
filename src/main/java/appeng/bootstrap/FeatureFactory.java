@@ -114,7 +114,7 @@ public class FeatureFactory
 		return new TileEntityBuilder<>( this, id, teClass, factory ).features( this.defaultFeatures );
 	}
 
-	public AEColoredItemDefinition colored( IItemDefinition target, int offset )
+	public AEColoredItemDefinition colored( IItemDefinition target )
 	{
 		ColoredItemDefinition definition = new ColoredItemDefinition();
 

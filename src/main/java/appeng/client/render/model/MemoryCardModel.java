@@ -25,8 +25,8 @@ import net.minecraftforge.client.model.geometry.IModelGeometry;
 public class MemoryCardModel implements IModelGeometry<MemoryCardModel>
 {
 
-	private static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "item/memory_card" );
-	private static final Material TEXTURE = new Material( AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "items/memory_card_hash" ) );
+	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "item/memory_card_base" );
+	private static final Material TEXTURE = new Material( AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "item/memory_card_hash" ) );
 
 	@Override
 	public Collection<Material> getTextures( IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors )

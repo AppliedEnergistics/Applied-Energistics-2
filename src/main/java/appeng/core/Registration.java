@@ -72,6 +72,8 @@ import appeng.client.gui.implementations.GuiVibrationChamber;
 import appeng.client.gui.implementations.GuiWireless;
 import appeng.client.gui.implementations.GuiWirelessTerm;
 import appeng.client.render.effects.*;
+import appeng.client.render.model.BiometricCardModel;
+import appeng.client.render.model.MemoryCardModel;
 import appeng.client.render.model.SkyCompassModel;
 import appeng.client.render.tesr.SkyChestTESR;
 import appeng.container.AEBaseContainer;
@@ -246,10 +248,7 @@ final class Registration
 	@OnlyIn( Dist.CLIENT )
 	public void modelRegistryEvent( ModelRegistryEvent event )
 	{
-		// Sky compass parts
-		for (ResourceLocation dependency : SkyCompassModel.DEPENDENCIES) {
-			ModelLoader.addSpecialModel(dependency);
-		}
+		registerSpecialModels();
 
 		// TODO: Do not use the internal API
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();
@@ -268,6 +267,18 @@ final class Registration
 		};
 		final Dist dist = FMLEnvironment.dist;
 		definitions.getRegistry().getBootstrapComponents( IModelRegistrationComponent.class ).forEachRemaining(b -> b.modelRegistration( dist, registry ) );
+	}
+
+	/**
+	 * Registers any JSON model files with Minecraft that are not referenced via blockstates or item IDs
+	 */
+	@OnlyIn(Dist.CLIENT)
+	private void registerSpecialModels() {
+		for (ResourceLocation dependency : SkyCompassModel.DEPENDENCIES) {
+			ModelLoader.addSpecialModel(dependency);
+		}
+		ModelLoader.addSpecialModel(BiometricCardModel.MODEL_BASE);
+		ModelLoader.addSpecialModel(MemoryCardModel.MODEL_BASE);
 	}
 
 	public void registerBlocks( RegistryEvent.Register<Block> event )

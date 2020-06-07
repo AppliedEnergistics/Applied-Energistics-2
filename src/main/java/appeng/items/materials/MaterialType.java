@@ -22,7 +22,6 @@ package appeng.items.materials;
 import java.util.EnumSet;
 import java.util.Set;
 
-import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -98,7 +97,7 @@ public enum MaterialType
 
 	WOODEN_GEAR("material_wooden_gear", EnumSet.of( AEFeature.GRIND_STONE ), "gearWood" ),
 
-	WIRELESS("material_wireless", EnumSet.of( AEFeature.WIRELESS_ACCESS_TERMINAL ) ),
+	WIRELESS_RECEIVER("material_wireless_receiver", EnumSet.of( AEFeature.WIRELESS_ACCESS_TERMINAL ) ),
 	WIRELESS_BOOSTER("material_wireless_booster", EnumSet.of( AEFeature.WIRELESS_ACCESS_TERMINAL ) ),
 
 	FORMATION_CORE("material_formation_core", EnumSet.of( AEFeature.CORES ) ),
@@ -119,7 +118,7 @@ public enum MaterialType
 	FLUID_CELL64K_PART("material_fluid_cell64k_part", EnumSet.of( AEFeature.STORAGE_CELLS ) );
 
 	private final Set<AEFeature> features;
-	private final ModelResourceLocation model;
+	private final ResourceLocation registryName;
 	private Item itemInstance;
 	// stack!
 	private MaterialStackSrc stackSrc;
@@ -127,33 +126,28 @@ public enum MaterialType
 	private Class<? extends Entity> droppedEntity;
 	private boolean isRegistered = false;
 
-	MaterialType(String modelName)
-	{
-		this(modelName, EnumSet.of( AEFeature.CORE ) );
-	}
-
-	MaterialType(String modelName, final Set<AEFeature> features)
+	MaterialType(String id, final Set<AEFeature> features)
 	{
 		this.features = features;
-		this.model = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, modelName ), "inventory" );
+		this.registryName = new ResourceLocation( AppEng.MOD_ID, id);
 	}
 
-	MaterialType(String modelName, final Set<AEFeature> features, final Class<? extends Entity> c)
+	MaterialType(String id, final Set<AEFeature> features, final Class<? extends Entity> c)
 	{
-		this(modelName, features );
+		this(id, features );
 		this.droppedEntity = c;
 	}
 
-	MaterialType(String modelName, final Set<AEFeature> features, final String oreDictionary, final Class<? extends Entity> c)
+	MaterialType(String id, final Set<AEFeature> features, final String oreDictionary, final Class<? extends Entity> c)
 	{
-		this(modelName, features );
+		this(id, features );
 		this.oreName = oreDictionary;
 		this.droppedEntity = c;
 	}
 
-	MaterialType(String modelName, final Set<AEFeature> features, final String oreDictionary)
+	MaterialType(String id, final Set<AEFeature> features, final String oreDictionary)
 	{
-		this(modelName, features );
+		this(id, features );
 		this.oreName = oreDictionary;
 	}
 
@@ -212,9 +206,11 @@ public enum MaterialType
 		this.stackSrc = stackSrc;
 	}
 
-	public ModelResourceLocation getModel()
+	public String getId() { return registryName.getPath(); }
+
+	public ResourceLocation getRegistryName()
 	{
-		return this.model;
+		return this.registryName;
 	}
 
 }

@@ -30,9 +30,9 @@ public class ColorApplicatorModel implements IModelGeometry<ColorApplicatorModel
 
 	private static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "item/color_applicator_colored" );
 
-	private static final Material TEXTURE_DARK = new Material( AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "items/color_applicator_tip_dark" ) );
-	private static final Material TEXTURE_MEDIUM = new Material( AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "items/color_applicator_tip_medium" ) );
-	private static final Material TEXTURE_BRIGHT = new Material( AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "items/color_applicator_tip_bright" ) );
+	private static final Material TEXTURE_DARK = new Material( AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "item/color_applicator_tip_dark" ) );
+	private static final Material TEXTURE_MEDIUM = new Material( AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "item/color_applicator_tip_medium" ) );
+	private static final Material TEXTURE_BRIGHT = new Material( AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "item/color_applicator_tip_bright" ) );
 
 	@Override
 	public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {

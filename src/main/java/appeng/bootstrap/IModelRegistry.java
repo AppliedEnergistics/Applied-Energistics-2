@@ -32,6 +32,4 @@ public interface IModelRegistry
 	void setCustomModelResourceLocation( Item item, int metadata, ModelResourceLocation model );
 
 	// FIXME void setCustomMeshDefinition( Item item, ItemMeshDefinition meshDefinition );
-
-	// FIXME void setCustomStateMapper( Block block, IStateMapper mapper );
 }

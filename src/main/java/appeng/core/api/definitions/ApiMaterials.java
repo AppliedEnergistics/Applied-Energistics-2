@@ -128,70 +128,70 @@ public final class ApiMaterials implements IMaterials
 				.customize(builder -> builder.setTrackingRange(16).setUpdateInterval(4).setShouldReceiveVelocityUpdates(true))
 				.build();
 
-		this.cell2SpatialPart = createMaterial( "material_cell2_spatial_part", MaterialType.CELL2_SPATIAL_PART );
-		this.cell16SpatialPart = createMaterial( "material_cell16_spatial_part", MaterialType.CELL16_SPATIAL_PART );
-		this.cell128SpatialPart = createMaterial( "material_cell128_spatial_part", MaterialType.CELL128_SPATIAL_PART );
-		this.silicon = createMaterial( "material_silicon", MaterialType.SILICON );
-		this.skyDust = createMaterial( "material_sky_dust", MaterialType.SKY_DUST );
-		this.calcProcessorPress = createMaterial( "material_calculation_processor_press", MaterialType.CALCULATION_PROCESSOR_PRESS );
-		this.engProcessorPress = createMaterial( "material_engineering_processor_press", MaterialType.ENGINEERING_PROCESSOR_PRESS );
-		this.logicProcessorPress = createMaterial( "material_logic_processor_press", MaterialType.LOGIC_PROCESSOR_PRESS );
-		this.siliconPress = createMaterial( "material_silicon_press", MaterialType.SILICON_PRESS );
-		this.namePress = createMaterial( "material_name_press", MaterialType.NAME_PRESS );
-		this.calcProcessorPrint = createMaterial( "material_calculation_processor_print", MaterialType.CALCULATION_PROCESSOR_PRINT );
-		this.engProcessorPrint = createMaterial( "material_engineering_processor_print", MaterialType.ENGINEERING_PROCESSOR_PRINT );
-		this.logicProcessorPrint = createMaterial( "material_logic_processor_print", MaterialType.LOGIC_PROCESSOR_PRINT );
-		this.siliconPrint = createMaterial( "material_silicon_print", MaterialType.SILICON_PRINT );
-		this.logicProcessor = createMaterial( "material_logic_processor", MaterialType.LOGIC_PROCESSOR );
-		this.calcProcessor = createMaterial( "material_calculation_processor", MaterialType.CALCULATION_PROCESSOR );
-		this.engProcessor = createMaterial( "material_engineering_processor", MaterialType.ENGINEERING_PROCESSOR );
-		this.basicCard = createMaterial( "material_basic_card", MaterialType.BASIC_CARD );
-		this.advCard = createMaterial( "material_advanced_card", MaterialType.ADVANCED_CARD );
-		this.purifiedCertusQuartzCrystal = createMaterial( "material_purified_certus_quartz_crystal", MaterialType.PURIFIED_CERTUS_QUARTZ_CRYSTAL );
-		this.purifiedNetherQuartzCrystal = createMaterial( "material_purified_nether_quartz_crystal", MaterialType.PURIFIED_NETHER_QUARTZ_CRYSTAL );
-		this.purifiedFluixCrystal = createMaterial( "material_purified_fluix_crystal", MaterialType.PURIFIED_FLUIX_CRYSTAL );
-		this.cell1kPart = createMaterial( "material_cell1k_part", MaterialType.CELL1K_PART );
-		this.cell4kPart = createMaterial( "material_cell4k_part", MaterialType.CELL4K_PART );
-		this.cell16kPart = createMaterial( "material_cell16k_part", MaterialType.CELL16K_PART );
-		this.cell64kPart = createMaterial( "material_cell64k_part", MaterialType.CELL64K_PART );
-		this.emptyStorageCell = createMaterial( "material_empty_storage_cell", MaterialType.EMPTY_STORAGE_CELL );
-		this.cardRedstone = createMaterial( "material_card_redstone", MaterialType.CARD_REDSTONE );
-		this.cardSpeed = createMaterial( "material_card_speed", MaterialType.CARD_SPEED );
-		this.cardCapacity = createMaterial( "material_card_capacity", MaterialType.CARD_CAPACITY );
-		this.cardFuzzy = createMaterial( "material_card_fuzzy", MaterialType.CARD_FUZZY );
-		this.cardInverter = createMaterial( "material_card_inverter", MaterialType.CARD_INVERTER );
-		this.cardCrafting = createMaterial( "material_card_crafting", MaterialType.CARD_CRAFTING );
-		this.enderDust = createMaterial( "material_ender_dust", MaterialType.ENDER_DUST );
-		this.flour = createMaterial( "material_flour", MaterialType.FLOUR );
-		this.goldDust = createMaterial( "material_gold_dust", MaterialType.GOLD_DUST );
-		this.ironDust = createMaterial( "material_iron_dust", MaterialType.IRON_DUST );
-		this.fluixDust = createMaterial( "material_fluix_dust", MaterialType.FLUIX_DUST );
-		this.certusQuartzDust = createMaterial( "material_certus_quartz_dust", MaterialType.CERTUS_QUARTZ_DUST );
-		this.netherQuartzDust = createMaterial( "material_nether_quartz_dust", MaterialType.NETHER_QUARTZ_DUST );
-		this.matterBall = createMaterial( "material_matter_ball", MaterialType.MATTER_BALL );
-		this.certusQuartzCrystal = createMaterial( "material_certus_quartz_crystal", MaterialType.CERTUS_QUARTZ_CRYSTAL );
-		this.certusQuartzCrystalCharged = createMaterial( "material_certus_quartz_crystal_charged", MaterialType.CERTUS_QUARTZ_CRYSTAL_CHARGED );
-		this.fluixCrystal = createMaterial( "material_fluix_crystal", MaterialType.FLUIX_CRYSTAL );
-		this.fluixPearl = createMaterial( "material_fluix_pearl", MaterialType.FLUIX_PEARL );
-		this.woodenGear = createMaterial( "material_wooden_gear", MaterialType.WOODEN_GEAR );
-		this.wirelessReceiver = createMaterial( "material_wireless_receiver", MaterialType.WIRELESS );
-		this.wirelessBooster = createMaterial( "material_wireless_booster", MaterialType.WIRELESS_BOOSTER );
-		this.annihilationCore = createMaterial( "material_annihilation_core", MaterialType.ANNIHILATION_CORE );
-		this.formationCore = createMaterial( "material_formation_core", MaterialType.FORMATION_CORE );
-		this.singularity = createMaterial( "material_singularity", MaterialType.SINGULARITY );
-		this.qESingularity = createMaterial( "material_quantum_entangled_singularity", MaterialType.QUANTUM_ENTANGLED_SINGULARITY );
-		this.blankPattern = createMaterial( "material_blank_pattern", MaterialType.BLANK_PATTERN );
-		this.fluidCell1kPart = createMaterial( "material_fluid_cell1k_part", MaterialType.FLUID_CELL1K_PART );
-		this.fluidCell4kPart = createMaterial( "material_fluid_cell4k_part", MaterialType.FLUID_CELL4K_PART );
-		this.fluidCell16kPart = createMaterial( "material_fluid_cell16k_part", MaterialType.FLUID_CELL16K_PART );
-		this.fluidCell64kPart = createMaterial( "material_fluid_cell64k_part", MaterialType.FLUID_CELL64K_PART );
+		this.cell2SpatialPart = createMaterial(MaterialType.CELL2_SPATIAL_PART );
+		this.cell16SpatialPart = createMaterial(MaterialType.CELL16_SPATIAL_PART );
+		this.cell128SpatialPart = createMaterial(MaterialType.CELL128_SPATIAL_PART );
+		this.silicon = createMaterial(MaterialType.SILICON );
+		this.skyDust = createMaterial(MaterialType.SKY_DUST );
+		this.calcProcessorPress = createMaterial(MaterialType.CALCULATION_PROCESSOR_PRESS );
+		this.engProcessorPress = createMaterial(MaterialType.ENGINEERING_PROCESSOR_PRESS );
+		this.logicProcessorPress = createMaterial(MaterialType.LOGIC_PROCESSOR_PRESS );
+		this.siliconPress = createMaterial(MaterialType.SILICON_PRESS );
+		this.namePress = createMaterial(MaterialType.NAME_PRESS );
+		this.calcProcessorPrint = createMaterial(MaterialType.CALCULATION_PROCESSOR_PRINT );
+		this.engProcessorPrint = createMaterial(MaterialType.ENGINEERING_PROCESSOR_PRINT );
+		this.logicProcessorPrint = createMaterial(MaterialType.LOGIC_PROCESSOR_PRINT );
+		this.siliconPrint = createMaterial(MaterialType.SILICON_PRINT );
+		this.logicProcessor = createMaterial(MaterialType.LOGIC_PROCESSOR );
+		this.calcProcessor = createMaterial(MaterialType.CALCULATION_PROCESSOR );
+		this.engProcessor = createMaterial(MaterialType.ENGINEERING_PROCESSOR );
+		this.basicCard = createMaterial(MaterialType.BASIC_CARD );
+		this.advCard = createMaterial(MaterialType.ADVANCED_CARD );
+		this.purifiedCertusQuartzCrystal = createMaterial(MaterialType.PURIFIED_CERTUS_QUARTZ_CRYSTAL );
+		this.purifiedNetherQuartzCrystal = createMaterial(MaterialType.PURIFIED_NETHER_QUARTZ_CRYSTAL );
+		this.purifiedFluixCrystal = createMaterial(MaterialType.PURIFIED_FLUIX_CRYSTAL );
+		this.cell1kPart = createMaterial(MaterialType.CELL1K_PART );
+		this.cell4kPart = createMaterial(MaterialType.CELL4K_PART );
+		this.cell16kPart = createMaterial(MaterialType.CELL16K_PART );
+		this.cell64kPart = createMaterial(MaterialType.CELL64K_PART );
+		this.emptyStorageCell = createMaterial(MaterialType.EMPTY_STORAGE_CELL );
+		this.cardRedstone = createMaterial(MaterialType.CARD_REDSTONE );
+		this.cardSpeed = createMaterial(MaterialType.CARD_SPEED );
+		this.cardCapacity = createMaterial(MaterialType.CARD_CAPACITY );
+		this.cardFuzzy = createMaterial(MaterialType.CARD_FUZZY );
+		this.cardInverter = createMaterial(MaterialType.CARD_INVERTER );
+		this.cardCrafting = createMaterial(MaterialType.CARD_CRAFTING );
+		this.enderDust = createMaterial(MaterialType.ENDER_DUST );
+		this.flour = createMaterial(MaterialType.FLOUR );
+		this.goldDust = createMaterial(MaterialType.GOLD_DUST );
+		this.ironDust = createMaterial(MaterialType.IRON_DUST );
+		this.fluixDust = createMaterial(MaterialType.FLUIX_DUST );
+		this.certusQuartzDust = createMaterial(MaterialType.CERTUS_QUARTZ_DUST );
+		this.netherQuartzDust = createMaterial(MaterialType.NETHER_QUARTZ_DUST );
+		this.matterBall = createMaterial(MaterialType.MATTER_BALL );
+		this.certusQuartzCrystal = createMaterial(MaterialType.CERTUS_QUARTZ_CRYSTAL );
+		this.certusQuartzCrystalCharged = createMaterial(MaterialType.CERTUS_QUARTZ_CRYSTAL_CHARGED );
+		this.fluixCrystal = createMaterial(MaterialType.FLUIX_CRYSTAL );
+		this.fluixPearl = createMaterial(MaterialType.FLUIX_PEARL );
+		this.woodenGear = createMaterial(MaterialType.WOODEN_GEAR );
+		this.wirelessReceiver = createMaterial(MaterialType.WIRELESS_RECEIVER);
+		this.wirelessBooster = createMaterial(MaterialType.WIRELESS_BOOSTER );
+		this.annihilationCore = createMaterial(MaterialType.ANNIHILATION_CORE );
+		this.formationCore = createMaterial(MaterialType.FORMATION_CORE );
+		this.singularity = createMaterial(MaterialType.SINGULARITY );
+		this.qESingularity = createMaterial(MaterialType.QUANTUM_ENTANGLED_SINGULARITY );
+		this.blankPattern = createMaterial(MaterialType.BLANK_PATTERN );
+		this.fluidCell1kPart = createMaterial(MaterialType.FLUID_CELL1K_PART );
+		this.fluidCell4kPart = createMaterial(MaterialType.FLUID_CELL4K_PART );
+		this.fluidCell16kPart = createMaterial(MaterialType.FLUID_CELL16K_PART );
+		this.fluidCell64kPart = createMaterial(MaterialType.FLUID_CELL64K_PART );
 	}
 
-	private IItemDefinition createMaterial(String id, final MaterialType mat)
+	private IItemDefinition createMaterial(final MaterialType mat)
 	{
 		Preconditions.checkState( !mat.isRegistered(), "Cannot create the same material twice." );
 
-		IItemDefinition def = registry.item(id, props -> new ItemMaterial(props, mat))
+		IItemDefinition def = registry.item(mat.getId(), props -> new ItemMaterial(props, mat))
 				.features(mat.getFeature().toArray(new AEFeature[0]))
 				.build();
 

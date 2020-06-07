@@ -26,8 +26,8 @@ import net.minecraftforge.client.model.geometry.IModelGeometry;
 public class BiometricCardModel implements IModelGeometry<BiometricCardModel>
 {
 
-	private static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "item/biometric_card" );
-	private static final Material TEXTURE = new Material( AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "items/biometric_card_hash" ) );
+	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "item/biometric_card_base" );
+	private static final Material TEXTURE = new Material( AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "item/biometric_card_hash" ) );
 
 	@Override
 	public Collection<Material> getTextures( IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors )
