@@ -29,6 +29,7 @@ import java.util.Map;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.block.storage.DriveSlotsState;
+import appeng.client.render.model.DriveModelData;
 import appeng.container.implementations.ContainerDrive;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
@@ -75,8 +76,6 @@ import javax.annotation.Nonnull;
 
 public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPriorityHost
 {
-
-	public static final ModelProperty<DriveSlotsState> SLOTS_STATE = new ModelProperty<>();
 
 	private static final int BIT_POWER_MASK = 0x80000000;
 	private static final int BIT_BLINK_MASK = 0x24924924;
@@ -419,13 +418,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	@Nonnull
 	@Override
 	public IModelData getModelData() {
-
-		return new ModelDataMap.Builder()
-				.withInitial(AEBaseTileBlock.UP, getUp())
-				.withInitial(AEBaseTileBlock.FORWARD, getForward())
-				.withInitial(SLOTS_STATE, DriveSlotsState.fromChestOrDrive( this ))
-				.build();
-
+		return new DriveModelData(getUp(), getForward(), DriveSlotsState.fromChestOrDrive( this ));
 	}
 
 	@Override

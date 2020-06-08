@@ -45,6 +45,7 @@ public class BlockMolecularAssembler extends AEBaseTileBlock<TileMolecularAssemb
 	public BlockMolecularAssembler(Block.Properties props)
 	{
 		super( props );
+		setDefaultState(getDefaultState().with(POWERED, false));
 	}
 
 	@Override
@@ -53,19 +54,10 @@ public class BlockMolecularAssembler extends AEBaseTileBlock<TileMolecularAssemb
 		builder.add(POWERED);
 	}
 
-// FIXME: This apparently was used to update block states purely client-side... this wont work anymore :|
-// FIXME	@Override
-// FIXME	public BlockState getActualState( BlockState state, IBlockReader worldIn, BlockPos pos )
-// FIXME	{
-// FIXME		boolean powered = false;
-// FIXME		TileMolecularAssembler te = this.getTileEntity( worldIn, pos );
-// FIXME		if( te != null )
-// FIXME		{
-// FIXME			powered = te.isPowered();
-// FIXME		}
-// FIXME
-// FIXME		return super.getActualState( state, worldIn, pos ).with( POWERED, powered );
-// FIXME	}
+	@Override
+	protected BlockState updateBlockStateFromTileEntity(BlockState currentState, TileMolecularAssembler te) {
+		return currentState.with(POWERED, te.isPowered());
+  }
 
 	@Override
 	public ActionResultType onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand, BlockRayTraceResult hit) {

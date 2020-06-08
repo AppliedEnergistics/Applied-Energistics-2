@@ -19,17 +19,23 @@
 package appeng.client.render.crafting;
 
 
+import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.core.Api;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.render.TesrRenderHelper;
 import appeng.tile.crafting.TileCraftingMonitorTile;
+import net.minecraftforge.registries.ForgeRegistries;
 
 
 /**
@@ -49,14 +55,15 @@ public class CraftingMonitorTESR extends TileEntityRenderer<TileCraftingMonitorT
 		Direction facing = te.getForward();
 
 		IAEItemStack jobProgress = te.getJobProgress();
+
 		if( jobProgress != null )
 		{
 			matrixStack.push();
-			matrixStack.translate(0.5, 0.5, 0.5);
+			matrixStack.translate(0.5, 0.5, 0.5); // Move to the center of the block
 
-			TesrRenderHelper.moveToFace( matrixStack, facing );
 			TesrRenderHelper.rotateToFace( matrixStack, facing, (byte) 0 );
-			TesrRenderHelper.renderItem2dWithAmount(matrixStack, buffers, jobProgress, 0.7f, 0.1f );
+			matrixStack.translate(0, 0.08, 0.5);
+			TesrRenderHelper.renderItem2dWithAmount(matrixStack, buffers, jobProgress, 0.3f, -0.18f, 15728880, combinedOverlay);
 
 			matrixStack.pop();
 		}

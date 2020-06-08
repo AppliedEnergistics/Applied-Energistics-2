@@ -19,13 +19,10 @@
 package appeng.client.render.crafting;
 
 
-import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.bootstrap.BlockRenderingCustomizer;
 import appeng.bootstrap.IBlockRendering;
 import appeng.bootstrap.IItemRendering;
-import appeng.core.AppEng;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -35,62 +32,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  */
 public class CraftingCubeRendering extends BlockRenderingCustomizer
 {
-
-	private final String registryName;
-
-	private final AbstractCraftingUnitBlock.CraftingUnitType type;
-
-	public CraftingCubeRendering( String registryName, AbstractCraftingUnitBlock.CraftingUnitType type )
-	{
-		this.registryName = registryName;
-		this.type = type;
-	}
-
 	@Override
 	@OnlyIn( Dist.CLIENT )
 	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 	{
-		if (type != AbstractCraftingUnitBlock.CraftingUnitType.MONITOR) {
-			rendering.renderType(RenderType.getCutout());
-		}
-
-		ResourceLocation baseName = new ResourceLocation( AppEng.MOD_ID, this.registryName );
-
+		rendering.renderType(RenderType.getCutout());
 		// Disable auto-rotation
-		if( this.type != AbstractCraftingUnitBlock.CraftingUnitType.MONITOR )
-		{
-			rendering.modelCustomizer( ( loc, model ) -> model );
-		}
-
-// FIXME		// This is the standard blockstate model
-// FIXME		ModelResourceLocation defaultModel = new ModelResourceLocation( baseName, "normal" );
-// FIXME
-// FIXME		// This is the built-in model
-// FIXME		String builtInName = "models/block/crafting/" + this.registryName + "/builtin";
-// FIXME		ModelResourceLocation builtInModelName = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, builtInName ), "normal" );
-// FIXME
-// FIXME		rendering.builtInModel( builtInName, new CraftingCubeModel( this.type ) );
-// FIXME
-// FIXME		rendering.stateMapper( block -> this.mapState( block, defaultModel, builtInModelName ) );
-
+		rendering.modelCustomizer( ( loc, model ) -> model );
 	}
-
-// FIXME	private Map<BlockState, ModelResourceLocation> mapState( Block block, ModelResourceLocation defaultModel, ModelResourceLocation formedModel )
-// FIXME	{
-// FIXME		Map<BlockState, ModelResourceLocation> result = new HashMap<>();
-// FIXME		for( BlockState state : block.getBlockState().getValidStates() )
-// FIXME		{
-// FIXME			if( state.get( AbstractCraftingUnitBlock.FORMED ) )
-// FIXME			{
-// FIXME				// Always use the builtin model if the multiblock is formed
-// FIXME				result.put( state, formedModel );
-// FIXME			}
-// FIXME			else
-// FIXME			{
-// FIXME				// Use the default model
-// FIXME				result.put( state, defaultModel );
-// FIXME			}
-// FIXME		}
-// FIXME		return result;
-// FIXME	}
 }

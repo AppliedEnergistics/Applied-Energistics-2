@@ -19,7 +19,6 @@
 package appeng.client.render.model;
 
 
-import appeng.block.AEBaseTileBlock;
 import appeng.client.render.FacingToRotation;
 import com.google.common.base.Objects;
 import com.google.common.cache.CacheBuilder;
@@ -36,7 +35,9 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.world.ILightReader;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
@@ -63,17 +64,17 @@ public class AutoRotatingBakedModel implements IBakedModel
 		this.quadCache = CacheBuilder.newBuilder().maximumSize( 252 ).build( new CacheLoader<AutoRotatingCacheKey, List<BakedQuad>>()
 		{
 			@Override
-			public List<BakedQuad> load( AutoRotatingCacheKey key ) throws Exception
+			public List<BakedQuad> load( AutoRotatingCacheKey key )
 			{
-				return AutoRotatingBakedModel.this.getRotatedModel( key.getBlockState(), key.getSide(), key.getForward(), key.getUp() );
+				return AutoRotatingBakedModel.this.getRotatedModel( key.getBlockState(), key.getSide(), new Random(0), key.getModelData() );
 			}
 		} );
 	}
 
-	private List<BakedQuad> getRotatedModel( BlockState state, Direction side, Direction forward, Direction up )
+	private List<BakedQuad> getRotatedModel(BlockState state, Direction side, Random rand, AEModelData modelData)
 	{
-		FacingToRotation f2r = FacingToRotation.get( forward, up );
-		List<BakedQuad> original = AutoRotatingBakedModel.this.parent.getQuads( state, f2r.resultingRotate( side ), new Random(0) );
+		FacingToRotation f2r = FacingToRotation.get( modelData.getForward(), modelData.getUp() );
+		List<BakedQuad> original = AutoRotatingBakedModel.this.parent.getQuads( state, f2r.resultingRotate( side ), rand, modelData );
 		List<BakedQuad> rotated = new ArrayList<>( original.size() );
 		for( BakedQuad quad : original )
 		{
@@ -155,21 +156,23 @@ public class AutoRotatingBakedModel implements IBakedModel
 	@Override
 	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData) {
 
-		Direction forward = extraData.getData(AEBaseTileBlock.FORWARD);
-		Direction up = extraData.getData(AEBaseTileBlock.UP);
-
-		if( forward == null || up == null )
-		{
+		if (!(extraData instanceof AEModelData)) {
 			return this.parent.getQuads( state, side, rand, extraData );
 		}
 
-		// The model has other properties than just forward/up, so it would cause our cache to inadvertendly also cache
-		// these
-		// additional states, possibly leading to huge issues if the other extended state properties do not implement
-		// equals/hashCode correctly
-		// FIXME: IModelData does not expose a way for us to check if it only has the two properties and no other
-		return this.getRotatedModel( state, side, forward, up );
+		AEModelData aeModelData = (AEModelData) extraData;
 
+		if (aeModelData.isCacheable()) {
+			return quadCache.getUnchecked(new AutoRotatingCacheKey(state, aeModelData, side));
+		} else {
+			return this.getRotatedModel(state, side, rand, aeModelData);
+		}
+	}
+
+	@Nonnull
+	@Override
+	public IModelData getModelData(@Nonnull ILightReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData) {
+		return this.parent.getModelData(world, pos, state, tileData);
 	}
 
 	public static class VertexRotator extends QuadGatheringTransformer

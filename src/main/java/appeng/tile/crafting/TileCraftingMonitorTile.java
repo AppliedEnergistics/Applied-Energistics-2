@@ -22,7 +22,6 @@ package appeng.tile.crafting;
 import java.io.IOException;
 import java.util.Optional;
 
-import appeng.block.AEBaseTileBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -38,16 +37,12 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
 import appeng.util.item.AEItemStack;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.data.ModelDataMap;
-import net.minecraftforge.client.model.data.ModelProperty;
 
 import javax.annotation.Nonnull;
 
 
 public class TileCraftingMonitorTile extends TileCraftingTile implements IColorableTile
 {
-
-	public static final ModelProperty<AEColor> COLOR = new ModelProperty<>();
 
 	@OnlyIn( Dist.CLIENT )
 	private Integer dspList;
@@ -204,11 +199,7 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 	@Nonnull
 	@Override
 	public IModelData getModelData() {
-		return new ModelDataMap.Builder()
-				.withInitial(AEBaseTileBlock.FORWARD, getForward())
-				.withInitial(AEBaseTileBlock.UP, getUp())
-				.withInitial(COLOR, getColor())
-				.build();
+		return new CraftingMonitorModelData(getUp(), getForward(), getConnections(), getColor());
 	}
 
 }

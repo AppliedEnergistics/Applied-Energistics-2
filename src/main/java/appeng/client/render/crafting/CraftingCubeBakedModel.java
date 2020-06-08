@@ -20,6 +20,7 @@ package appeng.client.render.crafting;
 
 
 import appeng.client.render.cablebus.CubeBuilder;
+import appeng.tile.crafting.CraftingCubeModelData;
 import appeng.tile.crafting.TileCraftingTile;
 import appeng.util.Platform;
 import net.minecraft.block.BlockState;
@@ -249,13 +250,11 @@ abstract class CraftingCubeBakedModel implements IDynamicBakedModel
 	// If none is present, just assume there are no adjacent crafting cube blocks
 	private static EnumSet<Direction> getConnections( IModelData modelData )
 	{
-		CraftingCubeState cubeState = modelData.getData( TileCraftingTile.STATE );
-		if( cubeState == null )
-		{
-			return EnumSet.noneOf( Direction.class );
+		if (!(modelData instanceof CraftingCubeModelData)) {
+			return EnumSet.noneOf(Direction.class);
 		}
 
-		return cubeState.getConnections();
+		return ((CraftingCubeModelData) modelData).getConnections();
 	}
 
 	protected abstract void addInnerCube(Direction facing, BlockState state, IModelData modelData, CubeBuilder builder, float x1, float y1, float z1, float x2, float y2, float z2);

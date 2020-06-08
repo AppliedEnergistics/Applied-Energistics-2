@@ -25,6 +25,7 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.api.util.IOrientable;
 import appeng.block.AEBaseTileBlock;
+import appeng.client.render.model.AEModelData;
 import appeng.core.AELog;
 import appeng.core.features.IStackSrc;
 import appeng.helpers.ICustomNameObject;
@@ -521,10 +522,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	@Nonnull
 	@Override
 	public IModelData getModelData() {
-		return new ModelDataMap.Builder()
-				.withInitial(AEBaseTileBlock.UP, up)
-				.withInitial(AEBaseTileBlock.FORWARD, forward)
-				.build();
+		return new AEModelData(up, forward);
 	}
 
 }

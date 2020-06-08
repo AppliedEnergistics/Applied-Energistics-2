@@ -25,7 +25,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Optional;
 
-import appeng.client.render.crafting.CraftingCubeState;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -61,15 +60,13 @@ import net.minecraft.world.IBlockReader;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
-import net.minecraftforge.client.model.data.ModelProperty;
+import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
 
 
 public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IPowerChannelState
 {
-
-	public static final ModelProperty<CraftingCubeState> STATE = new ModelProperty<>();
 
 	private final CraftingCPUCalculator calc = new CraftingCPUCalculator( this );
 	private CompoundNBT previousState = null;
@@ -183,7 +180,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 			{
 				// Not using flag 2 here (only send to clients, prevent block update) will cause infinite loops
 				// In case there is an inconsistency in the crafting clusters.
-				this.world.setBlockState( this.pos, newState, 2 );
+				this.world.setBlockState( this.pos, newState, Constants.BlockFlags.BLOCK_UPDATE);
 			}
 		}
 
@@ -394,12 +391,15 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		this.previousState = previousState;
 	}
 
-	// FIXME: REMOVE AND MOVE TO IDynamicBakedModel!
 	@Nonnull
 	@Override
 	public IModelData getModelData() {
+		return new CraftingCubeModelData(getUp(), getForward(), getConnections());
+	}
+
+	protected EnumSet<Direction> getConnections() {
 		if (world == null) {
-			return EmptyModelData.INSTANCE;
+			return EnumSet.noneOf(Direction.class);
 		}
 
 		EnumSet<Direction> connections = EnumSet.noneOf( Direction.class );
@@ -412,15 +412,23 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 			}
 		}
 
-		return new ModelDataMap.Builder()
-				.withInitial(STATE, new CraftingCubeState( connections ))
-				.build();
+		return connections;
 	}
 
 	private boolean isConnected( IBlockReader world, BlockPos pos, Direction side )
 	{
 		BlockPos adjacentPos = pos.offset( side );
 		return world.getBlockState( adjacentPos ).getBlock() instanceof AbstractCraftingUnitBlock;
+	}
+
+	/**
+	 * When the block state changes (i.e. becoming formed or unformed), we need to update the
+	 * model data since it contains connections to neighboring tiles.
+	 */
+	@Override
+	public void updateContainingBlockInfo() {
+		super.updateContainingBlockInfo();
+		requestModelDataUpdate();
 	}
 
 }

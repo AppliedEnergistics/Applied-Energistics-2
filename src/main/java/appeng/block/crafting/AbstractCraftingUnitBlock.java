@@ -23,7 +23,6 @@ import appeng.container.ContainerOpener;
 import appeng.container.implementations.ContainerCraftingCPU;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.StateContainer;
@@ -48,6 +47,7 @@ public abstract class AbstractCraftingUnitBlock<T extends TileCraftingTile> exte
 	{
 		super( props );
 		this.type = type;
+		this.setDefaultState(getDefaultState().with(FORMED, false).with(POWERED, false));
 	}
 
 	@Override

@@ -73,6 +73,7 @@ import appeng.client.gui.implementations.GuiWireless;
 import appeng.client.gui.implementations.GuiWirelessTerm;
 import appeng.client.render.effects.*;
 import appeng.client.render.model.BiometricCardModel;
+import appeng.client.render.model.DriveModel;
 import appeng.client.render.model.MemoryCardModel;
 import appeng.client.render.model.SkyCompassModel;
 import appeng.client.render.tesr.SkyChestTESR;
@@ -274,11 +275,10 @@ final class Registration
 	 */
 	@OnlyIn(Dist.CLIENT)
 	private void registerSpecialModels() {
-		for (ResourceLocation dependency : SkyCompassModel.DEPENDENCIES) {
-			ModelLoader.addSpecialModel(dependency);
-		}
+		SkyCompassModel.DEPENDENCIES.forEach(ModelLoader::addSpecialModel);
 		ModelLoader.addSpecialModel(BiometricCardModel.MODEL_BASE);
 		ModelLoader.addSpecialModel(MemoryCardModel.MODEL_BASE);
+		DriveModel.DEPENDENCIES.forEach(ModelLoader::addSpecialModel);
 	}
 
 	public void registerBlocks( RegistryEvent.Register<Block> event )

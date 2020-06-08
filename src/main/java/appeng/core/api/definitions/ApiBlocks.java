@@ -43,6 +43,9 @@ import appeng.bootstrap.components.IEntityRegistrationComponent;
 import appeng.bootstrap.components.IInitComponent;
 import appeng.bootstrap.definitions.TileEntityDefinition;
 import appeng.client.render.crafting.CraftingCubeRendering;
+import appeng.client.render.crafting.CraftingMonitorTESR;
+import appeng.client.render.crafting.MonitorBakedModel;
+import appeng.client.render.model.AutoRotatingBakedModel;
 import appeng.client.render.spatial.SpatialPylonRendering;
 import appeng.client.render.tesr.CrankTESR;
 import appeng.client.render.tesr.SkyChestTESR;
@@ -427,11 +430,11 @@ public final class ApiBlocks implements IBlocks
 		FeatureFactory crafting = registry.features( AEFeature.CRAFTING_CPU );
 		Block.Properties craftingBlockProps = Block.Properties.create(Material.IRON);
 		this.craftingUnit = crafting.block( "crafting_unit", () -> new CraftingUnitBlock( craftingBlockProps, CraftingUnitType.UNIT ) )
-				.rendering( new CraftingCubeRendering( "crafting_unit", CraftingUnitType.UNIT ) )
+				.rendering( new CraftingCubeRendering() )
 				.tileEntity( craftingUnit )
 				.build();
 		this.craftingAccelerator = crafting.block( "crafting_accelerator", () -> new CraftingUnitBlock( craftingBlockProps, CraftingUnitType.ACCELERATOR ) )
-				.rendering( new CraftingCubeRendering( "crafting_accelerator", CraftingUnitType.ACCELERATOR ) )
+				.rendering( new CraftingCubeRendering() )
 				.tileEntity( craftingUnit )
 				.build();
 
@@ -440,22 +443,22 @@ public final class ApiBlocks implements IBlocks
 		this.craftingStorage1k = crafting.block( "crafting_storage_1k", () -> new BlockCraftingStorage( craftingBlockProps, CraftingUnitType.STORAGE_1K ) )
 				.item( ItemCraftingStorage::new )
 				.tileEntity(craftingStorage)
-				.rendering( new CraftingCubeRendering( "crafting_storage_1k", CraftingUnitType.STORAGE_1K ) )
+				.rendering( new CraftingCubeRendering() )
 				.build();
 		this.craftingStorage4k = crafting.block( "crafting_storage_4k", () -> new BlockCraftingStorage( craftingBlockProps, CraftingUnitType.STORAGE_4K ) )
 				.item( ItemCraftingStorage::new )
 				.tileEntity(craftingStorage)
-				.rendering( new CraftingCubeRendering( "crafting_storage_4k", CraftingUnitType.STORAGE_4K ) )
+				.rendering( new CraftingCubeRendering() )
 				.build();
 		this.craftingStorage16k = crafting.block( "crafting_storage_16k", () -> new BlockCraftingStorage( craftingBlockProps, CraftingUnitType.STORAGE_16K ) )
 				.item( ItemCraftingStorage::new )
 				.tileEntity(craftingStorage)
-				.rendering( new CraftingCubeRendering( "crafting_storage_16k", CraftingUnitType.STORAGE_16K ) )
+				.rendering( new CraftingCubeRendering() )
 				.build();
 		this.craftingStorage64k = crafting.block( "crafting_storage_64k", () -> new BlockCraftingStorage( craftingBlockProps, CraftingUnitType.STORAGE_64K ) )
 				.item( ItemCraftingStorage::new )
 				.tileEntity(craftingStorage)
-				.rendering( new CraftingCubeRendering( "crafting_storage_64k", CraftingUnitType.STORAGE_64K ) )
+				.rendering( new CraftingCubeRendering() )
 				.build();
 		this.craftingMonitor = crafting.block( "crafting_monitor", () -> new BlockCraftingMonitor(craftingBlockProps) )
 				.tileEntity( registry.tileEntity("crafting_monitor", TileCraftingMonitorTile.class, TileCraftingMonitorTile::new)
@@ -463,11 +466,24 @@ public final class ApiBlocks implements IBlocks
 							@OnlyIn(Dist.CLIENT)
 							@Override
 							public void customize(TileEntityRendering<TileCraftingMonitorTile> rendering) {
-								// FIXME rendering.tileEntityRenderer(CraftingMonitorTESR::new);
+								rendering.tileEntityRenderer(CraftingMonitorTESR::new);
 							}
 						})
 						.build() )
-				.rendering( new CraftingCubeRendering( "crafting_monitor", CraftingUnitType.MONITOR ) )
+				.rendering(new BlockRenderingCustomizer() {
+					@Override
+					@OnlyIn(Dist.CLIENT)
+					public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
+						rendering.renderType(RenderType.getCutout());
+						rendering.modelCustomizer((path, model) -> {
+							// The formed model handles rotations itself, the unformed one does not
+							if (model instanceof MonitorBakedModel) {
+								return model;
+							}
+							return new AutoRotatingBakedModel(model);
+						});
+					}
+				})
 				.build();
 
 		this.molecularAssembler = registry.block( "molecular_assembler", () -> new BlockMolecularAssembler(Block.Properties.create(Material.IRON).notSolid()) )

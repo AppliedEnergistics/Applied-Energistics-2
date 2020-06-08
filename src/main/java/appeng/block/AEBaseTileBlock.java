@@ -69,9 +69,6 @@ import appeng.util.SettingsFrom;
 public abstract class AEBaseTileBlock<T extends AEBaseTile> extends AEBaseBlock
 {
 
-	public static final ModelProperty<Direction> FORWARD = new ModelProperty<>();
-	public static final ModelProperty<Direction> UP = new ModelProperty<>();
-
 	@Nonnull
 	private Class<T> tileEntityClass;
 	@Nonnull

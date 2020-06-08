@@ -29,15 +29,13 @@ import net.minecraft.util.Direction;
 final class AutoRotatingCacheKey
 {
 	private final BlockState blockState;
-	private final Direction forward;
-	private final Direction up;
+	private final AEModelData modelData;
 	private final Direction side;
 
-	AutoRotatingCacheKey( BlockState blockState, Direction forward, Direction up, Direction side )
+	AutoRotatingCacheKey( BlockState blockState, AEModelData modelData, Direction side )
 	{
 		this.blockState = blockState;
-		this.forward = forward;
-		this.up = up;
+		this.modelData = modelData;
 		this.side = side;
 	}
 
@@ -46,14 +44,8 @@ final class AutoRotatingCacheKey
 		return this.blockState;
 	}
 
-	public Direction getForward()
-	{
-		return this.forward;
-	}
-
-	public Direction getUp()
-	{
-		return this.up;
+	public AEModelData getModelData() {
+		return modelData;
 	}
 
 	public Direction getSide()
@@ -74,15 +66,14 @@ final class AutoRotatingCacheKey
 		}
 
 		AutoRotatingCacheKey cacheKey = (AutoRotatingCacheKey) o;
-		return this.blockState.equals( cacheKey.blockState ) && this.forward == cacheKey.forward && this.up == cacheKey.up && this.side == cacheKey.side;
+		return this.blockState.equals( cacheKey.blockState ) && this.modelData.equals(cacheKey.modelData) && this.side == cacheKey.side;
 	}
 
 	@Override
 	public int hashCode()
 	{
 		int result = this.blockState.hashCode();
-		result = 31 * result + this.forward.hashCode();
-		result = 31 * result + this.up.hashCode();
+		result = 31 * result + this.modelData.hashCode();
 		result = 31 * result + ( this.side != null ? this.side.hashCode() : 0 );
 		return result;
 	}

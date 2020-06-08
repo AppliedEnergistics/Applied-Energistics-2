@@ -22,7 +22,8 @@ package appeng.client.render.crafting;
 import appeng.api.util.AEColor;
 import appeng.block.crafting.BlockCraftingMonitor;
 import appeng.client.render.cablebus.CubeBuilder;
-import appeng.tile.crafting.TileCraftingMonitorTile;
+import appeng.client.render.model.AEModelData;
+import appeng.tile.crafting.CraftingMonitorModelData;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
@@ -36,7 +37,7 @@ import net.minecraftforge.client.model.data.IModelData;
  * color. The textures
  * are full-bright if the cube is powered.
  */
-class MonitorBakedModel extends CraftingCubeBakedModel
+public class MonitorBakedModel extends CraftingCubeBakedModel
 {
 
 	private final TextureAtlasSprite chassisTexture;
@@ -96,21 +97,16 @@ class MonitorBakedModel extends CraftingCubeBakedModel
 	}
 
 	private static AEColor getColor(IModelData modelData) {
-
-		AEColor color = modelData.getData(TileCraftingMonitorTile.COLOR);
-		if (color != null) {
-			return color;
+		if (modelData instanceof CraftingMonitorModelData) {
+			return ((CraftingMonitorModelData) modelData).getColor();
 		}
-
 		return AEColor.TRANSPARENT;
 	}
 
 	private static Direction getForward(IModelData modelData) {
-		Direction forward = modelData.getData(BlockCraftingMonitor.FORWARD);
-		if (forward != null) {
-			return forward;
+		if (modelData instanceof AEModelData) {
+			return ((AEModelData) modelData).getForward();
 		}
-
 		return Direction.NORTH;
 	}
 }

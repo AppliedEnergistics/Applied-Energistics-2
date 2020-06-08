@@ -26,6 +26,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 
@@ -42,15 +44,6 @@ public class TesrRenderHelper
 	private static final IWideReadableNumberConverter NUMBER_CONVERTER = ReadableNumberConverter.INSTANCE;
 
 	/**
-	 * Move the current coordinate system to the center of the given block face, assuming that the origin is currently
-	 * at the center of a block.
-	 */
-	public static void moveToFace( MatrixStack mStack, Direction face )
-	{
-		mStack.translate( face.getXOffset() * 0.50, face.getYOffset() * 0.50, face.getZOffset() * 0.50 );
-	}
-
-	/**
 	 * Rotate the current coordinate system so it is on the face of the given block side. This can be used to render on
 	 * the given face as if it was
 	 * a 2D canvas.
@@ -60,34 +53,28 @@ public class TesrRenderHelper
 		switch( face )
 		{
 			case UP:
-				mStack.scale( 1.0f, -1.0f, 1.0f );
 				mStack.rotate( Vector3f.XP.rotationDegrees( 90.0F ) );
 				mStack.rotate( Vector3f.ZP.rotationDegrees( spin * 90.0F ) );
 				break;
 
 			case DOWN:
-				mStack.scale( 1.0f, -1.0f, 1.0f );
 				mStack.rotate( Vector3f.XP.rotationDegrees( -90.0F ) );
 				mStack.rotate( Vector3f.ZP.rotationDegrees( spin * -90.0F ) );
 				break;
 
 			case EAST:
-				mStack.scale( -1.0f, -1.0f, -1.0f );
-				mStack.rotate( Vector3f.YP.rotationDegrees( -90.0F ) );
-				break;
-
-			case WEST:
-				mStack.scale( -1.0f, -1.0f, -1.0f );
 				mStack.rotate( Vector3f.YP.rotationDegrees( 90.0F ) );
 				break;
 
+			case WEST:
+				mStack.rotate( Vector3f.YP.rotationDegrees( -90.0F ) );
+				break;
+
 			case NORTH:
-				mStack.scale( -1.0f, -1.0f, -1.0f );
+				mStack.rotate( Vector3f.YP.rotationDegrees( 180.0F ) );
 				break;
 
 			case SOUTH:
-				mStack.scale( -1.0f, -1.0f, -1.0f );
-				mStack.rotate( Vector3f.YP.rotationDegrees( 180.0F ) );
 				break;
 
 			default:
@@ -99,36 +86,38 @@ public class TesrRenderHelper
 	/**
 	 * Render an item in 2D.
 	 */
-	public static void renderItem2d(MatrixStack matrixStack, IRenderTypeBuffer buffers, ItemStack itemStack, float scale)
+	public static void renderItem2d(MatrixStack matrixStack, IRenderTypeBuffer buffers, ItemStack itemStack, float scale, int combinedLightIn, int combinedOverlayIn)
 	{
 		if( !itemStack.isEmpty() )
 		{
-//	FIXME		RenderSystem.glMultiTexCoord2f( GL13.GL_TEXTURE22, 240.f, 240.0f );
-//	FIXME			RenderSystem.pushMatrix();
-//	FIXME			// The Z-scaling by 0.0001 causes the model to be visually "flattened"
-//	FIXME		// This cannot replace a proper projection, but it's cheap and gives the desired
-//	FIXME		// effect at least from head-on
-//	FIXME		RenderSystem.scaled( scale / 32.0f, scale / 32.0f, 0.0001f );
-//	FIXME		// Position the item icon at the top middle of the panel
-//	FIXME		RenderSystem.translated( -8, -11, 0 );
-//	FIXME			ItemRenderer renderItem = Minecraft.getInstance().getItemRenderer();
-//	FIXME		renderItem.renderItemAndEffectIntoGUI( itemStack, 0, 0 );
-//	FIXME			RenderSystem.popMatrix();
+			matrixStack.push();
+			// Push it out of the block face a bit to avoid z-fighting
+			matrixStack.translate(0, 0, 0.01f);
+			// The Z-scaling by 0.0002 causes the model to be visually "flattened"
+			// This cannot replace a proper projection, but it's cheap and gives the desired
+			// effect at least from head-on
+			matrixStack.scale( scale, scale, 0.0002f );
+
+			Minecraft.getInstance().getItemRenderer().renderItem(itemStack, ItemCameraTransforms.TransformType.GUI, combinedLightIn, OverlayTexture.NO_OVERLAY, matrixStack, buffers);
+
+			matrixStack.pop();
+
 		}
 	}
 
 	/**
 	 * Render an item in 2D and the given text below it.
-	 *
-	 * @param matrixStack
+	 *  @param matrixStack
 	 * @param buffers
 	 * @param spacing Specifies how far apart the item and the item stack amount are rendered.
+	 * @param combinedLightIn
+	 * @param combinedOverlayIn
 	 */
-	public static void renderItem2dWithAmount(MatrixStack matrixStack, IRenderTypeBuffer buffers, IAEItemStack itemStack, float itemScale, float spacing)
+	public static void renderItem2dWithAmount(MatrixStack matrixStack, IRenderTypeBuffer buffers, IAEItemStack itemStack, float itemScale, float spacing, int combinedLightIn, int combinedOverlayIn)
 	{
 		final ItemStack renderStack = itemStack.asItemStackRepresentation();
 
-		TesrRenderHelper.renderItem2d( matrixStack, buffers, renderStack, itemScale );
+		TesrRenderHelper.renderItem2d( matrixStack, buffers, renderStack, itemScale, combinedLightIn, combinedOverlayIn );
 
 		final long stackSize = itemStack.getStackSize();
 		final String renderedStackSize = NUMBER_CONVERTER.toWideReadableForm( stackSize );
@@ -136,10 +125,14 @@ public class TesrRenderHelper
 		// Render the item count
 		final FontRenderer fr = Minecraft.getInstance().fontRenderer;
 		final int width = fr.getStringWidth( renderedStackSize );
-		matrixStack.translate( 0.0f, spacing, 0 );
-		matrixStack.scale( 1.0f / 62.0f, 1.0f / 62.0f, 1.0f / 62.0f );
+		matrixStack.push();
+		matrixStack.translate( 0.0f, spacing, 0.02f );
+		matrixStack.scale( 1.0f / 62.0f, - 1.0f / 62.0f, 1.0f / 62.0f );
+		matrixStack.scale(0.5f, 0.5f, 0);
 		matrixStack.translate( -0.5f * width, 0.0f, 0.5f );
-		fr.drawString( renderedStackSize, 0, 0, 0 );
+		fr.renderString(renderedStackSize, 0, 0, -1, false, matrixStack.getLast().getMatrix(), buffers, false, 0, 15728880);
+		matrixStack.pop();
+
 
 	}
 }

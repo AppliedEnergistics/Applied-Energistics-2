@@ -57,7 +57,12 @@ public class DriveBakedModel extends DelegateBakedModel
 
 		List<BakedQuad> result = new ArrayList<>(this.bakedBase.getQuads(state, side, rand, extraData));
 
-		DriveSlotsState slotsState = extraData.getData( TileDrive.SLOTS_STATE );
+		if (!(extraData instanceof DriveModelData)) {
+			return result;
+		}
+		DriveModelData driveModelData = (DriveModelData) extraData;
+
+		DriveSlotsState slotsState = driveModelData.getSlotsState();
 
 		if( side == null && slotsState != null )
 		{

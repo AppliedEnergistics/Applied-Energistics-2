@@ -20,7 +20,9 @@ package appeng.client.render.model;
 
 
 import appeng.block.storage.DriveSlotState;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -42,6 +44,11 @@ public class DriveModel implements IModelGeometry<DriveModel>
 			DriveSlotState.ONLINE, new ResourceLocation( "appliedenergistics2:block/drive_cell_on" ),
 			DriveSlotState.TYPES_FULL, new ResourceLocation( "appliedenergistics2:block/drive_cell_types_full" ),
 			DriveSlotState.FULL, new ResourceLocation( "appliedenergistics2:block/drive_cell_full" ) );
+
+	public static final Set<ResourceLocation> DEPENDENCIES = ImmutableSet.<ResourceLocation>builder()
+			.addAll(MODELS_CELLS.values())
+			.add(MODEL_BASE)
+			.build();
 
 	@Override
 	public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {

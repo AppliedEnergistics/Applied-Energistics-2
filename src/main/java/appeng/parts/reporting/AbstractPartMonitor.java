@@ -268,13 +268,12 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 		}
 
 		matrixStack.push();
-		matrixStack.translate( 0.5, 0.5, 0.5 );
+		matrixStack.translate( 0.5, 0.5, 0.5 ); // Move into the center of the block
 
 		Direction facing = this.getSide().getFacing();
 
-		TesrRenderHelper.moveToFace( matrixStack, facing );
 		TesrRenderHelper.rotateToFace( matrixStack, facing, this.getSpin() );
-		TesrRenderHelper.renderItem2dWithAmount(matrixStack, buffers, ais, 0.8f, 0.17f );
+		TesrRenderHelper.renderItem2dWithAmount(matrixStack, buffers, ais, 0.8f, 0.17f, combinedLightIn, combinedOverlayIn );
 
 		matrixStack.pop();
 

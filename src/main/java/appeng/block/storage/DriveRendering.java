@@ -31,6 +31,5 @@ public class DriveRendering extends BlockRenderingCustomizer
 	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 	{
 		rendering.renderType(RenderType.getCutout());
-		// FIXME rendering.builtInModel( "models/block/builtin/drive", new DriveModel() );
 	}
 }
