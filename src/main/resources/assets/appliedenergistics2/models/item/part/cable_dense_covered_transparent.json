@@ -1,6 +1,0 @@
-{
-    "parent": "appliedenergistics2:item/part/cable_dense_covered_base",
-    "textures": {
-        "base": "appliedenergistics2:parts/cable/dense_covered/transparent"
-    }
-}

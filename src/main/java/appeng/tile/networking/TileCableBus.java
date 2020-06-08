@@ -62,8 +62,6 @@ import java.util.Set;
 public class TileCableBus extends AEBaseTile implements AEMultiTile
 {
 
-	public static final ModelProperty<CableBusRenderState> RENDER_STATE_PROPERTY = new ModelProperty<>();
-
 	private CableBusContainer cb = new CableBusContainer( this );
 
 	private int oldLV = -1; // on re-calculate light when it changes
@@ -117,19 +115,19 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile
 	 */
 	protected void updateTileSetting()
 	{
-		if( this.getCableBus().isRequiresDynamicRender() )
-		{
-			try
-			{
-				final TileCableBus tcb = (TileCableBus) BlockCableBus.getTesrTile().newInstance();
-				tcb.copyFrom( this );
-				this.getWorld().setTileEntity( this.pos, tcb );
-			}
-			catch( final Throwable ignored )
-			{
-
-			}
-		}
+// FIXME		if( this.getCableBus().isRequiresDynamicRender() )
+// FIXME		{
+// FIXME			try
+// FIXME			{
+// FIXME				final TileCableBus tcb = (TileCableBus) BlockCableBus.getTesrTile().newInstance();
+// FIXME				tcb.copyFrom( this );
+// FIXME				this.getWorld().setTileEntity( this.pos, tcb );
+// FIXME			}
+// FIXME			catch( final Throwable ignored )
+// FIXME			{
+// FIXME
+// FIXME			}
+// FIXME		}
 	}
 
 	protected void copyFrom( final TileCableBus oldTile )
@@ -401,7 +399,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile
 		renderState.setWorld(world);
 		renderState.setPos(pos);
 		return new ModelDataMap.Builder()
-				.withInitial(RENDER_STATE_PROPERTY, renderState)
+				.withInitial(CableBusRenderState.PROPERTY, renderState)
 				.build();
 
 	}

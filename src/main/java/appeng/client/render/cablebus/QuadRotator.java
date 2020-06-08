@@ -62,12 +62,12 @@ public class QuadRotator
 		CachedFormat format = CachedFormat.lookup( DefaultVertexFormats.BLOCK );
 		BakedPipeline pipeline = pipelines.get();
 		Quad collector = collectors.get();
-		pipeline.reset( format );
-		collector.reset( format );
 		QuadMatrixTransformer transformer = pipeline.getElement( "transformer", QuadMatrixTransformer.class );
 
 		for( BakedQuad quad : quads )
 		{
+			pipeline.reset( format );
+			collector.reset( format );
 			transformer.setMatrix( rotation.getMat() );
 			pipeline.prepare( collector );
 			quad.pipe( pipeline );

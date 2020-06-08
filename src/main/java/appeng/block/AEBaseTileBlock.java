@@ -19,52 +19,42 @@
 package appeng.block;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import appeng.block.networking.BlockCableBus;
-import appeng.client.render.FacingToRotation;
-import appeng.tile.networking.TileCableBus;
-import appeng.tile.storage.TileSkyChest;
-import com.google.common.collect.Lists;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.EnumProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraftforge.client.model.data.ModelProperty;
-import net.minecraftforge.items.ItemHandlerHelper;
-
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.util.AEColor;
 import appeng.api.util.IOrientable;
+import appeng.block.networking.BlockCableBus;
 import appeng.tile.AEBaseInvTile;
 import appeng.tile.AEBaseTile;
+import appeng.tile.networking.TileCableBus;
+import appeng.tile.storage.TileSkyChest;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
+import com.google.common.collect.Lists;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
+import net.minecraftforge.items.ItemHandlerHelper;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
 
 public abstract class AEBaseTileBlock<T extends AEBaseTile> extends AEBaseBlock
 {

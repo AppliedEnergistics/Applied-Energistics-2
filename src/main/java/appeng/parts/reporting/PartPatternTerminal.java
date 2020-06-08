@@ -21,7 +21,12 @@ package appeng.parts.reporting;
 
 import java.util.List;
 
+import appeng.api.config.SecurityPermissions;
+import appeng.container.implementations.ContainerMEMonitorable;
+import appeng.container.implementations.ContainerPatternTerm;
+import appeng.util.Platform;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
@@ -99,25 +104,15 @@ public class PartPatternTerminal extends AbstractPartTerminal
 		this.crafting.writeToNBT( data, "craftingGrid" );
 	}
 
-// FIXME	@Override
-// FIXME	public GuiBridge getGui( final PlayerEntity p )
-// FIXME	{
-// FIXME		int x = (int) p.getPosX();
-// FIXME		int y = (int) p.getPosY();
-// FIXME		int z = (int) p.getPosZ();
-// FIXME		if( this.getHost().getTile() != null )
-// FIXME		{
-// FIXME			x = this.getTile().getPos().getX();
-// FIXME			y = this.getTile().getPos().getY();
-// FIXME			z = this.getTile().getPos().getZ();
-// FIXME		}
-// FIXME
-// FIXME		if( GuiBridge.GUI_PATTERN_TERMINAL.hasPermissions( this.getHost().getTile(), x, y, z, this.getSide(), p ) )
-// FIXME		{
-// FIXME			return GuiBridge.GUI_PATTERN_TERMINAL;
-// FIXME		}
-// FIXME		return GuiBridge.GUI_ME;
-// FIXME	}
+	@Override
+	public ContainerType<?> getContainerType(final PlayerEntity p )
+	{
+		if(Platform.checkPermissions(p, this, SecurityPermissions.CRAFT, false) )
+		{
+			return ContainerPatternTerm.TYPE;
+		}
+		return ContainerMEMonitorable.TYPE;
+	}
 
 	@Override
 	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )

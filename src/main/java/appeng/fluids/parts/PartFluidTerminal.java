@@ -19,7 +19,9 @@
 package appeng.fluids.parts;
 
 
+import appeng.fluids.container.ContainerFluidTerminal;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -53,11 +55,11 @@ public class PartFluidTerminal extends AbstractPartTerminal
 		super( is );
 	}
 
-// FIXME	@Override
-// FIXME	public GuiBridge getGui( PlayerEntity player )
-// FIXME	{
-// FIXME		return GuiBridge.GUI_FLUID_TERMINAL;
-// FIXME	}
+	@Override
+	public ContainerType<?> getContainerType(PlayerEntity player )
+	{
+		return ContainerFluidTerminal.TYPE;
+	}
 
 	@Override
 	public IPartModel getStaticModels()

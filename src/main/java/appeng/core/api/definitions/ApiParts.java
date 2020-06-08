@@ -25,12 +25,14 @@ import appeng.api.parts.IPart;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
 import appeng.bootstrap.FeatureFactory;
+import appeng.core.AppEng;
 import appeng.core.CreativeTab;
 import appeng.core.features.*;
 import appeng.core.features.registries.PartModels;
 import appeng.fluids.parts.*;
 import appeng.items.parts.ColoredPartItem;
 import appeng.items.parts.ItemPart;
+import appeng.items.parts.ItemPartRendering;
 import appeng.items.parts.PartType;
 import appeng.parts.automation.*;
 import appeng.parts.misc.*;
@@ -38,8 +40,12 @@ import appeng.parts.networking.*;
 import appeng.parts.p2p.*;
 import appeng.parts.reporting.*;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
 /**
@@ -91,20 +97,12 @@ public final class ApiParts implements IParts
 
 	public ApiParts( FeatureFactory registry, PartModels partModels )
 	{
-//		IItemDefinition itemPartDef = registry.item( "part", ItemPart::new )
-//				.rendering( new ItemPartRendering( partModels ) )
-//				.build();
-
-		// Register all part models
-		for( PartType partType : PartType.values() )
-		{
-			partModels.registerModels( partType.getModels() );
-		}
+		registerPartModels(partModels);
 
 		this.cableSmart = constructColoredDefinition(registry, "smart_cable", PartType.CABLE_SMART, PartCableSmart::new);
 		this.cableCovered = constructColoredDefinition(registry, "covered_cable", PartType.CABLE_COVERED, PartCableCovered::new);
 		this.cableGlass = constructColoredDefinition(registry, "glass_cable", PartType.CABLE_GLASS, PartCableGlass::new);
-		this.cableDenseCovered = constructColoredDefinition(registry, "dense_cable", PartType.CABLE_DENSE_COVERED, PartDenseCableCovered::new);
+		this.cableDenseCovered = constructColoredDefinition(registry, "covered_dense_cable", PartType.CABLE_DENSE_COVERED, PartDenseCableCovered::new);
 		this.cableDenseSmart = constructColoredDefinition(registry, "smart_dense_cable", PartType.CABLE_DENSE_SMART, PartDenseCableSmart::new);
 		this.quartzFiber = createPart(registry, "quartz_fiber", PartType.QUARTZ_FIBER, PartQuartzFiber::new );
 		this.toggleBus = createPart(registry, "toggle_bus", PartType.TOGGLE_BUS, PartToggleBus::new );
@@ -122,7 +120,7 @@ public final class ApiParts implements IParts
 		this.levelEmitter = createPart(registry, "level_emitter", PartType.LEVEL_EMITTER, PartLevelEmitter::new );
 		this.fluidLevelEmitter = createPart(registry, "fluid_level_emitter", PartType.FLUID_LEVEL_EMITTER, PartFluidLevelEmitter::new );
 		this.annihilationPlane = createPart(registry, "annihilation_plane", PartType.ANNIHILATION_PLANE, PartAnnihilationPlane::new );
-		this.identityAnnihilationPlane = createPart(registry, "identity_annihiliation_plane", PartType.IDENTITY_ANNIHILATION_PLANE, PartIdentityAnnihilationPlane::new );
+		this.identityAnnihilationPlane = createPart(registry, "identity_annihilation_plane", PartType.IDENTITY_ANNIHILATION_PLANE, PartIdentityAnnihilationPlane::new );
 		this.fluidAnnihilationPlane = createPart(registry, "fluid_annihilation_plane", PartType.FLUID_ANNIHILATION_PLANE, PartFluidAnnihilationPlane::new );
 		this.formationPlane = createPart(registry, "formation_plane", PartType.FORMATION_PLANE, PartFormationPlane::new );
 		this.fluidFormationPlane = createPart(registry, "fluid_formation_plane", PartType.FLUID_FORMATION_PLANE, PartFluidFormationPlane::new );
@@ -133,20 +131,97 @@ public final class ApiParts implements IParts
 		this.conversionMonitor = createPart(registry, "conversion_monitor", PartType.CONVERSION_MONITOR, PartConversionMonitor::new );
 		this.iface = createPart(registry, "cable_interface", PartType.INTERFACE, PartInterface::new );
 		this.fluidIface = createPart(registry, "cable_fluid_interface", PartType.FLUID_INTERFACE, PartFluidInterface::new );
-		this.p2PTunnelME = createPart(registry, "me_tunnel", PartType.P2P_TUNNEL_ME, PartP2PTunnelME::new );
-		this.p2PTunnelRedstone = createPart(registry, "redstone_tunnel", PartType.P2P_TUNNEL_REDSTONE, PartP2PRedstone::new );
-		this.p2PTunnelItems = createPart(registry, "item_tunnel", PartType.P2P_TUNNEL_ITEMS, PartP2PItems::new );
-		this.p2PTunnelFluids = createPart(registry, "fluid_tunnel", PartType.P2P_TUNNEL_FLUIDS, PartP2PFluids::new );
-		this.p2PTunnelEU = null; // FIXME createPart( "tunnel.eu", PartType.P2P_TUNNEL_IC2, PartP2PIC2Power::new);
-		this.p2PTunnelFE = createPart(registry, "fe_tunnel", PartType.P2P_TUNNEL_FE, PartP2PFEPower::new );
-		this.p2PTunnelLight = createPart(registry, "light_tunnel", PartType.P2P_TUNNEL_LIGHT, PartP2PLight::new );
+		this.p2PTunnelME = createPart(registry, "me_p2p_tunnel", PartType.P2P_TUNNEL_ME, PartP2PTunnelME::new );
+		this.p2PTunnelRedstone = createPart(registry, "redstone_p2p_tunnel", PartType.P2P_TUNNEL_REDSTONE, PartP2PRedstone::new );
+		this.p2PTunnelItems = createPart(registry, "item_p2p_tunnel", PartType.P2P_TUNNEL_ITEM, PartP2PItems::new );
+		this.p2PTunnelFluids = createPart(registry, "fluid_p2p_tunnel", PartType.P2P_TUNNEL_FLUID, PartP2PFluids::new );
+		this.p2PTunnelEU = null; // FIXME createPart( "ic2_p2p_tunnel", PartType.P2P_TUNNEL_IC2, PartP2PIC2Power::new);
+		this.p2PTunnelFE = createPart(registry, "fe_p2p_tunnel", PartType.P2P_TUNNEL_FE, PartP2PFEPower::new );
+		this.p2PTunnelLight = createPart(registry, "light_p2p_tunnel", PartType.P2P_TUNNEL_LIGHT, PartP2PLight::new );
 		this.interfaceTerminal = createPart(registry, "interface_terminal", PartType.INTERFACE_TERMINAL, PartInterfaceTerminal::new );
 		this.fluidTerminal = createPart(registry, "fluid_terminal", PartType.FLUID_TERMINAL, PartFluidTerminal::new );
+	}
+
+	private void registerPartModels(PartModels partModels) {
+
+		// Register the built-in models for annihilation planes
+		ResourceLocation annihilationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "item/part/annihilation_plane" );
+		ResourceLocation annihilationPlaneOnTexture = new ResourceLocation( AppEng.MOD_ID, "parts/annihilation_plane_on" );
+		ResourceLocation fluidAnnihilationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "item/part/fluid_annihilation_plane" );
+		ResourceLocation fluidAnnihilationPlaneOnTexture = new ResourceLocation( AppEng.MOD_ID, "parts/fluid_annihilation_plane_on" );
+		ResourceLocation identityAnnihilationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "item/part/identity_annihilation_plane" );
+		ResourceLocation identityAnnihilationPlaneOnTexture = new ResourceLocation( AppEng.MOD_ID, "parts/identity_annihilation_plane_on" );
+		ResourceLocation formationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "item/part/formation_plane" );
+		ResourceLocation formationPlaneOnTexture = new ResourceLocation( AppEng.MOD_ID, "parts/formation_plane_on" );
+		ResourceLocation fluidFormationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "item/part/fluid_formation_plane" );
+		ResourceLocation fluidFormationPlaneOnTexture = new ResourceLocation( AppEng.MOD_ID, "parts/fluid_formation_plane_on" );
+		ResourceLocation sidesTexture = new ResourceLocation( AppEng.MOD_ID, "parts/plane_sides" );
+		ResourceLocation backTexture = new ResourceLocation( AppEng.MOD_ID, "parts/transition_plane_back" );
+
+		List<String> modelNames = new ArrayList<>();
+
+// FIXME		for( PlaneConnections connection : PlaneConnections.PERMUTATIONS )
+// FIXME		{
+// FIXME			PlaneModel model = new PlaneModel( annihilationPlaneTexture, sidesTexture, backTexture, connection );
+// FIXME			rendering.builtInModel( "models/part/annihilation_plane_" + connection.getFilenameSuffix(), model );
+// FIXME			modelNames.add( "part/annihilation_plane_" + connection.getFilenameSuffix() );
+// FIXME
+// FIXME			model = new PlaneModel( annihilationPlaneOnTexture, sidesTexture, backTexture, connection );
+// FIXME			rendering.builtInModel( "models/part/annihilation_plane_on_" + connection.getFilenameSuffix(), model );
+// FIXME			modelNames.add( "part/annihilation_plane_on_" + connection.getFilenameSuffix() );
+// FIXME
+// FIXME			model = new PlaneModel( fluidAnnihilationPlaneTexture, sidesTexture, backTexture, connection );
+// FIXME			rendering.builtInModel( "models/part/fluid_annihilation_plane_" + connection.getFilenameSuffix(), model );
+// FIXME			modelNames.add( "part/fluid_annihilation_plane_" + connection.getFilenameSuffix() );
+// FIXME
+// FIXME			model = new PlaneModel( fluidAnnihilationPlaneOnTexture, sidesTexture, backTexture, connection );
+// FIXME			rendering.builtInModel( "models/part/fluid_annihilation_plane_on_" + connection.getFilenameSuffix(), model );
+// FIXME			modelNames.add( "part/fluid_annihilation_plane_on_" + connection.getFilenameSuffix() );
+// FIXME
+// FIXME			model = new PlaneModel( identityAnnihilationPlaneTexture, sidesTexture, backTexture, connection );
+// FIXME			rendering.builtInModel( "models/part/identity_annihilation_plane_" + connection.getFilenameSuffix(), model );
+// FIXME			modelNames.add( "part/identity_annihilation_plane_" + connection.getFilenameSuffix() );
+// FIXME
+// FIXME			model = new PlaneModel( identityAnnihilationPlaneOnTexture, sidesTexture, backTexture, connection );
+// FIXME			rendering.builtInModel( "models/part/identity_annihilation_plane_on_" + connection.getFilenameSuffix(), model );
+// FIXME			modelNames.add( "part/identity_annihilation_plane_on_" + connection.getFilenameSuffix() );
+// FIXME
+// FIXME			model = new PlaneModel( formationPlaneTexture, sidesTexture, backTexture, connection );
+// FIXME			rendering.builtInModel( "models/part/formation_plane_" + connection.getFilenameSuffix(), model );
+// FIXME			modelNames.add( "part/formation_plane_" + connection.getFilenameSuffix() );
+// FIXME
+// FIXME			model = new PlaneModel( formationPlaneOnTexture, sidesTexture, backTexture, connection );
+// FIXME			rendering.builtInModel( "models/part/formation_plane_on_" + connection.getFilenameSuffix(), model );
+// FIXME			modelNames.add( "part/formation_plane_on_" + connection.getFilenameSuffix() );
+// FIXME
+// FIXME			model = new PlaneModel( fluidFormationPlaneTexture, sidesTexture, backTexture, connection );
+// FIXME			rendering.builtInModel( "models/part/fluid_formation_plane_" + connection.getFilenameSuffix(), model );
+// FIXME			modelNames.add( "part/fluid_formation_plane_" + connection.getFilenameSuffix() );
+// FIXME
+// FIXME			model = new PlaneModel( fluidFormationPlaneOnTexture, sidesTexture, backTexture, connection );
+// FIXME			rendering.builtInModel( "models/part/fluid_formation_plane_on_" + connection.getFilenameSuffix(), model );
+// FIXME			modelNames.add( "part/fluid_formation_plane_on_" + connection.getFilenameSuffix() );
+// FIXME		}
+// FIXME
+// FIXME		// base p2p model with frequency
+// FIXME		rendering.builtInModel( "models/part/builtin/p2p_tunnel_frequency", new P2PTunnelFrequencyModel() );
+
+		List<ResourceLocation> partResourceLocs = modelNames.stream()
+				.map( name -> new ResourceLocation( AppEng.MOD_ID, name ) )
+				.collect( Collectors.toList() );
+		partModels.registerModels( partResourceLocs );
+
+		// Register all part models
+		for( PartType partType : PartType.values() )
+		{
+			partModels.registerModels( partType.getModels() );
+		}
 	}
 
 	private <T extends IPart> IItemDefinition createPart(FeatureFactory registry, String id, PartType type, Function<ItemStack, T> factory) {
 		return registry.item(id, props -> new ItemPart<>(props, type, factory))
 				.itemGroup(CreativeTab.instance)
+				.rendering(new ItemPartRendering())
 				.build();
 	}
 
@@ -156,10 +231,11 @@ public final class ApiParts implements IParts
 
 		for( final AEColor color : AEColor.values() )
 		{
-			String id = color.registryPrefix + idSuffix;
+			String id = color.registryPrefix + '_' + idSuffix;
 
 			IItemDefinition itemDef = registry.item(id, props -> new ColoredPartItem<>(props, type, factory, color))
 					.itemGroup(CreativeTab.instance)
+					.rendering(new ItemPartRendering(color))
 					.build();
 
 			definition.add( color, new ItemStackSrc(itemDef.item(), ActivityState.Enabled) );

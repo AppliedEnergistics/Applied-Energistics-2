@@ -21,7 +21,11 @@ package appeng.parts.reporting;
 
 import java.util.List;
 
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerMEMonitorable;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
@@ -115,18 +119,18 @@ public abstract class AbstractPartTerminal extends AbstractPartDisplay implement
 	{
 		if( !super.onPartActivate( player, hand, pos ) )
 		{
-			if( Platform.isServer() )
+			if( !player.world.isRemote )
 			{
-				// FIXME Platform.openGUI( player, this.getHost().getTile(), this.getSide(), this.getGui( player ) );
+				ContainerOpener.openContainer(getContainerType(player), player, ContainerLocator.forPart(this));
 			}
 		}
 		return true;
 	}
 
-// FIXME	public GuiBridge getGui( final PlayerEntity player )
-// FIXME	{
-// FIXME		return GuiBridge.GUI_ME;
-// FIXME	}
+	public ContainerType<?> getContainerType(final PlayerEntity player )
+	{
+		return ContainerMEMonitorable.TYPE;
+	}
 
 	@Override
 	public <T extends IAEStack<T>> IMEMonitor<T> getInventory( IStorageChannel<T> channel )

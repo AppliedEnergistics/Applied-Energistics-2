@@ -33,6 +33,7 @@ import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.parts.IPart;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
@@ -77,6 +78,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.*;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -325,44 +327,6 @@ public class Platform
 		return false;
 	}
 
-//	public static void openGUI(@Nonnull final PlayerEntity p, @Nullable final TileEntity tile, @Nullable final AEPartLocation side, @Nonnull final ContainerType<?> type )
-//	{
-//		if( isClient() )
-//		{
-//			return;
-//		}
-//
-//		int x = (int) p.getPosX();
-//		int y = (int) p.getPosY();
-//		int z = (int) p.getPosZ();
-//		if( tile != null )
-//		{
-//			x = tile.getPos().getX();
-//			y = tile.getPos().getY();
-//			z = tile.getPos().getZ();
-//		}
-//
-//		if( ( type.getType().isItem() && tile == null ) || type.hasPermissions( tile, x, y, z, side, p ) )
-//		{
-//			if( tile == null && type.getType() == GuiHostType.ITEM )
-//			{
-//				NetworkHooks.openGui(p, );
-//				// FIXME NetworkHooks.openGui
-//				// p.openGui( AppEng.instance(), type.ordinal() << 4, p.getEntityWorld(), p.inventory.currentItem, 0, 0 );
-//			}
-//			else if( tile == null || type.getType() == GuiHostType.ITEM )
-//			{
-//				// FIXME NetworkHooks.openGui
-//				// p.openGui( AppEng.instance(), type.ordinal() << 4 | ( 1 << 3 ), p.getEntityWorld(), x, y, z );
-//			}
-//			else
-//			{
-//				// FIXME NetworkHooks.openGui
-//				// p.openGui( AppEng.instance(), type.ordinal() << 4 | ( side.ordinal() ), tile.getWorld(), x, y, z );
-//			}
-//		}
-//	}
-
 	/**
 	 * @return True if client-side classes (such as Renderers) are available.
 	 */
@@ -393,6 +357,37 @@ public class Platform
 		}
 		return player.world.canMineBlockBody( player, dc.getPos() );
 	}
+
+	public static boolean checkPermissions(final PlayerEntity player, final Object accessInterface, SecurityPermissions requiredPermission, boolean notifyPlayer) {
+		// FIXME: Check permissions...
+		if (requiredPermission != null && accessInterface instanceof IActionHost) {
+			final IGridNode gn = ((IActionHost) accessInterface).getActionableNode();
+			if (gn != null) {
+				final IGrid g = gn.getGrid();
+				if (g != null) {
+					final boolean requirePower = false;
+					if (requirePower) {
+						final IEnergyGrid eg = g.getCache(IEnergyGrid.class);
+						if (!eg.isNetworkPowered()) {
+							// FIXME trace logging?
+							return false;
+						}
+					}
+
+					final ISecurityGrid sg = g.getCache(ISecurityGrid.class);
+					if (!sg.hasPermission(player, requiredPermission)) {
+						player.sendMessage(new TranslationTextComponent("appliedenergistics2.permission_denied")
+								.applyTextStyle(TextFormatting.RED));
+						// FIXME trace logging?
+						return false;
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
 //
 //	/*
 //	 * Checks to see if a block is air?

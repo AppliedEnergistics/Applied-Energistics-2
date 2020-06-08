@@ -23,6 +23,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -43,15 +44,16 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 {
 	public static InventoryAdaptor getAdaptor( final TileEntity te, final Direction d )
 	{
-	// FIXME	if( te != null && te.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, d ) )
-	// FIXME	{
-	// FIXME		// Attempt getting an IItemHandler for the given side via caps
-	// FIXME		IItemHandler itemHandler = te.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, d );
-	// FIXME		if( itemHandler != null )
-	// FIXME		{
-	// FIXME			return new AdaptorItemHandler( itemHandler );
-	// FIXME		}
-	// FIXME	}
+		if( te != null )
+		{
+			LazyOptional<IItemHandler> cap = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, d);
+
+			// Attempt getting an IItemHandler for the given side via caps
+			if( cap.isPresent() )
+			{
+				return new AdaptorItemHandler( cap.orElseThrow(IllegalStateException::new) );
+			}
+		}
 		return null;
 	}
 

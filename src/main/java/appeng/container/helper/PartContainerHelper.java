@@ -29,8 +29,6 @@ public final class PartContainerHelper<C extends AEBaseContainer, P extends IPar
 
     private final ContainerFactory<P, C> factory;
 
-    private final SecurityPermissions requiredPermission;
-
     public PartContainerHelper(ContainerFactory<P, C> factory, Class<P> partClass) {
         this(factory, partClass, null);
     }
@@ -39,7 +37,6 @@ public final class PartContainerHelper<C extends AEBaseContainer, P extends IPar
         super(requiredPermission);
         this.partClass = partClass;
         this.factory = factory;
-        this.requiredPermission = requiredPermission;
     }
 
     /**
@@ -87,11 +84,6 @@ public final class PartContainerHelper<C extends AEBaseContainer, P extends IPar
         // Use block name at position
         // FIXME: this is not right, we'd need to check the part's item stack, or custom naming interface impl
         ITextComponent title = player.world.getBlockState(locator.getBlockPos()).getBlock().getNameTextComponent();
-
-        // FIXME: Check permissions...
-        if (requiredPermission != null) {
-            throw new IllegalStateException(); // NOT YET IMPLEMENTED
-        }
 
         INamedContainerProvider container = new SimpleNamedContainerProvider(
                 (wnd, p, pl) -> {

@@ -284,6 +284,7 @@ final class Registration
 
 		PartModels partModels = (PartModels) Api.INSTANCE.registries().partModels();
 		partModels.getModels().forEach(ModelLoader::addSpecialModel);
+		partModels.setInitialized(true);
 	}
 
 	public void registerBlocks( RegistryEvent.Register<Block> event )

@@ -314,7 +314,7 @@ public class CableBusBakedModel implements IBakedModel
 
 				// If a part sub-model has no particle texture (indicated by it being the missing texture),
 				// don't add it, so we don't get ugly missing texture break particles.
-				if( isMissingTexture(particleTexture) )
+				if( !isMissingTexture(particleTexture) )
 				{
 					result.add( particleTexture );
 				}

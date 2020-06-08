@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
+import appeng.core.AELog;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.util.Pair;
 
@@ -76,7 +77,12 @@ public class CableBusModel implements IModelGeometry<CableBusModel>
 
 		for( ResourceLocation location : this.partModels.getModels() )
 		{
-			result.put( location, bakery.getBakedModel( location, transformIn, spriteGetterIn ) );
+			IBakedModel bakedModel = bakery.getBakedModel(location, transformIn, spriteGetterIn);
+			if (bakedModel == null) {
+				AELog.warn("Failed to bake part model {}", location);
+			} else {
+				result.put(location, bakedModel);
+			}
 		}
 
 		return result.build();

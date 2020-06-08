@@ -29,7 +29,7 @@ import appeng.api.parts.IPart;
 import appeng.tile.AEBaseTile;
 
 
-public class CableBusTESR extends TileEntityRenderer<TileCableBusTESR>
+public class CableBusTESR extends TileEntityRenderer<TileCableBus>
 {
 
 	public CableBusTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
@@ -37,7 +37,11 @@ public class CableBusTESR extends TileEntityRenderer<TileCableBusTESR>
 	}
 
 	@Override
-	public void render(TileCableBusTESR te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers, int combinedLightIn, int combinedOverlayIn) {
+	public void render(TileCableBus te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers, int combinedLightIn, int combinedOverlayIn) {
+		if (!te.getCableBus().isRequiresDynamicRender()) {
+			return;
+		}
+
 		for( Direction facing : Direction.values() )
 		{
 			IPart part = te.getPart( facing );

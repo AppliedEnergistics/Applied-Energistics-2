@@ -198,6 +198,8 @@ public final class AppEng
 		ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "crafting_cube"), CraftingCubeModelLoader.INSTANCE);
 		ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "uvlightmap"), UVLModelLoader.INSTANCE);
 		addBuiltInModel("cable_bus", () -> new CableBusModel((PartModels) Api.INSTANCE.registries().partModels()));
+
+
 	}
 
 	private static <T extends IModelGeometry<T>> void addBuiltInModel(String id, Supplier<T> modelFactory) {

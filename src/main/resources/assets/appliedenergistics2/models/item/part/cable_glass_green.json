@@ -1,6 +1,0 @@
-{
-    "parent": "appliedenergistics2:item/part/cable_glass_base",
-    "textures": {
-        "base": "appliedenergistics2:parts/cable/glass/green"
-    }
-}

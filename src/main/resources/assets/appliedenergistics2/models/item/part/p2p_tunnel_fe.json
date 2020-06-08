@@ -1,6 +1,0 @@
-{
-    "parent": "appliedenergistics2:item/part/p2p_tunnel",
-    "textures": {
-        "type": "block/gold_block"
-    }
-}

@@ -549,10 +549,15 @@ public final class ApiBlocks implements IBlocks
 
 		this.multiPart = registry.block( "cable_bus", BlockCableBus::new )
 				.rendering( new CableBusRendering() )
-				// (handled in BlockCableBus.java and its setupTile())
-				// .tileEntity( TileCableBus.class )
-				// TODO: why the custom registration?
-				.bootstrap( ( block, item ) -> (IInitComponent) ((BlockCableBus) block)::setupTile)
+				.tileEntity( registry.tileEntity( "cable_bus", TileCableBus.class, TileCableBus::new)
+					.rendering(new TileEntityRenderingCustomizer<TileCableBus>() {
+						@Override
+						@OnlyIn(Dist.CLIENT)
+						public void customize(TileEntityRendering<TileCableBus> rendering) {
+							rendering.tileEntityRenderer(CableBusTESR::new);
+						}
+					})
+					.build())
 				.build();
 
 		this.skyStoneSlab = deco.block( "sky_stone_slab", () -> new SlabBlock( SKYSTONE_PROPERTIES ) )

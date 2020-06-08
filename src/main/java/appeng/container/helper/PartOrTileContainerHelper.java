@@ -36,8 +36,6 @@ public final class PartOrTileContainerHelper<C extends AEBaseContainer, I> exten
 
     private final ContainerFactory<C, I> factory;
 
-    private final SecurityPermissions requiredPermission;
-
     public PartOrTileContainerHelper(ContainerFactory<C, I> factory, Class<I> interfaceClass) {
         this(factory, interfaceClass, null);
     }
@@ -46,7 +44,6 @@ public final class PartOrTileContainerHelper<C extends AEBaseContainer, I> exten
         super(requiredPermission);
         this.interfaceClass = interfaceClass;
         this.factory = factory;
-        this.requiredPermission = requiredPermission;
     }
 
     /**

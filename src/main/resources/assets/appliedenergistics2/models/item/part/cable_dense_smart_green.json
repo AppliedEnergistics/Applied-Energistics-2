@@ -1,6 +1,0 @@
-{
-    "parent": "appliedenergistics2:item/part/cable_dense_smart_base",
-    "textures": {
-        "base": "appliedenergistics2:parts/cable/dense_smart/green"
-    }
-}

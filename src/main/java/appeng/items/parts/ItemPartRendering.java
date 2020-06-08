@@ -19,125 +19,31 @@
 package appeng.items.parts;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 import appeng.api.util.AEColor;
 import appeng.bootstrap.IItemRendering;
 import appeng.bootstrap.ItemRenderingCustomizer;
 import appeng.client.render.StaticItemColor;
-import appeng.core.AppEng;
-import appeng.core.features.registries.PartModels;
-import appeng.parts.automation.PlaneConnections;
-import appeng.parts.automation.PlaneModel;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 
 public class ItemPartRendering extends ItemRenderingCustomizer
 {
 
-	private final PartModels partModels;
+	private final AEColor color;
 
-	public ItemPartRendering( PartModels partModels )
-	{
-		this.partModels = partModels;
+	public ItemPartRendering() {
+		this.color = AEColor.TRANSPARENT;
+	}
+
+	public ItemPartRendering(AEColor color) {
+		this.color = color;
 	}
 
 	@Override
 	@OnlyIn( Dist.CLIENT )
 	public void customize( IItemRendering rendering )
 	{
-
-		// FIXME rendering.meshDefinition( this::getItemMeshDefinition );
-
-		rendering.color( new StaticItemColor( AEColor.TRANSPARENT ) );
-
-		// Register all item models as variants so they get loaded
-		rendering.variants( Arrays.stream( PartType.values() )
-				.filter( f -> f != PartType.INVALID_TYPE )
-				.flatMap( part -> part.getItemModels().stream() )
-				.collect( Collectors.toList() ) );
-
-		// Register the built-in models for annihilation planes
-		ResourceLocation annihilationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "item/part/annihilation_plane" );
-		ResourceLocation annihilationPlaneOnTexture = new ResourceLocation( AppEng.MOD_ID, "parts/annihilation_plane_on" );
-		ResourceLocation fluidAnnihilationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "item/part/fluid_annihilation_plane" );
-		ResourceLocation fluidAnnihilationPlaneOnTexture = new ResourceLocation( AppEng.MOD_ID, "parts/fluid_annihilation_plane_on" );
-		ResourceLocation identityAnnihilationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "item/part/identity_annihilation_plane" );
-		ResourceLocation identityAnnihilationPlaneOnTexture = new ResourceLocation( AppEng.MOD_ID, "parts/identity_annihilation_plane_on" );
-		ResourceLocation formationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "item/part/formation_plane" );
-		ResourceLocation formationPlaneOnTexture = new ResourceLocation( AppEng.MOD_ID, "parts/formation_plane_on" );
-		ResourceLocation fluidFormationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "item/part/fluid_formation_plane" );
-		ResourceLocation fluidFormationPlaneOnTexture = new ResourceLocation( AppEng.MOD_ID, "parts/fluid_formation_plane_on" );
-		ResourceLocation sidesTexture = new ResourceLocation( AppEng.MOD_ID, "parts/plane_sides" );
-		ResourceLocation backTexture = new ResourceLocation( AppEng.MOD_ID, "parts/transition_plane_back" );
-
-		List<String> modelNames = new ArrayList<>();
-
-		for( PlaneConnections connection : PlaneConnections.PERMUTATIONS )
-		{
-			PlaneModel model = new PlaneModel( annihilationPlaneTexture, sidesTexture, backTexture, connection );
-			rendering.builtInModel( "models/part/annihilation_plane_" + connection.getFilenameSuffix(), model );
-			modelNames.add( "part/annihilation_plane_" + connection.getFilenameSuffix() );
-
-			model = new PlaneModel( annihilationPlaneOnTexture, sidesTexture, backTexture, connection );
-			rendering.builtInModel( "models/part/annihilation_plane_on_" + connection.getFilenameSuffix(), model );
-			modelNames.add( "part/annihilation_plane_on_" + connection.getFilenameSuffix() );
-
-			model = new PlaneModel( fluidAnnihilationPlaneTexture, sidesTexture, backTexture, connection );
-			rendering.builtInModel( "models/part/fluid_annihilation_plane_" + connection.getFilenameSuffix(), model );
-			modelNames.add( "part/fluid_annihilation_plane_" + connection.getFilenameSuffix() );
-
-			model = new PlaneModel( fluidAnnihilationPlaneOnTexture, sidesTexture, backTexture, connection );
-			rendering.builtInModel( "models/part/fluid_annihilation_plane_on_" + connection.getFilenameSuffix(), model );
-			modelNames.add( "part/fluid_annihilation_plane_on_" + connection.getFilenameSuffix() );
-
-			model = new PlaneModel( identityAnnihilationPlaneTexture, sidesTexture, backTexture, connection );
-			rendering.builtInModel( "models/part/identity_annihilation_plane_" + connection.getFilenameSuffix(), model );
-			modelNames.add( "part/identity_annihilation_plane_" + connection.getFilenameSuffix() );
-
-			model = new PlaneModel( identityAnnihilationPlaneOnTexture, sidesTexture, backTexture, connection );
-			rendering.builtInModel( "models/part/identity_annihilation_plane_on_" + connection.getFilenameSuffix(), model );
-			modelNames.add( "part/identity_annihilation_plane_on_" + connection.getFilenameSuffix() );
-
-			model = new PlaneModel( formationPlaneTexture, sidesTexture, backTexture, connection );
-			rendering.builtInModel( "models/part/formation_plane_" + connection.getFilenameSuffix(), model );
-			modelNames.add( "part/formation_plane_" + connection.getFilenameSuffix() );
-
-			model = new PlaneModel( formationPlaneOnTexture, sidesTexture, backTexture, connection );
-			rendering.builtInModel( "models/part/formation_plane_on_" + connection.getFilenameSuffix(), model );
-			modelNames.add( "part/formation_plane_on_" + connection.getFilenameSuffix() );
-
-			model = new PlaneModel( fluidFormationPlaneTexture, sidesTexture, backTexture, connection );
-			rendering.builtInModel( "models/part/fluid_formation_plane_" + connection.getFilenameSuffix(), model );
-			modelNames.add( "part/fluid_formation_plane_" + connection.getFilenameSuffix() );
-
-			model = new PlaneModel( fluidFormationPlaneOnTexture, sidesTexture, backTexture, connection );
-			rendering.builtInModel( "models/part/fluid_formation_plane_on_" + connection.getFilenameSuffix(), model );
-			modelNames.add( "part/fluid_formation_plane_on_" + connection.getFilenameSuffix() );
-
-		}
-
-		// base p2p model with frequency
-		// FIXME rendering.builtInModel( "models/part/builtin/p2p_tunnel_frequency", new P2PTunnelFrequencyModel() );
-
-		List<ResourceLocation> partResourceLocs = modelNames.stream()
-				.map( name -> new ResourceLocation( AppEng.MOD_ID, name ) )
-				.collect( Collectors.toList() );
-		this.partModels.registerModels( partResourceLocs );
+		rendering.color( new StaticItemColor(color) );
 	}
-
-	// FIXME private ModelResourceLocation getItemMeshDefinition( ItemStack is )
-	// FIXME {
-	// FIXME 	PartType partType = this.item.getTypeByStack( is );
-	// FIXME 	int variant = this.item.variantOf( is.getDamage() );
-	// FIXME 	return partType.getItemModels().get( variant );
-	// FIXME }
 }
