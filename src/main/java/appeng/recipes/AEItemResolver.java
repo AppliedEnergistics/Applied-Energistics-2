@@ -139,17 +139,17 @@ public class AEItemResolver implements ISubItemResolver
 // FIXME				}
 			}
 
-			if( itemName.startsWith( "part." ) )
-			{
-				final String partName = itemName.substring( itemName.indexOf( '.' ) + 1 );
-				final PartType pt = PartType.valueOf( partName.toUpperCase() );
-				// itemName = itemName.substring( 0, itemName.indexOf( "." ) );
-				final int dVal = ItemPart.instance.getDamageByType( pt );
-				if( dVal >= 0 )
-				{
-					return new ResolverResult( "part", dVal );
-				}
-			}
+// FIXME			if( itemName.startsWith( "part." ) )
+// FIXME			{
+// FIXME				final String partName = itemName.substring( itemName.indexOf( '.' ) + 1 );
+// FIXME				final PartType pt = PartType.valueOf( partName.toUpperCase() );
+// FIXME				// itemName = itemName.substring( 0, itemName.indexOf( "." ) );
+// FIXME				final int dVal = ItemPart.instance.getDamageByType( pt );
+// FIXME				if( dVal >= 0 )
+// FIXME				{
+// FIXME					return new ResolverResult( "part", dVal );
+// FIXME				}
+// FIXME			}
 		}
 
 		return null;

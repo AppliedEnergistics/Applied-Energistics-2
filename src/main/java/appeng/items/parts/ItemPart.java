@@ -43,102 +43,25 @@ import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.Function;
 
 
-public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
+public class ItemPart<T extends IPart> extends AEBaseItem implements IPartItem<T>, IItemGroup
 {
 	private static final int INITIAL_REGISTERED_CAPACITY = PartType.values().length;
 	private static final Comparator<Entry<Integer, PartTypeWithVariant>> REGISTERED_COMPARATOR = new RegisteredComparator();
 
-	public static ItemPart instance;
+	private final PartType type;
+
+	private final Function<ItemStack, T> factory;
+
 	private final Map<Integer, PartTypeWithVariant> registered;
 
-	public ItemPart(Properties properties) {
+	public ItemPart(Properties properties, PartType type, Function<ItemStack, T> factory) {
 		super(properties);
+		this.type = type;
+		this.factory = factory;
 		this.registered = new HashMap<>( INITIAL_REGISTERED_CAPACITY );
-
-//		FIXME this.setHasSubtypes( true );
-
-		instance = this;
-	}
-
-	@Nonnull
-	public final ItemStackSrc createPart( final PartType mat )
-	{
-		Preconditions.checkNotNull( mat );
-
-		return this.createPart( mat, 0 );
-	}
-
-	@Nonnull
-	public ItemStackSrc createPart( final PartType mat, final AEColor color )
-	{
-		Preconditions.checkNotNull( mat );
-		Preconditions.checkNotNull( color );
-
-		final int varID = color.ordinal();
-
-		return this.createPart( mat, varID );
-	}
-
-	@Nonnull
-	private ItemStackSrc createPart( final PartType mat, final int varID )
-	{
-		assert mat != null;
-		assert varID >= 0;
-
-		// verify
-		for( final PartTypeWithVariant p : this.registered.values() )
-		{
-			if( p.part == mat && p.variant == varID )
-			{
-				throw new IllegalStateException( "Cannot create the same material twice..." );
-			}
-		}
-
-		boolean enabled = mat.isEnabled();
-
-		final int partDamage = mat.getBaseDamage() + varID;
-		final ActivityState state = ActivityState.from( enabled );
-		final ItemStackSrc output = new ItemStackSrc( this/* FIXME, partDamage */, state );
-
-		final PartTypeWithVariant pti = new PartTypeWithVariant( mat, varID );
-
-		this.processMetaOverlap( enabled, partDamage, mat, pti );
-
-		return output;
-	}
-
-	private void processMetaOverlap( final boolean enabled, final int partDamage, final PartType mat, final PartTypeWithVariant pti )
-	{
-		assert partDamage >= 0;
-		assert mat != null;
-		assert pti != null;
-
-		final PartTypeWithVariant registeredPartType = this.registered.get( partDamage );
-		if( registeredPartType != null )
-		{
-			throw new IllegalStateException( "Meta Overlap detected with type " + mat + " and damage " + partDamage + ". Found " + registeredPartType + " there already." );
-		}
-
-		if( enabled )
-		{
-			this.registered.put( partDamage, pti );
-		}
-	}
-
-	public int getDamageByType( final PartType t )
-	{
-		Preconditions.checkNotNull( t );
-
-		for( final Entry<Integer, PartTypeWithVariant> pt : this.registered.entrySet() )
-		{
-			if( pt.getValue().part == t )
-			{
-				return pt.getKey();
-			}
-		}
-		return -1;
 	}
 
 	@Override
@@ -146,9 +69,9 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 	{
 		PlayerEntity player = context.getPlayer();
 		ItemStack held = player.getHeldItem( context.getHand() );
-		if( this.getTypeByStack( held ) == PartType.INVALID_TYPE )
+		if( held.getItem() != this )
 		{
-			return ActionResultType.FAIL;
+			return ActionResultType.PASS;
 		}
 
 		return AEApi.instance().partHelper().placeBus( held, context.getPos(), context.getFace(), player, context.getHand(), context.getWorld() );
@@ -186,55 +109,13 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 		return super.getDisplayName( is );
 	}
 
-	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		final List<Entry<Integer, PartTypeWithVariant>> types = new ArrayList<>( this.registered.entrySet() );
-		Collections.sort( types, REGISTERED_COMPARATOR );
-
-		for( final Entry<Integer, PartTypeWithVariant> part : types )
-		{
-			items.add( new ItemStack( this, 1/* FIXME, part.getKey() */ ) );
-		}
+	public PartType getType() {
+		return type;
 	}
 
-	@Nonnull
-	public PartType getTypeByStack( final ItemStack is )
-	{
-		Preconditions.checkNotNull( is );
-
-		final PartTypeWithVariant pt = this.registered.get( is.getDamage() );
-		if( pt != null )
-		{
-			return pt.part;
-		}
-
-		return PartType.INVALID_TYPE;
-	}
-
-	@Nullable
 	@Override
-	public IPart createPartFromItemStack( final ItemStack is ) {
-		final PartType type = this.getTypeByStack( is );
-		final Class<? extends IPart> part = type.getPart();
-		if( part == null )
-		{
-			return null;
-		}
-
-		try
-		{
-			if( type.getConstructor() == null )
-			{
-				type.setConstructor( part.getConstructor( ItemStack.class ) );
-			}
-
-			return type.getConstructor().newInstance( is );
-		}
-		catch( final InstantiationException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e )
-		{
-			throw new IllegalStateException( "Unable to construct IBusPart from IBusItem : " + part
-					.getName() + " ; Possibly didn't have correct constructor( ItemStack )", e );
-		}
+	public T createPart(ItemStack is) {
+		return factory.apply(is);
 	}
 
 	public int variantOf( final int itemDamage )
@@ -248,6 +129,13 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 		return 0;
 	}
 
+	private static PartType getTypeByStack(ItemStack is) {
+		if (is.getItem() instanceof ItemPart) {
+			return ((ItemPart<?>) is.getItem()).getType();
+		}
+		return PartType.INVALID_TYPE;
+	}
+
 	@Nullable
 	@Override
 	public String getUnlocalizedGroupName( final Set<ItemStack> others, final ItemStack is )
@@ -258,13 +146,13 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 		boolean exportBusFluids = false;
 		boolean group = false;
 
-		final PartType u = this.getTypeByStack( is );
+		final PartType u = getTypeByStack( is );
 
 		for( final ItemStack stack : others )
 		{
 			if( stack.getItem() == this )
 			{
-				final PartType pt = this.getTypeByStack( stack );
+				final PartType pt = getTypeByStack( stack );
 				switch( pt )
 				{
 					case IMPORT_BUS:

@@ -45,7 +45,7 @@ public final class ApiDefinitions implements IDefinitions
 
 	public ApiDefinitions( final PartModels partModels )
 	{
-		this.blocks = new ApiBlocks( this.registry, partModels );
+		this.blocks = new ApiBlocks( this.registry);
 		this.materials = new ApiMaterials( this.registry );
 		this.items = new ApiItems( this.registry, this.materials );
 		this.parts = new ApiParts( this.registry, partModels );

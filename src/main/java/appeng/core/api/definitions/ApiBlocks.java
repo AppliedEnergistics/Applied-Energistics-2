@@ -175,7 +175,7 @@ public final class ApiBlocks implements IBlocks
 	private static final Block.Properties SKYSTONE_PROPERTIES = Block.Properties.create( Material.ROCK )
 			.hardnessAndResistance( 50, 150 );
 
-	public ApiBlocks( FeatureFactory registry, PartModels partModels )
+	public ApiBlocks(FeatureFactory registry)
 	{
 		this.quartzOre = registry.block( "quartz_ore", () -> new BlockQuartzOre(QUARTZ_PROPERTIES))
 				.features( AEFeature.CERTUS_ORE )
@@ -548,7 +548,7 @@ public final class ApiBlocks implements IBlocks
 				.build();
 
 		this.multiPart = registry.block( "cable_bus", BlockCableBus::new )
-				.rendering( new CableBusRendering( partModels ) )
+				.rendering( new CableBusRendering() )
 				// (handled in BlockCableBus.java and its setupTile())
 				// .tileEntity( TileCableBus.class )
 				// TODO: why the custom registration?

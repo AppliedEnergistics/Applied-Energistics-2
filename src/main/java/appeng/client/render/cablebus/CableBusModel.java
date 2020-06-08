@@ -24,27 +24,24 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
-import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.util.Pair;
 
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.client.renderer.model.IUnbakedModel;
-import net.minecraft.client.renderer.model.Material;
-import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 
 import appeng.api.util.AEColor;
 import appeng.core.features.registries.PartModels;
+import net.minecraftforge.client.model.IModelConfiguration;
+import net.minecraftforge.client.model.geometry.IModelGeometry;
 
 
 /**
  * The built-in model for the cable bus block.
  */
-public class CableBusModel implements IUnbakedModel
+public class CableBusModel implements IModelGeometry<CableBusModel>
 {
 
 	private final PartModels partModels;
@@ -55,25 +52,10 @@ public class CableBusModel implements IUnbakedModel
 	}
 
 	@Override
-	public Collection<ResourceLocation> getDependencies()
-	{
-		this.partModels.setInitialized( true );
-		return this.partModels.getModels();
-	}
+	public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {
+		Map<ResourceLocation, IBakedModel> partModels = this.loadPartModels( bakery, spriteGetter, modelTransform );
 
-	@Override
-	public Collection<Material> getTextures( Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors )
-	{
-		return Collections.unmodifiableList( CableBuilder.getTextures() );
-	}
-
-	@Nullable
-	@Override
-	public IBakedModel bakeModel( ModelBakery modelBakeryIn, Function<Material, TextureAtlasSprite> spriteGetterIn, IModelTransform transformIn, ResourceLocation locationIn )
-	{
-		Map<ResourceLocation, IBakedModel> partModels = this.loadPartModels( modelBakeryIn, spriteGetterIn, transformIn );
-
-		CableBuilder cableBuilder = new CableBuilder( spriteGetterIn );
+		CableBuilder cableBuilder = new CableBuilder( spriteGetter );
 		FacadeBuilder facadeBuilder = new FacadeBuilder();
 
 		// This should normally not be used, but we *have* to provide a particle texture or otherwise damage models will
@@ -83,13 +65,18 @@ public class CableBusModel implements IUnbakedModel
 		return new CableBusBakedModel( cableBuilder, facadeBuilder, partModels, particleTexture );
 	}
 
-	private Map<ResourceLocation, IBakedModel> loadPartModels( ModelBakery modelBakeryIn, Function<Material, TextureAtlasSprite> spriteGetterIn, IModelTransform transformIn )
+	@Override
+	public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+		return Collections.unmodifiableList( CableBuilder.getTextures() );
+	}
+
+	private Map<ResourceLocation, IBakedModel> loadPartModels( ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetterIn, IModelTransform transformIn )
 	{
 		ImmutableMap.Builder<ResourceLocation, IBakedModel> result = ImmutableMap.builder();
 
 		for( ResourceLocation location : this.partModels.getModels() )
 		{
-			result.put( location, modelBakeryIn.getBakedModel( location, transformIn, spriteGetterIn ) );
+			result.put( location, bakery.getBakedModel( location, transformIn, spriteGetterIn ) );
 		}
 
 		return result.build();

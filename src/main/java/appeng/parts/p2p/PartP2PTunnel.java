@@ -207,7 +207,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 			{
 				if( newType.getItem() instanceof IPartItem )
 				{
-					final IPart testPart = ( (IPartItem) newType.getItem() ).createPartFromItemStack( newType );
+					final IPart testPart = ( (IPartItem<?>) newType.getItem() ).createPart( newType );
 					if( testPart instanceof PartP2PTunnel )
 					{
 						this.getHost().removePart( this.getSide(), true );
@@ -216,7 +216,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 
 						if( newBus instanceof PartP2PTunnel )
 						{
-							final PartP2PTunnel newTunnel = (PartP2PTunnel) newBus;
+							final PartP2PTunnel<?> newTunnel = (PartP2PTunnel<?>) newBus;
 							newTunnel.setOutput( true );
 
 							try

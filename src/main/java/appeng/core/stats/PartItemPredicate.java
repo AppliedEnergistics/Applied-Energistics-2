@@ -43,9 +43,10 @@ public class PartItemPredicate extends ItemPredicate
 	@Override
 	public boolean test( ItemStack item )
 	{
-		if( ItemPart.instance != null && item.getItem() == ItemPart.instance )
+		if( item.getItem() instanceof ItemPart )
 		{
-			return ItemPart.instance.getTypeByStack( item ) == this.partType;
+			ItemPart<?> itemPart = (ItemPart<?>) item.getItem();
+			return itemPart.getType() == partType;
 		}
 		return false;
 	}

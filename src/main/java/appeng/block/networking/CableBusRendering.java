@@ -34,12 +34,6 @@ import appeng.core.features.registries.PartModels;
  */
 public class CableBusRendering extends BlockRenderingCustomizer
 {
-	private final PartModels partModels;
-
-	public CableBusRendering( PartModels partModels )
-	{
-		this.partModels = partModels;
-	}
 
 	@Override
 	@OnlyIn( Dist.CLIENT )
@@ -55,7 +49,6 @@ public class CableBusRendering extends BlockRenderingCustomizer
 		 */
 		rendering.renderType(rt -> true);
 
-		rendering.builtInModel( "models/block/builtin/cable_bus", new CableBusModel( this.partModels ) );
 		rendering.blockColor( new CableBusColor() );
 		rendering.modelCustomizer( ( loc, model ) -> model );
 	}

@@ -53,13 +53,12 @@ public interface IPartItem<P extends IPart>
 {
 
 	/**
-	 * create a new part INSTANCE, from the item stack.
+	 * create a new part INSTANCE
 	 *
-	 * @param is item
+	 * @param is ItemStack of this item, may have additional properties.
 	 *
 	 * @return part from item
 	 */
-	@Nullable
-	P createPartFromItemStack( ItemStack is );
+	P createPart(ItemStack is);
 
 }

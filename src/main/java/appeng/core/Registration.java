@@ -71,6 +71,7 @@ import appeng.client.gui.implementations.GuiUpgradeable;
 import appeng.client.gui.implementations.GuiVibrationChamber;
 import appeng.client.gui.implementations.GuiWireless;
 import appeng.client.gui.implementations.GuiWirelessTerm;
+import appeng.client.render.cablebus.CableBusModel;
 import appeng.client.render.effects.*;
 import appeng.client.render.model.BiometricCardModel;
 import appeng.client.render.model.DriveModel;
@@ -81,6 +82,7 @@ import appeng.container.AEBaseContainer;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.*;
 import appeng.core.features.registries.P2PTunnelRegistry;
+import appeng.core.features.registries.PartModels;
 import appeng.core.features.registries.cell.BasicCellHandler;
 import appeng.core.features.registries.cell.BasicItemCellGuiHandler;
 import appeng.core.features.registries.cell.CreativeCellHandler;
@@ -279,6 +281,9 @@ final class Registration
 		ModelLoader.addSpecialModel(BiometricCardModel.MODEL_BASE);
 		ModelLoader.addSpecialModel(MemoryCardModel.MODEL_BASE);
 		DriveModel.DEPENDENCIES.forEach(ModelLoader::addSpecialModel);
+
+		PartModels partModels = (PartModels) Api.INSTANCE.registries().partModels();
+		partModels.getModels().forEach(ModelLoader::addSpecialModel);
 	}
 
 	public void registerBlocks( RegistryEvent.Register<Block> event )

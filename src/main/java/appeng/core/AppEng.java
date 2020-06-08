@@ -33,9 +33,11 @@ import appeng.bootstrap.components.ItemColorComponent;
 import appeng.client.ClientHelper;
 import appeng.client.render.DummyFluidItemModel;
 import appeng.client.render.SimpleModelLoader;
+import appeng.client.render.cablebus.CableBusModel;
 import appeng.client.render.crafting.CraftingCubeModelLoader;
 import appeng.client.render.model.*;
 import appeng.client.render.spatial.SpatialPylonModel;
+import appeng.core.features.registries.PartModels;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.worlddata.WorldData;
@@ -195,6 +197,7 @@ public final class AppEng
 		addBuiltInModel("quantum_bridge_formed", QnbFormedModel::new);
 		ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "crafting_cube"), CraftingCubeModelLoader.INSTANCE);
 		ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "uvlightmap"), UVLModelLoader.INSTANCE);
+		addBuiltInModel("cable_bus", () -> new CableBusModel((PartModels) Api.INSTANCE.registries().partModels()));
 	}
 
 	private static <T extends IModelGeometry<T>> void addBuiltInModel(String id, Supplier<T> modelFactory) {

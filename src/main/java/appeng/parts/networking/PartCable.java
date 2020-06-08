@@ -19,17 +19,6 @@
 package appeng.parts.networking;
 
 
-import java.io.IOException;
-import java.util.EnumSet;
-
-import com.google.common.collect.ImmutableSet;
-
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Direction;
-
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.definitions.IParts;
@@ -46,10 +35,19 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IReadOnlyCollection;
-import appeng.items.parts.ItemPart;
+import appeng.items.parts.ColoredPartItem;
 import appeng.me.GridAccessException;
 import appeng.parts.AEBasePart;
 import appeng.util.Platform;
+import com.google.common.collect.ImmutableSet;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.Direction;
+
+import java.io.IOException;
+import java.util.EnumSet;
 
 
 public class PartCable extends AEBasePart implements IPartCable
@@ -68,7 +66,10 @@ public class PartCable extends AEBasePart implements IPartCable
 		super( is );
 		this.getProxy().setFlags( GridFlags.PREFERRED );
 		this.getProxy().setIdlePowerUsage( 0.0 );
-		this.getProxy().setColor( AEColor.values()[( (ItemPart) is.getItem() ).variantOf( is.getDamage() )] );
+		if (is.getItem() instanceof ColoredPartItem) {
+			ColoredPartItem<?> coloredPartItem = (ColoredPartItem<?>) is.getItem();
+			this.getProxy().setColor(coloredPartItem.getColor());
+		}
 	}
 
 	@Override

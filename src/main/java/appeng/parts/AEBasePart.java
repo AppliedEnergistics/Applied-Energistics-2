@@ -32,6 +32,7 @@ import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -102,7 +103,12 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
 	public PartType getType()
 	{
-		return ItemPart.instance.getTypeByStack( this.is );
+		Item item = this.is.getItem();
+		if (!(item instanceof ItemPart)) {
+			return PartType.INVALID_TYPE;
+		}
+
+		return ((ItemPart<?>) item).getType();
 	}
 
 	@Override

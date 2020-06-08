@@ -400,7 +400,7 @@ public enum PartType
 		return false;
 	}
 
-	Set<AEFeature> getFeature()
+	public Set<AEFeature> getFeature()
 	{
 		return this.features;
 	}
@@ -408,11 +408,6 @@ public enum PartType
 	Set<IntegrationType> getIntegrations()
 	{
 		return this.integrations;
-	}
-
-	Class<? extends IPart> getPart()
-	{
-		return this.myPart;
 	}
 
 	String getTranslationKey()
@@ -423,11 +418,6 @@ public enum PartType
 	GuiText getExtraName()
 	{
 		return this.extraName;
-	}
-
-	Constructor<? extends IPart> getConstructor()
-	{
-		return this.constructor;
 	}
 
 	void setConstructor( final Constructor<? extends IPart> constructor )

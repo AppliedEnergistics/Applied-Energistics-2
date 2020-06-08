@@ -21,17 +21,25 @@ package appeng.core.api.definitions;
 
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IParts;
-import appeng.api.exceptions.MissingDefinitionException;
+import appeng.api.parts.IPart;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
 import appeng.bootstrap.FeatureFactory;
-import appeng.core.features.ColoredItemDefinition;
-import appeng.core.features.DamagedItemDefinition;
-import appeng.core.features.ItemStackSrc;
+import appeng.core.CreativeTab;
+import appeng.core.features.*;
 import appeng.core.features.registries.PartModels;
+import appeng.fluids.parts.*;
+import appeng.items.parts.ColoredPartItem;
 import appeng.items.parts.ItemPart;
-import appeng.items.parts.ItemPartRendering;
 import appeng.items.parts.PartType;
+import appeng.parts.automation.*;
+import appeng.parts.misc.*;
+import appeng.parts.networking.*;
+import appeng.parts.p2p.*;
+import appeng.parts.reporting.*;
+import net.minecraft.item.ItemStack;
+
+import java.util.function.Function;
 
 
 /**
@@ -44,10 +52,6 @@ public final class ApiParts implements IParts
 	private final AEColoredItemDefinition cableGlass;
 	private final AEColoredItemDefinition cableDenseCovered;
 	private final AEColoredItemDefinition cableDenseSmart;
-	// private final AEColoredItemDefinition lumenCableSmart;
-	// private final AEColoredItemDefinition lumenCableCovered;
-	// private final AEColoredItemDefinition lumenCableGlass;
-	// private final AEColoredItemDefinition lumenCableDense;
 	private final IItemDefinition quartzFiber;
 	private final IItemDefinition toggleBus;
 	private final IItemDefinition invertedToggleBus;
@@ -70,7 +74,6 @@ public final class ApiParts implements IParts
 	private final IItemDefinition p2PTunnelEU;
 	private final IItemDefinition p2PTunnelFE;
 	private final IItemDefinition p2PTunnelLight;
-	// private final IItemDefinition p2PTunnelOpenComputers;
 	private final IItemDefinition cableAnchor;
 	private final IItemDefinition monitor;
 	private final IItemDefinition semiDarkMonitor;
@@ -88,10 +91,9 @@ public final class ApiParts implements IParts
 
 	public ApiParts( FeatureFactory registry, PartModels partModels )
 	{
-		IItemDefinition itemPartDef = registry.item( "part", ItemPart::new )
-				.rendering( new ItemPartRendering( partModels ) )
-				.build();
-		final ItemPart itemPart = (ItemPart) itemPartDef.item();
+//		IItemDefinition itemPartDef = registry.item( "part", ItemPart::new )
+//				.rendering( new ItemPartRendering( partModels ) )
+//				.build();
 
 		// Register all part models
 		for( PartType partType : PartType.values() )
@@ -99,65 +101,68 @@ public final class ApiParts implements IParts
 			partModels.registerModels( partType.getModels() );
 		}
 
-		this.cableSmart = constructColoredDefinition( itemPart, PartType.CABLE_SMART );
-		this.cableCovered = constructColoredDefinition( itemPart, PartType.CABLE_COVERED );
-		this.cableGlass = constructColoredDefinition( itemPart, PartType.CABLE_GLASS );
-		this.cableDenseCovered = constructColoredDefinition( itemPart, PartType.CABLE_DENSE_COVERED );
-		this.cableDenseSmart = constructColoredDefinition( itemPart, PartType.CABLE_DENSE_SMART );
-		// this.lumenCableSmart = Optional.absent(); // has yet to be implemented, no PartType defined for it yet
-		// this.lumenCableCovered = Optional.absent(); // has yet to be implemented, no PartType defined for it yet
-		// this.lumenCableGlass = Optional.absent(); // has yet to be implemented, no PartType defined for it yet
-		// this.lumenCableDense = Optional.absent(); // has yet to be implemented, no PartType defined for it yet
-		this.quartzFiber = new DamagedItemDefinition( "part.quartz_fiber", itemPart.createPart( PartType.QUARTZ_FIBER ) );
-		this.toggleBus = new DamagedItemDefinition( "part.toggle_bus", itemPart.createPart( PartType.TOGGLE_BUS ) );
-		this.invertedToggleBus = new DamagedItemDefinition( "part.toggle_bus.inverted", itemPart.createPart( PartType.INVERTED_TOGGLE_BUS ) );
-		this.storageBus = new DamagedItemDefinition( "part.bus.storage", itemPart.createPart( PartType.STORAGE_BUS ) );
-		this.importBus = new DamagedItemDefinition( "part.bus.import", itemPart.createPart( PartType.IMPORT_BUS ) );
-		this.exportBus = new DamagedItemDefinition( "part.bus.export", itemPart.createPart( PartType.EXPORT_BUS ) );
-		this.iface = new DamagedItemDefinition( "part.interface", itemPart.createPart( PartType.INTERFACE ) );
-		this.fluidIface = new DamagedItemDefinition( "part.fluid_interface", itemPart.createPart( PartType.FLUID_INTERFACE ) );
-		this.levelEmitter = new DamagedItemDefinition( "part.level_emitter", itemPart.createPart( PartType.LEVEL_EMITTER ) );
-		this.fluidLevelEmitter = new DamagedItemDefinition( "part.fluid_level_emitter", itemPart.createPart( PartType.FLUID_LEVEL_EMITTER ) );
-		this.annihilationPlane = new DamagedItemDefinition( "part.plane.annihilation", itemPart.createPart( PartType.ANNIHILATION_PLANE ) );
-		this.identityAnnihilationPlane = new DamagedItemDefinition( "part.plane.annihiliation.identity", itemPart
-				.createPart( PartType.IDENTITY_ANNIHILATION_PLANE ) );
-		this.fluidAnnihilationPlane = new DamagedItemDefinition( "part.plane.fluid_annihilation", itemPart.createPart( PartType.FLUID_ANNIHILATION_PLANE ) );
-		this.formationPlane = new DamagedItemDefinition( "part.plane.formation", itemPart.createPart( PartType.FORMATION_PLANE ) );
-		this.fluidFormationPlane = new DamagedItemDefinition( "part.plane.fluid_formation", itemPart.createPart( PartType.FLUID_FORMATION_PLANE ) );
-		this.p2PTunnelME = new DamagedItemDefinition( "part.tunnel.me", itemPart.createPart( PartType.P2P_TUNNEL_ME ) );
-		this.p2PTunnelRedstone = new DamagedItemDefinition( "part.tunnel.redstone", itemPart.createPart( PartType.P2P_TUNNEL_REDSTONE ) );
-		this.p2PTunnelItems = null; // FIXME new DamagedItemDefinition( "part.tunnel.item", itemPart.createPart( PartType.P2P_TUNNEL_ITEMS ) );
-		this.p2PTunnelFluids = null; // FIXME new DamagedItemDefinition( "part.tunnel.fluid", itemPart.createPart( PartType.P2P_TUNNEL_FLUIDS ) );
-		this.p2PTunnelEU = null; // FIXME new DamagedItemDefinition( "part.tunnel.eu", itemPart.createPart( PartType.P2P_TUNNEL_IC2 ) );
-		this.p2PTunnelFE = new DamagedItemDefinition( "part.tunnel.fe", itemPart.createPart( PartType.P2P_TUNNEL_FE ) );
-		this.p2PTunnelLight = new DamagedItemDefinition( "part.tunnel.light", itemPart.createPart( PartType.P2P_TUNNEL_LIGHT ) );
-		// this.p2PTunnelOpenComputers = new DamagedItemDefinition( itemMultiPart.createPart(
-		// PartType.P2PTunnelOpenComputers ) );
-		this.cableAnchor = new DamagedItemDefinition( "part.cable_anchor", itemPart.createPart( PartType.CABLE_ANCHOR ) );
-		this.monitor = new DamagedItemDefinition( "part.monitor", itemPart.createPart( PartType.MONITOR ) );
-		this.semiDarkMonitor = new DamagedItemDefinition( "part.monitor.semi_dark", itemPart.createPart( PartType.SEMI_DARK_MONITOR ) );
-		this.darkMonitor = new DamagedItemDefinition( "part.monitor.dark", itemPart.createPart( PartType.DARK_MONITOR ) );
-		this.interfaceTerminal = new DamagedItemDefinition( "part.terminal.interface", itemPart.createPart( PartType.INTERFACE_TERMINAL ) );
-		this.patternTerminal = new DamagedItemDefinition( "part.terminal.pattern", itemPart.createPart( PartType.PATTERN_TERMINAL ) );
-		this.craftingTerminal = new DamagedItemDefinition( "part.terminal.crafting", itemPart.createPart( PartType.CRAFTING_TERMINAL ) );
-		this.terminal = new DamagedItemDefinition( "part.terminal", itemPart.createPart( PartType.TERMINAL ) );
-		this.storageMonitor = new DamagedItemDefinition( "part.monitor.storage", itemPart.createPart( PartType.STORAGE_MONITOR ) );
-		this.conversionMonitor = new DamagedItemDefinition( "part.monitor.conversion", itemPart.createPart( PartType.CONVERSION_MONITOR ) );
-		this.fluidImportBus = new DamagedItemDefinition( "part.bus.import.fluid", itemPart.createPart( PartType.FLUID_IMPORT_BUS ) );
-		this.fluidExportBus = new DamagedItemDefinition( "part.bus.export.fluid", itemPart.createPart( PartType.FLUID_EXPORT_BUS ) );
-		this.fluidTerminal = new DamagedItemDefinition( "part.terminal.fluid", itemPart.createPart( PartType.FLUID_TERMINAL ) );
-		this.fluidStorageBus = new DamagedItemDefinition( "part.bus.storage.fluid", itemPart.createPart( PartType.FLUID_STORAGE_BUS ) );
+		this.cableSmart = constructColoredDefinition(registry, "smart_cable", PartType.CABLE_SMART, PartCableSmart::new);
+		this.cableCovered = constructColoredDefinition(registry, "covered_cable", PartType.CABLE_COVERED, PartCableCovered::new);
+		this.cableGlass = constructColoredDefinition(registry, "glass_cable", PartType.CABLE_GLASS, PartCableGlass::new);
+		this.cableDenseCovered = constructColoredDefinition(registry, "dense_cable", PartType.CABLE_DENSE_COVERED, PartDenseCableCovered::new);
+		this.cableDenseSmart = constructColoredDefinition(registry, "smart_dense_cable", PartType.CABLE_DENSE_SMART, PartDenseCableSmart::new);
+		this.quartzFiber = createPart(registry, "quartz_fiber", PartType.QUARTZ_FIBER, PartQuartzFiber::new );
+		this.toggleBus = createPart(registry, "toggle_bus", PartType.TOGGLE_BUS, PartToggleBus::new );
+		this.invertedToggleBus = createPart(registry, "inverted_toggle_bus", PartType.INVERTED_TOGGLE_BUS, PartInvertedToggleBus::new );
+		this.cableAnchor = createPart(registry, "cable_anchor", PartType.CABLE_ANCHOR, PartCableAnchor::new );
+		this.monitor = createPart(registry, "monitor", PartType.MONITOR, PartPanel::new );
+		this.semiDarkMonitor = createPart(registry, "semi_dark_monitor", PartType.SEMI_DARK_MONITOR, PartSemiDarkPanel::new );
+		this.darkMonitor = createPart(registry, "dark_monitor", PartType.DARK_MONITOR, PartDarkPanel::new );
+		this.storageBus = createPart(registry, "storage_bus", PartType.STORAGE_BUS, PartStorageBus::new );
+		this.fluidStorageBus = createPart(registry, "fluid_storage_bus", PartType.FLUID_STORAGE_BUS, PartFluidStorageBus::new );
+		this.importBus = createPart(registry, "import_bus", PartType.IMPORT_BUS, PartImportBus::new );
+		this.fluidImportBus = createPart(registry, "fluid_import_bus", PartType.FLUID_IMPORT_BUS, PartFluidImportBus::new );
+		this.exportBus = createPart(registry, "export_bus", PartType.EXPORT_BUS, PartExportBus::new );
+		this.fluidExportBus = createPart(registry, "fluid_export_bus", PartType.FLUID_EXPORT_BUS, PartFluidExportBus::new );
+		this.levelEmitter = createPart(registry, "level_emitter", PartType.LEVEL_EMITTER, PartLevelEmitter::new );
+		this.fluidLevelEmitter = createPart(registry, "fluid_level_emitter", PartType.FLUID_LEVEL_EMITTER, PartFluidLevelEmitter::new );
+		this.annihilationPlane = createPart(registry, "annihilation_plane", PartType.ANNIHILATION_PLANE, PartAnnihilationPlane::new );
+		this.identityAnnihilationPlane = createPart(registry, "identity_annihiliation_plane", PartType.IDENTITY_ANNIHILATION_PLANE, PartIdentityAnnihilationPlane::new );
+		this.fluidAnnihilationPlane = createPart(registry, "fluid_annihilation_plane", PartType.FLUID_ANNIHILATION_PLANE, PartFluidAnnihilationPlane::new );
+		this.formationPlane = createPart(registry, "formation_plane", PartType.FORMATION_PLANE, PartFormationPlane::new );
+		this.fluidFormationPlane = createPart(registry, "fluid_formation_plane", PartType.FLUID_FORMATION_PLANE, PartFluidFormationPlane::new );
+		this.patternTerminal = createPart(registry, "pattern_terminal", PartType.PATTERN_TERMINAL, PartPatternTerminal::new );
+		this.craftingTerminal = createPart(registry, "crafting_terminal", PartType.CRAFTING_TERMINAL, PartCraftingTerminal::new );
+		this.terminal = createPart(registry, "terminal", PartType.TERMINAL, PartTerminal::new );
+		this.storageMonitor = createPart(registry, "storage_monitor", PartType.STORAGE_MONITOR, PartStorageMonitor::new );
+		this.conversionMonitor = createPart(registry, "conversion_monitor", PartType.CONVERSION_MONITOR, PartConversionMonitor::new );
+		this.iface = createPart(registry, "cable_interface", PartType.INTERFACE, PartInterface::new );
+		this.fluidIface = createPart(registry, "cable_fluid_interface", PartType.FLUID_INTERFACE, PartFluidInterface::new );
+		this.p2PTunnelME = createPart(registry, "me_tunnel", PartType.P2P_TUNNEL_ME, PartP2PTunnelME::new );
+		this.p2PTunnelRedstone = createPart(registry, "redstone_tunnel", PartType.P2P_TUNNEL_REDSTONE, PartP2PRedstone::new );
+		this.p2PTunnelItems = createPart(registry, "item_tunnel", PartType.P2P_TUNNEL_ITEMS, PartP2PItems::new );
+		this.p2PTunnelFluids = createPart(registry, "fluid_tunnel", PartType.P2P_TUNNEL_FLUIDS, PartP2PFluids::new );
+		this.p2PTunnelEU = null; // FIXME createPart( "tunnel.eu", PartType.P2P_TUNNEL_IC2, PartP2PIC2Power::new);
+		this.p2PTunnelFE = createPart(registry, "fe_tunnel", PartType.P2P_TUNNEL_FE, PartP2PFEPower::new );
+		this.p2PTunnelLight = createPart(registry, "light_tunnel", PartType.P2P_TUNNEL_LIGHT, PartP2PLight::new );
+		this.interfaceTerminal = createPart(registry, "interface_terminal", PartType.INTERFACE_TERMINAL, PartInterfaceTerminal::new );
+		this.fluidTerminal = createPart(registry, "fluid_terminal", PartType.FLUID_TERMINAL, PartFluidTerminal::new );
 	}
 
-	private static AEColoredItemDefinition constructColoredDefinition( final ItemPart target, final PartType type )
+	private <T extends IPart> IItemDefinition createPart(FeatureFactory registry, String id, PartType type, Function<ItemStack, T> factory) {
+		return registry.item(id, props -> new ItemPart<>(props, type, factory))
+				.itemGroup(CreativeTab.instance)
+				.build();
+	}
+
+	private <T extends IPart> AEColoredItemDefinition constructColoredDefinition(FeatureFactory registry, String idSuffix, PartType type, Function<ItemStack, T> factory)
 	{
 		final ColoredItemDefinition definition = new ColoredItemDefinition();
 
 		for( final AEColor color : AEColor.values() )
 		{
-			final ItemStackSrc multiPartSource = target.createPart( type, color );
+			String id = color.registryPrefix + idSuffix;
 
-			definition.add( color, multiPartSource );
+			IItemDefinition itemDef = registry.item(id, props -> new ColoredPartItem<>(props, type, factory, color))
+					.itemGroup(CreativeTab.instance)
+					.build();
+
+			definition.add( color, new ItemStackSrc(itemDef.item(), ActivityState.Enabled) );
 		}
 
 		return definition;
@@ -191,34 +196,6 @@ public final class ApiParts implements IParts
 	public AEColoredItemDefinition cableDenseSmart()
 	{
 		return this.cableDenseSmart;
-	}
-
-	@Override
-	public AEColoredItemDefinition lumenCableSmart()
-	{
-		throw new MissingDefinitionException( "Lumen Smart Cable has yet to be implemented." );
-		// return this.lumenCableSmart;
-	}
-
-	@Override
-	public AEColoredItemDefinition lumenCableCovered()
-	{
-		throw new MissingDefinitionException( "Lumen Covered Cable has yet to be implemented." );
-		// return this.lumenCableCovered;
-	}
-
-	@Override
-	public AEColoredItemDefinition lumenCableGlass()
-	{
-		throw new MissingDefinitionException( "Lumen Glass Cable has yet to be implemented." );
-		// return this.lumenCableGlass;
-	}
-
-	@Override
-	public AEColoredItemDefinition lumenDenseCableSmart()
-	{
-		throw new MissingDefinitionException( "Lumen Dense Cable has yet to be implemented." );
-		// return this.lumenCableDense;
 	}
 
 	@Override

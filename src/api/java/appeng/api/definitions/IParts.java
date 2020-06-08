@@ -42,14 +42,6 @@ public interface IParts
 
 	AEColoredItemDefinition cableDenseSmart();
 
-	AEColoredItemDefinition lumenCableSmart();
-
-	AEColoredItemDefinition lumenCableCovered();
-
-	AEColoredItemDefinition lumenCableGlass();
-
-	AEColoredItemDefinition lumenDenseCableSmart();
-
 	IItemDefinition quartzFiber();
 
 	IItemDefinition toggleBus();

@@ -65,9 +65,6 @@ public class CableBusBakedModel implements IBakedModel
 
 	private final TextureAtlasSprite particleTexture;
 
-	private final AtlasTexture textureMap = Minecraft.getInstance().getModelManager().getAtlasTexture( AtlasTexture.LOCATION_BLOCKS_TEXTURE );
-	private final TextureAtlasSprite missingTexture = textureMap.getSprite( MissingTextureSprite.getLocation() );
-
 	CableBusBakedModel( CableBuilder cableBuilder, FacadeBuilder facadeBuilder, Map<ResourceLocation, IBakedModel> partModels, TextureAtlasSprite particleTexture )
 	{
 		this.cableBuilder = cableBuilder;
@@ -317,7 +314,7 @@ public class CableBusBakedModel implements IBakedModel
 
 				// If a part sub-model has no particle texture (indicated by it being the missing texture),
 				// don't add it, so we don't get ugly missing texture break particles.
-				if( this.missingTexture != particleTexture )
+				if( isMissingTexture(particleTexture) )
 				{
 					result.add( particleTexture );
 				}
@@ -325,6 +322,10 @@ public class CableBusBakedModel implements IBakedModel
 		}
 
 		return result;
+	}
+
+	private boolean isMissingTexture(TextureAtlasSprite particleTexture) {
+		return particleTexture instanceof MissingTextureSprite;
 	}
 
 	@Override
