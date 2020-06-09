@@ -25,6 +25,7 @@ import appeng.api.parts.IPart;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
 import appeng.bootstrap.FeatureFactory;
+import appeng.client.render.cablebus.P2PTunnelFrequencyModel;
 import appeng.core.AppEng;
 import appeng.core.CreativeTab;
 import appeng.core.features.*;
@@ -145,71 +146,8 @@ public final class ApiParts implements IParts
 	private void registerPartModels(PartModels partModels) {
 
 		// Register the built-in models for annihilation planes
-		ResourceLocation annihilationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "item/part/annihilation_plane" );
-		ResourceLocation annihilationPlaneOnTexture = new ResourceLocation( AppEng.MOD_ID, "parts/annihilation_plane_on" );
-		ResourceLocation fluidAnnihilationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "item/part/fluid_annihilation_plane" );
-		ResourceLocation fluidAnnihilationPlaneOnTexture = new ResourceLocation( AppEng.MOD_ID, "parts/fluid_annihilation_plane_on" );
-		ResourceLocation identityAnnihilationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "item/part/identity_annihilation_plane" );
-		ResourceLocation identityAnnihilationPlaneOnTexture = new ResourceLocation( AppEng.MOD_ID, "parts/identity_annihilation_plane_on" );
-		ResourceLocation formationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "item/part/formation_plane" );
-		ResourceLocation formationPlaneOnTexture = new ResourceLocation( AppEng.MOD_ID, "parts/formation_plane_on" );
 		ResourceLocation fluidFormationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "item/part/fluid_formation_plane" );
 		ResourceLocation fluidFormationPlaneOnTexture = new ResourceLocation( AppEng.MOD_ID, "parts/fluid_formation_plane_on" );
-		ResourceLocation sidesTexture = new ResourceLocation( AppEng.MOD_ID, "parts/plane_sides" );
-		ResourceLocation backTexture = new ResourceLocation( AppEng.MOD_ID, "parts/transition_plane_back" );
-
-		List<String> modelNames = new ArrayList<>();
-
-// FIXME		for( PlaneConnections connection : PlaneConnections.PERMUTATIONS )
-// FIXME		{
-// FIXME			PlaneModel model = new PlaneModel( annihilationPlaneTexture, sidesTexture, backTexture, connection );
-// FIXME			rendering.builtInModel( "models/part/annihilation_plane_" + connection.getFilenameSuffix(), model );
-// FIXME			modelNames.add( "part/annihilation_plane_" + connection.getFilenameSuffix() );
-// FIXME
-// FIXME			model = new PlaneModel( annihilationPlaneOnTexture, sidesTexture, backTexture, connection );
-// FIXME			rendering.builtInModel( "models/part/annihilation_plane_on_" + connection.getFilenameSuffix(), model );
-// FIXME			modelNames.add( "part/annihilation_plane_on_" + connection.getFilenameSuffix() );
-// FIXME
-// FIXME			model = new PlaneModel( fluidAnnihilationPlaneTexture, sidesTexture, backTexture, connection );
-// FIXME			rendering.builtInModel( "models/part/fluid_annihilation_plane_" + connection.getFilenameSuffix(), model );
-// FIXME			modelNames.add( "part/fluid_annihilation_plane_" + connection.getFilenameSuffix() );
-// FIXME
-// FIXME			model = new PlaneModel( fluidAnnihilationPlaneOnTexture, sidesTexture, backTexture, connection );
-// FIXME			rendering.builtInModel( "models/part/fluid_annihilation_plane_on_" + connection.getFilenameSuffix(), model );
-// FIXME			modelNames.add( "part/fluid_annihilation_plane_on_" + connection.getFilenameSuffix() );
-// FIXME
-// FIXME			model = new PlaneModel( identityAnnihilationPlaneTexture, sidesTexture, backTexture, connection );
-// FIXME			rendering.builtInModel( "models/part/identity_annihilation_plane_" + connection.getFilenameSuffix(), model );
-// FIXME			modelNames.add( "part/identity_annihilation_plane_" + connection.getFilenameSuffix() );
-// FIXME
-// FIXME			model = new PlaneModel( identityAnnihilationPlaneOnTexture, sidesTexture, backTexture, connection );
-// FIXME			rendering.builtInModel( "models/part/identity_annihilation_plane_on_" + connection.getFilenameSuffix(), model );
-// FIXME			modelNames.add( "part/identity_annihilation_plane_on_" + connection.getFilenameSuffix() );
-// FIXME
-// FIXME			model = new PlaneModel( formationPlaneTexture, sidesTexture, backTexture, connection );
-// FIXME			rendering.builtInModel( "models/part/formation_plane_" + connection.getFilenameSuffix(), model );
-// FIXME			modelNames.add( "part/formation_plane_" + connection.getFilenameSuffix() );
-// FIXME
-// FIXME			model = new PlaneModel( formationPlaneOnTexture, sidesTexture, backTexture, connection );
-// FIXME			rendering.builtInModel( "models/part/formation_plane_on_" + connection.getFilenameSuffix(), model );
-// FIXME			modelNames.add( "part/formation_plane_on_" + connection.getFilenameSuffix() );
-// FIXME
-// FIXME			model = new PlaneModel( fluidFormationPlaneTexture, sidesTexture, backTexture, connection );
-// FIXME			rendering.builtInModel( "models/part/fluid_formation_plane_" + connection.getFilenameSuffix(), model );
-// FIXME			modelNames.add( "part/fluid_formation_plane_" + connection.getFilenameSuffix() );
-// FIXME
-// FIXME			model = new PlaneModel( fluidFormationPlaneOnTexture, sidesTexture, backTexture, connection );
-// FIXME			rendering.builtInModel( "models/part/fluid_formation_plane_on_" + connection.getFilenameSuffix(), model );
-// FIXME			modelNames.add( "part/fluid_formation_plane_on_" + connection.getFilenameSuffix() );
-// FIXME		}
-// FIXME
-// FIXME		// base p2p model with frequency
-// FIXME		rendering.builtInModel( "models/part/builtin/p2p_tunnel_frequency", new P2PTunnelFrequencyModel() );
-
-		List<ResourceLocation> partResourceLocs = modelNames.stream()
-				.map( name -> new ResourceLocation( AppEng.MOD_ID, name ) )
-				.collect( Collectors.toList() );
-		partModels.registerModels( partResourceLocs );
 
 		// Register all part models
 		for( PartType partType : PartType.values() )

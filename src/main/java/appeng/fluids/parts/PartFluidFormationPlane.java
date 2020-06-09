@@ -10,6 +10,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.ContainerFormationPlane;
 import appeng.fluids.container.ContainerFluidFormationPlane;
+import appeng.parts.automation.PlaneModelData;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -22,6 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.fluid.Fluid;
+import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -57,10 +59,12 @@ import appeng.parts.automation.PlaneModels;
 import appeng.util.Platform;
 import appeng.util.prioritylist.PrecisePriorityList;
 
+import javax.annotation.Nonnull;
+
 
 public class PartFluidFormationPlane extends PartAbstractFormationPlane<IAEFluidStack> implements IAEFluidInventory
 {
-	private static final PlaneModels MODELS = new PlaneModels( "part/fluid_formation_plane_", "part/fluid_formation_plane_on_" );
+	private static final PlaneModels MODELS = new PlaneModels( "part/fluid_formation_plane", "part/fluid_formation_plane_on" );
 
 	@PartModels
 	public static List<IPartModel> getModels()
@@ -219,7 +223,13 @@ public class PartFluidFormationPlane extends PartAbstractFormationPlane<IAEFluid
 	@Override
 	public IPartModel getStaticModels()
 	{
-		return MODELS.getModel( this.getConnections(), this.isPowered(), this.isActive() );
+		return MODELS.getModel( this.isPowered(), this.isActive() );
+	}
+
+	@Nonnull
+	@Override
+	public IModelData getModelData() {
+		return new PlaneModelData(getConnections());
 	}
 
 	public IAEFluidTank getConfig()

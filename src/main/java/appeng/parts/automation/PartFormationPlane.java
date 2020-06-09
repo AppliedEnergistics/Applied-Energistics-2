@@ -43,6 +43,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.items.IItemHandler;
 
@@ -78,13 +79,14 @@ import appeng.util.inv.InvOperation;
 import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 
 public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 {
 
-	private static final PlaneModels MODELS = new PlaneModels( "part/formation_plane_", "part/formation_plane_on_" );
+	private static final PlaneModels MODELS = new PlaneModels( "part/formation_plane", "part/formation_plane_on" );
 
 	@PartModels
 	public static List<IPartModel> getModels()
@@ -374,7 +376,13 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 	@Override
 	public IPartModel getStaticModels()
 	{
-		return MODELS.getModel( this.getConnections(), this.isPowered(), this.isActive() );
+		return MODELS.getModel( this.isPowered(), this.isActive() );
+	}
+
+	@Nonnull
+	@Override
+	public IModelData getModelData() {
+		return new PlaneModelData(getConnections());
 	}
 
 	@Override

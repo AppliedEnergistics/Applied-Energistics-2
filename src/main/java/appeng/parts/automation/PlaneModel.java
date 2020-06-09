@@ -28,55 +28,43 @@ import javax.annotation.Nullable;
 
 import com.mojang.datafixers.util.Pair;
 
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.client.renderer.model.IUnbakedModel;
-import net.minecraft.client.renderer.model.Material;
-import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.IModelConfiguration;
+import net.minecraftforge.client.model.geometry.IModelGeometry;
 
 
 /**
  * Built-in model for annihilation planes that supports connected textures.
  */
-public class PlaneModel implements IUnbakedModel
+public class PlaneModel implements IModelGeometry<PlaneModel>
 {
 
 	private final Material frontTexture;
 	private final Material sidesTexture;
 	private final Material backTexture;
-	private final PlaneConnections connections;
 
-	public PlaneModel( ResourceLocation frontTexture, ResourceLocation sidesTexture, ResourceLocation backTexture, PlaneConnections connections )
+	public PlaneModel( ResourceLocation frontTexture, ResourceLocation sidesTexture, ResourceLocation backTexture )
 	{
 		this.frontTexture = new Material( AtlasTexture.LOCATION_BLOCKS_TEXTURE, frontTexture );
 		this.sidesTexture = new Material( AtlasTexture.LOCATION_BLOCKS_TEXTURE, sidesTexture );
 		this.backTexture = new Material( AtlasTexture.LOCATION_BLOCKS_TEXTURE, backTexture );
-		this.connections = connections;
 	}
 
 	@Override
-	public Collection<ResourceLocation> getDependencies()
-	{
-		return Collections.emptyList();
+	public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {
+		TextureAtlasSprite frontSprite = spriteGetter.apply( this.frontTexture );
+		TextureAtlasSprite sidesSprite = spriteGetter.apply( this.sidesTexture );
+		TextureAtlasSprite backSprite = spriteGetter.apply( this.backTexture );
+
+		return new PlaneBakedModel( frontSprite, sidesSprite, backSprite );
 	}
 
 	@Override
-	public Collection<Material> getTextures( Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors )
-	{
+	public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
 		return Arrays.asList( frontTexture, sidesTexture, backTexture );
 	}
 
-	@Nullable
-	@Override
-	public IBakedModel bakeModel( ModelBakery modelBakeryIn, Function<Material, TextureAtlasSprite> spriteGetterIn, IModelTransform transformIn, ResourceLocation locationIn )
-	{
-		TextureAtlasSprite frontSprite = spriteGetterIn.apply( this.frontTexture );
-		TextureAtlasSprite sidesSprite = spriteGetterIn.apply( this.sidesTexture );
-		TextureAtlasSprite backSprite = spriteGetterIn.apply( this.backTexture );
-
-		return new PlaneBakedModel( frontSprite, sidesSprite, backSprite, this.connections );
-	}
 }

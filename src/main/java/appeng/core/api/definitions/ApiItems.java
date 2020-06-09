@@ -27,10 +27,7 @@ import appeng.api.features.AEFeature;
 import appeng.client.render.crafting.EncodedPatternRenderer;
 import appeng.client.render.crafting.ItemEncodedPatternRendering;
 import appeng.core.CreativeTabFacade;
-import appeng.debug.ToolDebugCard;
-import appeng.debug.ToolEraser;
-import appeng.debug.ToolMeteoritePlacer;
-import appeng.debug.ToolReplicatorCard;
+import appeng.debug.*;
 import appeng.entity.EntityGrowingCrystal;
 import appeng.fluids.items.BasicFluidStorageCell;
 import appeng.fluids.items.FluidDummyItem;
@@ -310,6 +307,7 @@ public final class ApiItems implements IItems
 		this.toolMeteoritePlacer = debugTools.item( "debug_meteorite_placer", ToolMeteoritePlacer::new ).build();
 		this.toolDebugCard = debugTools.item( "debug_card", ToolDebugCard::new ).build();
 		this.toolReplicatorCard = debugTools.item( "debug_replicator_card", ToolReplicatorCard::new ).build();
+		debugTools.item( "debug_part_placer", ToolDebugPartPlacer::new ).build();
 
 		this.dummyFluidItem = registry.item( "dummy_fluid_item", FluidDummyItem::new ).rendering( new FluidDummyItemRendering() ).build();
 	}

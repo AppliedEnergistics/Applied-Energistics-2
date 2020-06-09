@@ -4,6 +4,7 @@ package appeng.fluids.parts;
 
 import java.util.List;
 
+import appeng.parts.automation.PlaneModelData;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -24,6 +25,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -64,10 +66,12 @@ import appeng.parts.automation.PlaneConnections;
 import appeng.parts.automation.PlaneModels;
 import appeng.util.Platform;
 
+import javax.annotation.Nonnull;
+
 
 public class PartFluidAnnihilationPlane extends PartBasicState implements IGridTickable
 {
-	private static final PlaneModels MODELS = new PlaneModels( "part/fluid_annihilation_plane_", "part/fluid_annihilation_plane_on_" );
+	private static final PlaneModels MODELS = new PlaneModels( "part/fluid_annihilation_plane", "part/fluid_annihilation_plane_on" );
 
 	@PartModels
 	public static List<IPartModel> getModels()
@@ -335,6 +339,13 @@ public class PartFluidAnnihilationPlane extends PartBasicState implements IGridT
 	@Override
 	public IPartModel getStaticModels()
 	{
-		return MODELS.getModel( this.getConnections(), this.isPowered(), this.isActive() );
+		return MODELS.getModel( this.isPowered(), this.isActive() );
 	}
+
+	@Nonnull
+	@Override
+	public IModelData getModelData() {
+		return new PlaneModelData(getConnections());
+	}
+
 }

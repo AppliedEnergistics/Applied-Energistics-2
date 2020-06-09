@@ -34,6 +34,7 @@ import appeng.client.ClientHelper;
 import appeng.client.render.DummyFluidItemModel;
 import appeng.client.render.SimpleModelLoader;
 import appeng.client.render.cablebus.CableBusModel;
+import appeng.client.render.cablebus.P2PTunnelFrequencyModel;
 import appeng.client.render.crafting.CraftingCubeModelLoader;
 import appeng.client.render.model.*;
 import appeng.client.render.spatial.SpatialPylonModel;
@@ -43,6 +44,8 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.worlddata.WorldData;
 import appeng.hooks.TickHandler;
 import appeng.parts.PartPlacement;
+import appeng.parts.automation.PlaneModel;
+import appeng.parts.automation.PlaneModelLoader;
 import appeng.server.AECommand;
 import appeng.server.ServerHelper;
 import com.google.common.base.Stopwatch;
@@ -98,12 +101,11 @@ public final class AppEng
 
 	private static AppEng INSTANCE;
 
-//FIXME	private final Registration registration;
+	private final Registration registration;
 
 	/**
 	 * determined in pre-init but used in init
 	 */
-	// FIXME private ExportConfig exportConfig;
 
 	public AppEng()
 	{
@@ -125,7 +127,7 @@ public final class AppEng
 		CreativeTabFacade.init();
 
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-		Registration registration = new Registration();
+		registration = new Registration();
 		modEventBus.addGenericListener(Block.class, registration::registerBlocks);
 		modEventBus.addGenericListener(Item.class, registration::registerItems);
 		modEventBus.addGenericListener(EntityType.class, registration::registerEntities);
@@ -195,10 +197,11 @@ public final class AppEng
 		addBuiltInModel("spatial_pylon", SpatialPylonModel::new);
 		addBuiltInModel("paint_splotches", PaintSplotchesModel::new);
 		addBuiltInModel("quantum_bridge_formed", QnbFormedModel::new);
+		addBuiltInModel("p2p_tunnel_frequency", P2PTunnelFrequencyModel::new);
+		ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "part_plane"), PlaneModelLoader.INSTANCE);
 		ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "crafting_cube"), CraftingCubeModelLoader.INSTANCE);
 		ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "uvlightmap"), UVLModelLoader.INSTANCE);
 		addBuiltInModel("cable_bus", () -> new CableBusModel((PartModels) Api.INSTANCE.registries().partModels()));
-
 
 	}
 
@@ -232,7 +235,7 @@ public final class AppEng
 
 	public AdvancementTriggers getAdvancementTriggers()
 	{
-		return null; // FIXME this.registration.advancementTriggers;
+		return this.registration.advancementTriggers;
 	}
 
 //	@EventHandler
@@ -249,8 +252,6 @@ public final class AppEng
 //
 //		AEConfig.init( configFile );
 //		FacadeConfig.init( facadeFile );
-//
-//		this.exportConfig = new ForgeExportConfig( recipeConfiguration );
 //
 //		AELog.info( "Pre Initialization ( started )" );
 //
@@ -285,35 +286,6 @@ public final class AppEng
 		AELog.info( "Starting " + serviceName );
 		thread.start();
 	}
-
-//	@EventHandler
-//	private void init( final FMLCommonSetupEvent event )
-//	{
-//		final Stopwatch start = Stopwatch.createStarted();
-//		AELog.info( "Initialization ( started )" );
-//
-//		AppEng.proxy.init();
-//
-//		if( this.exportConfig.isExportingItemNamesEnabled() )
-//		{
-//			if( FMLCommonHandler.instance().getSide().isClient() )
-//			{
-//				final ExportProcess process = new ExportProcess( this.configDirectory, this.exportConfig );
-//				final Thread exportProcessThread = new Thread( process );
-//
-//				this.startService( "AE2 CSV Export", exportProcessThread );
-//			}
-//			else
-//			{
-//				AELog.info( "Disabling item.csv export for custom recipes, since creative tab information is only available on the client." );
-//			}
-//		}
-//
-//		this.registration.initialize( event, this.configDirectory );
-//		IntegrationRegistry.INSTANCE.init();
-//
-//		AELog.info( "Initialization ( ended after " + start.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
-//	}
 
 	private void registerNetworkHandler()
 	{

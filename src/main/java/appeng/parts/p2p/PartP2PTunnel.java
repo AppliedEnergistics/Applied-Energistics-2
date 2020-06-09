@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
+import appeng.client.render.cablebus.P2PTunnelFrequencyModelData;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -52,6 +53,9 @@ import appeng.me.cache.P2PCache;
 import appeng.me.cache.helpers.TunnelCollection;
 import appeng.parts.PartBasicState;
 import appeng.util.Platform;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelProperty;
 
 
 public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState
@@ -437,7 +441,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	}
 
 	@Override
-	public Long getRenderFlag()
+	public IModelData getModelData()
 	{
 		long ret = Short.toUnsignedLong( this.getFrequency() );
 
@@ -446,6 +450,6 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 			ret |= 0x10000L;
 		}
 
-		return ret;
+		return new P2PTunnelFrequencyModelData(ret);
 	}
 }

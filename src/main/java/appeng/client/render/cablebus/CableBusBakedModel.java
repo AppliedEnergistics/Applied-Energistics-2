@@ -31,13 +31,11 @@ import java.util.Random;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
@@ -46,7 +44,6 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 
-import appeng.api.parts.IPartBakedModel;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
@@ -116,6 +113,11 @@ public class CableBusBakedModel implements IBakedModel
 					continue;
 				}
 
+				IModelData partModelData = renderState.getPartModelData().get(facing);
+				if (partModelData == null) {
+					partModelData = EmptyModelData.INSTANCE;
+				}
+
 				for( ResourceLocation model : partModel.getModels() )
 				{
 					IBakedModel bakedModel = this.partModels.get( model );
@@ -125,15 +127,7 @@ public class CableBusBakedModel implements IBakedModel
 						throw new IllegalStateException( "Trying to use an unregistered part model: " + model );
 					}
 
-					List<BakedQuad> partQuads;
-					if( bakedModel instanceof IPartBakedModel )
-					{
-						partQuads = ( (IPartBakedModel) bakedModel ).getPartQuads( renderState.getPartFlags().get( facing ), rand );
-					}
-					else
-					{
-						partQuads = bakedModel.getQuads( state, null, rand );
-					}
+					List<BakedQuad> partQuads = bakedModel.getQuads(state, null, rand, partModelData);
 
 					// Rotate quads accordingly
 					QuadRotator rotator = new QuadRotator();

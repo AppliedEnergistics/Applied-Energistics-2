@@ -30,6 +30,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ILightReader;
+import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 
 import appeng.api.parts.IPartModel;
@@ -84,7 +85,8 @@ public class CableBusRenderState
 	// facades on this cable bus
 	private List<AxisAlignedBB> boundingBoxes = new ArrayList<>();
 
-	private EnumMap<Direction, Long> partFlags = new EnumMap<>( Direction.class );
+	// Additional model data passed to the part models
+	private EnumMap<Direction, IModelData> partModelData = new EnumMap<>( Direction.class );
 
 	public CableCoreType getCoreType()
 	{
@@ -186,9 +188,9 @@ public class CableBusRenderState
 		return this.boundingBoxes;
 	}
 
-	public EnumMap<Direction, Long> getPartFlags()
+	public EnumMap<Direction, IModelData> getPartModelData()
 	{
-		return this.partFlags;
+		return this.partModelData;
 	}
 
 	@Override
@@ -203,7 +205,7 @@ public class CableBusRenderState
 		result = prime * result + ( ( this.channelsOnSide == null ) ? 0 : this.channelsOnSide.hashCode() );
 		result = prime * result + ( ( this.connectionTypes == null ) ? 0 : this.connectionTypes.hashCode() );
 		result = prime * result + ( ( this.coreType == null ) ? 0 : this.coreType.hashCode() );
-		result = prime * result + ( ( this.partFlags == null ) ? 0 : this.partFlags.hashCode() );
+		result = prime * result + ( ( this.partModelData == null ) ? 0 : this.partModelData.hashCode() );
 		return result;
 	}
 
@@ -228,6 +230,6 @@ public class CableBusRenderState
 		return this.cableColor == other.cableColor && this.cableType == other.cableType && this.coreType == other.coreType && Objects
 				.equals( this.attachmentConnections, other.attachmentConnections ) && Objects.equals( this.cableBusAdjacent, other.cableBusAdjacent ) && Objects
 						.equals( this.channelsOnSide, other.channelsOnSide ) && Objects.equals( this.connectionTypes, other.connectionTypes ) && Objects
-								.equals( this.partFlags, other.partFlags );
+								.equals( this.partModelData, other.partModelData);
 	}
 }

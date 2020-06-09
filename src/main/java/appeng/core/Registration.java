@@ -36,6 +36,7 @@ import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
+import appeng.bootstrap.ICriterionTriggerRegistry;
 import appeng.bootstrap.IModelRegistry;
 import appeng.bootstrap.components.*;
 import appeng.client.gui.implementations.GuiCellWorkbench;
@@ -86,6 +87,7 @@ import appeng.core.features.registries.PartModels;
 import appeng.core.features.registries.cell.BasicCellHandler;
 import appeng.core.features.registries.cell.BasicItemCellGuiHandler;
 import appeng.core.features.registries.cell.CreativeCellHandler;
+import appeng.core.stats.AdvancementTriggers;
 import appeng.core.stats.AeStats;
 import appeng.core.stats.PartItemPredicate;
 import appeng.fluids.client.gui.*;
@@ -97,6 +99,9 @@ import appeng.recipes.game.DisassembleRecipe;
 import appeng.recipes.ingredients.PartIngredientSerializer;
 import appeng.server.AECommand;
 import appeng.tile.AEBaseTile;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.ICriterionInstance;
+import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
@@ -121,7 +126,10 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.network.IContainerFactory;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
+
+import java.lang.reflect.Method;
 
 
 final class Registration
@@ -129,12 +137,13 @@ final class Registration
 
 	public Registration() {
 		AeStats.register();
+		advancementTriggers = new AdvancementTriggers( CriteriaTriggers::register );
 	}
 
 	//	DimensionType storageDimensionType;
 //	int storageDimensionID;
 //	Biome storageBiome;
-//	AdvancementTriggers advancementTriggers;
+	AdvancementTriggers advancementTriggers;
 //
 //	void preInitialize( final FMLPreInitializationEvent event )
 //	{
@@ -237,8 +246,6 @@ final class Registration
 		} );
 
 		PartItemPredicate.register();
-		// FIXME Stats.register();
-		// FIXME this.advancementTriggers = new AdvancementTriggers( new CriterionTrigggerRegistry() );
 	}
 
 //	@SubscribeEvent
@@ -871,31 +878,6 @@ final class Registration
 //		{
 //			ModelLoader.setCustomStateMapper( block, mapper );
 //		}
-//	}
-//
-//	private static class CriterionTrigggerRegistry implements ICriterionTriggerRegistry
-//	{
-//		private Method method;
-//
-//		CriterionTrigggerRegistry()
-//		{
-//			this.method = ReflectionHelper.findMethod( CriteriaTriggers.class, "register", "func_192118_a", ICriterionTrigger.class );
-//			this.method.setAccessible( true );
-//		}
-//
-//		@Override
-//		public void register( ICriterionTrigger<? extends ICriterionInstance> trigger )
-//		{
-//			try
-//			{
-//				this.method.invoke( null, trigger );
-//			}
-//			catch( IllegalAccessException | IllegalArgumentException | InvocationTargetException e )
-//			{
-//				AELog.debug( e );
-//			}
-//		}
-//
 //	}
 
 	public void registerTextures(TextureStitchEvent.Pre event) {

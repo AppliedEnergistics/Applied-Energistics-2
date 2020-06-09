@@ -91,17 +91,6 @@ public enum GuiText
 	Inscriber,
 	QuartzCuttingKnife,
 
-	// tunnel names
-	METunnel,
-	ItemTunnel,
-	RedstoneTunnel,
-	EUTunnel,
-	FluidTunnel,
-	OCTunnel,
-	LightTunnel,
-	FETunnel,
-	PressureTunnel,
-
 	// spatial
 	StoredSize,
 	CellId,

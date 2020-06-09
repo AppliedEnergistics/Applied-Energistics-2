@@ -12,18 +12,19 @@ import com.google.common.cache.CacheBuilder;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
 
-import appeng.api.parts.IPartBakedModel;
 import appeng.api.util.AEColor;
 import appeng.util.Platform;
+import net.minecraftforge.client.model.data.IDynamicBakedModel;
+import net.minecraftforge.client.model.data.IModelData;
 
 
-public class P2PTunnelFrequencyBakedModel implements IBakedModel, IPartBakedModel
+public class P2PTunnelFrequencyBakedModel implements IDynamicBakedModel
 {
+
 	private final TextureAtlasSprite texture;
 
 	private final static Cache<Long, List<BakedQuad>> modelCache = CacheBuilder.newBuilder().maximumSize( 100 ).build();
@@ -41,36 +42,16 @@ public class P2PTunnelFrequencyBakedModel implements IBakedModel, IPartBakedMode
 	}
 
 	@Override
-	public List<BakedQuad> getPartQuads( Long partFlags, Random rand )
+	public List<BakedQuad> getQuads( BlockState state, Direction side, Random rand, IModelData modelData )
 	{
-		try
-		{
-			return modelCache.get( partFlags, () ->
-			{
-				short frequency = 0;
-				boolean active = false;
-				if( partFlags != null )
-				{
-					frequency = (short) ( partFlags.longValue() & 0xffffL );
-					active = ( partFlags.longValue() & 0x10000L ) != 0;
-				}
-				return this.getQuadsForFrequency( frequency, active );
-			} );
-		}
-		catch( ExecutionException e )
+		if( side != null || !(modelData instanceof P2PTunnelFrequencyModelData) )
 		{
 			return Collections.emptyList();
 		}
-	}
 
-	@Override
-	public List<BakedQuad> getQuads( BlockState state, Direction side, Random rand )
-	{
-		if( side != null )
-		{
-			return Collections.emptyList();
-		}
-		return this.getPartQuads( null, rand );
+		P2PTunnelFrequencyModelData freqModelData = (P2PTunnelFrequencyModelData) modelData;
+
+		return this.getPartQuads( freqModelData.getFrequency());
 	}
 
 	private List<BakedQuad> getQuadsForFrequency( final short frequency, final boolean active )
@@ -94,7 +75,7 @@ public class P2PTunnelFrequencyBakedModel implements IBakedModel, IPartBakedMode
 				}
 				else
 				{
-					final float cv[] = c.dye.getColorComponentValues();
+					final float[] cv = c.dye.getColorComponentValues();
 					cb.setColorRGB( cv[0] * 0.5f, cv[1] * 0.5f, cv[2] * 0.5f );
 				}
 
@@ -106,6 +87,23 @@ public class P2PTunnelFrequencyBakedModel implements IBakedModel, IPartBakedMode
 
 		}
 		return cb.getOutput();
+	}
+
+	private List<BakedQuad> getPartQuads(long partFlags)
+	{
+		try
+		{
+			return modelCache.get( partFlags, () ->
+			{
+				short frequency = (short) ( partFlags & 0xffffL );
+				boolean active = ( partFlags & 0x10000L ) != 0;
+				return this.getQuadsForFrequency( frequency, active );
+			} );
+		}
+		catch( ExecutionException e )
+		{
+			return Collections.emptyList();
+		}
 	}
 
 	@Override

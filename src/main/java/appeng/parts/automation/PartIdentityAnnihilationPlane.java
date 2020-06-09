@@ -32,14 +32,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.client.model.data.IModelData;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 
 public class PartIdentityAnnihilationPlane extends PartAnnihilationPlane
 {
 
-	private static final PlaneModels MODELS = new PlaneModels( "part/identity_annihilation_plane_", "part/identity_annihilation_plane_on_" );
+	private static final PlaneModels MODELS = new PlaneModels( "part/identity_annihilation_plane", "part/identity_annihilation_plane_on" );
 
 	@PartModels
 	public static List<IPartModel> getModels()
@@ -90,7 +92,13 @@ public class PartIdentityAnnihilationPlane extends PartAnnihilationPlane
 	@Override
 	public IPartModel getStaticModels()
 	{
-		return MODELS.getModel( this.getConnections(), this.isPowered(), this.isActive() );
+		return MODELS.getModel( this.isPowered(), this.isActive() );
+	}
+
+	@Nonnull
+	@Override
+	public IModelData getModelData() {
+		return new PlaneModelData(getConnections());
 	}
 
 }

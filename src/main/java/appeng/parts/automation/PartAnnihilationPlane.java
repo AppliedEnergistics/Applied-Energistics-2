@@ -73,15 +73,18 @@ import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootParameters;
+import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
+
+import javax.annotation.Nonnull;
 
 
 public class PartAnnihilationPlane extends PartBasicState implements IGridTickable, IWorldCallable<TickRateModulation>
 {
 
-	private static final PlaneModels MODELS = new PlaneModels( "part/annihilation_plane_", "part/annihilation_plane_on_" );
+	private static final PlaneModels MODELS = new PlaneModels( "part/annihilation_plane", "part/annihilation_plane_on" );
 
 	@PartModels
 	public static List<IPartModel> getModels()
@@ -576,6 +579,8 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	{
 		this.isAccepting = true;
 
+		getTile().requestModelDataUpdate();
+
 		try
 		{
 			this.getProxy().getTick().alertDevice( this.getProxy().getNode() );
@@ -589,7 +594,13 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	@Override
 	public IPartModel getStaticModels()
 	{
-		return MODELS.getModel( this.getConnections(), this.isPowered(), this.isActive() );
+		return MODELS.getModel( this.isPowered(), this.isActive() );
+	}
+
+	@Nonnull
+	@Override
+	public IModelData getModelData() {
+		return new PlaneModelData(getConnections());
 	}
 
 	/**

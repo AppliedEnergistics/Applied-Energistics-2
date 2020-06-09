@@ -38,7 +38,7 @@ class P2PModels
 	public static final ResourceLocation MODEL_STATUS_OFF = new ResourceLocation( AppEng.MOD_ID, "part/p2p/p2p_tunnel_status_off" );
 	public static final ResourceLocation MODEL_STATUS_ON = new ResourceLocation( AppEng.MOD_ID, "part/p2p/p2p_tunnel_status_on" );
 	public static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = new ResourceLocation( AppEng.MOD_ID, "part/p2p/p2p_tunnel_status_has_channel" );
-	public static final ResourceLocation MODEL_FREQUENCY = new ResourceLocation( AppEng.MOD_ID, "part/builtin/p2p_tunnel_frequency" );
+	public static final ResourceLocation MODEL_FREQUENCY = new ResourceLocation( AppEng.MOD_ID, "part/p2p/p2p_tunnel_frequency" );
 
 	private final IPartModel modelsOff;
 	private final IPartModel modelsOn;

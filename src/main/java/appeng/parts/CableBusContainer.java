@@ -1243,7 +1243,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 				continue;
 			}
 
-			renderState.getPartFlags().put( facing, part.getRenderFlag() );
+			renderState.getPartModelData().put( facing, part.getModelData() );
 
 			// This will add the part's bounding boxes to the render state, which is required for facades
 			final AEPartLocation loc = AEPartLocation.fromFacing( facing );

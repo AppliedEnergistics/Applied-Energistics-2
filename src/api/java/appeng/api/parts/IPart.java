@@ -46,6 +46,8 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.common.capabilities.Capability;
 
 import appeng.api.networking.IGridNode;
@@ -346,13 +348,14 @@ public interface IPart extends IBoxProvider, ICustomCableConnection
 	}
 
 	/**
-	 * Flag to be passed to the renderer.
+	 * Additional model data to be passed to the models for rendering this part.
 	 *
-	 * @return flag or null
+	 * @return The model data to pass to the model. Only useful if custom models are used.
 	 */
-	default Long getRenderFlag()
+	@Nonnull
+	default IModelData getModelData()
 	{
-		return null;
+		return EmptyModelData.INSTANCE;
 	}
 
 }
