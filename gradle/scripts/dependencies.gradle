@@ -19,6 +19,11 @@
 repositories {
     mavenLocal()
 
+    maven { // modmaven, maven proxy
+        name 'modmaven'
+        url "https://modmaven.k-4u.nl/"
+    }
+
     maven {
         name "Mobius"
         url "http://mobiusstrip.eu/maven"
@@ -49,7 +54,7 @@ repositories {
         url "http://maven.tterrag.com/"
     }
 
-    maven { // McJtyLib
+    maven {
         name 'mcjty'
         url "http://maven.k-4u.nl/"
     }
@@ -64,39 +69,18 @@ repositories {
         url "http://maven.blamejared.com/"
     }
 
-    maven { // modmaven, maven proxy
-        name 'modmaven'
-        url "https://modmaven.k-4u.nl/"
-    }
-
     maven {
 		name = "CurseForge"
 		url = "https://minecraft.curseforge.com/api/maven/"
 	}
 }
 
-configurations {
-    mods
-}
-
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    // installable runtime dependencies
-    mods "mcp.mobius.waila:Hwyla:${hwyla_version}"
-    mods "net.industrial-craft:industrialcraft-2:${ic2_version}:dev"
-    mods "mcjty.theoneprobe:TheOneProbe-${minecraft_version}:${top_version}"
-
     // compile against provided APIs
-    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
-    //compileOnly "mcp.mobius.waila:Hwyla:${hwyla_version}"
-    //compileOnly "net.darkhax.tesla:Tesla-1.12.2:${tesla_version}"
-    //compileOnly "net.industrial-craft:industrialcraft-2:${ic2_version}:api"
+    compileOnly "mezz.jei:jei-${minecraft_version}:${jei_version}:api"
     compileOnly "mcjty.theoneprobe:TheOneProbe-${minecraft_release}:${minecraft_release}-${top_version}:api"
-    //compileOnly "cofh:CoFHCore:${cofhcore_version}:deobf"
-    //compileOnly "CraftTweaker2:CraftTweaker2-API:${crafttweaker_version}"
-	//compileOnly "inventory-tweaks:InventoryTweaks:${inventorytweaks_version}:api"
-    //compileOnly "team.chisel.ctm:CTM:${ctm_version}"
 
     // Runtime, Mods
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
