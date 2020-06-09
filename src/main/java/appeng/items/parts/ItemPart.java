@@ -48,20 +48,14 @@ import java.util.function.Function;
 
 public class ItemPart<T extends IPart> extends AEBaseItem implements IPartItem<T>, IItemGroup
 {
-	private static final int INITIAL_REGISTERED_CAPACITY = PartType.values().length;
-	private static final Comparator<Entry<Integer, PartTypeWithVariant>> REGISTERED_COMPARATOR = new RegisteredComparator();
-
 	private final PartType type;
 
 	private final Function<ItemStack, T> factory;
-
-	private final Map<Integer, PartTypeWithVariant> registered;
 
 	public ItemPart(Properties properties, PartType type, Function<ItemStack, T> factory) {
 		super(properties);
 		this.type = type;
 		this.factory = factory;
-		this.registered = new HashMap<>( INITIAL_REGISTERED_CAPACITY );
 	}
 
 	@Override
@@ -77,38 +71,6 @@ public class ItemPart<T extends IPart> extends AEBaseItem implements IPartItem<T
 		return AEApi.instance().partHelper().placeBus( held, context.getPos(), context.getFace(), player, context.getHand(), context.getWorld() );
 	}
 
-	@Override
-	public String getTranslationKey( final ItemStack is )
-	{
-		Preconditions.checkNotNull( is );
-		return "item.appliedenergistics2.multi_part." + this.getTypeByStack( is ).getTranslationKey().toLowerCase();
-	}
-
-	@Override
-	public ITextComponent getDisplayName(final ItemStack is )
-	{
-		final PartType pt = this.getTypeByStack( is );
-
-		if( pt.isCable() )
-		{
-			final AEColor[] variants = AEColor.values();
-
-			final int itemDamage = is.getDamage();
-			final PartTypeWithVariant registeredPartType = this.registered.get( itemDamage );
-			if( registeredPartType != null )
-			{
-				return super.getDisplayName( is ).appendText(" - ").appendSibling(new TranslationTextComponent(variants[registeredPartType.variant].translationKey));
-			}
-		}
-
-		if( pt.getExtraName() != null )
-		{
-			return super.getDisplayName( is ).appendText(" - ").appendSibling(pt.getExtraName().textComponent());
-		}
-
-		return super.getDisplayName( is );
-	}
-
 	public PartType getType() {
 		return type;
 	}
@@ -116,17 +78,6 @@ public class ItemPart<T extends IPart> extends AEBaseItem implements IPartItem<T
 	@Override
 	public T createPart(ItemStack is) {
 		return factory.apply(is);
-	}
-
-	public int variantOf( final int itemDamage )
-	{
-		final PartTypeWithVariant registeredPartType = this.registered.get( itemDamage );
-		if( registeredPartType != null )
-		{
-			return registeredPartType.variant;
-		}
-
-		return 0;
 	}
 
 	private static PartType getTypeByStack(ItemStack is) {
@@ -198,45 +149,6 @@ public class ItemPart<T extends IPart> extends AEBaseItem implements IPartItem<T
 		}
 
 		return null;
-	}
-
-	private static final class PartTypeWithVariant
-	{
-		private final PartType part;
-		private final int variant;
-
-		private PartTypeWithVariant( final PartType part, final int variant )
-		{
-			assert part != null;
-			assert variant >= 0;
-
-			this.part = part;
-			this.variant = variant;
-		}
-
-		@Override
-		public String toString()
-		{
-			return "PartTypeWithVariant{" + "part=" + this.part + ", variant=" + this.variant + '}';
-		}
-	}
-
-	private static final class RegisteredComparator implements Comparator<Entry<Integer, PartTypeWithVariant>>
-	{
-		@Override
-		public int compare( final Entry<Integer, PartTypeWithVariant> o1, final Entry<Integer, PartTypeWithVariant> o2 )
-		{
-			final String string1 = o1.getValue().part.name();
-			final String string2 = o2.getValue().part.name();
-			final int comparedString = string1.compareTo( string2 );
-
-			if( comparedString == 0 )
-			{
-				return Integer.compare( o1.getKey(), o2.getKey() );
-			}
-
-			return comparedString;
-		}
 	}
 
 }

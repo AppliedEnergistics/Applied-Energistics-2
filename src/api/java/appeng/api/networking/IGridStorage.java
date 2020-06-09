@@ -33,7 +33,7 @@ public interface IGridStorage
 {
 
 	/**
-	 * @return an NBTTagCompound that can be read, and written too.
+	 * @return an CompoundNBT that can be read, and written too.
 	 */
 	@Nonnull
 	CompoundNBT dataObject();

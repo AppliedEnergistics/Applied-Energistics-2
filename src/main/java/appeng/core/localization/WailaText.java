@@ -20,6 +20,8 @@ package appeng.core.localization;
 
 
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 
 public enum WailaText
@@ -62,6 +64,16 @@ public enum WailaText
 	public String getTranslationKey()
 	{
 		return this.root + '.' + this.toString();
+	}
+
+	public ITextComponent textComponent()
+	{
+		return new TranslationTextComponent(this.root + '.' + this.toString());
+	}
+
+	public ITextComponent textComponent(Object... args)
+	{
+		return new TranslationTextComponent(this.root + '.' + this.toString(), args);
 	}
 
 }

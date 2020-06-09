@@ -34,7 +34,7 @@ import net.minecraft.entity.player.PlayerEntity;
 /**
  * The source of any action.
  *
- * This can either be a {@link EntityPlayer} or an {@link IActionHost}.
+ * This can either be a {@link PlayerEntity} or an {@link IActionHost}.
  *
  * In most cases this is used for security checks, but can be used to validate the source itself.
  *

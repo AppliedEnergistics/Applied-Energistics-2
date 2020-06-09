@@ -1556,7 +1556,7 @@ public class Platform
 //
 //	// public static void addStat( final int playerID, final Achievement achievement )
 //	// {
-//	// final EntityPlayer p = AEApi.instance().registries().players().findPlayer( playerID );
+//	// final PlayerEntity p = AEApi.instance().registries().players().findPlayer( playerID );
 //	// if( p != null )
 //	// {
 //	// p.addStat( achievement, 1 );

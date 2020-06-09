@@ -92,7 +92,9 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 		if( materialType == MaterialType.NAME_PRESS )
 		{
 			final CompoundNBT c = stack.getOrCreateTag();
-			lines.add( new StringTextComponent( c.getString( "InscribeName" ) ) );
+			if (c.contains("InscriberName")) {
+				lines.add(new StringTextComponent(c.getString("InscribeName")));
+			}
 		}
 
 		final Upgrades u = this.getType( stack );

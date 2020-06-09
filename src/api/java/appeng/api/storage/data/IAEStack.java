@@ -125,7 +125,7 @@ public interface IAEStack<T extends IAEStack<T>>
 	void decCountRequestable( long i );
 
 	/**
-	 * write to a NBTTagCompound.
+	 * write to a CompoundNBT.
 	 *
 	 * @param i to be written data
 	 */

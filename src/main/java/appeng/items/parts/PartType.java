@@ -32,9 +32,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.parts.IPart;
-import appeng.core.AEConfig;
 import appeng.api.features.AEFeature;
-import appeng.core.localization.GuiText;
 import appeng.parts.automation.PartAnnihilationPlane;
 import appeng.parts.automation.PartExportBus;
 import appeng.parts.automation.PartFormationPlane;
@@ -122,12 +120,12 @@ public enum PartType
 
 	QUARTZ_FIBER(EnumSet.of( AEFeature.QUARTZ_FIBER ), EnumSet.noneOf( IntegrationType.class ), PartQuartzFiber.class ),
 
-	MONITOR(EnumSet.of( AEFeature.PANELS ), EnumSet.noneOf( IntegrationType.class ), PartPanel.class, "itemIlluminatedPanel" ),
+	MONITOR(EnumSet.of( AEFeature.PANELS ), EnumSet.noneOf( IntegrationType.class ), PartPanel.class),
 
 	SEMI_DARK_MONITOR(EnumSet.of( AEFeature.PANELS ), EnumSet
-			.noneOf( IntegrationType.class ), PartSemiDarkPanel.class, "itemIlluminatedPanel" ),
+			.noneOf( IntegrationType.class ), PartSemiDarkPanel.class),
 
-	DARK_MONITOR(EnumSet.of( AEFeature.PANELS ), EnumSet.noneOf( IntegrationType.class ), PartDarkPanel.class, "itemIlluminatedPanel" ),
+	DARK_MONITOR(EnumSet.of( AEFeature.PANELS ), EnumSet.noneOf( IntegrationType.class ), PartDarkPanel.class),
 
 	STORAGE_BUS(EnumSet.of( AEFeature.STORAGE_BUS ), EnumSet.noneOf( IntegrationType.class ), PartStorageBus.class ),
 	FLUID_STORAGE_BUS(EnumSet.of( AEFeature.FLUID_STORAGE_BUS ), EnumSet
@@ -175,74 +173,25 @@ public enum PartType
 	FLUID_INTERFACE(EnumSet.of( AEFeature.FLUID_INTERFACE ), EnumSet.noneOf( IntegrationType.class ), PartFluidInterface.class ),
 
 	P2P_TUNNEL_ME(EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_ME ), EnumSet
-			.noneOf( IntegrationType.class ), PartP2PTunnelME.class, GuiText.METunnel )
-	{
-		@Override
-		String getTranslationKey()
-		{
-			return "p2p_tunnel";
-		}
-	},
+			.noneOf( IntegrationType.class ), PartP2PTunnelME.class),
 
 	P2P_TUNNEL_REDSTONE(EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_REDSTONE ), EnumSet
-			.noneOf( IntegrationType.class ), PartP2PRedstone.class, GuiText.RedstoneTunnel )
-	{
-		@Override
-		String getTranslationKey()
-		{
-			return "p2p_tunnel";
-		}
-	},
+			.noneOf( IntegrationType.class ), PartP2PRedstone.class),
 
 	P2P_TUNNEL_ITEM(EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_ITEMS ), EnumSet
-			.noneOf( IntegrationType.class ), PartP2PItems.class, GuiText.ItemTunnel )
-	{
-		@Override
-		String getTranslationKey()
-		{
-			return "p2p_tunnel";
-		}
-	},
+			.noneOf( IntegrationType.class ), PartP2PItems.class),
 
 	P2P_TUNNEL_FLUID(EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_FLUIDS ), EnumSet
-			.noneOf( IntegrationType.class ), PartP2PFluids.class, GuiText.FluidTunnel )
-	{
-		@Override
-		String getTranslationKey()
-		{
-			return "p2p_tunnel";
-		}
-	},
+			.noneOf( IntegrationType.class ), PartP2PFluids.class),
 
 //FIXME	P2P_TUNNEL_IC2( 465, "p2p_tunnel_ic2", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_EU ), EnumSet
-//FIXME			.of( IntegrationType.IC2 ), PartP2PIC2Power.class, GuiText.EUTunnel )
-//FIXME	{
-//FIXME		@Override
-//FIXME		String getTranslationKey()
-//FIXME		{
-//FIXME			return "p2p_tunnel";
-//FIXME		}
-//FIXME	},
+//FIXME			.of( IntegrationType.IC2 ), PartP2PIC2Power.class ),
 
 	P2P_TUNNEL_LIGHT(EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_LIGHT ), EnumSet
-			.noneOf( IntegrationType.class ), PartP2PLight.class, GuiText.LightTunnel )
-	{
-		@Override
-		String getTranslationKey()
-		{
-			return "p2p_tunnel";
-		}
-	},
+			.noneOf( IntegrationType.class ), PartP2PLight.class),
 
 	P2P_TUNNEL_FE(EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_FE ), EnumSet
-			.noneOf( IntegrationType.class ), PartP2PFEPower.class, GuiText.FETunnel )
-	{
-		@Override
-		String getTranslationKey()
-		{
-			return "p2p_tunnel";
-		}
-	},
+			.noneOf( IntegrationType.class ), PartP2PFEPower.class),
 
 	// P2PTunnelOpenComputers( 468, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelOpenComputers ), EnumSet.of(
 	// IntegrationType.OpenComputers ), PartP2POpenComputers.class, GuiText.OCTunnel ),
@@ -254,32 +203,13 @@ public enum PartType
 
 	private final Set<AEFeature> features;
 	private final Set<IntegrationType> integrations;
-	private final GuiText extraName;
 	@OnlyIn( Dist.CLIENT )
 	private final Set<ResourceLocation> models;
-	private final String oreName;
 
 	PartType(final Set<AEFeature> features, final Set<IntegrationType> integrations, final Class<? extends IPart> c)
 	{
-		this(features, integrations, c, null, null );
-	}
-
-	PartType(final Set<AEFeature> features, final Set<IntegrationType> integrations, final Class<? extends IPart> c, final String oreDict)
-	{
-		this(features, integrations, c, null, oreDict );
-	}
-
-	PartType(final Set<AEFeature> features, final Set<IntegrationType> integrations, final Class<? extends IPart> c, final GuiText en)
-	{
-		this(features, integrations, c, en, null );
-	}
-
-	PartType(final Set<AEFeature> features, final Set<IntegrationType> integrations, final Class<? extends IPart> c, final GuiText en, final String oreDict)
-	{
 		this.features = Collections.unmodifiableSet( features );
 		this.integrations = Collections.unmodifiableSet( integrations );
-		this.extraName = en;
-		this.oreName = oreDict;
 
 		if( c != null )
 		{
@@ -304,21 +234,6 @@ public enum PartType
 	Set<IntegrationType> getIntegrations()
 	{
 		return this.integrations;
-	}
-
-	String getTranslationKey()
-	{
-		return this.name().toLowerCase();
-	}
-
-	GuiText getExtraName()
-	{
-		return this.extraName;
-	}
-
-	public String getOreName()
-	{
-		return this.oreName;
 	}
 
 	public Set<ResourceLocation> getModels()
