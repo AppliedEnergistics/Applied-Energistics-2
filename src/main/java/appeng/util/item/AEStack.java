@@ -19,41 +19,15 @@
 package appeng.util.item;
 
 
-import net.minecraft.network.PacketBuffer;
-
 import appeng.api.storage.data.IAEStack;
 
 
-public abstract class AEStack<StackType extends IAEStack<StackType>> implements IAEStack<StackType>
+public abstract class AEStack<T extends IAEStack<T>> implements IAEStack<T>
 {
 
 	private boolean isCraftable;
 	private long stackSize;
 	private long countRequestable;
-
-	protected static long getPacketValue( final byte type, final PacketBuffer tag )
-	{
-		if( type == 0 )
-		{
-			long l = tag.readByte();
-			l -= Byte.MIN_VALUE;
-			return l;
-		}
-		else if( type == 1 )
-		{
-			long l = tag.readShort();
-			l -= Short.MIN_VALUE;
-			return l;
-		}
-		else if( type == 2 )
-		{
-			long l = tag.readInt();
-			l -= Integer.MIN_VALUE;
-			return l;
-		}
-
-		return tag.readLong();
-	}
 
 	@Override
 	public long getStackSize()
@@ -62,10 +36,10 @@ public abstract class AEStack<StackType extends IAEStack<StackType>> implements 
 	}
 
 	@Override
-	public StackType setStackSize( final long ss )
+	public T setStackSize( final long ss )
 	{
 		this.stackSize = ss;
-		return (StackType) this;
+		return (T) this;
 	}
 
 	@Override
@@ -75,10 +49,10 @@ public abstract class AEStack<StackType extends IAEStack<StackType>> implements 
 	}
 
 	@Override
-	public StackType setCountRequestable( final long countRequestable )
+	public T setCountRequestable( final long countRequestable )
 	{
 		this.countRequestable = countRequestable;
-		return (StackType) this;
+		return (T) this;
 	}
 
 	@Override
@@ -88,26 +62,25 @@ public abstract class AEStack<StackType extends IAEStack<StackType>> implements 
 	}
 
 	@Override
-	public StackType setCraftable( final boolean isCraftable )
+	public T setCraftable( final boolean isCraftable )
 	{
 		this.isCraftable = isCraftable;
-		return (StackType) this;
+		return (T) this;
 	}
 
 	@Override
-	public StackType reset()
+	public T reset()
 	{
 		this.stackSize = 0;
-		// priority = Integer.MIN_VALUE;
 		this.setCountRequestable( 0 );
 		this.setCraftable( false );
-		return (StackType) this;
+		return (T) this;
 	}
 
 	@Override
-	public StackType empty()
+	public T empty()
 	{
-		final StackType dup = this.copy();
+		final T dup = this.copy();
 		dup.reset();
 		return dup;
 	}
@@ -142,45 +115,5 @@ public abstract class AEStack<StackType extends IAEStack<StackType>> implements 
 		this.countRequestable -= i;
 	}
 
-	protected byte getType( final long num )
-	{
-		if( num <= 255 )
-		{
-			return 0;
-		}
-		else if( num <= 65535 )
-		{
-			return 1;
-		}
-		else if( num <= 4294967295L )
-		{
-			return 2;
-		}
-		else
-		{
-			return 3;
-		}
-	}
-
 	protected abstract boolean hasTagCompound();
-
-	protected void putPacketValue( final PacketBuffer tag, final long num )
-	{
-		if( num <= 255 )
-		{
-			tag.writeByte( (byte) ( num + Byte.MIN_VALUE ) );
-		}
-		else if( num <= 65535 )
-		{
-			tag.writeShort( (short) ( num + Short.MIN_VALUE ) );
-		}
-		else if( num <= 4294967295L )
-		{
-			tag.writeInt( (int) ( num + Integer.MIN_VALUE ) );
-		}
-		else
-		{
-			tag.writeLong( num );
-		}
-	}
 }
