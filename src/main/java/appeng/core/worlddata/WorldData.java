@@ -19,13 +19,18 @@
 package appeng.core.worlddata;
 
 
+import appeng.services.CompassService;
+import appeng.services.compass.CompassThreadFactory;
 import com.google.common.base.Preconditions;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.DimensionManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.File;
+import java.util.concurrent.ThreadFactory;
 
 
 /**
@@ -41,6 +46,10 @@ import javax.annotation.Nullable;
  */
 public final class WorldData implements IWorldData
 {
+
+	private static final String AE2_DIRECTORY_NAME = "AE2";
+	private static final String SPAWNDATA_DIR_NAME = "spawndata";
+	private static final String COMPASS_DIR_NAME = "compass";
 
 	/**
 	 * Is null while no MinecraftServer exists.
@@ -63,19 +72,42 @@ public final class WorldData implements IWorldData
 			throw new IllegalStateException("The server doesn't have an Overworld dimension we could store our data on!");
 		}
 
+		File worldDirectory = overworld.getSaveHandler().getWorldDirectory();
+		File ae2directory = new File( worldDirectory, AE2_DIRECTORY_NAME );
+		File spawnDirectory = new File( ae2directory, SPAWNDATA_DIR_NAME );
+		File compassDirectory = new File( ae2directory, COMPASS_DIR_NAME );
+
 		final PlayerData playerData = overworld.getSavedData().getOrCreate(PlayerData::new, PlayerData.NAME);
 		final StorageData storageData = overworld.getSavedData().getOrCreate(StorageData::new, StorageData.NAME);
 
-//		final ThreadFactory compassThreadFactory = new CompassThreadFactory();
-//		final CompassService compassService = new CompassService( this.compassDirectory, compassThreadFactory );
-//		final CompassData compassData = new CompassData( this.compassDirectory, compassService );
-//
-//		final IWorldSpawnData spawnData = new SpawnData( this.spawnDirectory );
+		final ThreadFactory compassThreadFactory = new CompassThreadFactory();
+		final CompassService compassService = new CompassService( compassDirectory, compassThreadFactory );
+		final CompassData compassData = new CompassData( compassDirectory, compassService );
+
+		final IWorldSpawnData spawnData = new SpawnData( spawnDirectory );
 
 		this.playerData = playerData;
 		this.storageData = storageData;
-		this.compassData = null; // compassData;
-		this.spawnData = null; // spawnData;
+		this.compassData = compassData;
+		this.spawnData = spawnData;
+
+		// check if ae2 folder already exists, else create
+		if( !ae2directory.isDirectory() && !ae2directory.mkdir() )
+		{
+			throw new IllegalStateException( "Failed to create " + ae2directory.getAbsolutePath() );
+		}
+
+		// check if compass folder already exists, else create
+		if( !compassDirectory.isDirectory() && !compassDirectory.mkdir() )
+		{
+			throw new IllegalStateException( "Failed to create " + compassDirectory.getAbsolutePath() );
+		}
+
+		// check if spawn data dir already exists, else create
+		if( !spawnDirectory.isDirectory() && !spawnDirectory.mkdir() )
+		{
+			throw new IllegalStateException( "Failed to create " + spawnDirectory.getAbsolutePath() );
+		}
 	}
 
 	/**

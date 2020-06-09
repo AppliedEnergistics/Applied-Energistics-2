@@ -19,10 +19,7 @@
 package appeng.worldgen;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -33,6 +30,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
@@ -51,6 +49,7 @@ import appeng.worldgen.meteorite.FalloutSand;
 import appeng.worldgen.meteorite.FalloutSnow;
 import appeng.worldgen.meteorite.IMeteoriteWorld;
 import appeng.worldgen.meteorite.MeteoriteBlockPutter;
+import net.minecraftforge.registries.ForgeRegistries;
 
 
 public final class MeteoritePlacer
@@ -120,13 +119,13 @@ public final class MeteoritePlacer
 		this.squaredMeteoriteSize = this.settings.getDouble( "sizeOfMeteorite" );
 		this.crater = this.settings.getDouble( "crater" );
 
-		final Block blk = Block.getBlockById( this.settings.getInt( "blk" ) );
+		final Block blk = ForgeRegistries.BLOCKS.getValue( new ResourceLocation( this.settings.getString( "blk" ) ) );
 
 		if( blk == Blocks.SAND )
 		{
 			this.type = new FalloutSand( w, x, y, z, this.putter, this.skyStoneDefinition );
 		}
-		else if( blk == Blocks.HARDENED_CLAY )
+		else if( blk == Blocks.TERRACOTTA )
 		{
 			this.type = new FalloutCopy( w, x, y, z, this.putter, this.skyStoneDefinition );
 		}
@@ -216,10 +215,11 @@ public final class MeteoritePlacer
 		{
 			this.skyChestDefinition.maybeBlock().ifPresent( block -> this.putter.put( w, x, y, z, block ) );
 
-			final TileEntity te = w.getTileEntity( x, y, z );
+			final TileEntity te = w.getWorld().getTileEntity( new BlockPos( x, y, z ) ); // FIXME: this is also probably a band-aid for another issue
 			final InventoryAdaptor ap = InventoryAdaptor.getAdaptor( te, Direction.UP );
-			if( ap != null )
+			if( ap != null && !ap.containsItems() ) // FIXME: band-aid for meteorites being generated multiple times
 			{
+				// TODO: loot tables would be better
 				int primary = Math.max( 1, (int) ( Math.random() * 4 ) );
 
 				if( primary > 3 ) // in case math breaks...
@@ -348,13 +348,15 @@ public final class MeteoritePlacer
 			{
 				for( int j = y - 9; j < y + 30; j++ )
 				{
+					BlockState state = w.getBlockState( i, j, k );
 					Block blk = w.getBlock( i, j, k );
 					if( blk == Blocks.LAVA )
 					{
 						continue;
 					}
 
-					if( blk.isReplaceable( w.getWorld(), new BlockPos( i, j, k ) ) )
+					// TODO reconsider
+					if( state.canBeReplacedByLogs( w.getWorld(), new BlockPos( i, j, k ) ) )
 					{
 						blk = Platform.AIR_BLOCK;
 						final Block blk_b = w.getBlock( i, j + 1, k );
@@ -372,13 +374,13 @@ public final class MeteoritePlacer
 							final double dz = k - z;
 							final double dist = dx * dx + dy * dy + dz * dz;
 
-							final Block xf = w.getBlock( i, j - 1, k );
-							if( !xf.isReplaceable( w.getWorld(), new BlockPos( i, j - 1, k ) ) )
+							final BlockState xf = w.getBlockState( i, j - 1, k );
+							if( !xf.canBeReplacedByLogs( w.getWorld(), new BlockPos( i, j - 1, k ) ) )
 							{
 								final double extraRange = Math.random() * 0.6;
 								final double height = this.crater * ( extraRange + 0.2 ) - Math.abs( dist - this.crater * 1.7 );
 
-								if( xf != blk && height > 0 && Math.random() > 0.6 )
+								if( xf.getBlock() != blk && height > 0 && Math.random() > 0.6 )
 								{
 									randomShit++;
 									this.type.getRandomFall( w, i, j, k );
@@ -436,7 +438,7 @@ public final class MeteoritePlacer
 		this.settings.putInt( "x", x );
 		this.settings.putInt( "y", y );
 		this.settings.putInt( "z", z );
-		this.settings.putString( "blk", blk.getRegistryName().toString() );
+		this.settings.putString( "blk", Objects.requireNonNull( blk.getRegistryName() ).toString() );
 
 		this.settings.putDouble( "real_sizeOfMeteorite", this.meteoriteSize );
 		this.settings.putDouble( "realCrater", this.realCrater );

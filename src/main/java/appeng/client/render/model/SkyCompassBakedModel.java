@@ -26,6 +26,8 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import appeng.hooks.CompassManager;
+import appeng.hooks.CompassResult;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.Matrix4f;
@@ -188,38 +190,38 @@ public class SkyCompassBakedModel implements IDynamicBakedModel
 	{
 
 		// Only query for a meteor position if we know our own position
-// FIXME		if( pos != null )
-// FIXME		{
-// FIXME			CompassResult cr = CompassManager.INSTANCE.getCompassDirection( 0, pos.getX(), pos.getY(), pos.getZ() );
-// FIXME
-// FIXME			// Prefetch meteor positions from the server for adjacent blocks so they are available more quickly when
-// FIXME			// we're moving
-// FIXME			if( prefetch )
-// FIXME			{
-// FIXME				for( int i = 0; i < 3; i++ )
-// FIXME				{
-// FIXME					for( int j = 0; j < 3; j++ )
-// FIXME					{
-// FIXME						CompassManager.INSTANCE.getCompassDirection( 0, pos.getX() + i - 1, pos.getY(), pos.getZ() + j - 1 );
-// FIXME					}
-// FIXME				}
-// FIXME			}
-// FIXME
-// FIXME			if( cr.isValidResult() )
-// FIXME			{
-// FIXME				if( cr.isSpin() )
-// FIXME				{
-// FIXME					long timeMillis = System.currentTimeMillis();
-// FIXME					// .5 seconds per full rotation
-// FIXME					timeMillis %= 500;
-// FIXME					return timeMillis / 500.f * (float) Math.PI * 2;
-// FIXME				}
-// FIXME				else
-// FIXME				{
-// FIXME					return (float) cr.getRad();
-// FIXME				}
-// FIXME			}
-// FIXME		}
+		if( pos != null )
+		{
+			CompassResult cr = CompassManager.INSTANCE.getCompassDirection( 0, pos.getX(), pos.getY(), pos.getZ() );
+
+			// Prefetch meteor positions from the server for adjacent blocks so they are available more quickly when
+			// we're moving
+			if( prefetch )
+			{
+				for( int i = 0; i < 3; i++ )
+				{
+					for( int j = 0; j < 3; j++ )
+					{
+						CompassManager.INSTANCE.getCompassDirection( 0, pos.getX() + i - 1, pos.getY(), pos.getZ() + j - 1 );
+					}
+				}
+			}
+
+			if( cr.isValidResult() )
+			{
+				if( cr.isSpin() )
+				{
+					long timeMillis = System.currentTimeMillis();
+					// .5 seconds per full rotation
+					timeMillis %= 500;
+					return timeMillis / 500.f * (float) Math.PI * 2;
+				}
+				else
+				{
+					return (float) cr.getRad();
+				}
+			}
+		}
 
 		long timeMillis = System.currentTimeMillis();
 		// 3 seconds per full rotation

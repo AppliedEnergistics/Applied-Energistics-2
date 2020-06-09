@@ -19,11 +19,9 @@
 package appeng.core;
 
 
-import java.io.File;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-import appeng.api.AEApi;
 import appeng.block.paint.PaintSplotchesModel;
 import appeng.block.qnb.QnbFormedModel;
 import appeng.bootstrap.components.IClientSetupComponent;
@@ -58,9 +56,9 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.gen.feature.Feature;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 import net.minecraftforge.common.MinecraftForge;
@@ -76,11 +74,9 @@ import appeng.core.crash.ModCrashEnhancement;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.network.NetworkRegistry;
 
 import javax.annotation.Nonnull;
 
@@ -136,6 +132,7 @@ public final class AppEng
 		modEventBus.addGenericListener(TileEntityType.class, registration::registerTileEntities);
 		modEventBus.addGenericListener(ContainerType.class, registration::registerContainerTypes);
 		modEventBus.addGenericListener(IRecipeSerializer.class, registration::registerRecipeSerializers);
+		modEventBus.addGenericListener(Feature.class, registration::registerWorldGen);
 		modEventBus.addListener(registration::registerParticleFactories);
 		modEventBus.addListener(registration::registerTextures);
 		modEventBus.addListener(registration::registerCommands);

@@ -34,7 +34,6 @@ public class ChunkOnly extends StandardWorld
 	private final Chunk target;
 	private final int cx;
 	private final int cz;
-	private int verticalBits = 0;
 
 	public ChunkOnly( final World w, final int cx, final int cz )
 	{
@@ -83,7 +82,6 @@ public class ChunkOnly extends StandardWorld
 	{
 		if( this.range( x, y, z ) )
 		{
-			this.verticalBits |= 1 << ( y >> 4 );
 			this.getWorld().setBlockState( new BlockPos( x, y, z ), blk.getDefaultState() );
 		}
 	}
@@ -93,17 +91,7 @@ public class ChunkOnly extends StandardWorld
 	{
 		if( this.range( x, y, z ) )
 		{
-			this.verticalBits |= 1 << ( y >> 4 );
 			this.getWorld().setBlockState( new BlockPos( x, y, z ), state, flags & ( ~2 ) );
-		}
-	}
-
-	@Override
-	public void done()
-	{
-		if( this.verticalBits != 0 )
-		{
-			Platform.sendChunk( this.target, this.verticalBits );
 		}
 	}
 

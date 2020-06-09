@@ -19,41 +19,39 @@
 package appeng.worldgen;
 
 
-import java.util.Random;
-
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.IChunkProvider;
-import net.minecraft.world.gen.IChunkGenerator;
-import net.minecraftforge.fml.common.IWorldGenerator;
-
+import appeng.api.features.AEFeature;
 import appeng.api.features.IWorldGen.WorldGenType;
 import appeng.core.AEConfig;
+import appeng.core.AppEng;
 import appeng.core.features.registries.WorldGenRegistry;
 import appeng.core.worlddata.WorldData;
 import appeng.hooks.TickHandler;
 import appeng.util.IWorldCallable;
 import appeng.util.Platform;
 import appeng.worldgen.meteorite.ChunkOnly;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
+import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.GenerationSettings;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.NoFeatureConfig;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Random;
 
 
-public final class MeteoriteWorldGen implements IWorldGenerator
+public final class MeteoriteWorldGen extends Feature<NoFeatureConfig>
 {
-	@Override
-	public void generate( final Random r, final int chunkX, final int chunkZ, final World w, final IChunkGenerator chunkGenerator, final IChunkProvider chunkProvider )
-	{
-		if( WorldGenRegistry.INSTANCE.isWorldGenEnabled( WorldGenType.METEORITES, w ) )
-		{
-			final int x = r.nextInt( 16 ) + ( chunkX << 4 );
-			final int z = r.nextInt( 16 ) + ( chunkZ << 4 );
-			final int depth = AEConfig.instance().getMeteoriteMaximumSpawnHeight() + r.nextInt( 20 );
 
-			TickHandler.INSTANCE.addCallable( w, new MeteoriteSpawn( x, depth, z ) );
-		}
-		else
-		{
-			WorldData.instance().compassData().service().updateArea( w, chunkX, chunkZ );
-		}
+	public static final MeteoriteWorldGen INSTANCE = new MeteoriteWorldGen();
+
+	private MeteoriteWorldGen( )
+	{
+		super( NoFeatureConfig::deserialize );
+		setRegistryName( AppEng.MOD_ID, "meteorite" );
 	}
 
 	private boolean tryMeteorite( final World w, int depth, final int x, final int z )
@@ -71,14 +69,14 @@ public final class MeteoriteWorldGen implements IWorldGenerator
 				{
 					for( int cz = pz - 6; cz < pz + 6; cz++ )
 					{
-						if( w.getChunkProvider().getLoadedChunk( cx, cz ) != null )
+						if( w.getChunkProvider().isChunkLoaded( new ChunkPos( cx, cz ) ) )
 						{
 							if( px == cx && pz == cz )
 							{
 								continue;
 							}
 
-							if( WorldData.instance().spawnData().hasGenerated( w.provider.getDimension(), cx, cz ) )
+							if( WorldData.instance().spawnData().hasGenerated( w.getDimension(), cx, cz ) )
 							{
 								final MeteoritePlacer mp2 = new MeteoritePlacer();
 								mp2.spawnMeteorite( new ChunkOnly( w, cx, cz ), mp.getSettings() );
@@ -102,7 +100,30 @@ public final class MeteoriteWorldGen implements IWorldGenerator
 
 	private Iterable<CompoundNBT> getNearByMeteorites( final World w, final int chunkX, final int chunkZ )
 	{
-		return WorldData.instance().spawnData().getNearByMeteorites( w.provider.getDimension(), chunkX, chunkZ );
+		return WorldData.instance().spawnData().getNearByMeteorites( w.getDimension(), chunkX, chunkZ );
+	}
+
+	@ParametersAreNonnullByDefault
+	@Override
+	public boolean place( IWorld w, ChunkGenerator<? extends GenerationSettings> generator, Random r, BlockPos pos, NoFeatureConfig config )
+	{
+		if(!AEConfig.instance().isFeatureEnabled( AEFeature.METEORITE_WORLD_GEN )) return false;
+
+		ChunkPos chunkPos = new ChunkPos( pos );
+		if( WorldGenRegistry.INSTANCE.isWorldGenEnabled( WorldGenType.METEORITES, w.getWorld() ) )
+		{
+			final int x = r.nextInt( 16 ) + ( chunkPos.x << 4 );
+			final int z = r.nextInt( 16 ) + ( chunkPos.z << 4 );
+			final int depth = AEConfig.instance().getMeteoriteMaximumSpawnHeight() + r.nextInt( 20 );
+
+			TickHandler.INSTANCE.addCallable( w.getWorld(), new MeteoriteSpawn( x, depth, z ) );
+			return true;
+		}
+		else
+		{
+			WorldData.instance().compassData().service().updateArea( w.getWorld(), chunkPos.x, chunkPos.z );
+			return false;
+		}
 	}
 
 	private class MeteoriteSpawn implements IWorldCallable<Object>
@@ -143,7 +164,7 @@ public final class MeteoriteWorldGen implements IWorldGenerator
 				MeteoriteWorldGen.this.tryMeteorite( world, this.depth, this.x, this.z );
 			}
 
-			WorldData.instance().spawnData().setGenerated( world.provider.getDimension(), chunkX, chunkZ );
+			WorldData.instance().spawnData().setGenerated( world.getDimension(), chunkX, chunkZ );
 			WorldData.instance().compassData().service().updateArea( world, chunkX, chunkZ );
 
 			return null;

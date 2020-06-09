@@ -68,7 +68,6 @@ sourceSets {
     api
     main {
         java {
-            exclude 'appeng/worldgen/**'
             exclude 'appeng/spatial/StorageChunkProvider.java'
             exclude 'appeng/spatial/StorageHelper.java'
             exclude 'appeng/spatial/CachedPlane.java'

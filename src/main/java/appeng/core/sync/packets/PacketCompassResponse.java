@@ -19,6 +19,7 @@
 package appeng.core.sync.packets;
 
 
+import appeng.hooks.CompassManager;
 import appeng.hooks.CompassResult;
 import io.netty.buffer.Unpooled;
 
@@ -71,6 +72,6 @@ public class PacketCompassResponse extends AppEngPacket
 	@Override
 	public void clientPacketData( final INetworkInfo network, final PlayerEntity player )
 	{
-//	TODO	CompassManager.INSTANCE.postResult( this.attunement, this.cx << 4, this.cdy << 5, this.cz << 4, this.cr );
+		CompassManager.INSTANCE.postResult( this.attunement, this.cx << 4, this.cdy << 5, this.cz << 4, this.cr );
 	}
 }
