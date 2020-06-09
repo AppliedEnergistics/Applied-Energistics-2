@@ -19,31 +19,13 @@
 package appeng.core;
 
 
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-
-import appeng.api.AEApi;
-import appeng.api.definitions.IBlocks;
-import appeng.api.definitions.IDefinitions;
-
-
 public final class CreativeTab
 {
-	public static ItemGroup instance = null;
 
-	static void init()
-	{
-		instance = new ItemGroup( "appliedenergistics2" )
-		{
+	public static AEItemGroup INSTANCE;
 
-			@Override
-			public ItemStack createIcon()
-			{
-				final IDefinitions definitions = AEApi.instance().definitions();
-				final IBlocks blocks = definitions.blocks();
-				return blocks.controller().stack(1);
-			}
-
-		};
+	public static void init() {
+		INSTANCE = new AEItemGroup( "appliedenergistics2" );
 	}
+
 }

@@ -88,12 +88,14 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		super.fillItemGroup(group, items);
 
-		final ItemStack charged = new ItemStack( this, 1 );
-        final CompoundNBT tag = charged.getOrCreateTag();
-		tag.putDouble(CURRENT_POWER_NBT_KEY, this.getAEMaxPower( charged ));
-		tag.putDouble(MAX_POWER_NBT_KEY, this.getAEMaxPower( charged ));
+		if (this.isInGroup(group)) {
+			final ItemStack charged = new ItemStack(this, 1);
+			final CompoundNBT tag = charged.getOrCreateTag();
+			tag.putDouble(CURRENT_POWER_NBT_KEY, this.getAEMaxPower(charged));
+			tag.putDouble(MAX_POWER_NBT_KEY, this.getAEMaxPower(charged));
 
-		items.add( charged );
+			items.add(charged);
+		}
 	}
 
 	@Override

@@ -28,6 +28,7 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
+import appeng.core.AEItemGroup;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -63,7 +64,7 @@ class BlockDefinitionBuilder implements IBlockBuilder
 
 	private final EnumSet<AEFeature> features = EnumSet.noneOf( AEFeature.class );
 
-	private ItemGroup itemGroup = CreativeTab.instance;
+	private ItemGroup itemGroup = CreativeTab.INSTANCE;
 
 	private TileEntityDefinition tileEntityDefinition;
 
@@ -190,14 +191,21 @@ class BlockDefinitionBuilder implements IBlockBuilder
 			}
 		}
 
+		T definition;
 		if( block instanceof AEBaseTileBlock )
 		{
-			return (T) new TileDefinition( this.registryName, (AEBaseTileBlock) block, item, features );
+			definition = (T) new TileDefinition( this.registryName, (AEBaseTileBlock<?>) block, item, features );
 		}
 		else
 		{
-			return (T) new BlockDefinition( this.registryName, block, item, features );
+			definition = (T) new BlockDefinition( this.registryName, block, item, features );
 		}
+
+		if (itemGroup instanceof AEItemGroup) {
+			((AEItemGroup) itemGroup).add(definition);
+		}
+
+		return definition;
 	}
 
 	@Nullable

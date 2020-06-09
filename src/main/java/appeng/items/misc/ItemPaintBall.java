@@ -81,6 +81,10 @@ public class ItemPaintBall extends AEBaseItem
 	@Override
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> itemStacks) {
 
+		if (!isInGroup(group)) {
+			return;
+		}
+
 		for( final AEColor c : AEColor.values() )
 		{
 			if( c != AEColor.TRANSPARENT )

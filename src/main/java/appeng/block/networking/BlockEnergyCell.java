@@ -50,12 +50,12 @@ public class BlockEnergyCell extends AEBaseTileBlock<TileEnergyCell>
 	{
 		super.fillItemGroup( group, itemStacks );
 
-		final ItemStack charged = new ItemStack( this, 1 );
-        final CompoundNBT tag = charged.getOrCreateTag();
+		final ItemStack charged = new ItemStack(this, 1);
+		final CompoundNBT tag = charged.getOrCreateTag();
 		tag.putDouble("internalCurrentPower", this.getMaxPower());
 		tag.putDouble("internalMaxPower", this.getMaxPower());
 
-		itemStacks.add( charged );
+		itemStacks.add(charged);
 	}
 
 	public double getMaxPower()

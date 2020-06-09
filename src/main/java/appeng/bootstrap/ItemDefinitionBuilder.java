@@ -28,13 +28,13 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import appeng.bootstrap.components.IInitComponent;
+import appeng.core.AEItemGroup;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.IDispenseItemBehavior;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 
 import appeng.bootstrap.components.IItemRegistrationComponent;
-import appeng.bootstrap.components.IPostInitComponent;
 import appeng.core.AppEng;
 import appeng.core.CreativeTab;
 import appeng.api.features.AEFeature;
@@ -64,7 +64,7 @@ class ItemDefinitionBuilder implements IItemBuilder
 	@OnlyIn( Dist.CLIENT )
 	private ItemRendering itemRendering;
 
-	private ItemGroup itemGroup = CreativeTab.instance;
+	private ItemGroup itemGroup = CreativeTab.INSTANCE;
 
 	ItemDefinitionBuilder( FeatureFactory factory, String registryName, Function<Item.Properties, Item> itemFactory )
 	{
@@ -165,6 +165,10 @@ class ItemDefinitionBuilder implements IItemBuilder
 		if( Platform.hasClientClasses() )
 		{
 			this.itemRendering.apply( this.factory, item );
+		}
+
+		if (itemGroup instanceof AEItemGroup) {
+			((AEItemGroup) itemGroup).add(definition);
 		}
 
 		return definition;

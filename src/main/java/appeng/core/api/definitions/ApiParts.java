@@ -220,7 +220,7 @@ public final class ApiParts implements IParts
 
 	private <T extends IPart> IItemDefinition createPart(FeatureFactory registry, String id, PartType type, Function<ItemStack, T> factory) {
 		return registry.item(id, props -> new ItemPart<>(props, type, factory))
-				.itemGroup(CreativeTab.instance)
+				.itemGroup(CreativeTab.INSTANCE)
 				.rendering(new ItemPartRendering())
 				.build();
 	}
@@ -234,7 +234,7 @@ public final class ApiParts implements IParts
 			String id = color.registryPrefix + '_' + idSuffix;
 
 			IItemDefinition itemDef = registry.item(id, props -> new ColoredPartItem<>(props, type, factory, color))
-					.itemGroup(CreativeTab.instance)
+					.itemGroup(CreativeTab.INSTANCE)
 					.rendering(new ItemPartRendering(color))
 					.build();
 
