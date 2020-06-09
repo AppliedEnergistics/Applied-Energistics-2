@@ -22,6 +22,8 @@ package appeng.client.render.cablebus;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.Direction;
@@ -64,11 +66,18 @@ public class QuadRotator
 		Quad collector = collectors.get();
 		QuadMatrixTransformer transformer = pipeline.getElement( "transformer", QuadMatrixTransformer.class );
 
+		// FIXME: Temporary rotation fix
+		Matrix4f mat = new Matrix4f();
+		mat.setTranslation(-0.5f, -0.5f, -0.5f);
+		mat.multiplyBackward(rotation.getMat());
+		mat.translate(new Vector3f(0.5f, 0.5f, 0.5f));
+
 		for( BakedQuad quad : quads )
 		{
 			pipeline.reset( format );
 			collector.reset( format );
-			transformer.setMatrix( rotation.getMat() );
+
+			transformer.setMatrix( mat );
 			pipeline.prepare( collector );
 			quad.pipe( pipeline );
 			result.add( collector.bake() );

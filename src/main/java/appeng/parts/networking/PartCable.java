@@ -39,7 +39,6 @@ import appeng.items.parts.ColoredPartItem;
 import appeng.me.GridAccessException;
 import appeng.parts.AEBasePart;
 import appeng.util.Platform;
-import com.google.common.collect.ImmutableSet;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -52,9 +51,6 @@ import java.util.EnumSet;
 
 public class PartCable extends AEBasePart implements IPartCable
 {
-
-	private static final ImmutableSet<AEPartLocation> STRAIGHT_PART_LOCATIONS = ImmutableSet.of( AEPartLocation.DOWN, AEPartLocation.NORTH,
-			AEPartLocation.EAST );
 
 	private final int[] channelsOnSide = { 0, 0, 0, 0, 0, 0 };
 

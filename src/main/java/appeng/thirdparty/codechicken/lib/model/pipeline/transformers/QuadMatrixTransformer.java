@@ -45,6 +45,7 @@ public class QuadMatrixTransformer extends QuadTransformer
 
 	private final Vector4f storage = new Vector4f();
 	private Matrix4f matrix;
+	private boolean identityMatrix;
 
 	QuadMatrixTransformer()
 	{
@@ -55,17 +56,19 @@ public class QuadMatrixTransformer extends QuadTransformer
 	{
 		super( parent );
 		this.matrix = matrix;
+		this.identityMatrix = matrix.equals( identity );
 	}
 
 	public void setMatrix( Matrix4f matrix )
 	{
 		this.matrix = matrix;
+		this.identityMatrix = matrix.equals( identity );
 	}
 
 	@Override
 	public boolean transform()
 	{
-		if( matrix.equals( identity ) )
+		if( identityMatrix )
 		{
 			return true;
 		}
@@ -77,7 +80,7 @@ public class QuadMatrixTransformer extends QuadTransformer
 			vertex.vec[1] = storage.getY();
 			vertex.vec[2] = storage.getZ();
 
-			storage.set( vertex.normal[0], vertex.normal[1], vertex.normal[2], 1 );
+			storage.set( vertex.normal[0], vertex.normal[1], vertex.normal[2], 0 );
 			storage.transform( matrix );
 			storage.normalize();
 			vertex.normal[0] = storage.getX();
