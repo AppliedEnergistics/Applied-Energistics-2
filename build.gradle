@@ -52,7 +52,15 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
+// Create version number
 version = version_major + "." + version_minor + "." + version_patch
+
+ext.prNumber = System.getenv('PR_NUMBER') ?: false
+if (ext.prNumber) {
+  version = version + "+pr." + ext.prNumber
+}
+
+// Maven group and artifact name
 group = artifact_group
 archivesBaseName = artifact_basename
 
