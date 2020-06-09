@@ -79,8 +79,8 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     // compile against provided APIs
-    compileOnly "mezz.jei:jei-${minecraft_version}:${jei_version}:api"
-    compileOnly "mcp.mobius.waila:Hwyla:${hwyla_version}:api"
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
+    compileOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}:api")
     //compileOnly "net.darkhax.tesla:Tesla-1.12.2:${tesla_version}"
     //compileOnly "net.industrial-craft:industrialcraft-2:${ic2_version}:api"
     compileOnly "mcjty.theoneprobe:TheOneProbe-${minecraft_release}:${minecraft_release}-${top_version}:api"
