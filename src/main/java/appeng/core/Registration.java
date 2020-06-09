@@ -629,8 +629,6 @@ final class Registration
 		);
 
 		CraftingHelper.register( FeaturesEnabled.Serializer.INSTANCE );
-
-		CraftingHelper.register( new ResourceLocation( AppEng.MOD_ID, "part" ), PartIngredientSerializer.INSTANCE );
 	}
 
 
