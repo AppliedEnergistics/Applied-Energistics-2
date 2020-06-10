@@ -1,8 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "appliedenergistics2:material",
-      "data": 0
+      "item": "appliedenergistics2:certus_quartz_crystal"
     },
     "title": {
       "translate": "achievement.ae2.Root"
@@ -20,8 +19,7 @@
       "conditions": {
         "items": [
           {
-            "item": "appliedenergistics2:material",
-            "data": 0
+            "item": "appliedenergistics2:certus_quartz_crystal"
           }
         ]
       }

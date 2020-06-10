@@ -1,8 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "appliedenergistics2:part",
-      "data": 76
+      "item": "appliedenergistics2:fluix_smart_dense_cable"
     },
     "title": {
       "translate": "achievement.ae2.Networking3"

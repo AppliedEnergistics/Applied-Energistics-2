@@ -10,7 +10,7 @@
       "translate": "achievement.ae2.Facade.desc"
     }
   },
-  "parent": "appliedenergistics2:main/cable_glass",
+  "parent": "appliedenergistics2:main/glass_cable",
   "criteria": {
     "facade": {
       "trigger": "minecraft:inventory_changed",

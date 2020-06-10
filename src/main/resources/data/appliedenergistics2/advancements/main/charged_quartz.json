@@ -1,8 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "appliedenergistics2:material",
-      "data": 1
+      "item": "appliedenergistics2:charged_certus_quartz_crystal"
     },
     "title": {
       "translate": "achievement.ae2.ChargedQuartz"
@@ -18,8 +17,7 @@
       "conditions": {
         "items": [
           {
-            "item": "appliedenergistics2:material",
-            "data": 1
+            "item": "appliedenergistics2:charged_certus_quartz_crystal"
           }
         ]
       }

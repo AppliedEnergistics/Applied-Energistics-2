@@ -1,8 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "appliedenergistics2:part",
-      "data": 460
+      "item": "appliedenergistics2:me_p2p_tunnel"
     },
     "title": {
       "translate": "achievement.ae2.P2P"
@@ -11,7 +10,7 @@
       "translate": "achievement.ae2.P2P.desc"
     }
   },
-  "parent": "appliedenergistics2:main/cable_glass",
+  "parent": "appliedenergistics2:main/glass_cable",
   "criteria": {
     "certus": {
       "trigger": "minecraft:inventory_changed",

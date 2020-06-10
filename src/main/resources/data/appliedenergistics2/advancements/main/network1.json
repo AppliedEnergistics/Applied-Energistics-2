@@ -1,8 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "appliedenergistics2:part",
-      "data": 36
+      "item": "appliedenergistics2:fluix_covered_cable"
     },
     "title": {
       "translate": "achievement.ae2.Networking1"
@@ -11,7 +10,7 @@
       "translate": "achievement.ae2.Networking1.desc"
     }
   },
-  "parent": "appliedenergistics2:main/cable_glass",
+  "parent": "appliedenergistics2:main/glass_cable",
   "criteria": {
     "cable": {
       "trigger": "appliedenergistics2:network_apprentice"
