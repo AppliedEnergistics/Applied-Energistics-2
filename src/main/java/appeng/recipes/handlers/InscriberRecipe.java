@@ -1,17 +1,17 @@
 package appeng.recipes.handlers;
 
 import appeng.api.features.InscriberProcessType;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-import java.util.List;
+import javax.annotation.Nullable;
 
 public class InscriberRecipe implements IRecipe<IInventory> {
 
@@ -20,20 +20,20 @@ public class InscriberRecipe implements IRecipe<IInventory> {
     private final ResourceLocation id;
     private final String group;
 
-    private List<Ingredient> inputs;
+    private Ingredient middleInput;
+    private Ingredient topOptional;
+    private Ingredient bottomOptional;
     private ItemStack output;
-    private ItemStack topOptional;
-    private ItemStack bottomOptional;
-    private InscriberProcessType type;
+    private InscriberProcessType processType;
 
-    public InscriberRecipe(ResourceLocation id, String group, List<Ingredient> inputs, ItemStack output, ItemStack topOptional, ItemStack bottomOptional, InscriberProcessType type) {
+    public InscriberRecipe(ResourceLocation id, String group, Ingredient middleInput, ItemStack output, Ingredient topOptional, Ingredient bottomOptional, InscriberProcessType processType) {
         this.id = id;
         this.group = group;
-        this.inputs = inputs;
+        this.middleInput = middleInput;
         this.output = output;
         this.topOptional = topOptional;
         this.bottomOptional = bottomOptional;
-        this.type = type;
+        this.processType = processType;
     }
 
     @Override
@@ -43,27 +43,27 @@ public class InscriberRecipe implements IRecipe<IInventory> {
 
     @Override
     public ItemStack getCraftingResult(IInventory inv) {
-        return null;
+        return this.output.copy();
     }
 
     @Override
     public boolean canFit(int width, int height) {
-        return false;
+        return true;
     }
 
     @Override
     public ItemStack getRecipeOutput() {
-        return null;
+        return output;
     }
 
     @Override
     public ResourceLocation getId() {
-        return null;
+        return id;
     }
 
     @Override
     public IRecipeSerializer<?> getSerializer() {
-        return null;
+        return GrinderRecipeSerializer.INSTANCE;
     }
 
     @Override
@@ -71,20 +71,33 @@ public class InscriberRecipe implements IRecipe<IInventory> {
         return TYPE;
     }
 
-    public List<Ingredient> getInputs() {
-        return inputs;
+    @Override
+    public NonNullList<Ingredient> getIngredients() {
+        NonNullList<Ingredient> nonnulllist = NonNullList.create();
+        nonnulllist.add(this.topOptional);
+        nonnulllist.add(this.middleInput);
+        nonnulllist.add(this.bottomOptional);
+        return nonnulllist;
+    }
+
+    public Ingredient getMiddleInput() {
+        return middleInput;
     }
 
     public ItemStack getOutput() {
         return output;
     }
 
-    public ItemStack getTopOptional() {
+    public Ingredient getTopOptional() {
         return topOptional;
     }
 
-    public ItemStack getBottomOptional() {
+    public Ingredient getBottomOptional() {
         return bottomOptional;
+    }
+
+    public InscriberProcessType getProcessType() {
+        return processType;
     }
 
 }

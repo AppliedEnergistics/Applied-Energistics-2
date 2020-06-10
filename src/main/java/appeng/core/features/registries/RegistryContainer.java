@@ -20,7 +20,6 @@ package appeng.core.features.registries;
 
 
 import appeng.api.features.IChargerRegistry;
-import appeng.api.features.IGrinderRegistry;
 import appeng.api.features.IInscriberRegistry;
 import appeng.api.features.ILocatableRegistry;
 import appeng.api.features.IMatterCannonAmmoRegistry;
@@ -37,7 +36,6 @@ import appeng.api.parts.IPartModels;
 import appeng.api.storage.ICellRegistry;
 import appeng.core.features.registries.cell.CellRegistry;
 import appeng.core.features.registries.charger.ChargerRegistry;
-import appeng.core.features.registries.grinder.GrinderRecipeManager;
 import appeng.core.features.registries.inscriber.InscriberRegistry;
 
 
@@ -52,7 +50,6 @@ import appeng.core.features.registries.inscriber.InscriberRegistry;
  */
 public class RegistryContainer implements IRegistryContainer
 {
-	private final IGrinderRegistry grinder = new GrinderRecipeManager();
 	private final IInscriberRegistry inscriber = new InscriberRegistry();
 	private final IChargerRegistry charger = new ChargerRegistry();
 	private final ICellRegistry cell = new CellRegistry();
@@ -95,12 +92,6 @@ public class RegistryContainer implements IRegistryContainer
 	public ICellRegistry cell()
 	{
 		return this.cell;
-	}
-
-	@Override
-	public IGrinderRegistry grinder()
-	{
-		return this.grinder;
 	}
 
 	@Override

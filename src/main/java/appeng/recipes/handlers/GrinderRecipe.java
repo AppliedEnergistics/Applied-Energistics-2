@@ -20,18 +20,21 @@ public class GrinderRecipe implements IRecipe<IInventory> {
     private final ResourceLocation id;
     private final String group;
     private final Ingredient ingredient;
+    private final int ingredientCount;
     private final ItemStack result;
     private final List<GrinderOptionalResult> optionalResults;
     private final int turns;
 
-    public GrinderRecipe(ResourceLocation id, String group, Ingredient ingredient, ItemStack result, int turns, List<GrinderOptionalResult> optionalResults) {
+    public GrinderRecipe(ResourceLocation id, String group, Ingredient ingredient, int ingredientCount, ItemStack result, int turns, List<GrinderOptionalResult> optionalResults) {
         this.id = id;
         this.group = group;
         this.ingredient = ingredient;
+        this.ingredientCount = ingredientCount;
         this.result = result;
         this.turns = turns;
         this.optionalResults = ImmutableList.copyOf(optionalResults);
     }
+
     @Override
     public boolean matches(IInventory inv, World worldIn) {
         return this.ingredient.test(inv.getStackInSlot(0));
@@ -70,6 +73,14 @@ public class GrinderRecipe implements IRecipe<IInventory> {
 
     public Ingredient getIngredient() {
         return ingredient;
+    }
+
+    public int getTurns() {
+        return turns;
+    }
+
+    public int getIngredientCount() {
+        return ingredientCount;
     }
 
     @Override

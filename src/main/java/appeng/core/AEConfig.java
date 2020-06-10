@@ -101,7 +101,7 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost
 	// Grindstone
 	private List<String> grinderOres;
 	private Set<String> grinderBlackList;
-	private double oreDoublePercentage;
+	private float oreDoublePercentage;
 
 	// Batteries
 	private int wirelessTerminalBattery;
@@ -154,7 +154,7 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost
 
 			this.grinderOres = new ArrayList<>(config.grinderOres.get());
 			this.grinderBlackList = new HashSet<>(config.grinderBlackList.get());
-			this.oreDoublePercentage = config.oreDoublePercentage.get();
+			this.oreDoublePercentage = config.oreDoublePercentage.get().floatValue();
 
 			// FIXME: why is this here exactly???
 			this.settings.registerSetting( Settings.SEARCH_TOOLTIPS, YesNo.YES );
@@ -522,7 +522,7 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost
 		return this.grinderBlackList;
 	}
 
-	public double getOreDoublePercentage()
+	public float getOreDoublePercentage()
 	{
 		return this.oreDoublePercentage;
 	}

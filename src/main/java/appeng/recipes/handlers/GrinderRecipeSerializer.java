@@ -1,5 +1,6 @@
 package appeng.recipes.handlers;
 
+import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -32,7 +33,12 @@ public class GrinderRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
     @Override
     public GrinderRecipe read(ResourceLocation recipeId, JsonObject json) {
         String group = JSONUtils.getString(json, "group", "");
-        Ingredient ingredient = Ingredient.deserialize(JSONUtils.getJsonObject(json, "input"));
+        JsonObject inputObj = JSONUtils.getJsonObject(json, "input");
+        Ingredient ingredient = Ingredient.deserialize(inputObj);
+        int ingredientCount = 1;
+        if (inputObj.has("count")) {
+            ingredientCount = inputObj.get("count").getAsInt();
+        }
 
         JsonObject result = JSONUtils.getJsonObject(json, "result");
         ItemStack primaryResult = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(result, "primary"));
@@ -45,25 +51,28 @@ public class GrinderRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
                     throw new IllegalStateException("Entry in optional result list should be an object.");
                 }
                 ItemStack optionalResultItem = ShapedRecipe.deserializeItem(optionalResultJson.getAsJsonObject());
-                float optionalChance = JSONUtils.getFloat(optionalResultJson.getAsJsonObject(), "chance", 1.0f);
+                float optionalChance = JSONUtils.getFloat(optionalResultJson.getAsJsonObject(), "percentageChance",
+                        AEConfig.instance().getOreDoublePercentage()) / 100.0f;
                 optionalResults.add(new GrinderOptionalResult(optionalChance, optionalResultItem));
             }
         }
 
         int turns = JSONUtils.getInt(json, "turns", 8);
 
-        return new GrinderRecipe(recipeId, group, ingredient, primaryResult, turns, optionalResults);
+        return new GrinderRecipe(recipeId, group, ingredient, ingredientCount, primaryResult, turns, optionalResults);
     }
 
     @Nullable
     @Override
     public GrinderRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
-        return null;
+        // FIXME NOT YET IMPLEMENTED
+        throw new IllegalStateException();
     }
 
     @Override
     public void write(PacketBuffer buffer, GrinderRecipe recipe) {
-
+        // FIXME NOT YET IMPLEMENTED
+        throw new IllegalStateException();
     }
 
 }

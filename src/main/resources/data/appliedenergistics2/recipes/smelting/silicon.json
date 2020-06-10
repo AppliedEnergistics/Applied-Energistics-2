@@ -1,9 +1,9 @@
 {
-  "type": "appliedenergistics2:smelt",
+  "type": "minecraft:smelting",
   "result": {
     "item": "appliedenergistics2:silicon"
   },
-  "input": [
+  "ingredient": [
     {
       "tag": "appliedenergistics2:dusts/nether_quartz"
     },
@@ -11,5 +11,5 @@
       "tag": "appliedenergistics2:dusts/certus_quartz"
     }
   ],
-  "xp": 0.0
+  "experience": 0.0
 }

@@ -68,11 +68,6 @@ public interface IRegistryContainer
 	ICellRegistry cell();
 
 	/**
-	 * Manage grinder recipes via API
-	 */
-	IGrinderRegistry grinder();
-
-	/**
 	 * Manage inscriber recipes via API
 	 */
 	IInscriberRegistry inscriber();

@@ -53,7 +53,7 @@ class GrinderRecipeCategory implements IRecipeCategory<GrinderRecipe>
 
 	public GrinderRecipeCategory( IGuiHelper guiHelper )
 	{
-		this.localizedName = I18n.format( "tile.appliedenergistics2.grindstone.name" );
+		this.localizedName = I18n.format( "block.appliedenergistics2.grindstone" );
 
 		ResourceLocation location = new ResourceLocation( AppEng.MOD_ID, "textures/guis/grinder.png" );
 		this.background = guiHelper.createDrawable( location, 11, 16, 154, 70 );

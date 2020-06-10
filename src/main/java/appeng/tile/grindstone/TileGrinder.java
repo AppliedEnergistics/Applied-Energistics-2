@@ -19,19 +19,10 @@
 package appeng.tile.grindstone;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.RangedWrapper;
-
-import appeng.api.AEApi;
-import appeng.api.features.IGrinderRecipe;
 import appeng.api.implementations.tiles.ICrankable;
+import appeng.recipes.handlers.GrinderOptionalResult;
+import appeng.recipes.handlers.GrinderRecipe;
+import appeng.recipes.handlers.GrinderRecipes;
 import appeng.tile.AEBaseInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.InventoryAdaptor;
@@ -40,10 +31,21 @@ import appeng.util.inv.AdaptorItemHandler;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.filter.IAEItemFilter;
+import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.RangedWrapper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class TileGrinder extends AEBaseInvTile implements ICrankable
 {
+	private static final int SLOT_PROCESSING = 6;
+
 	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 7 );
 	private final IItemHandler invExt = new WrapperFilteredItemHandler( this.inv, new GrinderFilter() );
 	private int points;
@@ -96,24 +98,21 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 					continue;
 				}
 
-				final IGrinderRecipe r = AEApi.instance().registries().grinder().getRecipeForInput( item );
+				GrinderRecipe r = GrinderRecipes.findForInput(world, item);
 				if( r != null )
 				{
-					if( item.getCount() >= r.getInput().getCount() )
+					final ItemStack ais = item.copy();
+					ais.setCount( r.getIngredientCount() );
+					item.shrink( r.getIngredientCount() );
+
+					if( item.getCount() <= 0 )
 					{
-						final ItemStack ais = item.copy();
-						ais.setCount( r.getInput().getCount() );
-						item.shrink( r.getInput().getCount() );
-
-						if( item.getCount() <= 0 )
-						{
-							item = ItemStack.EMPTY;
-						}
-
-						this.inv.setStackInSlot( x, item );
-						this.inv.setStackInSlot( 6, ais );
-						return true;
+						item = ItemStack.EMPTY;
 					}
+
+					this.inv.setStackInSlot( x, item );
+					this.inv.setStackInSlot( 6, ais );
+					return true;
 				}
 			}
 			return false;
@@ -131,11 +130,11 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 
 		this.points++;
 
-		final ItemStack processing = this.inv.getStackInSlot( 6 );
-		final IGrinderRecipe r = AEApi.instance().registries().grinder().getRecipeForInput( processing );
+		final ItemStack processing = this.inv.getStackInSlot(SLOT_PROCESSING);
+		GrinderRecipe r = GrinderRecipes.findForInput(world, processing);
 		if( r != null )
 		{
-			if( r.getRequiredTurns() > this.points )
+			if( r.getTurns() > this.points )
 			{
 				return;
 			}
@@ -143,27 +142,16 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 			this.points = 0;
 			final InventoryAdaptor sia = new AdaptorItemHandler( new RangedWrapper( this.inv, 3, 6 ) );
 
-			this.addItem( sia, r.getOutput() );
+			this.addItem( sia, r.getRecipeOutput());
 
-			r.getOptionalOutput().ifPresent( itemStack ->
-			{
+			for (GrinderOptionalResult optionalResult : r.getOptionalResults()) {
 				final float chance = ( Platform.getRandomInt() % 2000 ) / 2000.0f;
 
-				if( chance <= r.getOptionalChance() )
+				if( chance <= optionalResult.getChance() )
 				{
-					this.addItem( sia, itemStack );
+					this.addItem( sia, optionalResult.getResult() );
 				}
-			} );
-
-			r.getSecondOptionalOutput().ifPresent( itemStack ->
-			{
-				final float chance = ( Platform.getRandomInt() % 2000 ) / 2000.0f;
-
-				if( chance <= r.getSecondOptionalChance() )
-				{
-					this.addItem( sia, itemStack );
-				}
-			} );
+			}
 
 			this.inv.setStackInSlot( 6, ItemStack.EMPTY );
 		}
@@ -203,7 +191,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 		@Override
 		public boolean allowInsert( IItemHandler inv, int slotIndex, ItemStack stack )
 		{
-			if( AEApi.instance().registries().grinder().getRecipeForInput( stack ) == null )
+			if( !GrinderRecipes.isValidIngredient(world, stack) )
 			{
 				return false;
 			}

@@ -96,6 +96,8 @@ import appeng.recipes.conditions.FeaturesEnabled;
 import appeng.recipes.game.DisassembleRecipe;
 import appeng.recipes.handlers.GrinderRecipe;
 import appeng.recipes.handlers.GrinderRecipeSerializer;
+import appeng.recipes.handlers.InscriberRecipe;
+import appeng.recipes.handlers.InscriberRecipeSerializer;
 import appeng.server.AECommand;
 import appeng.tile.AEBaseTile;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -587,14 +589,13 @@ final class Registration
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();
 
 		GrinderRecipe.TYPE = new AERecipeType<>(GrinderRecipeSerializer.INSTANCE.getRegistryName());
+		InscriberRecipe.TYPE = new AERecipeType<>(InscriberRecipeSerializer.INSTANCE.getRegistryName());
 
 		r.registerAll(
 				DisassembleRecipe.SERIALIZER,
-				GrinderRecipeSerializer.INSTANCE
+				GrinderRecipeSerializer.INSTANCE,
+				InscriberRecipeSerializer.INSTANCE
 //				FacadeRecipe.getSerializer( (ItemFacade) definitions.items().facade().item() ) FIXME reimplement facades
-//				this.factories.put( new ResourceLocation( AppEng.MOD_ID, "inscriber" ), new InscriberHandler() ); FIXME re-implement machine recipes
-//				this.factories.put( new ResourceLocation( AppEng.MOD_ID, "smelt" ), new SmeltingHandler() );
-//				this.factories.put( new ResourceLocation( AppEng.MOD_ID, "grinder" ), new GrinderHandler() );
 		);
 
 		CraftingHelper.register( FeaturesEnabled.Serializer.INSTANCE );

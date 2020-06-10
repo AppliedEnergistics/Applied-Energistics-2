@@ -1,11 +1,11 @@
 {
   "type": "appliedenergistics2:grinder",
   "input": {
-    "tag": "appliedenergistics2:crystals/fluix"
+    "tag": "forge:ingots/gold"
   },
   "result": {
     "primary": {
-      "item": "appliedenergistics2:fluix_dust"
+      "item": "appliedenergistics2:gold_dust"
     }
   },
   "turns": 4

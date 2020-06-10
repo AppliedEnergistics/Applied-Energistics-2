@@ -19,6 +19,7 @@
 package appeng.container.slot;
 
 
+import appeng.recipes.handlers.GrinderRecipes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
@@ -192,7 +193,7 @@ public class SlotRestrictedInput extends AppEngSlot
 			case VIEW_CELL:
 				return items.viewCell().isSameAs( i );
 			case ORE:
-				return AEApi.instance().registries().grinder().getRecipeForInput( i ) != null;
+				return GrinderRecipes.isValidIngredient(p.player.world, i);
 			case FUEL:
 				return ForgeHooks.getBurnTime( i ) > 0;
 			case POWERED_TOOL:

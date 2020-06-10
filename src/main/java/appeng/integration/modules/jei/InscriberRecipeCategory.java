@@ -32,7 +32,11 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 class InscriberRecipeCategory implements IRecipeCategory<InscriberRecipe>
@@ -57,7 +61,7 @@ class InscriberRecipeCategory implements IRecipeCategory<InscriberRecipe>
 	{
 		ResourceLocation location = new ResourceLocation( AppEng.MOD_ID, "textures/guis/inscriber.png" );
 		this.background = guiHelper.createDrawable( location, 44, 15, 97, 64 );
-		this.localizedName = I18n.format( "tile.appliedenergistics2.inscriber.name" );
+		this.localizedName = I18n.format( "block.appliedenergistics2.inscriber" );
 
 		IDrawableStatic progressDrawable = guiHelper.drawableBuilder( location, 135, 177, 6, 18 )
 				.addPadding(24, 0, 91, 0)
@@ -110,13 +114,7 @@ class InscriberRecipeCategory implements IRecipeCategory<InscriberRecipe>
 
 	@Override
 	public void setIngredients(InscriberRecipe recipe, IIngredients ingredients) {
-
-// FIXME		List<List<ItemStack>> inputSlots = new ArrayList<>( 3 );
-// FIXME		inputSlots.add( Collections.singletonList( recipe.getTopOptional() ) );
-// FIXME		inputSlots.add( recipe.getInputs() );
-// FIXME		inputSlots.add( Collections.singletonList( recipe.getBottomOptional() ) );
-// FIXME		ingredients.setInputLists(VanillaTypes.ITEM, inputSlots );
-
+		ingredients.setInputIngredients(recipe.getIngredients());
 		ingredients.setOutput( VanillaTypes.ITEM, recipe.getOutput() );
 	}
 
