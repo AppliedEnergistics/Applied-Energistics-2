@@ -15,18 +15,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
- 
-// Suppresses warnings/errors when building javadocs
-allprojects {
-	tasks.withType(Javadoc) {
-		options.addStringOption('Xdoclint:none', '-quiet')
-	}
-}
-
-javadoc {
-	options.encoding = 'UTF-8'
-	options.charSet = 'UTF-8'
-}
 
 jar {
     from sourceSets.main.output.classesDirs
@@ -50,9 +38,13 @@ jar {
 task javadocs(type: Javadoc) {
     source = sourceSets.api.java
     include "appeng/api/**"
+
+    options.addStringOption('Xdoclint:none', '-quiet')
+    options.encoding = 'UTF-8'
+    options.charSet = 'UTF-8'
 }
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
+task javadocJar(type: Jar, dependsOn: javadocs) {
     classifier = "javadoc"
     from javadoc.destinationDir
 }
