@@ -21,40 +21,32 @@ package appeng.util.item;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
-import java.util.NavigableMap;
-import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.Map;
+import java.util.NoSuchElementException;
+
+import net.minecraft.item.Item;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.util.item.AESharedItemStack.Bounds;
 
 
 public final class ItemList implements IItemList<IAEItemStack>
 {
 
-	private final NavigableMap<AESharedItemStack, IAEItemStack> records = new ConcurrentSkipListMap<>();
+	private final Map<Item, IItemList<IAEItemStack>> records = new IdentityHashMap<>();
 
 	@Override
-	public void add( final IAEItemStack option )
+	public void add( final IAEItemStack itemStack )
 	{
-		if( option == null )
+		if( itemStack == null )
 		{
 			return;
 		}
 
-		final IAEItemStack st = this.records.get( ( (AEItemStack) option ).getSharedStack() );
-
-		if( st != null )
-		{
-			st.add( option );
-			return;
-		}
-
-		final IAEItemStack opt = option.copy();
-
-		this.putItemRecord( opt );
+		this.getRecord( itemStack.getItem() ).add( itemStack );
 	}
 
 	@Override
@@ -65,7 +57,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 			return null;
 		}
 
-		return this.records.get( ( (AEItemStack) itemStack ).getSharedStack() );
+		return this.getRecord( itemStack.getItem() ).findPrecise( itemStack );
 	}
 
 	@Override
@@ -76,9 +68,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 			return Collections.emptyList();
 		}
 
-		final AEItemStack ais = (AEItemStack) filter;
-
-		return this.findFuzzyDamage( ais, fuzzy, false );
+		return this.getRecord( filter.getItem() ).findFuzzy( filter, fuzzy );
 	}
 
 	@Override
@@ -88,76 +78,36 @@ public final class ItemList implements IItemList<IAEItemStack>
 	}
 
 	@Override
-	public void addStorage( final IAEItemStack option )
+	public void addStorage( final IAEItemStack itemStack )
 	{
-		if( option == null )
+		if( itemStack == null )
 		{
 			return;
 		}
 
-		final IAEItemStack st = this.records.get( ( (AEItemStack) option ).getSharedStack() );
-
-		if( st != null )
-		{
-			st.incStackSize( option.getStackSize() );
-			return;
-		}
-
-		final IAEItemStack opt = option.copy();
-
-		this.putItemRecord( opt );
-	}
-
-	/*
-	 * public void clean() { Iterator<StackType> i = iterator(); while (i.hasNext()) { StackType AEI =
-	 * i.next(); if ( !AEI.isMeaningful() ) i.remove(); } }
-	 */
-
-	@Override
-	public void addCrafting( final IAEItemStack option )
-	{
-		if( option == null )
-		{
-			return;
-		}
-
-		final IAEItemStack st = this.records.get( ( (AEItemStack) option ).getSharedStack() );
-
-		if( st != null )
-		{
-			st.setCraftable( true );
-			return;
-		}
-
-		final IAEItemStack opt = option.copy();
-		opt.setStackSize( 0 );
-		opt.setCraftable( true );
-
-		this.putItemRecord( opt );
+		this.getRecord( itemStack.getItem() ).addStorage( itemStack );
 	}
 
 	@Override
-	public void addRequestable( final IAEItemStack option )
+	public void addCrafting( final IAEItemStack itemStack )
 	{
-		if( option == null )
+		if( itemStack == null )
 		{
 			return;
 		}
 
-		final IAEItemStack st = this.records.get( ( (AEItemStack) option ).getSharedStack() );
+		this.getRecord( itemStack.getItem() ).addCrafting( itemStack );
+	}
 
-		if( st != null )
+	@Override
+	public void addRequestable( final IAEItemStack itemStack )
+	{
+		if( itemStack == null )
 		{
-			st.setCountRequestable( st.getCountRequestable() + option.getCountRequestable() );
 			return;
 		}
 
-		final IAEItemStack opt = option.copy();
-		opt.setStackSize( 0 );
-		opt.setCraftable( false );
-		opt.setCountRequestable( option.getCountRequestable() );
-
-		this.putItemRecord( opt );
+		this.getRecord( itemStack.getItem() ).addRequestable( itemStack );
 	}
 
 	@Override
@@ -180,7 +130,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 	@Override
 	public Iterator<IAEItemStack> iterator()
 	{
-		return new MeaningfulItemIterator<>( this.records.values().iterator() );
+		return new ChainedIterator( this.records.values().iterator() );
 	}
 
 	@Override
@@ -192,16 +142,71 @@ public final class ItemList implements IItemList<IAEItemStack>
 		}
 	}
 
-	private IAEItemStack putItemRecord( final IAEItemStack itemStack )
+	private IItemList<IAEItemStack> getRecord( Item item )
 	{
-		return this.records.put( ( (AEItemStack) itemStack ).getSharedStack(), itemStack );
+		return this.records.computeIfAbsent( item, this::makeRecordMap );
 	}
 
-	private Collection<IAEItemStack> findFuzzyDamage( final IAEItemStack filter, final FuzzyMode fuzzy, final boolean ignoreMeta )
+	private IItemList<IAEItemStack> makeRecordMap( Item item )
 	{
-		final AEItemStack itemStack = (AEItemStack) filter;
-		final Bounds bounds = itemStack.getSharedStack().getBounds( fuzzy, ignoreMeta );
+		if( item.isDamageable() )
+		{
+			return new FuzzyItemList();
+		}
+		else
+		{
+			return new StrictItemList();
+		}
+	}
 
-		return this.records.subMap( bounds.lower(), true, bounds.upper(), true ).descendingMap().values();
+	private class ChainedIterator implements Iterator<IAEItemStack>
+	{
+
+		private final Iterator<IItemList<IAEItemStack>> parent;
+		private Iterator<IAEItemStack> next;
+
+		public ChainedIterator( Iterator<IItemList<IAEItemStack>> iterator )
+		{
+			this.parent = iterator;
+			if( this.parent.hasNext() )
+			{
+				this.next = this.parent.next().iterator();
+			}
+		}
+
+		@Override
+		public boolean hasNext()
+		{
+			while( this.next != null )
+			{
+				if( this.next.hasNext() )
+				{
+					return true;
+				}
+
+				if( this.parent.hasNext() )
+				{
+					this.next = this.parent.next().iterator();
+				}
+				else
+				{
+					this.next = null;
+				}
+			}
+
+			return false;
+		}
+
+		@Override
+		public IAEItemStack next()
+		{
+			if( this.next == null )
+			{
+				throw new NoSuchElementException();
+			}
+
+			return this.next.next();
+		}
+
 	}
 }
