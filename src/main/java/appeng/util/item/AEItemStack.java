@@ -106,7 +106,10 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	@Override
 	public void writeToNBT( final CompoundNBT i )
 	{
-		this.getDefinition().write( i.getCompound( NBT_ITEMSTACK ) );
+		final CompoundNBT itemStack = new CompoundNBT();
+		this.getDefinition().write( itemStack );
+
+		i.put( NBT_ITEMSTACK, itemStack );
 		i.putLong( NBT_STACKSIZE, this.getStackSize() );
 		i.putLong( NBT_REQUESTABLE, this.getCountRequestable() );
 		i.putBoolean( NBT_CRAFTABLE, this.isCraftable() );
