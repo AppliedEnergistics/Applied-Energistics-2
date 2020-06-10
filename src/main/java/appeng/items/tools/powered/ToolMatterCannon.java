@@ -243,7 +243,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 		{
 			final ItemPaintBall ipb = (ItemPaintBall) type.getItem();
 
-			final AEColor col = ipb.getColor( type );
+			final AEColor col = ipb.getColor();
 			// boolean lit = ipb.isLumen( type );
 
 			if( pos instanceof EntityRayTraceResult )

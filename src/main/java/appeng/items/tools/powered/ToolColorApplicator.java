@@ -232,7 +232,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 		if( paintBall.getItem() instanceof ItemPaintBall )
 		{
 			final ItemPaintBall ipb = (ItemPaintBall) paintBall.getItem();
-			return ipb.getColor( paintBall );
+			return ipb.getColor();
 		}
 		else
 		{

@@ -257,7 +257,7 @@ public class TilePaint extends AEBaseTile
 		{
 			final ItemPaintBall ipb = (ItemPaintBall) type.getItem();
 
-			final AEColor col = ipb.getColor( type );
+			final AEColor col = ipb.getColor();
 			final boolean lit = ipb.isLumen();
 
 			if( this.dots == null )

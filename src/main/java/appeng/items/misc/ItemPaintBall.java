@@ -43,26 +43,9 @@ public class ItemPaintBall extends AEBaseItem
 		this.lumen = lumen;
 	}
 
-	@Override
-	public ITextComponent getDisplayName(final ItemStack is )
+	public AEColor getColor()
 	{
-		// FIXME: in the new system, we should have different items for the colors,
-		// FIXME: Making this function fully redundant
-		return super.getDisplayName( is ).shallowCopy().appendText(" - ").appendSibling(this.getExtraName( is ));
-	}
-
-	private ITextComponent getExtraName( final ItemStack is )
-	{
-		return new TranslationTextComponent(this.getColor(is).translationKey);
-	}
-
-	public AEColor getColor( final ItemStack is )
-	{
-		Item item = is.getItem();
-		if (item instanceof ItemPaintBall) {
-			return ((ItemPaintBall) item).color;
-		}
-		return AEColor.TRANSPARENT;
+		return color;
 	}
 
 	public boolean isLumen()
