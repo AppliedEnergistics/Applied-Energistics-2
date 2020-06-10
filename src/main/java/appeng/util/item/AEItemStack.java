@@ -29,7 +29,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -50,14 +49,12 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	private static final String NBT_CRAFTABLE = "craft";
 	private static final String NBT_ITEMSTACK = "is";
 
-	private AESharedItemStack sharedStack;
+	private final AESharedItemStack sharedStack;
 
 	@OnlyIn( Dist.CLIENT )
 	private ITextComponent displayName;
 	@OnlyIn( Dist.CLIENT )
 	private List<ITextComponent> tooltip;
-	@OnlyIn( Dist.CLIENT )
-	private ResourceLocation uniqueID;
 
 	private AEItemStack( final AEItemStack is )
 	{

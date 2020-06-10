@@ -42,7 +42,7 @@ class FuzzyItemList extends AbstractItemList
 			return Collections.emptyList();
 		}
 
-		return this.findFuzzyDamage( filter, fuzzy, false );
+		return this.findFuzzyDamage( filter, fuzzy );
 	}
 
 	@Override
@@ -51,10 +51,10 @@ class FuzzyItemList extends AbstractItemList
 		return this.records;
 	}
 
-	private Collection<IAEItemStack> findFuzzyDamage( final IAEItemStack filter, final FuzzyMode fuzzy, final boolean ignoreMeta )
+	private Collection<IAEItemStack> findFuzzyDamage( final IAEItemStack filter, final FuzzyMode fuzzy )
 	{
 		final AEItemStack itemStack = (AEItemStack) filter;
-		final Bounds bounds = itemStack.getSharedStack().getBounds( fuzzy, ignoreMeta );
+		final Bounds bounds = itemStack.getSharedStack().getBounds( fuzzy );
 
 		return this.records.subMap( bounds.lower(), true, bounds.upper(), true ).descendingMap().values();
 	}
