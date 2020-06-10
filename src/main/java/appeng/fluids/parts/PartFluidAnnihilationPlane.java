@@ -6,12 +6,12 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidBlock;
@@ -84,8 +84,8 @@ public class PartFluidAnnihilationPlane extends PartBasicState implements IGridT
 
 			final BlockPos pos = te.getPos();
 
-			final EnumFacing e = bch.getWorldX();
-			final EnumFacing u = bch.getWorldY();
+			final Direction e = bch.getWorldX();
+			final Direction u = bch.getWorldY();
 
 			if( this.isAnnihilationPlane( te.getWorld().getTileEntity( pos.offset( e.getOpposite() ) ), this.getSide() ) )
 			{
@@ -115,33 +115,33 @@ public class PartFluidAnnihilationPlane extends PartBasicState implements IGridT
 	public PlaneConnections getConnections()
 	{
 
-		final EnumFacing facingRight, facingUp;
+		final Direction facingRight, facingUp;
 		AEPartLocation location = this.getSide();
 		switch( location )
 		{
 			case UP:
-				facingRight = EnumFacing.EAST;
-				facingUp = EnumFacing.NORTH;
+				facingRight = Direction.EAST;
+				facingUp = Direction.NORTH;
 				break;
 			case DOWN:
-				facingRight = EnumFacing.WEST;
-				facingUp = EnumFacing.NORTH;
+				facingRight = Direction.WEST;
+				facingUp = Direction.NORTH;
 				break;
 			case NORTH:
-				facingRight = EnumFacing.WEST;
-				facingUp = EnumFacing.UP;
+				facingRight = Direction.WEST;
+				facingUp = Direction.UP;
 				break;
 			case SOUTH:
-				facingRight = EnumFacing.EAST;
-				facingUp = EnumFacing.UP;
+				facingRight = Direction.EAST;
+				facingUp = Direction.UP;
 				break;
 			case WEST:
-				facingRight = EnumFacing.SOUTH;
-				facingUp = EnumFacing.UP;
+				facingRight = Direction.SOUTH;
+				facingUp = Direction.UP;
 				break;
 			case EAST:
-				facingRight = EnumFacing.NORTH;
-				facingUp = EnumFacing.UP;
+				facingRight = Direction.NORTH;
+				facingUp = Direction.UP;
 				break;
 			default:
 			case INTERNAL:
@@ -182,7 +182,7 @@ public class PartFluidAnnihilationPlane extends PartBasicState implements IGridT
 	}
 
 	@Override
-	public void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor )
+	public void onNeighborChanged( IBlockReader w, BlockPos pos, BlockPos neighbor )
 	{
 		if( pos.offset( this.getSide().getFacing() ).equals( neighbor ) )
 		{
@@ -244,7 +244,7 @@ public class PartFluidAnnihilationPlane extends PartBasicState implements IGridT
 		final TileEntity te = this.getTile();
 		final World w = te.getWorld();
 		final BlockPos pos = te.getPos().offset( this.getSide().getFacing() );
-		final IBlockState state = w.getBlockState( pos );
+		final BlockState state = w.getBlockState( pos );
 		final Block block = state.getBlock();
 
 		if( block instanceof IFluidBlock || block instanceof BlockLiquid )

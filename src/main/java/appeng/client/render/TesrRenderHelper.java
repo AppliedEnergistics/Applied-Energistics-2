@@ -25,7 +25,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.util.IWideReadableNumberConverter;
@@ -44,7 +44,7 @@ public class TesrRenderHelper
 	 * Move the current coordinate system to the center of the given block face, assuming that the origin is currently
 	 * at the center of a block.
 	 */
-	public static void moveToFace( EnumFacing face )
+	public static void moveToFace( Direction face )
 	{
 		GlStateManager.translate( face.getFrontOffsetX() * 0.50, face.getFrontOffsetY() * 0.50, face.getFrontOffsetZ() * 0.50 );
 	}
@@ -54,7 +54,7 @@ public class TesrRenderHelper
 	 * the given face as if it was
 	 * a 2D canvas.
 	 */
-	public static void rotateToFace( EnumFacing face, byte spin )
+	public static void rotateToFace( Direction face, byte spin )
 	{
 		switch( face )
 		{

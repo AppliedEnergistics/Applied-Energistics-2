@@ -1,0 +1,15 @@
+{
+    "result": {
+        "item": "appliedenergistics2:crafting_storage_16k"
+    },
+    "type": "forge:ore_shapeless",
+    "ingredients": [
+        {
+            "type": "appliedenergistics2:part",
+            "part": "material.cell16k_part"
+        },
+        {
+            "item": "appliedenergistics2:crafting_unit"
+        }
+    ]
+}

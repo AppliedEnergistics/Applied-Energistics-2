@@ -21,7 +21,7 @@ package appeng.core.worlddata;
 
 import java.util.Collection;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 
 /**
@@ -35,7 +35,7 @@ public interface IWorldSpawnData
 
 	boolean hasGenerated( int dim, int chunkX, int chunkZ );
 
-	boolean addNearByMeteorites( int dim, int chunkX, int chunkZ, NBTTagCompound newData );
+	boolean addNearByMeteorites( int dim, int chunkX, int chunkZ, CompoundNBT newData );
 
-	Collection<NBTTagCompound> getNearByMeteorites( int dim, int chunkX, int chunkZ );
+	Collection<CompoundNBT> getNearByMeteorites( int dim, int chunkX, int chunkZ );
 }

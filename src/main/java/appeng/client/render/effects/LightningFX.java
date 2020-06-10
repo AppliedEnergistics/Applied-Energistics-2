@@ -25,7 +25,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
@@ -125,7 +125,7 @@ public class LightningFX extends Particle
 		double oy = 0;
 		double oz = 0;
 
-		final EntityPlayer p = Minecraft.getMinecraft().player;
+		final PlayerEntity p = Minecraft.getMinecraft().player;
 		double offX = -rZ;
 		double offY = MathHelper.cos( (float) ( Math.PI / 2.0f + p.rotationPitch * 0.017453292F ) );
 		double offZ = rX;

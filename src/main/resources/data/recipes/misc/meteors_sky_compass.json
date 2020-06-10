@@ -1,0 +1,21 @@
+{
+    "result": {
+        "item": "appliedenergistics2:sky_compass"
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        " a ",
+        "aba",
+        " a "
+    ],
+    "key": {
+        "a": {
+            "type": "forge:ore_dict",
+            "ore": "ingotIron"
+        },
+        "b": {
+            "type": "appliedenergistics2:part",
+            "part": "material.certus_quartz_crystal_charged"
+        }
+    }
+}

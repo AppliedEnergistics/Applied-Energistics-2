@@ -28,16 +28,16 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
@@ -60,23 +60,10 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	{
 		super( Material.CIRCUITS );
 
-		this.setDefaultState( this.blockState.getBaseState().withProperty( FACING, EnumFacing.UP ).withProperty( ODD, false ) );
+		this.setDefaultState( this.blockState.getBaseState().withProperty( FACING, Direction.UP ).withProperty( ODD, false ) );
 		this.setLightOpacity( 0 );
 		this.setFullSize( false );
 		this.setOpaque( false );
-	}
-
-	@Override
-	public int getMetaFromState( final IBlockState state )
-	{
-		return state.getValue( FACING ).ordinal();
-	}
-
-	@Override
-	public IBlockState getStateFromMeta( final int meta )
-	{
-		EnumFacing facing = EnumFacing.values()[meta];
-		return this.getDefaultState().withProperty( FACING, facing );
 	}
 
 	@Override
@@ -86,7 +73,7 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	}
 
 	@Override
-	public int getWeakPower( final IBlockState state, final IBlockAccess w, final BlockPos pos, final EnumFacing side )
+	public int getWeakPower( final BlockState state, final IBlockReader w, final BlockPos pos, final Direction side )
 	{
 		if( w instanceof World && ( (TileLightDetector) this.getTileEntity( w, pos ) ).isReady() )
 		{
@@ -97,7 +84,7 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	}
 
 	@Override
-	public void onNeighborChange( final IBlockAccess world, final BlockPos pos, final BlockPos neighbor )
+	public void onNeighborChange( final IBlockReader world, final BlockPos pos, final BlockPos neighbor )
 	{
 		super.onNeighborChange( world, pos, neighbor );
 
@@ -109,18 +96,18 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	}
 
 	@Override
-	public void randomDisplayTick( final IBlockState state, final World worldIn, final BlockPos pos, final Random rand )
+	public void randomDisplayTick( final BlockState state, final World worldIn, final BlockPos pos, final Random rand )
 	{
 		// cancel out lightning
 	}
 
 	@Override
-	public boolean isValidOrientation( final World w, final BlockPos pos, final EnumFacing forward, final EnumFacing up )
+	public boolean isValidOrientation( final World w, final BlockPos pos, final Direction forward, final Direction up )
 	{
 		return this.canPlaceAt( w, pos, up.getOpposite() );
 	}
 
-	private boolean canPlaceAt( final World w, final BlockPos pos, final EnumFacing dir )
+	private boolean canPlaceAt( final World w, final BlockPos pos, final Direction dir )
 	{
 		return w.isSideSolid( pos.offset( dir ), dir.getOpposite(), false );
 	}
@@ -128,7 +115,7 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	@Override
 	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final BlockPos pos, final Entity thePlayer, final boolean b )
 	{
-		final EnumFacing up = this.getOrientable( w, pos ).getUp();
+		final Direction up = this.getOrientable( w, pos ).getUp();
 		final double xOff = -0.3 * up.getFrontOffsetX();
 		final double yOff = -0.3 * up.getFrontOffsetY();
 		final double zOff = -0.3 * up.getFrontOffsetZ();
@@ -147,9 +134,9 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	}
 
 	@Override
-	public void neighborChanged( IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
+	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
 	{
-		final EnumFacing up = this.getOrientable( world, pos ).getUp();
+		final Direction up = this.getOrientable( world, pos ).getUp();
 		if( !this.canPlaceAt( world, pos, up.getOpposite() ) )
 		{
 			this.dropTorch( world, pos );
@@ -158,7 +145,7 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 
 	private void dropTorch( final World w, final BlockPos pos )
 	{
-		final IBlockState prev = w.getBlockState( pos );
+		final BlockState prev = w.getBlockState( pos );
 		w.destroyBlock( pos, true );
 		w.notifyBlockUpdate( pos, prev, w.getBlockState( pos ), 3 );
 	}
@@ -166,7 +153,7 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	@Override
 	public boolean canPlaceBlockAt( final World w, final BlockPos pos )
 	{
-		for( final EnumFacing dir : EnumFacing.VALUES )
+		for( final Direction dir : Direction.VALUES )
 		{
 			if( this.canPlaceAt( w, pos, dir ) )
 			{
@@ -183,20 +170,20 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	}
 
 	@Override
-	public boolean isFullCube( IBlockState state )
+	public boolean isFullCube( BlockState state )
 	{
 		return false;
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public BlockRenderLayer getBlockLayer()
 	{
 		return BlockRenderLayer.CUTOUT;
 	}
 
 	@Override
-	public IOrientable getOrientable( final IBlockAccess w, final BlockPos pos )
+	public IOrientable getOrientable( final IBlockReader w, final BlockPos pos )
 	{
 		return new MetaRotation( w, pos, FACING );
 	}

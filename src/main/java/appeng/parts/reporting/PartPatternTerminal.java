@@ -21,9 +21,9 @@ package appeng.parts.reporting;
 
 import java.util.List;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.items.IItemHandler;
 
@@ -78,7 +78,7 @@ public class PartPatternTerminal extends AbstractPartTerminal
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 		this.setCraftingRecipe( data.getBoolean( "craftingMode" ) );
@@ -89,7 +89,7 @@ public class PartPatternTerminal extends AbstractPartTerminal
 	}
 
 	@Override
-	public void writeToNBT( final NBTTagCompound data )
+	public void writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
 		data.setBoolean( "craftingMode", this.craftingMode );
@@ -100,7 +100,7 @@ public class PartPatternTerminal extends AbstractPartTerminal
 	}
 
 	@Override
-	public GuiBridge getGui( final EntityPlayer p )
+	public GuiBridge getGui( final PlayerEntity p )
 	{
 		int x = (int) p.posX;
 		int y = (int) p.posY;

@@ -21,9 +21,9 @@ package appeng.fluids.helper;
 
 import java.util.Optional;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -229,13 +229,13 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 		return new DimensionalCoord( this.iHost.getTileEntity() );
 	}
 
-	public boolean hasCapability( Capability<?> capabilityClass, EnumFacing facing )
+	public boolean hasCapability( Capability<?> capabilityClass, Direction facing )
 	{
 		return capabilityClass == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capabilityClass == Capabilities.STORAGE_MONITORABLE_ACCESSOR;
 	}
 
 	@SuppressWarnings( "unchecked" )
-	public <T> T getCapability( Capability<T> capabilityClass, EnumFacing facing )
+	public <T> T getCapability( Capability<T> capabilityClass, Direction facing )
 	{
 		if( capabilityClass == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY )
 		{
@@ -492,14 +492,14 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 		this.priority = newValue;
 	}
 
-	public void writeToNBT( final NBTTagCompound data )
+	public void writeToNBT( final CompoundNBT data )
 	{
 		data.setInteger( "priority", this.priority );
 		this.tanks.writeToNBT( data, "storage" );
 		this.config.writeToNBT( data, "config" );
 	}
 
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		this.config.readFromNBT( data, "config" );
 		this.tanks.readFromNBT( data, "storage" );

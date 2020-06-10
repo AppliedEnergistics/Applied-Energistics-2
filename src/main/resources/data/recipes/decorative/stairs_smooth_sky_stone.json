@@ -1,0 +1,17 @@
+{
+    "result": {
+        "item": "appliedenergistics2:smooth_sky_stone_stairs",
+        "count": 4
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "a  ",
+        "aa ",
+        "aaa"
+    ],
+    "key": {
+        "a": {
+            "item": "appliedenergistics2:smooth_sky_stone_block"
+        }
+    }
+}

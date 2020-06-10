@@ -1,0 +1,17 @@
+{
+    "result": {
+        "item": "appliedenergistics2:crank"
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "aaa",
+        "  a",
+        "  a"
+    ],
+    "key": {
+        "a": {
+            "type": "forge:ore_dict",
+            "ore": "stickWood"
+        }
+    }
+}

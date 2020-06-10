@@ -19,7 +19,7 @@
 package appeng.client.render;
 
 
-import java.util.Arrays;
+import java.util.Collections;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -89,7 +89,7 @@ public class UVLightmapJsonTest
 		FeatureFactory fact = Api.INSTANCE.definitions().getRegistry();
 		fact.addBootstrapComponent( (IBlockRegistrationComponent) ( side, registry ) -> registry.register( uvlblock ) );
 		fact.addBootstrapComponent( (IItemRegistrationComponent) ( side, registry ) -> registry.register( uvlblockItem ) );
-		fact.addBootstrapComponent( new ItemVariantsComponent( uvlblockItem, Arrays.asList( uvlblockR ) ) );
+		fact.addBootstrapComponent( new ItemVariantsComponent( uvlblockItem, Collections.singletonList( uvlblockR ) ) );
 		fact.addBootstrapComponent( new ItemModelComponent( uvlblockItem, ImmutableMap.of( 0, new ModelResourceLocation( uvlblockR, "inventory" ) ) ) );
 	}
 }

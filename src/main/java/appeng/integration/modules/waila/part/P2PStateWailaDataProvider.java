@@ -23,8 +23,8 @@ import java.util.List;
 
 import com.google.common.collect.Iterators;
 
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.translation.I18n;
@@ -67,7 +67,7 @@ public final class P2PStateWailaDataProvider extends BasePartWailaDataProvider
 	{
 		if( part instanceof PartP2PTunnel )
 		{
-			NBTTagCompound nbtData = accessor.getNBTData();
+			CompoundNBT nbtData = accessor.getNBTData();
 			if( nbtData.hasKey( TAG_P2P_STATE ) )
 			{
 				int[] stateArr = nbtData.getIntArray( TAG_P2P_STATE );
@@ -100,7 +100,7 @@ public final class P2PStateWailaDataProvider extends BasePartWailaDataProvider
 	}
 
 	@Override
-	public NBTTagCompound getNBTData( EntityPlayerMP player, IPart part, TileEntity te, NBTTagCompound tag, World world, BlockPos pos )
+	public CompoundNBT getNBTData( PlayerEntityMP player, IPart part, TileEntity te, CompoundNBT tag, World world, BlockPos pos )
 	{
 		if( part instanceof PartP2PTunnel )
 		{

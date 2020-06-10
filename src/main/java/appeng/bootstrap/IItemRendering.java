@@ -22,13 +22,12 @@ package appeng.bootstrap;
 import java.util.Arrays;
 import java.util.Collection;
 
-import net.minecraft.client.renderer.ItemMeshDefinition;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import appeng.bootstrap.components.ItemMeshDefinitionComponent;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 
 /**
@@ -42,13 +41,13 @@ public interface IItemRendering
 	 * item model to be used for rendering by inspecting the item stack (i.e. for NBT data).
 	 * Please
 	 */
-	@SideOnly( Side.CLIENT )
-	IItemRendering meshDefinition( ItemMeshDefinition meshDefinition );
+	@OnlyIn( Dist.CLIENT )
+	IItemRendering meshDefinition( ItemMeshDefinitionComponent meshDefinition );
 
 	/**
 	 * Registers an item model for meta=0, see {@link #model(int, ModelResourceLocation)}.
 	 */
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	default IItemRendering model( ModelResourceLocation model )
 	{
 		return model( 0, model );
@@ -57,13 +56,13 @@ public interface IItemRendering
 	/**
 	 * Registers an item model for a given meta.
 	 */
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	IItemRendering model( int meta, ModelResourceLocation model );
 
 	/**
 	 * Convenient override for {@link #variants(Collection)}.
 	 */
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	default IItemRendering variants( ResourceLocation... resources )
 	{
 		return variants( Arrays.asList( resources ) );
@@ -76,20 +75,20 @@ public interface IItemRendering
 	 *
 	 * Models registered via {@link #model(int, ModelResourceLocation)} are automatically added here.
 	 */
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	IItemRendering variants( Collection<ResourceLocation> resources );
 
 	/**
 	 * Registers a custom item color definition that inspects an item stack and tint and
 	 * returns a color multiplier.
 	 */
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	IItemRendering color( IItemColor itemColor );
 
 	/**
 	 * Registers a built-in model under the given resource path.
 	 */
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	IItemRendering builtInModel( String name, IModel model );
 
 }

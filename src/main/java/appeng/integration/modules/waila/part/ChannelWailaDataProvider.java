@@ -21,8 +21,8 @@ package appeng.integration.modules.waila.part;
 
 import java.util.List;
 
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -48,7 +48,7 @@ import appeng.parts.networking.PartDenseCableSmart;
 public final class ChannelWailaDataProvider extends BasePartWailaDataProvider
 {
 	/**
-	 * Channel key used for the transferred {@link net.minecraft.nbt.NBTTagCompound}
+	 * Channel key used for the transferred {@link net.minecraft.nbt.CompoundNBT}
 	 */
 	private static final String ID_USED_CHANNELS = "usedChannels";
 
@@ -77,7 +77,7 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider
 	{
 		if( part instanceof PartCableSmart || part instanceof PartDenseCableSmart )
 		{
-			final NBTTagCompound tag = accessor.getNBTData();
+			final CompoundNBT tag = accessor.getNBTData();
 
 			final byte usedChannels = this.getUsedChannels( part, tag, this.cache );
 
@@ -105,7 +105,7 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider
 	 *
 	 * @return used channels on the cable
 	 */
-	private byte getUsedChannels( final IPart part, final NBTTagCompound tag, final Object2ByteMap<IPart> cache )
+	private byte getUsedChannels( final IPart part, final CompoundNBT tag, final Object2ByteMap<IPart> cache )
 	{
 		final byte usedChannels;
 
@@ -142,11 +142,11 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider
 	 * @return tag send to the client
 	 */
 	@Override
-	public NBTTagCompound getNBTData( EntityPlayerMP player, IPart part, TileEntity te, NBTTagCompound tag, World world, BlockPos pos )
+	public CompoundNBT getNBTData( PlayerEntityMP player, IPart part, TileEntity te, CompoundNBT tag, World world, BlockPos pos )
 	{
 		if( part instanceof PartCableSmart || part instanceof PartDenseCableSmart )
 		{
-			final NBTTagCompound tempTag = new NBTTagCompound();
+			final CompoundNBT tempTag = new CompoundNBT();
 
 			part.writeToNBT( tempTag );
 

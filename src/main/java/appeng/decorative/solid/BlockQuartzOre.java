@@ -22,12 +22,12 @@ package appeng.decorative.solid;
 import java.util.Random;
 
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.item.Item;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
@@ -51,7 +51,7 @@ public class BlockQuartzOre extends AEBaseBlock
 	}
 
 	@Override
-	public int quantityDropped( IBlockState state, int fortune, Random rand )
+	public int quantityDropped( BlockState state, int fortune, Random rand )
 	{
 		if( fortune > 0 && Item.getItemFromBlock( this ) != this.getItemDropped( null, rand, fortune ) )
 		{
@@ -77,7 +77,7 @@ public class BlockQuartzOre extends AEBaseBlock
 	}
 
 	@Override
-	public int getExpDrop( IBlockState state, IBlockAccess world, BlockPos pos, int fortune )
+	public int getExpDrop( BlockState state, IBlockReader world, BlockPos pos, int fortune )
 	{
 		Random rand = world instanceof World ? ( (World) world ).rand : new Random();
 
@@ -89,7 +89,7 @@ public class BlockQuartzOre extends AEBaseBlock
 	}
 
 	@Override
-	public Item getItemDropped( final IBlockState state, final Random rand, final int fortune )
+	public Item getItemDropped( final BlockState state, final Random rand, final int fortune )
 	{
 		return AEApi.instance()
 				.definitions()
@@ -100,7 +100,7 @@ public class BlockQuartzOre extends AEBaseBlock
 	}
 
 	@Override
-	public int damageDropped( final IBlockState state )
+	public int damageDropped( final BlockState state )
 	{
 		return AEApi.instance()
 				.definitions()

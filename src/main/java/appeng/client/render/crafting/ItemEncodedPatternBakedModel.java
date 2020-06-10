@@ -12,7 +12,7 @@ import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.input.Keyboard;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -20,9 +20,9 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.PerspectiveMapWrapper;
 import net.minecraftforge.common.model.TRSRTransformation;
@@ -53,7 +53,7 @@ class ItemEncodedPatternBakedModel implements IBakedModel
 	}
 
 	@Override
-	public List<BakedQuad> getQuads( @Nullable IBlockState state, @Nullable EnumFacing side, long rand )
+	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, long rand )
 	{
 		return this.baseModel.getQuads( state, side, rand );
 	}
@@ -157,7 +157,7 @@ class ItemEncodedPatternBakedModel implements IBakedModel
 		}
 
 		@Override
-		public List<BakedQuad> getQuads( @Nullable IBlockState state, @Nullable EnumFacing side, long rand )
+		public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, long rand )
 		{
 			// This may be called for items on the ground, in which case we will always fall back to the pattern
 			return ItemEncodedPatternBakedModel.this.baseModel.getQuads( state, side, rand );
@@ -220,7 +220,7 @@ class ItemEncodedPatternBakedModel implements IBakedModel
 		}
 
 		@Override
-		public IBakedModel handleItemState( IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity )
+		public IBakedModel handleItemState( IBakedModel originalModel, ItemStack stack, World world, LivingEntity entity )
 		{
 			boolean shiftHeld = Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT );
 			if( shiftHeld )

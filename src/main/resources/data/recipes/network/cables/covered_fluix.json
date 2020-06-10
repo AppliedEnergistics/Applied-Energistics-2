@@ -1,0 +1,16 @@
+{
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "cable_covered.fluix"
+    },
+    "type": "appliedenergistics2:part_shapeless",
+    "ingredients": [
+        {
+            "item": "#appliedenergistics2:wool"
+        },
+        {
+            "type": "appliedenergistics2:part",
+            "part": "cable_glass.fluix"
+        }
+    ]
+}

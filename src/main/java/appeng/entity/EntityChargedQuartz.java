@@ -22,7 +22,7 @@ package appeng.entity;
 import java.util.List;
 
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Items;
@@ -81,7 +81,7 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 		final int i = MathHelper.floor( ( this.getEntityBoundingBox().minY + this.getEntityBoundingBox().maxY ) / 2.0D );
 		final int k = MathHelper.floor( this.posZ );
 
-		IBlockState state = this.world.getBlockState( new BlockPos( j, i, k ) );
+		BlockState state = this.world.getBlockState( new BlockPos( j, i, k ) );
 		final Material mat = state.getMaterial();
 
 		if( Platform.isServer() && mat.isLiquid() )

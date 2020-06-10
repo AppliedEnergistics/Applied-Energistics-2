@@ -1,0 +1,20 @@
+{
+    "result": {
+        "item": "appliedenergistics2:dense_energy_cell"
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "aaa",
+        "aba",
+        "aaa"
+    ],
+    "key": {
+        "a": {
+            "item": "appliedenergistics2:energy_cell"
+        },
+        "b": {
+            "type": "appliedenergistics2:part",
+            "part": "material.calculation_processor"
+        }
+    }
+}

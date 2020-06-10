@@ -19,46 +19,6 @@
 package appeng.client.gui;
 
 
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
-import com.google.common.base.Joiner;
-import com.google.common.base.Stopwatch;
-import com.google.common.collect.Lists;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fluids.Fluid;
-
-import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.widgets.GuiCustomSlot;
 import appeng.client.gui.widgets.GuiScrollbar;
@@ -68,28 +28,39 @@ import appeng.client.me.SlotDisconnected;
 import appeng.client.me.SlotME;
 import appeng.client.render.StackSizeRenderer;
 import appeng.container.AEBaseContainer;
-import appeng.container.slot.AppEngCraftingSlot;
-import appeng.container.slot.AppEngSlot;
-import appeng.container.slot.AppEngSlot.hasCalculatedValidness;
-import appeng.container.slot.IOptionalSlot;
-import appeng.container.slot.SlotCraftingTerm;
-import appeng.container.slot.SlotDisabled;
-import appeng.container.slot.SlotFake;
-import appeng.container.slot.SlotInaccessible;
-import appeng.container.slot.SlotOutput;
-import appeng.container.slot.SlotPatternTerm;
-import appeng.container.slot.SlotRestrictedInput;
+import appeng.container.slot.*;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.core.sync.packets.PacketSwapSlots;
 import appeng.fluids.client.render.FluidStackSizeRenderer;
-import appeng.fluids.container.slots.IMEFluidSlot;
 import appeng.helpers.InventoryAction;
+import com.google.common.base.Joiner;
+import com.google.common.base.Stopwatch;
+import com.google.common.collect.Lists;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.java.games.input.Keyboard;
+import net.minecraft.client.gui.screen.inventory.ChestScreen;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.client.gui.GuiUtils;
+
+import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 
-public abstract class AEBaseGui extends GuiContainer
+public abstract class AEBaseGui extends ChestScreen
 {
 	private final List<InternalSlotME> meSlots = new ArrayList<>();
 	// drag y
@@ -102,10 +73,11 @@ public abstract class AEBaseGui extends GuiContainer
 	private ItemStack dbl_whichItem = ItemStack.EMPTY;
 	private Slot bl_clicked;
 	protected final List<GuiCustomSlot> guiSlots = new ArrayList<>();
+	protected float zLevel = 0.0F;
 
 	public AEBaseGui( final Container container )
 	{
-		super( container );
+		super( container, player, title );
 	}
 
 	protected static String join( final Collection<String> toolTip, final String delimiter )
@@ -115,12 +87,12 @@ public abstract class AEBaseGui extends GuiContainer
 		return joiner.join( toolTip );
 	}
 
-	protected int getQty( final GuiButton btn )
+	protected int getQty( final Button btn )
 	{
 		try
 		{
 			final DecimalFormat df = new DecimalFormat( "+#;-#" );
-			return df.parse( btn.displayString ).intValue();
+			return df.parse( btn.getMessage() ).intValue();
 		}
 		catch( final ParseException e )
 		{
@@ -129,19 +101,12 @@ public abstract class AEBaseGui extends GuiContainer
 	}
 
 	@Override
-	public void initGui()
+	public void init()
 	{
-		super.initGui();
+		super.init();
 
-		final List<Slot> slots = this.getInventorySlots();
-		final Iterator<Slot> i = slots.iterator();
-		while( i.hasNext() )
-		{
-			if( i.next() instanceof SlotME )
-			{
-				i.remove();
-			}
-		}
+		final List<Slot> slots = this.container.inventorySlots;
+		slots.removeIf( slot -> slot instanceof SlotME );
 
 		for( final InternalSlotME me : this.meSlots )
 		{
@@ -151,23 +116,23 @@ public abstract class AEBaseGui extends GuiContainer
 
 	private List<Slot> getInventorySlots()
 	{
-		return this.inventorySlots.inventorySlots;
+		return this.container.inventorySlots;
 	}
 
 	@Override
-	public void drawScreen( final int mouseX, final int mouseY, final float partialTicks )
+	public void render( final int mouseX, final int mouseY, final float partialTicks )
 	{
-		super.drawDefaultBackground();
-		super.drawScreen( mouseX, mouseY, partialTicks );
+		super.renderBackground();
+		super.drawGuiContainerBackgroundLayer( partialTicks, mouseX, mouseY);
 
 		GlStateManager.pushMatrix();
-		GlStateManager.translate( this.guiLeft, this.guiTop, 0.0F );
-		GlStateManager.enableDepth();
+		GlStateManager.translatef( this.guiLeft, this.guiTop, 0.0F );
+		GlStateManager.enableDepthTest();
 		for( final GuiCustomSlot c : this.guiSlots )
 		{
 			this.drawGuiSlot( c, mouseX, mouseY, partialTicks );
 		}
-		GlStateManager.disableDepth();
+		GlStateManager.disableDepthTest();
 		for( final GuiCustomSlot c : this.guiSlots )
 		{
 			this.drawTooltip( c, mouseX - this.guiLeft, mouseY - this.guiTop );
@@ -176,7 +141,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 		this.renderHoveredToolTip( mouseX, mouseY );
 
-		for( final Object c : this.buttonList )
+		for( final Object c : this.buttons )
 		{
 			if( c instanceof ITooltip )
 			{
@@ -194,13 +159,13 @@ public abstract class AEBaseGui extends GuiContainer
 			final int right = left + slot.getWidth();
 			final int bottom = top + slot.getHeight();
 
-			slot.drawContent( this.mc, mouseX, mouseY, partialTicks );
+			slot.drawContent( this.minecraft, mouseX, mouseY, partialTicks );
 
-			if( this.isPointInRegion( left, top, slot.getWidth(), slot.getHeight(), mouseX, mouseY ) && slot.canClick( this.mc.player ) )
+			if( this.isPointInRegion( left, top, slot.getWidth(), slot.getHeight(), mouseX, mouseY ) && slot.canClick( this.minecraft.player ) )
 			{
 				GlStateManager.disableLighting();
 				GlStateManager.colorMask( true, true, true, false );
-				this.drawGradientRect( left, top, right, bottom, -2130706433, -2130706433 );
+				this.fillGradient( left, top, right, bottom, -2130706433, -2130706433 );
 				GlStateManager.colorMask( true, true, true, true );
 				GlStateManager.enableLighting();
 			}
@@ -255,7 +220,8 @@ public abstract class AEBaseGui extends GuiContainer
 			lines.set( i, TextFormatting.GRAY + lines.get( i ) );
 		}
 
-		this.drawHoveringText( lines, x, y, this.fontRenderer );
+		//List<String> textLines, int mouseX, int mouseY, int screenWidth, int screenHeight, int maxTextWidth, FontRenderer font)
+		GuiUtils.drawHoveringText( lines, x, y, this.font );
 	}
 
 	@Override
@@ -263,7 +229,7 @@ public abstract class AEBaseGui extends GuiContainer
 	{
 		final int ox = this.guiLeft; // (width - xSize) / 2;
 		final int oy = this.guiTop; // (height - ySize) / 2;
-		GlStateManager.color( 1.0F, 1.0F, 1.0F, 1.0F );
+		GlStateManager.color4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
 		if( this.getScrollBar() != null )
 		{
@@ -280,10 +246,10 @@ public abstract class AEBaseGui extends GuiContainer
 	{
 		final int ox = this.guiLeft; // (width - xSize) / 2;
 		final int oy = this.guiTop; // (height - ySize) / 2;
-		GlStateManager.color( 1.0F, 1.0F, 1.0F, 1.0F );
+		GlStateManager.color4f( 1.0F, 1.0F, 1.0F, 1.0F );
 		this.drawBG( ox, oy, x, y );
 
-		final List<Slot> slots = this.getInventorySlots();
+		final List<Slot> slots = this.container.inventorySlots;
 		for( final Slot slot : slots )
 		{
 			if( slot instanceof IOptionalSlot )
@@ -294,18 +260,18 @@ public abstract class AEBaseGui extends GuiContainer
 					final AppEngSlot aeSlot = (AppEngSlot) slot;
 					if( aeSlot.isSlotEnabled() )
 					{
-						this.drawTexturedModalRect( ox + aeSlot.xPos - 1, oy + aeSlot.yPos - 1, optionalSlot.getSourceX() - 1, optionalSlot.getSourceY() - 1,
-								18,
-								18 );
+						GuiUtils.drawTexturedModalRect( ox + aeSlot.xPos - 1, oy + aeSlot.yPos - 1,
+								optionalSlot.getSourceX() - 1, optionalSlot.getSourceY() - 1,
+								18,  18, this.zLevel );
 					}
 					else
 					{
-						GlStateManager.color( 1.0F, 1.0F, 1.0F, 0.4F );
+						GlStateManager.color4f( 1.0F, 1.0F, 1.0F, 0.4F );
 						GlStateManager.enableBlend();
-						this.drawTexturedModalRect( ox + aeSlot.xPos - 1, oy + aeSlot.yPos - 1, optionalSlot.getSourceX() - 1, optionalSlot.getSourceY() - 1,
-								18,
-								18 );
-						GlStateManager.color( 1.0F, 1.0F, 1.0F, 1.0F );
+						GuiUtils.drawTexturedModalRect( ox + aeSlot.xPos - 1, oy + aeSlot.yPos - 1,
+								optionalSlot.getSourceX() - 1, optionalSlot.getSourceY() - 1,
+								18, 18 , this.zLevel );
+						GlStateManager.color4f( 1.0F, 1.0F, 1.0F, 1.0F );
 					}
 				}
 			}
@@ -318,45 +284,44 @@ public abstract class AEBaseGui extends GuiContainer
 
 	}
 
-	@Override
-	protected void mouseClicked( final int xCoord, final int yCoord, final int btn ) throws IOException
+	@Override public boolean mouseClicked( final double xCoord, final double yCoord, final int btn )
 	{
 		this.drag_click.clear();
 
 		if( btn == 1 )
 		{
-			for( final Object o : this.buttonList )
+			for( final Object o : this.buttons )
 			{
-				final GuiButton guibutton = (GuiButton) o;
-				if( guibutton.mousePressed( this.mc, xCoord, yCoord ) )
+				final Button guibutton = (Button) o;
+				if( guibutton.mousePressed( this.minecraft, xCoord, yCoord ) )
 				{
-					super.mouseClicked( xCoord, yCoord, 0 );
-					return;
+					return super.mouseClicked( xCoord, yCoord, 0 );
 				}
 			}
 		}
 
 		for( GuiCustomSlot slot : this.guiSlots )
 		{
-			if( this.isPointInRegion( slot.xPos(), slot.yPos(), slot.getWidth(), slot.getHeight(), xCoord, yCoord ) && slot.canClick( this.mc.player ) )
+			if( this.isPointInRegion( slot.xPos(), slot.yPos(), slot.getWidth(), slot.getHeight(), xCoord, yCoord ) && slot.canClick( this.minecraft.player ) )
 			{
-				slot.slotClicked( this.mc.player.inventory.getItemStack(), btn );
+				slot.slotClicked( this.minecraft.player.inventory.getItemStack(), btn );
 			}
 		}
 
 		if( this.getScrollBar() != null )
 		{
-			this.getScrollBar().click( this, xCoord - this.guiLeft, yCoord - this.guiTop );
+			this.getScrollBar().click( this, (int) xCoord - this.guiLeft, (int) yCoord - this.guiTop );
 		}
 
-		super.mouseClicked( xCoord, yCoord, btn );
+		return super.mouseClicked( xCoord, yCoord, btn );
 	}
 
+	//TODO
 	@Override
-	protected void mouseClickMove( final int x, final int y, final int c, final long d )
+	public boolean mouseDragged( final double x, final double y, final int c, final double d, final double idk )
 	{
 		final Slot slot = this.getSlot( x, y );
-		final ItemStack itemstack = this.mc.player.inventory.getItemStack();
+		final ItemStack itemstack = this.minecraft.player.inventory.getItemStack();
 
 		if( this.getScrollBar() != null )
 		{
@@ -377,15 +342,16 @@ public abstract class AEBaseGui extends GuiContainer
 		}
 		else
 		{
-			super.mouseClickMove( x, y, c, d );
+			return super.mouseDragged( x, y, c, d, idk);
 		}
 	}
 
 	// TODO 1.9.4 aftermath - Whole ClickType thing, to be checked.
+	// TODO oh man 1.15.2 stuff 2...
 	@Override
-	protected void handleMouseClick( final Slot slot, final int slotIdx, final int mouseButton, final ClickType clickType )
+	protected void handleMouseClick( @Nonnull final Slot slot, final int slotIdx, final int mouseButton, @Nonnull final ClickType clickType )
 	{
-		final EntityPlayer player = Minecraft.getMinecraft().player;
+		final PlayerEntity player = this.minecraft.player;
 
 		if( slot instanceof SlotFake )
 		{
@@ -452,14 +418,14 @@ public abstract class AEBaseGui extends GuiContainer
 					stack = ( (SlotME) slot ).getAEStack();
 				}
 
-				int slotNum = this.getInventorySlots().size();
+				int slotNum = this.container.inventorySlots.size();
 
 				if( !( slot instanceof SlotME ) && slot != null )
 				{
 					slotNum = slot.slotNumber;
 				}
 
-				( (AEBaseContainer) this.inventorySlots ).setTargetStack( stack );
+				( (AEBaseContainer) this.container.inventorySlots ).setTargetStack( stack );
 				final PacketInventoryAction p = new PacketInventoryAction( InventoryAction.MOVE_REGION, slotNum, 0 );
 				NetworkHandler.instance().sendToServer( p );
 				return;
@@ -547,8 +513,8 @@ public abstract class AEBaseGui extends GuiContainer
 
 			if( action != null )
 			{
-				( (AEBaseContainer) this.inventorySlots ).setTargetStack( stack );
-				final PacketInventoryAction p = new PacketInventoryAction( action, this.getInventorySlots().size(), 0 );
+				( (AEBaseContainer) this.container.inventorySlots ).setTargetStack( stack );
+				final PacketInventoryAction p = new PacketInventoryAction( action, this.container.inventorySlots.size(), 0 );
 				NetworkHandler.instance().sendToServer( p );
 			}
 
@@ -577,11 +543,11 @@ public abstract class AEBaseGui extends GuiContainer
 			{
 				// a replica of the weird broken vanilla feature.
 
-				final List<Slot> slots = this.getInventorySlots();
+				final List<Slot> slots = this.container.inventorySlots;
 				for( final Slot inventorySlot : slots )
 				{
 					if( inventorySlot != null && inventorySlot.canTakeStack(
-							this.mc.player ) && inventorySlot.getHasStack() && inventorySlot.isSameInventory( slot ) && Container.canAddItemToSlot(
+							this.minecraft.player ) && inventorySlot.getHasStack() && inventorySlot.isSameInventory( slot ) && Container.canAddItemToSlot(
 									inventorySlot, this.dbl_whichItem, true ) )
 					{
 						this.handleMouseClick( inventorySlot, inventorySlot.slotNumber, 0, ClickType.QUICK_MOVE );
@@ -601,18 +567,18 @@ public abstract class AEBaseGui extends GuiContainer
 	{
 		final Slot theSlot = this.getSlotUnderMouse();
 
-		if( this.mc.player.inventory.getItemStack().isEmpty() && theSlot != null )
+		if( this.minecraft.player.inventory.getItemStack().isEmpty() && theSlot != null )
 		{
 			for( int j = 0; j < 9; ++j )
 			{
-				if( keyCode == this.mc.gameSettings.keyBindsHotbar[j].getKeyCode() )
+				if( keyCode == this.minecraft.gameSettings.keyBindsHotbar[j].getKeyCode() )
 				{
-					final List<Slot> slots = this.getInventorySlots();
+					final List<Slot> slots = this.container.inventorySlots;
 					for( final Slot s : slots )
 					{
-						if( s.getSlotIndex() == j && s.inventory == ( (AEBaseContainer) this.inventorySlots ).getPlayerInv() )
+						if( s.getSlotIndex() == j && s.inventory == ( (AEBaseContainer) this.container.inventorySlots ).getPlayerInv() )
 						{
-							if( !s.canTakeStack( ( (AEBaseContainer) this.inventorySlots ).getPlayerInv().player ) )
+							if( !s.canTakeStack( ( (AEBaseContainer) this.container.inventorySlots ).getPlayerInv().player ) )
 							{
 								return false;
 							}
@@ -628,7 +594,7 @@ public abstract class AEBaseGui extends GuiContainer
 					{
 						for( final Slot s : slots )
 						{
-							if( s.getSlotIndex() == j && s.inventory == ( (AEBaseContainer) this.inventorySlots ).getPlayerInv() )
+							if( s.getSlotIndex() == j && s.inventory == ( (AEBaseContainer) this.container.inventorySlots ).getPlayerInv() )
 							{
 								NetworkHandler.instance().sendToServer( new PacketSwapSlots( s.slotNumber, theSlot.slotNumber ) );
 								return true;
@@ -648,9 +614,9 @@ public abstract class AEBaseGui extends GuiContainer
 		super.onGuiClosed();
 	}
 
-	protected Slot getSlot( final int mouseX, final int mouseY )
+	protected Slot getSlot( final double mouseX, final double mouseY )
 	{
-		final List<Slot> slots = this.getInventorySlots();
+		final List<Slot> slots = this.container.inventorySlots;
 		for( final Slot slot : slots )
 		{
 			// isPointInRegion
@@ -673,8 +639,8 @@ public abstract class AEBaseGui extends GuiContainer
 		final int i = Mouse.getEventDWheel();
 		if( i != 0 && isShiftKeyDown() )
 		{
-			final int x = Mouse.getEventX() * this.width / this.mc.displayWidth;
-			final int y = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
+			final int x = Mouse.getEventX() * this.width / this.minecraft.displayWidth;
+			final int y = this.height - Mouse.getEventY() * this.height / this.minecraft.displayHeight - 1;
 			this.mouseWheelEvent( x, y, i / Math.abs( i ) );
 		}
 		else if( i != 0 && this.getScrollBar() != null )
@@ -691,10 +657,10 @@ public abstract class AEBaseGui extends GuiContainer
 			final IAEItemStack item = ( (SlotME) slot ).getAEStack();
 			if( item != null )
 			{
-				( (AEBaseContainer) this.inventorySlots ).setTargetStack( item );
+				( (AEBaseContainer) this.container.inventorySlots ).setTargetStack( item );
 				final InventoryAction direction = wheel > 0 ? InventoryAction.ROLL_DOWN : InventoryAction.ROLL_UP;
 				final int times = Math.abs( wheel );
-				final int inventorySize = this.getInventorySlots().size();
+				final int inventorySize = this.container.inventorySlots.size();
 				for( int h = 0; h < times; h++ )
 				{
 					final PacketInventoryAction p = new PacketInventoryAction( direction, inventorySize, 0 );
@@ -712,20 +678,20 @@ public abstract class AEBaseGui extends GuiContainer
 	public void bindTexture( final String base, final String file )
 	{
 		final ResourceLocation loc = new ResourceLocation( base, "textures/" + file );
-		this.mc.getTextureManager().bindTexture( loc );
+		this.minecraft.getTextureManager().bindTexture( loc );
 	}
 
 	protected void drawItem( final int x, final int y, final ItemStack is )
 	{
 		this.zLevel = 100.0F;
-		this.itemRender.zLevel = 100.0F;
+		this.itemRenderer.zLevel = 100.0F;
 
-		RenderHelper.enableGUIStandardItemLighting();
-		GlStateManager.enableDepth();
-		this.itemRender.renderItemAndEffectIntoGUI( is, x, y );
-		GlStateManager.disableDepth();
+		RenderHelper.enableStandardItemLighting();
+		GlStateManager.enableDepthTest();
+		this.itemRenderer.renderItemAndEffectIntoGUI( is, x, y );
+		GlStateManager.disableDepthTest();
 
-		this.itemRender.zLevel = 0.0F;
+		this.itemRenderer.zLevel = 0.0F;
 		this.zLevel = 0.0F;
 	}
 
@@ -736,21 +702,23 @@ public abstract class AEBaseGui extends GuiContainer
 
 	private boolean hasCustomInventoryName()
 	{
-		if( this.inventorySlots instanceof AEBaseContainer )
+		if( this.container.inventorySlots instanceof AEBaseContainer )
 		{
-			return ( (AEBaseContainer) this.inventorySlots ).getCustomName() != null;
+			return ( (AEBaseContainer) this.container.inventorySlots ).getCustomName() != null;
 		}
 		return false;
 	}
 
 	private String getInventoryName()
 	{
-		return ( (AEBaseContainer) this.inventorySlots ).getCustomName();
+		return ( (AEBaseContainer) this.container.inventorySlots ).getCustomName();
 	}
 
 	/**
 	 * This overrides the base-class method through some access transformer hackery...
 	 */
+	// TODO fix this - drawSlot is now private
+	/*
 	@Override
 	public void drawSlot( Slot s )
 	{
@@ -875,7 +843,7 @@ public abstract class AEBaseGui extends GuiContainer
 							tessellator.draw();
 
 						}
-						catch( final Exception err )
+						catch( final Exception ignored )
 						{
 						}
 					}
@@ -891,7 +859,7 @@ public abstract class AEBaseGui extends GuiContainer
 						{
 							try
 							{
-								isValid = ( (SlotRestrictedInput) s ).isValid( is, this.mc.world );
+								isValid = ( (SlotRestrictedInput) s ).isValid( is, this.minecraft.world );
 							}
 							catch( final Exception err )
 							{
@@ -934,7 +902,7 @@ public abstract class AEBaseGui extends GuiContainer
 		}
 		// do the usual for non-ME Slots.
 		super.drawSlot( s );
-	}
+	}*/
 
 	protected boolean isPowered()
 	{
@@ -944,7 +912,7 @@ public abstract class AEBaseGui extends GuiContainer
 	public void bindTexture( final String file )
 	{
 		final ResourceLocation loc = new ResourceLocation( AppEng.MOD_ID, "textures/" + file );
-		this.mc.getTextureManager().bindTexture( loc );
+		this.minecraft.getTextureManager().bindTexture( loc );
 	}
 
 	protected GuiScrollbar getScrollBar()

@@ -1,0 +1,22 @@
+{
+    "conditions": [
+        {
+            "type": "appliedenergistics2:material_exists",
+            "material": "material.card_fuzzy"
+        }
+    ],
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "material.card_fuzzy"
+    },
+    "type": "appliedenergistics2:part_shapeless",
+    "ingredients": [
+        {
+            "type": "appliedenergistics2:part",
+            "part": "material.advanced_card"
+        },
+        {
+            "item": "#appliedenergistics2:wool"
+        }
+    ]
+}

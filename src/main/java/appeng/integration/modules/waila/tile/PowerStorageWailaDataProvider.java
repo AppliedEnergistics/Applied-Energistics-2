@@ -21,9 +21,9 @@ package appeng.integration.modules.waila.tile;
 
 import java.util.List;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntityMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -50,7 +50,7 @@ import appeng.util.Platform;
 public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider
 {
 	/**
-	 * Power key used for the transferred {@link net.minecraft.nbt.NBTTagCompound}
+	 * Power key used for the transferred {@link net.minecraft.nbt.CompoundNBT}
 	 */
 	private static final String ID_CURRENT_POWER = "currentPower";
 
@@ -89,7 +89,7 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider
 			final double maxPower = storage.getAEMaxPower();
 			if( maxPower > 0 )
 			{
-				final NBTTagCompound tag = accessor.getNBTData();
+				final CompoundNBT tag = accessor.getNBTData();
 
 				final long internalCurrentPower = this.getInternalCurrentPower( tag, te );
 
@@ -123,7 +123,7 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider
 	 * @return tag send to the client
 	 */
 	@Override
-	public NBTTagCompound getNBTData( EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, BlockPos pos )
+	public CompoundNBT getNBTData( PlayerEntityMP player, TileEntity te, CompoundNBT tag, World world, BlockPos pos )
 	{
 		if( te instanceof IAEPowerStorage )
 		{
@@ -151,7 +151,7 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider
 	 *
 	 * @return used channels on the cable
 	 */
-	private long getInternalCurrentPower( final NBTTagCompound tag, final TileEntity te )
+	private long getInternalCurrentPower( final CompoundNBT tag, final TileEntity te )
 	{
 		final long internalCurrentPower;
 

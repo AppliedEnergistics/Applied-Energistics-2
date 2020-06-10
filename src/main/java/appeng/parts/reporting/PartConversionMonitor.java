@@ -22,10 +22,10 @@ package appeng.parts.reporting;
 import java.util.Collections;
 import java.util.List;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.items.IItemHandler;
@@ -74,7 +74,7 @@ public class PartConversionMonitor extends AbstractPartMonitor
 	}
 
 	@Override
-	public boolean onPartActivate( EntityPlayer player, EnumHand hand, Vec3d pos )
+	public boolean onPartActivate( PlayerEntity player, Hand hand, Vec3d pos )
 	{
 		if( Platform.isClient() )
 		{
@@ -121,7 +121,7 @@ public class PartConversionMonitor extends AbstractPartMonitor
 	}
 
 	@Override
-	public boolean onClicked( EntityPlayer player, EnumHand hand, Vec3d pos )
+	public boolean onClicked( PlayerEntity player, Hand hand, Vec3d pos )
 	{
 		if( Platform.isClient() )
 		{
@@ -147,7 +147,7 @@ public class PartConversionMonitor extends AbstractPartMonitor
 	}
 
 	@Override
-	public boolean onShiftClicked( EntityPlayer player, EnumHand hand, Vec3d pos )
+	public boolean onShiftClicked( PlayerEntity player, Hand hand, Vec3d pos )
 	{
 		if( Platform.isClient() )
 		{
@@ -172,7 +172,7 @@ public class PartConversionMonitor extends AbstractPartMonitor
 		return true;
 	}
 
-	private void insertItem( final EntityPlayer player, final EnumHand hand, final boolean allItems )
+	private void insertItem( final PlayerEntity player, final Hand hand, final boolean allItems )
 	{
 		try
 		{
@@ -219,7 +219,7 @@ public class PartConversionMonitor extends AbstractPartMonitor
 		}
 	}
 
-	private void extractItem( final EntityPlayer player, int count )
+	private void extractItem( final PlayerEntity player, int count )
 	{
 		final IAEItemStack input = this.getDisplayed();
 		if( input != null )

@@ -1,0 +1,32 @@
+{
+    "result": {
+        "item": "appliedenergistics2:security_station"
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "aba",
+        "cdc",
+        "aea"
+    ],
+    "key": {
+        "d": {
+            "type": "appliedenergistics2:part",
+            "part": "material.cell16k_part"
+        },
+        "e": {
+            "type": "appliedenergistics2:part",
+            "part": "material.engineering_processor"
+        },
+        "b": {
+            "item": "appliedenergistics2:chest"
+        },
+        "a": {
+            "type": "forge:ore_dict",
+            "ore": "ingotIron"
+        },
+        "c": {
+            "type": "appliedenergistics2:part",
+            "part": "cable_glass.fluix"
+        }
+    }
+}

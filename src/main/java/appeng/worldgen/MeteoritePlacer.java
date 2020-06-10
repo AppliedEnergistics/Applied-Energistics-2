@@ -25,14 +25,14 @@ import java.util.HashSet;
 import java.util.List;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.oredict.OreDictionary;
@@ -67,7 +67,7 @@ public final class MeteoritePlacer
 	private double realCrater = this.meteoriteSize * 2 + 5;
 	private double squaredMeteoriteSize = this.meteoriteSize * this.meteoriteSize;
 	private double crater = this.realCrater * this.realCrater;
-	private NBTTagCompound settings;
+	private CompoundNBT settings;
 	private Fallout type;
 
 	public MeteoritePlacer()
@@ -113,7 +113,7 @@ public final class MeteoritePlacer
 		this.type = new Fallout( this.putter, this.skyStoneDefinition );
 	}
 
-	boolean spawnMeteorite( final IMeteoriteWorld w, final NBTTagCompound meteoriteBlob )
+	boolean spawnMeteorite( final IMeteoriteWorld w, final CompoundNBT meteoriteBlob )
 	{
 		this.settings = meteoriteBlob;
 
@@ -223,7 +223,7 @@ public final class MeteoritePlacer
 			this.skyChestDefinition.maybeBlock().ifPresent( block -> this.putter.put( w, x, y, z, block ) );
 
 			final TileEntity te = w.getTileEntity( x, y, z );
-			final InventoryAdaptor ap = InventoryAdaptor.getAdaptor( te, EnumFacing.UP );
+			final InventoryAdaptor ap = InventoryAdaptor.getAdaptor( te, Direction.UP );
 			if( ap != null )
 			{
 				int primary = Math.max( 1, (int) ( Math.random() * 4 ) );
@@ -376,7 +376,7 @@ public final class MeteoritePlacer
 
 						if( blk_b != blk )
 						{
-							final IBlockState meta_b = w.getBlockState( i, j + 1, k );
+							final BlockState meta_b = w.getBlockState( i, j + 1, k );
 
 							w.setBlock( i, j, k, meta_b, 3 );
 						}
@@ -447,7 +447,7 @@ public final class MeteoritePlacer
 			return false; // must spawn on a valid block..
 		}
 
-		this.settings = new NBTTagCompound();
+		this.settings = new CompoundNBT();
 		this.settings.setInteger( "x", x );
 		this.settings.setInteger( "y", y );
 		this.settings.setInteger( "z", z );
@@ -568,7 +568,7 @@ public final class MeteoritePlacer
 		return false;
 	}
 
-	NBTTagCompound getSettings()
+	CompoundNBT getSettings()
 	{
 		return this.settings;
 	}

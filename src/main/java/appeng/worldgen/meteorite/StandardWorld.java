@@ -20,7 +20,7 @@ package appeng.worldgen.meteorite;
 
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -126,7 +126,7 @@ public class StandardWorld implements IMeteoriteWorld
 	}
 
 	@Override
-	public void setBlock( final int x, final int y, final int z, final IBlockState state, final int l )
+	public void setBlock( final int x, final int y, final int z, final BlockState state, final int l )
 	{
 		if( this.range( x, y, z ) )
 		{
@@ -135,7 +135,7 @@ public class StandardWorld implements IMeteoriteWorld
 	}
 
 	@Override
-	public IBlockState getBlockState( final int x, final int y, final int z )
+	public BlockState getBlockState( final int x, final int y, final int z )
 	{
 		if( this.range( x, y, z ) )
 		{

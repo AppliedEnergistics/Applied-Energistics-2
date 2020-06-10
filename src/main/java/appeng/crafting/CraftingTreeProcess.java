@@ -19,15 +19,15 @@
 package appeng.crafting;
 
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.minecraft.inventory.InventoryCrafting;
+import appeng.util.item.AEItemStack;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -40,6 +40,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.container.ContainerNull;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.util.Platform;
+import net.minecraft.world.server.ServerWorld;
 
 
 public class CraftingTreeProcess
@@ -70,14 +71,14 @@ public class CraftingTreeProcess
 		{
 			final IAEItemStack[] list = details.getInputs();
 
-			final InventoryCrafting ic = new InventoryCrafting( new ContainerNull(), 3, 3 );
+			final CraftingInventory ic = new CraftingInventory( new ContainerNull(), 3, 3 );
 			final IAEItemStack[] is = details.getInputs();
 			for( int x = 0; x < ic.getSizeInventory(); x++ )
 			{
 				ic.setInventorySlotContents( x, is[x] == null ? ItemStack.EMPTY : is[x].createItemStack() );
 			}
 
-			FMLCommonHandler.instance().firePlayerCraftingEvent( Platform.getPlayer( (WorldServer) world ), details.getOutput( ic, world ), ic );
+			FMLCommonHandler.instance().firePlayerCraftingEvent( Platform.getPlayer( (ServerWorld) world ), details.getOutput( ic, world ), ic );
 
 			for( int x = 0; x < ic.getSizeInventory(); x++ )
 			{
@@ -98,6 +99,7 @@ public class CraftingTreeProcess
 					if( !g.isEmpty() && a != null && a.equals( g ) )
 					{
 						isAnInput = true;
+						break;
 					}
 				}
 
@@ -155,6 +157,7 @@ public class CraftingTreeProcess
 					if( !g.isEmpty() && a != null && a.equals( g ) )
 					{
 						isAnInput = true;
+						break;
 					}
 				}
 
@@ -191,7 +194,7 @@ public class CraftingTreeProcess
 
 		if( this.fullSimulation )
 		{
-			final InventoryCrafting ic = new InventoryCrafting( new ContainerNull(), 3, 3 );
+			final CraftingInventory ic = new CraftingInventory( new ContainerNull(), 3, 3 );
 
 			for( final Entry<CraftingTreeNode, Long> entry : this.nodes.entrySet() )
 			{
@@ -201,7 +204,7 @@ public class CraftingTreeProcess
 				ic.setInventorySlotContents( entry.getKey().getSlot(), stack.createItemStack() );
 			}
 
-			FMLCommonHandler.instance().firePlayerCraftingEvent( Platform.getPlayer( (WorldServer) this.world ), this.details.getOutput( ic, this.world ), ic );
+			FMLCommonHandler.instance().firePlayerCraftingEvent( Platform.getPlayer( (firePlayerCraftingEvent) this.world ), this.details.getOutput( ic, this.world ), ic );
 
 			for( int x = 0; x < ic.getSizeInventory(); x++ )
 			{

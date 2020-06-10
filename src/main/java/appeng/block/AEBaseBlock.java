@@ -27,24 +27,20 @@ import javax.annotation.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
@@ -52,6 +48,9 @@ import appeng.helpers.AEGlassMaterial;
 import appeng.helpers.ICustomCollision;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.ToolType;
 
 
 public abstract class AEBaseBlock extends Block
@@ -64,34 +63,37 @@ public abstract class AEBaseBlock extends Block
 
 	protected AxisAlignedBB boundingBox = FULL_BLOCK_AABB;
 
-	protected AEBaseBlock( final Material mat )
+	protected static Block.Properties getBlockProperitesFromMaterial( final Material mat )
 	{
-		super( mat );
-
+		Block.Properties properties = Block.Properties.create(mat);
 		if( mat == AEGlassMaterial.INSTANCE || mat == Material.GLASS )
 		{
-			this.setSoundType( SoundType.GLASS );
+			properties.sound( SoundType.GLASS );
 		}
 		else if( mat == Material.ROCK )
 		{
-			this.setSoundType( SoundType.STONE );
+			properties.sound( SoundType.STONE );
 		}
 		else if( mat == Material.WOOD )
 		{
-			this.setSoundType( SoundType.WOOD );
+			properties.sound( SoundType.WOOD );
 		}
 		else
 		{
-			this.setSoundType( SoundType.METAL );
+			properties.sound( SoundType.METAL );
 		}
 
-		this.setLightOpacity( 255 );
-		this.setLightLevel( 0 );
-		this.setHardness( 2.2F );
-		this.setHarvestLevel( "pickaxe", 0 );
+		properties.lightValue( 0 );
+		properties.hardnessAndResistance( 2.2F );
+		properties.harvestLevel( 0 );
+		properties.harvestTool( ToolType.PICKAXE );
 
-		// Workaround as vanilla sets it way too early.
-		this.fullBlock = this.isFullSize();
+		return properties;
+	}
+
+	protected AEBaseBlock( final Material mat )
+	{
+		super( getBlockProperitesFromMaterial( mat ) );
 	}
 
 	@Override
@@ -101,20 +103,20 @@ public abstract class AEBaseBlock extends Block
 	}
 
 	@Override
-	public final boolean isNormalCube( IBlockState state )
+	public final boolean isNormalCube( BlockState state )
 	{
 		return this.isFullSize() && this.isOpaque();
 	}
 
 	@Override
-	public AxisAlignedBB getBoundingBox( IBlockState state, IBlockAccess source, BlockPos pos )
+	public AxisAlignedBB getBoundingBox( BlockState state, IBlockReader source, BlockPos pos )
 	{
 		return this.boundingBox;
 	}
 
 	@SuppressWarnings( "deprecation" )
 	@Override
-	public void addCollisionBoxToList( final IBlockState state, final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, @Nullable final Entity e, boolean p_185477_7_ )
+	public void addCollisionBoxToList( final BlockState state, final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, @Nullable final Entity e, boolean p_185477_7_ )
 	{
 		final ICustomCollision collisionHandler = this.getCustomCollision( w, pos );
 
@@ -139,8 +141,8 @@ public abstract class AEBaseBlock extends Block
 
 	@SuppressWarnings( "deprecation" )
 	@Override
-	@SideOnly( Side.CLIENT )
-	public AxisAlignedBB getSelectedBoundingBox( IBlockState state, final World w, final BlockPos pos )
+	@OnlyIn( Dist.CLIENT )
+	public AxisAlignedBB getSelectedBoundingBox( BlockState state, final World w, final BlockPos pos )
 	{
 		final ICustomCollision collisionHandler = this.getCustomCollision( w, pos );
 
@@ -148,10 +150,10 @@ public abstract class AEBaseBlock extends Block
 		{
 			if( Platform.isClient() )
 			{
-				final EntityPlayer player = Minecraft.getMinecraft().player;
+				final PlayerEntity player = Minecraft.getInstance().player;
 				final LookDirection ld = Platform.getPlayerRay( player, Platform.getEyeOffset( player ) );
 
-				final Iterable<AxisAlignedBB> bbs = collisionHandler.getSelectedBoundingBoxesFromPool( w, pos, Minecraft.getMinecraft().player, true );
+				final Iterable<AxisAlignedBB> bbs = collisionHandler.getSelectedBoundingBoxesFromPool( w, pos, Minecraft.getInstance().player, true );
 				AxisAlignedBB br = null;
 
 				double lastDist = 0;
@@ -166,9 +168,9 @@ public abstract class AEBaseBlock extends Block
 
 					if( r != null )
 					{
-						final double xLen = ( ld.getA().x - r.hitVec.x );
-						final double yLen = ( ld.getA().y - r.hitVec.y );
-						final double zLen = ( ld.getA().z - r.hitVec.z );
+						final double xLen = ( ld.getA().x - r.getHitVec().x );
+						final double yLen = ( ld.getA().y - r.getHitVec().y );
+						final double zLen = ( ld.getA().z - r.getHitVec().z );
 
 						final double thisDist = xLen * xLen + yLen * yLen + zLen * zLen;
 
@@ -225,14 +227,14 @@ public abstract class AEBaseBlock extends Block
 	}
 
 	@Override
-	public final boolean isOpaqueCube( IBlockState state )
+	public final boolean isOpaqueCube( BlockState state )
 	{
 		return this.isOpaque();
 	}
 
 	@SuppressWarnings( "deprecation" )
 	@Override
-	public RayTraceResult collisionRayTrace( final IBlockState state, final World w, final BlockPos pos, final Vec3d a, final Vec3d b )
+	public RayTraceResult collisionRayTrace( final BlockState state, final World w, final BlockPos pos, final Vec3d a, final Vec3d b )
 	{
 		final ICustomCollision collisionHandler = this.getCustomCollision( w, pos );
 
@@ -279,25 +281,25 @@ public abstract class AEBaseBlock extends Block
 	}
 
 	@Override
-	public boolean hasComparatorInputOverride( IBlockState state )
+	public boolean hasComparatorInputOverride( BlockState state )
 	{
 		return this.isInventory();
 	}
 
 	@Override
-	public int getComparatorInputOverride( IBlockState state, final World worldIn, final BlockPos pos )
+	public int getComparatorInputOverride( BlockState state, final World worldIn, final BlockPos pos )
 	{
 		return 0;
 	}
 
 	@Override
-	public final boolean isNormalCube( IBlockState state, final IBlockAccess world, final BlockPos pos )
+	public final boolean isNormalCube( BlockState state, final IBlockReader world, final BlockPos pos )
 	{
 		return this.isFullSize();
 	}
 
 	@Override
-	public boolean rotateBlock( final World w, final BlockPos pos, final EnumFacing axis )
+	public boolean rotateBlock( final World w, final BlockPos pos, final Direction axis )
 	{
 		final IOrientable rotatable = this.getOrientable( w, pos );
 
@@ -310,8 +312,8 @@ public abstract class AEBaseBlock extends Block
 			}
 			else
 			{
-				EnumFacing forward = rotatable.getForward();
-				EnumFacing up = rotatable.getUp();
+				Direction forward = rotatable.getForward();
+				Direction up = rotatable.getUp();
 
 				for( int rs = 0; rs < 4; rs++ )
 				{
@@ -331,24 +333,24 @@ public abstract class AEBaseBlock extends Block
 	}
 
 	@Override
-	public EnumFacing[] getValidRotations( final World w, final BlockPos pos )
+	public Direction[] getValidRotations( final World w, final BlockPos pos )
 	{
-		return new EnumFacing[0];
+		return new Direction[0];
 	}
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	@Override
 	public void addInformation( final ItemStack is, final World world, final List<String> lines, final ITooltipFlag advancedItemTooltips )
 	{
 
 	}
 
-	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer player, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public boolean onActivated( final World w, final BlockPos pos, final PlayerEntity player, final Hand hand, final @Nullable ItemStack heldItem, final Direction side, final float hitX, final float hitY, final float hitZ )
 	{
 		return false;
 	}
 
-	public final EnumFacing mapRotation( final IOrientable ori, final EnumFacing dir )
+	public final Direction mapRotation( final IOrientable ori, final Direction dir )
 	{
 		// case DOWN: return bottomIcon;
 		// case UP: return blockIcon;
@@ -357,22 +359,22 @@ public abstract class AEBaseBlock extends Block
 		// case WEST: return sideIcon;
 		// case EAST: return sideIcon;
 
-		final EnumFacing forward = ori.getForward();
-		final EnumFacing up = ori.getUp();
+		final Direction forward = ori.getForward();
+		final Direction up = ori.getUp();
 
 		if( forward == null || up == null )
 		{
 			return dir;
 		}
 
-		final int west_x = forward.getFrontOffsetY() * up.getFrontOffsetZ() - forward.getFrontOffsetZ() * up.getFrontOffsetY();
-		final int west_y = forward.getFrontOffsetZ() * up.getFrontOffsetX() - forward.getFrontOffsetX() * up.getFrontOffsetZ();
-		final int west_z = forward.getFrontOffsetX() * up.getFrontOffsetY() - forward.getFrontOffsetY() * up.getFrontOffsetX();
+		final int west_x = forward.getYOffset() * up.getZOffset() - forward.getZOffset() * up.getYOffset();
+		final int west_y = forward.getZOffset() * up.getXOffset() - forward.getXOffset() * up.getZOffset();
+		final int west_z = forward.getXOffset() * up.getYOffset() - forward.getYOffset() * up.getXOffset();
 
-		EnumFacing west = null;
-		for( final EnumFacing dx : EnumFacing.VALUES )
+		Direction west = null;
+		for( final Direction dx : Direction.values() )
 		{
-			if( dx.getFrontOffsetX() == west_x && dx.getFrontOffsetY() == west_y && dx.getFrontOffsetZ() == west_z )
+			if( dx.getXOffset() == west_x && dx.getYOffset() == west_y && dx.getZOffset() == west_z )
 			{
 				west = dx;
 			}
@@ -385,29 +387,29 @@ public abstract class AEBaseBlock extends Block
 
 		if( dir == forward )
 		{
-			return EnumFacing.SOUTH;
+			return Direction.SOUTH;
 		}
 		if( dir == forward.getOpposite() )
 		{
-			return EnumFacing.NORTH;
+			return Direction.NORTH;
 		}
 
 		if( dir == up )
 		{
-			return EnumFacing.UP;
+			return Direction.UP;
 		}
 		if( dir == up.getOpposite() )
 		{
-			return EnumFacing.DOWN;
+			return Direction.DOWN;
 		}
 
 		if( dir == west )
 		{
-			return EnumFacing.WEST;
+			return Direction.WEST;
 		}
 		if( dir == west.getOpposite() )
 		{
-			return EnumFacing.EAST;
+			return Direction.EAST;
 		}
 
 		return null;
@@ -416,7 +418,7 @@ public abstract class AEBaseBlock extends Block
 	@Override
 	public String toString()
 	{
-		String regName = this.getRegistryName() != null ? this.getRegistryName().getResourcePath() : "unregistered";
+		String regName = this.getRegistryName() != null ? this.getRegistryName().getPath() : "unregistered";
 		return this.getClass().getSimpleName() + "[" + regName + "]";
 	}
 
@@ -430,12 +432,12 @@ public abstract class AEBaseBlock extends Block
 		return false;
 	}
 
-	protected void customRotateBlock( final IOrientable rotatable, final EnumFacing axis )
+	protected void customRotateBlock( final IOrientable rotatable, final Direction axis )
 	{
 
 	}
 
-	protected IOrientable getOrientable( final IBlockAccess w, final BlockPos pos )
+	protected IOrientable getOrientable( final IBlockReader w, final BlockPos pos )
 	{
 		if( this instanceof IOrientableBlock )
 		{
@@ -445,7 +447,7 @@ public abstract class AEBaseBlock extends Block
 		return null;
 	}
 
-	protected boolean isValidOrientation( final World w, final BlockPos pos, final EnumFacing forward, final EnumFacing up )
+	protected boolean isValidOrientation( final World w, final BlockPos pos, final Direction forward, final Direction up )
 	{
 		return true;
 	}

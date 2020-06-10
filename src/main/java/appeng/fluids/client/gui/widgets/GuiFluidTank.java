@@ -24,8 +24,8 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.util.AEColor;
@@ -33,7 +33,7 @@ import appeng.client.gui.widgets.ITooltip;
 import appeng.fluids.util.IAEFluidTank;
 
 
-@SideOnly( Side.CLIENT )
+@OnlyIn( Dist.CLIENT )
 public class GuiFluidTank extends GuiButton implements ITooltip
 {
 	private final IAEFluidTank tank;

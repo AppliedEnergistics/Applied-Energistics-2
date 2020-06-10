@@ -67,7 +67,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.JsonUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ICustomModelLoader;
@@ -304,11 +304,11 @@ public enum UVLModelLoader implements ICustomModelLoader
 			public BlockPartFace deserialize( JsonElement p_deserialize_1_, Type p_deserialize_2_, JsonDeserializationContext p_deserialize_3_ ) throws JsonParseException
 			{
 				JsonObject jsonobject = p_deserialize_1_.getAsJsonObject();
-				EnumFacing enumfacing = this.parseCullFace( jsonobject );
+				Direction Direction = this.parseCullFace( jsonobject );
 				int i = this.parseTintIndex( jsonobject );
 				String s = this.parseTexture( jsonobject );
 				BlockFaceUV blockfaceuv = (BlockFaceUV) p_deserialize_3_.deserialize( jsonobject, BlockFaceUV.class );
-				BlockPartFace blockFace = new BlockPartFace( enumfacing, i, s, blockfaceuv );
+				BlockPartFace blockFace = new BlockPartFace( Direction, i, s, blockfaceuv );
 				UVLModelWrapper.this.uvlightmap.put( blockFace, this.parseUVL( jsonobject ) );
 				return blockFace;
 			}
@@ -324,10 +324,10 @@ public enum UVLModelLoader implements ICustomModelLoader
 			}
 
 			@Nullable
-			private EnumFacing parseCullFace( JsonObject object )
+			private Direction parseCullFace( JsonObject object )
 			{
 				String s = JsonUtils.getString( object, "cullface", "" );
-				return EnumFacing.byName( s );
+				return Direction.byName( s );
 			}
 
 			protected Pair<Float, Float> parseUVL( JsonObject object )
@@ -345,7 +345,7 @@ public enum UVLModelLoader implements ICustomModelLoader
 		{
 
 			@Override
-			public BakedQuad makeBakedQuad( Vector3f posFrom, Vector3f posTo, BlockPartFace face, TextureAtlasSprite sprite, EnumFacing facing, ITransformation modelRotationIn, BlockPartRotation partRotation, boolean uvLocked, boolean shade )
+			public BakedQuad makeBakedQuad( Vector3f posFrom, Vector3f posTo, BlockPartFace face, TextureAtlasSprite sprite, Direction facing, ITransformation modelRotationIn, BlockPartRotation partRotation, boolean uvLocked, boolean shade )
 			{
 				BakedQuad quad = super.makeBakedQuad( posFrom, posTo, face, sprite, facing, modelRotationIn, partRotation, uvLocked, shade );
 

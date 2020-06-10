@@ -1,0 +1,27 @@
+{
+    "result": {
+        "item": "appliedenergistics2:spatial_pylon"
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "aba",
+        "cdc",
+        "aba"
+    ],
+    "key": {
+        "a": {
+            "item": "appliedenergistics2:quartz_glass"
+        },
+        "c": {
+            "type": "forge:ore_dict",
+            "ore": "dustFluix"
+        },
+        "b": {
+            "type": "appliedenergistics2:part",
+            "part": "cable_glass.fluix"
+        },
+        "d": {
+            "item": "#appliedenergistics2:fluixCrystal"
+        }
+    }
+}

@@ -21,11 +21,12 @@ package appeng.bootstrap.components;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.client.renderer.ItemMeshDefinition;
+import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.item.Item;
-import net.minecraftforge.fml.relauncher.Side;
 
 import appeng.bootstrap.IModelRegistry;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.ItemModelMesherForge;
 
 
 /**
@@ -37,7 +38,7 @@ public class ItemMeshDefinitionComponent implements IModelRegistrationComponent
 
 	private final Item item;
 
-	private final ItemMeshDefinition meshDefinition;
+	private final ItemModelMesher meshDefinition;
 
 	public ItemMeshDefinitionComponent( @Nonnull Item item, @Nonnull ItemMeshDefinition meshDefinition )
 	{
@@ -46,7 +47,7 @@ public class ItemMeshDefinitionComponent implements IModelRegistrationComponent
 	}
 
 	@Override
-	public void modelRegistration( Side side, IModelRegistry registry )
+	public void modelRegistration( Dist side, IModelRegistry registry )
 	{
 		registry.setCustomMeshDefinition( this.item, this.meshDefinition );
 	}

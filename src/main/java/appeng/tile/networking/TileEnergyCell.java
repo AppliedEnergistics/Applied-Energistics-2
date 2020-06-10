@@ -19,7 +19,7 @@
 package appeng.tile.networking;
 
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -99,7 +99,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT( final NBTTagCompound data )
+	public CompoundNBT writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
 		data.setDouble( "internalCurrentPower", this.internalCurrentPower );
@@ -107,7 +107,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 		this.internalCurrentPower = data.getDouble( "internalCurrentPower" );
@@ -120,7 +120,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	}
 
 	@Override
-	public void uploadSettings( final SettingsFrom from, final NBTTagCompound compound )
+	public void uploadSettings( final SettingsFrom from, final CompoundNBT compound )
 	{
 		if( from == SettingsFrom.DISMANTLE_ITEM )
 		{
@@ -129,11 +129,11 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	}
 
 	@Override
-	public NBTTagCompound downloadSettings( final SettingsFrom from )
+	public CompoundNBT downloadSettings( final SettingsFrom from )
 	{
 		if( from == SettingsFrom.DISMANTLE_ITEM )
 		{
-			final NBTTagCompound tag = new NBTTagCompound();
+			final CompoundNBT tag = new CompoundNBT();
 			tag.setDouble( "internalCurrentPower", this.internalCurrentPower );
 			tag.setDouble( "internalMaxPower", this.getInternalMaxPower() ); // used for tool tip.
 			return tag;

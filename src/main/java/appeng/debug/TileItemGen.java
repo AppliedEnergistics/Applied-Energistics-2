@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -72,7 +72,7 @@ public class TileItemGen extends AEBaseTile
 	}
 
 	@Override
-	public boolean hasCapability( Capability<?> capability, @Nullable EnumFacing facing )
+	public boolean hasCapability( Capability<?> capability, @Nullable Direction facing )
 	{
 		if( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY == capability )
 		{
@@ -83,7 +83,7 @@ public class TileItemGen extends AEBaseTile
 
 	@Override
 	@Nullable
-	public <T> T getCapability( Capability<T> capability, @Nullable EnumFacing facing )
+	public <T> T getCapability( Capability<T> capability, @Nullable Direction facing )
 	{
 		if( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY == capability )
 		{

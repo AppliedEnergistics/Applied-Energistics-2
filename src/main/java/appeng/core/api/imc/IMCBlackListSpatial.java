@@ -20,9 +20,9 @@ package appeng.core.api.imc;
 
 
 import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
+import net.minecraftforge.fml.InterModComms;
 
 import appeng.api.AEApi;
 import appeng.core.AELog;
@@ -33,10 +33,17 @@ public class IMCBlackListSpatial implements IIMCProcessor
 {
 
 	@Override
-	public void process( final IMCMessage m )
+	public void process( final InterModComms.IMCMessage m )
 	{
+		final Object messageArg = m.getMessageSupplier().get();
 
-		final ItemStack is = m.getItemStackValue();
+		if( !( messageArg instanceof ItemStack) )
+		{
+			AELog.warn( "Bad argument for %1$2 by Mod %2$s: expected instance of ItemStack got %3$s", this.getClass().getSimpleName(), m.getSenderModId(), messageArg.getClass().getSimpleName() );
+			return;
+		}
+
+		final ItemStack is = (ItemStack) messageArg;
 		if( !is.isEmpty() )
 		{
 			final Block blk = Block.getBlockFromItem( is.getItem() );
@@ -47,6 +54,6 @@ public class IMCBlackListSpatial implements IIMCProcessor
 			}
 		}
 
-		AELog.info( "Bad Block blacklisted by " + m.getSender() );
+		AELog.info( "Bad Block blacklisted by " + m.getSenderModId() );
 	}
 }

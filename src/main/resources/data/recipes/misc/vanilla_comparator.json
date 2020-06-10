@@ -1,0 +1,23 @@
+{
+    "result": {
+        "item": "minecraft:comparator"
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        " a ",
+        "aba",
+        "ccc"
+    ],
+    "key": {
+        "b": {
+            "item": "#appliedenergistics2:netherCrystal"
+        },
+        "a": {
+            "item": "minecraft:redstone_torch"
+        },
+        "c": {
+            "type": "forge:ore_dict",
+            "ore": "stone"
+        }
+    }
+}

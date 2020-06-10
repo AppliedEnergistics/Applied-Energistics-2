@@ -1,0 +1,24 @@
+{
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "part.export_bus"
+    },
+    "type": "appliedenergistics2:part_shaped",
+    "pattern": [
+        "aba",
+        " c "
+    ],
+    "key": {
+        "b": {
+            "type": "appliedenergistics2:part",
+            "part": "material.formation_core"
+        },
+        "a": {
+            "type": "forge:ore_dict",
+            "ore": "ingotIron"
+        },
+        "c": {
+            "item": "minecraft:piston"
+        }
+    }
+}

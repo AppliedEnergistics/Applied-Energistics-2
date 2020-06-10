@@ -19,7 +19,7 @@
 package appeng.tile.grid;
 
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
@@ -37,14 +37,14 @@ public abstract class AENetworkPowerTile extends AEBasePoweredTile implements IA
 	private final AENetworkProxy gridProxy = new AENetworkProxy( this, "proxy", this.getItemFromTile( this ), true );
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 		this.getProxy().readFromNBT( data );
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT( final NBTTagCompound data )
+	public CompoundNBT writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
 		this.getProxy().writeToNBT( data );

@@ -1,0 +1,17 @@
+{
+    "result": {
+        "item": "appliedenergistics2:light_detector"
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "ab"
+    ],
+    "key": {
+        "a": {
+            "item": "#appliedenergistics2:netherCrystal"
+        },
+        "b": {
+            "item": "minecraft:iron_ingot"
+        }
+    }
+}

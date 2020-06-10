@@ -1,0 +1,20 @@
+{
+    "result": {
+        "item": "appliedenergistics2:quartz_glass",
+        "count": 4
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "aba",
+        "bab",
+        "aba"
+    ],
+    "key": {
+        "b": {
+            "item": "#appliedenergistics2:glass"
+        },
+        "a": {
+            "item": "#appliedenergistics2:dustQuartz"
+        }
+    }
+}

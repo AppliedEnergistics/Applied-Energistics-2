@@ -20,8 +20,8 @@ package appeng.block.storage;
 
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.bootstrap.BlockRenderingCustomizer;
 import appeng.bootstrap.IBlockRendering;
@@ -39,7 +39,7 @@ public class SkyChestRenderingCustomizer extends BlockRenderingCustomizer
 		this.type = type;
 	}
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	@Override
 	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 	{

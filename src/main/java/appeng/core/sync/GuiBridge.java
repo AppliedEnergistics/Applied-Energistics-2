@@ -21,14 +21,14 @@ package appeng.core.sync;
 
 import java.lang.reflect.Constructor;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.IGuiHandler;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
@@ -125,7 +125,7 @@ import appeng.tile.storage.TileSkyChest;
 import appeng.util.Platform;
 
 
-public enum GuiBridge implements IGuiHandler
+public enum GuiBridge
 {
 	GUI_Handler(),
 
@@ -264,7 +264,7 @@ public enum GuiBridge implements IGuiHandler
 	}
 
 	@Override
-	public Object getServerGuiElement( final int ordinal, final EntityPlayer player, final World w, final int x, final int y, final int z )
+	public Object getServerGuiElement( final int ordinal, final PlayerEntity player, final World w, final int x, final int y, final int z )
 	{
 		final AEPartLocation side = AEPartLocation.fromOrdinal( ordinal & 0x07 );
 		final GuiBridge ID = values()[ordinal >> 4];
@@ -309,7 +309,7 @@ public enum GuiBridge implements IGuiHandler
 		return new ContainerNull();
 	}
 
-	private Object getGuiObject( final ItemStack it, final EntityPlayer player, final World w, final int x, final int y, final int z )
+	private Object getGuiObject( final ItemStack it, final PlayerEntity player, final World w, final int x, final int y, final int z )
 	{
 		if( !it.isEmpty() )
 		{
@@ -354,7 +354,7 @@ public enum GuiBridge implements IGuiHandler
 		return newContainer;
 	}
 
-	public Object ConstructContainer( final InventoryPlayer inventory, final AEPartLocation side, final Object tE )
+	public Object ConstructContainer( final PlayerInventory inventory, final AEPartLocation side, final Object tE )
 	{
 		try
 		{
@@ -380,7 +380,7 @@ public enum GuiBridge implements IGuiHandler
 		}
 	}
 
-	private Constructor findConstructor( final Constructor[] c, final InventoryPlayer inventory, final Object tE )
+	private Constructor findConstructor( final Constructor[] c, final PlayerInventory inventory, final Object tE )
 	{
 		for( final Constructor con : c )
 		{
@@ -407,7 +407,7 @@ public enum GuiBridge implements IGuiHandler
 	}
 
 	@Override
-	public Object getClientGuiElement( final int ordinal, final EntityPlayer player, final World w, final int x, final int y, final int z )
+	public Object getClientGuiElement( final int ordinal, final PlayerEntity player, final World w, final int x, final int y, final int z )
 	{
 		final AEPartLocation side = AEPartLocation.fromOrdinal( ordinal & 0x07 );
 		final GuiBridge ID = values()[ordinal >> 4];
@@ -452,7 +452,7 @@ public enum GuiBridge implements IGuiHandler
 		return new GuiNull( new ContainerNull() );
 	}
 
-	public Object ConstructGui( final InventoryPlayer inventory, final AEPartLocation side, final Object tE )
+	public Object ConstructGui( final PlayerInventory inventory, final AEPartLocation side, final Object tE )
 	{
 		try
 		{
@@ -478,7 +478,7 @@ public enum GuiBridge implements IGuiHandler
 		}
 	}
 
-	public boolean hasPermissions( final TileEntity te, final int x, final int y, final int z, final AEPartLocation side, final EntityPlayer player )
+	public boolean hasPermissions( final TileEntity te, final int x, final int y, final int z, final AEPartLocation side, final PlayerEntity player )
 	{
 		final World w = player.getEntityWorld();
 		final BlockPos pos = new BlockPos( x, y, z );
@@ -522,7 +522,7 @@ public enum GuiBridge implements IGuiHandler
 		return false;
 	}
 
-	private boolean securityCheck( final Object te, final EntityPlayer player )
+	private boolean securityCheck( final Object te, final PlayerEntity player )
 	{
 		if( te instanceof IActionHost && this.requiredPermission != null )
 		{

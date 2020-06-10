@@ -22,10 +22,10 @@ package appeng.parts.automation;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumHand;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 
@@ -94,14 +94,14 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 		super( is );
 
 		this.getConfigManager().registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
-		this.getConfigManager().registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		this.getConfigManager().registerSetting( Settings.FUZZY_MODE, FuzzyMode.ENABLED );
 		this.getConfigManager().registerSetting( Settings.CRAFT_ONLY, YesNo.NO );
 		this.getConfigManager().registerSetting( Settings.SCHEDULING_MODE, SchedulingMode.DEFAULT );
 		this.mySrc = new MachineSource( this );
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound extra )
+	public void readFromNBT( final CompoundNBT extra )
 	{
 		super.readFromNBT( extra );
 		this.craftingTracker.readFromNBT( extra );
@@ -109,7 +109,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	}
 
 	@Override
-	public void writeToNBT( final NBTTagCompound extra )
+	public void writeToNBT( final CompoundNBT extra )
 	{
 		super.writeToNBT( extra );
 		this.craftingTracker.writeToNBT( extra );
@@ -163,7 +163,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 
 					if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 					{
-						for( final IAEItemStack o : ImmutableList.copyOf( inv.getStorageList().findFuzzy( ais, fzMode ) ) )
+						for( final IAEItemStack o : ImmutableList.copyOf( inv.getStorageList().findFuzzy( ais ) ) )
 						{
 							this.pushItemIntoTarget( destination, energy, inv, o );
 							if( this.itemToSend <= 0 )
@@ -215,7 +215,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
+	public boolean onPartActivate( final PlayerEntity player, final Hand hand, final Vec3d pos )
 	{
 		if( Platform.isServer() )
 		{

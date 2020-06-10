@@ -19,15 +19,15 @@
 package appeng.fluids.parts;
 
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
@@ -69,7 +69,7 @@ public abstract class PartSharedFluidBus extends PartUpgradeable implements IGri
 	}
 
 	@Override
-	public void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor )
+	public void onNeighborChanged( IBlockReader w, BlockPos pos, BlockPos neighbor )
 	{
 		this.updateState();
 		if( this.lastRedstone != this.getHost().hasRedstone( this.getSide() ) )
@@ -102,7 +102,7 @@ public abstract class PartSharedFluidBus extends PartUpgradeable implements IGri
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
+	public boolean onPartActivate( final PlayerEntity player, final Hand hand, final Vec3d pos )
 	{
 		if( Platform.isServer() )
 		{
@@ -158,14 +158,14 @@ public abstract class PartSharedFluidBus extends PartUpgradeable implements IGri
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound extra )
+	public void readFromNBT( CompoundNBT extra )
 	{
 		super.readFromNBT( extra );
 		this.config.readFromNBT( extra, "config" );
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound extra )
+	public void writeToNBT( CompoundNBT extra )
 	{
 		super.writeToNBT( extra );
 		this.config.writeToNBT( extra, "config" );

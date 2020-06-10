@@ -24,7 +24,7 @@ import javax.vecmath.Vector3f;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
@@ -46,7 +46,7 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer
 	public CachedFormat format;
 
 	public int tintIndex = -1;
-	public EnumFacing orientation;
+	public Direction orientation;
 	public boolean diffuseLighting = true;
 	public TextureAtlasSprite sprite;
 
@@ -91,7 +91,7 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer
 	}
 
 	@Override
-	public void setQuadOrientation( EnumFacing orientation )
+	public void setQuadOrientation( Direction orientation )
 	{
 		this.orientation = orientation;
 	}
@@ -230,7 +230,7 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer
                 vertex.normal[3] = 0;
             }
         }
-        this.orientation = EnumFacing.getFacingFromVector( this.normal.x, this.normal.y, this.normal.z );
+        this.orientation = Direction.getFacingFromVector( this.normal.x, this.normal.y, this.normal.z );
     }
 
 	/**

@@ -24,6 +24,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ChunkEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import appeng.core.AEConfig;
@@ -31,7 +32,7 @@ import appeng.core.AELog;
 import appeng.core.features.AEFeature;
 import appeng.server.ISubCommand;
 
-
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ChunkLogger implements ISubCommand
 {
 

@@ -466,22 +466,6 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 
 		if( res == null )
 		{
-			if( details != null && details.isCraftable() )
-			{
-				for( final IAEItemStack ais : this.craftableItems.keySet() )
-				{
-					if( ais.getItem() == whatToCraft.getItem() && ( !ais.getItem().getHasSubtypes() || ais.getItemDamage() == whatToCraft.getItemDamage() ) )
-					{
-						// TODO: check if OK
-						// TODO: this is slightly hacky, but fine as long as we only deal with itemstacks
-						if( details.isValidItemForSlot( slotIndex, ais.asItemStackRepresentation(), world ) )
-						{
-							return this.craftableItems.get( ais );
-						}
-					}
-				}
-			}
-
 			return ImmutableSet.of();
 		}
 
@@ -498,7 +482,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 
 		final CraftingJob job = new CraftingJob( world, grid, actionSrc, slotItem, cb );
 
-		return CRAFTING_POOL.submit( job, (ICraftingJob) job );
+		return CRAFTING_POOL.submit( job, job );
 	}
 
 	@Override

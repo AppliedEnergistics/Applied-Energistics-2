@@ -19,30 +19,21 @@
 package appeng.client.render.cablebus;
 
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.common.property.IExtendedBlockState;
 
 import appeng.api.parts.IPartBakedModel;
 import appeng.api.parts.IPartModel;
@@ -64,7 +55,7 @@ public class CableBusBakedModel implements IBakedModel
 
 	private final TextureAtlasSprite particleTexture;
 
-	private final TextureMap textureMap = Minecraft.getMinecraft().getTextureMapBlocks();
+	private final TextureManager textureMap = Minecraft.getInstance().getTextureManager();
 
 	CableBusBakedModel( CableBuilder cableBuilder, FacadeBuilder facadeBuilder, Map<ResourceLocation, IBakedModel> partModels, TextureAtlasSprite particleTexture )
 	{
@@ -75,7 +66,7 @@ public class CableBusBakedModel implements IBakedModel
 	}
 
 	@Override
-	public List<BakedQuad> getQuads( @Nullable IBlockState state, @Nullable EnumFacing side, long rand )
+	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, Random rand )
 	{
 		CableBusRenderState renderState = getRenderingState( state );
 
@@ -104,7 +95,7 @@ public class CableBusBakedModel implements IBakedModel
 			quads.addAll( cableModel );
 
 			// Then handle attachments
-			for( EnumFacing facing : EnumFacing.values() )
+			for( Direction facing : Direction.values() )
 			{
 				final IPartModel partModel = renderState.getAttachments().get( facing );
 				if( partModel == null )
@@ -133,7 +124,7 @@ public class CableBusBakedModel implements IBakedModel
 
 					// Rotate quads accordingly
 					QuadRotator rotator = new QuadRotator();
-					partQuads = rotator.rotateQuads( partQuads, facing, EnumFacing.UP );
+					partQuads = rotator.rotateQuads( partQuads, facing, Direction.UP );
 
 					quads.addAll( partQuads );
 				}
@@ -145,16 +136,16 @@ public class CableBusBakedModel implements IBakedModel
 	}
 
 	// Determines whether a cable is connected to exactly two sides that are opposite each other
-	private static boolean isStraightLine( AECableType cableType, EnumMap<EnumFacing, AECableType> sides )
+	private static boolean isStraightLine( AECableType cableType, EnumMap<Direction, AECableType> sides )
 	{
-		final Iterator<Entry<EnumFacing, AECableType>> it = sides.entrySet().iterator();
+		final Iterator<Entry<Direction, AECableType>> it = sides.entrySet().iterator();
 		if( !it.hasNext() )
 		{
 			return false; // No connections
 		}
 
-		final Entry<EnumFacing, AECableType> nextConnection = it.next();
-		final EnumFacing firstSide = nextConnection.getKey();
+		final Entry<Direction, AECableType> nextConnection = it.next();
+		final Direction firstSide = nextConnection.getKey();
 		final AECableType firstType = nextConnection.getValue();
 
 		if( !it.hasNext() )
@@ -184,14 +175,14 @@ public class CableBusBakedModel implements IBakedModel
 		}
 
 		AEColor cableColor = renderState.getCableColor();
-		EnumMap<EnumFacing, AECableType> connectionTypes = renderState.getConnectionTypes();
+		EnumMap<Direction, AECableType> connectionTypes = renderState.getConnectionTypes();
 
 		// If the connection is straight, no busses are attached, and no covered core has been forced (in case of glass
 		// cables), then render the cable as a simplified straight line.
 		boolean noAttachments = !renderState.getAttachments().values().stream().anyMatch( IPartModel::requireCableConnection );
 		if( noAttachments && isStraightLine( cableType, connectionTypes ) )
 		{
-			EnumFacing facing = connectionTypes.keySet().iterator().next();
+			Direction facing = connectionTypes.keySet().iterator().next();
 
 			switch( cableType )
 			{
@@ -220,8 +211,8 @@ public class CableBusBakedModel implements IBakedModel
 		this.cableBuilder.addCableCore( renderState.getCoreType(), cableColor, quadsOut );
 
 		// Render all internal connections to attachments
-		EnumMap<EnumFacing, Integer> attachmentConnections = renderState.getAttachmentConnections();
-		for( EnumFacing facing : attachmentConnections.keySet() )
+		EnumMap<Direction, Integer> attachmentConnections = renderState.getAttachmentConnections();
+		for( Direction facing : attachmentConnections.keySet() )
 		{
 			int distance = attachmentConnections.get( facing );
 			int channels = renderState.getChannelsOnSide().get( facing );
@@ -247,9 +238,9 @@ public class CableBusBakedModel implements IBakedModel
 		}
 
 		// Render all outgoing connections using the appropriate type
-		for( final Entry<EnumFacing, AECableType> connection : connectionTypes.entrySet() )
+		for( final Entry<Direction, AECableType> connection : connectionTypes.entrySet() )
 		{
-			final EnumFacing facing = connection.getKey();
+			final Direction facing = connection.getKey();
 			final AECableType connectionType = connection.getValue();
 			final boolean cableBusAdjacent = renderState.getCableBusAdjacent().contains( facing );
 			final int channels = renderState.getChannelsOnSide().get( facing );
@@ -293,7 +284,7 @@ public class CableBusBakedModel implements IBakedModel
 		}
 
 		// If no core is present, just use the first part that comes into play
-		for( EnumFacing side : renderState.getAttachments().keySet() )
+		for( Direction side : renderState.getAttachments().keySet() )
 		{
 			IPartModel partModel = renderState.getAttachments().get( side );
 
@@ -320,7 +311,7 @@ public class CableBusBakedModel implements IBakedModel
 		return result;
 	}
 
-	private static CableBusRenderState getRenderingState( IBlockState state )
+	private static CableBusRenderState getRenderingState( BlockState state )
 	{
 		if( state == null || !( state instanceof IExtendedBlockState ) )
 		{

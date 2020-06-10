@@ -23,9 +23,9 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntityMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -107,7 +107,7 @@ public final class TileWailaDataProvider implements IWailaDataProvider
 	}
 
 	@Override
-	public NBTTagCompound getNBTData( EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, BlockPos pos )
+	public CompoundNBT getNBTData( PlayerEntityMP player, TileEntity te, CompoundNBT tag, World world, BlockPos pos )
 	{
 		for( final IWailaDataProvider provider : this.providers )
 		{

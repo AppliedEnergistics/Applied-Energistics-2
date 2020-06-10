@@ -1,0 +1,24 @@
+{
+    "result": {
+        "item": "appliedenergistics2:wireless_terminal"
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "a",
+        "b",
+        "c"
+    ],
+    "key": {
+        "b": {
+            "type": "appliedenergistics2:part",
+            "part": "part.terminal"
+        },
+        "c": {
+            "item": "appliedenergistics2:dense_energy_cell"
+        },
+        "a": {
+            "type": "appliedenergistics2:part",
+            "part": "material.wireless"
+        }
+    }
+}

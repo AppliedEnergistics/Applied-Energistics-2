@@ -19,7 +19,7 @@
 package appeng.client.gui.widgets;
 
 
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 
 import appeng.client.gui.AEBaseGui;
 
@@ -40,7 +40,7 @@ public class GuiScrollbar implements IScrollSource
 	public void draw( final AEBaseGui g )
 	{
 		g.bindTexture( "minecraft", "gui/container/creative_inventory/tabs.png" );
-		GlStateManager.color( 1.0f, 1.0f, 1.0f, 1.0f );
+		GlStateManager.color4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 		if( this.getRange() == 0 )
 		{
@@ -127,7 +127,7 @@ public class GuiScrollbar implements IScrollSource
 		return this.currentScroll;
 	}
 
-	public void click( final AEBaseGui aeBaseGui, final int x, final int y )
+	public void click( final AEBaseGui aeBaseGui, final double x, final double y )
 	{
 		if( this.getRange() == 0 )
 		{
@@ -138,7 +138,7 @@ public class GuiScrollbar implements IScrollSource
 		{
 			if( y > this.displayY && y <= this.displayY + this.height )
 			{
-				this.currentScroll = ( y - this.displayY );
+				this.currentScroll = (int) (y - this.displayY);
 				this.currentScroll = this.minScroll + ( ( this.currentScroll * 2 * this.getRange() / this.height ) );
 				this.currentScroll = ( this.currentScroll + 1 ) >> 1;
 				this.applyRange();

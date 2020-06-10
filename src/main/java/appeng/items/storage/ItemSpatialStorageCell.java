@@ -23,12 +23,12 @@ import java.util.List;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.implementations.TransitionResult;
 import appeng.api.implementations.items.ISpatialStorageCell;
@@ -57,7 +57,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 		this.maxRegion = spatialScale;
 	}
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	@Override
 	public void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
 	{
@@ -97,9 +97,9 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 			w = DimensionManager.getWorld( id );
 		}
 
-		if( w != null && w.hasCapability( Capabilities.SPATIAL_DIMENSION, null ) )
+		if( w != null)
 		{
-			return w.getCapability( Capabilities.SPATIAL_DIMENSION, null );
+			return w.getCapability( Capabilities.SPATIAL_DIMENSION ).orElse( null );
 		}
 		return null;
 	}
@@ -107,10 +107,10 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	@Override
 	public WorldCoord getStoredSize( final ItemStack is )
 	{
-		if( is.hasTagCompound() )
+		if( is.hasTag() )
 		{
-			final NBTTagCompound c = is.getTagCompound();
-			return new WorldCoord( c.getInteger( NBT_SIZE_X_KEY ), c.getInteger( NBT_SIZE_Y_KEY ), c.getInteger( NBT_SIZE_Z_KEY ) );
+			final CompoundNBT c = is.getTag();
+			return new WorldCoord( c.getInt( NBT_SIZE_X_KEY ), c.getInt( NBT_SIZE_Y_KEY ), c.getInt( NBT_SIZE_Z_KEY ) );
 		}
 		return new WorldCoord( 0, 0, 0 );
 	}
@@ -118,10 +118,10 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	@Override
 	public int getStoredDimensionID( final ItemStack is )
 	{
-		if( is.hasTagCompound() )
+		if( is.hasTag() )
 		{
-			final NBTTagCompound c = is.getTagCompound();
-			return c.getInteger( NBT_CELL_ID_KEY );
+			final CompoundNBT c = is.getTag();
+			return c.getInt( NBT_CELL_ID_KEY );
 		}
 		return -1;
 	}
@@ -180,11 +180,11 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 
 	private void setStorageCell( final ItemStack is, int id, BlockPos size )
 	{
-		final NBTTagCompound c = Platform.openNbtData( is );
+		final CompoundNBT c = Platform.openNbtData( is );
 
-		c.setInteger( NBT_CELL_ID_KEY, id );
-		c.setInteger( NBT_SIZE_X_KEY, size.getX() );
-		c.setInteger( NBT_SIZE_Y_KEY, size.getY() );
-		c.setInteger( NBT_SIZE_Z_KEY, size.getZ() );
+		c.putInt( NBT_CELL_ID_KEY, id );
+		c.putInt( NBT_SIZE_X_KEY, size.getX() );
+		c.putInt( NBT_SIZE_Y_KEY, size.getY() );
+		c.putInt( NBT_SIZE_Z_KEY, size.getZ() );
 	}
 }

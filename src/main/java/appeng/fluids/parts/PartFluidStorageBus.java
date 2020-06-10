@@ -25,12 +25,12 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -109,14 +109,14 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 	{
 		super( is );
 		this.getConfigManager().registerSetting( Settings.ACCESS, AccessRestriction.READ_WRITE );
-		this.getConfigManager().registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		this.getConfigManager().registerSetting( Settings.FUZZY_MODE, FuzzyMode.ENABLED );
 		this.getConfigManager().registerSetting( Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY );
 		this.source = new MachineSource( this );
 	}
 
 	private IMEInventory<IAEFluidStack> getInventoryWrapper( TileEntity target )
 	{
-		EnumFacing targetSide = this.getSide().getFacing().getOpposite();
+		Direction targetSide = this.getSide().getFacing().getOpposite();
 		// Prioritize a handler to directly link to another ME network
 		IStorageMonitorableAccessor accessor = target.getCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide );
 		if( accessor != null )
@@ -222,7 +222,7 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
+	public boolean onPartActivate( final PlayerEntity player, final Hand hand, final Vec3d pos )
 	{
 		if( Platform.isServer() )
 		{
@@ -241,14 +241,14 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 		this.config.readFromNBT( data, "config" );
 	}
 
 	@Override
-	public void writeToNBT( final NBTTagCompound data )
+	public void writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
 		this.config.writeToNBT( data, "config" );
@@ -334,11 +334,11 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 				if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 				{
 					this.handler.setPartitionList(
-							new FuzzyPriorityList<IAEFluidStack>( priorityList, (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) ) );
+							new FuzzyPriorityList<>( priorityList, (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) ) );
 				}
 				else
 				{
-					this.handler.setPartitionList( new PrecisePriorityList<IAEFluidStack>( priorityList ) );
+					this.handler.setPartitionList( new PrecisePriorityList<>( priorityList ) );
 				}
 
 				if( inv instanceof IBaseMonitor )
@@ -429,7 +429,7 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 			return 0;
 		}
 
-		final EnumFacing targetSide = this.getSide().getFacing().getOpposite();
+		final Direction targetSide = this.getSide().getFacing().getOpposite();
 
 		if( target.hasCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide ) )
 		{

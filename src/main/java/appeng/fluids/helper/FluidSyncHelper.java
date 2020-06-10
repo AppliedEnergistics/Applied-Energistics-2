@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntityMP;
 import net.minecraft.inventory.IContainerListener;
 
 import appeng.api.storage.data.IAEFluidStack;
@@ -59,9 +59,9 @@ public class FluidSyncHelper
 
 		for( final IContainerListener l : listeners )
 		{
-			if( l instanceof EntityPlayerMP )
+			if( l instanceof PlayerEntityMP )
 			{
-				NetworkHandler.instance().sendTo( new PacketFluidSlot( data ), (EntityPlayerMP) l );
+				NetworkHandler.instance().sendTo( new PacketFluidSlot( data ), (PlayerEntityMP) l );
 			}
 		}
 	}

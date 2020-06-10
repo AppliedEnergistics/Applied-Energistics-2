@@ -23,8 +23,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import net.minecraftforge.fml.common.event.FMLInterModComms;
-
 import appeng.api.config.TunnelType;
 import appeng.core.api.IIMCProcessor;
 import appeng.core.api.imc.IMCBlackListSpatial;
@@ -32,6 +30,7 @@ import appeng.core.api.imc.IMCGrinder;
 import appeng.core.api.imc.IMCMatterCannon;
 import appeng.core.api.imc.IMCP2PAttunement;
 import appeng.core.api.imc.IMCSpatial;
+import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 
 
 /**
@@ -76,29 +75,29 @@ public class IMCHandler
 	 *
 	 * @param event Event carrying the identifier and message for the handlers
 	 */
-	void handleIMCEvent( final FMLInterModComms.IMCEvent event )
+	void handleIMCEvent( final InterModProcessEvent event )
 	{
-		for( final FMLInterModComms.IMCMessage message : event.getMessages() )
+		event.getIMCStream().forEach( message ->
 		{
-			final String key = message.key;
+			final String method = message.getMethod();
 
 			try
 			{
-				final IIMCProcessor handler = this.processors.get( key );
+				final IIMCProcessor handler = this.processors.get( method );
 				if( handler != null )
 				{
 					handler.process( message );
 				}
 				else
 				{
-					throw new IllegalStateException( "Invalid IMC Called: " + key );
+					throw new IllegalStateException( "Invalid IMC Called: " + method );
 				}
 			}
 			catch( final Exception t )
 			{
-				AELog.warn( "Problem detected when processing IMC " + key + " from " + message.getSender() );
+				AELog.warn( "Problem detected when processing IMC " + method + " from " + message.getSenderModId() );
 				AELog.debug( t );
 			}
-		}
+		} );
 	}
 }

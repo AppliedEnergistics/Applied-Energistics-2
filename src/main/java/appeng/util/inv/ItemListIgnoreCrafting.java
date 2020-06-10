@@ -22,7 +22,6 @@ package appeng.util.inv;
 import java.util.Collection;
 import java.util.Iterator;
 
-import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
@@ -56,9 +55,9 @@ public class ItemListIgnoreCrafting<T extends IAEStack<T>> implements IItemList<
 	}
 
 	@Override
-	public Collection<T> findFuzzy( final T input, final FuzzyMode fuzzy )
+	public Collection<T> findFuzzy( final T input )
 	{
-		return this.target.findFuzzy( input, fuzzy );
+		return this.target.findFuzzy( input );
 	}
 
 	@Override

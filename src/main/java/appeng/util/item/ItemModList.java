@@ -22,7 +22,6 @@ package appeng.util.item;
 import java.util.Collection;
 
 import appeng.api.AEApi;
-import appeng.api.config.FuzzyMode;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemContainer;
@@ -74,9 +73,9 @@ public class ItemModList implements IItemContainer<IAEItemStack>
 	}
 
 	@Override
-	public Collection<IAEItemStack> findFuzzy( final IAEItemStack input, final FuzzyMode fuzzy )
+	public Collection<IAEItemStack> findFuzzy( final IAEItemStack input )
 	{
-		return this.overrides.findFuzzy( input, fuzzy );
+		return this.overrides.findFuzzy( input );
 	}
 
 	@Override

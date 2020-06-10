@@ -19,21 +19,24 @@
 package appeng.decorative.solid;
 
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import appeng.block.AEBaseBlock;
 import appeng.core.worlddata.WorldData;
 import appeng.util.Platform;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
 
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class BlockSkyStone extends AEBaseBlock
 {
 	private static final float BLOCK_RESISTANCE = 150.0f;
@@ -59,14 +62,14 @@ public class BlockSkyStone extends AEBaseBlock
 	@SubscribeEvent
 	public void breakFaster( final PlayerEvent.BreakSpeed event )
 	{
-		if( event.getState().getBlock() == this && event.getEntityPlayer() != null )
+		if( event.getState().getBlock() == this && event.getPlayer() != null )
 		{
-			final ItemStack is = event.getEntityPlayer().getItemStackFromSlot( EntityEquipmentSlot.MAINHAND );
+			final ItemStack is = event.getPlayer().getItemStackFromSlot( EquipmentSlotType.MAINHAND );
 			int level = -1;
 
 			if( !is.isEmpty() )
 			{
-				level = is.getItem().getHarvestLevel( is, "pickaxe", event.getEntityPlayer(), event.getState() );
+				level = is.getItem().getHarvestLevel( is, ToolType.PICKAXE, event.getPlayer(), event.getState() );
 			}
 
 			if( this.type != SkystoneType.STONE || level >= 3 || event.getOriginalSpeed() > BREAK_SPEAK_THRESHOLD )
@@ -77,7 +80,7 @@ public class BlockSkyStone extends AEBaseBlock
 	}
 
 	@Override
-	public void onBlockAdded( final World w, final BlockPos pos, final IBlockState state )
+	public void onBlockAdded( final World w, final BlockPos pos, final BlockState state )
 	{
 		super.onBlockAdded( w, pos, state );
 		if( Platform.isServer() )
@@ -87,7 +90,7 @@ public class BlockSkyStone extends AEBaseBlock
 	}
 
 	@Override
-	public void breakBlock( final World w, final BlockPos pos, final IBlockState state )
+	public void breakBlock( final World w, final BlockPos pos, final BlockState state )
 	{
 		super.breakBlock( w, pos, state );
 

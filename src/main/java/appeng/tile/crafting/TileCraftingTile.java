@@ -25,11 +25,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Optional;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -60,14 +60,14 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 {
 
 	private final CraftingCPUCalculator calc = new CraftingCPUCalculator( this );
-	private NBTTagCompound previousState = null;
+	private CompoundNBT previousState = null;
 	private boolean isCoreBlock = false;
 	private CraftingCPUCluster cluster;
 
 	public TileCraftingTile()
 	{
 		this.getProxy().setFlags( GridFlags.MULTIBLOCK, GridFlags.REQUIRE_CHANNEL );
-		this.getProxy().setValidSides( EnumSet.noneOf( EnumFacing.class ) );
+		this.getProxy().setValidSides( EnumSet.noneOf( Direction.class ) );
 	}
 
 	@Override
@@ -147,7 +147,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 
 	public void updateMeta( final boolean updateFormed )
 	{
-		if( this.world == null || this.notLoaded() || this.isInvalid() )
+		if( this.world == null || this.notLoaded() || !this.isValid() )
 		{
 			return;
 		}
@@ -160,12 +160,12 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 			power = this.getProxy().isActive();
 		}
 
-		final IBlockState current = this.world.getBlockState( this.pos );
+		final BlockState current = this.world.getBlockState( this.pos );
 
 		// The tile might try to update while being destroyed
 		if( current.getBlock() instanceof BlockCraftingUnit )
 		{
-			final IBlockState newState = current.withProperty( BlockCraftingUnit.POWERED, power ).withProperty( BlockCraftingUnit.FORMED, formed );
+			final BlockState newState = current.with( BlockCraftingUnit.POWERED, power ).with( BlockCraftingUnit.FORMED, formed );
 
 			if( current != newState )
 			{
@@ -179,11 +179,11 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		{
 			if( formed )
 			{
-				this.getProxy().setValidSides( EnumSet.allOf( EnumFacing.class ) );
+				this.getProxy().setValidSides( EnumSet.allOf( Direction.class ) );
 			}
 			else
 			{
-				this.getProxy().setValidSides( EnumSet.noneOf( EnumFacing.class ) );
+				this.getProxy().setValidSides( EnumSet.noneOf( Direction.class ) );
 			}
 		}
 	}
@@ -192,25 +192,25 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	{
 		if( Platform.isClient() )
 		{
-			return this.world.getBlockState( this.pos ).getValue( BlockCraftingUnit.FORMED );
+			return this.world.getBlockState( this.pos ).get( BlockCraftingUnit.FORMED );
 		}
 		return this.cluster != null;
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT( final NBTTagCompound data )
+	public CompoundNBT writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
-		data.setBoolean( "core", this.isCoreBlock() );
+		data.putBoolean( "core", this.isCoreBlock() );
 		if( this.isCoreBlock() && this.cluster != null )
 		{
-			this.cluster.writeToNBT( data );
+			this.cluster.write( data );
 		}
 		return data;
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 		this.setCoreBlock( data.getBoolean( "core" ) );
@@ -347,7 +347,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	{
 		if( Platform.isClient() )
 		{
-			return this.world.getBlockState( this.pos ).getValue( BlockCraftingUnit.POWERED );
+			return this.world.getBlockState( this.pos ).get( BlockCraftingUnit.POWERED );
 		}
 		return this.getProxy().isActive();
 	}
@@ -372,12 +372,12 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		this.isCoreBlock = isCoreBlock;
 	}
 
-	public NBTTagCompound getPreviousState()
+	public CompoundNBT getPreviousState()
 	{
 		return this.previousState;
 	}
 
-	public void setPreviousState( final NBTTagCompound previousState )
+	public void setPreviousState( final CompoundNBT previousState )
 	{
 		this.previousState = previousState;
 	}

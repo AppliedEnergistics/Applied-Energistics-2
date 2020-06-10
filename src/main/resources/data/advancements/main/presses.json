@@ -1,0 +1,69 @@
+{
+    "display": {
+        "icon": {
+            "item": "appliedenergistics2:material",
+            "data": 15
+        },
+        "title": {
+            "translate": "achievement.ae2.Presses"
+        },
+        "description": {
+            "translate": "achievement.ae2.Presses.desc"
+        }
+    },
+    "parent": "appliedenergistics2:main/root",
+    "criteria": {
+        "calc": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "item": "appliedenergistics2:material",
+                        "data": 13
+                    }
+                ]
+            }
+        },
+        "eng": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "item": "appliedenergistics2:material",
+                        "data": 14
+                    }
+                ]
+            }
+        },
+        "logic": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "item": "appliedenergistics2:material",
+                        "data": 15
+                    }
+                ]
+            }
+        },
+        "silicon": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "item": "appliedenergistics2:material",
+                        "data": 19
+                    }
+                ]
+            }
+        }
+    },
+    "requirements": [
+        [
+            "calc",
+            "eng",
+            "logic",
+            "silicon"
+        ]
+    ]
+}

@@ -19,40 +19,47 @@
 package appeng.core.sync.network;
 
 
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.NetHandlerPlayServer;
-import net.minecraft.network.ThreadQuickExitException;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.network.FMLEventChannel;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientCustomPacketEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent.ServerCustomPacketEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-
 import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.AppEngPacketHandlerBase;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 
 public class NetworkHandler
 {
 	private static NetworkHandler instance;
 
-	private final FMLEventChannel ec;
-	private final String myChannelName;
+	private final SimpleChannel sc;
+	private final ResourceLocation myChannelName;
 
-	private final IPacketHandler clientHandler;
-	private final IPacketHandler serveHandler;
+	private final IPacketHandler packetHandler;
 
-	public NetworkHandler( final String channelName )
+	public NetworkHandler( final ResourceLocation channelName )
 	{
-		FMLCommonHandler.instance().bus().register( this );
-		this.ec = NetworkRegistry.INSTANCE.newEventDrivenChannel( this.myChannelName = channelName );
-		this.ec.register( this );
+		this.sc = NetworkRegistry.ChannelBuilder
+				.named( this.myChannelName = channelName )
+				.simpleChannel();
 
-		this.clientHandler = this.createClientSide();
-		this.serveHandler = this.createServerSide();
+		this.packetHandler = this.createPacketHandler();
+
+		for( AppEngPacketHandlerBase.PacketTypes packetType : AppEngPacketHandlerBase.PacketTypes.values() )
+		{
+			packetType.register(sc, packetType.ordinal(), this.packetHandler );
+		}
 	}
 
-	public static void init( final String channelName )
+	private IPacketHandler createPacketHandler()
+	{
+		return FMLEnvironment.dist.isClient() ? createClientSide() : createServerSide();
+	}
+
+	public static void init( final ResourceLocation channelName )
 	{
 		instance = new NetworkHandler( channelName );
 	}
@@ -86,66 +93,38 @@ public class NetworkHandler
 		}
 	}
 
-	@SubscribeEvent
-	public void serverPacket( final ServerCustomPacketEvent ev )
-	{
-		final NetHandlerPlayServer srv = (NetHandlerPlayServer) ev.getPacket().handler();
-		if( this.serveHandler != null )
-		{
-			try
-			{
-				this.serveHandler.onPacketData( null, ev.getHandler(), ev.getPacket(), srv.player );
-			}
-			catch( final ThreadQuickExitException ignored )
-			{
-
-			}
-		}
-	}
-
-	@SubscribeEvent
-	public void clientPacket( final ClientCustomPacketEvent ev )
-	{
-		if( this.clientHandler != null )
-		{
-			try
-			{
-				this.clientHandler.onPacketData( null, ev.getHandler(), ev.getPacket(), null );
-			}
-			catch( final ThreadQuickExitException ignored )
-			{
-
-			}
-		}
-	}
-
-	public String getChannel()
+	public ResourceLocation getChannel()
 	{
 		return this.myChannelName;
 	}
 
+	public void reply( final AppEngPacket message, NetworkEvent.Context ctx )
+	{
+		this.sc.reply( message, ctx );
+	}
+
 	public void sendToAll( final AppEngPacket message )
 	{
-		this.ec.sendToAll( message.getProxy() );
+		this.sc.send( PacketDistributor.ALL.noArg(), message );
 	}
 
-	public void sendTo( final AppEngPacket message, final EntityPlayerMP player )
+	public void sendTo( final AppEngPacket message, final ServerPlayerEntity player )
 	{
-		this.ec.sendTo( message.getProxy(), player );
+		this.sc.send( PacketDistributor.PLAYER.with(() -> player ), message );
 	}
 
-	public void sendToAllAround( final AppEngPacket message, final NetworkRegistry.TargetPoint point )
+	public void sendToAllAround( final AppEngPacket message, final PacketDistributor.TargetPoint point )
 	{
-		this.ec.sendToAllAround( message.getProxy(), point );
+		this.sc.send( PacketDistributor.NEAR.with( () -> point ), message );
 	}
 
-	public void sendToDimension( final AppEngPacket message, final int dimensionId )
+	public void sendToDimension( final AppEngPacket message, final DimensionType dimensionType )
 	{
-		this.ec.sendToDimension( message.getProxy(), dimensionId );
+		this.sc.send( PacketDistributor.DIMENSION.with( () -> dimensionType ), message );
 	}
 
 	public void sendToServer( final AppEngPacket message )
 	{
-		this.ec.sendToServer( message.getProxy() );
+		this.sc.sendToServer( message );
 	}
 }

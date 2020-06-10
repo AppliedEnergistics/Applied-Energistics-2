@@ -27,7 +27,8 @@ package appeng.api.parts;
 import java.util.Set;
 
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 
 import appeng.api.util.AEPartLocation;
 
@@ -40,6 +41,11 @@ import appeng.api.util.AEPartLocation;
  */
 public abstract class LayerBase extends TileEntity // implements IPartHost
 {
+
+	public LayerBase( TileEntityType<?> tileEntityTypeIn )
+	{
+		super( tileEntityTypeIn );
+	}
 
 	/**
 	 * Grants access for the layer to the parts of the host.
@@ -64,7 +70,7 @@ public abstract class LayerBase extends TileEntity // implements IPartHost
 	 *
 	 * @return the part for the requested side.
 	 */
-	public IPart getPart( final EnumFacing side )
+	public IPart getPart( final Direction side )
 	{
 		return null; // place holder.
 	}

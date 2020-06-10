@@ -28,15 +28,15 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ItemLayerModel;
@@ -66,7 +66,7 @@ public class DummyFluidDispatcherBakedModel extends DelegateBakedModel
 
 	// This is never used. See the item override list below.
 	@Override
-	public List<BakedQuad> getQuads( @Nullable IBlockState state, @Nullable EnumFacing side, long rand )
+	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, long rand )
 	{
 		return Collections.emptyList();
 	}
@@ -89,7 +89,7 @@ public class DummyFluidDispatcherBakedModel extends DelegateBakedModel
 		return new ItemOverrideList( Collections.emptyList() )
 		{
 			@Override
-			public IBakedModel handleItemState( IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity )
+			public IBakedModel handleItemState( IBakedModel originalModel, ItemStack stack, World world, LivingEntity entity )
 			{
 				if( !( stack.getItem() instanceof FluidDummyItem ) )
 				{

@@ -22,16 +22,20 @@ package appeng.core.sync.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 
 import appeng.core.AppEng;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.parts.PartPlacement;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 
 public class PacketPartPlacement extends AppEngPacket
@@ -42,7 +46,7 @@ public class PacketPartPlacement extends AppEngPacket
 	private int z;
 	private int face;
 	private float eyeHeight;
-	private EnumHand hand;
+	private Hand hand;
 
 	// automatic.
 	public PacketPartPlacement( final ByteBuf stream )
@@ -52,15 +56,14 @@ public class PacketPartPlacement extends AppEngPacket
 		this.z = stream.readInt();
 		this.face = stream.readByte();
 		this.eyeHeight = stream.readFloat();
-		this.hand = EnumHand.values()[stream.readByte()];
+		this.hand = Hand.values()[stream.readByte()];
 	}
 
 	// api
-	public PacketPartPlacement( final BlockPos pos, final EnumFacing face, final float eyeHeight, final EnumHand hand )
+	public PacketPartPlacement( final BlockPos pos, final Direction face, final float eyeHeight, final Hand hand )
 	{
-		final ByteBuf data = Unpooled.buffer();
+		final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
-		data.writeInt( this.getPacketID() );
 		data.writeInt( pos.getX() );
 		data.writeInt( pos.getY() );
 		data.writeInt( pos.getZ() );
@@ -72,13 +75,17 @@ public class PacketPartPlacement extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player, NetworkEvent.Context ctx )
 	{
-		final EntityPlayerMP sender = (EntityPlayerMP) player;
-		AppEng.proxy.updateRenderMode( sender );
+		AppEng.proxy.updateRenderMode( player );
 		PartPlacement.setEyeHeight( this.eyeHeight );
-		PartPlacement.place( sender.getHeldItem( this.hand ), new BlockPos( this.x, this.y, this.z ), EnumFacing.VALUES[this.face], sender, this.hand,
-				sender.world,
+
+		// sender.getHeldItem( this.hand ), new BlockPos( this.x, this.y, this.z ), EnumFacing.VALUES[this.face], sender, this.hand,
+		//				sender.world,
+		Vec3d hitvec = player.getPositionVec().subtract( new Vec3d( this.x, this.y, this.z ) );
+
+		PartPlacement.place(new ItemUseContext( player, this.hand,
+					new BlockRayTraceResult(hitvec, Direction.values()[this.face], new BlockPos( this.x, this.y, this.z ), false)),
 				PartPlacement.PlaceType.INTERACT_FIRST_PASS, 0 );
 		AppEng.proxy.updateRenderMode( null );
 	}

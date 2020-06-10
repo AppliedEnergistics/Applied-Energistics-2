@@ -1,0 +1,18 @@
+{
+    "result": {
+        "item": "appliedenergistics2:tiny_tnt"
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "ab",
+        "ba"
+    ],
+    "key": {
+        "b": {
+            "item": "minecraft:gunpowder"
+        },
+        "a": {
+            "item": "#appliedenergistics2:dustQuartz"
+        }
+    }
+}

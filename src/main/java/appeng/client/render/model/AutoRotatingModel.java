@@ -30,7 +30,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -38,7 +38,7 @@ import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.QuadGatheringTransformer;
@@ -69,7 +69,7 @@ public class AutoRotatingModel implements IBakedModel
 		} );
 	}
 
-	private List<BakedQuad> getRotatedModel( IBlockState state, EnumFacing side, EnumFacing forward, EnumFacing up )
+	private List<BakedQuad> getRotatedModel( BlockState state, Direction side, Direction forward, Direction up )
 	{
 		FacingToRotation f2r = FacingToRotation.get( forward, up );
 		List<BakedQuad> original = AutoRotatingModel.this.parent.getQuads( state, f2r.resultingRotate( side ), 0 );
@@ -143,7 +143,7 @@ public class AutoRotatingModel implements IBakedModel
 	}
 
 	@Override
-	public List<BakedQuad> getQuads( IBlockState state, EnumFacing side, long rand )
+	public List<BakedQuad> getQuads( BlockState state, Direction side, long rand )
 	{
 		if( !( state instanceof IExtendedBlockState ) )
 		{
@@ -152,8 +152,8 @@ public class AutoRotatingModel implements IBakedModel
 
 		IExtendedBlockState extState = (IExtendedBlockState) state;
 
-		EnumFacing forward = extState.getValue( AEBaseTileBlock.FORWARD );
-		EnumFacing up = extState.getValue( AEBaseTileBlock.UP );
+		Direction forward = extState.getValue( AEBaseTileBlock.FORWARD );
+		Direction up = extState.getValue( AEBaseTileBlock.UP );
 
 		if( forward == null || up == null )
 		{
@@ -177,9 +177,9 @@ public class AutoRotatingModel implements IBakedModel
 	public static class VertexRotator extends QuadGatheringTransformer
 	{
 		private final FacingToRotation f2r;
-		private final EnumFacing face;
+		private final Direction face;
 
-		public VertexRotator( FacingToRotation f2r, EnumFacing face )
+		public VertexRotator( FacingToRotation f2r, Direction face )
 		{
 			this.f2r = f2r;
 			this.face = face;
@@ -317,7 +317,7 @@ public class AutoRotatingModel implements IBakedModel
 		}
 
 		@Override
-		public void setQuadOrientation( EnumFacing orientation )
+		public void setQuadOrientation( Direction orientation )
 		{
 			this.parent.setQuadOrientation( orientation );
 		}

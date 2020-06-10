@@ -19,11 +19,11 @@
 package appeng.block;
 
 
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
 
-public final class UnlistedBlockAccess implements IUnlistedProperty<IBlockAccess>
+public final class UnlistedBlockAccess implements IUnlistedProperty<IBlockReader>
 {
 	@Override
 	public String getName()
@@ -32,19 +32,19 @@ public final class UnlistedBlockAccess implements IUnlistedProperty<IBlockAccess
 	}
 
 	@Override
-	public boolean isValid( final IBlockAccess value )
+	public boolean isValid( final IBlockReader value )
 	{
 		return true;
 	}
 
 	@Override
-	public Class<IBlockAccess> getType()
+	public Class<IBlockReader> getType()
 	{
-		return IBlockAccess.class;
+		return IBlockReader.class;
 	}
 
 	@Override
-	public String valueToString( final IBlockAccess value )
+	public String valueToString( final IBlockReader value )
 	{
 		return null;
 	}

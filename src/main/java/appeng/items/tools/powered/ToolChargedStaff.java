@@ -19,7 +19,7 @@
 package appeng.items.tools.powered;
 
 
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -41,7 +41,7 @@ public class ToolChargedStaff extends AEBasePoweredItem
 	}
 
 	@Override
-	public boolean hitEntity( final ItemStack item, final EntityLivingBase target, final EntityLivingBase hitter )
+	public boolean hitEntity( final ItemStack item, final LivingEntity target, final LivingEntity hitter )
 	{
 		if( this.getAECurrentPower( item ) > 300 )
 		{

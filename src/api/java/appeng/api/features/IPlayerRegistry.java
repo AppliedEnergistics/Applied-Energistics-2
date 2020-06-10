@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 
 
 /**
@@ -50,7 +50,7 @@ public interface IPlayerRegistry
 	 *
 	 * @return user id of a player entity.
 	 */
-	int getID( EntityPlayer player );
+	int getID( PlayerEntity player );
 
 	/**
 	 * @param playerID to be found player id
@@ -58,5 +58,5 @@ public interface IPlayerRegistry
 	 * @return PlayerEntity, or null if the player could not be found.
 	 */
 	@Nullable
-	EntityPlayer findPlayer( int playerID );
+	PlayerEntity findPlayer( int playerID );
 }

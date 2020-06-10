@@ -25,7 +25,8 @@
 package appeng.core.api.imc;
 
 
-import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.InterModComms;
 
 import appeng.api.AEApi;
 import appeng.core.AELog;
@@ -36,17 +37,26 @@ public class IMCSpatial implements IIMCProcessor
 {
 
 	@Override
-	public void process( final IMCMessage m )
+	public void process( final InterModComms.IMCMessage m )
 	{
+		final Object messageArg = m.getMessageSupplier().get();
+
+		if( !( messageArg instanceof String) )
+		{
+			AELog.warn( "Bad argument for %1$2 by Mod %2$s: expected instance of String got %3$s", this.getClass().getSimpleName(), m.getSenderModId(), messageArg.getClass().getSimpleName() );
+			return;
+		}
+
+		String clazzName = (String) messageArg;
 
 		try
 		{
-			final Class classInstance = Class.forName( m.getStringValue() );
+			final Class classInstance = Class.forName( clazzName );
 			AEApi.instance().registries().movable().whiteListTileEntity( classInstance );
 		}
 		catch( final ClassNotFoundException e )
 		{
-			AELog.info( "Bad Class Registered: " + m.getStringValue() + " by " + m.getSender() );
+			AELog.info( "Bad Class Registered: " + clazzName + " by " + m.getSenderModId() );
 		}
 	}
 }

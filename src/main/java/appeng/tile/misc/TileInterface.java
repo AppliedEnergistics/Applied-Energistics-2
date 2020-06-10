@@ -29,11 +29,11 @@ import com.google.common.collect.ImmutableSet;
 
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -87,14 +87,14 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, II
 		this.duality.notifyNeighbors();
 	}
 
-	public void setSide( final EnumFacing facing )
+	public void setSide( final Direction facing )
 	{
 		if( Platform.isClient() )
 		{
 			return;
 		}
 
-		EnumFacing newForward = facing;
+		Direction newForward = facing;
 
 		if( !this.omniDirectional && this.getForward() == facing.getOpposite() )
 		{
@@ -116,14 +116,14 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, II
 
 		if( this.omniDirectional )
 		{
-			this.setOrientation( EnumFacing.NORTH, EnumFacing.UP );
+			this.setOrientation( Direction.NORTH, Direction.UP );
 		}
 		else
 		{
-			EnumFacing newUp = EnumFacing.UP;
-			if( newForward == EnumFacing.UP || newForward == EnumFacing.DOWN )
+			Direction newUp = Direction.UP;
+			if( newForward == Direction.UP || newForward == Direction.DOWN )
 			{
-				newUp = EnumFacing.NORTH;
+				newUp = Direction.NORTH;
 			}
 			this.setOrientation( newForward, newUp );
 		}
@@ -137,7 +137,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, II
 	{
 		if( this.omniDirectional )
 		{
-			this.getProxy().setValidSides( EnumSet.allOf( EnumFacing.class ) );
+			this.getProxy().setValidSides( EnumSet.allOf( Direction.class ) );
 		}
 		else
 		{
@@ -167,7 +167,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, II
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT( final NBTTagCompound data )
+	public CompoundNBT writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
 		data.setBoolean( "omniDirectional", this.omniDirectional );
@@ -176,7 +176,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, II
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 		this.omniDirectional = data.getBoolean( "omniDirectional" );
@@ -255,11 +255,11 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, II
 	}
 
 	@Override
-	public EnumSet<EnumFacing> getTargets()
+	public EnumSet<Direction> getTargets()
 	{
 		if( this.omniDirectional )
 		{
-			return EnumSet.allOf( EnumFacing.class );
+			return EnumSet.allOf( Direction.class );
 		}
 		return EnumSet.of( this.getForward() );
 	}
@@ -277,7 +277,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, II
 	}
 
 	@Override
-	public boolean pushPattern( final ICraftingPatternDetails patternDetails, final InventoryCrafting table )
+	public boolean pushPattern( final ICraftingPatternDetails patternDetails, final CraftingInventory table )
 	{
 		return this.duality.pushPattern( patternDetails, table );
 	}
@@ -339,13 +339,13 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, II
 	}
 
 	@Override
-	public boolean hasCapability( Capability<?> capability, @Nullable EnumFacing facing )
+	public boolean hasCapability( Capability<?> capability, @Nullable Direction facing )
 	{
 		return this.duality.hasCapability( capability, facing ) || super.hasCapability( capability, facing );
 	}
 
 	@Override
-	public <T> T getCapability( Capability<T> capability, @Nullable EnumFacing facing )
+	public <T> T getCapability( Capability<T> capability, @Nullable Direction facing )
 	{
 		T result = this.duality.getCapability( capability, facing );
 		if( result != null )

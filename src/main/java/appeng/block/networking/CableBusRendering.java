@@ -19,8 +19,8 @@
 package appeng.block.networking;
 
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.bootstrap.BlockRenderingCustomizer;
 import appeng.bootstrap.IBlockRendering;
@@ -42,7 +42,7 @@ public class CableBusRendering extends BlockRenderingCustomizer
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 	{
 		rendering.builtInModel( "models/block/builtin/cable_bus", new CableBusModel( this.partModels ) );

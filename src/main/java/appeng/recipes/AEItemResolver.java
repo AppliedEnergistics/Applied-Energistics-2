@@ -175,7 +175,7 @@ public class AEItemResolver implements ISubItemResolver
 		}
 
 		final ItemStack is = partType.stack( col, 1 );
-		return new ResolverResult( "paint_ball", ( lumen ? 20 : 0 ) + is.getItemDamage() );
+		return new ResolverResult( "paint_ball", ( lumen ? 20 : 0 ) + is.getDamage() );
 	}
 
 	private Object cableItem( final AEColoredItemDefinition partType, final String substring )
@@ -192,6 +192,6 @@ public class AEItemResolver implements ISubItemResolver
 		}
 
 		final ItemStack is = partType.stack( col, 1 );
-		return new ResolverResult( "part", is.getItemDamage() );
+		return new ResolverResult( "part", is.getDamage() );
 	}
 }

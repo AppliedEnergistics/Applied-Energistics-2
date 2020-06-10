@@ -26,25 +26,21 @@ package appeng.api.config;
 
 public enum FuzzyMode
 {
-	// Note that percentage damaged, is the inverse of percentage durability.
-	IGNORE_ALL( -1 ),
-	PERCENT_99( 0 ),
-	PERCENT_75( 25 ),
-	PERCENT_50( 50 ),
-	PERCENT_25( 75 );
+	ENABLED,
+	DISABLED;
 
-	public final float breakPoint;
-	public final float percentage;
-
-	FuzzyMode( final float p )
+	public static FuzzyMode fromBoolean( boolean enabled )
 	{
-		this.percentage = p;
-		this.breakPoint = p / 100.0f;
+		return enabled ? ENABLED : DISABLED;
 	}
 
-	public int calculateBreakPoint( final int maxDamage )
+	public boolean isEnabled()
 	{
-		return (int) ( ( this.percentage * maxDamage ) / 100.0f );
+		return this == ENABLED;
 	}
 
+	public boolean isDisabled()
+	{
+		return this == DISABLED;
+	}
 }

@@ -19,11 +19,10 @@
 package appeng.facade;
 
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -32,6 +31,7 @@ import appeng.api.parts.IBoxProvider;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.util.AEPartLocation;
+import net.minecraft.item.Items;
 
 
 public class FacadePart implements IFacadePart, IBoxProvider
@@ -65,7 +65,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	@Override
 	public void getBoxes( final IPartCollisionHelper ch, final Entity e )
 	{
-		if( e instanceof EntityLivingBase )
+		if( e instanceof LivingEntity )
 		{
 			// prevent weird snag behavior
 			ch.addBox( 0.0, 0.0, 14, 16.0, 16.0, 16.0 );
@@ -102,7 +102,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 		{
 			return 0;
 		}
-		return is.getItemDamage();
+		return is.getDamage();
 	}
 
 	@Override
@@ -119,7 +119,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 			return true;
 		}
 
-		return this.getBlockState().isOpaqueCube();
+		return this.getBlockState().isTransparent();
 	}
 
 	@Override
@@ -139,7 +139,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	}
 
 	@Override
-	public IBlockState getBlockState()
+	public BlockState getBlockState()
 	{
 		final Item maybeFacade = this.facade.getItem();
 

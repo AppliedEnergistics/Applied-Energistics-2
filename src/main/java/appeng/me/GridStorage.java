@@ -26,7 +26,7 @@ import java.lang.ref.WeakReference;
 import java.util.WeakHashMap;
 
 import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridStorage;
@@ -38,7 +38,7 @@ public class GridStorage implements IGridStorage
 {
 
 	private final long myID;
-	private final NBTTagCompound data;
+	private final CompoundNBT data;
 	private final GridStorageSearch mySearchEntry; // keep myself in the list until I'm
 	private final WeakHashMap<GridStorage, Boolean> divided = new WeakHashMap<>();
 	private WeakReference<IGrid> internalGrid = null;
@@ -55,7 +55,7 @@ public class GridStorage implements IGridStorage
 	{
 		this.myID = id;
 		this.mySearchEntry = gss;
-		this.data = new NBTTagCompound();
+		this.data = new CompoundNBT();
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class GridStorage implements IGridStorage
 	{
 		this.myID = id;
 		this.mySearchEntry = gss;
-		NBTTagCompound myTag = null;
+		CompoundNBT myTag = null;
 
 		try
 		{
@@ -78,7 +78,7 @@ public class GridStorage implements IGridStorage
 		}
 		catch( final Throwable t )
 		{
-			myTag = new NBTTagCompound();
+			myTag = new CompoundNBT();
 		}
 
 		this.data = myTag;
@@ -91,7 +91,7 @@ public class GridStorage implements IGridStorage
 	{
 		this.myID = 0;
 		this.mySearchEntry = null;
-		this.data = new NBTTagCompound();
+		this.data = new CompoundNBT();
 	}
 
 	public String getValue()
@@ -127,7 +127,7 @@ public class GridStorage implements IGridStorage
 	}
 
 	@Override
-	public NBTTagCompound dataObject()
+	public CompoundNBT dataObject()
 	{
 		return this.data;
 	}

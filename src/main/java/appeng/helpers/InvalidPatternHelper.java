@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.text.TextFormatting;
 
@@ -40,7 +40,7 @@ public class InvalidPatternHelper
 
 	public InvalidPatternHelper( final ItemStack is )
 	{
-		final NBTTagCompound encodedValue = is.getTagCompound();
+		final CompoundNBT encodedValue = is.getTagCompound();
 
 		if( encodedValue == null )
 		{
@@ -60,7 +60,7 @@ public class InvalidPatternHelper
 
 		for( int i = 0; i < inTag.tagCount(); i++ )
 		{
-			NBTTagCompound in = inTag.getCompoundTagAt( i );
+			CompoundNBT in = inTag.getCompoundTagAt( i );
 
 			// skip empty slots in the crafting grid
 			if( in.hasNoTags() )
@@ -100,7 +100,7 @@ public class InvalidPatternHelper
 
 		private ItemStack stack;
 
-		public PatternIngredient( NBTTagCompound tag )
+		public PatternIngredient( CompoundNBT tag )
 		{
 			this.stack = new ItemStack( tag );
 

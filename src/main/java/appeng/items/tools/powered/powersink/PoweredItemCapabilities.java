@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -62,14 +62,14 @@ class PoweredItemCapabilities implements ICapabilityProvider, IEnergyStorage
 	}
 
 	@Override
-	public boolean hasCapability( Capability<?> capability, @Nullable EnumFacing facing )
+	public boolean hasCapability( Capability<?> capability, @Nullable Direction facing )
 	{
 		return capability == Capabilities.FORGE_ENERGY || capability == Capabilities.TESLA_CONSUMER || capability == Capabilities.TESLA_HOLDER;
 	}
 
 	@SuppressWarnings( "unchecked" )
 	@Override
-	public <T> T getCapability( Capability<T> capability, @Nullable EnumFacing facing )
+	public <T> T getCapability( Capability<T> capability, @Nullable Direction facing )
 	{
 		if( capability == Capabilities.FORGE_ENERGY )
 		{

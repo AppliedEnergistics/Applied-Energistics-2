@@ -1,0 +1,13 @@
+{
+    "conditions": {
+        "material_exists": "appeng.recipes.factories.conditions.MaterialExists",
+        "features": "appeng.recipes.factories.conditions.Features"
+    },
+    "ingredients": {
+        "part": "appeng.recipes.factories.ingredients.PartIngredientFactory"
+    },
+    "recipes": {
+        "part_shaped": "appeng.recipes.factories.recipes.PartRecipeFactory",
+        "part_shapeless": "appeng.recipes.factories.recipes.PartRecipeFactory"
+    }
+}

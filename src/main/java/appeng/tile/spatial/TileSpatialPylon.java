@@ -24,7 +24,7 @@ import java.util.EnumSet;
 
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkChannelsChanged;
@@ -63,7 +63,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	{
 		this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL, GridFlags.MULTIBLOCK );
 		this.getProxy().setIdlePowerUsage( 0.5 );
-		this.getProxy().setValidSides( EnumSet.noneOf( EnumFacing.class ) );
+		this.getProxy().setValidSides( EnumSet.noneOf( Direction.class ) );
 	}
 
 	@Override
@@ -123,7 +123,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	public void updateStatus( final SpatialPylonCluster c )
 	{
 		this.cluster = c;
-		this.getProxy().setValidSides( c == null ? EnumSet.noneOf( EnumFacing.class ) : EnumSet.allOf( EnumFacing.class ) );
+		this.getProxy().setValidSides( c == null ? EnumSet.noneOf( Direction.class ) : EnumSet.allOf( Direction.class ) );
 		this.recalculateDisplay();
 	}
 

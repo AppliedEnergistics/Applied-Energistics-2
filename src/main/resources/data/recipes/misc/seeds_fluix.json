@@ -1,0 +1,18 @@
+{
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "crystal_seed.fluix",
+        "count": 2
+    },
+    "type": "appliedenergistics2:part_shapeless",
+    "ingredients": [
+        {
+            "type": "forge:ore_dict",
+            "ore": "sand"
+        },
+        {
+            "type": "forge:ore_dict",
+            "ore": "dustFluix"
+        }
+    ]
+}

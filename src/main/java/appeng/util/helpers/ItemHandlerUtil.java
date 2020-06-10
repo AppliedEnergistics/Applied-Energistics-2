@@ -19,7 +19,7 @@
 package appeng.util.helpers;
 
 
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -72,7 +72,7 @@ public class ItemHandlerUtil
 		}
 	}
 
-	public static void copy( final InventoryCrafting from, final IItemHandler to, boolean deepCopy )
+	public static void copy( final CraftingInventory from, final IItemHandler to, boolean deepCopy )
 	{
 		for( int i = 0; i < Math.min( from.getSizeInventory(), to.getSlots() ); ++i )
 		{

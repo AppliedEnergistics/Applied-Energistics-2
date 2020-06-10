@@ -1,0 +1,13 @@
+{
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "part.inverted_toggle_bus"
+    },
+    "type": "appliedenergistics2:part_shapeless",
+    "ingredients": [
+        {
+            "type": "appliedenergistics2:part",
+            "part": "part.toggle_bus"
+        }
+    ]
+}

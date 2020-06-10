@@ -22,12 +22,14 @@ package appeng.core.sync.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.hooks.CompassManager;
 import appeng.hooks.CompassResult;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 
 public class PacketCompassResponse extends AppEngPacket
@@ -55,9 +57,8 @@ public class PacketCompassResponse extends AppEngPacket
 	public PacketCompassResponse( final PacketCompassRequest req, final boolean hasResult, final boolean spin, final double radians )
 	{
 
-		final ByteBuf data = Unpooled.buffer();
+		final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
-		data.writeInt( this.getPacketID() );
 		data.writeLong( this.attunement = req.attunement );
 		data.writeInt( this.cx = req.cx );
 		data.writeInt( this.cz = req.cz );
@@ -71,7 +72,7 @@ public class PacketCompassResponse extends AppEngPacket
 	}
 
 	@Override
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
+	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final PlayerEntity player, NetworkEvent.Context ctx )
 	{
 		CompassManager.INSTANCE.postResult( this.attunement, this.cx << 4, this.cdy << 5, this.cz << 4, this.cr );
 	}

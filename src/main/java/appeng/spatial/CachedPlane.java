@@ -25,10 +25,11 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.ITickList;
 import net.minecraft.world.NextTickListEntry;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -62,7 +63,7 @@ public class CachedPlane
 	private final IMovableRegistry reg = AEApi.instance().registries().movable();
 	private final List<WorldCoord> updates = new ArrayList<>();
 	private int verticalBits;
-	private final IBlockState matrixBlockState;
+	private final BlockState matrixBlockState;
 
 	public CachedPlane( final World w, final int minX, final int minY, final int minZ, final int maxX, final int maxY, final int maxZ )
 	{
@@ -111,7 +112,7 @@ public class CachedPlane
 		{
 			for( int z = 0; z < this.z_size; z++ )
 			{
-				this.myColumns[x][z] = new Column( w.getChunkFromChunkCoords( ( minX + x ) >> 4,
+				this.myColumns[x][z] = new Column( w.getChunk( ( minX + x ) >> 4,
 						( minZ + z ) >> 4 ), ( minX + x ) & 0xF, ( minZ + z ) & 0xF, minCY, cy_size );
 			}
 		}
@@ -122,13 +123,12 @@ public class CachedPlane
 		{
 			for( int cz = 0; cz < this.cz_size; cz++ )
 			{
-				final List<Entry<BlockPos, TileEntity>> rawTiles = new ArrayList<>();
 				final List<BlockPos> deadTiles = new ArrayList<>();
 
-				final Chunk c = w.getChunkFromChunkCoords( minCX + cx, minCZ + cz );
+				final Chunk c = w.getChunk( minCX + cx, minCZ + cz );
 				this.myChunks[cx][cz] = c;
 
-				rawTiles.addAll( ( (HashMap<BlockPos, TileEntity>) c.getTileEntityMap() ).entrySet() );
+				final List<Entry<BlockPos, TileEntity>> rawTiles = new ArrayList<>( ( (HashMap<BlockPos, TileEntity>) c.getTileEntityMap() ).entrySet() );
 				for( final Entry<BlockPos, TileEntity> tx : rawTiles )
 				{
 					final BlockPos cp = tx.getKey();
@@ -151,7 +151,7 @@ public class CachedPlane
 							// don't skip air, just let the code replace it...
 							if( details.state != null && details.state.getBlock() == Platform.AIR_BLOCK && details.state.getMaterial().isReplaceable() )
 							{
-								w.setBlockToAir( tePOS );
+								w.removeBlock( tePOS, false );
 							}
 							else
 							{
@@ -166,11 +166,11 @@ public class CachedPlane
 					c.getTileEntityMap().remove( cp );
 				}
 
-				final long k = this.getWorld().getTotalWorldTime();
-				final List<NextTickListEntry> list = this.getWorld().getPendingBlockUpdates( c, false );
+				final long k = this.getWorld().getGameTime();
+				final ITickList<Block> list = c.getBlocksToBeTicked();
 				if( list != null )
 				{
-					for( final NextTickListEntry entry : list )
+					for( final Block entry : list )
 					{
 						final BlockPos tePOS = entry.position;
 						if( tePOS.getX() >= minX && tePOS.getX() <= maxX && tePOS.getY() >= minY && tePOS.getY() <= maxY && tePOS.getZ() >= minZ && tePOS
@@ -392,7 +392,7 @@ public class CachedPlane
 
 	private static class BlockStorageData
 	{
-		public IBlockState state;
+		public BlockState state;
 		public int light;
 	}
 

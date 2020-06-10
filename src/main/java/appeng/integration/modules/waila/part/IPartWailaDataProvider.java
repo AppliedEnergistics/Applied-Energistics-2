@@ -21,9 +21,9 @@ package appeng.integration.modules.waila.part;
 
 import java.util.List;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntityMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -52,5 +52,5 @@ public interface IPartWailaDataProvider
 
 	List<String> getWailaTail( IPart part, List<String> currentToolTip, IWailaDataAccessor accessor, IWailaConfigHandler config );
 
-	NBTTagCompound getNBTData( EntityPlayerMP player, IPart part, TileEntity te, NBTTagCompound tag, World world, BlockPos pos );
+	CompoundNBT getNBTData( PlayerEntityMP player, IPart part, TileEntity te, CompoundNBT tag, World world, BlockPos pos );
 }

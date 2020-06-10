@@ -20,10 +20,10 @@ package appeng.container.implementations;
 
 
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
@@ -44,7 +44,7 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 
 	private final PartLevelEmitter lvlEmitter;
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	private GuiTextField textField;
 	@GuiSync( 2 )
 	public LevelType lvType;
@@ -59,14 +59,14 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 		this.lvlEmitter = te;
 	}
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public void setTextField( final GuiTextField level )
 	{
 		this.textField = level;
 		this.textField.setText( String.valueOf( this.EmitterValue ) );
 	}
 
-	public void setLevel( final long l, final EntityPlayer player )
+	public void setLevel( final long l, final PlayerEntity player )
 	{
 		this.lvlEmitter.setReportingValue( l );
 		this.EmitterValue = l;

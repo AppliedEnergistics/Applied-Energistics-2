@@ -30,8 +30,8 @@ import net.minecraft.item.ItemSlab;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.EntityEntryBuilder;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.definitions.IBlockDefinition;
@@ -276,7 +276,7 @@ public final class ApiBlocks implements IBlocks
 				.rendering( new BlockRenderingCustomizer()
 				{
 					@Override
-					@SideOnly( Side.CLIENT )
+					@OnlyIn( Dist.CLIENT )
 					public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 					{
 						rendering.builtInModel( "models/block/builtin/quartz_glass", new GlassModel() );
@@ -349,7 +349,7 @@ public final class ApiBlocks implements IBlocks
 				.rendering( new BlockRenderingCustomizer()
 				{
 					@Override
-					@SideOnly( Side.CLIENT )
+					@OnlyIn( Dist.CLIENT )
 					public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 					{
 						rendering.tesr( BlockCharger.createTesr() );
@@ -621,7 +621,7 @@ public final class ApiBlocks implements IBlocks
 				.rendering( new BlockRenderingCustomizer()
 				{
 					@Override
-					@SideOnly( Side.CLIENT )
+					@OnlyIn( Dist.CLIENT )
 					public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 					{
 						ModelResourceLocation model = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, registryName ), "facing=east,half=bottom,shape=straight" );

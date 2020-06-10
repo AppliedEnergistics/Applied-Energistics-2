@@ -19,7 +19,7 @@
 package appeng.api.util;
 
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 
 /**
@@ -67,7 +67,7 @@ public enum AEPartLocation
 	public final int yOffset;
 	public final int zOffset;
 
-	private static final EnumFacing[] facings = { EnumFacing.DOWN, EnumFacing.UP, EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST, null };
+	private static final Direction[] facings = { Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST, null };
 	private static final int[] OPPOSITES = { 1, 0, 3, 2, 5, 4, 6 };
 
 	public static final AEPartLocation[] SIDE_LOCATIONS = { DOWN, UP, NORTH, SOUTH, WEST, EAST };
@@ -98,7 +98,7 @@ public enum AEPartLocation
 	 * @param side
 	 * @return proper Part Location for a facing enum.
 	 */
-	public static AEPartLocation fromFacing( final EnumFacing side )
+	public static AEPartLocation fromFacing( final Direction side )
 	{
 		if( side == null )
 		{
@@ -116,9 +116,9 @@ public enum AEPartLocation
 	}
 
 	/**
-	 * @return EnumFacing Equivalence, if Center returns null.
+	 * @return Direction Equivalence, if Center returns null.
 	 */
-	public EnumFacing getFacing()
+	public Direction getFacing()
 	{
 		return facings[this.ordinal()];
 	}

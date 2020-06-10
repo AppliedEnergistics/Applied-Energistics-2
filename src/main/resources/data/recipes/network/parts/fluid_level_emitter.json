@@ -1,0 +1,20 @@
+{
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "part.fluid_level_emitter"
+    },
+    "type": "appliedenergistics2:part_shapeless",
+    "ingredients": [
+        {
+            "item": "minecraft:redstone_torch"
+        },
+        {
+			"type": "forge:ore_dict",
+            "ore": "dyeBlue"
+        },
+        {
+            "type": "appliedenergistics2:part",
+            "part": "material.calculation_processor"
+        }
+    ]
+}

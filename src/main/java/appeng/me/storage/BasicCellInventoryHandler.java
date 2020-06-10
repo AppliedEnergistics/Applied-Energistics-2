@@ -20,7 +20,7 @@ package appeng.me.storage;
 
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
@@ -143,7 +143,7 @@ public class BasicCellInventoryHandler<T extends IAEStack<T>> extends MEInventor
 		return this.getWhitelist();
 	}
 
-	NBTTagCompound openNbtData()
+	CompoundNBT openNbtData()
 	{
 		return Platform.openNbtData( this.getCellInv().getItemStack() );
 	}

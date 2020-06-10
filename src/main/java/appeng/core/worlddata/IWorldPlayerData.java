@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 
 
 /**
@@ -34,7 +34,7 @@ import net.minecraft.entity.player.EntityPlayer;
 public interface IWorldPlayerData
 {
 	@Nullable
-	EntityPlayer getPlayerFromID( int playerID );
+	PlayerEntity getPlayerFromID( int playerID );
 
 	int getPlayerID( GameProfile profile );
 }

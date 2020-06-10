@@ -29,7 +29,7 @@ import java.util.Collection;
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.crafting.ICraftingLink;
@@ -47,19 +47,19 @@ public interface IStorageHelper
 
 	/**
 	 * Register a new storage channel.
-	 * 
+	 *
 	 * AE2 already provides native channels for {@link IAEItemStack} and {@link IAEFluidStack}.
-	 * 
+	 *
 	 * Each {@link IAEStack} subtype can only have a single factory instance. Overwriting is not intended.
 	 * Each subtype should be a direct one, this might be enforced at any time.
-	 * 
+	 *
 	 * Channel class and factory instance can be used interchangeable as identifier. In most cases the factory instance
 	 * is used as key as having direct access the methods is more beneficial compared to being forced to query the
 	 * registry each time.
-	 * 
+	 *
 	 * Caching the factory instance in a field or local variable is perfectly for performance reasons. But do not use
 	 * any AE2 internal field as they can change randomly between releases.
-	 * 
+	 *
 	 * @param channel The channel type, must be a subtype of {@link IStorageChannel}
 	 * @param factory An instance implementing the channel, must be be an instance of channel
 	 */
@@ -68,9 +68,9 @@ public interface IStorageHelper
 
 	/**
 	 * Fetch the factory instance for a specific storage channel.
-	 * 
+	 *
 	 * Channel must be a direct subtype of {@link IStorageChannel}.
-	 * 
+	 *
 	 * @throws NullPointerException when fetching an unregistered channel.
 	 * @param channel The channel type
 	 * @return the factory instance
@@ -80,7 +80,7 @@ public interface IStorageHelper
 
 	/**
 	 * An unmodifiable collection of all registered factory instance.
-	 * 
+	 *
 	 * This is mainly used as helper to let storage grids construct their internal storage for each type.
 	 */
 	@Nonnull
@@ -93,11 +93,11 @@ public interface IStorageHelper
 	 *
 	 * @return crafting link
 	 */
-	ICraftingLink loadCraftingLink( NBTTagCompound data, ICraftingRequester req );
+	ICraftingLink loadCraftingLink( CompoundNBT data, ICraftingRequester req );
 
 	/**
 	 * Extracts items from a {@link IMEInventory} respecting power requirements.
-	 * 
+	 *
 	 * @param energy Energy source.
 	 * @param inv Inventory to extract from.
 	 * @param request Requested item and count.
@@ -109,10 +109,10 @@ public interface IStorageHelper
 
 	/**
 	 * Inserts items into a {@link IMEInventory} respecting power requirements.
-	 * 
+	 *
 	 * @param energy Energy source.
 	 * @param inv Inventory to insert into.
-	 * @param request Items to insert.
+	 * @param input Items to insert.
 	 * @param src Action source.
 	 * @param mode Simulate or modulate
 	 * @return items not inserted or {@code null} if everything was inserted.
@@ -122,7 +122,7 @@ public interface IStorageHelper
 	/**
 	 * Posts alteration of stored items to the provided {@link IStorageGrid}.
 	 * This can be used by cell containers to notify the grid of storage cell changes.
-	 * 
+	 *
 	 * @param gs the storage grid.
 	 * @param removedCell the removed cell itemstack
 	 * @param addedCell the added cell itemstack

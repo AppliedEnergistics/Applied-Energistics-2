@@ -21,10 +21,10 @@ package appeng.container.implementations;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.items.IItemHandler;
@@ -92,11 +92,11 @@ public class ContainerQuartzKnife extends AEBaseContainer
 	}
 
 	@Override
-	public void onContainerClosed( final EntityPlayer par1EntityPlayer )
+	public void onContainerClosed( final PlayerEntity par1PlayerEntity )
 	{
 		if( this.inSlot.getStackInSlot( 0 ) != null )
 		{
-			par1EntityPlayer.dropItem( this.inSlot.getStackInSlot( 0 ), false );
+			par1PlayerEntity.dropItem( this.inSlot.getStackInSlot( 0 ), false );
 		}
 	}
 
@@ -123,7 +123,7 @@ public class ContainerQuartzKnife extends AEBaseContainer
 				{
 					return AEApi.instance().definitions().materials().namePress().maybeStack( 1 ).map( namePressStack ->
 					{
-						final NBTTagCompound compound = Platform.openNbtData( namePressStack );
+						final CompoundNBT compound = Platform.openNbtData( namePressStack );
 						compound.setString( "InscribeName", ContainerQuartzKnife.this.myName );
 
 						return namePressStack;

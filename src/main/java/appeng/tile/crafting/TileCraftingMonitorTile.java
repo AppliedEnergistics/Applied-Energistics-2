@@ -24,27 +24,27 @@ import java.util.Optional;
 
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 
 import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
 import appeng.util.item.AEItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 
 public class TileCraftingMonitorTile extends TileCraftingTile implements IColorableTile
 {
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	private Integer dspList;
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	private boolean updateList;
 
 	private IAEItemStack dspPlay;
@@ -90,20 +90,20 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
-		if( data.hasKey( "paintedColor" ) )
+		if( data.contains( "paintedColor" ) )
 		{
 			this.paintedColor = AEColor.values()[data.getByte( "paintedColor" )];
 		}
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT( final NBTTagCompound data )
+	public CompoundNBT writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
-		data.setByte( "paintedColor", (byte) this.paintedColor.ordinal() );
+		data.putByte( "paintedColor", (byte) this.paintedColor.ordinal() );
 		return data;
 	}
 
@@ -154,7 +154,7 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 	}
 
 	@Override
-	public boolean recolourBlock( final EnumFacing side, final AEColor newPaintedColor, final EntityPlayer who )
+	public boolean recolourBlock( final Direction side, final AEColor newPaintedColor, final PlayerEntity who )
 	{
 		if( this.paintedColor == newPaintedColor )
 		{

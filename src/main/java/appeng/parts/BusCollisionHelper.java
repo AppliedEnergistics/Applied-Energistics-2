@@ -22,7 +22,7 @@ package appeng.parts;
 import java.util.List;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 
 import appeng.api.parts.IPartCollisionHelper;
@@ -34,14 +34,14 @@ public class BusCollisionHelper implements IPartCollisionHelper
 
 	private final List<AxisAlignedBB> boxes;
 
-	private final EnumFacing x;
-	private final EnumFacing y;
-	private final EnumFacing z;
+	private final Direction x;
+	private final Direction y;
+	private final Direction z;
 
 	private final Entity entity;
 	private final boolean isVisual;
 
-	public BusCollisionHelper( final List<AxisAlignedBB> boxes, final EnumFacing x, final EnumFacing y, final EnumFacing z, final Entity e, final boolean visual )
+	public BusCollisionHelper( final List<AxisAlignedBB> boxes, final Direction x, final Direction y, final Direction z, final Entity e, final boolean visual )
 	{
 		this.boxes = boxes;
 		this.x = x;
@@ -60,40 +60,40 @@ public class BusCollisionHelper implements IPartCollisionHelper
 		switch( s )
 		{
 			case DOWN:
-				this.x = EnumFacing.EAST;
-				this.y = EnumFacing.NORTH;
-				this.z = EnumFacing.DOWN;
+				this.x = Direction.EAST;
+				this.y = Direction.NORTH;
+				this.z = Direction.DOWN;
 				break;
 			case UP:
-				this.x = EnumFacing.EAST;
-				this.y = EnumFacing.SOUTH;
-				this.z = EnumFacing.UP;
+				this.x = Direction.EAST;
+				this.y = Direction.SOUTH;
+				this.z = Direction.UP;
 				break;
 			case EAST:
-				this.x = EnumFacing.SOUTH;
-				this.y = EnumFacing.UP;
-				this.z = EnumFacing.EAST;
+				this.x = Direction.SOUTH;
+				this.y = Direction.UP;
+				this.z = Direction.EAST;
 				break;
 			case WEST:
-				this.x = EnumFacing.NORTH;
-				this.y = EnumFacing.UP;
-				this.z = EnumFacing.WEST;
+				this.x = Direction.NORTH;
+				this.y = Direction.UP;
+				this.z = Direction.WEST;
 				break;
 			case NORTH:
-				this.x = EnumFacing.WEST;
-				this.y = EnumFacing.UP;
-				this.z = EnumFacing.NORTH;
+				this.x = Direction.WEST;
+				this.y = Direction.UP;
+				this.z = Direction.NORTH;
 				break;
 			case SOUTH:
-				this.x = EnumFacing.EAST;
-				this.y = EnumFacing.UP;
-				this.z = EnumFacing.SOUTH;
+				this.x = Direction.EAST;
+				this.y = Direction.UP;
+				this.z = Direction.SOUTH;
 				break;
 			case INTERNAL:
 			default:
-				this.x = EnumFacing.EAST;
-				this.y = EnumFacing.UP;
-				this.z = EnumFacing.SOUTH;
+				this.x = Direction.EAST;
+				this.y = Direction.UP;
+				this.z = Direction.SOUTH;
 				break;
 		}
 	}
@@ -116,27 +116,27 @@ public class BusCollisionHelper implements IPartCollisionHelper
 		maxY /= 16.0;
 		maxZ /= 16.0;
 
-		double aX = minX * this.x.getFrontOffsetX() + minY * this.y.getFrontOffsetX() + minZ * this.z.getFrontOffsetX();
-		double aY = minX * this.x.getFrontOffsetY() + minY * this.y.getFrontOffsetY() + minZ * this.z.getFrontOffsetY();
-		double aZ = minX * this.x.getFrontOffsetZ() + minY * this.y.getFrontOffsetZ() + minZ * this.z.getFrontOffsetZ();
+		double aX = minX * this.x.getXOffset() + minY * this.y.getXOffset() + minZ * this.z.getXOffset();
+		double aY = minX * this.x.getYOffset() + minY * this.y.getYOffset() + minZ * this.z.getYOffset();
+		double aZ = minX * this.x.getZOffset() + minY * this.y.getZOffset() + minZ * this.z.getZOffset();
 
-		double bX = maxX * this.x.getFrontOffsetX() + maxY * this.y.getFrontOffsetX() + maxZ * this.z.getFrontOffsetX();
-		double bY = maxX * this.x.getFrontOffsetY() + maxY * this.y.getFrontOffsetY() + maxZ * this.z.getFrontOffsetY();
-		double bZ = maxX * this.x.getFrontOffsetZ() + maxY * this.y.getFrontOffsetZ() + maxZ * this.z.getFrontOffsetZ();
+		double bX = maxX * this.x.getXOffset() + maxY * this.y.getXOffset() + maxZ * this.z.getXOffset();
+		double bY = maxX * this.x.getYOffset() + maxY * this.y.getYOffset() + maxZ * this.z.getYOffset();
+		double bZ = maxX * this.x.getZOffset() + maxY * this.y.getZOffset() + maxZ * this.z.getZOffset();
 
-		if( this.x.getFrontOffsetX() + this.y.getFrontOffsetX() + this.z.getFrontOffsetX() < 0 )
+		if( this.x.getXOffset() + this.y.getXOffset() + this.z.getXOffset() < 0 )
 		{
 			aX += 1;
 			bX += 1;
 		}
 
-		if( this.x.getFrontOffsetY() + this.y.getFrontOffsetY() + this.z.getFrontOffsetY() < 0 )
+		if( this.x.getYOffset() + this.y.getYOffset() + this.z.getYOffset() < 0 )
 		{
 			aY += 1;
 			bY += 1;
 		}
 
-		if( this.x.getFrontOffsetZ() + this.y.getFrontOffsetZ() + this.z.getFrontOffsetZ() < 0 )
+		if( this.x.getZOffset() + this.y.getZOffset() + this.z.getZOffset() < 0 )
 		{
 			aZ += 1;
 			bZ += 1;
@@ -153,19 +153,19 @@ public class BusCollisionHelper implements IPartCollisionHelper
 	}
 
 	@Override
-	public EnumFacing getWorldX()
+	public Direction getWorldX()
 	{
 		return this.x;
 	}
 
 	@Override
-	public EnumFacing getWorldY()
+	public Direction getWorldY()
 	{
 		return this.y;
 	}
 
 	@Override
-	public EnumFacing getWorldZ()
+	public Direction getWorldZ()
 	{
 		return this.z;
 	}

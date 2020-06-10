@@ -1,0 +1,64 @@
+{
+    "display": {
+        "icon": {
+            "item": "appliedenergistics2:crafting_storage_64k"
+        },
+        "title": {
+            "translate": "achievement.ae2.CraftingCPU"
+        },
+        "description": {
+            "translate": "achievement.ae2.CraftingCPU.desc"
+        }
+    },
+    "parent": "appliedenergistics2:main/pattern_terminal",
+    "criteria": {
+        "c1k": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "item": "appliedenergistics2:crafting_storage_1k"
+                    }
+                ]
+            }
+        },
+        "c4k": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "item": "appliedenergistics2:crafting_storage_4k"
+                    }
+                ]
+            }
+        },
+        "c16k": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "item": "appliedenergistics2:crafting_storage_16k"
+                    }
+                ]
+            }
+        },
+        "c64k": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "item": "appliedenergistics2:crafting_storage_64k"
+                    }
+                ]
+            }
+        }
+    },
+    "requirements": [
+        [
+            "c1k",
+            "c4k",
+            "c16k",
+            "c64k"
+        ]
+    ]
+}

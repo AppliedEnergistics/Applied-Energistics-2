@@ -1,0 +1,21 @@
+{
+    "result": {
+        "item": "appliedenergistics2:charged_staff"
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "a  ",
+        " b ",
+        "  b"
+    ],
+    "key": {
+        "b": {
+            "type": "forge:ore_dict",
+            "ore": "ingotIron"
+        },
+        "a": {
+            "type": "appliedenergistics2:part",
+            "part": "material.certus_quartz_crystal_charged"
+        }
+    }
+}

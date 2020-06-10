@@ -1,0 +1,28 @@
+{
+    "display": {
+        "icon": {
+            "item": "appliedenergistics2:part",
+            "data": 340
+        },
+        "title": {
+            "translate": "achievement.ae2.PatternTerminal"
+        },
+        "description": {
+            "translate": "achievement.ae2.PatternTerminal.desc"
+        }
+    },
+    "parent": "appliedenergistics2:main/crafting_terminal",
+    "criteria": {
+        "certus": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "type": "appliedenergistics2:part",
+                        "part": "PATTERN_TERMINAL"
+                    }
+                ]
+            }
+        }
+    }
+}

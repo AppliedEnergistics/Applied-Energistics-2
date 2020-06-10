@@ -1,0 +1,23 @@
+{
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "cable_smart.orange",
+        "count": 8
+    },
+    "type": "appliedenergistics2:part_shaped",
+    "pattern": [
+        "aaa",
+        "aba",
+        "aaa"
+    ],
+    "key": {
+        "b": {
+            "type": "forge:ore_dict",
+            "ore": "dyeOrange"
+        },
+        "a": {
+            "type": "appliedenergistics2:part",
+            "part": "cable_smart.fluix"
+        }
+    }
+}

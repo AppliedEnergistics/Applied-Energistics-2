@@ -1,0 +1,12 @@
+{
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "part.interface"
+    },
+    "type": "appliedenergistics2:part_shapeless",
+    "ingredients": [
+        {
+            "item": "appliedenergistics2:interface"
+        }
+    ]
+}

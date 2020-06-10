@@ -22,8 +22,8 @@ package appeng.integration;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 
 public enum IntegrationRegistry
@@ -34,12 +34,12 @@ public enum IntegrationRegistry
 
 	public void add( final IntegrationType type )
 	{
-		if( type.side == IntegrationSide.CLIENT && FMLLaunchHandler.side() == Side.SERVER )
+		if( type.side == IntegrationSide.CLIENT && FMLEnvironment.dist == Dist.DEDICATED_SERVER )
 		{
 			return;
 		}
 
-		if( type.side == IntegrationSide.SERVER && FMLLaunchHandler.side() == Side.CLIENT )
+		if( type.side == IntegrationSide.SERVER && FMLEnvironment.dist == Dist.DEDICATED_SERVER )
 		{
 			return;
 		}

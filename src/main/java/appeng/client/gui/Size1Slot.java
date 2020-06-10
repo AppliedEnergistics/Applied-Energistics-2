@@ -6,13 +6,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.SlotItemHandler;
 
 
@@ -72,34 +72,34 @@ class Size1Slot extends SlotItemHandler
 
 	@Override
 	@Nullable
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public String getSlotTexture()
 	{
 		return this.delegate.getSlotTexture();
 	}
 
 	@Override
-	public boolean canTakeStack( EntityPlayer playerIn )
+	public boolean canTakeStack( PlayerEntity playerIn )
 	{
 		return this.delegate.canTakeStack( playerIn );
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public boolean isEnabled()
 	{
 		return this.delegate.isEnabled();
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public ResourceLocation getBackgroundLocation()
 	{
 		return this.delegate.getBackgroundLocation();
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public TextureAtlasSprite getBackgroundSprite()
 	{
 		return this.delegate.getBackgroundSprite();

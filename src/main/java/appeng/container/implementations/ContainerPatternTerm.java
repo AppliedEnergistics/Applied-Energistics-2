@@ -23,19 +23,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerEntityMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.InventoryCraftResult;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
@@ -164,7 +164,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	private ItemStack getAndUpdateOutput()
 	{
 		final World world = this.getPlayerInv().player.world;
-		final InventoryCrafting ic = new InventoryCrafting( this, 3, 3 );
+		final CraftingInventory ic = new CraftingInventory( this, 3, 3 );
 
 		for( int x = 0; x < ic.getSizeInventory(); x++ )
 		{
@@ -246,7 +246,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		}
 
 		// encode the slot.
-		final NBTTagCompound encodedValue = new NBTTagCompound();
+		final CompoundNBT encodedValue = new CompoundNBT();
 
 		final NBTTagList tagIn = new NBTTagList();
 		final NBTTagList tagOut = new NBTTagList();
@@ -320,7 +320,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 			if( hasValue )
 			{
-				return list.toArray( new ItemStack[list.size()] );
+				return list.toArray( new ItemStack[0] );
 			}
 		}
 
@@ -344,7 +344,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 	private NBTBase createItemTag( final ItemStack i )
 	{
-		final NBTTagCompound c = new NBTTagCompound();
+		final CompoundNBT c = new CompoundNBT();
 
 		if( !i.isEmpty() )
 		{
@@ -390,21 +390,21 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			}
 
 			final IAEItemStack extracted = Platform.poweredExtraction( this.getPowerSource(), this.getCellInventory(), out, this.getActionSource() );
-			final EntityPlayer p = this.getPlayerInv().player;
+			final PlayerEntity p = this.getPlayerInv().player;
 
 			if( extracted != null )
 			{
 				inv.addItems( extracted.createItemStack() );
-				if( p instanceof EntityPlayerMP )
+				if( p instanceof PlayerEntityMP )
 				{
-					this.updateHeld( (EntityPlayerMP) p );
+					this.updateHeld( (PlayerEntityMP) p );
 				}
 				this.detectAndSendChanges();
 				return;
 			}
 
-			final InventoryCrafting ic = new InventoryCrafting( new ContainerNull(), 3, 3 );
-			final InventoryCrafting real = new InventoryCrafting( new ContainerNull(), 3, 3 );
+			final CraftingInventory ic = new CraftingInventory( new ContainerNull(), 3, 3 );
+			final CraftingInventory real = new CraftingInventory( new ContainerNull(), 3, 3 );
 
 			for( int x = 0; x < 9; x++ )
 			{
@@ -455,9 +455,9 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 				}
 
 				inv.addItems( is );
-				if( p instanceof EntityPlayerMP )
+				if( p instanceof PlayerEntityMP )
 				{
-					this.updateHeld( (EntityPlayerMP) p );
+					this.updateHeld( (PlayerEntityMP) p );
 				}
 				this.detectAndSendChanges();
 			}
@@ -519,9 +519,9 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 						listener.sendSlotContents( this, slot.slotNumber, slot.getStack() );
 					}
 				}
-				if( listener instanceof EntityPlayerMP )
+				if( listener instanceof PlayerEntityMP )
 				{
-					( (EntityPlayerMP) listener ).isChangingQuantityOnly = false;
+					( (PlayerEntityMP) listener ).isChangingQuantityOnly = false;
 				}
 			}
 			this.detectAndSendChanges();

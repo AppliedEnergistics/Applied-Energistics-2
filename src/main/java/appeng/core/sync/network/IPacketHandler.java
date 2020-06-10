@@ -19,14 +19,18 @@
 package appeng.core.sync.network;
 
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.INetHandler;
-import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
+import appeng.core.sync.AppEngPacket;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 
 public interface IPacketHandler
 {
+	<MSG extends AppEngPacket> void onPacketData( MSG msg, Supplier<NetworkEvent.Context> contextSupplier );
 
-	void onPacketData( INetworkInfo manager, INetHandler handler, FMLProxyPacket packet, EntityPlayer player );
+	<MSG extends AppEngPacket> MSG decode( PacketBuffer packetBuffer );
 
+	<MSG extends AppEngPacket> void encode( MSG msg, PacketBuffer packetBuffer );
 }

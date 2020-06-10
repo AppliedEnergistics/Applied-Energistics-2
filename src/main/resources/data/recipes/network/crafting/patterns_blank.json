@@ -1,0 +1,28 @@
+{
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "material.blank_pattern"
+    },
+    "type": "appliedenergistics2:part_shaped",
+    "pattern": [
+        "aba",
+        "bcb",
+        "ddd"
+    ],
+    "key": {
+        "a": {
+            "item": "appliedenergistics2:quartz_glass"
+        },
+        "d": {
+            "type": "forge:ore_dict",
+            "ore": "ingotIron"
+        },
+        "c": {
+            "item": "#appliedenergistics2:certusCrystal"
+        },
+        "b": {
+            "type": "forge:ore_dict",
+            "ore": "dustGlowstone"
+        }
+    }
+}

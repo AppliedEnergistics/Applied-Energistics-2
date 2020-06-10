@@ -20,27 +20,36 @@ package appeng.client.render.model;
 
 
 import java.util.Map;
+import java.util.function.Predicate;
 
 import com.google.common.collect.ImmutableMap;
 
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonObject;
+import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
+import net.minecraft.resources.IResourceManager;
+import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.ICustomModelLoader;
-import net.minecraftforge.client.model.IModel;
+import net.minecraftforge.client.model.IModelLoader;
 
 import appeng.core.AppEng;
+import net.minecraftforge.client.model.data.IDynamicBakedModel;
+import net.minecraftforge.client.model.geometry.IModelGeometry;
+import net.minecraftforge.client.model.obj.OBJModel;
+import net.minecraftforge.resource.IResourceType;
 
 
 /**
  * Manages built-in models.
  */
-public class BuiltInModelLoader implements ICustomModelLoader
+public class BuiltInModelLoader implements IModelLoader<OBJModel>
 {
 
-	private final Map<String, IModel> builtInModels;
+	private final Map<String, OBJModel> builtInModels;
 
-	public BuiltInModelLoader( Map<String, IModel> builtInModels )
+	public BuiltInModelLoader( Map<String, OBJModel> builtInModels )
 	{
 		this.builtInModels = ImmutableMap.copyOf( builtInModels );
 	}
@@ -48,24 +57,23 @@ public class BuiltInModelLoader implements ICustomModelLoader
 	@Override
 	public boolean accepts( ResourceLocation modelLocation )
 	{
-		if( !modelLocation.getResourceDomain().equals( AppEng.MOD_ID ) )
+		if( !modelLocation.getNamespace().equals( AppEng.MOD_ID ) )
 		{
 			return false;
 		}
 
-		return this.builtInModels.containsKey( modelLocation.getResourcePath() );
+		return this.builtInModels.containsKey( modelLocation.getPath() );
 	}
 
-	@Override
-	public IModel loadModel( ResourceLocation modelLocation ) throws Exception
+	public OBJModel loadModel(OBJModel.ModelSettings settings)
 	{
-		return this.builtInModels.get( modelLocation.getResourcePath() );
+		return this.builtInModels.get( settings.modelLocation.getPath() );
 	}
 
 	@Override
 	public void onResourceManagerReload( IResourceManager resourceManager )
 	{
-		for( IModel model : this.builtInModels.values() )
+		for( OBJModel model : this.builtInModels.values() )
 		{
 			if( model instanceof IResourceManagerReloadListener )
 			{

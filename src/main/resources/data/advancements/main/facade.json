@@ -1,0 +1,26 @@
+{
+    "display": {
+        "icon": {
+            "item": "appliedenergistics2:facade"
+        },
+        "title": {
+            "translate": "achievement.ae2.Facade"
+        },
+        "description": {
+            "translate": "achievement.ae2.Facade.desc"
+        }
+    },
+    "parent": "appliedenergistics2:main/cable_glass",
+    "criteria": {
+        "facade": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "item": "appliedenergistics2:facade"
+                    }
+                ]
+            }
+        }
+    }
+}

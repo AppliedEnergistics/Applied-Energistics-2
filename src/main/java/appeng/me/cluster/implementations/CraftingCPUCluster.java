@@ -27,19 +27,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import appeng.api.config.FuzzyMode;
+import appeng.util.NBTHelper;
+import appeng.crafting.*;
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
-import appeng.api.config.FuzzyMode;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.IGrid;
@@ -65,17 +66,11 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.WorldCoord;
 import appeng.container.ContainerNull;
 import appeng.core.AELog;
-import appeng.crafting.CraftBranchFailure;
-import appeng.crafting.CraftingJob;
-import appeng.crafting.CraftingLink;
-import appeng.crafting.CraftingWatcher;
-import appeng.crafting.MECraftingInventory;
 import appeng.me.cache.CraftingGridCache;
 import appeng.me.cluster.IAECluster;
 import appeng.me.helpers.MachineSource;
 import appeng.tile.crafting.TileCraftingMonitorTile;
 import appeng.tile.crafting.TileCraftingTile;
-import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
 
@@ -494,12 +489,11 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	{
 		for( IAEItemStack g : condensedInputs )
 		{
-
-			if( details.isCraftable() )
+			if( details.isCraftable() && details.canSubstitute() )
 			{
 				boolean found = false;
 
-				for( IAEItemStack fuzz : this.inventory.getItemList().findFuzzy( g, FuzzyMode.IGNORE_ALL ) )
+				for( IAEItemStack fuzz : this.inventory.getItemList().findFuzzy( g ) )
 				{
 					fuzz = fuzz.copy();
 					fuzz.setStackSize( g.getStackSize() );
@@ -646,7 +640,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 			if( this.canCraft( details, details.getCondensedInputs() ) )
 			{
-				InventoryCrafting ic = null;
+				CraftingInventory ic = null;
 
 				for( final ICraftingMedium m : cc.getMediums( e.getKey() ) )
 				{
@@ -676,7 +670,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 								continue;
 							}
 
-							ic = new InventoryCrafting( new ContainerNull(), 3, 3 );
+							ic = new CraftingInventory( new ContainerNull( ContainerType.CRAFTING ), 3, 3 );
 							boolean found = false;
 
 							for( int x = 0; x < input.length; x++ )
@@ -687,23 +681,9 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 									if( details.isCraftable() )
 									{
-										final Collection<IAEItemStack> itemList;
 
-										if( details.canSubstitute() )
-										{
-											itemList = this.inventory.getItemList().findFuzzy( input[x], FuzzyMode.IGNORE_ALL );
-										}
-										else
-										{
-											itemList = new ArrayList<>( 1 );
-
-											final IAEItemStack item = this.inventory.getItemList().findPrecise( input[x] );
-
-											if( item != null )
-											{
-												itemList.add( item );
-											}
-										}
+										final Collection<IAEItemStack> itemList = this.inventory.find( input[x],
+												FuzzyMode.fromBoolean( details.canSubstitute() ) );
 
 										for( IAEItemStack fuzz : itemList )
 										{
@@ -747,67 +727,6 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 										break;
 									}
 								}
-							}
-
-							if( !found )
-							{
-								// put stuff back..
-								for( int x = 0; x < ic.getSizeInventory(); x++ )
-								{
-									final ItemStack is = ic.getStackInSlot( x );
-									if( !is.isEmpty() )
-									{
-										this.inventory.injectItems( AEItemStack.fromItemStack( is ), Actionable.MODULATE, this.machineSrc );
-									}
-								}
-								ic = null;
-								break;
-							}
-						}
-
-						if( m.pushPattern( details, ic ) )
-						{
-							this.somethingChanged = true;
-							this.remainingOperations--;
-
-							for( final IAEItemStack out : details.getCondensedOutputs() )
-							{
-								this.postChange( out, this.machineSrc );
-								this.waitingFor.add( out.copy() );
-								this.postCraftingStatusChange( out.copy() );
-							}
-
-							if( details.isCraftable() )
-							{
-								FMLCommonHandler.instance()
-										.firePlayerCraftingEvent( Platform.getPlayer( (WorldServer) this.getWorld() ),
-												details.getOutput( ic, this.getWorld() ), ic );
-
-								for( int x = 0; x < ic.getSizeInventory(); x++ )
-								{
-									final ItemStack output = Platform.getContainerItem( ic.getStackInSlot( x ) );
-									if( !output.isEmpty() )
-									{
-										final IAEItemStack cItem = AEItemStack.fromItemStack( output );
-										this.postChange( cItem, this.machineSrc );
-										this.waitingFor.add( cItem );
-										this.postCraftingStatusChange( cItem );
-									}
-								}
-							}
-
-							ic = null; // hand off complete!
-							this.markDirty();
-
-							e.getValue().value--;
-							if( e.getValue().value <= 0 )
-							{
-								continue;
-							}
-
-							if( this.remainingOperations == 0 )
-							{
-								return;
 							}
 						}
 					}
@@ -942,15 +861,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	@Override
 	public boolean isBusy()
 	{
-		final Iterator<Entry<ICraftingPatternDetails, TaskProgress>> i = this.tasks.entrySet().iterator();
 
-		while( i.hasNext() )
-		{
-			if( i.next().getValue().value <= 0 )
-			{
-				i.remove();
-			}
-		}
+		this.tasks.entrySet().removeIf( iCraftingPatternDetailsTaskProgressEntry -> iCraftingPatternDetailsTaskProgressEntry.getValue().value <= 0 );
 
 		return !this.tasks.isEmpty() || !this.waitingFor.isEmpty();
 	}
@@ -1007,15 +919,15 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 				Character.MAX_RADIX );
 	}
 
-	private NBTTagCompound generateLinkData( final String craftingID, final boolean standalone, final boolean req )
+	private CompoundNBT generateLinkData( final String craftingID, final boolean standalone, final boolean req )
 	{
-		final NBTTagCompound tag = new NBTTagCompound();
+		final CompoundNBT tag = new CompoundNBT();
 
-		tag.setString( "CraftID", craftingID );
-		tag.setBoolean( "canceled", false );
-		tag.setBoolean( "done", false );
-		tag.setBoolean( "standalone", standalone );
-		tag.setBoolean( "req", req );
+		tag.putString( "CraftID", craftingID );
+		tag.putBoolean( "canceled", false );
+		tag.putBoolean( "done", false );
+		tag.putBoolean( "standalone", standalone );
+		tag.putBoolean( "req", req );
 
 		return tag;
 	}
@@ -1142,58 +1054,36 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		return is;
 	}
 
-	public void writeToNBT( final NBTTagCompound data )
+	public void write( final CompoundNBT data )
 	{
-		data.setTag( "finalOutput", this.writeItem( this.finalOutput ) );
-		data.setTag( "inventory", this.writeList( this.inventory.getItemList() ) );
-		data.setBoolean( "waiting", this.waiting );
-		data.setBoolean( "isComplete", this.isComplete );
+		data.put( "finalOutput", NBTHelper.writeItem( this.finalOutput ) );
+		data.put( "inventory", NBTHelper.writeList( this.inventory.getItemList() ) );
+		data.putBoolean( "waiting", this.waiting );
+		data.putBoolean( "isComplete", this.isComplete );
+
+
 
 		if( this.myLastLink != null )
 		{
-			final NBTTagCompound link = new NBTTagCompound();
-			this.myLastLink.writeToNBT( link );
-			data.setTag( "link", link );
+			final CompoundNBT link = new CompoundNBT();
+			this.myLastLink.write( link );
+			data.put( "link", link );
 		}
 
-		final NBTTagList list = new NBTTagList();
+		final ListNBT list = new ListNBT();
 		for( final Entry<ICraftingPatternDetails, TaskProgress> e : this.tasks.entrySet() )
 		{
-			final NBTTagCompound item = this.writeItem( AEItemStack.fromItemStack( e.getKey().getPattern() ) );
-			item.setLong( "craftingProgress", e.getValue().value );
-			list.appendTag( item );
+			final CompoundNBT item = NBTHelper.writeItem( AEItemStack.fromItemStack( e.getKey().getPattern() ) );
+			item.putLong( "craftingProgress", e.getValue().value );
+			list.add( item );
 		}
-		data.setTag( "tasks", list );
+		data.put( "tasks", list );
 
-		data.setTag( "waitingFor", this.writeList( this.waitingFor ) );
+		data.put( "waitingFor", NBTHelper.writeList( this.waitingFor ) );
 
-		data.setLong( "elapsedTime", this.getElapsedTime() );
-		data.setLong( "startItemCount", this.getStartItemCount() );
-		data.setLong( "remainingItemCount", this.getRemainingItemCount() );
-	}
-
-	private NBTTagCompound writeItem( final IAEItemStack finalOutput2 )
-	{
-		final NBTTagCompound out = new NBTTagCompound();
-
-		if( finalOutput2 != null )
-		{
-			finalOutput2.writeToNBT( out );
-		}
-
-		return out;
-	}
-
-	private NBTTagList writeList( final IItemList<IAEItemStack> myList )
-	{
-		final NBTTagList out = new NBTTagList();
-
-		for( final IAEItemStack ais : myList )
-		{
-			out.appendTag( this.writeItem( ais ) );
-		}
-
-		return out;
+		data.putLong( "elapsedTime", this.getElapsedTime() );
+		data.putLong( "startItemCount", this.getStartItemCount() );
+		data.putLong( "remainingItemCount", this.getRemainingItemCount() );
 	}
 
 	void done()
@@ -1212,10 +1102,10 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		this.updateName();
 	}
 
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
-		this.finalOutput = AEItemStack.fromNBT( (NBTTagCompound) data.getTag( "finalOutput" ) );
-		for( final IAEItemStack ais : this.readList( (NBTTagList) data.getTag( "inventory" ) ) )
+		this.finalOutput = AEItemStack.fromNBT( data.getCompound( "finalOutput" ) );
+		for( final IAEItemStack ais : NBTHelper.readList( data.getList( "inventory", NBTHelper.DEFAULT_LIST_TYPE ) ) )
 		{
 			this.inventory.injectItems( ais, Actionable.MODULATE, this.machineSrc );
 		}
@@ -1223,17 +1113,17 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		this.waiting = data.getBoolean( "waiting" );
 		this.isComplete = data.getBoolean( "isComplete" );
 
-		if( data.hasKey( "link" ) )
+		if( data.contains( "link" ) )
 		{
-			final NBTTagCompound link = data.getCompoundTag( "link" );
+			final CompoundNBT link = data.getCompound( "link" );
 			this.myLastLink = new CraftingLink( link, this );
 			this.submitLink( this.myLastLink );
 		}
 
-		final NBTTagList list = data.getTagList( "tasks", 10 );
-		for( int x = 0; x < list.tagCount(); x++ )
+		final ListNBT list = data.getList( "tasks", NBTHelper.DEFAULT_LIST_TYPE );
+		for( int x = 0; x < list.size(); x++ )
 		{
-			final NBTTagCompound item = list.getCompoundTagAt( x );
+			final CompoundNBT item = list.getCompound( x );
 			final IAEItemStack pattern = AEItemStack.fromNBT( item );
 			if( pattern != null && pattern.getItem() instanceof ICraftingPatternItem )
 			{
@@ -1248,7 +1138,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			}
 		}
 
-		this.waitingFor = this.readList( (NBTTagList) data.getTag( "waitingFor" ) );
+		this.waitingFor = NBTHelper.readList( data.getList( "waitingFor", NBTHelper.DEFAULT_LIST_TYPE ) );
 		for( final IAEItemStack is : this.waitingFor )
 		{
 			this.postCraftingStatusChange( is.copy() );
@@ -1262,43 +1152,19 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	public void updateName()
 	{
-		this.myName = "";
+		StringBuilder name = new StringBuilder();
 		for( final TileCraftingTile te : this.tiles )
 		{
-
 			if( te.hasCustomInventoryName() )
 			{
-				if( this.myName.length() > 0 )
+				if( name.length() > 0 )
 				{
-					this.myName += ' ' + te.getCustomInventoryName();
+					name.append( ' '  );
 				}
-				else
-				{
-					this.myName = te.getCustomInventoryName();
-				}
+				name.append( te.getCustomInventoryName() );
 			}
 		}
-	}
-
-	private IItemList<IAEItemStack> readList( final NBTTagList tag )
-	{
-		final IItemList<IAEItemStack> out = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
-
-		if( tag == null )
-		{
-			return out;
-		}
-
-		for( int x = 0; x < tag.tagCount(); x++ )
-		{
-			final IAEItemStack ais = AEItemStack.fromNBT( tag.getCompoundTagAt( x ) );
-			if( ais != null )
-			{
-				out.add( ais );
-			}
-		}
-
-		return out;
+		this.myName = name.toString();
 	}
 
 	private World getWorld()

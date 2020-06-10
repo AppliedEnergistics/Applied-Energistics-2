@@ -23,26 +23,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemBlockSpecial;
-import net.minecraft.item.ItemFirework;
-import net.minecraft.item.ItemSkull;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.*;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.items.IItemHandler;
 
@@ -99,7 +91,7 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 	{
 		super( is );
 
-		this.getConfigManager().registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		this.getConfigManager().registerSetting( Settings.FUZZY_MODE, FuzzyMode.ENABLED );
 		this.getConfigManager().registerSetting( Settings.PLACE_BLOCK, YesNo.YES );
 		this.updateHandler();
 	}
@@ -126,11 +118,11 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 		if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 		{
 			this.myHandler.setPartitionList(
-					new FuzzyPriorityList<IAEItemStack>( priorityList, (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) ) );
+					new FuzzyPriorityList<>( priorityList, (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) ) );
 		}
 		else
 		{
-			this.myHandler.setPartitionList( new PrecisePriorityList<IAEItemStack>( priorityList ) );
+			this.myHandler.setPartitionList( new PrecisePriorityList<>( priorityList ) );
 		}
 
 		try
@@ -155,7 +147,7 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 		this.Config.readFromNBT( data, "config" );
@@ -163,7 +155,7 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 	}
 
 	@Override
-	public void writeToNBT( final NBTTagCompound data )
+	public void writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
 		this.Config.writeToNBT( data, "config" );
@@ -194,7 +186,7 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
+	public boolean onPartActivate( final PlayerEntity player, final Hand hand, final Vec3d pos )
 	{
 		if( Platform.isServer() )
 		{
@@ -237,40 +229,46 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 
 		final BlockPos tePos = te.getPos().offset( side.getFacing() );
 
-		if( w.getBlockState( tePos ).getBlock().isReplaceable( w, tePos ) )
+		// TODO check if this works - cant use Block#isReplaceable cuz it needs a not null player object to get the item to place
+		if( w.getBlockState( tePos ).getMaterial().isReplaceable() )
 		{
-			if( placeBlock == YesNo.YES && ( i instanceof ItemBlock || i instanceof ItemBlockSpecial || i instanceof IPlantable || i instanceof ItemSkull || i instanceof ItemFirework || i instanceof IPartItem || i == Item
-					.getItemFromBlock( Blocks.REEDS ) ) )
+			// no need to check for i instance of SkullItem since its a supertype of BlockItem
+			if( placeBlock.isYes() && ( i instanceof BlockItem || i instanceof IPlantable || i instanceof FireworkRocketItem || i instanceof IPartItem || i == Item
+					.getItemFromBlock( Blocks.SUGAR_CANE ) ) )
 			{
-				final EntityPlayer player = Platform.getPlayer( (WorldServer) w );
+				final PlayerEntity player = Platform.getPlayer( w.getServer().getWorld( w.getDimension().getType() ) );
 				Platform.configurePlayer( player, side, this.getTile() );
-				EnumHand hand = player.getActiveHand();
+				Hand hand = player.getActiveHand();
 				player.setHeldItem( hand, is );
+
+				BlockRayTraceResult rayTraceResult = new BlockRayTraceResult( new Vec3d( side.xOffset,
+						side.yOffset, side.zOffset ), side.getFacing(), tePos, false);
+				ItemUseContext iuCtx = new ItemUseContext( player, hand, rayTraceResult );
 
 				maxStorage = is.getCount();
 				worked = true;
 				if( type == Actionable.MODULATE )
 				{
-					if( i instanceof IPlantable || i instanceof ItemSkull || i == Item.getItemFromBlock( Blocks.REEDS ) )
+					if( i instanceof IPlantable || i instanceof SkullItem || i == Item.getItemFromBlock( Blocks.SUGAR_CANE ) )
 					{
 						boolean Worked = false;
 
 						if( side.xOffset == 0 && side.zOffset == 0 )
 						{
 							Worked = i.onItemUse( player, w, tePos.offset( side.getFacing() ), hand, side.getFacing().getOpposite(), side.xOffset,
-									side.yOffset, side.zOffset ) == EnumActionResult.SUCCESS;
+									side.yOffset, side.zOffset ) == ActionResultType.SUCCESS;
 						}
 
 						if( !Worked && side.xOffset == 0 && side.zOffset == 0 )
 						{
 							Worked = i.onItemUse( player, w, tePos.offset( side.getFacing().getOpposite() ), hand, side.getFacing(), side.xOffset,
-									side.yOffset, side.zOffset ) == EnumActionResult.SUCCESS;
+									side.yOffset, side.zOffset ) == ActionResultType.SUCCESS;
 						}
 
 						if( !Worked && side.yOffset == 0 )
 						{
-							Worked = i.onItemUse( player, w, tePos.offset( EnumFacing.DOWN ), hand, EnumFacing.UP, side.xOffset, side.yOffset,
-									side.zOffset ) == EnumActionResult.SUCCESS;
+							Worked = i.onItemUse( player, w, tePos.offset( Direction.DOWN ), hand, Direction.UP, side.xOffset, side.yOffset,
+									side.zOffset ) == ActionResultType.SUCCESS;
 						}
 
 						if( !Worked )
@@ -309,20 +307,21 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 						final double y = ( side.yOffset != 0 ? 0 : .7 * ( Platform.getRandomFloat() - .5 ) ) + side.yOffset + .5 + te.getPos().getY();
 						final double z = ( side.zOffset != 0 ? 0 : .7 * ( Platform.getRandomFloat() - .5 ) ) + side.zOffset + .5 + te.getPos().getZ();
 
-						final EntityItem ei = new EntityItem( w, x, y, z, is.copy() );
+						final ItemEntity ei = new ItemEntity( w, x, y, z, is.copy() );
 
 						Entity result = ei;
 
-						ei.motionX = side.xOffset * 0.2;
-						ei.motionY = side.yOffset * 0.2;
-						ei.motionZ = side.zOffset * 0.2;
+						Vec3d motion = new Vec3d( side.xOffset,  side.yOffset, side.zOffset);
+						motion.scale( 0.2 );
+
+						ei.setMotion( motion );
 
 						if( is.getItem().hasCustomEntity( is ) )
 						{
 							result = is.getItem().createEntity( w, ei, is );
 							if( result != null )
 							{
-								ei.setDead();
+								ei.remove();
 							}
 							else
 							{
@@ -330,9 +329,9 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 							}
 						}
 
-						if( !w.spawnEntity( result ) )
+						if( !w.addEntity( result ) )
 						{
-							result.setDead();
+							result.remove();
 							worked = false;
 						}
 					}
@@ -344,7 +343,7 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 			}
 		}
 
-		this.blocked = !w.getBlockState( tePos ).getBlock().isReplaceable( w, tePos );
+		this.blocked = !w.getBlockState( tePos ).getMaterial().isReplaceable();
 
 		if( worked )
 		{

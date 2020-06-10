@@ -27,7 +27,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
@@ -76,7 +76,7 @@ public final class DisassembleRecipe extends net.minecraftforge.registries.IForg
 	}
 
 	@Override
-	public boolean matches( final InventoryCrafting inv, final World w )
+	public boolean matches( final CraftingInventory inv, final World w )
 	{
 		return !this.getOutput( inv ).isEmpty();
 	}
@@ -161,7 +161,7 @@ public final class DisassembleRecipe extends net.minecraftforge.registries.IForg
 
 	@Nullable
 	@Override
-	public ItemStack getCraftingResult( final InventoryCrafting inv )
+	public ItemStack getCraftingResult( final CraftingInventory inv )
 	{
 		return this.getOutput( inv );
 	}
@@ -180,7 +180,7 @@ public final class DisassembleRecipe extends net.minecraftforge.registries.IForg
 	}
 
 	@Override
-	public NonNullList<ItemStack> getRemainingItems( final InventoryCrafting inv )
+	public NonNullList<ItemStack> getRemainingItems( final CraftingInventory inv )
 	{
 		return ForgeHooks.defaultRecipeGetRemainingItems( inv );
 	}

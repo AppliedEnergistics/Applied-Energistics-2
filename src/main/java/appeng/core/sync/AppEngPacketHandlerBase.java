@@ -19,41 +19,23 @@
 package appeng.core.sync;
 
 
+import appeng.core.AELog;
+import appeng.core.sync.network.IPacketHandler;
+import appeng.core.sync.packets.*;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.INetHandler;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.netty.buffer.ByteBuf;
 
-import appeng.core.sync.packets.PacketAssemblerAnimation;
-import appeng.core.sync.packets.PacketClick;
-import appeng.core.sync.packets.PacketCompassRequest;
-import appeng.core.sync.packets.PacketCompassResponse;
-import appeng.core.sync.packets.PacketCompressedNBT;
-import appeng.core.sync.packets.PacketConfigButton;
-import appeng.core.sync.packets.PacketCraftRequest;
-import appeng.core.sync.packets.PacketFluidSlot;
-import appeng.core.sync.packets.PacketInventoryAction;
-import appeng.core.sync.packets.PacketJEIRecipe;
-import appeng.core.sync.packets.PacketLightning;
-import appeng.core.sync.packets.PacketMEFluidInventoryUpdate;
-import appeng.core.sync.packets.PacketMEInventoryUpdate;
-import appeng.core.sync.packets.PacketMatterCannon;
-import appeng.core.sync.packets.PacketMockExplosion;
-import appeng.core.sync.packets.PacketPaintedEntity;
-import appeng.core.sync.packets.PacketPartPlacement;
-import appeng.core.sync.packets.PacketPatternSlot;
-import appeng.core.sync.packets.PacketProgressBar;
-import appeng.core.sync.packets.PacketSwapSlots;
-import appeng.core.sync.packets.PacketSwitchGuis;
-import appeng.core.sync.packets.PacketTargetFluidStack;
-import appeng.core.sync.packets.PacketTargetItemStack;
-import appeng.core.sync.packets.PacketTransitionEffect;
-import appeng.core.sync.packets.PacketValueConfig;
-
-
-public class AppEngPacketHandlerBase
+public abstract class AppEngPacketHandlerBase implements IPacketHandler
 {
 	private static final Map<Class<? extends AppEngPacket>, PacketTypes> REVERSE_LOOKUP = new HashMap<>();
 
@@ -121,10 +103,7 @@ public class AppEngPacketHandlerBase
 			{
 				x = this.packetClass.getConstructor( ByteBuf.class );
 			}
-			catch( final NoSuchMethodException ignored )
-			{
-			}
-			catch( final SecurityException ignored )
+			catch( final NoSuchMethodException | SecurityException ignored )
 			{
 			}
 
@@ -142,14 +121,64 @@ public class AppEngPacketHandlerBase
 			return ( values() )[id];
 		}
 
+		public void register( final SimpleChannel sc, final int id, IPacketHandler handler )
+		{
+			sc.registerMessage( id, this.packetClass, handler::encode, handler::decode, handler::onPacketData );
+		}
+
 		static PacketTypes getID( final Class<? extends AppEngPacket> c )
 		{
 			return REVERSE_LOOKUP.get( c );
 		}
 
-		public AppEngPacket parsePacket( final ByteBuf in ) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+		public AppEngPacket parsePacket( final PacketBuffer in ) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
 		{
 			return this.packetConstructor.newInstance( in );
+		}
+	}
+
+	@Override
+	public <MSG extends AppEngPacket> MSG decode( PacketBuffer packetBuffer )
+	{
+		final int packetType = packetBuffer.readInt();
+		try
+		{
+			return (MSG) PacketTypes.getPacket( packetType ).parsePacket( packetBuffer );
+		}
+		catch( InstantiationException | IllegalAccessException | InvocationTargetException e )
+		{
+			AELog.debug( e );
+			return null;
+		}
+	}
+
+	@Override
+	public <MSG extends AppEngPacket> void encode( MSG msg, PacketBuffer packetBuffer )
+	{
+		//TODO add packet id and remove from every packet
+		packetBuffer.writeInt( PacketTypes.getID( msg.getClass() ).ordinal() );
+		msg.encode( packetBuffer );
+	}
+
+	protected class DummyINetHandler implements INetHandler
+	{
+		protected NetworkManager manager;
+
+		public DummyINetHandler(NetworkManager manager)
+		{
+			this.manager = manager;
+		}
+
+		@Override
+		public void onDisconnect( ITextComponent reason )
+		{
+			throw new UnsupportedOperationException("Called onDisconnect on a dummy INetHandler!");
+		}
+
+		@Override
+		public NetworkManager getNetworkManager()
+		{
+			return manager;
 		}
 	}
 }

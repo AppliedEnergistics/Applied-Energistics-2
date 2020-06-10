@@ -21,7 +21,7 @@ package appeng.integration.abstraction;
 
 import java.util.Set;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 
 /**
@@ -43,7 +43,7 @@ public interface IC2PowerSink
 	{
 	}
 
-	default void setValidFaces( Set<EnumFacing> faces )
+	default void setValidFaces( Set<Direction> faces )
 	{
 	}
 }

@@ -1,0 +1,22 @@
+{
+    "conditions": [
+        {
+            "type": "appliedenergistics2:material_exists",
+            "material": "material.card_redstone"
+        }
+    ],
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "material.card_redstone"
+    },
+    "type": "appliedenergistics2:part_shapeless",
+    "ingredients": [
+        {
+            "item": "minecraft:redstone_torch"
+        },
+        {
+            "type": "appliedenergistics2:part",
+            "part": "material.basic_card"
+        }
+    ]
+}

@@ -22,7 +22,7 @@ package appeng.spatial;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -72,7 +72,7 @@ public class StorageChunkProvider extends ChunkGeneratorOverworld
 		return chunk;
 	}
 
-	private void fillChunk( Chunk chunk, IBlockState defaultState )
+	private void fillChunk( Chunk chunk, BlockState defaultState )
 	{
 		for( int cx = 0; cx < 16; cx++ )
 		{

@@ -1,0 +1,16 @@
+{
+    "result": {
+        "item": "appliedenergistics2:spatial_storage_cell_16_cubed"
+    },
+    "type": "forge:ore_shapeless",
+    "ingredients": [
+        {
+            "type": "appliedenergistics2:part",
+            "part": "material.empty_storage_cell"
+        },
+        {
+            "type": "appliedenergistics2:part",
+            "part": "material.cell16_spatial_part"
+        }
+    ]
+}

@@ -6,17 +6,16 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Function;
 
-import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.common.model.IModelState;
+import net.minecraftforge.client.model.IModelBuilder;
 
 import appeng.core.AppEng;
 
 
-public class P2PTunnelFrequencyModel implements IModel
+public class P2PTunnelFrequencyModel implements IModelBuilder
 {
 	private static final ResourceLocation TEXTURE = new ResourceLocation( AppEng.MOD_ID, "parts/p2p_tunnel_frequency" );
 

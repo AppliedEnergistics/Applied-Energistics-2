@@ -19,20 +19,31 @@
 package appeng.items.tools.quartz;
 
 
-import net.minecraft.item.ItemPickaxe;
-import net.minecraft.item.ItemStack;
+import appeng.core.AppEng;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.*;
 
 import appeng.core.features.AEFeature;
 import appeng.util.Platform;
 
+import java.util.Collection;
 
-public class ToolQuartzPickaxe extends ItemPickaxe
+
+public class ToolQuartzPickaxe extends PickaxeItem
 {
 	private final AEFeature type;
 
 	public ToolQuartzPickaxe( final AEFeature type )
 	{
-		super( ToolMaterial.IRON );
+		// A real nice way of creating an Iron tool without hard coding its values - Yay!
+		super( ItemTier.IRON,
+				(int) (Items.IRON_PICKAXE.getAttributeModifiers( EquipmentSlotType.MAINHAND )
+						.get( SharedMonsterAttributes.ATTACK_DAMAGE.getName() ).stream().filter( am -> am.getName().equals( "Tool modifier" ) ).findFirst().get().getAmount() - ItemTier.IRON.getAttackDamage()),
+				(float) Items.IRON_PICKAXE.getAttributeModifiers( EquipmentSlotType.MAINHAND )
+						.get( SharedMonsterAttributes.ATTACK_SPEED.getName() ).stream().filter( am -> am.getName().equals( "Tool modifier" ) ).findFirst().get().getAmount(),
+				(new Item.Properties()).group( AppEng.ITEM_GROUP ));
 		this.type = type;
 	}
 

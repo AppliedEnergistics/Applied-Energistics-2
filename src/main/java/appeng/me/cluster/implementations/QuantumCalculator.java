@@ -21,7 +21,7 @@ package appeng.me.cluster.implementations;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
@@ -162,7 +162,7 @@ public class QuantumCalculator extends MBCalculator
 		return te instanceof TileQuantumBridge;
 	}
 
-	private boolean isBlockAtLocation( final IBlockAccess w, final BlockPos pos, final IBlockDefinition def )
+	private boolean isBlockAtLocation( final IBlockReader w, final BlockPos pos, final IBlockDefinition def )
 	{
 		return def.maybeBlock().map( block -> block == w.getBlockState( pos ).getBlock() ).orElse( false );
 	}

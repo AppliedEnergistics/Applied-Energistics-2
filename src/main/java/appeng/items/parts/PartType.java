@@ -30,10 +30,8 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.parts.IPart;
 import appeng.api.util.AEColor;
@@ -85,6 +83,8 @@ import appeng.parts.reporting.PartSemiDarkPanel;
 import appeng.parts.reporting.PartStorageMonitor;
 import appeng.parts.reporting.PartTerminal;
 import appeng.util.Platform;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 
 public enum PartType
@@ -100,7 +100,7 @@ public enum PartType
 		}
 
 		@Override
-		@SideOnly( Side.CLIENT )
+		@OnlyIn( Dist.CLIENT )
 		protected List<ModelResourceLocation> createItemModels( String baseName )
 		{
 			return Arrays.stream( AEColor.values() )
@@ -118,7 +118,7 @@ public enum PartType
 		}
 
 		@Override
-		@SideOnly( Side.CLIENT )
+		@OnlyIn( Dist.CLIENT )
 		protected List<ModelResourceLocation> createItemModels( String baseName )
 		{
 			return Arrays.stream( AEColor.values() )
@@ -136,7 +136,7 @@ public enum PartType
 		}
 
 		@Override
-		@SideOnly( Side.CLIENT )
+		@OnlyIn( Dist.CLIENT )
 		protected List<ModelResourceLocation> createItemModels( String baseName )
 		{
 			return Arrays.stream( AEColor.values() )
@@ -155,7 +155,7 @@ public enum PartType
 		}
 
 		@Override
-		@SideOnly( Side.CLIENT )
+		@OnlyIn( Dist.CLIENT )
 		protected List<ModelResourceLocation> createItemModels( String baseName )
 		{
 			return Arrays.stream( AEColor.values() )
@@ -174,7 +174,7 @@ public enum PartType
 		}
 
 		@Override
-		@SideOnly( Side.CLIENT )
+		@OnlyIn( Dist.CLIENT )
 		protected List<ModelResourceLocation> createItemModels( String baseName )
 		{
 			return Arrays.stream( AEColor.values() )
@@ -326,7 +326,7 @@ public enum PartType
 	private final Set<IntegrationType> integrations;
 	private final Class<? extends IPart> myPart;
 	private final GuiText extraName;
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	private List<ModelResourceLocation> itemModels;
 	private final Set<ResourceLocation> models;
 	private final boolean enabled;
@@ -388,13 +388,13 @@ public enum PartType
 		}
 	}
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	protected List<ModelResourceLocation> createItemModels( String baseName )
 	{
 		return ImmutableList.of( modelFromBaseName( baseName ) );
 	}
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	private static ModelResourceLocation modelFromBaseName( String baseName )
 	{
 		return new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, "part/" + baseName ), "inventory" );
@@ -455,7 +455,7 @@ public enum PartType
 		return this.oreName;
 	}
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public List<ModelResourceLocation> getItemModels()
 	{
 		return this.itemModels;

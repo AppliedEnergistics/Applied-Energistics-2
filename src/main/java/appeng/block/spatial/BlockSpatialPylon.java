@@ -21,10 +21,10 @@ package appeng.block.spatial;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
@@ -53,7 +53,7 @@ public class BlockSpatialPylon extends AEBaseTileBlock
 	}
 
 	@Override
-	public IBlockState getExtendedState( IBlockState state, IBlockAccess world, BlockPos pos )
+	public BlockState getExtendedState( BlockState state, IBlockReader world, BlockPos pos )
 	{
 		IExtendedBlockState extState = (IExtendedBlockState) state;
 
@@ -61,7 +61,7 @@ public class BlockSpatialPylon extends AEBaseTileBlock
 	}
 
 	@Override
-	public void neighborChanged( IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
+	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
 	{
 		final TileSpatialPylon tsp = this.getTileEntity( world, pos );
 		if( tsp != null )
@@ -71,7 +71,7 @@ public class BlockSpatialPylon extends AEBaseTileBlock
 	}
 
 	@Override
-	public int getLightValue( final IBlockState state, final IBlockAccess w, final BlockPos pos )
+	public int getLightValue( final BlockState state, final IBlockReader w, final BlockPos pos )
 	{
 		final TileSpatialPylon tsp = this.getTileEntity( w, pos );
 		if( tsp != null )
@@ -81,7 +81,7 @@ public class BlockSpatialPylon extends AEBaseTileBlock
 		return super.getLightValue( state, w, pos );
 	}
 
-	private int getDisplayState( IBlockAccess world, BlockPos pos )
+	private int getDisplayState( IBlockReader world, BlockPos pos )
 	{
 		TileSpatialPylon te = this.getTileEntity( world, pos );
 

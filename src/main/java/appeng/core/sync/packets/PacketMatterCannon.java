@@ -23,16 +23,17 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Items;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.client.render.effects.MatterCannonFX;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 
 public class PacketMatterCannon extends AppEngPacket
@@ -72,9 +73,8 @@ public class PacketMatterCannon extends AppEngPacket
 		this.dz = dz / dlz;
 		this.len = len;
 
-		final ByteBuf data = Unpooled.buffer();
+		final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
-		data.writeInt( this.getPacketID() );
 		data.writeFloat( (float) x );
 		data.writeFloat( (float) y );
 		data.writeFloat( (float) z );
@@ -87,18 +87,18 @@ public class PacketMatterCannon extends AppEngPacket
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
+	@OnlyIn( Dist.CLIENT )
+	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final PlayerEntity player, NetworkEvent.Context ctx )
 	{
 		try
 		{
 
-			final World world = FMLClientHandler.instance().getClient().world;
+			final World world = player.world;
 			for( int a = 1; a < this.len; a++ )
 			{
 				final MatterCannonFX fx = new MatterCannonFX( world, this.x + this.dx * a, this.y + this.dy * a, this.z + this.dz * a, Items.DIAMOND );
 
-				Minecraft.getMinecraft().effectRenderer.addEffect( fx );
+				Minecraft.getInstance().effectRenderer.addEffect( fx );
 			}
 		}
 		catch( final Exception ignored )

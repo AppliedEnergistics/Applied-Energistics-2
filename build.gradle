@@ -1,55 +1,25 @@
-/*
- * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
- *
- * Applied Energistics 2 is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Applied Energistics 2 is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
- */
+import org.gradle.api.tasks.javadoc.Javadoc
 
 buildscript {
     repositories {
-        mavenLocal()
+        maven { url = 'https://files.minecraftforge.net/maven' }
         jcenter()
         mavenCentral()
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
 }
+apply plugin: 'net.minecraftforge.gradle'
+// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
 
-plugins {
-  id "org.sonarqube" version "2.6"
-}
+version = '1.0'
+group = 'com.yourname.modid' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = 'modid'
 
-apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'jacoco'
-
-repositories {
-    mavenLocal()
-    jcenter()
-    mavenCentral()
-}
-
-apply from: 'gradle/scripts/dependencies.gradle'
-apply from: 'gradle/scripts/artifacts.gradle'
-apply from: 'gradle/scripts/optional.gradle'
-
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
 // ensure everything uses UTF-8 and not some random codepage chosen by gradle
 compileJava.options.encoding = 'UTF-8'
@@ -57,65 +27,193 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
-version = aeversion + "-" + aechannel + "-" + aebuild
-group = aegroup
-archivesBaseName = aebasename
-
-// Add Coremod Manifest
-jar {
-    manifest {
-        attributes 'FMLAT': 'appeng_at.cfg'
+sourceSets {
+    api {
+        java {
+            srcDir 'src/api/java'
+        }
     }
+    main {
+        java {
+            srcDir 'src/main/java'
+        }
+        compileClasspath += sourceSets.api.output
+        runtimeClasspath += sourceSets.api.output
+    }
+    test {
+        compileClasspath += sourceSets.api.output + sourceSets.main.output
+        runtimeClasspath += sourceSets.api.output + sourceSets.main.output
+    }
+    datagenmain { setupDataGenSourceSet(sourceSets.datagenmain, null, 'main') }
+}
 
-    from sourceSets.api.output
-    dependsOn apiClasses
+//This method sets up a source set in datagen/$name and adds the api, main mekanism module and an optional
+// base module to the dependencies of the data generators source set that we are setting up
+def setupDataGenSourceSet(SourceSet datagenSourceSet, SourceSet baseSourceSet, String name) {
+    datagenSourceSet.java.srcDirs = ['src/datagen/' + name + '/java']
+    datagenSourceSet.resources.srcDirs = ['src/datagen/' + name + '/resources']
+    datagenSourceSet.compileClasspath += project.sourceSets.api.output
+    datagenSourceSet.compileClasspath += project.sourceSets.main.output
+    if (baseSourceSet != null) {
+        //Only case it is null is when we are doing datagenmain so other cases also add access to the stuff
+        // in datagenmain so we can add helper classes
+        datagenSourceSet.compileClasspath += project.sourceSets.datagenmain.output
+        datagenSourceSet.compileClasspath += baseSourceSet.output
+    }
+}
 
-    // specify which files are really included, can control which APIs should be in
-    include "appeng/**"
-    include "assets/**"
-    include "mcmod.info"
-    include "pack.mcmeta"
-    include "META-INF/appeng_at.cfg"
+configurations {
+    //Make sure all our sub source set stuff extends the proper base methods so that
+    // they can see all the dependencies we have in dependencies including forge
+    def compileExtenders = [apiCompile, testCompile, datagenmainCompile]
+    def compileOnlyExtenders = [apiCompileOnly, testCompileOnly, datagenmainCompileOnly]
+    def runtimeOnlyExtenders = [apiRuntimeOnly, datagenmainRuntimeOnly]
+    for (def compileExtender : compileExtenders) {
+        compileExtender.extendsFrom(compile)
+    }
+    for (def compileOnlyExtender : compileOnlyExtenders) {
+        compileOnlyExtender.extendsFrom(compileOnly)
+    }
+    for (def runtimeOnlyExtender : runtimeOnlyExtenders) {
+        runtimeOnlyExtender.extendsFrom(runtimeOnly)
+    }
 }
 
 minecraft {
-    version = minecraft_version + "-" + forge_version
+    // The mappings can be changed at any time, and must be in the following format.
+    // snapshot_YYYYMMDD   Snapshot are built nightly.
+    // stable_#            Stables are built at the discretion of the MCP team.
+    // Use non-default mappings at your own risk. they may not always work.
+    // Simply re-run your setup task after changing the mappings to update your workspace.
+    mappings channel: 'snapshot', version: '20200514-1.15.1'
+    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 
-    replaceIn "AEConfig.java"
-    replaceIn "package-info.java"
+    // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
-    replace "@version@", project.version
-    replace "@aeversion@", aeversion
-    replace "@aechannel@", aechannel
-    replace "@aebuild@", aebuild
+    // Default run configurations.
+    // These can be tweaked, removed, or duplicated as needed.
+    runs {
+        client {
+            workingDirectory project.file('run')
 
-    // used when launching minecraft in dev env
-    runDir = "run"
-    mappings = mcp_mappings
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                appeng {
+                    sources(sourceSets.main, sourceSets.api)
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run')
+
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                appeng {
+                    sources(sourceSets.main, sourceSets.api)
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+
+            args '--mod', 'appeng', '--all', '--output', file('src/generated/resources/')
+
+            mods {
+                appeng {
+                    sources(sourceSets.main, sourceSets.api)
+                }
+            }
+        }
+    }
 }
 
-sourceSets {
-    api
-    main
+dependencies {
+    // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
+    // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
+    // The userdev artifact is a special name and will get all sorts of transformations applied to it.
+    minecraft 'net.minecraftforge:forge:1.15.2-31.2.0'
+
+    // You may put jars on which you depend on in ./libs or you may define them like so..
+    // compile "some.group:artifact:version:classifier"
+    // compile "some.group:artifact:version"
+
+    // Real examples
+    // compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
+    // compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
+
+    // The 'provided' configuration is for optional dependencies that exist at compile-time but might not at runtime.
+    // provided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
+
+    // These dependencies get remapped to your current MCP mappings
+    // deobf 'com.mod-buildcraft:buildcraft:6.0.8:dev'
+
+    // For more info...
+    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
+    // http://www.gradle.org/docs/current/userguide/dependency_management.html
+
+    // unit test dependencies
+    testCompile "junit:junit:4.12"
+    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
 }
 
-processResources
-{
-    // this will ensure that this task is redone when the versions change.
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
-
-    // replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-        expand 'version': project.version, 'mcversion': project.minecraft.version
+// Example for how to get properties into the manifest for reading by the runtime..
+jar {
+    manifest {
+        attributes([
+            "Specification-Title": "appeng",
+            "Specification-Vendor": "examplemodsareus",
+            "Specification-Version": "1", // We are version 1 of ourselves
+            "Implementation-Title": project.name,
+            "Implementation-Version": "${version}",
+            "Implementation-Vendor" :"examplemodsareus",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
     }
+}
 
-    // copy everything else, thats not the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
+// Example configuration to allow publishing using the maven-publish task
+// This is the preferred method to reobfuscate your jar file
+jar.finalizedBy('reobfJar')
+// However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
+//publish.dependsOn('reobfJar')
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+        }
     }
+    repositories {
+        maven {
+            url "file:///${project.projectDir}/mcmodsrepo"
+        }
+    }
+}
 
-    // move access transformer to META-INF
-    rename '(.+_at.cfg)', 'META-INF/$1'
+task coreJar(type: Jar) {
+    from sourceSets.main.output
+    from sourceSets.api.output
+}
+
+task apiJar(type: Jar) {
+    classifier "api"
+    from sourceSets.api.output
 }

@@ -20,7 +20,7 @@ package appeng.worldgen.meteorite;
 
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -89,7 +89,7 @@ public class ChunkOnly extends StandardWorld
 	}
 
 	@Override
-	public void setBlock( final int x, final int y, final int z, final IBlockState state, final int flags )
+	public void setBlock( final int x, final int y, final int z, final BlockState state, final int flags )
 	{
 		if( this.range( x, y, z ) )
 		{

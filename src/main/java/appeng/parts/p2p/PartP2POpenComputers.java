@@ -22,7 +22,7 @@ package appeng.parts.p2p;
 // import javax.annotation.Nullable;
 //
 // import net.minecraft.item.ItemStack;
-// import net.minecraft.nbt.NBTTagCompound;
+// import net.minecraft.nbt.CompoundNBT;
 // import net.minecraft.util.IIcon;
 // import net.minecraftforge.common.util.ForgeDirection;
 //
@@ -96,7 +96,7 @@ package appeng.parts.p2p;
 // }
 //
 // @Override
-// @SideOnly( Side.CLIENT )
+// @OnlyIn( Dist.CLIENT )
 // public IIcon getTypeTexture()
 // {
 // return Items.get( "adapter" ).block().getBlockTextureFromSide( 2 );
@@ -119,7 +119,7 @@ package appeng.parts.p2p;
 // }
 //
 // @Override
-// public void readFromNBT( final NBTTagCompound data )
+// public void readFromNBT( final CompoundNBT data )
 // {
 // super.readFromNBT( data );
 // if( this.node != null )
@@ -129,7 +129,7 @@ package appeng.parts.p2p;
 // }
 //
 // @Override
-// public void writeToNBT( final NBTTagCompound data )
+// public void writeToNBT( final CompoundNBT data )
 // {
 // super.writeToNBT( data );
 // if( this.node != null )

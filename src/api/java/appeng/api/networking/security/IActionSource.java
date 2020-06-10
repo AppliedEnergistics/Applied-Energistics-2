@@ -28,13 +28,13 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 
 
 /**
  * The source of any action.
  * 
- * This can either be a {@link EntityPlayer} or an {@link IActionHost}.
+ * This can either be a {@link PlayerEntity} or an {@link IActionHost}.
  * 
  * In most cases this is used for security checks, but can be used to validate the source itself.
  *
@@ -50,7 +50,7 @@ public interface IActionSource
 	 * @return An optional player issuing the action.
 	 */
 	@Nonnull
-	Optional<EntityPlayer> player();
+	Optional<PlayerEntity> player();
 
 	/**
 	 * If present, it indicates the {@link IActionHost} of the source.

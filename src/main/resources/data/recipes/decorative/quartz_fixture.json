@@ -1,0 +1,19 @@
+{
+    "result": {
+        "item": "appliedenergistics2:quartz_fixture",
+        "count": 2
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "ab"
+    ],
+    "key": {
+        "b": {
+            "item": "minecraft:iron_ingot"
+        },
+        "a": {
+            "type": "appliedenergistics2:part",
+            "part": "material.certus_quartz_crystal_charged"
+        }
+    }
+}

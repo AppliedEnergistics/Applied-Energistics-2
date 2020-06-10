@@ -24,11 +24,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import appeng.bootstrap.components.ItemMeshDefinitionComponent;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.util.AEColor;
 import appeng.bootstrap.IItemRendering;
@@ -39,6 +38,8 @@ import appeng.core.AppEng;
 import appeng.core.features.registries.PartModels;
 import appeng.parts.automation.PlaneConnections;
 import appeng.parts.automation.PlaneModel;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 
 public class ItemPartRendering extends ItemRenderingCustomizer
@@ -55,7 +56,7 @@ public class ItemPartRendering extends ItemRenderingCustomizer
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public void customize( IItemRendering rendering )
 	{
 
@@ -138,10 +139,10 @@ public class ItemPartRendering extends ItemRenderingCustomizer
 		this.partModels.registerModels( partResourceLocs );
 	}
 
-	private ModelResourceLocation getItemMeshDefinition( ItemStack is )
+	private ItemMeshDefinitionComponent getItemMeshDefinition( ItemStack is )
 	{
 		PartType partType = this.item.getTypeByStack( is );
-		int variant = this.item.variantOf( is.getItemDamage() );
+		int variant = this.item.variantOf( is.getDamage() );
 		return partType.getItemModels().get( variant );
 	}
 }

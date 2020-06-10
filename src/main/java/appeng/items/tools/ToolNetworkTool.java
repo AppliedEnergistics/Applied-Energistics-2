@@ -21,22 +21,19 @@ package appeng.items.tools;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.Optional.Interface;
 
-import cofh.api.item.IToolHammer;
+//import cofh.api.item.IToolHammer;
 
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
@@ -59,8 +56,8 @@ import appeng.util.Platform;
 
 // TODO BC Integration
 //@Interface( iface = "buildcraft.api.tools.IToolWrench", iname = IntegrationType.BuildCraftCore )
-@Interface( iface = "cofh.api.item.IToolHammer", modid = "cofhcore" )
-public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, IToolHammer /* , IToolWrench */
+//@Interface( iface = "cofh.api.item.IToolHammer", modid = "cofhcore" )
+public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench/*, IToolHammer *//* , IToolWrench */
 {
 
 	public ToolNetworkTool()
@@ -77,46 +74,46 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick( final World w, final EntityPlayer p, final EnumHand hand )
+	public ActionResult<ItemStack> onItemRightClick( final World w, final PlayerEntity p, final Hand hand )
 	{
 		if( Platform.isClient() )
 		{
 			final RayTraceResult mop = AppEng.proxy.getRTR();
 
-			if( mop == null || mop.typeOfHit == RayTraceResult.Type.MISS )
+			if( mop == null || mop.getType() == RayTraceResult.Type.MISS )
 			{
-				NetworkHandler.instance().sendToServer( new PacketClick( BlockPos.ORIGIN, null, 0, 0, 0, hand ) );
+				NetworkHandler.instance().sendToServer( new PacketClick( BlockPos.ZERO, null, 0, 0, 0, hand ) );
 			}
 		}
 
-		return new ActionResult<>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
+		return new ActionResult<>( ActionResultType.SUCCESS, p.getHeldItem( hand ) );
 	}
 
 	@Override
-	public EnumActionResult onItemUseFirst( final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
+	public ActionResultType onItemUseFirst( final PlayerEntity player, final World world, final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ, final Hand hand )
 	{
-		final RayTraceResult mop = new RayTraceResult( new Vec3d( hitX, hitY, hitZ ), side, pos );
+		final RayTraceResult mop = new BlockRayTraceResult( new Vec3d( hitX, hitY, hitZ ), side, pos, false );
 		final TileEntity te = world.getTileEntity( pos );
 
 		if( te instanceof IPartHost )
 		{
-			final SelectedPart part = ( (IPartHost) te ).selectPart( mop.hitVec );
+			final SelectedPart part = ( (IPartHost) te ).selectPart( mop.getHitVec() );
 
 			if( part.part != null || part.facade != null )
 			{
 				if( part.part instanceof INetworkToolAgent && !( (INetworkToolAgent) part.part ).showNetworkInfo( mop ) )
 				{
-					return EnumActionResult.FAIL;
+					return ActionResultType.FAIL;
 				}
 				else if( player.isSneaking() )
 				{
-					return EnumActionResult.PASS;
+					return ActionResultType.PASS;
 				}
 			}
 		}
 		else if( te instanceof INetworkToolAgent && !( (INetworkToolAgent) te ).showNetworkInfo( mop ) )
 		{
-			return EnumActionResult.FAIL;
+			return ActionResultType.FAIL;
 		}
 
 		if( Platform.isClient() )
@@ -124,16 +121,16 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 			NetworkHandler.instance().sendToServer( new PacketClick( pos, side, hitX, hitY, hitZ, hand ) );
 		}
 
-		return EnumActionResult.SUCCESS;
+		return ActionResultType.SUCCESS;
 	}
 
 	@Override
-	public boolean doesSneakBypassUse( final ItemStack itemstack, final IBlockAccess world, final BlockPos pos, final EntityPlayer player )
+	public boolean doesSneakBypassUse( final ItemStack itemstack, final IBlockReader world, final BlockPos pos, final PlayerEntity player )
 	{
 		return true;
 	}
 
-	public boolean serverSideToolLogic( final ItemStack is, final EntityPlayer p, final EnumHand hand, final World w, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public boolean serverSideToolLogic( final ItemStack is, final PlayerEntity p, final Hand hand, final World w, final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( side != null )
 		{
@@ -148,7 +145,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 				final TileEntity te = w.getTileEntity( pos );
 				if( !( te instanceof IGridHost ) )
 				{
-					if( b.rotateBlock( w, pos, side ) )
+					if( b.rotate( w, pos, side ) )
 					{
 						b.neighborChanged( Platform.AIR_BLOCK.getDefaultState(), w, pos, Platform.AIR_BLOCK, null );
 						p.swingArm( hand );
@@ -179,7 +176,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 			}
 			else
 			{
-				b.onBlockActivated( w, pos, w.getBlockState( pos ), p, hand, side, hitX, hitY, hitZ );
+				b.onBlockActivated( w.getBlockState( pos ), w, pos, p, hand, rayTraceResult);
 			}
 		}
 		else
@@ -191,33 +188,33 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 	}
 
 	@Override
-	public boolean canWrench( final ItemStack wrench, final EntityPlayer player, final BlockPos pos )
+	public boolean canWrench( final ItemStack wrench, final PlayerEntity player, final BlockPos pos )
 	{
 		return true;
 	}
 
 	// IToolHammer - start
-	@Override
-	public boolean isUsable( ItemStack item, EntityLivingBase user, BlockPos pos )
+	/*@Override
+	public boolean isUsable( ItemStack item, LivingEntity user, BlockPos pos )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean isUsable( ItemStack item, EntityLivingBase user, Entity entity )
+	public boolean isUsable( ItemStack item, LivingEntity user, Entity entity )
 	{
 		return true;
 	}
 
 	@Override
-	public void toolUsed( ItemStack item, EntityLivingBase user, BlockPos pos )
+	public void toolUsed( ItemStack item, LivingEntity user, BlockPos pos )
 	{
 	}
 
 	@Override
-	public void toolUsed( ItemStack item, EntityLivingBase user, Entity entity )
+	public void toolUsed( ItemStack item, LivingEntity user, Entity entity )
 	{
-	}
+	}*/
 	// IToolHammer - end
 
 	// TODO: BC WRENCH INTEGRATION

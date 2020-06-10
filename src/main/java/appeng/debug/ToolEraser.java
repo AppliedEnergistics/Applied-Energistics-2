@@ -22,11 +22,11 @@ package appeng.debug;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.block.state.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -41,14 +41,14 @@ public class ToolEraser extends AEBaseItem
 	private static final int BLOCK_ERASE_LIMIT = 90000;
 
 	@Override
-	public EnumActionResult onItemUseFirst( final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
+	public ActionResultType onItemUseFirst( final PlayerEntity player, final World world, final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ, final Hand hand )
 	{
 		if( Platform.isClient() )
 		{
-			return EnumActionResult.PASS;
+			return ActionResultType.PASS;
 		}
 
-		final IBlockState state = world.getBlockState( pos );
+		final BlockState state = world.getBlockState( pos );
 
 		List<BlockPos> next = new ArrayList<>();
 		next.add( pos );
@@ -61,7 +61,7 @@ public class ToolEraser extends AEBaseItem
 
 			for( final BlockPos wc : c )
 			{
-				final IBlockState c_state = world.getBlockState( wc );
+				final BlockState c_state = world.getBlockState( wc );
 
 				if( state == c_state )
 				{
@@ -80,6 +80,6 @@ public class ToolEraser extends AEBaseItem
 
 		AELog.info( "Delete " + blocks + " blocks" );
 
-		return EnumActionResult.SUCCESS;
+		return ActionResultType.SUCCESS;
 	}
 }

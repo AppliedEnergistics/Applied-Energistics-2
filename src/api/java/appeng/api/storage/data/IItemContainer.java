@@ -24,9 +24,9 @@
 package appeng.api.storage.data;
 
 
-import java.util.Collection;
-
 import appeng.api.config.FuzzyMode;
+
+import java.util.Collection;
 
 
 /**
@@ -58,7 +58,16 @@ public interface IItemContainer<T extends IAEStack<T>>
 	 *
 	 * @return a list of relevant fuzzy matched stacks
 	 */
-	Collection<T> findFuzzy( T input, FuzzyMode fuzzy );
+	@Deprecated
+	Collection<T> findFuzzy( T input );
+
+	/**
+	 * @param input compared item
+	 * @param fuzzyMode whether to use Fuzzy search or not
+	 *
+	 * @return a list of relevant matched stacks
+	 */
+	Collection<T> find( T input, FuzzyMode fuzzyMode );
 
 	/**
 	 * @return true if there are no items in the list

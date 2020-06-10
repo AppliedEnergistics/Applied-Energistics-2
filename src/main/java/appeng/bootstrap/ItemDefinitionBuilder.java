@@ -30,8 +30,9 @@ import net.minecraft.block.BlockDispenser;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.dispenser.IBehaviorDispenseItem;
 import net.minecraft.item.Item;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.item.ItemGroup;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.bootstrap.components.IItemRegistrationComponent;
 import appeng.bootstrap.components.IPostInitComponent;
@@ -58,7 +59,7 @@ class ItemDefinitionBuilder implements IItemBuilder
 
 	private Supplier<IBehaviorDispenseItem> dispenserBehaviorSupplier;
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	private ItemRendering itemRendering;
 
 	private CreativeTabs creativeTab = CreativeTab.instance;
@@ -97,7 +98,7 @@ class ItemDefinitionBuilder implements IItemBuilder
 	}
 
 	@Override
-	public IItemBuilder creativeTab( CreativeTabs tab )
+	public IItemBuilder itemGroup( ItemGroup tab )
 	{
 		this.creativeTab = tab;
 		return this;
@@ -121,7 +122,7 @@ class ItemDefinitionBuilder implements IItemBuilder
 		return this;
 	}
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	private void customizeForClient( ItemRenderingCustomizer callback )
 	{
 		callback.customize( this.itemRendering );

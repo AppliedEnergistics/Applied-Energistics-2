@@ -27,14 +27,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import com.electronwill.nightconfig.core.Config;
 import com.google.common.collect.Sets;
 
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.PowerMultiplier;
@@ -51,9 +49,11 @@ import appeng.items.materials.MaterialType;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
+import net.minecraftforge.fml.config.ModConfig;
 
 
-public final class AEConfig extends Configuration implements IConfigurableObject, IConfigManagerHost
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
+public final class AEConfig extends ModConfig implements IConfigurableObject, IConfigManagerHost
 {
 
 	public static final String VERSION = "@version@";
@@ -339,7 +339,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 
 	private String getListComment( final Enum value )
 	{
-		String comment = null;
+		StringBuilder comment = new StringBuilder();
 
 		if( value != null )
 		{
@@ -348,18 +348,18 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 			for( final Object Oeg : set )
 			{
 				final Enum eg = (Enum) Oeg;
-				if( comment == null )
+				if( comment.length() == 0)
 				{
-					comment = "Possible Values: " + eg.name();
+					comment.append( "Possible Values: " ).append( eg.name() );
 				}
 				else
 				{
-					comment += ", " + eg.name();
+					comment.append( ", " ).append( eg.name() );
 				}
 			}
 		}
 
-		return comment;
+		return comment.toString();
 	}
 
 	public boolean isFeatureEnabled( final AEFeature f )

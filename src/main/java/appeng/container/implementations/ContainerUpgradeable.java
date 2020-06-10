@@ -58,7 +58,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 	@GuiSync( 0 )
 	public RedstoneMode rsMode = RedstoneMode.IGNORE;
 	@GuiSync( 1 )
-	public FuzzyMode fzMode = FuzzyMode.IGNORE_ALL;
+	public FuzzyMode fzMode = FuzzyMode.ENABLED;
 	@GuiSync( 5 )
 	public YesNo cMode = YesNo.NO;
 	@GuiSync( 6 )

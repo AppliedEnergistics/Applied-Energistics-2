@@ -24,9 +24,9 @@ import java.util.Optional;
 
 import com.google.common.collect.Lists;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntityMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -173,7 +173,7 @@ public final class PartWailaDataProvider implements IWailaDataProvider
 	}
 
 	@Override
-	public NBTTagCompound getNBTData( final EntityPlayerMP player, final TileEntity te, final NBTTagCompound tag, final World world, BlockPos pos )
+	public CompoundNBT getNBTData( final PlayerEntityMP player, final TileEntity te, final CompoundNBT tag, final World world, BlockPos pos )
 	{
 		final RayTraceResult mop = this.tracer.retraceBlock( world, player, pos );
 

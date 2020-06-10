@@ -27,11 +27,9 @@ import java.util.List;
 
 import com.google.common.base.Joiner;
 
-import org.lwjgl.input.Mouse;
 
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
@@ -69,12 +67,12 @@ public class GuiCraftConfirm extends AEBaseGui
 	private final List<IAEItemStack> visual = new ArrayList<>();
 
 	private GuiBridge OriginalGui;
-	private GuiButton cancel;
-	private GuiButton start;
-	private GuiButton selectCPU;
+	private Button cancel;
+	private Button start;
+	private Button selectCPU;
 	private int tooltip = -1;
 
-	public GuiCraftConfirm( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
+	public GuiCraftConfirm( final PlayerInventory inventoryPlayer, final ITerminalHost te )
 	{
 		super( new ContainerCraftConfirm( inventoryPlayer, te ) );
 		this.xSize = 238;
@@ -116,11 +114,11 @@ public class GuiCraftConfirm extends AEBaseGui
 	{
 		super.initGui();
 
-		this.start = new GuiButton( 0, this.guiLeft + 162, this.guiTop + this.ySize - 25, 50, 20, GuiText.Start.getLocal() );
+		this.start = new Button( 0, this.guiLeft + 162, this.guiTop + this.ySize - 25, 50, 20, GuiText.Start.getLocal() );
 		this.start.enabled = false;
 		this.buttonList.add( this.start );
 
-		this.selectCPU = new GuiButton( 0, this.guiLeft + ( 219 - 180 ) / 2, this.guiTop + this.ySize - 68, 180, 20, GuiText.CraftingCPU
+		this.selectCPU = new Button( 0, this.guiLeft + ( 219 - 180 ) / 2, this.guiTop + this.ySize - 68, 180, 20, GuiText.CraftingCPU
 				.getLocal() + ": " + GuiText.Automatic );
 		this.selectCPU.enabled = false;
 		this.buttonList.add( this.selectCPU );

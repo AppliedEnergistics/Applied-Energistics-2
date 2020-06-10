@@ -24,18 +24,16 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
 import appeng.api.implementations.ICraftingPatternItem;
@@ -47,6 +45,8 @@ import appeng.helpers.InvalidPatternHelper;
 import appeng.helpers.PatternHelper;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 
 public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternItem
@@ -60,20 +60,20 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick( final World w, final EntityPlayer player, final EnumHand hand )
+	public ActionResult<ItemStack> onItemRightClick( final World w, final PlayerEntity player, final Hand hand )
 	{
 		this.clearPattern( player.getHeldItem( hand ), player );
 
-		return new ActionResult<>( EnumActionResult.SUCCESS, player.getHeldItem( hand ) );
+		return new ActionResult<>( ActionResultType.SUCCESS, player.getHeldItem( hand ) );
 	}
 
 	@Override
-	public EnumActionResult onItemUseFirst( final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
+	public ActionResultType onItemUseFirst( final PlayerEntity player, final World world, final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ, final Hand hand )
 	{
-		return this.clearPattern( player.getHeldItem( hand ), player ) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
+		return this.clearPattern( player.getHeldItem( hand ), player ) ? ActionResultType.SUCCESS : ActionResultType.PASS;
 	}
 
-	private boolean clearPattern( final ItemStack stack, final EntityPlayer player )
+	private boolean clearPattern( final ItemStack stack, final PlayerEntity player )
 	{
 		if( player.isSneaking() )
 		{
@@ -82,7 +82,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 				return false;
 			}
 
-			final InventoryPlayer inv = player.inventory;
+			final PlayerInventory inv = player.inventory;
 
 			ItemStack is = AEApi.instance().definitions().materials().blankPattern().maybeStack( stack.getCount() ).orElse( ItemStack.EMPTY );
 			if( !is.isEmpty() )
@@ -102,19 +102,19 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
 	{
 		final ICraftingPatternDetails details = this.getPatternForItem( stack, world );
 
 		if( details == null )
 		{
-			if( !stack.hasTagCompound() )
+			if( !stack.getTag() )
 			{
 				return;
 			}
 
-			stack.setStackDisplayName( TextFormatting.RED + GuiText.InvalidPattern.getLocal() );
+			stack.setDisplayName( TextFormatting.RED + GuiText.InvalidPattern.getLocal() );
 
 			InvalidPatternHelper invalid = new InvalidPatternHelper( stack );
 
@@ -149,7 +149,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 
 		if( stack.hasDisplayName() )
 		{
-			stack.removeSubCompound( "display" );
+			stack.removeChildTag( "display" );
 		}
 
 		final boolean isCrafting = details.isCraftable();

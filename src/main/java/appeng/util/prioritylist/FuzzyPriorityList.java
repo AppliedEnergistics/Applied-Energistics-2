@@ -41,7 +41,7 @@ public class FuzzyPriorityList<T extends IAEStack<T>> implements IPartitionList<
 	@Override
 	public boolean isListed( final T input )
 	{
-		final Collection<T> out = this.list.findFuzzy( input, this.mode );
+		final Collection<T> out = this.list.findFuzzy( input );
 		return out != null && !out.isEmpty();
 	}
 

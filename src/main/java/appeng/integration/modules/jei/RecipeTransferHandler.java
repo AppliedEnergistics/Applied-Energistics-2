@@ -26,11 +26,11 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
 
 import mezz.jei.api.gui.IGuiIngredient;
@@ -64,7 +64,7 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
 
 	@Nullable
 	@Override
-	public IRecipeTransferError transferRecipe( T container, IRecipeLayout recipeLayout, EntityPlayer player, boolean maxTransfer, boolean doTransfer )
+	public IRecipeTransferError transferRecipe( T container, IRecipeLayout recipeLayout, PlayerEntity player, boolean maxTransfer, boolean doTransfer )
 	{
 
 		if( !doTransfer )
@@ -74,7 +74,7 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
 
 		Map<Integer, ? extends IGuiIngredient<ItemStack>> ingredients = recipeLayout.getItemStacks().getGuiIngredients();
 
-		final NBTTagCompound recipe = new NBTTagCompound();
+		final CompoundNBT recipe = new CompoundNBT();
 
 		int slotIndex = 0;
 		for( Map.Entry<Integer, ? extends IGuiIngredient<ItemStack>> ingredientEntry : ingredients.entrySet() )
@@ -116,7 +116,7 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
 
 						for( final ItemStack is : list )
 						{
-							final NBTTagCompound tag = new NBTTagCompound();
+							final CompoundNBT tag = new CompoundNBT();
 							is.writeToNBT( tag );
 							tags.appendTag( tag );
 						}

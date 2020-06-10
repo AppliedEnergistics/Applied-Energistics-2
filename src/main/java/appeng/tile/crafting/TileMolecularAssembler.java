@@ -24,11 +24,11 @@ import java.util.List;
 
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -81,7 +81,7 @@ import appeng.util.item.AEItemStack;
 
 public class TileMolecularAssembler extends AENetworkInvTile implements IUpgradeableHost, IConfigManagerHost, IGridTickable, ICraftingMachine, IPowerChannelState
 {
-	private final InventoryCrafting craftingInv;
+	private final CraftingInventory craftingInv;
 	private final AppEngInternalInventory gridInv = new AppEngInternalInventory( this, 9 + 1, 1 );
 	private final AppEngInternalInventory patternInv = new AppEngInternalInventory( this, 1, 1 );
 	private final IItemHandler gridInvExt = new WrapperFilteredItemHandler( this.gridInv, new CraftingGridFilter() );
@@ -105,7 +105,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 		this.settings.registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
 		this.getProxy().setIdlePowerUsage( 0.0 );
 		this.upgrades = new DefinitionUpgradeInventory( assembler, this, this.getUpgradeSlots() );
-		this.craftingInv = new InventoryCrafting( new ContainerNull(), 3, 3 );
+		this.craftingInv = new CraftingInventory( new ContainerNull(), 3, 3 );
 
 	}
 
@@ -115,7 +115,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	}
 
 	@Override
-	public boolean pushPattern( final ICraftingPatternDetails patternDetails, final InventoryCrafting table, final EnumFacing where )
+	public boolean pushPattern( final ICraftingPatternDetails patternDetails, final CraftingInventory table, final Direction where )
 	{
 		if( this.myPattern.isEmpty() )
 		{
@@ -213,7 +213,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT( final NBTTagCompound data )
+	public CompoundNBT writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
 		if( this.forcePlan && this.myPlan != null )
@@ -221,7 +221,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 			final ItemStack pattern = this.myPlan.getPattern();
 			if( !pattern.isEmpty() )
 			{
-				final NBTTagCompound compound = new NBTTagCompound();
+				final CompoundNBT compound = new CompoundNBT();
 				pattern.writeToNBT( compound );
 				data.setTag( "myPlan", compound );
 				data.setInteger( "pushDirection", this.pushDirection.ordinal() );
@@ -234,7 +234,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 		if( data.hasKey( "myPlan" ) )
@@ -346,7 +346,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	}
 
 	@Override
-	protected IItemHandler getItemHandlerForSide( EnumFacing side )
+	protected IItemHandler getItemHandlerForSide( Direction side )
 	{
 		return this.gridInvExt;
 	}
@@ -536,7 +536,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	{
 		if( this.pushDirection == AEPartLocation.INTERNAL )
 		{
-			for( final EnumFacing d : EnumFacing.VALUES )
+			for( final Direction d : Direction.VALUES )
 			{
 				output = this.pushTo( output, d );
 			}
@@ -555,7 +555,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 		this.gridInv.setStackInSlot( 9, output );
 	}
 
-	private ItemStack pushTo( ItemStack output, final EnumFacing d )
+	private ItemStack pushTo( ItemStack output, final Direction d )
 	{
 		if( output.isEmpty() )
 		{

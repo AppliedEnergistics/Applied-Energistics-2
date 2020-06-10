@@ -1,0 +1,23 @@
+{
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "cable_covered.cyan",
+        "count": 8
+    },
+    "type": "appliedenergistics2:part_shaped",
+    "pattern": [
+        "aaa",
+        "aba",
+        "aaa"
+    ],
+    "key": {
+        "b": {
+            "type": "forge:ore_dict",
+            "ore": "dyeCyan"
+        },
+        "a": {
+            "type": "appliedenergistics2:part",
+            "part": "cable_covered.fluix"
+        }
+    }
+}

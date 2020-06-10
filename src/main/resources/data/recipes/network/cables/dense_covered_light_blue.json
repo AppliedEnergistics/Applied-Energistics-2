@@ -1,0 +1,23 @@
+{
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "cable_dense_covered.light_blue",
+        "count": 8
+    },
+    "type": "appliedenergistics2:part_shaped",
+    "pattern": [
+        "aaa",
+        "aba",
+        "aaa"
+    ],
+    "key": {
+        "a": {
+            "type": "appliedenergistics2:part",
+            "part": "cable_dense_covered.fluix"
+        },
+        "b": {
+            "type": "forge:ore_dict",
+            "ore": "dyeLightBlue"
+        }
+    }
+}

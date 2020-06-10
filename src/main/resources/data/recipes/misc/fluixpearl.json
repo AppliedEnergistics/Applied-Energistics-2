@@ -1,0 +1,30 @@
+{
+    "conditions": [
+        {
+            "type": "appliedenergistics2:material_exists",
+            "material": "material.fluix_pearl"
+        }
+    ],
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "material.fluix_pearl"
+    },
+    "type": "appliedenergistics2:part_shaped",
+    "pattern": [
+        "aba",
+        "bcb",
+        "aba"
+    ],
+    "key": {
+        "c": {
+            "item": "minecraft:ender_pearl"
+        },
+        "a": {
+            "type": "forge:ore_dict",
+            "ore": "dustFluix"
+        },
+        "b": {
+            "item": "#appliedenergistics2:fluixCrystal"
+        }
+    }
+}

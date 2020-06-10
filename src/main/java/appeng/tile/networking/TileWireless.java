@@ -25,7 +25,7 @@ import java.util.EnumSet;
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
@@ -62,11 +62,11 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	{
 		this.inv.setFilter( new AEItemDefinitionFilter( AEApi.instance().definitions().materials().wirelessBooster() ) );
 		this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
-		this.getProxy().setValidSides( EnumSet.noneOf( EnumFacing.class ) );
+		this.getProxy().setValidSides( EnumSet.noneOf( Direction.class ) );
 	}
 
 	@Override
-	public void setOrientation( final EnumFacing inForward, final EnumFacing inUp )
+	public void setOrientation( final Direction inForward, final Direction inUp )
 	{
 		super.setOrientation( inForward, inUp );
 		this.getProxy().setValidSides( EnumSet.of( this.getForward().getOpposite() ) );

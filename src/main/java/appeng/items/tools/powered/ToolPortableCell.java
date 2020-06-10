@@ -23,15 +23,15 @@ import java.util.List;
 import java.util.Set;
 
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
@@ -63,13 +63,13 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell<
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick( final World w, final EntityPlayer player, final EnumHand hand )
+	public ActionResult<ItemStack> onItemRightClick( final World w, final PlayerEntity player, final Hand hand )
 	{
 		Platform.openGUI( player, null, AEPartLocation.INTERNAL, GuiBridge.GUI_PORTABLE_CELL );
-		return new ActionResult<>( EnumActionResult.SUCCESS, player.getHeldItem( hand ) );
+		return new ActionResult<>( ActionResultType.SUCCESS, player.getHeldItem( hand ) );
 	}
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	@Override
 	public boolean isFull3D()
 	{
@@ -77,7 +77,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell<
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
 	{
 		super.addCheckedInformation( stack, world, lines, advancedTooltips );
@@ -173,7 +173,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell<
 		}
 		catch( final Throwable t )
 		{
-			return FuzzyMode.IGNORE_ALL;
+			return FuzzyMode.ENABLED;
 		}
 	}
 

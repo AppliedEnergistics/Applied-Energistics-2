@@ -22,7 +22,7 @@ package appeng.core.features.registries;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -80,7 +80,7 @@ public final class WirelessRegistry implements IWirelessTermRegistry
 	}
 
 	@Override
-	public void openWirelessTerminalGui( final ItemStack item, final World w, final EntityPlayer player )
+	public void openWirelessTerminalGui( final ItemStack item, final World w, final PlayerEntity player )
 	{
 		if( Platform.isClient() )
 		{

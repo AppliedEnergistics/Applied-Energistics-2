@@ -24,7 +24,7 @@
 package appeng.api.implementations.items;
 
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 
@@ -44,5 +44,5 @@ public interface IAEWrench
 	 *
 	 * @return true if wrench can be used
 	 */
-	boolean canWrench( ItemStack wrench, EntityPlayer player, BlockPos pos );
+	boolean canWrench( ItemStack wrench, PlayerEntity player, BlockPos pos );
 }

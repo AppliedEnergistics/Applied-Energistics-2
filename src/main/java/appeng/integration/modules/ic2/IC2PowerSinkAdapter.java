@@ -23,7 +23,7 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 import ic2.api.energy.prefab.BasicSink;
 import ic2.api.energy.tile.IEnergyEmitter;
@@ -42,7 +42,7 @@ public class IC2PowerSinkAdapter extends BasicSink implements IC2PowerSink
 
 	private final IExternalPowerSink powerSink;
 
-	private final Set<EnumFacing> validFaces = EnumSet.allOf( EnumFacing.class );
+	private final Set<Direction> validFaces = EnumSet.allOf( Direction.class );
 
 	public IC2PowerSinkAdapter( TileEntity tileEntity, IExternalPowerSink powerSink )
 	{
@@ -75,19 +75,19 @@ public class IC2PowerSinkAdapter extends BasicSink implements IC2PowerSink
 	}
 
 	@Override
-	public double injectEnergy( EnumFacing directionFrom, double amount, double voltage )
+	public double injectEnergy( Direction directionFrom, double amount, double voltage )
 	{
 		return PowerUnits.EU.convertTo( PowerUnits.AE, this.powerSink.injectExternalPower( PowerUnits.EU, amount, Actionable.MODULATE ) );
 	}
 
 	@Override
-	public boolean acceptsEnergyFrom( IEnergyEmitter iEnergyEmitter, EnumFacing side )
+	public boolean acceptsEnergyFrom( IEnergyEmitter iEnergyEmitter, Direction side )
 	{
 		return this.validFaces.contains( side );
 	}
 
 	@Override
-	public void setValidFaces( Set<EnumFacing> faces )
+	public void setValidFaces( Set<Direction> faces )
 	{
 		this.validFaces.clear();
 		this.validFaces.addAll( faces );

@@ -24,8 +24,8 @@ import java.util.List;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
@@ -67,7 +67,7 @@ public class ItemCreativeStorageCell extends AEBaseItem implements ICellWorkbenc
 	@Override
 	public FuzzyMode getFuzzyMode( final ItemStack is )
 	{
-		return FuzzyMode.IGNORE_ALL;
+		return FuzzyMode.ENABLED;
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public class ItemCreativeStorageCell extends AEBaseItem implements ICellWorkbenc
 
 	}
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	@Override
 	public void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
 	{
@@ -94,7 +94,7 @@ public class ItemCreativeStorageCell extends AEBaseItem implements ICellWorkbenc
 			{
 				if( !is.isEmpty() )
 				{
-					lines.add( is.getDisplayName() );
+					lines.add( is.getDisplayName().getString() );
 				}
 			}
 		}

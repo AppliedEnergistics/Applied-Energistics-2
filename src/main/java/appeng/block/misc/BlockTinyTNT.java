@@ -27,16 +27,16 @@ import javax.annotation.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -66,13 +66,13 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public boolean isFullCube( IBlockState state )
+	public boolean isFullCube( BlockState state )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer player, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public boolean onActivated( final World w, final BlockPos pos, final PlayerEntity player, final Hand hand, final @Nullable ItemStack heldItem, final Direction side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( heldItem != null && heldItem.getItem() == Items.FLINT_AND_STEEL )
 		{
@@ -87,7 +87,7 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 		}
 	}
 
-	public void startFuse( final World w, final BlockPos pos, final EntityLivingBase igniter )
+	public void startFuse( final World w, final BlockPos pos, final LivingEntity igniter )
 	{
 		if( !w.isRemote )
 		{
@@ -99,7 +99,7 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public void neighborChanged( IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
+	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
 	{
 		if( world.isBlockIndirectlyGettingPowered( pos ) > 0 )
 		{
@@ -109,7 +109,7 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public void onBlockAdded( final World w, final BlockPos pos, final IBlockState state )
+	public void onBlockAdded( final World w, final BlockPos pos, final BlockState state )
 	{
 		super.onBlockAdded( w, pos, state );
 
@@ -129,7 +129,7 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 
 			if( entityarrow.isBurning() )
 			{
-				this.startFuse( w, pos, entityarrow.shootingEntity instanceof EntityLivingBase ? (EntityLivingBase) entityarrow.shootingEntity : null );
+				this.startFuse( w, pos, entityarrow.shootingEntity instanceof LivingEntity ? (LivingEntity) entityarrow.shootingEntity : null );
 				w.setBlockToAir( pos );
 			}
 		}

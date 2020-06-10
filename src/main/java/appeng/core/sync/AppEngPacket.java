@@ -20,74 +20,57 @@ package appeng.core.sync;
 
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import java.util.function.Consumer;
 
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.INetHandler;
-import net.minecraft.network.Packet;
+import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 
-import appeng.core.AEConfig;
-import appeng.core.AELog;
-import appeng.core.features.AEFeature;
 import appeng.core.sync.network.INetworkInfo;
-import appeng.core.sync.network.NetworkHandler;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 
-public abstract class AppEngPacket implements Packet
+public abstract class AppEngPacket implements IPacket
 {
 	private PacketBuffer p;
-	private PacketCallState caller;
+	private Consumer<AppEngPacket> caller;
 
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player, NetworkEvent.Context ctx )
 	{
 		throw new UnsupportedOperationException( "This packet ( " + this.getPacketID() + " does not implement a server side handler." );
 	}
 
-	public final int getPacketID()
+	private int getPacketID()
 	{
 		return AppEngPacketHandlerBase.PacketTypes.getID( this.getClass() ).ordinal();
 	}
 
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
+	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final PlayerEntity player,  NetworkEvent.Context ctx )
 	{
 		throw new UnsupportedOperationException( "This packet ( " + this.getPacketID() + " does not implement a client side handler." );
 	}
 
-	protected void configureWrite( final ByteBuf data )
+	protected void configureWrite( final PacketBuffer data )
 	{
-		data.capacity( data.readableBytes() );
-		this.p = new PacketBuffer( data );
+		this.p = data;
 	}
 
-	public FMLProxyPacket getProxy()
+	public void encode( PacketBuffer packetBuffer )
 	{
-		if( this.p.array().length > 2 * 1024 * 1024 ) // 2k walking room :)
-		{
-			throw new IllegalArgumentException( "Sorry AE2 made a " + this.p.array().length + " byte packet by accident!" );
-		}
-
-		final FMLProxyPacket pp = new FMLProxyPacket( this.p, NetworkHandler.instance().getChannel() );
-
-		if( AEConfig.instance().isFeatureEnabled( AEFeature.PACKET_LOGGING ) )
-		{
-			AELog.info( this.getClass().getName() + " : " + pp.payload().readableBytes() );
-		}
-
-		return pp;
+		packetBuffer.writeBytes( this.p );
 	}
 
 	@Override
-	public void readPacketData( final PacketBuffer buf ) throws IOException
+	public void readPacketData( final PacketBuffer buf )
 	{
 		throw new RuntimeException( "Not Implemented" );
 	}
 
 	@Override
-	public void writePacketData( final PacketBuffer buf ) throws IOException
+	public void writePacketData( final PacketBuffer buf )
 	{
 		throw new RuntimeException( "Not Implemented" );
 	}
@@ -115,7 +98,7 @@ public abstract class AppEngPacket implements Packet
 		return this.getPacketByteArray( stream, 0, stream.readableBytes() );
 	}
 
-	public void setCallParam( final PacketCallState call )
+	public void setCallParam( final Consumer<AppEngPacket> call )
 	{
 		this.caller = call;
 	}
@@ -123,7 +106,6 @@ public abstract class AppEngPacket implements Packet
 	@Override
 	public void processPacket( final INetHandler handler )
 	{
-		this.caller.call( this );
+		this.caller.accept( this );
 	}
-
 }

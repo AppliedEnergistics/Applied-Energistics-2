@@ -21,18 +21,16 @@ package appeng.parts.reporting;
 
 import java.io.IOException;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
 import appeng.api.implementations.parts.IPartStorageMonitor;
@@ -54,6 +52,8 @@ import appeng.util.IWideReadableNumberConverter;
 import appeng.util.Platform;
 import appeng.util.ReadableNumberConverter;
 import appeng.util.item.AEItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 
 /**
@@ -82,30 +82,30 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 
 		this.isLocked = data.getBoolean( "isLocked" );
 
-		final NBTTagCompound myItem = data.getCompoundTag( "configuredItem" );
+		final CompoundNBT myItem = data.getCompound( "configuredItem" );
 		this.configuredItem = AEItemStack.fromNBT( myItem );
 	}
 
 	@Override
-	public void writeToNBT( final NBTTagCompound data )
+	public void writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
 
-		data.setBoolean( "isLocked", this.isLocked );
+		data.putBoolean( "isLocked", this.isLocked );
 
-		final NBTTagCompound myItem = new NBTTagCompound();
+		final CompoundNBT myItem = new CompoundNBT();
 		if( this.configuredItem != null )
 		{
-			this.configuredItem.writeToNBT( myItem );
+			this.configuredItem.write( myItem );
 		}
 
-		data.setTag( "configuredItem", myItem );
+		data.put( "configuredItem", myItem );
 	}
 
 	@Override
@@ -145,7 +145,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
+	public boolean onPartActivate( final PlayerEntity player, final Hand hand, final Vec3d pos )
 	{
 		if( Platform.isClient() )
 		{
@@ -179,7 +179,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 	}
 
 	@Override
-	public boolean onPartShiftActivate( EntityPlayer player, EnumHand hand, Vec3d pos )
+	public boolean onPartShiftActivate( PlayerEntity player, Hand hand, Vec3d pos )
 	{
 		if( Platform.isClient() )
 		{
@@ -251,7 +251,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public void renderDynamic( double x, double y, double z, float partialTicks, int destroyStage )
 	{
 
@@ -268,9 +268,9 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 		}
 
 		GlStateManager.pushMatrix();
-		GlStateManager.translate( x + 0.5, y + 0.5, z + 0.5 );
+		GlStateManager.translated( x + 0.5, y + 0.5, z + 0.5 );
 
-		EnumFacing facing = this.getSide().getFacing();
+		Direction facing = this.getSide().getFacing();
 
 		TesrRenderHelper.moveToFace( facing );
 		TesrRenderHelper.rotateToFace( facing, this.getSpin() );

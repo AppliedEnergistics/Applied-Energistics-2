@@ -1,0 +1,23 @@
+{
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "lumen_paint_ball.cyan",
+        "count": 8
+    },
+    "type": "appliedenergistics2:part_shaped",
+    "pattern": [
+        "aaa",
+        "aba",
+        "aaa"
+    ],
+    "key": {
+        "a": {
+            "type": "appliedenergistics2:part",
+            "part": "paint_ball.cyan"
+        },
+        "b": {
+            "type": "forge:ore_dict",
+            "ore": "dustGlowstone"
+        }
+    }
+}

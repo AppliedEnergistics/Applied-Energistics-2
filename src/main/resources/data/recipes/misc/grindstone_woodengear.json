@@ -1,0 +1,24 @@
+{
+    "conditions": [
+        {
+            "type": "appliedenergistics2:material_exists",
+            "material": "material.wooden_gear"
+        }
+    ],
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "material.wooden_gear"
+    },
+    "type": "appliedenergistics2:part_shaped",
+    "pattern": [
+        " a ",
+        "a a",
+        " a "
+    ],
+    "key": {
+        "a": {
+            "type": "forge:ore_dict",
+            "ore": "stickWood"
+        }
+    }
+}

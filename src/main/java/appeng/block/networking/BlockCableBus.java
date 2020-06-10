@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleDigging;
@@ -37,29 +37,29 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
@@ -110,7 +110,7 @@ public class BlockCableBus extends AEBaseTileBlock implements IAEFacade
 	}
 
 	@Override
-	public boolean isFullCube( IBlockState state )
+	public boolean isFullCube( BlockState state )
 	{
 		return false;
 	}
@@ -122,7 +122,7 @@ public class BlockCableBus extends AEBaseTileBlock implements IAEFacade
 	}
 
 	@Override
-	public IBlockState getExtendedState( IBlockState state, IBlockAccess world, BlockPos pos )
+	public BlockState getExtendedState( BlockState state, IBlockReader world, BlockPos pos )
 	{
 		CableBusRenderState renderState = this.cb( world, pos ).getRenderState();
 		renderState.setWorld( world );
@@ -131,25 +131,25 @@ public class BlockCableBus extends AEBaseTileBlock implements IAEFacade
 	}
 
 	@Override
-	public void randomDisplayTick( final IBlockState state, final World worldIn, final BlockPos pos, final Random rand )
+	public void randomDisplayTick( final BlockState state, final World worldIn, final BlockPos pos, final Random rand )
 	{
 		this.cb( worldIn, pos ).randomDisplayTick( worldIn, pos, rand );
 	}
 
 	@Override
-	public void onNeighborChange( final IBlockAccess w, final BlockPos pos, final BlockPos neighbor )
+	public void onNeighborChange( final IBlockReader w, final BlockPos pos, final BlockPos neighbor )
 	{
 		this.cb( w, pos ).onNeighborChanged( w, pos, neighbor );
 	}
 
 	@Override
-	public Item getItemDropped( final IBlockState state, final Random rand, final int fortune )
+	public Item getItemDropped( final BlockState state, final Random rand, final int fortune )
 	{
 		return null;
 	}
 
 	@Override
-	public int getWeakPower( final IBlockState state, final IBlockAccess w, final BlockPos pos, final EnumFacing side )
+	public int getWeakPower( final BlockState state, final IBlockReader w, final BlockPos pos, final Direction side )
 	{
 		return this.cb( w, pos ).isProvidingWeakPower( side.getOpposite() ); // TODO:
 		// IS
@@ -157,19 +157,19 @@ public class BlockCableBus extends AEBaseTileBlock implements IAEFacade
 	}
 
 	@Override
-	public boolean canProvidePower( final IBlockState state )
+	public boolean canProvidePower( final BlockState state )
 	{
 		return true;
 	}
 
 	@Override
-	public void onEntityCollidedWithBlock( final World w, final BlockPos pos, final IBlockState state, final Entity entityIn )
+	public void onEntityCollidedWithBlock( final World w, final BlockPos pos, final BlockState state, final Entity entityIn )
 	{
 		this.cb( w, pos ).onEntityCollision( entityIn );
 	}
 
 	@Override
-	public int getStrongPower( final IBlockState state, final IBlockAccess w, final BlockPos pos, final EnumFacing side )
+	public int getStrongPower( final BlockState state, final IBlockReader w, final BlockPos pos, final Direction side )
 	{
 		return this.cb( w, pos ).isProvidingStrongPower( side.getOpposite() ); // TODO:
 		// IS
@@ -177,7 +177,7 @@ public class BlockCableBus extends AEBaseTileBlock implements IAEFacade
 	}
 
 	@Override
-	public int getLightValue( final IBlockState state, final IBlockAccess world, final BlockPos pos )
+	public int getLightValue( final BlockState state, final IBlockReader world, final BlockPos pos )
 	{
 		if( state.getBlock() != this )
 		{
@@ -187,25 +187,25 @@ public class BlockCableBus extends AEBaseTileBlock implements IAEFacade
 	}
 
 	@Override
-	public boolean isLadder( final IBlockState state, final IBlockAccess world, final BlockPos pos, final EntityLivingBase entity )
+	public boolean isLadder( final BlockState state, final IBlockReader world, final BlockPos pos, final LivingEntity entity )
 	{
 		return this.cb( world, pos ).isLadder( entity );
 	}
 
 	@Override
-	public boolean isSideSolid( final IBlockState state, final IBlockAccess w, final BlockPos pos, final EnumFacing side )
+	public boolean isSideSolid( final BlockState state, final IBlockReader w, final BlockPos pos, final Direction side )
 	{
 		return this.cb( w, pos ).isSolidOnSide( side );
 	}
 
 	@Override
-	public boolean isReplaceable( final IBlockAccess w, final BlockPos pos )
+	public boolean isReplaceable( final IBlockReader w, final BlockPos pos )
 	{
 		return this.cb( w, pos ).isEmpty();
 	}
 
 	@Override
-	public boolean removedByPlayer( final IBlockState state, final World world, final BlockPos pos, final EntityPlayer player, final boolean willHarvest )
+	public boolean removedByPlayer( final BlockState state, final World world, final BlockPos pos, final PlayerEntity player, final boolean willHarvest )
 	{
 		if( player.capabilities.isCreativeMode )
 		{
@@ -220,18 +220,18 @@ public class BlockCableBus extends AEBaseTileBlock implements IAEFacade
 	}
 
 	@Override
-	public boolean canConnectRedstone( final IBlockState state, final IBlockAccess w, final BlockPos pos, EnumFacing side )
+	public boolean canConnectRedstone( final BlockState state, final IBlockReader w, final BlockPos pos, Direction side )
 	{
 		if( side == null )
 		{
-			side = EnumFacing.UP;
+			side = Direction.UP;
 		}
 
 		return this.cb( w, pos ).canConnectRedstone( EnumSet.of( side ) );
 	}
 
 	@Override
-	public ItemStack getPickBlock( final IBlockState state, final RayTraceResult target, final World world, final BlockPos pos, final EntityPlayer player )
+	public ItemStack getPickBlock( final BlockState state, final RayTraceResult target, final World world, final BlockPos pos, final PlayerEntity player )
 	{
 		final Vec3d v3 = target.hitVec.subtract( pos.getX(), pos.getY(), pos.getZ() );
 		final SelectedPart sp = this.cb( world, pos ).selectPart( v3 );
@@ -249,8 +249,8 @@ public class BlockCableBus extends AEBaseTileBlock implements IAEFacade
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
-	public boolean addHitEffects( final IBlockState state, final World world, final RayTraceResult target, final ParticleManager effectRenderer )
+	@OnlyIn( Dist.CLIENT )
+	public boolean addHitEffects( final BlockState state, final World world, final RayTraceResult target, final ParticleManager effectRenderer )
 	{
 
 		// Half the particle rate. Since we're spawning concentrated on a specific spot,
@@ -292,7 +292,7 @@ public class BlockCableBus extends AEBaseTileBlock implements IAEFacade
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public boolean addDestroyEffects( final World world, final BlockPos pos, final ParticleManager effectRenderer )
 	{
 		ICableBusContainer cb = this.cb( world, pos );
@@ -341,7 +341,7 @@ public class BlockCableBus extends AEBaseTileBlock implements IAEFacade
 	}
 
 	@Override
-	public void neighborChanged( IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
+	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
 	{
 		if( Platform.isServer() )
 		{
@@ -349,7 +349,7 @@ public class BlockCableBus extends AEBaseTileBlock implements IAEFacade
 		}
 	}
 
-	private ICableBusContainer cb( final IBlockAccess w, final BlockPos pos )
+	private ICableBusContainer cb( final IBlockReader w, final BlockPos pos )
 	{
 		final TileEntity te = w.getTileEntity( pos );
 		ICableBusContainer out = null;
@@ -363,7 +363,7 @@ public class BlockCableBus extends AEBaseTileBlock implements IAEFacade
 	}
 
 	@Nullable
-	private IFacadeContainer fc( final IBlockAccess w, final BlockPos pos )
+	private IFacadeContainer fc( final IBlockReader w, final BlockPos pos )
 	{
 		final TileEntity te = w.getTileEntity( pos );
 		IFacadeContainer out = null;
@@ -377,7 +377,7 @@ public class BlockCableBus extends AEBaseTileBlock implements IAEFacade
 	}
 
 	@Override
-	public void onBlockClicked( World worldIn, BlockPos pos, EntityPlayer playerIn )
+	public void onBlockClicked( World worldIn, BlockPos pos, PlayerEntity playerIn )
 	{
 		if( Platform.isClient() )
 		{
@@ -386,34 +386,34 @@ public class BlockCableBus extends AEBaseTileBlock implements IAEFacade
 			{
 				final Vec3d hitVec = rtr.hitVec.subtract( new Vec3d( pos ) );
 
-				if( this.cb( worldIn, pos ).clicked( playerIn, EnumHand.MAIN_HAND, hitVec ) )
+				if( this.cb( worldIn, pos ).clicked( playerIn, Hand.MAIN_HAND, hitVec ) )
 				{
 					NetworkHandler.instance()
 							.sendToServer(
-									new PacketClick( pos, rtr.sideHit, (float) hitVec.x, (float) hitVec.y, (float) hitVec.z, EnumHand.MAIN_HAND, true ) );
+									new PacketClick( pos, rtr.sideHit, (float) hitVec.x, (float) hitVec.y, (float) hitVec.z, Hand.MAIN_HAND, true ) );
 				}
 			}
 		}
 	}
 
-	public void onBlockClickPacket( World worldIn, BlockPos pos, EntityPlayer playerIn, EnumHand hand, Vec3d hitVec )
+	public void onBlockClickPacket( World worldIn, BlockPos pos, PlayerEntity playerIn, Hand hand, Vec3d hitVec )
 	{
 		this.cb( worldIn, pos ).clicked( playerIn, hand, hitVec );
 	}
 
 	@Override
-	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer player, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public boolean onActivated( final World w, final BlockPos pos, final PlayerEntity player, final Hand hand, final @Nullable ItemStack heldItem, final Direction side, final float hitX, final float hitY, final float hitZ )
 	{
 		return this.cb( w, pos ).activate( player, hand, new Vec3d( hitX, hitY, hitZ ) );
 	}
 
 	@Override
-	public boolean recolorBlock( final World world, final BlockPos pos, final EnumFacing side, final EnumDyeColor color )
+	public boolean recolorBlock( final World world, final BlockPos pos, final Direction side, final EnumDyeColor color )
 	{
 		return this.recolorBlock( world, pos, side, color, null );
 	}
 
-	public boolean recolorBlock( final World world, final BlockPos pos, final EnumFacing side, final EnumDyeColor color, final EntityPlayer who )
+	public boolean recolorBlock( final World world, final BlockPos pos, final Direction side, final EnumDyeColor color, final PlayerEntity who )
 	{
 		try
 		{
@@ -426,7 +426,7 @@ public class BlockCableBus extends AEBaseTileBlock implements IAEFacade
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public void getSubBlocks( final CreativeTabs tabs, final NonNullList<ItemStack> itemStacks )
 	{
 		// do nothing
@@ -445,7 +445,7 @@ public class BlockCableBus extends AEBaseTileBlock implements IAEFacade
 		}
 	}
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	private static void setupTesr()
 	{
 		tesrTile = Api.INSTANCE.partHelper().getCombinedInstance( TileCableBusTESR.class );
@@ -454,13 +454,13 @@ public class BlockCableBus extends AEBaseTileBlock implements IAEFacade
 	}
 
 	@Override
-	public boolean canRenderInLayer( IBlockState state, BlockRenderLayer layer )
+	public boolean canRenderInLayer( BlockState state, BlockRenderLayer layer )
 	{
 		return true;
 	}
 
 	@Override
-	public IBlockState getFacadeState( IBlockAccess world, BlockPos pos, EnumFacing side )
+	public BlockState getFacadeState( IBlockReader world, BlockPos pos, Direction side )
 	{
 		if( side != null )
 		{
@@ -488,10 +488,10 @@ public class BlockCableBus extends AEBaseTileBlock implements IAEFacade
 	}
 
 	// Helper to get access to the protected constructor
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	private static class DestroyFX extends ParticleDigging
 	{
-		DestroyFX( World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, IBlockState state )
+		DestroyFX( World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, BlockState state )
 		{
 			super( worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn, state );
 		}

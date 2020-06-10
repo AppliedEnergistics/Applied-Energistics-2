@@ -1,0 +1,30 @@
+{
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "part.semi_dark_monitor",
+        "count": 3
+    },
+    "type": "appliedenergistics2:part_shaped",
+    "pattern": [
+        " ab",
+        "cdb",
+        " ab"
+    ],
+    "key": {
+        "b": {
+            "item": "appliedenergistics2:quartz_glass"
+        },
+        "c": {
+            "type": "forge:ore_dict",
+            "ore": "ingotIron"
+        },
+        "d": {
+            "type": "forge:ore_dict",
+            "ore": "dustRedstone"
+        },
+        "a": {
+            "type": "forge:ore_dict",
+            "ore": "dustGlowstone"
+        }
+    }
+}

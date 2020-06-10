@@ -22,12 +22,14 @@ package appeng.core.sync.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
+import net.minecraft.entity.player.PlayerEntity;
 
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 
 public class PacketProgressBar extends AppEngPacket
@@ -49,9 +51,8 @@ public class PacketProgressBar extends AppEngPacket
 		this.id = (short) shortID;
 		this.value = value;
 
-		final ByteBuf data = Unpooled.buffer();
+		final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
-		data.writeInt( this.getPacketID() );
 		data.writeShort( shortID );
 		data.writeLong( value );
 
@@ -59,7 +60,7 @@ public class PacketProgressBar extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player, NetworkEvent.Context ctx )
 	{
 		final Container c = player.openContainer;
 		if( c instanceof AEBaseContainer )
@@ -69,7 +70,7 @@ public class PacketProgressBar extends AppEngPacket
 	}
 
 	@Override
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
+	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final PlayerEntity player, NetworkEvent.Context ctx )
 	{
 		final Container c = player.openContainer;
 		if( c instanceof AEBaseContainer )

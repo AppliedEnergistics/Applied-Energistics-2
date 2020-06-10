@@ -21,9 +21,9 @@ package appeng.integration.modules.waila.part;
 
 import java.util.List;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntityMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -68,7 +68,7 @@ public abstract class BasePartWailaDataProvider implements IPartWailaDataProvide
 	}
 
 	@Override
-	public NBTTagCompound getNBTData( EntityPlayerMP player, IPart part, TileEntity te, NBTTagCompound tag, World world, BlockPos pos )
+	public CompoundNBT getNBTData( PlayerEntityMP player, IPart part, TileEntity te, CompoundNBT tag, World world, BlockPos pos )
 	{
 		return tag;
 	}

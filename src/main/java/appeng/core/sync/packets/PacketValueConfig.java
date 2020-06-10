@@ -28,11 +28,12 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.Hand;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
@@ -56,6 +57,7 @@ import appeng.core.sync.network.INetworkInfo;
 import appeng.fluids.container.ContainerFluidLevelEmitter;
 import appeng.fluids.container.ContainerFluidStorageBus;
 import appeng.helpers.IMouseWheelItem;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 
 public class PacketValueConfig extends AppEngPacket
@@ -79,9 +81,7 @@ public class PacketValueConfig extends AppEngPacket
 		this.Name = name;
 		this.Value = value;
 
-		final ByteBuf data = Unpooled.buffer();
-
-		data.writeInt( this.getPacketID() );
+		final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
 		final ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		final DataOutputStream dos = new DataOutputStream( bos );
@@ -95,22 +95,22 @@ public class PacketValueConfig extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player, NetworkEvent.Context ctx )
 	{
 		final Container c = player.openContainer;
 
-		if( this.Name.equals( "Item" ) && ( ( !player.getHeldItem( EnumHand.MAIN_HAND ).isEmpty() && player.getHeldItem( EnumHand.MAIN_HAND )
-				.getItem() instanceof IMouseWheelItem ) || ( !player.getHeldItem( EnumHand.OFF_HAND )
-						.isEmpty() && player.getHeldItem( EnumHand.OFF_HAND ).getItem() instanceof IMouseWheelItem ) ) )
+		if( this.Name.equals( "Item" ) && ( ( !player.getHeldItem( Hand.MAIN_HAND ).isEmpty() && player.getHeldItem( Hand.MAIN_HAND )
+				.getItem() instanceof IMouseWheelItem ) || ( !player.getHeldItem( Hand.OFF_HAND )
+						.isEmpty() && player.getHeldItem( Hand.OFF_HAND ).getItem() instanceof IMouseWheelItem ) ) )
 		{
-			final EnumHand hand;
-			if( !player.getHeldItem( EnumHand.MAIN_HAND ).isEmpty() && player.getHeldItem( EnumHand.MAIN_HAND ).getItem() instanceof IMouseWheelItem )
+			final Hand hand;
+			if( !player.getHeldItem( Hand.MAIN_HAND ).isEmpty() && player.getHeldItem( Hand.MAIN_HAND ).getItem() instanceof IMouseWheelItem )
 			{
-				hand = EnumHand.MAIN_HAND;
+				hand = Hand.MAIN_HAND;
 			}
-			else if( !player.getHeldItem( EnumHand.OFF_HAND ).isEmpty() && player.getHeldItem( EnumHand.OFF_HAND ).getItem() instanceof IMouseWheelItem )
+			else if( !player.getHeldItem( Hand.OFF_HAND ).isEmpty() && player.getHeldItem( Hand.OFF_HAND ).getItem() instanceof IMouseWheelItem )
 			{
-				hand = EnumHand.OFF_HAND;
+				hand = Hand.OFF_HAND;
 			}
 			else
 			{
@@ -270,7 +270,7 @@ public class PacketValueConfig extends AppEngPacket
 	}
 
 	@Override
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
+	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final PlayerEntity player, NetworkEvent.Context ctx )
 	{
 		final Container c = player.openContainer;
 
@@ -284,7 +284,7 @@ public class PacketValueConfig extends AppEngPacket
 		}
 		else if( this.Name.equals( "CraftingStatus" ) && this.Value.equals( "Clear" ) )
 		{
-			final GuiScreen gs = Minecraft.getMinecraft().currentScreen;
+			final Screen gs = Minecraft.getInstance().currentScreen;
 			if( gs instanceof GuiCraftingCPU )
 			{
 				( (GuiCraftingCPU) gs ).clearItems();

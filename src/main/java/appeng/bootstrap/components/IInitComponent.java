@@ -19,7 +19,7 @@
 package appeng.bootstrap.components;
 
 
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.api.distmarker.Dist;
 
 import appeng.bootstrap.IBootstrapComponent;
 

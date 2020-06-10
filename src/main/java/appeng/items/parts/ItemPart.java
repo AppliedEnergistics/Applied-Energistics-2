@@ -36,15 +36,15 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.AEApi;
 import appeng.api.implementations.items.IItemGroup;
@@ -154,14 +154,14 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 	}
 
 	@Override
-	public EnumActionResult onItemUse( final EntityPlayer player, final World w, final BlockPos pos, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public ActionResultType onItemUse( ItemUseContext context )
 	{
-		if( this.getTypeByStack( player.getHeldItem( hand ) ) == PartType.INVALID_TYPE )
+		if( this.getTypeByStack( context.getItem() ) == PartType.INVALID_TYPE )
 		{
-			return EnumActionResult.FAIL;
+			return ActionResultType.FAIL;
 		}
 
-		return AEApi.instance().partHelper().placeBus( player.getHeldItem( hand ), pos, side, player, hand, w );
+		return AEApi.instance().partHelper().placeBus( context );
 	}
 
 	@Override
@@ -180,7 +180,7 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 		{
 			final AEColor[] variants = AEColor.values();
 
-			final int itemDamage = is.getItemDamage();
+			final int itemDamage = is.getDamage();
 			final PartTypeWithVariant registeredPartType = this.registered.get( itemDamage );
 			if( registeredPartType != null )
 			{
@@ -213,7 +213,7 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 	{
 		Preconditions.checkNotNull( is );
 
-		final PartTypeWithVariant pt = this.registered.get( is.getItemDamage() );
+		final PartTypeWithVariant pt = this.registered.get( is.getDamage() );
 		if( pt != null )
 		{
 			return pt.part;

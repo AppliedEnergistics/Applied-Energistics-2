@@ -22,9 +22,9 @@ package appeng.core.features.registries;
 import java.util.HashSet;
 
 import net.minecraft.world.World;
-import net.minecraft.world.WorldProvider;
 
 import appeng.api.features.IWorldGen;
+import net.minecraft.world.dimension.Dimension;
 
 
 public final class WorldGenRegistry implements IWorldGen
@@ -45,19 +45,19 @@ public final class WorldGenRegistry implements IWorldGen
 	}
 
 	@Override
-	public void disableWorldGenForProviderID( final WorldGenType type, final Class<? extends WorldProvider> provider )
+	public void disableWorldGenForProviderID( final WorldGenType type, final Dimension dimension )
 	{
 		if( type == null )
 		{
 			throw new IllegalArgumentException( "Bad Type Passed" );
 		}
 
-		if( provider == null )
+		if( dimension == null )
 		{
 			throw new IllegalArgumentException( "Bad Provider Passed" );
 		}
 
-		this.types[type.ordinal()].badProviders.add( provider );
+		this.types[type.ordinal()].badProviders.add( dimension );
 	}
 
 	@Override
@@ -95,9 +95,9 @@ public final class WorldGenRegistry implements IWorldGen
 			throw new IllegalArgumentException( "Bad Provider Passed" );
 		}
 
-		final boolean isBadProvider = this.types[type.ordinal()].badProviders.contains( w.provider.getClass() );
-		final boolean isBadDimension = this.types[type.ordinal()].badDimensions.contains( w.provider.getDimension() );
-		final boolean isGoodDimension = this.types[type.ordinal()].enabledDimensions.contains( w.provider.getDimension() );
+		final boolean isBadProvider = this.types[type.ordinal()].badProviders.contains( w.dimension );
+		final boolean isBadDimension = this.types[type.ordinal()].badDimensions.contains( w.dimension.getType().getId() );
+		final boolean isGoodDimension = this.types[type.ordinal()].enabledDimensions.contains( w.dimension.getType().getId() );
 
 		if( isBadProvider || isBadDimension )
 		{
@@ -115,7 +115,7 @@ public final class WorldGenRegistry implements IWorldGen
 	private static class TypeSet
 	{
 
-		final HashSet<Class<? extends WorldProvider>> badProviders = new HashSet<>();
+		final HashSet<Dimension> badProviders = new HashSet<>();
 		final HashSet<Integer> badDimensions = new HashSet<>();
 		final HashSet<Integer> enabledDimensions = new HashSet<>();
 	}

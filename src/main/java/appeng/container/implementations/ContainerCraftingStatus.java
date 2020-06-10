@@ -68,6 +68,7 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 					if( ccr.getCpu() == c )
 					{
 						found = true;
+						break;
 					}
 				}
 

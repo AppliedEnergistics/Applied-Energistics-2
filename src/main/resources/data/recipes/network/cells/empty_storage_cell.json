@@ -1,0 +1,25 @@
+{
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "material.empty_storage_cell"
+    },
+    "type": "appliedenergistics2:part_shaped",
+    "pattern": [
+        "aba",
+        "b b",
+        "ccc"
+    ],
+    "key": {
+        "a": {
+            "item": "appliedenergistics2:quartz_glass"
+        },
+        "c": {
+            "type": "forge:ore_dict",
+            "ore": "ingotIron"
+        },
+        "b": {
+            "type": "forge:ore_dict",
+            "ore": "dustRedstone"
+        }
+    }
+}

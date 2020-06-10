@@ -22,21 +22,14 @@ package appeng.block.crafting;
 import java.util.EnumSet;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.ExtendedBlockState;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
 
 import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
@@ -69,12 +62,12 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	}
 
 	@Override
-	public IExtendedBlockState getExtendedState( IBlockState state, IBlockAccess world, BlockPos pos )
+	public IExtendedBlockState getExtendedState( BlockState state, IBlockReader world, BlockPos pos )
 	{
 
-		EnumSet<EnumFacing> connections = EnumSet.noneOf( EnumFacing.class );
+		EnumSet<Direction> connections = EnumSet.noneOf( Direction.class );
 
-		for( EnumFacing facing : EnumFacing.values() )
+		for( Direction facing : Direction.values() )
 		{
 			if( this.isConnected( world, pos, facing ) )
 			{
@@ -87,7 +80,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 		return extState.withProperty( STATE, new CraftingCubeState( connections ) );
 	}
 
-	private boolean isConnected( IBlockAccess world, BlockPos pos, EnumFacing side )
+	private boolean isConnected( IBlockReader world, BlockPos pos, Direction side )
 	{
 		BlockPos adjacentPos = pos.offset( side );
 		return world.getBlockState( adjacentPos ).getBlock() instanceof BlockCraftingUnit;
@@ -100,21 +93,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	}
 
 	@Override
-	public IBlockState getStateFromMeta( final int meta )
-	{
-		return this.getDefaultState().withProperty( POWERED, ( meta & 1 ) == 1 ).withProperty( FORMED, ( meta & 2 ) == 2 );
-	}
-
-	@Override
-	public int getMetaFromState( final IBlockState state )
-	{
-		boolean p = state.getValue( POWERED );
-		boolean f = state.getValue( FORMED );
-		return ( p ? 1 : 0 ) | ( f ? 2 : 0 );
-	}
-
-	@Override
-	public void neighborChanged( final IBlockState state, final World worldIn, final BlockPos pos, final Block blockIn, final BlockPos fromPos )
+	public void neighborChanged( final BlockState state, final World worldIn, final BlockPos pos, final Block blockIn, final BlockPos fromPos )
 	{
 		final TileCraftingTile cp = this.getTileEntity( worldIn, pos );
 		if( cp != null )
@@ -130,7 +109,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	}
 
 	@Override
-	public void breakBlock( final World w, final BlockPos pos, final IBlockState state )
+	public void breakBlock( final World w, final BlockPos pos, final BlockState state )
 	{
 		final TileCraftingTile cp = this.getTileEntity( w, pos );
 		if( cp != null )
@@ -142,7 +121,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onBlockActivated( final World w, final BlockPos pos, final IBlockState state, final EntityPlayer p, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public boolean onBlockActivated( final World w, final BlockPos pos, final BlockState state, final PlayerEntity p, final Hand hand, final Direction side, final float hitX, final float hitY, final float hitZ )
 	{
 		final TileCraftingTile tg = this.getTileEntity( w, pos );
 

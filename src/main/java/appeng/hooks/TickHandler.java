@@ -36,12 +36,11 @@ import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 
 import net.minecraft.world.World;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent.Phase;
+import net.minecraftforge.event.TickEvent.Type;
+import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Type;
-import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 
 import appeng.api.AEApi;
 import appeng.api.networking.IGridNode;
@@ -56,8 +55,11 @@ import appeng.me.Grid;
 import appeng.tile.AEBaseTile;
 import appeng.util.IWorldCallable;
 import appeng.util.Platform;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
 
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class TickHandler
 {
 
@@ -215,10 +217,11 @@ public class TickHandler
 			while( !repo.tiles.isEmpty() )
 			{
 				final AEBaseTile bt = repo.tiles.poll();
-				if( !bt.isInvalid() )
-				{
+				//TODO check how to get isInvalid
+				/*if( !bt.isInvalid() )
+				{*/
 					bt.onReady();
-				}
+				//}
 			}
 
 			// tick networks.

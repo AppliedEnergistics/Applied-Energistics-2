@@ -1,0 +1,27 @@
+{
+    "result": {
+        "item": "appliedenergistics2:view_cell"
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "aba",
+        "bcb",
+        "ddd"
+    ],
+    "key": {
+        "a": {
+            "item": "appliedenergistics2:quartz_glass"
+        },
+        "d": {
+            "type": "forge:ore_dict",
+            "ore": "ingotIron"
+        },
+        "b": {
+            "type": "forge:ore_dict",
+            "ore": "dustRedstone"
+        },
+        "c": {
+            "item": "#appliedenergistics2:certusCrystal"
+        }
+    }
+}

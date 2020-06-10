@@ -1,0 +1,16 @@
+{
+    "result": {
+        "item": "appliedenergistics2:quartz_block"
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "aa",
+        "aa"
+    ],
+    "key": {
+        "a": {
+            "type": "forge:ore_dict",
+            "ore": "crystalCertusQuartz"
+        }
+    }
+}

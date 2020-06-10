@@ -13,13 +13,13 @@ import com.google.common.collect.ImmutableMap;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.client.model.PerspectiveMapWrapper;
 import net.minecraftforge.common.model.TRSRTransformation;
 
@@ -31,7 +31,7 @@ class ColorApplicatorBakedModel implements IBakedModel
 
 	private final ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> transforms;
 
-	private final EnumMap<EnumFacing, List<BakedQuad>> quadsBySide;
+	private final EnumMap<Direction, List<BakedQuad>> quadsBySide;
 
 	private final List<BakedQuad> generalQuads;
 
@@ -42,14 +42,14 @@ class ColorApplicatorBakedModel implements IBakedModel
 
 		// Put the tint indices in... Since this is an item model, we are ignoring rand
 		this.generalQuads = this.fixQuadTint( null, texDark, texMedium, texBright );
-		this.quadsBySide = new EnumMap<>( EnumFacing.class );
-		for( EnumFacing facing : EnumFacing.values() )
+		this.quadsBySide = new EnumMap<>( Direction.class );
+		for( Direction facing : Direction.values() )
 		{
 			this.quadsBySide.put( facing, this.fixQuadTint( facing, texDark, texMedium, texBright ) );
 		}
 	}
 
-	private List<BakedQuad> fixQuadTint( EnumFacing facing, TextureAtlasSprite texDark, TextureAtlasSprite texMedium, TextureAtlasSprite texBright )
+	private List<BakedQuad> fixQuadTint( Direction facing, TextureAtlasSprite texDark, TextureAtlasSprite texMedium, TextureAtlasSprite texBright )
 	{
 		List<BakedQuad> quads = this.baseModel.getQuads( null, facing, 0 );
 		List<BakedQuad> result = new ArrayList<>( quads.size() );
@@ -84,7 +84,7 @@ class ColorApplicatorBakedModel implements IBakedModel
 	}
 
 	@Override
-	public List<BakedQuad> getQuads( @Nullable IBlockState state, @Nullable EnumFacing side, long rand )
+	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, long rand )
 	{
 		if( side == null )
 		{

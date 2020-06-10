@@ -25,10 +25,10 @@ import java.util.List;
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.api.networking.IGridNode;
@@ -130,7 +130,7 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	}
 
 	@Override
-	public void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor )
+	public void onNeighborChanged( IBlockReader w, BlockPos pos, BlockPos neighbor )
 	{
 		if( this.isOutput() && pos.offset( this.getSide().getFacing() ).equals( neighbor ) )
 		{
@@ -172,14 +172,14 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound tag )
+	public void readFromNBT( final CompoundNBT tag )
 	{
 		super.readFromNBT( tag );
 		this.lastValue = tag.getInteger( "lastValue" );
 	}
 
 	@Override
-	public void writeToNBT( final NBTTagCompound tag )
+	public void writeToNBT( final CompoundNBT tag )
 	{
 		super.writeToNBT( tag );
 		tag.setInteger( "lastValue", this.lastValue );

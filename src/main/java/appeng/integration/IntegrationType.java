@@ -51,7 +51,7 @@ public enum IntegrationType
 		}
 	},
 
-	InvTweaks( IntegrationSide.CLIENT, "Inventory Tweaks", "inventorytweaks" )
+	InvTweaks( IntegrationDist, "Inventory Tweaks", "inventorytweaks" )
 	{
 		@Override
 		public IIntegrationModule createInstance()
@@ -60,7 +60,7 @@ public enum IntegrationType
 		}
 	},
 
-	JEI( IntegrationSide.CLIENT, "Just Enough Items", "jei" )
+	JEI( IntegrationDist, "Just Enough Items", "jei" )
 	{
 		@Override
 		public IIntegrationModule createInstance()

@@ -1,0 +1,27 @@
+{
+    "result": {
+        "item": "appliedenergistics2:quartz_growth_accelerator"
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "aba",
+        "cdc",
+        "aba"
+    ],
+    "key": {
+        "c": {
+            "item": "appliedenergistics2:quartz_glass"
+        },
+        "a": {
+            "type": "forge:ore_dict",
+            "ore": "ingotIron"
+        },
+        "b": {
+            "type": "appliedenergistics2:part",
+            "part": "cable_glass.fluix"
+        },
+        "d": {
+            "item": "appliedenergistics2:fluix_block"
+        }
+    }
+}

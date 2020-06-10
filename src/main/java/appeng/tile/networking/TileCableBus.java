@@ -28,11 +28,11 @@ import javax.annotation.Nullable;
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -65,14 +65,14 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	private int oldLV = -1; // on re-calculate light when it changes
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 		this.getCableBus().readFromNBT( data );
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT( final NBTTagCompound data )
+	public CompoundNBT writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
 		this.getCableBus().writeToNBT( data );
@@ -249,7 +249,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public AEPartLocation addPart( final ItemStack is, final AEPartLocation side, final EntityPlayer player, final EnumHand hand )
+	public AEPartLocation addPart( final ItemStack is, final AEPartLocation side, final PlayerEntity player, final Hand hand )
 	{
 		return this.getCableBus().addPart( is, side, player, hand );
 	}
@@ -261,7 +261,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public IPart getPart( final EnumFacing side )
+	public IPart getPart( final Direction side )
 	{
 		return this.getCableBus().getPart( side );
 	}
@@ -291,7 +291,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public boolean isBlocked( final EnumFacing side )
+	public boolean isBlocked( final Direction side )
 	{
 		// TODO 1.10.2-R - Stuff.
 		return false;
@@ -370,7 +370,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public boolean recolourBlock( final EnumFacing side, final AEColor colour, final EntityPlayer who )
+	public boolean recolourBlock( final Direction side, final AEColor colour, final PlayerEntity who )
 	{
 		return this.getCableBus().recolourBlock( side, colour, who );
 	}
@@ -386,7 +386,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public boolean hasCapability( Capability<?> capabilityClass, @Nullable EnumFacing fromSide )
+	public boolean hasCapability( Capability<?> capabilityClass, @Nullable Direction fromSide )
 	{
 		// Note that null will be translated to INTERNAL here
 		AEPartLocation partLocation = AEPartLocation.fromFacing( fromSide );
@@ -398,7 +398,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public <T> T getCapability( Capability<T> capabilityClass, @Nullable EnumFacing fromSide )
+	public <T> T getCapability( Capability<T> capabilityClass, @Nullable Direction fromSide )
 	{
 		// Note that null will be translated to INTERNAL here
 		AEPartLocation partLocation = AEPartLocation.fromFacing( fromSide );

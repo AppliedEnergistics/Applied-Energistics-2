@@ -24,7 +24,7 @@
 package appeng.api.implementations.tiles;
 
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;;
 
 
 /**
@@ -55,5 +55,5 @@ public interface ICrankable
 	/**
 	 * @return true if the crank can attach on the given side.
 	 */
-	boolean canCrankAttach( EnumFacing directionToCrank );
+	boolean canCrankAttach( Direction directionToCrank );
 }

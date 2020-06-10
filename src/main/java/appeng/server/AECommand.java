@@ -72,10 +72,6 @@ public final class AECommand extends CommandBase
 					throw new WrongUsageException( c.command.getHelp( this.srv ) );
 				}
 			}
-			catch( final WrongUsageException wrong )
-			{
-				throw wrong;
-			}
 			catch( final Throwable er )
 			{
 				throw new WrongUsageException( "commands.ae2.usage" );

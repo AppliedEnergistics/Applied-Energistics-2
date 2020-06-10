@@ -24,7 +24,7 @@ public class InscriberHandler implements IAERecipeFactory
 {
 
 	@Override
-	public void register( JsonObject json, JsonContext ctx )
+	public void register( JsonObject json )
 	{
 		ItemStack result = PartRecipeFactory.getResult( json, ctx );
 		String mode = JsonUtils.getString( json, "mode" );

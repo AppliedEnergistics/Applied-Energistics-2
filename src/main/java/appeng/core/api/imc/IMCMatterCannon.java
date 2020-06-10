@@ -18,8 +18,8 @@
 
 /* Example:
 
- NBTTagCompound msg = new NBTTagCompound();
- NBTTagCompound item = new NBTTagCompound();
+ CompoundNBT msg = new CompoundNBT();
+ CompoundNBT item = new CompoundNBT();
 
  new ItemStack( Blocks.anvil ).writeToNBT( item );
  msg.setTag( "item", item );
@@ -32,24 +32,33 @@
 package appeng.core.api.imc;
 
 
+import appeng.core.AELog;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
+import net.minecraft.nbt.CompoundNBT;
 
 import appeng.api.AEApi;
 import appeng.core.api.IIMCProcessor;
+import net.minecraftforge.fml.InterModComms;
 
 
 public class IMCMatterCannon implements IIMCProcessor
 {
 
 	@Override
-	public void process( final IMCMessage m )
+	public void process( final InterModComms.IMCMessage m )
 	{
-		final NBTTagCompound msg = m.getNBTValue();
-		final NBTTagCompound item = (NBTTagCompound) msg.getTag( "item" );
+		final Object messageArg = m.getMessageSupplier().get();
 
-		final ItemStack ammo = new ItemStack( item );
+		if( !( messageArg instanceof CompoundNBT) )
+		{
+			AELog.warn( "Bad argument for %1$2 by Mod %2$s: expected instance of CompoundNBT got %3$s", this.getClass().getSimpleName(), m.getSenderModId(), messageArg.getClass().getSimpleName() );
+			return;
+		}
+
+		final CompoundNBT msg = (CompoundNBT) messageArg;
+		final CompoundNBT item = msg.getCompound( "item" );
+
+		final ItemStack ammo = ItemStack.read( item );
 		final double weight = msg.getDouble( "weight" );
 
 		if( ammo.isEmpty() )

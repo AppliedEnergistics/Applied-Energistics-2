@@ -23,14 +23,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
+/*
 import ic2.api.energy.prefab.BasicSinkSource;
 import ic2.api.energy.tile.IEnergyAcceptor;
-import ic2.api.energy.tile.IEnergyEmitter;
+import ic2.api.energy.tile.IEnergyEmitter;*/
 
 import appeng.api.config.PowerUnits;
 import appeng.api.parts.IPartModel;
@@ -56,7 +56,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power>
 	private double bufferedEnergy2;
 	private double bufferedVoltage2;
 
-	private BasicSinkSource sinkSource;
+	//private BasicSinkSource sinkSource;
 
 	public PartP2PIC2Power( ItemStack is )
 	{
@@ -64,7 +64,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power>
 	}
 
 	@Override
-	public void readFromNBT( NBTTagCompound tag )
+	public void readFromNBT( CompoundNBT tag )
 	{
 		super.readFromNBT( tag );
 		this.bufferedEnergy1 = tag.getDouble( TAG_BUFFERED_ENERGY_1 );
@@ -74,13 +74,13 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power>
 	}
 
 	@Override
-	public void writeToNBT( NBTTagCompound tag )
+	public void writeToNBT( CompoundNBT tag )
 	{
 		super.writeToNBT( tag );
-		tag.setDouble( TAG_BUFFERED_ENERGY_1, this.bufferedEnergy1 );
-		tag.setDouble( TAG_BUFFERED_ENERGY_2, this.bufferedEnergy2 );
-		tag.setDouble( TAG_BUFFERED_VOLTAGE_1, this.bufferedVoltage1 );
-		tag.setDouble( TAG_BUFFERED_VOLTAGE_2, this.bufferedVoltage2 );
+		tag.putDouble( TAG_BUFFERED_ENERGY_1, this.bufferedEnergy1 );
+		tag.putDouble( TAG_BUFFERED_ENERGY_2, this.bufferedEnergy2 );
+		tag.putDouble( TAG_BUFFERED_VOLTAGE_1, this.bufferedVoltage1 );
+		tag.putDouble( TAG_BUFFERED_VOLTAGE_2, this.bufferedVoltage2 );
 	}
 
 	@Override
@@ -125,23 +125,23 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power>
 
 	private void updateSinkSource()
 	{
-		if( this.sinkSource == null )
+		/*if( this.sinkSource == null )
 		{
 			this.sinkSource = new SinkSource( this.getHost().getTile().getWorld(), this.getHost().getLocation().getPos(), 2048, 4, 4 );
 		}
 
-		this.sinkSource.update();
+		this.sinkSource.update();*/
 	}
 
 	private void invalidateSinkSource()
 	{
-		if( this.sinkSource != null )
+		/*if( this.sinkSource != null )
 		{
 			this.sinkSource.invalidate();
-		}
+		}*/
 	}
 
-	private class SinkSource extends BasicSinkSource
+	/*private class SinkSource extends BasicSinkSource
 	{
 
 		SinkSource( World world, BlockPos pos, int i, int j, int k )
@@ -150,13 +150,13 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power>
 		}
 
 		@Override
-		public boolean emitsEnergyTo( IEnergyAcceptor receiver, EnumFacing side )
+		public boolean emitsEnergyTo( IEnergyAcceptor receiver, Direction side )
 		{
 			return PartP2PIC2Power.this.isOutput() && side == PartP2PIC2Power.this.getSide().getFacing();
 		}
 
 		@Override
-		public boolean acceptsEnergyFrom( IEnergyEmitter emitter, EnumFacing side )
+		public boolean acceptsEnergyFrom( IEnergyEmitter emitter, Direction side )
 		{
 			return !PartP2PIC2Power.this.isOutput() && side == PartP2PIC2Power.this.getSide().getFacing();
 		}
@@ -188,7 +188,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power>
 		}
 
 		@Override
-		public double injectEnergy( EnumFacing directionFrom, double amount, double voltage )
+		public double injectEnergy( Direction directionFrom, double amount, double voltage )
 		{
 			TunnelCollection<PartP2PIC2Power> outs;
 			try
@@ -282,6 +282,6 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power>
 				PartP2PIC2Power.this.bufferedVoltage2 = 0;
 			}
 		}
-	}
+	}*/
 
 }

@@ -1,0 +1,22 @@
+{
+    "conditions": [
+        {
+            "type": "appliedenergistics2:material_exists",
+            "material": "material.card_speed"
+        }
+    ],
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "material.card_speed"
+    },
+    "type": "appliedenergistics2:part_shapeless",
+    "ingredients": [
+        {
+            "type": "appliedenergistics2:part",
+            "part": "material.advanced_card"
+        },
+        {
+            "item": "#appliedenergistics2:fluixCrystal"
+        }
+    ]
+}

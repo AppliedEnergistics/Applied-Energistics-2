@@ -1,0 +1,17 @@
+{
+    "result": {
+        "item": "appliedenergistics2:fluix_block"
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "aaa",
+        "a a",
+        "aaa"
+    ],
+    "key": {
+        "a": {
+            "type": "appliedenergistics2:part",
+            "part": "material.purified_fluix_crystal"
+        }
+    }
+}

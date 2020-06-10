@@ -24,7 +24,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.api.distmarker.Dist;
 
 import appeng.bootstrap.IModelRegistry;
 
@@ -46,7 +46,7 @@ public class StateMapperComponent implements IModelRegistrationComponent
 	}
 
 	@Override
-	public void modelRegistration( Side side, IModelRegistry registry )
+	public void modelRegistration( Dist side, IModelRegistry registry )
 	{
 		registry.setCustomStateMapper( this.block, this.stateMapper );
 		if( this.stateMapper instanceof IResourceManagerReloadListener )

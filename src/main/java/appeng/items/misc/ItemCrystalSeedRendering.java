@@ -24,8 +24,8 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.bootstrap.IItemRendering;
 import appeng.bootstrap.ItemRenderingCustomizer;
@@ -51,7 +51,7 @@ public class ItemCrystalSeedRendering extends ItemRenderingCustomizer
 	};
 
 	@Override
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public void customize( IItemRendering rendering )
 	{
 		rendering.variants( ImmutableList.<ResourceLocation>builder().add( MODELS_CERTUS ).add( MODELS_FLUIX ).add( MODELS_NETHER ).build() );

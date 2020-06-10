@@ -1,0 +1,15 @@
+{
+    "result": {
+        "item": "appliedenergistics2:crafting_accelerator"
+    },
+    "type": "forge:ore_shapeless",
+    "ingredients": [
+        {
+            "type": "appliedenergistics2:part",
+            "part": "material.engineering_processor"
+        },
+        {
+            "item": "appliedenergistics2:crafting_unit"
+        }
+    ]
+}

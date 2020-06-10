@@ -2,7 +2,7 @@
 package appeng.client.render.cablebus;
 
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 
 
 /**
@@ -12,17 +12,17 @@ public class FacadeRenderState
 {
 
 	// The block state to use for rendering this facade
-	private final IBlockState sourceBlock;
+	private final BlockState sourceBlock;
 
 	private final boolean transparent;
 
-	public FacadeRenderState( IBlockState sourceBlock, boolean transparent )
+	public FacadeRenderState( BlockState sourceBlock, boolean transparent )
 	{
 		this.sourceBlock = sourceBlock;
 		this.transparent = transparent;
 	}
 
-	public IBlockState getSourceBlock()
+	public BlockState getSourceBlock()
 	{
 		return this.sourceBlock;
 	}

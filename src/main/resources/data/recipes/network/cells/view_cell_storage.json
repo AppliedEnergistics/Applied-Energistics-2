@@ -1,0 +1,15 @@
+{
+    "result": {
+        "item": "appliedenergistics2:view_cell"
+    },
+    "type": "forge:ore_shapeless",
+    "ingredients": [
+        {
+            "type": "appliedenergistics2:part",
+            "part": "material.empty_storage_cell"
+        },
+        {
+            "item": "#appliedenergistics2:certusCrystal"
+        }
+    ]
+}

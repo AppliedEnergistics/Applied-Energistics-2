@@ -22,17 +22,15 @@ package appeng.block;
 import java.util.List;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
@@ -41,9 +39,11 @@ import appeng.block.misc.BlockSkyCompass;
 import appeng.block.networking.BlockWireless;
 import appeng.me.helpers.IGridProxyable;
 import appeng.tile.AEBaseTile;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 
-public class AEBaseItemBlock extends ItemBlock
+public class AEBaseItemBlock extends BlockItem
 {
 
 	private final AEBaseBlock blockType;
@@ -66,13 +66,13 @@ public class AEBaseItemBlock extends ItemBlock
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public final void addInformation( final ItemStack itemStack, final World world, final List<String> toolTip, final ITooltipFlag advancedTooltips )
 	{
 		this.addCheckedInformation( itemStack, world, toolTip, advancedTooltips );
 	}
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public void addCheckedInformation( final ItemStack itemStack, final World world, final List<String> toolTip, final ITooltipFlag advancedTooltips )
 	{
 		this.blockType.addInformation( itemStack, world, toolTip, advancedTooltips );
@@ -91,40 +91,40 @@ public class AEBaseItemBlock extends ItemBlock
 	}
 
 	@Override
-	public boolean placeBlockAt( final ItemStack stack, final EntityPlayer player, final World w, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final IBlockState newState )
+	public boolean placeBlockAt( final ItemStack stack, final PlayerEntity player, final World w, final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ, final BlockState newState )
 	{
-		EnumFacing up = null;
-		EnumFacing forward = null;
+		Direction up = null;
+		Direction forward = null;
 
 		if( this.blockType instanceof AEBaseTileBlock )
 		{
 			if( this.blockType instanceof BlockLightDetector )
 			{
 				up = side;
-				if( up == EnumFacing.UP || up == EnumFacing.DOWN )
+				if( up == Direction.UP || up == Direction.DOWN )
 				{
-					forward = EnumFacing.SOUTH;
+					forward = Direction.SOUTH;
 				}
 				else
 				{
-					forward = EnumFacing.UP;
+					forward = Direction.UP;
 				}
 			}
 			else if( this.blockType instanceof BlockWireless || this.blockType instanceof BlockSkyCompass )
 			{
 				forward = side;
-				if( forward == EnumFacing.UP || forward == EnumFacing.DOWN )
+				if( forward == Direction.UP || forward == Direction.DOWN )
 				{
-					up = EnumFacing.SOUTH;
+					up = Direction.SOUTH;
 				}
 				else
 				{
-					up = EnumFacing.UP;
+					up = Direction.UP;
 				}
 			}
 			else
 			{
-				up = EnumFacing.UP;
+				up = Direction.UP;
 
 				final byte rotation = (byte) ( MathHelper.floor( ( player.rotationYaw * 4F ) / 360F + 2.5D ) & 3 );
 
@@ -132,28 +132,28 @@ public class AEBaseItemBlock extends ItemBlock
 				{
 					default:
 					case 0:
-						forward = EnumFacing.SOUTH;
+						forward = Direction.SOUTH;
 						break;
 					case 1:
-						forward = EnumFacing.WEST;
+						forward = Direction.WEST;
 						break;
 					case 2:
-						forward = EnumFacing.NORTH;
+						forward = Direction.NORTH;
 						break;
 					case 3:
-						forward = EnumFacing.EAST;
+						forward = Direction.EAST;
 						break;
 				}
 
 				if( player.rotationPitch > 65 )
 				{
 					up = forward.getOpposite();
-					forward = EnumFacing.UP;
+					forward = Direction.UP;
 				}
 				else if( player.rotationPitch < -65 )
 				{
 					up = forward.getOpposite();
-					forward = EnumFacing.DOWN;
+					forward = Direction.DOWN;
 				}
 			}
 		}
@@ -163,10 +163,10 @@ public class AEBaseItemBlock extends ItemBlock
 		{
 			ori = ( (IOrientableBlock) this.blockType ).getOrientable( w, pos );
 			up = side;
-			forward = EnumFacing.SOUTH;
+			forward = Direction.SOUTH;
 			if( up.getFrontOffsetY() == 0 )
 			{
-				forward = EnumFacing.UP;
+				forward = Direction.UP;
 			}
 		}
 

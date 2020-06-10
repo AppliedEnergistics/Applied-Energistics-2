@@ -19,9 +19,9 @@
 package appeng.integration.modules.theoneprobe.config;
 
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
 
 import mcjty.theoneprobe.api.IProbeConfig;
@@ -36,13 +36,13 @@ public class AEConfigProvider implements IProbeConfigProvider
 {
 
 	@Override
-	public void getProbeConfig( IProbeConfig config, EntityPlayer player, World world, Entity entity, IProbeHitEntityData data )
+	public void getProbeConfig( IProbeConfig config, PlayerEntity player, World world, Entity entity, IProbeHitEntityData data )
 	{
 		// Still no AE entities.
 	}
 
 	@Override
-	public void getProbeConfig( IProbeConfig config, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data )
+	public void getProbeConfig( IProbeConfig config, PlayerEntity player, World world, BlockState blockState, IProbeHitData data )
 	{
 		if( world.getTileEntity( data.getPos() ) instanceof AEBaseTile )
 		{

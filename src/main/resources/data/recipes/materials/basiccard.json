@@ -1,0 +1,37 @@
+{
+    "conditions": [
+        {
+            "type": "appliedenergistics2:material_exists",
+            "material": "material.basic_card"
+        }
+    ],
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "material.basic_card",
+        "count": 2
+    },
+    "type": "appliedenergistics2:part_shaped",
+    "pattern": [
+        "ab ",
+        "cdb",
+        "ab "
+    ],
+    "key": {
+        "b": {
+            "type": "forge:ore_dict",
+            "ore": "ingotIron"
+        },
+        "c": {
+            "type": "forge:ore_dict",
+            "ore": "dustRedstone"
+        },
+        "a": {
+            "type": "forge:ore_dict",
+            "ore": "ingotGold"
+        },
+        "d": {
+            "type": "appliedenergistics2:part",
+            "part": "material.calculation_processor"
+        }
+    }
+}

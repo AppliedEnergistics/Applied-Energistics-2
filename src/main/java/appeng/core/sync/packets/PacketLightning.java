@@ -23,9 +23,10 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.client.render.effects.LightningFX;
 import appeng.core.AEConfig;
@@ -33,6 +34,7 @@ import appeng.core.AppEng;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.Platform;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 
 public class PacketLightning extends AppEngPacket
@@ -57,9 +59,8 @@ public class PacketLightning extends AppEngPacket
 		this.y = y;
 		this.z = z;
 
-		final ByteBuf data = Unpooled.buffer();
+		final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
-		data.writeInt( this.getPacketID() );
 		data.writeFloat( (float) x );
 		data.writeFloat( (float) y );
 		data.writeFloat( (float) z );
@@ -68,15 +69,15 @@ public class PacketLightning extends AppEngPacket
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
+	@OnlyIn( Dist.CLIENT )
+	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final PlayerEntity player, NetworkEvent.Context ctx )
 	{
 		try
 		{
 			if( Platform.isClient() && AEConfig.instance().isEnableEffects() )
 			{
 				final LightningFX fx = new LightningFX( AppEng.proxy.getWorld(), this.x, this.y, this.z, 0.0f, 0.0f, 0.0f );
-				Minecraft.getMinecraft().effectRenderer.addEffect( fx );
+				Minecraft.getInstance().effectRenderer.addEffect( fx );
 			}
 		}
 		catch( final Exception ignored )

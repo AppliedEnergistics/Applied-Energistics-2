@@ -1,0 +1,23 @@
+{
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "cable_glass.brown",
+        "count": 8
+    },
+    "type": "appliedenergistics2:part_shaped",
+    "pattern": [
+        "aaa",
+        "aba",
+        "aaa"
+    ],
+    "key": {
+        "b": {
+            "type": "forge:ore_dict",
+            "ore": "dyeBrown"
+        },
+        "a": {
+            "type": "appliedenergistics2:part",
+            "part": "cable_glass.fluix"
+        }
+    }
+}

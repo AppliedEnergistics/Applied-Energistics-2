@@ -30,8 +30,8 @@ import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.bootstrap.components.BlockColorComponent;
@@ -43,30 +43,30 @@ import appeng.client.render.model.AutoRotatingModel;
 class BlockRendering implements IBlockRendering
 {
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	private BiFunction<ModelResourceLocation, IBakedModel, IBakedModel> modelCustomizer;
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	private IBlockColor blockColor;
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	private TileEntitySpecialRenderer<?> tesr;
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	private IStateMapper stateMapper;
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	private Map<String, IModel> builtInModels = new HashMap<>();
 
 	@Override
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public IBlockRendering modelCustomizer( BiFunction<ModelResourceLocation, IBakedModel, IBakedModel> customizer )
 	{
 		this.modelCustomizer = customizer;
 		return this;
 	}
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	@Override
 	public IBlockRendering blockColor( IBlockColor blockColor )
 	{
@@ -74,7 +74,7 @@ class BlockRendering implements IBlockRendering
 		return this;
 	}
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	@Override
 	public IBlockRendering tesr( TileEntitySpecialRenderer<?> tesr )
 	{
@@ -89,7 +89,7 @@ class BlockRendering implements IBlockRendering
 		return this;
 	}
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	@Override
 	public IBlockRendering stateMapper( IStateMapper mapper )
 	{

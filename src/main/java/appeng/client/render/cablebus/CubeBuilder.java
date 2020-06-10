@@ -28,12 +28,12 @@ import javax.vecmath.Vector4f;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.BlockModelRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 
 import appeng.client.render.VertexFormats;
@@ -49,13 +49,13 @@ public class CubeBuilder
 
 	private final List<BakedQuad> output;
 
-	private final EnumMap<EnumFacing, TextureAtlasSprite> textures = new EnumMap<>( EnumFacing.class );
+	private final EnumMap<Direction, TextureAtlasSprite> textures = new EnumMap<>( Direction.class );
 
-	private EnumSet<EnumFacing> drawFaces = EnumSet.allOf( EnumFacing.class );
+	private EnumSet<Direction> drawFaces = EnumSet.allOf( Direction.class );
 
-	private final EnumMap<EnumFacing, Vector4f> customUv = new EnumMap<>( EnumFacing.class );
+	private final EnumMap<Direction, Vector4f> customUv = new EnumMap<>( Direction.class );
 
-	private byte[] uvRotations = new byte[EnumFacing.values().length];
+	private byte[] uvRotations = new byte[Direction.values().length];
 
 	private int color = 0xFFFFFFFF;
 
@@ -92,7 +92,7 @@ public class CubeBuilder
 			this.format = VertexFormats.getFormatWithLightMap( this.format );
 		}
 
-		for( EnumFacing face : this.drawFaces )
+		for( Direction face : this.drawFaces )
 		{
 			this.putFace( face, x1, y1, z1, x2, y2, z2 );
 		}
@@ -104,7 +104,7 @@ public class CubeBuilder
 		}
 	}
 
-	public void addQuad( EnumFacing face, float x1, float y1, float z1, float x2, float y2, float z2 )
+	public void addQuad( Direction face, float x1, float y1, float z1, float x2, float y2, float z2 )
 	{
 		// If brightness is forced to specific values, extend the vertex format to contain the multi-texturing lightmap
 		// offset
@@ -136,7 +136,7 @@ public class CubeBuilder
 		float v2;
 	}
 
-	private void putFace( EnumFacing face, float x1, float y1, float z1, float x2, float y2, float z2 )
+	private void putFace( Direction face, float x1, float y1, float z1, float x2, float y2, float z2 )
 	{
 
 		TextureAtlasSprite texture = this.textures.get( face );
@@ -210,7 +210,7 @@ public class CubeBuilder
 		this.output.add( builder.build() );
 	}
 
-	private UvVector getDefaultUv( EnumFacing face, TextureAtlasSprite texture, float x1, float y1, float z1, float x2, float y2, float z2 )
+	private UvVector getDefaultUv( Direction face, TextureAtlasSprite texture, float x1, float y1, float z1, float x2, float y2, float z2 )
 	{
 
 		UvVector uv = new UvVector();
@@ -258,7 +258,7 @@ public class CubeBuilder
 		return uv;
 	}
 
-	private UvVector getStandardUv( EnumFacing face, TextureAtlasSprite texture, float x1, float y1, float z1, float x2, float y2, float z2 )
+	private UvVector getStandardUv( Direction face, TextureAtlasSprite texture, float x1, float y1, float z1, float x2, float y2, float z2 )
 	{
 		UvVector uv = new UvVector();
 		switch( face )
@@ -304,7 +304,7 @@ public class CubeBuilder
 	}
 
 	// uv.u1, uv.v1
-	private void putVertexTL( UnpackedBakedQuad.Builder builder, EnumFacing face, float x, float y, float z, UvVector uv )
+	private void putVertexTL( UnpackedBakedQuad.Builder builder, Direction face, float x, float y, float z, UvVector uv )
 	{
 		float u, v;
 
@@ -333,7 +333,7 @@ public class CubeBuilder
 	}
 
 	// uv.u2, uv.v1
-	private void putVertexTR( UnpackedBakedQuad.Builder builder, EnumFacing face, float x, float y, float z, UvVector uv )
+	private void putVertexTR( UnpackedBakedQuad.Builder builder, Direction face, float x, float y, float z, UvVector uv )
 	{
 		float u, v;
 
@@ -361,7 +361,7 @@ public class CubeBuilder
 	}
 
 	// uv.u2, uv.v2
-	private void putVertexBR( UnpackedBakedQuad.Builder builder, EnumFacing face, float x, float y, float z, UvVector uv )
+	private void putVertexBR( UnpackedBakedQuad.Builder builder, Direction face, float x, float y, float z, UvVector uv )
 	{
 
 		float u;
@@ -392,7 +392,7 @@ public class CubeBuilder
 	}
 
 	// uv.u1, uv.v2
-	private void putVertexBL( UnpackedBakedQuad.Builder builder, EnumFacing face, float x, float y, float z, UvVector uv )
+	private void putVertexBL( UnpackedBakedQuad.Builder builder, Direction face, float x, float y, float z, UvVector uv )
 	{
 
 		float u;
@@ -422,7 +422,7 @@ public class CubeBuilder
 		this.putVertex( builder, face, x, y, z, u, v );
 	}
 
-	private void putVertex( UnpackedBakedQuad.Builder builder, EnumFacing face, float x, float y, float z, float u, float v )
+	private void putVertex( UnpackedBakedQuad.Builder builder, Direction face, float x, float y, float z, float u, float v )
 	{
 		VertexFormat format = builder.getVertexFormat();
 
@@ -468,7 +468,7 @@ public class CubeBuilder
 
 	public void setTexture( TextureAtlasSprite texture )
 	{
-		for( EnumFacing face : EnumFacing.values() )
+		for( Direction face : Direction.values() )
 		{
 			this.textures.put( face, texture );
 		}
@@ -476,20 +476,20 @@ public class CubeBuilder
 
 	public void setTextures( TextureAtlasSprite up, TextureAtlasSprite down, TextureAtlasSprite north, TextureAtlasSprite south, TextureAtlasSprite east, TextureAtlasSprite west )
 	{
-		this.textures.put( EnumFacing.UP, up );
-		this.textures.put( EnumFacing.DOWN, down );
-		this.textures.put( EnumFacing.NORTH, north );
-		this.textures.put( EnumFacing.SOUTH, south );
-		this.textures.put( EnumFacing.EAST, east );
-		this.textures.put( EnumFacing.WEST, west );
+		this.textures.put( Direction.UP, up );
+		this.textures.put( Direction.DOWN, down );
+		this.textures.put( Direction.NORTH, north );
+		this.textures.put( Direction.SOUTH, south );
+		this.textures.put( Direction.EAST, east );
+		this.textures.put( Direction.WEST, west );
 	}
 
-	public void setTexture( EnumFacing facing, TextureAtlasSprite sprite )
+	public void setTexture( Direction facing, TextureAtlasSprite sprite )
 	{
 		this.textures.put( facing, sprite );
 	}
 
-	public void setDrawFaces( EnumSet<EnumFacing> drawFaces )
+	public void setDrawFaces( EnumSet<Direction> drawFaces )
 	{
 		this.drawFaces = drawFaces;
 	}
@@ -517,12 +517,12 @@ public class CubeBuilder
 		this.renderFullBright = renderFullBright;
 	}
 
-	public void setCustomUv( EnumFacing facing, float u1, float v1, float u2, float v2 )
+	public void setCustomUv( Direction facing, float u1, float v1, float u2, float v2 )
 	{
 		this.customUv.put( facing, new Vector4f( u1, v1, u2, v2 ) );
 	}
 
-	public void setUvRotation( EnumFacing facing, int rotation )
+	public void setUvRotation( Direction facing, int rotation )
 	{
 		if( rotation == 2 )
 		{

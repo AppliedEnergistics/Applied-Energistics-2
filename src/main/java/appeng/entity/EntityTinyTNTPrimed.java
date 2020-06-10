@@ -25,9 +25,9 @@ import io.netty.buffer.ByteBuf;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityTNTPrimed;
@@ -62,7 +62,7 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 		this.setSize( SIZE, SIZE );
 	}
 
-	public EntityTinyTNTPrimed( final World w, final double x, final double y, final double z, final EntityLivingBase igniter )
+	public EntityTinyTNTPrimed( final World w, final double x, final double y, final double z, final LivingEntity igniter )
 	{
 		super( w, x, y, z, igniter );
 		this.setSize( SIZE, SIZE );
@@ -160,7 +160,7 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 					for( int z = (int) ( this.posZ - 2 ); z <= this.posZ + 2; z++ )
 					{
 						final BlockPos point = new BlockPos( x, y, z );
-						final IBlockState state = this.world.getBlockState( point );
+						final BlockState state = this.world.getBlockState( point );
 						final Block block = state.getBlock();
 
 						if( block != null && !block.isAir( state, this.world, point ) )

@@ -22,13 +22,13 @@ package appeng.parts.automation;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Items;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 
@@ -69,7 +69,7 @@ public class PartIdentityAnnihilationPlane extends PartAnnihilationPlane
 	}
 
 	@Override
-	protected float calculateEnergyUsage( final WorldServer w, final BlockPos pos, final List<ItemStack> items )
+	protected float calculateEnergyUsage( final ServerWorld w, final BlockPos pos, final List<ItemStack> items )
 	{
 		final float requiredEnergy = super.calculateEnergyUsage( w, pos, items );
 
@@ -77,24 +77,19 @@ public class PartIdentityAnnihilationPlane extends PartAnnihilationPlane
 	}
 
 	@Override
-	protected List<ItemStack> obtainBlockDrops( final WorldServer w, final BlockPos pos )
+	protected List<ItemStack> obtainBlockDrops( final ServerWorld w, final BlockPos pos )
 	{
 		final FakePlayer fakePlayer = FakePlayerFactory.getMinecraft( w );
-		final IBlockState state = w.getBlockState( pos );
+		final BlockState state = w.getBlockState( pos );
 
-		if( state.getBlock().canSilkHarvest( w, pos, state, fakePlayer ) )
+		if( state.getBlock().canHarvestBlock( state, w, pos, fakePlayer ) )
 		{
 			final List<ItemStack> out = new ArrayList<>( 1 );
 			final Item item = Item.getItemFromBlock( state.getBlock() );
 
 			if( item != Items.AIR )
 			{
-				int meta = 0;
-				if( item.getHasSubtypes() )
-				{
-					meta = state.getBlock().getMetaFromState( state );
-				}
-				final ItemStack itemstack = new ItemStack( item, 1, meta );
+				final ItemStack itemstack = new ItemStack( item, 1 );
 				out.add( itemstack );
 			}
 			return out;

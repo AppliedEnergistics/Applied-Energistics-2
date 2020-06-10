@@ -28,12 +28,10 @@ import javax.annotation.Nullable;
 import com.google.common.base.Preconditions;
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.common.config.ConfigCategory;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
+import net.minecraft.entity.player.PlayerEntity;
 
 import appeng.core.AppEng;
+import net.minecraftforge.fml.config.ModConfig;
 
 
 /**
@@ -51,31 +49,31 @@ final class PlayerData implements IWorldPlayerData, IOnWorldStartable, IOnWorldS
 	private static final String LAST_PLAYER_KEY = "lastPlayer";
 	private static final int LAST_PLAYER_DEFAULT = 0;
 
-	private final Configuration config;
+	private final ModConfig config;
 	private final IWorldPlayerMapping playerMapping;
 
 	private int lastPlayerID;
 
-	public PlayerData( @Nonnull final Configuration configFile )
+	public PlayerData( @Nonnull final ModConfig configFile )
 	{
 		Preconditions.checkNotNull( configFile );
 
 		this.config = configFile;
 
-		final ConfigCategory playerList = this.config.getCategory( "players" );
+		final ConfigCategory playerList = this.config.getConfigData().get( "players" );
 		this.playerMapping = new PlayerMapping( playerList );
 	}
 
 	@Nullable
 	@Override
-	public EntityPlayer getPlayerFromID( final int playerID )
+	public PlayerEntity getPlayerFromID( final int playerID )
 	{
 		final Optional<UUID> maybe = this.playerMapping.get( playerID );
 
 		if( maybe.isPresent() )
 		{
 			final UUID uuid = maybe.get();
-			for( final EntityPlayer player : AppEng.proxy.getPlayers() )
+			for( final PlayerEntity player : AppEng.proxy.getPlayers() )
 			{
 				if( player.getUniqueID().equals( uuid ) )
 				{

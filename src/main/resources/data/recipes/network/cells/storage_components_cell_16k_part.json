@@ -1,0 +1,29 @@
+{
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "material.cell16k_part"
+    },
+    "type": "appliedenergistics2:part_shaped",
+    "pattern": [
+        "aba",
+        "cdc",
+        "aca"
+    ],
+    "key": {
+        "b": {
+            "type": "appliedenergistics2:part",
+            "part": "material.calculation_processor"
+        },
+        "d": {
+            "item": "appliedenergistics2:quartz_glass"
+        },
+        "c": {
+            "type": "appliedenergistics2:part",
+            "part": "material.cell4k_part"
+        },
+        "a": {
+            "type": "forge:ore_dict",
+            "ore": "dustGlowstone"
+        }
+    }
+}

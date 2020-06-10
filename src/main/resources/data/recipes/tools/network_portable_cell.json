@@ -1,0 +1,21 @@
+{
+    "result": {
+        "item": "appliedenergistics2:portable_cell"
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "abc"
+    ],
+    "key": {
+        "a": {
+            "item": "appliedenergistics2:chest"
+        },
+        "c": {
+            "item": "appliedenergistics2:energy_cell"
+        },
+        "b": {
+            "type": "appliedenergistics2:part",
+            "part": "material.cell1k_part"
+        }
+    }
+}

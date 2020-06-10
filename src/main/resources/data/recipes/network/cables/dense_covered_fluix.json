@@ -1,0 +1,25 @@
+{
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "cable_dense_covered.fluix"
+    },
+    "type": "appliedenergistics2:part_shapeless",
+    "ingredients": [
+        {
+            "type": "appliedenergistics2:part",
+            "part": "cable_covered.fluix"
+        },
+        {
+            "type": "appliedenergistics2:part",
+            "part": "cable_covered.fluix"
+        },
+        {
+            "type": "appliedenergistics2:part",
+            "part": "cable_covered.fluix"
+        },
+        {
+            "type": "appliedenergistics2:part",
+            "part": "cable_covered.fluix"
+        }
+    ]
+}

@@ -1,0 +1,241 @@
+[
+    {
+        "name": "appliedenergistics2:interface",
+        "conditions": [
+            {
+                "type": "appliedenergistics2:features",
+                "features": [
+                    "interface"
+                ]
+            }
+        ],
+        "ingredient": [
+            {
+                "item": "appliedenergistics2:interface"
+            },
+            {
+                "type": "appliedenergistics2:part",
+                "part": "part.interface"
+            }
+        ]
+    },
+    {
+        "name": "appliedenergistics2:fluid_interface",
+        "conditions": [
+            {
+                "type": "appliedenergistics2:features",
+                "features": [
+                    "fluid_interface"
+                ]
+            }
+        ],
+        "ingredient": [
+            {
+                "item": "appliedenergistics2:fluid_interface"
+            },
+            {
+                "type": "appliedenergistics2:part",
+                "part": "part.fluid_interface"
+            }
+        ]
+    },
+    {
+        "name": "appliedenergistics2:knife",
+        "conditions": [
+            {
+                "type": "appliedenergistics2:features",
+                "features": "quartz_knife"
+            }
+        ],
+        "ingredient": [
+            {
+                "item": "appliedenergistics2:certus_quartz_cutting_knife",
+                "data": 32767
+            },
+            {
+                "item": "appliedenergistics2:nether_quartz_cutting_knife",
+                "data": 32767
+            }
+        ]
+    },
+    {
+        "name": "appliedenergistics2:cable",
+        "ingredient": [
+            {
+                "type": "appliedenergistics2:part",
+                "part": "cable_glass"
+            },
+            {
+                "type": "appliedenergistics2:part",
+                "part": "cable_covered"
+            },
+            {
+                "type": "appliedenergistics2:part",
+                "part": "cable_smart"
+            }
+        ]
+    },
+    {
+        "name": "appliedenergistics2:metalIngots",
+        "ingredient": [
+            {
+                "item": "minecraft:iron_ingot"
+            },
+            {
+                "type": "forge:ore_dict",
+                "ore": "ingotCopper"
+            },
+            {
+                "type": "forge:ore_dict",
+                "ore": "ingotTin"
+            },
+            {
+                "type": "forge:ore_dict",
+                "ore": "ingotSilver"
+            },
+            {
+                "type": "forge:ore_dict",
+                "ore": "ingotLead"
+            },
+            {
+                "type": "forge:ore_dict",
+                "ore": "ingotBronze"
+            },
+            {
+                "type": "forge:ore_dict",
+                "ore": "ingotBrass"
+            },
+            {
+                "type": "forge:ore_dict",
+                "ore": "ingotNickel"
+            },
+            {
+                "type": "forge:ore_dict",
+                "ore": "ingotInvar"
+            },
+            {
+                "type": "forge:ore_dict",
+                "ore": "ingotAluminium"
+            },
+            {
+                "type": "forge:ore_dict",
+                "ore": "ingotAluminum"
+            }
+        ]
+    },
+    {
+        "name": "appliedenergistics2:dustEnder",
+        "ingredient": [
+            {
+                "type": "forge:ore_dict",
+                "ore": "dustEnder"
+            },
+            {
+                "type": "forge:ore_dict",
+                "ore": "dustEnderPearl"
+            }
+        ]
+    },
+    {
+        "name": "appliedenergistics2:glass",
+        "ingredient": [
+            {
+                "type": "forge:ore_dict",
+                "ore": "blockGlass"
+            },
+            {
+                "type": "forge:ore_dict",
+                "ore": "glass"
+            },
+            {
+                "item": "minecraft:glass"
+            }
+        ]
+    },
+    {
+        "name": "appliedenergistics2:wool",
+        "ingredient": [
+            {
+                "type": "forge:ore_dict",
+                "ore": "wool"
+            },
+            {
+                "item": "minecraft:wool",
+                "data": 32767
+            }
+        ]
+    },
+    {
+        "name": "appliedenergistics2:crystalQuartz",
+        "ingredient": [
+            {
+                "type": "forge:ore_dict",
+                "ore": "crystalCertusQuartz"
+            },
+            {
+                "type": "forge:ore_dict",
+                "ore": "gemQuartz"
+            },
+            {
+                "type": "appliedenergistics2:part",
+                "part": "material.certus_quartz_crystal_charged"
+            }
+        ]
+    },
+    {
+        "name": "appliedenergistics2:dustQuartz",
+        "ingredient": [
+            {
+                "type": "forge:ore_dict",
+                "ore": "dustCertusQuartz"
+            },
+            {
+                "type": "forge:ore_dict",
+                "ore": "dustNetherQuartz"
+            }
+        ]
+    },
+    {
+        "name": "appliedenergistics2:certusCrystal",
+        "ingredient": [
+            {
+                "type": "forge:ore_dict",
+                "ore": "crystalCertusQuartz"
+            },
+            {
+                "type": "appliedenergistics2:part",
+                "part": "material.certus_quartz_crystal_charged"
+            },
+            {
+                "type": "appliedenergistics2:part",
+                "part": "material.purified_certus_quartz_crystal"
+            }
+        ]
+    },
+    {
+        "name": "appliedenergistics2:netherCrystal",
+        "ingredient": [
+            {
+                "type": "forge:ore_dict",
+                "ore": "gemQuartz"
+            },
+            {
+                "type": "appliedenergistics2:part",
+                "part": "material.purified_nether_quartz_crystal"
+            }
+        ]
+    },
+    {
+        "name": "appliedenergistics2:fluixCrystal",
+        "ingredient": [
+            {
+                "type": "forge:ore_dict",
+                "ore": "crystalFluix"
+            },
+            {
+                "type": "appliedenergistics2:part",
+                "part": "material.purified_fluix_crystal"
+            }
+        ]
+    }
+]

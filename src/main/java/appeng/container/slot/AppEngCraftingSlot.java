@@ -19,8 +19,8 @@
 package appeng.container.slot;
 
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.util.NonNullList;
@@ -42,17 +42,17 @@ public class AppEngCraftingSlot extends AppEngSlot
 	/**
 	 * The player that is using the GUI where this slot resides.
 	 */
-	private final EntityPlayer thePlayer;
+	private final PlayerEntity thePlayer;
 
 	/**
 	 * The number of items that have been crafted so far. Gets passed to ItemStack.onCrafting before being reset.
 	 */
 	private int amountCrafted;
 
-	public AppEngCraftingSlot( final EntityPlayer par1EntityPlayer, final IItemHandler par2IInventory, final IItemHandler par3IInventory, final int par4, final int par5, final int par6 )
+	public AppEngCraftingSlot( final PlayerEntity par1PlayerEntity, final IItemHandler par2IInventory, final IItemHandler par3IInventory, final int par4, final int par5, final int par6 )
 	{
 		super( par3IInventory, par4, par5, par6 );
-		this.thePlayer = par1EntityPlayer;
+		this.thePlayer = par1PlayerEntity;
 		this.craftMatrix = par2IInventory;
 	}
 
@@ -138,12 +138,12 @@ public class AppEngCraftingSlot extends AppEngSlot
 	}
 
 	@Override
-	public ItemStack onTake( final EntityPlayer playerIn, final ItemStack stack )
+	public ItemStack onTake( final PlayerEntity playerIn, final ItemStack stack )
 	{
 		net.minecraftforge.fml.common.FMLCommonHandler.instance().firePlayerCraftingEvent( playerIn, stack, new WrapperInvItemHandler( this.craftMatrix ) );
 		this.onCrafting( stack );
 		net.minecraftforge.common.ForgeHooks.setCraftingPlayer( playerIn );
-		final InventoryCrafting ic = new InventoryCrafting( this.getContainer(), 3, 3 );
+		final CraftingInventory ic = new CraftingInventory( this.getContainer(), 3, 3 );
 
 		for( int x = 0; x < this.craftMatrix.getSlots(); x++ )
 		{
@@ -198,7 +198,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 	}
 
 	// TODO: This is really hacky and NEEDS to be solved with a full container/gui refactoring.
-	protected NonNullList<ItemStack> getRemainingItems( InventoryCrafting ic, World world )
+	protected NonNullList<ItemStack> getRemainingItems( CraftingInventory ic, World world )
 	{
 		return CraftingManager.getRemainingItems( ic, world );
 	}

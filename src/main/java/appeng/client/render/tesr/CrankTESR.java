@@ -21,7 +21,7 @@ package appeng.client.render.tesr;
 
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -32,8 +32,8 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.client.render.FacingToRotation;
 import appeng.tile.grindstone.TileCrank;
@@ -43,7 +43,7 @@ import appeng.tile.grindstone.TileCrank;
  * This FastTESR only handles the animated model of the turning crank. When the crank is at rest, it is rendered using a
  * normal model.
  */
-@SideOnly( Side.CLIENT )
+@OnlyIn( Dist.CLIENT )
 public class CrankTESR extends TileEntitySpecialRenderer<TileCrank>
 {
 
@@ -67,7 +67,7 @@ public class CrankTESR extends TileEntitySpecialRenderer<TileCrank>
 			GlStateManager.shadeModel( GL11.GL_FLAT );
 		}
 
-		IBlockState blockState = te.getWorld().getBlockState( te.getPos() );
+		BlockState blockState = te.getWorld().getBlockState( te.getPos() );
 
 		BlockRendererDispatcher dispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
 		IBakedModel model = dispatcher.getModelForState( blockState );

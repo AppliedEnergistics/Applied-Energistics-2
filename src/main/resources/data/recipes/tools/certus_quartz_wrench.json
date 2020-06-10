@@ -1,0 +1,17 @@
+{
+    "result": {
+        "item": "appliedenergistics2:certus_quartz_wrench"
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "a a",
+        " a ",
+        "a a"
+    ],
+    "key": {
+        "a": {
+            "type": "forge:ore_dict",
+            "ore": "crystalCertusQuartz"
+        }
+    }
+}

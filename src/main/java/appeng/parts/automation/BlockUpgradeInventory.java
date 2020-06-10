@@ -21,7 +21,7 @@ package appeng.parts.automation;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.config.Upgrades;
@@ -47,7 +47,7 @@ public class BlockUpgradeInventory extends UpgradeInventory
 		{
 			final Item encodedItem = is.getItem();
 
-			if( encodedItem instanceof ItemBlock && Block.getBlockFromItem( encodedItem ) == this.block )
+			if( encodedItem instanceof BlockItem && Block.getBlockFromItem( encodedItem ) == this.block )
 			{
 				max = upgrades.getSupported().get( is );
 				break;

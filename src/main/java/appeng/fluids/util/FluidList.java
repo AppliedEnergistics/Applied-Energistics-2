@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
 
@@ -68,7 +67,7 @@ public final class FluidList implements IItemList<IAEFluidStack>
 	}
 
 	@Override
-	public Collection<IAEFluidStack> findFuzzy( final IAEFluidStack filter, final FuzzyMode fuzzy )
+	public Collection<IAEFluidStack> findFuzzy( final IAEFluidStack filter )
 	{
 		if( filter == null )
 		{

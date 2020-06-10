@@ -37,6 +37,7 @@ import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import appeng.api.AEApi;
@@ -45,7 +46,7 @@ import appeng.services.compass.CompassReader;
 import appeng.services.compass.ICompassCallback;
 import appeng.util.Platform;
 
-
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class CompassService
 {
 	private static final int CHUNK_SIZE = 16;

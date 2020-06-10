@@ -1,0 +1,24 @@
+{
+    "result": {
+        "item": "appliedenergistics2:controller"
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "aba",
+        "bcb",
+        "aba"
+    ],
+    "key": {
+        "c": {
+            "type": "appliedenergistics2:part",
+            "part": "material.engineering_processor"
+        },
+        "b": {
+            "type": "appliedenergistics2:part",
+            "part": "material.purified_fluix_crystal"
+        },
+        "a": {
+            "item": "appliedenergistics2:smooth_sky_stone_block"
+        }
+    }
+}

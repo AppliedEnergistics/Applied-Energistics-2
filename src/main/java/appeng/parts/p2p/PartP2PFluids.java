@@ -25,21 +25,21 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
+
+import javax.annotation.Nonnull;
 
 
 public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFluidHandler
@@ -48,8 +48,8 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 	private static final P2PModels MODELS = new P2PModels( "part/p2p/p2p_tunnel_fluids" );
 
 	private static final ThreadLocal<Deque<PartP2PFluids>> DEPTH = new ThreadLocal<>();
-	private static final FluidTankProperties[] ACTIVE_TANK = { new FluidTankProperties( null, 10000, true, false ) };
-	private static final FluidTankProperties[] INACTIVE_TANK = { new FluidTankProperties( null, 0, false, false ) };
+	private static final int ACTIVE_TANK_CAPACITY = 10000;
+	private static final int INACTIVE_TANK_CAPACITY = 0;
 
 	private IFluidHandler cachedTank;
 	private int tmpUsed;
@@ -77,7 +77,7 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 	}
 
 	@Override
-	public void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor )
+	public void onNeighborChanged( IBlockReader w, BlockPos pos, BlockPos neighbor )
 	{
 		this.cachedTank = null;
 
@@ -89,17 +89,6 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 				in.onTunnelNetworkChange();
 			}
 		}
-	}
-
-	@Override
-	public boolean hasCapability( Capability<?> capabilityClass )
-	{
-		if( capabilityClass == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY )
-		{
-			return true;
-		}
-
-		return super.hasCapability( capabilityClass );
 	}
 
 	@Override
@@ -119,23 +108,34 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 		return MODELS.getModel( this.isPowered(), this.isActive() );
 	}
 
-	@Override
-	public IFluidTankProperties[] getTankProperties()
-	{
+	public int getTanks() {
+		return 1;
+	}
+
+	public FluidStack getFluidInTank( int tank ) {
+		return FluidStack.EMPTY;
+	}
+
+	public int getTankCapacity( int tank )  {
 		if( !this.isOutput() )
 		{
 			final PartP2PFluids tun = this.getInput();
 			if( tun != null )
 			{
-				return ACTIVE_TANK;
+				return ACTIVE_TANK_CAPACITY;
 			}
 		}
 
-		return INACTIVE_TANK;
+		return INACTIVE_TANK_CAPACITY;
+	}
+
+	@Override public boolean isFluidValid( int tank, @Nonnull FluidStack stack )
+	{
+		return this.fill( stack, FluidAction.SIMULATE ) > 0;
 	}
 
 	@Override
-	public int fill( FluidStack resource, boolean doFill )
+	public int fill( FluidStack resource, FluidAction action )
 	{
 		final Deque<PartP2PFluids> stack = this.getDepth();
 
@@ -160,7 +160,7 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 			final IFluidHandler tank = l.getTarget();
 			if( tank != null )
 			{
-				l.tmpUsed = tank.fill( resource.copy(), false );
+				l.tmpUsed = tank.fill( resource.copy(), FluidAction.SIMULATE );
 			}
 			else
 			{
@@ -187,17 +187,17 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 			return 0;
 		}
 
-		if( !doFill )
+		if( action.simulate() )
 		{
 			if( stack.pop() != this )
 			{
 				throw new IllegalStateException( "Invalid Recursion detected." );
 			}
 
-			return Math.min( resource.amount, requestTotal );
+			return Math.min( resource.getAmount(), requestTotal );
 		}
 
-		int available = resource.amount;
+		int available = resource.getAmount();
 
 		i = list.iterator();
 		int used = 0;
@@ -207,23 +207,23 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 			final PartP2PFluids l = i.next();
 
 			final FluidStack insert = resource.copy();
-			insert.amount = (int) Math.ceil( insert.amount * ( (double) l.tmpUsed / (double) requestTotal ) );
-			if( insert.amount > available )
+			insert.setAmount( (int) Math.ceil( insert.getAmount() * ( (double) l.tmpUsed / (double) requestTotal ) ) );
+			if( insert.getAmount() > available )
 			{
-				insert.amount = available;
+				insert.setAmount( available );
 			}
 
 			final IFluidHandler tank = l.getTarget();
 			if( tank != null )
 			{
-				l.tmpUsed = tank.fill( insert.copy(), true );
+				l.tmpUsed = tank.fill( insert.copy(), FluidAction.EXECUTE );
 			}
 			else
 			{
 				l.tmpUsed = 0;
 			}
 
-			available -= insert.amount;
+			available -= insert.getAmount();
 			used += l.tmpUsed;
 		}
 
@@ -235,16 +235,16 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 		return used;
 	}
 
-	@Override
-	public FluidStack drain( FluidStack resource, boolean doDrain )
+	@Nonnull @Override
+	public FluidStack drain( FluidStack resource, FluidAction action )
 	{
-		return null;
+		return FluidStack.EMPTY;
 	}
 
-	@Override
-	public FluidStack drain( int maxDrain, boolean doDrain )
+	@Nonnull @Override
+	public FluidStack drain( int maxDrain, FluidAction action )
 	{
-		return null;
+		return FluidStack.EMPTY;
 	}
 
 	private Deque<PartP2PFluids> getDepth()
@@ -297,10 +297,9 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 
 		final TileEntity te = this.getTile().getWorld().getTileEntity( this.getTile().getPos().offset( this.getSide().getFacing() ) );
 
-		if( te != null && te.hasCapability( CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, this.getSide().getFacing().getOpposite() ) )
+		if( te != null)
 		{
-			return this.cachedTank = te.getCapability( CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
-					this.getSide().getFacing().getOpposite() );
+			return this.cachedTank = te.getCapability( CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, this.getSide().getFacing().getOpposite() ).orElse( this.cachedTank );
 		}
 
 		return null;

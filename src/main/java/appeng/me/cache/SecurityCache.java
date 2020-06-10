@@ -27,7 +27,7 @@ import java.util.List;
 import com.google.common.base.Preconditions;
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
@@ -150,7 +150,7 @@ public class SecurityCache implements ISecurityGrid
 	}
 
 	@Override
-	public boolean hasPermission( final EntityPlayer player, final SecurityPermissions perm )
+	public boolean hasPermission( final PlayerEntity player, final SecurityPermissions perm )
 	{
 		Preconditions.checkNotNull( player );
 		Preconditions.checkNotNull( perm );

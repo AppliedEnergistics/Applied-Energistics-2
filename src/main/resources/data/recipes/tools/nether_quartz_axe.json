@@ -1,0 +1,21 @@
+{
+    "result": {
+        "item": "appliedenergistics2:nether_quartz_axe"
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "aa",
+        "ab",
+        " b"
+    ],
+    "key": {
+        "a": {
+            "type": "forge:ore_dict",
+            "ore": "gemQuartz"
+        },
+        "b": {
+            "type": "forge:ore_dict",
+            "ore": "stickWood"
+        }
+    }
+}

@@ -2,34 +2,27 @@
 package appeng.recipes;
 
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSyntaxException;
-
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
-
-import net.minecraft.util.JsonUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.JsonContext;
-import net.minecraftforge.fml.common.FMLLog;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModContainer;
-
 import appeng.core.AppEng;
 import appeng.recipes.handlers.GrinderHandler;
 import appeng.recipes.handlers.InscriberHandler;
 import appeng.recipes.handlers.SmeltingHandler;
+import com.google.gson.*;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.ShapedRecipe;
+import net.minecraft.resources.IResourceManager;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.registries.IForgeRegistry;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class AERecipeLoader
@@ -38,44 +31,49 @@ public class AERecipeLoader
 	private static Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 	private final Map<ResourceLocation, IAERecipeFactory> factories = new HashMap<>();
 
-	private final ModContainer mod;
-	private final JsonContext ctx;
+	IResourceManager resourceManager;
 
 	public AERecipeLoader()
 	{
-		this.mod = Loader.instance().getIndexedModList().get( AppEng.MOD_ID );
-		this.ctx = new JsonContext( AppEng.MOD_ID );
-
 		this.initFactories();
 	}
 
-	public boolean loadProcessingRecipes()
+	public boolean loadProcessingRecipes(IForgeRegistry<IRecipe> registry)
 	{
-		return CraftingHelper.findFiles( this.mod, "assets/" + AppEng.MOD_ID + AERECIPE_BASE, this::preprocess, this::process, true, true );
+		//TODO add recipes
+		//CraftingHelper
+		//return CraftingHelper.findFiles( this.mod, "assets/" + AppEng.MOD_ID + AERECIPE_BASE, this::preprocess, this::process, true, true );
+
+		Collection<ResourceLocation> recipes = resourceManager.getAllResourceLocations( "data/" + AppEng.MOD_ID + AERECIPE_BASE, this::process );
+
+		for(ResourceLocation recipe : recipes) {
+			//add
+		}
+		return true;
 	}
 
-	private boolean preprocess( final Path root )
+	private boolean preprocess( final String root )
 	{
 		return true;
 	}
 
-	private boolean process( final Path root, final Path file )
+	private boolean process( final String file )
 	{
-		String relative = root.relativize( file ).toString();
-		if( !"json".equals( FilenameUtils.getExtension( file.toString() ) ) || relative.startsWith( "_" ) )
+		//String relative = root.relativize( file ).toString();
+		if( !"json".equals( FilenameUtils.getExtension( file ) ) || file.startsWith( "_" ) )
 		{
 			return true;
 		}
 
-		String name = FilenameUtils.removeExtension( relative ).replaceAll( "\\\\", "/" );
-		ResourceLocation key = new ResourceLocation( this.ctx.getModId(), name );
+		String name = FilenameUtils.removeExtension( file ).replaceAll( "\\\\", "/" );
+		ResourceLocation key = new ResourceLocation( AppEng.MOD_ID, name );
 
 		BufferedReader reader = null;
 		try
 		{
-			reader = Files.newBufferedReader( file );
-			JsonObject json = JsonUtils.fromJson( GSON, reader, JsonObject.class );
-			if( json.has( "conditions" ) && !CraftingHelper.processConditions( JsonUtils.getJsonArray( json, "conditions" ), this.ctx ) )
+			reader = Files.newBufferedReader( Paths.get(file) );
+			JsonObject json = GSON.fromJson( reader, JsonObject.class );
+			if( json.has( "conditions" ) && !CraftingHelper.processConditions( json, "conditions" ) )
 			{
 				return true;
 			}
@@ -107,7 +105,8 @@ public class AERecipeLoader
 			throw new JsonSyntaxException( "Json cannot be null" );
 		}
 
-		String type = this.ctx.appendModId( JsonUtils.getString( json, "type" ) );
+		//TODO check wtf happens here
+		String type = json.getAsJsonObject("type").getAsString();
 		if( type.isEmpty() )
 		{
 			throw new JsonSyntaxException( "Recipe type can not be an empty string" );
@@ -119,7 +118,7 @@ public class AERecipeLoader
 			throw new JsonSyntaxException( "Unknown recipe type: " + type );
 		}
 
-		factory.register( json, this.ctx );
+		factory.register( json );
 	}
 
 	private void initFactories()

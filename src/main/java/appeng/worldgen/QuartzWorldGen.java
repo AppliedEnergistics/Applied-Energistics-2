@@ -23,10 +23,8 @@ import java.util.Random;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.IChunkProvider;
-import net.minecraft.world.gen.IChunkGenerator;
-import net.minecraft.world.gen.feature.WorldGenMinable;
-import net.minecraftforge.fml.common.IWorldGenerator;
+import net.minecraft.world.chunk.AbstractChunkProvider;
+import net.minecraft.world.gen.ChunkGenerator;
 
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlockDefinition;
@@ -56,7 +54,7 @@ public final class QuartzWorldGen implements IWorldGenerator
 	}
 
 	@Override
-	public void generate( final Random r, final int chunkX, final int chunkZ, final World w, final IChunkGenerator chunkGenerator, final IChunkProvider chunkProvider )
+	public void generate( final Random r, final int chunkX, final int chunkZ, final World w, final ChunkGenerator chunkGenerator, final IChunkProvider chunkProvider )
 	{
 		if( this.oreNormal == null && this.oreCharged == null )
 		{

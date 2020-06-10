@@ -28,7 +28,7 @@ import java.util.EnumSet;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 
 import appeng.api.IAppEngApi;
@@ -130,7 +130,7 @@ public interface IGridNode
 	 * @param name nbt name
 	 * @param nodeData to be loaded data
 	 */
-	void loadFromNBT( @Nonnull String name, @Nonnull NBTTagCompound nodeData );
+	void loadFromNBT( @Nonnull String name, @Nonnull CompoundNBT nodeData );
 
 	/**
 	 * this should be called for each node you maintain, you can save all your nodes to the same tag with different
@@ -139,7 +139,7 @@ public interface IGridNode
 	 * @param name nbt name
 	 * @param nodeData to be saved data
 	 */
-	void saveToNBT( @Nonnull String name, @Nonnull NBTTagCompound nodeData );
+	void saveToNBT( @Nonnull String name, @Nonnull CompoundNBT nodeData );
 
 	/**
 	 * @return if the node's channel requirements are currently met, use this for display purposes, use isActive for

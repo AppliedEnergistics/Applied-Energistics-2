@@ -30,7 +30,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
@@ -240,7 +240,7 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 			}
 
 			// Next, check if the Item you're holding supports any registered capability
-			for( EnumFacing face : EnumFacing.VALUES )
+			for( Direction face : Direction.VALUES )
 			{
 				for( Entry<Capability<?>, TunnelType> entry : this.capTunnels.entrySet() )
 				{

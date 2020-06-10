@@ -28,7 +28,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 
 import appeng.api.IAppEngApi;
 import appeng.api.storage.data.IAEStack;
@@ -55,7 +54,7 @@ public interface ICellRegistry
 
 	/**
 	 * Register a new handler
-	 * 
+	 *
 	 * @param handler cell gui handler
 	 */
 	void addCellGuiHandler( @Nonnull ICellGuiHandler handler );

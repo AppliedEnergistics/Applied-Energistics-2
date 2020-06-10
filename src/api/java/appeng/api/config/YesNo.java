@@ -26,5 +26,18 @@ package appeng.api.config;
 
 public enum YesNo
 {
-	YES, NO, UNDECIDED
+	YES, NO, UNDECIDED;
+
+	public boolean isYes() {
+		return this == YES;
+	}
+
+	public boolean isNo() {
+		return this == NO;
+	}
+
+	public boolean isUndecided()
+	{
+		return this == UNDECIDED;
+	}
 }

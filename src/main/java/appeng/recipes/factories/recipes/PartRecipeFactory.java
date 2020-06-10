@@ -33,20 +33,17 @@ import com.google.gson.JsonSyntaxException;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.JsonUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.IRecipeFactory;
-import net.minecraftforge.common.crafting.JsonContext;
-import net.minecraftforge.oredict.ShapedOreRecipe;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import appeng.api.AEApi;
 import appeng.api.recipes.ResolverResult;
 import appeng.core.AELog;
 import appeng.core.AppEng;
+import net.minecraftforge.registries.ForgeRegistries;
 
 
 /**
@@ -55,16 +52,20 @@ import appeng.core.AppEng;
 public class PartRecipeFactory implements IRecipeFactory
 {
 	@Override
-	public IRecipe parse( JsonContext context, JsonObject json )
+	public IRecipe parse( ResourceLocation rl, JsonObject json )
 	{
-		String type = JsonUtils.getString( json, "type" );
+		//IRecipeSerializer
+		//IRecipeSerializer.CRAFTING_SHAPED.read( rl, json );
+		//ForgeRegistries.RECIPE_SERIALIZERS.register(  );
+		IRecipeSerializer.CRAFTING_SHAPED.read( rl, json );
+		String type = json.get( "type" ).getAsString();
 		if( type.contains( "shaped" ) )
 		{
-			return shapedFactory( context, json );
+			return shapedFactory( rl, json );
 		}
 		else if( type.contains( "shapeless" ) )
 		{
-			return shapelessFactory( context, json );
+			return shapelessFactory( rl, json );
 		}
 		else
 		{

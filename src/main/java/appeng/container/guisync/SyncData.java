@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.EnumSet;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntityMP;
 import net.minecraft.inventory.IContainerListener;
 
 import appeng.container.AEBaseContainer;
@@ -86,9 +86,9 @@ public class SyncData
 	{
 		if( val instanceof String )
 		{
-			if( o instanceof EntityPlayerMP )
+			if( o instanceof PlayerEntityMP )
 			{
-				NetworkHandler.instance().sendTo( new PacketValueConfig( "SyncDat." + this.channel, (String) val ), (EntityPlayerMP) o );
+				NetworkHandler.instance().sendTo( new PacketValueConfig( "SyncDat." + this.channel, (String) val ), (PlayerEntityMP) o );
 			}
 		}
 		else if( this.field.getType().isEnum() )
@@ -97,9 +97,9 @@ public class SyncData
 		}
 		else if( val instanceof Long || val.getClass() == long.class )
 		{
-			if( o instanceof EntityPlayerMP )
+			if( o instanceof PlayerEntityMP )
 			{
-				NetworkHandler.instance().sendTo( new PacketProgressBar( this.channel, (Long) val ), (EntityPlayerMP) o );
+				NetworkHandler.instance().sendTo( new PacketProgressBar( this.channel, (Long) val ), (PlayerEntityMP) o );
 			}
 		}
 		else if( val instanceof Boolean || val.getClass() == boolean.class )

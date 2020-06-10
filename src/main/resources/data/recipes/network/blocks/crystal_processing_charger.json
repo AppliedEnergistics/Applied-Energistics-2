@@ -1,0 +1,20 @@
+{
+    "result": {
+        "item": "appliedenergistics2:charger"
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "aba",
+        "a  ",
+        "aba"
+    ],
+    "key": {
+        "a": {
+            "type": "forge:ore_dict",
+            "ore": "ingotIron"
+        },
+        "b": {
+            "item": "#appliedenergistics2:fluixCrystal"
+        }
+    }
+}

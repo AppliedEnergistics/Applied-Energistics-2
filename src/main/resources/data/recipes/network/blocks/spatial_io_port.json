@@ -1,0 +1,31 @@
+{
+    "result": {
+        "item": "appliedenergistics2:spatial_io_port"
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "aaa",
+        "bcb",
+        "ded"
+    ],
+    "key": {
+        "a": {
+            "item": "#appliedenergistics2:glass"
+        },
+        "e": {
+            "type": "appliedenergistics2:part",
+            "part": "material.engineering_processor"
+        },
+        "d": {
+            "type": "forge:ore_dict",
+            "ore": "ingotIron"
+        },
+        "c": {
+            "item": "appliedenergistics2:io_port"
+        },
+        "b": {
+            "type": "appliedenergistics2:part",
+            "part": "cable_glass.fluix"
+        }
+    }
+}

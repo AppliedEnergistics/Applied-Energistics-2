@@ -26,10 +26,10 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
@@ -52,28 +52,28 @@ public class CableBusRenderState
 	private AEColor cableColor = AEColor.TRANSPARENT;
 
 	// Describes the outgoing connections of this cable bus to other blocks, and how they should be rendered
-	private EnumMap<EnumFacing, AECableType> connectionTypes = new EnumMap<>( EnumFacing.class );
+	private EnumMap<Direction, AECableType> connectionTypes = new EnumMap<>( Direction.class );
 
 	// Indicate on which sides signified by connectionTypes above, there is another cable bus. If a side is connected,
 	// but it is absent from this
 	// set, then it means that there is a Grid host, but not a cable bus on that side (i.e. an interface, a controller,
 	// etc.)
-	private EnumSet<EnumFacing> cableBusAdjacent = EnumSet.noneOf( EnumFacing.class );
+	private EnumSet<Direction> cableBusAdjacent = EnumSet.noneOf( Direction.class );
 
 	// Specifies the number of channels used for the connection to a given side. Only contains entries if
 	// connections contains a corresponding entry.
-	private EnumMap<EnumFacing, Integer> channelsOnSide = new EnumMap<>( EnumFacing.class );
+	private EnumMap<Direction, Integer> channelsOnSide = new EnumMap<>( Direction.class );
 
-	private EnumMap<EnumFacing, IPartModel> attachments = new EnumMap<>( EnumFacing.class );
+	private EnumMap<Direction, IPartModel> attachments = new EnumMap<>( Direction.class );
 
 	// For each attachment, this contains the distance from the edge until which a cable connection should be drawn
-	private EnumMap<EnumFacing, Integer> attachmentConnections = new EnumMap<>( EnumFacing.class );
+	private EnumMap<Direction, Integer> attachmentConnections = new EnumMap<>( Direction.class );
 
 	// Contains the facade to use for each side that has a facade attached
-	private EnumMap<EnumFacing, FacadeRenderState> facades = new EnumMap<>( EnumFacing.class );
+	private EnumMap<Direction, FacadeRenderState> facades = new EnumMap<>( Direction.class );
 
 	// Used for Facades.
-	private WeakReference<IBlockAccess> world;
+	private WeakReference<IBlockReader> world;
 	private BlockPos pos;
 
 	// Contains the bounding boxes of all parts on the cable bus to allow facades to cut out holes for the parts. This
@@ -81,7 +81,7 @@ public class CableBusRenderState
 	// facades on this cable bus
 	private List<AxisAlignedBB> boundingBoxes = new ArrayList<>();
 
-	private EnumMap<EnumFacing, Long> partFlags = new EnumMap<>( EnumFacing.class );
+	private EnumMap<Direction, Long> partFlags = new EnumMap<>( Direction.class );
 
 	public CableCoreType getCoreType()
 	{
@@ -113,57 +113,57 @@ public class CableBusRenderState
 		this.cableColor = cableColor;
 	}
 
-	public EnumMap<EnumFacing, Integer> getChannelsOnSide()
+	public EnumMap<Direction, Integer> getChannelsOnSide()
 	{
 		return this.channelsOnSide;
 	}
 
-	public EnumMap<EnumFacing, AECableType> getConnectionTypes()
+	public EnumMap<Direction, AECableType> getConnectionTypes()
 	{
 		return this.connectionTypes;
 	}
 
-	public void setConnectionTypes( EnumMap<EnumFacing, AECableType> connectionTypes )
+	public void setConnectionTypes( EnumMap<Direction, AECableType> connectionTypes )
 	{
 		this.connectionTypes = connectionTypes;
 	}
 
-	public void setChannelsOnSide( EnumMap<EnumFacing, Integer> channelsOnSide )
+	public void setChannelsOnSide( EnumMap<Direction, Integer> channelsOnSide )
 	{
 		this.channelsOnSide = channelsOnSide;
 	}
 
-	public EnumSet<EnumFacing> getCableBusAdjacent()
+	public EnumSet<Direction> getCableBusAdjacent()
 	{
 		return this.cableBusAdjacent;
 	}
 
-	public void setCableBusAdjacent( EnumSet<EnumFacing> cableBusAdjacent )
+	public void setCableBusAdjacent( EnumSet<Direction> cableBusAdjacent )
 	{
 		this.cableBusAdjacent = cableBusAdjacent;
 	}
 
-	public EnumMap<EnumFacing, IPartModel> getAttachments()
+	public EnumMap<Direction, IPartModel> getAttachments()
 	{
 		return this.attachments;
 	}
 
-	public EnumMap<EnumFacing, Integer> getAttachmentConnections()
+	public EnumMap<Direction, Integer> getAttachmentConnections()
 	{
 		return this.attachmentConnections;
 	}
 
-	public EnumMap<EnumFacing, FacadeRenderState> getFacades()
+	public EnumMap<Direction, FacadeRenderState> getFacades()
 	{
 		return this.facades;
 	}
 
-	public IBlockAccess getWorld()
+	public IBlockReader getWorld()
 	{
 		return this.world.get();
 	}
 
-	public void setWorld( IBlockAccess world )
+	public void setWorld( IBlockReader world )
 	{
 		this.world = new WeakReference<>( world );
 	}
@@ -183,7 +183,7 @@ public class CableBusRenderState
 		return this.boundingBoxes;
 	}
 
-	public EnumMap<EnumFacing, Long> getPartFlags()
+	public EnumMap<Direction, Long> getPartFlags()
 	{
 		return this.partFlags;
 	}

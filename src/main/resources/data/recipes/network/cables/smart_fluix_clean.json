@@ -1,0 +1,16 @@
+{
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "cable_smart.fluix"
+    },
+    "type": "appliedenergistics2:part_shapeless",
+    "ingredients": [
+        {
+            "type": "appliedenergistics2:part",
+            "part": "cable_smart"
+        },
+        {
+            "item": "minecraft:water_bucket"
+        }
+    ]
+}

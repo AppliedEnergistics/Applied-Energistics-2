@@ -1,0 +1,19 @@
+{
+    "conditions": [
+        {
+            "type": "appliedenergistics2:material_exists",
+            "material": "material.certus_quartz_crystal"
+        }
+    ],
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "material.certus_quartz_crystal",
+        "count": 4
+    },
+    "type": "appliedenergistics2:part_shapeless",
+    "ingredients": [
+        {
+            "item": "appliedenergistics2:quartz_pillar"
+        }
+    ]
+}

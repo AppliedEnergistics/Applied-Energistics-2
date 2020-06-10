@@ -27,17 +27,17 @@ import javax.annotation.Nullable;
 import javax.vecmath.AxisAngle4f;
 import javax.vecmath.Matrix4f;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.block.state.BlockState;
+import net.minecraft.client.entity.PlayerEntitySP;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
@@ -68,7 +68,7 @@ public class SkyCompassBakedModel implements IBakedModel
 	}
 
 	@Override
-	public List<BakedQuad> getQuads( @Nullable IBlockState state, @Nullable EnumFacing side, long rand )
+	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, long rand )
 	{
 		float rotation = 0;
 		// Get rotation from the special block state
@@ -159,11 +159,11 @@ public class SkyCompassBakedModel implements IBakedModel
 		{
 
 			@Override
-			public IBakedModel handleItemState( IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity )
+			public IBakedModel handleItemState( IBakedModel originalModel, ItemStack stack, World world, LivingEntity entity )
 			{
-				if( world != null && entity instanceof EntityPlayerSP )
+				if( world != null && entity instanceof PlayerEntitySP )
 				{
-					EntityPlayer player = (EntityPlayer) entity;
+					PlayerEntity player = (PlayerEntity) entity;
 
 					float offRads = (float) ( player.rotationYaw / 180.0f * (float) Math.PI + Math.PI );
 

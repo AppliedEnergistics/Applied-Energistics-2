@@ -24,7 +24,7 @@
 package appeng.api.networking.crafting;
 
 
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -92,7 +92,7 @@ public interface ICraftingPatternDetails
 	 *
 	 * @return the crafted ( work bench ) item.
 	 */
-	ItemStack getOutput( InventoryCrafting craftingInv, World world );
+	ItemStack getOutput( CraftingInventory craftingInv, World world );
 
 	/**
 	 * Get the priority of this pattern

@@ -23,8 +23,8 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.state.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -63,7 +63,7 @@ public final class TileInfoProvider implements IProbeInfoProvider
 	}
 
 	@Override
-	public void addProbeInfo( ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data )
+	public void addProbeInfo( ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data )
 	{
 		final TileEntity tile = world.getTileEntity( data.getPos() );
 

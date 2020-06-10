@@ -24,10 +24,10 @@ import java.util.EnumSet;
 
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 
 import appeng.api.AEApi;
 import appeng.api.networking.GridFlags;
@@ -62,14 +62,14 @@ public class AENetworkProxy implements IGridBlock
 	private final boolean worldNode;
 	private final String nbtName; // name
 	private AEColor myColor = AEColor.TRANSPARENT;
-	private NBTTagCompound data = null; // input
+	private CompoundNBT data = null; // input
 	private ItemStack myRepInstance = ItemStack.EMPTY;
 	private boolean isReady = false;
 	private IGridNode node = null;
-	private EnumSet<EnumFacing> validSides;
+	private EnumSet<Direction> validSides;
 	private EnumSet<GridFlags> flags = EnumSet.noneOf( GridFlags.class );
 	private double idleDraw = 1.0;
-	private EntityPlayer owner;
+	private PlayerEntity owner;
 
 	public AENetworkProxy( final IGridProxyable te, final String nbtName, final ItemStack visual, final boolean inWorld )
 	{
@@ -77,7 +77,7 @@ public class AENetworkProxy implements IGridBlock
 		this.nbtName = nbtName;
 		this.worldNode = inWorld;
 		this.myRepInstance = visual;
-		this.validSides = EnumSet.allOf( EnumFacing.class );
+		this.validSides = EnumSet.allOf( Direction.class );
 	}
 
 	public void setVisualRepresentation( final ItemStack is )
@@ -85,7 +85,7 @@ public class AENetworkProxy implements IGridBlock
 		this.myRepInstance = is;
 	}
 
-	public void writeToNBT( final NBTTagCompound tag )
+	public void writeToNBT( final CompoundNBT tag )
 	{
 		if( this.node != null )
 		{
@@ -93,7 +93,7 @@ public class AENetworkProxy implements IGridBlock
 		}
 	}
 
-	public void setValidSides( final EnumSet<EnumFacing> validSides )
+	public void setValidSides( final EnumSet<Direction> validSides )
 	{
 		this.validSides = validSides;
 		if( this.node != null )
@@ -155,7 +155,7 @@ public class AENetworkProxy implements IGridBlock
 		return this.node;
 	}
 
-	public void readFromNBT( final NBTTagCompound tag )
+	public void readFromNBT( final CompoundNBT tag )
 	{
 		this.data = tag;
 		if( this.node != null && this.data != null )
@@ -342,7 +342,7 @@ public class AENetworkProxy implements IGridBlock
 	}
 
 	@Override
-	public EnumSet<EnumFacing> getConnectableSides()
+	public EnumSet<Direction> getConnectableSides()
 	{
 		return this.validSides;
 	}
@@ -434,7 +434,7 @@ public class AENetworkProxy implements IGridBlock
 		return eg;
 	}
 
-	public void setOwner( final EntityPlayer player )
+	public void setOwner( final PlayerEntity player )
 	{
 		this.owner = player;
 	}

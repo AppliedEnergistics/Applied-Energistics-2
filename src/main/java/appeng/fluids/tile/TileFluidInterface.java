@@ -24,9 +24,9 @@ import java.util.EnumSet;
 import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.IItemHandler;
 
@@ -97,7 +97,7 @@ public class TileFluidInterface extends AENetworkTile implements IGridTickable, 
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT( final NBTTagCompound data )
+	public CompoundNBT writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
 		this.duality.writeToNBT( data );
@@ -105,7 +105,7 @@ public class TileFluidInterface extends AENetworkTile implements IGridTickable, 
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 		this.duality.readFromNBT( data );
@@ -124,9 +124,9 @@ public class TileFluidInterface extends AENetworkTile implements IGridTickable, 
 	}
 
 	@Override
-	public EnumSet<EnumFacing> getTargets()
+	public EnumSet<Direction> getTargets()
 	{
-		return EnumSet.allOf( EnumFacing.class );
+		return EnumSet.allOf( Direction.class );
 	}
 
 	@Override
@@ -142,13 +142,13 @@ public class TileFluidInterface extends AENetworkTile implements IGridTickable, 
 	}
 
 	@Override
-	public boolean hasCapability( Capability<?> capability, @Nullable EnumFacing facing )
+	public boolean hasCapability( Capability<?> capability, @Nullable Direction facing )
 	{
 		return this.duality.hasCapability( capability, facing ) || super.hasCapability( capability, facing );
 	}
 
 	@Override
-	public <T> T getCapability( Capability<T> capability, @Nullable EnumFacing facing )
+	public <T> T getCapability( Capability<T> capability, @Nullable Direction facing )
 	{
 		T result = this.duality.getCapability( capability, facing );
 		if( result != null )

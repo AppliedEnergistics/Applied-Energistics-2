@@ -21,14 +21,14 @@ package appeng.items.tools.quartz;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional.Interface;
 
@@ -53,7 +53,7 @@ public class ToolQuartzWrench extends AEBaseItem implements IAEWrench, IToolHamm
 	}
 
 	@Override
-	public EnumActionResult onItemUseFirst( final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
+	public ActionResultType onItemUseFirst( final PlayerEntity player, final World world, final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ, final Hand hand )
 	{
 		final Block b = world.getBlockState( pos ).getBlock();
 		if( b != null && !player.isSneaking() && Platform.hasPermissions( new DimensionalCoord( world, pos ), player ) )
@@ -62,50 +62,50 @@ public class ToolQuartzWrench extends AEBaseItem implements IAEWrench, IToolHamm
 			{
 				// TODO 1.10-R - if we return FAIL on client, action will not be sent to server. Fix that in all
 				// Block#onItemUseFirst overrides.
-				return !world.isRemote ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
+				return !world.isRemote ? ActionResultType.SUCCESS : ActionResultType.PASS;
 			}
 
 			if( b.rotateBlock( world, pos, side ) )
 			{
 				player.swingArm( hand );
-				return !world.isRemote ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
+				return !world.isRemote ? ActionResultType.SUCCESS : ActionResultType.FAIL;
 			}
 		}
-		return EnumActionResult.PASS;
+		return ActionResultType.PASS;
 	}
 
 	@Override
-	public boolean doesSneakBypassUse( final ItemStack itemstack, final IBlockAccess world, final BlockPos pos, final EntityPlayer player )
+	public boolean doesSneakBypassUse( final ItemStack itemstack, final IBlockReader world, final BlockPos pos, final PlayerEntity player )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canWrench( final ItemStack wrench, final EntityPlayer player, final BlockPos pos )
+	public boolean canWrench( final ItemStack wrench, final PlayerEntity player, final BlockPos pos )
 	{
 		return true;
 	}
 
 	// IToolHammer - start
 	@Override
-	public boolean isUsable( ItemStack item, EntityLivingBase user, BlockPos pos )
+	public boolean isUsable( ItemStack item, LivingEntity user, BlockPos pos )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean isUsable( ItemStack item, EntityLivingBase user, Entity entity )
+	public boolean isUsable( ItemStack item, LivingEntity user, Entity entity )
 	{
 		return true;
 	}
 
 	@Override
-	public void toolUsed( ItemStack item, EntityLivingBase user, BlockPos pos )
+	public void toolUsed( ItemStack item, LivingEntity user, BlockPos pos )
 	{
 	}
 
 	@Override
-	public void toolUsed( ItemStack item, EntityLivingBase user, Entity entity )
+	public void toolUsed( ItemStack item, LivingEntity user, Entity entity )
 	{
 	}
 
@@ -114,12 +114,12 @@ public class ToolQuartzWrench extends AEBaseItem implements IAEWrench, IToolHamm
 	// TODO: BC Wrench Integration
 	/*
 	 * @Override
-	 * public boolean canWrench( EntityPlayer player, int x, int y, int z )
+	 * public boolean canWrench( PlayerEntity player, int x, int y, int z )
 	 * {
 	 * return true;
 	 * }
 	 * @Override
-	 * public void wrenchUsed( EntityPlayer player, int x, int y, int z )
+	 * public void wrenchUsed( PlayerEntity player, int x, int y, int z )
 	 * {
 	 * player.swingItem();
 	 * }

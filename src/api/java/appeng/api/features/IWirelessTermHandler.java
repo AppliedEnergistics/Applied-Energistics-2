@@ -24,7 +24,7 @@
 package appeng.api.features;
 
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.util.IConfigManager;
@@ -52,7 +52,7 @@ public interface IWirelessTermHandler extends INetworkEncodable
 	 *
 	 * @return true if wireless terminal uses power
 	 */
-	boolean usePower( EntityPlayer player, double amount, ItemStack is );
+	boolean usePower( PlayerEntity player, double amount, ItemStack is );
 
 	/**
 	 * gets the power status of the item.
@@ -61,7 +61,7 @@ public interface IWirelessTermHandler extends INetworkEncodable
 	 *
 	 * @return returns true if there is any power left.
 	 */
-	boolean hasPower( EntityPlayer player, double amount, ItemStack is );
+	boolean hasPower( PlayerEntity player, double amount, ItemStack is );
 
 	/**
 	 * Return the config manager for the wireless terminal.

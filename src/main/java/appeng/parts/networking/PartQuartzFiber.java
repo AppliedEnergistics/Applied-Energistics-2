@@ -23,11 +23,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 
 import appeng.api.config.Actionable;
@@ -78,14 +78,14 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound extra )
+	public void readFromNBT( final CompoundNBT extra )
 	{
 		super.readFromNBT( extra );
 		this.outerProxy.readFromNBT( extra );
 	}
 
 	@Override
-	public void writeToNBT( final NBTTagCompound extra )
+	public void writeToNBT( final CompoundNBT extra )
 	{
 		super.writeToNBT( extra );
 		this.outerProxy.writeToNBT( extra );
@@ -125,7 +125,7 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 	}
 
 	@Override
-	public void onPlacement( final EntityPlayer player, final EnumHand hand, final ItemStack held, final AEPartLocation side )
+	public void onPlacement( final PlayerEntity player, final Hand hand, final ItemStack held, final AEPartLocation side )
 	{
 		super.onPlacement( player, hand, held, side );
 		this.outerProxy.setOwner( player );

@@ -24,10 +24,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntityMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Settings;
@@ -67,7 +67,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 	private final Map<IInterfaceHost, InvTracker> diList = new HashMap<>();
 	private final Map<Long, InvTracker> byId = new HashMap<>();
 	private IGrid grid;
-	private NBTTagCompound data = new NBTTagCompound();
+	private CompoundNBT data = new CompoundNBT();
 
 	public ContainerInterfaceTerminal( final InventoryPlayer ip, final PartInterfaceTerminal anchor )
 	{
@@ -188,19 +188,19 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 		{
 			try
 			{
-				NetworkHandler.instance().sendTo( new PacketCompressedNBT( this.data ), (EntityPlayerMP) this.getPlayerInv().player );
+				NetworkHandler.instance().sendTo( new PacketCompressedNBT( this.data ), (PlayerEntityMP) this.getPlayerInv().player );
 			}
 			catch( final IOException e )
 			{
 				// :P
 			}
 
-			this.data = new NBTTagCompound();
+			this.data = new CompoundNBT();
 		}
 	}
 
 	@Override
-	public void doAction( final EntityPlayerMP player, final InventoryAction action, final int slot, final long id )
+	public void doAction( final PlayerEntityMP player, final InventoryAction action, final int slot, final long id )
 	{
 		final InvTracker inv = this.byId.get( id );
 		if( inv != null )
@@ -311,7 +311,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 		}
 	}
 
-	private void regenList( final NBTTagCompound data )
+	private void regenList( final CompoundNBT data )
 	{
 		this.byId.clear();
 		this.diList.clear();
@@ -369,10 +369,10 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 		return !ItemStack.areItemStacksEqual( a, b );
 	}
 
-	private void addItems( final NBTTagCompound data, final InvTracker inv, final int offset, final int length )
+	private void addItems( final CompoundNBT data, final InvTracker inv, final int offset, final int length )
 	{
 		final String name = '=' + Long.toString( inv.which, Character.MAX_RADIX );
-		final NBTTagCompound tag = data.getCompoundTag( name );
+		final CompoundNBT tag = data.getCompoundTag( name );
 
 		if( tag.hasNoTags() )
 		{
@@ -382,7 +382,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 
 		for( int x = 0; x < length; x++ )
 		{
-			final NBTTagCompound itemNBT = new NBTTagCompound();
+			final CompoundNBT itemNBT = new CompoundNBT();
 
 			final ItemStack is = inv.server.getStackInSlot( x + offset );
 

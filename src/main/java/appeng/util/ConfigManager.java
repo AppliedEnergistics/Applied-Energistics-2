@@ -23,7 +23,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 import appeng.api.config.LevelEmitterMode;
 import appeng.api.config.Settings;
@@ -82,7 +82,7 @@ public final class ConfigManager implements IConfigManager
 	 * @param tagCompound to be written to compound
 	 */
 	@Override
-	public void writeToNBT( final NBTTagCompound tagCompound )
+	public void writeToNBT( final CompoundNBT tagCompound )
 	{
 		for( final Map.Entry<Settings, Enum<?>> entry : this.settings.entrySet() )
 		{
@@ -96,7 +96,7 @@ public final class ConfigManager implements IConfigManager
 	 * @param tagCompound to be read from compound
 	 */
 	@Override
-	public void readFromNBT( final NBTTagCompound tagCompound )
+	public void readFromNBT( final CompoundNBT tagCompound )
 	{
 		for( final Map.Entry<Settings, Enum<?>> entry : this.settings.entrySet() )
 		{

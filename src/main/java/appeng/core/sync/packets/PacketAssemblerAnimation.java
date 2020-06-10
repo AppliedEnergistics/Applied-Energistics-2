@@ -24,10 +24,11 @@ import java.io.IOException;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.EffectType;
@@ -35,6 +36,7 @@ import appeng.core.AppEng;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.item.AEItemStack;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 
 public class PacketAssemblerAnimation extends AppEngPacket
@@ -47,7 +49,7 @@ public class PacketAssemblerAnimation extends AppEngPacket
 	public final IAEItemStack is;
 
 	// automatic.
-	public PacketAssemblerAnimation( final ByteBuf stream ) throws IOException
+	public PacketAssemblerAnimation( final ByteBuf stream )
 	{
 		this.x = stream.readInt();
 		this.y = stream.readInt();
@@ -60,9 +62,8 @@ public class PacketAssemblerAnimation extends AppEngPacket
 	public PacketAssemblerAnimation( final BlockPos pos, final byte rate, final IAEItemStack is ) throws IOException
 	{
 
-		final ByteBuf data = Unpooled.buffer();
+		final PacketBuffer data = new PacketBuffer( Unpooled.buffer() );
 
-		data.writeInt( this.getPacketID() );
 		data.writeInt( this.x = pos.getX() );
 		data.writeInt( this.y = pos.getY() );
 		data.writeInt( this.z = pos.getZ() );
@@ -74,8 +75,8 @@ public class PacketAssemblerAnimation extends AppEngPacket
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
+	@OnlyIn( Dist.CLIENT )
+	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final PlayerEntity player, NetworkEvent.Context ctx )
 	{
 		final double d0 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
 		final double d1 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);

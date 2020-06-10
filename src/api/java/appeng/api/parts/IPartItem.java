@@ -42,7 +42,7 @@ import net.minecraft.item.ItemStack;
  * <code>
  *
  * {@literal @}Override
- * public default EnumActionResult onItemUse(ItemStack is, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+ * public default EnumActionResult onItemUse(ItemStack is, PlayerEntity player, World world, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ)
  *	{
  *		return AEApi.instance().partHelper().placeBus( is, pos, side, player, hand, world );
  *	}

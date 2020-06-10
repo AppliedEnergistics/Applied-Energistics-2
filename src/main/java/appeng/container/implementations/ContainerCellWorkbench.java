@@ -21,7 +21,7 @@ package appeng.container.implementations;
 
 import java.util.Iterator;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntityMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
@@ -164,9 +164,9 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 						}
 					}
 
-					if( listener instanceof EntityPlayerMP )
+					if( listener instanceof PlayerEntityMP )
 					{
-						( (EntityPlayerMP) listener ).isChangingQuantityOnly = false;
+						( (PlayerEntityMP) listener ).isChangingQuantityOnly = false;
 					}
 				}
 			}
@@ -216,7 +216,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		{
 			return cwi.getFuzzyMode( this.workBench.getInventoryByName( "cell" ).getStackInSlot( 0 ) );
 		}
-		return FuzzyMode.IGNORE_ALL;
+		return FuzzyMode.ENABLED;
 	}
 
 	public void partition()

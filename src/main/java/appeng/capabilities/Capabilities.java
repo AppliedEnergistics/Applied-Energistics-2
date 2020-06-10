@@ -18,11 +18,12 @@
 
 package appeng.capabilities;
 
-
+/*
 import net.darkhax.tesla.api.ITeslaConsumer;
-import net.darkhax.tesla.api.ITeslaHolder;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.util.EnumFacing;
+import net.darkhax.tesla.api.ITeslaHolder;*/
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -48,9 +49,9 @@ public final class Capabilities
 
 	public static Capability<ISpatialDimension> SPATIAL_DIMENSION;
 
-	public static Capability<ITeslaConsumer> TESLA_CONSUMER;
+	/*public static Capability<ITeslaConsumer> TESLA_CONSUMER;
 
-	public static Capability<ITeslaHolder> TESLA_HOLDER;
+	public static Capability<ITeslaHolder> TESLA_HOLDER;*/
 
 	public static Capability<IEnergyStorage> FORGE_ENERGY;
 
@@ -75,7 +76,7 @@ public final class Capabilities
 		SPATIAL_DIMENSION = cap;
 	}
 
-	@CapabilityInject( ITeslaConsumer.class )
+	/*@CapabilityInject( ITeslaConsumer.class )
 	private static void capITeslaConsumerRegistered( Capability<ITeslaConsumer> cap )
 	{
 		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.TESLA ) )
@@ -91,7 +92,7 @@ public final class Capabilities
 		{
 			TESLA_HOLDER = cap;
 		}
-	}
+	}*/
 
 	@CapabilityInject( IEnergyStorage.class )
 	private static void capIEnergyStorageRegistered( Capability<IEnergyStorage> cap )
@@ -105,13 +106,12 @@ public final class Capabilities
 		return new Capability.IStorage<T>()
 		{
 			@Override
-			public NBTBase writeNBT( Capability<T> capability, T instance, EnumFacing side )
+			public CompoundNBT writeNBT( Capability<T> capability, T instance, Direction side )
 			{
 				return null;
 			}
 
-			@Override
-			public void readNBT( Capability<T> capability, T instance, EnumFacing side, NBTBase nbt )
+			@Override public void readNBT( Capability<T> capability, T instance, Direction side, INBT nbt )
 			{
 
 			}

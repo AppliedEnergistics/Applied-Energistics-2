@@ -22,13 +22,15 @@ package appeng.core.sync.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 
 import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.fluids.container.ContainerFluidTerminal;
 import appeng.fluids.util.AEFluidStack;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 
 /**
@@ -67,8 +69,7 @@ public class PacketTargetFluidStack extends AppEngPacket
 
 		this.stack = stack;
 
-		final ByteBuf data = Unpooled.buffer();
-		data.writeInt( this.getPacketID() );
+		final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 		if( stack != null )
 		{
 			try
@@ -84,7 +85,7 @@ public class PacketTargetFluidStack extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player, NetworkEvent.Context ctx )
 	{
 		if( player.openContainer instanceof ContainerFluidTerminal )
 		{

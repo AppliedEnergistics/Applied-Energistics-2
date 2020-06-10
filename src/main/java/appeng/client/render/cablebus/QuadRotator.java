@@ -22,14 +22,11 @@ package appeng.client.render.cablebus;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.vecmath.Matrix4f;
-import javax.vecmath.Point3f;
-import javax.vecmath.Vector3f;
-
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 import appeng.client.render.FacingToRotation;
 import appeng.core.AELog;
@@ -42,9 +39,9 @@ import appeng.core.AELog;
 public class QuadRotator
 {
 
-	public List<BakedQuad> rotateQuads( List<BakedQuad> quads, EnumFacing newForward, EnumFacing newUp )
+	public List<BakedQuad> rotateQuads( List<BakedQuad> quads, Direction newForward, Direction newUp )
 	{
-		if( newForward == EnumFacing.NORTH && newUp == EnumFacing.UP )
+		if( newForward == Direction.NORTH && newUp == Direction.UP )
 		{
 			return quads; // This is the default orientation
 		}
@@ -59,18 +56,18 @@ public class QuadRotator
 		return result;
 	}
 
-	private BakedQuad rotateQuad( BakedQuad quad, EnumFacing forward, EnumFacing up )
+	private BakedQuad rotateQuad( BakedQuad quad, Direction forward, Direction up )
 	{
 		// Sanitize forward/up
 		if( forward.getAxis() == up.getAxis() )
 		{
-			if( up.getAxis() == EnumFacing.Axis.Y )
+			if( up.getAxis() == Direction.Axis.Y )
 			{
-				up = EnumFacing.NORTH;
+				up = Direction.NORTH;
 			}
 			else
 			{
-				up = EnumFacing.UP;
+				up = Direction.UP;
 			}
 		}
 
@@ -149,7 +146,7 @@ public class QuadRotator
 			}
 		}
 
-		EnumFacing newFace = rotation.rotate( quad.getFace() );
+		Direction newFace = rotation.rotate( quad.getFace() );
 		return new BakedQuad( newData, quad.getTintIndex(), newFace, quad.getSprite(), quad.shouldApplyDiffuseLighting(), quad.getFormat() );
 	}
 

@@ -19,12 +19,10 @@
 package appeng.client.render;
 
 
-import javax.vecmath.Matrix4f;
-import javax.vecmath.Vector3f;
-
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.EnumFacing;
-import net.minecraftforge.common.model.TRSRTransformation;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.util.Direction;
 
 
 /**
@@ -80,9 +78,9 @@ public enum FacingToRotation
 	{
 		this.rot = rot;
 		this.mat = TRSRTransformation
-				.toVecmath( new org.lwjgl.util.vector.Matrix4f().rotate( (float) Math.toRadians( rot.x ), new org.lwjgl.util.vector.Vector3f( 1, 0, 0 ) )
-						.rotate( (float) Math.toRadians( rot.y ), new org.lwjgl.util.vector.Vector3f( 0, 1, 0 ) )
-						.rotate( (float) Math.toRadians( rot.z ), new org.lwjgl.util.vector.Vector3f( 0, 0, 1 ) ) );
+				.toVecmath( new Matrix4f(). rotate( (float) Math.toRadians( rot.getX() ), new Vector3f( 1, 0, 0 ) )
+						.rotate( (float) Math.toRadians( rot.getY() ), new Vector3f( 0, 1, 0 ) )
+						.rotate( (float) Math.toRadians( rot.getZ() ), new Vector3f( 0, 0, 1 ) ) );
 	}
 
 	public Vector3f getRot()
@@ -97,19 +95,19 @@ public enum FacingToRotation
 
 	public void glRotateCurrentMat()
 	{
-		GlStateManager.rotate( this.rot.x, 1, 0, 0 );
-		GlStateManager.rotate( this.rot.y, 0, 1, 0 );
-		GlStateManager.rotate( this.rot.z, 0, 0, 1 );
+		GlStateManager.rotatef( this.rot.getX(), 1, 0, 0 );
+		GlStateManager.rotatef( this.rot.getY(), 0, 1, 0 );
+		GlStateManager.rotatef( this.rot.getZ(), 0, 0, 1 );
 	}
 
-	public EnumFacing rotate( EnumFacing facing )
+	public Direction rotate( Direction facing )
 	{
 		return TRSRTransformation.rotate( this.mat, facing );
 	}
 
-	public EnumFacing resultingRotate( EnumFacing facing )
+	public Direction resultingRotate( Direction facing )
 	{
-		for( EnumFacing face : EnumFacing.values() )
+		for( Direction face : Direction.values() )
 		{
 			if( this.rotate( face ) == facing )
 			{
@@ -119,7 +117,7 @@ public enum FacingToRotation
 		return null;
 	}
 
-	public static FacingToRotation get( EnumFacing forward, EnumFacing up )
+	public static FacingToRotation get( Direction forward, Direction up )
 	{
 		return values()[forward.ordinal() * 6 + up.ordinal()];
 	}

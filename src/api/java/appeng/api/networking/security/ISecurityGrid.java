@@ -27,10 +27,9 @@ package appeng.api.networking.security;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
-import net.minecraft.entity.player.EntityPlayer;
-
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGridCache;
+import net.minecraft.entity.player.PlayerEntity;
 
 
 public interface ISecurityGrid extends IGridCache
@@ -49,7 +48,7 @@ public interface ISecurityGrid extends IGridCache
 	 *
 	 * @return true if the player has permissions.
 	 */
-	boolean hasPermission( @Nonnull EntityPlayer player, @Nonnull SecurityPermissions perm );
+	boolean hasPermission( @Nonnull PlayerEntity player, @Nonnull SecurityPermissions perm );
 
 	/**
 	 * Check if a player has permissions.

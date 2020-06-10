@@ -21,13 +21,13 @@ package appeng.block.networking;
 
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.helpers.AEGlassMaterial;
@@ -39,31 +39,19 @@ public class BlockEnergyCell extends AEBaseTileBlock
 
 	public static final PropertyInteger ENERGY_STORAGE = PropertyInteger.create( "fullness", 0, 7 );
 
-	@Override
-	public int getMetaFromState( final IBlockState state )
-	{
-		return state.getValue( ENERGY_STORAGE );
-	}
-
-	@Override
-	public IBlockState getStateFromMeta( final int meta )
-	{
-		return this.getDefaultState().withProperty( ENERGY_STORAGE, Math.min( 7, Math.max( 0, meta ) ) );
-	}
-
 	public BlockEnergyCell()
 	{
 		super( AEGlassMaterial.INSTANCE );
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public void getSubBlocks( final CreativeTabs tabs, final NonNullList<ItemStack> itemStacks )
 	{
 		super.getSubBlocks( tabs, itemStacks );
 
 		final ItemStack charged = new ItemStack( this, 1 );
-		final NBTTagCompound tag = Platform.openNbtData( charged );
+		final CompoundNBT tag = Platform.openNbtData( charged );
 		tag.setDouble( "internalCurrentPower", this.getMaxPower() );
 		tag.setDouble( "internalMaxPower", this.getMaxPower() );
 

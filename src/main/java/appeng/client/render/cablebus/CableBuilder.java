@@ -29,7 +29,7 @@ import java.util.function.Function;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 
 import appeng.api.util.AECableType;
@@ -159,7 +159,7 @@ class CableBuilder
 		}
 	}
 
-	public void addGlassConnection( EnumFacing facing, AEColor cableColor, AECableType connectionType, boolean cableBusAdjacent, List<BakedQuad> quadsOut )
+	public void addGlassConnection( Direction facing, AEColor cableColor, AECableType connectionType, boolean cableBusAdjacent, List<BakedQuad> quadsOut )
 	{
 		CubeBuilder cubeBuilder = new CubeBuilder( this.format, quadsOut );
 
@@ -201,7 +201,7 @@ class CableBuilder
 		}
 	}
 
-	public void addStraightGlassConnection( EnumFacing facing, AEColor cableColor, List<BakedQuad> quadsOut )
+	public void addStraightGlassConnection( Direction facing, AEColor cableColor, List<BakedQuad> quadsOut )
 	{
 		CubeBuilder cubeBuilder = new CubeBuilder( this.format, quadsOut );
 
@@ -229,7 +229,7 @@ class CableBuilder
 		}
 	}
 
-	public void addConstrainedGlassConnection( EnumFacing facing, AEColor cableColor, int distanceFromEdge, List<BakedQuad> quadsOut )
+	public void addConstrainedGlassConnection( Direction facing, AEColor cableColor, int distanceFromEdge, List<BakedQuad> quadsOut )
 	{
 
 		// Glass connections reach only 6 voxels from the edge
@@ -266,7 +266,7 @@ class CableBuilder
 		}
 	}
 
-	public void addCoveredConnection( EnumFacing facing, AEColor cableColor, AECableType connectionType, boolean cableBusAdjacent, List<BakedQuad> quadsOut )
+	public void addCoveredConnection( Direction facing, AEColor cableColor, AECableType connectionType, boolean cableBusAdjacent, List<BakedQuad> quadsOut )
 	{
 
 		CubeBuilder cubeBuilder = new CubeBuilder( this.format, quadsOut );
@@ -286,7 +286,7 @@ class CableBuilder
 		addCoveredCableSizedCube( facing, cubeBuilder );
 	}
 
-	public void addStraightCoveredConnection( EnumFacing facing, AEColor cableColor, List<BakedQuad> quadsOut )
+	public void addStraightCoveredConnection( Direction facing, AEColor cableColor, List<BakedQuad> quadsOut )
 	{
 		CubeBuilder cubeBuilder = new CubeBuilder( this.format, quadsOut );
 
@@ -299,35 +299,35 @@ class CableBuilder
 
 	}
 
-	private static void setStraightCableUVs( CubeBuilder cubeBuilder, EnumFacing facing, int x, int y )
+	private static void setStraightCableUVs( CubeBuilder cubeBuilder, Direction facing, int x, int y )
 	{
 		switch( facing )
 		{
 			case DOWN:
 			case UP:
-				cubeBuilder.setCustomUv( EnumFacing.NORTH, x, 0, y, x );
-				cubeBuilder.setCustomUv( EnumFacing.EAST, x, 0, y, x );
-				cubeBuilder.setCustomUv( EnumFacing.SOUTH, x, 0, y, x );
-				cubeBuilder.setCustomUv( EnumFacing.WEST, x, 0, y, x );
+				cubeBuilder.setCustomUv( Direction.NORTH, x, 0, y, x );
+				cubeBuilder.setCustomUv( Direction.EAST, x, 0, y, x );
+				cubeBuilder.setCustomUv( Direction.SOUTH, x, 0, y, x );
+				cubeBuilder.setCustomUv( Direction.WEST, x, 0, y, x );
 				break;
 			case EAST:
 			case WEST:
-				cubeBuilder.setCustomUv( EnumFacing.UP, 0, x, x, y );
-				cubeBuilder.setCustomUv( EnumFacing.DOWN, 0, x, x, y );
-				cubeBuilder.setCustomUv( EnumFacing.NORTH, 0, x, x, y );
-				cubeBuilder.setCustomUv( EnumFacing.SOUTH, 0, x, x, y );
+				cubeBuilder.setCustomUv( Direction.UP, 0, x, x, y );
+				cubeBuilder.setCustomUv( Direction.DOWN, 0, x, x, y );
+				cubeBuilder.setCustomUv( Direction.NORTH, 0, x, x, y );
+				cubeBuilder.setCustomUv( Direction.SOUTH, 0, x, x, y );
 				break;
 			case NORTH:
 			case SOUTH:
-				cubeBuilder.setCustomUv( EnumFacing.UP, x, 0, y, x );
-				cubeBuilder.setCustomUv( EnumFacing.DOWN, x, 0, y, x );
-				cubeBuilder.setCustomUv( EnumFacing.EAST, 0, x, x, y );
-				cubeBuilder.setCustomUv( EnumFacing.WEST, 0, x, x, y );
+				cubeBuilder.setCustomUv( Direction.UP, x, 0, y, x );
+				cubeBuilder.setCustomUv( Direction.DOWN, x, 0, y, x );
+				cubeBuilder.setCustomUv( Direction.EAST, 0, x, x, y );
+				cubeBuilder.setCustomUv( Direction.WEST, 0, x, x, y );
 				break;
 		}
 	}
 
-	public void addConstrainedCoveredConnection( EnumFacing facing, AEColor cableColor, int distanceFromEdge, List<BakedQuad> quadsOut )
+	public void addConstrainedCoveredConnection( Direction facing, AEColor cableColor, int distanceFromEdge, List<BakedQuad> quadsOut )
 	{
 		// The core of a covered cable reaches up to 5 voxels from the block edge, so
 		// drawing a connection can only occur from there onwards
@@ -345,7 +345,7 @@ class CableBuilder
 
 	}
 
-	public void addSmartConnection( EnumFacing facing, AEColor cableColor, AECableType connectionType, boolean cableBusAdjacent, int channels, List<BakedQuad> quadsOut )
+	public void addSmartConnection( Direction facing, AEColor cableColor, AECableType connectionType, boolean cableBusAdjacent, int channels, List<BakedQuad> quadsOut )
 	{
 		if( connectionType == AECableType.COVERED || connectionType == AECableType.GLASS )
 		{
@@ -399,7 +399,7 @@ class CableBuilder
 		addCoveredCableSizedCube( facing, cubeBuilder );
 	}
 
-	public void addStraightSmartConnection( EnumFacing facing, AEColor cableColor, int channels, List<BakedQuad> quadsOut )
+	public void addStraightSmartConnection( Direction facing, AEColor cableColor, int channels, List<BakedQuad> quadsOut )
 	{
 		CubeBuilder cubeBuilder = new CubeBuilder( this.format, quadsOut );
 
@@ -425,7 +425,7 @@ class CableBuilder
 		addStraightCoveredCableSizedCube( facing, cubeBuilder );
 	}
 
-	public void addConstrainedSmartConnection( EnumFacing facing, AEColor cableColor, int distanceFromEdge, int channels, List<BakedQuad> quadsOut )
+	public void addConstrainedSmartConnection( Direction facing, AEColor cableColor, int distanceFromEdge, int channels, List<BakedQuad> quadsOut )
 	{
 		// Same as with covered cables, the smart cable's core extends up to 5 voxels away from the edge.
 		// Drawing a connection to any point before that point is fruitless
@@ -456,7 +456,7 @@ class CableBuilder
 		addCoveredCableSizedCube( facing, distanceFromEdge, cubeBuilder );
 	}
 
-	public void addDenseCoveredConnection( EnumFacing facing, AEColor cableColor, AECableType connectionType, boolean cableBusAdjacent, List<BakedQuad> quadsOut )
+	public void addDenseCoveredConnection( Direction facing, AEColor cableColor, AECableType connectionType, boolean cableBusAdjacent, List<BakedQuad> quadsOut )
 	{
 		// Dense cables only render their connections as dense if the adjacent blocks actually wants that
 		if( connectionType == AECableType.COVERED || connectionType == AECableType.SMART || connectionType == AECableType.GLASS )
@@ -480,7 +480,7 @@ class CableBuilder
 		cubeBuilder.setTexture( texture );
 	}
 
-	public void addDenseSmartConnection( EnumFacing facing, AEColor cableColor, AECableType connectionType, boolean cableBusAdjacent, int channels, List<BakedQuad> quadsOut )
+	public void addDenseSmartConnection( Direction facing, AEColor cableColor, AECableType connectionType, boolean cableBusAdjacent, int channels, List<BakedQuad> quadsOut )
 	{
 		// Dense cables only render their connections as dense if the adjacent blocks actually wants that
 		if( connectionType == AECableType.SMART )
@@ -532,7 +532,7 @@ class CableBuilder
 
 	}
 
-	public void addStraightDenseCoveredConnection( EnumFacing facing, AEColor cableColor, List<BakedQuad> quadsOut )
+	public void addStraightDenseCoveredConnection( Direction facing, AEColor cableColor, List<BakedQuad> quadsOut )
 	{
 		CubeBuilder cubeBuilder = new CubeBuilder( this.format, quadsOut );
 
@@ -544,7 +544,7 @@ class CableBuilder
 		addStraightDenseCableSizedCube( facing, cubeBuilder );
 	}
 
-	public void addStraightDenseSmartConnection( EnumFacing facing, AEColor cableColor, int channels, List<BakedQuad> quadsOut )
+	public void addStraightDenseSmartConnection( Direction facing, AEColor cableColor, int channels, List<BakedQuad> quadsOut )
 	{
 		CubeBuilder cubeBuilder = new CubeBuilder( this.format, quadsOut );
 
@@ -573,7 +573,7 @@ class CableBuilder
 		addStraightDenseCableSizedCube( facing, cubeBuilder );
 	}
 
-	private static void addDenseCableSizedCube( EnumFacing facing, CubeBuilder cubeBuilder )
+	private static void addDenseCableSizedCube( Direction facing, CubeBuilder cubeBuilder )
 	{
 		switch( facing )
 		{
@@ -600,31 +600,31 @@ class CableBuilder
 
 	// Adds a cube to the given cube builder that has the size of a dense cable connection and spans the entire block
 	// for the given direction
-	private static void addStraightDenseCableSizedCube( EnumFacing facing, CubeBuilder cubeBuilder )
+	private static void addStraightDenseCableSizedCube( Direction facing, CubeBuilder cubeBuilder )
 	{
 		switch( facing )
 		{
 			case DOWN:
 			case UP:
-				cubeBuilder.setUvRotation( EnumFacing.EAST, 3 );
+				cubeBuilder.setUvRotation( Direction.EAST, 3 );
 				cubeBuilder.addCube( 3, 0, 3, 13, 16, 13 );
-				cubeBuilder.setUvRotation( EnumFacing.EAST, 0 );
+				cubeBuilder.setUvRotation( Direction.EAST, 0 );
 				break;
 			case EAST:
 			case WEST:
-				cubeBuilder.setUvRotation( EnumFacing.SOUTH, 3 );
-				cubeBuilder.setUvRotation( EnumFacing.NORTH, 3 );
+				cubeBuilder.setUvRotation( Direction.SOUTH, 3 );
+				cubeBuilder.setUvRotation( Direction.NORTH, 3 );
 				cubeBuilder.addCube( 0, 3, 3, 16, 13, 13 );
-				cubeBuilder.setUvRotation( EnumFacing.SOUTH, 0 );
-				cubeBuilder.setUvRotation( EnumFacing.NORTH, 0 );
+				cubeBuilder.setUvRotation( Direction.SOUTH, 0 );
+				cubeBuilder.setUvRotation( Direction.NORTH, 0 );
 				break;
 			case NORTH:
 			case SOUTH:
-				cubeBuilder.setUvRotation( EnumFacing.EAST, 3 );
-				cubeBuilder.setUvRotation( EnumFacing.WEST, 3 );
+				cubeBuilder.setUvRotation( Direction.EAST, 3 );
+				cubeBuilder.setUvRotation( Direction.WEST, 3 );
 				cubeBuilder.addCube( 3, 3, 0, 13, 13, 16 );
-				cubeBuilder.setUvRotation( EnumFacing.EAST, 0 );
-				cubeBuilder.setUvRotation( EnumFacing.WEST, 0 );
+				cubeBuilder.setUvRotation( Direction.EAST, 0 );
+				cubeBuilder.setUvRotation( Direction.WEST, 0 );
 				break;
 		}
 
@@ -632,7 +632,7 @@ class CableBuilder
 
 	// Adds a cube to the given cube builder that has the size of a covered cable connection from the core of the cable
 	// to the given face
-	private static void addCoveredCableSizedCube( EnumFacing facing, CubeBuilder cubeBuilder )
+	private static void addCoveredCableSizedCube( Direction facing, CubeBuilder cubeBuilder )
 	{
 		switch( facing )
 		{
@@ -659,36 +659,36 @@ class CableBuilder
 
 	// Adds a cube to the given cube builder that has the size of a covered cable connection and spans the entire block
 	// for the given direction
-	private static void addStraightCoveredCableSizedCube( EnumFacing facing, CubeBuilder cubeBuilder )
+	private static void addStraightCoveredCableSizedCube( Direction facing, CubeBuilder cubeBuilder )
 	{
 		switch( facing )
 		{
 			case DOWN:
 			case UP:
-				cubeBuilder.setUvRotation( EnumFacing.EAST, 3 );
+				cubeBuilder.setUvRotation( Direction.EAST, 3 );
 				cubeBuilder.addCube( 5, 0, 5, 11, 16, 11 );
-				cubeBuilder.setUvRotation( EnumFacing.EAST, 0 );
+				cubeBuilder.setUvRotation( Direction.EAST, 0 );
 				break;
 			case EAST:
 			case WEST:
-				cubeBuilder.setUvRotation( EnumFacing.SOUTH, 3 );
-				cubeBuilder.setUvRotation( EnumFacing.NORTH, 3 );
+				cubeBuilder.setUvRotation( Direction.SOUTH, 3 );
+				cubeBuilder.setUvRotation( Direction.NORTH, 3 );
 				cubeBuilder.addCube( 0, 5, 5, 16, 11, 11 );
-				cubeBuilder.setUvRotation( EnumFacing.SOUTH, 0 );
-				cubeBuilder.setUvRotation( EnumFacing.NORTH, 0 );
+				cubeBuilder.setUvRotation( Direction.SOUTH, 0 );
+				cubeBuilder.setUvRotation( Direction.NORTH, 0 );
 				break;
 			case NORTH:
 			case SOUTH:
-				cubeBuilder.setUvRotation( EnumFacing.EAST, 3 );
-				cubeBuilder.setUvRotation( EnumFacing.WEST, 3 );
+				cubeBuilder.setUvRotation( Direction.EAST, 3 );
+				cubeBuilder.setUvRotation( Direction.WEST, 3 );
 				cubeBuilder.addCube( 5, 5, 0, 11, 11, 16 );
-				cubeBuilder.setUvRotation( EnumFacing.EAST, 0 );
-				cubeBuilder.setUvRotation( EnumFacing.WEST, 0 );
+				cubeBuilder.setUvRotation( Direction.EAST, 0 );
+				cubeBuilder.setUvRotation( Direction.WEST, 0 );
 				break;
 		}
 	}
 
-	private static void addCoveredCableSizedCube( EnumFacing facing, int distanceFromEdge, CubeBuilder cubeBuilder )
+	private static void addCoveredCableSizedCube( Direction facing, int distanceFromEdge, CubeBuilder cubeBuilder )
 	{
 		switch( facing )
 		{
@@ -719,7 +719,7 @@ class CableBuilder
 	 * that do not want to be connected to using a glass cable connection. This applies to most machines (interfaces,
 	 * etc.)
 	 */
-	private void addBigCoveredCableSizedCube( EnumFacing facing, CubeBuilder cubeBuilder )
+	private void addBigCoveredCableSizedCube( Direction facing, CubeBuilder cubeBuilder )
 	{
 		switch( facing )
 		{

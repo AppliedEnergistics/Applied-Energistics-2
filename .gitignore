@@ -1,31 +1,25 @@
-# exclude all
-/*
+# eclipse
+bin
+*.launch
+.settings
+.metadata
+.classpath
+.project
 
-# include important folders
-# need gradle 
-!gradle/
-!gradlew
-!gradlew.bat
-!build.gradle
-!gradle.properties
-!.travis.yml
+# idea
+out
+*.ipr
+*.iws
+*.iml
+.idea
 
-# include markdowns
-!README.md
-!LICENSE
+# gradle
+build
+.gradle
 
-# include sourcecode
-!src/
+# other
+eclipse
+run
 
-# include git important files
-!.gitmodules
-!.gitignore
-
-# code format to reduce noise in git commits
-!codeformat/
-
-# Github specific files and directories
-!.github/
-
-# Explicit ignores
-Thumbs.db
+# Files from Forge MDK
+forge*changelog.txt

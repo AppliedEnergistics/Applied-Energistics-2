@@ -19,10 +19,10 @@
 package appeng.util;
 
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -41,7 +41,7 @@ import appeng.util.inv.ItemSlot;
  */
 public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 {
-	public static InventoryAdaptor getAdaptor( final TileEntity te, final EnumFacing d )
+	public static InventoryAdaptor getAdaptor( final TileEntity te, final Direction d )
 	{
 		if( te != null && te.hasCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, d ) )
 		{
@@ -55,7 +55,7 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 		return null;
 	}
 
-	public static InventoryAdaptor getAdaptor( final EntityPlayer te )
+	public static InventoryAdaptor getAdaptor( final PlayerEntity te )
 	{
 		if( te != null )
 		{

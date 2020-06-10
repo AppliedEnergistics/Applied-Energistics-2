@@ -22,10 +22,10 @@ package appeng.integration.abstraction;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.block.state.BlockState;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraftforge.fml.common.Optional;
 
 import team.chisel.ctm.api.IFacade;
@@ -40,12 +40,12 @@ import team.chisel.ctm.api.IFacade;
 public interface IAEFacade extends IFacade
 {
 
-	IBlockState getFacadeState( IBlockAccess world, BlockPos pos, EnumFacing side );
+	BlockState getFacadeState( IBlockReader world, BlockPos pos, Direction side );
 
 	@Nonnull
 	@Override
 	@Optional.Method( modid = "ctm-api" )
-	default IBlockState getFacade( @Nonnull IBlockAccess world, @Nonnull BlockPos pos, @Nullable EnumFacing side, @Nonnull BlockPos connection )
+	default BlockState getFacade( @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nullable Direction side, @Nonnull BlockPos connection )
 	{
 		return getFacadeState( world, pos, side );
 	}
@@ -53,7 +53,7 @@ public interface IAEFacade extends IFacade
 	@Nonnull
 	@Override
 	@Optional.Method( modid = "ctm-api" )
-	default IBlockState getFacade( @Nonnull IBlockAccess world, @Nonnull BlockPos pos, @Nullable EnumFacing side )
+	default BlockState getFacade( @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nullable Direction side )
 	{
 		return getFacadeState( world, pos, side );
 	}

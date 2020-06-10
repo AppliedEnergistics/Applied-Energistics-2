@@ -12,14 +12,14 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
@@ -74,7 +74,7 @@ class QnbFormedBakedModel implements IBakedModel
 	}
 
 	@Override
-	public List<BakedQuad> getQuads( @Nullable IBlockState state, @Nullable EnumFacing side, long rand )
+	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, long rand )
 	{
 		// Get the correct base model
 		if( !( state instanceof IExtendedBlockState ) )
@@ -88,13 +88,13 @@ class QnbFormedBakedModel implements IBakedModel
 		return this.getQuads( formedState, state, side, rand );
 	}
 
-	private List<BakedQuad> getQuads( QnbFormedState formedState, IBlockState state, EnumFacing side, long rand )
+	private List<BakedQuad> getQuads( QnbFormedState formedState, BlockState state, Direction side, long rand )
 	{
 		CubeBuilder builder = new CubeBuilder( this.vertexFormat );
 
 		if( state.getBlock() == this.linkBlock )
 		{
-			Set<EnumFacing> sides = formedState.getAdjacentQuantumBridges();
+			Set<Direction> sides = formedState.getAdjacentQuantumBridges();
 
 			this.renderCableAt( builder, 0.11f * 16, this.glassCableTexture, 0.141f * 16, sides );
 
@@ -116,7 +116,7 @@ class QnbFormedBakedModel implements IBakedModel
 				{
 					builder.setTexture( this.lightCornerTexture );
 					builder.setRenderFullBright( true );
-					for( EnumFacing facing : EnumFacing.values() )
+					for( Direction facing : Direction.values() )
 					{
 						// Offset the face by a slight amount so that it is drawn over the already drawn ring texture
 						// (avoids z-fighting)
@@ -145,7 +145,7 @@ class QnbFormedBakedModel implements IBakedModel
 				{
 					builder.setTexture( this.lightTexture );
 					builder.setRenderFullBright( true );
-					for( EnumFacing facing : EnumFacing.values() )
+					for( Direction facing : Direction.values() )
 					{
 						// Offset the face by a slight amount so that it is drawn over the already drawn ring texture
 						// (avoids z-fighting)
@@ -165,36 +165,36 @@ class QnbFormedBakedModel implements IBakedModel
 		return builder.getOutput();
 	}
 
-	private void renderCableAt( CubeBuilder builder, float thickness, TextureAtlasSprite texture, float pull, Set<EnumFacing> connections )
+	private void renderCableAt( CubeBuilder builder, float thickness, TextureAtlasSprite texture, float pull, Set<Direction> connections )
 	{
 		builder.setTexture( texture );
 
-		if( connections.contains( EnumFacing.WEST ) )
+		if( connections.contains( Direction.WEST ) )
 		{
 			builder.addCube( 0, 8 - thickness, 8 - thickness, 8 - thickness - pull, 8 + thickness, 8 + thickness );
 		}
 
-		if( connections.contains( EnumFacing.EAST ) )
+		if( connections.contains( Direction.EAST ) )
 		{
 			builder.addCube( 8 + thickness + pull, 8 - thickness, 8 - thickness, 16, 8 + thickness, 8 + thickness );
 		}
 
-		if( connections.contains( EnumFacing.NORTH ) )
+		if( connections.contains( Direction.NORTH ) )
 		{
 			builder.addCube( 8 - thickness, 8 - thickness, 0, 8 + thickness, 8 + thickness, 8 - thickness - pull );
 		}
 
-		if( connections.contains( EnumFacing.SOUTH ) )
+		if( connections.contains( Direction.SOUTH ) )
 		{
 			builder.addCube( 8 - thickness, 8 - thickness, 8 + thickness + pull, 8 + thickness, 8 + thickness, 16 );
 		}
 
-		if( connections.contains( EnumFacing.DOWN ) )
+		if( connections.contains( Direction.DOWN ) )
 		{
 			builder.addCube( 8 - thickness, 0, 8 - thickness, 8 + thickness, 8 - thickness - pull, 8 + thickness );
 		}
 
-		if( connections.contains( EnumFacing.UP ) )
+		if( connections.contains( Direction.UP ) )
 		{
 			builder.addCube( 8 - thickness, 8 + thickness + pull, 8 - thickness, 8 + thickness, 16, 8 + thickness );
 		}

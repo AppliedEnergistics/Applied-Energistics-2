@@ -19,13 +19,13 @@
 package appeng.block.networking;
 
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.AEColor;
 import appeng.client.render.cablebus.CableBusRenderState;
@@ -34,12 +34,12 @@ import appeng.client.render.cablebus.CableBusRenderState;
 /**
  * Exposes the cable bus color as tint indices 0 (dark variant), 1 (medium variant) and 2 (bright variant).
  */
-@SideOnly( Side.CLIENT )
+@OnlyIn( Dist.CLIENT )
 public class CableBusColor implements IBlockColor
 {
 
 	@Override
-	public int colorMultiplier( IBlockState state, IBlockAccess worldIn, BlockPos pos, int color )
+	public int colorMultiplier( BlockState state, IBlockReader worldIn, BlockPos pos, int color )
 	{
 
 		AEColor busColor = AEColor.TRANSPARENT;

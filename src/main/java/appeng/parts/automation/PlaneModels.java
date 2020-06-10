@@ -89,9 +89,9 @@ public class PlaneModels
 	public List<IPartModel> getModels()
 	{
 		List<IPartModel> result = new ArrayList<>();
-		this.modelsOff.values().forEach( result::add );
-		this.modelsOn.values().forEach( result::add );
-		this.modelsHasChannel.values().forEach( result::add );
+		result.addAll( this.modelsOff.values() );
+		result.addAll( this.modelsOn.values() );
+		result.addAll( this.modelsHasChannel.values() );
 		return result;
 	}
 

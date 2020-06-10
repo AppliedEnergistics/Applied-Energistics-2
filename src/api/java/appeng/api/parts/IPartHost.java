@@ -26,11 +26,11 @@ package appeng.api.parts;
 
 import java.util.Set;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
 
 import appeng.api.util.AEColor;
@@ -72,7 +72,7 @@ public interface IPartHost extends ICustomCableConnection
 	 * @return null if the item failed to add, the side it was placed on other wise ( may different for cables,
 	 * {@link AEPartLocation}.UNKNOWN )
 	 */
-	AEPartLocation addPart( ItemStack is, AEPartLocation side, EntityPlayer owner, EnumHand hand );
+	AEPartLocation addPart( ItemStack is, AEPartLocation side, PlayerEntity owner, Hand hand );
 
 	/**
 	 * Get part by side ( center is {@link AEPartLocation}.UNKNOWN )
@@ -90,7 +90,7 @@ public interface IPartHost extends ICustomCableConnection
 	 *
 	 * @return the part located on the specified side, or null if there is no part.
 	 */
-	IPart getPart( EnumFacing side );
+	IPart getPart( Direction side );
 
 	/**
 	 * removes the part on the side, this doesn't drop it or anything, if you don't do something with it, its just
@@ -134,7 +134,7 @@ public interface IPartHost extends ICustomCableConnection
 	 *
 	 * @return returns if microblocks are blocking this cable path.
 	 */
-	boolean isBlocked( EnumFacing side );
+	boolean isBlocked( Direction side );
 
 	/**
 	 * finds the part located at the position ( pos must be relative, not global )

@@ -19,20 +19,25 @@
 package appeng.items.tools.quartz;
 
 
-import net.minecraft.item.ItemHoe;
-import net.minecraft.item.ItemStack;
-
+import appeng.core.AppEng;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.*;
 import appeng.core.features.AEFeature;
 import appeng.util.Platform;
 
 
-public class ToolQuartzHoe extends ItemHoe
+public class ToolQuartzHoe extends HoeItem
 {
 	private final AEFeature type;
 
 	public ToolQuartzHoe( final AEFeature type )
 	{
-		super( ToolMaterial.IRON );
+		// A real nice way of creating an Iron tool without hard coding its values - Yay!
+		super( ItemTier.IRON,
+				(float) Items.IRON_HOE.getAttributeModifiers( EquipmentSlotType.MAINHAND )
+						.get( SharedMonsterAttributes.ATTACK_SPEED.getName() ).stream().filter( am -> am.getName().equals( "Tool modifier" ) ).findFirst().get().getAmount(),
+				(new Item.Properties()).group( AppEng.ITEM_GROUP ));
 		this.type = type;
 	}
 

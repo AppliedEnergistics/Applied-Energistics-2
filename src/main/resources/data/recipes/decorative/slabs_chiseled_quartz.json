@@ -1,0 +1,16 @@
+{
+    "result": {
+        "item": "appliedenergistics2:chiseled_quartz_slab",
+        "data": 0,
+        "count": 6
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "aaa"
+    ],
+    "key": {
+        "a": {
+            "item": "appliedenergistics2:chiseled_quartz_block"
+        }
+    }
+}

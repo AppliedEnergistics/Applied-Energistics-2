@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.world.World;
 
 import appeng.api.config.SecurityPermissions;

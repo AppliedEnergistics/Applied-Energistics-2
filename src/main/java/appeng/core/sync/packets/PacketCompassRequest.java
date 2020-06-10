@@ -22,8 +22,7 @@ package appeng.core.sync.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
 
 import appeng.api.util.DimensionalCoord;
 import appeng.core.sync.AppEngPacket;
@@ -31,17 +30,18 @@ import appeng.core.sync.network.INetworkInfo;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.worlddata.WorldData;
 import appeng.services.compass.ICompassCallback;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 
 public class PacketCompassRequest extends AppEngPacket implements ICompassCallback
 {
-
 	final long attunement;
 	final int cx;
 	final int cz;
 	final int cdy;
 
-	private EntityPlayer talkBackTo;
+	private NetworkEvent.Context ctx;
 
 	// automatic.
 	public PacketCompassRequest( final ByteBuf stream )
@@ -56,9 +56,8 @@ public class PacketCompassRequest extends AppEngPacket implements ICompassCallba
 	public PacketCompassRequest( final long attunement, final int cx, final int cz, final int cdy )
 	{
 
-		final ByteBuf data = Unpooled.buffer();
+		final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
-		data.writeInt( this.getPacketID() );
 		data.writeLong( this.attunement = attunement );
 		data.writeInt( this.cx = cx );
 		data.writeInt( this.cz = cz );
@@ -70,13 +69,13 @@ public class PacketCompassRequest extends AppEngPacket implements ICompassCallba
 	@Override
 	public void calculatedDirection( final boolean hasResult, final boolean spin, final double radians, final double dist )
 	{
-		NetworkHandler.instance().sendTo( new PacketCompassResponse( this, hasResult, spin, radians ), (EntityPlayerMP) this.talkBackTo );
+		NetworkHandler.instance().reply( new PacketCompassResponse( this, hasResult, spin, radians ), this.ctx);
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player, NetworkEvent.Context ctx )
 	{
-		this.talkBackTo = player;
+		this.ctx = ctx;
 
 		final DimensionalCoord loc = new DimensionalCoord( player.world, this.cx << 4, this.cdy << 5, this.cz << 4 );
 		WorldData.instance().compassData().service().getCompassDirection( loc, 174, this );

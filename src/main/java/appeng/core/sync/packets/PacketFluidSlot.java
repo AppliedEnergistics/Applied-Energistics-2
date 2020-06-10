@@ -25,16 +25,17 @@ import java.util.Map;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.fluids.container.IFluidSyncContainer;
 import appeng.fluids.util.AEFluidStack;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 
 public class PacketFluidSlot extends AppEngPacket
@@ -44,11 +45,13 @@ public class PacketFluidSlot extends AppEngPacket
 	public PacketFluidSlot( final ByteBuf stream )
 	{
 		this.list = new HashMap<>();
-		NBTTagCompound tag = ByteBufUtils.readTag( stream );
+		final PacketBuffer data = new PacketBuffer(stream);
 
-		for( final String key : tag.getKeySet() )
+		CompoundNBT tag = data.readCompoundTag();
+
+		for( final String key : tag.keySet() )
 		{
-			this.list.put( Integer.parseInt( key ), AEFluidStack.fromNBT( tag.getCompoundTag( key ) ) );
+			this.list.put( Integer.parseInt( key ), AEFluidStack.fromNBT( tag.getCompound( key ) ) );
 		}
 	}
 
@@ -56,25 +59,24 @@ public class PacketFluidSlot extends AppEngPacket
 	public PacketFluidSlot( final Map<Integer, IAEFluidStack> list )
 	{
 		this.list = list;
-		final NBTTagCompound sendTag = new NBTTagCompound();
+		final CompoundNBT sendTag = new CompoundNBT();
 		for( Map.Entry<Integer, IAEFluidStack> fs : list.entrySet() )
 		{
-			final NBTTagCompound tag = new NBTTagCompound();
+			final CompoundNBT tag = new CompoundNBT();
 			if( fs.getValue() != null )
 			{
-				fs.getValue().writeToNBT( tag );
+				fs.getValue().write( tag );
 			}
-			sendTag.setTag( fs.getKey().toString(), tag );
+			sendTag.put( fs.getKey().toString(), tag );
 		}
 
-		final ByteBuf data = Unpooled.buffer();
-		data.writeInt( this.getPacketID() );
-		ByteBufUtils.writeTag( data, sendTag );
+		final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+		data.writeCompoundTag( sendTag );
 		this.configureWrite( data );
 	}
 
 	@Override
-	public void clientPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public void clientPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player, NetworkEvent.Context ctx )
 	{
 		final Container c = player.openContainer;
 		if( c instanceof IFluidSyncContainer )
@@ -84,7 +86,7 @@ public class PacketFluidSlot extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
+	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, PlayerEntity player, NetworkEvent.Context ctx )
 	{
 		final Container c = player.openContainer;
 		if( c instanceof IFluidSyncContainer )

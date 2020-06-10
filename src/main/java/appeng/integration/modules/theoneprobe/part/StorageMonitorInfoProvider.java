@@ -19,8 +19,8 @@
 package appeng.integration.modules.theoneprobe.part;
 
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.state.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
 
 import mcjty.theoneprobe.api.IProbeHitData;
@@ -39,7 +39,7 @@ public class StorageMonitorInfoProvider implements IPartProbInfoProvider
 {
 
 	@Override
-	public void addProbeInfo( IPart part, ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data )
+	public void addProbeInfo( IPart part, ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data )
 	{
 		if( part instanceof IPartStorageMonitor )
 		{

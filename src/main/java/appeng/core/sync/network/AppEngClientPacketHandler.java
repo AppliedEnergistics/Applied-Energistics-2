@@ -19,64 +19,34 @@
 package appeng.core.sync.network;
 
 
-import java.lang.reflect.InvocationTargetException;
-
-import io.netty.buffer.ByteBuf;
+import java.util.function.Supplier;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.INetHandler;
-import net.minecraft.network.PacketThreadUtil;
-import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
+import net.minecraft.network.*;
 
-import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandlerBase;
-import appeng.core.sync.PacketCallState;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 
-public class AppEngClientPacketHandler extends AppEngPacketHandlerBase implements IPacketHandler
+public class AppEngClientPacketHandler extends AppEngPacketHandlerBase
 {
+	private Minecraft client;
+
+	public AppEngClientPacketHandler()
+	{
+		this.client = Minecraft.getInstance();
+	}
 
 	@Override
-	public void onPacketData( final INetworkInfo manager, final INetHandler handler, final FMLProxyPacket packet, final EntityPlayer player )
+	public <MSG extends AppEngPacket> void onPacketData( MSG pack, Supplier<NetworkEvent.Context> contextSupplier )
 	{
-		final ByteBuf stream = packet.payload();
+		NetworkEvent.Context ctx = contextSupplier.get();
+		NetworkManager manager = ctx.getNetworkManager();
 
-		try
-		{
-			final int packetType = stream.readInt();
-			final AppEngPacket pack = PacketTypes.getPacket( packetType ).parsePacket( stream );
+		pack.setCallParam( (packet) -> packet.clientPacketData( null, packet, this.client.player, ctx ) );
 
-			final PacketCallState callState = new PacketCallState()
-			{
-
-				@Override
-				public void call( final AppEngPacket appEngPacket )
-				{
-					appEngPacket.clientPacketData( manager, appEngPacket, Minecraft.getMinecraft().player );
-				}
-			};
-
-			pack.setCallParam( callState );
-			PacketThreadUtil.checkThreadAndEnqueue( pack, handler, Minecraft.getMinecraft() );
-			callState.call( pack );
-		}
-		catch( final InstantiationException e )
-		{
-			AELog.debug( e );
-		}
-		catch( final IllegalAccessException e )
-		{
-			AELog.debug( e );
-		}
-		catch( final IllegalArgumentException e )
-		{
-			AELog.debug( e );
-		}
-		catch( final InvocationTargetException e )
-		{
-			AELog.debug( e );
-		}
+		//TODO find a better way to get an INetHandler than to instantiate one every time
+		PacketThreadUtil.checkThreadAndEnqueue( pack, new DummyINetHandler(manager), this.client );
 	}
 }

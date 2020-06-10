@@ -1,0 +1,25 @@
+{
+    "result": {
+        "item": "appliedenergistics2:certus_quartz_cutting_knife"
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "  a",
+        "ba ",
+        "cc "
+    ],
+    "key": {
+        "b": {
+            "type": "forge:ore_dict",
+            "ore": "ingotIron"
+        },
+        "c": {
+            "type": "forge:ore_dict",
+            "ore": "crystalCertusQuartz"
+        },
+        "a": {
+            "type": "forge:ore_dict",
+            "ore": "stickWood"
+        }
+    }
+}

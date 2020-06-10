@@ -19,7 +19,7 @@
 package appeng.fluids.parts;
 
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -54,7 +54,7 @@ public class PartFluidTerminal extends AbstractPartTerminal
 	}
 
 	@Override
-	public GuiBridge getGui( EntityPlayer player )
+	public GuiBridge getGui( PlayerEntity player )
 	{
 		return GuiBridge.GUI_FLUID_TERMINAL;
 	}

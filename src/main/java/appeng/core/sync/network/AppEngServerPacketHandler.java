@@ -19,64 +19,29 @@
 package appeng.core.sync.network;
 
 
-import java.lang.reflect.InvocationTargetException;
-
-import io.netty.buffer.ByteBuf;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.INetHandler;
-import net.minecraft.network.PacketThreadUtil;
-import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
-
-import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandlerBase;
-import appeng.core.sync.PacketCallState;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.PacketThreadUtil;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 
-public final class AppEngServerPacketHandler extends AppEngPacketHandlerBase implements IPacketHandler
+public final class AppEngServerPacketHandler extends AppEngPacketHandlerBase
 {
 
 	@Override
-	public void onPacketData( final INetworkInfo manager, final INetHandler handler, final FMLProxyPacket packet, final EntityPlayer player )
+	public <MSG extends AppEngPacket> void onPacketData( MSG pack, Supplier<NetworkEvent.Context> contextSupplier )
 	{
-		final ByteBuf stream = packet.payload();
+		NetworkEvent.Context ctx = contextSupplier.get();
+		NetworkManager manager = ctx.getNetworkManager();
+		ServerPlayerEntity serverPlayerEntity = ctx.getSender();
 
-		try
-		{
-			final int packetType = stream.readInt();
-			final AppEngPacket pack = PacketTypes.getPacket( packetType ).parsePacket( stream );
+		pack.setCallParam( (packet) -> packet.serverPacketData( null, packet, serverPlayerEntity, ctx) );
 
-			final PacketCallState callState = new PacketCallState()
-			{
-
-				@Override
-				public void call( final AppEngPacket appEngPacket )
-				{
-					appEngPacket.serverPacketData( manager, appEngPacket, player );
-				}
-			};
-
-			pack.setCallParam( callState );
-			PacketThreadUtil.checkThreadAndEnqueue( pack, handler, ( (EntityPlayerMP) player ).getServer() );
-			callState.call( pack );
-		}
-		catch( final InstantiationException e )
-		{
-			AELog.debug( e );
-		}
-		catch( final IllegalAccessException e )
-		{
-			AELog.debug( e );
-		}
-		catch( final IllegalArgumentException e )
-		{
-			AELog.debug( e );
-		}
-		catch( final InvocationTargetException e )
-		{
-			AELog.debug( e );
-		}
+		//TODO find a better way to get an INetHandler than to instantiate one every time
+		PacketThreadUtil.checkThreadAndEnqueue( pack, new DummyINetHandler(manager), serverPlayerEntity.getServerWorld() );
 	}
 }

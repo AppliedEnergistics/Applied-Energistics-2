@@ -4,26 +4,26 @@ package appeng.block.qnb;
 
 import java.util.Set;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 
 public class QnbFormedState
 {
 
-	private final Set<EnumFacing> adjacentQuantumBridges;
+	private final Set<Direction> adjacentQuantumBridges;
 
 	private final boolean corner;
 
 	private final boolean powered;
 
-	public QnbFormedState( Set<EnumFacing> adjacentQuantumBridges, boolean corner, boolean powered )
+	public QnbFormedState( Set<Direction> adjacentQuantumBridges, boolean corner, boolean powered )
 	{
 		this.adjacentQuantumBridges = adjacentQuantumBridges;
 		this.corner = corner;
 		this.powered = powered;
 	}
 
-	public Set<EnumFacing> getAdjacentQuantumBridges()
+	public Set<Direction> getAdjacentQuantumBridges()
 	{
 		return this.adjacentQuantumBridges;
 	}

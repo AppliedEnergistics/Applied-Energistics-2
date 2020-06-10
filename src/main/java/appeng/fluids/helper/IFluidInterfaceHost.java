@@ -22,7 +22,7 @@ package appeng.fluids.helper;
 import java.util.EnumSet;
 
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.security.IActionHost;
@@ -33,7 +33,7 @@ public interface IFluidInterfaceHost extends IActionHost, IGridProxyable, IUpgra
 {
 	DualityFluidInterface getDualityFluidInterface();
 
-	EnumSet<EnumFacing> getTargets();
+	EnumSet<Direction> getTargets();
 
 	TileEntity getTileEntity();
 

@@ -34,24 +34,23 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
@@ -85,7 +84,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 		instance = this;
 	}
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	@Override
 	public void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
 	{
@@ -99,7 +98,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 
 		if( mt == MaterialType.NAME_PRESS )
 		{
-			final NBTTagCompound c = Platform.openNbtData( stack );
+			final CompoundNBT c = Platform.openNbtData( stack );
 			lines.add( c.getString( "InscribeName" ) );
 		}
 
@@ -143,7 +142,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 
 	public MaterialType getTypeByStack( final ItemStack is )
 	{
-		MaterialType type = this.dmgToMaterial.get( is.getItemDamage() );
+		MaterialType type = this.dmgToMaterial.get( is.getDamage() );
 		return ( type != null ) ? type : MaterialType.INVALID_TYPE;
 	}
 
@@ -234,22 +233,22 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 		{
 			if( mat.getDamageValue() >= 0 && mat.isRegistered() && mat.getItemInstance() == this )
 			{
-				itemStacks.add( new ItemStack( this, 1, mat.getDamageValue() ) );
+				itemStacks.add( new ItemStack( this, 1 ) );
 			}
 		}
 	}
 
 	@Override
-	public EnumActionResult onItemUseFirst( final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
+	public ActionResultType onItemUseFirst( ItemStack stack, ItemUseContext context )
 	{
-		if( player.isSneaking() )
+		if( context.getPlayer().isSneaking() )
 		{
-			final TileEntity te = world.getTileEntity( pos );
+			final TileEntity te = context.getWorld().getTileEntity( context.getPos() );
 			IItemHandler upgrades = null;
 
 			if( te instanceof IPartHost )
 			{
-				final SelectedPart sp = ( (IPartHost) te ).selectPart( new Vec3d( hitX, hitY, hitZ ) );
+				final SelectedPart sp = ( (IPartHost) te ).selectPart( context.getHitVec() );
 				if( sp.part instanceof IUpgradeableHost )
 				{
 					upgrades = ( (ISegmentedInventory) sp.part ).getInventoryByName( "upgrades" );
@@ -260,26 +259,26 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 				upgrades = ( (ISegmentedInventory) te ).getInventoryByName( "upgrades" );
 			}
 
-			if( upgrades != null && !player.getHeldItem( hand ).isEmpty() && player.getHeldItem( hand ).getItem() instanceof IUpgradeModule )
+			if( upgrades != null && !stack.isEmpty() && stack.getItem() instanceof IUpgradeModule )
 			{
-				final IUpgradeModule um = (IUpgradeModule) player.getHeldItem( hand ).getItem();
-				final Upgrades u = um.getType( player.getHeldItem( hand ) );
+				final IUpgradeModule um = (IUpgradeModule) stack.getItem();
+				final Upgrades u = um.getType( stack );
 
 				if( u != null )
 				{
-					if( player.world.isRemote )
+					if( context.getWorld().isRemote )
 					{
-						return EnumActionResult.PASS;
+						return ActionResultType.PASS;
 					}
 
 					final InventoryAdaptor ad = new AdaptorItemHandler( upgrades );
-					player.setHeldItem( hand, ad.addItems( player.getHeldItem( hand ) ) );
-					return EnumActionResult.SUCCESS;
+					context.getPlayer().setHeldItem( context.getHand(), ad.addItems( stack ) );
+					return ActionResultType.SUCCESS;
 				}
 			}
 		}
 
-		return super.onItemUseFirst( player, world, pos, side, hitX, hitY, hitZ, hand );
+		return super.onItemUseFirst( stack, context );
 	}
 
 	@Override
@@ -309,9 +308,9 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 		eqi.motionY = location.motionY;
 		eqi.motionZ = location.motionZ;
 
-		if( location instanceof EntityItem && eqi instanceof EntityItem )
+		if( location instanceof ItemEntity && eqi instanceof ItemEntity )
 		{
-			( (EntityItem) eqi ).setDefaultPickupDelay();
+			( (ItemEntity) eqi ).setDefaultPickupDelay();
 		}
 
 		return eqi;

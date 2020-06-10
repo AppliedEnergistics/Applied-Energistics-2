@@ -1,0 +1,28 @@
+{
+    "result": {
+        "item": "appliedenergistics2:matter_cannon"
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "aab",
+        "cd ",
+        "a  "
+    ],
+    "key": {
+        "b": {
+            "type": "appliedenergistics2:part",
+            "part": "material.formation_core"
+        },
+        "a": {
+            "type": "forge:ore_dict",
+            "ore": "ingotIron"
+        },
+        "c": {
+            "type": "appliedenergistics2:part",
+            "part": "material.cell4k_part"
+        },
+        "d": {
+            "item": "appliedenergistics2:energy_cell"
+        }
+    }
+}

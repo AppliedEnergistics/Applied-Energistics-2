@@ -22,7 +22,7 @@ package appeng.bootstrap.components;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.item.Item;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.api.distmarker.Dist;
 
 
 public class ItemColorComponent implements IInitComponent

@@ -50,7 +50,7 @@ public class PartIngredientFactory implements IIngredientFactory
 			final ResolverResultSet resolverResultSet = (ResolverResultSet) result;
 
 			return net.minecraft.item.crafting.Ingredient
-					.fromStacks( resolverResultSet.results.toArray( new ItemStack[resolverResultSet.results.size()] ) );
+					.fromStacks( resolverResultSet.results.toArray( new ItemStack[0] ) );
 		}
 		else if( result instanceof ResolverResult )
 		{

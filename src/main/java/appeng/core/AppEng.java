@@ -25,28 +25,25 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
+import appeng.client.ClientHelper;
+import appeng.server.ServerHelper;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 
-import net.minecraft.world.DimensionType;
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.common.ForgeVersion;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLInterModComms;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
 
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
+import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
+import net.minecraftforge.versions.forge.ForgeVersion;
 import team.chisel.ctm.CTM;
 
 import appeng.api.AEApi;
@@ -70,18 +67,17 @@ import appeng.services.version.VersionCheckerConfig;
 import appeng.util.Platform;
 
 
-@Mod( modid = AppEng.MOD_ID, acceptedMinecraftVersions = "[1.12.2]", name = AppEng.MOD_NAME, version = AEConfig.VERSION, dependencies = AppEng.MOD_DEPENDENCIES, guiFactory = "appeng.client.gui.config.AEConfigGuiFactory", certificateFingerprint = "dfa4d3ac143316c6f32aa1a1beda1e34d42132e5" )
+@Mod( modid = AppEng.MOD_ID, acceptedMinecraftVersions = "[1.15.2]", name = AppEng.MOD_NAME, version = AEConfig.VERSION, dependencies = AppEng.MOD_DEPENDENCIES, guiFactory = "appeng.client.gui.config.AEConfigGuiFactory", certificateFingerprint = "dfa4d3ac143316c6f32aa1a1beda1e34d42132e5" )
 public final class AppEng
 {
-	@SidedProxy( clientSide = "appeng.client.ClientHelper", serverSide = "appeng.server.ServerHelper", modId = AppEng.MOD_ID )
-	public static CommonHelper proxy;
+	public static CommonHelper proxy = DistExecutor.runForDist( () -> ClientHelper::new, () -> ServerHelper::new );
 
 	public static final String MOD_ID = "appliedenergistics2";
 	public static final String MOD_NAME = "Applied Energistics 2";
 
 	public static final String ASSETS = "appliedenergistics2:";
 
-	private static final String FORGE_CURRENT_VERSION = ForgeVersion.majorVersion + "." + ForgeVersion.minorVersion + "." + ForgeVersion.revisionVersion + "." + ForgeVersion.buildVersion;
+	private static final String FORGE_CURRENT_VERSION = ForgeVersion.getVersion();
 	private static final String FORGE_MAX_VERSION = ( ForgeVersion.majorVersion + 1 ) + ".0.0.0";
 	public static final String MOD_DEPENDENCIES = "required-after:forge@[" + FORGE_CURRENT_VERSION + "," + FORGE_MAX_VERSION + ");after:ctm@[" + CTM.VERSION + ",);";
 
@@ -99,7 +95,7 @@ public final class AppEng
 
 	private AppEng()
 	{
-		FMLCommonHandler.instance().registerCrashCallable( new ModCrashEnhancement( CrashInfo.MOD_VERSION ) );
+		MinecraftForge.EVENT_BUS.register( new ModCrashEnhancement( CrashInfo.MOD_VERSION ) );
 
 		this.registration = new Registration();
 		MinecraftForge.EVENT_BUS.register( this.registration );
@@ -132,8 +128,8 @@ public final class AppEng
 		return this.registration.advancementTriggers;
 	}
 
-	@EventHandler
-	private void preInit( final FMLPreInitializationEvent event )
+	@SubscribeEvent
+	private void preInit( final FMLCommonSetupEvent event )
 	{
 		final Stopwatch watch = Stopwatch.createStarted();
 		this.configDirectory = new File( event.getModConfigurationDirectory().getPath(), "AppliedEnergistics2" );
@@ -197,7 +193,7 @@ public final class AppEng
 		thread.start();
 	}
 
-	@EventHandler
+	@SubscribeEvent
 	private void init( final FMLInitializationEvent event )
 	{
 		final Stopwatch start = Stopwatch.createStarted();
@@ -226,7 +222,7 @@ public final class AppEng
 		AELog.info( "Initialization ( ended after " + start.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
 	}
 
-	@EventHandler
+	@SubscribeEvent
 	private void postInit( final FMLPostInitializationEvent event )
 	{
 		final Stopwatch start = Stopwatch.createStarted();
@@ -245,34 +241,34 @@ public final class AppEng
 		AELog.info( "Post Initialization ( ended after " + start.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
 	}
 
-	@EventHandler
-	private void handleIMCEvent( final FMLInterModComms.IMCEvent event )
+	@SubscribeEvent
+	private void handleIMCEvent( final InterModProcessEvent event )
 	{
 		final IMCHandler imcHandler = new IMCHandler();
 
 		imcHandler.handleIMCEvent( event );
 	}
 
-	@EventHandler
+	@SubscribeEvent
 	private void serverAboutToStart( final FMLServerAboutToStartEvent evt )
 	{
 		WorldData.onServerAboutToStart( evt.getServer() );
 	}
 
-	@EventHandler
+	@SubscribeEvent
 	private void serverStopping( final FMLServerStoppingEvent event )
 	{
 		WorldData.instance().onServerStopping();
 	}
 
-	@EventHandler
+	@SubscribeEvent
 	private void serverStopped( final FMLServerStoppedEvent event )
 	{
 		WorldData.instance().onServerStoppped();
 		TickHandler.INSTANCE.shutdown();
 	}
 
-	@EventHandler
+	@SubscribeEvent
 	private void serverStarting( final FMLServerStartingEvent evt )
 	{
 		evt.registerServerCommand( new AECommand( evt.getServer() ) );

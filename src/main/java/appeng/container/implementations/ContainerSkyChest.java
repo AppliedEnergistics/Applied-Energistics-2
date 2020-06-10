@@ -19,7 +19,7 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.InventoryPlayer;
 
 import appeng.container.AEBaseContainer;
@@ -51,9 +51,9 @@ public class ContainerSkyChest extends AEBaseContainer
 	}
 
 	@Override
-	public void onContainerClosed( final EntityPlayer par1EntityPlayer )
+	public void onContainerClosed( final PlayerEntity par1PlayerEntity )
 	{
-		super.onContainerClosed( par1EntityPlayer );
-		this.chest.closeInventory( par1EntityPlayer );
+		super.onContainerClosed( par1PlayerEntity );
+		this.chest.closeInventory( par1PlayerEntity );
 	}
 }

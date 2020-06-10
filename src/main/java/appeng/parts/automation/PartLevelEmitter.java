@@ -22,13 +22,13 @@ package appeng.parts.automation;
 import java.util.Collection;
 import java.util.Random;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -125,7 +125,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		super( is );
 
 		this.getConfigManager().registerSetting( Settings.REDSTONE_EMITTER, RedstoneMode.HIGH_SIGNAL );
-		this.getConfigManager().registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		this.getConfigManager().registerSetting( Settings.FUZZY_MODE, FuzzyMode.ENABLED );
 		this.getConfigManager().registerSetting( Settings.LEVEL_TYPE, LevelType.ITEM_LEVEL );
 		this.getConfigManager().registerSetting( Settings.CRAFT_VIA_REDSTONE, YesNo.NO );
 	}
@@ -330,7 +330,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		{
 			this.lastReportedValue = 0;
 			final FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE );
-			final Collection<IAEItemStack> fuzzyList = monitor.getStorageList().findFuzzy( myStack, fzMode );
+			final Collection<IAEItemStack> fuzzyList = monitor.getStorageList().findFuzzy( myStack );
 			for( final IAEItemStack st : fuzzyList )
 			{
 				this.lastReportedValue += st.getStackSize();
@@ -451,8 +451,17 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 			final double d1 = d.yOffset * 0.45F + ( r.nextFloat() - 0.5F ) * 0.2D;
 			final double d2 = d.zOffset * 0.45F + ( r.nextFloat() - 0.5F ) * 0.2D;
 
-			world.spawnParticle( EnumParticleTypes.REDSTONE, 0.5 + pos.getX() + d0, 0.5 + pos.getY() + d1, 0.5 + pos.getZ() + d2, 0.0D, 0.0D, 0.0D,
-					new int[0] );
+			// use this to control the wanted redstone level - if this level wont change
+			// this expression can be simplified
+			// TODO check if redstone level should be able to change
+			int redstoneLevel = 15;
+			float f = (float) redstoneLevel / 15.0F;
+			float f1 = f * 0.6F + 0.4F;
+			float f2 = Math.max(0.0F, f * f * 0.7F - 0.5F);
+			float f3 = Math.max(0.0F, f * f * 0.6F - 0.7F);
+
+			world.addParticle( new RedstoneParticleData(f1, f2, f3, 1.0F),
+					0.5 + pos.getX() + d0, 0.5 + pos.getY() + d1, 0.5 + pos.getZ() + d2, 0.0D, 0.0D, 0.0D);
 		}
 	}
 
@@ -463,7 +472,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
+	public boolean onPartActivate( final PlayerEntity player, final Hand hand, final Vec3d pos )
 	{
 		if( Platform.isServer() )
 		{
@@ -502,7 +511,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 		this.lastReportedValue = data.getLong( "lastReportedValue" );
@@ -512,12 +521,12 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public void writeToNBT( final NBTTagCompound data )
+	public void writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
-		data.setLong( "lastReportedValue", this.lastReportedValue );
-		data.setLong( "reportingValue", this.reportingValue );
-		data.setBoolean( "prevState", this.prevState );
+		data.putLong( "lastReportedValue", this.lastReportedValue );
+		data.putLong( "reportingValue", this.reportingValue );
+		data.putBoolean( "prevState", this.prevState );
 		this.config.writeToNBT( data, "config" );
 	}
 
@@ -533,7 +542,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public boolean pushPattern( final ICraftingPatternDetails patternDetails, final InventoryCrafting table )
+	public boolean pushPattern( final ICraftingPatternDetails patternDetails, final CraftingInventory table )
 	{
 		return false;
 	}

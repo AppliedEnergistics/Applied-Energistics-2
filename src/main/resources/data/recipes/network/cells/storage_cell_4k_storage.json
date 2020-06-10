@@ -1,0 +1,16 @@
+{
+    "result": {
+        "item": "appliedenergistics2:storage_cell_4k"
+    },
+    "type": "forge:ore_shapeless",
+    "ingredients": [
+        {
+            "type": "appliedenergistics2:part",
+            "part": "material.empty_storage_cell"
+        },
+        {
+            "type": "appliedenergistics2:part",
+            "part": "material.cell4k_part"
+        }
+    ]
+}

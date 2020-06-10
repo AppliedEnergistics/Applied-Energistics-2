@@ -25,12 +25,12 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -53,7 +53,7 @@ public class BlockQuantumLinkChamber extends BlockQuantumBase
 	}
 
 	@Override
-	public void randomDisplayTick( final IBlockState state, final World w, final BlockPos pos, final Random rand )
+	public void randomDisplayTick( final BlockState state, final World w, final BlockPos pos, final Random rand )
 	{
 		final TileQuantumBridge bridge = this.getTileEntity( w, pos );
 		if( bridge != null )
@@ -69,7 +69,7 @@ public class BlockQuantumLinkChamber extends BlockQuantumBase
 	}
 
 	@Override
-	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer p, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public boolean onActivated( final World w, final BlockPos pos, final PlayerEntity p, final Hand hand, final @Nullable ItemStack heldItem, final Direction side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( p.isSneaking() )
 		{

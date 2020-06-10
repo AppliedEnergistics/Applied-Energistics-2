@@ -23,13 +23,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import appeng.api.config.FuzzyMode;
 import com.google.common.collect.Lists;
 
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
-import appeng.api.config.FuzzyMode;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.security.IActionSource;
@@ -129,21 +129,7 @@ public class CraftingTreeNode
 			final Collection<IAEItemStack> itemList;
 			final IItemList<IAEItemStack> inventoryList = inv.getItemList();
 
-			if( this.parent.details.canSubstitute() )
-			{
-				itemList = inventoryList.findFuzzy( this.what, FuzzyMode.IGNORE_ALL );
-			}
-			else
-			{
-				itemList = Lists.newArrayList();
-
-				final IAEItemStack item = inventoryList.findPrecise( this.what );
-
-				if( item != null )
-				{
-					itemList.add( item );
-				}
-			}
+			itemList = inventoryList.find( this.what, FuzzyMode.fromBoolean(this.parent.details.canSubstitute()) );
 
 			for( IAEItemStack fuzz : itemList )
 			{

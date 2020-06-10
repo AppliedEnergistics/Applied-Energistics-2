@@ -28,7 +28,7 @@ import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.MaterialLiquid;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -36,13 +36,13 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.helpers.Splotch;
@@ -71,7 +71,7 @@ public class BlockPaint extends AEBaseTileBlock
 	}
 
 	@Override
-	public IBlockState getExtendedState( IBlockState state, IBlockAccess world, BlockPos pos )
+	public BlockState getExtendedState( BlockState state, IBlockReader world, BlockPos pos )
 	{
 		IExtendedBlockState extState = (IExtendedBlockState) state;
 
@@ -93,26 +93,26 @@ public class BlockPaint extends AEBaseTileBlock
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public void getSubBlocks( final CreativeTabs tabs, final NonNullList<ItemStack> itemStacks )
 	{
 		// do nothing
 	}
 
 	@Override
-	public AxisAlignedBB getCollisionBoundingBox( IBlockState blockState, IBlockAccess worldIn, BlockPos pos )
+	public AxisAlignedBB getCollisionBoundingBox( BlockState blockState, IBlockReader worldIn, BlockPos pos )
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canCollideCheck( final IBlockState state, final boolean hitIfLiquid )
+	public boolean canCollideCheck( final BlockState state, final boolean hitIfLiquid )
 	{
 		return false;
 	}
 
 	@Override
-	public void neighborChanged( IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
+	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
 	{
 		final TilePaint tp = this.getTileEntity( world, pos );
 
@@ -123,13 +123,13 @@ public class BlockPaint extends AEBaseTileBlock
 	}
 
 	@Override
-	public Item getItemDropped( final IBlockState state, final Random rand, final int fortune )
+	public Item getItemDropped( final BlockState state, final Random rand, final int fortune )
 	{
 		return null;
 	}
 
 	@Override
-	public void dropBlockAsItemWithChance( final World worldIn, final BlockPos pos, final IBlockState state, final float chance, final int fortune )
+	public void dropBlockAsItemWithChance( final World worldIn, final BlockPos pos, final BlockState state, final float chance, final int fortune )
 	{
 
 	}
@@ -144,7 +144,7 @@ public class BlockPaint extends AEBaseTileBlock
 	}
 
 	@Override
-	public int getLightValue( final IBlockState state, final IBlockAccess w, final BlockPos pos )
+	public int getLightValue( final BlockState state, final IBlockReader w, final BlockPos pos )
 	{
 		final TilePaint tp = this.getTileEntity( w, pos );
 
@@ -157,13 +157,13 @@ public class BlockPaint extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean isAir( final IBlockState state, final IBlockAccess world, final BlockPos pos )
+	public boolean isAir( final BlockState state, final IBlockReader world, final BlockPos pos )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean isReplaceable( final IBlockAccess worldIn, final BlockPos pos )
+	public boolean isReplaceable( final IBlockReader worldIn, final BlockPos pos )
 	{
 		return true;
 	}

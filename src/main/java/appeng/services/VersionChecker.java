@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 
@@ -179,7 +179,7 @@ public final class VersionChecker implements Runnable
 	{
 		if( Loader.isModLoaded( "VersionChecker" ) )
 		{
-			final NBTTagCompound versionInf = new NBTTagCompound();
+			final CompoundNBT versionInf = new CompoundNBT();
 			versionInf.setString( "modDisplayName", AppEng.MOD_NAME );
 			versionInf.setString( "oldVersion", modFormatted );
 			versionInf.setString( "newVersion", ghFormatted );

@@ -1,0 +1,19 @@
+{
+    "display": {
+        "icon": {
+            "item": "appliedenergistics2:spatial_storage_cell_128_cubed"
+        },
+        "title": {
+            "translate": "achievement.ae2.SpatialIOExplorer"
+        },
+        "description": {
+            "translate": "achievement.ae2.SpatialIOExplorer.desc"
+        }
+    },
+    "parent": "appliedenergistics2:main/spatial_ioport",
+    "criteria": {
+        "explorer": {
+            "trigger": "appliedenergistics2:spatial_explorer"
+        }
+    }
+}

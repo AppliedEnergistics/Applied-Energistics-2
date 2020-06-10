@@ -25,10 +25,10 @@ import java.util.List;
 
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -80,7 +80,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, ITickable
 			return null;
 		}
 
-		final EnumFacing grinder = this.getUp().getOpposite();
+		final Direction grinder = this.getUp().getOpposite();
 		final TileEntity te = this.world.getTileEntity( this.pos.offset( grinder ) );
 		if( te instanceof ICrankable )
 		{
@@ -105,10 +105,10 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, ITickable
 	}
 
 	@Override
-	public void setOrientation( final EnumFacing inForward, final EnumFacing inUp )
+	public void setOrientation( final Direction inForward, final Direction inUp )
 	{
 		super.setOrientation( inForward, inUp );
-		final IBlockState state = this.world.getBlockState( this.pos );
+		final BlockState state = this.world.getBlockState( this.pos );
 		this.getBlockType().neighborChanged( state, this.world, this.pos, state.getBlock(), this.pos );
 	}
 

@@ -20,27 +20,27 @@ public class GrinderHandler implements IAERecipeFactory
 {
 
 	@Override
-	public void register( JsonObject json, JsonContext ctx )
+	public void register( JsonObject json )
 	{
 		// TODO only primary for now
 
-		JsonObject result = JsonUtils.getJsonObject( json, "result" );
+		JsonObject result = json.get( "result" ).getAsJsonObject();
 		ItemStack primary = PartRecipeFactory.getResult( result, ctx, "primary" );
 		ItemStack[] input = CraftingHelper.getIngredient( json.get( "input" ), ctx ).getMatchingStacks();
 
 		int turns = 5;
 		if( json.has( "turns" ) )
 		{
-			turns = JsonUtils.getInt( json, "turns" );
+			turns = json.get( "turns" ).getAsInt();
 		}
 
 		final IGrinderRegistry reg = AEApi.instance().registries().grinder();
-		for( int i = 0; i < input.length; ++i )
+		for( ItemStack itemStack : input )
 		{
 			final IGrinderRecipeBuilder builder = reg.builder();
 
 			builder.withOutput( primary );
-			builder.withInput( input[i] );
+			builder.withInput( itemStack );
 			builder.withTurns( turns );
 
 			reg.addRecipe( builder.build() );

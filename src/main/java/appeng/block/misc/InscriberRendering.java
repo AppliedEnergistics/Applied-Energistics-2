@@ -2,8 +2,8 @@
 package appeng.block.misc;
 
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.bootstrap.BlockRenderingCustomizer;
 import appeng.bootstrap.IBlockRendering;
@@ -14,7 +14,7 @@ import appeng.client.render.tesr.InscriberTESR;
 public class InscriberRendering extends BlockRenderingCustomizer
 {
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	@Override
 	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 	{

@@ -19,10 +19,10 @@
 package appeng.client.render.crafting;
 
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
 import appeng.api.util.AEColor;
@@ -61,9 +61,9 @@ class MonitorBakedModel extends CraftingCubeBakedModel
 	}
 
 	@Override
-	protected void addInnerCube( EnumFacing side, IBlockState state, CubeBuilder builder, float x1, float y1, float z1, float x2, float y2, float z2 )
+	protected void addInnerCube( Direction side, BlockState state, CubeBuilder builder, float x1, float y1, float z1, float x2, float y2, float z2 )
 	{
-		EnumFacing forward = getForward( state );
+		Direction forward = getForward( state );
 
 		// For sides other than the front, use the chassis texture
 		if( side != forward )
@@ -96,7 +96,7 @@ class MonitorBakedModel extends CraftingCubeBakedModel
 
 	}
 
-	private static AEColor getColor( IBlockState state )
+	private static AEColor getColor( BlockState state )
 	{
 		if( state instanceof IExtendedBlockState )
 		{
@@ -111,18 +111,18 @@ class MonitorBakedModel extends CraftingCubeBakedModel
 		return AEColor.TRANSPARENT;
 	}
 
-	private static EnumFacing getForward( IBlockState state )
+	private static Direction getForward( BlockState state )
 	{
 		if( state instanceof IExtendedBlockState )
 		{
 			IExtendedBlockState extState = (IExtendedBlockState) state;
-			EnumFacing forward = extState.getValue( BlockCraftingMonitor.FORWARD );
+			Direction forward = extState.getValue( BlockCraftingMonitor.FORWARD );
 			if( forward != null )
 			{
 				return forward;
 			}
 		}
 
-		return EnumFacing.NORTH;
+		return Direction.NORTH;
 	}
 }

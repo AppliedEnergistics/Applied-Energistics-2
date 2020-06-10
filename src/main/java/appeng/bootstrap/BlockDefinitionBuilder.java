@@ -35,8 +35,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.definitions.IBlockDefinition;
 import appeng.block.AEBaseBlock;
@@ -79,10 +79,10 @@ class BlockDefinitionBuilder implements IBlockBuilder
 
 	private Function<Block, ItemBlock> itemFactory;
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	private BlockRendering blockRendering;
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	private ItemRendering itemRendering;
 
 	BlockDefinitionBuilder( FeatureFactory factory, String id, Supplier<? extends Block> blockSupplier )
@@ -144,7 +144,7 @@ class BlockDefinitionBuilder implements IBlockBuilder
 		this.rendering( new BlockRenderingCustomizer()
 		{
 			@Override
-			@SideOnly( Side.CLIENT )
+			@OnlyIn( Dist.CLIENT )
 			public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 			{
 				ModelResourceLocation model = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, BlockDefinitionBuilder.this.registryName ), "inventory" );
@@ -169,7 +169,7 @@ class BlockDefinitionBuilder implements IBlockBuilder
 		return this;
 	}
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	private void customizeForClient( BlockRenderingCustomizer callback )
 	{
 		callback.customize( this.blockRendering, this.itemRendering );

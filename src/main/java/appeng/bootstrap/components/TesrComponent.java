@@ -20,8 +20,8 @@ package appeng.bootstrap.components;
 
 
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.relauncher.Side;
 
 import appeng.tile.AEBaseTile;
 
@@ -47,7 +47,7 @@ public class TesrComponent<T extends AEBaseTile> implements IPreInitComponent
 
 	@Override
 	// public void modelReg( Side side )
-	public void preInitialize( Side side )
+	public void preInitialize( Dist side )
 	{
 		ClientRegistry.bindTileEntitySpecialRenderer( this.tileEntityClass, this.tesr );
 	}

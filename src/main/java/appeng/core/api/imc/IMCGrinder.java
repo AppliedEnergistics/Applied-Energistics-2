@@ -18,9 +18,9 @@
 
 /* Example:
 
- NBTTagCompound msg = new NBTTagCompound();
- NBTTagCompound in = new NBTTagCompound();
- NBTTagCompound out = new NBTTagCompound();
+ CompoundNBT msg = new CompoundNBT();
+ CompoundNBT in = new CompoundNBT();
+ CompoundNBT out = new CompoundNBT();
 
  new ItemStack( Blocks.iron_ore ).writeToNBT( in );
  new ItemStack( Items.iron_ingot ).writeToNBT( out );
@@ -32,10 +32,10 @@
 
  -- or --
 
- NBTTagCompound msg = new NBTTagCompound();
- NBTTagCompound in = new NBTTagCompound();
- NBTTagCompound out = new NBTTagCompound();
- NBTTagCompound optional = new NBTTagCompound();
+ CompoundNBT msg = new CompoundNBT();
+ CompoundNBT in = new CompoundNBT();
+ CompoundNBT out = new CompoundNBT();
+ CompoundNBT optional = new CompoundNBT();
 
  new ItemStack( Blocks.iron_ore ).writeToNBT( in );
  new ItemStack( Items.iron_ingot ).writeToNBT( out );
@@ -53,30 +53,40 @@
 package appeng.core.api.imc;
 
 
+import appeng.core.AELog;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
+import net.minecraft.nbt.CompoundNBT;
 
 import appeng.api.AEApi;
 import appeng.api.features.IGrinderRecipe;
 import appeng.api.features.IGrinderRecipeBuilder;
 import appeng.api.features.IGrinderRegistry;
 import appeng.core.api.IIMCProcessor;
+import net.minecraftforge.fml.InterModComms;
 
 
 public class IMCGrinder implements IIMCProcessor
 {
 	@Override
-	public void process( final IMCMessage m )
+	public void process( final InterModComms.IMCMessage m )
 	{
-		final NBTTagCompound msg = m.getNBTValue();
-		final NBTTagCompound inTag = (NBTTagCompound) msg.getTag( "in" );
-		final NBTTagCompound outTag = (NBTTagCompound) msg.getTag( "out" );
+		final Object messageArg = m.getMessageSupplier().get();
 
-		final ItemStack in = new ItemStack( inTag );
-		final ItemStack out = new ItemStack( outTag );
+		if( !( messageArg instanceof CompoundNBT) )
+		{
+			AELog.warn( "Bad argument for %1$2 by Mod %2$s: expected instance of CompoundNBT got %3$s", this.getClass().getSimpleName(), m.getSenderModId(), messageArg.getClass().getSimpleName() );
+			return;
+		}
 
-		final int turns = msg.getInteger( "turns" );
+		final CompoundNBT msg = (CompoundNBT) messageArg;
+		final CompoundNBT inTag = msg.getCompound( "in" );
+		final CompoundNBT outTag = msg.getCompound( "out" );
+
+		final ItemStack in = ItemStack.read( inTag );
+		final ItemStack out = ItemStack.read( outTag );
+
+		final int turns = msg.getInt( "turns" );
 
 		if( in.isEmpty() )
 		{
@@ -88,10 +98,10 @@ public class IMCGrinder implements IIMCProcessor
 			throw new IllegalStateException( "invalid output" );
 		}
 
-		if( msg.hasKey( "optional" ) )
+		if( msg.contains( "optional" ) )
 		{
-			final NBTTagCompound optionalTag = (NBTTagCompound) msg.getTag( "optional" );
-			final ItemStack optional = new ItemStack( optionalTag );
+			final CompoundNBT optionalTag = msg.getCompound( "optional" );
+			final ItemStack optional = ItemStack.read( optionalTag );
 
 			if( optional.isEmpty() )
 			{

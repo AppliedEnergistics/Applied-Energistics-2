@@ -1,0 +1,18 @@
+{
+    "result": {
+        "item": "minecraft:quartz_block",
+        "data": 0
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "aaa",
+        "a a",
+        "aaa"
+    ],
+    "key": {
+        "a": {
+            "type": "appliedenergistics2:part",
+            "part": "material.purified_nether_quartz_crystal"
+        }
+    }
+}

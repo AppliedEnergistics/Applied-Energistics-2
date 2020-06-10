@@ -1,0 +1,29 @@
+{
+    "result": {
+        "item": "appliedenergistics2:crafting_unit"
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "aba",
+        "cdc",
+        "aba"
+    ],
+    "key": {
+        "a": {
+            "type": "forge:ore_dict",
+            "ore": "ingotIron"
+        },
+        "d": {
+            "type": "appliedenergistics2:part",
+            "part": "material.logic_processor"
+        },
+        "c": {
+            "type": "appliedenergistics2:part",
+            "part": "cable_glass.fluix"
+        },
+        "b": {
+            "type": "appliedenergistics2:part",
+            "part": "material.calculation_processor"
+        }
+    }
+}

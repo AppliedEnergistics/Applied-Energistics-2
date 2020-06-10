@@ -28,10 +28,10 @@ import java.util.Random;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Items;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -44,6 +44,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import appeng.api.parts.CableRenderMode;
@@ -74,7 +75,7 @@ import appeng.hooks.TickHandler.PlayerColor;
 import appeng.server.ServerHelper;
 import appeng.util.Platform;
 
-
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ClientHelper extends ServerHelper
 {
 	private final static String KEY_CATEGORY = "key.appliedenergistics2.category";
@@ -126,11 +127,11 @@ public class ClientHelper extends ServerHelper
 	}
 
 	@Override
-	public List<EntityPlayer> getPlayers()
+	public List<PlayerEntity> getPlayers()
 	{
 		if( Platform.isClient() )
 		{
-			final List<EntityPlayer> o = new ArrayList<>();
+			final List<PlayerEntity> o = new ArrayList<>();
 			o.add( Minecraft.getMinecraft().player );
 			return o;
 		}
@@ -205,7 +206,7 @@ public class ClientHelper extends ServerHelper
 		}
 
 		final Minecraft mc = Minecraft.getMinecraft();
-		final EntityPlayer player = mc.player;
+		final PlayerEntity player = mc.player;
 
 		return this.renderModeForPlayer( player );
 	}
@@ -219,7 +220,7 @@ public class ClientHelper extends ServerHelper
 			return;
 		}
 
-		final EntityPlayer player = mc.player;
+		final PlayerEntity player = mc.player;
 
 		final int x = (int) player.posX;
 		final int y = (int) player.posY;
@@ -317,11 +318,11 @@ public class ClientHelper extends ServerHelper
 		}
 
 		final Minecraft mc = Minecraft.getMinecraft();
-		final EntityPlayer player = mc.player;
+		final PlayerEntity player = mc.player;
 		if( player.isSneaking() )
 		{
-			final boolean mainHand = player.getHeldItem( EnumHand.MAIN_HAND ).getItem() instanceof IMouseWheelItem;
-			final boolean offHand = player.getHeldItem( EnumHand.OFF_HAND ).getItem() instanceof IMouseWheelItem;
+			final boolean mainHand = player.getHeldItem( Hand.MAIN_HAND ).getItem() instanceof IMouseWheelItem;
+			final boolean offHand = player.getHeldItem( Hand.OFF_HAND ).getItem() instanceof IMouseWheelItem;
 
 			if( mainHand || offHand )
 			{

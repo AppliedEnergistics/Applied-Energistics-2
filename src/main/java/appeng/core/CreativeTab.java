@@ -21,8 +21,8 @@ package appeng.core;
 
 import java.util.Optional;
 
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
@@ -33,7 +33,7 @@ import appeng.api.definitions.IItems;
 import appeng.api.definitions.IMaterials;
 
 
-public final class CreativeTab extends CreativeTabs
+public final class CreativeTab extends ItemGroup
 {
 	public static CreativeTab instance = null;
 
@@ -48,13 +48,12 @@ public final class CreativeTab extends CreativeTabs
 	}
 
 	@Override
-	public ItemStack getTabIconItem()
+	public ItemStack createIcon()
 	{
 		return this.getIconItemStack();
 	}
 
-	@Override
-	public ItemStack getIconItemStack()
+	private ItemStack getIconItemStack()
 	{
 		final IDefinitions definitions = AEApi.instance().definitions();
 		final IBlocks blocks = definitions.blocks();

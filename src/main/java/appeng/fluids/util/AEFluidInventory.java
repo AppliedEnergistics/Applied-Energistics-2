@@ -4,7 +4,7 @@ package appeng.fluids.util;
 
 import java.util.Objects;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
@@ -277,24 +277,24 @@ public class AEFluidInventory implements IAEFluidTank
 		return totalDrained;
 	}
 
-	public void writeToNBT( final NBTTagCompound data, final String name )
+	public void writeToNBT( final CompoundNBT data, final String name )
 	{
-		final NBTTagCompound c = new NBTTagCompound();
+		final CompoundNBT c = new CompoundNBT();
 		this.writeToNBT( c );
 		data.setTag( name, c );
 	}
 
-	private void writeToNBT( final NBTTagCompound target )
+	private void writeToNBT( final CompoundNBT target )
 	{
 		for( int x = 0; x < this.fluids.length; x++ )
 		{
 			try
 			{
-				final NBTTagCompound c = new NBTTagCompound();
+				final CompoundNBT c = new CompoundNBT();
 
 				if( this.fluids[x] != null )
 				{
-					this.fluids[x].writeToNBT( c );
+					this.fluids[x].write( c );
 				}
 
 				target.setTag( "#" + x, c );
@@ -305,22 +305,22 @@ public class AEFluidInventory implements IAEFluidTank
 		}
 	}
 
-	public void readFromNBT( final NBTTagCompound data, final String name )
+	public void readFromNBT( final CompoundNBT data, final String name )
 	{
-		final NBTTagCompound c = data.getCompoundTag( name );
+		final CompoundNBT c = data.getCompoundTag( name );
 		if( c != null )
 		{
 			this.readFromNBT( c );
 		}
 	}
 
-	private void readFromNBT( final NBTTagCompound target )
+	private void readFromNBT( final CompoundNBT target )
 	{
 		for( int x = 0; x < this.fluids.length; x++ )
 		{
 			try
 			{
-				final NBTTagCompound c = target.getCompoundTag( "#" + x );
+				final CompoundNBT c = target.getCompoundTag( "#" + x );
 
 				if( c != null )
 				{

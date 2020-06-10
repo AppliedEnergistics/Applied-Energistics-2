@@ -26,14 +26,14 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
 import appeng.block.crafting.BlockCraftingUnit;
@@ -65,7 +65,7 @@ abstract class CraftingCubeBakedModel implements IBakedModel
 	}
 
 	@Override
-	public List<BakedQuad> getQuads( @Nullable IBlockState state, @Nullable EnumFacing side, long rand )
+	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, long rand )
 	{
 
 		if( side == null )
@@ -73,7 +73,7 @@ abstract class CraftingCubeBakedModel implements IBakedModel
 			return Collections.emptyList(); // No generic quads for this model
 		}
 
-		EnumSet<EnumFacing> connections = getConnections( state );
+		EnumSet<Direction> connections = getConnections( state );
 
 		List<BakedQuad> quads = new ArrayList<>();
 		CubeBuilder builder = new CubeBuilder( this.format, quads );
@@ -84,14 +84,14 @@ abstract class CraftingCubeBakedModel implements IBakedModel
 		this.addRing( builder, side, connections );
 
 		// Calculate the bounds of the "inner" block that is framed by the border drawn above
-		float x2 = connections.contains( EnumFacing.EAST ) ? 16 : 13.01f;
-		float x1 = connections.contains( EnumFacing.WEST ) ? 0 : 2.99f;
+		float x2 = connections.contains( Direction.EAST ) ? 16 : 13.01f;
+		float x1 = connections.contains( Direction.WEST ) ? 0 : 2.99f;
 
-		float y2 = connections.contains( EnumFacing.UP ) ? 16 : 13.01f;
-		float y1 = connections.contains( EnumFacing.DOWN ) ? 0 : 2.99f;
+		float y2 = connections.contains( Direction.UP ) ? 16 : 13.01f;
+		float y1 = connections.contains( Direction.DOWN ) ? 0 : 2.99f;
 
-		float z2 = connections.contains( EnumFacing.SOUTH ) ? 16 : 13.01f;
-		float z1 = connections.contains( EnumFacing.NORTH ) ? 0 : 2.99f;
+		float z2 = connections.contains( Direction.SOUTH ) ? 16 : 13.01f;
+		float z1 = connections.contains( Direction.NORTH ) ? 0 : 2.99f;
 
 		// On the axis of the side that we're currently drawing, extend the dimensions
 		// out to the outer face of the block
@@ -119,21 +119,21 @@ abstract class CraftingCubeBakedModel implements IBakedModel
 		return quads;
 	}
 
-	private void addRing( CubeBuilder builder, @Nullable EnumFacing side, EnumSet<EnumFacing> connections )
+	private void addRing( CubeBuilder builder, @Nullable Direction side, EnumSet<Direction> connections )
 	{
 		// Fill in the corners
 		builder.setTexture( this.ringCorner );
-		this.addCornerCap( builder, connections, side, EnumFacing.UP, EnumFacing.EAST, EnumFacing.NORTH );
-		this.addCornerCap( builder, connections, side, EnumFacing.UP, EnumFacing.EAST, EnumFacing.SOUTH );
-		this.addCornerCap( builder, connections, side, EnumFacing.UP, EnumFacing.WEST, EnumFacing.NORTH );
-		this.addCornerCap( builder, connections, side, EnumFacing.UP, EnumFacing.WEST, EnumFacing.SOUTH );
-		this.addCornerCap( builder, connections, side, EnumFacing.DOWN, EnumFacing.EAST, EnumFacing.NORTH );
-		this.addCornerCap( builder, connections, side, EnumFacing.DOWN, EnumFacing.EAST, EnumFacing.SOUTH );
-		this.addCornerCap( builder, connections, side, EnumFacing.DOWN, EnumFacing.WEST, EnumFacing.NORTH );
-		this.addCornerCap( builder, connections, side, EnumFacing.DOWN, EnumFacing.WEST, EnumFacing.SOUTH );
+		this.addCornerCap( builder, connections, side, Direction.UP, Direction.EAST, Direction.NORTH );
+		this.addCornerCap( builder, connections, side, Direction.UP, Direction.EAST, Direction.SOUTH );
+		this.addCornerCap( builder, connections, side, Direction.UP, Direction.WEST, Direction.NORTH );
+		this.addCornerCap( builder, connections, side, Direction.UP, Direction.WEST, Direction.SOUTH );
+		this.addCornerCap( builder, connections, side, Direction.DOWN, Direction.EAST, Direction.NORTH );
+		this.addCornerCap( builder, connections, side, Direction.DOWN, Direction.EAST, Direction.SOUTH );
+		this.addCornerCap( builder, connections, side, Direction.DOWN, Direction.WEST, Direction.NORTH );
+		this.addCornerCap( builder, connections, side, Direction.DOWN, Direction.WEST, Direction.SOUTH );
 
 		// Fill in the remaining stripes of the face
-		for( EnumFacing a : EnumFacing.values() )
+		for( Direction a : Direction.values() )
 		{
 			if( a == side || a == side.getOpposite() )
 			{
@@ -141,11 +141,11 @@ abstract class CraftingCubeBakedModel implements IBakedModel
 			}
 
 			// Select the horizontal or vertical ring texture depending on which side we're filling in
-			if( ( side.getAxis() != EnumFacing.Axis.Y ) && ( a == EnumFacing.NORTH || a == EnumFacing.EAST || a == EnumFacing.WEST || a == EnumFacing.SOUTH ) )
+			if( ( side.getAxis() != Direction.Axis.Y ) && ( a == Direction.NORTH || a == Direction.EAST || a == Direction.WEST || a == Direction.SOUTH ) )
 			{
 				builder.setTexture( this.ringVer );
 			}
-			else if( side.getAxis() == EnumFacing.Axis.Y && ( a == EnumFacing.EAST || a == EnumFacing.WEST ) )
+			else if( side.getAxis() == Direction.Axis.Y && ( a == Direction.EAST || a == Direction.WEST ) )
 			{
 				builder.setTexture( this.ringVer );
 			}
@@ -194,8 +194,8 @@ abstract class CraftingCubeBakedModel implements IBakedModel
 				// drawn in those directions. Since a corner is drawn if the three touching faces dont have adjacent
 				// crafting cube blocks, we'd have to check for a, side, and the perpendicular direction. But in this
 				// block, we've already checked for side (due to face culling) and a (see above).
-				EnumFacing perpendicular = a.rotateAround( side.getAxis() );
-				for( EnumFacing cornerCandidate : EnumSet.of( perpendicular, perpendicular.getOpposite() ) )
+				Direction perpendicular = a.rotateAround( side.getAxis() );
+				for( Direction cornerCandidate : EnumSet.of( perpendicular, perpendicular.getOpposite() ) )
 				{
 					if( !connections.contains( cornerCandidate ) )
 					{
@@ -232,7 +232,7 @@ abstract class CraftingCubeBakedModel implements IBakedModel
 	/**
 	 * Adds a 3x3x3 corner cap to the cube builder if there are no adjacent crafting cubes on that corner.
 	 */
-	private void addCornerCap( CubeBuilder builder, EnumSet<EnumFacing> connections, EnumFacing side, EnumFacing down, EnumFacing west, EnumFacing north )
+	private void addCornerCap( CubeBuilder builder, EnumSet<Direction> connections, Direction side, Direction down, Direction west, Direction north )
 	{
 		if( connections.contains( down ) || connections.contains( west ) || connections.contains( north ) )
 		{
@@ -245,35 +245,35 @@ abstract class CraftingCubeBakedModel implements IBakedModel
 			return;
 		}
 
-		float x1 = ( west == EnumFacing.WEST ? 0 : 13 );
-		float y1 = ( down == EnumFacing.DOWN ? 0 : 13 );
-		float z1 = ( north == EnumFacing.NORTH ? 0 : 13 );
-		float x2 = ( west == EnumFacing.WEST ? 3 : 16 );
-		float y2 = ( down == EnumFacing.DOWN ? 3 : 16 );
-		float z2 = ( north == EnumFacing.NORTH ? 3 : 16 );
+		float x1 = ( west == Direction.WEST ? 0 : 13 );
+		float y1 = ( down == Direction.DOWN ? 0 : 13 );
+		float z1 = ( north == Direction.NORTH ? 0 : 13 );
+		float x2 = ( west == Direction.WEST ? 3 : 16 );
+		float y2 = ( down == Direction.DOWN ? 3 : 16 );
+		float z2 = ( north == Direction.NORTH ? 3 : 16 );
 		builder.addCube( x1, y1, z1, x2, y2, z2 );
 	}
 
 	// Retrieve the cube connection state from the block state
 	// If none is present, just assume there are no adjacent crafting cube blocks
-	private static EnumSet<EnumFacing> getConnections( @Nullable IBlockState state )
+	private static EnumSet<Direction> getConnections( @Nullable BlockState state )
 	{
 		if( !( state instanceof IExtendedBlockState ) )
 		{
-			return EnumSet.noneOf( EnumFacing.class );
+			return EnumSet.noneOf( Direction.class );
 		}
 
 		IExtendedBlockState extState = (IExtendedBlockState) state;
 		CraftingCubeState cubeState = extState.getValue( BlockCraftingUnit.STATE );
 		if( cubeState == null )
 		{
-			return EnumSet.noneOf( EnumFacing.class );
+			return EnumSet.noneOf( Direction.class );
 		}
 
 		return cubeState.getConnections();
 	}
 
-	protected abstract void addInnerCube( EnumFacing facing, IBlockState state, CubeBuilder builder, float x1, float y1, float z1, float x2, float y2, float z2 );
+	protected abstract void addInnerCube( Direction facing, BlockState state, CubeBuilder builder, float x1, float y1, float z1, float x2, float y2, float z2 );
 
 	@Override
 	public boolean isAmbientOcclusion()

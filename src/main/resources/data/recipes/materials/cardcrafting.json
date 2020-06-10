@@ -1,0 +1,23 @@
+{
+    "conditions": [
+        {
+            "type": "appliedenergistics2:material_exists",
+            "material": "material.card_crafting"
+        }
+    ],
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "material.card_crafting"
+    },
+    "type": "appliedenergistics2:part_shapeless",
+    "ingredients": [
+        {
+            "type": "forge:ore_dict",
+            "ore": "workbench"
+        },
+        {
+            "type": "appliedenergistics2:part",
+            "part": "material.basic_card"
+        }
+    ]
+}

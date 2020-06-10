@@ -33,31 +33,31 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.ICriterionInstance;
 import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.ItemMeshDefinition;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.block.statemap.IStateMapper;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.EntityEntry;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.forgespi.Environment;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import appeng.api.config.Upgrades;
@@ -119,14 +119,13 @@ import appeng.recipes.AEItemResolver;
 import appeng.recipes.AERecipeLoader;
 import appeng.recipes.game.DisassembleRecipe;
 import appeng.recipes.game.FacadeRecipe;
-import appeng.recipes.ores.OreDictionaryHandler;
 import appeng.spatial.BiomeGenStorage;
 import appeng.spatial.StorageWorldProvider;
 import appeng.tile.AEBaseTile;
 import appeng.worldgen.MeteoriteWorldGen;
 import appeng.worldgen.QuartzWorldGen;
 
-
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 final class Registration
 {
 	DimensionType storageDimensionType;
@@ -134,7 +133,134 @@ final class Registration
 	Biome storageBiome;
 	AdvancementTriggers advancementTriggers;
 
-	void preInitialize( final FMLPreInitializationEvent event )
+	/*
+	 * Register events call order (higher means earlier):
+	 * 		Block
+	 * 		Item
+	 * Other registry events in alphabetical order
+	 * 		Biome
+	 * 		Enchantment
+	 * 		EntityEntry
+	 * 		IRecipe
+	 * 		PotionType
+	 * 		SoundEvent
+	 * 		VillagerProfession
+	 * 		Potion
+	 * Then FML*Setup Events (on the InterModComms event bus)
+	 * 		FMLCommonSetupEvent
+	 * 		FMLClientSetupEvent OR FMLDedicatedServerSetupEvent
+	 * 		InterModEnqueueEvent
+	 * 		InterModProcessEvent
+	 */
+
+	/**
+	 * Called first
+	 * Called before {@link #registerItems(RegistryEvent.Register)}
+	 *
+	 * When event done ObjectHolder annotations are refreshed
+	 */
+	@SubscribeEvent
+	public void registerBlocks( RegistryEvent.Register<Block> event )
+	{
+		final IForgeRegistry<Block> registry = event.getRegistry();
+		final ApiDefinitions definitions = Api.INSTANCE.definitions();
+		definitions.getRegistry().getBootstrapComponents( IBlockRegistrationComponent.class ).forEachRemaining( b -> b.blockRegistration( FMLEnvironment.dist, registry ) );
+	}
+
+	/**
+	 * Called after {@link #registerBlocks(RegistryEvent.Register)}
+	 * Called before {@link #registerBiomes(RegistryEvent.Register)}
+	 *
+	 * When event done ObjectHolder annotations are refreshed
+	 */
+	@SubscribeEvent
+	public void registerItems( RegistryEvent.Register<Item> event )
+	{
+		final IForgeRegistry<Item> registry = event.getRegistry();
+		final ApiDefinitions definitions = Api.INSTANCE.definitions();
+		final Dist side =  FMLEnvironment.dist;
+		definitions.getRegistry().getBootstrapComponents( IItemRegistrationComponent.class ).forEachRemaining( b -> b.itemRegistration( side, registry ) );
+		// register oredicts
+		definitions.getRegistry().getBootstrapComponents( IOreDictComponent.class ).forEachRemaining( b -> b.oreRegistration( side ) );
+		ItemMaterial.instance.registerOredicts();
+		ItemPart.instance.registerOreDicts();
+	}
+
+	/**
+	 * Called after {@link #registerItems(RegistryEvent.Register)}
+	 * Called before {@link #registerEntities(RegistryEvent.Register)}
+	 */
+	@SubscribeEvent
+	public void registerBiomes( RegistryEvent.Register<Biome> event )
+	{
+		final IForgeRegistry<Biome> registry = event.getRegistry();
+		this.registerSpatialBiome( registry );
+	}
+
+	/**
+	 * Called after {@link #registerBiomes(RegistryEvent.Register)}
+	 * Called before {@link #registerRecipes(RegistryEvent.Register)}
+	 */
+	@SubscribeEvent
+	public void registerEntities( RegistryEvent.Register<EntityType> event )
+	{
+		final IForgeRegistry<EntityType> registry = event.getRegistry();
+		final ApiDefinitions definitions = Api.INSTANCE.definitions();
+		definitions.getRegistry().getBootstrapComponents( IEntityRegistrationComponent.class ).forEachRemaining( b -> b.entityRegistration( registry ) );
+	}
+
+	/**
+	 * Called after {@link #registerEntities(RegistryEvent.Register)}
+	 * Called before {@link #clientSetup(FMLClientSetupEvent)}
+	 */
+	@SubscribeEvent
+	public void registerRecipes( RegistryEvent.Register<IRecipeSerializer> event )
+	{
+		final IForgeRegistry<IRecipeSerializer> registry = event.getRegistry();
+
+		final Api api = Api.INSTANCE;
+		final ApiDefinitions definitions = api.definitions();
+		final Dist side = FMLEnvironment.dist;
+
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.ENABLE_DISASSEMBLY_CRAFTING ) )
+		{
+			DisassembleRecipe r = new DisassembleRecipe();
+			registry.register( r.setRegistryName( AppEng.MOD_ID.toLowerCase(), "disassemble" ) );
+		}
+
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.ENABLE_FACADE_CRAFTING ) )
+		{
+			definitions.items().facade().maybeItem().ifPresent( facadeItem ->
+			{
+				FacadeRecipe f = new FacadeRecipe( (ItemFacade) facadeItem );
+				registry.register( f.setRegistryName( AppEng.MOD_ID.toLowerCase(), "facade" ) );
+			} );
+		}
+
+		definitions.getRegistry().getBootstrapComponents( IRecipeRegistrationComponent.class ).forEachRemaining( b -> b.recipeRegistration( side, registry ) );
+
+		final AERecipeLoader ldr = new AERecipeLoader();
+		ldr.loadProcessingRecipes(registry);
+	}
+
+	@SubscribeEvent
+	@OnlyIn( Dist.CLIENT )
+	public void modelRegistryEvent( ModelRegistryEvent event )
+	{
+		final ApiDefinitions definitions = Api.INSTANCE.definitions();
+		final IModelRegistry registry = new ModelLoaderWrapper();
+		final Dist side =  FMLEnvironment.dist;
+		definitions.getRegistry().getBootstrapComponents( IModelRegistrationComponent.class ).forEachRemaining( b -> b.modelRegistration( side, registry ) );
+	}
+
+	/**
+	 * Called after {@link #registerRecipes(RegistryEvent.Register)}
+	 * Called before {@link #clientSetup(FMLClientSetupEvent)} or {@link #dedicatedServerSetup(FMLDedicatedServerSetupEvent)} during mod startup.
+	 *
+	 * Replaces preInit
+ 	 */
+	@SubscribeEvent
+	void preInitialize( final FMLCommonSetupEvent event )
 	{
 		Capabilities.register();
 
@@ -142,26 +268,28 @@ final class Registration
 		final IRecipeHandlerRegistry recipeRegistry = api.registries().recipes();
 		this.registerCraftHandlers( recipeRegistry );
 
-		MinecraftForge.EVENT_BUS.register( OreDictionaryHandler.INSTANCE );
-
 		ApiDefinitions definitions = api.definitions();
 
 		// Register
-		definitions.getRegistry().getBootstrapComponents( IPreInitComponent.class ).forEachRemaining( b -> b.preInitialize( event.getSide() ) );
+		definitions.getRegistry().getBootstrapComponents( IPreInitComponent.class ).forEachRemaining( b -> b.preInitialize(  FMLEnvironment.dist ) );
 	}
 
-	private void registerSpatialBiome( IForgeRegistry<Biome> registry )
+	/**
+	 * Called after {@link #preInitialize(FMLCommonSetupEvent)}
+	 * Called before {@link #
+	 */
+	@SubscribeEvent
+	void clientSetup( final FMLClientSetupEvent event )
 	{
-		if( !AEConfig.instance().isFeatureEnabled( AEFeature.SPATIAL_IO ) )
-		{
-			return;
-		}
+	}
 
-		if( this.storageBiome == null )
-		{
-			this.storageBiome = new BiomeGenStorage();
-		}
-		registry.register( this.storageBiome.setRegistryName( "appliedenergistics2:storage_biome" ) );
+	/**
+	 * Called after {@link #preInitialize(FMLCommonSetupEvent)}
+	 * Called before {@link #
+	 */
+	@SubscribeEvent
+	void dedicatedServerSetup( final FMLDedicatedServerSetupEvent event )
+	{
 	}
 
 	private void registerSpatialDimension()
@@ -175,7 +303,7 @@ final class Registration
 		if( config.getStorageProviderID() == -1 )
 		{
 			final Set<Integer> ids = new HashSet<>();
-			for( DimensionType type : DimensionType.values() )
+			for( DimensionType type : DimensionType.getAll() )
 			{
 				ids.add( type.getId() );
 			}
@@ -191,6 +319,7 @@ final class Registration
 
 		this.storageDimensionType = DimensionType.register( "Storage Cell", "_cell", config.getStorageProviderID(), StorageWorldProvider.class, true );
 
+		//TODO use RegisterDimensionsEvent
 		if( config.getStorageDimensionID() == -1 )
 		{
 			config.setStorageDimensionID( DimensionManager.getNextFreeDimId() );
@@ -201,11 +330,13 @@ final class Registration
 		DimensionManager.registerDimension( this.storageDimensionID, this.storageDimensionType );
 	}
 
+
 	private void registerCraftHandlers( final IRecipeHandlerRegistry registry )
 	{
 		registry.addNewSubItemResolver( new AEItemResolver() );
 	}
 
+	//TODO Remove
 	public void initialize( @Nonnull final FMLInitializationEvent event, @Nonnull final File recipeDirectory )
 	{
 		Preconditions.checkNotNull( event );
@@ -254,81 +385,21 @@ final class Registration
 		this.advancementTriggers = new AdvancementTriggers( new CriterionTrigggerRegistry() );
 	}
 
-	@SubscribeEvent
-	public void registerBiomes( RegistryEvent.Register<Biome> event )
+
+	private void registerSpatialBiome( IForgeRegistry<Biome> registry )
 	{
-		final IForgeRegistry<Biome> registry = event.getRegistry();
-		this.registerSpatialBiome( registry );
-	}
-
-	@SubscribeEvent
-	@SideOnly( Side.CLIENT )
-	public void modelRegistryEvent( ModelRegistryEvent event )
-	{
-		final ApiDefinitions definitions = Api.INSTANCE.definitions();
-		final IModelRegistry registry = new ModelLoaderWrapper();
-		final Side side = FMLCommonHandler.instance().getEffectiveSide();
-		definitions.getRegistry().getBootstrapComponents( IModelRegistrationComponent.class ).forEachRemaining( b -> b.modelRegistration( side, registry ) );
-	}
-
-	@SubscribeEvent
-	public void registerBlocks( RegistryEvent.Register<Block> event )
-	{
-		final IForgeRegistry<Block> registry = event.getRegistry();
-		final ApiDefinitions definitions = Api.INSTANCE.definitions();
-		final Side side = FMLCommonHandler.instance().getEffectiveSide();
-		definitions.getRegistry().getBootstrapComponents( IBlockRegistrationComponent.class ).forEachRemaining( b -> b.blockRegistration( side, registry ) );
-	}
-
-	@SubscribeEvent
-	public void registerItems( RegistryEvent.Register<Item> event )
-	{
-		final IForgeRegistry<Item> registry = event.getRegistry();
-		final ApiDefinitions definitions = Api.INSTANCE.definitions();
-		final Side side = FMLCommonHandler.instance().getEffectiveSide();
-		definitions.getRegistry().getBootstrapComponents( IItemRegistrationComponent.class ).forEachRemaining( b -> b.itemRegistration( side, registry ) );
-		// register oredicts
-		definitions.getRegistry().getBootstrapComponents( IOreDictComponent.class ).forEachRemaining( b -> b.oreRegistration( side ) );
-		ItemMaterial.instance.registerOredicts();
-		ItemPart.instance.registerOreDicts();
-	}
-
-	@SubscribeEvent
-	public void registerRecipes( RegistryEvent.Register<IRecipe> event )
-	{
-		final IForgeRegistry<IRecipe> registry = event.getRegistry();
-
-		final Api api = Api.INSTANCE;
-		final ApiDefinitions definitions = api.definitions();
-		final Side side = FMLCommonHandler.instance().getEffectiveSide();
-
-		if( AEConfig.instance().isFeatureEnabled( AEFeature.ENABLE_DISASSEMBLY_CRAFTING ) )
+		if( !AEConfig.instance().isFeatureEnabled( AEFeature.SPATIAL_IO ) )
 		{
-			DisassembleRecipe r = new DisassembleRecipe();
-			registry.register( r.setRegistryName( AppEng.MOD_ID.toLowerCase(), "disassemble" ) );
+			return;
 		}
 
-		if( AEConfig.instance().isFeatureEnabled( AEFeature.ENABLE_FACADE_CRAFTING ) )
+		if( this.storageBiome == null )
 		{
-			definitions.items().facade().maybeItem().ifPresent( facadeItem ->
-			{
-				FacadeRecipe f = new FacadeRecipe( (ItemFacade) facadeItem );
-				registry.register( f.setRegistryName( AppEng.MOD_ID.toLowerCase(), "facade" ) );
-			} );
+			this.storageBiome = new BiomeGenStorage();
 		}
+		this.storageBiome.setRegistryName( AppEng.MOD_ID, "storage_biome" );
 
-		definitions.getRegistry().getBootstrapComponents( IRecipeRegistrationComponent.class ).forEachRemaining( b -> b.recipeRegistration( side, registry ) );
-
-		final AERecipeLoader ldr = new AERecipeLoader();
-		ldr.loadProcessingRecipes();
-	}
-
-	@SubscribeEvent
-	public void registerEntities( RegistryEvent.Register<EntityEntry> event )
-	{
-		final IForgeRegistry<EntityEntry> registry = event.getRegistry();
-		final ApiDefinitions definitions = Api.INSTANCE.definitions();
-		definitions.getRegistry().getBootstrapComponents( IEntityRegistrationComponent.class ).forEachRemaining( b -> b.entityRegistration( registry ) );
+		registry.register( this.storageBiome );
 	}
 
 	@SubscribeEvent

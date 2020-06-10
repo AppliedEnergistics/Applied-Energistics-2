@@ -20,14 +20,14 @@ package appeng.debug;
 
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -46,11 +46,11 @@ import appeng.util.Platform;
 public class ToolReplicatorCard extends AEBaseItem
 {
 	@Override
-	public EnumActionResult onItemUseFirst( final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
+	public ActionResultType onItemUseFirst( final PlayerEntity player, final World world, final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ, final Hand hand )
 	{
 		if( Platform.isClient() )
 		{
-			return EnumActionResult.PASS;
+			return ActionResultType.PASS;
 		}
 
 		int x = pos.getX();
@@ -61,7 +61,7 @@ public class ToolReplicatorCard extends AEBaseItem
 		{
 			if( world.getTileEntity( pos ) instanceof IGridHost )
 			{
-				final NBTTagCompound tag = new NBTTagCompound();
+				final CompoundNBT tag = new CompoundNBT();
 				tag.setInteger( "x", x );
 				tag.setInteger( "y", y );
 				tag.setInteger( "z", z );
@@ -76,7 +76,7 @@ public class ToolReplicatorCard extends AEBaseItem
 		}
 		else
 		{
-			final NBTTagCompound ish = player.getHeldItem( hand ).getTagCompound();
+			final CompoundNBT ish = player.getHeldItem( hand ).getTagCompound();
 			if( ish != null )
 			{
 				final int src_x = ish.getInteger( "x" );
@@ -90,8 +90,8 @@ public class ToolReplicatorCard extends AEBaseItem
 				if( te instanceof IGridHost )
 				{
 					final IGridHost gh = (IGridHost) te;
-					final EnumFacing sideOff = EnumFacing.VALUES[src_side];
-					final EnumFacing currentSideOff = side;
+					final Direction sideOff = Direction.VALUES[src_side];
+					final Direction currentSideOff = side;
 					final IGridNode n = gh.getGridNode( AEPartLocation.fromFacing( sideOff ) );
 					if( n != null )
 					{
@@ -128,16 +128,16 @@ public class ToolReplicatorCard extends AEBaseItem
 										{
 											final BlockPos p = new BlockPos( min_x + i, min_y + j, min_z + k );
 											final BlockPos d = new BlockPos( i + rel_x, j + rel_y, k + rel_z );
-											final IBlockState state = src_w.getBlockState( p );
+											final BlockState state = src_w.getBlockState( p );
 											final Block blk = state.getBlock();
-											final IBlockState prev = world.getBlockState( d );
+											final BlockState prev = world.getBlockState( d );
 
 											world.setBlockState( d, state );
 											if( blk != null && blk.hasTileEntity( state ) )
 											{
 												final TileEntity ote = src_w.getTileEntity( p );
 												final TileEntity nte = blk.createTileEntity( world, state );
-												final NBTTagCompound data = new NBTTagCompound();
+												final CompoundNBT data = new CompoundNBT();
 												ote.writeToNBT( data );
 												nte.readFromNBT( data.copy() );
 												world.setTileEntity( d, nte );
@@ -172,7 +172,7 @@ public class ToolReplicatorCard extends AEBaseItem
 				this.outputMsg( player, "No Source Defined" );
 			}
 		}
-		return EnumActionResult.SUCCESS;
+		return ActionResultType.SUCCESS;
 	}
 
 	private void outputMsg( final ICommandSender player, final String string )

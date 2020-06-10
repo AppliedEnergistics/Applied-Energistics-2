@@ -21,8 +21,6 @@ package appeng.core.api.definitions;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.EntityEntryBuilder;
-import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IItems;
@@ -72,7 +70,7 @@ import appeng.items.tools.quartz.ToolQuartzAxe;
 import appeng.items.tools.quartz.ToolQuartzCuttingKnife;
 import appeng.items.tools.quartz.ToolQuartzHoe;
 import appeng.items.tools.quartz.ToolQuartzPickaxe;
-import appeng.items.tools.quartz.ToolQuartzSpade;
+import appeng.items.tools.quartz.ToolQuartzShovel;
 import appeng.items.tools.quartz.ToolQuartzSword;
 import appeng.items.tools.quartz.ToolQuartzWrench;
 
@@ -152,7 +150,7 @@ public final class ApiItems implements IItems
 		this.certusQuartzHoe = certusTools.item( "certus_quartz_hoe", () -> new ToolQuartzHoe( AEFeature.CERTUS_QUARTZ_TOOLS ) )
 				.addFeatures( AEFeature.QUARTZ_HOE )
 				.build();
-		this.certusQuartzShovel = certusTools.item( "certus_quartz_spade", () -> new ToolQuartzSpade( AEFeature.CERTUS_QUARTZ_TOOLS ) )
+		this.certusQuartzShovel = certusTools.item( "certus_quartz_spade", () -> new ToolQuartzShovel( AEFeature.CERTUS_QUARTZ_TOOLS ) )
 				.addFeatures( AEFeature.QUARTZ_SPADE )
 				.build();
 		this.certusQuartzPick = certusTools.item( "certus_quartz_pickaxe", () -> new ToolQuartzPickaxe( AEFeature.CERTUS_QUARTZ_TOOLS ) )
@@ -177,7 +175,7 @@ public final class ApiItems implements IItems
 		this.netherQuartzHoe = netherTools.item( "nether_quartz_hoe", () -> new ToolQuartzHoe( AEFeature.NETHER_QUARTZ_TOOLS ) )
 				.addFeatures( AEFeature.QUARTZ_HOE )
 				.build();
-		this.netherQuartzShovel = netherTools.item( "nether_quartz_spade", () -> new ToolQuartzSpade( AEFeature.NETHER_QUARTZ_TOOLS ) )
+		this.netherQuartzShovel = netherTools.item( "nether_quartz_spade", () -> new ToolQuartzShovel( AEFeature.NETHER_QUARTZ_TOOLS ) )
 				.addFeatures( AEFeature.QUARTZ_SPADE )
 				.build();
 		this.netherQuartzPick = netherTools.item( "nether_quartz_pickaxe", () -> new ToolQuartzPickaxe( AEFeature.NETHER_QUARTZ_TOOLS ) )
@@ -246,7 +244,7 @@ public final class ApiItems implements IItems
 
 		this.facade = registry.item( "facade", ItemFacade::new )
 				.features( AEFeature.FACADES )
-				.creativeTab( CreativeTabFacade.instance )
+				.itemGroup( CreativeTabFacade.instance )
 				.rendering( new FacadeRendering() )
 				.build();
 		this.crystalSeed = registry.item( "crystal_seed", ItemCrystalSeed::new )

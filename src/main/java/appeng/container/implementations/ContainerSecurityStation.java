@@ -19,7 +19,7 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.item.ItemStack;
@@ -70,7 +70,7 @@ public class ContainerSecurityStation extends ContainerMEMonitorable implements 
 		this.bindPlayerInventory( ip, 0, 0 );
 	}
 
-	public void toggleSetting( final String value, final EntityPlayer player )
+	public void toggleSetting( final String value, final PlayerEntity player )
 	{
 		try
 		{
@@ -120,7 +120,7 @@ public class ContainerSecurityStation extends ContainerMEMonitorable implements 
 	}
 
 	@Override
-	public void onContainerClosed( final EntityPlayer player )
+	public void onContainerClosed( final PlayerEntity player )
 	{
 		super.onContainerClosed( player );
 

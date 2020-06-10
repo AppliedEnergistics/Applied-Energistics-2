@@ -24,11 +24,11 @@ import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 
 import appeng.api.AEApi;
 import appeng.api.exceptions.FailedConnectionException;
@@ -73,14 +73,14 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound extra )
+	public void readFromNBT( final CompoundNBT extra )
 	{
 		super.readFromNBT( extra );
 		this.outerProxy.readFromNBT( extra );
 	}
 
 	@Override
-	public void writeToNBT( final NBTTagCompound extra )
+	public void writeToNBT( final CompoundNBT extra )
 	{
 		super.writeToNBT( extra );
 		this.outerProxy.writeToNBT( extra );
@@ -137,7 +137,7 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 	}
 
 	@Override
-	public void onPlacement( final EntityPlayer player, final EnumHand hand, final ItemStack held, final AEPartLocation side )
+	public void onPlacement( final PlayerEntity player, final Hand hand, final ItemStack held, final AEPartLocation side )
 	{
 		super.onPlacement( player, hand, held, side );
 		this.outerProxy.setOwner( player );

@@ -19,19 +19,18 @@
 package appeng.util.item;
 
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.NavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
-
-import net.minecraftforge.oredict.OreDictionary;
+import java.util.stream.Collectors;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.util.item.AESharedItemStack.Bounds;
+import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 
 
 public final class ItemList implements IItemList<IAEItemStack>
@@ -72,7 +71,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 	}
 
 	@Override
-	public Collection<IAEItemStack> findFuzzy( final IAEItemStack filter, final FuzzyMode fuzzy )
+	public Collection<IAEItemStack> findFuzzy( final IAEItemStack filter )
 	{
 		if( filter == null )
 		{
@@ -80,27 +79,27 @@ public final class ItemList implements IItemList<IAEItemStack>
 		}
 
 		final AEItemStack ais = (AEItemStack) filter;
+		final Item a = ais.getItem();
 
-		return ais.getOre().map( or ->
+		Collection<ResourceLocation> atags = ais.getItemTags();
+
+		return this.records.values().stream().filter( is ->
+				a.equals( is.getItem() ) || ItemTagHelper.INSTANCE.isSimilarItem( atags, is.getItem() ) ).collect( Collectors.toSet());
+	}
+
+	@Override public Collection<IAEItemStack> find( IAEItemStack input, FuzzyMode fuzzyMode )
+	{
+		if(input == null)
 		{
-			if( or.getAEEquivalents().size() == 1 )
-			{
-				final IAEItemStack is = or.getAEEquivalents().get( 0 );
+			return Collections.emptyList();
+		}
 
-				return this.findFuzzyDamage( is, fuzzy, is.getItemDamage() == OreDictionary.WILDCARD_VALUE );
-			}
-			else
-			{
-				final Collection<IAEItemStack> output = new ArrayList<>();
-
-				for( final IAEItemStack is : or.getAEEquivalents() )
-				{
-					output.addAll( this.findFuzzyDamage( is, fuzzy, is.getItemDamage() == OreDictionary.WILDCARD_VALUE ) );
-				}
-
-				return output;
-			}
-		} ).orElse( this.findFuzzyDamage( ais, fuzzy, false ) );
+		if( !fuzzyMode.isEnabled() )
+		{
+			IAEItemStack item = this.findPrecise( input );
+			return item != null ? Collections.singleton( item ) : Collections.emptyList();
+		}
+		return this.findFuzzy( input );
 	}
 
 	@Override
@@ -217,13 +216,5 @@ public final class ItemList implements IItemList<IAEItemStack>
 	private IAEItemStack putItemRecord( final IAEItemStack itemStack )
 	{
 		return this.records.put( ( (AEItemStack) itemStack ).getSharedStack(), itemStack );
-	}
-
-	private Collection<IAEItemStack> findFuzzyDamage( final IAEItemStack filter, final FuzzyMode fuzzy, final boolean ignoreMeta )
-	{
-		final AEItemStack itemStack = (AEItemStack) filter;
-		final Bounds bounds = itemStack.getSharedStack().getBounds( fuzzy, ignoreMeta );
-
-		return this.records.subMap( bounds.lower(), true, bounds.upper(), true ).descendingMap().values();
 	}
 }

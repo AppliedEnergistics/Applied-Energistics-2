@@ -1,0 +1,20 @@
+{
+    "display": {
+        "icon": {
+            "item": "appliedenergistics2:part",
+            "data": 36
+        },
+        "title": {
+            "translate": "achievement.ae2.Networking1"
+        },
+        "description": {
+            "translate": "achievement.ae2.Networking1.desc"
+        }
+    },
+    "parent": "appliedenergistics2:main/cable_glass",
+    "criteria": {
+        "cable": {
+            "trigger": "appliedenergistics2:network_apprentice"
+        }
+    }
+}

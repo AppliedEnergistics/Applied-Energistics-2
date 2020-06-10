@@ -27,7 +27,10 @@ public class BiomeGenStorage extends Biome
 
 	public BiomeGenStorage()
 	{
+		//TODO add to forge registy instead somehow idk
 		super( new BiomeProperties( "Storage Cell" ).setBaseBiome( "void" ).setRainDisabled().setTemperature( -100 ) );
+
+		new Biome.Builder().parent( "void" ).precipitation( RainType.NONE ).temperature( -100 );
 
 		this.decorator.treesPerChunk = 0;
 		this.decorator.flowersPerChunk = 0;

@@ -22,7 +22,7 @@ public class InventoryTweaksModule implements IInvTweaks
 					.getField( "instance" )
 					.get( null );
 		}
-		catch( Exception ex )
+		catch( Exception ignored )
 		{
 		}
 	}

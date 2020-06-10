@@ -1,0 +1,21 @@
+{
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "part.quartz_fiber",
+        "count": 3
+    },
+    "type": "appliedenergistics2:part_shaped",
+    "pattern": [
+        "aaa",
+        "bbb",
+        "aaa"
+    ],
+    "key": {
+        "a": {
+            "item": "#appliedenergistics2:glass"
+        },
+        "b": {
+            "item": "#appliedenergistics2:dustQuartz"
+        }
+    }
+}

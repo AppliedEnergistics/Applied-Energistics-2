@@ -32,19 +32,19 @@ import io.netty.buffer.ByteBuf;
 
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
@@ -92,7 +92,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
 		this.is = is;
 		this.proxy = new AENetworkProxy( this, "part", is, this instanceof PartCable );
-		this.proxy.setValidSides( EnumSet.noneOf( EnumFacing.class ) );
+		this.proxy.setValidSides( EnumSet.noneOf( Direction.class ) );
 	}
 
 	public IPartHost getHost()
@@ -189,7 +189,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	@Override
 	public String getCustomInventoryName()
 	{
-		return this.getItemStack().getDisplayName();
+		return this.getItemStack().getDisplayName().getFormattedText();
 	}
 
 	@Override
@@ -200,7 +200,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
 	public void addEntityCrashInfo( final CrashReportCategory crashreportcategory )
 	{
-		crashreportcategory.addCrashSection( "Part Side", this.getSide() );
+		crashreportcategory.addDetail( "Part Side", this.getSide() );
 	}
 
 	@Override
@@ -209,7 +209,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 		if( type == PartItemStack.NETWORK )
 		{
 			final ItemStack copy = this.is.copy();
-			copy.setTagCompound( null );
+			copy.setTag( null );
 			return copy;
 		}
 		return this.is;
@@ -222,7 +222,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor )
+	public void onNeighborChanged( IBlockReader w, BlockPos pos, BlockPos neighbor )
 	{
 
 	}
@@ -234,13 +234,13 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		this.proxy.readFromNBT( data );
 	}
 
 	@Override
-	public void writeToNBT( final NBTTagCompound data )
+	public void writeToNBT( final CompoundNBT data )
 	{
 		this.proxy.writeToNBT( data );
 	}
@@ -308,7 +308,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public void randomDisplayTick( final World world, final BlockPos pos, final Random r )
 	{
 
@@ -333,7 +333,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public boolean isLadder( final EntityLivingBase entity )
+	public boolean isLadder( final LivingEntity entity )
 	{
 		return false;
 	}
@@ -356,7 +356,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	 * @param from source of settings
 	 * @param compound compound of source
 	 */
-	private void uploadSettings( final SettingsFrom from, final NBTTagCompound compound )
+	private void uploadSettings( final SettingsFrom from, final CompoundNBT compound )
 	{
 		if( compound != null )
 		{
@@ -370,7 +370,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 		if( this instanceof IPriorityHost )
 		{
 			final IPriorityHost pHost = (IPriorityHost) this;
-			pHost.setPriority( compound.getInteger( "priority" ) );
+			pHost.setPriority( compound.getInt( "priority" ) );
 		}
 
 		final IItemHandler inv = this.getInventoryByName( "config" );
@@ -389,13 +389,11 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	/**
 	 * null means nothing to store...
 	 *
-	 * @param from source of settings
-	 *
 	 * @return compound of source
 	 */
-	private NBTTagCompound downloadSettings( final SettingsFrom from )
+	private CompoundNBT downloadSettings( )
 	{
-		final NBTTagCompound output = new NBTTagCompound();
+		final CompoundNBT output = new CompoundNBT();
 
 		final IConfigManager cm = this.getConfigManager();
 		if( cm != null )
@@ -406,7 +404,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 		if( this instanceof IPriorityHost )
 		{
 			final IPriorityHost pHost = (IPriorityHost) this;
-			output.setInteger( "priority", pHost.getPriority() );
+			output.putInt( "priority", pHost.getPriority() );
 		}
 
 		final IItemHandler inv = this.getInventoryByName( "config" );
@@ -415,7 +413,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 			( (AppEngInternalAEInventory) inv ).writeToNBT( output, "config" );
 		}
 
-		return output.hasNoTags() ? null : output;
+		return output.isEmpty() ? null : output;
 	}
 
 	public boolean useStandardMemoryCard()
@@ -423,7 +421,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 		return true;
 	}
 
-	private boolean useMemoryCard( final EntityPlayer player )
+	private boolean useMemoryCard( final PlayerEntity player )
 	{
 		final ItemStack memCardIS = player.inventory.getCurrentItem();
 
@@ -444,11 +442,12 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 				}
 			}
 
-			final String name = is.getUnlocalizedName();
+			// just a key so only the same item gets overridden
+			final String name = is.getTranslationKey();
 
 			if( player.isSneaking() )
 			{
-				final NBTTagCompound data = this.downloadSettings( SettingsFrom.MEMORY_CARD );
+				final CompoundNBT data = this.downloadSettings();
 				if( data != null )
 				{
 					memoryCard.setMemoryCardContents( memCardIS, name, data );
@@ -458,7 +457,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 			else
 			{
 				final String storedName = memoryCard.getSettingsName( memCardIS );
-				final NBTTagCompound data = memoryCard.getData( memCardIS );
+				final CompoundNBT data = memoryCard.getData( memCardIS );
 				if( name.equals( storedName ) )
 				{
 					this.uploadSettings( SettingsFrom.MEMORY_CARD, data );
@@ -475,7 +474,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public final boolean onActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
+	public final boolean onActivate( final PlayerEntity player, final Hand hand, final Vec3d pos )
 	{
 		if( this.useMemoryCard( player ) )
 		{
@@ -486,7 +485,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public final boolean onShiftActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
+	public final boolean onShiftActivate( final PlayerEntity player, final Hand hand, final Vec3d pos )
 	{
 		if( this.useMemoryCard( player ) )
 		{
@@ -496,18 +495,18 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 		return this.onPartShiftActivate( player, hand, pos );
 	}
 
-	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
+	public boolean onPartActivate( final PlayerEntity player, final Hand hand, final Vec3d pos )
 	{
 		return false;
 	}
 
-	public boolean onPartShiftActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
+	public boolean onPartShiftActivate( final PlayerEntity player, final Hand hand, final Vec3d pos )
 	{
 		return false;
 	}
 
 	@Override
-	public void onPlacement( final EntityPlayer player, final EnumHand hand, final ItemStack held, final AEPartLocation side )
+	public void onPlacement( final PlayerEntity player, final Hand hand, final ItemStack held, final AEPartLocation side )
 	{
 		this.proxy.setOwner( player );
 	}

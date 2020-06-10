@@ -23,15 +23,17 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
+import net.minecraft.client.audio.SimpleSound;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Items;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.AEPartLocation;
 import appeng.client.render.effects.EnergyFx;
@@ -39,6 +41,7 @@ import appeng.core.AppEng;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.Platform;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 
 public class PacketTransitionEffect extends AppEngPacket
@@ -69,9 +72,8 @@ public class PacketTransitionEffect extends AppEngPacket
 		this.d = dir;
 		this.mode = wasBlock;
 
-		final ByteBuf data = Unpooled.buffer();
+		final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
-		data.writeInt( this.getPacketID() );
 		data.writeFloat( (float) x );
 		data.writeFloat( (float) y );
 		data.writeFloat( (float) z );
@@ -82,8 +84,8 @@ public class PacketTransitionEffect extends AppEngPacket
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
+	@OnlyIn( Dist.CLIENT )
+	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final PlayerEntity player, NetworkEvent.Context ctx )
 	{
 		final World world = AppEng.proxy.getWorld();
 
@@ -105,19 +107,22 @@ public class PacketTransitionEffect extends AppEngPacket
 				fx.setMotionY( -0.1f * this.d.yOffset );
 				fx.setMotionZ( -0.1f * this.d.zOffset );
 
-				Minecraft.getMinecraft().effectRenderer.addEffect( fx );
+				Minecraft.getInstance().effectRenderer.addEffect( fx );
 			}
 		}
 
 		if( this.mode )
 		{
-			final Block block = world.getBlockState( new BlockPos( (int) this.x, (int) this.y, (int) this.z ) ).getBlock();
+			BlockPos blockPos = new BlockPos( (int) this.x, (int) this.y, (int) this.z );
+			final Block block = world.getBlockState( blockPos ).getBlock();
 
-			Minecraft.getMinecraft()
+			SoundType soundType = block.getSoundType( world.getBlockState( blockPos ), world, blockPos, null );
+
+
+			Minecraft.getInstance()
 					.getSoundHandler()
-					.playSound( new PositionedSoundRecord( block.getSoundType()
-							.getBreakSound(), SoundCategory.BLOCKS, ( block.getSoundType().getVolume() + 1.0F ) / 2.0F, block.getSoundType()
-									.getPitch() * 0.8F, (float) this.x + 0.5F, (float) this.y + 0.5F, (float) this.z + 0.5F ) );
+					.play(new SimpleSound( soundType.getBreakSound(), SoundCategory.BLOCKS,  ( soundType.getVolume() + 1.0F ) / 2.0F,
+							soundType.pitch * 0.8F, (float) this.x + 0.5F, (float) this.y + 0.5F, (float) this.z + 0.5F ));
 		}
 	}
 }

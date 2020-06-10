@@ -37,45 +37,28 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.play.server.SPacketChunkData;
-import net.minecraft.server.management.PlayerChunkMap;
-import net.minecraft.server.management.PlayerChunkMapEntry;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.registry.RegistryNamespaced;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.FakePlayerFactory;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
@@ -126,6 +109,9 @@ import appeng.util.helpers.ItemComparisonHelper;
 import appeng.util.helpers.P2PHelper;
 import appeng.util.item.AEItemStack;
 import appeng.util.prioritylist.IPartitionList;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.forgespi.Environment;
 
 
 /**
@@ -141,13 +127,13 @@ public class Platform
 
 	public static final int DEF_OFFSET = 16;
 
-	private static final boolean CLIENT_INSTALL = FMLCommonHandler.instance().getSide().isClient();
+	private static final boolean CLIENT_INSTALL = Environment.get().getDist().isClient();
 
 	/*
 	 * random source, use it for item drop locations...
 	 */
 	private static final Random RANDOM_GENERATOR = new Random();
-	private static final WeakHashMap<World, EntityPlayer> FAKE_PLAYERS = new WeakHashMap<>();
+	private static final WeakHashMap<World, PlayerEntity> FAKE_PLAYERS = new WeakHashMap<>();
 	// private static Method getEntry;
 
 	private static final ItemComparisonHelper ITEM_COMPARISON_HELPER = new ItemComparisonHelper();
@@ -231,32 +217,32 @@ public class Platform
 		return AEPartLocation.INTERNAL;
 	}
 
-	public static EnumFacing crossProduct( final EnumFacing forward, final EnumFacing up )
+	public static Direction crossProduct( final Direction forward, final Direction up )
 	{
-		final int west_x = forward.getFrontOffsetY() * up.getFrontOffsetZ() - forward.getFrontOffsetZ() * up.getFrontOffsetY();
-		final int west_y = forward.getFrontOffsetZ() * up.getFrontOffsetX() - forward.getFrontOffsetX() * up.getFrontOffsetZ();
-		final int west_z = forward.getFrontOffsetX() * up.getFrontOffsetY() - forward.getFrontOffsetY() * up.getFrontOffsetX();
+		final int west_x = forward.getYOffset() * up.getZOffset() - forward.getZOffset() * up.getYOffset();
+		final int west_y = forward.getZOffset() * up.getXOffset() - forward.getXOffset() * up.getZOffset();
+		final int west_z = forward.getXOffset() * up.getYOffset() - forward.getYOffset() * up.getXOffset();
 
 		switch( west_x + west_y * 2 + west_z * 3 )
 		{
 			case 1:
-				return EnumFacing.EAST;
+				return Direction.EAST;
 			case -1:
-				return EnumFacing.WEST;
+				return Direction.WEST;
 
 			case 2:
-				return EnumFacing.UP;
+				return Direction.UP;
 			case -2:
-				return EnumFacing.DOWN;
+				return Direction.DOWN;
 
 			case 3:
-				return EnumFacing.SOUTH;
+				return Direction.SOUTH;
 			case -3:
-				return EnumFacing.NORTH;
+				return Direction.NORTH;
 		}
 
 		// something is better then nothing?
-		return EnumFacing.NORTH;
+		return Direction.NORTH;
 	}
 
 	public static <T extends Enum> T rotateEnum( T ce, final boolean backwards, final EnumSet validOptions )
@@ -355,16 +341,16 @@ public class Platform
 		return false;
 	}
 
-	public static void openGUI( @Nonnull final EntityPlayer p, @Nullable final TileEntity tile, @Nullable final AEPartLocation side, @Nonnull final GuiBridge type )
+	public static void openGUI( @Nonnull final PlayerEntity p, @Nullable final TileEntity tile, @Nullable final AEPartLocation side, @Nonnull final GuiBridge type )
 	{
 		if( isClient() )
 		{
 			return;
 		}
 
-		int x = (int) p.posX;
-		int y = (int) p.posY;
-		int z = (int) p.posZ;
+		int x = p.getPosition().getX();
+		int y = p.getPosition().getY();
+		int z = p.getPosition().getZ();
 		if( tile != null )
 		{
 			x = tile.getPos().getX();
@@ -377,6 +363,7 @@ public class Platform
 			if( tile == null && type.getType() == GuiHostType.ITEM )
 			{
 				p.openGui( AppEng.instance(), type.ordinal() << 4, p.getEntityWorld(), p.inventory.currentItem, 0, 0 );
+				p.openContainer(  )
 			}
 			else if( tile == null || type.getType() == GuiHostType.ITEM )
 			{
@@ -405,7 +392,7 @@ public class Platform
 		return CLIENT_INSTALL;
 	}
 
-	public static boolean hasPermissions( final DimensionalCoord dc, final EntityPlayer player )
+	public static boolean hasPermissions( final DimensionalCoord dc, final PlayerEntity player )
 	{
 		return dc.getWorld().canMineBlockBody( player, dc.getPos() );
 	}
@@ -428,7 +415,7 @@ public class Platform
 	public static ItemStack[] getBlockDrops( final World w, final BlockPos pos )
 	{
 		List<ItemStack> out = new ArrayList<>();
-		final IBlockState state = w.getBlockState( pos );
+		final BlockState state = w.getBlockState( pos );
 
 		if( state != null )
 		{
@@ -439,7 +426,7 @@ public class Platform
 		{
 			return new ItemStack[0];
 		}
-		return out.toArray( new ItemStack[out.size()] );
+		return out.toArray( new ItemStack[0] );
 	}
 
 	public static AEPartLocation cycleOrientations( final AEPartLocation dir, final boolean upAndDown )
@@ -491,13 +478,13 @@ public class Platform
 	/*
 	 * Creates / or loads previous NBT Data on items, used for editing items owned by AE.
 	 */
-	public static NBTTagCompound openNbtData( final ItemStack i )
+	public static CompoundNBT openNbtData( final ItemStack i )
 	{
-		NBTTagCompound compound = i.getTagCompound();
+		CompoundNBT compound = i.getTag();
 
 		if( compound == null )
 		{
-			i.setTagCompound( compound = new NBTTagCompound() );
+			i.setTag( compound = new CompoundNBT() );
 		}
 
 		return compound;
@@ -519,9 +506,9 @@ public class Platform
 						final double offset_x = ( getRandomInt() % 32 - 16 ) / 82;
 						final double offset_y = ( getRandomInt() % 32 - 16 ) / 82;
 						final double offset_z = ( getRandomInt() % 32 - 16 ) / 82;
-						final EntityItem ei = new EntityItem( w, 0.5 + offset_x + pos.getX(), 0.5 + offset_y + pos.getY(), 0.2 + offset_z + pos.getZ(), i
+						final ItemEntity ei = new ItemEntity( w, 0.5 + offset_x + pos.getX(), 0.5 + offset_y + pos.getY(), 0.2 + offset_z + pos.getZ(), i
 								.copy() );
-						w.spawnEntity( ei );
+						w.addEntity( ei );
 					}
 				}
 			}
@@ -533,7 +520,7 @@ public class Platform
 	 */
 	public static boolean isServer()
 	{
-		return FMLCommonHandler.instance().getEffectiveSide().isServer();
+		return FMLEnvironment.dist.isDedicatedServer();
 	}
 
 	public static int getRandomInt()
@@ -562,12 +549,12 @@ public class Platform
 		return false;
 	}
 
-	public static ItemStack findMatchingRecipeOutput( final InventoryCrafting ic, final World world )
+	public static ItemStack findMatchingRecipeOutput( final CraftingInventory ic, final World world )
 	{
 		return CraftingManager.findMatchingResult( ic, world );
 	}
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public static List<String> getTooltip( final Object o )
 	{
 		if( o == null )
@@ -593,8 +580,8 @@ public class Platform
 		try
 		{
 			ITooltipFlag.TooltipFlags tooltipFlag = Minecraft
-					.getMinecraft().gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL;
-			return itemStack.getTooltip( Minecraft.getMinecraft().player, tooltipFlag );
+					.getInstance().gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL;
+			return itemStack.getTooltip( Minecraft.getInstance().player, tooltipFlag );
 		}
 		catch( final Exception errB )
 		{
@@ -696,7 +683,7 @@ public class Platform
 		return n == null ? "** Null" : n;
 	}
 
-	public static boolean isWrench( final EntityPlayer player, final ItemStack eq, final BlockPos pos )
+	public static boolean isWrench( final PlayerEntity player, final ItemStack eq, final BlockPos pos )
 	{
 		if( !eq.isEmpty() )
 		{
@@ -744,20 +731,20 @@ public class Platform
 		return false;
 	}
 
-	public static EntityPlayer getPlayer( final WorldServer w )
+	public static PlayerEntity getPlayer( final ServerWorld w )
 	{
 		if( w == null )
 		{
 			throw new InvalidParameterException( "World is null." );
 		}
 
-		final EntityPlayer wrp = FAKE_PLAYERS.get( w );
+		final PlayerEntity wrp = FAKE_PLAYERS.get( w );
 		if( wrp != null )
 		{
 			return wrp;
 		}
 
-		final EntityPlayer p = FakePlayerFactory.getMinecraft( w );
+		final PlayerEntity p = FakePlayerFactory.getMinecraft( w );
 		FAKE_PLAYERS.put( w, p );
 		return p;
 	}
@@ -842,216 +829,58 @@ public class Platform
 			return forward;
 		}
 
-		switch( forward )
-		{
-			case DOWN:
-				switch( axis )
-				{
-					case DOWN:
-						return forward;
-					case UP:
-						return forward;
-					case NORTH:
-						return AEPartLocation.EAST;
-					case SOUTH:
-						return AEPartLocation.WEST;
-					case EAST:
-						return AEPartLocation.NORTH;
-					case WEST:
-						return AEPartLocation.SOUTH;
-					default:
-						break;
-				}
-				break;
-			case UP:
-				switch( axis )
-				{
-					case NORTH:
-						return AEPartLocation.WEST;
-					case SOUTH:
-						return AEPartLocation.EAST;
-					case EAST:
-						return AEPartLocation.SOUTH;
-					case WEST:
-						return AEPartLocation.NORTH;
-					default:
-						break;
-				}
-				break;
-			case NORTH:
-				switch( axis )
-				{
-					case UP:
-						return AEPartLocation.WEST;
-					case DOWN:
-						return AEPartLocation.EAST;
-					case EAST:
-						return AEPartLocation.UP;
-					case WEST:
-						return AEPartLocation.DOWN;
-					default:
-						break;
-				}
-				break;
-			case SOUTH:
-				switch( axis )
-				{
-					case UP:
-						return AEPartLocation.EAST;
-					case DOWN:
-						return AEPartLocation.WEST;
-					case EAST:
-						return AEPartLocation.DOWN;
-					case WEST:
-						return AEPartLocation.UP;
-					default:
-						break;
-				}
-				break;
-			case EAST:
-				switch( axis )
-				{
-					case UP:
-						return AEPartLocation.NORTH;
-					case DOWN:
-						return AEPartLocation.SOUTH;
-					case NORTH:
-						return AEPartLocation.UP;
-					case SOUTH:
-						return AEPartLocation.DOWN;
-					default:
-						break;
-				}
-			case WEST:
-				switch( axis )
-				{
-					case UP:
-						return AEPartLocation.SOUTH;
-					case DOWN:
-						return AEPartLocation.NORTH;
-					case NORTH:
-						return AEPartLocation.DOWN;
-					case SOUTH:
-						return AEPartLocation.UP;
-					default:
-						break;
-				}
-			default:
-				break;
-		}
-		return forward;
+		return AEPartLocation.fromFacing( Platform.rotateAround(forward.getFacing(), axis.getFacing()) );
 	}
 
-	public static EnumFacing rotateAround( final EnumFacing forward, final EnumFacing axis )
+	public static Direction rotateAround( final Direction forward, final Direction axis )
 	{
-		switch( forward )
+		if (forward.getAxis() == axis.getAxis())
 		{
-			case DOWN:
-				switch( axis )
-				{
-					case DOWN:
-						return forward;
-					case UP:
-						return forward;
-					case NORTH:
-						return EnumFacing.EAST;
-					case SOUTH:
-						return EnumFacing.WEST;
-					case EAST:
-						return EnumFacing.NORTH;
-					case WEST:
-						return EnumFacing.SOUTH;
-					default:
-						break;
-				}
-				break;
-			case UP:
-				switch( axis )
-				{
-					case NORTH:
-						return EnumFacing.WEST;
-					case SOUTH:
-						return EnumFacing.EAST;
-					case EAST:
-						return EnumFacing.SOUTH;
-					case WEST:
-						return EnumFacing.NORTH;
-					default:
-						break;
-				}
-				break;
-			case NORTH:
-				switch( axis )
-				{
-					case UP:
-						return EnumFacing.WEST;
-					case DOWN:
-						return EnumFacing.EAST;
-					case EAST:
-						return EnumFacing.UP;
-					case WEST:
-						return EnumFacing.DOWN;
-					default:
-						break;
-				}
-				break;
-			case SOUTH:
-				switch( axis )
-				{
-					case UP:
-						return EnumFacing.EAST;
-					case DOWN:
-						return EnumFacing.WEST;
-					case EAST:
-						return EnumFacing.DOWN;
-					case WEST:
-						return EnumFacing.UP;
-					default:
-						break;
-				}
-				break;
-			case EAST:
-				switch( axis )
-				{
-					case UP:
-						return EnumFacing.NORTH;
-					case DOWN:
-						return EnumFacing.SOUTH;
-					case NORTH:
-						return EnumFacing.UP;
-					case SOUTH:
-						return EnumFacing.DOWN;
-					default:
-						break;
-				}
-			case WEST:
-				switch( axis )
-				{
-					case UP:
-						return EnumFacing.SOUTH;
-					case DOWN:
-						return EnumFacing.NORTH;
-					case NORTH:
-						return EnumFacing.DOWN;
-					case SOUTH:
-						return EnumFacing.UP;
-					default:
-						break;
-				}
-			default:
-				break;
+			// what we want to rotate is on the same axis we want to rotate around
+			return forward;
 		}
-		return forward;
+
+		// Perspective: looking at the cube from the axis face
+		// X Axis -> AxisDirection.POSITIVE -> CCW rotation (NORTH -> UP -> SOUTH -> DOWN)
+		// Y Axis -> AxisDirection.POSITIVE -> CCW rotation (NORTH -> WEST -> SOUTH -> EAST)
+		// Z Axis -> AxisDirection.POSITIVE -> CC rotation (EAST -> DOWN -> WEST -> UP) !!! wtf
+
+
+		Vec3i rotVec;
+		if( axis.getAxis() == Direction.Axis.Z)
+		{
+			rotVec = axis.getOpposite().getDirectionVec();
+		} else
+		{
+			rotVec = axis.getDirectionVec();
+		}
+		Vec3i vec = forward.getDirectionVec();
+
+		int rz = rotVec.getZ();
+		int ry = rotVec.getY();
+		int rx = rotVec.getX();
+
+
+		int px = vec.getX();
+		int py = vec.getY();
+		int pz = vec.getZ();
+
+		int resX = Math.abs(rx) * px - rz*py + ry *pz;
+		int resY = rz*px + Math.abs(ry)*py - rx*pz;
+		int resZ = -ry*px + rx *py + Math.abs(rz)*pz;
+
+		return Direction.getFacingFromVector( resX, resY, resZ );
 	}
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public static String gui_localize( final String string )
 	{
 		return I18n.translateToLocal( string );
 	}
 
-	public static LookDirection getPlayerRay( final EntityPlayer playerIn, final float eyeOffset )
+	public static LookDirection getPlayerRay( final PlayerEntity playerIn, final float eyeOffset )
 	{
+		playerIn.getLookVec()
 		double reachDistance = 5.0d;
 
 		final double x = playerIn.prevPosX + ( playerIn.posX - playerIn.prevPosX );
@@ -1069,9 +898,9 @@ public class Platform
 		final float eyeRayX = yawRayX * pitchMultiplier;
 		final float eyeRayZ = yawRayZ * pitchMultiplier;
 
-		if( playerIn instanceof EntityPlayerMP )
+		if( playerIn instanceof PlayerEntityMP )
 		{
-			reachDistance = ( (EntityPlayerMP) playerIn ).interactionManager.getBlockReachDistance();
+			reachDistance = ( (PlayerEntityMP) playerIn ).interactionManager.getBlockReachDistance();
 		}
 
 		final Vec3d from = new Vec3d( x, y, z );
@@ -1080,7 +909,7 @@ public class Platform
 		return new LookDirection( from, to );
 	}
 
-	public static RayTraceResult rayTrace( final EntityPlayer p, final boolean hitBlocks, final boolean hitEntities )
+	public static RayTraceResult rayTrace( final PlayerEntity p, final boolean hitBlocks, final boolean hitEntities )
 	{
 		final World w = p.getEntityWorld();
 
@@ -1415,7 +1244,7 @@ public class Platform
 		return gs.hasPermission( playerID, SecurityPermissions.BUILD );
 	}
 
-	public static void configurePlayer( final EntityPlayer player, final AEPartLocation side, final TileEntity tile )
+	public static void configurePlayer( final PlayerEntity player, final AEPartLocation side, final TileEntity tile )
 	{
 		float pitch = 0.0f;
 		float yaw = 0.0f;
@@ -1485,7 +1314,7 @@ public class Platform
 		}
 	}
 
-	public static ItemStack extractItemsByRecipe( final IEnergySource energySrc, final IActionSource mySrc, final IMEMonitor<IAEItemStack> src, final World w, final IRecipe r, final ItemStack output, final InventoryCrafting ci, final ItemStack providedTemplate, final int slot, final IItemList<IAEItemStack> items, final Actionable realForFake, final IPartitionList<IAEItemStack> filter )
+	public static ItemStack extractItemsByRecipe( final IEnergySource energySrc, final IActionSource mySrc, final IMEMonitor<IAEItemStack> src, final World w, final IRecipe r, final ItemStack output, final CraftingInventory ci, final ItemStack providedTemplate, final int slot, final IItemList<IAEItemStack> items, final Actionable realForFake, final IPartitionList<IAEItemStack> filter )
 	{
 		if( energySrc.extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.9 )
 		{
@@ -1511,15 +1340,14 @@ public class Platform
 				}
 			}
 
-			final boolean checkFuzzy = ae_req.getOre().isPresent() || providedTemplate.getItemDamage() == OreDictionary.WILDCARD_VALUE || providedTemplate
-					.hasTagCompound() || providedTemplate.isItemStackDamageable();
+			final boolean checkFuzzy = !ae_req.getItemTags().isEmpty();
 
 			if( items != null && checkFuzzy )
 			{
 				for( final IAEItemStack x : items )
 				{
 					final ItemStack sh = x.getDefinition();
-					if( ( Platform.itemComparisons().isEqualItemType( providedTemplate, sh ) || ae_req.sameOre( x ) ) && !ItemStack.areItemsEqual( sh,
+					if( ( Platform.itemComparisons().isEqualItemType( providedTemplate, sh ) || ae_req.isSimilarItem( x ) ) && !ItemStack.areItemsEqual( sh,
 							output ) )
 					{ // Platform.isSameItemType( sh, providedTemplate )
 						final ItemStack cp = sh.copy();
@@ -1567,7 +1395,7 @@ public class Platform
 		}
 
 		ItemStack ci = i.getContainerItem( stackInSlot.copy() );
-		if( !ci.isEmpty() && ci.isItemStackDamageable() && ci.getItemDamage() == ci.getMaxDamage() )
+		if( !ci.isEmpty() && ci.isDamageable() && ci.getDamage() == ci.getMaxDamage() )
 		{
 			ci = ItemStack.EMPTY;
 		}
@@ -1654,7 +1482,7 @@ public class Platform
 		}
 	}
 
-	public static float getEyeOffset( final EntityPlayer player )
+	public static float getEyeOffset( final PlayerEntity player )
 	{
 		assert player.world.isRemote : "Valid only on client";
 		return (float) ( player.posY + player.getEyeHeight() - player.getDefaultEyeHeight() );
@@ -1662,7 +1490,7 @@ public class Platform
 
 	// public static void addStat( final int playerID, final Achievement achievement )
 	// {
-	// final EntityPlayer p = AEApi.instance().registries().players().findPlayer( playerID );
+	// final PlayerEntity p = AEApi.instance().registries().players().findPlayer( playerID );
 	// if( p != null )
 	// {
 	// p.addStat( achievement, 1 );

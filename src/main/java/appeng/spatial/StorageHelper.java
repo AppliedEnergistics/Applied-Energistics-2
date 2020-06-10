@@ -23,9 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntityMP;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -111,9 +111,9 @@ public class StorageHelper
 		// load the chunk!
 		newWorld.getChunkProvider().provideChunk( MathHelper.floor( link.x ) >> 4, MathHelper.floor( link.z ) >> 4 );
 
-		if( entity instanceof EntityPlayerMP && link.dim.provider instanceof StorageWorldProvider )
+		if( entity instanceof PlayerEntityMP && link.dim.provider instanceof StorageWorldProvider )
 		{
-			AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger( (EntityPlayerMP) entity );
+			AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger( (PlayerEntityMP) entity );
 		}
 
 		entity.changeDimension( link.dim.provider.getDimension(), new METeleporter( link ) );
@@ -230,7 +230,7 @@ public class StorageHelper
 		@Override
 		public void visit( final BlockPos pos )
 		{
-			final IBlockState state = this.dst.getBlockState( pos );
+			final BlockState state = this.dst.getBlockState( pos );
 			final Block blk = state.getBlock();
 			blk.neighborChanged( state, this.dst, pos, blk, pos );
 		}
@@ -240,9 +240,9 @@ public class StorageHelper
 	{
 
 		private final World dst;
-		private final IBlockState state;
+		private final BlockState state;
 
-		public WrapInMatrixFrame( final IBlockState state, final World dst2 )
+		public WrapInMatrixFrame( final BlockState state, final World dst2 )
 		{
 			this.dst = dst2;
 			this.state = state;

@@ -49,21 +49,21 @@ public class DimensionalCoord extends WorldCoord
 	{
 		super( s );
 		this.w = s.getWorld();
-		this.dimId = this.w.provider.getDimension();
+		this.dimId = this.w.dimension.getType().getId();
 	}
 
 	public DimensionalCoord( final World _w, final int x, final int y, final int z )
 	{
 		super( x, y, z );
 		this.w = _w;
-		this.dimId = _w.provider.getDimension();
+		this.dimId = _w.dimension.getType().getId();
 	}
 
 	public DimensionalCoord( final World _w, final BlockPos pos )
 	{
 		super( pos );
 		this.w = _w;
-		this.dimId = _w.provider.getDimension();
+		this.dimId = _w.dimension.getType().getId();
 	}
 
 	@Override

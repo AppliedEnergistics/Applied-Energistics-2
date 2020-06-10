@@ -22,8 +22,7 @@ package appeng.core.sync.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
 
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
@@ -33,6 +32,8 @@ import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.Reflected;
 import appeng.util.Platform;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 
 public final class PacketConfigButton extends AppEngPacket
@@ -54,9 +55,8 @@ public final class PacketConfigButton extends AppEngPacket
 		this.option = option;
 		this.rotationDirection = rotationDirection;
 
-		final ByteBuf data = Unpooled.buffer();
+		final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
-		data.writeInt( this.getPacketID() );
 		data.writeInt( option.ordinal() );
 		data.writeBoolean( rotationDirection );
 
@@ -64,12 +64,11 @@ public final class PacketConfigButton extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player, NetworkEvent.Context ctx )
 	{
-		final EntityPlayerMP sender = (EntityPlayerMP) player;
-		if( sender.openContainer instanceof AEBaseContainer )
+		if( player.openContainer instanceof AEBaseContainer )
 		{
-			final AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
+			final AEBaseContainer baseContainer = (AEBaseContainer) player.openContainer;
 			if( baseContainer.getTarget() instanceof IConfigurableObject )
 			{
 				final IConfigManager cm = ( (IConfigurableObject) baseContainer.getTarget() ).getConfigManager();

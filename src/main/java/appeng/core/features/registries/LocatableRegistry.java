@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import appeng.api.events.LocatableEventAnnounce;
@@ -31,7 +32,7 @@ import appeng.api.features.ILocatable;
 import appeng.api.features.ILocatableRegistry;
 import appeng.util.Platform;
 
-
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class LocatableRegistry implements ILocatableRegistry
 {
 	private final Map<Long, ILocatable> set;

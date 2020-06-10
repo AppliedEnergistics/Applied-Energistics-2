@@ -24,7 +24,7 @@
 package appeng.api.util;
 
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 
 /**
@@ -45,12 +45,12 @@ public interface IOrientable
 	/**
 	 * @return the direction the tile is facing
 	 */
-	EnumFacing getForward();
+	Direction getForward();
 
 	/**
 	 * @return the direction top of the tile
 	 */
-	EnumFacing getUp();
+	Direction getUp();
 
 	/**
 	 * Update the orientation
@@ -58,5 +58,5 @@ public interface IOrientable
 	 * @param Forward new forward direction
 	 * @param Up new upwards direction
 	 */
-	void setOrientation( EnumFacing Forward, EnumFacing Up );
+	void setOrientation( Direction Forward, Direction Up );
 }

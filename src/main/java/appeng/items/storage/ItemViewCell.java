@@ -151,7 +151,7 @@ public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
 		}
 		catch( final Throwable t )
 		{
-			return FuzzyMode.IGNORE_ALL;
+			return FuzzyMode.ENABLED;
 		}
 	}
 

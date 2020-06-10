@@ -22,11 +22,13 @@ package appeng.core.sync.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 
 public class PacketSwapSlots extends AppEngPacket
@@ -45,9 +47,8 @@ public class PacketSwapSlots extends AppEngPacket
 	// api
 	public PacketSwapSlots( final int slotA, final int slotB )
 	{
-		final ByteBuf data = Unpooled.buffer();
+		final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
-		data.writeInt( this.getPacketID() );
 		data.writeInt( this.slotA = slotA );
 		data.writeInt( this.slotB = slotB );
 
@@ -55,7 +56,7 @@ public class PacketSwapSlots extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player, NetworkEvent.Context ctx )
 	{
 		if( player != null && player.openContainer instanceof AEBaseContainer )
 		{

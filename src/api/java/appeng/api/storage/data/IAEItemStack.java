@@ -86,7 +86,7 @@ public interface IAEItemStack extends IAEStack<IAEItemStack>
 	/**
 	 * Compare the Ore Dictionary ID for this to another item.
 	 */
-	boolean sameOre( IAEItemStack is );
+	boolean isSimilarItem( IAEItemStack is );
 
 	/**
 	 * compare the item/damage/nbt of the stack.
@@ -108,7 +108,7 @@ public interface IAEItemStack extends IAEStack<IAEItemStack>
 
 	/**
 	 * DO NOT MODIFY THIS STACK! NEVER. If you think about it .. DON'T
-	 * 
+	 *
 	 * @return definition stack
 	 */
 	ItemStack getDefinition();

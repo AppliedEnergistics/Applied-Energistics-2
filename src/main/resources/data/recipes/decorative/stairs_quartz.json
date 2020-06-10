@@ -1,0 +1,17 @@
+{
+    "result": {
+        "item": "appliedenergistics2:quartz_stairs",
+        "count": 4
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "a  ",
+        "aa ",
+        "aaa"
+    ],
+    "key": {
+        "a": {
+            "item": "appliedenergistics2:quartz_block"
+        }
+    }
+}

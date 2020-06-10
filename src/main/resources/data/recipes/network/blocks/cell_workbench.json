@@ -1,0 +1,28 @@
+{
+    "result": {
+        "item": "appliedenergistics2:cell_workbench"
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "aba",
+        "cdc",
+        "ccc"
+    ],
+    "key": {
+        "c": {
+            "type": "forge:ore_dict",
+            "ore": "ingotIron"
+        },
+        "a": {
+            "item": "#appliedenergistics2:wool"
+        },
+        "d": {
+            "type": "forge:ore_dict",
+            "ore": "chestWood"
+        },
+        "b": {
+            "type": "appliedenergistics2:part",
+            "part": "material.calculation_processor"
+        }
+    }
+}

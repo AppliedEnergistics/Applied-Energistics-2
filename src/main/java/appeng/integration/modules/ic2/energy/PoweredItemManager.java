@@ -19,7 +19,7 @@
 package appeng.integration.modules.ic2.energy;
 
 
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 
 import ic2.api.item.IBackupElectricItemManager;
@@ -79,7 +79,7 @@ public class PoweredItemManager implements IBackupElectricItemManager
 	}
 
 	@Override
-	public boolean use( ItemStack stack, double amount, EntityLivingBase entity )
+	public boolean use( ItemStack stack, double amount, LivingEntity entity )
 	{
 		final IAEItemPowerStorage poweredItem = (IAEItemPowerStorage) stack.getItem();
 
@@ -95,7 +95,7 @@ public class PoweredItemManager implements IBackupElectricItemManager
 	}
 
 	@Override
-	public void chargeFromArmor( ItemStack stack, EntityLivingBase entity )
+	public void chargeFromArmor( ItemStack stack, LivingEntity entity )
 	{
 		// TODO Auto-generated method stub
 	}

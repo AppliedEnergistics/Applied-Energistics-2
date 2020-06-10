@@ -20,7 +20,7 @@ package appeng.worldgen.meteorite;
 
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.init.Blocks;
 
 
@@ -39,7 +39,7 @@ public class MeteoriteBlockPutter
 		return true;
 	}
 
-	void put( final IMeteoriteWorld w, final int i, final int j, final int k, final IBlockState state, final int meta )
+	void put( final IMeteoriteWorld w, final int i, final int j, final int k, final BlockState state, final int meta )
 	{
 		if( w.getBlock( i, j, k ) == Blocks.BEDROCK )
 		{

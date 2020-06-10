@@ -27,6 +27,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import appeng.api.AEApi;
@@ -44,7 +45,7 @@ import appeng.me.cluster.IAECluster;
 import appeng.tile.qnb.TileQuantumBridge;
 import appeng.util.iterators.ChainedIterator;
 
-
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class QuantumCluster implements ILocatable, IAECluster
 {
 

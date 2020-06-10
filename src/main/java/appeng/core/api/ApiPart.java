@@ -33,23 +33,19 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 
+import jdk.internal.org.objectweb.asm.commons.RemappingClassAdapter;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.util.ActionResultType;
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.commons.Remapper;
-import org.objectweb.asm.commons.RemappingClassAdapter;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.api.parts.IPartHelper;
@@ -328,9 +324,9 @@ public class ApiPart implements IPartHelper
 	}
 
 	@Override
-	public EnumActionResult placeBus( final ItemStack is, final BlockPos pos, final EnumFacing side, final EntityPlayer player, final EnumHand hand, final World w )
+	public ActionResultType placeBus( ItemUseContext context )
 	{
-		return PartPlacement.place( is, pos, side, player, hand, w, PartPlacement.PlaceType.PLACE_ITEM, 0 );
+		return PartPlacement.place( context, PartPlacement.PlaceType.PLACE_ITEM, 0 );
 	}
 
 	@Override

@@ -19,10 +19,10 @@
 package appeng.parts.automation;
 
 
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Upgrades;
@@ -135,7 +135,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound target )
+	public void readFromNBT( final CompoundNBT target )
 	{
 		super.readFromNBT( target );
 		this.updateUpgradeInfo();

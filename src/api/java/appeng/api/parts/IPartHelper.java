@@ -24,13 +24,8 @@
 package appeng.api.parts;
 
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.util.ActionResultType;
 
 
 public interface IPartHelper
@@ -65,15 +60,11 @@ public interface IPartHelper
 	/**
 	 * use in use item, to try and place a IBusItem
 	 *
-	 * @param is ItemStack of an item which implements {@link IPartItem}
-	 * @param pos pos of part
-	 * @param side side which the part should be on
-	 * @param player player placing part
-	 * @param world part in world
+	 * @param context ItemUseContext
 	 *
 	 * @return true if placing was successful
 	 */
-	EnumActionResult placeBus( ItemStack is, BlockPos pos, EnumFacing side, EntityPlayer player, EnumHand hand, World world );
+	ActionResultType placeBus( ItemUseContext context );
 
 	/**
 	 * @return the render mode

@@ -24,11 +24,11 @@ import java.util.EnumSet;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
@@ -59,12 +59,12 @@ public class BlockQuartzGlass extends AEBaseBlock
 	}
 
 	@Override
-	public IBlockState getExtendedState( IBlockState state, IBlockAccess world, BlockPos pos )
+	public BlockState getExtendedState( BlockState state, IBlockReader world, BlockPos pos )
 	{
 
-		EnumSet<EnumFacing> flushWith = EnumSet.noneOf( EnumFacing.class );
+		EnumSet<Direction> flushWith = EnumSet.noneOf( Direction.class );
 		// Test every direction for another glass block
-		for( EnumFacing facing : EnumFacing.values() )
+		for( Direction facing : Direction.values() )
 		{
 			if( isGlassBlock( world, pos, facing ) )
 			{
@@ -79,7 +79,7 @@ public class BlockQuartzGlass extends AEBaseBlock
 		return extState.withProperty( GLASS_STATE, glassState );
 	}
 
-	private static boolean isGlassBlock( IBlockAccess world, BlockPos pos, EnumFacing facing )
+	private static boolean isGlassBlock( IBlockReader world, BlockPos pos, Direction facing )
 	{
 		return world.getBlockState( pos.offset( facing ) ).getBlock() instanceof BlockQuartzGlass;
 	}
@@ -91,7 +91,7 @@ public class BlockQuartzGlass extends AEBaseBlock
 	}
 
 	@Override
-	public boolean shouldSideBeRendered( final IBlockState state, final IBlockAccess w, final BlockPos pos, final EnumFacing side )
+	public boolean shouldSideBeRendered( final BlockState state, final IBlockReader w, final BlockPos pos, final Direction side )
 	{
 		BlockPos adjacentPos = pos.offset( side );
 
@@ -109,7 +109,7 @@ public class BlockQuartzGlass extends AEBaseBlock
 	}
 
 	@Override
-	public boolean isFullCube( IBlockState state )
+	public boolean isFullCube( BlockState state )
 	{
 		return false;
 	}

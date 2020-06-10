@@ -23,7 +23,7 @@ import java.util.Optional;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
@@ -32,10 +32,10 @@ import appeng.api.networking.security.IActionSource;
 public class PlayerSource implements IActionSource
 {
 
-	private final EntityPlayer player;
+	private final PlayerEntity player;
 	private final IActionHost via;
 
-	public PlayerSource( final EntityPlayer p, final IActionHost v )
+	public PlayerSource( final PlayerEntity p, final IActionHost v )
 	{
 		Preconditions.checkNotNull( p );
 		this.player = p;
@@ -43,7 +43,7 @@ public class PlayerSource implements IActionSource
 	}
 
 	@Override
-	public Optional<EntityPlayer> player()
+	public Optional<PlayerEntity> player()
 	{
 		return Optional.of( this.player );
 	}

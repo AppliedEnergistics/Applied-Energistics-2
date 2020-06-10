@@ -1,0 +1,26 @@
+{
+    "display": {
+        "icon": {
+            "item": "appliedenergistics2:interface"
+        },
+        "title": {
+            "translate": "achievement.ae2.Recursive"
+        },
+        "description": {
+            "translate": "achievement.ae2.Recursive.desc"
+        }
+    },
+    "parent": "appliedenergistics2:main/cable_glass",
+    "criteria": {
+        "certus": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "item": "appliedenergistics2:interface"
+                    }
+                ]
+            }
+        }
+    }
+}

@@ -1,0 +1,24 @@
+{
+    "result": {
+        "item": "appliedenergistics2:network_tool"
+    },
+    "type": "forge:ore_shapeless",
+    "ingredients": [
+        {
+            "type": "forge:ore_dict",
+            "ore": "itemIlluminatedPanel"
+        },
+        {
+            "type": "forge:ore_dict",
+            "ore": "chestWood"
+        },
+        {
+            "type": "forge:ore_dict",
+            "ore": "itemQuartzWrench"
+        },
+        {
+            "type": "appliedenergistics2:part",
+            "part": "material.calculation_processor"
+        }
+    ]
+}

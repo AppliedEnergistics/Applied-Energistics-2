@@ -22,7 +22,7 @@ package appeng.recipes.game;
 import javax.annotation.Nullable;
 
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
@@ -49,7 +49,7 @@ public final class FacadeRecipe extends net.minecraftforge.registries.IForgeRegi
 	}
 
 	@Override
-	public boolean matches( final InventoryCrafting inv, final World w )
+	public boolean matches( final CraftingInventory inv, final World w )
 	{
 		return !this.getOutput( inv, false ).isEmpty();
 	}
@@ -75,7 +75,7 @@ public final class FacadeRecipe extends net.minecraftforge.registries.IForgeRegi
 	}
 
 	@Override
-	public ItemStack getCraftingResult( final InventoryCrafting inv )
+	public ItemStack getCraftingResult( final CraftingInventory inv )
 	{
 		return this.getOutput( inv, true );
 	}
@@ -93,7 +93,7 @@ public final class FacadeRecipe extends net.minecraftforge.registries.IForgeRegi
 	}
 
 	@Override
-	public NonNullList<ItemStack> getRemainingItems( final InventoryCrafting inv )
+	public NonNullList<ItemStack> getRemainingItems( final CraftingInventory inv )
 	{
 		return ForgeHooks.defaultRecipeGetRemainingItems( inv );
 	}

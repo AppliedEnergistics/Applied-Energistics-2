@@ -1,0 +1,23 @@
+{
+    "result": {
+        "item": "minecraft:daylight_detector"
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "aaa",
+        "bbb",
+        "ccc"
+    ],
+    "key": {
+        "a": {
+            "item": "#appliedenergistics2:glass"
+        },
+        "b": {
+            "item": "#appliedenergistics2:netherCrystal"
+        },
+        "c": {
+            "type": "forge:ore_dict",
+            "ore": "slabWood"
+        }
+    }
+}

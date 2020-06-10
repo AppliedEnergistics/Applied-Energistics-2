@@ -1,0 +1,32 @@
+{
+    "result": {
+        "item": "appliedenergistics2:quantum_ring"
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "aba",
+        "cde",
+        "aba"
+    ],
+    "key": {
+        "c": {
+            "type": "appliedenergistics2:part",
+            "part": "material.engineering_processor"
+        },
+        "e": {
+            "type": "appliedenergistics2:part",
+            "part": "cable_dense_smart.fluix"
+        },
+        "a": {
+            "type": "forge:ore_dict",
+            "ore": "ingotIron"
+        },
+        "d": {
+            "item": "appliedenergistics2:energy_cell"
+        },
+        "b": {
+            "type": "appliedenergistics2:part",
+            "part": "material.logic_processor"
+        }
+    }
+}

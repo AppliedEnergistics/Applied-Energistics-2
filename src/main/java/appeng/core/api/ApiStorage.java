@@ -30,7 +30,7 @@ import com.google.common.collect.MutableClassToInstanceMap;
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
@@ -100,7 +100,7 @@ public class ApiStorage implements IStorageHelper
 	}
 
 	@Override
-	public ICraftingLink loadCraftingLink( final NBTTagCompound data, final ICraftingRequester req )
+	public ICraftingLink loadCraftingLink( final CompoundNBT data, final ICraftingRequester req )
 	{
 		Preconditions.checkNotNull( data );
 		Preconditions.checkNotNull( req );
@@ -154,7 +154,7 @@ public class ApiStorage implements IStorageHelper
 		}
 
 		@Override
-		public IAEItemStack createFromNBT( NBTTagCompound nbt )
+		public IAEItemStack createFromNBT( CompoundNBT nbt )
 		{
 			Preconditions.checkNotNull( nbt );
 			return AEItemStack.fromNBT( nbt );
@@ -208,7 +208,7 @@ public class ApiStorage implements IStorageHelper
 				}
 				else
 				{
-					return AEFluidStack.fromFluidStack( FluidUtil.getFluidContained( is ) );
+					return AEFluidStack.fromFluidStack( FluidUtil.getFluidContained( is ).orElse( null ) );
 				}
 			}
 
@@ -224,7 +224,7 @@ public class ApiStorage implements IStorageHelper
 		}
 
 		@Override
-		public IAEFluidStack createFromNBT( NBTTagCompound nbt )
+		public IAEFluidStack createFromNBT( CompoundNBT nbt )
 		{
 			Preconditions.checkNotNull( nbt );
 			return AEFluidStack.fromNBT( nbt );

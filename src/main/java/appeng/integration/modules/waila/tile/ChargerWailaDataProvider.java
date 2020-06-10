@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.IItemHandler;
@@ -70,7 +70,7 @@ public final class ChargerWailaDataProvider extends BaseWailaDataProvider
 			if( !chargingItem.isEmpty() )
 			{
 				final String currentInventory = chargingItem.getDisplayName();
-				final EntityPlayer player = accessor.getPlayer();
+				final PlayerEntity player = accessor.getPlayer();
 
 				currentToolTip.add( WailaText.Contains + ": " + currentInventory );
 				ITooltipFlag.TooltipFlags tooltipFlag = Minecraft

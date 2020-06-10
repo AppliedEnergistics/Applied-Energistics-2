@@ -24,7 +24,8 @@ import java.util.concurrent.Future;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 
 import appeng.api.networking.IGrid;
@@ -40,6 +41,7 @@ import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.Platform;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 
 public class PacketCraftRequest extends AppEngPacket
@@ -60,9 +62,8 @@ public class PacketCraftRequest extends AppEngPacket
 		this.amount = craftAmt;
 		this.heldShift = shift;
 
-		final ByteBuf data = Unpooled.buffer();
+		final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
-		data.writeInt( this.getPacketID() );
 		data.writeBoolean( shift );
 		data.writeLong( this.amount );
 
@@ -70,7 +71,7 @@ public class PacketCraftRequest extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player, NetworkEvent.Context ctx )
 	{
 		if( player.openContainer instanceof ContainerCraftAmount )
 		{

@@ -26,16 +26,16 @@ import java.util.Random;
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.api.networking.IGridNode;
@@ -108,13 +108,13 @@ public class PartCableAnchor implements IPart
 	}
 
 	@Override
-	public void writeToNBT( final NBTTagCompound data )
+	public void writeToNBT( final CompoundNBT data )
 	{
 
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 
 	}
@@ -126,13 +126,13 @@ public class PartCableAnchor implements IPart
 	}
 
 	@Override
-	public boolean isLadder( final EntityLivingBase entity )
+	public boolean isLadder( final LivingEntity entity )
 	{
 		return this.mySide.yOffset == 0 && ( entity.collidedHorizontally || !entity.onGround );
 	}
 
 	@Override
-	public void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor )
+	public void onNeighborChanged( IBlockReader w, BlockPos pos, BlockPos neighbor )
 	{
 
 	}
@@ -199,13 +199,13 @@ public class PartCableAnchor implements IPart
 	}
 
 	@Override
-	public boolean onActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
+	public boolean onActivate( final PlayerEntity player, final Hand hand, final Vec3d pos )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean onShiftActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
+	public boolean onShiftActivate( final PlayerEntity player, final Hand hand, final Vec3d pos )
 	{
 		return false;
 	}
@@ -229,7 +229,7 @@ public class PartCableAnchor implements IPart
 	}
 
 	@Override
-	public void onPlacement( final EntityPlayer player, final EnumHand hand, final ItemStack held, final AEPartLocation side )
+	public void onPlacement( final PlayerEntity player, final Hand hand, final ItemStack held, final AEPartLocation side )
 	{
 
 	}

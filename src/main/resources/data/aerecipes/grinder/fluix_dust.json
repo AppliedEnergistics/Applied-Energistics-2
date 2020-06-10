@@ -1,0 +1,13 @@
+{
+	"type": "appliedenergistics2:grinder",
+	"input": {
+		"type": "forge:ore_dict",
+		"ore": "crystalFluix"
+	},
+	"result": {
+		"primary": {
+			"part": "material.fluix_dust"
+		}
+	},
+	"turns": 8
+}

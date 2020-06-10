@@ -29,8 +29,8 @@ import net.minecraft.world.biome.BiomeProviderSingle;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.client.IRenderHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.client.render.SpatialSkyRender;
 import appeng.core.AppEng;
@@ -67,7 +67,7 @@ public class StorageWorldProvider extends WorldProvider
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public float[] calcSunriseSunsetColors( final float celestialAngle, final float partialTicks )
 	{
 		return null;
@@ -86,7 +86,7 @@ public class StorageWorldProvider extends WorldProvider
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public boolean isSkyColored()
 	{
 		return true;

@@ -19,20 +19,28 @@
 package appeng.items.tools.quartz;
 
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
+import appeng.core.AppEng;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.*;
 
 import appeng.core.features.AEFeature;
 import appeng.util.Platform;
 
 
-public class ToolQuartzSword extends ItemSword
+public class ToolQuartzSword extends SwordItem
 {
 	private final AEFeature type;
 
 	public ToolQuartzSword( AEFeature type )
 	{
-		super( ToolMaterial.IRON );
+		// A real nice way of creating an Iron tool without hard coding its values - Yay!
+		super( ItemTier.IRON,
+				(int) (Items.IRON_SWORD.getAttributeModifiers( EquipmentSlotType.MAINHAND )
+						.get( SharedMonsterAttributes.ATTACK_DAMAGE.getName() ).stream().filter( am -> am.getName().equals( "Tool modifier" ) ).findFirst().get().getAmount() - ItemTier.IRON.getAttackDamage()),
+				(float) Items.IRON_SWORD.getAttributeModifiers( EquipmentSlotType.MAINHAND )
+						.get( SharedMonsterAttributes.ATTACK_SPEED.getName() ).stream().filter( am -> am.getName().equals( "Tool modifier" ) ).findFirst().get().getAmount(),
+				(new Item.Properties()).group( AppEng.ITEM_GROUP ));
 		this.type = type;
 	}
 

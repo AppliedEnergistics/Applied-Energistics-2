@@ -27,13 +27,14 @@ import java.io.IOException;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Container;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
@@ -70,19 +71,19 @@ public class PacketJEIRecipe extends AppEngPacket
 	{
 		final ByteArrayInputStream bytes = this.getPacketByteArray( stream );
 		bytes.skip( stream.readerIndex() );
-		final NBTTagCompound comp = CompressedStreamTools.readCompressed( bytes );
+		final CompoundNBT comp = CompressedStreamTools.readCompressed( bytes );
 		if( comp != null )
 		{
 			this.recipe = new ItemStack[9][];
 			for( int x = 0; x < this.recipe.length; x++ )
 			{
-				final NBTTagList list = comp.getTagList( "#" + x, 10 );
-				if( list.tagCount() > 0 )
+				final ListNBT list = comp.getList( "#" + x, 10 );
+				if( list.size() > 0 )
 				{
-					this.recipe[x] = new ItemStack[list.tagCount()];
-					for( int y = 0; y < list.tagCount(); y++ )
+					this.recipe[x] = new ItemStack[list.size()];
+					for( int y = 0; y < list.size(); y++ )
 					{
-						this.recipe[x][y] = new ItemStack( list.getCompoundTagAt( y ) );
+						this.recipe[x][y] = ItemStack.read( list.getCompound( y ) );
 					}
 				}
 			}
@@ -90,14 +91,12 @@ public class PacketJEIRecipe extends AppEngPacket
 	}
 
 	// api
-	public PacketJEIRecipe( final NBTTagCompound recipe ) throws IOException
+	public PacketJEIRecipe( final CompoundNBT recipe ) throws IOException
 	{
-		final ByteBuf data = Unpooled.buffer();
+		final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
 		final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 		final DataOutputStream outputStream = new DataOutputStream( bytes );
-
-		data.writeInt( this.getPacketID() );
 
 		CompressedStreamTools.writeCompressed( recipe, outputStream );
 		data.writeBytes( bytes.toByteArray() );
@@ -106,10 +105,9 @@ public class PacketJEIRecipe extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player, NetworkEvent.Context ctx )
 	{
-		final EntityPlayerMP pmp = (EntityPlayerMP) player;
-		final Container con = pmp.openContainer;
+		final Container con = player.openContainer;
 
 		if( !( con instanceof IContainerCraftingPacket ) )
 		{
@@ -230,7 +228,7 @@ public class PacketJEIRecipe extends AppEngPacket
 	}
 
 	/**
-	 * 
+	 *
 	 * @param slot
 	 * @param is itemstack
 	 * @return is if it can be used, else EMPTY

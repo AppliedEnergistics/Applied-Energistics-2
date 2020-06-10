@@ -1,0 +1,28 @@
+{
+    "result": {
+        "item": "appliedenergistics2:biometric_card"
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "abb",
+        "cdc"
+    ],
+    "key": {
+        "a": {
+            "type": "appliedenergistics2:part",
+            "part": "material.engineering_processor"
+        },
+        "b": {
+            "type": "forge:ore_dict",
+            "ore": "ingotIron"
+        },
+        "d": {
+            "type": "forge:ore_dict",
+            "ore": "dustRedstone"
+        },
+        "c": {
+            "type": "forge:ore_dict",
+            "ore": "ingotGold"
+        }
+    }
+}
