@@ -1,25 +1,22 @@
 {
-    "result": {
-        "type": "appliedenergistics2:part",
-        "part": "part.toggle_bus"
+  "result": {
+    "item": "appliedenergistics2:toggle_bus"
+  },
+  "type": "appliedenergistics2:part_shaped",
+  "pattern": [
+    " a ",
+    "bcb",
+    " a "
+  ],
+  "key": {
+    "c": {
+      "item": "minecraft:lever"
     },
-    "type": "appliedenergistics2:part_shaped",
-    "pattern": [
-        " a ",
-        "bcb",
-        " a "
-    ],
-    "key": {
-        "c": {
-            "item": "minecraft:lever"
-        },
-        "a": {
-            "type": "forge:ore_dict",
-            "ore": "dustRedstone"
-        },
-        "b": {
-            "type": "appliedenergistics2:part",
-            "part": "cable_glass.fluix"
-        }
+    "a": {
+      "tag": "forge:dusts/redstone"
+    },
+    "b": {
+      "item": "appliedenergistics2:fluix_cable_glass"
     }
+  }
 }

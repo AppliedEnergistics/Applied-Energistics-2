@@ -1,29 +1,26 @@
 {
-    "result": {
-        "type": "appliedenergistics2:part",
-        "part": "material.fluid_cell64k_part"
+  "result": {
+    "item": "appliedenergistics2:fluid_cell64k_part"
+  },
+  "type": "appliedenergistics2:part_shaped",
+  "pattern": [
+    "aba",
+    "cdc",
+    "aca"
+  ],
+  "key": {
+    "d": {
+      "item": "appliedenergistics2:quartz_glass"
     },
-    "type": "appliedenergistics2:part_shaped",
-    "pattern": [
-        "aba",
-        "cdc",
-        "aca"
-    ],
-    "key": {
-        "d": {
-            "item": "appliedenergistics2:quartz_glass"
-        },
-        "a": {
-            "item": "minecraft:dye",
-            "data": 4
-        },
-        "c": {
-            "type": "appliedenergistics2:part",
-            "part": "material.fluid_cell16k_part"
-        },
-        "b": {
-            "type": "appliedenergistics2:part",
-            "part": "material.calculation_processor"
-        }
+    "a": {
+      "item": "minecraft:dye",
+      "data": 4
+    },
+    "c": {
+      "item": "appliedenergistics2:fluid_cell16k_part"
+    },
+    "b": {
+      "item": "appliedenergistics2:calculation_processor"
     }
+  }
 }

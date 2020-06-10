@@ -1,28 +1,24 @@
 {
-    "result": {
-        "item": "appliedenergistics2:memory_card"
+  "result": {
+    "item": "appliedenergistics2:memory_card"
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "abb",
+    "cdc"
+  ],
+  "key": {
+    "b": {
+      "tag": "forge:ingots/iron"
     },
-    "type": "forge:ore_shaped",
-    "pattern": [
-        "abb",
-        "cdc"
-    ],
-    "key": {
-        "b": {
-            "type": "forge:ore_dict",
-            "ore": "ingotIron"
-        },
-        "d": {
-            "type": "forge:ore_dict",
-            "ore": "dustRedstone"
-        },
-        "c": {
-            "type": "forge:ore_dict",
-            "ore": "ingotGold"
-        },
-        "a": {
-            "type": "appliedenergistics2:part",
-            "part": "material.calculation_processor"
-        }
+    "d": {
+      "tag": "forge:dusts/redstone"
+    },
+    "c": {
+      "tag": "forge:ingots/gold"
+    },
+    "a": {
+      "item": "appliedenergistics2:calculation_processor"
     }
+  }
 }

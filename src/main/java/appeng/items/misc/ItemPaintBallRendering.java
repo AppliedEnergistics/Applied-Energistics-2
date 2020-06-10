@@ -20,9 +20,6 @@ package appeng.items.misc;
 
 
 
-import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraft.item.ItemStack;
-
 import appeng.api.util.AEColor;
 import appeng.bootstrap.IItemRendering;
 import appeng.bootstrap.ItemRenderingCustomizer;
@@ -31,33 +28,36 @@ import appeng.bootstrap.ItemRenderingCustomizer;
 public class ItemPaintBallRendering extends ItemRenderingCustomizer
 {
 
+	private final boolean lumen;
+
+	private final AEColor color;
+
+	public ItemPaintBallRendering(AEColor color, boolean lumen) {
+		this.lumen = lumen;
+		this.color = color;
+	}
+
 	@Override
 	public void customize( IItemRendering rendering )
 	{
-		rendering.color( ItemPaintBallRendering::getColorFromItemstack );
-		// FIXME rendering.meshDefinition( is -> ItemPaintBall.isLumen( is ) ? MODEL_SHIMMER : MODEL_NORMAL );
-	}
-
-	private static int getColorFromItemstack( ItemStack stack, int tintIndex )
-	{
-		ItemPaintBall item = (ItemPaintBall) stack.getItem();
-		final AEColor col = item.getColor( stack );
-
-		boolean lumen = item.isLumen();
-		final int colorValue = lumen ? col.mediumVariant : col.mediumVariant;
+		final int colorValue = lumen ? color.mediumVariant : color.mediumVariant;
 		final int r = ( colorValue >> 16 ) & 0xff;
 		final int g = ( colorValue >> 8 ) & 0xff;
 		final int b = ( colorValue ) & 0xff;
 
+		int renderColor;
 		if( lumen )
 		{
 			final float fail = 0.7f;
 			final int full = (int) ( 255 * 0.3 );
-			return (int) ( full + r * fail ) << 16 | (int) ( full + g * fail ) << 8 | (int) ( full + b * fail ) | 0xff << 24;
+			renderColor = (int) ( full + r * fail ) << 16 | (int) ( full + g * fail ) << 8 | (int) ( full + b * fail ) | 0xff << 24;
 		}
 		else
 		{
-			return r << 16 | g << 8 | b | 0xff << 24;
+			renderColor = r << 16 | g << 8 | b | 0xff << 24;
 		}
+
+		rendering.color( (is, tintIndex) -> renderColor );
 	}
+
 }

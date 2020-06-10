@@ -1,12 +1,11 @@
 {
-    "result": {
-        "type": "appliedenergistics2:part",
-        "part": "part.interface"
-    },
-    "type": "appliedenergistics2:part_shapeless",
-    "ingredients": [
-        {
-            "item": "appliedenergistics2:interface"
-        }
-    ]
+  "result": {
+    "item": "appliedenergistics2:cable_interface"
+  },
+  "type": "appliedenergistics2:part_shapeless",
+  "ingredients": [
+    {
+      "item": "appliedenergistics2:interface"
+    }
+  ]
 }

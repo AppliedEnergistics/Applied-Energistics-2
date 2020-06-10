@@ -1,15 +1,15 @@
 {
-    "type": "appliedenergistics2:part_shapeless",
-    "result": {
-        "part": "part.cable_anchor",
-        "count": 3
+  "type": "appliedenergistics2:part_shapeless",
+  "result": {
+    "part": "part.cable_anchor",
+    "count": 3
+  },
+  "ingredients": [
+    {
+      "tag": "appliedenergistics2:metal_ingots"
     },
-    "ingredients": [
-        {
-            "item": "#appliedenergistics2:metalIngots"
-        },
-        {
-            "item": "#appliedenergistics2:knife"
-        }
-    ]
+    {
+      "tag": "appliedenergistics2:knife"
+    }
+  ]
 }

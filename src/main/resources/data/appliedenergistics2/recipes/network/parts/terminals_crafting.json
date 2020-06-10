@@ -1,21 +1,17 @@
 {
-    "result": {
-        "type": "appliedenergistics2:part",
-        "part": "part.crafting_terminal"
+  "result": {
+    "item": "appliedenergistics2:crafting_terminal"
+  },
+  "type": "appliedenergistics2:part_shapeless",
+  "ingredients": [
+    {
+      "item": "appliedenergistics2:terminal"
     },
-    "type": "appliedenergistics2:part_shapeless",
-    "ingredients": [
-        {
-            "type": "appliedenergistics2:part",
-            "part": "part.terminal"
-        },
-        {
-            "type": "forge:ore_dict",
-            "ore": "workbench"
-        },
-        {
-            "type": "appliedenergistics2:part",
-            "part": "material.calculation_processor"
-        }
-    ]
+    {
+      "tag": "appliedenergistics2:workbench"
+    },
+    {
+      "item": "appliedenergistics2:calculation_processor"
+    }
+  ]
 }

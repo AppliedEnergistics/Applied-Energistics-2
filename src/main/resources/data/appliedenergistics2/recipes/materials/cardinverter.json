@@ -6,8 +6,7 @@
     }
   ],
   "result": {
-    "type": "appliedenergistics2:part",
-    "part": "material.card_inverter"
+    "item": "appliedenergistics2:card_inverter"
   },
   "type": "appliedenergistics2:part_shapeless",
   "ingredients": [
@@ -15,8 +14,7 @@
       "item": "minecraft:redstone_torch"
     },
     {
-      "type": "appliedenergistics2:part",
-      "part": "material.advanced_card"
+      "item": "appliedenergistics2:advanced_card"
     }
   ]
 }

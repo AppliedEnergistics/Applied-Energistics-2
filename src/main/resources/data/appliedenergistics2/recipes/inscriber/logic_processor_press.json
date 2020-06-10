@@ -1,17 +1,15 @@
 {
-	"type": "appliedenergistics2:inscriber",
-	"mode": "inscribe",
-	"result": {
-		"part": "material.logic_processor_press"
-	},
-	"ingredients": {
-		"top": {
-			"type": "appliedenergistics2:part",
-			"part": "material.logic_processor_press"
-		},
-		"middle": {
-			"type": "forge:ore_dict",
-			"ore": "blockIron"
-		}
-	}
+  "type": "appliedenergistics2:inscriber",
+  "mode": "inscribe",
+  "result": {
+    "part": "material.logic_processor_press"
+  },
+  "ingredients": {
+    "top": {
+      "item": "appliedenergistics2:logic_processor_press"
+    },
+    "middle": {
+      "tag": "forge:storage_blocks/iron"
+    }
+  }
 }

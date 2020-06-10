@@ -1,23 +1,21 @@
 {
-    "result": {
-        "type": "appliedenergistics2:part",
-        "part": "cable_glass.yellow",
-        "count": 8
+  "result": {
+    "type": "appliedenergistics2:part",
+    "part": "cable_glass.yellow",
+    "count": 8
+  },
+  "type": "appliedenergistics2:part_shaped",
+  "pattern": [
+    "aaa",
+    "aba",
+    "aaa"
+  ],
+  "key": {
+    "a": {
+      "item": "appliedenergistics2:fluix_cable_glass"
     },
-    "type": "appliedenergistics2:part_shaped",
-    "pattern": [
-        "aaa",
-        "aba",
-        "aaa"
-    ],
-    "key": {
-        "a": {
-            "type": "appliedenergistics2:part",
-            "part": "cable_glass.fluix"
-        },
-        "b": {
-            "type": "forge:ore_dict",
-            "ore": "dyeYellow"
-        }
+    "b": {
+      "tag": "forge:dyes/yellow"
     }
+  }
 }

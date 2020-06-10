@@ -1,21 +1,19 @@
 {
-    "result": {
-        "item": "appliedenergistics2:certus_quartz_sword"
+  "result": {
+    "item": "appliedenergistics2:certus_quartz_sword"
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "a",
+    "a",
+    "b"
+  ],
+  "key": {
+    "a": {
+      "tag": "appliedenergistics2:crystals/certus_quartz"
     },
-    "type": "forge:ore_shaped",
-    "pattern": [
-        "a",
-        "a",
-        "b"
-    ],
-    "key": {
-        "a": {
-            "type": "forge:ore_dict",
-            "ore": "crystalCertusQuartz"
-        },
-        "b": {
-            "type": "forge:ore_dict",
-            "ore": "stickWood"
-        }
+    "b": {
+      "tag": "forge:rods/wooden"
     }
+  }
 }

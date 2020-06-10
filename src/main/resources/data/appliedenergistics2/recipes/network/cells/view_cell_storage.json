@@ -1,15 +1,14 @@
 {
-    "result": {
-        "item": "appliedenergistics2:view_cell"
+  "result": {
+    "item": "appliedenergistics2:view_cell"
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "appliedenergistics2:empty_storage_cell"
     },
-    "type": "forge:ore_shapeless",
-    "ingredients": [
-        {
-            "type": "appliedenergistics2:part",
-            "part": "material.empty_storage_cell"
-        },
-        {
-            "item": "#appliedenergistics2:certusCrystal"
-        }
-    ]
+    {
+      "tag": "appliedenergistics2:crystals/certus"
+    }
+  ]
 }

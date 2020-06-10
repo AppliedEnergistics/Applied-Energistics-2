@@ -1,23 +1,22 @@
 {
-    "result": {
-        "item": "minecraft:daylight_detector"
+  "result": {
+    "item": "minecraft:daylight_detector"
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "aaa",
+    "bbb",
+    "ccc"
+  ],
+  "key": {
+    "a": {
+      "tag": "appliedenergistics2:glass"
     },
-    "type": "forge:ore_shaped",
-    "pattern": [
-        "aaa",
-        "bbb",
-        "ccc"
-    ],
-    "key": {
-        "a": {
-            "item": "#appliedenergistics2:glass"
-        },
-        "b": {
-            "item": "#appliedenergistics2:netherCrystal"
-        },
-        "c": {
-            "type": "forge:ore_dict",
-            "ore": "slabWood"
-        }
+    "b": {
+      "tag": "appliedenergistics2:crystals/nether"
+    },
+    "c": {
+      "tag": "minecraft:wooden_slabs"
     }
+  }
 }

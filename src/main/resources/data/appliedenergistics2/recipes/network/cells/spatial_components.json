@@ -1,26 +1,22 @@
 {
-    "result": {
-        "type": "appliedenergistics2:part",
-        "part": "material.cell2_spatial_part"
+  "result": {
+    "item": "appliedenergistics2:cell2_spatial_part"
+  },
+  "type": "appliedenergistics2:part_shaped",
+  "pattern": [
+    "aba",
+    "bcb",
+    "aba"
+  ],
+  "key": {
+    "c": {
+      "item": "appliedenergistics2:engineering_processor"
     },
-    "type": "appliedenergistics2:part_shaped",
-    "pattern": [
-        "aba",
-        "bcb",
-        "aba"
-    ],
-    "key": {
-        "c": {
-            "type": "appliedenergistics2:part",
-            "part": "material.engineering_processor"
-        },
-        "a": {
-            "type": "forge:ore_dict",
-            "ore": "dustGlowstone"
-        },
-        "b": {
-            "type": "appliedenergistics2:part",
-            "part": "material.fluix_pearl"
-        }
+    "a": {
+      "tag": "forge:dust/glowstone"
+    },
+    "b": {
+      "item": "appliedenergistics2:fluix_pearl"
     }
+  }
 }

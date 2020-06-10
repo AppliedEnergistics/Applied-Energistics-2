@@ -1,24 +1,22 @@
 {
-    "result": {
-        "item": "appliedenergistics2:wireless_terminal"
+  "result": {
+    "item": "appliedenergistics2:wireless_terminal"
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "a",
+    "b",
+    "c"
+  ],
+  "key": {
+    "b": {
+      "item": "appliedenergistics2:terminal"
     },
-    "type": "forge:ore_shaped",
-    "pattern": [
-        "a",
-        "b",
-        "c"
-    ],
-    "key": {
-        "b": {
-            "type": "appliedenergistics2:part",
-            "part": "part.terminal"
-        },
-        "c": {
-            "item": "appliedenergistics2:dense_energy_cell"
-        },
-        "a": {
-            "type": "appliedenergistics2:part",
-            "part": "material.wireless"
-        }
+    "c": {
+      "item": "appliedenergistics2:dense_energy_cell"
+    },
+    "a": {
+      "item": "appliedenergistics2:wireless_receiver"
     }
+  }
 }

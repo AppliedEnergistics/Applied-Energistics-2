@@ -1,23 +1,21 @@
 {
-    "result": {
-        "type": "appliedenergistics2:part",
-        "part": "cable_dense_smart.blue",
-        "count": 8
+  "result": {
+    "type": "appliedenergistics2:part",
+    "part": "cable_dense_smart.blue",
+    "count": 8
+  },
+  "type": "appliedenergistics2:part_shaped",
+  "pattern": [
+    "aaa",
+    "aba",
+    "aaa"
+  ],
+  "key": {
+    "a": {
+      "item": "appliedenergistics2:fluix_cable_dense_smart"
     },
-    "type": "appliedenergistics2:part_shaped",
-    "pattern": [
-        "aaa",
-        "aba",
-        "aaa"
-    ],
-    "key": {
-        "a": {
-            "type": "appliedenergistics2:part",
-            "part": "cable_dense_smart.fluix"
-        },
-        "b": {
-            "type": "forge:ore_dict",
-            "ore": "dyeBlue"
-        }
+    "b": {
+      "tag": "forge:dyes/blue"
     }
+  }
 }

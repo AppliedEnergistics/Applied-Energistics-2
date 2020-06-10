@@ -1,28 +1,26 @@
 {
-    "result": {
-        "type": "appliedenergistics2:part",
-        "part": "material.wireless_booster",
-        "count": 2
+  "result": {
+    "type": "appliedenergistics2:part",
+    "part": "material.wireless_booster",
+    "count": 2
+  },
+  "type": "appliedenergistics2:part_shaped",
+  "pattern": [
+    "abc",
+    "ddd"
+  ],
+  "key": {
+    "d": {
+      "tag": "forge:ingots/iron"
     },
-    "type": "appliedenergistics2:part_shaped",
-    "pattern": [
-        "abc",
-        "ddd"
-    ],
-    "key": {
-        "d": {
-            "type": "forge:ore_dict",
-            "ore": "ingotIron"
-        },
-        "b": {
-            "item": "#appliedenergistics2:certusCrystal"
-        },
-        "a": {
-            "type": "forge:ore_dict",
-            "ore": "dustFluix"
-        },
-        "c": {
-            "item": "#appliedenergistics2:dustEnder"
-        }
+    "b": {
+      "tag": "appliedenergistics2:crystals/certus"
+    },
+    "a": {
+      "tag": "appliedenergistics2:dusts/fluix"
+    },
+    "c": {
+      "tag": "appliedenergistics2:dusts/ender"
     }
+  }
 }

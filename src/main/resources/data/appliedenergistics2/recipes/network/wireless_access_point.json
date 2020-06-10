@@ -1,25 +1,22 @@
 {
-    "result": {
-        "item": "appliedenergistics2:wireless_access_point"
+  "result": {
+    "item": "appliedenergistics2:wireless_access_point"
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "a",
+    "b",
+    "c"
+  ],
+  "key": {
+    "a": {
+      "item": "appliedenergistics2:wireless_receiver"
     },
-    "type": "forge:ore_shaped",
-    "pattern": [
-        "a",
-        "b",
-        "c"
-    ],
-    "key": {
-        "a": {
-            "type": "appliedenergistics2:part",
-            "part": "material.wireless"
-        },
-        "c": {
-            "type": "appliedenergistics2:part",
-            "part": "cable_glass.fluix"
-        },
-        "b": {
-            "type": "appliedenergistics2:part",
-            "part": "material.calculation_processor"
-        }
+    "c": {
+      "item": "appliedenergistics2:fluix_cable_glass"
+    },
+    "b": {
+      "item": "appliedenergistics2:calculation_processor"
     }
+  }
 }

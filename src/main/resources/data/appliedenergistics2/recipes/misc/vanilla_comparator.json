@@ -1,23 +1,22 @@
 {
-    "result": {
-        "item": "minecraft:comparator"
+  "result": {
+    "item": "minecraft:comparator"
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " a ",
+    "aba",
+    "ccc"
+  ],
+  "key": {
+    "b": {
+      "tag": "appliedenergistics2:crystals/nether"
     },
-    "type": "forge:ore_shaped",
-    "pattern": [
-        " a ",
-        "aba",
-        "ccc"
-    ],
-    "key": {
-        "b": {
-            "item": "#appliedenergistics2:netherCrystal"
-        },
-        "a": {
-            "item": "minecraft:redstone_torch"
-        },
-        "c": {
-            "type": "forge:ore_dict",
-            "ore": "stone"
-        }
+    "a": {
+      "item": "minecraft:redstone_torch"
+    },
+    "c": {
+      "tag": "forge:stone"
     }
+  }
 }

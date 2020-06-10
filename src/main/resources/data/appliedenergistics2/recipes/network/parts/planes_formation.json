@@ -1,24 +1,21 @@
 {
-    "result": {
-        "type": "appliedenergistics2:part",
-        "part": "part.formation_plane"
+  "result": {
+    "item": "appliedenergistics2:formation_plane"
+  },
+  "type": "appliedenergistics2:part_shaped",
+  "pattern": [
+    "aaa",
+    "bcb"
+  ],
+  "key": {
+    "c": {
+      "item": "appliedenergistics2:formation_core"
     },
-    "type": "appliedenergistics2:part_shaped",
-    "pattern": [
-        "aaa",
-        "bcb"
-    ],
-    "key": {
-        "c": {
-            "type": "appliedenergistics2:part",
-            "part": "material.formation_core"
-        },
-        "b": {
-            "type": "forge:ore_dict",
-            "ore": "ingotIron"
-        },
-        "a": {
-            "item": "#appliedenergistics2:fluixCrystal"
-        }
+    "b": {
+      "tag": "forge:ingots/iron"
+    },
+    "a": {
+      "tag": "appliedenergistics2:crystals/fluix"
     }
+  }
 }

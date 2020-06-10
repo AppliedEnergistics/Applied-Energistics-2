@@ -1,17 +1,16 @@
 {
-    "result": {
-        "item": "appliedenergistics2:crank"
-    },
-    "type": "forge:ore_shaped",
-    "pattern": [
-        "aaa",
-        "  a",
-        "  a"
-    ],
-    "key": {
-        "a": {
-            "type": "forge:ore_dict",
-            "ore": "stickWood"
-        }
+  "result": {
+    "item": "appliedenergistics2:crank"
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "aaa",
+    "  a",
+    "  a"
+  ],
+  "key": {
+    "a": {
+      "tag": "forge:rods/wooden"
     }
+  }
 }

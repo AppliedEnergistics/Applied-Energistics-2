@@ -1,23 +1,22 @@
 {
-    "result": {
-        "item": "appliedenergistics2:energy_cell"
+  "result": {
+    "item": "appliedenergistics2:energy_cell"
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "aba",
+    "bcb",
+    "aba"
+  ],
+  "key": {
+    "c": {
+      "item": "appliedenergistics2:quartz_glass"
     },
-    "type": "forge:ore_shaped",
-    "pattern": [
-        "aba",
-        "bcb",
-        "aba"
-    ],
-    "key": {
-        "c": {
-            "item": "appliedenergistics2:quartz_glass"
-        },
-        "a": {
-            "item": "#appliedenergistics2:certusCrystal"
-        },
-        "b": {
-            "type": "forge:ore_dict",
-            "ore": "dustFluix"
-        }
+    "a": {
+      "tag": "appliedenergistics2:crystals/certus"
+    },
+    "b": {
+      "tag": "appliedenergistics2:dusts/fluix"
     }
+  }
 }

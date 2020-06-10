@@ -1,28 +1,25 @@
 {
-    "result": {
-        "item": "appliedenergistics2:fluid_storage_cell_64k"
+  "result": {
+    "item": "appliedenergistics2:fluid_storage_cell_64k"
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "aba",
+    "bcb",
+    "ddd"
+  ],
+  "key": {
+    "a": {
+      "item": "appliedenergistics2:quartz_glass"
     },
-    "type": "forge:ore_shaped",
-    "pattern": [
-        "aba",
-        "bcb",
-        "ddd"
-    ],
-    "key": {
-        "a": {
-            "item": "appliedenergistics2:quartz_glass"
-        },
-        "d": {
-            "type": "forge:ore_dict",
-            "ore": "ingotIron"
-        },
-        "b": {
-            "type": "forge:ore_dict",
-            "ore": "dustRedstone"
-        },
-        "c": {
-            "type": "appliedenergistics2:part",
-            "part": "material.fluid_cell64k_part"
-        }
+    "d": {
+      "tag": "forge:ingots/iron"
+    },
+    "b": {
+      "tag": "forge:dusts/redstone"
+    },
+    "c": {
+      "item": "appliedenergistics2:fluid_cell64k_part"
     }
+  }
 }

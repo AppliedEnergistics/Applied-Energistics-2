@@ -1,20 +1,17 @@
 {
-    "result": {
-        "type": "appliedenergistics2:part",
-        "part": "part.interface_terminal"
+  "result": {
+    "item": "appliedenergistics2:interface_terminal"
+  },
+  "type": "appliedenergistics2:part_shapeless",
+  "ingredients": [
+    {
+      "tag": "appliedenergistics2:illuminated_panel"
     },
-    "type": "appliedenergistics2:part_shapeless",
-    "ingredients": [
-        {
-            "type": "forge:ore_dict",
-            "ore": "itemIlluminatedPanel"
-        },
-        {
-            "type": "appliedenergistics2:part",
-            "part": "material.engineering_processor"
-        },
-        {
-            "item": "#appliedenergistics2:interface"
-        }
-    ]
+    {
+      "item": "appliedenergistics2:engineering_processor"
+    },
+    {
+      "tag": "appliedenergistics2:interface"
+    }
+  ]
 }

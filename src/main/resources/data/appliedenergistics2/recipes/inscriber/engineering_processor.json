@@ -1,21 +1,18 @@
 {
-	"type": "appliedenergistics2:inscriber",
-	"mode": "press",
-	"result": {
-		"part": "material.calculation_processor"
-	},	
-	"ingredients": {
-		"top": {
-			"type": "appliedenergistics2:part",
-			"part": "material.calculation_processor_print"
-		},
-		"middle": {
-			"type": "forge:ore_dict",
-			"ore": "dustRedstone"
-		},
-		"bottom": {
-			"type": "appliedenergistics2:part",
-			"part": "material.silicon_print"
-		}
-	}
+  "type": "appliedenergistics2:inscriber",
+  "mode": "press",
+  "result": {
+    "part": "material.calculation_processor"
+  },
+  "ingredients": {
+    "top": {
+      "item": "appliedenergistics2:calculation_processor_print"
+    },
+    "middle": {
+      "tag": "forge:dusts/redstone"
+    },
+    "bottom": {
+      "item": "appliedenergistics2:silicon_print"
+    }
+  }
 }

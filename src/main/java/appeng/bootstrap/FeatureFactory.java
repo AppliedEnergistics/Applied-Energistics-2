@@ -114,23 +114,6 @@ public class FeatureFactory
 		return new TileEntityBuilder<>( this, id, teClass, factory ).features( this.defaultFeatures );
 	}
 
-	public AEColoredItemDefinition colored( IItemDefinition target )
-	{
-		ColoredItemDefinition definition = new ColoredItemDefinition();
-
-		target.maybeItem().ifPresent( targetItem ->
-		{
-			for( final AEColor color : AEColor.VALID_COLORS )
-			{
-				final ActivityState state = ActivityState.from( true );
-
-				definition.add( color, new ItemStackSrc( targetItem, state ) );
-			}
-		} );
-
-		return definition;
-	}
-
 	public FeatureFactory features( AEFeature... features )
 	{
 		return new FeatureFactory( this, features );

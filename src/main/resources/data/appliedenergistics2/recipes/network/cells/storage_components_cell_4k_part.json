@@ -1,29 +1,25 @@
 {
-    "result": {
-        "type": "appliedenergistics2:part",
-        "part": "material.cell4k_part"
+  "result": {
+    "item": "appliedenergistics2:cell4k_part"
+  },
+  "type": "appliedenergistics2:part_shaped",
+  "pattern": [
+    "aba",
+    "cdc",
+    "aca"
+  ],
+  "key": {
+    "d": {
+      "item": "appliedenergistics2:quartz_glass"
     },
-    "type": "appliedenergistics2:part_shaped",
-    "pattern": [
-        "aba",
-        "cdc",
-        "aca"
-    ],
-    "key": {
-        "d": {
-            "item": "appliedenergistics2:quartz_glass"
-        },
-        "a": {
-            "type": "forge:ore_dict",
-            "ore": "dustRedstone"
-        },
-        "c": {
-            "type": "appliedenergistics2:part",
-            "part": "material.cell1k_part"
-        },
-        "b": {
-            "type": "appliedenergistics2:part",
-            "part": "material.calculation_processor"
-        }
+    "a": {
+      "tag": "forge:dusts/redstone"
+    },
+    "c": {
+      "item": "appliedenergistics2:cell1k_part"
+    },
+    "b": {
+      "item": "appliedenergistics2:calculation_processor"
     }
+  }
 }

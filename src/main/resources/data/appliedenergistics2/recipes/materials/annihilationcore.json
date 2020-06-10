@@ -1,30 +1,28 @@
 {
-    "conditions": [
-        {
-            "type": "appliedenergistics2:material_exists",
-            "material": "material.annihilation_core"
-        }
-    ],
-    "result": {
-        "type": "appliedenergistics2:part",
-        "part": "material.annihilation_core",
-        "count": 2
-    },
-    "type": "appliedenergistics2:part_shaped",
-    "pattern": [
-        "abc"
-    ],
-    "key": {
-        "b": {
-            "type": "forge:ore_dict",
-            "ore": "dustFluix"
-        },
-        "a": {
-            "item": "#appliedenergistics2:netherCrystal"
-        },
-        "c": {
-            "type": "appliedenergistics2:part",
-            "part": "material.logic_processor"
-        }
+  "conditions": [
+    {
+      "type": "appliedenergistics2:material_exists",
+      "material": "material.annihilation_core"
     }
+  ],
+  "result": {
+    "type": "appliedenergistics2:part",
+    "part": "material.annihilation_core",
+    "count": 2
+  },
+  "type": "appliedenergistics2:part_shaped",
+  "pattern": [
+    "abc"
+  ],
+  "key": {
+    "b": {
+      "tag": "appliedenergistics2:dusts/fluix"
+    },
+    "a": {
+      "tag": "appliedenergistics2:crystals/nether"
+    },
+    "c": {
+      "item": "appliedenergistics2:logic_processor"
+    }
+  }
 }

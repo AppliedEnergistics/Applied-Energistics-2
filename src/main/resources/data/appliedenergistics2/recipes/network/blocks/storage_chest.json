@@ -1,31 +1,28 @@
 {
-    "result": {
-        "item": "appliedenergistics2:chest"
+  "result": {
+    "item": "appliedenergistics2:chest"
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "aba",
+    "c c",
+    "ded"
+  ],
+  "key": {
+    "a": {
+      "tag": "appliedenergistics2:glass"
     },
-    "type": "forge:ore_shaped",
-    "pattern": [
-        "aba",
-        "c c",
-        "ded"
-    ],
-    "key": {
-        "a": {
-            "item": "#appliedenergistics2:glass"
-        },
-        "b": {
-            "type": "appliedenergistics2:part",
-            "part": "part.terminal"
-        },
-        "d": {
-            "type": "forge:ore_dict",
-            "ore": "ingotIron"
-        },
-        "c": {
-            "type": "appliedenergistics2:part",
-            "part": "cable_glass.fluix"
-        },
-        "e": {
-            "item": "#appliedenergistics2:fluixCrystal"
-        }
+    "b": {
+      "item": "appliedenergistics2:terminal"
+    },
+    "d": {
+      "tag": "forge:ingots/iron"
+    },
+    "c": {
+      "item": "appliedenergistics2:fluix_cable_glass"
+    },
+    "e": {
+      "tag": "appliedenergistics2:crystals/fluix"
     }
+  }
 }

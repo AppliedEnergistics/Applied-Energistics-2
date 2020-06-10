@@ -1,20 +1,20 @@
 {
-    "result": {
-        "item": "appliedenergistics2:quartz_glass",
-        "count": 4
+  "result": {
+    "item": "appliedenergistics2:quartz_glass",
+    "count": 4
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "aba",
+    "bab",
+    "aba"
+  ],
+  "key": {
+    "b": {
+      "tag": "appliedenergistics2:glass"
     },
-    "type": "forge:ore_shaped",
-    "pattern": [
-        "aba",
-        "bab",
-        "aba"
-    ],
-    "key": {
-        "b": {
-            "item": "#appliedenergistics2:glass"
-        },
-        "a": {
-            "item": "#appliedenergistics2:dustQuartz"
-        }
+    "a": {
+      "tag": "appliedenergistics2:dusts/quartz"
     }
+  }
 }

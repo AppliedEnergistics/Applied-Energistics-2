@@ -1,23 +1,22 @@
 {
-    "result": {
-        "item": "appliedenergistics2:vibration_chamber"
+  "result": {
+    "item": "appliedenergistics2:vibration_chamber"
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "aaa",
+    "aba",
+    "aca"
+  ],
+  "key": {
+    "a": {
+      "tag": "forge:ingots/iron"
     },
-    "type": "forge:ore_shaped",
-    "pattern": [
-        "aaa",
-        "aba",
-        "aca"
-    ],
-    "key": {
-        "a": {
-            "type": "forge:ore_dict",
-            "ore": "ingotIron"
-        },
-        "c": {
-            "item": "appliedenergistics2:energy_acceptor"
-        },
-        "b": {
-            "item": "minecraft:furnace"
-        }
+    "c": {
+      "item": "appliedenergistics2:energy_acceptor"
+    },
+    "b": {
+      "item": "minecraft:furnace"
     }
+  }
 }

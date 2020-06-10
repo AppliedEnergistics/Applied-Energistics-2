@@ -1,28 +1,25 @@
 {
-    "result": {
-        "item": "appliedenergistics2:color_applicator"
+  "result": {
+    "item": "appliedenergistics2:color_applicator"
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ab ",
+    "bc ",
+    "  d"
+  ],
+  "key": {
+    "a": {
+      "item": "appliedenergistics2:formation_core"
     },
-    "type": "forge:ore_shaped",
-    "pattern": [
-        "ab ",
-        "bc ",
-        "  d"
-    ],
-    "key": {
-        "a": {
-            "type": "appliedenergistics2:part",
-            "part": "material.formation_core"
-        },
-        "b": {
-            "type": "forge:ore_dict",
-            "ore": "ingotIron"
-        },
-        "c": {
-            "type": "appliedenergistics2:part",
-            "part": "material.cell4k_part"
-        },
-        "d": {
-            "item": "appliedenergistics2:energy_cell"
-        }
+    "b": {
+      "tag": "forge:ingots/iron"
+    },
+    "c": {
+      "item": "appliedenergistics2:cell4k_part"
+    },
+    "d": {
+      "item": "appliedenergistics2:energy_cell"
     }
+  }
 }

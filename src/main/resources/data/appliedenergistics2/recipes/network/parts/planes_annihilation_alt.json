@@ -1,24 +1,21 @@
 {
-    "result": {
-        "type": "appliedenergistics2:part",
-        "part": "part.annihilation_plane"
+  "result": {
+    "item": "appliedenergistics2:annihilation_plane"
+  },
+  "type": "appliedenergistics2:part_shaped",
+  "pattern": [
+    "aaa",
+    "bcb"
+  ],
+  "key": {
+    "b": {
+      "tag": "forge:ingots/iron"
     },
-    "type": "appliedenergistics2:part_shaped",
-    "pattern": [
-        "aaa",
-        "bcb"
-    ],
-    "key": {
-        "b": {
-            "type": "forge:ore_dict",
-            "ore": "ingotIron"
-        },
-        "a": {
-            "item": "#appliedenergistics2:fluixCrystal"
-        },
-        "c": {
-            "type": "appliedenergistics2:part",
-            "part": "material.annihilation_core"
-        }
+    "a": {
+      "tag": "appliedenergistics2:crystals/fluix"
+    },
+    "c": {
+      "item": "appliedenergistics2:annihilation_core"
     }
+  }
 }

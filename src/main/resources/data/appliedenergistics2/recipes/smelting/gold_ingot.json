@@ -1,11 +1,10 @@
 {
-	"type": "appliedenergistics2:smelt",
-	"result": {
-		"item": "minecraft:gold_ingot"
-	},
-	"input": {
-		"type": "forge:ore_dict",
-		"ore": "dustGold"	
-	},
-	"xp" : 0.0
+  "type": "appliedenergistics2:smelt",
+  "result": {
+    "item": "minecraft:gold_ingot"
+  },
+  "input": {
+    "tag": "forge:dusts/gold"
+  },
+  "xp": 0.0
 }

@@ -1,24 +1,21 @@
 {
-    "result": {
-        "type": "appliedenergistics2:part",
-        "part": "part.import_bus"
+  "result": {
+    "item": "appliedenergistics2:import_bus"
+  },
+  "type": "appliedenergistics2:part_shaped",
+  "pattern": [
+    " a ",
+    "bcb"
+  ],
+  "key": {
+    "c": {
+      "item": "minecraft:sticky_piston"
     },
-    "type": "appliedenergistics2:part_shaped",
-    "pattern": [
-        " a ",
-        "bcb"
-    ],
-    "key": {
-        "c": {
-            "item": "minecraft:sticky_piston"
-        },
-        "b": {
-            "type": "forge:ore_dict",
-            "ore": "ingotIron"
-        },
-        "a": {
-            "type": "appliedenergistics2:part",
-            "part": "material.annihilation_core"
-        }
+    "b": {
+      "tag": "forge:ingots/iron"
+    },
+    "a": {
+      "item": "appliedenergistics2:annihilation_core"
     }
+  }
 }

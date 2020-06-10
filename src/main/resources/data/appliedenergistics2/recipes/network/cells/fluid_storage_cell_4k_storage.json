@@ -1,16 +1,14 @@
 {
-    "result": {
-        "item": "appliedenergistics2:fluid_storage_cell_4k"
+  "result": {
+    "item": "appliedenergistics2:fluid_storage_cell_4k"
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "appliedenergistics2:empty_storage_cell"
     },
-    "type": "forge:ore_shapeless",
-    "ingredients": [
-        {
-            "type": "appliedenergistics2:part",
-            "part": "material.empty_storage_cell"
-        },
-        {
-            "type": "appliedenergistics2:part",
-            "part": "material.fluid_cell4k_part"
-        }
-    ]
+    {
+      "item": "appliedenergistics2:fluid_cell4k_part"
+    }
+  ]
 }

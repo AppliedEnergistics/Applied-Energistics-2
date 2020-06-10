@@ -1,21 +1,18 @@
 {
-    "result": {
-        "type": "appliedenergistics2:part",
-        "part": "part.fluid_terminal"
+  "result": {
+    "item": "appliedenergistics2:fluid_terminal"
+  },
+  "type": "appliedenergistics2:part_shapeless",
+  "ingredients": [
+    {
+      "item": "appliedenergistics2:terminal"
     },
-    "type": "appliedenergistics2:part_shapeless",
-    "ingredients": [
-        {
-            "type": "appliedenergistics2:part",
-            "part": "part.terminal"
-        },
-        {
-            "item": "minecraft:dye",
-            "data": 4
-        },
-        {
-            "type": "appliedenergistics2:part",
-            "part": "material.logic_processor"
-        }
-    ]
+    {
+      "item": "minecraft:dye",
+      "data": 4
+    },
+    {
+      "item": "appliedenergistics2:logic_processor"
+    }
+  ]
 }

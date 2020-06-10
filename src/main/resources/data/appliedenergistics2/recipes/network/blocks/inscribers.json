@@ -1,23 +1,22 @@
 {
-    "result": {
-        "item": "appliedenergistics2:inscriber"
+  "result": {
+    "item": "appliedenergistics2:inscriber"
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "aba",
+    "c a",
+    "aba"
+  ],
+  "key": {
+    "b": {
+      "item": "minecraft:sticky_piston"
     },
-    "type": "forge:ore_shaped",
-    "pattern": [
-        "aba",
-        "c a",
-        "aba"
-    ],
-    "key": {
-        "b": {
-            "item": "minecraft:sticky_piston"
-        },
-        "a": {
-            "type": "forge:ore_dict",
-            "ore": "ingotIron"
-        },
-        "c": {
-            "item": "#appliedenergistics2:fluixCrystal"
-        }
+    "a": {
+      "tag": "forge:ingots/iron"
+    },
+    "c": {
+      "tag": "appliedenergistics2:crystals/fluix"
     }
+  }
 }

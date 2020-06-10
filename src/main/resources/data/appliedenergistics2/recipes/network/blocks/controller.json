@@ -1,24 +1,22 @@
 {
-    "result": {
-        "item": "appliedenergistics2:controller"
+  "result": {
+    "item": "appliedenergistics2:controller"
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "aba",
+    "bcb",
+    "aba"
+  ],
+  "key": {
+    "c": {
+      "item": "appliedenergistics2:engineering_processor"
     },
-    "type": "forge:ore_shaped",
-    "pattern": [
-        "aba",
-        "bcb",
-        "aba"
-    ],
-    "key": {
-        "c": {
-            "type": "appliedenergistics2:part",
-            "part": "material.engineering_processor"
-        },
-        "b": {
-            "type": "appliedenergistics2:part",
-            "part": "material.purified_fluix_crystal"
-        },
-        "a": {
-            "item": "appliedenergistics2:smooth_sky_stone_block"
-        }
+    "b": {
+      "item": "appliedenergistics2:purified_fluix_crystal"
+    },
+    "a": {
+      "item": "appliedenergistics2:smooth_sky_stone_block"
     }
+  }
 }

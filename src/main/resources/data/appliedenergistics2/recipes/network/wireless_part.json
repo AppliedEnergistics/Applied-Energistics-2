@@ -1,26 +1,22 @@
 {
-    "result": {
-        "type": "appliedenergistics2:part",
-        "part": "material.wireless"
+  "result": {
+    "item": "appliedenergistics2:wireless_receiver"
+  },
+  "type": "appliedenergistics2:part_shaped",
+  "pattern": [
+    " a ",
+    "bcb",
+    " b "
+  ],
+  "key": {
+    "b": {
+      "tag": "forge:ingots/iron"
     },
-    "type": "appliedenergistics2:part_shaped",
-    "pattern": [
-        " a ",
-        "bcb",
-        " b "
-    ],
-    "key": {
-        "b": {
-            "type": "forge:ore_dict",
-            "ore": "ingotIron"
-        },
-        "c": {
-            "type": "appliedenergistics2:part",
-            "part": "part.quartz_fiber"
-        },
-        "a": {
-            "type": "appliedenergistics2:part",
-            "part": "material.fluix_pearl"
-        }
+    "c": {
+      "item": "appliedenergistics2:quartz_fiber"
+    },
+    "a": {
+      "item": "appliedenergistics2:fluix_pearl"
     }
+  }
 }

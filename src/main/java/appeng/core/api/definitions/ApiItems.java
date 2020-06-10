@@ -21,12 +21,16 @@ package appeng.core.api.definitions;
 
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IItems;
+import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
 import appeng.bootstrap.FeatureFactory;
 import appeng.api.features.AEFeature;
 import appeng.client.render.crafting.EncodedPatternRenderer;
 import appeng.client.render.crafting.ItemEncodedPatternRendering;
 import appeng.core.CreativeTabFacade;
+import appeng.core.features.ActivityState;
+import appeng.core.features.ColoredItemDefinition;
+import appeng.core.features.ItemStackSrc;
 import appeng.debug.*;
 import appeng.entity.EntityGrowingCrystal;
 import appeng.fluids.items.BasicFluidStorageCell;
@@ -290,17 +294,8 @@ public final class ApiItems implements IItems
 				.rendering( new ItemEncodedPatternRendering() )
 				.build();
 
-		IItemDefinition paintBall = registry.item( "paint_ball", props -> new ItemPaintBall(props, false) )
-				.features( AEFeature.PAINT_BALLS )
-				.rendering( new ItemPaintBallRendering() )
-				.build();
-		// FIXME these are both wrong
-		this.coloredPaintBall = registry.colored( paintBall );
-		IItemDefinition lumenPaintBall = registry.item( "lumen_paint_ball", props -> new ItemPaintBall(props, true) )
-				.features( AEFeature.PAINT_BALLS )
-				.rendering( new ItemPaintBallRendering() )
-				.build();
-		this.coloredLumenPaintBall = registry.colored( lumenPaintBall );
+		this.coloredPaintBall = createPaintBalls(registry, "_paint_ball", false);
+		this.coloredLumenPaintBall = createPaintBalls(registry, "_lumen_paint_ball", true);
 
 		FeatureFactory debugTools = registry.features( AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE );
 		this.toolEraser = debugTools.item( "debug_eraser", ToolEraser::new ).build();
@@ -310,6 +305,19 @@ public final class ApiItems implements IItems
 		debugTools.item( "debug_part_placer", ToolDebugPartPlacer::new ).build();
 
 		this.dummyFluidItem = registry.item( "dummy_fluid_item", FluidDummyItem::new ).rendering( new FluidDummyItemRendering() ).build();
+	}
+
+	private static AEColoredItemDefinition createPaintBalls(FeatureFactory registry, String idSuffix, boolean lumen) {
+		ColoredItemDefinition colors = new ColoredItemDefinition();
+		for (AEColor color : AEColor.values()) {
+			String id = color.registryPrefix + idSuffix;
+			IItemDefinition paintBall = registry.item(id, props -> new ItemPaintBall(props, color, lumen))
+					.features(AEFeature.PAINT_BALLS)
+					.rendering(new ItemPaintBallRendering(color, lumen))
+					.build();
+			colors.add(color, new ItemStackSrc(paintBall.item(), ActivityState.Enabled));
+		}
+		return colors;
 	}
 
 	@Override

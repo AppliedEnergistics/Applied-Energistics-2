@@ -1,24 +1,22 @@
 {
-    "result": {
-        "item": "appliedenergistics2:condenser"
+  "result": {
+    "item": "appliedenergistics2:condenser"
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "aba",
+    "bcb",
+    "aba"
+  ],
+  "key": {
+    "b": {
+      "tag": "appliedenergistics2:glass"
     },
-    "type": "forge:ore_shaped",
-    "pattern": [
-        "aba",
-        "bcb",
-        "aba"
-    ],
-    "key": {
-        "b": {
-            "item": "#appliedenergistics2:glass"
-        },
-        "a": {
-            "type": "forge:ore_dict",
-            "ore": "ingotIron"
-        },
-        "c": {
-            "type": "forge:ore_dict",
-            "ore": "dustFluix"
-        }
+    "a": {
+      "tag": "forge:ingots/iron"
+    },
+    "c": {
+      "tag": "appliedenergistics2:dusts/fluix"
     }
+  }
 }

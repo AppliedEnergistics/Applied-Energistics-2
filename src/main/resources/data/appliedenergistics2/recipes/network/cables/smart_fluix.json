@@ -1,21 +1,17 @@
 {
-    "result": {
-        "type": "appliedenergistics2:part",
-        "part": "cable_smart.fluix"
+  "result": {
+    "item": "appliedenergistics2:fluix_cable_smart"
+  },
+  "type": "appliedenergistics2:part_shapeless",
+  "ingredients": [
+    {
+      "item": "appliedenergistics2:fluix_cable_covered"
     },
-    "type": "appliedenergistics2:part_shapeless",
-    "ingredients": [
-        {
-            "type": "appliedenergistics2:part",
-            "part": "cable_covered.fluix"
-        },
-        {
-            "type": "forge:ore_dict",
-            "ore": "dustRedstone"
-        },
-        {
-            "type": "forge:ore_dict",
-            "ore": "dustGlowstone"
-        }
-    ]
+    {
+      "tag": "forge:dusts/redstone"
+    },
+    {
+      "tag": "forge:dust/glowstone"
+    }
+  ]
 }

@@ -1,25 +1,20 @@
 {
-    "result": {
-        "type": "appliedenergistics2:part",
-        "part": "part.terminal"
+  "result": {
+    "item": "appliedenergistics2:terminal"
+  },
+  "type": "appliedenergistics2:part_shapeless",
+  "ingredients": [
+    {
+      "item": "appliedenergistics2:formation_core"
     },
-    "type": "appliedenergistics2:part_shapeless",
-    "ingredients": [
-        {
-            "type": "appliedenergistics2:part",
-            "part": "material.formation_core"
-        },
-        {
-            "type": "forge:ore_dict",
-            "ore": "itemIlluminatedPanel"
-        },
-        {
-            "type": "appliedenergistics2:part",
-            "part": "material.logic_processor"
-        },
-        {
-            "type": "appliedenergistics2:part",
-            "part": "material.annihilation_core"
-        }
-    ]
+    {
+      "tag": "appliedenergistics2:illuminated_panel"
+    },
+    {
+      "item": "appliedenergistics2:logic_processor"
+    },
+    {
+      "item": "appliedenergistics2:annihilation_core"
+    }
+  ]
 }

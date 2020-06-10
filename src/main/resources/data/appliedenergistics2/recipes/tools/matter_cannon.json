@@ -1,28 +1,25 @@
 {
-    "result": {
-        "item": "appliedenergistics2:matter_cannon"
+  "result": {
+    "item": "appliedenergistics2:matter_cannon"
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "aab",
+    "cd ",
+    "a  "
+  ],
+  "key": {
+    "b": {
+      "item": "appliedenergistics2:formation_core"
     },
-    "type": "forge:ore_shaped",
-    "pattern": [
-        "aab",
-        "cd ",
-        "a  "
-    ],
-    "key": {
-        "b": {
-            "type": "appliedenergistics2:part",
-            "part": "material.formation_core"
-        },
-        "a": {
-            "type": "forge:ore_dict",
-            "ore": "ingotIron"
-        },
-        "c": {
-            "type": "appliedenergistics2:part",
-            "part": "material.cell4k_part"
-        },
-        "d": {
-            "item": "appliedenergistics2:energy_cell"
-        }
+    "a": {
+      "tag": "forge:ingots/iron"
+    },
+    "c": {
+      "item": "appliedenergistics2:cell4k_part"
+    },
+    "d": {
+      "item": "appliedenergistics2:energy_cell"
     }
+  }
 }

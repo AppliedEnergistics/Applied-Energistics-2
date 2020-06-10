@@ -1,16 +1,14 @@
 {
-    "result": {
-        "type": "appliedenergistics2:part",
-        "part": "part.level_emitter"
+  "result": {
+    "item": "appliedenergistics2:level_emitter"
+  },
+  "type": "appliedenergistics2:part_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:redstone_torch"
     },
-    "type": "appliedenergistics2:part_shapeless",
-    "ingredients": [
-        {
-            "item": "minecraft:redstone_torch"
-        },
-        {
-            "type": "appliedenergistics2:part",
-            "part": "material.calculation_processor"
-        }
-    ]
+    {
+      "item": "appliedenergistics2:calculation_processor"
+    }
+  ]
 }

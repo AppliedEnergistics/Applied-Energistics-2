@@ -1,18 +1,16 @@
 {
-    "result": {
-        "type": "appliedenergistics2:part",
-        "part": "crystal_seed.nether",
-        "count": 2
+  "result": {
+    "type": "appliedenergistics2:part",
+    "part": "crystal_seed.nether",
+    "count": 2
+  },
+  "type": "appliedenergistics2:part_shapeless",
+  "ingredients": [
+    {
+      "tag": "forge:sand"
     },
-    "type": "appliedenergistics2:part_shapeless",
-    "ingredients": [
-        {
-            "type": "forge:ore_dict",
-            "ore": "sand"
-        },
-        {
-            "type": "forge:ore_dict",
-            "ore": "dustNetherQuartz"
-        }
-    ]
+    {
+      "tag": "appliedenergistics2:dusts/nether_quartz"
+    }
+  ]
 }

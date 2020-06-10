@@ -1,22 +1,20 @@
 {
-    "conditions": [
-        {
-            "type": "appliedenergistics2:material_exists",
-            "material": "material.card_speed"
-        }
-    ],
-    "result": {
-        "type": "appliedenergistics2:part",
-        "part": "material.card_speed"
+  "conditions": [
+    {
+      "type": "appliedenergistics2:material_exists",
+      "material": "material.card_speed"
+    }
+  ],
+  "result": {
+    "item": "appliedenergistics2:card_speed"
+  },
+  "type": "appliedenergistics2:part_shapeless",
+  "ingredients": [
+    {
+      "item": "appliedenergistics2:advanced_card"
     },
-    "type": "appliedenergistics2:part_shapeless",
-    "ingredients": [
-        {
-            "type": "appliedenergistics2:part",
-            "part": "material.advanced_card"
-        },
-        {
-            "item": "#appliedenergistics2:fluixCrystal"
-        }
-    ]
+    {
+      "tag": "appliedenergistics2:crystals/fluix"
+    }
+  ]
 }

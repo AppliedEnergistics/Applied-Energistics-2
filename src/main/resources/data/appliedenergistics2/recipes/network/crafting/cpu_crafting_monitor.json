@@ -1,15 +1,14 @@
 {
-    "result": {
-        "item": "appliedenergistics2:crafting_monitor"
+  "result": {
+    "item": "appliedenergistics2:crafting_monitor"
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "appliedenergistics2:storage_monitor"
     },
-    "type": "forge:ore_shapeless",
-    "ingredients": [
-        {
-            "type": "appliedenergistics2:part",
-            "part": "part.storage_monitor"
-        },
-        {
-            "item": "appliedenergistics2:crafting_unit"
-        }
-    ]
+    {
+      "item": "appliedenergistics2:crafting_unit"
+    }
+  ]
 }

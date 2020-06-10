@@ -1,27 +1,25 @@
 {
-    "result": {
-        "item": "appliedenergistics2:view_cell"
+  "result": {
+    "item": "appliedenergistics2:view_cell"
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "aba",
+    "bcb",
+    "ddd"
+  ],
+  "key": {
+    "a": {
+      "item": "appliedenergistics2:quartz_glass"
     },
-    "type": "forge:ore_shaped",
-    "pattern": [
-        "aba",
-        "bcb",
-        "ddd"
-    ],
-    "key": {
-        "a": {
-            "item": "appliedenergistics2:quartz_glass"
-        },
-        "d": {
-            "type": "forge:ore_dict",
-            "ore": "ingotIron"
-        },
-        "b": {
-            "type": "forge:ore_dict",
-            "ore": "dustRedstone"
-        },
-        "c": {
-            "item": "#appliedenergistics2:certusCrystal"
-        }
+    "d": {
+      "tag": "forge:ingots/iron"
+    },
+    "b": {
+      "tag": "forge:dusts/redstone"
+    },
+    "c": {
+      "tag": "appliedenergistics2:crystals/certus"
     }
+  }
 }

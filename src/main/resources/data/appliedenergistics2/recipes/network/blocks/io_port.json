@@ -1,31 +1,28 @@
 {
-    "result": {
-        "item": "appliedenergistics2:io_port"
+  "result": {
+    "item": "appliedenergistics2:io_port"
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "aaa",
+    "bcb",
+    "ded"
+  ],
+  "key": {
+    "a": {
+      "tag": "appliedenergistics2:glass"
     },
-    "type": "forge:ore_shaped",
-    "pattern": [
-        "aaa",
-        "bcb",
-        "ded"
-    ],
-    "key": {
-        "a": {
-            "item": "#appliedenergistics2:glass"
-        },
-        "d": {
-            "type": "forge:ore_dict",
-            "ore": "ingotIron"
-        },
-        "b": {
-            "item": "appliedenergistics2:drive"
-        },
-        "e": {
-            "type": "appliedenergistics2:part",
-            "part": "material.logic_processor"
-        },
-        "c": {
-            "type": "appliedenergistics2:part",
-            "part": "cable_glass.fluix"
-        }
+    "d": {
+      "tag": "forge:ingots/iron"
+    },
+    "b": {
+      "item": "appliedenergistics2:drive"
+    },
+    "e": {
+      "item": "appliedenergistics2:logic_processor"
+    },
+    "c": {
+      "item": "appliedenergistics2:fluix_cable_glass"
     }
+  }
 }

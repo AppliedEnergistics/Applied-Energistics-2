@@ -1,13 +1,11 @@
 {
-    "result": {
-        "type": "appliedenergistics2:part",
-        "part": "part.monitor"
-    },
-    "type": "appliedenergistics2:part_shapeless",
-    "ingredients": [
-        {
-            "type": "appliedenergistics2:part",
-            "part": "part.semi_dark_monitor"
-        }
-    ]
+  "result": {
+    "item": "appliedenergistics2:monitor"
+  },
+  "type": "appliedenergistics2:part_shapeless",
+  "ingredients": [
+    {
+      "item": "appliedenergistics2:semi_dark_monitor"
+    }
+  ]
 }

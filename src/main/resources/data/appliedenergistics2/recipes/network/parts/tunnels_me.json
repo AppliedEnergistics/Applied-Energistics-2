@@ -1,25 +1,22 @@
 {
-    "result": {
-        "type": "appliedenergistics2:part",
-        "part": "part.p2p_tunnel_me"
+  "result": {
+    "item": "appliedenergistics2:me_p2p_tunnel"
+  },
+  "type": "appliedenergistics2:part_shaped",
+  "pattern": [
+    " a ",
+    "aba",
+    "ccc"
+  ],
+  "key": {
+    "b": {
+      "item": "appliedenergistics2:engineering_processor"
     },
-    "type": "appliedenergistics2:part_shaped",
-    "pattern": [
-        " a ",
-        "aba",
-        "ccc"
-    ],
-    "key": {
-        "b": {
-            "type": "appliedenergistics2:part",
-            "part": "material.engineering_processor"
-        },
-        "a": {
-            "type": "forge:ore_dict",
-            "ore": "ingotIron"
-        },
-        "c": {
-            "item": "#appliedenergistics2:fluixCrystal"
-        }
+    "a": {
+      "tag": "forge:ingots/iron"
+    },
+    "c": {
+      "tag": "appliedenergistics2:crystals/fluix"
     }
+  }
 }

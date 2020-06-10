@@ -1,29 +1,25 @@
 {
-    "result": {
-        "item": "appliedenergistics2:fluid_interface"
+  "result": {
+    "item": "appliedenergistics2:fluid_interface"
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "aba",
+    "c d",
+    "aba"
+  ],
+  "key": {
+    "d": {
+      "item": "appliedenergistics2:formation_core"
     },
-    "type": "forge:ore_shaped",
-    "pattern": [
-        "aba",
-        "c d",
-        "aba"
-    ],
-    "key": {
-        "d": {
-            "type": "appliedenergistics2:part",
-            "part": "material.formation_core"
-        },
-        "b": {
-			"type": "forge:ore_dict",
-            "ore": "dyeBlue"
-        },
-        "a": {
-            "type": "forge:ore_dict",
-            "ore": "ingotIron"
-        },
-        "c": {
-            "type": "appliedenergistics2:part",
-            "part": "material.annihilation_core"
-        }
+    "b": {
+      "tag": "forge:dyes/blue"
+    },
+    "a": {
+      "tag": "forge:ingots/iron"
+    },
+    "c": {
+      "item": "appliedenergistics2:annihilation_core"
     }
+  }
 }

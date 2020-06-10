@@ -1,16 +1,14 @@
 {
-    "result": {
-        "item": "appliedenergistics2:spatial_storage_cell_16_cubed"
+  "result": {
+    "item": "appliedenergistics2:spatial_storage_cell_16_cubed"
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "appliedenergistics2:empty_storage_cell"
     },
-    "type": "forge:ore_shapeless",
-    "ingredients": [
-        {
-            "type": "appliedenergistics2:part",
-            "part": "material.empty_storage_cell"
-        },
-        {
-            "type": "appliedenergistics2:part",
-            "part": "material.cell16_spatial_part"
-        }
-    ]
+    {
+      "item": "appliedenergistics2:cell16_spatial_part"
+    }
+  ]
 }

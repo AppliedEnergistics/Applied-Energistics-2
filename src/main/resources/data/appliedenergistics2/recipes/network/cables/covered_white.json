@@ -1,23 +1,21 @@
 {
-    "result": {
-        "type": "appliedenergistics2:part",
-        "part": "cable_covered.white",
-        "count": 8
+  "result": {
+    "type": "appliedenergistics2:part",
+    "part": "cable_covered.white",
+    "count": 8
+  },
+  "type": "appliedenergistics2:part_shaped",
+  "pattern": [
+    "aaa",
+    "aba",
+    "aaa"
+  ],
+  "key": {
+    "a": {
+      "item": "appliedenergistics2:fluix_cable_covered"
     },
-    "type": "appliedenergistics2:part_shaped",
-    "pattern": [
-        "aaa",
-        "aba",
-        "aaa"
-    ],
-    "key": {
-        "a": {
-            "type": "appliedenergistics2:part",
-            "part": "cable_covered.fluix"
-        },
-        "b": {
-            "type": "forge:ore_dict",
-            "ore": "dyeWhite"
-        }
+    "b": {
+      "tag": "forge:dyes/white"
     }
+  }
 }

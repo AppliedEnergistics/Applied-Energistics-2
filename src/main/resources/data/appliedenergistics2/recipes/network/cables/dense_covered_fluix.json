@@ -1,25 +1,20 @@
 {
-    "result": {
-        "type": "appliedenergistics2:part",
-        "part": "cable_dense_covered.fluix"
+  "result": {
+    "item": "appliedenergistics2:fluix_cable_dense_covered"
+  },
+  "type": "appliedenergistics2:part_shapeless",
+  "ingredients": [
+    {
+      "item": "appliedenergistics2:fluix_cable_covered"
     },
-    "type": "appliedenergistics2:part_shapeless",
-    "ingredients": [
-        {
-            "type": "appliedenergistics2:part",
-            "part": "cable_covered.fluix"
-        },
-        {
-            "type": "appliedenergistics2:part",
-            "part": "cable_covered.fluix"
-        },
-        {
-            "type": "appliedenergistics2:part",
-            "part": "cable_covered.fluix"
-        },
-        {
-            "type": "appliedenergistics2:part",
-            "part": "cable_covered.fluix"
-        }
-    ]
+    {
+      "item": "appliedenergistics2:fluix_cable_covered"
+    },
+    {
+      "item": "appliedenergistics2:fluix_cable_covered"
+    },
+    {
+      "item": "appliedenergistics2:fluix_cable_covered"
+    }
+  ]
 }

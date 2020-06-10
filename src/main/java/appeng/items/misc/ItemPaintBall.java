@@ -21,6 +21,7 @@ package appeng.items.misc;
 
 import appeng.api.util.AEColor;
 import appeng.items.AEBaseItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -32,12 +33,13 @@ import net.minecraft.util.text.TranslationTextComponent;
 public class ItemPaintBall extends AEBaseItem
 {
 
-	private static final String TAG_COLOR = "c";
+	private final AEColor color;
 
 	private final boolean lumen;
 
-	public ItemPaintBall(Properties properties, boolean lumen) {
+	public ItemPaintBall(Properties properties, AEColor color, boolean lumen) {
 		super(properties);
+		this.color = color;
 		this.lumen = lumen;
 	}
 
@@ -56,42 +58,16 @@ public class ItemPaintBall extends AEBaseItem
 
 	public AEColor getColor( final ItemStack is )
 	{
-		CompoundNBT tag = is.getTag();
-		if (tag == null || !tag.contains(TAG_COLOR)) {
-			return AEColor.TRANSPARENT;
+		Item item = is.getItem();
+		if (item instanceof ItemPaintBall) {
+			return ((ItemPaintBall) item).color;
 		}
-		int c = tag.getInt(TAG_COLOR);
-		if (c < 0 || c >= AEColor.values().length) {
-			return AEColor.TRANSPARENT;
-		}
-		return AEColor.values()[c];
-	}
-
-	public ItemStack setColor( final ItemStack is, AEColor color )
-	{
-		is.getOrCreateTag().putInt(TAG_COLOR, color.ordinal());
-		return is;
+		return AEColor.TRANSPARENT;
 	}
 
 	public boolean isLumen()
 	{
 		return lumen;
-	}
-
-	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> itemStacks) {
-
-		if (!isInGroup(group)) {
-			return;
-		}
-
-		for( final AEColor c : AEColor.values() )
-		{
-			if( c != AEColor.TRANSPARENT )
-			{
-				itemStacks.add( setColor(new ItemStack( this ), c) );
-			}
-		}
 	}
 
 }

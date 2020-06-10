@@ -1,28 +1,27 @@
 {
-    "display": {
-        "icon": {
-            "item": "appliedenergistics2:part",
-            "data": 16
-        },
-        "title": {
-            "translate": "achievement.ae2.GlassCable"
-        },
-        "description": {
-            "translate": "achievement.ae2.GlassCable.desc"
-        }
+  "display": {
+    "icon": {
+      "item": "appliedenergistics2:part",
+      "data": 16
     },
-    "parent": "appliedenergistics2:main/fluix",
-    "criteria": {
-        "certus": {
-            "trigger": "minecraft:inventory_changed",
-            "conditions": {
-                "items": [
-                    {
-                        "type": "appliedenergistics2:part",
-                        "part": "CABLE_GLASS"
-                    }
-                ]
-            }
-        }
+    "title": {
+      "translate": "achievement.ae2.GlassCable"
+    },
+    "description": {
+      "translate": "achievement.ae2.GlassCable.desc"
     }
+  },
+  "parent": "appliedenergistics2:main/fluix",
+  "criteria": {
+    "certus": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "appliedenergistics2:glass_cable"
+          }
+        ]
+      }
+    }
+  }
 }

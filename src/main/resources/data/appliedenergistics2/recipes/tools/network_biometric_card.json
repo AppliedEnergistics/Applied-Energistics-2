@@ -1,28 +1,24 @@
 {
-    "result": {
-        "item": "appliedenergistics2:biometric_card"
+  "result": {
+    "item": "appliedenergistics2:biometric_card"
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "abb",
+    "cdc"
+  ],
+  "key": {
+    "a": {
+      "item": "appliedenergistics2:engineering_processor"
     },
-    "type": "forge:ore_shaped",
-    "pattern": [
-        "abb",
-        "cdc"
-    ],
-    "key": {
-        "a": {
-            "type": "appliedenergistics2:part",
-            "part": "material.engineering_processor"
-        },
-        "b": {
-            "type": "forge:ore_dict",
-            "ore": "ingotIron"
-        },
-        "d": {
-            "type": "forge:ore_dict",
-            "ore": "dustRedstone"
-        },
-        "c": {
-            "type": "forge:ore_dict",
-            "ore": "ingotGold"
-        }
+    "b": {
+      "tag": "forge:ingots/iron"
+    },
+    "d": {
+      "tag": "forge:dusts/redstone"
+    },
+    "c": {
+      "tag": "forge:ingots/gold"
     }
+  }
 }

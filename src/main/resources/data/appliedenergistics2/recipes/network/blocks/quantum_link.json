@@ -1,20 +1,19 @@
 {
-    "result": {
-        "item": "appliedenergistics2:quantum_link"
+  "result": {
+    "item": "appliedenergistics2:quantum_link"
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "aba",
+    "b b",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "item": "appliedenergistics2:quartz_glass"
     },
-    "type": "forge:ore_shaped",
-    "pattern": [
-        "aba",
-        "b b",
-        "aba"
-    ],
-    "key": {
-        "a": {
-            "item": "appliedenergistics2:quartz_glass"
-        },
-        "b": {
-            "type": "appliedenergistics2:part",
-            "part": "material.fluix_pearl"
-        }
+    "b": {
+      "item": "appliedenergistics2:fluix_pearl"
     }
+  }
 }

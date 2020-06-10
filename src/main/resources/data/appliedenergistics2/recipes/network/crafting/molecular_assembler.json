@@ -1,32 +1,28 @@
 {
-    "result": {
-        "item": "appliedenergistics2:molecular_assembler"
+  "result": {
+    "item": "appliedenergistics2:molecular_assembler"
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "aba",
+    "cde",
+    "aba"
+  ],
+  "key": {
+    "e": {
+      "item": "appliedenergistics2:formation_core"
     },
-    "type": "forge:ore_shaped",
-    "pattern": [
-        "aba",
-        "cde",
-        "aba"
-    ],
-    "key": {
-        "e": {
-            "type": "appliedenergistics2:part",
-            "part": "material.formation_core"
-        },
-        "b": {
-            "item": "appliedenergistics2:quartz_glass"
-        },
-        "d": {
-            "type": "forge:ore_dict",
-            "ore": "workbench"
-        },
-        "a": {
-            "type": "forge:ore_dict",
-            "ore": "ingotIron"
-        },
-        "c": {
-            "type": "appliedenergistics2:part",
-            "part": "material.annihilation_core"
-        }
+    "b": {
+      "item": "appliedenergistics2:quartz_glass"
+    },
+    "d": {
+      "tag": "appliedenergistics2:workbench"
+    },
+    "a": {
+      "tag": "forge:ingots/iron"
+    },
+    "c": {
+      "item": "appliedenergistics2:annihilation_core"
     }
+  }
 }

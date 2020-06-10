@@ -1,17 +1,14 @@
 {
-    "result": {
-        "type": "appliedenergistics2:part",
-        "part": "part.identity_annihilation_plane"
+  "result": {
+    "item": "appliedenergistics2:identity_annihilation_plane"
+  },
+  "type": "appliedenergistics2:part_shapeless",
+  "ingredients": [
+    {
+      "item": "appliedenergistics2:annihilation_plane"
     },
-    "type": "appliedenergistics2:part_shapeless",
-    "ingredients": [
-        {
-            "type": "appliedenergistics2:part",
-            "part": "part.annihilation_plane"
-        },
-        {
-            "type": "appliedenergistics2:part",
-            "part": "material.fluix_pearl"
-        }
-    ]
+    {
+      "item": "appliedenergistics2:fluix_pearl"
+    }
+  ]
 }

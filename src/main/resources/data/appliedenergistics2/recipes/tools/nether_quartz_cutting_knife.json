@@ -1,25 +1,22 @@
 {
-    "result": {
-        "item": "appliedenergistics2:nether_quartz_cutting_knife"
+  "result": {
+    "item": "appliedenergistics2:nether_quartz_cutting_knife"
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  a",
+    "ba ",
+    "cc "
+  ],
+  "key": {
+    "b": {
+      "tag": "forge:ingots/iron"
     },
-    "type": "forge:ore_shaped",
-    "pattern": [
-        "  a",
-        "ba ",
-        "cc "
-    ],
-    "key": {
-        "b": {
-            "type": "forge:ore_dict",
-            "ore": "ingotIron"
-        },
-        "c": {
-            "type": "forge:ore_dict",
-            "ore": "gemQuartz"
-        },
-        "a": {
-            "type": "forge:ore_dict",
-            "ore": "stickWood"
-        }
+    "c": {
+      "tag": "forge:gems/quartz"
+    },
+    "a": {
+      "tag": "forge:rods/wooden"
     }
+  }
 }

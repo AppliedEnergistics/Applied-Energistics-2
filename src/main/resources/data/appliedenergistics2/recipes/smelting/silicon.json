@@ -1,18 +1,15 @@
 {
-	"type": "appliedenergistics2:smelt",
-	"result": {
-		"part": "material.silicon"
-	},
-	"input": 
-	[
-		{
-			"type": "forge:ore_dict",
-			"ore": "dustNetherQuartz"	
-		},
-		{
-			"type": "forge:ore_dict",
-			"ore": "dustCertusQuartz"	
-		}
-	],
-	"xp" : 0.0
+  "type": "appliedenergistics2:smelt",
+  "result": {
+    "part": "material.silicon"
+  },
+  "input": [
+    {
+      "tag": "appliedenergistics2:dusts/nether_quartz"
+    },
+    {
+      "tag": "appliedenergistics2:dusts/certus_quartz"
+    }
+  ],
+  "xp": 0.0
 }

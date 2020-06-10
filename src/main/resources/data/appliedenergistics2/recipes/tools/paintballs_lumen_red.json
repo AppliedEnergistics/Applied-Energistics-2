@@ -1,23 +1,21 @@
 {
-    "result": {
-        "type": "appliedenergistics2:part",
-        "part": "lumen_paint_ball.red",
-        "count": 8
+  "result": {
+    "type": "appliedenergistics2:part",
+    "part": "lumen_paint_ball.red",
+    "count": 8
+  },
+  "type": "appliedenergistics2:part_shaped",
+  "pattern": [
+    "aaa",
+    "aba",
+    "aaa"
+  ],
+  "key": {
+    "a": {
+      "item": "appliedenergistics2:red_paint_ball"
     },
-    "type": "appliedenergistics2:part_shaped",
-    "pattern": [
-        "aaa",
-        "aba",
-        "aaa"
-    ],
-    "key": {
-        "a": {
-            "type": "appliedenergistics2:part",
-            "part": "paint_ball.red"
-        },
-        "b": {
-            "type": "forge:ore_dict",
-            "ore": "dustGlowstone"
-        }
+    "b": {
+      "tag": "forge:dust/glowstone"
     }
+  }
 }
