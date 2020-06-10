@@ -1,10 +1,9 @@
 {
   "result": {
-    "type": "appliedenergistics2:part",
-    "part": "cable_dense_smart.magenta",
+    "item": "appliedenergistics2:magenta_smart_dense_cable",
     "count": 8
   },
-  "type": "appliedenergistics2:part_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     "aaa",
     "aba",
@@ -12,7 +11,7 @@
   ],
   "key": {
     "a": {
-      "item": "appliedenergistics2:fluix_cable_dense_smart"
+      "item": "appliedenergistics2:fluix_smart_dense_cable"
     },
     "b": {
       "tag": "forge:dyes/magenta"

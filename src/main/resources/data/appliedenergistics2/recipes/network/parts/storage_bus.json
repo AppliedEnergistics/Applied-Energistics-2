@@ -2,7 +2,7 @@
   "result": {
     "item": "appliedenergistics2:storage_bus"
   },
-  "type": "appliedenergistics2:part_shapeless",
+  "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
       "item": "minecraft:sticky_piston"

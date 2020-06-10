@@ -1,14 +1,14 @@
 {
   "conditions": [
     {
-      "type": "appliedenergistics2:material_exists",
-      "material": "material.card_inverter"
+      "type": "appliedenergistics2:feature",
+      "features": ["ADVANCED_CARDS"]
     }
   ],
   "result": {
-    "item": "appliedenergistics2:card_inverter"
+    "item": "appliedenergistics2:inverter_card"
   },
-  "type": "appliedenergistics2:part_shapeless",
+  "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
       "item": "minecraft:redstone_torch"

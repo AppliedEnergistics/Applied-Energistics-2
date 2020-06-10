@@ -1,10 +1,9 @@
 {
   "result": {
-    "type": "appliedenergistics2:part",
-    "part": "lumen_paint_ball.lime",
+    "item": "appliedenergistics2:lime_lumen_paint_ball",
     "count": 8
   },
-  "type": "appliedenergistics2:part_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     "aaa",
     "aba",
@@ -15,7 +14,7 @@
       "item": "appliedenergistics2:lime_paint_ball"
     },
     "b": {
-      "tag": "forge:dust/glowstone"
+      "tag": "forge:dusts/glowstone"
     }
   }
 }

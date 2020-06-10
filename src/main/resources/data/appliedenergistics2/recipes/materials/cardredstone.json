@@ -1,14 +1,14 @@
 {
   "conditions": [
     {
-      "type": "appliedenergistics2:material_exists",
-      "material": "material.card_redstone"
+      "type": "appliedenergistics2:feature",
+      "features": ["BASIC_CARDS"]
     }
   ],
   "result": {
-    "item": "appliedenergistics2:card_redstone"
+    "item": "appliedenergistics2:redstone_card"
   },
-  "type": "appliedenergistics2:part_shapeless",
+  "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
       "item": "minecraft:redstone_torch"

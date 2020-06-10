@@ -2,7 +2,7 @@
   "result": {
     "item": "appliedenergistics2:fluid_cell16k_part"
   },
-  "type": "appliedenergistics2:part_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     "aba",
     "cdc",
@@ -13,8 +13,7 @@
       "item": "appliedenergistics2:quartz_glass"
     },
     "a": {
-      "item": "minecraft:dye",
-      "data": 4
+      "item": "minecraft:lapis_lazuli"
     },
     "c": {
       "item": "appliedenergistics2:fluid_cell4k_part"

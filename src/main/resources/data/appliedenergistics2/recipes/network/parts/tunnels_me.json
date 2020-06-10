@@ -2,7 +2,7 @@
   "result": {
     "item": "appliedenergistics2:me_p2p_tunnel"
   },
-  "type": "appliedenergistics2:part_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     " a ",
     "aba",

@@ -23,8 +23,6 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import net.minecraft.client.renderer.color.IItemColor;
-import net.minecraft.client.renderer.model.IUnbakedModel;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -35,29 +33,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  */
 public interface IItemRendering
 {
-
-	/**
-	 * Registers a custom item mesh definition that will be used to dynamically determine the
-	 * item model to be used for rendering by inspecting the item stack (i.e. for NBT data).
-	 * Please
-	 */
-//FIXME	@OnlyIn( Dist.CLIENT )
-//FIXME	IItemRendering meshDefinition( ItemMeshDefinition meshDefinition );
-
-	/**
-	 * Registers an item model for meta=0, see {@link #model(int, ModelResourceLocation)}.
-	 */
-	@OnlyIn( Dist.CLIENT )
-	default IItemRendering model( ModelResourceLocation model )
-	{
-		return this.model( 0, model );
-	}
-
-	/**
-	 * Registers an item model for a given meta.
-	 */
-	@OnlyIn( Dist.CLIENT )
-	IItemRendering model( int meta, ModelResourceLocation model );
 
 	/**
 	 * Convenient override for {@link #variants(Collection)}.
@@ -72,8 +47,6 @@ public interface IItemRendering
 	 * Registers the item variants of this item. This are all models that need to be loaded for this item.
 	 * This has no direct effect on rendering, but is used to load models that are used for example by
 	 * the ItemMeshDefinition.
-	 *
-	 * Models registered via {@link #model(int, ModelResourceLocation)} are automatically added here.
 	 */
 	@OnlyIn( Dist.CLIENT )
 	IItemRendering variants( Collection<ResourceLocation> resources );
@@ -84,11 +57,5 @@ public interface IItemRendering
 	 */
 	@OnlyIn( Dist.CLIENT )
 	IItemRendering color( IItemColor itemColor );
-
-	/**
-	 * Registers a built-in model under the given resource path.
-	 */
-	@OnlyIn( Dist.CLIENT )
-	IItemRendering builtInModel( String name, IUnbakedModel model );
 
 }

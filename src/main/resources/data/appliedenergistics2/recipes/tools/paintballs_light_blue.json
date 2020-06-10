@@ -1,10 +1,9 @@
 {
   "result": {
-    "type": "appliedenergistics2:part",
-    "part": "paint_ball.light_blue",
+    "item": "appliedenergistics2:light_blue_paint_ball",
     "count": 8
   },
-  "type": "appliedenergistics2:part_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     "aaa",
     "aba",

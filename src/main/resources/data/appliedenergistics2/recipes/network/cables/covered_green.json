@@ -1,10 +1,9 @@
 {
   "result": {
-    "type": "appliedenergistics2:part",
-    "part": "cable_covered.green",
+    "item": "appliedenergistics2:green_covered_cable",
     "count": 8
   },
-  "type": "appliedenergistics2:part_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     "aaa",
     "aba",
@@ -15,7 +14,7 @@
       "tag": "forge:dyes/green"
     },
     "a": {
-      "item": "appliedenergistics2:fluix_cable_covered"
+      "item": "appliedenergistics2:fluix_covered_cable"
     }
   }
 }

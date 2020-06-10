@@ -29,7 +29,4 @@ public interface IModelRegistry
 {
 	void registerItemVariants( Item item, ResourceLocation... names );
 
-	void setCustomModelResourceLocation( Item item, int metadata, ModelResourceLocation model );
-
-	// FIXME void setCustomMeshDefinition( Item item, ItemMeshDefinition meshDefinition );
 }

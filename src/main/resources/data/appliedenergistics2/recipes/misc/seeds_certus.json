@@ -1,10 +1,9 @@
 {
   "result": {
-    "type": "appliedenergistics2:part",
-    "part": "crystal_seed.certus",
+    "item": "appliedenergistics2:certus_crystal_seed",
     "count": 2
   },
-  "type": "appliedenergistics2:part_shapeless",
+  "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
       "tag": "forge:sand"

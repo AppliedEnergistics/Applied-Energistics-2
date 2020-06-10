@@ -1,7 +1,6 @@
 {
   "result": {
-    "item": "minecraft:quartz_block",
-    "data": 0
+    "item": "minecraft:quartz_block"
   },
   "type": "minecraft:crafting_shaped",
   "pattern": [

@@ -35,10 +35,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 
@@ -50,9 +47,6 @@ class BlockRendering implements IBlockRendering
 
 	@OnlyIn( Dist.CLIENT )
 	private IBlockColor blockColor;
-
-	@OnlyIn( Dist.CLIENT )
-	private Map<String, IUnbakedModel> builtInModels = new HashMap<>();
 
 	@OnlyIn( Dist.CLIENT )
 	private RenderType renderType;
@@ -73,13 +67,6 @@ class BlockRendering implements IBlockRendering
 	public IBlockRendering blockColor( IBlockColor blockColor )
 	{
 		this.blockColor = blockColor;
-		return this;
-	}
-
-	@Override
-	public IBlockRendering builtInModel( String name, IUnbakedModel model )
-	{
-		this.builtInModels.put( name, model );
 		return this;
 	}
 
@@ -107,8 +94,6 @@ class BlockRendering implements IBlockRendering
 			// extended props
 			factory.addModelOverride( block.getRegistryName().getPath(), ( l, m ) -> new AutoRotatingBakedModel( m ) );
 		}
-
-		this.builtInModels.forEach( factory::addBuiltInModel );
 
 		// TODO : 1.12
 		if( this.blockColor != null )

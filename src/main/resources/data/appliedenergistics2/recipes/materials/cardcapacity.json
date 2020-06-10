@@ -1,14 +1,14 @@
 {
   "conditions": [
     {
-      "type": "appliedenergistics2:material_exists",
-      "material": "material.card_capacity"
+      "type": "appliedenergistics2:feature",
+      "features": ["BASIC_CARDS"]
     }
   ],
   "result": {
-    "item": "appliedenergistics2:card_capacity"
+    "item": "appliedenergistics2:capacity_card"
   },
-  "type": "appliedenergistics2:part_shapeless",
+  "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
       "tag": "appliedenergistics2:crystals/certus"

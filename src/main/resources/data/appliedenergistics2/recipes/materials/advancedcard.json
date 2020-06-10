@@ -1,16 +1,15 @@
 {
   "conditions": [
     {
-      "type": "appliedenergistics2:material_exists",
-      "material": "material.advanced_card"
+      "type": "appliedenergistics2:feature",
+      "features": ["ADVANCED_CARDS"]
     }
   ],
   "result": {
-    "type": "appliedenergistics2:part",
-    "part": "material.advanced_card",
+    "item": "appliedenergistics2:advanced_card",
     "count": 2
   },
-  "type": "appliedenergistics2:part_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     "ab ",
     "cdb",

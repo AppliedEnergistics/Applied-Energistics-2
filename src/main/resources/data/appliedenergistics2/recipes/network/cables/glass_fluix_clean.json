@@ -1,8 +1,8 @@
 {
   "result": {
-    "item": "appliedenergistics2:fluix_cable_glass"
+    "item": "appliedenergistics2:fluix_glass_cable"
   },
-  "type": "appliedenergistics2:part_shapeless",
+  "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
       "tag": "appliedenergistics2:glass_cable"

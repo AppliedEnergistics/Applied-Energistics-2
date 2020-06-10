@@ -2,7 +2,7 @@
   "type": "appliedenergistics2:inscriber",
   "mode": "inscribe",
   "result": {
-    "part": "material.silicon_press"
+    "item": "appliedenergistics2:silicon_press"
   },
   "ingredients": {
     "top": {

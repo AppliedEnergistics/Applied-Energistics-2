@@ -310,6 +310,10 @@ public final class ApiItems implements IItems
 	private static AEColoredItemDefinition createPaintBalls(FeatureFactory registry, String idSuffix, boolean lumen) {
 		ColoredItemDefinition colors = new ColoredItemDefinition();
 		for (AEColor color : AEColor.values()) {
+			if (color == AEColor.TRANSPARENT) {
+				continue; // Fluix paintballs don't exist
+			}
+
 			String id = color.registryPrefix + idSuffix;
 			IItemDefinition paintBall = registry.item(id, props -> new ItemPaintBall(props, color, lumen))
 					.features(AEFeature.PAINT_BALLS)

@@ -2,7 +2,7 @@
   "type": "appliedenergistics2:inscriber",
   "mode": "inscribe",
   "result": {
-    "part": "material.engineering_processor_press"
+    "item": "appliedenergistics2:engineering_processor_press"
   },
   "ingredients": {
     "top": {

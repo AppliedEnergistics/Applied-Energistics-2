@@ -2,7 +2,7 @@
   "type": "appliedenergistics2:inscriber",
   "mode": "press",
   "result": {
-    "part": "material.logic_processor"
+    "item": "appliedenergistics2:logic_processor"
   },
   "ingredients": {
     "top": {

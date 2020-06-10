@@ -1,16 +1,15 @@
 {
   "conditions": [
     {
-      "type": "appliedenergistics2:material_exists",
-      "material": "material.annihilation_core"
+      "type": "appliedenergistics2:feature",
+      "features": ["CORES"]
     }
   ],
   "result": {
-    "type": "appliedenergistics2:part",
-    "part": "material.annihilation_core",
+    "item": "appliedenergistics2:annihilation_core",
     "count": 2
   },
-  "type": "appliedenergistics2:part_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     "abc"
   ],

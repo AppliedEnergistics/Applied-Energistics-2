@@ -22,6 +22,7 @@ package appeng.util;
 import appeng.api.AEApi;
 import appeng.api.config.*;
 import appeng.api.definitions.IItemDefinition;
+import appeng.api.definitions.IMaterials;
 import appeng.api.features.AEFeature;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.implementations.items.IAEWrench;
@@ -1562,15 +1563,15 @@ public class Platform
 //	// p.addStat( achievement, 1 );
 //	// }
 //	// }
-//
-//	public static boolean isRecipePrioritized( final ItemStack what )
-//	{
-//		final IMaterials materials = AEApi.instance().definitions().materials();
-//
-//		boolean isPurified = materials.purifiedCertusQuartzCrystal().isSameAs( what );
-//		isPurified |= materials.purifiedFluixCrystal().isSameAs( what );
-//		isPurified |= materials.purifiedNetherQuartzCrystal().isSameAs( what );
-//
-//		return isPurified;
-//	}
+
+	public static boolean isRecipePrioritized( final ItemStack what )
+	{
+		final IMaterials materials = AEApi.instance().definitions().materials();
+
+		boolean isPurified = materials.purifiedCertusQuartzCrystal().isSameAs( what );
+		isPurified |= materials.purifiedFluixCrystal().isSameAs( what );
+		isPurified |= materials.purifiedNetherQuartzCrystal().isSameAs( what );
+
+		return isPurified;
+	}
 }

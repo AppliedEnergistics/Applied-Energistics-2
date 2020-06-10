@@ -16,7 +16,7 @@
       "tag": "forge:ingots/iron"
     },
     "c": {
-      "item": "appliedenergistics2:cell16_spatial_part"
+      "item": "appliedenergistics2:spatial_cell16_part"
     },
     "b": {
       "tag": "forge:dusts/redstone"

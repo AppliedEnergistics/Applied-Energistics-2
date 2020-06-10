@@ -2,7 +2,7 @@
   "type": "appliedenergistics2:inscriber",
   "mode": "press",
   "result": {
-    "part": "material.calculation_processor"
+    "item": "appliedenergistics2:calculation_processor"
   },
   "ingredients": {
     "top": {

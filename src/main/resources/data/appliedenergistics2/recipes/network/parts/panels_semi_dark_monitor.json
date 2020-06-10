@@ -1,10 +1,9 @@
 {
   "result": {
-    "type": "appliedenergistics2:part",
-    "part": "part.semi_dark_monitor",
+    "item": "appliedenergistics2:semi_dark_monitor",
     "count": 3
   },
-  "type": "appliedenergistics2:part_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     " ab",
     "cdb",
@@ -21,7 +20,7 @@
       "tag": "forge:dusts/redstone"
     },
     "a": {
-      "tag": "forge:dust/glowstone"
+      "tag": "forge:dusts/glowstone"
     }
   }
 }

@@ -2,7 +2,7 @@
   "result": {
     "item": "appliedenergistics2:fluid_storage_bus"
   },
-  "type": "appliedenergistics2:part_shapeless",
+  "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
       "item": "minecraft:sticky_piston"
@@ -14,8 +14,7 @@
       "item": "minecraft:piston"
     },
     {
-      "item": "minecraft:dye",
-      "data": 4
+      "item": "minecraft:lapis_lazuli"
     }
   ]
 }

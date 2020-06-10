@@ -16,37 +16,38 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.bootstrap.components;
+package appeng.integration.modules.jei;
 
 
-import com.google.common.base.Preconditions;
-import net.minecraft.client.renderer.model.IUnbakedModel;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import appeng.integration.abstraction.IJEI;
+import com.google.common.base.Strings;
+import mezz.jei.api.runtime.IJeiRuntime;
 
-import java.util.HashMap;
-import java.util.Map;
-
-@OnlyIn( Dist.CLIENT )
-public class BuiltInModelComponent implements IPreInitComponent
+class JeiRuntimeAdapter implements IJEI
 {
 
-	private final Map<String, IUnbakedModel> builtInModels = new HashMap<>();
+	private final IJeiRuntime runtime;
 
-	private boolean hasInitialized = false;
-
-	public void addModel( String path, IUnbakedModel model )
+	JeiRuntimeAdapter( IJeiRuntime jeiRuntime )
 	{
-		Preconditions.checkState( !this.hasInitialized );
-		this.builtInModels.put( path, model );
+		this.runtime = jeiRuntime;
 	}
 
 	@Override
-	public void preInitialize( Dist dist )
+	public boolean isEnabled()
 	{
-		this.hasInitialized = true;
-//
-//		BuiltInModelLoader loader = new BuiltInModelLoader( this.builtInModels );
-//		ModelLoaderRegistry.registerLoader( loader );
+		return true;
+	}
+
+	@Override
+	public String getSearchText()
+	{
+		return Strings.nullToEmpty( this.runtime.getIngredientFilter().getFilterText() );
+	}
+
+	@Override
+	public void setSearchText( String searchText )
+	{
+		this.runtime.getIngredientFilter().setFilterText( Strings.nullToEmpty( searchText ) );
 	}
 }

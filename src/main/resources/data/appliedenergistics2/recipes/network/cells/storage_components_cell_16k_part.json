@@ -2,7 +2,7 @@
   "result": {
     "item": "appliedenergistics2:cell16k_part"
   },
-  "type": "appliedenergistics2:part_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     "aba",
     "cdc",
@@ -19,7 +19,7 @@
       "item": "appliedenergistics2:cell4k_part"
     },
     "a": {
-      "tag": "forge:dust/glowstone"
+      "tag": "forge:dusts/glowstone"
     }
   }
 }

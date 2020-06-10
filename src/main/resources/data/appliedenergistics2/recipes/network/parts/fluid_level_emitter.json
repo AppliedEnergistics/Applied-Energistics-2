@@ -2,7 +2,7 @@
   "result": {
     "item": "appliedenergistics2:fluid_level_emitter"
   },
-  "type": "appliedenergistics2:part_shapeless",
+  "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
       "item": "minecraft:redstone_torch"

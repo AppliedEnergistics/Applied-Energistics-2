@@ -1,10 +1,9 @@
 {
   "result": {
-    "type": "appliedenergistics2:part",
-    "part": "cable_glass.fluix",
+    "item": "appliedenergistics2:fluix_glass_cable",
     "count": 4
   },
-  "type": "appliedenergistics2:part_shapeless",
+  "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
       "item": "appliedenergistics2:quartz_fiber"

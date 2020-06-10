@@ -1,10 +1,9 @@
 {
   "result": {
-    "type": "appliedenergistics2:part",
-    "part": "cable_smart.purple",
+    "item": "appliedenergistics2:purple_smart_cable",
     "count": 8
   },
-  "type": "appliedenergistics2:part_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     "aaa",
     "aba",
@@ -15,7 +14,7 @@
       "tag": "forge:dyes/purple"
     },
     "a": {
-      "item": "appliedenergistics2:fluix_cable_smart"
+      "item": "appliedenergistics2:fluix_smart_cable"
     }
   }
 }

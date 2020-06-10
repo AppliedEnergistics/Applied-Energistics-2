@@ -47,12 +47,6 @@ public interface IBlockRendering
 	@OnlyIn( Dist.CLIENT )
 	IBlockRendering blockColor( IBlockColor blockColor );
 
-	/**
-	 * Registers a built-in model under the given resource path.
-	 */
-	@OnlyIn( Dist.CLIENT )
-	IBlockRendering builtInModel( String name, IUnbakedModel model );
-
 	@OnlyIn( Dist.CLIENT )
 	IBlockRendering renderType(RenderType type);
 

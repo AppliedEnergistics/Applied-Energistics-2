@@ -2,14 +2,13 @@
   "result": {
     "item": "appliedenergistics2:fluid_terminal"
   },
-  "type": "appliedenergistics2:part_shapeless",
+  "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
       "item": "appliedenergistics2:terminal"
     },
     {
-      "item": "minecraft:dye",
-      "data": 4
+      "item": "minecraft:lapis_lazuli"
     },
     {
       "item": "appliedenergistics2:logic_processor"

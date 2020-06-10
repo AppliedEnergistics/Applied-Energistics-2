@@ -16,16 +16,28 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.bootstrap.components;
+package appeng.integration.abstraction;
 
 
-import net.minecraftforge.api.distmarker.Dist;
-
-import appeng.bootstrap.IBootstrapComponent;
+import appeng.integration.IIntegrationModule;
 
 
-@FunctionalInterface
-public interface IPreInitComponent extends IBootstrapComponent
+/**
+ * Abstracts access to the JEI API functionality.
+ */
+public interface IJEI extends IIntegrationModule
 {
-	void preInitialize( Dist dist );
+
+	default String getSearchText()
+	{
+		return "";
+	}
+
+	default void setSearchText( String searchText )
+	{
+	}
+
+	class Stub extends IIntegrationModule.Stub implements IJEI
+	{
+	}
 }

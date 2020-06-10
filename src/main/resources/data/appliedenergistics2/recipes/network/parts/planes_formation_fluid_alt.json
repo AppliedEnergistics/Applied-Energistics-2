@@ -2,7 +2,7 @@
   "result": {
     "item": "appliedenergistics2:fluid_formation_plane"
   },
-  "type": "appliedenergistics2:part_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     "aaa",
     "ddd",

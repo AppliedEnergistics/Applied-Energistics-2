@@ -30,6 +30,7 @@ import appeng.bootstrap.components.IClientSetupComponent;
 import appeng.bootstrap.components.IInitComponent;
 import appeng.bootstrap.components.IPostInitComponent;
 import appeng.bootstrap.components.ItemColorComponent;
+import appeng.capabilities.Capabilities;
 import appeng.client.ClientHelper;
 import appeng.client.render.DummyFluidItemModel;
 import appeng.client.render.SimpleModelLoader;
@@ -162,6 +163,7 @@ public final class AppEng
 		definitions.getRegistry().getBootstrapComponents( IInitComponent.class ).forEachRemaining(IInitComponent::initialize);
 		definitions.getRegistry().getBootstrapComponents( IPostInitComponent.class ).forEachRemaining(IPostInitComponent::postInitialize);
 
+		Capabilities.register();
 		Registration.setupInternalRegistries();
 		Registration.postInit();
 

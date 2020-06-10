@@ -1,10 +1,9 @@
 {
   "result": {
-    "type": "appliedenergistics2:part",
-    "part": "crystal_seed.fluix",
+    "item": "appliedenergistics2:fluix_crystal_seed",
     "count": 2
   },
-  "type": "appliedenergistics2:part_shapeless",
+  "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
       "tag": "forge:sand"

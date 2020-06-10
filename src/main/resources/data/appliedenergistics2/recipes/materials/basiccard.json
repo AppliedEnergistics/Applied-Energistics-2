@@ -1,16 +1,15 @@
 {
   "conditions": [
     {
-      "type": "appliedenergistics2:material_exists",
-      "material": "material.basic_card"
+      "type": "appliedenergistics2:feature",
+      "features": ["BASIC_CARDS"]
     }
   ],
   "result": {
-    "type": "appliedenergistics2:part",
-    "part": "material.basic_card",
+    "item": "appliedenergistics2:basic_card",
     "count": 2
   },
-  "type": "appliedenergistics2:part_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     "ab ",
     "cdb",

@@ -22,7 +22,6 @@ package appeng.core;
 import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
 import appeng.api.definitions.IBlocks;
-import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItems;
 import appeng.api.definitions.IParts;
 import appeng.api.features.IRegistryContainer;
@@ -36,9 +35,9 @@ import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
-import appeng.bootstrap.ICriterionTriggerRegistry;
 import appeng.bootstrap.IModelRegistry;
 import appeng.bootstrap.components.*;
+import appeng.capabilities.Capabilities;
 import appeng.client.gui.implementations.GuiCellWorkbench;
 import appeng.client.gui.implementations.GuiChest;
 import appeng.client.gui.implementations.GuiCondenser;
@@ -72,7 +71,6 @@ import appeng.client.gui.implementations.GuiUpgradeable;
 import appeng.client.gui.implementations.GuiVibrationChamber;
 import appeng.client.gui.implementations.GuiWireless;
 import appeng.client.gui.implementations.GuiWirelessTerm;
-import appeng.client.render.cablebus.CableBusModel;
 import appeng.client.render.effects.*;
 import appeng.client.render.model.BiometricCardModel;
 import appeng.client.render.model.DriveModel;
@@ -96,20 +94,19 @@ import appeng.fluids.registries.BasicFluidCellGuiHandler;
 import appeng.me.cache.*;
 import appeng.recipes.conditions.FeaturesEnabled;
 import appeng.recipes.game.DisassembleRecipe;
+import appeng.recipes.handlers.GrinderRecipe;
+import appeng.recipes.handlers.GrinderRecipeSerializer;
 import appeng.server.AECommand;
 import appeng.tile.AEBaseTile;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.ICriterionInstance;
-import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.renderer.ItemModelMesher;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
@@ -118,17 +115,15 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.network.IContainerFactory;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
-
-import java.lang.reflect.Method;
 
 
 final class Registration
@@ -143,23 +138,7 @@ final class Registration
 //	int storageDimensionID;
 //	Biome storageBiome;
 	AdvancementTriggers advancementTriggers;
-//
-//	void preInitialize( final FMLPreInitializationEvent event )
-//	{
-//		Capabilities.register();
-//
-//		final Api api = AEApi.instance();
-//		final IRecipeHandlerRegistry recipeRegistry = api.registries().recipes();
-//		this.registerCraftHandlers( recipeRegistry );
-//
-//		MinecraftForge.EVENT_BUS.register( OreDictionaryHandler.INSTANCE );
-//
-//		ApiDefinitions definitions = api.definitions();
-//
-//		// Register
-//		definitions.getRegistry().getBootstrapComponents( IPreInitComponent.class ).forEachRemaining( b -> b.preInitialize( event.getSide() ) );
-//	}
-//
+
 //	private void registerSpatialBiome( IForgeRegistry<Biome> registry )
 //	{
 //		if( !AEConfig.instance().isFeatureEnabled( AEFeature.SPATIAL_IO ) )
@@ -210,11 +189,6 @@ final class Registration
 //
 //		DimensionManager.registerDimension( this.storageDimensionID, this.storageDimensionType );
 //	}
-//
-//	private void registerCraftHandlers( final IRecipeHandlerRegistry registry )
-//	{
-//		registry.addNewSubItemResolver( new AEItemResolver() );
-//	}
 
 	public static void setupInternalRegistries()
 	{
@@ -264,15 +238,9 @@ final class Registration
 		final IModelRegistry registry = new IModelRegistry() {
 			@Override
 			public void registerItemVariants(Item item, ResourceLocation... names) {
-
+// FIXME REMOVE OR IMPL
 			}
 
-			@Override
-			public void setCustomModelResourceLocation(Item item, int metadata, ModelResourceLocation model) {
-				// FIXME: this does not actually work
-				ItemModelMesher mesher = Minecraft.getInstance().getItemRenderer().getItemModelMesher();
-				mesher.register(item, model);
-			}
 		};
 		final Dist dist = FMLEnvironment.dist;
 		definitions.getRegistry().getBootstrapComponents( IModelRegistrationComponent.class ).forEachRemaining(b -> b.modelRegistration( dist, registry ) );
@@ -611,7 +579,6 @@ final class Registration
 		ContainerOpener.addOpener(type, opener);
 		return type;
 	}
-
 	public void registerRecipeSerializers( RegistryEvent.Register<IRecipeSerializer<?>> event )
 	{
 		IForgeRegistry<IRecipeSerializer<?>> r = event.getRegistry();
@@ -619,8 +586,11 @@ final class Registration
 		// TODO: Do not use the internal API
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();
 
+		GrinderRecipe.TYPE = new AERecipeType<>(GrinderRecipeSerializer.INSTANCE.getRegistryName());
+
 		r.registerAll(
-				DisassembleRecipe.SERIALIZER
+				DisassembleRecipe.SERIALIZER,
+				GrinderRecipeSerializer.INSTANCE
 //				FacadeRecipe.getSerializer( (ItemFacade) definitions.items().facade().item() ) FIXME reimplement facades
 //				this.factories.put( new ResourceLocation( AppEng.MOD_ID, "inscriber" ), new InscriberHandler() ); FIXME re-implement machine recipes
 //				this.factories.put( new ResourceLocation( AppEng.MOD_ID, "smelt" ), new SmeltingHandler() );

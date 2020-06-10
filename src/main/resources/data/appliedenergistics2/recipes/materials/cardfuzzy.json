@@ -1,14 +1,14 @@
 {
   "conditions": [
     {
-      "type": "appliedenergistics2:material_exists",
-      "material": "material.card_fuzzy"
+      "type": "appliedenergistics2:feature",
+      "features": ["ADVANCED_CARDS"]
     }
   ],
   "result": {
-    "item": "appliedenergistics2:card_fuzzy"
+    "item": "appliedenergistics2:fuzzy_card"
   },
-  "type": "appliedenergistics2:part_shapeless",
+  "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
       "item": "appliedenergistics2:advanced_card"

@@ -1,10 +1,9 @@
 {
   "result": {
-    "type": "appliedenergistics2:part",
-    "part": "cable_glass.pink",
+    "item": "appliedenergistics2:pink_glass_cable",
     "count": 8
   },
-  "type": "appliedenergistics2:part_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     "aaa",
     "aba",
@@ -12,7 +11,7 @@
   ],
   "key": {
     "a": {
-      "item": "appliedenergistics2:fluix_cable_glass"
+      "item": "appliedenergistics2:fluix_glass_cable"
     },
     "b": {
       "tag": "forge:dyes/pink"

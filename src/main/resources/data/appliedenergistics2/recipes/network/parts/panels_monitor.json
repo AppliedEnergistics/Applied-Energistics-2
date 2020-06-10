@@ -2,7 +2,7 @@
   "result": {
     "item": "appliedenergistics2:monitor"
   },
-  "type": "appliedenergistics2:part_shapeless",
+  "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
       "item": "appliedenergistics2:semi_dark_monitor"
