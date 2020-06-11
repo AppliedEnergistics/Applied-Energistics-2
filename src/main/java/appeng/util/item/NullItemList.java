@@ -21,42 +21,75 @@ package appeng.util.item;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Map;
-import java.util.NavigableMap;
-import java.util.TreeMap;
+import java.util.Iterator;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.util.item.AESharedItemStack.Bounds;
+import appeng.api.storage.data.IItemList;
 
 
-class FuzzyItemList extends AbstractItemList
+public class NullItemList implements IItemList<IAEItemStack>
 {
-	private final NavigableMap<AESharedItemStack, IAEItemStack> records = new TreeMap<>();
 
 	@Override
-	public Collection<IAEItemStack> findFuzzy( final IAEItemStack filter, final FuzzyMode fuzzy )
+	public void add( IAEItemStack option )
 	{
-		if( filter == null )
-		{
-			return Collections.emptyList();
-		}
-
-		return this.findFuzzyDamage( filter, fuzzy );
 	}
 
 	@Override
-	Map<AESharedItemStack, IAEItemStack> getRecords()
+	public IAEItemStack findPrecise( IAEItemStack i )
 	{
-		return this.records;
+		return null;
 	}
 
-	private Collection<IAEItemStack> findFuzzyDamage( final IAEItemStack filter, final FuzzyMode fuzzy )
+	@Override
+	public Collection<IAEItemStack> findFuzzy( IAEItemStack input, FuzzyMode fuzzy )
 	{
-		final AEItemStack itemStack = (AEItemStack) filter;
-		final Bounds bounds = itemStack.getSharedStack().getBounds( fuzzy );
+		return Collections.emptyList();
+	}
 
-		return this.records.subMap( bounds.lower(), true, bounds.upper(), true ).descendingMap().values();
+	@Override
+	public boolean isEmpty()
+	{
+		return true;
+	}
+
+	@Override
+	public void addStorage( IAEItemStack option )
+	{
+	}
+
+	@Override
+	public void addCrafting( IAEItemStack option )
+	{
+	}
+
+	@Override
+	public void addRequestable( IAEItemStack option )
+	{
+	}
+
+	@Override
+	public IAEItemStack getFirstItem()
+	{
+		return null;
+	}
+
+	@Override
+	public int size()
+	{
+		return 0;
+	}
+
+	@Override
+	public Iterator<IAEItemStack> iterator()
+	{
+		return Collections.emptyIterator();
+	}
+
+	@Override
+	public void resetStatus()
+	{
 	}
 
 }

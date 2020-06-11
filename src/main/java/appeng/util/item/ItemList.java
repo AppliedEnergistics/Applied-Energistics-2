@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2020, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -36,18 +36,9 @@ import appeng.api.storage.data.IItemList;
 public final class ItemList implements IItemList<IAEItemStack>
 {
 
+	private final static IItemList<IAEItemStack> NULL_ITEMLIST = new NullItemList();
+
 	private final Map<Item, IItemList<IAEItemStack>> records = new IdentityHashMap<>();
-
-	@Override
-	public void add( final IAEItemStack itemStack )
-	{
-		if( itemStack == null )
-		{
-			return;
-		}
-
-		this.getRecord( itemStack.getItem() ).add( itemStack );
-	}
 
 	@Override
 	public IAEItemStack findPrecise( final IAEItemStack itemStack )
@@ -78,6 +69,17 @@ public final class ItemList implements IItemList<IAEItemStack>
 	}
 
 	@Override
+	public void add( final IAEItemStack itemStack )
+	{
+		if( itemStack == null )
+		{
+			return;
+		}
+
+		this.getOrCreateRecord( itemStack.getItem() ).add( itemStack );
+	}
+
+	@Override
 	public void addStorage( final IAEItemStack itemStack )
 	{
 		if( itemStack == null )
@@ -85,7 +87,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 			return;
 		}
 
-		this.getRecord( itemStack.getItem() ).addStorage( itemStack );
+		this.getOrCreateRecord( itemStack.getItem() ).addStorage( itemStack );
 	}
 
 	@Override
@@ -96,7 +98,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 			return;
 		}
 
-		this.getRecord( itemStack.getItem() ).addCrafting( itemStack );
+		this.getOrCreateRecord( itemStack.getItem() ).addCrafting( itemStack );
 	}
 
 	@Override
@@ -107,7 +109,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 			return;
 		}
 
-		this.getRecord( itemStack.getItem() ).addRequestable( itemStack );
+		this.getOrCreateRecord( itemStack.getItem() ).addRequestable( itemStack );
 	}
 
 	@Override
@@ -124,7 +126,13 @@ public final class ItemList implements IItemList<IAEItemStack>
 	@Override
 	public int size()
 	{
-		return this.records.size();
+		int size = 0;
+		for( IItemList<IAEItemStack> entry : records.values() )
+		{
+			size += entry.size();
+		}
+
+		return size;
 	}
 
 	@Override
@@ -143,6 +151,11 @@ public final class ItemList implements IItemList<IAEItemStack>
 	}
 
 	private IItemList<IAEItemStack> getRecord( Item item )
+	{
+		return this.records.getOrDefault( item, NULL_ITEMLIST );
+	}
+
+	private IItemList<IAEItemStack> getOrCreateRecord( Item item )
 	{
 		return this.records.computeIfAbsent( item, this::makeRecordMap );
 	}

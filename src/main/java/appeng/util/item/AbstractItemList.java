@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2020, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -163,13 +163,22 @@ abstract class AbstractItemList implements IItemList<IAEItemStack>
 	@Override
 	public int size()
 	{
-		return this.getRecords().size();
+		int size = 0;
+		for( IAEItemStack entry : getRecords().values() )
+		{
+			if( entry.isMeaningful() )
+			{
+				size++;
+			}
+		}
+
+		return size;
 	}
 
 	@Override
 	public Iterator<IAEItemStack> iterator()
 	{
-		return new MeaningfulItemIterator<>( this.getRecords().values().iterator() );
+		return new MeaningfulItemIterator<>( this.getRecords().values() );
 	}
 
 	@Override
