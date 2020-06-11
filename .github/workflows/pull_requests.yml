@@ -1,4 +1,4 @@
-name: 'Build master'
+name: 'Build PRs'
 
 on:
   pull_request:
@@ -21,11 +21,15 @@ jobs:
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+      - name: Generate assets
+        uses: GabrielBB/xvfb-action@v1.2
+        with:
+          run: ./gradlew runData --no-daemon
       - name: Build with Gradle
-        run: |
-          echo "::set-env name=PR_NUMBER::$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")"
-          ./gradlew build
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: ./gradlew build --no-daemon
       - uses: actions/upload-artifact@v2
         with:
-          name: jar-artifacts
-          path: build/libs/appliedenergistics2-?.?.?+pr.*[0-9].jar
+          name: dist
+          path: build/libs/

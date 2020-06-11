@@ -14,8 +14,9 @@
 !README.md
 !LICENSE
 
-# include sourcecode
+# include sourcecode except generated
 !src/
+src/generated
 
 # include git important files
 !.gitmodules

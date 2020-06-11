@@ -16,6 +16,10 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
+processResources {
+    exclude '.cache'
+}
+
 jar {
     from sourceSets.main.output.classesDirs
     from sourceSets.api.output.classesDirs

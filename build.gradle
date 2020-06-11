@@ -55,9 +55,14 @@ tasks.withType(JavaCompile) {
 // Create version number
 version = version_major + "." + version_minor + "." + version_patch
 
-ext.prNumber = System.getenv('PR_NUMBER') ?: false
-if (ext.prNumber) {
-  version = version + "+pr." + ext.prNumber
+ext.pr = System.getenv('PR_NUMBER') ?: ""
+if (ext.pr) {
+  version = version + "+pr." + ext.pr
+}
+
+ext.branch = System.getenv('BRANCH') ?: ""
+if (ext.branch) {
+  version = version + "+branch." + ext.branch
 }
 
 // Maven group and artifact name
