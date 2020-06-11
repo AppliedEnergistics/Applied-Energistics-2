@@ -38,7 +38,6 @@ import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.bootstrap.IModelRegistry;
 import appeng.bootstrap.components.*;
-import appeng.capabilities.Capabilities;
 import appeng.client.gui.implementations.GuiCellWorkbench;
 import appeng.client.gui.implementations.GuiChest;
 import appeng.client.gui.implementations.GuiCondenser;
@@ -120,6 +119,7 @@ import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
@@ -818,12 +818,14 @@ final class Registration
 		}
 
 		ForgeRegistries.BIOMES.forEach(
-				b -> b.addFeature( GenerationStage.Decoration.SURFACE_STRUCTURES,
-						new ConfiguredFeature<NoFeatureConfig, Feature<NoFeatureConfig>>(
-								MeteoriteWorldGen.INSTANCE,
-								IFeatureConfig.NO_FEATURE_CONFIG
-						)
-				)
+				b -> {
+					b.addFeature(GenerationStage.Decoration.TOP_LAYER_MODIFICATION,
+							new ConfiguredFeature<NoFeatureConfig, Feature<NoFeatureConfig>>(
+									MeteoriteWorldGen.INSTANCE,
+									IFeatureConfig.NO_FEATURE_CONFIG
+							)
+					);
+				}
 		);
 
 	}

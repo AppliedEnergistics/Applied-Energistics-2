@@ -27,7 +27,6 @@ import appeng.block.qnb.QnbFormedModel;
 import appeng.bootstrap.components.IClientSetupComponent;
 import appeng.bootstrap.components.IInitComponent;
 import appeng.bootstrap.components.IPostInitComponent;
-import appeng.bootstrap.components.ItemColorComponent;
 import appeng.capabilities.Capabilities;
 import appeng.client.ClientHelper;
 import appeng.client.render.DummyFluidItemModel;
@@ -43,9 +42,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.worlddata.WorldData;
 import appeng.hooks.TickHandler;
 import appeng.parts.PartPlacement;
-import appeng.parts.automation.PlaneModel;
 import appeng.parts.automation.PlaneModelLoader;
-import appeng.server.AECommand;
 import appeng.server.ServerHelper;
 import com.google.common.base.Stopwatch;
 import net.minecraft.block.Block;
@@ -54,14 +51,18 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.particles.ParticleType;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.CrashReportExtender;
 import net.minecraftforge.fml.DistExecutor;
@@ -73,9 +74,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import appeng.core.crash.ModCrashEnhancement;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
+import net.minecraftforge.fml.event.server.*;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import javax.annotation.Nonnull;
@@ -147,7 +146,7 @@ public final class AppEng
 
 		MinecraftForge.EVENT_BUS.addListener( TickHandler.INSTANCE::unloadWorld );
 		MinecraftForge.EVENT_BUS.addListener( TickHandler.INSTANCE::onTick );
-		MinecraftForge.EVENT_BUS.addListener( this::serverAboutToStart );
+		MinecraftForge.EVENT_BUS.addListener( this::onServerAboutToStart );
 		MinecraftForge.EVENT_BUS.addListener( this::serverStopped );
 		MinecraftForge.EVENT_BUS.addListener( this::serverStopping );
 
@@ -302,9 +301,9 @@ public final class AppEng
 		AELog.info( "Post Initialization ( ended after " + start.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
 	}
 
-	private void serverAboutToStart( final FMLServerStartedEvent evt )
+	private void onServerAboutToStart(final FMLServerAboutToStartEvent evt)
 	{
-		WorldData.onServerAboutToStart( evt.getServer() );
+		WorldData.onServerStarting( evt.getServer() );
 	}
 
 	private void serverStopping( final FMLServerStoppingEvent event )

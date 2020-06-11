@@ -38,9 +38,8 @@ final class CompassData implements IWorldCompassData
 	@Nonnull
 	private final CompassService service;
 
-	public CompassData( @Nonnull final File compassDirectory, @Nonnull final CompassService service )
+	public CompassData( @Nonnull final CompassService service )
 	{
-		Preconditions.checkNotNull( compassDirectory );
 		Preconditions.checkNotNull( service );
 
 		this.service = service;

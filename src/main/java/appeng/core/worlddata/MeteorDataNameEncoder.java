@@ -33,14 +33,6 @@ import com.google.common.base.Preconditions;
  */
 public class MeteorDataNameEncoder
 {
-	private static final char DATA_SEPARATOR = '_';
-	private static final char BASE_EXTENSION_SEPARATOR = '.';
-	private static final String FILE_EXTENSION = "dat";
-
-	private final char dataSeparator;
-	@Nonnull
-	private final String fileExtension;
-	private final char baseExtSeparator;
 	private final int bitScale;
 
 	/**
@@ -48,23 +40,11 @@ public class MeteorDataNameEncoder
 	 */
 	public MeteorDataNameEncoder( final int bitScale )
 	{
-		this( DATA_SEPARATOR, BASE_EXTENSION_SEPARATOR, FILE_EXTENSION, bitScale );
-	}
-
-	private MeteorDataNameEncoder( final char dataSeparator, final char baseExtSeparator, @Nonnull final String fileExtension, final int bitScale )
-	{
-		Preconditions.checkNotNull( fileExtension );
-		Preconditions.checkArgument( !fileExtension.isEmpty() );
 		Preconditions.checkArgument( bitScale >= 0 );
-
-		this.dataSeparator = dataSeparator;
-		this.baseExtSeparator = baseExtSeparator;
-		this.fileExtension = fileExtension;
 		this.bitScale = bitScale;
 	}
 
 	/**
-	 * @param dimension ID of the processed dimension. Can be any integer
 	 * @param chunkX X coordinate of the chunk. Can be any integer
 	 * @param chunkZ Z coordinate of the chunk. Can be any integer
 	 *
@@ -73,12 +53,10 @@ public class MeteorDataNameEncoder
 	 *
 	 * @since rv3 05.06.2015
 	 */
-	public String encode( final int dimension, final int chunkX, final int chunkZ )
+	public String encode( final int chunkX, final int chunkZ )
 	{
 		final int shiftedX = chunkX >> this.bitScale;
 		final int shiftedZ = chunkZ >> this.bitScale;
-
-		return String.format( "%d%c%d%c%d%c%s", dimension, this.dataSeparator, shiftedX, this.dataSeparator, shiftedZ, this.baseExtSeparator,
-				this.fileExtension );
+		return shiftedX + "_" + shiftedZ;
 	}
 }

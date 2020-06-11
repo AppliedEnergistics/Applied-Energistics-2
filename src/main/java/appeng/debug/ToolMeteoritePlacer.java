@@ -20,6 +20,8 @@ package appeng.debug;
 
 
 import appeng.worldgen.MeteoritePlacer;
+import appeng.worldgen.MeteoriteSpawner;
+import appeng.worldgen.PlacedMeteoriteSettings;
 import appeng.worldgen.meteorite.StandardWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -30,7 +32,6 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 import appeng.items.AEBaseItem;
-import appeng.util.Platform;
 
 
 public class ToolMeteoritePlacer extends AEBaseItem
@@ -55,13 +56,17 @@ public class ToolMeteoritePlacer extends AEBaseItem
 			return ActionResultType.PASS;
 		}
 
- 		final MeteoritePlacer mp = new MeteoritePlacer();
- 		final boolean worked = mp.spawnMeteorite( new StandardWorld( world ), pos.getX(), pos.getY(), pos.getZ() );
+ 		final MeteoriteSpawner ms = new MeteoriteSpawner();
+		PlacedMeteoriteSettings spawned = ms.trySpawnMeteorite(world, pos);
 
- 		if( !worked )
+ 		if( spawned == null )
  		{
  			player.sendMessage( new StringTextComponent( "Un-suitable Location." ) );
+ 			return ActionResultType.FAIL;
  		}
+
+		final MeteoritePlacer placer = new MeteoritePlacer(world, spawned);
+		placer.place();
 
 		return ActionResultType.SUCCESS;
 	}

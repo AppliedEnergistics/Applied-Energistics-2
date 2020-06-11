@@ -25,11 +25,9 @@ import com.google.common.base.Preconditions;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.common.DimensionManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.File;
 import java.util.concurrent.ThreadFactory;
 
 
@@ -47,67 +45,39 @@ import java.util.concurrent.ThreadFactory;
 public final class WorldData implements IWorldData
 {
 
-	private static final String AE2_DIRECTORY_NAME = "AE2";
-	private static final String SPAWNDATA_DIR_NAME = "spawndata";
-	private static final String COMPASS_DIR_NAME = "compass";
-
 	/**
 	 * Is null while no MinecraftServer exists.
 	 */
 	@Nullable
 	private static IWorldData instance;
 
+	@Nullable
+	private static MinecraftServer server;
+
 	private final IWorldPlayerData playerData;
 	private final IWorldGridStorageData storageData;
 	private final IWorldCompassData compassData;
-	private final IWorldSpawnData spawnData;
 
-	private WorldData( @Nonnull final MinecraftServer server )
+	private WorldData( @Nonnull final ServerWorld overworld )
 	{
-		Preconditions.checkNotNull( server );
+		Preconditions.checkNotNull( overworld );
 
 		// Attach shared data to the server's overworld dimension
-		ServerWorld overworld = server.getWorld(DimensionType.OVERWORLD);
-		if (overworld == null) {
+		if (overworld.getDimension().getType() != DimensionType.OVERWORLD) {
 			throw new IllegalStateException("The server doesn't have an Overworld dimension we could store our data on!");
 		}
-
-		File worldDirectory = overworld.getSaveHandler().getWorldDirectory();
-		File ae2directory = new File( worldDirectory, AE2_DIRECTORY_NAME );
-		File spawnDirectory = new File( ae2directory, SPAWNDATA_DIR_NAME );
-		File compassDirectory = new File( ae2directory, COMPASS_DIR_NAME );
 
 		final PlayerData playerData = overworld.getSavedData().getOrCreate(PlayerData::new, PlayerData.NAME);
 		final StorageData storageData = overworld.getSavedData().getOrCreate(StorageData::new, StorageData.NAME);
 
 		final ThreadFactory compassThreadFactory = new CompassThreadFactory();
-		final CompassService compassService = new CompassService( compassDirectory, compassThreadFactory );
-		final CompassData compassData = new CompassData( compassDirectory, compassService );
-
-		final IWorldSpawnData spawnData = new SpawnData( spawnDirectory );
+		final CompassService compassService = new CompassService(server, compassThreadFactory );
+		final CompassData compassData = new CompassData( compassService );
 
 		this.playerData = playerData;
 		this.storageData = storageData;
 		this.compassData = compassData;
-		this.spawnData = spawnData;
 
-		// check if ae2 folder already exists, else create
-		if( !ae2directory.isDirectory() && !ae2directory.mkdir() )
-		{
-			throw new IllegalStateException( "Failed to create " + ae2directory.getAbsolutePath() );
-		}
-
-		// check if compass folder already exists, else create
-		if( !compassDirectory.isDirectory() && !compassDirectory.mkdir() )
-		{
-			throw new IllegalStateException( "Failed to create " + compassDirectory.getAbsolutePath() );
-		}
-
-		// check if spawn data dir already exists, else create
-		if( !spawnDirectory.isDirectory() && !spawnDirectory.mkdir() )
-		{
-			throw new IllegalStateException( "Failed to create " + spawnDirectory.getAbsolutePath() );
-		}
 	}
 
 	/**
@@ -117,8 +87,19 @@ public final class WorldData implements IWorldData
 	 */
 	@Deprecated
 	@Nonnull
-	public static IWorldData instance()
+	public synchronized static IWorldData instance()
 	{
+		// The overworld is lazily loaded, meaning we cannot access it right away
+		// when the server is starting, but the first time the instance is accessed,
+		// we create the actual world data
+		if (instance == null) {
+			if (server == null) {
+				throw new IllegalStateException("No server set.");
+			}
+
+			ServerWorld overworld = server.getWorld(DimensionType.OVERWORLD);
+			instance = new WorldData(overworld);
+		}
 		return instance;
 	}
 
@@ -126,12 +107,10 @@ public final class WorldData implements IWorldData
 	 * Requires to start up from external from here
 	 *
 	 * drawback of the singleton build style
-	 *
-	 * @param server
 	 */
-	public static void onServerAboutToStart( MinecraftServer server )
+	public static void onServerStarting(MinecraftServer server)
 	{
-		instance = new WorldData(server);
+		WorldData.server = server;
 	}
 
 	@Override
@@ -143,8 +122,9 @@ public final class WorldData implements IWorldData
 	@Override
 	public void onServerStoppped()
 	{
-		Preconditions.checkNotNull( instance );
+		Preconditions.checkNotNull( server );
 		instance = null;
+		WorldData.server = null;
 	}
 
 	@Nonnull
@@ -166,12 +146,5 @@ public final class WorldData implements IWorldData
 	public IWorldCompassData compassData()
 	{
 		return this.compassData;
-	}
-
-	@Nonnull
-	@Override
-	public IWorldSpawnData spawnData()
-	{
-		return this.spawnData;
 	}
 }
