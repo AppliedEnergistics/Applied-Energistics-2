@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2020, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,19 +19,16 @@
 package appeng.util.item;
 
 
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -47,14 +44,17 @@ import appeng.util.Platform;
 
 public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemStack
 {
-	private AESharedItemStack sharedStack;
+	private static final String NBT_STACKSIZE = "cnt";
+	private static final String NBT_REQUESTABLE = "req";
+	private static final String NBT_CRAFTABLE = "craft";
+	private static final String NBT_ITEMSTACK = "is";
+
+	private final AESharedItemStack sharedStack;
 
 	@OnlyIn( Dist.CLIENT )
 	private ITextComponent displayName;
 	@OnlyIn( Dist.CLIENT )
 	private List<ITextComponent> tooltip;
-	@OnlyIn( Dist.CLIENT )
-	private ResourceLocation uniqueID;
 
 	private AEItemStack( final AEItemStack is )
 	{
@@ -90,38 +90,37 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			return null;
 		}
 
-		final ItemStack itemstack = ItemStack.read( i );
+		final ItemStack itemstack = ItemStack.read( i.getCompound( NBT_ITEMSTACK ) );
 		if( itemstack.isEmpty() )
 		{
 			return null;
 		}
 
 		final AEItemStack item = AEItemStack.fromItemStack( itemstack );
-		item.setStackSize( i.getLong( "Cnt" ) );
-		item.setCountRequestable( i.getLong( "Req" ) );
-		item.setCraftable( i.getBoolean( "Craft" ) );
+		item.setStackSize( i.getLong( NBT_STACKSIZE ) );
+		item.setCountRequestable( i.getLong( NBT_REQUESTABLE ) );
+		item.setCraftable( i.getBoolean( NBT_CRAFTABLE ) );
 		return item;
 	}
 
 	@Override
 	public void writeToNBT( final CompoundNBT i )
 	{
-		this.getDefinition().write( i );
-		i.putLong( "Cnt", this.getStackSize() );
-		i.putLong( "Req", this.getCountRequestable() );
-		i.putBoolean( "Craft", this.isCraftable() );
+		final CompoundNBT itemStack = new CompoundNBT();
+		this.getDefinition().write( itemStack );
+
+		i.put( NBT_ITEMSTACK, itemStack );
+		i.putLong( NBT_STACKSIZE, this.getStackSize() );
+		i.putLong( NBT_REQUESTABLE, this.getCountRequestable() );
+		i.putBoolean( NBT_CRAFTABLE, this.isCraftable() );
 	}
 
-	public static AEItemStack fromPacket( final PacketBuffer data )
+	public static AEItemStack fromPacket( final PacketBuffer buffer )
 	{
-		final byte mask = data.readByte();
-		final byte stackType = (byte) ( ( mask & 0x0C ) >> 2 );
-		final byte countReqType = (byte) ( ( mask & 0x30 ) >> 4 );
-		final boolean isCraftable = ( mask & 0x40 ) > 0;
-
-		final ItemStack itemstack = data.readItemStack();
-		final long stackSize = getPacketValue( stackType, data );
-		final long countRequestable = getPacketValue( countReqType, data );
+		final boolean isCraftable = buffer.readBoolean();
+		final long stackSize = buffer.readVarLong();
+		final long countRequestable = buffer.readVarLong();
+		final ItemStack itemstack = buffer.readItemStack();
 
 		if( itemstack.isEmpty() )
 		{
@@ -135,15 +134,12 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	}
 
 	@Override
-	public void writeToPacket( final PacketBuffer i )
+	public void writeToPacket( final PacketBuffer buffer )
 	{
-		final byte mask = (byte) ( ( this.getType( this.getStackSize() ) << 2 ) | ( this
-				.getType( this.getCountRequestable() ) << 4 ) | ( (byte) ( this.isCraftable() ? 1 : 0 ) << 6 ) );
-
-		i.writeByte( mask );
-		i.writeItemStack(getDefinition());
-		this.putPacketValue( i, this.getStackSize() );
-		this.putPacketValue( i, this.getCountRequestable() );
+		buffer.writeBoolean( this.isCraftable() );
+		buffer.writeVarLong( this.getStackSize() );
+		buffer.writeVarLong( this.getCountRequestable() );
+		buffer.writeItemStack( getDefinition() );
 	}
 
 	@Override

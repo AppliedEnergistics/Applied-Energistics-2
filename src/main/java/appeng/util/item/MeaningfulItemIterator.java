@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2020, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,6 +19,8 @@
 package appeng.util.item;
 
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -28,12 +30,15 @@ import appeng.api.storage.data.IAEItemStack;
 public class MeaningfulItemIterator<T extends IAEItemStack> implements Iterator<T>
 {
 
+	private final Collection<T> collection;
 	private final Iterator<T> parent;
 	private T next;
+	private final Collection<T> toRemove = new ArrayList<>();
 
-	public MeaningfulItemIterator( final Iterator<T> iterator )
+	public MeaningfulItemIterator( final Collection<T> collection )
 	{
-		this.parent = iterator;
+		this.collection = collection;
+		this.parent = collection.iterator();
 	}
 
 	@Override
@@ -49,9 +54,14 @@ public class MeaningfulItemIterator<T extends IAEItemStack> implements Iterator<
 			}
 			else
 			{
-				this.parent.remove(); // self cleaning :3
+				// TODO: Avoid if possible
+				this.toRemove.add( this.next );
+				// this.parent.remove(); // self cleaning :3
 			}
 		}
+
+		// Cleanup afterwards to avoid CMEs
+		this.toRemove.forEach( entry -> this.collection.remove( entry ) );
 
 		this.next = null;
 		return false;
