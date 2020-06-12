@@ -49,19 +49,19 @@ public final class BasicFluidStorageCell extends AbstractStorageCell<IAEFluidSta
 		super( props, whichCell, kilobytes );
 		switch( whichCell )
 		{
-			case FLUID_CELL1K_PART:
+			case FLUID_1K_CELL_COMPONENT:
 				this.idleDrain = 0.5;
 				this.perType = 8;
 				break;
-			case FLUID_CELL4K_PART:
+			case FLUID_4K_CELL_COMPONENT:
 				this.idleDrain = 1.0;
 				this.perType = 32;
 				break;
-			case FLUID_CELL16K_PART:
+			case FLUID_16K_CELL_COMPONENT:
 				this.idleDrain = 1.5;
 				this.perType = 128;
 				break;
-			case FLUID_CELL64K_PART:
+			case FLUID_64K_CELL_COMPONENT:
 				this.idleDrain = 2.0;
 				this.perType = 512;
 				break;

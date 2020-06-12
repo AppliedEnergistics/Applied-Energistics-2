@@ -128,9 +128,9 @@ public final class ApiMaterials implements IMaterials
 				.customize(builder -> builder.setTrackingRange(16).setUpdateInterval(4).setShouldReceiveVelocityUpdates(true))
 				.build();
 
-		this.cell2SpatialPart = createMaterial(MaterialType.CELL2_SPATIAL_PART );
-		this.cell16SpatialPart = createMaterial(MaterialType.CELL16_SPATIAL_PART );
-		this.cell128SpatialPart = createMaterial(MaterialType.CELL128_SPATIAL_PART );
+		this.cell2SpatialPart = createMaterial(MaterialType.SPATIAL_2_CELL_COMPONENT );
+		this.cell16SpatialPart = createMaterial(MaterialType.SPATIAL_16_CELL_COMPONENT );
+		this.cell128SpatialPart = createMaterial(MaterialType.SPATIAL_128_CELL_COMPONENT );
 		this.silicon = createMaterial(MaterialType.SILICON );
 		this.skyDust = createMaterial(MaterialType.SKY_DUST );
 		this.calcProcessorPress = createMaterial(MaterialType.CALCULATION_PROCESSOR_PRESS );
@@ -150,10 +150,10 @@ public final class ApiMaterials implements IMaterials
 		this.purifiedCertusQuartzCrystal = createMaterial(MaterialType.PURIFIED_CERTUS_QUARTZ_CRYSTAL );
 		this.purifiedNetherQuartzCrystal = createMaterial(MaterialType.PURIFIED_NETHER_QUARTZ_CRYSTAL );
 		this.purifiedFluixCrystal = createMaterial(MaterialType.PURIFIED_FLUIX_CRYSTAL );
-		this.cell1kPart = createMaterial(MaterialType.CELL1K_PART );
-		this.cell4kPart = createMaterial(MaterialType.CELL4K_PART );
-		this.cell16kPart = createMaterial(MaterialType.CELL16K_PART );
-		this.cell64kPart = createMaterial(MaterialType.CELL64K_PART );
+		this.cell1kPart = createMaterial(MaterialType.ITEM_1K_CELL_COMPONENT );
+		this.cell4kPart = createMaterial(MaterialType.ITEM_4K_CELL_COMPONENT );
+		this.cell16kPart = createMaterial(MaterialType.ITEM_16K_CELL_COMPONENT );
+		this.cell64kPart = createMaterial(MaterialType.ITEM_64K_CELL_COMPONENT );
 		this.emptyStorageCell = createMaterial(MaterialType.EMPTY_STORAGE_CELL );
 		this.cardRedstone = createMaterial(MaterialType.CARD_REDSTONE );
 		this.cardSpeed = createMaterial(MaterialType.CARD_SPEED );
@@ -181,10 +181,10 @@ public final class ApiMaterials implements IMaterials
 		this.singularity = createMaterial(MaterialType.SINGULARITY );
 		this.qESingularity = createMaterial(MaterialType.QUANTUM_ENTANGLED_SINGULARITY );
 		this.blankPattern = createMaterial(MaterialType.BLANK_PATTERN );
-		this.fluidCell1kPart = createMaterial(MaterialType.FLUID_CELL1K_PART );
-		this.fluidCell4kPart = createMaterial(MaterialType.FLUID_CELL4K_PART );
-		this.fluidCell16kPart = createMaterial(MaterialType.FLUID_CELL16K_PART );
-		this.fluidCell64kPart = createMaterial(MaterialType.FLUID_CELL64K_PART );
+		this.fluidCell1kPart = createMaterial(MaterialType.FLUID_1K_CELL_COMPONENT );
+		this.fluidCell4kPart = createMaterial(MaterialType.FLUID_4K_CELL_COMPONENT );
+		this.fluidCell16kPart = createMaterial(MaterialType.FLUID_16K_CELL_COMPONENT );
+		this.fluidCell64kPart = createMaterial(MaterialType.FLUID_64K_CELL_COMPONENT );
 	}
 
 	private IItemDefinition createMaterial(final MaterialType mat)

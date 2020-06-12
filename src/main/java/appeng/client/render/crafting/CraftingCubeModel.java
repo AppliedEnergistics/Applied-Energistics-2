@@ -47,10 +47,10 @@ class CraftingCubeModel implements IModelGeometry<CraftingCubeModel>
 	private final static Material UNIT_BASE = texture( "unit_base" );
 	private final static Material LIGHT_BASE = texture( "light_base" );
 	private final static Material ACCELERATOR_LIGHT = texture( "accelerator_light" );
-	private final static Material STORAGE_1K_LIGHT = texture( "storage_1k_light" );
-	private final static Material STORAGE_4K_LIGHT = texture( "storage_4k_light" );
-	private final static Material STORAGE_16K_LIGHT = texture( "storage_16k_light" );
-	private final static Material STORAGE_64K_LIGHT = texture( "storage_64k_light" );
+	private final static Material STORAGE_1K_LIGHT = texture( "1k_storage_light" );
+	private final static Material STORAGE_4K_LIGHT = texture( "4k_storage_light" );
+	private final static Material STORAGE_16K_LIGHT = texture( "16k_storage_light" );
+	private final static Material STORAGE_64K_LIGHT = texture( "64k_storage_light" );
 	private final static Material MONITOR_BASE = texture( "monitor_base" );
 	private final static Material MONITOR_LIGHT_DARK = texture( "monitor_light_dark" );
 	private final static Material MONITOR_LIGHT_MEDIUM = texture( "monitor_light_medium" );

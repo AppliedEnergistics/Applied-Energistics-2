@@ -6,13 +6,13 @@
   },
   "ingredients": {
     "top": {
-      "item": "appliedenergistics2:calculation_processor_print"
+      "item": "appliedenergistics2:printed_calculation_processor"
     },
     "middle": {
       "tag": "forge:dusts/redstone"
     },
     "bottom": {
-      "item": "appliedenergistics2:silicon_print"
+      "item": "appliedenergistics2:printed_silicon"
     }
   }
 }

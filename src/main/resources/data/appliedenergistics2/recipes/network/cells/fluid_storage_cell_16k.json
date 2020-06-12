@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "appliedenergistics2:fluid_storage_cell_16k"
+    "item": "appliedenergistics2:16k_fluid_storage_cell"
   },
   "type": "minecraft:crafting_shaped",
   "pattern": [
@@ -19,7 +19,7 @@
       "tag": "forge:dusts/redstone"
     },
     "c": {
-      "item": "appliedenergistics2:fluid_cell16k_part"
+      "item": "appliedenergistics2:16k_fluid_cell_component"
     }
   }
 }

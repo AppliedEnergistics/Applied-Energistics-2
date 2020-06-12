@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "appliedenergistics2:storage_cell_16k"
+    "item": "appliedenergistics2:16k_storage_cell"
   },
   "type": "minecraft:crafting_shaped",
   "pattern": [
@@ -13,7 +13,7 @@
       "item": "appliedenergistics2:quartz_glass"
     },
     "c": {
-      "item": "appliedenergistics2:cell16k_part"
+      "item": "appliedenergistics2:16k_cell_component"
     },
     "d": {
       "tag": "forge:ingots/iron"

@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "appliedenergistics2:storage_cell_64k"
+    "item": "appliedenergistics2:64k_storage_cell"
   },
   "type": "minecraft:crafting_shaped",
   "pattern": [
@@ -19,7 +19,7 @@
       "tag": "forge:dusts/redstone"
     },
     "c": {
-      "item": "appliedenergistics2:cell64k_part"
+      "item": "appliedenergistics2:64k_cell_component"
     }
   }
 }

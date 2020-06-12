@@ -1,6 +1,0 @@
-{
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "appliedenergistics2:item/material_fluid_cell64k_part"
-    }
-}

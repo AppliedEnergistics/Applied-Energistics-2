@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "appliedenergistics2:cell4k_part"
+    "item": "appliedenergistics2:4k_cell_component"
   },
   "type": "minecraft:crafting_shaped",
   "pattern": [
@@ -16,7 +16,7 @@
       "tag": "forge:dusts/redstone"
     },
     "c": {
-      "item": "appliedenergistics2:cell1k_part"
+      "item": "appliedenergistics2:1k_cell_component"
     },
     "b": {
       "item": "appliedenergistics2:calculation_processor"

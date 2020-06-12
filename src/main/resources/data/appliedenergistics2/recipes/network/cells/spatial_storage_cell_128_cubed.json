@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "appliedenergistics2:spatial_storage_cell_128_cubed"
+    "item": "appliedenergistics2:128_cubed_spatial_storage_cell"
   },
   "type": "minecraft:crafting_shaped",
   "pattern": [
@@ -19,7 +19,7 @@
       "tag": "forge:dusts/redstone"
     },
     "c": {
-      "item": "appliedenergistics2:spatial_cell128_part"
+      "item": "appliedenergistics2:128_cubed_spatial_cell_component"
     }
   }
 }
