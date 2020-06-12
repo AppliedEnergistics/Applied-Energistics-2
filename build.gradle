@@ -72,12 +72,6 @@ archivesBaseName = artifact_basename
 sourceSets {
     api
     main {
-        java {
-            exclude 'appeng/spatial/StorageChunkProvider.java'
-            exclude 'appeng/spatial/StorageHelper.java'
-            exclude 'appeng/spatial/CachedPlane.java'
-            exclude 'appeng/spatial/StorageWorldProvider.java'
-        }
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output
         resources {

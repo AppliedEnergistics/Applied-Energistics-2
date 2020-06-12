@@ -21,12 +21,18 @@ package appeng.items.storage;
 
 import java.util.List;
 
+import appeng.core.AELog;
+import appeng.core.worlddata.SpatialDimensionManager;
+import appeng.spatial.StorageHelper;
+import javafx.animation.Transition;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -54,7 +60,6 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	public ItemSpatialStorageCell( Properties props, final int spatialScale )
 	{
 		super(props);
-		// FIXME this.setMaxStackSize( 1 );
 		this.maxRegion = spatialScale;
 	}
 
@@ -62,10 +67,10 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	@Override
 	public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
 	{
-		final int id = this.getStoredDimensionID( stack );
-		if( id >= 0 )
+		final DimensionType dimType = this.getStoredDimension( stack );
+		if( dimType != null )
 		{
-			lines.add( GuiText.CellId.textComponent().appendText( ": " + id ) );
+			lines.add( GuiText.CellId.textComponent().appendText( ": " + dimType.getRegistryName() ) );
 		}
 
 		final WorldCoord wc = this.getStoredSize( stack );
@@ -88,45 +93,30 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	}
 
 	@Override
-	public ISpatialDimension getSpatialDimension()
-	{
-		World w = null;
-// FIXME		final int id = AppEng.instance().getStorageDimensionID();
-// FIXME		World w = DimensionManager.getWorld( id );
-// FIXME		if( w == null )
-// FIXME		{
-// FIXME			DimensionManager.initDimension( id );
-// FIXME			w = DimensionManager.getWorld( id );
-// FIXME		}
-
-		if( w != null )
-		{
-			LazyOptional<ISpatialDimension> spatialCap = w.getCapability(Capabilities.SPATIAL_DIMENSION, null);
-			return spatialCap.orElse(null);
-		}
-		return null;
-	}
-
-	@Override
 	public WorldCoord getStoredSize( final ItemStack is )
 	{
-		if( is.hasTag() )
+		final CompoundNBT c = is.getTag();
+		if( c != null )
 		{
-			final CompoundNBT c = is.getTag();
 			return new WorldCoord( c.getInt( NBT_SIZE_X_KEY ), c.getInt( NBT_SIZE_Y_KEY ), c.getInt( NBT_SIZE_Z_KEY ) );
 		}
 		return new WorldCoord( 0, 0, 0 );
 	}
 
 	@Override
-	public int getStoredDimensionID( final ItemStack is )
+	public DimensionType getStoredDimension(final ItemStack is )
 	{
-		if( is.hasTag() )
+		final CompoundNBT c = is.getTag();
+		if( c != null && c.contains(NBT_CELL_ID_KEY) )
 		{
-			final CompoundNBT c = is.getTag();
-			return c.getInt( NBT_CELL_ID_KEY );
+			try {
+				ResourceLocation dimTypeId = new ResourceLocation(c.getString( NBT_CELL_ID_KEY) );
+				return DimensionType.byName(dimTypeId);
+			} catch (Exception e) {
+				AELog.warn("Failed to retrieve storage cell dimension.", e);
+			}
 		}
-		return -1;
+		return null;
 	}
 
 	@Override
@@ -139,31 +129,38 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 
 		final BlockPos targetSize = new BlockPos( targetX, targetY, targetZ );
 
-		ISpatialDimension manager = this.getSpatialDimension();
+		ISpatialDimension manager = new SpatialDimensionManager();
 
-		int cellid = this.getStoredDimensionID( is );
-		if( cellid < 0 )
+		DimensionType storedDim = this.getStoredDimension( is );
+		if( storedDim == null )
 		{
-			cellid = manager.createNewCellDimension( targetSize, playerId );
+			storedDim = manager.createNewCellDimension( targetSize, playerId );
+		}
+
+		if (storedDim == null) {
+			// Failed to create the dimension
+			return new TransitionResult(false, 0);
 		}
 
 		try
 		{
-			if( manager.isCellDimension( cellid ) )
+			if(  manager.isCellDimension( storedDim ) )
 			{
-				BlockPos scale = manager.getCellContentSize( cellid );
+				World cellWorld = manager.getWorld(storedDim);
+
+				BlockPos scale = manager.getCellContentSize( storedDim );
 
 				if( scale.equals( targetSize ) )
 				{
 					if( targetX <= maxSize && targetY <= maxSize && targetZ <= maxSize )
 					{
-						BlockPos offset = manager.getCellDimensionOrigin( cellid );
+						BlockPos offset = manager.getCellDimensionOrigin( storedDim );
 
-						this.setStorageCell( is, cellid, targetSize );
-						// FIXME StorageHelper.getInstance()
-						// FIXME 		.swapRegions( w, min.x + 1, min.y + 1, min.z + 1, manager.getWorld(), offset.getX(), offset.getY(),
-						// FIXME 				offset.getZ(), targetX - 1, targetY - 1,
-						// FIXME 				targetZ - 1 );
+						this.setStorageCell( is, storedDim, targetSize );
+						StorageHelper.getInstance()
+								.swapRegions( w, min.x + 1, min.y + 1, min.z + 1, cellWorld, offset.getX(), offset.getY(),
+										offset.getZ(), targetX - 1, targetY - 1,
+										targetZ - 1 );
 
 						return new TransitionResult( true, 0 );
 					}
@@ -174,18 +171,18 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 		finally
 		{
 			// clean up newly created dimensions that failed transfer
-			if( manager.isCellDimension( cellid ) && this.getStoredDimensionID( is ) < 0 )
+			if( manager.isCellDimension( storedDim ) && this.getStoredDimension( is ) == null )
 			{
-				manager.deleteCellDimension( cellid );
+				manager.deleteCellDimension( storedDim );
 			}
 		}
 	}
 
-	private void setStorageCell( final ItemStack is, int id, BlockPos size )
+	private void setStorageCell( final ItemStack is, DimensionType dim, BlockPos size )
 	{
         final CompoundNBT c = is.getOrCreateTag();
 
-		c.putInt( NBT_CELL_ID_KEY, id );
+		c.putString( NBT_CELL_ID_KEY, dim.getRegistryName().toString() );
 		c.putInt( NBT_SIZE_X_KEY, size.getX() );
 		c.putInt( NBT_SIZE_Y_KEY, size.getY() );
 		c.putInt( NBT_SIZE_Z_KEY, size.getZ() );

@@ -23,47 +23,49 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.api.storage.ISpatialDimension;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.server.ServerWorld;
 
 
 class NullSpatialDimension implements ISpatialDimension
 {
 	@Override
-	public int createNewCellDimension( BlockPos size, int owner )
-	{
-		return -1;
-	}
-
-	@Override
-	public void deleteCellDimension( int cellStorageId )
-	{
-	}
-
-	@Override
-	public int getCellDimensionOwner( int cellStorageId )
-	{
-		return -1;
-	}
-
-	@Override
-	public BlockPos getCellDimensionOrigin( int cellStorageId )
+	public DimensionType createNewCellDimension(BlockPos size, int owner )
 	{
 		return null;
 	}
 
 	@Override
-	public World getWorld()
+	public void deleteCellDimension( DimensionType cellStorageId )
+	{
+	}
+
+	@Override
+	public int getCellDimensionOwner( DimensionType cellStorageId )
+	{
+		return -1;
+	}
+
+	@Override
+	public BlockPos getCellDimensionOrigin( DimensionType cellStorageId )
 	{
 		return null;
 	}
 
 	@Override
-	public boolean isCellDimension( int cellDimID )
+	public ServerWorld getWorld(DimensionType cellStorageId )
+	{
+		return null;
+	}
+
+	@Override
+	public boolean isCellDimension( DimensionType cellDimID )
 	{
 		return false;
 	}
 
 	@Override
-	public BlockPos getCellContentSize( int cellDimId )
+	public BlockPos getCellContentSize( DimensionType cellDimId )
 	{
 		return null;
 	}

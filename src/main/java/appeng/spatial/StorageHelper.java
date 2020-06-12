@@ -21,6 +21,7 @@ package appeng.spatial;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -30,7 +31,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.minecraft.world.ServerWorld;
+import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.ITeleporter;
 
@@ -91,37 +92,34 @@ public class StorageHelper
 		}
 
 		// Are we riding something? Teleport it instead.
-		if( entity.isRiding() )
+		if( entity.isPassenger() )
 		{
 			return this.teleportEntity( entity.getRidingEntity(), link );
 		}
 
 		// Is something riding us? Handle it first.
-		final List<Entity> passangers = entity.getPassengers();
-		final List<Entity> passangersOnOtherSide = new ArrayList<>();
-		if( !passangers.isEmpty() )
+		final List<Entity> passengers = entity.getPassengers();
+		final List<Entity> passengersOnOtherSide = new ArrayList<>(passengers.size());
+		for( Entity passenger : passengers )
 		{
-			for( Entity passanger : passangers )
-			{
-				passanger.dismountRidingEntity();
-				passangersOnOtherSide.add( this.teleportEntity( passanger, link ) );
-			}
-			// We keep track of all so we can remount them on the other side.
+			passenger.stopRiding();
+			passengersOnOtherSide.add( this.teleportEntity( passenger, link ) );
 		}
+		// We keep track of all so we can remount them on the other side.
 
 		// load the chunk!
-		newWorld.getChunkProvider().provideChunk( MathHelper.floor( link.x ) >> 4, MathHelper.floor( link.z ) >> 4 );
+		newWorld.getChunkProvider().getChunk( MathHelper.floor( link.x ) >> 4, MathHelper.floor( link.z ) >> 4, ChunkStatus.FULL, true );
 
-		if( entity instanceof ServerPlayerEntity && link.dim.provider instanceof StorageWorldProvider )
+		if( entity instanceof ServerPlayerEntity && link.dim.getDimension() instanceof StorageCellDimension)
 		{
 			AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger( (ServerPlayerEntity) entity );
 		}
 
 		entity.changeDimension( link.dim.getDimension().getType(), new METeleporter( link ) );
 
-		if( !passangersOnOtherSide.isEmpty() )
+		if( !passengersOnOtherSide.isEmpty() )
 		{
-			for( Entity passanger : passangersOnOtherSide )
+			for( Entity passanger : passengersOnOtherSide )
 			{
 				passanger.startRiding( entity, true );
 			}
@@ -195,12 +193,12 @@ public class StorageHelper
 
 		for( final WorldCoord wc : cDst.getUpdates() )
 		{
-			cSrc.getWorld().notifyNeighborsOfStateChange( wc.getPos(), Platform.AIR_BLOCK, true );
+			cSrc.getWorld().notifyNeighborsOfStateChange( wc.getPos(), Platform.AIR_BLOCK );
 		}
 
 		for( final WorldCoord wc : cSrc.getUpdates() )
 		{
-			cSrc.getWorld().notifyNeighborsOfStateChange( wc.getPos(), Platform.AIR_BLOCK, true );
+			cSrc.getWorld().notifyNeighborsOfStateChange( wc.getPos(), Platform.AIR_BLOCK );
 		}
 
 		this.transverseEdges( srcX - 1, srcY - 1, srcZ - 1, srcX + scaleX + 1, srcY + scaleY + 1, srcZ + scaleZ + 1, new TriggerUpdates( srcWorld ) );
@@ -208,14 +206,6 @@ public class StorageHelper
 
 		this.transverseEdges( srcX, srcY, srcZ, srcX + scaleX, srcY + scaleY, srcZ + scaleZ, new TriggerUpdates( srcWorld ) );
 		this.transverseEdges( dstX, dstY, dstZ, dstX + scaleX, dstY + scaleY, dstZ + scaleZ, new TriggerUpdates( dstWorld ) );
-
-		/*
-		 * IChunkProvider cp = destination.getChunkProvider(); if ( cp instanceof ChunkProviderServer ) {
-		 * ChunkProviderServer
-		 * srv = (ChunkProviderServer) cp; srv.unloadAllChunks(); }
-		 * cp.unloadQueuedChunks();
-		 */
-
 	}
 
 	private static class TriggerUpdates implements ISpatialVisitor
@@ -283,10 +273,12 @@ public class StorageHelper
 		}
 
 		@Override
-		public void placeEntity( World world, Entity entity, float yaw )
-		{
-			entity.setLocationAndAngles( this.destination.x, this.destination.y, this.destination.z, yaw, entity.rotationPitch );
-			entity.motionX = entity.motionY = entity.motionZ = 0.0D;
+		public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
+			Entity newEntity = repositionEntity.apply(false);
+			newEntity.rotationYaw = yaw;
+			newEntity.setPositionAndUpdate( this.destination.x, this.destination.y, this.destination.z );
+			newEntity.setMotion(0, 0, 0);
+			return newEntity;
 		}
 	}
 }

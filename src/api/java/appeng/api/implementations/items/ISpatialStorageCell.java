@@ -31,6 +31,7 @@ import net.minecraft.world.World;
 import appeng.api.implementations.TransitionResult;
 import appeng.api.storage.ISpatialDimension;
 import appeng.api.util.WorldCoord;
+import net.minecraft.world.dimension.DimensionType;
 
 
 /**
@@ -53,12 +54,6 @@ public interface ISpatialStorageCell
 	 */
 	int getMaxStoredDim( ItemStack is );
 
-	/**
-	 * @param is spatial storage cell
-	 *
-	 * @return the world for this cell
-	 */
-	ISpatialDimension getSpatialDimension();
 
 	/**
 	 * get the currently stored size.
@@ -76,7 +71,7 @@ public interface ISpatialStorageCell
 	 *
 	 * @return dimension id or -1
 	 */
-	int getStoredDimensionID( ItemStack is );
+	DimensionType getStoredDimension(ItemStack is );
 
 	/**
 	 * Perform a spatial swap with the contents of the cell, and the world.

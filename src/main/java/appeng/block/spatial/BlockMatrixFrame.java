@@ -52,7 +52,7 @@ public class BlockMatrixFrame extends AEBaseBlock
 
 	public BlockMatrixFrame()
 	{
-		super( Properties.create(MATERIAL).hardnessAndResistance(-1.0F, 6000000.0F).noDrops().notSolid() );
+		super( Properties.create(MATERIAL).hardnessAndResistance(-1.0F, 6000000.0F).noDrops() );
 //	FIXME	this.setLightOpacity( 0 );
 //	FIXME	this.setOpaque( false );
 	}
@@ -76,7 +76,7 @@ public class BlockMatrixFrame extends AEBaseBlock
 
 	@Override
 	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-		return VoxelShapes.empty();
+		return VoxelShapes.fullCube();
 	}
 
 	@Override

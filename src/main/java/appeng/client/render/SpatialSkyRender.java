@@ -50,15 +50,18 @@ public class SpatialSkyRender implements IRenderHandler
 		this.dspList = GL11.glGenLists( 1 );
 	}
 
-	//FIXME, Do not use this until the above PR is merged.
-	//	public static IRenderHandler getInstance()
-	//	{
-	//		return INSTANCE;
-	//	}
+	public static IRenderHandler getInstance()
+	{
+		return INSTANCE;
+	}
 
 	@Override
 	public void render( final int ticks, final float partialTicks, final ClientWorld world, final Minecraft mc )
 	{
+		//FIXME, Do not use this until the above PR is merged.
+		if (true) {
+			return;
+		}
 
 		final long now = System.currentTimeMillis();
 		if( now - this.cycle > 2000 )

@@ -73,6 +73,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.network.play.server.SChunkDataPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -82,6 +83,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -89,6 +91,8 @@ import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.thread.SidedThreadGroups;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.network.FMLNetworkConstants;
+import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -1528,26 +1532,7 @@ public class Platform
 //
 //		return Lists.newArrayList( is );
 //	}
-//
-//	public static void sendChunk( final Chunk c, final int verticalBits )
-//	{
-//		try
-//		{
-//			// FIXME final ServerWorld ws = (ServerWorld) c.getWorld();
-//			// FIXME final PlayerChunkMap pm = ws.getPlayerChunkMap();
-//			// FIXME final PlayerChunkMapEntry playerInstance = pm.getEntry( c.x, c.z );
-//// FIXME
-//			// FIXME if( playerInstance != null )
-//			// FIXME {
-//			// FIXME 	playerInstance.sendPacket( new SChunkDataPacket( c, verticalBits ) );
-//			// FIXME }
-//		}
-//		catch( final Throwable t )
-//		{
-//			AELog.debug( t );
-//		}
-//	}
-//
+
 	public static float getEyeOffset( final PlayerEntity player )
 	{
 		assert player.world.isRemote : "Valid only on client";

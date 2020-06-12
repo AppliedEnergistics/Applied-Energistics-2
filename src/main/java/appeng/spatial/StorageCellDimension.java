@@ -19,9 +19,10 @@
 package appeng.spatial;
 
 
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.dimension.Dimension;
@@ -34,23 +35,21 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import appeng.client.render.SpatialSkyRender;
 import appeng.core.AppEng;
 
+import javax.annotation.Nullable;
+
 // FIXME: Rename suffix to Dimension
-public class StorageWorldProvider extends Dimension
+public class StorageCellDimension extends Dimension
 {
 
-	private final Biome biome;
-
-	public StorageWorldProvider()
-	{
-		this.hasSkyLight = true;
-		this.biome = AppEng.instance().getStorageBiome();
-		this.biomeProvider = new BiomeProviderSingle( this.biome );
+	public StorageCellDimension(World world, DimensionType dimensionType) {
+		// FIXME: check light value
+		super(world, dimensionType, 1.0f);
 	}
 
 	@Override
 	public ChunkGenerator createChunkGenerator()
 	{
-		return new StorageChunkProvider( this.world, 0 );
+		return new StorageChunkGenerator( this.world );
 	}
 
 	@Override
@@ -98,12 +97,6 @@ public class StorageWorldProvider extends Dimension
 	}
 
 	@Override
-	public DimensionType getDimensionType()
-	{
-		return AppEng.instance().getStorageDimensionType();
-	}
-
-	@Override
 	public IRenderHandler getSkyRenderer()
 	{
 		return SpatialSkyRender.getInstance();
@@ -116,31 +109,13 @@ public class StorageWorldProvider extends Dimension
 	}
 
 	@Override
-	public Vec3d getSkyColor( final Entity cameraEntity, final float partialTicks )
-	{
-		return new Vec3d( 0.07, 0.07, 0.07 );
-	}
-
-	@Override
-	public float getStarBrightness( final float par1 )
-	{
-		return 0;
-	}
-
-	@Override
-	public boolean canSnowAt( final BlockPos pos, final boolean checkLight )
-	{
-		return false;
-	}
-
-	@Override
 	public BlockPos getSpawnCoordinate()
 	{
 		return new BlockPos( 0, 0, 0 );
 	}
 
 	@Override
-	public boolean isBlockHighHumidity( final BlockPos pos )
+	public boolean isHighHumidity( final BlockPos pos )
 	{
 		return false;
 	}
@@ -152,9 +127,20 @@ public class StorageWorldProvider extends Dimension
 	}
 
 	@Override
-	public Biome getBiomeForCoords( BlockPos pos )
-	{
-		return this.biome;
+	public boolean canDoRainSnowIce(Chunk chunk) {
+		return false;
+	}
+
+	@Nullable
+	@Override
+	public BlockPos findSpawn(ChunkPos chunkPosIn, boolean checkValid) {
+		return getSpawnCoordinate();
+	}
+
+	@Nullable
+	@Override
+	public BlockPos findSpawn(int posX, int posZ, boolean checkValid) {
+		return getSpawnCoordinate();
 	}
 
 }

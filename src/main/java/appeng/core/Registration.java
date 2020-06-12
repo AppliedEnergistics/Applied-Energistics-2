@@ -38,39 +38,7 @@ import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.bootstrap.IModelRegistry;
 import appeng.bootstrap.components.*;
-import appeng.client.gui.implementations.GuiCellWorkbench;
-import appeng.client.gui.implementations.GuiChest;
-import appeng.client.gui.implementations.GuiCondenser;
-import appeng.client.gui.implementations.GuiCraftAmount;
-import appeng.client.gui.implementations.GuiCraftConfirm;
-import appeng.client.gui.implementations.GuiCraftingCPU;
-import appeng.client.gui.implementations.GuiCraftingStatus;
-import appeng.client.gui.implementations.GuiCraftingTerm;
-import appeng.client.gui.implementations.GuiDrive;
-import appeng.client.gui.implementations.GuiFormationPlane;
-import appeng.client.gui.implementations.GuiGrinder;
-import appeng.client.gui.implementations.GuiIOPort;
-import appeng.client.gui.implementations.GuiInscriber;
-import appeng.client.gui.implementations.GuiInterface;
-import appeng.client.gui.implementations.GuiInterfaceTerminal;
-import appeng.client.gui.implementations.GuiLevelEmitter;
-import appeng.client.gui.implementations.GuiMAC;
-import appeng.client.gui.implementations.GuiMEMonitorable;
-import appeng.client.gui.implementations.GuiMEPortableCell;
-import appeng.client.gui.implementations.GuiNetworkStatus;
-import appeng.client.gui.implementations.GuiNetworkTool;
-import appeng.client.gui.implementations.GuiPatternTerm;
-import appeng.client.gui.implementations.GuiPriority;
-import appeng.client.gui.implementations.GuiQNB;
-import appeng.client.gui.implementations.GuiQuartzKnife;
-import appeng.client.gui.implementations.GuiSecurityStation;
-import appeng.client.gui.implementations.GuiSkyChest;
-import appeng.client.gui.implementations.GuiSpatialIOPort;
-import appeng.client.gui.implementations.GuiStorageBus;
-import appeng.client.gui.implementations.GuiUpgradeable;
-import appeng.client.gui.implementations.GuiVibrationChamber;
-import appeng.client.gui.implementations.GuiWireless;
-import appeng.client.gui.implementations.GuiWirelessTerm;
+import appeng.client.gui.implementations.*;
 import appeng.client.render.effects.*;
 import appeng.client.render.model.BiometricCardModel;
 import appeng.client.render.model.DriveModel;
@@ -99,7 +67,10 @@ import appeng.recipes.handlers.GrinderRecipeSerializer;
 import appeng.recipes.handlers.InscriberRecipe;
 import appeng.recipes.handlers.InscriberRecipeSerializer;
 import appeng.server.AECommand;
+import appeng.spatial.StorageCellBiome;
+import appeng.spatial.StorageCellModDimension;
 import appeng.tile.AEBaseTile;
+import appeng.worldgen.MeteoriteWorldGen;
 import net.minecraft.advancements.CriteriaTriggers;
 import appeng.worldgen.MeteoriteWorldGen;
 import net.minecraft.block.Block;
@@ -109,10 +80,16 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.IFeatureConfig;
+import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
@@ -124,8 +101,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.ModDimension;
 import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.DistExecutor;
@@ -146,61 +123,7 @@ final class Registration
 		advancementTriggers = new AdvancementTriggers( CriteriaTriggers::register );
 	}
 
-	//	DimensionType storageDimensionType;
-//	int storageDimensionID;
-//	Biome storageBiome;
 	AdvancementTriggers advancementTriggers;
-
-//	private void registerSpatialBiome( IForgeRegistry<Biome> registry )
-//	{
-//		if( !AEConfig.instance().isFeatureEnabled( AEFeature.SPATIAL_IO ) )
-//		{
-//			return;
-//		}
-//
-//		if( this.storageBiome == null )
-//		{
-//			this.storageBiome = new BiomeGenStorage();
-//		}
-//		registry.register( this.storageBiome.setRegistryName( "appliedenergistics2:storage_biome" ) );
-//	}
-//
-//	private void registerSpatialDimension()
-//	{
-//		final AEConfig config = AEConfig.instance();
-//		if( !config.isFeatureEnabled( AEFeature.SPATIAL_IO ) )
-//		{
-//			return;
-//		}
-//
-//		if( config.getStorageProviderID() == -1 )
-//		{
-//			final Set<Integer> ids = new HashSet<>();
-//			for( DimensionType type : DimensionType.values() )
-//			{
-//				ids.add( type.getId() );
-//			}
-//
-//			int newId = -11;
-//			while( ids.contains( newId ) )
-//			{
-//				--newId;
-//			}
-//			config.setStorageProviderID( newId );
-//			config.save();
-//		}
-//
-//		this.storageDimensionType = DimensionType.register( "Storage Cell", "_cell", config.getStorageProviderID(), StorageWorldProvider.class, true );
-//
-//		if( config.getStorageDimensionID() == -1 )
-//		{
-//			config.setStorageDimensionID( DimensionManager.getNextFreeDimId() );
-//			config.save();
-//		}
-//		this.storageDimensionID = config.getStorageDimensionID();
-//
-//		DimensionManager.registerDimension( this.storageDimensionID, this.storageDimensionType );
-//	}
 
 	public static void setupInternalRegistries()
 	{
@@ -233,13 +156,6 @@ final class Registration
 		PartItemPredicate.register();
 	}
 
-//	@SubscribeEvent
-//	public void registerBiomes( RegistryEvent.Register<Biome> event )
-//	{
-//		final IForgeRegistry<Biome> registry = event.getRegistry();
-//		this.registerSpatialBiome( registry );
-//	}
-//
 	@OnlyIn( Dist.CLIENT )
 	public void modelRegistryEvent( ModelRegistryEvent event )
 	{
@@ -837,33 +753,14 @@ final class Registration
 		r.register( MeteoriteWorldGen.INSTANCE );
 	}
 
-//	private static class ModelLoaderWrapper implements IModelRegistry
-//	{
-//
-//		@Override
-//		public void registerItemVariants( Item item, ResourceLocation... names )
-//		{
-//			ModelLoader.registerItemVariants( item, names );
-//		}
-//
-//		@Override
-//		public void setCustomModelResourceLocation( Item item, int metadata, ModelResourceLocation model )
-//		{
-//			ModelLoader.setCustomModelResourceLocation( item, metadata, model );
-//		}
-//
-//		@Override
-//		public void setCustomMeshDefinition( Item item, ItemMeshDefinition meshDefinition )
-//		{
-//			ModelLoader.setCustomMeshDefinition( item, meshDefinition );
-//		}
-//
-//		@Override
-//		public void setCustomStateMapper( Block block, IStateMapper mapper )
-//		{
-//			ModelLoader.setCustomStateMapper( block, mapper );
-//		}
-//	}
+	public void registerBiomes(RegistryEvent.Register<Biome> evt) {
+		evt.getRegistry().register(StorageCellBiome.INSTANCE);
+	}
+
+	public void registerModDimension(RegistryEvent.Register<ModDimension> evt)
+	{
+		evt.getRegistry().register(StorageCellModDimension.INSTANCE);
+	}
 
 	public void registerTextures(TextureStitchEvent.Pre event) {
 		SkyChestTESR.registerTextures(event);
@@ -887,4 +784,5 @@ final class Registration
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();
 		definitions.getRegistry().getBootstrapComponents( IModelBakeComponent.class ).forEachRemaining(c -> c.onModelBakeEvent(event));
 	}
+
 }

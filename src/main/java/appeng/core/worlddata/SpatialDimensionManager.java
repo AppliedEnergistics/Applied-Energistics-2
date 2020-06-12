@@ -19,164 +19,126 @@
 package appeng.core.worlddata;
 
 
-import java.util.HashMap;
-import java.util.Map;
-
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import net.minecraftforge.common.util.INBTSerializable;
-
 import appeng.api.storage.ISpatialDimension;
-import appeng.capabilities.Capabilities;
-import net.minecraftforge.common.util.LazyOptional;
+import appeng.core.AELog;
+import appeng.core.AppEng;
+import appeng.spatial.StorageCellModDimension;
+import io.netty.buffer.Unpooled;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-
-public class SpatialDimensionManager implements ISpatialDimension, ICapabilitySerializable<CompoundNBT>
+public class SpatialDimensionManager implements ISpatialDimension
 {
-	private static final String NBT_SPATIAL_DATA_KEY = "spatial_data";
-	private static final String NBT_SPATIAL_ID_KEY = "id";
-
-	private World world;
-	private Map<Integer, StorageCellData> spatialData = new HashMap<>();
+	private static final int MAX_DIM_PER_PLAYER = 999;
 
 	private static final int MAX_CELL_DIMENSION = 512;
 
-	public SpatialDimensionManager( World world )
-	{
-		this.world = world;
+	@Override
+	public ServerWorld getWorld(DimensionType cellDim) {
+		return DimensionManager.getWorld(getServer(), cellDim, true, true);
 	}
 
 	@Override
-	public World getWorld()
+	public DimensionType createNewCellDimension( BlockPos contentSize, int owner )
 	{
-		return this.world;
-	}
-
-	@Override
-	public int createNewCellDimension( BlockPos contentSize, int owner )
-	{
-		int newId = this.getNextId();
+		// Try to find a free dimension ID for the player
+		ResourceLocation dimKey = null;
+		for (int i = 1; i <= MAX_DIM_PER_PLAYER; i++) {
+			dimKey = new ResourceLocation(AppEng.MOD_ID, "spatial_cell_" + owner + "_" + i);
+			if (DimensionType.byName(dimKey) == null) {
+				break;
+			}
+			dimKey = null;
+		}
+		if (dimKey == null) {
+			return null;
+		}
 
 		StorageCellData data = new StorageCellData();
 		data.contentDimension = contentSize;
 		data.owner = owner;
 
-		this.spatialData.put( newId, data );
+		PacketBuffer extraData = new PacketBuffer(Unpooled.buffer());
+		extraData.writeInt(owner);
+		extraData.writeBlockPos(contentSize);
 
-		return newId;
+		return DimensionManager.registerDimension(dimKey, StorageCellModDimension.INSTANCE, extraData, true);
 	}
 
 	@Override
-	public void deleteCellDimension( int cellStorageId )
+	public void deleteCellDimension( DimensionType cellDim )
 	{
-		StorageCellData removed = this.spatialData.remove( cellStorageId );
-		if( removed != null )
-		{
-			this.clearCellArea( cellStorageId, removed );
+		AELog.info("Unregistering storage cell dimension %s", cellDim.getRegistryName());
+		MinecraftServer server = getServer();
+		ServerWorld world = DimensionManager.getWorld(server, cellDim, false, false);
+		if (world != null) {
+			DimensionManager.unloadWorld(world);
 		}
+		DimensionManager.unloadWorlds(server, true);
+		DimensionManager.unregisterDimension(cellDim.getId());
+	}
+
+	private static MinecraftServer getServer() {
+		return ServerLifecycleHooks.getCurrentServer();
 	}
 
 	@Override
-	public boolean isCellDimension( int cellStorageId )
+	public boolean isCellDimension( DimensionType cellDim )
 	{
-		return this.spatialData.containsKey( cellStorageId );
-	}
-
-	@Override
-	public int getCellDimensionOwner( int cellStorageId )
-	{
-		StorageCellData cell = this.spatialData.get( cellStorageId );
-		if( cell != null )
-		{
-			return cell.owner;
+		// Check if the cell dimension type is even registered
+		if (cellDim.getRegistryName() == null || !cellDim.getRegistryName().equals(DimensionType.getKey(cellDim))) {
+			return false;
 		}
-		return -1;
+
+		return cellDim.getModType() instanceof StorageCellModDimension;
 	}
 
 	@Override
-	public BlockPos getCellDimensionOrigin( int cellStorageId )
+	public int getCellDimensionOwner( DimensionType cellDim )
 	{
-		if( this.isCellDimension( cellStorageId ) )
-		{
-			return this.getBlockPosFromId( cellStorageId );
+		if (!(cellDim.getModType() instanceof StorageCellModDimension)) {
+			return -1;
 		}
-		return null;
+
+		PacketBuffer data = cellDim.getData();
+		if (data == null) {
+			return -1;
+		}
+		data.readerIndex(0);
+		return data.readInt();
 	}
 
 	@Override
-	public BlockPos getCellContentSize( int cellStorageId )
+	public BlockPos getCellDimensionOrigin( DimensionType cellDim )
 	{
-		StorageCellData cell = this.spatialData.get( cellStorageId );
-		if( cell != null )
-		{
-			return cell.contentDimension;
-		}
-		return null;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap) {
-		if( cap == Capabilities.SPATIAL_DIMENSION )
-		{
-			return LazyOptional.of(() -> (T) this);
-		}
-		return LazyOptional.empty();
-	}
-
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-		return getCapability(cap);
+		// A region file is 512x512 blocks (32x32 chunks),
+		// to avoid creating the 4 regions around 0,0,0,
+		// we move the origin to the middle of region 0,0
+		return new BlockPos(512 / 2, 61, 512 / 2);
 	}
 
 	@Override
-	public CompoundNBT serializeNBT()
+	public BlockPos getCellContentSize( DimensionType cellDim )
 	{
-		final CompoundNBT ret = new CompoundNBT();
-		final ListNBT list = new ListNBT();
-
-		for( Map.Entry<Integer, StorageCellData> entry : this.spatialData.entrySet() )
-		{
-			final CompoundNBT nbt = entry.getValue().serializeNBT();
-			nbt.putInt( NBT_SPATIAL_ID_KEY, entry.getKey() );
-			list.add( nbt );
+		if (!(cellDim.getModType() instanceof StorageCellModDimension)) {
+			return BlockPos.ZERO;
 		}
-		ret.put( NBT_SPATIAL_DATA_KEY, list );
-		return ret;
-	}
 
-	@Override
-	public void deserializeNBT( CompoundNBT nbt )
-	{
-		if( nbt.contains(NBT_SPATIAL_DATA_KEY) )
-		{
-			final ListNBT list = (ListNBT) nbt.get( NBT_SPATIAL_DATA_KEY );
-
-			this.spatialData.clear();
-			for( int i = 0; i < list.size(); ++i )
-			{
-				final CompoundNBT entry = list.getCompound( i );
-				final StorageCellData data = new StorageCellData();
-				final int id = entry.getInt( NBT_SPATIAL_ID_KEY );
-				data.deserializeNBT( entry );
-				this.spatialData.put( id, data );
-			}
+		PacketBuffer data = cellDim.getData();
+		if (data == null) {
+			return BlockPos.ZERO;
 		}
-	}
-
-	private int getNextId()
-	{
-		return this.spatialData.keySet().stream().max( Integer::compare ).orElse( -1 ) + 1;
+		data.readerIndex(4);
+		return data.readBlockPos();
 	}
 
 	private BlockPos getBlockPosFromId( int id )
@@ -212,11 +174,6 @@ public class SpatialDimensionManager implements ISpatialDimension, ICapabilitySe
 		posz -= 64;
 
 		return new BlockPos( posx, 64, posz );
-	}
-
-	private void clearCellArea( int cellId, StorageCellData cell )
-	{
-		// TODO reset chunks?
 	}
 
 	private static class StorageCellData implements INBTSerializable<CompoundNBT>

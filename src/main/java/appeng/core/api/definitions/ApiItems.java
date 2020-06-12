@@ -248,21 +248,23 @@ public final class ApiItems implements IItems
 				.features( AEFeature.VIEW_CELL )
 				.build();
 
-		FeatureFactory storageCells = registry.features( AEFeature.STORAGE_CELLS );
-		this.cell1k = storageCells.item( "1k_storage_cell", props -> new BasicItemStorageCell(props, MaterialType.ITEM_1K_CELL_COMPONENT, 1 ) ).build();
-		this.cell4k = storageCells.item( "4k_storage_cell", props -> new BasicItemStorageCell(props, MaterialType.ITEM_4K_CELL_COMPONENT, 4 ) ).build();
-		this.cell16k = storageCells.item( "16k_storage_cell", props -> new BasicItemStorageCell(props, MaterialType.ITEM_16K_CELL_COMPONENT, 16 ) ).build();
-		this.cell64k = storageCells.item( "64k_storage_cell", props -> new BasicItemStorageCell(props, MaterialType.ITEM_64K_CELL_COMPONENT, 64 ) ).build();
+		Consumer<Item.Properties> storageCellProps = p -> p.maxStackSize(1);
 
-		this.fluidCell1k = storageCells.item( "1k_fluid_storage_cell", props -> new BasicFluidStorageCell(props, MaterialType.FLUID_1K_CELL_COMPONENT, 1 ) ).build();
-		this.fluidCell4k = storageCells.item( "4k_fluid_storage_cell", props -> new BasicFluidStorageCell(props, MaterialType.FLUID_4K_CELL_COMPONENT, 4 ) ).build();
-		this.fluidCell16k = storageCells.item( "16k_fluid_storage_cell", props -> new BasicFluidStorageCell(props, MaterialType.FLUID_16K_CELL_COMPONENT, 16 ) ).build();
-		this.fluidCell64k = storageCells.item( "64k_fluid_storage_cell", props -> new BasicFluidStorageCell(props, MaterialType.FLUID_64K_CELL_COMPONENT, 64 ) ).build();
+		FeatureFactory storageCells = registry.features( AEFeature.STORAGE_CELLS );
+		this.cell1k = storageCells.item( "1k_storage_cell", props -> new BasicItemStorageCell(props, MaterialType.ITEM_1K_CELL_COMPONENT, 1 ) ).props(storageCellProps).build();
+		this.cell4k = storageCells.item( "4k_storage_cell", props -> new BasicItemStorageCell(props, MaterialType.ITEM_4K_CELL_COMPONENT, 4 ) ).props(storageCellProps).build();
+		this.cell16k = storageCells.item( "16k_storage_cell", props -> new BasicItemStorageCell(props, MaterialType.ITEM_16K_CELL_COMPONENT, 16 ) ).props(storageCellProps).build();
+		this.cell64k = storageCells.item( "64k_storage_cell", props -> new BasicItemStorageCell(props, MaterialType.ITEM_64K_CELL_COMPONENT, 64 ) ).props(storageCellProps).build();
+
+		this.fluidCell1k = storageCells.item( "1k_fluid_storage_cell", props -> new BasicFluidStorageCell(props, MaterialType.FLUID_1K_CELL_COMPONENT, 1 ) ).props(storageCellProps).build();
+		this.fluidCell4k = storageCells.item( "4k_fluid_storage_cell", props -> new BasicFluidStorageCell(props, MaterialType.FLUID_4K_CELL_COMPONENT, 4 ) ).props(storageCellProps).build();
+		this.fluidCell16k = storageCells.item( "16k_fluid_storage_cell", props -> new BasicFluidStorageCell(props, MaterialType.FLUID_16K_CELL_COMPONENT, 16 ) ).props(storageCellProps).build();
+		this.fluidCell64k = storageCells.item( "64k_fluid_storage_cell", props -> new BasicFluidStorageCell(props, MaterialType.FLUID_64K_CELL_COMPONENT, 64 ) ).props(storageCellProps).build();
 
 		FeatureFactory spatialCells = registry.features( AEFeature.SPATIAL_IO );
-		this.spatialCell2 = spatialCells.item( "2_cubed_spatial_storage_cell", props -> new ItemSpatialStorageCell(props, 2 ) ).build();
-		this.spatialCell16 = spatialCells.item( "16_cubed_spatial_storage_cell", props -> new ItemSpatialStorageCell(props, 16 ) ).build();
-		this.spatialCell128 = spatialCells.item( "128_cubed_spatial_storage_cell", props -> new ItemSpatialStorageCell(props, 128 ) ).build();
+		this.spatialCell2 = spatialCells.item( "2_cubed_spatial_storage_cell", props -> new ItemSpatialStorageCell(props, 2 ) ).props(storageCellProps).build();
+		this.spatialCell16 = spatialCells.item( "16_cubed_spatial_storage_cell", props -> new ItemSpatialStorageCell(props, 16 ) ).props(storageCellProps).build();
+		this.spatialCell128 = spatialCells.item( "128_cubed_spatial_storage_cell", props -> new ItemSpatialStorageCell(props, 128 ) ).props(storageCellProps).build();
 
 		this.facade = registry.item( "facade", ItemFacade::new )
 				.features( AEFeature.FACADES )

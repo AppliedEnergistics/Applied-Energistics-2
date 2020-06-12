@@ -21,21 +21,26 @@ package appeng.api.storage;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.server.ServerWorld;
+
+import javax.annotation.Nullable;
 
 
 public interface ISpatialDimension
 {
-	World getWorld();
+	ServerWorld getWorld(DimensionType cellDim );
 
-	int createNewCellDimension( BlockPos contentSize, int playerId );
+	@Nullable
+	DimensionType createNewCellDimension(BlockPos contentSize, int playerId );
 
-	void deleteCellDimension( int cellDimId );
+	void deleteCellDimension( DimensionType cellDim );
 
-	boolean isCellDimension( int cellDimID );
+	boolean isCellDimension( DimensionType cellDim );
 
-	int getCellDimensionOwner( int cellDimId );
+	int getCellDimensionOwner( DimensionType cellDim );
 
-	BlockPos getCellDimensionOrigin( int cellDimId );
+	BlockPos getCellDimensionOrigin( DimensionType cellDim );
 
-	BlockPos getCellContentSize( int cellDimId );
+	BlockPos getCellContentSize( DimensionType cellDim );
 }

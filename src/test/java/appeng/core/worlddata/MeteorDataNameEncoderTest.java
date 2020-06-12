@@ -32,12 +32,10 @@ import org.junit.Test;
  */
 public class MeteorDataNameEncoderTest
 {
-	private static final int WITHOUT_DIMENSION = -5;
 	private static final int WITHOUT_CHUNK_X = 0;
 	private static final int WITHOUT_CHUNK_Z = 13;
 	private static final String WITHOUT_EXPECTED = "-5_0_13.dat";
 
-	private static final int WITH_DIMENSION = 3;
 	private static final int WITH_CHUNK_X = 32;
 	private static final int WITH_CHUNK_Z = -64;
 	private static final String WITH_EXPECTED = "3_2_-4.dat";
@@ -49,7 +47,7 @@ public class MeteorDataNameEncoderTest
 	public void testEncoderWithoutShifting()
 	{
 		final String expected = WITHOUT_EXPECTED;
-		final String actual = this.encoderWithZeroShifting.encode( WITHOUT_DIMENSION, WITHOUT_CHUNK_X, WITHOUT_CHUNK_Z );
+		final String actual = this.encoderWithZeroShifting.encode( WITHOUT_CHUNK_X, WITHOUT_CHUNK_Z );
 
 		Assert.assertEquals( expected, actual );
 	}
@@ -58,7 +56,7 @@ public class MeteorDataNameEncoderTest
 	public void testEncoderWithShifting()
 	{
 		final String expected = WITH_EXPECTED;
-		final String actual = this.encoderWithFourShifting.encode( WITH_DIMENSION, WITH_CHUNK_X, WITH_CHUNK_Z );
+		final String actual = this.encoderWithFourShifting.encode( WITH_CHUNK_X, WITH_CHUNK_Z );
 
 		Assert.assertEquals( expected, actual );
 	}
