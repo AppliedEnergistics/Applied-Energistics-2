@@ -19,9 +19,12 @@
 package appeng.worldgen.meteorite;
 
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 
 import appeng.api.definitions.IBlockDefinition;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 
 
 public class FalloutSand extends FalloutCopy
@@ -29,9 +32,9 @@ public class FalloutSand extends FalloutCopy
 	private static final double GLASS_THRESHOLD = 0.66;
 	private final MeteoriteBlockPutter putter;
 
-	public FalloutSand( final IMeteoriteWorld w, final int x, final int y, final int z, final MeteoriteBlockPutter putter, final IBlockDefinition skyStoneDefinition )
+	public FalloutSand(final IWorld w, BlockPos pos, final MeteoriteBlockPutter putter, final BlockState skyStone )
 	{
-		super( w, x, y, z, putter, skyStoneDefinition );
+		super( w, pos, putter, skyStone );
 		this.putter = putter;
 	}
 
@@ -42,11 +45,11 @@ public class FalloutSand extends FalloutCopy
 	}
 
 	@Override
-	public void getOther( final IMeteoriteWorld w, final int x, final int y, final int z, final double a )
+	public void getOther( final IWorld w, BlockPos pos, final double a )
 	{
 		if( a > GLASS_THRESHOLD )
 		{
-			this.putter.put( w, x, y, z, Blocks.GLASS );
+			this.putter.put( w, pos, Blocks.GLASS.getDefaultState() );
 		}
 	}
 }

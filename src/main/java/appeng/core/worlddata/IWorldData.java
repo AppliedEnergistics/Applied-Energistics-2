@@ -41,7 +41,4 @@ public interface IWorldData
 
 	@Nonnull
 	IWorldCompassData compassData();
-
-	@Nonnull
-	IWorldSpawnData spawnData();
 }

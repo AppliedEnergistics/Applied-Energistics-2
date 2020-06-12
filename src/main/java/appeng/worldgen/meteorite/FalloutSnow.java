@@ -19,9 +19,12 @@
 package appeng.worldgen.meteorite;
 
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 
 import appeng.api.definitions.IBlockDefinition;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 
 
 public class FalloutSnow extends FalloutCopy
@@ -30,9 +33,9 @@ public class FalloutSnow extends FalloutCopy
 	private static final double ICE_THRESHOLD = 0.5;
 	private final MeteoriteBlockPutter putter;
 
-	public FalloutSnow( final IMeteoriteWorld w, final int x, final int y, final int z, final MeteoriteBlockPutter putter, final IBlockDefinition skyStoneDefinition )
+	public FalloutSnow(final IWorld w, BlockPos pos, final MeteoriteBlockPutter putter, final BlockState skyStone)
 	{
-		super( w, x, y, z, putter, skyStoneDefinition );
+		super( w, pos, putter, skyStone );
 		this.putter = putter;
 	}
 
@@ -43,15 +46,15 @@ public class FalloutSnow extends FalloutCopy
 	}
 
 	@Override
-	public void getOther( final IMeteoriteWorld w, final int x, final int y, final int z, final double a )
+	public void getOther( final IWorld w, BlockPos pos, final double a )
 	{
 		if( a > SNOW_THRESHOLD )
 		{
-			this.putter.put( w, x, y, z, Blocks.SNOW );
+			this.putter.put( w, pos, Blocks.SNOW.getDefaultState() );
 		}
 		else if( a > ICE_THRESHOLD )
 		{
-			this.putter.put( w, x, y, z, Blocks.ICE );
+			this.putter.put( w, pos, Blocks.ICE.getDefaultState() );
 		}
 	}
 }

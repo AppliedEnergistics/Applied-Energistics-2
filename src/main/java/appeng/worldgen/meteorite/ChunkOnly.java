@@ -22,21 +22,22 @@ package appeng.worldgen.meteorite;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
 import appeng.util.Platform;
+import net.minecraft.world.chunk.IChunk;
 
 
 public class ChunkOnly extends StandardWorld
 {
 
-	private final Chunk target;
+	private final IChunk target;
 	private final int cx;
 	private final int cz;
-	private int verticalBits = 0;
 
-	public ChunkOnly( final World w, final int cx, final int cz )
+	public ChunkOnly(final IWorld w, final int cx, final int cz )
 	{
 		super( w );
 		this.target = w.getChunk( cx, cz );
@@ -68,48 +69,42 @@ public class ChunkOnly extends StandardWorld
 		return Math.min( in, ( this.cz + 1 ) << 4 );
 	}
 
-	@Override
-	public Block getBlock( final int x, final int y, final int z )
+    @Override
+    public boolean contains(BlockPos pos) {
+        return this.range(pos);
+    }
+
+    @Override
+	public Block getBlock( BlockPos pos )
 	{
-		if( this.range( x, y, z ) )
+		if( this.range( pos ) )
 		{
-			return this.target.getBlockState( new BlockPos(x, y, z) ).getBlock();
+			return this.target.getBlockState( new BlockPos(pos) ).getBlock();
 		}
 		return Platform.AIR_BLOCK;
 	}
 
 	@Override
-	public void setBlock( final int x, final int y, final int z, final Block blk )
+	public void setBlock( BlockPos pos, final BlockState blk )
 	{
-		if( this.range( x, y, z ) )
+		if( this.range( pos ) )
 		{
-			this.verticalBits |= 1 << ( y >> 4 );
-			this.getWorld().setBlockState( new BlockPos( x, y, z ), blk.getDefaultState() );
+			target.setBlockState(new BlockPos( pos ), blk, false);
 		}
 	}
 
 	@Override
-	public void setBlock( final int x, final int y, final int z, final BlockState state, final int flags )
+	public void setBlock( BlockPos pos, final BlockState state, final int flags )
 	{
-		if( this.range( x, y, z ) )
+		if( this.range( pos ) )
 		{
-			this.verticalBits |= 1 << ( y >> 4 );
-			this.getWorld().setBlockState( new BlockPos( x, y, z ), state, flags & ( ~2 ) );
+			this.getWorld().setBlockState( new BlockPos( pos ), state, flags & ( ~2 ) );
 		}
 	}
 
 	@Override
-	public void done()
+	public boolean range( BlockPos pos )
 	{
-		if( this.verticalBits != 0 )
-		{
-			Platform.sendChunk( this.target, this.verticalBits );
-		}
-	}
-
-	@Override
-	public boolean range( final int x, final int y, final int z )
-	{
-		return this.cx == ( x >> 4 ) && this.cz == ( z >> 4 );
+		return this.cx == ( pos.getX() >> 4 ) && this.cz == ( pos.getZ() >> 4 );
 	}
 }

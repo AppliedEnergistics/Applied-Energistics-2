@@ -19,6 +19,7 @@
 package appeng.core.sync.packets;
 
 
+import appeng.core.worlddata.WorldData;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -77,6 +78,6 @@ public class PacketCompassRequest extends AppEngPacket implements ICompassCallba
 		this.talkBackTo = player;
 
 		final DimensionalCoord loc = new DimensionalCoord( player.world, this.cx << 4, this.cdy << 5, this.cz << 4 );
-		// FIXME WorldData.instance().compassData().service().getCompassDirection( loc, 174, this );
+		WorldData.instance().compassData().service().getCompassDirection( loc, 174, this );
 	}
 }

@@ -24,6 +24,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 import appeng.util.Platform;
@@ -32,9 +33,9 @@ import appeng.util.Platform;
 public class StandardWorld implements IMeteoriteWorld
 {
 
-	private final World w;
+	private final IWorld w;
 
-	public StandardWorld( final World w )
+	public StandardWorld( final IWorld w )
 	{
 		this.w = w;
 	}
@@ -64,82 +65,76 @@ public class StandardWorld implements IMeteoriteWorld
 	}
 
 	@Override
-	public boolean isNether()
-	{
-		return !this.getWorld().provider.isNether();
+	public boolean contains(BlockPos pos) {
+		return true;
 	}
 
 	@Override
-	public Block getBlock( final int x, final int y, final int z )
+	public Block getBlock( BlockPos pos )
 	{
-		if( this.range( x, y, z ) )
+		if( this.range( pos ) )
 		{
-			return this.getWorld().getBlockState( new BlockPos( x, y, z ) ).getBlock();
+			return this.getWorld().getBlockState( new BlockPos( pos ) ).getBlock();
 		}
 		return Platform.AIR_BLOCK;
 	}
 
 	@Override
-	public boolean canBlockSeeTheSky( final int x, final int y, final int z )
+	public boolean canBlockSeeTheSky( BlockPos pos )
 	{
-		if( this.range( x, y, z ) )
+		if( this.range( pos ) )
 		{
-			return this.getWorld().canBlockSeeSky( new BlockPos( x, y, z ) );
+			return this.getWorld().canBlockSeeSky( new BlockPos( pos ) );
 		}
 		return false;
 	}
 
 	@Override
-	public TileEntity getTileEntity( final int x, final int y, final int z )
+	public TileEntity getTileEntity( BlockPos pos )
 	{
-		if( this.range( x, y, z ) )
+		if( this.range( pos ) )
 		{
-			return this.getWorld().getTileEntity( new BlockPos( x, y, z ) );
+			return this.getWorld().getTileEntity( new BlockPos( pos ) );
 		}
 		return null;
 	}
 
 	@Override
-	public World getWorld()
+	public IWorld getWorld()
 	{
 		return this.w;
 	}
 
 	@Override
-	public void setBlock( final int x, final int y, final int z, final Block blk )
+	public void setBlock( BlockPos pos, final BlockState blk )
 	{
-		if( this.range( x, y, z ) )
+		if( this.range( pos ) )
 		{
-			this.getWorld().setBlockState( new BlockPos( x, y, z ), blk.getDefaultState() );
+			// FIXME: Attempt at reducing impact of placing meteors by passing 16|32 here
+			this.getWorld().setBlockState( new BlockPos( pos ), blk, 16|32 );
 		}
 	}
 
-	@Override
-	public void done()
-	{
-
-	}
-
-	public boolean range( final int x, final int y, final int z )
+	public boolean range( BlockPos pos )
 	{
 		return true;
 	}
 
 	@Override
-	public void setBlock( final int x, final int y, final int z, final BlockState state, final int l )
+	public void setBlock( BlockPos pos, final BlockState state, final int l )
 	{
-		if( this.range( x, y, z ) )
+		if( this.range( pos ) )
 		{
-			this.w.setBlockState( new BlockPos( x, y, z ), state, l );
+			this.w.setBlockState( new BlockPos( pos ), state, l );
 		}
 	}
 
 	@Override
-	public BlockState getBlockState( final int x, final int y, final int z )
+	public BlockState getBlockState( BlockPos pos )
 	{
-		if( this.range( x, y, z ) )
+		if( this.range( pos ) )
 		{
-			return this.w.getBlockState( new BlockPos( x, y, z ) );
+			return this.w.getBlockState( new BlockPos( pos ) );
 		}
 		return Blocks.AIR.getDefaultState();
 	}

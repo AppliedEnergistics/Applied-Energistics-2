@@ -19,28 +19,21 @@
 package appeng.services.compass;
 
 
-import java.io.File;
+import com.google.common.base.Preconditions;
+import net.minecraft.world.server.ServerWorld;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.annotation.Nonnull;
-
-import com.google.common.base.Preconditions;
 
 
 public final class CompassReader
 {
 	private final Map<Long, CompassRegion> regions = new HashMap<>( 100 );
-	private final int dimensionId;
-	private final File worldCompassFolder;
+	private final ServerWorld world;
 
-	public CompassReader( final int dimensionId, @Nonnull final File worldCompassFolder )
+	public CompassReader( ServerWorld world )
 	{
-		Preconditions.checkNotNull( worldCompassFolder );
-		Preconditions.checkArgument( worldCompassFolder.isDirectory() );
-
-		this.dimensionId = dimensionId;
-		this.worldCompassFolder = worldCompassFolder;
+		this.world = Preconditions.checkNotNull( world );
 	}
 
 	public void close()
@@ -77,7 +70,7 @@ public final class CompassReader
 
 		if( cr == null )
 		{
-			cr = new CompassRegion( cx, cz, this.dimensionId, this.worldCompassFolder );
+			cr = new CompassRegion( world, cx, cz );
 			this.regions.put( pos, cr );
 		}
 

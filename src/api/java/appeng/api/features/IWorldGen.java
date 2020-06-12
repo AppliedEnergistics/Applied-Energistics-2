@@ -24,6 +24,7 @@
 package appeng.api.features;
 
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.Dimension;
 
@@ -33,9 +34,9 @@ public interface IWorldGen
 
 	void disableWorldGenForProviderID( WorldGenType type, Class<? extends Dimension> provider );
 
-	void enableWorldGenForDimension( WorldGenType type, int dimID );
+	void enableWorldGenForDimension( WorldGenType type, ResourceLocation dimID );
 
-	void disableWorldGenForDimension( WorldGenType type, int dimID );
+	void disableWorldGenForDimension( WorldGenType type, ResourceLocation dimID );
 
 	boolean isWorldGenEnabled( WorldGenType type, World w );
 

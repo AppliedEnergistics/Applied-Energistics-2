@@ -26,6 +26,7 @@ import appeng.api.definitions.IItems;
 import appeng.api.definitions.IParts;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.features.IWirelessTermHandler;
+import appeng.api.features.IWorldGen;
 import appeng.api.movable.IMovableRegistry;
 import appeng.api.networking.IGridCacheRegistry;
 import appeng.api.networking.crafting.ICraftingGrid;
@@ -37,7 +38,6 @@ import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.bootstrap.IModelRegistry;
 import appeng.bootstrap.components.*;
-import appeng.capabilities.Capabilities;
 import appeng.client.gui.implementations.GuiCellWorkbench;
 import appeng.client.gui.implementations.GuiChest;
 import appeng.client.gui.implementations.GuiCondenser;
@@ -101,6 +101,7 @@ import appeng.recipes.handlers.InscriberRecipeSerializer;
 import appeng.server.AECommand;
 import appeng.tile.AEBaseTile;
 import net.minecraft.advancements.CriteriaTriggers;
+import appeng.worldgen.MeteoriteWorldGen;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
@@ -112,6 +113,13 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.IFeatureConfig;
+import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
@@ -126,6 +134,8 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.network.IContainerFactory;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
+
+import java.util.Objects;
 
 
 final class Registration
@@ -754,16 +764,6 @@ final class Registration
 // FIXME			// VillagerRegistry.instance().getRegisteredVillagers().registerVillageTradeHandler( 3, new AETrading() );
 // FIXME		}
 
-// FIXME		if( AEConfig.instance().isFeatureEnabled( AEFeature.CERTUS_QUARTZ_WORLD_GEN ) )
-// FIXME		{
-// FIXME			GameRegistry.registerWorldGenerator( new QuartzWorldGen(), 0 );
-// FIXME		}
-// FIXME
-// FIXME		if( AEConfig.instance().isFeatureEnabled( AEFeature.METEORITE_WORLD_GEN ) )
-// FIXME		{
-// FIXME			GameRegistry.registerWorldGenerator( new MeteoriteWorldGen(), 0 );
-// FIXME		}
-
 		final IMovableRegistry mr = registries.movable();
 
 		/*
@@ -799,25 +799,42 @@ final class Registration
 		 */
 		mr.whiteListTileEntity( AEBaseTile.class );
 
-// FIXME		/*
-// FIXME		 * world gen
-// FIXME		 */
-// FIXME		for( final WorldGenType type : WorldGenType.values() )
-// FIXME		{
-// FIXME			registries.worldgen().disableWorldGenForProviderID( type, StorageWorldProvider.class );
-// FIXME
-// FIXME			// nether
-// FIXME			registries.worldgen().disableWorldGenForDimension( type, -1 );
-// FIXME
-// FIXME			// end
-// FIXME			registries.worldgen().disableWorldGenForDimension( type, 1 );
-// FIXME		}
-// FIXME
-// FIXME		// whitelist from config
-// FIXME		for( final int dimension : AEConfig.instance().getMeteoriteDimensionWhitelist() )
-// FIXME		{
-// FIXME			registries.worldgen().enableWorldGenForDimension( WorldGenType.METEORITES, dimension );
-// FIXME		}
+		/*
+		 * world gen
+		 */
+		for( final IWorldGen.WorldGenType type : IWorldGen.WorldGenType.values() )
+		{
+			// FIXME: registries.worldgen().disableWorldGenForProviderID( type, StorageWorldProvider.class );
+
+			registries.worldgen().disableWorldGenForDimension( type, DimensionType.THE_NETHER.getRegistryName() );
+
+			registries.worldgen().disableWorldGenForDimension( type, DimensionType.THE_NETHER.getRegistryName() );
+		}
+
+		// whitelist from config
+		for( final String dimension : AEConfig.instance().getMeteoriteDimensionWhitelist() )
+		{
+			registries.worldgen().enableWorldGenForDimension( IWorldGen.WorldGenType.METEORITES, new ResourceLocation( dimension ) );
+		}
+
+		ForgeRegistries.BIOMES.forEach(
+				b -> {
+					b.addFeature(GenerationStage.Decoration.TOP_LAYER_MODIFICATION,
+							new ConfiguredFeature<NoFeatureConfig, Feature<NoFeatureConfig>>(
+									MeteoriteWorldGen.INSTANCE,
+									IFeatureConfig.NO_FEATURE_CONFIG
+							)
+					);
+				}
+		);
+
+	}
+
+	public void registerWorldGen( RegistryEvent.Register<Feature<?>> evt )
+	{
+		IForgeRegistry<Feature<?>> r = evt.getRegistry();
+
+		r.register( MeteoriteWorldGen.INSTANCE );
 	}
 
 //	private static class ModelLoaderWrapper implements IModelRegistry

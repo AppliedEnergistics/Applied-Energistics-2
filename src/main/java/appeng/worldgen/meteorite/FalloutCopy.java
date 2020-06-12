@@ -19,10 +19,14 @@
 package appeng.worldgen.meteorite;
 
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 
 import appeng.api.definitions.IBlockDefinition;
 import appeng.util.Platform;
+import net.minecraft.block.Blocks;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 
 
 public class FalloutCopy extends Fallout
@@ -34,47 +38,47 @@ public class FalloutCopy extends Fallout
 	private final BlockState block;
 	private final MeteoriteBlockPutter putter;
 
-	public FalloutCopy( final IMeteoriteWorld w, final int x, final int y, final int z, final MeteoriteBlockPutter putter, final IBlockDefinition skyStoneDefinition )
+	public FalloutCopy(final IWorld w, BlockPos pos, final MeteoriteBlockPutter putter, final BlockState skyStone )
 	{
-		super( putter, skyStoneDefinition );
+		super( putter, skyStone );
 		this.putter = putter;
-		this.block = w.getBlockState( x, y, z );
+		this.block = w.getBlockState( pos );
 	}
 
 	@Override
-	public void getRandomFall( final IMeteoriteWorld w, final int x, final int y, final int z )
+	public void getRandomFall( final IWorld w, BlockPos pos )
 	{
 		final double a = Math.random();
 		if( a > SPECIFIED_BLOCK_THRESHOLD )
 		{
-			this.putter.put( w, x, y, z, this.block, 3 );
+			this.putter.put( w, pos, this.block );
 		}
 		else
 		{
-			this.getOther( w, x, y, z, a );
+			this.getOther( w, pos, a );
 		}
 	}
 
-	public void getOther( final IMeteoriteWorld w, final int x, final int y, final int z, final double a )
+	public void getOther( final IWorld w, BlockPos pos, final double a )
 	{
 
 	}
 
 	@Override
-	public void getRandomInset( final IMeteoriteWorld w, final int x, final int y, final int z )
+	public void getRandomInset( final IWorld w, BlockPos pos )
 	{
 		final double a = Math.random();
 		if( a > SPECIFIED_BLOCK_THRESHOLD )
 		{
-			this.putter.put( w, x, y, z, this.block, 3 );
+			this.putter.put( w, pos, this.block );
 		}
 		else if( a > AIR_BLOCK_THRESHOLD )
 		{
-			this.putter.put( w, x, y, z, Platform.AIR_BLOCK );
+			this.putter.put( w, pos, Blocks.AIR.getDefaultState() );
 		}
 		else
 		{
-			this.getOther( w, x, y, z, a - BLOCK_THRESHOLD_STEP );
+			this.getOther( w, pos, a - BLOCK_THRESHOLD_STEP );
 		}
 	}
 }

@@ -19,6 +19,7 @@
 package appeng.decorative.solid;
 
 
+import appeng.core.worlddata.WorldData;
 import net.minecraft.block.BlockState;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -26,6 +27,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -70,9 +72,9 @@ public class BlockSkyStone extends AEBaseBlock
 
 	@Override
 	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
-		if( Platform.isServer() )
+		if( worldIn instanceof ServerWorld)
 		{
-			// FIXME WorldData.instance().compassData().service().updateArea( worldIn, currentPos.getX(), currentPos.getY(), currentPos.getZ() );
+			WorldData.instance().compassData().service().updateArea((ServerWorld) worldIn, currentPos.getX(), currentPos.getY(), currentPos.getZ() );
 		}
 
 		return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
@@ -86,9 +88,9 @@ public class BlockSkyStone extends AEBaseBlock
 
 		super.onReplaced(state, w, pos, newState, isMoving);
 
-		if( Platform.isServer() )
+		if( w instanceof ServerWorld )
 		{
-			// FIXME WorldData.instance().compassData().service().updateArea( w, pos.getX(), pos.getY(), pos.getZ() );
+			WorldData.instance().compassData().service().updateArea((ServerWorld) w, pos.getX(), pos.getY(), pos.getZ() );
 		}
 	}
 
