@@ -61,12 +61,12 @@ public enum MaterialType
 	ENGINEERING_PROCESSOR_PRESS("engineering_processor_press", EnumSet.of( AEFeature.PRESSES ) ),
 	LOGIC_PROCESSOR_PRESS("logic_processor_press", EnumSet.of( AEFeature.PRESSES ) ),
 
-	CALCULATION_PROCESSOR_PRINT("calculation_processor_print", EnumSet.of( AEFeature.PRINTED_CIRCUITS ) ),
-	ENGINEERING_PROCESSOR_PRINT("engineering_processor_print", EnumSet.of( AEFeature.PRINTED_CIRCUITS ) ),
-	LOGIC_PROCESSOR_PRINT("logic_processor_print", EnumSet.of( AEFeature.PRINTED_CIRCUITS ) ),
+	CALCULATION_PROCESSOR_PRINT("printed_calculation_processor", EnumSet.of( AEFeature.PRINTED_CIRCUITS ) ),
+	ENGINEERING_PROCESSOR_PRINT("printed_engineering_processor", EnumSet.of( AEFeature.PRINTED_CIRCUITS ) ),
+	LOGIC_PROCESSOR_PRINT("printed_logic_processor", EnumSet.of( AEFeature.PRINTED_CIRCUITS ) ),
 
 	SILICON_PRESS("silicon_press", EnumSet.of( AEFeature.PRESSES ) ),
-	SILICON_PRINT("silicon_print", EnumSet.of( AEFeature.PRINTED_CIRCUITS ) ),
+	SILICON_PRINT("printed_silicon", EnumSet.of( AEFeature.PRINTED_CIRCUITS ) ),
 
 	NAME_PRESS("name_press", EnumSet.of( AEFeature.PRESSES ) ),
 
@@ -85,14 +85,14 @@ public enum MaterialType
 	CARD_SPEED("speed_card", EnumSet.of( AEFeature.ADVANCED_CARDS ) ),
 	CARD_INVERTER("inverter_card", EnumSet.of( AEFeature.ADVANCED_CARDS ) ),
 
-	CELL2_SPATIAL_PART("spatial_cell2_part", EnumSet.of( AEFeature.SPATIAL_IO ) ),
-	CELL16_SPATIAL_PART("spatial_cell16_part", EnumSet.of( AEFeature.SPATIAL_IO ) ),
-	CELL128_SPATIAL_PART("spatial_cell128_part", EnumSet.of( AEFeature.SPATIAL_IO ) ),
+	SPATIAL_2_CELL_COMPONENT("2_cubed_spatial_cell_component", EnumSet.of( AEFeature.SPATIAL_IO ) ),
+	SPATIAL_16_CELL_COMPONENT("16_cubed_spatial_cell_component", EnumSet.of( AEFeature.SPATIAL_IO ) ),
+	SPATIAL_128_CELL_COMPONENT("128_cubed_spatial_cell_component", EnumSet.of( AEFeature.SPATIAL_IO ) ),
 
-	CELL1K_PART("cell1k_part", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
-	CELL4K_PART("cell4k_part", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
-	CELL16K_PART("cell16k_part", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
-	CELL64K_PART("cell64k_part", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
+	ITEM_1K_CELL_COMPONENT("1k_cell_component", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
+	ITEM_4K_CELL_COMPONENT("4k_cell_component", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
+	ITEM_16K_CELL_COMPONENT("16k_cell_component", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
+	ITEM_64K_CELL_COMPONENT("64k_cell_component", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
 	EMPTY_STORAGE_CELL("empty_storage_cell", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
 
 	WOODEN_GEAR("wooden_gear", EnumSet.of( AEFeature.GRIND_STONE ), "gearWood" ),
@@ -112,10 +112,10 @@ public enum MaterialType
 	BLANK_PATTERN("blank_pattern", EnumSet.of( AEFeature.PATTERNS ) ),
 	CARD_CRAFTING("crafting_card", EnumSet.of( AEFeature.ADVANCED_CARDS, AEFeature.CRAFTING_CPU ) ),
 
-	FLUID_CELL1K_PART("fluid_cell1k_part", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
-	FLUID_CELL4K_PART("fluid_cell4k_part", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
-	FLUID_CELL16K_PART("fluid_cell16k_part", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
-	FLUID_CELL64K_PART("fluid_cell64k_part", EnumSet.of( AEFeature.STORAGE_CELLS ) );
+	FLUID_1K_CELL_COMPONENT("1k_fluid_cell_component", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
+	FLUID_4K_CELL_COMPONENT("4k_fluid_cell_component", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
+	FLUID_16K_CELL_COMPONENT("16k_fluid_cell_component", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
+	FLUID_64K_CELL_COMPONENT("64k_fluid_cell_component", EnumSet.of( AEFeature.STORAGE_CELLS ) );
 
 	private final Set<AEFeature> features;
 	private final ResourceLocation registryName;

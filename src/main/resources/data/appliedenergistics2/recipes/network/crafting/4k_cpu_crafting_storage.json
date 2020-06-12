@@ -1,0 +1,14 @@
+{
+  "result": {
+    "item": "appliedenergistics2:4k_crafting_storage"
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "appliedenergistics2:4k_cell_component"
+    },
+    {
+      "item": "appliedenergistics2:crafting_unit"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "appliedenergistics2:item/material_silicon"
+        "layer0": "appliedenergistics2:item/silicon"
     }
 }

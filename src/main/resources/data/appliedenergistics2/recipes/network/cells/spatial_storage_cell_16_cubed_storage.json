@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "appliedenergistics2:spatial_storage_cell_16_cubed"
+    "item": "appliedenergistics2:16_cubed_spatial_storage_cell"
   },
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
@@ -8,7 +8,7 @@
       "item": "appliedenergistics2:empty_storage_cell"
     },
     {
-      "item": "appliedenergistics2:spatial_cell16_part"
+      "item": "appliedenergistics2:16_cubed_spatial_cell_component"
     }
   ]
 }

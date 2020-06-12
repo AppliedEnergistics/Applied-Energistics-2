@@ -440,22 +440,22 @@ public final class ApiBlocks implements IBlocks
 
 		TileEntityDefinition craftingStorage = registry.tileEntity("crafting_storage", TileCraftingStorageTile.class, TileCraftingStorageTile::new)
 				.build();
-		this.craftingStorage1k = crafting.block( "crafting_storage_1k", () -> new BlockCraftingStorage( craftingBlockProps, CraftingUnitType.STORAGE_1K ) )
+		this.craftingStorage1k = crafting.block( "1k_crafting_storage", () -> new BlockCraftingStorage( craftingBlockProps, CraftingUnitType.STORAGE_1K ) )
 				.item( ItemCraftingStorage::new )
 				.tileEntity(craftingStorage)
 				.rendering( new CraftingCubeRendering() )
 				.build();
-		this.craftingStorage4k = crafting.block( "crafting_storage_4k", () -> new BlockCraftingStorage( craftingBlockProps, CraftingUnitType.STORAGE_4K ) )
+		this.craftingStorage4k = crafting.block( "4k_crafting_storage", () -> new BlockCraftingStorage( craftingBlockProps, CraftingUnitType.STORAGE_4K ) )
 				.item( ItemCraftingStorage::new )
 				.tileEntity(craftingStorage)
 				.rendering( new CraftingCubeRendering() )
 				.build();
-		this.craftingStorage16k = crafting.block( "crafting_storage_16k", () -> new BlockCraftingStorage( craftingBlockProps, CraftingUnitType.STORAGE_16K ) )
+		this.craftingStorage16k = crafting.block( "16k_crafting_storage", () -> new BlockCraftingStorage( craftingBlockProps, CraftingUnitType.STORAGE_16K ) )
 				.item( ItemCraftingStorage::new )
 				.tileEntity(craftingStorage)
 				.rendering( new CraftingCubeRendering() )
 				.build();
-		this.craftingStorage64k = crafting.block( "crafting_storage_64k", () -> new BlockCraftingStorage( craftingBlockProps, CraftingUnitType.STORAGE_64K ) )
+		this.craftingStorage64k = crafting.block( "64k_crafting_storage", () -> new BlockCraftingStorage( craftingBlockProps, CraftingUnitType.STORAGE_64K ) )
 				.item( ItemCraftingStorage::new )
 				.tileEntity(craftingStorage)
 				.rendering( new CraftingCubeRendering() )

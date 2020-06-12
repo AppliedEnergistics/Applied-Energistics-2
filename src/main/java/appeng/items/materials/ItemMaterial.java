@@ -239,13 +239,13 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 	{
 		switch( materialType )
 		{
-			case CELL1K_PART:
+			case ITEM_1K_CELL_COMPONENT:
 				return KILO_SCALAR;
-			case CELL4K_PART:
+			case ITEM_4K_CELL_COMPONENT:
 				return KILO_SCALAR * 4;
-			case CELL16K_PART:
+			case ITEM_16K_CELL_COMPONENT:
 				return KILO_SCALAR * 16;
-			case CELL64K_PART:
+			case ITEM_64K_CELL_COMPONENT:
 				return KILO_SCALAR * 64;
 			default:
 		}
@@ -257,10 +257,10 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 	{
 		switch( materialType )
 		{
-			case CELL1K_PART:
-			case CELL4K_PART:
-			case CELL16K_PART:
-			case CELL64K_PART:
+			case ITEM_1K_CELL_COMPONENT:
+			case ITEM_4K_CELL_COMPONENT:
+			case ITEM_16K_CELL_COMPONENT:
+			case ITEM_64K_CELL_COMPONENT:
 				return true;
 			default:
 		}

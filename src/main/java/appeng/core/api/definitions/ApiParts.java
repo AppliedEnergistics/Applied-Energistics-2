@@ -326,14 +326,6 @@ public final class ApiParts implements IParts
 		return this.p2PTunnelLight;
 	}
 
-	/*
-	 * @Override
-	 * public IItemDefinition p2PTunnelOpenComputers()
-	 * {
-	 * return this.p2PTunnelOpenComputers;
-	 * }
-	 */
-
 	@Override
 	public IItemDefinition cableAnchor()
 	{

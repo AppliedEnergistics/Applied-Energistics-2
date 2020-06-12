@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "appliedenergistics2:cell64k_part"
+    "item": "appliedenergistics2:64k_cell_component"
   },
   "type": "minecraft:crafting_shaped",
   "pattern": [
@@ -13,7 +13,7 @@
       "item": "appliedenergistics2:calculation_processor"
     },
     "c": {
-      "item": "appliedenergistics2:cell16k_part"
+      "item": "appliedenergistics2:16k_cell_component"
     },
     "d": {
       "item": "appliedenergistics2:quartz_glass"

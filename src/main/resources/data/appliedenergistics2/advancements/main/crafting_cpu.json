@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "appliedenergistics2:crafting_storage_64k"
+      "item": "appliedenergistics2:64k_crafting_storage"
     },
     "title": {
       "translate": "achievement.ae2.CraftingCPU"
@@ -17,7 +17,7 @@
       "conditions": {
         "items": [
           {
-            "item": "appliedenergistics2:crafting_storage_1k"
+            "item": "appliedenergistics2:1k_crafting_storage"
           }
         ]
       }
@@ -27,7 +27,7 @@
       "conditions": {
         "items": [
           {
-            "item": "appliedenergistics2:crafting_storage_4k"
+            "item": "appliedenergistics2:4k_crafting_storage"
           }
         ]
       }
@@ -37,7 +37,7 @@
       "conditions": {
         "items": [
           {
-            "item": "appliedenergistics2:crafting_storage_16k"
+            "item": "appliedenergistics2:16k_crafting_storage"
           }
         ]
       }
@@ -47,7 +47,7 @@
       "conditions": {
         "items": [
           {
-            "item": "appliedenergistics2:crafting_storage_64k"
+            "item": "appliedenergistics2:64k_crafting_storage"
           }
         ]
       }
