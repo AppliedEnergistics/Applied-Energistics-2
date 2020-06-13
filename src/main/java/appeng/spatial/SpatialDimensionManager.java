@@ -16,15 +16,12 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.core.worlddata;
+package appeng.spatial;
 
 
 import appeng.api.storage.ISpatialDimension;
 import appeng.core.AELog;
 import appeng.core.AppEng;
-import appeng.spatial.StorageCellDimension;
-import appeng.spatial.StorageCellModDimension;
-import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
@@ -51,8 +48,7 @@ public class SpatialDimensionManager implements ISpatialDimension
 		ResourceLocation dimKey = findFreeDimensionId();
 		AELog.info("Allocating storage cell dimension '%s' for %d", dimKey);
 
-		PacketBuffer extraData = new PacketBuffer(Unpooled.buffer());
-		extraData.writeBlockPos(contentSize);
+		PacketBuffer extraData = SpatialDimensionExtraData.create(contentSize);
 
 		return DimensionManager.registerDimension(dimKey, StorageCellModDimension.INSTANCE, extraData, true);
 	}
@@ -100,10 +96,6 @@ public class SpatialDimensionManager implements ISpatialDimension
 		DimensionManager.unregisterDimension(cellDim.getId());
 	}
 
-	private static MinecraftServer getServer() {
-		return ServerLifecycleHooks.getCurrentServer();
-	}
-
 	@Override
 	public boolean isCellDimension( DimensionType cellDim )
 	{
@@ -128,12 +120,11 @@ public class SpatialDimensionManager implements ISpatialDimension
 			return BlockPos.ZERO;
 		}
 
-		PacketBuffer data = cellDim.getData();
-		if (data == null) {
-			return BlockPos.ZERO;
-		}
-		data.readerIndex(4);
-		return data.readBlockPos();
+		return SpatialDimensionExtraData.getContentSize(cellDim.getData());
+	}
+
+	private static MinecraftServer getServer() {
+		return ServerLifecycleHooks.getCurrentServer();
 	}
 
 }

@@ -25,7 +25,7 @@ import appeng.api.storage.ISpatialDimension;
 import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
-import appeng.core.worlddata.SpatialDimensionManager;
+import appeng.spatial.SpatialDimensionManager;
 import appeng.items.AEBaseItem;
 import appeng.spatial.StorageHelper;
 import net.minecraft.client.util.ITooltipFlag;
