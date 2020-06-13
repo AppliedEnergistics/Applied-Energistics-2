@@ -19,6 +19,7 @@
 package appeng.entity;
 
 
+import appeng.items.misc.ItemCrystalSeed;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityType;
@@ -204,7 +205,11 @@ public final class EntityGrowingCrystal extends AEBaseEntityItem
 	// Don't let seeds "float" on water surface
 	@Override
 	protected void applyFloatMotion() {
+		ItemStack item = getItem();
+		if (item.getItem() instanceof ItemCrystalSeed) {
+			return;
+		}
+		super.applyFloatMotion();
 	}
-
 
 }
