@@ -24,14 +24,20 @@ import appeng.worldgen.MeteoriteSpawner;
 import appeng.worldgen.PlacedMeteoriteSettings;
 import appeng.worldgen.meteorite.StandardWorld;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.network.play.server.SChunkDataPacket;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 import appeng.items.AEBaseItem;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ChunkSection;
+import net.minecraft.world.server.ServerWorld;
 
 
 public class ToolMeteoritePlacer extends AEBaseItem
@@ -48,8 +54,8 @@ public class ToolMeteoritePlacer extends AEBaseItem
 			return ActionResultType.PASS;
 		}
 
-		PlayerEntity player = context.getPlayer();
-		World world = context.getWorld();
+		ServerPlayerEntity player = (ServerPlayerEntity) context.getPlayer();
+		ServerWorld world = (ServerWorld) context.getWorld();
 		BlockPos pos = context.getPos();
 
 		if (player == null) {
@@ -67,6 +73,14 @@ public class ToolMeteoritePlacer extends AEBaseItem
 
 		final MeteoritePlacer placer = new MeteoritePlacer(world, spawned);
 		placer.place();
+
+		// The placer will not send chunks to the player since it's used as part
+		// of world-gen normally, so we'll have to do it ourselves. Since this
+		// is a debug tool, we'll not care about being terribly efficient here
+		ChunkPos.getAllInBox(new ChunkPos(spawned.getPos()), 1).forEach(cp -> {
+			Chunk c = world.getChunk(cp.x, cp.z);
+			player.connection.sendPacket(new SChunkDataPacket(c, 65535)); // 65535 == full chunk
+		});
 
 		return ActionResultType.SUCCESS;
 	}
