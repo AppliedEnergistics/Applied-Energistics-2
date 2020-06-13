@@ -1,0 +1,3 @@
+*         text=auto eol=lf
+*.java    text diff=java eol=lf
+*.gradle  text diff=java eol=lf
