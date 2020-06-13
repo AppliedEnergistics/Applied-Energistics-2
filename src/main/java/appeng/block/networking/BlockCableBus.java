@@ -222,7 +222,7 @@ public class BlockCableBus extends AEBaseTileBlock<TileCableBus> /* FIXME implem
 			double z = target.getHitVec().z;
 			// FIXME: Check how this looks, probably like shit, maybe provide parts the ability to supply particle textures???
 			effectRenderer.addEffect(new CableBusBreakingParticle(world, x, y, z, texture)
-					.multipleParticleScaleBy(0.8F));
+					.multiplyParticleScaleBy(0.8F));
 		}
 
 		return true;

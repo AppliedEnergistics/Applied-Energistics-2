@@ -1,5 +1,6 @@
 package appeng.spatial;
 
+import appeng.core.AELog;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
@@ -14,32 +15,51 @@ import javax.annotation.Nullable;
  */
 public final class SpatialDimensionExtraData {
 
-    private static final int FORMAT_VERSION = 1;
-    private static final int OFFSET_VERSION = 0;
-    private static final int OFFSET_CONTENT_SIZE = 1;
+    // Used to allow forward compatibility
+    private static final int CURRENT_FORMAT = 1;
 
-    private SpatialDimensionExtraData() {
+    /**
+     * The storage size of this dimension. This is dicateted by the pylon structure size used to perform
+     * the first transfer into this dimension. Once it's set, it cannot be changed anymore.
+     */
+    private final BlockPos size;
+
+    public SpatialDimensionExtraData(BlockPos size) {
+        this.size = size;
     }
 
-    public static PacketBuffer create(BlockPos contentSize) {
-        PacketBuffer extraData = new PacketBuffer(Unpooled.buffer());
-        extraData.writeByte(FORMAT_VERSION);
-        extraData.writeBlockPos(contentSize);
-        // Cut the buffer to minimal size
-        extraData.capacity(extraData.writerIndex());
-        return extraData;
+    public PacketBuffer write() {
+        PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
+        buf.writeByte(CURRENT_FORMAT);
+        buf.writeBlockPos(size);
+        buf.capacity(buf.writerIndex()); // This cuts the backing buffer to the required size
+        return buf;
     }
 
-    private static boolean checkVersion(PacketBuffer data){
-        return data.getByte(OFFSET_VERSION) == FORMAT_VERSION;
+    public BlockPos getSize() {
+        return size;
     }
 
-    public static BlockPos getContentSize(@Nullable PacketBuffer data) {
-        if (data == null || !checkVersion(data)) {
-            return BlockPos.ZERO;
+    @Nullable
+    public static SpatialDimensionExtraData read(@Nullable PacketBuffer buf) {
+        if (buf == null) {
+            return null;
         }
 
-        data.readerIndex(OFFSET_CONTENT_SIZE);
-        return data.readBlockPos();
+        try {
+            buf.readerIndex(0);
+            byte version = buf.readByte();
+            if (version != CURRENT_FORMAT) {
+                // Currently no new format has been defined, as such anything but the current version is invalid
+                return null;
+            }
+
+            BlockPos size = buf.readBlockPos();
+            return new SpatialDimensionExtraData(size);
+        } catch (IndexOutOfBoundsException e) {
+            AELog.warn(e, "Failed to read spatial storage dimension data.");
+            return null;
+        }
     }
+
 }

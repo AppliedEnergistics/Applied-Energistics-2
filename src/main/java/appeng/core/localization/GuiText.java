@@ -92,8 +92,10 @@ public enum GuiText
 	QuartzCuttingKnife,
 
 	// spatial
+	SpatialCapacity,
 	StoredSize,
-	CellId,
+	Unformatted,
+	SerialNumber,
 
 	CopyMode,
 	CopyModeDesc,
@@ -213,6 +215,10 @@ public enum GuiText
 
 	public ITextComponent textComponent() {
 		return new TranslationTextComponent(getTranslationKey());
+	}
+
+	public ITextComponent textComponent(Object... args) {
+		return new TranslationTextComponent(getTranslationKey(), args);
 	}
 
 }

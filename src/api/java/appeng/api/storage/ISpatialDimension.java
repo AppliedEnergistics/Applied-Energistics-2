@@ -20,11 +20,13 @@ package appeng.api.storage;
 
 
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 
 public interface ISpatialDimension
@@ -32,7 +34,7 @@ public interface ISpatialDimension
 	ServerWorld getWorld(DimensionType cellDim );
 
 	@Nullable
-	DimensionType createNewCellDimension(BlockPos contentSize);
+	DimensionType createNewCellDimension(BlockPos capacity);
 
 	void deleteCellDimension( DimensionType cellDim );
 
@@ -40,5 +42,12 @@ public interface ISpatialDimension
 
 	BlockPos getCellDimensionOrigin( DimensionType cellDim );
 
-	BlockPos getCellContentSize( DimensionType cellDim );
+	BlockPos getCellDimensionSize(DimensionType cellDim );
+
+	/**
+	 * Adds a user-facing tooltip that describes this dimension so that a player
+	 * can keep storage cells apart.
+	 */
+	void addCellDimensionTooltip(DimensionType cellDim, List<ITextComponent> lines);
+
 }

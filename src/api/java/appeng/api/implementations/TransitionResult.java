@@ -33,9 +33,9 @@ public class TransitionResult
 	public final boolean success;
 	public final double energyUsage;
 
-	public TransitionResult( final boolean _success, final double power )
+	public TransitionResult( final boolean success, final double power )
 	{
-		this.success = _success;
+		this.success = success;
 		this.energyUsage = power;
 	}
 }

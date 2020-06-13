@@ -15,18 +15,19 @@ public class SpatialDimensionExtraDataTest {
      */
     @Test
     public void testCreatedBufferSize() {
-        PacketBuffer buffer = SpatialDimensionExtraData.create(BlockPos.ZERO);
-        assertEquals(9, buffer.array().length);
+        PacketBuffer buffer = new SpatialDimensionExtraData(BlockPos.ZERO).write();
+        assertEquals(1 + 8 + 8, buffer.array().length);
     }
 
     @Test
     public void testReadWriteSize() {
-        BlockPos pos = new BlockPos(1, 2, 3);
-        PacketBuffer buffer = SpatialDimensionExtraData.create(pos);
+        BlockPos capacity = new BlockPos(1, 2, 3);
+        PacketBuffer buffer = new SpatialDimensionExtraData(capacity).write();
 
         PacketBuffer readBackBuf = new PacketBuffer(Unpooled.wrappedBuffer(buffer.array()));
-        BlockPos actualPos = SpatialDimensionExtraData.getContentSize(readBackBuf);
-        assertEquals(pos, actualPos);
+        SpatialDimensionExtraData extraData = SpatialDimensionExtraData.read(readBackBuf);
+        assertNotNull(extraData);
+        assertEquals(capacity, extraData.getSize());
     }
 
     /**
@@ -34,14 +35,12 @@ public class SpatialDimensionExtraDataTest {
      */
     @Test
     public void testHandleInvalidFormatVersion() {
-        BlockPos pos = new BlockPos(1, 2, 3);
-        PacketBuffer buffer = SpatialDimensionExtraData.create(pos);
+        PacketBuffer buffer = new SpatialDimensionExtraData(BlockPos.ZERO).write();
         buffer.writerIndex(0);
         buffer.writeByte(5);
 
         PacketBuffer readBackBuf = new PacketBuffer(Unpooled.wrappedBuffer(buffer.array()));
-        BlockPos actualPos = SpatialDimensionExtraData.getContentSize(readBackBuf);
-        assertEquals(BlockPos.ZERO, actualPos);
+        assertNull(SpatialDimensionExtraData.read(readBackBuf));
     }
 
 }

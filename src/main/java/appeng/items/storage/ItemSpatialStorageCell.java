@@ -34,6 +34,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -58,11 +60,17 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	@Override
 	public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
 	{
+		final DimensionType dimType = this.getStoredDimension(stack);
+		if (dimType == null) {
+			lines.add(GuiText.Unformatted.textComponent().applyTextStyle(TextFormatting.ITALIC));
+			lines.add( GuiText.SpatialCapacity.textComponent(maxRegion, maxRegion, maxRegion));
+		} else {
+			SpatialDimensionManager.INSTANCE.addCellDimensionTooltip(dimType, lines);
+		}
+
 		if (advancedTooltips.isAdvanced()) {
-			final DimensionType dimType = this.getStoredDimension(stack);
 			if (dimType != null && dimType.getRegistryName() != null) {
-				String ae2Id = dimType.getRegistryName().getPath();
-				lines.add(GuiText.CellId.textComponent().appendText(": " + ae2Id));
+				lines.add(new StringTextComponent("Dimension: " + dimType.getRegistryName()));
 			}
 		}
 	}
@@ -105,7 +113,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 
 		final BlockPos targetSize = new BlockPos( targetX, targetY, targetZ );
 
-		ISpatialDimension manager = new SpatialDimensionManager();
+		ISpatialDimension manager = SpatialDimensionManager.INSTANCE;
 
 		DimensionType storedDim = this.getStoredDimension( is );
 		if( storedDim == null )
@@ -124,7 +132,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 			{
 				World cellWorld = manager.getWorld(storedDim);
 
-				BlockPos scale = manager.getCellContentSize( storedDim );
+				BlockPos scale = manager.getCellDimensionSize( storedDim );
 
 				if( scale.equals( targetSize ) )
 				{

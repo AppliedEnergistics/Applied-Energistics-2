@@ -20,11 +20,14 @@ package appeng.capabilities;
 
 
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
 import appeng.api.storage.ISpatialDimension;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
+
+import java.util.List;
 
 
 class NullSpatialDimension implements ISpatialDimension
@@ -47,6 +50,15 @@ class NullSpatialDimension implements ISpatialDimension
 	}
 
 	@Override
+	public BlockPos getCellDimensionSize(DimensionType cellDim) {
+		return BlockPos.ZERO;
+	}
+
+    @Override
+    public void addCellDimensionTooltip(DimensionType cellDim, List<ITextComponent> tooltip) {
+    }
+
+    @Override
 	public ServerWorld getWorld(DimensionType cellStorageId )
 	{
 		return null;
@@ -56,11 +68,5 @@ class NullSpatialDimension implements ISpatialDimension
 	public boolean isCellDimension( DimensionType cellDimID )
 	{
 		return false;
-	}
-
-	@Override
-	public BlockPos getCellContentSize( DimensionType cellDimId )
-	{
-		return null;
 	}
 }
