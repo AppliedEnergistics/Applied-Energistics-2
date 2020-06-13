@@ -11,10 +11,12 @@ import net.minecraft.block.Block;
 import net.minecraft.data.DirectoryCache;
 import net.minecraft.data.IDataProvider;
 import net.minecraft.data.loot.BlockLootTables;
-import net.minecraft.item.Items;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.conditions.SurvivesExplosion;
+import net.minecraft.world.storage.loot.functions.ApplyBonus;
+import net.minecraft.world.storage.loot.functions.SetCount;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -29,8 +31,26 @@ public class BlockDropProvider extends BlockLootTables implements IAE2DataProvid
 {
 	private Map<Block, Function<Block, LootTable.Builder>> overrides = ImmutableMap.<Block, Function<Block, LootTable.Builder>>builder()
 			.put( BLOCKS.matrixFrame().block(), $ -> LootTable.builder() )
-			.put( BLOCKS.quartzOre().block(), b -> droppingItemWithFortune( b, Items.QUARTZ ) ) // FIXME replace with the material reference
-			.put( BLOCKS.quartzOreCharged().block(), b -> droppingItemWithFortune( b, Items.LAPIS_LAZULI ) ) // FIXME replace with the material reference
+			.put( BLOCKS.quartzOre().block(), b ->
+					droppingWithSilkTouch(BLOCKS.quartzOre().block(),
+							withExplosionDecay(
+									BLOCKS.quartzOre().block(),
+									ItemLootEntry.builder(MATERIALS.certusQuartzCrystal().item())
+											.acceptFunction(SetCount.builder(RandomValueRange.of(1.0F, 2.0F)))
+											.acceptFunction(ApplyBonus.uniformBonusCount(Enchantments.FORTUNE))
+							)
+					)
+			)
+			.put( BLOCKS.quartzOreCharged().block(), b ->
+					droppingWithSilkTouch(BLOCKS.quartzOreCharged().block(),
+							withExplosionDecay(
+									BLOCKS.quartzOreCharged().block(),
+									ItemLootEntry.builder(MATERIALS.certusQuartzCrystalCharged().item())
+											.acceptFunction(SetCount.builder(RandomValueRange.of(1.0F, 2.0F)))
+											.acceptFunction(ApplyBonus.uniformBonusCount(Enchantments.FORTUNE))
+							)
+					)
+			)
 			.build();
 
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
