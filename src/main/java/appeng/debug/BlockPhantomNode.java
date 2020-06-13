@@ -39,7 +39,7 @@ public class BlockPhantomNode extends AEBaseTileBlock<TilePhantomNode>
 
 	public BlockPhantomNode()
 	{
-		super( Block.Properties.create(Material.IRON) );
+		super( defaultProps(Material.IRON) );
 	}
 
 	@Override

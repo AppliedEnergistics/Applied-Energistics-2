@@ -30,7 +30,7 @@ public class BlockItemGen extends AEBaseTileBlock<TileItemGen>
 
 	public BlockItemGen()
 	{
-		super( Block.Properties.create(Material.IRON) );
+		super( defaultProps(Material.IRON) );
 	}
 
 }

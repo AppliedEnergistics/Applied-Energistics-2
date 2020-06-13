@@ -121,11 +121,11 @@ public final class ApiMaterials implements IMaterials
 		this.registry = registry;
 
 		EntitySingularity.TYPE = registry.<EntitySingularity>entity("singularity", EntitySingularity::new, EntityClassification.MISC)
-				.customize(builder -> builder.setTrackingRange(16).setUpdateInterval(4).setShouldReceiveVelocityUpdates(true))
+				.customize(builder -> builder.size(0.2f, 0.2f).setTrackingRange(16).setUpdateInterval(4).setShouldReceiveVelocityUpdates(true))
 				.build();
 
 		EntityChargedQuartz.TYPE = registry.<EntityChargedQuartz>entity("charged_quartz", EntityChargedQuartz::new, EntityClassification.MISC)
-				.customize(builder -> builder.setTrackingRange(16).setUpdateInterval(4).setShouldReceiveVelocityUpdates(true))
+				.customize(builder -> builder.size(0.2f, 0.2f).setTrackingRange(16).setUpdateInterval(4).setShouldReceiveVelocityUpdates(true))
 				.build();
 
 		this.cell2SpatialPart = createMaterial(MaterialType.SPATIAL_2_CELL_COMPONENT );

@@ -19,46 +19,44 @@
 package appeng.block.misc;
 
 
-import java.util.Random;
-import java.util.function.Function;
-
-import javax.annotation.Nullable;
-
+import appeng.api.AEApi;
+import appeng.api.util.AEAxisAlignedBB;
+import appeng.block.AEBaseTileBlock;
+import appeng.client.render.effects.LightningFX;
+import appeng.client.render.renderable.ItemRenderable;
+import appeng.client.render.tesr.ModularTESR;
+import appeng.core.AEConfig;
+import appeng.core.AppEng;
+import appeng.tile.misc.TileCharger;
+import appeng.util.Platform;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.TransformationMatrix;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.Matrix4f;
-import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
-import appeng.api.AEApi;
-import appeng.api.util.AEAxisAlignedBB;
-import appeng.block.AEBaseTileBlock;
-import appeng.client.render.renderable.ItemRenderable;
-import appeng.client.render.tesr.ModularTESR;
-import appeng.core.AEConfig;
-import appeng.core.AppEng;
-import appeng.tile.AEBaseTile;
-import appeng.tile.misc.TileCharger;
-import appeng.util.Platform;
+import javax.annotation.Nullable;
+import java.util.Random;
+import java.util.function.Function;
 
 
 public class BlockCharger extends AEBaseTileBlock<TileCharger>
@@ -66,7 +64,7 @@ public class BlockCharger extends AEBaseTileBlock<TileCharger>
 
 	public BlockCharger()
 	{
-		super( Properties.create(Material.IRON).notSolid() );
+		super( defaultProps(Material.IRON).notSolid() );
 
 		this.setFullSize( this.setOpaque( false ) );
 	}
@@ -110,12 +108,10 @@ public class BlockCharger extends AEBaseTileBlock<TileCharger>
 			return;
 		}
 
-		final AEBaseTile tile = this.getTileEntity( w, pos );
-		if( tile instanceof TileCharger )
+		final TileCharger tile = this.getTileEntity( w, pos );
+		if(tile != null)
 		{
-			final TileCharger tc = (TileCharger) tile;
-
-			if( AEApi.instance().definitions().materials().certusQuartzCrystalCharged().isSameAs( tc.getInternalInventory().getStackInSlot( 0 ) ) )
+			if( AEApi.instance().definitions().materials().certusQuartzCrystalCharged().isSameAs( tile.getInternalInventory().getStackInSlot( 0 ) ) )
 			{
 				final double xOff = 0.0;
 				final double yOff = 0.0;
@@ -125,9 +121,9 @@ public class BlockCharger extends AEBaseTileBlock<TileCharger>
 				{
 					if( AppEng.proxy.shouldAddParticles( r ) )
 					{
-// FIXME						final LightningFX fx = new LightningFX( w, xOff + 0.5 + pos.getX(), yOff + 0.5 + pos.getY(), zOff + 0.5 + pos
-// FIXME								.getZ(), 0.0D, 0.0D, 0.0D );
-// FIXME						Minecraft.getInstance().effectRenderer.addEffect( fx );
+						final LightningFX fx = new LightningFX( w, xOff + 0.5 + pos.getX(), yOff + 0.5 + pos.getY(), zOff + 0.5 + pos
+								.getZ(), 0.0, 0.0, 0.0 );
+						Minecraft.getInstance().particles.addEffect( fx );
 					}
 				}
 			}
@@ -202,10 +198,9 @@ public class BlockCharger extends AEBaseTileBlock<TileCharger>
 	}
 
 	@OnlyIn( Dist.CLIENT )
-	private static Pair<ItemStack, Matrix4f> getRenderedItem( TileCharger tile )
+	private static Pair<ItemStack, TransformationMatrix> getRenderedItem(TileCharger tile )
 	{
-		Matrix4f transform = new Matrix4f();
-		transform.translate( new Vector3f( 0.5f, 0.4f, 0.5f ) );
+		TransformationMatrix transform = new TransformationMatrix(new Vector3f( 0.5f, 0.375f, 0.5f ), null, null, null);
 		return new ImmutablePair<>( tile.getInternalInventory().getStackInSlot( 0 ), transform );
 	}
 

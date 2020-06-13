@@ -27,7 +27,7 @@ import net.minecraft.block.material.Material;
 public class BlockChunkloader extends AEBaseTileBlock<TileChunkLoader> {
 
     public BlockChunkloader() {
-        super(Block.Properties.create(Material.IRON));
+        super(defaultProps(Material.IRON));
     }
 
 }

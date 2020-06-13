@@ -35,7 +35,7 @@ public class BlockSpatialPylon extends AEBaseTileBlock<TileSpatialPylon>
 
 	public BlockSpatialPylon()
 	{
-		super( Properties.create(AEGlassMaterial.INSTANCE) );
+		super( defaultProps(AEGlassMaterial.INSTANCE) );
 	}
 
 	@Override

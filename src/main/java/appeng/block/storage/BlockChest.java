@@ -52,7 +52,7 @@ public class BlockChest extends AEBaseTileBlock<TileChest>
 
 	public BlockChest()
 	{
-		super( Properties.create(Material.IRON) );
+		super( defaultProps(Material.IRON) );
 		this.setDefaultState( this.getDefaultState().with( SLOT_STATE, DriveSlotState.EMPTY ) );
 	}
 

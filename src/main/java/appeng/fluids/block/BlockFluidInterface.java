@@ -44,7 +44,7 @@ public class BlockFluidInterface extends AEBaseTileBlock<TileFluidInterface>
 {
 	public BlockFluidInterface()
 	{
-		super(Properties.create( Material.IRON ));
+		super(defaultProps( Material.IRON ));
 	}
 
 	@Override

@@ -48,7 +48,7 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock<TileQuartzGrow
 
 	public BlockQuartzGrowthAccelerator()
 	{
-		super( Properties.create(Material.ROCK).sound(SoundType.METAL) );
+		super( defaultProps(Material.ROCK).sound(SoundType.METAL) );
 		this.setDefaultState( this.getDefaultState().with( POWERED, false ) );
 	}
 

@@ -65,7 +65,7 @@ public class BlockQuantumLinkChamber extends BlockQuantumBase
 
 	public BlockQuantumLinkChamber()
 	{
-		super(Properties.create(AEGlassMaterial.INSTANCE) );
+		super(defaultProps(AEGlassMaterial.INSTANCE) );
 	}
 
 	@Override

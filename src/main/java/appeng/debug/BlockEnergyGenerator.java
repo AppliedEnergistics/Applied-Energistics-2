@@ -30,7 +30,7 @@ public class BlockEnergyGenerator extends AEBaseTileBlock<TileEnergyGenerator>
 
 	public BlockEnergyGenerator()
 	{
-		super( Block.Properties.create(Material.IRON) );
+		super( defaultProps(Material.IRON) );
 	}
 
 }

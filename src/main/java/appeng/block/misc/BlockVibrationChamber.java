@@ -56,7 +56,7 @@ public final class BlockVibrationChamber extends AEBaseTileBlock<TileVibrationCh
 
 	public BlockVibrationChamber()
 	{
-		super( Properties.create(Material.IRON).hardnessAndResistance(4.2F) );
+		super( defaultProps(Material.IRON).hardnessAndResistance(4.2F) );
 		this.setDefaultState( this.getDefaultState().with( ACTIVE, false ) );
 	}
 

@@ -37,7 +37,7 @@ public class BlockQuantumRing extends BlockQuantumBase {
     private static final VoxelShape SHAPE_FORMED = createShape(1.0 / 16.0);
 
     public BlockQuantumRing() {
-        super(Properties.create(Material.IRON));
+        super(defaultProps(Material.IRON));
     }
 
     @Override

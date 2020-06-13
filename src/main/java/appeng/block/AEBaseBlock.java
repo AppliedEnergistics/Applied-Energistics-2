@@ -21,9 +21,13 @@ package appeng.block;
 
 import javax.annotation.Nullable;
 
+import appeng.helpers.AEGlassMaterial;
 import appeng.util.Platform;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.material.MaterialColor;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
@@ -39,6 +43,7 @@ import net.minecraft.world.World;
 
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
+import net.minecraftforge.common.ToolType;
 
 
 public abstract class AEBaseBlock extends Block
@@ -53,29 +58,44 @@ public abstract class AEBaseBlock extends Block
 	protected AEBaseBlock( final Block.Properties props )
 	{
 		super( props );
+	}
 
-		// FIXME: Move to block registration
-		// FIXME if( mat == AEGlassMaterial.INSTANCE || mat == Material.GLASS )
-		// FIXME {
-		// FIXME 	this.setSoundType( SoundType.GLASS );
-		// FIXME }
-		// FIXME else if( mat == Material.ROCK )
-		// FIXME {
-		// FIXME 	this.setSoundType( SoundType.STONE );
-		// FIXME }
-		// FIXME else if( mat == Material.WOOD )
-		// FIXME {
-		// FIXME 	this.setSoundType( SoundType.WOOD );
-		// FIXME }
-		// FIXME else
-		// FIXME {
-		// FIXME 	this.setSoundType( SoundType.METAL );
-		// FIXME }
+	/**
+	 * Utility function to create block properties with some sensible defaults for AE blocks.
+	 */
+	public static Block.Properties defaultProps(Material material) {
+		return defaultProps(material, material.getColor());
+	}
 
-		// FIXME this.setLightOpacity( 255 );
-		// FIXME this.setLightLevel( 0 );
-		// FIXME this.setHardness( 2.2F );
-		// FIXME this.setHarvestLevel( "pickaxe", 0 );
+	/**
+	 * Utility function to create block properties with some sensible defaults for AE blocks.
+	 */
+	public static Block.Properties defaultProps(Material material, MaterialColor color) {
+		return Block.Properties.create(material, color)
+				// These values previousls were encoded in AEBaseBlock
+				.hardnessAndResistance(2.2f, 11.f)
+				.harvestTool(ToolType.PICKAXE)
+				.harvestLevel(0)
+				.sound(getDefaultSoundByMaterial(material));
+	}
+
+	private static SoundType getDefaultSoundByMaterial(Material mat) {
+		if( mat == AEGlassMaterial.INSTANCE || mat == Material.GLASS )
+		{
+			return SoundType.GLASS;
+		}
+		else if( mat == Material.ROCK )
+		{
+			return SoundType.STONE;
+		}
+		else if( mat == Material.WOOD )
+		{
+			return SoundType.WOOD;
+		}
+		else
+		{
+			return SoundType.METAL;
+		}
 	}
 
 	@Override

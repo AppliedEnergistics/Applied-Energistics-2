@@ -67,7 +67,7 @@ public class BlockWireless extends AEBaseTileBlock<TileWireless>
 
 	public BlockWireless()
 	{
-		super( Properties.create(AEGlassMaterial.INSTANCE).notSolid() );
+		super( defaultProps(AEGlassMaterial.INSTANCE).notSolid() );
 		this.setFullSize( false );
 		this.setOpaque( false );
 		this.setDefaultState( this.getDefaultState().with( STATE, State.OFF ) );

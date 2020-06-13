@@ -55,9 +55,9 @@ public class BlockTinyTNT extends AEBaseBlock
 
 	private static final VoxelShape SHAPE = VoxelShapes.create(new AxisAlignedBB( 0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f ));
 
-	public BlockTinyTNT()
+	public BlockTinyTNT(Block.Properties props)
 	{
-		super( Properties.create(Material.TNT).hardnessAndResistance(0).sound(SoundType.GROUND).notSolid() );
+		super(props);
 	}
 
 	@Override

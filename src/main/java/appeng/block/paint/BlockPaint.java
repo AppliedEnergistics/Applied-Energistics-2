@@ -45,7 +45,7 @@ public class BlockPaint extends AEBaseTileBlock<TilePaint>
 {
 	public BlockPaint()
 	{
-		super(Properties.create(Material.WATER, MaterialColor.AIR));
+		super(defaultProps(Material.WATER, MaterialColor.AIR));
 		this.setFullSize( false );
 		this.setOpaque( false );
 	}

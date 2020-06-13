@@ -57,6 +57,7 @@ import appeng.decorative.solid.*;
 import appeng.entity.EntityTinyTNTPrimed;
 import appeng.fluids.block.BlockFluidInterface;
 import appeng.fluids.tile.TileFluidInterface;
+import appeng.helpers.AEGlassMaterial;
 import appeng.hooks.DispenserBehaviorTinyTNT;
 import appeng.tile.crafting.TileCraftingMonitorTile;
 import appeng.tile.crafting.TileCraftingStorageTile;
@@ -83,6 +84,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ToolType;
 
+import static appeng.block.AEBaseBlock.defaultProps;
 import static appeng.block.crafting.AbstractCraftingUnitBlock.CraftingUnitType;
 import static appeng.decorative.solid.BlockSkyStone.SkystoneType;
 
@@ -169,10 +171,10 @@ public final class ApiBlocks implements IBlocks
 	private final IBlockDefinition cubeGenerator;
 	private final IBlockDefinition energyGenerator;
 
-	private static final Block.Properties QUARTZ_PROPERTIES = Block.Properties.create(Material.ROCK)
+	private static final Block.Properties QUARTZ_PROPERTIES = defaultProps(Material.ROCK)
 			.hardnessAndResistance(3, 5);
 
-	private static final Block.Properties SKYSTONE_PROPERTIES = Block.Properties.create( Material.ROCK )
+	private static final Block.Properties SKYSTONE_PROPERTIES = defaultProps( Material.ROCK )
 			.hardnessAndResistance( 50, 150 );
 
 	public ApiBlocks(FeatureFactory registry)
@@ -200,7 +202,7 @@ public final class ApiBlocks implements IBlocks
 		this.chiseledQuartzBlock = deco.block( "chiseled_quartz_block", () -> new AEDecorativeBlock(QUARTZ_PROPERTIES) ).build();
 
 		this.quartzGlass = registry.features( AEFeature.QUARTZ_GLASS )
-				.block( "quartz_glass", () -> new BlockQuartzGlass(Block.Properties.create(Material.GLASS).hardnessAndResistance(2.2F).sound(SoundType.GLASS).notSolid()) )
+				.block( "quartz_glass", () -> new BlockQuartzGlass(defaultProps(Material.GLASS).notSolid()) )
 				.rendering(new BlockRenderingCustomizer() {
 					@Override
 					@OnlyIn(Dist.CLIENT)
@@ -209,7 +211,7 @@ public final class ApiBlocks implements IBlocks
 					}
 				})
 				.build();
-		this.quartzVibrantGlass = deco.block( "quartz_vibrant_glass", () -> new BlockQuartzLamp(Block.Properties.create(Material.GLASS).hardnessAndResistance(2.2F).sound(SoundType.GLASS).lightValue(15).notSolid()) )
+		this.quartzVibrantGlass = deco.block( "quartz_vibrant_glass", () -> new BlockQuartzLamp(defaultProps(Material.GLASS).lightValue(15).notSolid()) )
 				.addFeatures( AEFeature.DECORATIVE_LIGHTS, AEFeature.QUARTZ_GLASS )
 				.rendering(new BlockRenderingCustomizer() {
 					@Override
@@ -234,7 +236,7 @@ public final class ApiBlocks implements IBlocks
 		this.fluixBlock = registry.features( AEFeature.FLUIX ).block( "fluix_block", () -> new AEDecorativeBlock(QUARTZ_PROPERTIES) ).build();
 
 		this.skyStoneBlock = registry.features( AEFeature.SKY_STONE )
-				.block( "sky_stone_block", () -> new BlockSkyStone( SkystoneType.STONE, Block.Properties.create(Material.ROCK)
+				.block( "sky_stone_block", () -> new BlockSkyStone( SkystoneType.STONE, defaultProps(Material.ROCK)
 						.hardnessAndResistance(50, 150)
 						.harvestLevel(3) ) )
 				.build();
@@ -249,7 +251,7 @@ public final class ApiBlocks implements IBlocks
 				.addFeatures( AEFeature.SKY_STONE )
 				.build();
 
-		Block.Properties skyStoneChestProps = Block.Properties.create(Material.ROCK)
+		Block.Properties skyStoneChestProps = defaultProps(Material.ROCK)
 				.hardnessAndResistance(50, 150)
 				.notSolid();
 
@@ -271,17 +273,17 @@ public final class ApiBlocks implements IBlocks
 				.tileEntity( skyChestTile )
 				.build();
 
-		this.skyCompass = registry.block( "sky_compass", () -> new BlockSkyCompass(Block.Properties.create(Material.MISCELLANEOUS)) )
+		this.skyCompass = registry.block( "sky_compass", () -> new BlockSkyCompass(defaultProps(Material.MISCELLANEOUS)) )
 				.features( AEFeature.METEORITE_COMPASS )
 				.tileEntity( registry.tileEntity("sky_compass", TileSkyCompass.class, TileSkyCompass::new)
 						.rendering( new SkyCompassRendering() )
 						.build() )
 				.build();
-		this.grindstone = registry.block( "grindstone", () -> new BlockGrinder(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.2f)) )
+		this.grindstone = registry.block( "grindstone", () -> new BlockGrinder(defaultProps(Material.ROCK).hardnessAndResistance(3.2f)) )
 				.features( AEFeature.GRIND_STONE )
 				.tileEntity( registry.tileEntity("grindstone", TileGrinder.class, TileGrinder::new ).build() )
 				.build();
-		this.crank = registry.block( "crank", () -> new BlockCrank(Block.Properties.create(Material.WOOD).harvestTool(ToolType.AXE).harvestLevel(0).notSolid()) )
+		this.crank = registry.block( "crank", () -> new BlockCrank(defaultProps(Material.WOOD).harvestTool(ToolType.AXE).harvestLevel(0).notSolid()) )
 				.features( AEFeature.GRIND_STONE )
 				.tileEntity( registry.tileEntity("crank", TileCrank.class, TileCrank::new )
 						.rendering(new TileEntityRenderingCustomizer<TileCrank>() {
@@ -293,7 +295,7 @@ public final class ApiBlocks implements IBlocks
 						})
 						.build() )
 				.build();
-		this.inscriber = registry.block( "inscriber", () -> new BlockInscriber(Block.Properties.create(Material.IRON).notSolid()) )
+		this.inscriber = registry.block( "inscriber", () -> new BlockInscriber(defaultProps(Material.IRON).notSolid()) )
 				.features( AEFeature.INSCRIBER )
 				.tileEntity( registry.tileEntity("inscriber", TileInscriber.class, TileInscriber::new)
 						.rendering(new InscriberRendering())
@@ -325,7 +327,7 @@ public final class ApiBlocks implements IBlocks
 				.setShouldReceiveVelocityUpdates(true))
 				.build();
 
-		this.tinyTNT = registry.block( "tiny_tnt", BlockTinyTNT::new )
+		this.tinyTNT = registry.block( "tiny_tnt", () -> new BlockTinyTNT(defaultProps(Material.TNT).sound(SoundType.GROUND).hardnessAndResistance(0).notSolid()) )
 				.features( AEFeature.TINY_TNT )
 				.bootstrap( ( block, item ) -> (IInitComponent) () -> DispenserBlock.registerDispenseBehavior( item,
 						new DispenserBehaviorTinyTNT() ) )
@@ -425,7 +427,7 @@ public final class ApiBlocks implements IBlocks
 				.build();
 
 		FeatureFactory crafting = registry.features( AEFeature.CRAFTING_CPU );
-		Block.Properties craftingBlockProps = Block.Properties.create(Material.IRON);
+		Block.Properties craftingBlockProps = defaultProps(Material.IRON);
 		this.craftingUnit = crafting.block( "crafting_unit", () -> new CraftingUnitBlock( craftingBlockProps, CraftingUnitType.UNIT ) )
 				.rendering( new CraftingCubeRendering() )
 				.tileEntity( craftingUnit )
@@ -483,7 +485,7 @@ public final class ApiBlocks implements IBlocks
 				})
 				.build();
 
-		this.molecularAssembler = registry.block( "molecular_assembler", () -> new BlockMolecularAssembler(Block.Properties.create(Material.IRON).notSolid()) )
+		this.molecularAssembler = registry.block( "molecular_assembler", () -> new BlockMolecularAssembler(defaultProps(Material.IRON).notSolid()) )
 				.features( AEFeature.MOLECULAR_ASSEMBLER )
 				.rendering(new BlockRenderingCustomizer() {
 					@OnlyIn(Dist.CLIENT)
@@ -603,10 +605,6 @@ public final class ApiBlocks implements IBlocks
 				.features( AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE )
 				.tileEntity( registry.tileEntity("debug_energy_gen", TileEnergyGenerator.class, TileEnergyGenerator::new).build() )
 				.build();
-	}
-
-	private Block createQuartzOreBlock() {
-		return new BlockQuartzOre(Block.Properties.create(Material.ROCK).hardnessAndResistance(3, 5));
 	}
 
 	@Override

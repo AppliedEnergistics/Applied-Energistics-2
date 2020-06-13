@@ -43,7 +43,7 @@ public class BlockCellWorkbench extends AEBaseTileBlock<TileCellWorkbench>
 
 	public BlockCellWorkbench()
 	{
-		super( Properties.create(Material.IRON) );
+		super( defaultProps(Material.IRON) );
 	}
 
 	@Override

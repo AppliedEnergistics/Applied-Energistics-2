@@ -45,7 +45,7 @@ public class BlockIOPort extends AEBaseTileBlock<TileIOPort>
 
 	public BlockIOPort()
 	{
-		super( Properties.create(Material.IRON) );
+		super( defaultProps(Material.IRON) );
 	}
 
 	@Override

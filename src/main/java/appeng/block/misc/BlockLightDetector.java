@@ -52,7 +52,7 @@ public class BlockLightDetector extends AEBaseTileBlock<TileLightDetector> imple
 
 	public BlockLightDetector()
 	{
-		super( Properties.create(Material.MISCELLANEOUS).notSolid() );
+		super( defaultProps(Material.MISCELLANEOUS).notSolid() );
 
 		this.setDefaultState( this.getDefaultState().with(BlockStateProperties.FACING, Direction.UP ).with( ODD, false ) );
 	}

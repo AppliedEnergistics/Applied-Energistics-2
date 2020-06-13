@@ -31,6 +31,6 @@ public class BlockEnergyAcceptor extends AEBaseTileBlock<TileEnergyAcceptor>
 
 	public BlockEnergyAcceptor()
 	{
-		super(Block.Properties.create(Material.IRON) );
+		super(defaultProps(Material.IRON) );
 	}
 }

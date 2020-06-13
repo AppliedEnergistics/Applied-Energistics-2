@@ -46,7 +46,7 @@ public class BlockCondenser extends AEBaseTileBlock<TileCondenser>
 
 	public BlockCondenser()
 	{
-		super( Properties.create(Material.IRON) );
+		super( defaultProps(Material.IRON) );
 	}
 
 	@Override

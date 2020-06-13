@@ -52,7 +52,7 @@ public class BlockInterface extends AEBaseTileBlock<TileInterface>
 
 	public BlockInterface()
 	{
-		super( Properties.create(Material.IRON) );
+		super( defaultProps(Material.IRON) );
 	}
 
 	@Override

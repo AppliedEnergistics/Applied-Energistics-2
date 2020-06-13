@@ -81,7 +81,7 @@ public class BlockQuartzFixture extends AEBaseBlock implements IOrientableBlock
 
 	public BlockQuartzFixture()
 	{
-		super(Block.Properties.create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0, 0).lightValue(14).sound(SoundType.GLASS));
+		super(defaultProps(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0).lightValue(14).sound(SoundType.GLASS));
 
 		this.setDefaultState( getDefaultState().with( FACING, Direction.UP ).with( ODD, false ) );
 		this.setFullSize( false );

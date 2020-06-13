@@ -43,7 +43,7 @@ public class BlockDrive extends AEBaseTileBlock<TileDrive>
 
 	public BlockDrive()
 	{
-		super( Properties.create(Material.IRON) );
+		super( defaultProps(Material.IRON) );
 	}
 
 	@Override

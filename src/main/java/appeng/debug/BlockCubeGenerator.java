@@ -39,7 +39,7 @@ public class BlockCubeGenerator extends AEBaseTileBlock<TileCubeGenerator>
 
 	public BlockCubeGenerator()
 	{
-		super(Block.Properties.create(Material.IRON) );
+		super(defaultProps(Material.IRON) );
 	}
 
 	@Override

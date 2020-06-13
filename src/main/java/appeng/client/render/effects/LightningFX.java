@@ -56,7 +56,7 @@ public class LightningFX extends SpriteTexturedParticle
 	private final double[] verticesWithUV = new double[3];
 	private boolean hasData = false;
 
-	private LightningFX( final World w, final double x, final double y, final double z, final double r, final double g, final double b )
+	public LightningFX( final World w, final double x, final double y, final double z, final double r, final double g, final double b )
 	{
 		this( w, x, y, z, r, g, b, 6 );
 		this.regen();

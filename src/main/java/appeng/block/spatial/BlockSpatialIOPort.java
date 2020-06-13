@@ -48,7 +48,7 @@ public class BlockSpatialIOPort extends AEBaseTileBlock<TileSpatialIOPort>
 
 	public BlockSpatialIOPort()
 	{
-		super( Properties.create(Material.IRON) );
+		super( defaultProps(Material.IRON) );
 	}
 
 	@Override

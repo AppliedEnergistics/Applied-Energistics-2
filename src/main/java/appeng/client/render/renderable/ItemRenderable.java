@@ -24,6 +24,7 @@ import java.util.function.Function;
 
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.BufferUtils;
@@ -36,9 +37,9 @@ import net.minecraft.tileentity.TileEntity;
 public class ItemRenderable<T extends TileEntity> implements Renderable<T>
 {
 
-	private final Function<T, Pair<ItemStack, Matrix4f>> f;
+	private final Function<T, Pair<ItemStack, TransformationMatrix>> f;
 
-	public ItemRenderable( Function<T, Pair<ItemStack, Matrix4f>> f )
+	public ItemRenderable( Function<T, Pair<ItemStack, TransformationMatrix>> f )
 	{
 		this.f = f;
 	}
@@ -46,16 +47,16 @@ public class ItemRenderable<T extends TileEntity> implements Renderable<T>
 	@Override
 	public void renderTileEntityAt(T te, float partialTicks, com.mojang.blaze3d.matrix.MatrixStack matrixStack, IRenderTypeBuffer buffers, int combinedLight, int combinedOverlay)
 	{
-		Pair<ItemStack, Matrix4f> pair = this.f.apply( te );
+		Pair<ItemStack, TransformationMatrix> pair = this.f.apply( te );
 		if( pair != null && pair.getLeft() != null )
 		{
-			matrixStack.push();
 			if( pair.getRight() != null )
 			{
-				FloatBuffer matrix = BufferUtils.createFloatBuffer( 16 );
-				// FIXME pair.getRight().store( matrix );
-				// FIXME matrix.flip();
-				// FIXME matrixStack.( matrix );
+				pair.getRight().push(matrixStack);
+			}
+			else
+			{
+				matrixStack.push();
 			}
 			Minecraft.getInstance().getItemRenderer().renderItem( pair.getLeft(), ItemCameraTransforms.TransformType.GROUND, combinedLight, combinedOverlay, matrixStack, buffers );
 			matrixStack.pop();
