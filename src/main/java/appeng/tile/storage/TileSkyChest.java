@@ -186,9 +186,8 @@ public class TileSkyChest extends AEBaseInvTile implements ITickableTileEntity, 
 	}
 
 	@Override
-	public float getLidAngle(float v) {
-		// FIXME: Do it nicely as the chest does it (interpolation, baby!)
-		return lidAngle;
+	public float getLidAngle(float partialTicks) {
+		return MathHelper.lerp(partialTicks, this.prevLidAngle, this.lidAngle);
 	}
 
 }
