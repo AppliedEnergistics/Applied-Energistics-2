@@ -118,7 +118,7 @@ public class AEBaseBlockItem extends BlockItem
 			else
 			{
 				up = Direction.UP;
-				forward = context.getPlacementHorizontalFacing();
+				forward = context.getPlacementHorizontalFacing().getOpposite();
 
 				if (player != null) {
 					if (player.rotationPitch > 65) {
