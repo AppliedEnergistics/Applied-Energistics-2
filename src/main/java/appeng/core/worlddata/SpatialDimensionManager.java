@@ -38,7 +38,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 public class SpatialDimensionManager implements ISpatialDimension
 {
 
-	private static final String DIM_ID_PREFIX = "storage_cell_";
+	private static final String DIM_ID_PREFIX = "spatial_";
 
 	@Override
 	public ServerWorld getWorld(DimensionType cellDim) {
