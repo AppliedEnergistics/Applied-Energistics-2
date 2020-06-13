@@ -282,10 +282,8 @@ public final class ApiItems implements IItems
 				.features( AEFeature.CRYSTAL_SEEDS )
 			.build();
 
-		registry.<EntityGrowingCrystal>entity("growing_crystal", EntityGrowingCrystal::new, EntityClassification.MISC)
-				.customize(builder -> builder.setTrackingRange(16)
-						.setUpdateInterval(4)
-						.setShouldReceiveVelocityUpdates(true))
+		EntityGrowingCrystal.TYPE = registry.<EntityGrowingCrystal>entity("growing_crystal", EntityGrowingCrystal::new, EntityClassification.MISC)
+				.customize(builder -> builder.size(0.25F, 0.25F))
 				.build();
 
 		// rv1

@@ -20,7 +20,6 @@ package appeng.items.misc;
 
 
 import appeng.api.implementations.items.IGrowableCrystal;
-import appeng.core.AppEng;
 import appeng.core.localization.ButtonToolTips;
 import appeng.entity.EntityGrowingCrystal;
 import appeng.items.AEBaseItem;
@@ -111,10 +110,14 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
 	{
 		lines.add( ButtonToolTips.DoesntDespawn.getTranslationKey() );
-		final int progress = getGrowthTicks( stack );
-		lines.add( new StringTextComponent( Math.round( 100 * progress / (float) GROWTH_TICKS_REQUIRED ) + "%" ) );
+		lines.add(getGrowthTooltipItem(stack));
 
 		super.addInformation( stack, world, lines, advancedTooltips );
+	}
+
+	public ITextComponent getGrowthTooltipItem(ItemStack stack) {
+		final int progress = getGrowthTicks( stack );
+		return new StringTextComponent( Math.round( 100 * progress / (float) GROWTH_TICKS_REQUIRED ) + "%" );
 	}
 
 	@Override

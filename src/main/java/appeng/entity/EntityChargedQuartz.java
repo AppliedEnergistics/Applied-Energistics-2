@@ -45,6 +45,8 @@ import appeng.util.Platform;
 public final class EntityChargedQuartz extends AEBaseEntityItem
 {
 
+	public static EntityType<EntityChargedQuartz> TYPE;
+
 	private int delay = 0;
 	private int transformTime = 0;
 
@@ -54,7 +56,7 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 
 	public EntityChargedQuartz(final World w, final double x, final double y, final double z, final ItemStack is )
 	{
-		super( w, x, y, z, is );
+		super( TYPE, w, x, y, z, is );
 	}
 
 	@Override

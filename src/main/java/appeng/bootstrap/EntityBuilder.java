@@ -1,11 +1,19 @@
 package appeng.bootstrap;
 
 import appeng.api.features.AEFeature;
+import appeng.bootstrap.components.IClientSetupComponent;
 import appeng.bootstrap.components.IEntityRegistrationComponent;
 import appeng.core.AppEng;
+import appeng.entity.EntityFloatingItem;
+import appeng.entity.EntityTinyTNTPrimed;
+import appeng.entity.RenderFloatingItem;
+import appeng.entity.RenderTinyTNTPrimed;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
 import java.util.Collections;
 import java.util.EnumSet;
@@ -27,7 +35,7 @@ public class EntityBuilder<T extends Entity> {
     public EntityBuilder(FeatureFactory factory, String id, EntityType.IFactory<T> entityFactory, EntityClassification classification) {
         this.factory = factory;
         this.id = id;
-        this.builder = EntityType.Builder.<T>create(entityFactory, classification);
+        this.builder = EntityType.Builder.create(entityFactory, classification);
     }
 
     public EntityBuilder<T> features(AEFeature... features) {
@@ -46,10 +54,12 @@ public class EntityBuilder<T extends Entity> {
         return this;
     }
 
-    public void build() {
+    public EntityType<T> build() {
+        EntityType<T> entityType = builder.build("appliedenergistics2:" + id);
+        entityType.setRegistryName(AppEng.MOD_ID, id);
         factory.addBootstrapComponent((IEntityRegistrationComponent) r -> {
-            EntityType<T> entityType = builder.build("appliedenergistics2:" + id);
-            r.register( entityType.setRegistryName(AppEng.MOD_ID, id) );
+            r.register(entityType);
         });
+        return entityType;
     }
 }

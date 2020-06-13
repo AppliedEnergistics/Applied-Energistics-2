@@ -19,27 +19,32 @@
 package appeng.entity;
 
 
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-
-public final class EntityFloatingItem extends ItemEntity
+// This is not supposed to ever spawn on the server-side
+public final class EntityFloatingItem extends AEBaseEntityItem
 {
 
-	private final ICanDie parent;
+	public static EntityType<EntityFloatingItem> TYPE;
+
+	private ICanDie parent;
 	private int superDeath = 0;
 	private float progress = 0;
 
-	public EntityFloatingItem( final ICanDie parent, final World world, final double x, final double y, final double z, final ItemStack stack )
+	public EntityFloatingItem(EntityType<? extends AEBaseEntityItem> entityType, World world) {
+		super(entityType, world);
+	}
+
+	public EntityFloatingItem(final ICanDie parent, final World world, final double x, final double y, final double z, final ItemStack stack )
 	{
-		super( world, x, y, z, stack );
+		super( TYPE, world, x, y, z, stack );
 		this.setMotion( 0, 0, 0 );
 		this.rotationYaw = 0;
 		this.parent = parent;
 	}
-
-	// public boolean isEntityAlive()
 
 	@Override
 	public void tick()

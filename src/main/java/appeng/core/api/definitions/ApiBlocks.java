@@ -318,20 +318,17 @@ public final class ApiBlocks implements IBlocks
 						} )
 						.build() )
 				.build();
+
+		EntityTinyTNTPrimed.TYPE = registry.<EntityTinyTNTPrimed>entity("tiny_tnt_primed", EntityTinyTNTPrimed::new, EntityClassification.MISC)
+				.customize(p -> p.setTrackingRange(16)
+				.setUpdateInterval(4)
+				.setShouldReceiveVelocityUpdates(true))
+				.build();
+
 		this.tinyTNT = registry.block( "tiny_tnt", BlockTinyTNT::new )
 				.features( AEFeature.TINY_TNT )
 				.bootstrap( ( block, item ) -> (IInitComponent) () -> DispenserBlock.registerDispenseBehavior( item,
 						new DispenserBehaviorTinyTNT() ) )
-				.bootstrap( ( block, item ) -> (IEntityRegistrationComponent) r ->
-				{
-					r.register(EntityType.Builder.<EntityTinyTNTPrimed>create(EntityTinyTNTPrimed::new, EntityClassification.MISC)
-							.setTrackingRange(16)
-							.setUpdateInterval(4)
-							.setShouldReceiveVelocityUpdates(true)
-							.build(AppEng.MOD_ID + ":tiny_tnt_primed")
-							.setRegistryName(AppEng.MOD_ID + ":tiny_tnt_primed")
-					);
-				} )
 				.build();
 		this.securityStation = registry.block( "security_station", BlockSecurityStation::new )
 				.features( AEFeature.SECURITY )

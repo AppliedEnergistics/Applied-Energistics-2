@@ -42,6 +42,8 @@ import appeng.util.Platform;
 public final class EntitySingularity extends AEBaseEntityItem
 {
 
+	public static EntityType<EntitySingularity> TYPE;
+
 	private static int randTickSeed = 0;
 
 	public EntitySingularity(EntityType<? extends EntitySingularity> entityType, final World w )
@@ -51,7 +53,7 @@ public final class EntitySingularity extends AEBaseEntityItem
 
 	public EntitySingularity( final World w, final double x, final double y, final double z, final ItemStack is )
 	{
-		super( w, x, y, z, is );
+		super( TYPE, w, x, y, z, is );
 	}
 
 	@Override

@@ -120,11 +120,11 @@ public final class ApiMaterials implements IMaterials
 	{
 		this.registry = registry;
 
-		registry.<EntitySingularity>entity("singularity", EntitySingularity::new, EntityClassification.MISC)
+		EntitySingularity.TYPE = registry.<EntitySingularity>entity("singularity", EntitySingularity::new, EntityClassification.MISC)
 				.customize(builder -> builder.setTrackingRange(16).setUpdateInterval(4).setShouldReceiveVelocityUpdates(true))
 				.build();
 
-		registry.<EntityChargedQuartz>entity("charged_quartz", EntityChargedQuartz::new, EntityClassification.MISC)
+		EntityChargedQuartz.TYPE = registry.<EntityChargedQuartz>entity("charged_quartz", EntityChargedQuartz::new, EntityClassification.MISC)
 				.customize(builder -> builder.setTrackingRange(16).setUpdateInterval(4).setShouldReceiveVelocityUpdates(true))
 				.build();
 

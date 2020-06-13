@@ -40,12 +40,15 @@ import appeng.core.features.registries.PartModels;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.worlddata.WorldData;
+import appeng.entity.*;
 import appeng.hooks.TickHandler;
 import appeng.parts.PartPlacement;
 import appeng.parts.automation.PlaneModelLoader;
 import appeng.server.ServerHelper;
 import com.google.common.base.Stopwatch;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
@@ -73,6 +76,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.CrashReportExtender;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 
 import net.minecraftforge.fml.config.ModConfig;
@@ -180,14 +184,11 @@ public final class AppEng
 
 		((ClientHelper) proxy).clientInit();
 
-		// Do not register the Fullbright hacks if Optifine is present or if the Forge lighting is disabled
-		// FIXME if( !FMLClientHandler.instance().hasOptifine() && ForgeModContainer.forgeLightPipelineEnabled )
-		// FIXME {
-		// FIXME 	ModelLoaderRegistry.registerLoader( UVLModelLoader.INSTANCE );
-		// FIXME }
-
-		// FIXME RenderingRegistry.registerEntityRenderingHandler( EntityTinyTNTPrimed.class, manager -> new RenderTinyTNTPrimed( manager ) );
-		// FIXME RenderingRegistry.registerEntityRenderingHandler( EntityFloatingItem.class, manager -> new RenderFloatingItem( manager ) );
+		RenderingRegistry.registerEntityRenderingHandler(EntityTinyTNTPrimed.TYPE, RenderTinyTNTPrimed::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityFloatingItem.TYPE, RenderFloatingItem::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntitySingularity.TYPE, m -> new ItemRenderer(m, Minecraft.getInstance().getItemRenderer()));
+		RenderingRegistry.registerEntityRenderingHandler(EntityGrowingCrystal.TYPE, m -> new ItemRenderer(m, Minecraft.getInstance().getItemRenderer()));
+		RenderingRegistry.registerEntityRenderingHandler(EntityChargedQuartz.TYPE, m -> new ItemRenderer(m, Minecraft.getInstance().getItemRenderer()));
 
 		// TODO: Do not use the internal API
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();

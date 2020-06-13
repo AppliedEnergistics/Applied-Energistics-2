@@ -19,8 +19,15 @@
 package appeng.integration.modules.waila;
 
 
+import appeng.entity.EntityGrowingCrystal;
+import appeng.items.misc.ItemCrystalSeed;
 import mcp.mobius.waila.api.*;
 import appeng.tile.AEBaseTile;
+import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+
+import java.util.List;
 
 @WailaPlugin
 public class WailaModule implements IWailaPlugin

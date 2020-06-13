@@ -39,8 +39,10 @@ import appeng.api.features.AEFeature;
 import appeng.util.Platform;
 
 
-public final class EntityGrowingCrystal extends ItemEntity
+public final class EntityGrowingCrystal extends AEBaseEntityItem
 {
+
+	public static EntityType<EntityGrowingCrystal> TYPE;
 
 	private int progress_1000 = 0;
 
@@ -50,7 +52,7 @@ public final class EntityGrowingCrystal extends ItemEntity
 
 	public EntityGrowingCrystal(final World w, final double x, final double y, final double z, final ItemStack is )
 	{
-		super( w, x, y, z, is );
+		super( TYPE, w, x, y, z, is );
 		this.setNoDespawn();
 	}
 
@@ -143,7 +145,10 @@ public final class EntityGrowingCrystal extends ItemEntity
 				if( this.progress_1000 > 1000 )
 				{
 					this.progress_1000 -= 1000;
-					this.setItem( cry.triggerGrowth( is ) );
+					// We need to copy the stack or the change detection will not work and not sync
+					// this new stack to the client
+					ItemStack newItem = cry.triggerGrowth(is.copy());
+					this.setItem(newItem);
 				}
 			}
 		}
@@ -195,4 +200,11 @@ public final class EntityGrowingCrystal extends ItemEntity
 
 		return te instanceof ICrystalGrowthAccelerator && ( (ICrystalGrowthAccelerator) te ).isPowered();
 	}
+
+	// Don't let seeds "float" on water surface
+	@Override
+	protected void applyFloatMotion() {
+	}
+
+
 }

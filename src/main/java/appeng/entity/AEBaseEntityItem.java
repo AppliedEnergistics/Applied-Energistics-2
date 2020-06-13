@@ -25,25 +25,38 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.IPacket;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 
 public abstract class AEBaseEntityItem extends ItemEntity
 {
 
-	public AEBaseEntityItem( EntityType<? extends AEBaseEntityItem> entityType, final World world )
+	protected AEBaseEntityItem( EntityType<? extends AEBaseEntityItem> entityType, final World world )
 	{
 		super( entityType, world );
 	}
 
-	public AEBaseEntityItem( final World world, final double x, final double y, final double z, final ItemStack stack )
+	protected AEBaseEntityItem( EntityType<? extends AEBaseEntityItem> entityType, final World world, final double x, final double y, final double z, final ItemStack stack )
 	{
-		super( world, x, y, z, stack );
+		this(entityType, world);
+		this.setPosition(x, y, z);
+		this.rotationYaw = this.rand.nextFloat() * 360.0F;
+		this.setMotion(this.rand.nextDouble() * 0.2D - 0.1D, 0.2D, this.rand.nextDouble() * 0.2D - 0.1D);
+		this.setItem(stack);
+		this.lifespan = stack.getEntityLifespan(world);
 	}
 
 	protected List<Entity> getCheckedEntitiesWithinAABBExcludingEntity( final AxisAlignedBB region )
 	{
 		return this.world.getEntitiesWithinAABBExcludingEntity( this, region );
 	}
+
+	@Override
+	public IPacket<?> createSpawnPacket() {
+		return NetworkHooks.getEntitySpawningPacket(this);
+	}
+
 }

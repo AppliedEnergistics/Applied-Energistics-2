@@ -56,6 +56,7 @@ import appeng.core.features.registries.cell.CreativeCellHandler;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.core.stats.AeStats;
 import appeng.core.stats.PartItemPredicate;
+import appeng.entity.EntityFloatingItem;
 import appeng.fluids.client.gui.*;
 import appeng.fluids.container.*;
 import appeng.fluids.registries.BasicFluidCellGuiHandler;
@@ -76,6 +77,7 @@ import appeng.worldgen.MeteoriteWorldGen;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
@@ -527,9 +529,12 @@ final class Registration
 		CraftingHelper.register( FeaturesEnabled.Serializer.INSTANCE );
 	}
 
-
 	public void registerEntities( RegistryEvent.Register<EntityType<?>> event )
 	{
+		// Special case only used on the client-side
+		EntityFloatingItem.TYPE = EntityType.Builder.<EntityFloatingItem>create(EntityFloatingItem::new, EntityClassification.MISC)
+				.build("appliedenergistics2:floating_item");
+
 		final IForgeRegistry<EntityType<?>> registry = event.getRegistry();
 		// TODO: Do not use the internal API
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();

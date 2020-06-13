@@ -54,6 +54,8 @@ import appeng.util.Platform;
 public final class EntityTinyTNTPrimed extends TNTEntity implements IEntityAdditionalSpawnData
 {
 
+	public static EntityType<EntityTinyTNTPrimed> TYPE;
+
 	public EntityTinyTNTPrimed( EntityType<? extends EntityTinyTNTPrimed> type, World worldIn )
 	{
 		super( type, worldIn );
