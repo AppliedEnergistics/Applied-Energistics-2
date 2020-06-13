@@ -45,6 +45,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.block.AEBaseBlock;
 
+/**
+ * This block is used to fill empty space in spatial dimensions
+ * and delinates the border of a spatial dimensions's usable space.
+ */
 public class BlockMatrixFrame extends AEBaseBlock
 {
 
@@ -52,9 +56,7 @@ public class BlockMatrixFrame extends AEBaseBlock
 
 	public BlockMatrixFrame()
 	{
-		super( Properties.create(MATERIAL).hardnessAndResistance(-1.0F, 6000000.0F).noDrops() );
-//	FIXME	this.setLightOpacity( 0 );
-//	FIXME	this.setOpaque( false );
+		super( Properties.create(MATERIAL).hardnessAndResistance(-1.0F, 6000000.0F).notSolid().noDrops() );
 	}
 
 	@Override
@@ -76,7 +78,8 @@ public class BlockMatrixFrame extends AEBaseBlock
 
 	@Override
 	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-		return VoxelShapes.fullCube();
+		// This also prevents any blocks from being placed on this block!
+		return VoxelShapes.empty();
 	}
 
 	@Override

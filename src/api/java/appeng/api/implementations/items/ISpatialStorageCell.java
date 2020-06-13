@@ -26,6 +26,7 @@ package appeng.api.implementations.items;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.api.implementations.TransitionResult;
@@ -53,16 +54,6 @@ public interface ISpatialStorageCell
 	 * @return the maximum size of the spatial storage cell along any given axis
 	 */
 	int getMaxStoredDim( ItemStack is );
-
-
-	/**
-	 * get the currently stored size.
-	 *
-	 * @param is spatial storage cell
-	 *
-	 * @return size of spatial
-	 */
-	WorldCoord getStoredSize( ItemStack is );
 
 	/**
 	 * get the currently stored Dimension id.

@@ -30,7 +30,7 @@ import net.minecraft.world.server.ServerWorld;
 class NullSpatialDimension implements ISpatialDimension
 {
 	@Override
-	public DimensionType createNewCellDimension(BlockPos size, int owner )
+	public DimensionType createNewCellDimension(BlockPos size)
 	{
 		return null;
 	}
@@ -38,12 +38,6 @@ class NullSpatialDimension implements ISpatialDimension
 	@Override
 	public void deleteCellDimension( DimensionType cellStorageId )
 	{
-	}
-
-	@Override
-	public int getCellDimensionOwner( DimensionType cellStorageId )
-	{
-		return -1;
 	}
 
 	@Override

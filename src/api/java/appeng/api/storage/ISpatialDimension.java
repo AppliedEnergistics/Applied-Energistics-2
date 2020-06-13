@@ -32,13 +32,11 @@ public interface ISpatialDimension
 	ServerWorld getWorld(DimensionType cellDim );
 
 	@Nullable
-	DimensionType createNewCellDimension(BlockPos contentSize, int playerId );
+	DimensionType createNewCellDimension(BlockPos contentSize);
 
 	void deleteCellDimension( DimensionType cellDim );
 
 	boolean isCellDimension( DimensionType cellDim );
-
-	int getCellDimensionOwner( DimensionType cellDim );
 
 	BlockPos getCellDimensionOrigin( DimensionType cellDim );
 

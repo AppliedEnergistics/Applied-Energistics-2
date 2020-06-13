@@ -19,12 +19,15 @@
 package appeng.items.storage;
 
 
-import java.util.List;
-
+import appeng.api.implementations.TransitionResult;
+import appeng.api.implementations.items.ISpatialStorageCell;
+import appeng.api.storage.ISpatialDimension;
+import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
+import appeng.core.localization.GuiText;
 import appeng.core.worlddata.SpatialDimensionManager;
+import appeng.items.AEBaseItem;
 import appeng.spatial.StorageHelper;
-import javafx.animation.Transition;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -33,27 +36,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.api.implementations.TransitionResult;
-import appeng.api.implementations.items.ISpatialStorageCell;
-import appeng.api.storage.ISpatialDimension;
-import appeng.api.util.WorldCoord;
-import appeng.capabilities.Capabilities;
-import appeng.core.AppEng;
-import appeng.core.localization.GuiText;
-import appeng.items.AEBaseItem;
-import net.minecraftforge.common.util.LazyOptional;
+import java.util.List;
 
 
 public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorageCell
 {
-	private static final String NBT_CELL_ID_KEY = "StorageCellID";
-	private static final String NBT_SIZE_X_KEY = "sizeX";
-	private static final String NBT_SIZE_Y_KEY = "sizeY";
-	private static final String NBT_SIZE_Z_KEY = "sizeZ";
+	private static final String TAG_DIMENSION_ID = "dimension_id";
 
 	private final int maxRegion;
 
@@ -67,16 +58,12 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	@Override
 	public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
 	{
-		final DimensionType dimType = this.getStoredDimension( stack );
-		if( dimType != null )
-		{
-			lines.add( GuiText.CellId.textComponent().appendText( ": " + dimType.getRegistryName() ) );
-		}
-
-		final WorldCoord wc = this.getStoredSize( stack );
-		if( wc.x > 0 )
-		{
-			lines.add( GuiText.StoredSize.textComponent().appendText( ": " + wc.x + " x " + wc.y + " x " + wc.z ) );
+		if (advancedTooltips.isAdvanced()) {
+			final DimensionType dimType = this.getStoredDimension(stack);
+			if (dimType != null && dimType.getRegistryName() != null) {
+				String ae2Id = dimType.getRegistryName().getPath();
+				lines.add(GuiText.CellId.textComponent().appendText(": " + ae2Id));
+			}
 		}
 	}
 
@@ -93,24 +80,13 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	}
 
 	@Override
-	public WorldCoord getStoredSize( final ItemStack is )
-	{
-		final CompoundNBT c = is.getTag();
-		if( c != null )
-		{
-			return new WorldCoord( c.getInt( NBT_SIZE_X_KEY ), c.getInt( NBT_SIZE_Y_KEY ), c.getInt( NBT_SIZE_Z_KEY ) );
-		}
-		return new WorldCoord( 0, 0, 0 );
-	}
-
-	@Override
 	public DimensionType getStoredDimension(final ItemStack is )
 	{
 		final CompoundNBT c = is.getTag();
-		if( c != null && c.contains(NBT_CELL_ID_KEY) )
+		if( c != null && c.contains(TAG_DIMENSION_ID) )
 		{
 			try {
-				ResourceLocation dimTypeId = new ResourceLocation(c.getString( NBT_CELL_ID_KEY) );
+				ResourceLocation dimTypeId = new ResourceLocation(c.getString(TAG_DIMENSION_ID) );
 				return DimensionType.byName(dimTypeId);
 			} catch (Exception e) {
 				AELog.warn("Failed to retrieve storage cell dimension.", e);
@@ -134,7 +110,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 		DimensionType storedDim = this.getStoredDimension( is );
 		if( storedDim == null )
 		{
-			storedDim = manager.createNewCellDimension( targetSize, playerId );
+			storedDim = manager.createNewCellDimension( targetSize);
 		}
 
 		if (storedDim == null) {
@@ -156,7 +132,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 					{
 						BlockPos offset = manager.getCellDimensionOrigin( storedDim );
 
-						this.setStorageCell( is, storedDim, targetSize );
+						this.setStoredDimension( is, storedDim);
 						StorageHelper.getInstance()
 								.swapRegions( w, min.x + 1, min.y + 1, min.z + 1, cellWorld, offset.getX(), offset.getY(),
 										offset.getZ(), targetX - 1, targetY - 1,
@@ -178,13 +154,9 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 		}
 	}
 
-	private void setStorageCell( final ItemStack is, DimensionType dim, BlockPos size )
+	private void setStoredDimension(final ItemStack is, DimensionType dim)
 	{
         final CompoundNBT c = is.getOrCreateTag();
-
-		c.putString( NBT_CELL_ID_KEY, dim.getRegistryName().toString() );
-		c.putInt( NBT_SIZE_X_KEY, size.getX() );
-		c.putInt( NBT_SIZE_Y_KEY, size.getY() );
-		c.putInt( NBT_SIZE_Z_KEY, size.getZ() );
+		c.putString(TAG_DIMENSION_ID, dim.getRegistryName().toString() );
 	}
 }
