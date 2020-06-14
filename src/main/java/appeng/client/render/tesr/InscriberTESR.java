@@ -15,7 +15,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -39,14 +38,6 @@ public final class InscriberTESR extends TileEntityRenderer<TileInscriber>
 
 	public InscriberTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
 		super(rendererDispatcherIn);
-	}
-
-	// See https://easings.net/#easeOutBack
-	private static float ease(float x) {
-		float c1 = 1.70158f;
-		float c3 = c1 + 1;
-
-		return (float) (1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2));
 	}
 
 	@Override
@@ -78,10 +69,9 @@ public final class InscriberTESR extends TileEntityRenderer<TileInscriber>
 
 		if( progress > 1.0f )
 		{
-			progress = 1.0f - ( progress - 1.0f );
+			progress = 1.0f - ( easeDecompressMotion(progress - 1.0f) );
 		} else {
-			// Only apply the easing function on the way down
-			progress = ease(progress);
+			progress = easeCompressMotion(progress);
 		}
 
 		float press = 0.2f;
@@ -184,12 +174,12 @@ public final class InscriberTESR extends TileEntityRenderer<TileInscriber>
 		vb.endVertex();
 	}
 
+	private static final ResourceLocation TAG_STORAGE_BLOCKS = new ResourceLocation("forge:storage_blocks");
+
 	private void renderItem( MatrixStack ms, final ItemStack stack, final float o, IRenderTypeBuffer buffers, int combinedLight, int combinedOverlay )
 	{
 		if( !stack.isEmpty() )
 		{
-			final ItemStack sis = stack.copy(); // FIXME WHY????
-
 			ms.push();
 			// move to center
 			ms.translate( 0.5f, 0.5f + o, 0.5f );
@@ -197,13 +187,15 @@ public final class InscriberTESR extends TileEntityRenderer<TileInscriber>
 			// set scale
 			ms.scale( ITEM_RENDER_SCALE, ITEM_RENDER_SCALE, ITEM_RENDER_SCALE );
 
+			ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
+
 			// heuristic to scale items down much further than blocks
-			if( !( sis.getItem() instanceof BlockItem ) )
+			if( !stack.getItem().getTags().contains(TAG_STORAGE_BLOCKS) )
 			{
 				ms.scale( 0.5f, 0.5f, 0.5f );
 			}
 
-			Minecraft.getInstance().getItemRenderer().renderItem(sis, ItemCameraTransforms.TransformType.FIXED, combinedLight, combinedOverlay, ms, buffers);
+			itemRenderer.renderItem(stack, ItemCameraTransforms.TransformType.FIXED, combinedLight, combinedOverlay, ms, buffers);
 			ms.pop();
 		}
 	}
@@ -214,4 +206,18 @@ public final class InscriberTESR extends TileEntityRenderer<TileInscriber>
 			evt.addSprite(TEXTURE_INSIDE.getTextureLocation());
 		}
 	}
+
+	// See https://easings.net/#easeOutBack
+	private static float easeCompressMotion(float x) {
+		float c1 = 1.70158f;
+		float c3 = c1 + 1;
+
+		return (float) (1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2));
+	}
+
+	// See https://easings.net/#easeInQuint
+	private static float easeDecompressMotion(float x) {
+		return x * x * x * x * x;
+	}
+
 }
