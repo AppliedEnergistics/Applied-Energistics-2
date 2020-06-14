@@ -718,16 +718,10 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 
 			try
 			{
-				// FIXME Probably not required this.zLevel = 100.0F;
-				this.itemRenderer.zLevel = 100.0F;
-
 				if( !this.isPowered() )
 				{
 					fill( s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66111111 );
 				}
-
-				// FIXME Probably not required this.zLevel = 0.0F;
-				this.itemRenderer.zLevel = 0.0F;
 
 				// Annoying but easier than trying to splice into render item
 				super.drawSlot( new Size1Slot( (SlotME) s ) );

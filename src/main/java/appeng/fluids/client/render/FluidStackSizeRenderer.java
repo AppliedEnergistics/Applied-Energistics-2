@@ -23,6 +23,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
+import appeng.client.render.StackSizeRenderer;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.FontRenderer;
 
@@ -50,27 +51,9 @@ public class FluidStackSizeRenderer
 
 	public void renderStackSize( FontRenderer fontRenderer, IAEFluidStack aeStack, int xPos, int yPos )
 	{
-		if( aeStack != null )
-		{
-			final float scaleFactor = AEConfig.instance().useTerminalUseLargeFont() ? 0.85f : 0.5f;
-			final float inverseScaleFactor = 1.0f / scaleFactor;
-			final int offset = AEConfig.instance().useTerminalUseLargeFont() ? 0 : -1;
-
-			if( aeStack.getStackSize() > 0 )
-			{
-				final String stackSize = this.getToBeRenderedStackSize( aeStack.getStackSize() );
-
-				RenderSystem.disableDepthTest();
-				RenderSystem.disableBlend();
-				RenderSystem.pushMatrix();
-				RenderSystem.scalef( scaleFactor, scaleFactor, scaleFactor );
-				final int X = (int) ( ( (float) xPos + offset + 16.0f - fontRenderer.getStringWidth( stackSize ) * scaleFactor ) * inverseScaleFactor );
-				final int Y = (int) ( ( (float) yPos + offset + 16.0f - 7.0f * scaleFactor ) * inverseScaleFactor );
-				fontRenderer.drawStringWithShadow( stackSize, X, Y, 16777215 );
-				RenderSystem.popMatrix();
-				RenderSystem.enableDepthTest();
-				RenderSystem.enableBlend();
-			}
+		if (aeStack != null && aeStack.getStackSize() > 0) {
+			final String stackSize = this.getToBeRenderedStackSize(aeStack.getStackSize());
+			StackSizeRenderer.renderSizeLabel(fontRenderer, xPos, yPos, stackSize);
 		}
 	}
 
