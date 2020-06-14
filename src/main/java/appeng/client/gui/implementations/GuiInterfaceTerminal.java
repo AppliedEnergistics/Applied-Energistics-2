@@ -152,7 +152,7 @@ public class GuiInterfaceTerminal extends AEBaseGui<ContainerInterfaceTerminal>
 	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
 	{
 		this.bindTexture( "guis/interfaceterminal.png" );
-		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset() );
 
 		int offset = 17;
 		final int ex = this.getScrollBar().getCurrentScroll();
@@ -166,7 +166,7 @@ public class GuiInterfaceTerminal extends AEBaseGui<ContainerInterfaceTerminal>
 
 				RenderSystem.color4f( 1, 1, 1, 1 );
 				final int width = inv.getInventory().getSlots() * 18;
-				GuiUtils.drawTexturedModalRect( offsetX + 7, offsetY + offset, 7, 139, width, 18, 0 /* FIXME this.zlevel was used */ );
+				GuiUtils.drawTexturedModalRect( offsetX + 7, offsetY + offset, 7, 139, width, 18, getBlitOffset() );
 			}
 			offset += 18;
 		}

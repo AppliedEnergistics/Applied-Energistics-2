@@ -95,7 +95,7 @@ public class GuiCraftAmount extends AEBaseGui<ContainerCraftAmount>
 		this.next.setMessage(hasShiftDown() ? GuiText.Start.getLocal() : GuiText.Next.getLocal());
 
 		this.bindTexture( "guis/craft_amt.png" );
-		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset() );
 
 		try
 		{

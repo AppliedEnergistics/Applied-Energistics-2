@@ -37,7 +37,7 @@ public abstract class GuiCustomSlot extends AbstractGui implements ITooltip
 
 	public abstract void drawContent( final Minecraft mc, final int mouseX, final int mouseY, final float partialTicks );
 
-	public void drawBackground( int guileft, int guitop )
+	public void drawBackground( int guileft, int guitop, int currentZIndex )
 	{
 	}
 

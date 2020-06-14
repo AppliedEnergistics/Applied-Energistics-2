@@ -116,14 +116,14 @@ public class GuiUpgradeable<T extends ContainerUpgradeable> extends AEBaseGui<T>
 		this.handleButtonVisibility();
 
 		this.bindTexture( this.getBackground() );
-		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, 211 - 34, this.ySize, 0 /* FIXME this.zlevel was used */ );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, 211 - 34, this.ySize, getBlitOffset() );
 		if( this.drawUpgrades() )
 		{
-			GuiUtils.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 14 + this.cvb.availableUpgrades() * 18, 0 /* FIXME this.zlevel was used */ );
+			GuiUtils.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 14 + this.cvb.availableUpgrades() * 18, getBlitOffset() );
 		}
 		if( this.hasToolbox() )
 		{
-			GuiUtils.drawTexturedModalRect( offsetX + 178, offsetY + this.ySize - 90, 178, this.ySize - 90, 68, 68, 0 /* FIXME this.zlevel was used */ );
+			GuiUtils.drawTexturedModalRect( offsetX + 178, offsetY + this.ySize - 90, 178, this.ySize - 90, 68, 68, getBlitOffset() );
 		}
 	}
 

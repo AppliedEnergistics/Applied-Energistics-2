@@ -89,7 +89,7 @@ public class GuiPriority extends AEBaseGui<ContainerPriority>
 	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
 	{
 		this.bindTexture( "guis/priority.png" );
-		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset() );
 
 		this.priority.render(mouseX, mouseY, partialTicks);
 	}

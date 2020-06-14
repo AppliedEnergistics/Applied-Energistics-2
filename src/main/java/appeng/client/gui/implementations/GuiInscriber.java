@@ -71,15 +71,15 @@ public class GuiInscriber extends AEBaseGui<ContainerInscriber>
 		this.pb.x = 135 + this.guiLeft;
 		this.pb.y = 39 + this.guiTop;
 
-		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, 211 - 34, this.ySize, 0 /* FIXME this.zlevel was used */ );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, 211 - 34, this.ySize, getBlitOffset() );
 
 		if( this.drawUpgrades() )
 		{
-			GuiUtils.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 14 + this.container.availableUpgrades() * 18, 0 /* FIXME this.zlevel was used */ );
+			GuiUtils.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 14 + this.container.availableUpgrades() * 18, getBlitOffset() );
 		}
 		if( this.hasToolbox() )
 		{
-			GuiUtils.drawTexturedModalRect( offsetX + 178, offsetY + this.ySize - 90, 178, this.ySize - 90, 68, 68, 0 /* FIXME this.zlevel was used */ );
+			GuiUtils.drawTexturedModalRect( offsetX + 178, offsetY + this.ySize - 90, 178, this.ySize - 90, 68, 68, getBlitOffset() );
 		}
 	}
 

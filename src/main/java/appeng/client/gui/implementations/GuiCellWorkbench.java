@@ -67,53 +67,53 @@ public class GuiCellWorkbench extends GuiUpgradeable<ContainerCellWorkbench>
 		this.handleButtonVisibility();
 
 		this.bindTexture( this.getBackground() );
-		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, 211 - 34, this.ySize, 0 /* FIXME this.zlevel was used */ );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, 211 - 34, this.ySize, getBlitOffset() );
 		if( this.drawUpgrades() )
 		{
 			if( this.container.availableUpgrades() <= 8 )
 			{
-				GuiUtils.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 7 + this.container.availableUpgrades() * 18, 0 /* FIXME this.zlevel was used */ );
-				GuiUtils.drawTexturedModalRect( offsetX + 177, offsetY + ( 7 + ( this.container.availableUpgrades() ) * 18 ), 177, 151, 35, 7, 0 /* FIXME this.zlevel was used */ );
+				GuiUtils.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 7 + this.container.availableUpgrades() * 18, getBlitOffset() );
+				GuiUtils.drawTexturedModalRect( offsetX + 177, offsetY + ( 7 + ( this.container.availableUpgrades() ) * 18 ), 177, 151, 35, 7, getBlitOffset() );
 			}
 			else if( this.container.availableUpgrades() <= 16 )
 			{
-				GuiUtils.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 7 + 8 * 18, 0 /* FIXME this.zlevel was used */ );
-				GuiUtils.drawTexturedModalRect( offsetX + 177, offsetY + ( 7 + ( 8 ) * 18 ), 177, 151, 35, 7, 0 /* FIXME this.zlevel was used */ );
+				GuiUtils.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 7 + 8 * 18, getBlitOffset() );
+				GuiUtils.drawTexturedModalRect( offsetX + 177, offsetY + ( 7 + ( 8 ) * 18 ), 177, 151, 35, 7, getBlitOffset() );
 
 				final int dx = this.container.availableUpgrades() - 8;
-				GuiUtils.drawTexturedModalRect( offsetX + 177 + 27, offsetY, 186, 0, 35 - 8, 7 + dx * 18, 0 /* FIXME this.zlevel was used */ );
+				GuiUtils.drawTexturedModalRect( offsetX + 177 + 27, offsetY, 186, 0, 35 - 8, 7 + dx * 18, getBlitOffset() );
 				if( dx == 8 )
 				{
-					GuiUtils.drawTexturedModalRect( offsetX + 177 + 27, offsetY + ( 7 + ( dx ) * 18 ), 186, 151, 35 - 8, 7, 0 /* FIXME this.zlevel was used */ );
+					GuiUtils.drawTexturedModalRect( offsetX + 177 + 27, offsetY + ( 7 + ( dx ) * 18 ), 186, 151, 35 - 8, 7, getBlitOffset() );
 				}
 				else
 				{
-					GuiUtils.drawTexturedModalRect( offsetX + 177 + 27 + 4, offsetY + ( 7 + ( dx ) * 18 ), 186 + 4, 151, 35 - 8, 7, 0 /* FIXME this.zlevel was used */ );
+					GuiUtils.drawTexturedModalRect( offsetX + 177 + 27 + 4, offsetY + ( 7 + ( dx ) * 18 ), 186 + 4, 151, 35 - 8, 7, getBlitOffset() );
 				}
 			}
 			else
 			{
-				GuiUtils.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 7 + 8 * 18, 0 /* FIXME this.zlevel was used */ );
-				GuiUtils.drawTexturedModalRect( offsetX + 177, offsetY + ( 7 + ( 8 ) * 18 ), 177, 151, 35, 7, 0 /* FIXME this.zlevel was used */ );
+				GuiUtils.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 7 + 8 * 18, getBlitOffset() );
+				GuiUtils.drawTexturedModalRect( offsetX + 177, offsetY + ( 7 + ( 8 ) * 18 ), 177, 151, 35, 7, getBlitOffset() );
 
-				GuiUtils.drawTexturedModalRect( offsetX + 177 + 27, offsetY, 186, 0, 35 - 8, 7 + 8 * 18, 0 /* FIXME this.zlevel was used */ );
-				GuiUtils.drawTexturedModalRect( offsetX + 177 + 27, offsetY + ( 7 + ( 8 ) * 18 ), 186, 151, 35 - 8, 7, 0 /* FIXME this.zlevel was used */ );
+				GuiUtils.drawTexturedModalRect( offsetX + 177 + 27, offsetY, 186, 0, 35 - 8, 7 + 8 * 18, getBlitOffset() );
+				GuiUtils.drawTexturedModalRect( offsetX + 177 + 27, offsetY + ( 7 + ( 8 ) * 18 ), 186, 151, 35 - 8, 7, getBlitOffset() );
 
 				final int dx = this.container.availableUpgrades() - 16;
-				GuiUtils.drawTexturedModalRect( offsetX + 177 + 27 + 18, offsetY, 186, 0, 35 - 8, 7 + dx * 18, 0 /* FIXME this.zlevel was used */ );
+				GuiUtils.drawTexturedModalRect( offsetX + 177 + 27 + 18, offsetY, 186, 0, 35 - 8, 7 + dx * 18, getBlitOffset() );
 				if( dx == 8 )
 				{
-					GuiUtils.drawTexturedModalRect( offsetX + 177 + 27 + 18, offsetY + ( 7 + ( dx ) * 18 ), 186, 151, 35 - 8, 7, 0 /* FIXME this.zlevel was used */ );
+					GuiUtils.drawTexturedModalRect( offsetX + 177 + 27 + 18, offsetY + ( 7 + ( dx ) * 18 ), 186, 151, 35 - 8, 7, getBlitOffset() );
 				}
 				else
 				{
-					GuiUtils.drawTexturedModalRect( offsetX + 177 + 27 + 18 + 4, offsetY + ( 7 + ( dx ) * 18 ), 186 + 4, 151, 35 - 8, 7, 0 /* FIXME this.zlevel was used */ );
+					GuiUtils.drawTexturedModalRect( offsetX + 177 + 27 + 18 + 4, offsetY + ( 7 + ( dx ) * 18 ), 186 + 4, 151, 35 - 8, 7, getBlitOffset() );
 				}
 			}
 		}
 		if( this.hasToolbox() )
 		{
-			GuiUtils.drawTexturedModalRect( offsetX + 178, offsetY + this.ySize - 90, 178, 161, 68, 68, 0 /* FIXME this.zlevel was used */ );
+			GuiUtils.drawTexturedModalRect( offsetX + 178, offsetY + this.ySize - 90, 178, 161, 68, 68, getBlitOffset() );
 		}
 	}
 

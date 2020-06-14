@@ -72,6 +72,6 @@ public class GuiCondenser extends AEBaseGui<ContainerCondenser>
 	{
 		this.bindTexture( "guis/condenser.png" );
 
-		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset() );
 	}
 }

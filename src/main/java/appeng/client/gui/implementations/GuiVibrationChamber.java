@@ -66,7 +66,7 @@ public class GuiVibrationChamber extends AEBaseGui<ContainerVibrationChamber>
 			RenderSystem.color3f( 1, 1, 1 );
 			final int l = -15;
 			final int k = 25;
-			GuiUtils.drawTexturedModalRect( k + 56, l + 36 + 12 - i1, 176, 12 - i1, 14, i1 + 2, 0 /* FIXME this.zlevel was used */ );
+			GuiUtils.drawTexturedModalRect( k + 56, l + 36 + 12 - i1, 176, 12 - i1, 14, i1 + 2, getBlitOffset() );
 		}
 	}
 
@@ -76,6 +76,6 @@ public class GuiVibrationChamber extends AEBaseGui<ContainerVibrationChamber>
 		this.bindTexture( "guis/vibchamber.png" );
 		this.pb.x = 99 + this.guiLeft;
 		this.pb.y = 36 + this.guiTop;
-		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset() );
 	}
 }

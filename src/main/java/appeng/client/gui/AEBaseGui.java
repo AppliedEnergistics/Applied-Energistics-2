@@ -39,14 +39,14 @@ import appeng.core.sync.packets.PacketSwapSlots;
 import appeng.fluids.client.render.FluidStackSizeRenderer;
 import appeng.fluids.container.slots.IMEFluidSlot;
 import appeng.helpers.InventoryAction;
-import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -69,8 +69,6 @@ import net.minecraftforge.fml.client.gui.GuiUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
-import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -99,14 +97,7 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 		super.init();
 
 		final List<Slot> slots = this.getInventorySlots();
-		final Iterator<Slot> i = slots.iterator();
-		while( i.hasNext() )
-		{
-			if( i.next() instanceof SlotME )
-			{
-				i.remove();
-			}
-		}
+		slots.removeIf(slot -> slot instanceof SlotME);
 
 		for( final InternalSlotME me : this.meSlots )
 		{
@@ -160,9 +151,9 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 			final int right = left + slot.getWidth();
 			final int bottom = top + slot.getHeight();
 
-			slot.drawContent( this.minecraft, mouseX, mouseY, partialTicks );
+			slot.drawContent( getMinecraft(), mouseX, mouseY, partialTicks );
 
-			if( this.isPointInRegion( left, top, slot.getWidth(), slot.getHeight(), mouseX, mouseY ) && slot.canClick( this.minecraft.player ) )
+			if( this.isPointInRegion( left, top, slot.getWidth(), slot.getHeight(), mouseX, mouseY ) && slot.canClick( getPlayer() ) )
 			{
 				RenderSystem.colorMask( true, true, true, false );
 				this.fillGradient( left, top, right, bottom, -2130706433, -2130706433 );
@@ -261,7 +252,7 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 						GuiUtils.drawTexturedModalRect( ox + aeSlot.xPos - 1, oy + aeSlot.yPos - 1, optionalSlot.getSourceX() - 1, optionalSlot.getSourceY() - 1,
 								18,
 								18,
-								0 /* FIXME: Check, this used this.zLevel before */);
+								getBlitOffset());
 					}
 					else
 					{
@@ -270,7 +261,7 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 						GuiUtils.drawTexturedModalRect( ox + aeSlot.xPos - 1, oy + aeSlot.yPos - 1, optionalSlot.getSourceX() - 1, optionalSlot.getSourceY() - 1,
 								18,
 								18,
-								0 /* FIXME: Check, this used this.zLevel before */);
+								getBlitOffset());
 						RenderSystem.color4f( 1.0F, 1.0F, 1.0F, 1.0F );
 					}
 				}
@@ -279,7 +270,7 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 
 		for( final GuiCustomSlot slot : this.guiSlots )
 		{
-			slot.drawBackground( ox, oy );
+			slot.drawBackground( ox, oy, getBlitOffset() );
 		}
 
 	}
@@ -303,9 +294,9 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 
 		for( GuiCustomSlot slot : this.guiSlots )
 		{
-			if( this.isPointInRegion( slot.xPos(), slot.yPos(), slot.getWidth(), slot.getHeight(), xCoord, yCoord ) && slot.canClick( this.minecraft.player ) )
+			if( this.isPointInRegion( slot.xPos(), slot.yPos(), slot.getWidth(), slot.getHeight(), xCoord, yCoord ) && slot.canClick( getPlayer() ) )
 			{
-				slot.slotClicked( this.minecraft.player.inventory.getItemStack(), btn );
+				slot.slotClicked( getPlayer().inventory.getItemStack(), btn );
 			}
 		}
 
@@ -321,7 +312,7 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 	public boolean mouseDragged(double mouseX, double mouseY, int mouseButton, double dragX, double dragY) {
 
 		final Slot slot = this.getSlot( (int) mouseX, (int) mouseY );
-		final ItemStack itemstack = this.minecraft.player.inventory.getItemStack();
+		final ItemStack itemstack = getPlayer().inventory.getItemStack();
 
 		if( this.getScrollBar() != null )
 		{
@@ -353,7 +344,7 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 	@Override
 	protected void handleMouseClick( final Slot slot, final int slotIdx, final int mouseButton, final ClickType clickType )
 	{
-		final PlayerEntity player = Minecraft.getInstance().player;
+		final PlayerEntity player = getPlayer();
 
 		if( slot instanceof SlotFake )
 		{
@@ -386,7 +377,7 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 				return; // prevent weird double clicks..
 			}
 
-			InventoryAction action = null;
+			InventoryAction action;
 			if( hasShiftDown() )
 			{
 				action = InventoryAction.CRAFT_SHIFT;
@@ -508,7 +499,7 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 
 			if( action != null )
 			{
-				( (AEBaseContainer) this.container ).setTargetStack( stack );
+				this.container.setTargetStack( stack );
 				final PacketInventoryAction p = new PacketInventoryAction( action, this.getInventorySlots().size(), 0 );
 				NetworkHandler.instance().sendToServer( p );
 			}
@@ -542,7 +533,7 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 				for( final Slot inventorySlot : slots )
 				{
 					if( inventorySlot != null && inventorySlot.canTakeStack(
-							this.minecraft.player ) && inventorySlot.getHasStack() && inventorySlot.isSameInventory( slot ) && Container.canAddItemToSlot(
+							getPlayer() ) && inventorySlot.getHasStack() && inventorySlot.isSameInventory( slot ) && Container.canAddItemToSlot(
 									inventorySlot, this.dbl_whichItem, true ) )
 					{
 						this.handleMouseClick( inventorySlot, inventorySlot.slotNumber, 0, ClickType.QUICK_MOVE );
@@ -560,16 +551,21 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 	protected boolean func_195363_d(int keyCode, int scanCode) {
 		return checkHotbarKeys(InputMappings.getInputByCode(keyCode, scanCode));
 	}
+	
+	protected ClientPlayerEntity getPlayer() {
+		// Our UIs are usually not opened when not in-game, so this should not be a problem
+		return Preconditions.checkNotNull(getMinecraft().player);
+	}
 
 	protected boolean checkHotbarKeys( final InputMappings.Input input )
 	{
 		final Slot theSlot = this.getSlotUnderMouse();
 
-		if( this.minecraft.player.inventory.getItemStack().isEmpty() && theSlot != null )
+		if( getPlayer().inventory.getItemStack().isEmpty() && theSlot != null )
 		{
 			for( int j = 0; j < 9; ++j )
 			{
-				if( this.minecraft.gameSettings.keyBindsHotbar[j].isActiveAndMatches(input) )
+				if( getMinecraft().gameSettings.keyBindsHotbar[j].isActiveAndMatches(input) )
 				{
 					final List<Slot> slots = this.getInventorySlots();
 					for( final Slot s : slots )
@@ -673,7 +669,7 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 	public void bindTexture( final String base, final String file )
 	{
 		final ResourceLocation loc = new ResourceLocation( base, "textures/" + file );
-		this.minecraft.getTextureManager().bindTexture( loc );
+		getMinecraft().getTextureManager().bindTexture( loc );
 	}
 
 	protected void drawItem( final int x, final int y, final ItemStack is )
@@ -695,16 +691,12 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 
 	private boolean hasCustomInventoryName()
 	{
-		if( this.container instanceof AEBaseContainer )
-		{
-			return ( (AEBaseContainer) this.container ).getCustomName() != null;
-		}
-		return false;
+		return this.container.getCustomName() != null;
 	}
 
 	private String getInventoryName()
 	{
-		return ( (AEBaseContainer) this.container ).getCustomName();
+		return this.container.getCustomName();
 	}
 
 	/**
@@ -746,9 +738,9 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 				RenderSystem.disableBlend();
 				final Fluid fluid = fs.getFluid();
 				FluidAttributes fluidAttributes = fluid.getAttributes();
-				minecraft.getTextureManager().bindTexture( AtlasTexture.LOCATION_BLOCKS_TEXTURE );
+				bindTexture( AtlasTexture.LOCATION_BLOCKS_TEXTURE );
 				ResourceLocation fluidStillTexture = fluidAttributes.getStillTexture(fs.getFluidStack());
-				final TextureAtlasSprite sprite = minecraft.getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(fluidStillTexture);
+				final TextureAtlasSprite sprite = getMinecraft().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(fluidStillTexture);
 
 				// Set color for dynamic fluids
 				// Convert int color to RGB
@@ -783,7 +775,7 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 
 						try
 						{
-							final int uv_y = (int) Math.floor( aes.getIcon() / 16 );
+							final int uv_y = aes.getIcon() / 16;
 							final int uv_x = aes.getIcon() - uv_y * 16;
 
 							RenderSystem.enableBlend();
@@ -803,24 +795,23 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 							final float f1 = 0.00390625F;
 							final float f = 0.00390625F;
 							final float par6 = 16;
-							int zLevel = 0; // FIXME This was previously a field (see FIXMEs above)
-							vb.pos( par1 + 0, par2 + par6, zLevel )
+							vb.pos( par1 + 0, par2 + par6, getBlitOffset() )
 									.tex( ( par3 + 0 ) * f, ( par4 + par6 ) * f1 )
 									.color( 1.0f, 1.0f, 1.0f,
 											aes.getOpacityOfIcon() )
 									.endVertex();
 							final float par5 = 16;
-							vb.pos( par1 + par5, par2 + par6, zLevel )
+							vb.pos( par1 + par5, par2 + par6, getBlitOffset() )
 									.tex( ( par3 + par5 ) * f, ( par4 + par6 ) * f1 )
 									.color( 1.0f, 1.0f, 1.0f,
 											aes.getOpacityOfIcon() )
 									.endVertex();
-							vb.pos( par1 + par5, par2 + 0, zLevel )
+							vb.pos( par1 + par5, par2 + 0, getBlitOffset() )
 									.tex( ( par3 + par5 ) * f, ( par4 + 0 ) * f1 )
 									.color( 1.0f, 1.0f, 1.0f,
 											aes.getOpacityOfIcon() )
 									.endVertex();
-							vb.pos( par1 + 0, par2 + 0, zLevel )
+							vb.pos( par1 + 0, par2 + 0, getBlitOffset() )
 									.tex( ( par3 + 0 ) * f, ( par4 + 0 ) * f1 )
 									.color( 1.0f, 1.0f, 1.0f,
 											aes.getOpacityOfIcon() )
@@ -830,6 +821,7 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 						}
 						catch( final Exception err )
 						{
+							err.printStackTrace();
 						}
 					}
 				}
@@ -844,7 +836,7 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 						{
 							try
 							{
-								isValid = ( (SlotRestrictedInput) s ).isValid( is, this.minecraft.world );
+								isValid = ( (SlotRestrictedInput) s ).isValid( is, getMinecraft().world );
 							}
 							catch( final Exception err )
 							{
@@ -856,13 +848,12 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 
 					if( ( (AppEngSlot) s ).getIsValid() == hasCalculatedValidness.Invalid )
 					{
-						// FIXME: Test this, the fill function used below does not support setting Z
-						// FIXME this.zLevel = 100.0F;
+						setBlitOffset(100);
 						this.itemRenderer.zLevel = 100.0F;
 
 						fill( s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66ff6666 );
 
-						// FIXME this.zLevel = 0.0F;
+						setBlitOffset(0);
 						this.itemRenderer.zLevel = 0.0F;
 					}
 				}
@@ -896,12 +887,12 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
 	public void bindTexture( final String file )
 	{
 		final ResourceLocation loc = new ResourceLocation( AppEng.MOD_ID, "textures/" + file );
-		this.minecraft.getTextureManager().bindTexture( loc );
+		getMinecraft().getTextureManager().bindTexture( loc );
 	}
 
 	public void bindTexture( final ResourceLocation loc )
 	{
-		this.minecraft.getTextureManager().bindTexture( loc );
+		getMinecraft().getTextureManager().bindTexture( loc );
 	}
 
 	protected GuiScrollbar getScrollBar()
