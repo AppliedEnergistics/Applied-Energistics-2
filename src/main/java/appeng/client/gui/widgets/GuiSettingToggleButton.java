@@ -62,6 +62,7 @@ public class GuiSettingToggleButton<T extends Enum<T>> extends GuiIconButton
 		// Build a list of values (in order) that are valid w.r.t. the given predicate
 		EnumSet<T> validValues = EnumSet.allOf(val.getDeclaringClass());
 		validValues.removeIf(isValidValue.negate());
+		validValues.removeIf(s -> !setting.getPossibleValues().contains(s));
 		this.validValues = validValues;
 
 		this.buttonSetting = setting;

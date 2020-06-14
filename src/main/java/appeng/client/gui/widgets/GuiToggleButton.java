@@ -65,7 +65,7 @@ public class GuiToggleButton extends Button implements ITooltip
 			RenderSystem.color4f( 1.0f, 1.0f, 1.0f, 1.0f );
 			Minecraft.getInstance().textureManager.bindTexture( TEXTURE_STATES );
 
-			final int uv_y = (int) Math.floor( iconIndex / 16 );
+			final int uv_y = iconIndex / 16;
 			final int uv_x = iconIndex - uv_y * 16;
 
 			GuiUtils.drawTexturedModalRect( this.x, this.y, 256 - 16, 256 - 16, 16, 16, 0 );

@@ -169,7 +169,16 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 
 		this.maxRows = this.getMaxRows();
 		TerminalStyle terminalStyle = (TerminalStyle) AEConfig.instance().getConfigManager().getSetting(Settings.TERMINAL_STYLE);
-		this.perRow = terminalStyle != TerminalStyle.FULL ? 9 : 9 + ( ( this.width - this.standardSize ) / 18 );
+
+		if( terminalStyle != TerminalStyle.FULL )
+		{
+			this.perRow = 9;
+		}
+		else
+		{
+			this.perRow = 9 + ( ( this.width - this.standardSize ) / 18 );
+		}
+		this.xSize = this.standardSize + ( ( this.perRow - 9 ) * 18 );
 
 		final int magicNumber = 114 + 1;
 		final int extraSpace = this.height - magicNumber - this.reservedSpace;
@@ -185,6 +194,9 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 			this.rows = 3;
 		}
 
+		// Size the container according to the number of rows we decided to have
+		this.ySize = magicNumber + this.rows * 18 + this.reservedSpace;
+
 		this.getMeSlots().clear();
 		for( int y = 0; y < this.rows; y++ )
 		{
@@ -194,24 +206,11 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 			}
 		}
 
-		if( terminalStyle != TerminalStyle.FULL )
-		{
-			this.xSize = this.standardSize + ( ( this.perRow - 9 ) * 18 );
-		}
-		else
-		{
-			this.xSize = this.standardSize;
-		}
 
 		super.init();
 		// full size : 204
 		// extra slots : 72
 		// slot 18
-
-		this.ySize = magicNumber + this.rows * 18 + this.reservedSpace;
-		// this.guiTop = top;
-		final int unusedSpace = this.height - this.ySize;
-		this.guiTop = (int) Math.floor( unusedSpace / ( unusedSpace < 0 ? 3.8f : 2.0f ) );
 
 		int offset = this.guiTop + 8;
 
@@ -342,20 +341,20 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 
 		this.bindTexture( this.getBackground() );
 		final int x_width = 197;
-		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, x_width, 18, getBlitOffset() );
+		blit( offsetX, offsetY, 0, 0, x_width, 18 );
 
 		if( this.viewCell || ( this instanceof GuiSecurityStation ) )
 		{
-			GuiUtils.drawTexturedModalRect( offsetX + x_width, offsetY, x_width, 0, 46, 128, getBlitOffset() );
+			blit( offsetX + x_width, offsetY, x_width, 0, 46, 128 );
 		}
 
 		for( int x = 0; x < this.rows; x++ )
 		{
-			GuiUtils.drawTexturedModalRect( offsetX, offsetY + 18 + x * 18, 0, 18, x_width, 18, getBlitOffset() );
+			blit( offsetX, offsetY + 18 + x * 18, 0, 18, x_width, 18 );
 		}
 
-		GuiUtils.drawTexturedModalRect( offsetX, offsetY + 16 + this.rows * 18 + this.lowerTextureOffset, 0, 106 - 18 - 18, x_width,
-				99 + this.reservedSpace - this.lowerTextureOffset, getBlitOffset() );
+		blit( offsetX, offsetY + 16 + this.rows * 18 + this.lowerTextureOffset, 0, 106 - 18 - 18, x_width,
+				99 + this.reservedSpace - this.lowerTextureOffset );
 
 		if( this.viewCell )
 		{
@@ -558,6 +557,7 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 
 	private void reinitalize()
 	{
+		this.children.removeAll(this.buttons);
 		this.buttons.clear();
 		this.init();
 	}
