@@ -74,7 +74,7 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
 
 			lines.add( GuiText.StoredEnergy.textComponent().appendText(':' + MessageFormat.format( " {0,number,#} ", internalCurrentPower ))
 				.appendSibling(new TranslationTextComponent( PowerUnits.AE.unlocalizedName ))
-					.appendText(" - " + MessageFormat.format( " {0,number,#.##%} ", percent )));
+					.appendText(" - " + MessageFormat.format( "{0,number,#.##%}", percent )));
 		}
 	}
 
