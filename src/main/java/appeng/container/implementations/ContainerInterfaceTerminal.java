@@ -26,8 +26,6 @@ import java.util.Map.Entry;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.container.ContainerLocator;
-import appeng.container.helper.PartContainerHelper;
-import appeng.container.helper.TileContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -68,8 +66,8 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 
 	public static ContainerType<ContainerInterfaceTerminal> TYPE;
 
-	private static final PartContainerHelper<ContainerInterfaceTerminal, PartInterfaceTerminal> helper
-			= new PartContainerHelper<>(ContainerInterfaceTerminal::new, PartInterfaceTerminal.class, SecurityPermissions.BUILD);
+	private static final ContainerHelper<ContainerInterfaceTerminal, PartInterfaceTerminal> helper
+			= new ContainerHelper<>(ContainerInterfaceTerminal::new, PartInterfaceTerminal.class, SecurityPermissions.BUILD);
 
 	public static ContainerInterfaceTerminal fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		return helper.fromNetwork(windowId, inv, buf);

@@ -22,7 +22,7 @@ package appeng.container.implementations;
 import java.util.Iterator;
 
 import appeng.container.ContainerLocator;
-import appeng.container.helper.TileContainerHelper;
+import appeng.container.implementations.ContainerHelper;
 import appeng.util.EnumCycler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -60,8 +60,8 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 
 	public static ContainerType<ContainerCellWorkbench> TYPE;
 
-	private static final TileContainerHelper<ContainerCellWorkbench, TileCellWorkbench> helper
-			= new TileContainerHelper<>(ContainerCellWorkbench::new, TileCellWorkbench.class);
+	private static final ContainerHelper<ContainerCellWorkbench, TileCellWorkbench> helper
+			= new ContainerHelper<>(ContainerCellWorkbench::new, TileCellWorkbench.class);
 
 	private final TileCellWorkbench workBench;
 	@GuiSync( 2 )

@@ -20,7 +20,7 @@ package appeng.container.implementations;
 
 
 import appeng.container.ContainerLocator;
-import appeng.container.helper.TileContainerHelper;
+import appeng.container.implementations.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -38,8 +38,8 @@ public class ContainerGrinder extends AEBaseContainer
 
 	public static ContainerType<ContainerGrinder> TYPE;
 
-	private static final TileContainerHelper<ContainerGrinder, TileGrinder> helper
-			= new TileContainerHelper<>(ContainerGrinder::new, TileGrinder.class);
+	private static final ContainerHelper<ContainerGrinder, TileGrinder> helper
+			= new ContainerHelper<>(ContainerGrinder::new, TileGrinder.class);
 
 	public static ContainerGrinder fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		return helper.fromNetwork(windowId, inv, buf);

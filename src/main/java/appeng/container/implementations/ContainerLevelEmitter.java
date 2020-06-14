@@ -20,8 +20,6 @@ package appeng.container.implementations;
 
 
 import appeng.container.ContainerLocator;
-import appeng.container.helper.PartContainerHelper;
-import appeng.container.helper.TileContainerHelper;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -49,8 +47,8 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 
 	public static ContainerType<ContainerLevelEmitter> TYPE;
 
-	private static final PartContainerHelper<ContainerLevelEmitter, PartLevelEmitter> helper
-			= new PartContainerHelper<>(ContainerLevelEmitter::new, PartLevelEmitter.class, SecurityPermissions.BUILD);
+	private static final ContainerHelper<ContainerLevelEmitter, PartLevelEmitter> helper
+			= new ContainerHelper<>(ContainerLevelEmitter::new, PartLevelEmitter.class, SecurityPermissions.BUILD);
 
 	public static ContainerLevelEmitter fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		return helper.fromNetwork(windowId, inv, buf);

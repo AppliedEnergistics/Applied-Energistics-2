@@ -1,4 +1,4 @@
-package appeng.container.helper;
+package appeng.container.implementations;
 
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
@@ -12,6 +12,7 @@ import appeng.container.ContainerLocator;
 import appeng.core.AELog;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.WirelessTerminalGuiObject;
+import appeng.util.Platform;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -23,7 +24,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -33,18 +33,20 @@ import net.minecraftforge.fml.network.NetworkHooks;
  *
  * @param <C>
  */
-public final class ContainerHelper<C extends AEBaseContainer, I> extends AbstractContainerHelper {
+public final class ContainerHelper<C extends AEBaseContainer, I> {
 
     private final Class<I> interfaceClass;
 
     private final ContainerFactory<C, I> factory;
+
+    private final SecurityPermissions requiredPermission;
 
     public ContainerHelper(ContainerFactory<C, I> factory, Class<I> interfaceClass) {
         this(factory, interfaceClass, null);
     }
 
     public ContainerHelper(ContainerFactory<C, I> factory, Class<I> interfaceClass, SecurityPermissions requiredPermission) {
-        super(requiredPermission);
+        this.requiredPermission = requiredPermission;
         this.interfaceClass = interfaceClass;
         this.factory = factory;
     }
@@ -119,9 +121,8 @@ public final class ContainerHelper<C extends AEBaseContainer, I> extends Abstrac
             return getHostFromPlayerInventory(player, locator);
         }
 
-        if (!locator.hasBlockPos() || !locator.hasSide()) {
-            return null; // No block was clicked or the side is unknown
-            // FIXME: If no side is provided, should be try with INTERNAL???
+        if (!locator.hasBlockPos()) {
+            return null; // No block was clicked
         }
 
         TileEntity tileEntity = player.world.getTileEntity(locator.getBlockPos());
@@ -129,7 +130,13 @@ public final class ContainerHelper<C extends AEBaseContainer, I> extends Abstrac
         // The tile entity itself can host a terminal (i.e. Chest!)
         if (interfaceClass.isInstance(tileEntity)) {
             return interfaceClass.cast(tileEntity);
-        } else if (tileEntity instanceof IPartHost) {
+        }
+
+        if (!locator.hasSide()) {
+            return null;
+        }
+
+        if (tileEntity instanceof IPartHost) {
             // But it could also be a part attached to the tile entity
             IPartHost partHost = (IPartHost) tileEntity;
             IPart part = partHost.getPart(locator.getSide());
@@ -185,6 +192,17 @@ public final class ContainerHelper<C extends AEBaseContainer, I> extends Abstrac
     @FunctionalInterface
     public interface ContainerFactory<C, I> {
         C create(int windowId, PlayerInventory playerInv, I accessObj);
+    }
+
+    private boolean checkPermission(PlayerEntity player, Object accessInterface) {
+
+        if (requiredPermission != null)
+        {
+            return Platform.checkPermissions(player, accessInterface, requiredPermission, true);
+        }
+
+        return true;
+
     }
 
 }

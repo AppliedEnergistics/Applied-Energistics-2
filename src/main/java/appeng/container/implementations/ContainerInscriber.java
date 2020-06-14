@@ -23,7 +23,7 @@ import appeng.api.AEApi;
 import appeng.api.definitions.IItemDefinition;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
-import appeng.container.helper.TileContainerHelper;
+import appeng.container.implementations.ContainerHelper;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
@@ -50,8 +50,8 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 
 	public static ContainerType<ContainerInscriber> TYPE;
 
-	private static final TileContainerHelper<ContainerInscriber, TileInscriber> helper
-			= new TileContainerHelper<>(ContainerInscriber::new, TileInscriber.class);
+	private static final ContainerHelper<ContainerInscriber, TileInscriber> helper
+			= new ContainerHelper<>(ContainerInscriber::new, TileInscriber.class);
 
 	public static ContainerInscriber fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		return helper.fromNetwork(windowId, inv, buf);

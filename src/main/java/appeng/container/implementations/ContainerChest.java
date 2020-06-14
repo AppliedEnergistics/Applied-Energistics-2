@@ -21,7 +21,7 @@ package appeng.container.implementations;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.container.ContainerLocator;
-import appeng.container.helper.TileContainerHelper;
+import appeng.container.implementations.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 
@@ -37,8 +37,8 @@ public class ContainerChest extends AEBaseContainer
 
 	public static ContainerType<ContainerChest> TYPE;
 
-	private static final TileContainerHelper<ContainerChest, TileChest> helper
-			= new TileContainerHelper<>(ContainerChest::new, TileChest.class, SecurityPermissions.BUILD);
+	private static final ContainerHelper<ContainerChest, TileChest> helper
+			= new ContainerHelper<>(ContainerChest::new, TileChest.class, SecurityPermissions.BUILD);
 
 	public ContainerChest( int id, final PlayerInventory ip, final TileChest chest )
 	{

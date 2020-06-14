@@ -20,7 +20,7 @@ package appeng.container.implementations;
 
 
 import appeng.container.ContainerLocator;
-import appeng.container.helper.TileContainerHelper;
+import appeng.container.implementations.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 
@@ -36,8 +36,8 @@ public class ContainerDrive extends AEBaseContainer
 
 public static ContainerType<ContainerDrive> TYPE;
 
-	private static final TileContainerHelper<ContainerDrive, TileDrive> helper
-			= new TileContainerHelper<>(ContainerDrive::new, TileDrive.class);
+	private static final ContainerHelper<ContainerDrive, TileDrive> helper
+			= new ContainerHelper<>(ContainerDrive::new, TileDrive.class);
 
 	public static ContainerDrive fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		return helper.fromNetwork(windowId, inv, buf);

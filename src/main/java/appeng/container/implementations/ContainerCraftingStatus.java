@@ -25,7 +25,6 @@ import java.util.List;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.container.ContainerLocator;
-import appeng.container.helper.ContainerHelper;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.entity.player.PlayerEntity;

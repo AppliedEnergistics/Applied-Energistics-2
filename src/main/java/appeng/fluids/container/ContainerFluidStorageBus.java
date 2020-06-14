@@ -22,7 +22,7 @@ package appeng.fluids.container;
 import java.util.Iterator;
 
 import appeng.container.ContainerLocator;
-import appeng.container.helper.PartContainerHelper;
+import appeng.container.implementations.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -58,8 +58,8 @@ public class ContainerFluidStorageBus extends ContainerFluidConfigurable
 
 	public static ContainerType<ContainerFluidStorageBus> TYPE;
 
-	private static final PartContainerHelper<ContainerFluidStorageBus, PartFluidStorageBus> helper
-			= new PartContainerHelper<>(ContainerFluidStorageBus::new, PartFluidStorageBus.class);
+	private static final ContainerHelper<ContainerFluidStorageBus, PartFluidStorageBus> helper
+			= new ContainerHelper<>(ContainerFluidStorageBus::new, PartFluidStorageBus.class);
 
 	public static ContainerFluidStorageBus fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		return helper.fromNetwork(windowId, inv, buf);

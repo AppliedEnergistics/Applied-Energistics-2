@@ -26,7 +26,7 @@ import javax.annotation.Nonnull;
 import appeng.api.AEApi;
 import appeng.api.config.*;
 import appeng.container.ContainerLocator;
-import appeng.container.helper.ContainerHelper;
+import appeng.container.implementations.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;

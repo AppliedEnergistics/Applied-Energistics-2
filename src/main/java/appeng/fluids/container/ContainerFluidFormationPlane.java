@@ -3,7 +3,7 @@ package appeng.fluids.container;
 
 
 import appeng.container.ContainerLocator;
-import appeng.container.helper.PartContainerHelper;
+import appeng.container.implementations.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -23,8 +23,8 @@ public class ContainerFluidFormationPlane extends ContainerFluidConfigurable
 
 	public static ContainerType<ContainerFluidFormationPlane> TYPE;
 
-	private static final PartContainerHelper<ContainerFluidFormationPlane, PartFluidFormationPlane> helper
-			= new PartContainerHelper<>(ContainerFluidFormationPlane::new, PartFluidFormationPlane.class, SecurityPermissions.BUILD);
+	private static final ContainerHelper<ContainerFluidFormationPlane, PartFluidFormationPlane> helper
+			= new ContainerHelper<>(ContainerFluidFormationPlane::new, PartFluidFormationPlane.class, SecurityPermissions.BUILD);
 
 	public static ContainerFluidFormationPlane fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		return helper.fromNetwork(windowId, inv, buf);

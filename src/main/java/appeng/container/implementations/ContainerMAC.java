@@ -25,7 +25,7 @@ import appeng.api.config.Settings;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
-import appeng.container.helper.TileContainerHelper;
+import appeng.container.implementations.ContainerHelper;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.SlotMACPattern;
 import appeng.container.slot.SlotOutput;
@@ -47,8 +47,8 @@ public class ContainerMAC extends ContainerUpgradeable implements IProgressProvi
 
 	public static ContainerType<ContainerMAC> TYPE;
 
-	private static final TileContainerHelper<ContainerMAC, TileMolecularAssembler> helper
-			= new TileContainerHelper<>(ContainerMAC::new, TileMolecularAssembler.class);
+	private static final ContainerHelper<ContainerMAC, TileMolecularAssembler> helper
+			= new ContainerHelper<>(ContainerMAC::new, TileMolecularAssembler.class);
 
 	public static ContainerMAC fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		return helper.fromNetwork(windowId, inv, buf);

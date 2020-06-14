@@ -21,7 +21,7 @@ package appeng.fluids.container;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.container.ContainerLocator;
-import appeng.container.helper.PartContainerHelper;
+import appeng.container.implementations.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 
@@ -41,8 +41,8 @@ public class ContainerFluidIO extends ContainerFluidConfigurable
 
 	public static ContainerType<ContainerFluidIO> TYPE;
 
-	private static final PartContainerHelper<ContainerFluidIO, PartSharedFluidBus> helper
-			= new PartContainerHelper<>(ContainerFluidIO::new, PartSharedFluidBus.class, SecurityPermissions.BUILD);
+	private static final ContainerHelper<ContainerFluidIO, PartSharedFluidBus> helper
+			= new ContainerHelper<>(ContainerFluidIO::new, PartSharedFluidBus.class, SecurityPermissions.BUILD);
 
 	public static ContainerFluidIO fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		return helper.fromNetwork(windowId, inv, buf);

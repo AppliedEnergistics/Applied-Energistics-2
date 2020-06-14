@@ -24,7 +24,7 @@ import appeng.api.config.Settings;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
-import appeng.container.helper.TileContainerHelper;
+import appeng.container.implementations.ContainerHelper;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
@@ -42,8 +42,8 @@ public class ContainerCondenser extends AEBaseContainer implements IProgressProv
 
 	public static ContainerType<ContainerCondenser> TYPE;
 
-	private static final TileContainerHelper<ContainerCondenser, TileCondenser> helper
-			= new TileContainerHelper<>(ContainerCondenser::new, TileCondenser.class);
+	private static final ContainerHelper<ContainerCondenser, TileCondenser> helper
+			= new ContainerHelper<>(ContainerCondenser::new, TileCondenser.class);
 
 	private final TileCondenser condenser;
 	@GuiSync( 0 )

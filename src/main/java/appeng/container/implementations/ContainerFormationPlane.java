@@ -20,7 +20,7 @@ package appeng.container.implementations;
 
 
 import appeng.container.ContainerLocator;
-import appeng.container.helper.PartContainerHelper;
+import appeng.container.implementations.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -45,8 +45,8 @@ public class ContainerFormationPlane extends ContainerUpgradeable
 
 	public static ContainerType<ContainerFormationPlane> TYPE;
 
-	private static final PartContainerHelper<ContainerFormationPlane, PartFormationPlane> helper
-			= new PartContainerHelper<>(ContainerFormationPlane::new, PartFormationPlane.class, SecurityPermissions.BUILD);
+	private static final ContainerHelper<ContainerFormationPlane, PartFormationPlane> helper
+			= new ContainerHelper<>(ContainerFormationPlane::new, PartFormationPlane.class, SecurityPermissions.BUILD);
 
 	public static ContainerFormationPlane fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		return helper.fromNetwork(windowId, inv, buf);

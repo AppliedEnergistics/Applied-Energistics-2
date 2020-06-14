@@ -20,7 +20,7 @@ package appeng.container.implementations;
 
 
 import appeng.container.ContainerLocator;
-import appeng.container.helper.TileContainerHelper;
+import appeng.container.implementations.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 
@@ -45,8 +45,8 @@ public class ContainerSpatialIOPort extends AEBaseContainer
 
 public static ContainerType<ContainerSpatialIOPort> TYPE;
 
-	private static final TileContainerHelper<ContainerSpatialIOPort, TileSpatialIOPort> helper
-			= new TileContainerHelper<>(ContainerSpatialIOPort::new, TileSpatialIOPort.class, SecurityPermissions.BUILD);
+	private static final ContainerHelper<ContainerSpatialIOPort, TileSpatialIOPort> helper
+			= new ContainerHelper<>(ContainerSpatialIOPort::new, TileSpatialIOPort.class, SecurityPermissions.BUILD);
 
 	@GuiSync( 0 )
 	public long currentPower;

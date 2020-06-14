@@ -22,7 +22,6 @@ package appeng.container.implementations;
 import javax.annotation.Nonnull;
 
 import appeng.container.ContainerLocator;
-import appeng.container.helper.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;

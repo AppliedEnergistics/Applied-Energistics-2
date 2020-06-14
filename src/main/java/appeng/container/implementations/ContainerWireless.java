@@ -21,7 +21,7 @@ package appeng.container.implementations;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.container.ContainerLocator;
-import appeng.container.helper.TileContainerHelper;
+import appeng.container.implementations.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 
@@ -39,8 +39,8 @@ public class ContainerWireless extends AEBaseContainer
 
 	public static ContainerType<ContainerWireless> TYPE;
 
-	private static final TileContainerHelper<ContainerWireless, TileWireless> helper
-			= new TileContainerHelper<>(ContainerWireless::new, TileWireless.class, SecurityPermissions.BUILD);
+	private static final ContainerHelper<ContainerWireless, TileWireless> helper
+			= new ContainerHelper<>(ContainerWireless::new, TileWireless.class, SecurityPermissions.BUILD);
 
 	public static ContainerWireless fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		return helper.fromNetwork(windowId, inv, buf);

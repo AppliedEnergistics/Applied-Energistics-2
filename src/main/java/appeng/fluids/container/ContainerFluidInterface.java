@@ -23,7 +23,7 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.util.IConfigManager;
 import appeng.container.ContainerLocator;
-import appeng.container.helper.ContainerHelper;
+import appeng.container.implementations.ContainerHelper;
 import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.helper.FluidSyncHelper;
 import appeng.fluids.helper.IFluidInterfaceHost;

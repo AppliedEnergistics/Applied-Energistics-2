@@ -20,7 +20,7 @@ package appeng.container.implementations;
 
 
 import appeng.container.ContainerLocator;
-import appeng.container.helper.TileContainerHelper;
+import appeng.container.implementations.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -44,8 +44,8 @@ public class ContainerIOPort extends ContainerUpgradeable
 
 public static ContainerType<ContainerIOPort> TYPE;
 
-	private static final TileContainerHelper<ContainerIOPort, TileIOPort> helper
-			= new TileContainerHelper<>(ContainerIOPort::new, TileIOPort.class, SecurityPermissions.BUILD);
+	private static final ContainerHelper<ContainerIOPort, TileIOPort> helper
+			= new ContainerHelper<>(ContainerIOPort::new, TileIOPort.class, SecurityPermissions.BUILD);
 
 	public static ContainerIOPort fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		return helper.fromNetwork(windowId, inv, buf);

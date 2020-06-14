@@ -2,7 +2,7 @@ package appeng.fluids.container;
 
 
 import appeng.container.ContainerLocator;
-import appeng.container.helper.PartContainerHelper;
+import appeng.container.implementations.ContainerHelper;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -24,8 +24,8 @@ public class ContainerFluidLevelEmitter extends ContainerFluidConfigurable
 {
 	public static ContainerType<ContainerFluidLevelEmitter> TYPE;
 
-	private static final PartContainerHelper<ContainerFluidLevelEmitter, PartFluidLevelEmitter> helper
-			= new PartContainerHelper<>(ContainerFluidLevelEmitter::new, PartFluidLevelEmitter.class, SecurityPermissions.BUILD);
+	private static final ContainerHelper<ContainerFluidLevelEmitter, PartFluidLevelEmitter> helper
+			= new ContainerHelper<>(ContainerFluidLevelEmitter::new, PartFluidLevelEmitter.class, SecurityPermissions.BUILD);
 
 	public static ContainerFluidLevelEmitter fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		return helper.fromNetwork(windowId, inv, buf);

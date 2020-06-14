@@ -22,8 +22,6 @@ package appeng.container.implementations;
 import java.util.Iterator;
 
 import appeng.container.ContainerLocator;
-import appeng.container.helper.PartContainerHelper;
-import appeng.container.helper.TileContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -57,8 +55,8 @@ public class ContainerStorageBus extends ContainerUpgradeable
 
 	public static ContainerType<ContainerStorageBus> TYPE;
 
-	private static final PartContainerHelper<ContainerStorageBus, PartStorageBus> helper
-			= new PartContainerHelper<>(ContainerStorageBus::new, PartStorageBus.class, SecurityPermissions.BUILD);
+	private static final ContainerHelper<ContainerStorageBus, PartStorageBus> helper
+			= new ContainerHelper<>(ContainerStorageBus::new, PartStorageBus.class, SecurityPermissions.BUILD);
 
 	public static ContainerStorageBus fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		return helper.fromNetwork(windowId, inv, buf);

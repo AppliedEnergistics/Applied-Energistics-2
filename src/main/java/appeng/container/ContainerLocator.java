@@ -182,7 +182,7 @@ public final class ContainerLocator {
                 buf.writeByte(side.ordinal());
                 break;
             case BLOCK:
-                buf.writeByte(22);
+                buf.writeByte(2);
                 buf.writeInt(dimensionId);
                 buf.writeBlockPos(blockPos);
                 break;

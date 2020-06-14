@@ -20,7 +20,7 @@ package appeng.container.implementations;
 
 
 import appeng.container.ContainerLocator;
-import appeng.container.helper.TileContainerHelper;
+import appeng.container.implementations.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 
@@ -36,8 +36,8 @@ public class ContainerSkyChest extends AEBaseContainer
 
 public static ContainerType<ContainerSkyChest> TYPE;
 
-	private static final TileContainerHelper<ContainerSkyChest, TileSkyChest> helper
-			= new TileContainerHelper<>(ContainerSkyChest::new, TileSkyChest.class);
+	private static final ContainerHelper<ContainerSkyChest, TileSkyChest> helper
+			= new ContainerHelper<>(ContainerSkyChest::new, TileSkyChest.class);
 
 
 	private final TileSkyChest chest;
