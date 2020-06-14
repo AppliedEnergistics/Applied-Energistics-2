@@ -272,7 +272,11 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 
 	public boolean isActive()
 	{
-		return this.isActive;
+		if (world != null && !world.isRemote) {
+			return isPowered();
+		} else {
+			return this.isActive;
+		}
 	}
 
 	@Override
