@@ -37,19 +37,9 @@ import net.minecraftforge.fml.client.gui.GuiUtils;
 public class GuiChest extends AEBaseGui<ContainerChest>
 {
 
-	private GuiTabButton priority;
-
 	public GuiChest(ContainerChest container, PlayerInventory playerInventory, ITextComponent title) {
 		super(container, playerInventory, title);
 		this.ySize = 166;
-	}
-
-	protected void actionPerformed( final Button button )
-	{
-		if( button == this.priority )
-		{
-			NetworkHandler.instance().sendToServer( new PacketSwitchGuis( ContainerPriority.TYPE ) );
-		}
 	}
 
 	@Override
@@ -57,7 +47,11 @@ public class GuiChest extends AEBaseGui<ContainerChest>
 	{
 		super.init();
 
-		this.addButton( this.priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRenderer, this::actionPerformed ) );
+		this.addButton( new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRenderer, btn -> openPriority() ) );
+	}
+
+	private void openPriority() {
+		NetworkHandler.instance().sendToServer( new PacketSwitchGuis( ContainerPriority.TYPE ) );
 	}
 
 	@Override

@@ -90,16 +90,13 @@ public class BlockChest extends AEBaseTileBlock<TileChest>
 				return ActionResultType.SUCCESS;
 			}
 
-			if( hit.getFace() != tg.getUp() )
-			{
-				ContainerOpener.openContainer(ContainerChest.TYPE, p, ContainerLocator.forTileEntitySide(tg, hit.getFace()));
-			}
-			else
-			{
+			if (hit.getFace() == tg.getUp()) {
 				if( !tg.openGui( p ) )
 				{
 					p.sendMessage( PlayerMessages.ChestCannotReadStorageCell.get() );
 				}
+			} else {
+				ContainerOpener.openContainer(ContainerChest.TYPE, p, ContainerLocator.forTileEntitySide(tg, hit.getFace()));
 			}
 
 			return ActionResultType.SUCCESS;

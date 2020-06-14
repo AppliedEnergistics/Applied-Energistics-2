@@ -23,7 +23,6 @@ import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiNumberBox;
 import appeng.container.implementations.ContainerPriority;
 import appeng.core.AEConfig;
-import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
@@ -31,9 +30,6 @@ import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
-
-import java.io.IOException;
 
 
 public class GuiPriority extends AEBaseGui<ContainerPriority>
@@ -88,8 +84,8 @@ public class GuiPriority extends AEBaseGui<ContainerPriority>
 	@Override
 	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
 	{
-		this.bindTexture( "guis/priority.png" );
-		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset() );
+		this.bindTexture( getBackground() );
+		blit( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
 
 		this.priority.render(mouseX, mouseY, partialTicks);
 	}

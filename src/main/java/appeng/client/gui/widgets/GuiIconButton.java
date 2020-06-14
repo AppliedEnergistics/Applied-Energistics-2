@@ -82,7 +82,7 @@ public abstract class GuiIconButton extends Button implements ITooltip
 					RenderSystem.color4f( 0.5f, 0.5f, 0.5f, 1.0f );
 				}
 
-				final int uv_y = (int) Math.floor( iconIndex / 16.0f );
+				final int uv_y = iconIndex / 16;
 				final int uv_x = iconIndex - uv_y * 16;
 
 				GuiUtils.drawTexturedModalRect( 0, 0, 256 - 16, 256 - 16, 16, 16, 0 );

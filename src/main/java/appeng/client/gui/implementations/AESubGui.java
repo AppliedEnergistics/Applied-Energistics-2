@@ -5,10 +5,7 @@ import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IParts;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiTabButton;
-import appeng.container.implementations.ContainerCraftingTerm;
-import appeng.container.implementations.ContainerMEMonitorable;
-import appeng.container.implementations.ContainerPatternTerm;
-import appeng.container.implementations.ContainerWirelessTerm;
+import appeng.container.implementations.*;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.helpers.IPriorityHost;
@@ -16,6 +13,7 @@ import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.parts.reporting.PartCraftingTerminal;
 import appeng.parts.reporting.PartPatternTerminal;
 import appeng.parts.reporting.PartTerminal;
+import appeng.tile.storage.TileChest;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
@@ -24,13 +22,13 @@ import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 /**
- * Utility class for showing a sub-screen for the current container that allows returning to the current UI.
+ * Utility class for sub-screens of other containers that allow returning to the primary container UI.
  */
 final class AESubGui {
 
     private final AEBaseGui<?> gui;
-    private final ContainerType<?> originalGui;
-    private final ItemStack originalGuiIcon;
+    private final ContainerType<?> previousContainerType;
+    private final ItemStack previousContainerIcon;
 
     /**
      * Based on the container we're opening for, try to determine what it's "primary" GUI would be
@@ -42,39 +40,47 @@ final class AESubGui {
         final IDefinitions definitions = AEApi.instance().definitions();
         final IParts parts = definitions.parts();
 
-        if (containerTarget instanceof IPriorityHost) {
+        if (containerTarget instanceof TileChest) {
+            // A chest is also a priority host, but the priority _interface_ can only be opened from the
+            // chest ui that doesn't actually show the contents of the inserted cell.
             IPriorityHost priorityHost = (IPriorityHost) containerTarget;
-            this.originalGuiIcon = priorityHost.getItemStackRepresentation();
-            this.originalGui = priorityHost.getContainerType();
+            this.previousContainerIcon = priorityHost.getItemStackRepresentation();
+            this.previousContainerType = ContainerChest.TYPE;
+        }
+
+        else if (containerTarget instanceof IPriorityHost) {
+            IPriorityHost priorityHost = (IPriorityHost) containerTarget;
+            this.previousContainerIcon = priorityHost.getItemStackRepresentation();
+            this.previousContainerType = priorityHost.getContainerType();
         }
 
         else if( containerTarget instanceof WirelessTerminalGuiObject)
         {
-            this.originalGuiIcon = definitions.items().wirelessTerminal().maybeStack( 1 ).orElse( ItemStack.EMPTY );
-            this.originalGui = ContainerWirelessTerm.TYPE;
+            this.previousContainerIcon = definitions.items().wirelessTerminal().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+            this.previousContainerType = ContainerWirelessTerm.TYPE;
         }
 
         else if( containerTarget instanceof PartTerminal)
         {
-            this.originalGuiIcon = parts.terminal().maybeStack( 1 ).orElse( ItemStack.EMPTY );
-            this.originalGui = ContainerMEMonitorable.TYPE;
+            this.previousContainerIcon = parts.terminal().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+            this.previousContainerType = ContainerMEMonitorable.TYPE;
         }
 
         else if( containerTarget instanceof PartCraftingTerminal)
         {
-            this.originalGuiIcon = parts.craftingTerminal().maybeStack( 1 ).orElse( ItemStack.EMPTY );
-            this.originalGui = ContainerCraftingTerm.TYPE;
+            this.previousContainerIcon = parts.craftingTerminal().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+            this.previousContainerType = ContainerCraftingTerm.TYPE;
         }
 
         else if( containerTarget instanceof PartPatternTerminal)
         {
-            this.originalGuiIcon = parts.patternTerminal().maybeStack( 1 ).orElse( ItemStack.EMPTY );
-            this.originalGui = ContainerPatternTerm.TYPE;
+            this.previousContainerIcon = parts.patternTerminal().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+            this.previousContainerType = ContainerPatternTerm.TYPE;
         }
 
         else  {
-            this.originalGuiIcon = null;
-            this.originalGui = null;
+            this.previousContainerIcon = null;
+            this.previousContainerType = null;
         }
     }
 
@@ -83,13 +89,13 @@ final class AESubGui {
     }
 
     public final GuiTabButton addBackButton(Consumer<GuiTabButton> buttonAdder, int x, int y, @Nullable String label) {
-        if( this.originalGui != null && !originalGuiIcon.isEmpty() )
+        if( this.previousContainerType != null && !previousContainerIcon.isEmpty() )
         {
             if (label == null) {
-                label = originalGuiIcon.getDisplayName().getString();
+                label = previousContainerIcon.getDisplayName().getString();
             }
             ItemRenderer itemRenderer = gui.getMinecraft().getItemRenderer();
-            GuiTabButton button = new GuiTabButton( gui.getGuiLeft() + x, gui.getGuiTop() + y, originalGuiIcon, label, itemRenderer, btn -> goBack() );
+            GuiTabButton button = new GuiTabButton( gui.getGuiLeft() + x, gui.getGuiTop() + y, previousContainerIcon, label, itemRenderer, btn -> goBack() );
             buttonAdder.accept(button);
             return button;
         }
@@ -97,7 +103,7 @@ final class AESubGui {
     }
 
     public final void goBack() {
-        NetworkHandler.instance().sendToServer( new PacketSwitchGuis( this.originalGui ) );
+        NetworkHandler.instance().sendToServer(new PacketSwitchGuis(this.previousContainerType));
     }
 
 }

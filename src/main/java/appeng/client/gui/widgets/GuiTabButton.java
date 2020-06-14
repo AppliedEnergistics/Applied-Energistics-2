@@ -73,19 +73,23 @@ public class GuiTabButton extends Button implements ITooltip
 			RenderSystem.color4f( 1.0f, 1.0f, 1.0f, 1.0f );
 			minecraft.textureManager.bindTexture(TEXTURE_STATES);
 
+			RenderSystem.enableAlphaTest();
+
 			int uv_x = ( this.hideEdge > 0 ? 11 : 13 );
 
 			final int offsetX = this.hideEdge > 0 ? 1 : 0;
 
-			GuiUtils.drawTexturedModalRect( this.x, this.y, uv_x * 16, 0, 25, 22, 0 );
+			blit( this.x, this.y, uv_x * 16, 0, 25, 22 );
 
 			if( this.myIcon >= 0 )
 			{
-				final int uv_y = (int) Math.floor( this.myIcon / 16 );
+				final int uv_y = this.myIcon / 16;
 				uv_x = this.myIcon - uv_y * 16;
 
-				GuiUtils.drawTexturedModalRect( offsetX + this.x + 3, this.y + 3, uv_x * 16, uv_y * 16, 16, 16, 0 );
+				blit( offsetX + this.x + 3, this.y + 3, uv_x * 16, uv_y * 16, 16, 16 );
 			}
+
+			RenderSystem.disableAlphaTest();
 
 			if( this.myItem != null )
 			{
