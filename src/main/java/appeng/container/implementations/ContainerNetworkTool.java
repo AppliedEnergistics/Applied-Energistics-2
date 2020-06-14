@@ -23,8 +23,7 @@ import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
-import appeng.container.helper.PartOrTileContainerHelper;
-import appeng.container.helper.TileContainerHelper;
+import appeng.container.helper.ContainerHelper;
 import appeng.container.slot.SlotRestrictedInput;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -39,8 +38,8 @@ public class ContainerNetworkTool extends AEBaseContainer
 
 	public static ContainerType<ContainerNetworkTool> TYPE;
 
-	private static final PartOrTileContainerHelper<ContainerNetworkTool, INetworkTool> helper
-			= new PartOrTileContainerHelper<>(ContainerNetworkTool::new, INetworkTool.class);
+	private static final ContainerHelper<ContainerNetworkTool, INetworkTool> helper
+			= new ContainerHelper<>(ContainerNetworkTool::new, INetworkTool.class);
 
 	public static ContainerNetworkTool fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		return helper.fromNetwork(windowId, inv, buf);

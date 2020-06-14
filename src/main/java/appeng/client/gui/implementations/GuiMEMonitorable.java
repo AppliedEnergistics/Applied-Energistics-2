@@ -139,6 +139,10 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 		{
 			this.myName = GuiText.Terminal;
 		}
+		else
+		{
+			throw new IllegalArgumentException("Invalid GUI target given: " + te);
+		}
 	}
 
 	public void postUpdate( final List<IAEItemStack> list )

@@ -31,8 +31,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerNull;
 import appeng.container.guisync.GuiSync;
-import appeng.container.helper.PartOrTileContainerHelper;
-import appeng.container.helper.TileContainerHelper;
+import appeng.container.helper.ContainerHelper;
 import appeng.container.slot.*;
 import appeng.core.sync.packets.PacketPatternSlot;
 import appeng.helpers.IContainerCraftingPacket;
@@ -77,8 +76,8 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 	public static ContainerType<ContainerPatternTerm> TYPE;
 
-	private static final PartOrTileContainerHelper<ContainerPatternTerm, ITerminalHost> helper
-			= new PartOrTileContainerHelper<>(ContainerPatternTerm::new, ITerminalHost.class, SecurityPermissions.CRAFT);
+	private static final ContainerHelper<ContainerPatternTerm, ITerminalHost> helper
+			= new ContainerHelper<>(ContainerPatternTerm::new, ITerminalHost.class, SecurityPermissions.CRAFT);
 
 	public static ContainerPatternTerm fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		return helper.fromNetwork(windowId, inv, buf);

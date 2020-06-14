@@ -25,8 +25,7 @@ import java.util.List;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.container.ContainerLocator;
-import appeng.container.helper.PartOrTileContainerHelper;
-import appeng.container.helper.TileContainerHelper;
+import appeng.container.helper.ContainerHelper;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -46,8 +45,8 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 
 	public static ContainerType<ContainerCraftingStatus> TYPE;
 
-	private static final PartOrTileContainerHelper<ContainerCraftingStatus, ITerminalHost> helper
-			= new PartOrTileContainerHelper<>(ContainerCraftingStatus::new, ITerminalHost.class, SecurityPermissions.CRAFT);
+	private static final ContainerHelper<ContainerCraftingStatus, ITerminalHost> helper
+			= new ContainerHelper<>(ContainerCraftingStatus::new, ITerminalHost.class, SecurityPermissions.CRAFT);
 
 	public static ContainerCraftingStatus fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		return helper.fromNetwork(windowId, inv, buf);

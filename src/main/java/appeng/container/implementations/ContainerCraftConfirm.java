@@ -39,8 +39,7 @@ import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.guisync.GuiSync;
-import appeng.container.helper.PartOrTileContainerHelper;
-import appeng.container.helper.TileContainerHelper;
+import appeng.container.helper.ContainerHelper;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
@@ -57,7 +56,6 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
@@ -73,8 +71,8 @@ public class ContainerCraftConfirm extends AEBaseContainer
 
 	public static ContainerType<ContainerCraftConfirm> TYPE;
 
-	private static final PartOrTileContainerHelper<ContainerCraftConfirm, ITerminalHost> helper
-			= new PartOrTileContainerHelper<>(ContainerCraftConfirm::new, ITerminalHost.class, SecurityPermissions.CRAFT);
+	private static final ContainerHelper<ContainerCraftConfirm, ITerminalHost> helper
+			= new ContainerHelper<>(ContainerCraftConfirm::new, ITerminalHost.class, SecurityPermissions.CRAFT);
 
 	public static ContainerCraftConfirm fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		return helper.fromNetwork(windowId, inv, buf);

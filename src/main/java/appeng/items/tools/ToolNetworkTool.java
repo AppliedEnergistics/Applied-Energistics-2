@@ -67,8 +67,11 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench
 	}
 
 	@Override
-	public IGuiItemObject getGuiObject( final ItemStack is, final World world, final BlockPos pos )
+	public IGuiItemObject getGuiObject( final ItemStack is, int playerInventorySlot, final World world, final BlockPos pos )
 	{
+		if (pos == null) {
+			return new NetworkToolViewer( is, null );
+		}
 		final TileEntity te = world.getTileEntity( pos );
 		return new NetworkToolViewer( is, (IGridHost) ( te instanceof IGridHost ? te : null ) );
 	}
@@ -82,7 +85,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench
 
 			if( mop == null || mop.getType() == RayTraceResult.Type.MISS )
 			{
-				NetworkHandler.instance().sendToServer( new PacketClick( BlockPos.ZERO, null, 0, 0, 0, hand ) );
+				NetworkHandler.instance().sendToServer( new PacketClick( hand ) );
 			}
 		}
 
@@ -118,7 +121,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench
 
 		if( Platform.isClient() )
 		{
-			NetworkHandler.instance().sendToServer( new PacketClick( context.getPos(), context.getFace(), context.getPos().getX(), context.getPos().getY(), context.getPos().getZ(), context.getHand() ) );
+			NetworkHandler.instance().sendToServer( new PacketClick( context ) );
 		}
 
 		return ActionResultType.SUCCESS;
@@ -130,59 +133,58 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench
 		return true;
 	}
 
-	public boolean serverSideToolLogic( final ItemStack is, final PlayerEntity p, final Hand hand, final World w, final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ )
+	public boolean serverSideToolLogic( ItemUseContext useContext )
 	{
-		if( side != null )
+		BlockPos pos = useContext.getPos();
+		PlayerEntity p = useContext.getPlayer();
+		World w = p.world;
+		Hand hand = useContext.getHand();
+		Direction side = useContext.getFace();
+
+		if( !Platform.hasPermissions( new DimensionalCoord( w, pos ), p ) )
 		{
-			if( !Platform.hasPermissions( new DimensionalCoord( w, pos ), p ) )
-			{
-				return false;
-			}
+			return false;
+		}
 
-			final BlockState bs = w.getBlockState( pos );
-			if( !p.isCrouching() )
+		final BlockState bs = w.getBlockState( pos );
+		if( !p.isCrouching() )
+		{
+			final TileEntity te = w.getTileEntity( pos );
+			if( !( te instanceof IGridHost ) )
 			{
-				final TileEntity te = w.getTileEntity( pos );
-				if( !( te instanceof IGridHost ) )
+				if( bs.rotate( w, pos, Rotation.CLOCKWISE_90 ) != bs )
 				{
-					if( bs.rotate( w, pos, Rotation.CLOCKWISE_90 ) != bs )
-					{
-						bs.neighborChanged( w, pos, Platform.AIR_BLOCK, pos, false );
-						p.swingArm( hand );
-						return !w.isRemote;
-					}
+					bs.neighborChanged( w, pos, Platform.AIR_BLOCK, pos, false );
+					p.swingArm( hand );
+					return !w.isRemote;
 				}
 			}
+		}
 
-			if( !p.isCrouching() )
+		if( !p.isCrouching() )
+		{
+			if( p.openContainer instanceof AEBaseContainer )
 			{
-				if( p.openContainer instanceof AEBaseContainer )
-				{
-					return true;
-				}
-
-				final TileEntity te = w.getTileEntity( pos );
-
-				if( te instanceof IGridHost )
-				{
-					ContainerOpener.openContainer(ContainerNetworkStatus.TYPE, p, ContainerLocator.forTileEntitySide(te, side));
-				}
-				else
-				{
-					ContainerOpener.openContainer(ContainerNetworkTool.TYPE, p, ContainerLocator.forHand(hand));
-				}
-
 				return true;
+			}
+
+			final TileEntity te = w.getTileEntity( pos );
+
+			if( te instanceof IGridHost )
+			{
+				ContainerOpener.openContainer(ContainerNetworkStatus.TYPE, p, ContainerLocator.forItemUseContext(useContext));
 			}
 			else
 			{
-				BlockRayTraceResult rtr = new BlockRayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos, false);
-				bs.onBlockActivated( w, p, hand, rtr );
+				ContainerOpener.openContainer(ContainerNetworkTool.TYPE, p, ContainerLocator.forHand(p, hand));
 			}
+
+			return true;
 		}
 		else
 		{
-			ContainerOpener.openContainer(ContainerNetworkTool.TYPE, p, ContainerLocator.forHand(hand));
+			BlockRayTraceResult rtr = new BlockRayTraceResult(useContext.getHitVec(), side, pos, false);
+			bs.onBlockActivated( w, p, hand, rtr );
 		}
 
 		return false;

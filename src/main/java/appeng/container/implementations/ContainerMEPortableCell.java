@@ -20,7 +20,7 @@ package appeng.container.implementations;
 
 
 import appeng.container.ContainerLocator;
-import appeng.container.helper.PartOrTileContainerHelper;
+import appeng.container.helper.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -38,8 +38,8 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable
 
 	public static ContainerType<ContainerMEPortableCell> TYPE;
 
-	private static final PartOrTileContainerHelper<ContainerMEPortableCell, IPortableCell> helper
-			= new PartOrTileContainerHelper<>(ContainerMEPortableCell::new, IPortableCell.class);
+	private static final ContainerHelper<ContainerMEPortableCell, IPortableCell> helper
+			= new ContainerHelper<>(ContainerMEPortableCell::new, IPortableCell.class);
 
 	public static ContainerMEPortableCell fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		return helper.fromNetwork(windowId, inv, buf);

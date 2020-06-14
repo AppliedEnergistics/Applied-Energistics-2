@@ -20,8 +20,7 @@ package appeng.container.implementations;
 
 
 import appeng.container.ContainerLocator;
-import appeng.container.helper.PartContainerHelper;
-import appeng.container.helper.PartOrTileContainerHelper;
+import appeng.container.helper.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 
@@ -38,8 +37,8 @@ public class ContainerWirelessTerm extends ContainerMEPortableCell
 
 	public static ContainerType<ContainerWirelessTerm> TYPE;
 
-	private static final PartOrTileContainerHelper<ContainerWirelessTerm, WirelessTerminalGuiObject> helper
-			= new PartOrTileContainerHelper<>(ContainerWirelessTerm::new, WirelessTerminalGuiObject.class);
+	private static final ContainerHelper<ContainerWirelessTerm, WirelessTerminalGuiObject> helper
+			= new ContainerHelper<>(ContainerWirelessTerm::new, WirelessTerminalGuiObject.class);
 
 	public static ContainerWirelessTerm fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		return helper.fromNetwork(windowId, inv, buf);

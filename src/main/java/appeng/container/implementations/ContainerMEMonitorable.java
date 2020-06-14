@@ -24,8 +24,9 @@ import java.nio.BufferOverflowException;
 
 import javax.annotation.Nonnull;
 
+import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.container.ContainerLocator;
-import appeng.container.helper.PartOrTileContainerHelper;
+import appeng.container.helper.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -82,8 +83,8 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 
 	public static ContainerType<ContainerMEMonitorable> TYPE;
 
-	private static final PartOrTileContainerHelper<ContainerMEMonitorable, ITerminalHost> helper
-			= new PartOrTileContainerHelper<>(ContainerMEMonitorable::new, ITerminalHost.class);
+	private static final ContainerHelper<ContainerMEMonitorable, ITerminalHost> helper
+			= new ContainerHelper<>(ContainerMEMonitorable::new, ITerminalHost.class);
 
 	public static ContainerMEMonitorable fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		return helper.fromNetwork(windowId, inv, buf);
@@ -116,7 +117,8 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 				id,
 				ip,
 				monitorable instanceof TileEntity ? (TileEntity) monitorable : null,
-				monitorable instanceof IPart ? (IPart) monitorable : null );
+				monitorable instanceof IPart ? (IPart) monitorable : null,
+				monitorable instanceof IGuiItemObject ? (IGuiItemObject) monitorable : null);
 
 		this.host = monitorable;
 		this.clientCM = new ConfigManager( this );
@@ -166,7 +168,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 						final IGrid g = node.getGrid();
 						if( g != null )
 						{
-							this.setPowerSource( new ChannelPowerSrc( this.networkNode, (IEnergySource) g.getCache( IEnergyGrid.class ) ) );
+							this.setPowerSource( new ChannelPowerSrc( this.networkNode, g.getCache( IEnergyGrid.class )) );
 						}
 					}
 				}

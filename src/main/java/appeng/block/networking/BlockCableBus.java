@@ -47,10 +47,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.IFluidState;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
@@ -312,7 +309,7 @@ public class BlockCableBus extends AEBaseTileBlock<TileCableBus> /* FIXME implem
 					if (this.cb(worldIn, pos).clicked(player, Hand.MAIN_HAND, hitVec)) {
 						NetworkHandler.instance()
 								.sendToServer(
-										new PacketClick(pos, ((BlockRayTraceResult) rtr).getFace(), (float) hitVec.x, (float) hitVec.y, (float) hitVec.z, Hand.MAIN_HAND, true));
+										new PacketClick(pos, brtr.getFace(), (float) hitVec.x, (float) hitVec.y, (float) hitVec.z, Hand.MAIN_HAND, true));
 					}
 				}
 			}

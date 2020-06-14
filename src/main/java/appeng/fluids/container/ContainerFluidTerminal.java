@@ -26,7 +26,7 @@ import javax.annotation.Nonnull;
 import appeng.api.AEApi;
 import appeng.api.config.*;
 import appeng.container.ContainerLocator;
-import appeng.container.helper.PartOrTileContainerHelper;
+import appeng.container.helper.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -82,8 +82,8 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 
 	public static ContainerType<ContainerFluidTerminal> TYPE;
 
-	private static final PartOrTileContainerHelper<ContainerFluidTerminal, ITerminalHost> helper
-			= new PartOrTileContainerHelper<>(ContainerFluidTerminal::new, ITerminalHost.class, SecurityPermissions.BUILD);
+	private static final ContainerHelper<ContainerFluidTerminal, ITerminalHost> helper
+			= new ContainerHelper<>(ContainerFluidTerminal::new, ITerminalHost.class, SecurityPermissions.BUILD);
 
 	public static ContainerFluidTerminal fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		return helper.fromNetwork(windowId, inv, buf);

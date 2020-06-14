@@ -22,7 +22,7 @@ package appeng.container.implementations;
 import javax.annotation.Nonnull;
 
 import appeng.container.ContainerLocator;
-import appeng.container.helper.PartOrTileContainerHelper;
+import appeng.container.helper.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -47,8 +47,8 @@ public class ContainerCraftAmount extends AEBaseContainer
 
 	public static ContainerType<ContainerCraftAmount> TYPE;
 
-	private static final PartOrTileContainerHelper<ContainerCraftAmount, ITerminalHost> helper
-			= new PartOrTileContainerHelper<>(ContainerCraftAmount::new, ITerminalHost.class, SecurityPermissions.CRAFT);
+	private static final ContainerHelper<ContainerCraftAmount, ITerminalHost> helper
+			= new ContainerHelper<>(ContainerCraftAmount::new, ITerminalHost.class, SecurityPermissions.CRAFT);
 
 	private final Slot craftingItem;
 	private IAEItemStack itemToCreate;

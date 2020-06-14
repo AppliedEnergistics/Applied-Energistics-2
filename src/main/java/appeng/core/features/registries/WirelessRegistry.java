@@ -116,7 +116,7 @@ public final class WirelessRegistry implements IWirelessTermRegistry
 
 		if( handler.hasPower( player, 0.5, item ) )
 		{
-			ContainerOpener.openContainer(ContainerWirelessTerm.TYPE, player, ContainerLocator.forHand(hand));
+			ContainerOpener.openContainer(ContainerWirelessTerm.TYPE, player, ContainerLocator.forHand(player, hand));
 		}
 		else
 		{

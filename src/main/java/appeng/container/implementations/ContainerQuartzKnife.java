@@ -22,7 +22,7 @@ package appeng.container.implementations;
 import javax.annotation.Nonnull;
 
 import appeng.container.ContainerLocator;
-import appeng.container.helper.PartOrTileContainerHelper;
+import appeng.container.helper.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -47,8 +47,8 @@ public class ContainerQuartzKnife extends AEBaseContainer
 
 public static ContainerType<ContainerQuartzKnife> TYPE;
 
-	private static final PartOrTileContainerHelper<ContainerQuartzKnife, QuartzKnifeObj> helper
-			= new PartOrTileContainerHelper<>(ContainerQuartzKnife::new, QuartzKnifeObj.class);
+	private static final ContainerHelper<ContainerQuartzKnife, QuartzKnifeObj> helper
+			= new ContainerHelper<>(ContainerQuartzKnife::new, QuartzKnifeObj.class);
 
 	public static ContainerQuartzKnife fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		return helper.fromNetwork(windowId, inv, buf);

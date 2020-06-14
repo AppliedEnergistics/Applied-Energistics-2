@@ -71,7 +71,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell<
 	@Override
 	public ActionResult<ItemStack> onItemRightClick( final World w, final PlayerEntity player, final Hand hand )
 	{
-		ContainerOpener.openContainer(ContainerMEPortableCell.TYPE, player, ContainerLocator.forHand(hand));
+		ContainerOpener.openContainer(ContainerMEPortableCell.TYPE, player, ContainerLocator.forHand(player, hand));
 		return new ActionResult<>( ActionResultType.SUCCESS, player.getHeldItem( hand ) );
 	}
 
@@ -183,9 +183,9 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell<
 	}
 
 	@Override
-	public IGuiItemObject getGuiObject( final ItemStack is, final World w, final BlockPos pos )
+	public IGuiItemObject getGuiObject( final ItemStack is, int playerInventorySlot, final World w, final BlockPos pos )
 	{
-		return new PortableCellViewer( is, pos.getX() );
+		return new PortableCellViewer( is, playerInventorySlot );
 	}
 
 	@Override

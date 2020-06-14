@@ -20,7 +20,7 @@ package appeng.container.implementations;
 
 
 import appeng.container.ContainerLocator;
-import appeng.container.helper.PartOrTileContainerHelper;
+import appeng.container.helper.ContainerHelper;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -43,8 +43,8 @@ public class ContainerPriority extends AEBaseContainer
 
 public static ContainerType<ContainerPriority> TYPE;
 
-	private static final PartOrTileContainerHelper<ContainerPriority, IPriorityHost> helper
-			= new PartOrTileContainerHelper<>(ContainerPriority::new, IPriorityHost.class, SecurityPermissions.BUILD);
+	private static final ContainerHelper<ContainerPriority, IPriorityHost> helper
+			= new ContainerHelper<>(ContainerPriority::new, IPriorityHost.class, SecurityPermissions.BUILD);
 
 	public static ContainerPriority fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		return helper.fromNetwork(windowId, inv, buf);

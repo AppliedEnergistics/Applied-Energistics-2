@@ -19,26 +19,29 @@
 package appeng.core.sync.packets;
 
 
-import appeng.block.networking.BlockCableBus;
-import appeng.items.tools.ToolNetworkTool;
-import appeng.items.tools.powered.ToolColorApplicator;
-import io.netty.buffer.Unpooled;
-
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-
 import appeng.api.AEApi;
 import appeng.api.definitions.IComparableDefinition;
 import appeng.api.definitions.IItems;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
+import appeng.block.networking.BlockCableBus;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerNetworkTool;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
+import appeng.items.tools.ToolNetworkTool;
+import appeng.items.tools.powered.ToolColorApplicator;
+import io.netty.buffer.Unpooled;
+import net.minecraft.block.Block;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
 
 
@@ -76,8 +79,19 @@ public class PacketClick extends AppEngPacket
 		this.leftClick = stream.readBoolean();
 	}
 
-	// api
-	public PacketClick( final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ, final Hand hand )
+	// API for when a block was right clicked
+	public PacketClick( ItemUseContext context )
+	{
+		this(context.getPos(), context.getFace(), context.getPos().getX(), context.getPos().getY(), context.getPos().getZ(), context.getHand());
+	}
+
+	// API for when an item in hand was right-clicked, with no block context
+	public PacketClick( Hand hand )
+	{
+		this(BlockPos.ZERO, null, 0, 0, 0, hand);
+	}
+
+	private PacketClick( final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ, final Hand hand )
 	{
 		this( pos, side, hitX, hitY, hitZ, hand, false );
 	}
@@ -108,14 +122,21 @@ public class PacketClick extends AppEngPacket
 		this.configureWrite( data );
 	}
 
+	// Indicates that block pos, side and hit vector have valid data
+	private boolean hasBlockContext() {
+		return side != null;
+	}
+
 	@Override
 	public void serverPacketData( final INetworkInfo manager, final PlayerEntity player )
 	{
-		final ItemStack is = player.inventory.getCurrentItem();
+		final BlockPos pos = new BlockPos( this.x, this.y, this.z );
+
+		final ItemStack is = player.getHeldItem(hand);
 		final IItems items = AEApi.instance().definitions().items();
 		final IComparableDefinition maybeMemoryCard = items.memoryCard();
 		final IComparableDefinition maybeColorApplicator = items.colorApplicator();
-		final BlockPos pos = new BlockPos( this.x, this.y, this.z );
+
 		if( this.leftClick )
 		{
 			final Block block = player.world.getBlockState( pos ).getBlock();
@@ -131,8 +152,14 @@ public class PacketClick extends AppEngPacket
 				if( is.getItem() instanceof ToolNetworkTool)
 				{
 					final ToolNetworkTool tnt = (ToolNetworkTool) is.getItem();
-					tnt.serverSideToolLogic( is, player, this.hand, player.world, pos, this.side, this.hitX, this.hitY,
-							this.hitZ );
+
+					if (hasBlockContext()) {
+						// Reconstruct an item use context
+						ItemUseContext useContext = new ItemUseContext(player, hand, new BlockRayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos, false));
+						tnt.serverSideToolLogic(useContext);
+					} else {
+						ContainerOpener.openContainer(ContainerNetworkTool.TYPE, player, ContainerLocator.forHand(player, hand));
+					}
 				}
 
 				if( maybeMemoryCard.isSameAs( is ) )

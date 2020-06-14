@@ -23,7 +23,7 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.util.IConfigManager;
 import appeng.container.ContainerLocator;
-import appeng.container.helper.PartOrTileContainerHelper;
+import appeng.container.helper.ContainerHelper;
 import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.helper.FluidSyncHelper;
 import appeng.fluids.helper.IFluidInterfaceHost;
@@ -44,8 +44,8 @@ public class ContainerFluidInterface extends ContainerFluidConfigurable
 
 	public static ContainerType<ContainerFluidInterface> TYPE;
 
-	private static final PartOrTileContainerHelper<ContainerFluidInterface, IFluidInterfaceHost> helper
-			= new PartOrTileContainerHelper<>(ContainerFluidInterface::new, IFluidInterfaceHost.class, SecurityPermissions.BUILD);
+	private static final ContainerHelper<ContainerFluidInterface, IFluidInterfaceHost> helper
+			= new ContainerHelper<>(ContainerFluidInterface::new, IFluidInterfaceHost.class, SecurityPermissions.BUILD);
 
 	public static ContainerFluidInterface fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		return helper.fromNetwork(windowId, inv, buf);

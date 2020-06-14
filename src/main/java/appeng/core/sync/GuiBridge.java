@@ -307,20 +307,6 @@ public enum GuiBridge
 
 	private Object getGuiObject( final ItemStack it, final PlayerEntity player, final World w, final int x, final int y, final int z )
 	{
-		if( !it.isEmpty() )
-		{
-			if( it.getItem() instanceof IGuiItem )
-			{
-				return ( (IGuiItem) it.getItem() ).getGuiObject( it, w, new BlockPos( x, y, z ) );
-			}
-
-			final IWirelessTermHandler wh = AEApi.instance().registries().wireless().getWirelessTerminalHandler( it );
-			if( wh != null )
-			{
-				return new WirelessTerminalGuiObject( wh, it, player, w, x, y, z );
-			}
-		}
-
 		return null;
 	}
 
@@ -485,11 +471,6 @@ public enum GuiBridge
 				final ItemStack it = player.inventory.getCurrentItem();
 				if( !it.isEmpty() && it.getItem() instanceof IGuiItem )
 				{
-					final Object myItem = ( (IGuiItem) it.getItem() ).getGuiObject( it, w, pos );
-					if( this.CorrectTileOrPart( myItem ) )
-					{
-						return true;
-					}
 				}
 			}
 

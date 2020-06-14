@@ -20,20 +20,15 @@ package appeng.container.implementations;
 
 
 import appeng.container.ContainerLocator;
-import appeng.container.helper.PartContainerHelper;
-import appeng.container.helper.PartOrTileContainerHelper;
-import appeng.parts.misc.PartStorageBus;
-import appeng.tile.misc.TileCellWorkbench;
+import appeng.container.helper.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 
@@ -66,8 +61,8 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 
 	public static ContainerType<ContainerUpgradeable> TYPE;
 
-	private static final PartOrTileContainerHelper<ContainerUpgradeable, IUpgradeableHost> helper
-			= new PartOrTileContainerHelper<>(ContainerUpgradeable::new, IUpgradeableHost.class, SecurityPermissions.BUILD);
+	private static final ContainerHelper<ContainerUpgradeable, IUpgradeableHost> helper
+			= new ContainerHelper<>(ContainerUpgradeable::new, IUpgradeableHost.class, SecurityPermissions.BUILD);
 
 	public static ContainerUpgradeable fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		return helper.fromNetwork(windowId, inv, buf);
@@ -130,7 +125,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 			{
 				this.lockPlayerInventorySlot( x );
 				this.tbSlot = x;
-				this.tbInventory = (NetworkToolViewer) ( (IGuiItem) pii.getItem() ).getGuiObject( pii, w, new BlockPos( xCoord, yCoord, zCoord ) );
+				this.tbInventory = (NetworkToolViewer) ( (IGuiItem) pii.getItem() ).getGuiObject( pii, x, w, new BlockPos( xCoord, yCoord, zCoord ) );
 				break;
 			}
 		}

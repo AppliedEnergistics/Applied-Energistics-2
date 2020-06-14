@@ -22,8 +22,7 @@ package appeng.container.implementations;
 import java.io.IOException;
 
 import appeng.container.ContainerLocator;
-import appeng.container.helper.PartOrTileContainerHelper;
-import appeng.container.helper.TileContainerHelper;
+import appeng.container.helper.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -55,8 +54,8 @@ public class ContainerNetworkStatus extends AEBaseContainer
 
 	public static ContainerType<ContainerNetworkStatus> TYPE;
 
-	private static final PartOrTileContainerHelper<ContainerNetworkStatus, INetworkTool> helper
-			= new PartOrTileContainerHelper<>(ContainerNetworkStatus::new, INetworkTool.class);
+	private static final ContainerHelper<ContainerNetworkStatus, INetworkTool> helper
+			= new ContainerHelper<>(ContainerNetworkStatus::new, INetworkTool.class);
 
 	public static ContainerNetworkStatus fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		return helper.fromNetwork(windowId, inv, buf);

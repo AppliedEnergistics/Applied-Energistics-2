@@ -19,12 +19,17 @@
 package appeng.items.tools.quartz;
 
 
+import appeng.api.features.AEFeature;
+import appeng.api.implementations.guiobjects.IGuiItem;
+import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.ContainerQuartzKnife;
+import appeng.items.AEBaseItem;
+import appeng.items.contents.QuartzKnifeObj;
+import appeng.util.Platform;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResult;
@@ -32,13 +37,6 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import appeng.api.implementations.guiobjects.IGuiItem;
-import appeng.api.implementations.guiobjects.IGuiItemObject;
-import appeng.api.features.AEFeature;
-import appeng.items.AEBaseItem;
-import appeng.items.contents.QuartzKnifeObj;
-import appeng.util.Platform;
 
 
 public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
@@ -54,9 +52,10 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	@Override
 	public ActionResultType onItemUse(ItemUseContext context )
 	{
-		if( Platform.isServer() )
+		PlayerEntity player = context.getPlayer();
+		if( Platform.isServer() && player != null )
 		{
-			ContainerOpener.openContainer(ContainerQuartzKnife.TYPE, context.getPlayer(), ContainerLocator.forHand(context.getHand()));
+			ContainerOpener.openContainer(ContainerQuartzKnife.TYPE, context.getPlayer(), ContainerLocator.forItemUseContext(context));
 		}
 		return ActionResultType.SUCCESS;
 	}
@@ -66,7 +65,7 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	{
 		if( Platform.isServer() )
 		{
-			ContainerOpener.openContainer(ContainerQuartzKnife.TYPE, p, ContainerLocator.forHand(hand));
+			ContainerOpener.openContainer(ContainerQuartzKnife.TYPE, p, ContainerLocator.forHand(p, hand));
 		}
 		p.swingArm( hand );
 		return new ActionResult<>( ActionResultType.SUCCESS, p.getHeldItem( hand ) );
@@ -94,7 +93,7 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	}
 
 	@Override
-	public IGuiItemObject getGuiObject( final ItemStack is, final World world, final BlockPos pos )
+	public IGuiItemObject getGuiObject( final ItemStack is, int playerInventorySlot, final World world, final BlockPos pos )
 	{
 		return new QuartzKnifeObj( is );
 	}

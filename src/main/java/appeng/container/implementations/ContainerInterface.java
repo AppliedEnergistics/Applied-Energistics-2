@@ -20,7 +20,7 @@ package appeng.container.implementations;
 
 
 import appeng.container.ContainerLocator;
-import appeng.container.helper.PartOrTileContainerHelper;
+import appeng.container.helper.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 
@@ -43,8 +43,8 @@ public class ContainerInterface extends ContainerUpgradeable
 
 	public static ContainerType<ContainerInterface> TYPE;
 
-	private static final PartOrTileContainerHelper<ContainerInterface, IInterfaceHost> helper
-			= new PartOrTileContainerHelper<>(ContainerInterface::new, IInterfaceHost.class, SecurityPermissions.BUILD);
+	private static final ContainerHelper<ContainerInterface, IInterfaceHost> helper
+			= new ContainerHelper<>(ContainerInterface::new, IInterfaceHost.class, SecurityPermissions.BUILD);
 
 	public static ContainerInterface fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		return helper.fromNetwork(windowId, inv, buf);

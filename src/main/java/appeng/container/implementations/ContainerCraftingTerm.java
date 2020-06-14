@@ -21,8 +21,7 @@ package appeng.container.implementations;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.container.ContainerLocator;
-import appeng.container.helper.PartOrTileContainerHelper;
-import appeng.container.helper.TileContainerHelper;
+import appeng.container.helper.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
@@ -53,8 +52,8 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 
 	public static ContainerType<ContainerCraftingTerm> TYPE;
 
-	private static final PartOrTileContainerHelper<ContainerCraftingTerm, ITerminalHost> helper
-			= new PartOrTileContainerHelper<>(ContainerCraftingTerm::new, ITerminalHost.class, SecurityPermissions.CRAFT);
+	private static final ContainerHelper<ContainerCraftingTerm, ITerminalHost> helper
+			= new ContainerHelper<>(ContainerCraftingTerm::new, ITerminalHost.class, SecurityPermissions.CRAFT);
 
 	public static ContainerCraftingTerm fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		return helper.fromNetwork(windowId, inv, buf);

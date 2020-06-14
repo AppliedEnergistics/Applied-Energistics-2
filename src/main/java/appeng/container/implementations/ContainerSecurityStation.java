@@ -20,8 +20,7 @@ package appeng.container.implementations;
 
 
 import appeng.container.ContainerLocator;
-import appeng.container.helper.PartOrTileContainerHelper;
-import appeng.container.helper.TileContainerHelper;
+import appeng.container.helper.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -50,8 +49,8 @@ public class ContainerSecurityStation extends ContainerMEMonitorable implements 
 
 public static ContainerType<ContainerSecurityStation> TYPE;
 
-	private static final PartOrTileContainerHelper<ContainerSecurityStation, ITerminalHost> helper
-			= new PartOrTileContainerHelper<>(ContainerSecurityStation::new, ITerminalHost.class, SecurityPermissions.SECURITY);
+	private static final ContainerHelper<ContainerSecurityStation, ITerminalHost> helper
+			= new ContainerHelper<>(ContainerSecurityStation::new, ITerminalHost.class, SecurityPermissions.SECURITY);
 
 	private final SlotRestrictedInput configSlot;
 

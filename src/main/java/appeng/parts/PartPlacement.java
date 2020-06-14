@@ -432,7 +432,7 @@ public class PartPlacement
 
 				if( event.getPlayer().isCrouching() && !held.isEmpty() && supportedItem )
 				{
-					NetworkHandler.instance().sendToServer( new PacketClick( event.getPos(), event.getFace(), 0, 0, 0, event.getHand() ) );
+					NetworkHandler.instance().sendToServer( new PacketClick( event.getHand() ) );
 				}
 			}
 		}

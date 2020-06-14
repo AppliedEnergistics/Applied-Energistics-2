@@ -65,13 +65,13 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	private double myRange = Double.MAX_VALUE;
 	private final int inventorySlot;
 
-	public WirelessTerminalGuiObject( final IWirelessTermHandler wh, final ItemStack is, final PlayerEntity ep, final World w, final int x, final int y, final int z )
+	public WirelessTerminalGuiObject( final IWirelessTermHandler wh, final ItemStack is, final PlayerEntity ep, int inventorySlot )
 	{
 		this.encryptionKey = wh.getEncryptionKey( is );
 		this.effectiveItem = is;
 		this.myPlayer = ep;
 		this.wth = wh;
-		this.inventorySlot = x;
+		this.inventorySlot = inventorySlot;
 
 		ILocatable obj = null;
 
