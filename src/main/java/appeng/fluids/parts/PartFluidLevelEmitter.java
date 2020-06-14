@@ -6,7 +6,6 @@ import java.util.Random;
 
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
-import appeng.container.implementations.ContainerLevelEmitter;
 import appeng.fluids.container.ContainerFluidLevelEmitter;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -100,7 +99,7 @@ public class PartFluidLevelEmitter extends PartUpgradeable implements IStackWatc
 	}
 
 	@Override
-	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
+	public void updateSetting(IConfigManager manager, Settings settingName, Enum<?> newValue )
 	{
 		this.configureWatchers();
 	}

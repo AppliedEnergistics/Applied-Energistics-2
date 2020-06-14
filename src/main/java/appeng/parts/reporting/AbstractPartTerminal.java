@@ -47,7 +47,6 @@ import appeng.me.GridAccessException;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
-import appeng.util.Platform;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 
@@ -147,7 +146,7 @@ public abstract class AbstractPartTerminal extends AbstractPartDisplay implement
 	}
 
 	@Override
-	public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )
+	public void updateSetting(final IConfigManager manager, final Settings settingName, final Enum<?> newValue )
 	{
 
 	}

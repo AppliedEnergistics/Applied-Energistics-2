@@ -25,11 +25,10 @@ import appeng.api.config.OperationMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.definitions.IDefinitions;
-import appeng.client.gui.widgets.GuiImgButton;
+import appeng.client.gui.widgets.GuiServerSettingToggleButton;
+import appeng.client.gui.widgets.GuiSettingToggleButton;
 import appeng.container.implementations.ContainerIOPort;
 import appeng.core.localization.GuiText;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketConfigButton;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
@@ -37,8 +36,8 @@ import net.minecraft.util.text.ITextComponent;
 public class GuiIOPort extends GuiUpgradeable<ContainerIOPort>
 {
 
-	private GuiImgButton fullMode;
-	private GuiImgButton operationMode;
+	private GuiSettingToggleButton<FullnessMode> fullMode;
+	private GuiSettingToggleButton<OperationMode> operationMode;
 
 	public GuiIOPort(ContainerIOPort container, PlayerInventory playerInventory, ITextComponent title) {
 		super(container, playerInventory, title);
@@ -48,13 +47,13 @@ public class GuiIOPort extends GuiUpgradeable<ContainerIOPort>
 	@Override
 	protected void addButtons()
 	{
-		this.redstoneMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 28, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE, this::actionPerformed);
-		this.fullMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.FULLNESS_MODE, FullnessMode.EMPTY, btn -> selectNextFullMode() );
-		this.operationMode = new GuiImgButton( this.guiLeft + 80, this.guiTop + 17, Settings.OPERATION_MODE, OperationMode.EMPTY, btn -> selectNextOperationMode() );
+		this.fullMode = new GuiServerSettingToggleButton<>( this.guiLeft - 18, this.guiTop + 8, Settings.FULLNESS_MODE, FullnessMode.EMPTY );
+		this.operationMode = new GuiServerSettingToggleButton<>( this.guiLeft + 80, this.guiTop + 17, Settings.OPERATION_MODE, OperationMode.EMPTY );
 
 		this.addButton( this.operationMode );
-		this.addButton( this.redstoneMode );
 		this.addButton( this.fullMode );
+		this.redstoneMode = new GuiServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 28, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
+		addButton(this.redstoneMode);
 	}
 
 	@Override
@@ -95,16 +94,6 @@ public class GuiIOPort extends GuiUpgradeable<ContainerIOPort>
 	protected String getBackground()
 	{
 		return "guis/io_port.png";
-	}
-
-	private void selectNextFullMode() {
-		final boolean backwards = minecraft.mouseHelper.isRightDown();
-		NetworkHandler.instance().sendToServer( new PacketConfigButton( this.fullMode.getSetting(), backwards ) );
-	}
-
-	private void selectNextOperationMode() {
-		final boolean backwards = minecraft.mouseHelper.isRightDown();
-		NetworkHandler.instance().sendToServer( new PacketConfigButton( this.operationMode.getSetting(), backwards ) );
 	}
 
 }

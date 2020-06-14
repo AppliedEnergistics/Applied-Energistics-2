@@ -21,16 +21,15 @@ package appeng.fluids.helper;
 
 import java.util.Optional;
 
+import appeng.api.config.Settings;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraft.fluid.Fluid;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
@@ -614,7 +613,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 	}
 
 	@Override
-	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
+	public void updateSetting(IConfigManager manager, Settings settingName, Enum<?> newValue )
 	{
 	}
 }

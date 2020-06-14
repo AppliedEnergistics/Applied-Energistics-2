@@ -22,13 +22,13 @@ package appeng.client.gui.implementations;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
-import appeng.client.gui.widgets.GuiImgButton;
+import appeng.client.gui.widgets.GuiServerSettingToggleButton;
+import appeng.client.gui.widgets.GuiSettingToggleButton;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.container.implementations.ContainerFormationPlane;
 import appeng.container.implementations.ContainerPriority;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketConfigButton;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
@@ -37,7 +37,7 @@ import net.minecraft.util.text.ITextComponent;
 public class GuiFormationPlane extends GuiUpgradeable<ContainerFormationPlane>
 {
 
-	private GuiImgButton placeMode;
+	private GuiSettingToggleButton<YesNo> placeMode;
 
 	public GuiFormationPlane(ContainerFormationPlane container, PlayerInventory playerInventory, ITextComponent title) {
 		super(container, playerInventory, title);
@@ -47,8 +47,8 @@ public class GuiFormationPlane extends GuiUpgradeable<ContainerFormationPlane>
 	@Override
 	protected void addButtons()
 	{
-		this.placeMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 28, Settings.PLACE_BLOCK, YesNo.YES, btn -> selectNextPlaceMode() );
-		this.fuzzyMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 48, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL, this::actionPerformed );
+		this.placeMode = new GuiServerSettingToggleButton<>( this.guiLeft - 18, this.guiTop + 28, Settings.PLACE_BLOCK, YesNo.YES );
+		this.fuzzyMode = new GuiServerSettingToggleButton<>( this.guiLeft - 18, this.guiTop + 48, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 
 		this.addButton( new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRenderer, btn -> openPriorityGui() ) );
 
@@ -81,11 +81,6 @@ public class GuiFormationPlane extends GuiUpgradeable<ContainerFormationPlane>
 
 	private void openPriorityGui() {
 		NetworkHandler.instance().sendToServer( new PacketSwitchGuis( ContainerPriority.TYPE ) );
-	}
-
-	private void selectNextPlaceMode() {
-		final boolean backwards = minecraft.mouseHelper.isRightDown();
-		NetworkHandler.instance().sendToServer( new PacketConfigButton( this.placeMode.getSetting(), backwards ) );
 	}
 
 }

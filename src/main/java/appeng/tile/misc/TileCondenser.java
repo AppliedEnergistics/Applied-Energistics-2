@@ -27,7 +27,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraft.fluid.Fluid;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
@@ -62,8 +61,6 @@ import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperChainedItemHandler;
 import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.filter.AEItemFilters;
-
-import java.util.function.Predicate;
 
 
 public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, IConfigurableObject
@@ -203,7 +200,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 	}
 
 	@Override
-	public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )
+	public void updateSetting(final IConfigManager manager, final Settings settingName, final Enum<?> newValue )
 	{
 		this.addPower( 0 );
 	}

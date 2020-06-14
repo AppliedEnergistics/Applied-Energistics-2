@@ -420,7 +420,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	}
 
 	@Override
-	public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )
+	public void updateSetting(final IConfigManager manager, final Settings settingName, final Enum<?> newValue )
 	{
 		if( this.getGui() != null )
 		{

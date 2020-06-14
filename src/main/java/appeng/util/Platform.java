@@ -34,7 +34,6 @@ import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.storage.IStorageGrid;
-import appeng.api.parts.IPart;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
@@ -69,12 +68,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.network.play.server.SChunkDataPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -84,23 +81,20 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.thread.SidedThreadGroups;
 import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.fml.network.FMLNetworkConstants;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -112,6 +106,7 @@ import java.util.*;
 public class Platform
 {
 
+	// FIXME get rid of this shit, there's CAVE_AIR now !!!
 	public static final Block AIR_BLOCK = Blocks.AIR;
 
 	public static final int DEF_OFFSET = 16;
@@ -234,102 +229,6 @@ public class Platform
 
 		// something is better then nothing?
 		return Direction.NORTH;
-	}
-
-	public static <T extends Enum> T rotateEnum( T ce, final boolean backwards, final EnumSet validOptions )
-	{
-		do
-		{
-			if( backwards )
-			{
-				ce = prevEnum( ce );
-			}
-			else
-			{
-				ce = nextEnum( ce );
-			}
-		}
-		while( !validOptions.contains( ce ) || isNotValidSetting( ce ) );
-
-		return ce;
-	}
-
-	/*
-	 * Simple way to cycle an enum...
-	 */
-	private static <T extends Enum> T prevEnum( final T ce )
-	{
-		final EnumSet valList = EnumSet.allOf( ce.getClass() );
-
-		int pLoc = ce.ordinal() - 1;
-		if( pLoc < 0 )
-		{
-			pLoc = valList.size() - 1;
-		}
-
-		if( pLoc < 0 || pLoc >= valList.size() )
-		{
-			pLoc = 0;
-		}
-
-		int pos = 0;
-		for( final Object g : valList )
-		{
-			if( pos == pLoc )
-			{
-				return (T) g;
-			}
-			pos++;
-		}
-
-		return null;
-	}
-
-	/*
-	 * Simple way to cycle an enum...
-	 */
-	public static <T extends Enum<?>> T nextEnum( final T ce )
-	{
-		final EnumSet valList = EnumSet.allOf( ce.getClass() );
-
-		int pLoc = ce.ordinal() + 1;
-		if( pLoc >= valList.size() )
-		{
-			pLoc = 0;
-		}
-
-		if( pLoc < 0 || pLoc >= valList.size() )
-		{
-			pLoc = 0;
-		}
-
-		int pos = 0;
-		for( final Object g : valList )
-		{
-			if( pos == pLoc )
-			{
-				return (T) g;
-			}
-			pos++;
-		}
-
-		return null;
-	}
-
-	private static boolean isNotValidSetting( final Enum<?> e )
-	{
-		if( e == SortOrder.INVTWEAKS /* FIXME && !Integrations.invTweaks().isEnabled() */ )
-		{
-			return true;
-		}
-
-		final boolean isJEI = e == SearchBoxMode.JEI_AUTOSEARCH || e == SearchBoxMode.JEI_AUTOSEARCH_KEEP || e == SearchBoxMode.JEI_MANUAL_SEARCH || e == SearchBoxMode.JEI_MANUAL_SEARCH_KEEP;
-		if( isJEI && !JEIFacade.instance().isEnabled())
-		{
-			return true;
-		}
-
-		return false;
 	}
 
 	/**
@@ -565,6 +464,13 @@ public class Platform
 
 		final ResourceLocation n = ForgeRegistries.FLUIDS.getKey( fs.getFluidStack().getFluid() );
 		return n == null ? "** Null" : n.getNamespace(); // FIXME: Check if namespace == mod
+	}
+
+	public static String getModName( String modId ) {
+		return "" + TextFormatting.BLUE + TextFormatting.ITALIC + ModList.get()
+				.getModContainerById( modId )
+				.map(mc -> mc.getModInfo().getDisplayName())
+				.orElse(null);
 	}
 
 	public static ITextComponent getItemDisplayName( final Object o )
@@ -1559,4 +1465,19 @@ public class Platform
 
 		return isPurified;
 	}
+
+	public static boolean isSortOrderAvailable(SortOrder order) {
+		if (order == SortOrder.INVTWEAKS) {
+			return false; // FIXME Integrations.invTweaks().isEnabled()
+		}
+		return true;
+	}
+
+	public static boolean isSearchModeAvailable(SearchBoxMode mode) {
+		if (mode.isRequiresJei()) {
+			return JEIFacade.instance().isEnabled();
+		}
+		return true;
+	}
+
 }

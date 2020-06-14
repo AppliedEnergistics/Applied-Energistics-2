@@ -19,9 +19,7 @@
 package appeng.client.gui.implementations;
 
 
-import java.io.IOException;
-
-import net.minecraft.client.gui.widget.button.Button;
+import appeng.client.gui.widgets.GuiActionButton;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
@@ -35,20 +33,17 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.items.IUpgradeModule;
-import appeng.client.gui.widgets.GuiImgButton;
+import appeng.client.gui.widgets.GuiSettingToggleButton;
 import appeng.client.gui.widgets.GuiToggleButton;
 import appeng.container.implementations.ContainerCellWorkbench;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
-import appeng.util.Platform;
 
 
 public class GuiCellWorkbench extends GuiUpgradeable<ContainerCellWorkbench>
 {
 
-	private GuiImgButton clear;
-	private GuiImgButton partition;
 	private GuiToggleButton copyMode;
 
 	public GuiCellWorkbench(ContainerCellWorkbench container, PlayerInventory playerInventory, ITextComponent title) {
@@ -59,16 +54,11 @@ public class GuiCellWorkbench extends GuiUpgradeable<ContainerCellWorkbench>
 	@Override
 	protected void addButtons()
 	{
-		this.clear = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.ACTIONS, ActionItems.CLOSE, this::actionPerformed );
-		this.partition = new GuiImgButton( this.guiLeft - 18, this.guiTop + 28, Settings.ACTIONS, ActionItems.WRENCH, this::actionPerformed );
-		this.copyMode = new GuiToggleButton( this.guiLeft - 18, this.guiTop + 48, 11 * 16 + 5, 12 * 16 + 5, GuiText.CopyMode.getLocal(), GuiText.CopyModeDesc
-				.getLocal(), this::actionPerformed );
-		this.fuzzyMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 68, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL, this::actionPerformed );
-
-		this.addButton( this.fuzzyMode );
-		this.addButton( this.partition );
-		this.addButton( this.clear );
-		this.addButton( this.copyMode );
+		this.fuzzyMode = this.addButton( new GuiSettingToggleButton<>( this.guiLeft - 18, this.guiTop + 68, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL, this::toggleFuzzyMode ) );
+		this.addButton(new GuiActionButton(this.guiLeft - 18, this.guiTop + 28, ActionItems.WRENCH, act1 -> action("Partition")));
+		this.addButton(new GuiActionButton(this.guiLeft - 18, this.guiTop + 8, ActionItems.CLOSE, act -> action("Clear")));
+		this.copyMode = this.addButton( new GuiToggleButton( this.guiLeft - 18, this.guiTop + 48, 11 * 16 + 5, 12 * 16 + 5, GuiText.CopyMode.getLocal(), GuiText.CopyModeDesc
+				.getLocal(), act -> action("CopyMode") ) );
 	}
 
 	@Override
@@ -166,33 +156,13 @@ public class GuiCellWorkbench extends GuiUpgradeable<ContainerCellWorkbench>
 		return GuiText.CellWorkbench;
 	}
 
-	@Override
-	protected void actionPerformed( final Button btn )
-	{
-		if( btn == this.copyMode )
-		{
-			NetworkHandler.instance().sendToServer( new PacketValueConfig( "CellWorkbench.Action", "CopyMode" ) );
-		}
-		else if( btn == this.partition )
-		{
-			NetworkHandler.instance().sendToServer( new PacketValueConfig( "CellWorkbench.Action", "Partition" ) );
-		}
-		else if( btn == this.clear )
-		{
-			NetworkHandler.instance().sendToServer( new PacketValueConfig( "CellWorkbench.Action", "Clear" ) );
-		}
-		else if( btn == this.fuzzyMode )
-		{
-			final boolean backwards = minecraft.mouseHelper.isRightDown();
-
-			FuzzyMode fz = (FuzzyMode) this.fuzzyMode.getCurrentValue();
-			fz = Platform.rotateEnum( fz, backwards, Settings.FUZZY_MODE.getPossibleValues() );
-
-			NetworkHandler.instance().sendToServer( new PacketValueConfig( "CellWorkbench.Fuzzy", fz.name() ) );
-		}
-		else
-		{
-			super.actionPerformed( btn );
-		}
+	private void action(String type) {
+		NetworkHandler.instance().sendToServer( new PacketValueConfig( "CellWorkbench.Action", type ) );
 	}
+
+	private void toggleFuzzyMode(GuiSettingToggleButton<FuzzyMode> button, boolean backwards) {
+		FuzzyMode fz = button.getNextValue(backwards);
+		NetworkHandler.instance().sendToServer( new PacketValueConfig( "CellWorkbench.Fuzzy", fz.name() ) );
+	}
+
 }

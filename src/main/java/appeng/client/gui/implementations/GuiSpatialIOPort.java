@@ -19,11 +19,9 @@
 package appeng.client.gui.implementations;
 
 
-import appeng.api.config.Settings;
 import appeng.client.gui.AEBaseGui;
-import appeng.client.gui.widgets.GuiImgButton;
+import appeng.client.gui.widgets.CommonButtons;
 import appeng.container.implementations.ContainerSpatialIOPort;
-import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
 import net.minecraft.entity.player.PlayerInventory;
@@ -34,8 +32,6 @@ import net.minecraftforge.fml.client.gui.GuiUtils;
 public class GuiSpatialIOPort extends AEBaseGui<ContainerSpatialIOPort>
 {
 
-	private GuiImgButton units;
-
 	public GuiSpatialIOPort(ContainerSpatialIOPort container, PlayerInventory playerInventory, ITextComponent title) {
 		super(container, playerInventory, title);
 		this.ySize = 199;
@@ -45,15 +41,7 @@ public class GuiSpatialIOPort extends AEBaseGui<ContainerSpatialIOPort>
 	public void init()
 	{
 		super.init();
-
-		this.units = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.POWER_UNITS, AEConfig.instance().selectedPowerUnit(), btn -> selectNextUnit() );
-		this.addButton( this.units );
-	}
-
-	private void selectNextUnit() {
-		final boolean backwards = minecraft.mouseHelper.isRightDown();
-		AEConfig.instance().nextPowerUnit( backwards );
-		this.units.set( AEConfig.instance().selectedPowerUnit() );
+		this.addButton( CommonButtons.togglePowerUnit( this.guiLeft - 18, this.guiTop + 8 ) );
 	}
 
 	@Override

@@ -26,7 +26,7 @@ import appeng.api.config.ViewItems;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.util.IConfigManager;
 import appeng.client.gui.AEBaseMEGui;
-import appeng.client.gui.widgets.GuiImgButton;
+import appeng.client.gui.widgets.GuiSettingToggleButton;
 import appeng.client.gui.widgets.GuiScrollbar;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.client.gui.widgets.MEGuiTextField;
@@ -43,14 +43,11 @@ import appeng.fluids.container.slots.IMEFluidSlot;
 import appeng.helpers.InventoryAction;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import java.text.NumberFormat;
@@ -75,8 +72,8 @@ public class GuiFluidTerminal extends AEBaseMEGui<ContainerFluidTerminal> implem
 	private int perRow = 9;
 
 	private MEGuiTextField searchField;
-	private GuiImgButton sortByBox;
-	private GuiImgButton sortDirBox;
+	private GuiSettingToggleButton<SortOrder> sortByBox;
+	private GuiSettingToggleButton<SortDir> sortDirBox;
 
 	public GuiFluidTerminal(ContainerFluidTerminal container, PlayerInventory playerInventory, ITextComponent title) {
 		super(container, playerInventory, title);
@@ -104,11 +101,10 @@ public class GuiFluidTerminal extends AEBaseMEGui<ContainerFluidTerminal> implem
 
 		int offset = this.guiTop;
 
-		this.sortByBox = this.addButton( new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_BY, this.configSrc.getSetting( Settings.SORT_BY ), this::actionPerformed ) );
+		this.sortByBox = this.addButton( new GuiSettingToggleButton<>( this.guiLeft - 18, offset, Settings.SORT_BY, getSortBy(), Platform::isSortOrderAvailable, this::toggleServerSetting ) );
 		offset += 20;
 
-		this.sortDirBox = this.addButton( new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_DIRECTION, this.configSrc
-				.getSetting( Settings.SORT_DIRECTION ), this::actionPerformed ) );
+		this.sortDirBox = this.addButton( new GuiSettingToggleButton<>( this.guiLeft - 18, offset, Settings.SORT_DIRECTION, getSortDir(), this::toggleServerSetting ) );
 
 		for( int y = 0; y < this.rows; y++ )
 		{
@@ -134,14 +130,14 @@ public class GuiFluidTerminal extends AEBaseMEGui<ContainerFluidTerminal> implem
 	{
 		this.bindTexture( this.getBackground() );
 		final int x_width = 197;
-		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, x_width, 18, 0 /* FIXME ZINDEX */ );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, x_width, 18, getBlitOffset() );
 
 		for( int x = 0; x < 6; x++ )
 		{
-			GuiUtils.drawTexturedModalRect( offsetX, offsetY + 18 + x * 18, 0, 18, x_width, 18, 0 /* FIXME ZINDEX */ );
+			GuiUtils.drawTexturedModalRect( offsetX, offsetY + 18 + x * 18, 0, 18, x_width, 18, getBlitOffset() );
 		}
 
-		GuiUtils.drawTexturedModalRect( offsetX, offsetY + 16 + 6 * 18, 0, 106 - 18 - 18, x_width, 99 + 77, 0 /* FIXME ZINDEX */ );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY + 16 + 6 * 18, 0, 106 - 18 - 18, x_width, 99 + 77, getBlitOffset() );
 
 		if( this.searchField != null )
 		{
@@ -170,11 +166,7 @@ public class GuiFluidTerminal extends AEBaseMEGui<ContainerFluidTerminal> implem
 				final IAEFluidStack fluidStack = fluidSlot.getAEFluidStack();
 				final String formattedAmount = NumberFormat.getNumberInstance( Locale.US ).format( fluidStack.getStackSize() / 1000.0 ) + " B";
 
-				// FIXME: Move getting the mod name to platform
-				final String modName = "" + TextFormatting.BLUE + TextFormatting.ITALIC + ModList.get()
-						.getModContainerById( Platform.getModId( fluidStack ) )
-						.map(mc -> mc.getModInfo().getDisplayName())
-						.orElse(null);
+				final String modName = Platform.getModName( Platform.getModId( fluidStack ) );
 
 				final List<String> list = new ArrayList<>();
 
@@ -190,23 +182,10 @@ public class GuiFluidTerminal extends AEBaseMEGui<ContainerFluidTerminal> implem
 		super.renderHoveredToolTip( mouseX, mouseY );
 	}
 
-	protected void actionPerformed( Button btn )
-	{
-		if( btn instanceof GuiImgButton )
-		{
-			final boolean backwards = minecraft.mouseHelper.isRightDown();
-			final GuiImgButton iBtn = (GuiImgButton) btn;
-
-			if( iBtn.getSetting() != Settings.ACTIONS )
-			{
-				final Enum cv = iBtn.getCurrentValue();
-				final Enum next = Platform.rotateEnum( cv, backwards, iBtn.getSetting().getPossibleValues() );
-
-				NetworkHandler.instance().sendToServer( new PacketValueConfig( iBtn.getSetting().name(), next.name() ) );
-
-				iBtn.set( next );
-			}
-		}
+	private <S extends Enum<S>> void toggleServerSetting(GuiSettingToggleButton<S> btn, boolean backwards) {
+		S next = btn.getNextValue(backwards);
+		NetworkHandler.instance().sendToServer( new PacketValueConfig( btn.getSetting().name(), next.name() ) );
+		btn.set( next );
 	}
 
 	@Override
@@ -269,8 +248,8 @@ public class GuiFluidTerminal extends AEBaseMEGui<ContainerFluidTerminal> implem
 				this.repo.setSearchString( this.searchField.getText() );
 				this.repo.updateView();
 				this.setScrollBar();
-				return true;
 			}
+			return true;
 		}
 
 		return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);
@@ -328,16 +307,16 @@ public class GuiFluidTerminal extends AEBaseMEGui<ContainerFluidTerminal> implem
 	}
 
 	@Override
-	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
+	public void updateSetting(IConfigManager manager, Settings settingName, Enum<?> newValue )
 	{
 		if( this.sortByBox != null )
 		{
-			this.sortByBox.set( this.configSrc.getSetting( Settings.SORT_BY ) );
+			this.sortByBox.set( getSortBy() );
 		}
 
 		if( this.sortDirBox != null )
 		{
-			this.sortDirBox.set( this.configSrc.getSetting( Settings.SORT_DIRECTION ) );
+			this.sortDirBox.set( getSortDir() );
 		}
 
 		this.repo.updateView();

@@ -19,11 +19,11 @@
 package appeng.client.gui.implementations;
 
 
+import appeng.client.gui.widgets.GuiServerSettingToggleButton;
 import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
-import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiProgressBar;
 import appeng.client.gui.widgets.GuiProgressBar.Direction;
 import appeng.container.implementations.ContainerMAC;
@@ -53,8 +53,8 @@ public class GuiMAC extends GuiUpgradeable<ContainerMAC>
 	@Override
 	protected void addButtons()
 	{
-		this.redstoneMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE, this::actionPerformed );
-		this.addButton( this.redstoneMode );
+		this.redstoneMode = new GuiServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 8, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
+		addButton(this.redstoneMode);
 	}
 
 	@Override

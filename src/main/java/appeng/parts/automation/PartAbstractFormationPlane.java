@@ -2,6 +2,7 @@
 package appeng.parts.automation;
 
 
+import appeng.api.config.Settings;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -52,7 +53,7 @@ public abstract class PartAbstractFormationPlane<T extends IAEStack<T>> extends 
 	}
 
 	@Override
-	public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )
+	public void updateSetting(final IConfigManager manager, final Settings settingName, final Enum<?> newValue )
 	{
 		this.updateHandler();
 		this.getHost().markForSave();

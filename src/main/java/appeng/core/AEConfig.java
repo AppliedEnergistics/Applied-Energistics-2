@@ -25,6 +25,7 @@ import appeng.api.util.IConfigurableObject;
 import appeng.api.features.AEFeature;
 import appeng.core.settings.TickRates;
 import appeng.util.ConfigManager;
+import appeng.util.EnumCycler;
 import appeng.util.IConfigManagerHost;
 import com.google.common.base.Strings;
 import net.minecraft.world.dimension.DimensionType;
@@ -352,7 +353,7 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost
 	}
 
 	@Override
-	public void updateSetting( final IConfigManager manager, final Enum setting, final Enum newValue )
+	public void updateSetting(final IConfigManager manager, final Settings setting, final Enum<?> newValue )
 	{
 		// FIXME for( final Settings e : this.settings.getSettings() )
 		// FIXME {
@@ -430,9 +431,10 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost
 		return this.selectedPowerUnit;
 	}
 
-	public void nextPowerUnit( final boolean backwards )
+	@SuppressWarnings("unchecked")
+	public void nextPowerUnit(final boolean backwards )
 	{
-		// FIXME this.selectedPowerUnit = Platform.rotateEnum( this.selectedPowerUnit, backwards, Settings.POWER_UNITS.getPossibleValues() );
+		this.selectedPowerUnit = EnumCycler.rotateEnum( this.selectedPowerUnit, backwards, (EnumSet<PowerUnits>) Settings.POWER_UNITS.getPossibleValues() );
 		this.save();
 	}
 

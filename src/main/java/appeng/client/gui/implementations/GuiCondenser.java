@@ -19,6 +19,8 @@
 package appeng.client.gui.implementations;
 
 
+import appeng.api.config.CondenserOutput;
+import appeng.client.gui.widgets.GuiServerSettingToggleButton;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
@@ -26,20 +28,17 @@ import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.api.config.Settings;
 import appeng.client.gui.AEBaseGui;
-import appeng.client.gui.widgets.GuiImgButton;
+import appeng.client.gui.widgets.GuiSettingToggleButton;
 import appeng.client.gui.widgets.GuiProgressBar;
 import appeng.client.gui.widgets.GuiProgressBar.Direction;
 import appeng.container.implementations.ContainerCondenser;
 import appeng.core.localization.GuiText;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketConfigButton;
 
 
 public class GuiCondenser extends AEBaseGui<ContainerCondenser>
 {
 
-	private GuiProgressBar pb;
-	private GuiImgButton mode;
+	private GuiSettingToggleButton<CondenserOutput> mode;
 
 	public GuiCondenser(ContainerCondenser container, PlayerInventory playerInventory, ITextComponent title) {
 		super(container, playerInventory, title);
@@ -51,15 +50,10 @@ public class GuiCondenser extends AEBaseGui<ContainerCondenser>
 	{
 		super.init();
 
-		this.pb = new GuiProgressBar( this.container, "guis/condenser.png", 120 + this.guiLeft, 25 + this.guiTop, 178, 25, 6, 18, Direction.VERTICAL, GuiText.StoredEnergy
-				.getLocal() );
+		this.mode = new GuiServerSettingToggleButton<>( 128 + this.guiLeft, 52 + this.guiTop, Settings.CONDENSER_OUTPUT, this.container.getOutput());
 
-		this.mode = new GuiImgButton( 128 + this.guiLeft, 52 + this.guiTop, Settings.CONDENSER_OUTPUT, this.container.getOutput(), btn -> {
-			final boolean backwards = minecraft.mouseHelper.isRightDown();
-			NetworkHandler.instance().sendToServer( new PacketConfigButton( Settings.CONDENSER_OUTPUT, backwards ) );
-		} );
-
-		this.addButton( this.pb );
+		this.addButton(new GuiProgressBar(this.container, "guis/condenser.png", 120 + this.guiLeft, 25 + this.guiTop, 178, 25, 6, 18, Direction.VERTICAL, GuiText.StoredEnergy
+				.getLocal()));
 		this.addButton( this.mode );
 	}
 

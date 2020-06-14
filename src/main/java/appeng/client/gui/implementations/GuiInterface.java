@@ -21,7 +21,8 @@ package appeng.client.gui.implementations;
 
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
-import appeng.client.gui.widgets.GuiImgButton;
+import appeng.client.gui.widgets.GuiServerSettingToggleButton;
+import appeng.client.gui.widgets.GuiSettingToggleButton;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.client.gui.widgets.GuiToggleButton;
 import appeng.container.implementations.ContainerInterface;
@@ -37,7 +38,7 @@ import net.minecraft.util.text.ITextComponent;
 public class GuiInterface extends GuiUpgradeable<ContainerInterface>
 {
 
-	private GuiImgButton blockMode;
+	private GuiSettingToggleButton<YesNo> blockMode;
 	private GuiToggleButton interfaceMode;
 
 	public GuiInterface(ContainerInterface container, PlayerInventory playerInventory, ITextComponent title) {
@@ -50,7 +51,7 @@ public class GuiInterface extends GuiUpgradeable<ContainerInterface>
 	{
 		this.addButton( new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRenderer, btn -> openPriorityGui() ) );
 
-		this.blockMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.BLOCK, YesNo.NO, btn -> selectNextBlockMode() );
+		this.blockMode = new GuiServerSettingToggleButton<>( this.guiLeft - 18, this.guiTop + 8, Settings.BLOCK, YesNo.NO );
 		this.addButton( this.blockMode);
 
 		this.interfaceMode = new GuiToggleButton( this.guiLeft - 18, this.guiTop + 26, 84, 85, GuiText.InterfaceTerminal
@@ -90,13 +91,8 @@ public class GuiInterface extends GuiUpgradeable<ContainerInterface>
 		NetworkHandler.instance().sendToServer( new PacketSwitchGuis( ContainerPriority.TYPE ) );
 	}
 
-	private void selectNextBlockMode() {
-		final boolean backwards = minecraft.mouseHelper.isRightDown();
-		NetworkHandler.instance().sendToServer( new PacketConfigButton( this.blockMode.getSetting(), backwards ) );
-	}
-
 	private void selectNextInterfaceMode() {
-		final boolean backwards = minecraft.mouseHelper.isRightDown();
+		final boolean backwards = getMinecraft().mouseHelper.isRightDown();
 		NetworkHandler.instance().sendToServer( new PacketConfigButton( Settings.INTERFACE_TERMINAL, backwards ) );
 	}
 

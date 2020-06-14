@@ -20,9 +20,9 @@ package appeng.client.gui.implementations;
 
 
 import appeng.api.config.ActionItems;
-import appeng.api.config.ItemSubstitution;
 import appeng.api.config.Settings;
-import appeng.client.gui.widgets.GuiImgButton;
+import appeng.client.gui.widgets.GuiActionButton;
+import appeng.client.gui.widgets.GuiSettingToggleButton;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.container.implementations.ContainerPatternTerm;
 import appeng.container.slot.AppEngSlot;
@@ -49,8 +49,8 @@ public class GuiPatternTerm extends GuiMEMonitorable<ContainerPatternTerm>
 
 	private GuiTabButton tabCraftButton;
 	private GuiTabButton tabProcessButton;
-	private GuiImgButton substitutionsEnabledBtn;
-	private GuiImgButton substitutionsDisabledBtn;
+	private GuiActionButton substitutionsEnabledBtn;
+	private GuiActionButton substitutionsDisabledBtn;
 
 	public GuiPatternTerm(ContainerPatternTerm container, PlayerInventory playerInventory, ITextComponent title) {
 		super(container, playerInventory, title);
@@ -70,19 +70,19 @@ public class GuiPatternTerm extends GuiMEMonitorable<ContainerPatternTerm>
 				.getLocal(), this.itemRenderer, btn -> toggleCraftMode(CRAFTMODE_CRFTING) );
 		this.addButton( this.tabProcessButton );
 
-		this.substitutionsEnabledBtn = new GuiImgButton( this.guiLeft + 84, this.guiTop + this.ySize - 163, Settings.ACTIONS, ItemSubstitution.ENABLED, btn -> toggleSubstitutions(SUBSITUTION_DISABLE) );
+		this.substitutionsEnabledBtn = new GuiActionButton( this.guiLeft + 84, this.guiTop + this.ySize - 163, ActionItems.ENABLE_SUBSTITUTION, act -> toggleSubstitutions(SUBSITUTION_DISABLE) );
 		this.substitutionsEnabledBtn.setHalfSize( true );
 		this.addButton( this.substitutionsEnabledBtn );
 
-		this.substitutionsDisabledBtn = new GuiImgButton( this.guiLeft + 84, this.guiTop + this.ySize - 163, Settings.ACTIONS, ItemSubstitution.DISABLED, btn -> toggleSubstitutions(SUBSITUTION_ENABLE) );
+		this.substitutionsDisabledBtn = new GuiActionButton( this.guiLeft + 84, this.guiTop + this.ySize - 163, ActionItems.DISABLE_SUBSTITUTION, act -> toggleSubstitutions(SUBSITUTION_ENABLE) );
 		this.substitutionsDisabledBtn.setHalfSize( true );
 		this.addButton( this.substitutionsDisabledBtn );
 
-		GuiImgButton clearBtn = new GuiImgButton(this.guiLeft + 74, this.guiTop + this.ySize - 163, Settings.ACTIONS, ActionItems.CLOSE, btn -> clear());
+		GuiActionButton clearBtn = new GuiActionButton(this.guiLeft + 74, this.guiTop + this.ySize - 163, ActionItems.CLOSE, act -> clear());
 		clearBtn.setHalfSize( true );
 		this.addButton(clearBtn);
 
-		GuiImgButton encodeBtn = new GuiImgButton(this.guiLeft + 147, this.guiTop + this.ySize - 142, Settings.ACTIONS, ActionItems.ENCODE, btn -> encode());
+		GuiActionButton encodeBtn = new GuiActionButton(this.guiLeft + 147, this.guiTop + this.ySize - 142, ActionItems.ENCODE, act -> encode());
 		this.addButton(encodeBtn);
 	}
 

@@ -21,7 +21,8 @@ package appeng.client.gui.implementations;
 
 import appeng.api.config.Settings;
 import appeng.client.gui.AEBaseGui;
-import appeng.client.gui.widgets.GuiImgButton;
+import appeng.client.gui.widgets.CommonButtons;
+import appeng.client.gui.widgets.GuiSettingToggleButton;
 import appeng.container.implementations.ContainerWireless;
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
@@ -34,8 +35,6 @@ import net.minecraftforge.fml.client.gui.GuiUtils;
 public class GuiWireless extends AEBaseGui<ContainerWireless>
 {
 
-	private GuiImgButton units;
-
 	public GuiWireless(ContainerWireless container, PlayerInventory playerInventory, ITextComponent title) {
 		super(container, playerInventory, title);
 		this.ySize = 166;
@@ -46,14 +45,7 @@ public class GuiWireless extends AEBaseGui<ContainerWireless>
 	{
 		super.init();
 
-		this.units = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.POWER_UNITS, AEConfig.instance().selectedPowerUnit(), btn -> toggleUnits() );
-		this.addButton( this.units );
-	}
-
-	private void toggleUnits() {
-		final boolean backwards = minecraft.mouseHelper.isRightDown();
-		AEConfig.instance().nextPowerUnit( backwards );
-		this.units.set( AEConfig.instance().selectedPowerUnit() );
+		this.addButton( CommonButtons.togglePowerUnit( this.guiLeft - 18, this.guiTop + 8 ) );
 	}
 
 	@Override

@@ -20,13 +20,14 @@ package appeng.client.gui.implementations;
 
 
 import appeng.api.config.*;
-import appeng.client.gui.widgets.GuiImgButton;
+import appeng.client.gui.widgets.GuiActionButton;
+import appeng.client.gui.widgets.GuiServerSettingToggleButton;
+import appeng.client.gui.widgets.GuiSettingToggleButton;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.container.implementations.ContainerPriority;
 import appeng.container.implementations.ContainerStorageBus;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketConfigButton;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.core.sync.packets.PacketValueConfig;
 import net.minecraft.entity.player.PlayerInventory;
@@ -36,8 +37,8 @@ import net.minecraft.util.text.ITextComponent;
 public class GuiStorageBus extends GuiUpgradeable<ContainerStorageBus>
 {
 
-	private GuiImgButton rwMode;
-	private GuiImgButton storageFilter;
+	private GuiSettingToggleButton<AccessRestriction> rwMode;
+	private GuiSettingToggleButton<StorageFilter> storageFilter;
 
 	public GuiStorageBus(ContainerStorageBus container, PlayerInventory playerInventory, ITextComponent title) {
 		super(container, playerInventory, title);
@@ -47,11 +48,11 @@ public class GuiStorageBus extends GuiUpgradeable<ContainerStorageBus>
 	@Override
 	protected void addButtons()
 	{
-		addButton( new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.ACTIONS, ActionItems.CLOSE, btn -> clear() ) );
-		addButton( new GuiImgButton( this.guiLeft - 18, this.guiTop + 28, Settings.ACTIONS, ActionItems.WRENCH, btn -> partition() ) );
-		this.rwMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 48, Settings.ACCESS, AccessRestriction.READ_WRITE, btn -> toggleReadWriteMode() );
-		this.storageFilter = new GuiImgButton( this.guiLeft - 18, this.guiTop + 68, Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY, btn -> toggleStorageFilterMode() );
-		this.fuzzyMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 88, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL, this::actionPerformed );
+		addButton( new GuiActionButton( this.guiLeft - 18, this.guiTop + 8, ActionItems.CLOSE, btn -> clear() ) );
+		addButton( new GuiActionButton( this.guiLeft - 18, this.guiTop + 28, ActionItems.WRENCH, btn -> partition() ) );
+		this.rwMode = new GuiServerSettingToggleButton<>( this.guiLeft - 18, this.guiTop + 48, Settings.ACCESS, AccessRestriction.READ_WRITE );
+		this.storageFilter = new GuiServerSettingToggleButton<>( this.guiLeft - 18, this.guiTop + 68, Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY );
+		this.fuzzyMode = new GuiServerSettingToggleButton<>( this.guiLeft - 18, this.guiTop + 88, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 
 		this.addButton( new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRenderer, btn -> openPriorityGui() ) );
 
@@ -98,16 +99,6 @@ public class GuiStorageBus extends GuiUpgradeable<ContainerStorageBus>
 
 	private void openPriorityGui() {
 		NetworkHandler.instance().sendToServer( new PacketSwitchGuis( ContainerPriority.TYPE ) );
-	}
-
-	private void toggleReadWriteMode() {
-		final boolean backwards = minecraft.mouseHelper.isRightDown();
-		NetworkHandler.instance().sendToServer( new PacketConfigButton( this.rwMode.getSetting(), backwards ) );
-	}
-
-	private void toggleStorageFilterMode() {
-		final boolean backwards = minecraft.mouseHelper.isRightDown();
-		NetworkHandler.instance().sendToServer( new PacketConfigButton( this.storageFilter.getSetting(), backwards ) );
 	}
 
 }

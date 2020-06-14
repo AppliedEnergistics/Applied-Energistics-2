@@ -24,7 +24,7 @@ import java.util.List;
 import appeng.api.config.*;
 import appeng.container.implementations.ContainerCraftingStatus;
 import appeng.integration.abstraction.JEIFacade;
-import net.minecraft.client.gui.widget.button.Button;
+import appeng.util.Platform;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.text.ITextComponent;
@@ -41,7 +41,7 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.ActionKey;
 import appeng.client.gui.AEBaseMEGui;
-import appeng.client.gui.widgets.GuiImgButton;
+import appeng.client.gui.widgets.GuiSettingToggleButton;
 import appeng.client.gui.widgets.GuiScrollbar;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.client.gui.widgets.ISortSource;
@@ -63,7 +63,6 @@ import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.parts.reporting.AbstractPartTerminal;
 import appeng.tile.misc.TileSecurityStation;
 import appeng.util.IConfigManagerHost;
-import appeng.util.Platform;
 import org.lwjgl.glfw.GLFW;
 
 
@@ -89,11 +88,9 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 	private int rows = 0;
 	private int maxRows = Integer.MAX_VALUE;
 	private int standardSize;
-	private GuiImgButton ViewBox;
-	private GuiImgButton SortByBox;
-	private GuiImgButton SortDirBox;
-	private GuiImgButton searchBoxSettings;
-	private GuiImgButton terminalStyleBox;
+	private GuiSettingToggleButton<ViewItems> viewModeToggle;
+	private GuiSettingToggleButton<SortOrder> sortByToggle;
+	private GuiSettingToggleButton<SortDir> sortDirToggle;
 	private boolean isAutoFocus = false;
 	private int currentMouseX = 0;
 	private int currentMouseY = 0;
@@ -165,62 +162,19 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 		NetworkHandler.instance().sendToServer( new PacketSwitchGuis(ContainerCraftingStatus.TYPE) );
 	}
 
-	protected void actionPerformed( final Button btn )
-	{
-		if( btn instanceof GuiImgButton )
-		{
-			final boolean backwards = minecraft.mouseHelper.isRightDown();
-
-			final GuiImgButton iBtn = (GuiImgButton) btn;
-			if( iBtn.getSetting() != Settings.ACTIONS )
-			{
-				final Enum cv = iBtn.getCurrentValue();
-				final Enum next = Platform.rotateEnum( cv, backwards, iBtn.getSetting().getPossibleValues() );
-
-				if( btn == this.terminalStyleBox )
-				{
-					AEConfig.instance().getConfigManager().putSetting( iBtn.getSetting(), next );
-				}
-				else if( btn == this.searchBoxSettings )
-				{
-					AEConfig.instance().getConfigManager().putSetting( iBtn.getSetting(), next );
-				}
-				else
-				{
-					NetworkHandler.instance().sendToServer( new PacketValueConfig( iBtn.getSetting().name(), next.name() ) );
-				}
-
-				iBtn.set( next );
-
-				if( next.getClass() == SearchBoxMode.class || next.getClass() == TerminalStyle.class )
-				{
-					this.reinitalize();
-				}
-			}
-		}
-	}
-
-	private void reinitalize()
-	{
-		this.buttons.clear();
-		this.init();
-	}
-
 	@Override
 	public void init()
 	{
-		minecraft.keyboardListener.enableRepeatEvents( true );
+		getMinecraft().keyboardListener.enableRepeatEvents( true );
 
 		this.maxRows = this.getMaxRows();
-		this.perRow = AEConfig.instance()
-				.getConfigManager()
-				.getSetting(
-						Settings.TERMINAL_STYLE ) != TerminalStyle.FULL ? 9 : 9 + ( ( this.width - this.standardSize ) / 18 );
+		TerminalStyle terminalStyle = (TerminalStyle) AEConfig.instance().getConfigManager().getSetting(Settings.TERMINAL_STYLE);
+		this.perRow = terminalStyle != TerminalStyle.FULL ? 9 : 9 + ( ( this.width - this.standardSize ) / 18 );
 
 		final int magicNumber = 114 + 1;
 		final int extraSpace = this.height - magicNumber - this.reservedSpace;
 
-		this.rows = (int) Math.floor( extraSpace / 18 );
+		this.rows = extraSpace / 18;
 		if( this.rows > this.maxRows )
 		{
 			this.rows = this.maxRows;
@@ -240,7 +194,7 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 			}
 		}
 
-		if( AEConfig.instance().getConfigManager().getSetting( Settings.TERMINAL_STYLE ) != TerminalStyle.FULL )
+		if( terminalStyle != TerminalStyle.FULL )
 		{
 			this.xSize = this.standardSize + ( ( this.perRow - 9 ) * 18 );
 		}
@@ -263,33 +217,27 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 
 		if( this.customSortOrder )
 		{
-			this.SortByBox = this.addButton( new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_BY, this.configSrc.getSetting( Settings.SORT_BY ), this::actionPerformed ) );
+			this.sortByToggle = this.addButton( new GuiSettingToggleButton<>( this.guiLeft - 18, offset, Settings.SORT_BY, getSortBy(), Platform::isSortOrderAvailable, this::toggleServerSetting ) );
 			offset += 20;
 		}
 
 		if( this.viewCell || this instanceof GuiWirelessTerm )
 		{
-			this.ViewBox = this.addButton( new GuiImgButton( this.guiLeft - 18, offset, Settings.VIEW_MODE, this.configSrc.getSetting( Settings.VIEW_MODE ), this::actionPerformed ) );
+			this.viewModeToggle = this.addButton( new GuiSettingToggleButton<>( this.guiLeft - 18, offset, Settings.VIEW_MODE, getSortDisplay(), this::toggleServerSetting ) );
 			offset += 20;
 		}
 
-		this.addButton( this.SortDirBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_DIRECTION, this.configSrc
-				.getSetting( Settings.SORT_DIRECTION ), this::actionPerformed ) );
+		this.addButton( this.sortDirToggle = new GuiSettingToggleButton<>( this.guiLeft - 18, offset, Settings.SORT_DIRECTION, getSortDir(), this::toggleServerSetting ) );
 		offset += 20;
 
-		this.addButton(
-				this.searchBoxSettings = new GuiImgButton( this.guiLeft - 18, offset, Settings.SEARCH_MODE, AEConfig.instance()
-						.getConfigManager()
-						.getSetting(
-								Settings.SEARCH_MODE ), this::actionPerformed ) );
+		SearchBoxMode searchMode = (SearchBoxMode) AEConfig.instance().getConfigManager().getSetting(Settings.SEARCH_MODE);
+		this.addButton(new GuiSettingToggleButton<>( this.guiLeft - 18, offset, Settings.SEARCH_MODE, searchMode, Platform::isSearchModeAvailable, this::toggleClientSetting));
 
 		offset += 20;
 
 		if( !( this instanceof GuiMEPortableCell ) || this instanceof GuiWirelessTerm )
 		{
-			this.addButton( this.terminalStyleBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.TERMINAL_STYLE, AEConfig.instance()
-					.getConfigManager()
-					.getSetting( Settings.TERMINAL_STYLE ), this::actionPerformed ) );
+			this.addButton( new GuiSettingToggleButton<>( this.guiLeft - 18, offset, Settings.TERMINAL_STYLE, terminalStyle, this::toggleClientSetting) );
 		}
 
 		this.searchField = new MEGuiTextField( this.font, this.guiLeft + Math.max( 80, this.offsetX ), this.guiTop + 4, 90, 12 );
@@ -306,11 +254,9 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 			this.craftingStatusBtn.setHideEdge( 13 );
 		}
 
-		final Enum searchModeSetting = AEConfig.instance().getConfigManager().getSetting( Settings.SEARCH_MODE );
-
-		this.isAutoFocus = SearchBoxMode.AUTOSEARCH == searchModeSetting || SearchBoxMode.JEI_AUTOSEARCH == searchModeSetting || SearchBoxMode.AUTOSEARCH_KEEP == searchModeSetting || SearchBoxMode.JEI_AUTOSEARCH_KEEP == searchModeSetting;
-		final boolean isKeepFilter = SearchBoxMode.AUTOSEARCH_KEEP == searchModeSetting || SearchBoxMode.JEI_AUTOSEARCH_KEEP == searchModeSetting || SearchBoxMode.MANUAL_SEARCH_KEEP == searchModeSetting || SearchBoxMode.JEI_MANUAL_SEARCH_KEEP == searchModeSetting;
-		final boolean isJEIEnabled = SearchBoxMode.JEI_AUTOSEARCH == searchModeSetting || SearchBoxMode.JEI_MANUAL_SEARCH == searchModeSetting;
+		this.isAutoFocus = SearchBoxMode.AUTOSEARCH == searchMode || SearchBoxMode.JEI_AUTOSEARCH == searchMode || SearchBoxMode.AUTOSEARCH_KEEP == searchMode || SearchBoxMode.JEI_AUTOSEARCH_KEEP == searchMode;
+		final boolean isKeepFilter = SearchBoxMode.AUTOSEARCH_KEEP == searchMode || SearchBoxMode.JEI_AUTOSEARCH_KEEP == searchMode || SearchBoxMode.MANUAL_SEARCH_KEEP == searchMode || SearchBoxMode.JEI_MANUAL_SEARCH_KEEP == searchMode;
+		final boolean isJEIEnabled = SearchBoxMode.JEI_AUTOSEARCH == searchMode || SearchBoxMode.JEI_MANUAL_SEARCH == searchMode;
 
 		this.searchField.setFocused2( this.isAutoFocus );
 
@@ -386,7 +332,7 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 	public void removed()
 	{
 		super.removed();
-		minecraft.keyboardListener.enableRepeatEvents( false );
+		getMinecraft().keyboardListener.enableRepeatEvents( false );
 		memoryText = this.searchField.getText();
 	}
 
@@ -464,13 +410,12 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 			return true;
 		}
 
-		final boolean mouseInGui = this.isMouseOver( this.currentMouseX, this.currentMouseY );
-		if( this.isAutoFocus && !this.searchField.isFocused() && mouseInGui )
+		if( this.isAutoFocus && !this.searchField.isFocused() && isHovered() )
 		{
 			this.searchField.setFocused2( true );
 		}
 
-		if (this.searchField.charTyped(character, p_charTyped_2_)) {
+		if (this.searchField.isFocused() && this.searchField.charTyped(character, p_charTyped_2_)) {
 			this.repo.setSearchString( this.searchField.getText() );
 			this.repo.updateView();
 			this.setScrollBar();
@@ -486,31 +431,40 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 
 		InputMappings.Input input = InputMappings.getInputByCode(keyCode, scanCode);
 
-		if( !this.checkHotbarKeys(input) )
+		if( keyCode != GLFW.GLFW_KEY_ESCAPE && !this.checkHotbarKeys(input) )
 		{
 			if( AppEng.proxy.isActionKey( ActionKey.TOGGLE_FOCUS, input ) )
 			{
 				this.searchField.setFocused2( !this.searchField.isFocused() );
 				return true;
 			}
-
-			if( this.searchField.isFocused() && keyCode == GLFW.GLFW_KEY_ENTER )
-			{
-				this.searchField.setFocused2( false );
-				return true;
+			if (!this.searchField.isFocused() && this.isAutoFocus && isHovered()) {
+				this.searchField.setFocused2(true);
 			}
 
-			if( this.searchField.keyPressed( keyCode, scanCode, p_keyPressed_3_ ) )
-			{
-				this.repo.setSearchString( this.searchField.getText() );
-				this.repo.updateView();
-				this.setScrollBar();
-				// tell forge the key event is handled and should not be sent out
+			if (this.searchField.isFocused()) {
+				if (keyCode == GLFW.GLFW_KEY_ENTER) {
+					this.searchField.setFocused2(false);
+					return true;
+				}
+
+				if (this.searchField.keyPressed(keyCode, scanCode, p_keyPressed_3_)) {
+					this.repo.setSearchString(this.searchField.getText());
+					this.repo.updateView();
+					this.setScrollBar();
+				}
+
+				// We need to swallow key presses if the field is focused because typing 'e' would otherwise close
+				// the screen
 				return true;
 			}
 		}
 
 		return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);
+	}
+
+	private boolean isHovered() {
+		return isPointInRegion(0, 0, this.xSize, this.ySize, currentMouseX, currentMouseY);
 	}
 
 	@Override
@@ -539,21 +493,21 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 	}
 
 	@Override
-	public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )
+	public void updateSetting(final IConfigManager manager, final Settings settingName, final Enum<?> newValue )
 	{
-		if( this.SortByBox != null )
+		if( this.sortByToggle != null )
 		{
-			this.SortByBox.set( this.configSrc.getSetting( Settings.SORT_BY ) );
+			this.sortByToggle.set( getSortBy() );
 		}
 
-		if( this.SortDirBox != null )
+		if( this.sortDirToggle != null )
 		{
-			this.SortDirBox.set( this.configSrc.getSetting( Settings.SORT_DIRECTION ) );
+			this.sortDirToggle.set( getSortDir() );
 		}
 
-		if( this.ViewBox != null )
+		if( this.viewModeToggle != null )
 		{
-			this.ViewBox.set( this.configSrc.getSetting( Settings.VIEW_MODE ) );
+			this.viewModeToggle.set( getSortDisplay() );
 		}
 
 		this.repo.updateView();
@@ -588,4 +542,24 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 	{
 		this.standardSize = standardSize;
 	}
+
+	private <S extends Enum<S>> void toggleClientSetting(GuiSettingToggleButton<S> btn, boolean backwards) {
+		S next = btn.getNextValue(backwards);
+		AEConfig.instance().getConfigManager().putSetting( btn.getSetting(), next );
+		btn.set( next );
+		this.reinitalize();
+	}
+
+	private <S extends Enum<S>> void toggleServerSetting(GuiSettingToggleButton<S> btn, boolean backwards) {
+		S next = btn.getNextValue(backwards);
+		NetworkHandler.instance().sendToServer( new PacketValueConfig( btn.getSetting().name(), next.name() ) );
+		btn.set( next );
+	}
+
+	private void reinitalize()
+	{
+		this.buttons.clear();
+		this.init();
+	}
+
 }

@@ -19,8 +19,7 @@
 package appeng.client.gui.implementations;
 
 
-import java.io.IOException;
-
+import appeng.client.gui.widgets.GuiServerSettingToggleButton;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.util.text.ITextComponent;
@@ -33,14 +32,12 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
-import appeng.client.gui.widgets.GuiImgButton;
+import appeng.client.gui.widgets.GuiSettingToggleButton;
 import appeng.client.gui.widgets.GuiNumberBox;
 import appeng.container.implementations.ContainerLevelEmitter;
 import appeng.core.AEConfig;
-import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketConfigButton;
 import appeng.core.sync.packets.PacketValueConfig;
 
 
@@ -58,8 +55,8 @@ public class GuiLevelEmitter extends GuiUpgradeable<ContainerLevelEmitter>
 	private Button minus100;
 	private Button minus1000;
 
-	private GuiImgButton levelMode;
-	private GuiImgButton craftingMode;
+	private GuiSettingToggleButton<LevelType> levelMode;
+	private GuiSettingToggleButton<YesNo> craftingMode;
 
 	public GuiLevelEmitter(ContainerLevelEmitter container, PlayerInventory playerInventory, ITextComponent title) {
 		super(container, playerInventory, title);
@@ -82,10 +79,10 @@ public class GuiLevelEmitter extends GuiUpgradeable<ContainerLevelEmitter>
 	@Override
 	protected void addButtons()
 	{
-		this.levelMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.LEVEL_TYPE, LevelType.ITEM_LEVEL, btn -> selectNextLevelMode() );
-		this.redstoneMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 28, Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL, this::actionPerformed );
-		this.fuzzyMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 48, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL, this::actionPerformed );
-		this.craftingMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 48, Settings.CRAFT_VIA_REDSTONE, YesNo.NO, btn -> selectNextCraftingMode() );
+		this.levelMode = new GuiServerSettingToggleButton<>( this.guiLeft - 18, this.guiTop + 8, Settings.LEVEL_TYPE, LevelType.ITEM_LEVEL );
+		this.redstoneMode = new GuiServerSettingToggleButton<>( this.guiLeft - 18, this.guiTop + 28, Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL );
+		this.fuzzyMode = new GuiServerSettingToggleButton<>( this.guiLeft - 18, this.guiTop + 48, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		this.craftingMode = new GuiServerSettingToggleButton<>( this.guiLeft - 18, this.guiTop + 48, Settings.CRAFT_VIA_REDSTONE, YesNo.NO );
 
 		final int a = AEConfig.instance().levelByStackAmounts( 0 );
 		final int b = AEConfig.instance().levelByStackAmounts( 1 );
@@ -104,7 +101,6 @@ public class GuiLevelEmitter extends GuiUpgradeable<ContainerLevelEmitter>
 
 		this.addButton( this.levelMode );
 		this.addButton( this.redstoneMode );
-		this.addButton( this.fuzzyMode );
 		this.addButton( this.craftingMode );
 	}
 
@@ -163,16 +159,6 @@ public class GuiLevelEmitter extends GuiUpgradeable<ContainerLevelEmitter>
 	protected GuiText getName()
 	{
 		return GuiText.LevelEmitter;
-	}
-
-	private void selectNextCraftingMode() {
-		final boolean backwards = minecraft.mouseHelper.isRightDown();
-		NetworkHandler.instance().sendToServer( new PacketConfigButton( this.craftingMode.getSetting(), backwards ) );
-	}
-
-	private void selectNextLevelMode() {
-		final boolean backwards = minecraft.mouseHelper.isRightDown();
-		NetworkHandler.instance().sendToServer( new PacketConfigButton( this.levelMode.getSetting(), backwards ) );
 	}
 
 	private void addQty( final long i )

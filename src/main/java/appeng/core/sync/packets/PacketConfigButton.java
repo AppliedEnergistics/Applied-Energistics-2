@@ -69,7 +69,7 @@ public final class PacketConfigButton extends AppEngPacket
 		// FIXME 	if( baseContainer.getTarget() instanceof IConfigurableObject )
 		// FIXME 	{
 		// FIXME 		final IConfigManager cm = ( (IConfigurableObject) baseContainer.getTarget() ).getConfigManager();
-		// FIXME 		final Enum<?> newState = Platform.rotateEnum( cm.getSetting( this.option ), this.rotationDirection, this.option.getPossibleValues() );
+		// FIXME 		final Enum<?> newState = EnumCycler.rotateEnum( cm.getSetting( this.option ), this.rotationDirection, this.option.getPossibleValues() );
 		// FIXME 		cm.putSetting( this.option, newState );
 		// FIXME 	}
 		// FIXME }

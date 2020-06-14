@@ -23,6 +23,7 @@ import java.util.Iterator;
 
 import appeng.container.ContainerLocator;
 import appeng.container.helper.TileContainerHelper;
+import appeng.util.EnumCycler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -93,7 +94,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 
 	public void nextWorkBenchCopyMode()
 	{
-		this.workBench.getConfigManager().putSetting( Settings.COPY_MODE, Platform.nextEnum( this.getWorkBenchCopyMode() ) );
+		this.workBench.getConfigManager().putSetting( Settings.COPY_MODE, EnumCycler.next( this.getWorkBenchCopyMode() ) );
 	}
 
 	private CopyMode getWorkBenchCopyMode()

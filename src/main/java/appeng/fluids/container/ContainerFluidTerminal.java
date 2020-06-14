@@ -26,9 +26,7 @@ import javax.annotation.Nonnull;
 import appeng.api.AEApi;
 import appeng.api.config.*;
 import appeng.container.ContainerLocator;
-import appeng.container.helper.PartContainerHelper;
 import appeng.container.helper.PartOrTileContainerHelper;
-import appeng.fluids.parts.PartFluidFormationPlane;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -268,7 +266,7 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 	}
 
 	@Override
-	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
+	public void updateSetting(IConfigManager manager, Settings settingName, Enum<?> newValue )
 	{
 		if( this.getGui() != null )
 		{

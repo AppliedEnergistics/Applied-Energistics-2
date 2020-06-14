@@ -26,5 +26,16 @@ package appeng.api.config;
 
 public enum SearchBoxMode
 {
-	AUTOSEARCH, AUTOSEARCH_KEEP, MANUAL_SEARCH, MANUAL_SEARCH_KEEP, JEI_AUTOSEARCH, JEI_AUTOSEARCH_KEEP, JEI_MANUAL_SEARCH, JEI_MANUAL_SEARCH_KEEP
+	AUTOSEARCH(false), AUTOSEARCH_KEEP(false), MANUAL_SEARCH(false), MANUAL_SEARCH_KEEP(false), JEI_AUTOSEARCH(true), JEI_AUTOSEARCH_KEEP(true), JEI_MANUAL_SEARCH(true), JEI_MANUAL_SEARCH_KEEP(true);
+
+	private final boolean requiresJei;
+
+	SearchBoxMode(boolean requiresJei) {
+		this.requiresJei = requiresJei;
+	}
+
+	public boolean isRequiresJei() {
+		return requiresJei;
+	}
+
 }

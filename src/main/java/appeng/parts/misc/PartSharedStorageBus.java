@@ -22,6 +22,7 @@ package appeng.parts.misc;
 import java.util.Collections;
 import java.util.List;
 
+import appeng.api.config.Settings;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
@@ -144,7 +145,7 @@ public abstract class PartSharedStorageBus extends PartUpgradeable implements IG
 	}
 
 	@Override
-	public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )
+	public void updateSetting(final IConfigManager manager, final Settings settingName, final Enum<?> newValue )
 	{
 		this.resetCache( true );
 		this.getHost().markForSave();

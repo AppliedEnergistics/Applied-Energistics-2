@@ -19,7 +19,7 @@
 package appeng.client.gui.implementations;
 
 
-import net.minecraft.client.gui.widget.button.Button;
+import appeng.client.gui.widgets.GuiServerSettingToggleButton;
 import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.api.config.FuzzyMode;
@@ -30,11 +30,9 @@ import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.client.gui.AEBaseGui;
-import appeng.client.gui.widgets.GuiImgButton;
+import appeng.client.gui.widgets.GuiSettingToggleButton;
 import appeng.container.implementations.ContainerUpgradeable;
 import appeng.core.localization.GuiText;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketConfigButton;
 import appeng.parts.automation.PartExportBus;
 import appeng.parts.automation.PartImportBus;
 import net.minecraft.util.text.ITextComponent;
@@ -47,10 +45,10 @@ public class GuiUpgradeable<T extends ContainerUpgradeable> extends AEBaseGui<T>
 	protected final ContainerUpgradeable cvb;
 	protected final IUpgradeableHost bc;
 
-	protected GuiImgButton redstoneMode;
-	protected GuiImgButton fuzzyMode;
-	protected GuiImgButton craftMode;
-	protected GuiImgButton schedulingMode;
+	protected GuiSettingToggleButton<RedstoneMode> redstoneMode;
+	protected GuiSettingToggleButton<FuzzyMode> fuzzyMode;
+	protected GuiSettingToggleButton<YesNo> craftMode;
+	protected GuiSettingToggleButton<SchedulingMode> schedulingMode;
 
 	public GuiUpgradeable(T container, PlayerInventory playerInventory, ITextComponent title) {
 		super(container, playerInventory, title);
@@ -75,15 +73,14 @@ public class GuiUpgradeable<T extends ContainerUpgradeable> extends AEBaseGui<T>
 
 	protected void addButtons()
 	{
-		this.redstoneMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE, this::actionPerformed );
-		this.fuzzyMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 28, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL, this::actionPerformed );
-		this.craftMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 48, Settings.CRAFT_ONLY, YesNo.NO, this::actionPerformed );
-		this.schedulingMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 68, Settings.SCHEDULING_MODE, SchedulingMode.DEFAULT, this::actionPerformed );
-
-		this.addButton( this.craftMode );
-		this.addButton( this.redstoneMode );
-		this.addButton( this.fuzzyMode );
-		this.addButton( this.schedulingMode );
+		this.redstoneMode = new GuiServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 8, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
+		addButton(this.redstoneMode);
+		this.fuzzyMode = new GuiServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 28, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		addButton(this.fuzzyMode);
+		this.craftMode = new GuiServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 48, Settings.CRAFT_ONLY, YesNo.NO );
+		addButton(this.craftMode);
+		this.schedulingMode = new GuiServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 68, Settings.SCHEDULING_MODE, SchedulingMode.DEFAULT );
+		addButton(this.schedulingMode);
 	}
 
 	@Override
@@ -165,30 +162,4 @@ public class GuiUpgradeable<T extends ContainerUpgradeable> extends AEBaseGui<T>
 		return this.bc instanceof PartImportBus ? GuiText.ImportBus : GuiText.ExportBus;
 	}
 
-	// FIXME: replace with individual methods
-	protected void actionPerformed( final Button btn )
-	{
-		// Detect right-clicks
-		final boolean backwards = minecraft.mouseHelper.isRightDown();
-
-		if( btn == this.redstoneMode )
-		{
-			NetworkHandler.instance().sendToServer( new PacketConfigButton( this.redstoneMode.getSetting(), backwards ) );
-		}
-
-		if( btn == this.craftMode )
-		{
-			NetworkHandler.instance().sendToServer( new PacketConfigButton( this.craftMode.getSetting(), backwards ) );
-		}
-
-		if( btn == this.fuzzyMode )
-		{
-			NetworkHandler.instance().sendToServer( new PacketConfigButton( this.fuzzyMode.getSetting(), backwards ) );
-		}
-
-		if( btn == this.schedulingMode )
-		{
-			NetworkHandler.instance().sendToServer( new PacketConfigButton( this.schedulingMode.getSetting(), backwards ) );
-		}
-	}
 }

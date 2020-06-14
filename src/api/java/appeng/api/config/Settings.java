@@ -53,8 +53,6 @@ public enum Settings
 
 	SEARCH_MODE( EnumSet.allOf( SearchBoxMode.class ) ),
 
-	ACTIONS( EnumSet.allOf( ActionItems.class ) ),
-
 	IO_DIRECTION( EnumSet.of( RelativeDirection.LEFT, RelativeDirection.RIGHT ) ),
 
 	BLOCK( EnumSet.of( YesNo.YES, YesNo.NO ) ),

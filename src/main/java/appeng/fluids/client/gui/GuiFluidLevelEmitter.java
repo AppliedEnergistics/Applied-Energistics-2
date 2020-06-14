@@ -3,6 +3,7 @@ package appeng.fluids.client.gui;
 
 
 
+import appeng.client.gui.widgets.GuiServerSettingToggleButton;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
@@ -10,7 +11,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.client.gui.implementations.GuiUpgradeable;
-import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiNumberBox;
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
@@ -50,7 +50,7 @@ public class GuiFluidLevelEmitter extends GuiUpgradeable<ContainerFluidLevelEmit
 	@Override
 	protected void addButtons()
 	{
-		this.redstoneMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 28, Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL, this::actionPerformed );
+		this.redstoneMode = new GuiServerSettingToggleButton<>( this.guiLeft - 18, this.guiTop + 28, Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL );
 
 		final int a = AEConfig.instance().levelByMillyBuckets( 0 );
 		final int b = AEConfig.instance().levelByMillyBuckets( 1 );

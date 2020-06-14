@@ -19,11 +19,12 @@
 package appeng.client.gui.implementations;
 
 
+import appeng.client.gui.widgets.GuiActionButton;
 import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.api.config.ActionItems;
 import appeng.api.config.Settings;
-import appeng.client.gui.widgets.GuiImgButton;
+import appeng.client.gui.widgets.GuiSettingToggleButton;
 import appeng.container.implementations.ContainerCraftingTerm;
 import appeng.container.slot.SlotCraftingMatrix;
 import appeng.core.localization.GuiText;
@@ -63,7 +64,7 @@ public class GuiCraftingTerm extends GuiMEMonitorable<ContainerCraftingTerm>
 	public void init()
 	{
 		super.init();
-		GuiImgButton clearBtn = this.addButton( new GuiImgButton( this.guiLeft + 92, this.guiTop + this.ySize - 156, Settings.ACTIONS, ActionItems.STASH, btn -> clear() ));
+		GuiActionButton clearBtn = this.addButton( new GuiActionButton( this.guiLeft + 92, this.guiTop + this.ySize - 156, ActionItems.STASH, btn -> clear() ));
 		clearBtn.setHalfSize( true );
 	}
 

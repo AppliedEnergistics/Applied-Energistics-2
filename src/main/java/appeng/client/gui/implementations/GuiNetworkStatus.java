@@ -19,19 +19,17 @@
 package appeng.client.gui.implementations;
 
 
-import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.AEBaseGui;
-import appeng.client.gui.widgets.GuiImgButton;
+import appeng.client.gui.widgets.CommonButtons;
 import appeng.client.gui.widgets.GuiScrollbar;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.client.me.ItemRepo;
 import appeng.client.me.SlotME;
 import appeng.container.implementations.ContainerNetworkStatus;
-import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -49,7 +47,6 @@ public class GuiNetworkStatus extends AEBaseGui<ContainerNetworkStatus> implemen
 
 	private final ItemRepo repo;
 	private final int rows = 4;
-	private GuiImgButton units;
 	private int tooltip = -1;
 
 	public GuiNetworkStatus(ContainerNetworkStatus container, PlayerInventory playerInventory, ITextComponent title) {
@@ -68,14 +65,7 @@ public class GuiNetworkStatus extends AEBaseGui<ContainerNetworkStatus> implemen
 	{
 		super.init();
 
-		this.units = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.POWER_UNITS, AEConfig.instance().selectedPowerUnit(), btn -> selectNextUnit() );
-		this.addButton( this.units );
-	}
-
-	private void selectNextUnit() {
-		final boolean backwards = minecraft.mouseHelper.isRightDown();
-		AEConfig.instance().nextPowerUnit( backwards );
-		this.units.set( AEConfig.instance().selectedPowerUnit() );
+		this.addButton( CommonButtons.togglePowerUnit( this.guiLeft - 18, this.guiTop + 8 ) );
 	}
 
 	@Override
