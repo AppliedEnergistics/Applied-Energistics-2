@@ -80,7 +80,7 @@ public class BlockCableBus extends AEBaseTileBlock<TileCableBus> /* FIXME implem
 	private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
 
 	public BlockCableBus() {
-		super(defaultProps(AEGlassMaterial.INSTANCE).notSolid());
+		super(defaultProps(AEGlassMaterial.INSTANCE).notSolid().noDrops());
 	}
 
 	@Override
