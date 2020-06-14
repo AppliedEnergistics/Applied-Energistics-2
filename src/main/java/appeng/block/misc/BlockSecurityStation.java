@@ -67,17 +67,8 @@ public class BlockSecurityStation extends AEBaseTileBlock<TileSecurityStation>
 	}
 
 	@Override
-	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld world, BlockPos pos, BlockPos facingPos) {
-		// FIXME: Powered state needs to be handled differently
-		boolean powered = false;
-		TileSecurityStation te = this.getTileEntity( world, pos );
-		if( te != null )
-		{
-			powered = te.isActive();
-		}
-
-		return super.updatePostPlacement(stateIn, facing, facingState, world, pos, facingPos)
-				.with( POWERED, powered );
+	protected BlockState updateBlockStateFromTileEntity(BlockState currentState, TileSecurityStation te) {
+		return currentState.with( POWERED, te.isActive() );
 	}
 
 	@Override

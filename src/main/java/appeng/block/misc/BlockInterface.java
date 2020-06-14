@@ -62,16 +62,8 @@ public class BlockInterface extends AEBaseTileBlock<TileInterface>
 	}
 
 	@Override
-	public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos pos, BlockPos facingPos) {
-		// Determine whether the interface is omni-directional or not
-		TileInterface te = this.getTileEntity(world, pos);
-		boolean omniDirectional = true; // The default
-		if (te != null) {
-			omniDirectional = te.isOmniDirectional();
-		}
-
-		return super.updatePostPlacement(state, facing, facingState, world, pos, facingPos)
-				.with(OMNIDIRECTIONAL, omniDirectional);
+	protected BlockState updateBlockStateFromTileEntity(BlockState currentState, TileInterface te) {
+		return currentState.with(OMNIDIRECTIONAL, te.isOmniDirectional());
 	}
 
 	@Override

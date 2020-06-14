@@ -66,12 +66,8 @@ public abstract class BlockQuantumBase extends AEBaseTileBlock<TileQuantumBridge
 	}
 
 	@Override
-	public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos pos, BlockPos facingPos) {
-		TileQuantumBridge bridge = this.getTileEntity(world, pos);
-		if (bridge != null) {
-			state = state.with(FORMED, bridge.isFormed());
-		}
-		return state;
+	protected BlockState updateBlockStateFromTileEntity(BlockState currentState, TileQuantumBridge te) {
+		return currentState.with(FORMED, te.isFormed());
 	}
 
 	@Override

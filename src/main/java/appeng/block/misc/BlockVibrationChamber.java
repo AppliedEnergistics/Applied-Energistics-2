@@ -61,13 +61,8 @@ public final class BlockVibrationChamber extends AEBaseTileBlock<TileVibrationCh
 	}
 
 	@Override
-	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld world, BlockPos pos, BlockPos facingPos) {
-		// FIXME: This must be actively done from within the tile-entity and not passively
-		TileVibrationChamber te = this.getTileEntity( world, pos );
-		boolean active = te != null && te.isOn;
-
-		return super.updatePostPlacement(stateIn, facing, facingState, world, pos, facingPos)
-				.with( ACTIVE, active );
+	protected BlockState updateBlockStateFromTileEntity(BlockState currentState, TileVibrationChamber te) {
+		return currentState.with( ACTIVE, te.isOn );
 	}
 
 	@Override
