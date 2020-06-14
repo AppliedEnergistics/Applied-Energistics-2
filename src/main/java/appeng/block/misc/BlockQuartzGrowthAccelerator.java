@@ -21,6 +21,7 @@ package appeng.block.misc;
 
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseTileBlock;
+import appeng.client.render.effects.LightningFX;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.tile.misc.TileQuartzGrowthAccelerator;
@@ -29,6 +30,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.Direction;
@@ -53,13 +55,8 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock<TileQuartzGrow
 	}
 
 	@Override
-	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld world, BlockPos pos, BlockPos facingPos) {
-		// FIXME: This is not correct since placement updates dont occur when the TE updates
-		TileQuartzGrowthAccelerator te = this.getTileEntity( world, pos );
-		boolean powered = te != null && te.isPowered();
-
-		return super.updatePostPlacement(stateIn, facing, facingState, world, pos, facingPos)
-				.with( POWERED, powered );
+	protected BlockState updateBlockStateFromTileEntity(BlockState currentState, TileQuartzGrowthAccelerator te) {
+		return currentState.with( POWERED, te.isPowered() );
 	}
 
 	@Override
@@ -145,8 +142,8 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock<TileQuartzGrow
 			ry += dz * forward.getYOffset();
 			rz += dz * forward.getZOffset();
 
-			// FIXME final LightningFX fx = new LightningFX( w, rx, ry, rz, 0.0D, 0.0D, 0.0D );
-			// FIXME Minecraft.getInstance().effectRenderer.addEffect( fx );
+			final LightningFX fx = new LightningFX( w, rx, ry, rz, 0.0D, 0.0D, 0.0D );
+			Minecraft.getInstance().particles.addEffect( fx );
 		}
 	}
 
