@@ -23,6 +23,9 @@ import net.minecraft.item.ItemStack;
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
+/**
+ * Utility class for showing a sub-screen for the current container that allows returning to the current UI.
+ */
 final class AESubGui {
 
     private final AEBaseGui<?> gui;
