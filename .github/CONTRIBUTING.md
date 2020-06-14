@@ -15,27 +15,7 @@ Applied Energistics 2 crashing, have a suggestion, found a bug?  Create an issue
     * If it is already possible with vanilla and AE2 itself, the suggestion will be considered invalid.
     * Asking for a smaller version, more compact version, or more efficient version of something will also be considered invalid.
 2. Go to [the issues page](https://github.com/AppliedEnergistics/Applied-Energistics-2/issues) and click [new issue](https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/new)
-3. Enter your a title of your issue (something that summarizes your issue), and then create a detailed description of the issue.
-    * Do not tag it with something like `[Feature]`, `[Bug]`, or a version.
-    * Restrict it to a single bug or feature, it makes managing them way easier for us.
-    * The following details are required. Also refer to the issue template when creating one.
-        * Forge version
-        * AE2 version
-        * Crash log, when reporting a crash (Please make sure to use [pastebin](http://pastebin.com/))
-            * Never post an excerpt of what you consider important
-            * Always post the full log
-        * Other mods and their version, when reporting an issue between AE and another mod
-            * Also consider updating these before submitting a new issue, it might be already fixed
-        * A detailed description of the bug or feature
-    * To further help in resolving your issues please try to include the follow if applicable:
-        * What was expected?
-        * How to reproduce the problem?
-            * This is usually a great detail and allows us to fix it way faster
-        * Server or Single Player?
-        * Screen shots or Pictures of the problem
-        * Mod Pack using and version?
-            * Keep in mind that some mods might use an outdated version of AE2
-            * If so you should report it to your modpack
+3. If applicable, use on of the provided templates. It will also contain further details about required or useful information to add.
 4. Click `Submit New Issue`, and wait for feedback!
 
 Providing as many details as possible does help us to find and resolve the issue faster and also you getting a fixed version as fast as possible.
@@ -47,17 +27,19 @@ Please note that we might close any issue not matching these requirements.
 * Submit an issue to the github project, assuming one does not already exist.
   * Clearly describe the issue including steps to reproduce when it is a bug.
   * Make sure you fill in the earliest version that you know has the issue.
+  * Waiting for feedback is suggested.
 * Fork the repository on GitHub
 * Create a topic branch from where you want to base your work.
-  * This is revison branch that is under active development.
+  * This `master` branch that is under active development.
   * Only target release branches if you are certain your fix must be on that
     branch.
   * To quickly create a topic branch based on the development branch; `git 
-    checkout -b fix/master/my_contribution branch`. Please avoid working 
-    directly on the `active development` branch.
+    checkout -b my_contribution_branch`. Please avoid working 
+    directly on the `master` branch.
 * Make commits of logical units.
 * Check for unnecessary whitespace with `git diff --check` before committing.
 * Make sure your commit messages are in the proper format.
+  * You can either use the gradle `spotlessCheck` and `spotlessApply` tasks or use the provided eclipse formatter config in `/codeformat`
 
 ````
     (#12345) Make the example in CONTRIBUTING imperative and concrete
@@ -72,20 +54,18 @@ Please note that we might close any issue not matching these requirements.
     from our issue tracker.  The body describes the behavior without the patch,
     why this is a problem, and how the patch fixes the problem when applied.
 ````
-* Always fully test your changes. If they are large engouh in scope, then fully test AE2.
+* Always fully test your changes. If they are large enough in scope, then fully test AE2.
 * Describing the process you used to test your changes in detail will help speed up this process.
 
 ## Making Trivial Changes
 
 ### Documentation
 
-For changes of a trivial nature to comments and documentation, it is not
-always necessary to create a new issue. In this case, it is
-appropriate to start the first line of a commit with '(doc)' instead of
-a ticket number.
+For changes of a trivial nature to comments and documentation, it is not always necessary to create a new issue. 
+We usually use `squash and merge`. This allows us to easily append the PR number for future reference.
 
 ````
-    (doc) Add documentation commit example to CONTRIBUTING
+    Add documentation commit example to CONTRIBUTING
 
     There is no example for contributing a documentation commit
     to the Puppet repository. This is a problem because the contributor
@@ -112,56 +92,11 @@ the styling guidelines used by AE.
 
 PRs that do not conform to these standards will be rejected.
 
-You can find presets for Eclipse and IntelliJ IDEA in the `codeformat` folder.
-We try to keep them up to date. Please report any case of maintaining the correct formatting.
+You can find presets for Eclipse in the `codeformat` folder. For IntelliJ IDEA we recommend the eclipse formatter plugin.
 
-### Whitespace
+There is also a gradle task available to check for syntax errors (`spotlessCheck`) as well as applying the fixes (`spotlessApply`).
 
-#### Tabs or spaces
-Configure your IDE to use tabs as padding whitespace. Ensure that there is no extra whitespace 
-at the end of lines, or on blank lines.
-
-#### Pad parenthes with whitespace
-````
-if( item.equals( newItem )
-
-public void DeleteItem( item )
-
-catch( Throwable )
-````
-
-### Braces
-
-Place opening and closing braces on a new line. Always include open and close braces, even if
-the body is a single line.
-
-````
-if( item.equals( newItem )
-{
-
-}
-else
-{
-
-}
-
-public void DeleteItem( item )
-{
-
-}
-````
-
-## Submitting Changes
-
-* Push your changes to a topic branch in your fork of the repository.
-* Submit a pull request to the repository in the puppetlabs organization.
-* Update your issue to mark that you have submitted code and are ready for it to be reviewed.
-  * Include a link to the pull request in the ticket.
-* The core team looks at Pull Requests on a regular basis.
-  * There are many reasons why it will take a long time to pull your PR. Be patient, we'll
-    get to it.
-* After feedback has been given we expect responses within two weeks. After two
-  weeks will may close the pull request if it isn't showing any activity.
+We try to keep them up to date. Please report any problem with maintaining the correct formatting.
 
 # Additional Resources
 

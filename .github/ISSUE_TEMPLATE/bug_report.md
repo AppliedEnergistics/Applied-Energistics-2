@@ -22,9 +22,7 @@ about: You found a bug or encountered a crash? Please report it here.
 
 **Environment**
 <!-- Include as many relevant details about the environment -->
-<!-- Like the used version, SP/MP, other mods and their version -->
-<!-- The following ones are required, please note "latest" is not a version -->
+<!-- A forced crash report by pressing F3+c for 10 seconds. Use pastebin, gist, etc. -->
+<!-- Without it, we will automatically close the issue. -->
 
-- Minecraft Version: 
-- AE2 Version: 
-- Forge Version:
+- Environment: 
