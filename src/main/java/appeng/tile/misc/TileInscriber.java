@@ -26,7 +26,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.google.common.collect.Lists;
+import appeng.recipes.handlers.InscriberRecipe;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -42,10 +42,7 @@ import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.Upgrades;
-import appeng.api.definitions.IComparableDefinition;
 import appeng.api.definitions.ITileDefinition;
-import appeng.api.features.IInscriberRecipe;
-import appeng.api.features.IInscriberRecipeBuilder;
 import appeng.api.features.InscriberProcessType;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.IGridNode;
@@ -65,7 +62,6 @@ import appeng.tile.grid.AENetworkPowerTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
-import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperChainedItemHandler;
 import appeng.util.inv.WrapperFilteredItemHandler;
@@ -98,7 +94,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	private final IItemHandler bottomItemHandlerExtern;
 	private final IItemHandler sideItemHandlerExtern;
 
-	private IInscriberRecipe cachedTask = null;
+	private InscriberRecipe cachedTask = null;
 
 	private final IItemHandlerModifiable inv = new WrapperChainedItemHandler( this.topItemHandler, this.bottomItemHandler, this.sideItemHandler );
 
@@ -278,77 +274,22 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	}
 
 	@Nullable
-	public IInscriberRecipe getTask()
+	public InscriberRecipe getTask()
 	{
-		if( this.cachedTask == null )
+		if ( this.cachedTask == null && world != null )
 		{
-			this.cachedTask = this.getTask( this.sideItemHandler.getStackInSlot( 0 ), this.topItemHandler.getStackInSlot( 0 ),
-					this.bottomItemHandler.getStackInSlot( 0 ) );
+			ItemStack input = this.sideItemHandler.getStackInSlot(0);
+			ItemStack plateA = this.topItemHandler.getStackInSlot(0);
+			ItemStack plateB = this.bottomItemHandler.getStackInSlot(0);
+			// If the player somehow managed to insert more than one item, we bail here
+			if( input.getCount() > 1 || plateA.getCount() > 1 || plateB.getCount() > 1 )
+			{
+				return null;
+			}
+
+			this.cachedTask = InscriberRecipes.findRecipe( world, input, plateA, plateB, true);
 		}
 		return this.cachedTask;
-	}
-
-	@Nullable
-	private IInscriberRecipe getTask( final ItemStack input, final ItemStack plateA, final ItemStack plateB )
-	{
-		if( input.isEmpty() || input.getCount() > 1 )
-		{
-			return null;
-		}
-
-		if( !plateA.isEmpty() && plateA.getCount() > 1 )
-		{
-			return null;
-		}
-
-		if( !plateB.isEmpty() && plateB.getCount() > 1 )
-		{
-			return null;
-		}
-
-		final IComparableDefinition namePress = AEApi.instance().definitions().materials().namePress();
-		final boolean isNameA = namePress.isSameAs( plateA );
-		final boolean isNameB = namePress.isSameAs( plateB );
-
-		if( ( isNameA && isNameB ) || isNameA && plateB.isEmpty() )
-		{
-			return this.makeNamePressRecipe( input, plateA, plateB );
-		}
-		else if( plateA.isEmpty() && isNameB )
-		{
-			return this.makeNamePressRecipe( input, plateB, plateA );
-		}
-
-		for( final IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
-		{
-
-			final boolean matchA = ( plateA.isEmpty() && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons()
-					.isSameItem( plateA,
-							recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) ) && // and...
-					( ( plateB.isEmpty() && !recipe.getBottomOptional().isPresent() ) || ( Platform.itemComparisons()
-							.isSameItem( plateB,
-									recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) ) );
-
-			final boolean matchB = ( plateB.isEmpty() && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons()
-					.isSameItem( plateB,
-							recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) ) && // and...
-					( ( plateA.isEmpty() && !recipe.getBottomOptional().isPresent() ) || ( Platform.itemComparisons()
-							.isSameItem( plateA,
-									recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) ) );
-
-			if( matchA || matchB )
-			{
-				for( final ItemStack option : recipe.getInputs() )
-				{
-					if( Platform.itemComparisons().isSameItem( input, option ) )
-					{
-						return recipe;
-					}
-				}
-			}
-		}
-
-		return null;
 	}
 
 	@Override
@@ -359,7 +300,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			this.finalStep++;
 			if( this.finalStep == 8 )
 			{
-				final IInscriberRecipe out = this.getTask();
+				final InscriberRecipe out = this.getTask();
 				if( out != null )
 				{
 					final ItemStack outputCopy = out.getOutput().copy();
@@ -425,7 +366,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			if( this.getProcessingTime() > this.getMaxProcessingTime() )
 			{
 				this.setProcessingTime( this.getMaxProcessingTime() );
-				final IInscriberRecipe out = this.getTask();
+				final InscriberRecipe out = this.getTask();
 				if( out != null )
 				{
 					final ItemStack outputCopy = out.getOutput().copy();
@@ -527,54 +468,6 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		this.processingTime = processingTime;
 	}
 
-	private IInscriberRecipe makeNamePressRecipe( ItemStack input, ItemStack plateA, ItemStack plateB )
-	{
-		String name = "";
-
-		if( !plateA.isEmpty() )
-		{
-            final CompoundNBT tag = plateA.getOrCreateTag();
-			name += tag.getString( "InscribeName" );
-		}
-
-		if( !plateB.isEmpty() )
-		{
-            final CompoundNBT tag = plateB.getOrCreateTag();
-			name += " " + tag.getString( "InscribeName" );
-		}
-
-		final ItemStack startingItem = input.copy();
-		final ItemStack renamedItem = input.copy();
-
-		final CompoundNBT display = renamedItem.getOrCreateChildTag( "display" );
-		if( !name.isEmpty() )
-		{
-			display.putString("Name", name);
-		}
-		else
-		{
-			display.remove( "Name" );
-		}
-
-		final List<ItemStack> inputs = Lists.newArrayList( startingItem );
-		final InscriberProcessType type = InscriberProcessType.INSCRIBE;
-
-		final IInscriberRecipeBuilder builder = AEApi.instance().registries().inscriber().builder();
-		builder.withInputs( inputs ).withOutput( renamedItem ).withProcessType( type );
-
-		if( !plateA.isEmpty() )
-		{
-			builder.withTopOptional( plateA );
-		}
-
-		if( !plateB.isEmpty() )
-		{
-			builder.withBottomOptional( plateB );
-		}
-
-		return builder.build();
-	}
-
 	/**
 	 * This is an item handler that exposes the inscribers inventory while providing simulation capabilities that do not
 	 * reset the progress if there's already an item in a slot. Previously, the progress of the inscriber was reset when
@@ -613,14 +506,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				{
 					return true;
 				}
-				for( final ItemStack optionals : AEApi.instance().registries().inscriber().getOptionals() )
-				{
-					if( Platform.itemComparisons().isSameItem( stack, optionals ) )
-					{
-						return true;
-					}
-				}
-				return false;
+				return InscriberRecipes.isValidOptionalIngredient(getWorld(), stack);
 			}
 			return true;
 		}

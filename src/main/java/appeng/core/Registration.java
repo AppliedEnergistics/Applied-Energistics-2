@@ -44,6 +44,7 @@ import appeng.client.render.model.BiometricCardModel;
 import appeng.client.render.model.DriveModel;
 import appeng.client.render.model.MemoryCardModel;
 import appeng.client.render.model.SkyCompassModel;
+import appeng.client.render.tesr.InscriberTESR;
 import appeng.client.render.tesr.SkyChestTESR;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerOpener;
@@ -769,6 +770,7 @@ final class Registration
 
 	public void registerTextures(TextureStitchEvent.Pre event) {
 		SkyChestTESR.registerTextures(event);
+		InscriberTESR.registerTexture(event);
 	}
 
 	public void registerCommands( final FMLServerStartingEvent evt )

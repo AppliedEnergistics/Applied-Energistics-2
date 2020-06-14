@@ -159,25 +159,14 @@ An example string would be `appeng:appliedenergistics2:rv5-stable-1:api` for the
 ## Applied Energistics 2 CraftTweaker
 
 ### Inscriber
-Add a recipe. When `inscribe` is true the bottom and top inputs are not consumed.
 
-	mods.appliedenergistics2.Inscriber.addRecipe(ItemStack output, ItemStack input, boolean inscribe, 
-	                                             @Optional ItemStack topInput, @Optional ItemStack bottomInput );
-
-Remove all recipes for this output stack. 
-	                                             
-	mods.appliedenergistics2.Inscriber.removeRecipe(ItemStack output);	
+The inscriber uses the vanilla recipe system with a custom `type` of `appliedenergistics2:inscriber`.
+See the [inscriber recipe folder](src/main/resources/data/appliedenergistics2/recipes/inscriber) for some examples.
 
 ### Grindstone
-Add a recipe.
 
-	mods.appliedenergistics2.Grinder.addRecipe( ItemStack output, ItemStack input, int turns, 
-	                                            @Optional ItemStack secondary1Output, @Optional float secondary1Chance,
-	                                            @Optional ItemStack secondary2Output, @Optional float secondary2Chance);
-	
-Remove recipes for this input.
-
-	mods.appliedenergistics2.Grinder.removeRecipe(ItemStack input);	
+The grindstone uses the vanilla recipe system with a custom `type` of `appliedenergistics2:grinder`.
+See the [grinder recipe folder](src/main/resources/data/appliedenergistics2/recipes/grinder) for some examples.
 
 ### Spatial
 Whitelist a TileEntity class for Spatial IO.

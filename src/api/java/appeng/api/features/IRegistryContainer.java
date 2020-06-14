@@ -68,11 +68,6 @@ public interface IRegistryContainer
 	ICellRegistry cell();
 
 	/**
-	 * Manage inscriber recipes via API
-	 */
-	IInscriberRegistry inscriber();
-
-	/**
 	 * Manage charger via API
 	 */
 	IChargerRegistry charger();

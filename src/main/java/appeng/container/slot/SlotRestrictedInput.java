@@ -19,7 +19,9 @@
 package appeng.container.slot;
 
 
+import appeng.items.misc.ItemEncodedPattern;
 import appeng.recipes.handlers.GrinderRecipes;
+import appeng.tile.misc.InscriberRecipes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
@@ -169,15 +171,7 @@ public class SlotRestrictedInput extends AppEngSlot
 					return true;
 				}
 
-				for( final ItemStack optional : AEApi.instance().registries().inscriber().getOptionals() )
-				{
-					if( Platform.itemComparisons().isSameItem( i, optional ) )
-					{
-						return true;
-					}
-				}
-
-				return false;
+				return InscriberRecipes.isValidOptionalIngredient(p.player.world, i);
 
 			case INSCRIBER_INPUT:
 				return true;/*
@@ -244,15 +238,15 @@ public class SlotRestrictedInput extends AppEngSlot
 		if( Platform.isClient() && ( this.which == PlacableItemType.ENCODED_PATTERN ) )
 		{
 			final ItemStack is = super.getStack();
-			// FIXME if( !is.isEmpty() && is.getItem() instanceof ItemEncodedPattern )
-			// FIXME {
-			// FIXME 	final ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
-			// FIXME 	final ItemStack out = iep.getOutput( is );
-			// FIXME 	if( !out.isEmpty() )
-			// FIXME 	{
-			// FIXME 		return out;
-			// FIXME 	}
-			// FIXME }
+			if( !is.isEmpty() && is.getItem() instanceof ItemEncodedPattern)
+			{
+				final ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
+				final ItemStack out = iep.getOutput( is );
+				if( !out.isEmpty() )
+				{
+					return out;
+				}
+			}
 		}
 		return super.getStack();
 	}

@@ -21,13 +21,13 @@ package appeng.container.implementations;
 
 import appeng.api.AEApi;
 import appeng.api.definitions.IItemDefinition;
-import appeng.api.features.IInscriberRecipe;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.container.helper.TileContainerHelper;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
+import appeng.tile.misc.InscriberRecipes;
 import appeng.tile.misc.TileInscriber;
 import appeng.util.Platform;
 import net.minecraft.entity.player.PlayerEntity;
@@ -80,12 +80,15 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 
 		IItemHandler inv = te.getInternalInventory();
 
-		this.addSlot(
-				this.top = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, inv, 0, 45, 16, this.getPlayerInventory() ) );
-		this.addSlot(
-				this.bottom = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, inv, 1, 45, 62, this.getPlayerInventory() ) );
-		this.addSlot(
-				this.middle = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_INPUT, inv, 2, 63, 39, this.getPlayerInventory() ) );
+		SlotRestrictedInput top = new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, inv, 0, 45, 16, this.getPlayerInventory());
+		top.setStackLimit(1);
+		this.top = this.addSlot(top);
+		SlotRestrictedInput bottom = new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, inv, 1, 45, 62, this.getPlayerInventory());
+		bottom.setStackLimit(1);
+		this.bottom = this.addSlot(bottom);
+		SlotRestrictedInput middle = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_INPUT, inv, 2, 63, 39, this.getPlayerInventory() );
+		middle.setStackLimit(1);
+		this.middle = this.addSlot(middle);
 
 		this.addSlot( new SlotOutput( inv, 3, 113, 40, -1 ) );
 	}
@@ -143,75 +146,26 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 				return !press.isSameAs( is );
 			}
 
-			boolean matches = false;
-			for( final IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
-			{
-				final boolean matchA = !top
-						.isEmpty() && ( Platform.itemComparisons().isSameItem( top, recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) || Platform
-								.itemComparisons()
-								.isSameItem( top, recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) );
-				final boolean matchB = !bot
-						.isEmpty() && ( Platform.itemComparisons().isSameItem( bot, recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) || Platform
-								.itemComparisons()
-								.isSameItem( bot, recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) );
-
-				if( matchA || matchB )
-				{
-					matches = true;
-					for( final ItemStack option : recipe.getInputs() )
-					{
-						if( Platform.itemComparisons().isSameItem( is, option ) )
-						{
-							return true;
-						}
-					}
-				}
-			}
-			if( matches )
-			{
-				return false;
-			}
+			return InscriberRecipes.findRecipe(ti.getWorld(), is, top, bot, false) != null;
 		}
-		else if( ( s == this.top && !bot.isEmpty() ) || ( s == this.bottom && !top.isEmpty() ) )
-		{
+		else if( ( s == this.top && !bot.isEmpty() ) || ( s == this.bottom && !top.isEmpty() ) ) {
 			ItemStack otherSlot;
-			if( s == this.top )
-			{
+			if (s == this.top) {
 				otherSlot = this.bottom.getStack();
-			}
-			else
-			{
+			} else {
 				otherSlot = this.top.getStack();
 			}
 
 			// name presses
 			final IItemDefinition namePress = AEApi.instance().definitions().materials().namePress();
-			if( namePress.isSameAs( otherSlot ) )
-			{
-				return namePress.isSameAs( is );
+			if (namePress.isSameAs(otherSlot)) {
+				return namePress.isSameAs(is);
 			}
 
 			// everything else
-			for( final IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
-			{
-				boolean isValid = false;
-				if( Platform.itemComparisons().isSameItem( otherSlot, recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) )
-				{
-					isValid = Platform.itemComparisons().isSameItem( is, recipe.getBottomOptional().orElse( ItemStack.EMPTY ) );
-				}
-				else if( Platform.itemComparisons().isSameItem( otherSlot, recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) )
-				{
-					isValid = Platform.itemComparisons().isSameItem( is, recipe.getTopOptional().orElse( ItemStack.EMPTY ) );
-				}
-
-				if( isValid )
-				{
-					return true;
-				}
-			}
-			return false;
+			// test for a partial recipe match (ignoring the middle slot)
+			return InscriberRecipes.isValidOptionalIngredientCombination(ti.getWorld(), is, otherSlot);
 		}
-
 		return true;
 	}
 
