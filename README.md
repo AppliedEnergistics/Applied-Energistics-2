@@ -1,5 +1,5 @@
-[![Travis](https://img.shields.io/travis/AppliedEnergistics/Applied-Energistics-2.svg?maxAge=2592000&style=flat-square)](https://travis-ci.org/AppliedEnergistics/Applied-Energistics-2)
-[![Latest Release](https://img.shields.io/github/release/AppliedEnergistics/Applied-Energistics-2.svg?label=Latest%20Release&style=flat-square)](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases)
+[![Build master](https://img.shields.io/github/workflow/status/AppliedEnergistics/Applied-Energistics-2/Build master?style=flat-square)](https://github.com/AppliedEnergistics/Applied-Energistics-2/actions?query=workflow%3A%22Build+master%22)
+[![Latest Release](https://img.shields.io/github/v/release/AppliedEnergistics/Applied-Energistics-2?label=Latest%20Release&style=flat-square)](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases)
 
 # Applied Energistics 2
 
@@ -32,13 +32,13 @@ A Mod about Matter, Energy and using them to conquer the world..
 ## License
 
 * Applied Energistics 2 API
-  - (c) 2013 - 2018 AlgorithmX2 et al
+  - (c) 2013 - 2020 AlgorithmX2 et al
   - [![License](https://img.shields.io/badge/License-MIT-red.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 * Applied Energistics 2
-  - (c) 2013 - 2018 AlgorithmX2 et al
+  - (c) 2013 - 2020 AlgorithmX2 et al
   - [![License](https://img.shields.io/badge/License-LGPLv3-blue.svg?style=flat-square)](https://raw.githubusercontent.com/AppliedEnergistics/Applied-Energistics-2/rv2/LICENSE)
 * Textures and Models
-  - (c) 2013 - 2018 AlgorithmX2 et al
+  - (c) 2013 - 2020 AlgorithmX2 et al
   - [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%203.0-yellow.svg?style=flat-square)](https://creativecommons.org/licenses/by-nc-sa/3.0/)
 * Text and Translations
   - [![License](https://img.shields.io/badge/License-No%20Restriction-green.svg?style=flat-square)](https://creativecommons.org/publicdomain/zero/1.0/)
@@ -59,27 +59,7 @@ Applied Energistics 2 crashing, have a suggestion, found a bug?  Create an issue
     * If it is already possible with vanilla and AE2 itself, the suggestion will be considered invalid.
     * Asking for a smaller version, more compact version, or more efficient version of something will also be considered invalid.
 2. Go to [the issues page](https://github.com/AppliedEnergistics/Applied-Energistics-2/issues) and click [new issue](https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/new)
-3. Enter your a title of your issue (something that summarizes your issue), and then create a detailed description of the issue.
-    * Do not tag it with something like `[Feature]`, `[Bug]`, or a version.
-    * Restrict it to a single bug or feature, it makes managing them way easier for us.
-    * The following details are required. Also refer to the issue template when creating one.
-        * Forge version
-        * AE2 version
-        * Crash log, when reporting a crash (Please make sure to use [pastebin](http://pastebin.com/))
-            * Never post an excerpt of what you consider important
-            * Always post the full log
-        * Other mods and their version, when reporting an issue between AE and another mod
-            * Also consider updating these before submitting a new issue, it might be already fixed
-        * A detailed description of the bug or feature
-    * To further help in resolving your issues please try to include the follow if applicable:
-        * What was expected?
-        * How to reproduce the problem?
-            * This is usually a great detail and allows us to fix it way faster
-        * Server or Single Player?
-        * Screen shots or Pictures of the problem
-        * Mod Pack using and version?
-            * Keep in mind that some mods might use an outdated version of AE2
-            * If so you should report it to your modpack
+3. If applicable, use on of the provided templates. It will also contain further details about required or useful information to add.
 4. Click `Submit New Issue`, and wait for feedback!
 
 Providing as many details as possible does help us to find and resolve the issue faster and also you getting a fixed version as fast as possible.
@@ -91,17 +71,10 @@ Please note that we might close any issue not matching these requirements.
 1. Clone this repository via 
   - SSH `git clone git@github.com:AppliedEnergistics/Applied-Energistics-2.git` or 
   - HTTPS `git clone https://github.com/AppliedEnergistics/Applied-Energistics-2.git`
-2. Setup workspace 
-  - Decompiled source `gradlew setupDecompWorkspace`
-  - Obfuscated source `gradlew setupDevWorkspace`
-  - CI server `gradlew setupCIWorkspace`
-3. Build `gradlew build`. Jar will be in `build/libs`
-4. For core developer: Setup IDE
-  - IntelliJ: Import into IDE, execute `gradlew genIntellijRuns` and change RunConfiguration to `*_main` as quickfix for [ForgeGradle](https://github.com/MinecraftForge/ForgeGradle/issues/357)
-  - Eclipse: execute `gradlew eclipse`
-5. For add-on developer: Core-Mod Detection
-  - In order to have FML detect AE from your dev environment, add the following VM Option to your run profile
-  - `-Dfml.coreMods.load=appeng.coremod.AppEngCore`
+2. Build using the gradle `build` task. Jar will be in `build/libs`
+3. For core developer: Setup IDE
+  - IntelliJ: Import as gradle project
+  - Eclipse: Import as gradle project or execute gradle task `eclipse` and potentially `genEclipseRuns`
 
 ## Contribution
 
