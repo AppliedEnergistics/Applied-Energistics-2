@@ -481,7 +481,7 @@ public abstract class AEBaseContainer extends Container
 						{
 							final ItemStack t = d.getStack().copy();
 
-							if( Platform.itemComparisons().isSameItem( tis, t ) ) // t.isItemEqual(tis))
+							if( Platform.itemComparisons().isSameItem( t, tis ) )
 							{
 								int maxSize = t.getMaxStackSize();
 								if( maxSize > d.getSlotStackLimit() )
@@ -489,38 +489,34 @@ public abstract class AEBaseContainer extends Container
 									maxSize = d.getSlotStackLimit();
 								}
 
-								int placeAble = maxSize - t.getCount();
+								int placeable = maxSize - t.getCount();
+								if (placeable > 0) {
+									if (tis.getCount() < placeable) {
+										placeable = tis.getCount();
+									}
 
-								if( tis.getCount() < placeAble )
-								{
-									placeAble = tis.getCount();
-								}
+									t.setCount(t.getCount() + placeable);
+									tis.setCount(tis.getCount() - placeable);
 
-								t.setCount( t.getCount() + placeAble );
-								tis.setCount( tis.getCount() - placeAble );
+									d.putStack(t);
 
-								d.putStack( t );
+									if (tis.getCount() <= 0) {
+										clickSlot.putStack(ItemStack.EMPTY);
+										d.onSlotChanged();
 
-								if( tis.getCount() <= 0 )
-								{
-									clickSlot.putStack( ItemStack.EMPTY );
-									d.onSlotChanged();
-
-									// if ( hasMETiles ) updateClient();
-
-									this.updateSlot( clickSlot );
-									this.updateSlot( d );
-									return ItemStack.EMPTY;
-								}
-								else
-								{
-									this.updateSlot( d );
+										this.updateSlot(clickSlot);
+										this.updateSlot(d);
+										return ItemStack.EMPTY;
+									} else {
+										this.updateSlot(d);
+									}
 								}
 							}
 						}
 					}
 				}
 
+				// FIXME figure out whats the difference between this and the one above ?!
 				// any match..
 				for( final Slot d : selectedSlots )
 				{
@@ -538,39 +534,32 @@ public abstract class AEBaseContainer extends Container
 							if( Platform.itemComparisons().isSameItem( t, tis ) )
 							{
 								int maxSize = t.getMaxStackSize();
-								if( d.getSlotStackLimit() < maxSize )
+								if( maxSize > d.getSlotStackLimit() )
 								{
 									maxSize = d.getSlotStackLimit();
 								}
 
-								int placeAble = maxSize - t.getCount();
+								int placeable = maxSize - t.getCount();
+								if (placeable > 0) {
+									if (tis.getCount() < placeable) {
+										placeable = tis.getCount();
+									}
 
-								if( tis.getCount() < placeAble )
-								{
-									placeAble = tis.getCount();
-								}
+									t.setCount(t.getCount() + placeable);
+									tis.setCount(tis.getCount() - placeable);
 
-								t.setCount( t.getCount() + placeAble );
-								tis.setCount( tis.getCount() - placeAble );
+									d.putStack(t);
 
-								d.putStack( t );
+									if (tis.getCount() <= 0) {
+										clickSlot.putStack(ItemStack.EMPTY);
+										d.onSlotChanged();
 
-								if( tis.getCount() <= 0 )
-								{
-									clickSlot.putStack( ItemStack.EMPTY );
-									d.onSlotChanged();
-
-									// if ( worldEntity != null )
-									// worldEntity.markDirty();
-									// if ( hasMETiles ) updateClient();
-
-									this.updateSlot( clickSlot );
-									this.updateSlot( d );
-									return ItemStack.EMPTY;
-								}
-								else
-								{
-									this.updateSlot( d );
+										this.updateSlot(clickSlot);
+										this.updateSlot(d);
+										return ItemStack.EMPTY;
+									} else {
+										this.updateSlot(d);
+									}
 								}
 							}
 						}
@@ -595,10 +584,6 @@ public abstract class AEBaseContainer extends Container
 							{
 								clickSlot.putStack( ItemStack.EMPTY );
 								d.onSlotChanged();
-
-								// if ( worldEntity != null )
-								// worldEntity.markDirty();
-								// if ( hasMETiles ) updateClient();
 
 								this.updateSlot( clickSlot );
 								this.updateSlot( d );
