@@ -2,16 +2,13 @@
 package appeng.client.render.tesr;
 
 
+import appeng.api.features.InscriberProcessType;
 import appeng.recipes.handlers.InscriberRecipe;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mojang.blaze3d.vertex.MatrixApplyingVertexBuilder;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.Material;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 
 import net.minecraft.client.Minecraft;
@@ -20,9 +17,9 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.model.pipeline.TransformerConsumer;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.client.render.FacingToRotation;
@@ -100,29 +97,29 @@ public final class InscriberTESR extends TileEntityRenderer<TileInscriber>
 		IVertexBuilder buffer = buffers.getBuffer(RenderType.getSolid());
 
 		// Bottom of Top Stamp
-		addVertex( buffer, ms, TwoPx, middle + press, TwoPx, 1, 1, 1, 1, tas.getInterpolatedU( 2 ), tas.getInterpolatedV( 13 ), combinedOverlay, combinedLight, 0, -1, 0);
-		addVertex( buffer, ms, 1.0f - TwoPx, middle + press, TwoPx, 1, 1, 1, 1, tas.getInterpolatedU( 14 ), tas.getInterpolatedV( 13 ), combinedOverlay, combinedLight, 0, -1, 0);
-		addVertex( buffer, ms, 1.0f - TwoPx, middle + press, 1.0f - TwoPx, 1, 1, 1, 1, tas.getInterpolatedU( 14 ), tas.getInterpolatedV( 2 ), combinedOverlay, combinedLight, 0, -1, 0);
-		addVertex( buffer, ms, TwoPx, middle + press, 1.0f - TwoPx, 1, 1, 1, 1, tas.getInterpolatedU( 2 ), tas.getInterpolatedV( 2 ), combinedOverlay, combinedLight, 0, -1, 0);
+		addVertex( buffer, ms, tas, TwoPx, middle + press, TwoPx, 2,  13 , combinedOverlay, combinedLight, Direction.DOWN);
+		addVertex( buffer, ms, tas, 1.0f - TwoPx, middle + press, TwoPx, 14,  13 , combinedOverlay, combinedLight, Direction.DOWN);
+		addVertex( buffer, ms, tas, 1.0f - TwoPx, middle + press, 1.0f - TwoPx, 14,  2 , combinedOverlay, combinedLight, Direction.DOWN);
+		addVertex( buffer, ms, tas, TwoPx, middle + press, 1.0f - TwoPx, 2,  2 , combinedOverlay, combinedLight, Direction.DOWN);
 
 		// Front of Top Stamp
-		addVertex( buffer, ms, TwoPx, middle + base, TwoPx, 1, 1, 1, 1, tas.getInterpolatedU( 2 ), tas.getInterpolatedV( 3 - 16 * ( press - base ) ), combinedOverlay, combinedLight, 0, 0, -1);
-		addVertex( buffer, ms, 1.0f - TwoPx, middle + base, TwoPx, 1, 1, 1, 1, tas.getInterpolatedU( 14 ), tas.getInterpolatedV( 3 - 16 * ( press - base ) ), combinedOverlay, combinedLight, 0, 0, -1);
-		addVertex( buffer, ms, 1.0f - TwoPx, middle + press, TwoPx, 1, 1, 1, 1, tas.getInterpolatedU( 14 ), tas.getInterpolatedV( 3 ), combinedOverlay, combinedLight, 0, 0, -1);
-		addVertex( buffer, ms, TwoPx, middle + press, TwoPx, 1, 1, 1, 1, tas.getInterpolatedU( 2 ), tas.getInterpolatedV( 3 ), combinedOverlay, combinedLight, 0, 0, -1);
+		addVertex( buffer, ms, tas, TwoPx, middle + base, TwoPx, 2,  3 - 16 * ( press - base ) , combinedOverlay, combinedLight, Direction.NORTH);
+		addVertex( buffer, ms, tas, 1.0f - TwoPx, middle + base, TwoPx, 14,  3 - 16 * ( press - base ) , combinedOverlay, combinedLight, Direction.NORTH);
+		addVertex( buffer, ms, tas, 1.0f - TwoPx, middle + press, TwoPx, 14,  3 , combinedOverlay, combinedLight, Direction.NORTH);
+		addVertex( buffer, ms, tas, TwoPx, middle + press, TwoPx, 2,  3 , combinedOverlay, combinedLight, Direction.NORTH);
 
 		// Top of Bottom Stamp
 		middle -= 2.0f * 0.02f;
-		addVertex( buffer, ms, 1.0f - TwoPx, middle - press, TwoPx, 1, 1, 1, 1, tas.getInterpolatedU( 2 ), tas.getInterpolatedV( 13 ), combinedOverlay, combinedLight, 0, 1, 0);
-		addVertex( buffer, ms, TwoPx, middle - press, TwoPx, 1, 1, 1, 1, tas.getInterpolatedU( 14 ), tas.getInterpolatedV( 13 ), combinedOverlay, combinedLight, 0, 1, 0);
-		addVertex( buffer, ms, TwoPx, middle - press, 1.0f - TwoPx, 1, 1, 1, 1, tas.getInterpolatedU( 14 ), tas.getInterpolatedV( 2 ), combinedOverlay, combinedLight, 0, 1, 0);
-		addVertex( buffer, ms, 1.0f - TwoPx, middle - press, 1.0f - TwoPx, 1, 1, 1, 1, tas.getInterpolatedU( 2 ), tas.getInterpolatedV( 2 ), combinedOverlay, combinedLight, 0, 1, 0);
+		addVertex( buffer, ms, tas, 1.0f - TwoPx, middle - press, TwoPx, 2,  13 , combinedOverlay, combinedLight, Direction.UP);
+		addVertex( buffer, ms, tas, TwoPx, middle - press, TwoPx, 14,  13 , combinedOverlay, combinedLight, Direction.UP);
+		addVertex( buffer, ms, tas, TwoPx, middle - press, 1.0f - TwoPx, 14,  2 , combinedOverlay, combinedLight, Direction.UP);
+		addVertex( buffer, ms, tas, 1.0f - TwoPx, middle - press, 1.0f - TwoPx, 2,  2 , combinedOverlay, combinedLight, Direction.UP);
 
 		// Front of Bottom Stamp
-		addVertex( buffer, ms, 1.0f - TwoPx, middle + -base, TwoPx, 1, 1, 1, 1, tas.getInterpolatedU( 2 ), tas.getInterpolatedV( 3 - 16 * ( press - base ) ), combinedOverlay, combinedLight, 0, 0, -1);
-		addVertex( buffer, ms, TwoPx, middle - base, TwoPx, 1, 1, 1, 1, tas.getInterpolatedU( 14 ), tas.getInterpolatedV( 3 - 16 * ( press - base ) ), combinedOverlay, combinedLight, 0, 0, -1);
-		addVertex( buffer, ms, TwoPx, middle - press, TwoPx, 1, 1, 1, 1, tas.getInterpolatedU( 14 ), tas.getInterpolatedV( 3 ), combinedOverlay, combinedLight, 0, 0, -1);
-		addVertex( buffer, ms, 1.0f - TwoPx, middle - press, TwoPx, 1, 1, 1, 1, tas.getInterpolatedU( 2 ), tas.getInterpolatedV( 3 ), combinedOverlay, combinedLight, 0, 0, -1);
+		addVertex( buffer, ms, tas, 1.0f - TwoPx, middle + -base, TwoPx, 2,  3 - 16 * ( press - base ) , combinedOverlay, combinedLight, Direction.NORTH);
+		addVertex( buffer, ms, tas, TwoPx, middle - base, TwoPx, 14,  3 - 16 * ( press - base ) , combinedOverlay, combinedLight, Direction.NORTH);
+		addVertex( buffer, ms, tas, TwoPx, middle - press, TwoPx, 14,  3 , combinedOverlay, combinedLight, Direction.NORTH);
+		addVertex( buffer, ms, tas, 1.0f - TwoPx, middle - press, TwoPx, 2,  3 , combinedOverlay, combinedLight, Direction.NORTH);
 
 		// render items.
 
@@ -142,8 +139,12 @@ public final class InscriberTESR extends TileEntityRenderer<TileInscriber>
 			items++;
 		}
 
+		boolean renderPresses;
 		if( relativeProgress > 1.0f || items == 0 )
 		{
+			// When crafting completes, dont render the presses (they mave have been consumed, see below)
+			renderPresses = false;
+
 			ItemStack is = tileInv.getStackInSlot( 3 );
 
 			if( is.isEmpty() )
@@ -151,29 +152,35 @@ public final class InscriberTESR extends TileEntityRenderer<TileInscriber>
 				final InscriberRecipe ir = tile.getTask();
 				if( ir != null )
 				{
+					// The "PRESS" type will consume the presses so they should not render after completing
+					// the press animation
+					renderPresses = ir.getProcessType() == InscriberProcessType.INSCRIBE;
 					is = ir.getOutput().copy();
 				}
 			}
-
 			this.renderItem( ms, is, 0.0f, buffers, combinedLight, combinedOverlay );
 		}
 		else
 		{
+			renderPresses = true;
+			this.renderItem( ms, tileInv.getStackInSlot( 2 ), 0.0f, buffers, combinedLight, combinedOverlay );
+		}
+
+		if (renderPresses) {
 			this.renderItem( ms, tileInv.getStackInSlot( 0 ), press, buffers, combinedLight, combinedOverlay );
 			this.renderItem( ms, tileInv.getStackInSlot( 1 ), -press, buffers, combinedLight, combinedOverlay );
-			this.renderItem( ms, tileInv.getStackInSlot( 2 ), 0.0f, buffers, combinedLight, combinedOverlay );
 		}
 
 		ms.pop();
 	}
 
-	private static void addVertex(IVertexBuilder vb, MatrixStack ms, float x, float y, float z, float red, float green, float blue, float alpha, float texU, float texV, int overlayUV, int lightmapUV, float normalX, float normalY, float normalZ) {
+	private static void addVertex(IVertexBuilder vb, MatrixStack ms, TextureAtlasSprite sprite, float x, float y, float z, double texU, double texV, int overlayUV, int lightmapUV, Direction front) {
 		vb.pos(ms.getLast().getMatrix(), x, y, z);
-		vb.color(red, green, blue, alpha);
-		vb.tex(texU, texV);
+		vb.color(1.0f, 1.0f, 1.0f, 1.0f);
+		vb.tex(sprite.getInterpolatedU(texU), sprite.getInterpolatedV(texV));
 		vb.overlay(overlayUV);
 		vb.lightmap(lightmapUV);
-		vb.normal(ms.getLast().getNormal(), normalX, normalY, normalZ);
+		vb.normal(ms.getLast().getNormal(), front.getXOffset(), front.getYOffset(), front.getZOffset());
 		vb.endVertex();
 	}
 
