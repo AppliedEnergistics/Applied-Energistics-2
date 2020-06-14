@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 
+import appeng.integration.abstraction.JEIFacade;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
@@ -231,7 +232,7 @@ public class ItemRepo
 
 	private void updateJEI( String filter )
 	{
-		// FIXME Integrations.jei().setSearchText( filter );
+		JEIFacade.instance().setSearchText( filter );
 	}
 
 	public int size()

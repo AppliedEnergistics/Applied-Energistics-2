@@ -50,6 +50,7 @@ import appeng.core.AELog;
 import appeng.core.stats.AeStats;
 import appeng.fluids.util.AEFluidStack;
 import appeng.hooks.TickHandler;
+import appeng.integration.abstraction.JEIFacade;
 import appeng.me.GridAccessException;
 import appeng.me.GridNode;
 import appeng.me.helpers.AENetworkProxy;
@@ -317,17 +318,16 @@ public class Platform
 
 	private static boolean isNotValidSetting( final Enum<?> e )
 	{
-		//FIXME, INVENTORY TWEAKS
-//		if( e == SortOrder.INVTWEAKS && !Integrations.invTweaks().isEnabled() )
-//		{
-//			return true;
-//		}
-		//FIXME, JEI
-//		final boolean isJEI = e == SearchBoxMode.JEI_AUTOSEARCH || e == SearchBoxMode.JEI_AUTOSEARCH_KEEP || e == SearchBoxMode.JEI_MANUAL_SEARCH || e == SearchBoxMode.JEI_MANUAL_SEARCH_KEEP;
-//		if( isJEI && !Integrations.jei().isEnabled() )
-//		{
-//			return true;
-//		}
+		if( e == SortOrder.INVTWEAKS /* FIXME && !Integrations.invTweaks().isEnabled() */ )
+		{
+			return true;
+		}
+
+		final boolean isJEI = e == SearchBoxMode.JEI_AUTOSEARCH || e == SearchBoxMode.JEI_AUTOSEARCH_KEEP || e == SearchBoxMode.JEI_MANUAL_SEARCH || e == SearchBoxMode.JEI_MANUAL_SEARCH_KEEP;
+		if( isJEI && !JEIFacade.instance().isEnabled())
+		{
+			return true;
+		}
 
 		return false;
 	}

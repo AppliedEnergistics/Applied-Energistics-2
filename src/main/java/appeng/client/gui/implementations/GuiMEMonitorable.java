@@ -21,7 +21,9 @@ package appeng.client.gui.implementations;
 
 import java.util.List;
 
+import appeng.api.config.*;
 import appeng.container.implementations.ContainerCraftingStatus;
+import appeng.integration.abstraction.JEIFacade;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.inventory.container.Slot;
@@ -31,9 +33,6 @@ import net.minecraftforge.fml.client.gui.GuiUtils;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 
-import appeng.api.config.SearchBoxMode;
-import appeng.api.config.Settings;
-import appeng.api.config.TerminalStyle;
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.implementations.tiles.IMEChest;
 import appeng.api.implementations.tiles.IViewCellStorage;
@@ -54,7 +53,6 @@ import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.SlotCraftingMatrix;
 import appeng.container.slot.SlotFakeCraftingMatrix;
 import appeng.core.AEConfig;
-import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 
@@ -318,7 +316,7 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 
 		if( isJEIEnabled )
 		{
-			memoryText = null; // FIXME Integrations.jei().getSearchText();
+			memoryText = JEIFacade.instance().getSearchText();
 		}
 
 		if( isKeepFilter && memoryText != null && !memoryText.isEmpty() )
@@ -398,20 +396,20 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 
 		this.bindTexture( this.getBackground() );
 		final int x_width = 197;
-		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, x_width, 18, 0 /* FIXME this.zlevel was used */ );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, x_width, 18, getBlitOffset() );
 
 		if( this.viewCell || ( this instanceof GuiSecurityStation ) )
 		{
-			GuiUtils.drawTexturedModalRect( offsetX + x_width, offsetY, x_width, 0, 46, 128, 0 /* FIXME this.zlevel was used */ );
+			GuiUtils.drawTexturedModalRect( offsetX + x_width, offsetY, x_width, 0, 46, 128, getBlitOffset() );
 		}
 
 		for( int x = 0; x < this.rows; x++ )
 		{
-			GuiUtils.drawTexturedModalRect( offsetX, offsetY + 18 + x * 18, 0, 18, x_width, 18, 0 /* FIXME this.zlevel was used */ );
+			GuiUtils.drawTexturedModalRect( offsetX, offsetY + 18 + x * 18, 0, 18, x_width, 18, getBlitOffset() );
 		}
 
 		GuiUtils.drawTexturedModalRect( offsetX, offsetY + 16 + this.rows * 18 + this.lowerTextureOffset, 0, 106 - 18 - 18, x_width,
-				99 + this.reservedSpace - this.lowerTextureOffset, 0 /* FIXME this.zlevel was used */ );
+				99 + this.reservedSpace - this.lowerTextureOffset, getBlitOffset() );
 
 		if( this.viewCell )
 		{
@@ -523,21 +521,21 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
 	}
 
 	@Override
-	public Enum getSortBy()
+	public SortOrder getSortBy()
 	{
-		return this.configSrc.getSetting( Settings.SORT_BY );
+		return (SortOrder) this.configSrc.getSetting( Settings.SORT_BY );
 	}
 
 	@Override
-	public Enum getSortDir()
+	public SortDir getSortDir()
 	{
-		return this.configSrc.getSetting( Settings.SORT_DIRECTION );
+		return (SortDir) this.configSrc.getSetting( Settings.SORT_DIRECTION );
 	}
 
 	@Override
-	public Enum getSortDisplay()
+	public ViewItems getSortDisplay()
 	{
-		return this.configSrc.getSetting( Settings.VIEW_MODE );
+		return (ViewItems) this.configSrc.getSetting( Settings.VIEW_MODE );
 	}
 
 	@Override

@@ -20,6 +20,9 @@ package appeng.fluids.client.gui;
 
 
 import appeng.api.config.Settings;
+import appeng.api.config.SortDir;
+import appeng.api.config.SortOrder;
+import appeng.api.config.ViewItems;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.util.IConfigManager;
 import appeng.client.gui.AEBaseMEGui;
@@ -307,21 +310,21 @@ public class GuiFluidTerminal extends AEBaseMEGui<ContainerFluidTerminal> implem
 	}
 
 	@Override
-	public Enum getSortBy()
+	public SortOrder getSortBy()
 	{
-		return this.configSrc.getSetting( Settings.SORT_BY );
+		return (SortOrder) this.configSrc.getSetting( Settings.SORT_BY );
 	}
 
 	@Override
-	public Enum getSortDir()
+	public SortDir getSortDir()
 	{
-		return this.configSrc.getSetting( Settings.SORT_DIRECTION );
+		return (SortDir) this.configSrc.getSetting( Settings.SORT_DIRECTION );
 	}
 
 	@Override
-	public Enum getSortDisplay()
+	public ViewItems getSortDisplay()
 	{
-		return this.configSrc.getSetting( Settings.VIEW_MODE );
+		return (ViewItems) this.configSrc.getSetting( Settings.VIEW_MODE );
 	}
 
 	@Override

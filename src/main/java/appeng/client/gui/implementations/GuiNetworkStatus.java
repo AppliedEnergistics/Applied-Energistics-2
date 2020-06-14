@@ -259,19 +259,19 @@ public class GuiNetworkStatus extends AEBaseGui<ContainerNetworkStatus> implemen
 	}
 
 	@Override
-	public Enum getSortBy()
+	public SortOrder getSortBy()
 	{
 		return SortOrder.NAME;
 	}
 
 	@Override
-	public Enum getSortDir()
+	public SortDir getSortDir()
 	{
 		return SortDir.ASCENDING;
 	}
 
 	@Override
-	public Enum getSortDisplay()
+	public ViewItems getSortDisplay()
 	{
 		return ViewItems.ALL;
 	}

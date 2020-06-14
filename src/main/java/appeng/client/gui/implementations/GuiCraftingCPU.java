@@ -32,7 +32,6 @@ import appeng.client.gui.widgets.GuiScrollbar;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.container.implementations.ContainerCraftingCPU;
 import appeng.core.AEConfig;
-import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
@@ -47,7 +46,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -453,19 +451,19 @@ public class GuiCraftingCPU<T extends ContainerCraftingCPU> extends AEBaseGui<T>
 	}
 
 	@Override
-	public Enum getSortBy()
+	public SortOrder getSortBy()
 	{
 		return SortOrder.NAME;
 	}
 
 	@Override
-	public Enum getSortDir()
+	public SortDir getSortDir()
 	{
 		return SortDir.ASCENDING;
 	}
 
 	@Override
-	public Enum getSortDisplay()
+	public ViewItems getSortDisplay()
 	{
 		return ViewItems.ALL;
 	}

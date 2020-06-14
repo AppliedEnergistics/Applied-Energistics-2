@@ -30,6 +30,7 @@ import appeng.container.implementations.ContainerPatternTerm;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
+import appeng.integration.abstraction.JEIFacade;
 import appeng.recipes.handlers.GrinderRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
 import com.google.common.collect.ImmutableList;
@@ -167,7 +168,6 @@ public class JEIPlugin implements IModPlugin
 	@Override
 	public void onRuntimeAvailable( IJeiRuntime jeiRuntime )
 	{
-// FIXME JEIModule jeiModule = (JEIModule) Integrations.jei();
-// FIXME jeiModule.setJei( new JeiRuntimeAdapter( jeiRuntime ) );
+		JEIFacade.setInstance(new JeiRuntimeAdapter(jeiRuntime));
 	}
 }
