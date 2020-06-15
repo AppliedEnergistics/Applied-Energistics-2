@@ -27,6 +27,9 @@ package appeng.api.implementations.tiles;
 import appeng.api.networking.IGridHost;
 import appeng.api.storage.ICellContainer;
 import appeng.api.util.IOrientable;
+import net.minecraft.item.Item;
+
+import javax.annotation.Nullable;
 
 
 public interface IChestOrDrive extends ICellContainer, IGridHost, IOrientable
@@ -63,4 +66,11 @@ public interface IChestOrDrive extends ICellContainer, IGridHost, IOrientable
 	 * @return is the cell currently blinking to show activity.
 	 */
 	boolean isCellBlinking( int slot );
+
+	/**
+	 * Returns the item of the cell in the given slot or null.
+	 */
+	@Nullable
+	Item getCellItem(int slot );
+
 }

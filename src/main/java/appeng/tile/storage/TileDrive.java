@@ -27,18 +27,18 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
-import appeng.block.AEBaseTileBlock;
+import appeng.block.storage.DriveSlotCellType;
 import appeng.block.storage.DriveSlotsState;
 import appeng.client.render.model.DriveModelData;
 import appeng.container.implementations.ContainerDrive;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.data.ModelDataMap;
-import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
@@ -70,8 +70,10 @@ import appeng.tile.inventory.AppEngCellInventory;
 import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.IAEItemFilter;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 
 public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPriorityHost
@@ -89,6 +91,8 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	private Map<IStorageChannel<? extends IAEStack<?>>, List<IMEInventoryHandler>> inventoryHandlers;
 	private int priority = 0;
 	private boolean wasActive = false;
+	// This is only used on the client
+	private final Item[] cellItems = new Item[10];
 
 	/**
 	 * The state of all cells inside a drive as bitset, using the following format.
@@ -123,28 +127,100 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 		{
 			newState |= BIT_POWER_MASK;
 		}
+		for( int x = 0; x < this.getCellCount(); x++ ) {
+			newState |= (this.getCellStatus(x) << (3 * x));
+		}
+		data.writeInt( newState );
 
-		for( int x = 0; x < this.getCellCount(); x++ )
-		{
-			newState |= ( this.getCellStatus( x ) << ( 3 * x ) );
+		writeCellItemIds(data);
+	}
+
+	private void writeCellItemIds(PacketBuffer data) {
+		List<ResourceLocation> cellItemIds = new ArrayList<>(getCellCount());
+		byte[] bm = new byte[getCellCount()];
+		for( int x = 0; x < this.getCellCount(); x++ ) {
+			Item item = getCellItem(x);
+			if (item != null && item.getRegistryName() != null) {
+				ResourceLocation itemId = item.getRegistryName();
+				int idx = cellItemIds.indexOf(itemId);
+				if (idx == -1) {
+					cellItemIds.add(itemId);
+					bm[x] = (byte) cellItemIds.size(); // We use 1-based in bm[]
+				} else {
+					bm[x] = (byte)(1 + idx); // 1-based indexing!!
+				}
+			}
 		}
 
-		data.writeInt( newState );
+		// Write out the list of unique cell item ids
+		data.writeByte(cellItemIds.size());
+		for (ResourceLocation itemId : cellItemIds) {
+			data.writeResourceLocation(itemId);
+		}
+		// Then the lookup table for each slot
+		for (int i = 0; i < getCellCount(); i++) {
+			data.writeByte(bm[i]);
+		}
 	}
 
 	@Override
 	protected boolean readFromStream( final PacketBuffer data ) throws IOException
 	{
-		final boolean c = super.readFromStream( data );
+		boolean c = super.readFromStream( data );
 		final int oldState = this.state;
 		this.state = data.readInt();
+
+		c |= this.readCellItemIDs(data);
+
 		return ( this.state & BIT_STATE_MASK ) != ( oldState & BIT_STATE_MASK ) || c;
+	}
+
+	private boolean readCellItemIDs(final PacketBuffer data ) {
+		int uniqueStrCount = data.readByte();
+		String[] uniqueStrs = new String[uniqueStrCount];
+		for (int i = 0; i < uniqueStrCount; i++) {
+			uniqueStrs[i] = data.readString();
+		}
+
+		boolean changed = false;
+		for (int i = 0; i < getCellCount(); i++) {
+			byte idx = data.readByte();
+
+			// an index of 0 indicates the slot is empty
+			Item item = null;
+			if (idx > 0) {
+				--idx;
+				String itemId = uniqueStrs[idx];
+				item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemId));
+			}
+			if (cellItems[i] != item) {
+				changed = true;
+				cellItems[i] = item;
+			}
+		}
+
+		return changed;
 	}
 
 	@Override
 	public int getCellCount()
 	{
 		return 10;
+	}
+	
+	@Nullable
+	@Override
+	public Item getCellItem(int slot) {
+		// Client-side we'll need to actually use the synced state
+		if (world == null || world.isRemote) {
+			return cellItems[slot];
+		}
+
+		ItemStack stackInSlot = inv.getStackInSlot(slot);
+		if (!stackInSlot.isEmpty()) {
+			return stackInSlot.getItem();
+		}
+		return null;
 	}
 
 	@Override
@@ -427,3 +503,4 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 		return ContainerDrive.TYPE;
 	}
 }
+

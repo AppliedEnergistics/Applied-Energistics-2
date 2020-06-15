@@ -20,6 +20,9 @@ package appeng.block.storage;
 
 
 import appeng.api.implementations.tiles.IChestOrDrive;
+import com.google.common.base.Preconditions;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 
 /**
@@ -28,25 +31,37 @@ import appeng.api.implementations.tiles.IChestOrDrive;
 public class DriveSlotsState
 {
 
-	private final DriveSlotState[] slots;
+	private final Item[] cells;
 
-	private DriveSlotsState( DriveSlotState[] slots )
-	{
-		this.slots = slots;
+	private final DriveSlotState[] states;
+
+	public DriveSlotsState(Item[] cells, DriveSlotState[] states) {
+		Preconditions.checkArgument(cells.length == states.length);
+		this.cells = cells;
+		this.states = states;
 	}
 
-	public DriveSlotState getState( int index )
+	public DriveSlotState getState(int index )
 	{
-		if( index >= this.slots.length )
+		if( index >= this.states.length )
 		{
 			return DriveSlotState.EMPTY;
 		}
-		return this.slots[index];
+		return this.states[index];
+	}
+
+	public Item getCell(int index )
+	{
+		if( index >= this.cells.length )
+		{
+			return null;
+		}
+		return this.cells[index];
 	}
 
 	public int getSlotCount()
 	{
-		return this.slots.length;
+		return this.cells.length;
 	}
 
 	/**
@@ -54,35 +69,39 @@ public class DriveSlotsState
 	 */
 	public static DriveSlotsState fromChestOrDrive( IChestOrDrive chestOrDrive )
 	{
-		DriveSlotState[] slots = new DriveSlotState[chestOrDrive.getCellCount()];
+		DriveSlotState[] states = new DriveSlotState[chestOrDrive.getCellCount()];
+		Item[] cells = new Item[chestOrDrive.getCellCount()];
 		for( int i = 0; i < chestOrDrive.getCellCount(); i++ )
 		{
+			cells[i] = chestOrDrive.getCellItem(i);
+
 			if( !chestOrDrive.isPowered() )
 			{
 				if( chestOrDrive.getCellStatus( i ) != 0 )
 				{
-					slots[i] = DriveSlotState.OFFLINE;
+					states[i] = DriveSlotState.OFFLINE;
 				}
 				else
 				{
-					slots[i] = DriveSlotState.EMPTY;
+					states[i] = DriveSlotState.EMPTY;
 				}
 			}
 			else
 			{
-				slots[i] = DriveSlotState.fromCellStatus( chestOrDrive.getCellStatus( i ) );
+				states[i] = DriveSlotState.fromCellStatus( chestOrDrive.getCellStatus( i ) );
 			}
 		}
-		return new DriveSlotsState( slots );
+		return new DriveSlotsState( cells, states );
 	}
 
 	public static DriveSlotsState createEmpty( int slotCount )
 	{
-		DriveSlotState[] slots = new DriveSlotState[slotCount];
+		DriveSlotState[] states = new DriveSlotState[slotCount];
+		Item[] cells = new Item[slotCount];
 		for( int i = 0; i < slotCount; i++ )
 		{
-			slots[i] = DriveSlotState.EMPTY;
+			states[i] = DriveSlotState.EMPTY;
 		}
-		return new DriveSlotsState( slots );
+		return new DriveSlotsState( cells, states );
 	}
 }

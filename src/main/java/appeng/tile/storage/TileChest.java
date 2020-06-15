@@ -30,6 +30,7 @@ import appeng.container.implementations.ContainerMEMonitorable;
 import appeng.fluids.container.ContainerFluidTerminal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -288,6 +289,16 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 		}
 
 		return 0;
+	}
+
+	@Nullable
+	@Override
+	public Item getCellItem(int slot) {
+		if (slot != 0) {
+			return null;
+		}
+		ItemStack cell = getCell();
+		return cell.isEmpty() ? null : cell.getItem();
 	}
 
 	@Override

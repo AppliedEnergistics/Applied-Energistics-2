@@ -39,7 +39,6 @@ import appeng.block.spatial.BlockSpatialIOPort;
 import appeng.block.spatial.BlockSpatialPylon;
 import appeng.block.storage.*;
 import appeng.bootstrap.*;
-import appeng.bootstrap.components.IEntityRegistrationComponent;
 import appeng.bootstrap.components.IInitComponent;
 import appeng.bootstrap.definitions.TileEntityDefinition;
 import appeng.client.render.crafting.CraftingCubeRendering;
@@ -48,16 +47,15 @@ import appeng.client.render.crafting.MonitorBakedModel;
 import appeng.client.render.model.AutoRotatingBakedModel;
 import appeng.client.render.spatial.SpatialPylonRendering;
 import appeng.client.render.tesr.CrankTESR;
+import appeng.client.render.tesr.DriveLedTileEntityRenderer;
 import appeng.client.render.tesr.SkyChestTESR;
 import appeng.core.AppEng;
-import appeng.core.features.registries.PartModels;
 import appeng.debug.*;
 import appeng.decorative.AEDecorativeBlock;
 import appeng.decorative.solid.*;
 import appeng.entity.EntityTinyTNTPrimed;
 import appeng.fluids.block.BlockFluidInterface;
 import appeng.fluids.tile.TileFluidInterface;
-import appeng.helpers.AEGlassMaterial;
 import appeng.hooks.DispenserBehaviorTinyTNT;
 import appeng.tile.crafting.TileCraftingMonitorTile;
 import appeng.tile.crafting.TileCraftingStorageTile;
@@ -78,7 +76,6 @@ import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -365,7 +362,15 @@ public final class ApiBlocks implements IBlocks
 				.build();
 		this.drive = registry.block( "drive", BlockDrive::new )
 				.features( AEFeature.STORAGE_CELLS, AEFeature.ME_DRIVE )
-				.tileEntity( registry.tileEntity("drive", TileDrive.class, TileDrive::new).build() )
+				.tileEntity( registry.tileEntity("drive", TileDrive.class, TileDrive::new)
+						.rendering(new TileEntityRenderingCustomizer<TileDrive>() {
+							@Override
+							@OnlyIn(Dist.CLIENT)
+							public void customize(TileEntityRendering<TileDrive> rendering) {
+								rendering.tileEntityRenderer(DriveLedTileEntityRenderer::new);
+							}
+						})
+						.build() )
 				.rendering( new DriveRendering() )
 				.build();
 		this.chest = registry.block( "chest", BlockChest::new )

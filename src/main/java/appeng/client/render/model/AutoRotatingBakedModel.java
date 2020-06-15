@@ -74,6 +74,11 @@ public class AutoRotatingBakedModel implements IBakedModel
 	private List<BakedQuad> getRotatedModel(BlockState state, Direction side, Random rand, AEModelData modelData)
 	{
 		FacingToRotation f2r = FacingToRotation.get( modelData.getForward(), modelData.getUp() );
+
+		if (f2r.isRedundant()) {
+			return AutoRotatingBakedModel.this.parent.getQuads( state, side, rand, modelData );
+		}
+
 		List<BakedQuad> original = AutoRotatingBakedModel.this.parent.getQuads( state, f2r.resultingRotate( side ), rand, modelData );
 		List<BakedQuad> rotated = new ArrayList<>( original.size() );
 		for( BakedQuad quad : original )

@@ -72,7 +72,6 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 
 	public AbstractStorageCell(Properties properties, final MaterialType whichCell, final int kilobytes ) {
 		super(properties);
-		// FIXME this.setMaxStackSize( 1 ); ---- see point of registration
 		this.totalBytes = kilobytes * 1024;
 		this.component = whichCell;
 	}
@@ -244,4 +243,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 	{
 		return AEConfig.instance().isFeatureEnabled( AEFeature.ENABLE_DISASSEMBLY_CRAFTING );
 	}
+
+
+
 }

@@ -19,14 +19,17 @@
 package appeng.client.render.model;
 
 
-import appeng.block.storage.DriveSlotState;
+import appeng.api.definitions.IItems;
+import appeng.block.storage.DriveSlotCellType;
 import appeng.block.storage.DriveSlotsState;
 import appeng.client.render.DelegateBakedModel;
-import appeng.tile.storage.TileDrive;
+import appeng.core.Api;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
@@ -41,13 +44,11 @@ import java.util.Random;
 
 public class DriveBakedModel extends DelegateBakedModel
 {
-	private final IBakedModel bakedBase;
-	private final Map<DriveSlotState, IBakedModel> bakedCells;
+	private final Map<DriveSlotCellType, IBakedModel> bakedCells;
 
-	public DriveBakedModel( IBakedModel bakedBase, Map<DriveSlotState, IBakedModel> bakedCells )
+	public DriveBakedModel( IBakedModel bakedBase, Map<DriveSlotCellType, IBakedModel> bakedCells )
 	{
 		super(bakedBase);
-		this.bakedBase = bakedBase;
 		this.bakedCells = bakedCells;
 	}
 
@@ -55,7 +56,7 @@ public class DriveBakedModel extends DelegateBakedModel
 	@Override
 	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData) {
 
-		List<BakedQuad> result = new ArrayList<>(this.bakedBase.getQuads(state, side, rand, extraData));
+		List<BakedQuad> result = new ArrayList<>(super.getQuads(state, side, rand, extraData));
 
 		if (!(extraData instanceof DriveModelData)) {
 			return result;
@@ -70,34 +71,61 @@ public class DriveBakedModel extends DelegateBakedModel
 			{
 				for( int col = 0; col < 2; col++ )
 				{
-					DriveSlotState slotState = slotsState.getState( row * 2 + col );
-
-					IBakedModel bakedCell = this.bakedCells.get( slotState );
-
 					Matrix4f transform = new Matrix4f();
-					transform.setIdentity();
 
 					// Position this drive model copy at the correct slot. The transform is based on the
 					// cell-model being in slot 0,0 at the top left of the drive.
 					float xOffset = -col * 7 / 16.0f;
 					float yOffset = -row * 3 / 16.0f;
-
 					transform.setTranslation( xOffset, yOffset, 0 );
 
-					MatrixVertexTransformer transformer = new MatrixVertexTransformer( transform );
-					for( BakedQuad bakedQuad : bakedCell.getQuads( state, null, rand, extraData ) )
-					{
-						BakedQuadBuilder builder = new BakedQuadBuilder();
-						transformer.setParent( builder );
-						transformer.setVertexFormat( builder.getVertexFormat() );
-						bakedQuad.pipe( transformer );
-						result.add( builder.build() );
-					}
+					int slot = row * 2 + col;
+
+					// Add the drive chassis
+					Item cell = slotsState.getCell(slot);
+					IBakedModel cellChassisModel = getCellChassisModel(cell);
+					addModel(state, rand, extraData, result, cellChassisModel, transform);
 				}
 			}
 		}
 
 		return result;
+	}
+
+	@Override
+	public boolean isAmbientOcclusion() {
+		// We have faces inside the chassis that are facing east, but should not receive
+		// ambient occlusion from the east-side, but sadly this cannot be fine-tuned on a
+		// face-by-face basis.
+		return false;
+	}
+
+	// Determine which drive chassis to show based on the used cell
+	private IBakedModel getCellChassisModel(Item cell) {
+		IItems items = Api.INSTANCE.definitions().items();
+		if (cell == null) {
+			return bakedCells.get(DriveSlotCellType.EMPTY);
+		} else if (items.fluidCell1k().item() == cell
+				|| items.fluidCell4k().item() == cell
+				|| items.fluidCell16k().item() == cell
+				|| items.fluidCell64k().item() == cell) {
+			return bakedCells.get(DriveSlotCellType.FLUID);
+		} else {
+			// Fall back to an item model
+			return bakedCells.get(DriveSlotCellType.ITEM);
+		}
+	}
+
+	private static void addModel(@Nullable BlockState state, @Nonnull Random rand, @Nonnull IModelData extraData, List<BakedQuad> result, IBakedModel bakedCell, Matrix4f transform) {
+		MatrixVertexTransformer transformer = new MatrixVertexTransformer( transform );
+		for( BakedQuad bakedQuad : bakedCell.getQuads( state, null, rand, extraData ) )
+		{
+			BakedQuadBuilder builder = new BakedQuadBuilder();
+			transformer.setParent( builder );
+			transformer.setVertexFormat( builder.getVertexFormat() );
+			bakedQuad.pipe( transformer );
+			result.add( builder.build() );
+		}
 	}
 
 }

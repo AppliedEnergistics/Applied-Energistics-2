@@ -142,8 +142,7 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock<TileQuartzGrow
 			ry += dz * forward.getYOffset();
 			rz += dz * forward.getZOffset();
 
-			final LightningFX fx = new LightningFX( w, rx, ry, rz, 0.0D, 0.0D, 0.0D );
-			Minecraft.getInstance().particles.addEffect( fx );
+			Minecraft.getInstance().particles.addParticle(LightningFX.TYPE, rx, ry, rz, 0.0D, 0.0D, 0.0D);
 		}
 	}
 

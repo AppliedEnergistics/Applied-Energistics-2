@@ -19,6 +19,7 @@
 package appeng.client.render.model;
 
 
+import appeng.block.storage.DriveSlotCellType;
 import appeng.block.storage.DriveSlotState;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -36,14 +37,13 @@ import java.util.function.Function;
 public class DriveModel implements IModelGeometry<DriveModel>
 {
 
-	private static final ResourceLocation MODEL_BASE = new ResourceLocation( "appliedenergistics2:block/drive_base" );
+	private static final ResourceLocation MODEL_BASE = new ResourceLocation( "appliedenergistics2:block/drive/drive_base" );
 
-	private static final Map<DriveSlotState, ResourceLocation> MODELS_CELLS = ImmutableMap.of(
-			DriveSlotState.EMPTY, new ResourceLocation( "appliedenergistics2:block/drive_cell_empty" ),
-			DriveSlotState.OFFLINE, new ResourceLocation( "appliedenergistics2:block/drive_cell_off" ),
-			DriveSlotState.ONLINE, new ResourceLocation( "appliedenergistics2:block/drive_cell_on" ),
-			DriveSlotState.TYPES_FULL, new ResourceLocation( "appliedenergistics2:block/drive_cell_types_full" ),
-			DriveSlotState.FULL, new ResourceLocation( "appliedenergistics2:block/drive_cell_full" ) );
+	private static final Map<DriveSlotCellType, ResourceLocation> MODELS_CELLS = ImmutableMap.of(
+			DriveSlotCellType.EMPTY,  new ResourceLocation( "appliedenergistics2:block/drive/drive_cell_empty" ),
+			DriveSlotCellType.ITEM,  new ResourceLocation( "appliedenergistics2:block/drive/drive_cell_items" ),
+			DriveSlotCellType.FLUID,  new ResourceLocation( "appliedenergistics2:block/drive/drive_cell_fluids" )
+	);
 
 	public static final Set<ResourceLocation> DEPENDENCIES = ImmutableSet.<ResourceLocation>builder()
 			.addAll(MODELS_CELLS.values())
@@ -52,13 +52,13 @@ public class DriveModel implements IModelGeometry<DriveModel>
 
 	@Override
 	public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {
-		EnumMap<DriveSlotState, IBakedModel> cellModels = new EnumMap<>( DriveSlotState.class );
+		EnumMap<DriveSlotCellType, IBakedModel> cellModels = new EnumMap<>( DriveSlotCellType.class );
 
 		// Load the base model and the model for each cell state.
-		for( DriveSlotState slotState : MODELS_CELLS.keySet() )
+		for( DriveSlotCellType cellType : MODELS_CELLS.keySet() )
 		{
-			IBakedModel cellModel = bakery.getBakedModel( MODELS_CELLS.get( slotState ), modelTransform, spriteGetter );
-			cellModels.put( slotState, cellModel );
+			IBakedModel cellModel = bakery.getBakedModel( MODELS_CELLS.get( cellType ), modelTransform, spriteGetter );
+			cellModels.put( cellType, cellModel );
 		}
 
 		IBakedModel baseModel = bakery.getBakedModel( MODEL_BASE, modelTransform, spriteGetter );

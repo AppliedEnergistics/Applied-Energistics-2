@@ -56,7 +56,7 @@ public class LightningFX extends SpriteTexturedParticle
 	private final double[] verticesWithUV = new double[3];
 	private boolean hasData = false;
 
-	public LightningFX( final World w, final double x, final double y, final double z, final double r, final double g, final double b )
+	private LightningFX( final World w, final double x, final double y, final double z, final double r, final double g, final double b )
 	{
 		this( w, x, y, z, r, g, b, 6 );
 		this.regen();
@@ -117,7 +117,6 @@ public class LightningFX extends SpriteTexturedParticle
 
 	@Override
 	public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
-
 		Vec3d vec3d = renderInfo.getProjectedView();
 		float centerX = (float)(MathHelper.lerp(partialTicks, this.prevPosX, this.posX) - vec3d.getX());
 		float centerY = (float)(MathHelper.lerp(partialTicks, this.prevPosY, this.posY) - vec3d.getY());

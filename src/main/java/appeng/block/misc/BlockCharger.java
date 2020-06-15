@@ -22,6 +22,7 @@ package appeng.block.misc;
 import appeng.api.AEApi;
 import appeng.api.util.AEAxisAlignedBB;
 import appeng.block.AEBaseTileBlock;
+import appeng.client.render.effects.ChargedOreFX;
 import appeng.client.render.effects.LightningFX;
 import appeng.client.render.renderable.ItemRenderable;
 import appeng.client.render.tesr.ModularTESR;
@@ -121,9 +122,8 @@ public class BlockCharger extends AEBaseTileBlock<TileCharger>
 				{
 					if( AppEng.proxy.shouldAddParticles( r ) )
 					{
-						final LightningFX fx = new LightningFX( w, xOff + 0.5 + pos.getX(), yOff + 0.5 + pos.getY(), zOff + 0.5 + pos
-								.getZ(), 0.0, 0.0, 0.0 );
-						Minecraft.getInstance().particles.addEffect( fx );
+						Minecraft.getInstance().particles.addParticle(LightningFX.TYPE, xOff + 0.5 + pos.getX(), yOff + 0.5 + pos.getY(), zOff + 0.5 + pos
+								.getZ(), 0.0, 0.0, 0.0);
 					}
 				}
 			}

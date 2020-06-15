@@ -1,0 +1,49 @@
+{
+    "textures": {
+        "front": "appliedenergistics2:block/drive/drive_cell_states"
+    },
+    "elements": [
+        {
+            "name": "Cell Backdrop",
+            "from": [
+                8.5,
+                13.0,
+                0.5
+            ],
+            "to": [
+                14.5,
+                15.0,
+                2
+            ],
+            "faces": {
+                "north": {
+                    "texture": "#front",
+                    "uv": [
+                        0,
+                        8,
+                        5,
+                        10
+                    ]
+                },
+                "up": {
+                    "texture": "#front",
+                    "uv": [
+                        0,
+                        8,
+                        5,
+                        10
+                    ]
+                },
+                "down": {
+                    "texture": "#front",
+                    "uv": [
+                        0,
+                        8,
+                        5,
+                        10
+                    ]
+                }
+            }
+        }
+    ]
+}
