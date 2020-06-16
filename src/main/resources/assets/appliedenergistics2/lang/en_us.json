@@ -394,7 +394,7 @@
   "gui.tooltips.appliedenergistics2.StashDesc": "Return items on the crafting grid to network storage.",
   "gui.tooltips.appliedenergistics2.StoredCraftable": "Stored / Craftable",
   "gui.tooltips.appliedenergistics2.StoredItems": "Stored Items",
-  "gui.tooltips.appliedenergistics2.Substitutions": "Ore-Dict Substitutions",
+  "gui.tooltips.appliedenergistics2.Substitutions": "Item Substitutions",
   "gui.tooltips.appliedenergistics2.SubstitutionsDescDisabled": "Prevent substitutions of input components.",
   "gui.tooltips.appliedenergistics2.SubstitutionsDescEnabled": "Allow substitutions of input components.",
   "gui.tooltips.appliedenergistics2.SubstitutionsOff": "Substitutions Disabled",
