@@ -31,7 +31,7 @@ import appeng.capabilities.Capabilities;
 import appeng.client.ClientHelper;
 import appeng.client.render.DummyFluidItemModel;
 import appeng.client.render.SimpleModelLoader;
-import appeng.client.render.cablebus.CableBusModel;
+import appeng.client.render.cablebus.CableBusModelLoader;
 import appeng.client.render.cablebus.P2PTunnelFrequencyModel;
 import appeng.client.render.crafting.CraftingCubeModelLoader;
 import appeng.client.render.model.*;
@@ -208,7 +208,7 @@ public final class AppEng
 		ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "part_plane"), PlaneModelLoader.INSTANCE);
 		ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "crafting_cube"), CraftingCubeModelLoader.INSTANCE);
 		ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "uvlightmap"), UVLModelLoader.INSTANCE);
-		addBuiltInModel("cable_bus", () -> new CableBusModel((PartModels) Api.INSTANCE.registries().partModels()));
+		ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "cable_bus"), new CableBusModelLoader((PartModels) Api.INSTANCE.registries().partModels()));
 
 	}
 

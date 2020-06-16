@@ -363,4 +363,9 @@ public class CableBusBakedModel implements IBakedModel
 	{
 		return ItemOverrideList.EMPTY;
 	}
+
+	public static void clearCache() {
+		CABLE_MODEL_CACHE.clear();
+	}
+
 }
