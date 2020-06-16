@@ -64,7 +64,7 @@ import appeng.client.me.SlotME;
 import appeng.client.render.StackSizeRenderer;
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.*;
-import appeng.container.slot.AppEngSlot.hasCalculatedValidness;
+import appeng.container.slot.AppEngSlot.CalculatedValidity;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
@@ -701,7 +701,8 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
                 }
 
                 if (!is.isEmpty() && s instanceof AppEngSlot) {
-                    if (((AppEngSlot) s).getIsValid() == hasCalculatedValidness.NotAvailable) {
+                    AppEngSlot aeSlot = (AppEngSlot) s;
+                    if (aeSlot.getIsValid() == CalculatedValidity.NotAvailable) {
                         boolean isValid = s.isItemValid(is) || s instanceof SlotOutput
                                 || s instanceof AppEngCraftingSlot || s instanceof SlotDisabled
                                 || s instanceof SlotInaccessible || s instanceof SlotFake
@@ -713,11 +714,10 @@ public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScre
                                 AELog.debug(err);
                             }
                         }
-                        ((AppEngSlot) s)
-                                .setIsValid(isValid ? hasCalculatedValidness.Valid : hasCalculatedValidness.Invalid);
+                        aeSlot.setIsValid(isValid ? CalculatedValidity.Valid : CalculatedValidity.Invalid);
                     }
 
-                    if (((AppEngSlot) s).getIsValid() == hasCalculatedValidness.Invalid) {
+                    if (aeSlot.getIsValid() == CalculatedValidity.Invalid) {
                         setBlitOffset(100);
                         this.itemRenderer.zLevel = 100.0F;
 

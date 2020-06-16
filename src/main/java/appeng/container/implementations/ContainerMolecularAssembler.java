@@ -21,6 +21,7 @@ package appeng.container.implementations;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
@@ -33,6 +34,7 @@ import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.container.interfaces.IProgressProvider;
+import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.SlotMolecularAssemblerPattern;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
@@ -59,6 +61,8 @@ public class ContainerMolecularAssembler extends ContainerUpgradeable implements
     private final TileMolecularAssembler tma;
     @GuiSync(4)
     public int craftProgress = 0;
+
+    private Slot encodedPatternSlot;
 
     public ContainerMolecularAssembler(int id, final PlayerInventory ip, final TileMolecularAssembler te) {
         super(TYPE, id, ip, te);
@@ -108,8 +112,9 @@ public class ContainerMolecularAssembler extends ContainerUpgradeable implements
         offX = 126;
         offY = 16;
 
-        this.addSlot(new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.ENCODED_CRAFTING_PATTERN, mac, 10,
-                offX, offY, this.getPlayerInventory()));
+        encodedPatternSlot = this
+                .addSlot(new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.ENCODED_CRAFTING_PATTERN, mac, 10,
+                        offX, offY, this.getPlayerInventory()));
         this.addSlot(new SlotOutput(mac, 9, offX, offY + 32, -1));
 
         offX = 122;
@@ -161,4 +166,19 @@ public class ContainerMolecularAssembler extends ContainerUpgradeable implements
     public int getMaxProgress() {
         return MAX_CRAFT_PROGRESS;
     }
+
+    @Override
+    public void onSlotChange(Slot s) {
+
+        // If the pattern changes, the crafting grid slots lose validity
+        if (s == encodedPatternSlot) {
+            for (Slot otherSlot : inventorySlots) {
+                if (otherSlot != s && otherSlot instanceof AppEngSlot) {
+                    ((AppEngSlot) otherSlot).setIsValid(AppEngSlot.CalculatedValidity.NotAvailable);
+                }
+            }
+        }
+
+    }
+
 }

@@ -43,7 +43,7 @@ public class AppEngSlot extends Slot {
     private boolean isPlayerSide = false;
     private AEBaseContainer myContainer = null;
     private int IIcon = -1;
-    private hasCalculatedValidness isValid;
+    private CalculatedValidity isValid;
     private boolean isDisplay = false;
 
     public AppEngSlot(final IItemHandler inv, final int idx, final int x, final int y) {
@@ -53,7 +53,7 @@ public class AppEngSlot extends Slot {
 
         this.defX = x;
         this.defY = y;
-        this.setIsValid(hasCalculatedValidness.NotAvailable);
+        this.setIsValid(CalculatedValidity.NotAvailable);
     }
 
     public Slot setNotDraggable() {
@@ -105,10 +105,13 @@ public class AppEngSlot extends Slot {
     public void putStack(final ItemStack stack) {
         if (this.isSlotEnabled()) {
             ItemHandlerUtil.setStackInSlot(this.itemHandler, this.index, stack);
+            this.onSlotChanged();
+        }
+    }
 
-            if (this.getContainer() != null) {
-                this.getContainer().onSlotChange(this);
-            }
+    private void notifyContainerSlotChanged() {
+        if (this.getContainer() != null) {
+            this.getContainer().onSlotChange(this);
         }
     }
 
@@ -118,7 +121,9 @@ public class AppEngSlot extends Slot {
 
     @Override
     public void onSlotChanged() {
-        this.setIsValid(hasCalculatedValidness.NotAvailable);
+        super.onSlotChanged();
+        this.setIsValid(CalculatedValidity.NotAvailable);
+        notifyContainerSlotChanged();
     }
 
     @Override
@@ -220,11 +225,11 @@ public class AppEngSlot extends Slot {
         this.isPlayerSide = isPlayerSide;
     }
 
-    public hasCalculatedValidness getIsValid() {
+    public CalculatedValidity getIsValid() {
         return this.isValid;
     }
 
-    public void setIsValid(final hasCalculatedValidness isValid) {
+    public void setIsValid(final CalculatedValidity isValid) {
         this.isValid = isValid;
     }
 
@@ -236,7 +241,7 @@ public class AppEngSlot extends Slot {
         this.myContainer = myContainer;
     }
 
-    public enum hasCalculatedValidness {
+    public enum CalculatedValidity {
         NotAvailable, Valid, Invalid
     }
 }
