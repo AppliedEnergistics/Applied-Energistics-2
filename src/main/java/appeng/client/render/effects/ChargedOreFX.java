@@ -18,8 +18,6 @@
 
 package appeng.client.render.effects;
 
-
-import appeng.core.AppEng;
 import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
@@ -30,44 +28,45 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import appeng.core.AppEng;
+
 @OnlyIn(Dist.CLIENT)
-public class ChargedOreFX extends RedstoneParticle
-{
-	public static final BasicParticleType TYPE = new BasicParticleType(false);
+public class ChargedOreFX extends RedstoneParticle {
+    public static final BasicParticleType TYPE = new BasicParticleType(false);
 
-	static {
-		TYPE.setRegistryName(AppEng.MOD_ID, "charged_ore_fx");
-	}
-
-	private static final RedstoneParticleData PARTICLE_DATA = new RedstoneParticleData(0.21f, 0.61f, 1.0f, 1.0f);
-
-    private ChargedOreFX(World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, IAnimatedSprite spriteSet) {
-    	super(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, PARTICLE_DATA, spriteSet);
+    static {
+        TYPE.setRegistryName(AppEng.MOD_ID, "charged_ore_fx");
     }
 
-	@Override
-	public int getBrightnessForRender( final float par1 )
-	{
-		int j1 = super.getBrightnessForRender( par1 );
-		j1 = Math.max( j1 >> 20, j1 >> 4 );
-		j1 += 3;
-		if( j1 > 15 )
-		{
-			j1 = 15;
-		}
-		return j1 << 20 | j1 << 4;
-	}
+    private static final RedstoneParticleData PARTICLE_DATA = new RedstoneParticleData(0.21f, 0.61f, 1.0f, 1.0f);
 
-	@OnlyIn(Dist.CLIENT)
-	public static class Factory implements IParticleFactory<BasicParticleType> {
-		private final IAnimatedSprite spriteSet;
+    private ChargedOreFX(World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed,
+            IAnimatedSprite spriteSet) {
+        super(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, PARTICLE_DATA, spriteSet);
+    }
 
-		public Factory(IAnimatedSprite p_i50477_1_) {
-			this.spriteSet = p_i50477_1_;
-		}
+    @Override
+    public int getBrightnessForRender(final float par1) {
+        int j1 = super.getBrightnessForRender(par1);
+        j1 = Math.max(j1 >> 20, j1 >> 4);
+        j1 += 3;
+        if (j1 > 15) {
+            j1 = 15;
+        }
+        return j1 << 20 | j1 << 4;
+    }
 
-		public Particle makeParticle(BasicParticleType typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-			return new ChargedOreFX(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet);
-		}
-	}
+    @OnlyIn(Dist.CLIENT)
+    public static class Factory implements IParticleFactory<BasicParticleType> {
+        private final IAnimatedSprite spriteSet;
+
+        public Factory(IAnimatedSprite p_i50477_1_) {
+            this.spriteSet = p_i50477_1_;
+        }
+
+        public Particle makeParticle(BasicParticleType typeIn, World worldIn, double x, double y, double z,
+                double xSpeed, double ySpeed, double zSpeed) {
+            return new ChargedOreFX(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet);
+        }
+    }
 }

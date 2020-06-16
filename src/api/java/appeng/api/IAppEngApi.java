@@ -23,7 +23,6 @@
 
 package appeng.api;
 
-
 import appeng.api.definitions.IDefinitions;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.networking.IGridHelper;
@@ -32,38 +31,36 @@ import appeng.api.parts.IPartHelper;
 import appeng.api.storage.IStorageHelper;
 import appeng.api.util.IClientHelper;
 
-
 @AEInjectable
-public interface IAppEngApi
-{
-	/**
-	 * @return Registry Container for the numerous registries in AE2.
-	 */
-	IRegistryContainer registries();
+public interface IAppEngApi {
+    /**
+     * @return Registry Container for the numerous registries in AE2.
+     */
+    IRegistryContainer registries();
 
-	/**
-	 * @return A helper for working with storage data types.
-	 */
-	IStorageHelper storage();
+    /**
+     * @return A helper for working with storage data types.
+     */
+    IStorageHelper storage();
 
-	/**
-	 * @return A helper to create {@link IGridNode} and other grid related objects.
-	 */
-	IGridHelper grid();
+    /**
+     * @return A helper to create {@link IGridNode} and other grid related objects.
+     */
+    IGridHelper grid();
 
-	/**
-	 * @return A helper for working with grids, and buses.
-	 */
-	IPartHelper partHelper();
+    /**
+     * @return A helper for working with grids, and buses.
+     */
+    IPartHelper partHelper();
 
-	/**
-	 * @return An accessible list of all AE definitions
-	 */
-	IDefinitions definitions();
+    /**
+     * @return An accessible list of all AE definitions
+     */
+    IDefinitions definitions();
 
-	/**
-	 * @return Utility methods primarily useful for client side stuff
-	 */
-	IClientHelper client();
+    /**
+     * @return Utility methods primarily useful for client side stuff
+     */
+    IClientHelper client();
 
 }

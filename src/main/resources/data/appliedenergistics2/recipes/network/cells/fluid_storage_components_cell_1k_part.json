@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:1k_fluid_cell_component"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aba",
-    "bcb",
-    "aba"
-  ],
+  "pattern": ["aba", "bcb", "aba"],
   "key": {
     "a": {
       "item": "minecraft:lapis_lazuli"

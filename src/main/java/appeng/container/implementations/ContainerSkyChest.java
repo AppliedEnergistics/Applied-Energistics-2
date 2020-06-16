@@ -18,60 +18,52 @@
 
 package appeng.container.implementations;
 
-
-import appeng.container.ContainerLocator;
-import appeng.container.implementations.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-
-import appeng.container.AEBaseContainer;
-import appeng.container.slot.SlotNormal;
-import appeng.tile.storage.TileSkyChest;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.network.PacketBuffer;
 
+import appeng.container.AEBaseContainer;
+import appeng.container.ContainerLocator;
+import appeng.container.implementations.ContainerHelper;
+import appeng.container.slot.SlotNormal;
+import appeng.tile.storage.TileSkyChest;
 
-public class ContainerSkyChest extends AEBaseContainer
-{
+public class ContainerSkyChest extends AEBaseContainer {
 
-public static ContainerType<ContainerSkyChest> TYPE;
+    public static ContainerType<ContainerSkyChest> TYPE;
 
-	private static final ContainerHelper<ContainerSkyChest, TileSkyChest> helper
-			= new ContainerHelper<>(ContainerSkyChest::new, TileSkyChest.class);
+    private static final ContainerHelper<ContainerSkyChest, TileSkyChest> helper = new ContainerHelper<>(
+            ContainerSkyChest::new, TileSkyChest.class);
 
+    private final TileSkyChest chest;
 
-	private final TileSkyChest chest;
+    public ContainerSkyChest(int id, final PlayerInventory ip, final TileSkyChest chest) {
+        super(TYPE, id, ip, chest, null);
+        this.chest = chest;
 
-	public ContainerSkyChest(int id, final PlayerInventory ip, final TileSkyChest chest )
-	{
-		super( TYPE, id, ip, chest, null );
-		this.chest = chest;
+        for (int y = 0; y < 4; y++) {
+            for (int x = 0; x < 9; x++) {
+                this.addSlot(new SlotNormal(this.chest.getInternalInventory(), y * 9 + x, 8 + 18 * x, 24 + 18 * y));
+            }
+        }
 
-		for( int y = 0; y < 4; y++ )
-		{
-			for( int x = 0; x < 9; x++ )
-			{
-				this.addSlot( new SlotNormal( this.chest.getInternalInventory(), y * 9 + x, 8 + 18 * x, 24 + 18 * y ) );
-			}
-		}
+        this.chest.openInventory(ip.player);
 
-		this.chest.openInventory( ip.player );
+        this.bindPlayerInventory(ip, 0, 195 - /* height of player inventory */82);
+    }
 
-		this.bindPlayerInventory( ip, 0, 195 - /* height of player inventory */82 );
-	}
+    public static ContainerSkyChest fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+        return helper.fromNetwork(windowId, inv, buf);
+    }
 
-	public static ContainerSkyChest fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-		return helper.fromNetwork(windowId, inv, buf);
-	}
+    public static boolean open(PlayerEntity player, ContainerLocator locator) {
+        return helper.open(player, locator);
+    }
 
-	public static boolean open(PlayerEntity player, ContainerLocator locator) {
-		return helper.open(player, locator);
-	}
-
-	@Override
-	public void onContainerClosed( final PlayerEntity par1PlayerEntity )
-	{
-		super.onContainerClosed( par1PlayerEntity );
-		this.chest.closeInventory( par1PlayerEntity );
-	}
+    @Override
+    public void onContainerClosed(final PlayerEntity par1PlayerEntity) {
+        super.onContainerClosed(par1PlayerEntity);
+        this.chest.closeInventory(par1PlayerEntity);
+    }
 }

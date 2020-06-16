@@ -23,7 +23,6 @@
 
 package appeng.me.helpers;
 
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -40,182 +39,150 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
-
 /**
- * Common implementation of a simple class that monitors injection/extraction of a inventory to send events to a list of
- * listeners.
+ * Common implementation of a simple class that monitors injection/extraction of
+ * a inventory to send events to a list of listeners.
  *
  * @param <T>
  *
- * TODO: Needs to be redesigned to solve performance issues.
+ *            TODO: Needs to be redesigned to solve performance issues.
  */
-public class MEMonitorHandler<T extends IAEStack<T>> implements IMEMonitor<T>
-{
+public class MEMonitorHandler<T extends IAEStack<T>> implements IMEMonitor<T> {
 
-	private final IMEInventoryHandler<T> internalHandler;
-	private final IItemList<T> cachedList;
-	private final HashMap<IMEMonitorHandlerReceiver<T>, Object> listeners = new HashMap<>();
+    private final IMEInventoryHandler<T> internalHandler;
+    private final IItemList<T> cachedList;
+    private final HashMap<IMEMonitorHandlerReceiver<T>, Object> listeners = new HashMap<>();
 
-	protected boolean hasChanged = true;
+    protected boolean hasChanged = true;
 
-	public MEMonitorHandler( final IMEInventoryHandler<T> t )
-	{
-		this.internalHandler = t;
-		this.cachedList = t.getChannel().createList();
-	}
+    public MEMonitorHandler(final IMEInventoryHandler<T> t) {
+        this.internalHandler = t;
+        this.cachedList = t.getChannel().createList();
+    }
 
-	public MEMonitorHandler( final IMEInventoryHandler<T> t, final IStorageChannel<T> chan )
-	{
-		this.internalHandler = t;
-		this.cachedList = chan.createList();
-	}
+    public MEMonitorHandler(final IMEInventoryHandler<T> t, final IStorageChannel<T> chan) {
+        this.internalHandler = t;
+        this.cachedList = chan.createList();
+    }
 
-	@Override
-	public void addListener( final IMEMonitorHandlerReceiver<T> l, final Object verificationToken )
-	{
-		this.listeners.put( l, verificationToken );
-	}
+    @Override
+    public void addListener(final IMEMonitorHandlerReceiver<T> l, final Object verificationToken) {
+        this.listeners.put(l, verificationToken);
+    }
 
-	@Override
-	public void removeListener( final IMEMonitorHandlerReceiver<T> l )
-	{
-		this.listeners.remove( l );
-	}
+    @Override
+    public void removeListener(final IMEMonitorHandlerReceiver<T> l) {
+        this.listeners.remove(l);
+    }
 
-	@Override
-	public T injectItems( final T input, final Actionable mode, final IActionSource src )
-	{
-		if( mode == Actionable.SIMULATE )
-		{
-			return this.getHandler().injectItems( input, mode, src );
-		}
-		return this.monitorDifference( input.copy(), this.getHandler().injectItems( input, mode, src ), false, src );
-	}
+    @Override
+    public T injectItems(final T input, final Actionable mode, final IActionSource src) {
+        if (mode == Actionable.SIMULATE) {
+            return this.getHandler().injectItems(input, mode, src);
+        }
+        return this.monitorDifference(input.copy(), this.getHandler().injectItems(input, mode, src), false, src);
+    }
 
-	protected IMEInventoryHandler<T> getHandler()
-	{
-		return this.internalHandler;
-	}
+    protected IMEInventoryHandler<T> getHandler() {
+        return this.internalHandler;
+    }
 
-	private T monitorDifference( final T original, final T leftOvers, final boolean extraction, final IActionSource src )
-	{
-		final T diff = original.copy();
+    private T monitorDifference(final T original, final T leftOvers, final boolean extraction,
+            final IActionSource src) {
+        final T diff = original.copy();
 
-		if( extraction )
-		{
-			diff.setStackSize( leftOvers == null ? 0 : -leftOvers.getStackSize() );
-		}
-		else if( leftOvers != null )
-		{
-			diff.decStackSize( leftOvers.getStackSize() );
-		}
+        if (extraction) {
+            diff.setStackSize(leftOvers == null ? 0 : -leftOvers.getStackSize());
+        } else if (leftOvers != null) {
+            diff.decStackSize(leftOvers.getStackSize());
+        }
 
-		if( diff.getStackSize() != 0 )
-		{
-			this.postChangesToListeners( ImmutableList.of( diff ), src );
-		}
+        if (diff.getStackSize() != 0) {
+            this.postChangesToListeners(ImmutableList.of(diff), src);
+        }
 
-		return leftOvers;
-	}
+        return leftOvers;
+    }
 
-	protected void postChangesToListeners( final Iterable<T> changes, final IActionSource src )
-	{
-		this.notifyListenersOfChange( changes, src );
-	}
+    protected void postChangesToListeners(final Iterable<T> changes, final IActionSource src) {
+        this.notifyListenersOfChange(changes, src);
+    }
 
-	protected void notifyListenersOfChange( final Iterable<T> diff, final IActionSource src )
-	{
-		this.hasChanged = true;// need to update the cache.
-		final Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> i = this.getListeners();
-		while( i.hasNext() )
-		{
-			final Entry<IMEMonitorHandlerReceiver<T>, Object> o = i.next();
-			final IMEMonitorHandlerReceiver<T> receiver = o.getKey();
-			if( receiver.isValid( o.getValue() ) )
-			{
-				receiver.postChange( this, diff, src );
-			}
-			else
-			{
-				i.remove();
-			}
-		}
-	}
+    protected void notifyListenersOfChange(final Iterable<T> diff, final IActionSource src) {
+        this.hasChanged = true;// need to update the cache.
+        final Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> i = this.getListeners();
+        while (i.hasNext()) {
+            final Entry<IMEMonitorHandlerReceiver<T>, Object> o = i.next();
+            final IMEMonitorHandlerReceiver<T> receiver = o.getKey();
+            if (receiver.isValid(o.getValue())) {
+                receiver.postChange(this, diff, src);
+            } else {
+                i.remove();
+            }
+        }
+    }
 
-	protected Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> getListeners()
-	{
-		return this.listeners.entrySet().iterator();
-	}
+    protected Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> getListeners() {
+        return this.listeners.entrySet().iterator();
+    }
 
-	@Override
-	public T extractItems( final T request, final Actionable mode, final IActionSource src )
-	{
-		if( mode == Actionable.SIMULATE )
-		{
-			return this.getHandler().extractItems( request, mode, src );
-		}
-		return this.monitorDifference( request.copy(), this.getHandler().extractItems( request, mode, src ), true, src );
-	}
+    @Override
+    public T extractItems(final T request, final Actionable mode, final IActionSource src) {
+        if (mode == Actionable.SIMULATE) {
+            return this.getHandler().extractItems(request, mode, src);
+        }
+        return this.monitorDifference(request.copy(), this.getHandler().extractItems(request, mode, src), true, src);
+    }
 
-	@Override
-	public IStorageChannel<T> getChannel()
-	{
-		return this.getHandler().getChannel();
-	}
+    @Override
+    public IStorageChannel<T> getChannel() {
+        return this.getHandler().getChannel();
+    }
 
-	@Override
-	public AccessRestriction getAccess()
-	{
-		return this.getHandler().getAccess();
-	}
+    @Override
+    public AccessRestriction getAccess() {
+        return this.getHandler().getAccess();
+    }
 
-	@Override
-	public IItemList<T> getStorageList()
-	{
-		if( this.hasChanged )
-		{
-			this.hasChanged = false;
-			this.cachedList.resetStatus();
-			return this.getAvailableItems( this.cachedList );
-		}
+    @Override
+    public IItemList<T> getStorageList() {
+        if (this.hasChanged) {
+            this.hasChanged = false;
+            this.cachedList.resetStatus();
+            return this.getAvailableItems(this.cachedList);
+        }
 
-		return this.cachedList;
-	}
+        return this.cachedList;
+    }
 
-	@Override
-	public boolean isPrioritized( final T input )
-	{
-		return this.getHandler().isPrioritized( input );
-	}
+    @Override
+    public boolean isPrioritized(final T input) {
+        return this.getHandler().isPrioritized(input);
+    }
 
-	@Override
-	public boolean canAccept( final T input )
-	{
-		return this.getHandler().canAccept( input );
-	}
+    @Override
+    public boolean canAccept(final T input) {
+        return this.getHandler().canAccept(input);
+    }
 
-	@Override
-	public IItemList<T> getAvailableItems( final IItemList<T> out )
-	{
-		return this.getHandler().getAvailableItems( out );
-	}
+    @Override
+    public IItemList<T> getAvailableItems(final IItemList<T> out) {
+        return this.getHandler().getAvailableItems(out);
+    }
 
-	@Override
-	public int getPriority()
-	{
-		return this.getHandler().getPriority();
-	}
+    @Override
+    public int getPriority() {
+        return this.getHandler().getPriority();
+    }
 
-	@Override
-	public int getSlot()
-	{
-		return this.getHandler().getSlot();
-	}
+    @Override
+    public int getSlot() {
+        return this.getHandler().getSlot();
+    }
 
-	@Override
-	public boolean validForPass( final int i )
-	{
-		return this.getHandler().validForPass( i );
-	}
+    @Override
+    public boolean validForPass(final int i) {
+        return this.getHandler().validForPass(i);
+    }
 
 }

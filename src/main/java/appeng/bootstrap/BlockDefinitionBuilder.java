@@ -18,7 +18,6 @@
 
 package appeng.bootstrap;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -28,7 +27,6 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
-import appeng.core.AEItemGroup;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -37,203 +35,176 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.definitions.IBlockDefinition;
+import appeng.api.features.AEFeature;
 import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseBlockItem;
 import appeng.block.AEBaseTileBlock;
 import appeng.bootstrap.components.IBlockRegistrationComponent;
 import appeng.bootstrap.components.IItemRegistrationComponent;
 import appeng.bootstrap.definitions.TileEntityDefinition;
+import appeng.core.AEItemGroup;
 import appeng.core.AppEng;
 import appeng.core.CreativeTab;
-import appeng.api.features.AEFeature;
 import appeng.core.features.BlockDefinition;
 import appeng.core.features.TileDefinition;
 import appeng.util.Platform;
 
+class BlockDefinitionBuilder implements IBlockBuilder {
 
-class BlockDefinitionBuilder implements IBlockBuilder
-{
+    private final FeatureFactory factory;
 
-	private final FeatureFactory factory;
+    private final String registryName;
 
-	private final String registryName;
+    private final Supplier<? extends Block> blockSupplier;
 
-	private final Supplier<? extends Block> blockSupplier;
+    private final List<BiFunction<Block, Item, IBootstrapComponent>> bootstrapComponents = new ArrayList<>();
 
-	private final List<BiFunction<Block, Item, IBootstrapComponent>> bootstrapComponents = new ArrayList<>();
+    private final EnumSet<AEFeature> features = EnumSet.noneOf(AEFeature.class);
 
-	private final EnumSet<AEFeature> features = EnumSet.noneOf( AEFeature.class );
+    private ItemGroup itemGroup = CreativeTab.INSTANCE;
 
-	private ItemGroup itemGroup = CreativeTab.INSTANCE;
+    private TileEntityDefinition tileEntityDefinition;
 
-	private TileEntityDefinition tileEntityDefinition;
+    private boolean disableItem = false;
 
-	private boolean disableItem = false;
+    private BiFunction<Block, Item.Properties, BlockItem> itemFactory;
 
-	private BiFunction<Block, Item.Properties, BlockItem> itemFactory;
+    @OnlyIn(Dist.CLIENT)
+    private BlockRendering blockRendering;
 
-	@OnlyIn( Dist.CLIENT )
-	private BlockRendering blockRendering;
+    @OnlyIn(Dist.CLIENT)
+    private ItemRendering itemRendering;
 
-	@OnlyIn( Dist.CLIENT )
-	private ItemRendering itemRendering;
+    BlockDefinitionBuilder(FeatureFactory factory, String id, Supplier<? extends Block> blockSupplier) {
+        this.factory = factory;
+        this.registryName = id;
+        this.blockSupplier = blockSupplier;
 
-	BlockDefinitionBuilder( FeatureFactory factory, String id, Supplier<? extends Block> blockSupplier )
-	{
-		this.factory = factory;
-		this.registryName = id;
-		this.blockSupplier = blockSupplier;
-
-		if( Platform.hasClientClasses() )
-		{
-			 this.blockRendering = new BlockRendering();
-			 this.itemRendering = new ItemRendering();
-		}
-	}
-
-	@Override
-	public BlockDefinitionBuilder bootstrap( BiFunction<Block, Item, IBootstrapComponent> callback )
-	{
-		this.bootstrapComponents.add( callback );
-		return this;
-	}
-
-	@Override
-	public IBlockBuilder features( AEFeature... features )
-	{
-		this.features.clear();
-		this.addFeatures( features );
-		return this;
-	}
-
-	@Override
-	public IBlockBuilder addFeatures( AEFeature... features )
-	{
-		Collections.addAll( this.features, features );
-		return this;
-	}
+        if (Platform.hasClientClasses()) {
+            this.blockRendering = new BlockRendering();
+            this.itemRendering = new ItemRendering();
+        }
+    }
 
     @Override
-	public BlockDefinitionBuilder rendering( BlockRenderingCustomizer callback )
-	{
-		if( Platform.hasClientClasses() )
-		{
-			this.customizeForClient( callback );
-		}
+    public BlockDefinitionBuilder bootstrap(BiFunction<Block, Item, IBootstrapComponent> callback) {
+        this.bootstrapComponents.add(callback);
+        return this;
+    }
 
-		return this;
-	}
+    @Override
+    public IBlockBuilder features(AEFeature... features) {
+        this.features.clear();
+        this.addFeatures(features);
+        return this;
+    }
 
-	@Override
-	public IBlockBuilder tileEntity( TileEntityDefinition tileEntityDefinition )
-	{
-		this.tileEntityDefinition = tileEntityDefinition;
-		return this;
-	}
+    @Override
+    public IBlockBuilder addFeatures(AEFeature... features) {
+        Collections.addAll(this.features, features);
+        return this;
+    }
 
-	@Override
-	public IBlockBuilder item( BiFunction<Block, Item.Properties, BlockItem> factory )
-	{
-		this.itemFactory = factory;
-		return this;
-	}
+    @Override
+    public BlockDefinitionBuilder rendering(BlockRenderingCustomizer callback) {
+        if (Platform.hasClientClasses()) {
+            this.customizeForClient(callback);
+        }
 
-	@Override
-	public IBlockBuilder disableItem()
-	{
-		this.disableItem = true;
-		return this;
-	}
+        return this;
+    }
 
-	@OnlyIn( Dist.CLIENT )
-	private void customizeForClient( BlockRenderingCustomizer callback )
-	{
-		callback.customize( this.blockRendering, this.itemRendering );
-	}
+    @Override
+    public IBlockBuilder tileEntity(TileEntityDefinition tileEntityDefinition) {
+        this.tileEntityDefinition = tileEntityDefinition;
+        return this;
+    }
 
-	@SuppressWarnings( "unchecked" )
-	@Override
-	public <T extends IBlockDefinition> T build()
-	{
-		// Create block and matching item, and set factory name of both
-		Block block = this.blockSupplier.get();
-		block.setRegistryName( AppEng.MOD_ID, this.registryName );
+    @Override
+    public IBlockBuilder item(BiFunction<Block, Item.Properties, BlockItem> factory) {
+        this.itemFactory = factory;
+        return this;
+    }
 
-		BlockItem item = this.constructItemFromBlock( block );
-		if( item != null )
-		{
-			item.setRegistryName( AppEng.MOD_ID, this.registryName );
-		}
+    @Override
+    public IBlockBuilder disableItem() {
+        this.disableItem = true;
+        return this;
+    }
 
-		// Register the item and block with the game
-		this.factory.addBootstrapComponent( (IBlockRegistrationComponent) ( side, registry ) -> registry.register( block ) );
-		if( item != null )
-		{
-			this.factory.addBootstrapComponent( (IItemRegistrationComponent) ( side, registry ) -> registry.register( item ) );
-		}
+    @OnlyIn(Dist.CLIENT)
+    private void customizeForClient(BlockRenderingCustomizer callback) {
+        callback.customize(this.blockRendering, this.itemRendering);
+    }
 
-		// Register all extra handlers
-		this.bootstrapComponents.forEach( component -> this.factory.addBootstrapComponent( component.apply( block, item ) ) );
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends IBlockDefinition> T build() {
+        // Create block and matching item, and set factory name of both
+        Block block = this.blockSupplier.get();
+        block.setRegistryName(AppEng.MOD_ID, this.registryName);
 
-		if (this.tileEntityDefinition != null)
-		{
-			// Tell the tile entity definition about the block we've registered
-			this.tileEntityDefinition.addBlock(block);
-		}
+        BlockItem item = this.constructItemFromBlock(block);
+        if (item != null) {
+            item.setRegistryName(AppEng.MOD_ID, this.registryName);
+        }
 
-		if( Platform.hasClientClasses() )
-		{
-			this.blockRendering.apply( this.factory, block );
+        // Register the item and block with the game
+        this.factory.addBootstrapComponent((IBlockRegistrationComponent) (side, registry) -> registry.register(block));
+        if (item != null) {
+            this.factory
+                    .addBootstrapComponent((IItemRegistrationComponent) (side, registry) -> registry.register(item));
+        }
 
-			if( item != null )
-			{
-				this.itemRendering.apply( this.factory, item );
-			}
-		}
+        // Register all extra handlers
+        this.bootstrapComponents.forEach(component -> this.factory.addBootstrapComponent(component.apply(block, item)));
 
-		T definition;
-		if( block instanceof AEBaseTileBlock )
-		{
-			definition = (T) new TileDefinition( this.registryName, (AEBaseTileBlock<?>) block, item, features );
-		}
-		else
-		{
-			definition = (T) new BlockDefinition( this.registryName, block, item, features );
-		}
+        if (this.tileEntityDefinition != null) {
+            // Tell the tile entity definition about the block we've registered
+            this.tileEntityDefinition.addBlock(block);
+        }
 
-		if (itemGroup instanceof AEItemGroup) {
-			((AEItemGroup) itemGroup).add(definition);
-		}
+        if (Platform.hasClientClasses()) {
+            this.blockRendering.apply(this.factory, block);
 
-		return definition;
-	}
+            if (item != null) {
+                this.itemRendering.apply(this.factory, item);
+            }
+        }
 
-	@Nullable
-	private BlockItem constructItemFromBlock( Block block )
-	{
-		if( this.disableItem )
-		{
-			return null;
-		}
+        T definition;
+        if (block instanceof AEBaseTileBlock) {
+            definition = (T) new TileDefinition(this.registryName, (AEBaseTileBlock<?>) block, item, features);
+        } else {
+            definition = (T) new BlockDefinition(this.registryName, block, item, features);
+        }
 
-		Item.Properties itemProperties = new Item.Properties();
+        if (itemGroup instanceof AEItemGroup) {
+            ((AEItemGroup) itemGroup).add(definition);
+        }
 
-		if (itemGroup != null) {
-			itemProperties.group(itemGroup);
-		}
-		// FIXME: Allow more/all item properties
+        return definition;
+    }
 
-		if( this.itemFactory != null )
-		{
-			return this.itemFactory.apply( block, itemProperties );
-		}
-		else if( block instanceof AEBaseBlock )
-		{
-			return new AEBaseBlockItem( block, itemProperties );
-		}
-		else
-		{
-			return new BlockItem( block, itemProperties );
-		}
-	}
+    @Nullable
+    private BlockItem constructItemFromBlock(Block block) {
+        if (this.disableItem) {
+            return null;
+        }
+
+        Item.Properties itemProperties = new Item.Properties();
+
+        if (itemGroup != null) {
+            itemProperties.group(itemGroup);
+        }
+        // FIXME: Allow more/all item properties
+
+        if (this.itemFactory != null) {
+            return this.itemFactory.apply(block, itemProperties);
+        } else if (block instanceof AEBaseBlock) {
+            return new AEBaseBlockItem(block, itemProperties);
+        } else {
+            return new BlockItem(block, itemProperties);
+        }
+    }
 }

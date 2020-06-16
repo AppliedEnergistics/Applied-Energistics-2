@@ -23,22 +23,20 @@
 
 package appeng.api.util;
 
-
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 
-
 /**
- * Implemented on many of AE's non Tile Entity Blocks as a way to get a IOrientable.
+ * Implemented on many of AE's non Tile Entity Blocks as a way to get a
+ * IOrientable.
  */
-public interface IOrientableBlock
-{
+public interface IOrientableBlock {
 
-	/**
-	 * @param world world of block
-	 * @param pos The position of the block.
-	 *
-	 * @return a IOrientable if applicable
-	 */
-	IOrientable getOrientable( IBlockReader world, BlockPos pos );
+    /**
+     * @param world world of block
+     * @param pos   The position of the block.
+     *
+     * @return a IOrientable if applicable
+     */
+    IOrientable getOrientable(IBlockReader world, BlockPos pos);
 }

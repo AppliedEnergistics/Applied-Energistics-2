@@ -23,7 +23,6 @@
 
 package appeng.api.parts;
 
-
 import java.util.Collections;
 import java.util.List;
 
@@ -31,35 +30,32 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.util.ResourceLocation;
 
-
 /**
- * A container to store a collection of {@link ResourceLocation} as models for a part as well as other properties.
+ * A container to store a collection of {@link ResourceLocation} as models for a
+ * part as well as other properties.
  */
-public interface IPartModel
-{
+public interface IPartModel {
 
-	/**
-	 * A solid {@link IPartModel} indicates that the rendering requires a cable connection, which will also result in
-	 * creating an intersection for the cable.
-	 *
-	 * This should be true for pretty much all parts.
-	 *
-	 * @return true for a solid part.
-	 */
-	default boolean requireCableConnection()
-	{
-		return true;
-	}
+    /**
+     * A solid {@link IPartModel} indicates that the rendering requires a cable
+     * connection, which will also result in creating an intersection for the cable.
+     *
+     * This should be true for pretty much all parts.
+     *
+     * @return true for a solid part.
+     */
+    default boolean requireCableConnection() {
+        return true;
+    }
 
-	/**
-	 * A collection of {@link ResourceLocation} used as models for a part.
-	 *
-	 * @return a collection of models, never null.
-	 */
-	@Nonnull
-	default List<ResourceLocation> getModels()
-	{
-		return Collections.emptyList();
-	}
+    /**
+     * A collection of {@link ResourceLocation} used as models for a part.
+     *
+     * @return a collection of models, never null.
+     */
+    @Nonnull
+    default List<ResourceLocation> getModels() {
+        return Collections.emptyList();
+    }
 
 }

@@ -18,6 +18,15 @@
 
 package appeng.client.gui.implementations;
 
+import java.util.List;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
@@ -32,237 +41,207 @@ import appeng.client.me.SlotME;
 import appeng.container.implementations.ContainerNetworkStatus;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
-import java.util.List;
+public class GuiNetworkStatus extends AEBaseGui<ContainerNetworkStatus> implements ISortSource {
 
+    private final ItemRepo repo;
+    private final int rows = 4;
+    private int tooltip = -1;
 
-public class GuiNetworkStatus extends AEBaseGui<ContainerNetworkStatus> implements ISortSource
-{
+    public GuiNetworkStatus(ContainerNetworkStatus container, PlayerInventory playerInventory, ITextComponent title) {
+        super(container, playerInventory, title);
+        final GuiScrollbar scrollbar = new GuiScrollbar();
 
-	private final ItemRepo repo;
-	private final int rows = 4;
-	private int tooltip = -1;
+        this.setScrollBar(scrollbar);
+        this.repo = new ItemRepo(scrollbar, this);
+        this.ySize = 153;
+        this.xSize = 195;
+        this.repo.setRowSize(5);
+    }
 
-	public GuiNetworkStatus(ContainerNetworkStatus container, PlayerInventory playerInventory, ITextComponent title) {
-		super(container, playerInventory, title);
-		final GuiScrollbar scrollbar = new GuiScrollbar();
+    @Override
+    public void init() {
+        super.init();
 
-		this.setScrollBar( scrollbar );
-		this.repo = new ItemRepo( scrollbar, this );
-		this.ySize = 153;
-		this.xSize = 195;
-		this.repo.setRowSize( 5 );
-	}
+        this.addButton(CommonButtons.togglePowerUnit(this.guiLeft - 18, this.guiTop + 8));
+    }
 
-	@Override
-	public void init()
-	{
-		super.init();
+    @Override
+    public void render(final int mouseX, final int mouseY, final float btn) {
 
-		this.addButton( CommonButtons.togglePowerUnit( this.guiLeft - 18, this.guiTop + 8 ) );
-	}
+        final int gx = (this.width - this.xSize) / 2;
+        final int gy = (this.height - this.ySize) / 2;
 
-	@Override
-	public void render(final int mouseX, final int mouseY, final float btn )
-	{
+        this.tooltip = -1;
 
-		final int gx = ( this.width - this.xSize ) / 2;
-		final int gy = ( this.height - this.ySize ) / 2;
+        int y = 0;
+        int x = 0;
+        for (int z = 0; z <= 4 * 5; z++) {
+            final int minX = gx + 14 + x * 31;
+            final int minY = gy + 41 + y * 18;
 
-		this.tooltip = -1;
+            if (minX < mouseX && minX + 28 > mouseX) {
+                if (minY < mouseY && minY + 20 > mouseY) {
+                    this.tooltip = z;
+                    break;
+                }
+            }
 
-		int y = 0;
-		int x = 0;
-		for( int z = 0; z <= 4 * 5; z++ )
-		{
-			final int minX = gx + 14 + x * 31;
-			final int minY = gy + 41 + y * 18;
+            x++;
 
-			if( minX < mouseX && minX + 28 > mouseX )
-			{
-				if( minY < mouseY && minY + 20 > mouseY )
-				{
-					this.tooltip = z;
-					break;
-				}
-			}
+            if (x > 4) {
+                y++;
+                x = 0;
+            }
+        }
 
-			x++;
+        super.render(mouseX, mouseY, btn);
+    }
 
-			if( x > 4 )
-			{
-				y++;
-				x = 0;
-			}
-		}
+    @Override
+    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+        this.font.drawString(GuiText.NetworkDetails.getLocal(), 8, 6, 4210752);
 
-		super.render( mouseX, mouseY, btn );
-	}
+        this.font.drawString(
+                GuiText.StoredPower.getLocal() + ": " + Platform.formatPowerLong(container.getCurrentPower(), false),
+                13, 16, 4210752);
+        this.font.drawString(
+                GuiText.MaxPower.getLocal() + ": " + Platform.formatPowerLong(container.getMaxPower(), false), 13, 26,
+                4210752);
 
-	@Override
-	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
-	{
-		this.font.drawString( GuiText.NetworkDetails.getLocal(), 8, 6, 4210752 );
+        this.font.drawString(GuiText.PowerInputRate.getLocal() + ": "
+                + Platform.formatPowerLong(container.getAverageAddition(), true), 13, 143 - 10, 4210752);
+        this.font.drawString(
+                GuiText.PowerUsageRate.getLocal() + ": " + Platform.formatPowerLong(container.getPowerUsage(), true),
+                13, 143 - 20, 4210752);
 
-		this.font.drawString( GuiText.StoredPower.getLocal() + ": " + Platform.formatPowerLong( container.getCurrentPower(), false ), 13, 16, 4210752 );
-		this.font.drawString( GuiText.MaxPower.getLocal() + ": " + Platform.formatPowerLong( container.getMaxPower(), false ), 13, 26, 4210752 );
+        final int sectionLength = 30;
 
-		this.font.drawString( GuiText.PowerInputRate.getLocal() + ": " + Platform.formatPowerLong( container.getAverageAddition(), true ), 13, 143 - 10,
-				4210752 );
-		this.font.drawString( GuiText.PowerUsageRate.getLocal() + ": " + Platform.formatPowerLong( container.getPowerUsage(), true ), 13, 143 - 20, 4210752 );
+        int x = 0;
+        int y = 0;
+        final int xo = 12;
+        final int yo = 42;
+        final int viewStart = 0;// myScrollBar.getCurrentScroll() * 5;
+        final int viewEnd = viewStart + 5 * 4;
 
-		final int sectionLength = 30;
+        String toolTip = "";
+        int toolPosX = 0;
+        int toolPosY = 0;
 
-		int x = 0;
-		int y = 0;
-		final int xo = 12;
-		final int yo = 42;
-		final int viewStart = 0;// myScrollBar.getCurrentScroll() * 5;
-		final int viewEnd = viewStart + 5 * 4;
+        for (int z = viewStart; z < Math.min(viewEnd, this.repo.size()); z++) {
+            final IAEItemStack refStack = this.repo.getReferenceItem(z);
+            if (refStack != null) {
+                RenderSystem.pushMatrix();
+                RenderSystem.scalef(0.5f, 0.5f, 0.5f);
 
-		String toolTip = "";
-		int toolPosX = 0;
-		int toolPosY = 0;
+                String str = Long.toString(refStack.getStackSize());
+                if (refStack.getStackSize() >= 10000) {
+                    str = Long.toString(refStack.getStackSize() / 1000) + 'k';
+                }
 
-		for( int z = viewStart; z < Math.min( viewEnd, this.repo.size() ); z++ )
-		{
-			final IAEItemStack refStack = this.repo.getReferenceItem( z );
-			if( refStack != null )
-			{
-				RenderSystem.pushMatrix();
-				RenderSystem.scalef( 0.5f, 0.5f, 0.5f );
+                final int w = this.font.getStringWidth(str);
+                this.font.drawString(str, (int) ((x * sectionLength + xo + sectionLength - 19 - (w * 0.5)) * 2),
+                        (y * 18 + yo + 6) * 2, 4210752);
 
-				String str = Long.toString( refStack.getStackSize() );
-				if( refStack.getStackSize() >= 10000 )
-				{
-					str = Long.toString( refStack.getStackSize() / 1000 ) + 'k';
-				}
+                RenderSystem.popMatrix();
+                final int posX = x * sectionLength + xo + sectionLength - 18;
+                final int posY = y * 18 + yo;
 
-				final int w = this.font.getStringWidth( str );
-				this.font.drawString( str, (int) ( ( x * sectionLength + xo + sectionLength - 19 - ( w * 0.5 ) ) * 2 ), ( y * 18 + yo + 6 ) * 2,
-						4210752 );
+                if (this.tooltip == z - viewStart) {
+                    toolTip = Platform.getItemDisplayName(refStack).getFormattedText();
 
-				RenderSystem.popMatrix();
-				final int posX = x * sectionLength + xo + sectionLength - 18;
-				final int posY = y * 18 + yo;
+                    toolTip += ('\n' + GuiText.Installed.getLocal() + ": " + (refStack.getStackSize()));
+                    if (refStack.getCountRequestable() > 0) {
+                        toolTip += ('\n' + GuiText.EnergyDrain.getLocal() + ": "
+                                + Platform.formatPowerLong(refStack.getCountRequestable(), true));
+                    }
 
-				if( this.tooltip == z - viewStart )
-				{
-					toolTip = Platform.getItemDisplayName( refStack ).getFormattedText();
+                    toolPosX = x * sectionLength + xo + sectionLength - 8;
+                    toolPosY = y * 18 + yo;
+                }
 
-					toolTip += ( '\n' + GuiText.Installed.getLocal() + ": " + ( refStack.getStackSize() ) );
-					if( refStack.getCountRequestable() > 0 )
-					{
-						toolTip += ( '\n' + GuiText.EnergyDrain.getLocal() + ": " + Platform.formatPowerLong( refStack.getCountRequestable(), true ) );
-					}
+                this.drawItem(posX, posY, refStack.asItemStackRepresentation());
 
-					toolPosX = x * sectionLength + xo + sectionLength - 8;
-					toolPosY = y * 18 + yo;
-				}
+                x++;
 
-				this.drawItem( posX, posY, refStack.asItemStackRepresentation() );
+                if (x > 4) {
+                    y++;
+                    x = 0;
+                }
+            }
+        }
 
-				x++;
+        if (this.tooltip >= 0 && toolTip.length() > 0) {
+            this.drawTooltip(toolPosX, toolPosY + 10, toolTip);
+        }
+    }
 
-				if( x > 4 )
-				{
-					y++;
-					x = 0;
-				}
-			}
-		}
+    @Override
+    public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+        this.bindTexture("guis/networkstatus.png");
+        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());
+    }
 
-		if( this.tooltip >= 0 && toolTip.length() > 0 )
-		{
-			this.drawTooltip( toolPosX, toolPosY + 10, toolTip );
-		}
-	}
+    public void postUpdate(final List<IAEItemStack> list) {
+        this.repo.clear();
 
-	@Override
-	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
-	{
-		this.bindTexture( "guis/networkstatus.png" );
-		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset() );
-	}
+        for (final IAEItemStack is : list) {
+            this.repo.postUpdate(is);
+        }
 
-	public void postUpdate( final List<IAEItemStack> list )
-	{
-		this.repo.clear();
+        this.repo.updateView();
+        this.setScrollBar();
+    }
 
-		for( final IAEItemStack is : list )
-		{
-			this.repo.postUpdate( is );
-		}
+    private void setScrollBar() {
+        final int size = this.repo.size();
+        this.getScrollBar().setTop(39).setLeft(175).setHeight(78);
+        this.getScrollBar().setRange(0, (size + 4) / 5 - this.rows, 1);
+    }
 
-		this.repo.updateView();
-		this.setScrollBar();
-	}
+    @Override
+    protected void renderTooltip(final ItemStack stack, final int x, final int y) {
+        final Slot s = this.getSlot(x, y);
 
-	private void setScrollBar()
-	{
-		final int size = this.repo.size();
-		this.getScrollBar().setTop( 39 ).setLeft( 175 ).setHeight( 78 );
-		this.getScrollBar().setRange( 0, ( size + 4 ) / 5 - this.rows, 1 );
-	}
+        if (s instanceof SlotME && !stack.isEmpty()) {
+            IAEItemStack myStack = null;
 
-	@Override
-	protected void renderTooltip( final ItemStack stack, final int x, final int y )
-	{
-		final Slot s = this.getSlot( x, y );
+            try {
+                final SlotME theSlotField = (SlotME) s;
+                myStack = theSlotField.getAEStack();
+            } catch (final Throwable ignore) {
+            }
 
-		if( s instanceof SlotME && !stack.isEmpty() )
-		{
-			IAEItemStack myStack = null;
+            if (myStack != null) {
+                List<String> currentToolTip = getTooltipFromItem(stack);
 
-			try
-			{
-				final SlotME theSlotField = (SlotME) s;
-				myStack = theSlotField.getAEStack();
-			}
-			catch( final Throwable ignore )
-			{
-			}
+                while (currentToolTip.size() > 1) {
+                    currentToolTip.remove(1);
+                }
 
-			if( myStack != null )
-			{
-				List<String> currentToolTip = getTooltipFromItem(stack);
+                currentToolTip.add(GuiText.Installed.getLocal() + ": " + (myStack.getStackSize()));
+                currentToolTip.add(GuiText.EnergyDrain.getLocal() + ": "
+                        + Platform.formatPowerLong(myStack.getCountRequestable(), true));
 
-				while( currentToolTip.size() > 1 )
-				{
-					currentToolTip.remove( 1 );
-				}
+                this.drawTooltip(x, y, currentToolTip);
+            }
+        }
 
-				currentToolTip.add( GuiText.Installed.getLocal() + ": " + ( myStack.getStackSize() ) );
-				currentToolTip.add( GuiText.EnergyDrain.getLocal() + ": " + Platform.formatPowerLong( myStack.getCountRequestable(), true ) );
+        super.renderTooltip(stack, x, y);
+    }
 
-				this.drawTooltip( x, y, currentToolTip );
-			}
-		}
+    @Override
+    public SortOrder getSortBy() {
+        return SortOrder.NAME;
+    }
 
-		super.renderTooltip( stack, x, y );
-	}
+    @Override
+    public SortDir getSortDir() {
+        return SortDir.ASCENDING;
+    }
 
-	@Override
-	public SortOrder getSortBy()
-	{
-		return SortOrder.NAME;
-	}
-
-	@Override
-	public SortDir getSortDir()
-	{
-		return SortDir.ASCENDING;
-	}
-
-	@Override
-	public ViewItems getSortDisplay()
-	{
-		return ViewItems.ALL;
-	}
+    @Override
+    public ViewItems getSortDisplay() {
+        return ViewItems.ALL;
+    }
 }

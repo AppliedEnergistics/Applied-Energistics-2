@@ -18,16 +18,13 @@
 
 package appeng.core.worlddata;
 
-
 import appeng.services.CompassService;
-
 
 /**
  * @author thatsIch
  * @version rv3 - 30.05.2015
  * @since rv3 30.05.2015
  */
-public interface IWorldCompassData
-{
-	CompassService service();
+public interface IWorldCompassData {
+    CompassService service();
 }

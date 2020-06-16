@@ -1,9 +1,10 @@
 package appeng.core;
 
-import appeng.recipes.handlers.GrinderRecipe;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
+
+import appeng.recipes.handlers.GrinderRecipe;
 
 public class AERecipeType<T extends IRecipe<?>> implements IRecipeType<T> {
     private final String id;

@@ -18,13 +18,10 @@
 
 package appeng.container;
 
-
-import appeng.api.parts.IPartHost;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
-import appeng.parts.AEBasePart;
 import com.google.common.base.Preconditions;
+
 import io.netty.handler.codec.DecoderException;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -34,14 +31,19 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 
+import appeng.api.parts.IPartHost;
+import appeng.api.util.AEPartLocation;
+import appeng.api.util.DimensionalCoord;
+import appeng.parts.AEBasePart;
+
 /**
- * Describes how a container the player has opened was originally
- * located. This can be one of three ways:
+ * Describes how a container the player has opened was originally located. This
+ * can be one of three ways:
  *
  * <ul>
- *     <li>A tile entity at a given block position.</li>
- *     <li>A part (i.e. cable bus part) at the side of a given block position.</li>
- *     <li>An item held by the player.</li>
+ * <li>A tile entity at a given block position.</li>
+ * <li>A part (i.e. cable bus part) at the side of a given block position.</li>
+ * <li>An item held by the player.</li>
  * </ul>
  */
 public final class ContainerLocator {
@@ -52,13 +54,10 @@ public final class ContainerLocator {
          */
         PLAYER_INVENTORY,
         /**
-         * An item used from the player's inventory, but right-clicked
-         * on a block face, has block position and side in addition to the
-         * above.
+         * An item used from the player's inventory, but right-clicked on a block face,
+         * has block position and side in addition to the above.
          */
-        PLAYER_INVENTORY_WITH_BLOCK_CONTEXT,
-        BLOCK,
-        PART
+        PLAYER_INVENTORY_WITH_BLOCK_CONTEXT, BLOCK, PART
     }
 
     private final Type type;
@@ -92,8 +91,9 @@ public final class ContainerLocator {
     }
 
     /**
-     * Construct a container locator for an item being used on a block. The item could still open a container
-     * for itself, but it might also open a special container for the block being right-clicked.
+     * Construct a container locator for an item being used on a block. The item
+     * could still open a container for itself, but it might also open a special
+     * container for the block being right-clicked.
      */
     public static ContainerLocator forItemUseContext(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
@@ -103,7 +103,8 @@ public final class ContainerLocator {
         int dimensionId = player.world.getDimension().getType().getId();
         int slot = getPlayerInventorySlotFromHand(player, context.getHand());
         AEPartLocation side = AEPartLocation.fromFacing(context.getFace());
-        return new ContainerLocator(Type.PLAYER_INVENTORY_WITH_BLOCK_CONTEXT, slot, dimensionId, context.getPos(), side);
+        return new ContainerLocator(Type.PLAYER_INVENTORY_WITH_BLOCK_CONTEXT, slot, dimensionId, context.getPos(),
+                side);
     }
 
     public static ContainerLocator forHand(PlayerEntity player, Hand hand) {
@@ -128,13 +129,8 @@ public final class ContainerLocator {
     public static ContainerLocator forPart(AEBasePart part) {
         IPartHost host = part.getHost();
         DimensionalCoord pos = host.getLocation();
-        return new ContainerLocator(
-                Type.PART,
-                -1,
-                pos.getWorld().getDimension().getType().getId(),
-                pos.getBlockPos(),
-                part.getSide()
-        );
+        return new ContainerLocator(Type.PART, -1, pos.getWorld().getDimension().getType().getId(), pos.getBlockPos(),
+                part.getSide());
     }
 
     public boolean hasItemIndex() {
@@ -201,37 +197,15 @@ public final class ContainerLocator {
         byte type = buf.readByte();
         switch (type) {
             case 0:
-                return new ContainerLocator(
-                        Type.PLAYER_INVENTORY,
-                        buf.readInt(),
-                        -1,
-                        null,
-                        null
-                );
+                return new ContainerLocator(Type.PLAYER_INVENTORY, buf.readInt(), -1, null, null);
             case 1:
-                return new ContainerLocator(
-                        Type.PLAYER_INVENTORY_WITH_BLOCK_CONTEXT,
-                        buf.readInt(),
-                        buf.readInt(),
-                        buf.readBlockPos(),
-                        AEPartLocation.values()[buf.readByte()]
-                );
+                return new ContainerLocator(Type.PLAYER_INVENTORY_WITH_BLOCK_CONTEXT, buf.readInt(), buf.readInt(),
+                        buf.readBlockPos(), AEPartLocation.values()[buf.readByte()]);
             case 2:
-                return new ContainerLocator(
-                        Type.BLOCK,
-                        -1,
-                        buf.readInt(),
-                        buf.readBlockPos(),
-                        null
-                );
+                return new ContainerLocator(Type.BLOCK, -1, buf.readInt(), buf.readBlockPos(), null);
             case 3:
-                return new ContainerLocator(
-                        Type.PART,
-                        -1,
-                        buf.readInt(),
-                        buf.readBlockPos(),
-                        AEPartLocation.values()[buf.readByte()]
-                );
+                return new ContainerLocator(Type.PART, -1, buf.readInt(), buf.readBlockPos(),
+                        AEPartLocation.values()[buf.readByte()]);
             default:
                 throw new DecoderException("ContainerLocator type out of range: " + type);
         }

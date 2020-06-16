@@ -18,57 +18,48 @@
 
 package appeng.core.features.registries;
 
+import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import appeng.core.AppEng;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.entity.player.PlayerEntity;
 
 import appeng.api.features.IPlayerRegistry;
+import appeng.core.AppEng;
 import appeng.core.worlddata.WorldData;
 
-import java.util.UUID;
+public class PlayerRegistry implements IPlayerRegistry {
 
+    @Override
+    public int getID(final GameProfile username) {
+        if (username == null || !username.isComplete()) {
+            return -1;
+        }
 
-public class PlayerRegistry implements IPlayerRegistry
-{
+        return WorldData.instance().playerData().getMePlayerId(username);
+    }
 
-	@Override
-	public int getID( final GameProfile username )
-	{
-		if( username == null || !username.isComplete() )
-		{
-			return -1;
-		}
+    @Override
+    public int getID(final PlayerEntity player) {
+        return this.getID(player.getGameProfile());
+    }
 
-		return WorldData.instance().playerData().getMePlayerId( username );
-	}
+    @Nullable
+    @Override
+    public PlayerEntity findPlayer(final int playerID) {
+        UUID profileId = WorldData.instance().playerData().getProfileId(playerID);
+        if (profileId == null) {
+            return null;
+        }
 
-	@Override
-	public int getID( final PlayerEntity player )
-	{
-		return this.getID( player.getGameProfile() );
-	}
+        for (final PlayerEntity player : AppEng.proxy.getPlayers()) {
+            if (player.getUniqueID().equals(profileId)) {
+                return player;
+            }
+        }
 
-	@Nullable
-	@Override
-	public PlayerEntity findPlayer( final int playerID )
-	{
-		UUID profileId = WorldData.instance().playerData().getProfileId(playerID);
-		if (profileId == null) {
-			return null;
-		}
-
-		for( final PlayerEntity player : AppEng.proxy.getPlayers() )
-		{
-			if( player.getUniqueID().equals( profileId ) )
-			{
-				return player;
-			}
-		}
-
-		return null;
-	}
+        return null;
+    }
 }

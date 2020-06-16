@@ -23,33 +23,32 @@
 
 package appeng.api.storage;
 
-
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.storage.data.IAEStack;
 
+public interface IMEMonitorHandlerReceiver<T extends IAEStack<T>> {
 
-public interface IMEMonitorHandlerReceiver<T extends IAEStack<T>>
-{
+    /**
+     * return true if this object should remain as a listener.
+     *
+     * @param verificationToken to be checked object
+     *
+     * @return true if object should remain as a listener
+     */
+    boolean isValid(Object verificationToken);
 
-	/**
-	 * return true if this object should remain as a listener.
-	 *
-	 * @param verificationToken to be checked object
-	 *
-	 * @return true if object should remain as a listener
-	 */
-	boolean isValid( Object verificationToken );
+    /**
+     * called when changes are made to the Monitor, but only if listener is still
+     * valid.
+     *
+     * @param change done change
+     */
+    void postChange(IBaseMonitor<T> monitor, Iterable<T> change, IActionSource actionSource);
 
-	/**
-	 * called when changes are made to the Monitor, but only if listener is still valid.
-	 *
-	 * @param change done change
-	 */
-	void postChange( IBaseMonitor<T> monitor, Iterable<T> change, IActionSource actionSource );
-
-	/**
-	 * called when the list updates its contents, this is mostly for handling power events.
-	 */
-	void onListUpdate();
+    /**
+     * called when the list updates its contents, this is mostly for handling power
+     * events.
+     */
+    void onListUpdate();
 }

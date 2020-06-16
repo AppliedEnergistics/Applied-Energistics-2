@@ -1,6 +1,3 @@
 {
-  "values": [
-    "#forge:ingots/gold",
-    "#forge:ingots/iron"
-  ]
+  "values": ["#forge:ingots/gold", "#forge:ingots/iron"]
 }

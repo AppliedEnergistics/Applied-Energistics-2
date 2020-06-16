@@ -18,14 +18,10 @@
 
 package appeng.worldgen;
 
+import java.util.Random;
 
-import appeng.api.features.AEFeature;
-import appeng.api.features.IWorldGen.WorldGenType;
-import appeng.core.AEConfig;
-import appeng.core.AppEng;
-import appeng.core.features.registries.WorldGenRegistry;
-import appeng.core.worlddata.WorldData;
-import appeng.util.Platform;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
@@ -35,75 +31,76 @@ import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.server.ServerWorld;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Random;
+import appeng.api.features.AEFeature;
+import appeng.api.features.IWorldGen.WorldGenType;
+import appeng.core.AEConfig;
+import appeng.core.AppEng;
+import appeng.core.features.registries.WorldGenRegistry;
+import appeng.core.worlddata.WorldData;
+import appeng.util.Platform;
 
+public final class MeteoriteWorldGen extends Feature<NoFeatureConfig> {
 
-public final class MeteoriteWorldGen extends Feature<NoFeatureConfig>
-{
+    public static final MeteoriteWorldGen INSTANCE = new MeteoriteWorldGen();
 
-	public static final MeteoriteWorldGen INSTANCE = new MeteoriteWorldGen();
+    private MeteoriteWorldGen() {
+        super(NoFeatureConfig::deserialize);
+        setRegistryName(AppEng.MOD_ID, "meteorite");
+    }
 
-	private MeteoriteWorldGen( )
-	{
-		super( NoFeatureConfig::deserialize );
-		setRegistryName( AppEng.MOD_ID, "meteorite" );
-	}
+    private final MeteoriteSpawner spawner = new MeteoriteSpawner();
 
-	private final MeteoriteSpawner spawner = new MeteoriteSpawner();
+    @ParametersAreNonnullByDefault
+    @Override
+    public boolean place(IWorld w, ChunkGenerator<? extends GenerationSettings> generator, Random r, BlockPos pos,
+            NoFeatureConfig config) {
+        if (!AEConfig.instance().isFeatureEnabled(AEFeature.METEORITE_WORLD_GEN)) {
+            return false;
+        }
 
-	@ParametersAreNonnullByDefault
-	@Override
-	public boolean place( IWorld w, ChunkGenerator<? extends GenerationSettings> generator, Random r, BlockPos pos, NoFeatureConfig config )
-	{
-		if(!AEConfig.instance().isFeatureEnabled( AEFeature.METEORITE_WORLD_GEN )) {
-			return false;
-		}
+        ChunkPos chunkPos = new ChunkPos(pos);
+        if (!WorldGenRegistry.INSTANCE.isWorldGenEnabled(WorldGenType.METEORITES, w.getWorld())) {
+            return false;
+        }
 
-		ChunkPos chunkPos = new ChunkPos( pos );
-		if (!WorldGenRegistry.INSTANCE.isWorldGenEnabled(WorldGenType.METEORITES, w.getWorld())) {
-			return false;
-		}
+        double minSqDist = Double.MAX_VALUE;
 
-		double minSqDist = Double.MAX_VALUE;
+        MeteoriteSpawnData spawnData = MeteoriteSpawnData.get(w);
 
-		MeteoriteSpawnData spawnData = MeteoriteSpawnData.get(w);
+        // near by meteorites!
+        for (final PlacedMeteoriteSettings data : spawnData.getNearByMeteorites(chunkPos.x, chunkPos.z)) {
+            minSqDist = Math.min(minSqDist, getSqDistance(data, pos));
+        }
 
-		// near by meteorites!
-		for( final PlacedMeteoriteSettings data : spawnData.getNearByMeteorites(chunkPos.x, chunkPos.z) )
-		{
-			minSqDist = Math.min( minSqDist, getSqDistance( data, pos ) );
-		}
+        final boolean isCluster = (minSqDist < 30 * 30)
+                && Platform.getRandomFloat() < AEConfig.instance().getMeteoriteClusterChance();
 
-		final boolean isCluster = ( minSqDist < 30 * 30 ) && Platform.getRandomFloat() < AEConfig.instance().getMeteoriteClusterChance();
+        if (minSqDist > AEConfig.instance().getMinMeteoriteDistanceSq() || isCluster) {
+            final int x = r.nextInt(16) + (chunkPos.x << 4);
+            final int y = AEConfig.instance().getMeteoriteMaximumSpawnHeight() + r.nextInt(20);
+            final int z = r.nextInt(16) + (chunkPos.z << 4);
 
-		if( minSqDist > AEConfig.instance().getMinMeteoriteDistanceSq() || isCluster )
-		{
-			final int x = r.nextInt( 16 ) + ( chunkPos.x << 4 );
-			final int y = AEConfig.instance().getMeteoriteMaximumSpawnHeight() + r.nextInt( 20 );
-			final int z = r.nextInt( 16 ) + ( chunkPos.z << 4 );
+            PlacedMeteoriteSettings settings = spawner.trySpawnMeteoriteAtSuitableHeight(w, x, y, z);
+            if (settings != null) {
+                // Double check that no other chunk generated a meteorite within range while we
+                // were working
+                int checkRange = isCluster ? (30 * 30) : AEConfig.instance().getMinMeteoriteDistanceSq();
+                if (spawnData.tryAddSpawnedMeteorite(settings, checkRange)) {
+                    MeteoritePlacer placer = new MeteoritePlacer(w, settings);
+                    placer.place();
+                    WorldData.instance().compassData().service().updateArea(w, chunkPos.x, chunkPos.z);
+                }
+            }
+        }
 
-			PlacedMeteoriteSettings settings = spawner.trySpawnMeteoriteAtSuitableHeight(w, x, y, z);
-			if (settings != null) {
-				// Double check that no other chunk generated a meteorite within range while we were working
-				int checkRange = isCluster ? (30*30) : AEConfig.instance().getMinMeteoriteDistanceSq();
-				if (spawnData.tryAddSpawnedMeteorite(settings, checkRange)) {
-					MeteoritePlacer placer = new MeteoritePlacer(w, settings);
-					placer.place();
-					WorldData.instance().compassData().service().updateArea( w, chunkPos.x, chunkPos.z );
-				}
-			}
-		}
+        spawnData.setGenerated(chunkPos.x, chunkPos.z);
+        return true;
+    }
 
-		spawnData.setGenerated( chunkPos.x, chunkPos.z );
-		return true;
-	}
-
-	private static double getSqDistance( PlacedMeteoriteSettings placed, BlockPos pos )
-	{
-		final int chunkX = placed.getPos().getX() - pos.getX();
-		final int chunkZ = placed.getPos().getZ() - pos.getZ();
-		return chunkX * chunkX + chunkZ * chunkZ;
-	}
+    private static double getSqDistance(PlacedMeteoriteSettings placed, BlockPos pos) {
+        final int chunkX = placed.getPos().getX() - pos.getX();
+        final int chunkZ = placed.getPos().getZ() - pos.getZ();
+        return chunkX * chunkX + chunkZ * chunkZ;
+    }
 
 }

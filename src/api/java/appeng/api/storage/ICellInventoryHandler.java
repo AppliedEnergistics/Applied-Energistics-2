@@ -23,27 +23,24 @@
 
 package appeng.api.storage;
 
-
 import javax.annotation.Nullable;
 
 import appeng.api.config.IncludeExclude;
 import appeng.api.storage.data.IAEStack;
 
+public interface ICellInventoryHandler<T extends IAEStack<T>> extends IMEInventoryHandler<T> {
 
-public interface ICellInventoryHandler<T extends IAEStack<T>> extends IMEInventoryHandler<T>
-{
+    /**
+     * Get access to the ICellInventory. Can be null for custom cells.
+     * 
+     * @return get access to the Cell Inventory.
+     */
+    @Nullable
+    ICellInventory<T> getCellInv();
 
-	/**
-	 * Get access to the ICellInventory. Can be null for custom cells.
-	 * 
-	 * @return get access to the Cell Inventory.
-	 */
-	@Nullable
-	ICellInventory<T> getCellInv();
+    boolean isPreformatted();
 
-	boolean isPreformatted();
+    boolean isFuzzy();
 
-	boolean isFuzzy();
-
-	IncludeExclude getIncludeExcludeMode();
+    IncludeExclude getIncludeExcludeMode();
 }

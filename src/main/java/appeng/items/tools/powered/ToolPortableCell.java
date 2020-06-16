@@ -18,19 +18,14 @@
 
 package appeng.items.tools.powered;
 
-
 import java.util.List;
 import java.util.Set;
 
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.ContainerMEPortableCell;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -51,146 +46,122 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEPartLocation;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerMEPortableCell;
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
-
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
 import appeng.items.contents.PortableCellViewer;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.Platform;
 
+public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell<IAEItemStack>, IGuiItem, IItemGroup {
+    public ToolPortableCell(Item.Properties props) {
+        super(AEConfig.instance().getPortableCellBattery(), props);
+    }
 
-public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell<IAEItemStack>, IGuiItem, IItemGroup
-{
-	public ToolPortableCell(Item.Properties props)
-	{
-		super( AEConfig.instance().getPortableCellBattery(), props );
-	}
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity player, final Hand hand) {
+        ContainerOpener.openContainer(ContainerMEPortableCell.TYPE, player, ContainerLocator.forHand(player, hand));
+        return new ActionResult<>(ActionResultType.SUCCESS, player.getHeldItem(hand));
+    }
 
-	@Override
-	public ActionResult<ItemStack> onItemRightClick( final World w, final PlayerEntity player, final Hand hand )
-	{
-		ContainerOpener.openContainer(ContainerMEPortableCell.TYPE, player, ContainerLocator.forHand(player, hand));
-		return new ActionResult<>( ActionResultType.SUCCESS, player.getHeldItem( hand ) );
-	}
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+            final ITooltipFlag advancedTooltips) {
+        super.addInformation(stack, world, lines, advancedTooltips);
 
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
-	{
-		super.addInformation( stack, world, lines, advancedTooltips );
+        final ICellInventoryHandler<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory(stack,
+                null, AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
 
-		final ICellInventoryHandler<IAEItemStack> cdi = AEApi.instance()
-				.registries()
-				.cell()
-				.getCellInventory( stack, null,
-						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+        AEApi.instance().client().addCellInformation(cdi, lines);
+    }
 
-		AEApi.instance().client().addCellInformation( cdi, lines );
-	}
+    @Override
+    public int getBytes(final ItemStack cellItem) {
+        return 512;
+    }
 
-	@Override
-	public int getBytes( final ItemStack cellItem )
-	{
-		return 512;
-	}
+    @Override
+    public int getBytesPerType(final ItemStack cellItem) {
+        return 8;
+    }
 
-	@Override
-	public int getBytesPerType( final ItemStack cellItem )
-	{
-		return 8;
-	}
+    @Override
+    public int getTotalTypes(final ItemStack cellItem) {
+        return 27;
+    }
 
-	@Override
-	public int getTotalTypes( final ItemStack cellItem )
-	{
-		return 27;
-	}
+    @Override
+    public boolean isBlackListed(final ItemStack cellItem, final IAEItemStack requestedAddition) {
+        return false;
+    }
 
-	@Override
-	public boolean isBlackListed( final ItemStack cellItem, final IAEItemStack requestedAddition )
-	{
-		return false;
-	}
+    @Override
+    public boolean storableInStorageCell() {
+        return false;
+    }
 
-	@Override
-	public boolean storableInStorageCell()
-	{
-		return false;
-	}
+    @Override
+    public boolean isStorageCell(final ItemStack i) {
+        return true;
+    }
 
-	@Override
-	public boolean isStorageCell( final ItemStack i )
-	{
-		return true;
-	}
+    @Override
+    public double getIdleDrain() {
+        return 0.5;
+    }
 
-	@Override
-	public double getIdleDrain()
-	{
-		return 0.5;
-	}
+    @Override
+    public IStorageChannel<IAEItemStack> getChannel() {
+        return AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
+    }
 
-	@Override
-	public IStorageChannel<IAEItemStack> getChannel()
-	{
-		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
-	}
+    @Override
+    public String getUnlocalizedGroupName(final Set<ItemStack> others, final ItemStack is) {
+        return GuiText.StorageCells.getTranslationKey();
+    }
 
-	@Override
-	public String getUnlocalizedGroupName( final Set<ItemStack> others, final ItemStack is )
-	{
-		return GuiText.StorageCells.getTranslationKey();
-	}
+    @Override
+    public boolean isEditable(final ItemStack is) {
+        return true;
+    }
 
-	@Override
-	public boolean isEditable( final ItemStack is )
-	{
-		return true;
-	}
+    @Override
+    public IItemHandler getUpgradesInventory(final ItemStack is) {
+        return new CellUpgrades(is, 2);
+    }
 
-	@Override
-	public IItemHandler getUpgradesInventory( final ItemStack is )
-	{
-		return new CellUpgrades( is, 2 );
-	}
+    @Override
+    public IItemHandler getConfigInventory(final ItemStack is) {
+        return new CellConfig(is);
+    }
 
-	@Override
-	public IItemHandler getConfigInventory( final ItemStack is )
-	{
-		return new CellConfig( is );
-	}
+    @Override
+    public FuzzyMode getFuzzyMode(final ItemStack is) {
+        final String fz = is.getOrCreateTag().getString("FuzzyMode");
+        try {
+            return FuzzyMode.valueOf(fz);
+        } catch (final Throwable t) {
+            return FuzzyMode.IGNORE_ALL;
+        }
+    }
 
-	@Override
-	public FuzzyMode getFuzzyMode( final ItemStack is )
-	{
-        final String fz = is.getOrCreateTag().getString( "FuzzyMode" );
-		try
-		{
-			return FuzzyMode.valueOf( fz );
-		}
-		catch( final Throwable t )
-		{
-			return FuzzyMode.IGNORE_ALL;
-		}
-	}
-
-	@Override
-	public void setFuzzyMode( final ItemStack is, final FuzzyMode fzMode )
-	{
+    @Override
+    public void setFuzzyMode(final ItemStack is, final FuzzyMode fzMode) {
         is.getOrCreateTag().putString("FuzzyMode", fzMode.name());
-	}
+    }
 
-	@Override
-	public IGuiItemObject getGuiObject( final ItemStack is, int playerInventorySlot, final World w, final BlockPos pos )
-	{
-		return new PortableCellViewer( is, playerInventorySlot );
-	}
+    @Override
+    public IGuiItemObject getGuiObject(final ItemStack is, int playerInventorySlot, final World w, final BlockPos pos) {
+        return new PortableCellViewer(is, playerInventorySlot);
+    }
 
-	@Override
-	public boolean shouldCauseReequipAnimation( ItemStack oldStack, ItemStack newStack, boolean slotChanged )
-	{
-		return slotChanged;
-	}
+    @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        return slotChanged;
+    }
 }

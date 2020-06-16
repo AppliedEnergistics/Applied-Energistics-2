@@ -18,13 +18,11 @@
 
 package appeng.worldgen;
 
+import java.util.Random;
+import java.util.function.Function;
 
-import appeng.api.AEApi;
-import appeng.api.definitions.IBlockDefinition;
-import appeng.api.definitions.IBlocks;
-import appeng.api.features.IWorldGen.WorldGenType;
-import appeng.core.features.registries.WorldGenRegistry;
 import com.mojang.datafixers.Dynamic;
+
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -33,83 +31,73 @@ import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.feature.ReplaceBlockConfig;
 import net.minecraft.world.gen.feature.ReplaceBlockFeature;
 
-import java.util.Random;
-import java.util.function.Function;
+import appeng.api.AEApi;
+import appeng.api.definitions.IBlockDefinition;
+import appeng.api.definitions.IBlocks;
+import appeng.api.features.IWorldGen.WorldGenType;
+import appeng.core.features.registries.WorldGenRegistry;
 
+public final class QuartzWorldGen extends ReplaceBlockFeature {
+    /*
+     * private final WorldGenMinable oreNormal; private final WorldGenMinable
+     * oreCharged;
+     */
 
-public final class QuartzWorldGen extends ReplaceBlockFeature
-{
-	/*
-	private final WorldGenMinable oreNormal;
-	private final WorldGenMinable oreCharged;
-	 */
+    public QuartzWorldGen(Function<Dynamic<?>, ? extends ReplaceBlockConfig> serializer) {
+        super(serializer);
+        final IBlocks blocks = AEApi.instance().definitions().blocks();
+        final IBlockDefinition oreDefinition = blocks.quartzOre();
+        final IBlockDefinition chargedDefinition = blocks.quartzOreCharged();
 
-	public QuartzWorldGen( Function<Dynamic<?>, ? extends ReplaceBlockConfig> serializer )
-	{
-		super(serializer);
-		final IBlocks blocks = AEApi.instance().definitions().blocks();
-		final IBlockDefinition oreDefinition = blocks.quartzOre();
-		final IBlockDefinition chargedDefinition = blocks.quartzOreCharged();
+        /*
+         * this.oreNormal = oreDefinition.maybeBlock() .map( b -> new WorldGenMinable(
+         * b.getDefaultState(), AEConfig.instance().getQuartzOresPerCluster() ) )
+         * .orElse( null ); this.oreCharged = chargedDefinition.maybeBlock() .map( b ->
+         * new WorldGenMinable( b.getDefaultState(),
+         * AEConfig.instance().getQuartzOresPerCluster() ) ) .orElse( null );
+         */
+    }
 
-		/*
-		this.oreNormal = oreDefinition.maybeBlock()
-				.map( b -> new WorldGenMinable( b.getDefaultState(), AEConfig.instance().getQuartzOresPerCluster() ) )
-				.orElse( null );
-		this.oreCharged = chargedDefinition.maybeBlock()
-				.map( b -> new WorldGenMinable( b.getDefaultState(), AEConfig.instance().getQuartzOresPerCluster() ) )
-				.orElse( null );
-		 */
-	}
+    private static boolean shouldGenerate(final boolean isCharged, final World w) {
+        return WorldGenRegistry.INSTANCE
+                .isWorldGenEnabled(isCharged ? WorldGenType.CHARGED_CERTUS_QUARTZ : WorldGenType.CERTUS_QUARTZ, w);
+    }
 
-	private static boolean shouldGenerate( final boolean isCharged, final World w )
-	{
-		return WorldGenRegistry.INSTANCE.isWorldGenEnabled( isCharged ? WorldGenType.CHARGED_CERTUS_QUARTZ : WorldGenType.CERTUS_QUARTZ, w );
-	}
-
-	@Override public boolean place( IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random r, BlockPos pos, ReplaceBlockConfig config )
-	{
-		/*
-		if( this.oreNormal == null && this.oreCharged == null )
-		{
-			return false;
-		}
-
-		World w = worldIn.getWorld();
-
-		int seaLevel = w.getSeaLevel();
-
-		ChunkPos chunkPos = new ChunkPos( pos );
-
-		if( seaLevel < 20 )
-		{
-			final int x = ( chunkPos.x << 4 ) + 8;
-			final int z = ( chunkPos.z << 4 ) + 8;
-			seaLevel = w.getHeight( Heightmap.Type.WORLD_SURFACE, x, z );
-		}
-
-		final int oreDepthMultiplier = AEConfig.instance().getQuartzOresClusterAmount() * seaLevel / 64;
-		final int scale = (int) Math.round( r.nextGaussian() * Math.sqrt( oreDepthMultiplier ) + oreDepthMultiplier );
-
-		for( int cnt = 0; cnt < ( r.nextBoolean() ? scale * 2 : scale ) / 2; ++cnt )
-		{
-			boolean isCharged = false;
-
-			if( this.oreCharged != null )
-			{
-				isCharged = r.nextFloat() > AEConfig.instance().getSpawnChargedChance();
-			}
-
-			final WorldGenMinable whichOre = isCharged ? this.oreCharged : this.oreNormal;
-			if( whichOre != null && shouldGenerate( isCharged, w ) )
-			{
-				final int cx = chunkPos.x * 16 + r.nextInt( 16 );
-				final int cy = r.nextInt( 40 * seaLevel / 64 ) + r.nextInt( 22 * seaLevel / 64 ) + 12 * seaLevel / 64;
-				final int cz = chunkPos.z * 16 + r.nextInt( 16 );
-				whichOre.generate( w, r, new BlockPos( cx, cy, cz ) );
-			}
-		}
-		 */
-		return true;
-	}
+    @Override
+    public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random r, BlockPos pos,
+            ReplaceBlockConfig config) {
+        /*
+         * if( this.oreNormal == null && this.oreCharged == null ) { return false; }
+         * 
+         * World w = worldIn.getWorld();
+         * 
+         * int seaLevel = w.getSeaLevel();
+         * 
+         * ChunkPos chunkPos = new ChunkPos( pos );
+         * 
+         * if( seaLevel < 20 ) { final int x = ( chunkPos.x << 4 ) + 8; final int z = (
+         * chunkPos.z << 4 ) + 8; seaLevel = w.getHeight( Heightmap.Type.WORLD_SURFACE,
+         * x, z ); }
+         * 
+         * final int oreDepthMultiplier =
+         * AEConfig.instance().getQuartzOresClusterAmount() * seaLevel / 64; final int
+         * scale = (int) Math.round( r.nextGaussian() * Math.sqrt( oreDepthMultiplier )
+         * + oreDepthMultiplier );
+         * 
+         * for( int cnt = 0; cnt < ( r.nextBoolean() ? scale * 2 : scale ) / 2; ++cnt )
+         * { boolean isCharged = false;
+         * 
+         * if( this.oreCharged != null ) { isCharged = r.nextFloat() >
+         * AEConfig.instance().getSpawnChargedChance(); }
+         * 
+         * final WorldGenMinable whichOre = isCharged ? this.oreCharged :
+         * this.oreNormal; if( whichOre != null && shouldGenerate( isCharged, w ) ) {
+         * final int cx = chunkPos.x * 16 + r.nextInt( 16 ); final int cy = r.nextInt(
+         * 40 * seaLevel / 64 ) + r.nextInt( 22 * seaLevel / 64 ) + 12 * seaLevel / 64;
+         * final int cz = chunkPos.z * 16 + r.nextInt( 16 ); whichOre.generate( w, r,
+         * new BlockPos( cx, cy, cz ) ); } }
+         */
+        return true;
+    }
 
 }

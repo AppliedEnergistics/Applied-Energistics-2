@@ -1,10 +1,10 @@
 package appeng.bootstrap.components;
 
+import java.util.function.Predicate;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
-
-import java.util.function.Predicate;
 
 /**
  * Sets the rendering type for a block.

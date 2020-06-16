@@ -18,10 +18,6 @@
 
 package appeng.debug;
 
-
-import appeng.core.AppEng;
-import appeng.tile.AEBaseTile;
-import appeng.util.Platform;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DirectionalPlaceContext;
 import net.minecraft.item.Item;
@@ -33,102 +29,84 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 
+import appeng.core.AppEng;
+import appeng.tile.AEBaseTile;
+import appeng.util.Platform;
 
-public class TileCubeGenerator extends AEBaseTile implements ITickableTileEntity
-{
+public class TileCubeGenerator extends AEBaseTile implements ITickableTileEntity {
 
-	private int size = 3;
-	private ItemStack is = ItemStack.EMPTY;
-	private int countdown = 20 * 10;
-	private PlayerEntity who = null;
+    private int size = 3;
+    private ItemStack is = ItemStack.EMPTY;
+    private int countdown = 20 * 10;
+    private PlayerEntity who = null;
 
-	public TileCubeGenerator(TileEntityType<?> tileEntityTypeIn) {
-		super(tileEntityTypeIn);
-	}
+    public TileCubeGenerator(TileEntityType<?> tileEntityTypeIn) {
+        super(tileEntityTypeIn);
+    }
 
-	@Override
-	public void tick()
-	{
-		if( !this.is.isEmpty() && Platform.isServer() )
-		{
-			this.countdown--;
+    @Override
+    public void tick() {
+        if (!this.is.isEmpty() && Platform.isServer()) {
+            this.countdown--;
 
-			if( this.countdown % 20 == 0 )
-			{
-				for( final PlayerEntity e : AppEng.proxy.getPlayers() )
-				{
-					e.sendMessage( new StringTextComponent( "Spawning in... " + ( this.countdown / 20 ) ) );
-				}
-			}
+            if (this.countdown % 20 == 0) {
+                for (final PlayerEntity e : AppEng.proxy.getPlayers()) {
+                    e.sendMessage(new StringTextComponent("Spawning in... " + (this.countdown / 20)));
+                }
+            }
 
-			if( this.countdown <= 0 )
-			{
-				this.spawn();
-			}
-		}
-	}
+            if (this.countdown <= 0) {
+                this.spawn();
+            }
+        }
+    }
 
-	private void spawn()
-	{
-		this.world.removeBlock(this.pos, false);
+    private void spawn() {
+        this.world.removeBlock(this.pos, false);
 
-		final Item i = this.is.getItem();
-		final Direction side = Direction.UP;
+        final Item i = this.is.getItem();
+        final Direction side = Direction.UP;
 
-		final int half = (int) Math.floor( this.size / 2 );
+        final int half = (int) Math.floor(this.size / 2);
 
-		for( int y = 0; y < this.size; y++ )
-		{
-			for( int x = -half; x < half; x++ )
-			{
-				for( int z = -half; z < half; z++ )
-				{
-					final BlockPos p = this.pos.add( x, y - 1, z );
-					ItemUseContext useContext = new DirectionalPlaceContext(
-							this.world, p, side, this.is, side.getOpposite()
-					);
-					i.onItemUse(useContext);
-				}
-			}
-		}
-	}
+        for (int y = 0; y < this.size; y++) {
+            for (int x = -half; x < half; x++) {
+                for (int z = -half; z < half; z++) {
+                    final BlockPos p = this.pos.add(x, y - 1, z);
+                    ItemUseContext useContext = new DirectionalPlaceContext(this.world, p, side, this.is,
+                            side.getOpposite());
+                    i.onItemUse(useContext);
+                }
+            }
+        }
+    }
 
-	void click( final PlayerEntity player )
-	{
-		if( Platform.isServer() )
-		{
-			final ItemStack hand = player.inventory.getCurrentItem();
-			this.who = player;
+    void click(final PlayerEntity player) {
+        if (Platform.isServer()) {
+            final ItemStack hand = player.inventory.getCurrentItem();
+            this.who = player;
 
-			if( hand.isEmpty() )
-			{
-				this.is = ItemStack.EMPTY;
+            if (hand.isEmpty()) {
+                this.is = ItemStack.EMPTY;
 
-				if( player.isCrouching() )
-				{
-					this.size--;
-				}
-				else
-				{
-					this.size++;
-				}
+                if (player.isCrouching()) {
+                    this.size--;
+                } else {
+                    this.size++;
+                }
 
-				if( this.size < 3 )
-				{
-					this.size = 3;
-				}
-				if( this.size > 64 )
-				{
-					this.size = 64;
-				}
+                if (this.size < 3) {
+                    this.size = 3;
+                }
+                if (this.size > 64) {
+                    this.size = 64;
+                }
 
-				player.sendMessage( new StringTextComponent( "Size: " + this.size ) );
-			}
-			else
-			{
-				this.countdown = 20 * 10;
-				this.is = hand;
-			}
-		}
-	}
+                player.sendMessage(new StringTextComponent("Size: " + this.size));
+            } else {
+                this.countdown = 20 * 10;
+                this.is = hand;
+            }
+        }
+    }
 }

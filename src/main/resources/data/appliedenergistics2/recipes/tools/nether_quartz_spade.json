@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:nether_quartz_shovel"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "a",
-    "b",
-    "b"
-  ],
+  "pattern": ["a", "b", "b"],
   "key": {
     "a": {
       "tag": "forge:gems/quartz"

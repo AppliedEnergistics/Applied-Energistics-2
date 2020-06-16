@@ -18,91 +18,81 @@
 
 package appeng.util;
 
-
 import java.util.Comparator;
 
 import appeng.api.config.SortDir;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.util.item.AEItemStack;
 
+public class ItemSorters {
 
-public class ItemSorters
-{
+    private static SortDir Direction = SortDir.ASCENDING;
 
-	private static SortDir Direction = SortDir.ASCENDING;
+    public static final Comparator<IAEItemStack> CONFIG_BASED_SORT_BY_NAME = (o1, o2) -> {
+        final int cmp = Platform.getItemDisplayName(o1).getString()
+                .compareToIgnoreCase(Platform.getItemDisplayName(o2).getString());
+        return applyDirection(cmp);
+    };
 
-	public static final Comparator<IAEItemStack> CONFIG_BASED_SORT_BY_NAME = ( o1, o2 ) ->
-	{
-		final int cmp = Platform.getItemDisplayName( o1 ).getString().compareToIgnoreCase( Platform.getItemDisplayName( o2 ).getString() );
-		return applyDirection( cmp );
-	};
+    public static final Comparator<IAEItemStack> CONFIG_BASED_SORT_BY_MOD = (o1, o2) -> {
+        final AEItemStack op1 = (AEItemStack) o1;
+        final AEItemStack op2 = (AEItemStack) o2;
+        int cmp = op1.getModID().compareToIgnoreCase(op2.getModID());
 
-	public static final Comparator<IAEItemStack> CONFIG_BASED_SORT_BY_MOD = ( o1, o2 ) ->
-	{
-		final AEItemStack op1 = (AEItemStack) o1;
-		final AEItemStack op2 = (AEItemStack) o2;
-		int cmp = op1.getModID().compareToIgnoreCase( op2.getModID() );
+        if (cmp == 0) {
+            cmp = Platform.getItemDisplayName(o1).getString()
+                    .compareToIgnoreCase(Platform.getItemDisplayName(o2).getString());
+        }
 
-		if( cmp == 0 )
-		{
-			cmp = Platform.getItemDisplayName( o1 ).getString().compareToIgnoreCase( Platform.getItemDisplayName( o2 ).getString() );
-		}
+        return applyDirection(cmp);
+    };
 
-		return applyDirection( cmp );
-	};
+    public static final Comparator<IAEItemStack> CONFIG_BASED_SORT_BY_SIZE = (o1, o2) -> {
+        final int cmp = Long.compare(o2.getStackSize(), o1.getStackSize());
+        return applyDirection(cmp);
+    };
 
-	public static final Comparator<IAEItemStack> CONFIG_BASED_SORT_BY_SIZE = ( o1, o2 ) ->
-	{
-		final int cmp = Long.compare( o2.getStackSize(), o1.getStackSize() );
-		return applyDirection( cmp );
-	};
+    // FIXME private static IInvTweaks api;
 
-	// FIXME private static IInvTweaks api;
+    public static final Comparator<IAEItemStack> CONFIG_BASED_SORT_BY_INV_TWEAKS = (o1, o2) -> {
+        // FIXME if( api == null )
+        // FIXME {
+        return CONFIG_BASED_SORT_BY_NAME.compare(o1, o2);
+        // FIXME }
 
-	public static final Comparator<IAEItemStack> CONFIG_BASED_SORT_BY_INV_TWEAKS = ( o1, o2 ) ->
-	{
-		// FIXME if( api == null )
-		// FIXME {
-			return CONFIG_BASED_SORT_BY_NAME.compare( o1, o2 );
-		// FIXME }
+        // FIXME final int cmp = api.compareItems( o1.createItemStack(),
+        // o2.createItemStack() );
+        // FIXME return applyDirection( cmp );
+    };
 
-		// FIXME final int cmp = api.compareItems( o1.createItemStack(), o2.createItemStack() );
-		// FIXME return applyDirection( cmp );
-	};
+    public static void init() {
+        // FIXME if( api != null )
+        // FIXME {
+        // FIXME return;
+        // FIXME }
 
-	public static void init()
-	{
-		// FIXME if( api != null )
-		// FIXME {
-		// FIXME 	return;
-		// FIXME }
+        // FIXME if( Integrations.invTweaks().isEnabled() )
+        // FIXME {
+        // FIXME api = Integrations.invTweaks();
+        // FIXME }
+        // FIXME else
+        // FIXME {
+        // FIXME api = null;
+        // FIXME }
+    }
 
-		// FIXME if( Integrations.invTweaks().isEnabled() )
-		// FIXME {
-		// FIXME 	api = Integrations.invTweaks();
-		// FIXME }
-		// FIXME else
-		// FIXME {
-		// FIXME 	api = null;
-		// FIXME }
-	}
+    private static SortDir getDirection() {
+        return Direction;
+    }
 
-	private static SortDir getDirection()
-	{
-		return Direction;
-	}
+    public static void setDirection(final SortDir direction) {
+        Direction = direction;
+    }
 
-	public static void setDirection( final SortDir direction )
-	{
-		Direction = direction;
-	}
-
-	private static int applyDirection( int cmp )
-	{
-		if( getDirection() == SortDir.ASCENDING )
-		{
-			return cmp;
-		}
-		return -cmp;
-	}
+    private static int applyDirection(int cmp) {
+        if (getDirection() == SortDir.ASCENDING) {
+            return cmp;
+        }
+        return -cmp;
+    }
 }

@@ -18,15 +18,12 @@
 
 package appeng.core.sync.network;
 
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.PacketBuffer;
 
+public interface IPacketHandler {
 
-public interface IPacketHandler
-{
-
-	void onPacketData(INetworkInfo manager, INetHandler handler, PacketBuffer packet, PlayerEntity player );
+    void onPacketData(INetworkInfo manager, INetHandler handler, PacketBuffer packet, PlayerEntity player);
 
 }

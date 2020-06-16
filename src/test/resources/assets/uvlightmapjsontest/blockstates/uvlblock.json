@@ -1,5 +1,5 @@
 {
-    "variants": {
-        "normal": { "model": "uvlightmapjsontest:uvlblock_vanilla" }
-    }
+  "variants": {
+    "normal": { "model": "uvlightmapjsontest:uvlblock_vanilla" }
+  }
 }

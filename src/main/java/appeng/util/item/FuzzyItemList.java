@@ -18,7 +18,6 @@
 
 package appeng.util.item;
 
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -29,34 +28,28 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.util.item.AESharedItemStack.Bounds;
 
+class FuzzyItemList extends AbstractItemList {
+    private final NavigableMap<AESharedItemStack, IAEItemStack> records = new TreeMap<>();
 
-class FuzzyItemList extends AbstractItemList
-{
-	private final NavigableMap<AESharedItemStack, IAEItemStack> records = new TreeMap<>();
+    @Override
+    public Collection<IAEItemStack> findFuzzy(final IAEItemStack filter, final FuzzyMode fuzzy) {
+        if (filter == null) {
+            return Collections.emptyList();
+        }
 
-	@Override
-	public Collection<IAEItemStack> findFuzzy( final IAEItemStack filter, final FuzzyMode fuzzy )
-	{
-		if( filter == null )
-		{
-			return Collections.emptyList();
-		}
+        return this.findFuzzyDamage(filter, fuzzy);
+    }
 
-		return this.findFuzzyDamage( filter, fuzzy );
-	}
+    @Override
+    Map<AESharedItemStack, IAEItemStack> getRecords() {
+        return this.records;
+    }
 
-	@Override
-	Map<AESharedItemStack, IAEItemStack> getRecords()
-	{
-		return this.records;
-	}
+    private Collection<IAEItemStack> findFuzzyDamage(final IAEItemStack filter, final FuzzyMode fuzzy) {
+        final AEItemStack itemStack = (AEItemStack) filter;
+        final Bounds bounds = itemStack.getSharedStack().getBounds(fuzzy);
 
-	private Collection<IAEItemStack> findFuzzyDamage( final IAEItemStack filter, final FuzzyMode fuzzy )
-	{
-		final AEItemStack itemStack = (AEItemStack) filter;
-		final Bounds bounds = itemStack.getSharedStack().getBounds( fuzzy );
-
-		return this.records.subMap( bounds.lower(), true, bounds.upper(), true ).descendingMap().values();
-	}
+        return this.records.subMap(bounds.lower(), true, bounds.upper(), true).descendingMap().values();
+    }
 
 }

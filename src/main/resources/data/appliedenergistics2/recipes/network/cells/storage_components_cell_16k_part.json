@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:16k_cell_component"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aba",
-    "cdc",
-    "aca"
-  ],
+  "pattern": ["aba", "cdc", "aca"],
   "key": {
     "b": {
       "item": "appliedenergistics2:calculation_processor"

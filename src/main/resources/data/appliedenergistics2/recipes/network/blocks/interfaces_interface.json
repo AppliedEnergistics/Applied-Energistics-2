@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:interface"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aba",
-    "c d",
-    "aba"
-  ],
+  "pattern": ["aba", "c d", "aba"],
   "key": {
     "d": {
       "item": "appliedenergistics2:formation_core"

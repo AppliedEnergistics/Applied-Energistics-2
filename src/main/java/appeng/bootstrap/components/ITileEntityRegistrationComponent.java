@@ -1,8 +1,9 @@
 package appeng.bootstrap.components;
 
-import appeng.bootstrap.IBootstrapComponent;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.registries.IForgeRegistry;
+
+import appeng.bootstrap.IBootstrapComponent;
 
 @FunctionalInterface
 public interface ITileEntityRegistrationComponent extends IBootstrapComponent {

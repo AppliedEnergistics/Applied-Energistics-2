@@ -18,7 +18,6 @@
 
 package appeng.integration.modules.waila.part;
 
-
 import java.util.Optional;
 
 import net.minecraft.tileentity.TileEntity;
@@ -31,7 +30,6 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.SelectedPart;
 
-
 /**
  * Accessor to access specific parts for WAILA
  *
@@ -39,34 +37,30 @@ import appeng.api.parts.SelectedPart;
  * @version rv2
  * @since rv2
  */
-public final class PartAccessor
-{
-	/**
-	 * Hits a {@link IPartHost} with {@link BlockPos}.
-	 * <p/>
-	 * You can derive the looked at {@link IPart} by doing that. If a facade is being looked at, it is
-	 * defined as being absent.
-	 *
-	 * @param te being looked at {@link TileEntity}
-	 * @param rtr type of ray-trace
-	 *
-	 * @return maybe the looked at {@link IPart}
-	 */
-	public Optional<IPart> getMaybePart( final TileEntity te, final RayTraceResult rtr )
-	{
-		if( te instanceof IPartHost && rtr instanceof BlockRayTraceResult)
-		{
-			BlockPos pos = ((BlockRayTraceResult) rtr).getPos();
-			final Vec3d position = rtr.getHitVec().add( -pos.getX(), -pos.getY(), -pos.getZ() );
-			final IPartHost host = (IPartHost) te;
-			final SelectedPart sp = host.selectPart( position );
+public final class PartAccessor {
+    /**
+     * Hits a {@link IPartHost} with {@link BlockPos}.
+     * <p/>
+     * You can derive the looked at {@link IPart} by doing that. If a facade is
+     * being looked at, it is defined as being absent.
+     *
+     * @param te  being looked at {@link TileEntity}
+     * @param rtr type of ray-trace
+     *
+     * @return maybe the looked at {@link IPart}
+     */
+    public Optional<IPart> getMaybePart(final TileEntity te, final RayTraceResult rtr) {
+        if (te instanceof IPartHost && rtr instanceof BlockRayTraceResult) {
+            BlockPos pos = ((BlockRayTraceResult) rtr).getPos();
+            final Vec3d position = rtr.getHitVec().add(-pos.getX(), -pos.getY(), -pos.getZ());
+            final IPartHost host = (IPartHost) te;
+            final SelectedPart sp = host.selectPart(position);
 
-			if( sp.part != null )
-			{
-				return Optional.of( sp.part );
-			}
-		}
+            if (sp.part != null) {
+                return Optional.of(sp.part);
+            }
+        }
 
-		return Optional.empty();
-	}
+        return Optional.empty();
+    }
 }

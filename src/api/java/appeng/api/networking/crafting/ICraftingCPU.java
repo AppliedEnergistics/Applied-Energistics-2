@@ -23,38 +23,36 @@
 
 package appeng.api.networking.crafting;
 
+import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.storage.data.IAEItemStack;
-import net.minecraft.util.text.ITextComponent;
 
+public interface ICraftingCPU extends IBaseMonitor<IAEItemStack> {
 
-public interface ICraftingCPU extends IBaseMonitor<IAEItemStack>
-{
+    /**
+     * @return true if the CPU currently has a job.
+     */
+    boolean isBusy();
 
-	/**
-	 * @return true if the CPU currently has a job.
-	 */
-	boolean isBusy();
+    /**
+     * @return the action source for the CPU.
+     */
+    IActionSource getActionSource();
 
-	/**
-	 * @return the action source for the CPU.
-	 */
-	IActionSource getActionSource();
+    /**
+     * @return the available storage in bytes
+     */
+    long getAvailableStorage();
 
-	/**
-	 * @return the available storage in bytes
-	 */
-	long getAvailableStorage();
+    /**
+     * @return the number of co-processors in the CPU.
+     */
+    int getCoProcessors();
 
-	/**
-	 * @return the number of co-processors in the CPU.
-	 */
-	int getCoProcessors();
-
-	/**
-	 * @return a null or the name of the cpu.
-	 */
-	ITextComponent getName();
+    /**
+     * @return a null or the name of the cpu.
+     */
+    ITextComponent getName();
 }

@@ -18,21 +18,19 @@
 
 package appeng.integration.modules.waila.tile;
 
-
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.text.ITextComponent;
 
-import mcp.mobius.waila.api.IPluginConfig;
 import mcp.mobius.waila.api.IDataAccessor;
+import mcp.mobius.waila.api.IPluginConfig;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.localization.WailaText;
 import appeng.integration.modules.waila.BaseWailaDataProvider;
 import appeng.tile.crafting.TileCraftingMonitorTile;
-import net.minecraft.util.text.ITextComponent;
-
 
 /**
  * Crafting-monitor provider for WAILA
@@ -41,23 +39,20 @@ import net.minecraft.util.text.ITextComponent;
  * @version rv2
  * @since rv2
  */
-public final class CraftingMonitorWailaDataProvider extends BaseWailaDataProvider
-{
+public final class CraftingMonitorWailaDataProvider extends BaseWailaDataProvider {
 
-	@Override
-	public void appendBody(List<ITextComponent> tooltip, IDataAccessor accessor, IPluginConfig config) {
-		final TileEntity te = accessor.getTileEntity();
-		if( te instanceof TileCraftingMonitorTile )
-		{
-			final TileCraftingMonitorTile monitor = (TileCraftingMonitorTile) te;
-			final IAEItemStack displayStack = monitor.getJobProgress();
+    @Override
+    public void appendBody(List<ITextComponent> tooltip, IDataAccessor accessor, IPluginConfig config) {
+        final TileEntity te = accessor.getTileEntity();
+        if (te instanceof TileCraftingMonitorTile) {
+            final TileCraftingMonitorTile monitor = (TileCraftingMonitorTile) te;
+            final IAEItemStack displayStack = monitor.getJobProgress();
 
-			if( displayStack != null )
-			{
-				final ITextComponent currentCrafting = displayStack.asItemStackRepresentation().getDisplayName();
+            if (displayStack != null) {
+                final ITextComponent currentCrafting = displayStack.asItemStackRepresentation().getDisplayName();
 
-				tooltip.add( WailaText.Crafting.textComponent().appendText(": ").appendSibling(currentCrafting) );
-			}
-		}
-	}
+                tooltip.add(WailaText.Crafting.textComponent().appendText(": ").appendSibling(currentCrafting));
+            }
+        }
+    }
 }

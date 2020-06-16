@@ -18,7 +18,6 @@
 
 package appeng.integration.modules.waila.part;
 
-
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -27,7 +26,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-
 /**
  * Tracer for players hitting blocks
  *
@@ -35,66 +33,57 @@ import net.minecraft.world.World;
  * @version rv2
  * @since rv2
  */
-public final class Tracer
-{
-	/**
-	 * Trace view of players to blocks.
-	 * Ignore all which are out of reach.
-	 *
-	 * @param world word of block
-	 * @param player player viewing block
-	 * @param pos pos of block
-	 *
-	 * @return trace movement. Can be null
-	 */
-	public RayTraceResult retraceBlock(final World world, final PlayerEntity player, BlockPos pos )
-	{
-		BlockState blockState = world.getBlockState( pos );
+public final class Tracer {
+    /**
+     * Trace view of players to blocks. Ignore all which are out of reach.
+     *
+     * @param world  word of block
+     * @param player player viewing block
+     * @param pos    pos of block
+     *
+     * @return trace movement. Can be null
+     */
+    public RayTraceResult retraceBlock(final World world, final PlayerEntity player, BlockPos pos) {
+        BlockState blockState = world.getBlockState(pos);
 
-		final Vec3d headVec = this.getCorrectedHeadVec( player );
-		final Vec3d lookVec = player.getLook( 1.0F );
-		final double reach = this.getBlockReachDistance_server( player );
-		final Vec3d endVec = headVec.add( lookVec.x * reach, lookVec.y * reach, lookVec.z * reach );
+        final Vec3d headVec = this.getCorrectedHeadVec(player);
+        final Vec3d lookVec = player.getLook(1.0F);
+        final double reach = this.getBlockReachDistance_server(player);
+        final Vec3d endVec = headVec.add(lookVec.x * reach, lookVec.y * reach, lookVec.z * reach);
 
-		return blockState.getCollisionShape(world, pos).rayTrace( headVec, endVec, pos );
-	}
+        return blockState.getCollisionShape(world, pos).rayTrace(headVec, endVec, pos);
+    }
 
-	/**
-	 * Gets the view point of a player
-	 *
-	 * @param player player with head
-	 *
-	 * @return view point of player
-	 */
-	private Vec3d getCorrectedHeadVec( final PlayerEntity player )
-	{
-		double x = player.getPosX();
-		double y = player.getPosY();
-		double z = player.getPosZ();
+    /**
+     * Gets the view point of a player
+     *
+     * @param player player with head
+     *
+     * @return view point of player
+     */
+    private Vec3d getCorrectedHeadVec(final PlayerEntity player) {
+        double x = player.getPosX();
+        double y = player.getPosY();
+        double z = player.getPosZ();
 
-		if( player.world.isRemote )
-		{
-			// compatibility with eye height changing mods
-			y += player.getEyeHeight() - player.getEyeHeight();
-		}
-		else
-		{
-			y += player.getEyeHeight();
-			if( player instanceof ServerPlayerEntity && player.isSneaking() )
-			{
-				y -= 0.08;
-			}
-		}
-		return new Vec3d( x, y, z );
-	}
+        if (player.world.isRemote) {
+            // compatibility with eye height changing mods
+            y += player.getEyeHeight() - player.getEyeHeight();
+        } else {
+            y += player.getEyeHeight();
+            if (player instanceof ServerPlayerEntity && player.isSneaking()) {
+                y -= 0.08;
+            }
+        }
+        return new Vec3d(x, y, z);
+    }
 
-	/**
-	 * @param player multi-player player
-	 *
-	 * @return block reach distance of player
-	 */
-	private double getBlockReachDistance_server( final PlayerEntity player )
-	{
-		return player.getAttribute(net.minecraft.entity.player.PlayerEntity.REACH_DISTANCE).getValue();
-	}
+    /**
+     * @param player multi-player player
+     *
+     * @return block reach distance of player
+     */
+    private double getBlockReachDistance_server(final PlayerEntity player) {
+        return player.getAttribute(net.minecraft.entity.player.PlayerEntity.REACH_DISTANCE).getValue();
+    }
 }

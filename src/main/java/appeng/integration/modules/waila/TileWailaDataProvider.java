@@ -18,16 +18,10 @@
 
 package appeng.integration.modules.waila;
 
+import java.util.List;
 
-import appeng.integration.modules.waila.tile.ChargerWailaDataProvider;
-import appeng.integration.modules.waila.tile.CraftingMonitorWailaDataProvider;
-import appeng.integration.modules.waila.tile.PowerStateWailaDataProvider;
-import appeng.integration.modules.waila.tile.PowerStorageWailaDataProvider;
 import com.google.common.collect.Lists;
-import mcp.mobius.waila.api.IComponentProvider;
-import mcp.mobius.waila.api.IDataAccessor;
-import mcp.mobius.waila.api.IPluginConfig;
-import mcp.mobius.waila.api.IServerDataProvider;
+
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -35,75 +29,76 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
-import java.util.List;
+import mcp.mobius.waila.api.IComponentProvider;
+import mcp.mobius.waila.api.IDataAccessor;
+import mcp.mobius.waila.api.IPluginConfig;
+import mcp.mobius.waila.api.IServerDataProvider;
 
+import appeng.integration.modules.waila.tile.ChargerWailaDataProvider;
+import appeng.integration.modules.waila.tile.CraftingMonitorWailaDataProvider;
+import appeng.integration.modules.waila.tile.PowerStateWailaDataProvider;
+import appeng.integration.modules.waila.tile.PowerStorageWailaDataProvider;
 
 /**
- * Delegation provider for tiles through {@link mcp.mobius.waila.api.IComponentProvider}
+ * Delegation provider for tiles through
+ * {@link mcp.mobius.waila.api.IComponentProvider}
  *
  * @author thatsIch
  * @version rv2
  * @since rv2
  */
-public final class TileWailaDataProvider implements IComponentProvider, IServerDataProvider<TileEntity>
-{
-	/**
-	 * Contains all providers
-	 */
-	private final List<BaseWailaDataProvider> providers;
+public final class TileWailaDataProvider implements IComponentProvider, IServerDataProvider<TileEntity> {
+    /**
+     * Contains all providers
+     */
+    private final List<BaseWailaDataProvider> providers;
 
-	/**
-	 * Initializes the provider list with all wanted providers
-	 */
-	public TileWailaDataProvider()
-	{
-		final BaseWailaDataProvider charger = new ChargerWailaDataProvider();
-		final BaseWailaDataProvider energyCell = new PowerStorageWailaDataProvider();
-		final BaseWailaDataProvider craftingBlock = new PowerStateWailaDataProvider();
-		final BaseWailaDataProvider craftingMonitor = new CraftingMonitorWailaDataProvider();
+    /**
+     * Initializes the provider list with all wanted providers
+     */
+    public TileWailaDataProvider() {
+        final BaseWailaDataProvider charger = new ChargerWailaDataProvider();
+        final BaseWailaDataProvider energyCell = new PowerStorageWailaDataProvider();
+        final BaseWailaDataProvider craftingBlock = new PowerStateWailaDataProvider();
+        final BaseWailaDataProvider craftingMonitor = new CraftingMonitorWailaDataProvider();
 
-		this.providers = Lists.newArrayList( charger, energyCell, craftingBlock, craftingMonitor );
-	}
+        this.providers = Lists.newArrayList(charger, energyCell, craftingBlock, craftingMonitor);
+    }
 
-	@Override
-	public ItemStack getStack( final IDataAccessor accessor, final IPluginConfig config )
-	{
-		return ItemStack.EMPTY;
-	}
+    @Override
+    public ItemStack getStack(final IDataAccessor accessor, final IPluginConfig config) {
+        return ItemStack.EMPTY;
+    }
 
-	@Override
-	public void appendHead(List<ITextComponent> currentToolTip, final IDataAccessor accessor, final IPluginConfig config )
-	{
-		for( final BaseWailaDataProvider provider : this.providers )
-		{
-			provider.appendHead(currentToolTip, accessor, config);
-		}
-	}
+    @Override
+    public void appendHead(List<ITextComponent> currentToolTip, final IDataAccessor accessor,
+            final IPluginConfig config) {
+        for (final BaseWailaDataProvider provider : this.providers) {
+            provider.appendHead(currentToolTip, accessor, config);
+        }
+    }
 
-	@Override
-	public void appendBody( List<ITextComponent> currentToolTip, final IDataAccessor accessor, final IPluginConfig config )
-	{
-		for( final BaseWailaDataProvider provider : this.providers )
-		{
-			provider.appendBody(currentToolTip, accessor, config);
-		}
-	}
+    @Override
+    public void appendBody(List<ITextComponent> currentToolTip, final IDataAccessor accessor,
+            final IPluginConfig config) {
+        for (final BaseWailaDataProvider provider : this.providers) {
+            provider.appendBody(currentToolTip, accessor, config);
+        }
+    }
 
-	@Override
-	public void appendTail( List<ITextComponent> currentToolTip, final IDataAccessor accessor, final IPluginConfig config )
-	{
-		for( final BaseWailaDataProvider provider : this.providers )
-		{
-			provider.appendTail(currentToolTip, accessor, config);
-		}
-	}
+    @Override
+    public void appendTail(List<ITextComponent> currentToolTip, final IDataAccessor accessor,
+            final IPluginConfig config) {
+        for (final BaseWailaDataProvider provider : this.providers) {
+            provider.appendTail(currentToolTip, accessor, config);
+        }
+    }
 
-	@Override
-	public void appendServerData(CompoundNBT tag, ServerPlayerEntity player, World world, TileEntity te) {
+    @Override
+    public void appendServerData(CompoundNBT tag, ServerPlayerEntity player, World world, TileEntity te) {
 
-		for( final BaseWailaDataProvider provider : this.providers )
-		{
-			provider.appendServerData(tag, player, world, te);
-		}
-	}
+        for (final BaseWailaDataProvider provider : this.providers) {
+            provider.appendServerData(tag, player, world, te);
+        }
+    }
 }

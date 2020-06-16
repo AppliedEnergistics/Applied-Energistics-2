@@ -18,99 +18,85 @@
 
 package appeng.me;
 
+import java.lang.ref.WeakReference;
+import java.util.WeakHashMap;
+
+import net.minecraft.nbt.CompoundNBT;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridStorage;
 import appeng.core.worlddata.WorldData;
-import net.minecraft.nbt.CompoundNBT;
 
-import java.lang.ref.WeakReference;
-import java.util.WeakHashMap;
+public class GridStorage implements IGridStorage {
 
+    private final long myID;
+    private final CompoundNBT data;
+    private final WeakHashMap<GridStorage, Boolean> divided = new WeakHashMap<>();
+    private WeakReference<IGrid> internalGrid = null;
 
-public class GridStorage implements IGridStorage
-{
+    /**
+     * for use with world settings
+     *
+     * @param id ID of grid storage
+     */
+    public GridStorage(final long id) {
+        this.myID = id;
+        this.data = new CompoundNBT();
+    }
 
-	private final long myID;
-	private final CompoundNBT data;
-	private final WeakHashMap<GridStorage, Boolean> divided = new WeakHashMap<>();
-	private WeakReference<IGrid> internalGrid = null;
+    /**
+     * for use with world settings
+     *
+     * @param data The Grid data.
+     * @param id   ID of grid storage
+     */
+    public GridStorage(final long id, final CompoundNBT data) {
+        this.myID = id;
+        this.data = data;
+    }
 
-	/**
-	 * for use with world settings
-	 *
-	 * @param id ID of grid storage
-	 */
-	public GridStorage( final long id )
-	{
-		this.myID = id;
-		this.data = new CompoundNBT();
-	}
+    /**
+     * fake storage.
+     */
+    public GridStorage() {
+        this.myID = 0;
+        this.data = new CompoundNBT();
+    }
 
-	/**
-	 * for use with world settings
-	 *
-	 * @param data The Grid data.
-	 * @param id ID of grid storage
-	 */
-	public GridStorage( final long id, final CompoundNBT data )
-	{
-		this.myID = id;
-		this.data = data;
-	}
+    public void saveState() {
+        final Grid currentGrid = (Grid) this.getGrid();
+        if (currentGrid != null) {
+            currentGrid.saveState();
+        }
+    }
 
-	/**
-	 * fake storage.
-	 */
-	public GridStorage()
-	{
-		this.myID = 0;
-		this.data = new CompoundNBT();
-	}
+    public IGrid getGrid() {
+        return this.internalGrid == null ? null : this.internalGrid.get();
+    }
 
-	public void saveState()
-	{
-		final Grid currentGrid = (Grid) this.getGrid();
-		if( currentGrid != null )
-		{
-			currentGrid.saveState();
-		}
-	}
+    void setGrid(final IGrid grid) {
+        this.internalGrid = new WeakReference<>(grid);
+    }
 
-	public IGrid getGrid()
-	{
-		return this.internalGrid == null ? null : this.internalGrid.get();
-	}
+    @Override
+    public CompoundNBT dataObject() {
+        return this.data;
+    }
 
-	void setGrid( final IGrid grid )
-	{
-		this.internalGrid = new WeakReference<>( grid );
-	}
+    @Override
+    public long getID() {
+        return this.myID;
+    }
 
-	@Override
-	public CompoundNBT dataObject()
-	{
-		return this.data;
-	}
+    void addDivided(final GridStorage gs) {
+        this.divided.put(gs, true);
+    }
 
-	@Override
-	public long getID()
-	{
-		return this.myID;
-	}
+    boolean hasDivided(final GridStorage myStorage) {
+        return this.divided.containsKey(myStorage);
+    }
 
-	void addDivided( final GridStorage gs )
-	{
-		this.divided.put( gs, true );
-	}
-
-	boolean hasDivided( final GridStorage myStorage )
-	{
-		return this.divided.containsKey( myStorage );
-	}
-
-	void remove()
-	{
-		WorldData.instance().storageData().destroyGridStorage( this.myID );
-	}
+    void remove() {
+        WorldData.instance().storageData().destroyGridStorage(this.myID);
+    }
 }

@@ -18,7 +18,6 @@
 
 package appeng.items.tools.powered.powersink;
 
-
 import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
@@ -33,71 +32,61 @@ import appeng.api.config.PowerUnits;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.capabilities.Capabilities;
 
-
 /**
  * The capability provider to expose chargable items to other mods.
  */
-class PoweredItemCapabilities implements ICapabilityProvider, IEnergyStorage
-{
+class PoweredItemCapabilities implements ICapabilityProvider, IEnergyStorage {
 
-	private final ItemStack is;
+    private final ItemStack is;
 
-	private final IAEItemPowerStorage item;
+    private final IAEItemPowerStorage item;
 
-	PoweredItemCapabilities( ItemStack is, IAEItemPowerStorage item )
-	{
-		this.is = is;
-		this.item = item;
-	}
+    PoweredItemCapabilities(ItemStack is, IAEItemPowerStorage item) {
+        this.is = is;
+        this.item = item;
+    }
 
-	@SuppressWarnings( "unchecked" )
-	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing )
-	{
-		if( capability == Capabilities.FORGE_ENERGY )
-		{
-			return (LazyOptional<T>) LazyOptional.of(() -> this);
-		}
-		return LazyOptional.empty();
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
+        if (capability == Capabilities.FORGE_ENERGY) {
+            return (LazyOptional<T>) LazyOptional.of(() -> this);
+        }
+        return LazyOptional.empty();
+    }
 
-	@Override
-	public int receiveEnergy( int maxReceive, boolean simulate )
-	{
-		final double convertedOffer = PowerUnits.RF.convertTo( PowerUnits.AE, maxReceive );
-		final double overflow = this.item.injectAEPower( this.is, convertedOffer, simulate ? Actionable.SIMULATE : Actionable.MODULATE );
+    @Override
+    public int receiveEnergy(int maxReceive, boolean simulate) {
+        final double convertedOffer = PowerUnits.RF.convertTo(PowerUnits.AE, maxReceive);
+        final double overflow = this.item.injectAEPower(this.is, convertedOffer,
+                simulate ? Actionable.SIMULATE : Actionable.MODULATE);
 
-		return maxReceive - (int) PowerUnits.AE.convertTo( PowerUnits.RF, overflow );
-	}
+        return maxReceive - (int) PowerUnits.AE.convertTo(PowerUnits.RF, overflow);
+    }
 
-	@Override
-	public int extractEnergy( int maxExtract, boolean simulate )
-	{
-		return 0;
-	}
+    @Override
+    public int extractEnergy(int maxExtract, boolean simulate) {
+        return 0;
+    }
 
-	@Override
-	public int getEnergyStored()
-	{
-		return (int) PowerUnits.AE.convertTo( PowerUnits.RF, this.item.getAECurrentPower( this.is ) );
-	}
+    @Override
+    public int getEnergyStored() {
+        return (int) PowerUnits.AE.convertTo(PowerUnits.RF, this.item.getAECurrentPower(this.is));
+    }
 
-	@Override
-	public int getMaxEnergyStored()
-	{
-		return (int) PowerUnits.AE.convertTo( PowerUnits.RF, this.item.getAEMaxPower( this.is ) );
-	}
+    @Override
+    public int getMaxEnergyStored() {
+        return (int) PowerUnits.AE.convertTo(PowerUnits.RF, this.item.getAEMaxPower(this.is));
+    }
 
-	@Override
-	public boolean canExtract()
-	{
-		return false;
-	}
+    @Override
+    public boolean canExtract() {
+        return false;
+    }
 
-	@Override
-	public boolean canReceive()
-	{
-		return true;
-	}
+    @Override
+    public boolean canReceive() {
+        return true;
+    }
 
 }

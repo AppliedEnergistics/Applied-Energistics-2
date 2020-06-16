@@ -18,12 +18,13 @@
 
 package appeng.client.gui.implementations;
 
-
-import appeng.client.gui.widgets.GuiActionButton;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.ActionItems;
 import appeng.api.config.Settings;
+import appeng.client.gui.widgets.GuiActionButton;
 import appeng.client.gui.widgets.GuiSettingToggleButton;
 import appeng.container.implementations.ContainerCraftingTerm;
 import appeng.container.slot.SlotCraftingMatrix;
@@ -31,53 +32,45 @@ import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.helpers.InventoryAction;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.util.text.ITextComponent;
 
+public class GuiCraftingTerm extends GuiMEMonitorable<ContainerCraftingTerm> {
 
-public class GuiCraftingTerm extends GuiMEMonitorable<ContainerCraftingTerm>
-{
+    public GuiCraftingTerm(ContainerCraftingTerm container, PlayerInventory playerInventory, ITextComponent title) {
+        super(container, playerInventory, title);
+        this.setReservedSpace(73);
+    }
 
-	public GuiCraftingTerm(ContainerCraftingTerm container, PlayerInventory playerInventory, ITextComponent title) {
-		super(container, playerInventory, title);
-		this.setReservedSpace( 73 );
-	}
+    private void clear() {
+        Slot s = null;
+        for (final Object j : this.container.inventorySlots) {
+            if (j instanceof SlotCraftingMatrix) {
+                s = (Slot) j;
+            }
+        }
 
-	private void clear() {
-		Slot s = null;
-		for( final Object j : this.container.inventorySlots )
-		{
-			if( j instanceof SlotCraftingMatrix )
-			{
-				s = (Slot) j;
-			}
-		}
+        if (s != null) {
+            final PacketInventoryAction p = new PacketInventoryAction(InventoryAction.MOVE_REGION, s.slotNumber, 0);
+            NetworkHandler.instance().sendToServer(p);
+        }
+    }
 
-		if( s != null )
-		{
-			final PacketInventoryAction p = new PacketInventoryAction( InventoryAction.MOVE_REGION, s.slotNumber, 0 );
-			NetworkHandler.instance().sendToServer( p );
-		}
-	}
+    @Override
+    public void init() {
+        super.init();
+        GuiActionButton clearBtn = this.addButton(new GuiActionButton(this.guiLeft + 92, this.guiTop + this.ySize - 156,
+                ActionItems.STASH, btn -> clear()));
+        clearBtn.setHalfSize(true);
+    }
 
-	@Override
-	public void init()
-	{
-		super.init();
-		GuiActionButton clearBtn = this.addButton( new GuiActionButton( this.guiLeft + 92, this.guiTop + this.ySize - 156, ActionItems.STASH, btn -> clear() ));
-		clearBtn.setHalfSize( true );
-	}
+    @Override
+    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+        super.drawFG(offsetX, offsetY, mouseX, mouseY);
+        this.font.drawString(GuiText.CraftingTerminal.getLocal(), 8, this.ySize - 96 + 1 - this.getReservedSpace(),
+                4210752);
+    }
 
-	@Override
-	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
-	{
-		super.drawFG( offsetX, offsetY, mouseX, mouseY );
-		this.font.drawString( GuiText.CraftingTerminal.getLocal(), 8, this.ySize - 96 + 1 - this.getReservedSpace(), 4210752 );
-	}
-
-	@Override
-	protected String getBackground()
-	{
-		return "guis/crafting.png";
-	}
+    @Override
+    protected String getBackground() {
+        return "guis/crafting.png";
+    }
 }

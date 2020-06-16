@@ -2,13 +2,15 @@ package appeng.client.render.crafting;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
+
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModelLoader;
 
 /**
- * Provides our custom {@link EncodedPatternBakedModel encoded pattern item model}.
+ * Provides our custom {@link EncodedPatternBakedModel encoded pattern item
+ * model}.
  */
 public class EncodedPatternModelLoader implements IModelLoader<EncodedPatternModel> {
 

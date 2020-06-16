@@ -18,32 +18,29 @@
 
 package appeng.items.parts;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.AEColor;
 import appeng.bootstrap.IItemRendering;
 import appeng.bootstrap.ItemRenderingCustomizer;
 import appeng.client.render.StaticItemColor;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
+public class ItemPartRendering extends ItemRenderingCustomizer {
 
-public class ItemPartRendering extends ItemRenderingCustomizer
-{
+    private final AEColor color;
 
-	private final AEColor color;
+    public ItemPartRendering() {
+        this.color = AEColor.TRANSPARENT;
+    }
 
-	public ItemPartRendering() {
-		this.color = AEColor.TRANSPARENT;
-	}
+    public ItemPartRendering(AEColor color) {
+        this.color = color;
+    }
 
-	public ItemPartRendering(AEColor color) {
-		this.color = color;
-	}
-
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public void customize( IItemRendering rendering )
-	{
-		rendering.color( new StaticItemColor(color) );
-	}
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void customize(IItemRendering rendering) {
+        rendering.color(new StaticItemColor(color));
+    }
 }

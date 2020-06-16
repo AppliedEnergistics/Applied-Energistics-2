@@ -18,13 +18,13 @@
 
 package appeng.tile.powersink;
 
-
 import java.util.EnumSet;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
 
 import com.google.common.collect.ImmutableSet;
+
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
@@ -41,262 +41,223 @@ import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
 import appeng.capabilities.Capabilities;
 import appeng.tile.AEBaseInvTile;
 
+public abstract class AEBasePoweredTile extends AEBaseInvTile implements IAEPowerStorage, IExternalPowerSink {
 
-public abstract class AEBasePoweredTile extends AEBaseInvTile implements IAEPowerStorage, IExternalPowerSink
-{
+    // values that determine general function, are set by inheriting classes if
+    // needed. These should generally remain static.
+    private double internalMaxPower = 10000;
+    private boolean internalPublicPowerStorage = false;
+    private AccessRestriction internalPowerFlow = AccessRestriction.READ_WRITE;
+    // the current power buffer.
+    private double internalCurrentPower = 0;
+    private static final Set<Direction> ALL_SIDES = ImmutableSet.copyOf(EnumSet.allOf(Direction.class));
+    private Set<Direction> internalPowerSides = ALL_SIDES;
+    private final IEnergyStorage forgeEnergyAdapter;
+    // Cache the optional to not continuously re-allocate it or the supplier
+    private final LazyOptional<IEnergyStorage> forgeEnergyAdapterOptional;
 
-	// values that determine general function, are set by inheriting classes if
-	// needed. These should generally remain static.
-	private double internalMaxPower = 10000;
-	private boolean internalPublicPowerStorage = false;
-	private AccessRestriction internalPowerFlow = AccessRestriction.READ_WRITE;
-	// the current power buffer.
-	private double internalCurrentPower = 0;
-	private static final Set<Direction> ALL_SIDES = ImmutableSet.copyOf(EnumSet.allOf( Direction.class ));
-	private Set<Direction> internalPowerSides = ALL_SIDES;
-	private final IEnergyStorage forgeEnergyAdapter;
-	// Cache the optional to not continuously re-allocate it or the supplier
-	private final LazyOptional<IEnergyStorage> forgeEnergyAdapterOptional;
+    // IC2 private IC2PowerSink ic2Sink;
 
-	// IC2 private IC2PowerSink ic2Sink;
+    public AEBasePoweredTile(TileEntityType<?> tileEntityTypeIn) {
+        super(tileEntityTypeIn);
+        this.forgeEnergyAdapter = new ForgeEnergyAdapter(this);
+        this.forgeEnergyAdapterOptional = LazyOptional.of(() -> forgeEnergyAdapter);
+        // IC2 this.ic2Sink = Integrations.ic2().createPowerSink( this, this );
+        // IC2 this.ic2Sink.setValidFaces( this.internalPowerSides );
+    }
 
-	public AEBasePoweredTile(TileEntityType<?> tileEntityTypeIn) {
-		super(tileEntityTypeIn);
-		this.forgeEnergyAdapter = new ForgeEnergyAdapter( this );
-		this.forgeEnergyAdapterOptional = LazyOptional.of(() -> forgeEnergyAdapter);
-		// IC2 this.ic2Sink = Integrations.ic2().createPowerSink( this, this );
-		// IC2 this.ic2Sink.setValidFaces( this.internalPowerSides );
-	}
+    protected final Set<Direction> getPowerSides() {
+        return this.internalPowerSides;
+    }
 
-	protected final Set<Direction> getPowerSides()
-	{
-		return this.internalPowerSides;
-	}
+    protected void setPowerSides(final Set<Direction> sides) {
+        this.internalPowerSides = ImmutableSet.copyOf(sides);
+        // IC2 this.ic2Sink.setValidFaces( sides );
+        // trigger re-calc!
+    }
 
-	protected void setPowerSides( final Set<Direction> sides )
-	{
-		this.internalPowerSides = ImmutableSet.copyOf(sides);
-		// IC2 this.ic2Sink.setValidFaces( sides );
-		// trigger re-calc!
-	}
+    @Override
+    public CompoundNBT write(final CompoundNBT data) {
+        super.write(data);
+        data.putDouble("internalCurrentPower", this.getInternalCurrentPower());
+        return data;
+    }
 
-	@Override
-	public CompoundNBT write(final CompoundNBT data )
-	{
-		super.write( data );
-		data.putDouble("internalCurrentPower", this.getInternalCurrentPower());
-		return data;
-	}
+    @Override
+    public void read(final CompoundNBT data) {
+        super.read(data);
+        this.setInternalCurrentPower(data.getDouble("internalCurrentPower"));
+    }
 
-	@Override
-	public void read(final CompoundNBT data )
-	{
-		super.read( data );
-		this.setInternalCurrentPower( data.getDouble( "internalCurrentPower" ) );
-	}
+    @Override
+    public final double getExternalPowerDemand(final PowerUnits externalUnit, final double maxPowerRequired) {
+        return PowerUnits.AE.convertTo(externalUnit,
+                Math.max(0.0, this.getFunnelPowerDemand(externalUnit.convertTo(PowerUnits.AE, maxPowerRequired))));
+    }
 
-	@Override
-	public final double getExternalPowerDemand( final PowerUnits externalUnit, final double maxPowerRequired )
-	{
-		return PowerUnits.AE.convertTo( externalUnit, Math.max( 0.0, this.getFunnelPowerDemand( externalUnit.convertTo( PowerUnits.AE, maxPowerRequired ) ) ) );
-	}
+    protected double getFunnelPowerDemand(final double maxRequired) {
+        return this.getInternalMaxPower() - this.getInternalCurrentPower();
+    }
 
-	protected double getFunnelPowerDemand( final double maxRequired )
-	{
-		return this.getInternalMaxPower() - this.getInternalCurrentPower();
-	}
+    @Override
+    public final double injectExternalPower(final PowerUnits input, final double amt, Actionable mode) {
+        return PowerUnits.AE.convertTo(input, this.funnelPowerIntoStorage(input.convertTo(PowerUnits.AE, amt), mode));
+    }
 
-	@Override
-	public final double injectExternalPower( final PowerUnits input, final double amt, Actionable mode )
-	{
-		return PowerUnits.AE.convertTo( input, this.funnelPowerIntoStorage( input.convertTo( PowerUnits.AE, amt ), mode ) );
-	}
+    protected double funnelPowerIntoStorage(final double power, final Actionable mode) {
+        return this.injectAEPower(power, mode);
+    }
 
-	protected double funnelPowerIntoStorage( final double power, final Actionable mode )
-	{
-		return this.injectAEPower( power, mode );
-	}
+    @Override
+    public final double injectAEPower(double amt, final Actionable mode) {
+        if (amt < 0.000001) {
+            return 0;
+        }
 
-	@Override
-	public final double injectAEPower( double amt, final Actionable mode )
-	{
-		if( amt < 0.000001 )
-		{
-			return 0;
-		}
+        final double required = this.getAEMaxPower() - this.getAECurrentPower();
+        final double insertable = Math.min(required, amt);
 
-		final double required = this.getAEMaxPower() - this.getAECurrentPower();
-		final double insertable = Math.min( required, amt );
+        if (mode == Actionable.MODULATE) {
+            if (this.getInternalCurrentPower() < 0.01 && insertable > 0.01) {
+                this.PowerEvent(PowerEventType.PROVIDE_POWER);
+            }
 
-		if( mode == Actionable.MODULATE )
-		{
-			if( this.getInternalCurrentPower() < 0.01 && insertable > 0.01 )
-			{
-				this.PowerEvent( PowerEventType.PROVIDE_POWER );
-			}
+            this.setInternalCurrentPower(this.getInternalCurrentPower() + insertable);
+        }
 
-			this.setInternalCurrentPower( this.getInternalCurrentPower() + insertable );
-		}
+        return amt - insertable;
+    }
 
-		return amt - insertable;
-	}
+    protected void PowerEvent(final PowerEventType x) {
+        // nothing.
+    }
 
-	protected void PowerEvent( final PowerEventType x )
-	{
-		// nothing.
-	}
+    @Override
+    public final double getAEMaxPower() {
+        return this.getInternalMaxPower();
+    }
 
-	@Override
-	public final double getAEMaxPower()
-	{
-		return this.getInternalMaxPower();
-	}
+    @Override
+    public final double getAECurrentPower() {
+        return this.getInternalCurrentPower();
+    }
 
-	@Override
-	public final double getAECurrentPower()
-	{
-		return this.getInternalCurrentPower();
-	}
+    @Override
+    public final boolean isAEPublicPowerStorage() {
+        return this.isInternalPublicPowerStorage();
+    }
 
-	@Override
-	public final boolean isAEPublicPowerStorage()
-	{
-		return this.isInternalPublicPowerStorage();
-	}
+    @Override
+    public final AccessRestriction getPowerFlow() {
+        return this.getInternalPowerFlow();
+    }
 
-	@Override
-	public final AccessRestriction getPowerFlow()
-	{
-		return this.getInternalPowerFlow();
-	}
+    @Override
+    public final double extractAEPower(final double amt, final Actionable mode, final PowerMultiplier multiplier) {
+        return multiplier.divide(this.extractAEPower(multiplier.multiply(amt), mode));
+    }
 
-	@Override
-	public final double extractAEPower( final double amt, final Actionable mode, final PowerMultiplier multiplier )
-	{
-		return multiplier.divide( this.extractAEPower( multiplier.multiply( amt ), mode ) );
-	}
+    protected double extractAEPower(double amt, final Actionable mode) {
+        if (mode == Actionable.SIMULATE) {
+            if (this.getInternalCurrentPower() > amt) {
+                return amt;
+            }
+            return this.getInternalCurrentPower();
+        }
 
-	protected double extractAEPower( double amt, final Actionable mode )
-	{
-		if( mode == Actionable.SIMULATE )
-		{
-			if( this.getInternalCurrentPower() > amt )
-			{
-				return amt;
-			}
-			return this.getInternalCurrentPower();
-		}
+        final boolean wasFull = this.getInternalCurrentPower() >= this.getInternalMaxPower() - 0.001;
+        if (wasFull && amt > 0.001) {
+            this.PowerEvent(PowerEventType.REQUEST_POWER);
+        }
 
-		final boolean wasFull = this.getInternalCurrentPower() >= this.getInternalMaxPower() - 0.001;
-		if( wasFull && amt > 0.001 )
-		{
-			this.PowerEvent( PowerEventType.REQUEST_POWER );
-		}
+        if (this.getInternalCurrentPower() > amt) {
+            this.setInternalCurrentPower(this.getInternalCurrentPower() - amt);
+            return amt;
+        }
 
-		if( this.getInternalCurrentPower() > amt )
-		{
-			this.setInternalCurrentPower( this.getInternalCurrentPower() - amt );
-			return amt;
-		}
+        amt = this.getInternalCurrentPower();
+        this.setInternalCurrentPower(0);
+        return amt;
+    }
 
-		amt = this.getInternalCurrentPower();
-		this.setInternalCurrentPower( 0 );
-		return amt;
-	}
+    public double getInternalCurrentPower() {
+        return this.internalCurrentPower;
+    }
 
-	public double getInternalCurrentPower()
-	{
-		return this.internalCurrentPower;
-	}
+    public void setInternalCurrentPower(final double internalCurrentPower) {
+        this.internalCurrentPower = internalCurrentPower;
+    }
 
-	public void setInternalCurrentPower( final double internalCurrentPower )
-	{
-		this.internalCurrentPower = internalCurrentPower;
-	}
+    public double getInternalMaxPower() {
+        return this.internalMaxPower;
+    }
 
-	public double getInternalMaxPower()
-	{
-		return this.internalMaxPower;
-	}
+    public void setInternalMaxPower(final double internalMaxPower) {
+        this.internalMaxPower = internalMaxPower;
+    }
 
-	public void setInternalMaxPower( final double internalMaxPower )
-	{
-		this.internalMaxPower = internalMaxPower;
-	}
+    private boolean isInternalPublicPowerStorage() {
+        return this.internalPublicPowerStorage;
+    }
 
-	private boolean isInternalPublicPowerStorage()
-	{
-		return this.internalPublicPowerStorage;
-	}
+    public void setInternalPublicPowerStorage(final boolean internalPublicPowerStorage) {
+        this.internalPublicPowerStorage = internalPublicPowerStorage;
+    }
 
-	public void setInternalPublicPowerStorage( final boolean internalPublicPowerStorage )
-	{
-		this.internalPublicPowerStorage = internalPublicPowerStorage;
-	}
+    private AccessRestriction getInternalPowerFlow() {
+        return this.internalPowerFlow;
+    }
 
-	private AccessRestriction getInternalPowerFlow()
-	{
-		return this.internalPowerFlow;
-	}
+    public void setInternalPowerFlow(final AccessRestriction internalPowerFlow) {
+        this.internalPowerFlow = internalPowerFlow;
+    }
 
-	public void setInternalPowerFlow( final AccessRestriction internalPowerFlow )
-	{
-		this.internalPowerFlow = internalPowerFlow;
-	}
+    @Override
+    public void onReady() {
+        super.onReady();
 
-	@Override
-	public void onReady()
-	{
-		super.onReady();
+        // IC2 this.ic2Sink.onLoad();
+    }
 
-		// IC2 this.ic2Sink.onLoad();
-	}
+    @Override
+    public void onChunkUnloaded() {
+        super.onChunkUnloaded();
 
+        // IC2 this.ic2Sink.onChunkUnloaded();
+    }
 
+    @Override
+    public void remove() {
+        super.remove();
 
-	@Override
-	public void onChunkUnloaded()
-	{
-		super.onChunkUnloaded();
+        // IC2 this.ic2Sink.invalidate();
+    }
 
-		// IC2 this.ic2Sink.onChunkUnloaded();
-	}
+    @SuppressWarnings("unchecked")
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability) {
 
-	@Override
-	public void remove()
-	{
-		super.remove();
+        if (capability == Capabilities.FORGE_ENERGY) {
+            if (this.getPowerSides().equals(ALL_SIDES)) {
+                return (LazyOptional<T>) this.forgeEnergyAdapterOptional;
+            }
+        }
 
-		// IC2 this.ic2Sink.invalidate();
-	}
+        return super.getCapability(capability);
 
-	@SuppressWarnings("unchecked")
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability) {
+    }
 
-		if( capability == Capabilities.FORGE_ENERGY ) {
-			if (this.getPowerSides().equals(ALL_SIDES)) {
-				return (LazyOptional<T>) this.forgeEnergyAdapterOptional;
-			}
-		}
-
-		return super.getCapability( capability );
-
-	}
-
-	@SuppressWarnings("unchecked")
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {
-		if( capability == Capabilities.FORGE_ENERGY )
-		{
-			if( this.getPowerSides().contains( facing ) )
-			{
-				return (LazyOptional<T>) this.forgeEnergyAdapterOptional;
-			}
-		}
-		return super.getCapability( capability, facing );
-	}
+    @SuppressWarnings("unchecked")
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {
+        if (capability == Capabilities.FORGE_ENERGY) {
+            if (this.getPowerSides().contains(facing)) {
+                return (LazyOptional<T>) this.forgeEnergyAdapterOptional;
+            }
+        }
+        return super.getCapability(capability, facing);
+    }
 
 }

@@ -18,20 +18,14 @@
 
 package appeng.block.misc;
 
-
 import javax.annotation.Nullable;
 
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.ContainerFormationPlane;
-import appeng.container.implementations.ContainerSecurityStation;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-
-import net.minecraft.state.BooleanProperty;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -43,53 +37,51 @@ import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
-
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerFormationPlane;
+import appeng.container.implementations.ContainerSecurityStation;
 import appeng.tile.misc.TileSecurityStation;
 import appeng.util.Platform;
 
+public class BlockSecurityStation extends AEBaseTileBlock<TileSecurityStation> {
 
-public class BlockSecurityStation extends AEBaseTileBlock<TileSecurityStation>
-{
+    private static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
-	private static final BooleanProperty POWERED = BooleanProperty.create( "powered" );
+    public BlockSecurityStation() {
+        super(defaultProps(Material.IRON));
 
-	public BlockSecurityStation()
-	{
-		super( defaultProps(Material.IRON) );
+        this.setDefaultState(this.getDefaultState().with(POWERED, false));
+    }
 
-		this.setDefaultState( this.getDefaultState().with( POWERED, false ) );
-	}
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
+        builder.add(POWERED);
+    }
 
-	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-		super.fillStateContainer(builder);
-		builder.add(POWERED);
-	}
+    @Override
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, TileSecurityStation te) {
+        return currentState.with(POWERED, te.isActive());
+    }
 
-	@Override
-	protected BlockState updateBlockStateFromTileEntity(BlockState currentState, TileSecurityStation te) {
-		return currentState.with( POWERED, te.isActive() );
-	}
+    @Override
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+        if (p.isCrouching()) {
+            return ActionResultType.PASS;
+        }
 
-	@Override
-	public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit)
-	{
-		if( p.isCrouching() )
-		{
-			return ActionResultType.PASS;
-		}
+        final TileSecurityStation tg = this.getTileEntity(w, pos);
+        if (tg != null) {
+            if (w.isRemote()) {
+                return ActionResultType.SUCCESS;
+            }
 
-		final TileSecurityStation tg = this.getTileEntity( w, pos );
-		if( tg != null )
-		{
-			if( w.isRemote() )
-			{
-				return ActionResultType.SUCCESS;
-			}
-
-			ContainerOpener.openContainer(ContainerSecurityStation.TYPE, p, ContainerLocator.forTileEntitySide(tg, hit.getFace()));
-			return ActionResultType.SUCCESS;
-		}
-		return ActionResultType.PASS;
-	}
+            ContainerOpener.openContainer(ContainerSecurityStation.TYPE, p,
+                    ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+            return ActionResultType.SUCCESS;
+        }
+        return ActionResultType.PASS;
+    }
 }

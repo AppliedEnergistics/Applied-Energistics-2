@@ -18,6 +18,7 @@
 
 package appeng.tile.networking;
 
+import net.minecraft.tileentity.TileEntityType;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -26,56 +27,46 @@ import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.tile.grid.AENetworkTile;
-import net.minecraft.tileentity.TileEntityType;
 
+public class TileCreativeEnergyCell extends AENetworkTile implements IAEPowerStorage {
 
-public class TileCreativeEnergyCell extends AENetworkTile implements IAEPowerStorage
-{
+    public TileCreativeEnergyCell(TileEntityType<?> tileEntityTypeIn) {
+        super(tileEntityTypeIn);
+        this.getProxy().setIdlePowerUsage(0);
+    }
 
-	public TileCreativeEnergyCell(TileEntityType<?> tileEntityTypeIn) {
-		super(tileEntityTypeIn);
-		this.getProxy().setIdlePowerUsage( 0 );
-	}
+    @Override
+    public AECableType getCableConnectionType(final AEPartLocation dir) {
+        return AECableType.COVERED;
+    }
 
-	@Override
-	public AECableType getCableConnectionType( final AEPartLocation dir )
-	{
-		return AECableType.COVERED;
-	}
+    @Override
+    public double injectAEPower(final double amt, final Actionable mode) {
+        return 0;
+    }
 
-	@Override
-	public double injectAEPower( final double amt, final Actionable mode )
-	{
-		return 0;
-	}
+    @Override
+    public double getAEMaxPower() {
+        return Long.MAX_VALUE / 10000;
+    }
 
-	@Override
-	public double getAEMaxPower()
-	{
-		return Long.MAX_VALUE / 10000;
-	}
+    @Override
+    public double getAECurrentPower() {
+        return Long.MAX_VALUE / 10000;
+    }
 
-	@Override
-	public double getAECurrentPower()
-	{
-		return Long.MAX_VALUE / 10000;
-	}
+    @Override
+    public boolean isAEPublicPowerStorage() {
+        return true;
+    }
 
-	@Override
-	public boolean isAEPublicPowerStorage()
-	{
-		return true;
-	}
+    @Override
+    public AccessRestriction getPowerFlow() {
+        return AccessRestriction.READ_WRITE;
+    }
 
-	@Override
-	public AccessRestriction getPowerFlow()
-	{
-		return AccessRestriction.READ_WRITE;
-	}
-
-	@Override
-	public double extractAEPower( final double amt, final Actionable mode, final PowerMultiplier pm )
-	{
-		return amt;
-	}
+    @Override
+    public double extractAEPower(final double amt, final Actionable mode, final PowerMultiplier pm) {
+        return amt;
+    }
 }

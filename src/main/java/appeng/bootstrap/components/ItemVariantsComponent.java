@@ -18,7 +18,6 @@
 
 package appeng.bootstrap.components;
 
-
 import java.util.Collection;
 
 import net.minecraft.item.Item;
@@ -27,24 +26,20 @@ import net.minecraftforge.api.distmarker.Dist;
 
 import appeng.bootstrap.IModelRegistry;
 
+public class ItemVariantsComponent implements IModelRegistrationComponent {
 
-public class ItemVariantsComponent implements IModelRegistrationComponent
-{
+    private final Item item;
 
-	private final Item item;
+    private final Collection<ResourceLocation> resources;
 
-	private final Collection<ResourceLocation> resources;
+    public ItemVariantsComponent(Item item, Collection<ResourceLocation> resources) {
+        this.item = item;
+        this.resources = resources;
+    }
 
-	public ItemVariantsComponent( Item item, Collection<ResourceLocation> resources )
-	{
-		this.item = item;
-		this.resources = resources;
-	}
-
-	@Override
-	public void modelRegistration( Dist dist, IModelRegistry registry )
-	{
-		ResourceLocation[] resourceArr = this.resources.toArray( new ResourceLocation[0] );
-		registry.registerItemVariants( this.item, resourceArr );
-	}
+    @Override
+    public void modelRegistration(Dist dist, IModelRegistry registry) {
+        ResourceLocation[] resourceArr = this.resources.toArray(new ResourceLocation[0]);
+        registry.registerItemVariants(this.item, resourceArr);
+    }
 }

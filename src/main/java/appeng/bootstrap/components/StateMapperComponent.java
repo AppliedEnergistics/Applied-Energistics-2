@@ -18,19 +18,16 @@
 
 package appeng.bootstrap.components;
 
-
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 
 import appeng.bootstrap.IModelRegistry;
 
-
 /**
  * Registers a custom state mapper for a given block.
  */
-public class StateMapperComponent implements IModelRegistrationComponent
-{
+public class StateMapperComponent implements IModelRegistrationComponent {
 
 // FIXME	private final Block block;
 
@@ -42,14 +39,15 @@ public class StateMapperComponent implements IModelRegistrationComponent
 // FIXME		this.stateMapper = stateMapper;
 // FIXME	}
 
-	@Override
-	public void modelRegistration( Dist dist, IModelRegistry registry )
-	{
-	// FIXME	registry.setCustomStateMapper( this.block, this.stateMapper );
-	// FIXME	if( this.stateMapper instanceof IResourceManagerReloadListener )
-	// FIXME	{
-	// FIXME		( (IReloadableResourceManager) Minecraft.getInstance().getResourceManager() )
-	// FIXME				.registerReloadListener( (IResourceManagerReloadListener) this.stateMapper );
-	// FIXME	}
-	}
+    @Override
+    public void modelRegistration(Dist dist, IModelRegistry registry) {
+        // FIXME registry.setCustomStateMapper( this.block, this.stateMapper );
+        // FIXME if( this.stateMapper instanceof IResourceManagerReloadListener )
+        // FIXME {
+        // FIXME ( (IReloadableResourceManager)
+        // Minecraft.getInstance().getResourceManager() )
+        // FIXME .registerReloadListener( (IResourceManagerReloadListener)
+        // this.stateMapper );
+        // FIXME }
+    }
 }

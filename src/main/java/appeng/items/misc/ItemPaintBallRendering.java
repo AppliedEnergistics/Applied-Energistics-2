@@ -18,46 +18,39 @@
 
 package appeng.items.misc;
 
-
-
 import appeng.api.util.AEColor;
 import appeng.bootstrap.IItemRendering;
 import appeng.bootstrap.ItemRenderingCustomizer;
 
+public class ItemPaintBallRendering extends ItemRenderingCustomizer {
 
-public class ItemPaintBallRendering extends ItemRenderingCustomizer
-{
+    private final boolean lumen;
 
-	private final boolean lumen;
+    private final AEColor color;
 
-	private final AEColor color;
+    public ItemPaintBallRendering(AEColor color, boolean lumen) {
+        this.lumen = lumen;
+        this.color = color;
+    }
 
-	public ItemPaintBallRendering(AEColor color, boolean lumen) {
-		this.lumen = lumen;
-		this.color = color;
-	}
+    @Override
+    public void customize(IItemRendering rendering) {
+        final int colorValue = lumen ? color.mediumVariant : color.mediumVariant;
+        final int r = (colorValue >> 16) & 0xff;
+        final int g = (colorValue >> 8) & 0xff;
+        final int b = (colorValue) & 0xff;
 
-	@Override
-	public void customize( IItemRendering rendering )
-	{
-		final int colorValue = lumen ? color.mediumVariant : color.mediumVariant;
-		final int r = ( colorValue >> 16 ) & 0xff;
-		final int g = ( colorValue >> 8 ) & 0xff;
-		final int b = ( colorValue ) & 0xff;
+        int renderColor;
+        if (lumen) {
+            final float fail = 0.7f;
+            final int full = (int) (255 * 0.3);
+            renderColor = (int) (full + r * fail) << 16 | (int) (full + g * fail) << 8 | (int) (full + b * fail)
+                    | 0xff << 24;
+        } else {
+            renderColor = r << 16 | g << 8 | b | 0xff << 24;
+        }
 
-		int renderColor;
-		if( lumen )
-		{
-			final float fail = 0.7f;
-			final int full = (int) ( 255 * 0.3 );
-			renderColor = (int) ( full + r * fail ) << 16 | (int) ( full + g * fail ) << 8 | (int) ( full + b * fail ) | 0xff << 24;
-		}
-		else
-		{
-			renderColor = r << 16 | g << 8 | b | 0xff << 24;
-		}
-
-		rendering.color( (is, tintIndex) -> renderColor );
-	}
+        rendering.color((is, tintIndex) -> renderColor);
+    }
 
 }

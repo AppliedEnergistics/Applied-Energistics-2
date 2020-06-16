@@ -18,26 +18,21 @@
 
 package appeng.util.inv;
 
-
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraftforge.items.ItemStackHandler;
 
+public class WrapperCursorItemHandler extends ItemStackHandler {
+    private final PlayerInventory inv;
 
-public class WrapperCursorItemHandler extends ItemStackHandler
-{
-	private final PlayerInventory inv;
+    public WrapperCursorItemHandler(PlayerInventory PlayerInventory) {
+        super(1);
 
-	public WrapperCursorItemHandler( PlayerInventory PlayerInventory )
-	{
-		super( 1 );
+        this.inv = PlayerInventory;
+        this.setStackInSlot(0, PlayerInventory.getItemStack());
+    }
 
-		this.inv = PlayerInventory;
-		this.setStackInSlot( 0, PlayerInventory.getItemStack() );
-	}
-
-	@Override
-	protected void onContentsChanged( int slot )
-	{
-		this.inv.setItemStack( this.getStackInSlot( slot ) );
-	}
+    @Override
+    protected void onContentsChanged(int slot) {
+        this.inv.setItemStack(this.getStackInSlot(slot));
+    }
 }

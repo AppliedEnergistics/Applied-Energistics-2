@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:nether_quartz_axe"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aa",
-    "ab",
-    " b"
-  ],
+  "pattern": ["aa", "ab", " b"],
   "key": {
     "a": {
       "tag": "forge:gems/quartz"

@@ -23,7 +23,6 @@
 
 package appeng.api.parts;
 
-
 import java.util.Set;
 
 import net.minecraft.tileentity.TileEntity;
@@ -32,74 +31,71 @@ import net.minecraft.util.Direction;
 
 import appeng.api.util.AEPartLocation;
 
-
 /**
- * All Layers must extends this, this get part implementation is provided to interface with the parts, however a real
- * implementation will be used at runtime.
+ * All Layers must extends this, this get part implementation is provided to
+ * interface with the parts, however a real implementation will be used at
+ * runtime.
  *
  * TODO: Consider removing and replacing with capabilities.
  */
 public abstract class LayerBase extends TileEntity // implements IPartHost
 {
 
-	public LayerBase( TileEntityType<?> tileEntityTypeIn )
-	{
-		super( tileEntityTypeIn );
-		// TODO Auto-generated constructor stub
-	}
+    public LayerBase(TileEntityType<?> tileEntityTypeIn) {
+        super(tileEntityTypeIn);
+        // TODO Auto-generated constructor stub
+    }
 
-	/**
-	 * Grants access for the layer to the parts of the host.
-	 *
-	 * This Method looks silly, that is because its not used at runtime, a real implementation will be used instead.
-	 *
-	 * @param side side of part
-	 *
-	 * @return the part for the requested side.
-	 */
-	public IPart getPart( final AEPartLocation side )
-	{
-		return null; // place holder.
-	}
+    /**
+     * Grants access for the layer to the parts of the host.
+     *
+     * This Method looks silly, that is because its not used at runtime, a real
+     * implementation will be used instead.
+     *
+     * @param side side of part
+     *
+     * @return the part for the requested side.
+     */
+    public IPart getPart(final AEPartLocation side) {
+        return null; // place holder.
+    }
 
-	/**
-	 * Grants access for the layer to the parts of the host.
-	 *
-	 * This Method looks silly, that is because its not used at runtime, a real implementation will be used instead.
-	 *
-	 * @param side side of part
-	 *
-	 * @return the part for the requested side.
-	 */
-	public IPart getPart( final Direction side )
-	{
-		return null; // place holder.
-	}
+    /**
+     * Grants access for the layer to the parts of the host.
+     *
+     * This Method looks silly, that is because its not used at runtime, a real
+     * implementation will be used instead.
+     *
+     * @param side side of part
+     *
+     * @return the part for the requested side.
+     */
+    public IPart getPart(final Direction side) {
+        return null; // place holder.
+    }
 
-	/**
-	 * called when the parts change in the container, YOU MUST CALL super.PartChanged();
-	 */
-	public void notifyNeighbors()
-	{
-	}
+    /**
+     * called when the parts change in the container, YOU MUST CALL
+     * super.PartChanged();
+     */
+    public void notifyNeighbors() {
+    }
 
-	/**
-	 * called when the parts change in the container, YOU MUST CALL super.PartChanged();
-	 */
-	public void partChanged()
-	{
-	}
+    /**
+     * called when the parts change in the container, YOU MUST CALL
+     * super.PartChanged();
+     */
+    public void partChanged() {
+    }
 
-	/**
-	 * @return a mutable list of flags you can adjust to track state.
-	 */
-	public Set<LayerFlags> getLayerFlags()
-	{
-		return null; // place holder.
-	}
+    /**
+     * @return a mutable list of flags you can adjust to track state.
+     */
+    public Set<LayerFlags> getLayerFlags() {
+        return null; // place holder.
+    }
 
-	public void markForSave()
-	{
-		// something!
-	}
+    public void markForSave() {
+        // something!
+    }
 }

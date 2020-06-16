@@ -23,37 +23,34 @@
 
 package appeng.api.networking.storage;
 
-
 import appeng.api.storage.data.IAEStack;
-
 
 /**
  * DO NOT IMPLEMENT.
  *
  * Will be injected when adding an {@link IStackWatcherHost} to a grid.
  */
-public interface IStackWatcher
-{
-	/**
-	 * Add a specific {@link IAEStack} to watch.
-	 *
-	 * Supports multiple values, duplicate ones will not be added.
-	 *
-	 * @param stack
-	 * @return true, if successfully added.
-	 */
-	boolean add( IAEStack<?> stack );
+public interface IStackWatcher {
+    /**
+     * Add a specific {@link IAEStack} to watch.
+     *
+     * Supports multiple values, duplicate ones will not be added.
+     *
+     * @param stack
+     * @return true, if successfully added.
+     */
+    boolean add(IAEStack<?> stack);
 
-	/**
-	 * Remove a specific {@link IAEStack} from the watcher.
-	 *
-	 * @param stack
-	 * @return true, if successfully removed.
-	 */
-	boolean remove( IAEStack<?> stack );
+    /**
+     * Remove a specific {@link IAEStack} from the watcher.
+     *
+     * @param stack
+     * @return true, if successfully removed.
+     */
+    boolean remove(IAEStack<?> stack);
 
-	/**
-	 * Removes all watched stacks and resets the watcher to a clean state.
-	 */
-	void reset();
+    /**
+     * Removes all watched stacks and resets the watcher to a clean state.
+     */
+    void reset();
 }

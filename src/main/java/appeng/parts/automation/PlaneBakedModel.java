@@ -18,8 +18,8 @@
 
 package appeng.parts.automation;
 
-
 import java.util.*;
+
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
@@ -29,100 +29,89 @@ import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
-
-import appeng.client.render.cablebus.CubeBuilder;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
 
+import appeng.client.render.cablebus.CubeBuilder;
 
 /**
  * Built-in model for annihilation planes that supports connected textures.
  */
-public class PlaneBakedModel implements IDynamicBakedModel
-{
+public class PlaneBakedModel implements IDynamicBakedModel {
 
-	private static final PlaneConnections DEFAULT_PERMUTATION = PlaneConnections.of(false, false, false, false);
+    private static final PlaneConnections DEFAULT_PERMUTATION = PlaneConnections.of(false, false, false, false);
 
-	private final TextureAtlasSprite frontTexture;
+    private final TextureAtlasSprite frontTexture;
 
-	private final Map<PlaneConnections, List<BakedQuad>> quads;
+    private final Map<PlaneConnections, List<BakedQuad>> quads;
 
-	PlaneBakedModel( TextureAtlasSprite frontTexture, TextureAtlasSprite sidesTexture, TextureAtlasSprite backTexture )
-	{
-		this.frontTexture = frontTexture;
+    PlaneBakedModel(TextureAtlasSprite frontTexture, TextureAtlasSprite sidesTexture, TextureAtlasSprite backTexture) {
+        this.frontTexture = frontTexture;
 
-		quads = new HashMap<>(PlaneConnections.PERMUTATIONS.size());
-		// Create all possible permutations (16)
-		for (PlaneConnections permutation : PlaneConnections.PERMUTATIONS) {
-			List<BakedQuad> quads = new ArrayList<>(4 * 6);
+        quads = new HashMap<>(PlaneConnections.PERMUTATIONS.size());
+        // Create all possible permutations (16)
+        for (PlaneConnections permutation : PlaneConnections.PERMUTATIONS) {
+            List<BakedQuad> quads = new ArrayList<>(4 * 6);
 
-			CubeBuilder builder = new CubeBuilder(quads);
+            CubeBuilder builder = new CubeBuilder(quads);
 
-			builder.setTextures(sidesTexture, sidesTexture, frontTexture, backTexture, sidesTexture, sidesTexture);
+            builder.setTextures(sidesTexture, sidesTexture, frontTexture, backTexture, sidesTexture, sidesTexture);
 
-			// Keep the orientation of the X axis in mind here. When looking at a quad facing north from the front,
-			// The X-axis points left
-			int minX = permutation.isRight() ? 0 : 1;
-			int maxX = permutation.isLeft() ? 16 : 15;
-			int minY = permutation.isDown() ? 0 : 1;
-			int maxY = permutation.isUp() ? 16 : 15;
+            // Keep the orientation of the X axis in mind here. When looking at a quad
+            // facing north from the front,
+            // The X-axis points left
+            int minX = permutation.isRight() ? 0 : 1;
+            int maxX = permutation.isLeft() ? 16 : 15;
+            int minY = permutation.isDown() ? 0 : 1;
+            int maxY = permutation.isUp() ? 16 : 15;
 
-			builder.addCube(minX, minY, 0, maxX, maxY, 1);
+            builder.addCube(minX, minY, 0, maxX, maxY, 1);
 
-			this.quads.put(permutation, ImmutableList.copyOf(quads));
-		}
-	}
+            this.quads.put(permutation, ImmutableList.copyOf(quads));
+        }
+    }
 
-	@Override
-	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand, IModelData modelData)
-	{
-		if( side == null )
-		{
-			PlaneConnections connections = DEFAULT_PERMUTATION;
-			if (modelData instanceof PlaneModelData) {
-				 connections = ((PlaneModelData) modelData).getConnections();
-			}
-			return this.quads.get(connections);
-		}
-		else
-		{
-			return Collections.emptyList();
-		}
-	}
+    @Override
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand,
+            IModelData modelData) {
+        if (side == null) {
+            PlaneConnections connections = DEFAULT_PERMUTATION;
+            if (modelData instanceof PlaneModelData) {
+                connections = ((PlaneModelData) modelData).getConnections();
+            }
+            return this.quads.get(connections);
+        } else {
+            return Collections.emptyList();
+        }
+    }
 
-	@Override
-	public boolean isAmbientOcclusion()
-	{
-		return false;
-	}
+    @Override
+    public boolean isAmbientOcclusion() {
+        return false;
+    }
 
-	@Override
-	public boolean isGui3d()
-	{
-		return false;
-	}
+    @Override
+    public boolean isGui3d() {
+        return false;
+    }
 
-	@Override
-	public boolean func_230044_c_()
-	{
-		return false;//TODO
-	}
+    @Override
+    public boolean func_230044_c_() {
+        return false;// TODO
+    }
 
-	@Override
-	public boolean isBuiltInRenderer()
-	{
-		return false;
-	}
+    @Override
+    public boolean isBuiltInRenderer() {
+        return false;
+    }
 
-	@Override
-	public TextureAtlasSprite getParticleTexture()
-	{
-		return this.frontTexture;
-	}
+    @Override
+    public TextureAtlasSprite getParticleTexture() {
+        return this.frontTexture;
+    }
 
-	@Override
-	public ItemOverrideList getOverrides()
-	{
-		return ItemOverrideList.EMPTY;
-	}
+    @Override
+    public ItemOverrideList getOverrides() {
+        return ItemOverrideList.EMPTY;
+    }
 }

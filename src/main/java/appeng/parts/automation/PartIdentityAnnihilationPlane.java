@@ -18,13 +18,12 @@
 
 package appeng.parts.automation;
 
+import java.util.List;
 
-import appeng.api.parts.IPart;
-import appeng.api.parts.IPartHost;
-import appeng.api.parts.IPartModel;
-import appeng.api.util.AEPartLocation;
-import appeng.items.parts.PartModels;
+import javax.annotation.Nonnull;
+
 import com.google.common.collect.ImmutableMap;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
@@ -34,71 +33,65 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.client.model.data.IModelData;
 
-import javax.annotation.Nonnull;
-import java.util.List;
+import appeng.api.parts.IPart;
+import appeng.api.parts.IPartHost;
+import appeng.api.parts.IPartModel;
+import appeng.api.util.AEPartLocation;
+import appeng.items.parts.PartModels;
 
+public class PartIdentityAnnihilationPlane extends PartAnnihilationPlane {
 
-public class PartIdentityAnnihilationPlane extends PartAnnihilationPlane
-{
+    private static final PlaneModels MODELS = new PlaneModels("part/identity_annihilation_plane",
+            "part/identity_annihilation_plane_on");
 
-	private static final PlaneModels MODELS = new PlaneModels( "part/identity_annihilation_plane", "part/identity_annihilation_plane_on" );
+    @PartModels
+    public static List<IPartModel> getModels() {
+        return MODELS.getModels();
+    }
 
-	@PartModels
-	public static List<IPartModel> getModels()
-	{
-		return MODELS.getModels();
-	}
+    private static final float SILK_TOUCH_FACTOR = 16;
 
-	private static final float SILK_TOUCH_FACTOR = 16;
+    public PartIdentityAnnihilationPlane(final ItemStack is) {
+        super(is);
+    }
 
-	public PartIdentityAnnihilationPlane( final ItemStack is )
-	{
-		super( is );
-	}
+    @Override
+    protected boolean isAnnihilationPlane(final TileEntity blockTileEntity, final AEPartLocation side) {
+        if (blockTileEntity instanceof IPartHost) {
+            final IPart p = ((IPartHost) blockTileEntity).getPart(side);
+            return p != null && p.getClass() == this.getClass();
+        }
+        return false;
+    }
 
-	@Override
-	protected boolean isAnnihilationPlane( final TileEntity blockTileEntity, final AEPartLocation side )
-	{
-		if( blockTileEntity instanceof IPartHost )
-		{
-			final IPart p = ( (IPartHost) blockTileEntity ).getPart( side );
-			return p != null && p.getClass() == this.getClass();
-		}
-		return false;
-	}
+    @Override
+    protected float calculateEnergyUsage(final ServerWorld w, final BlockPos pos, final List<ItemStack> items) {
+        final float requiredEnergy = super.calculateEnergyUsage(w, pos, items);
 
-	@Override
-	protected float calculateEnergyUsage(final ServerWorld w, final BlockPos pos, final List<ItemStack> items )
-	{
-		final float requiredEnergy = super.calculateEnergyUsage( w, pos, items );
+        return requiredEnergy * SILK_TOUCH_FACTOR;
+    }
 
-		return requiredEnergy * SILK_TOUCH_FACTOR;
-	}
+    @Override
+    protected ItemStack createHarvestTool(BlockState state) {
+        ItemStack harvestTool = super.createHarvestTool(state);
 
-	@Override
-	protected ItemStack createHarvestTool(BlockState state) {
-		ItemStack harvestTool = super.createHarvestTool(state);
+        // For silk touch purposes, enchant the fake tool
+        if (harvestTool != null) {
+            EnchantmentHelper.setEnchantments(ImmutableMap.of(Enchantments.SILK_TOUCH, 1), harvestTool);
+        }
 
-		// For silk touch purposes, enchant the fake tool
-		if (harvestTool != null) {
-			EnchantmentHelper.setEnchantments(ImmutableMap.of(
-					Enchantments.SILK_TOUCH, 1
-			), harvestTool);
-		}
+        return harvestTool;
+    }
 
-		return harvestTool;
-	}
+    @Override
+    public IPartModel getStaticModels() {
+        return MODELS.getModel(this.isPowered(), this.isActive());
+    }
 
-	@Override
-	public IPartModel getStaticModels()
-	{
-		return MODELS.getModel( this.isPowered(), this.isActive() );
-	}
-
-	@Nonnull
-	@Override
-	public IModelData getModelData() {
-		return new PlaneModelData(getConnections());
-	}
+    @Nonnull
+    @Override
+    public IModelData getModelData() {
+        return new PlaneModelData(getConnections());
+    }
 
 }

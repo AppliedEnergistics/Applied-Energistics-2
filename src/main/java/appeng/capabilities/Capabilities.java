@@ -18,7 +18,6 @@
 
 package appeng.capabilities;
 
-
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -29,66 +28,56 @@ import net.minecraftforge.energy.IEnergyStorage;
 import appeng.api.storage.ISpatialDimension;
 import appeng.api.storage.IStorageMonitorableAccessor;
 
-
 /**
  * Utility class that holds various capabilities, both by AE2 and other Mods.
  */
-public final class Capabilities
-{
+public final class Capabilities {
 
-	private Capabilities()
-	{
-	}
+    private Capabilities() {
+    }
 
-	public static Capability<IStorageMonitorableAccessor> STORAGE_MONITORABLE_ACCESSOR;
+    public static Capability<IStorageMonitorableAccessor> STORAGE_MONITORABLE_ACCESSOR;
 
-	public static Capability<ISpatialDimension> SPATIAL_DIMENSION;
+    public static Capability<ISpatialDimension> SPATIAL_DIMENSION;
 
-	public static Capability<IEnergyStorage> FORGE_ENERGY;
+    public static Capability<IEnergyStorage> FORGE_ENERGY;
 
-	/**
-	 * Register AE2 provided capabilities.
-	 */
-	public static void register()
-	{
-		CapabilityManager.INSTANCE.register( IStorageMonitorableAccessor.class, createNullStorage(), NullMENetworkAccessor::new );
-		CapabilityManager.INSTANCE.register( ISpatialDimension.class, createNullStorage(), NullSpatialDimension::new );
-	}
+    /**
+     * Register AE2 provided capabilities.
+     */
+    public static void register() {
+        CapabilityManager.INSTANCE.register(IStorageMonitorableAccessor.class, createNullStorage(),
+                NullMENetworkAccessor::new);
+        CapabilityManager.INSTANCE.register(ISpatialDimension.class, createNullStorage(), NullSpatialDimension::new);
+    }
 
-	@CapabilityInject( IStorageMonitorableAccessor.class )
-	private static void capIStorageMonitorableAccessorRegistered( Capability<IStorageMonitorableAccessor> cap )
-	{
-		STORAGE_MONITORABLE_ACCESSOR = cap;
-	}
+    @CapabilityInject(IStorageMonitorableAccessor.class)
+    private static void capIStorageMonitorableAccessorRegistered(Capability<IStorageMonitorableAccessor> cap) {
+        STORAGE_MONITORABLE_ACCESSOR = cap;
+    }
 
-	@CapabilityInject( ISpatialDimension.class )
-	private static void capISpatialDimensionRegistered( Capability<ISpatialDimension> cap )
-	{
-		SPATIAL_DIMENSION = cap;
-	}
+    @CapabilityInject(ISpatialDimension.class)
+    private static void capISpatialDimensionRegistered(Capability<ISpatialDimension> cap) {
+        SPATIAL_DIMENSION = cap;
+    }
 
-	@CapabilityInject( IEnergyStorage.class )
-	private static void capIEnergyStorageRegistered( Capability<IEnergyStorage> cap )
-	{
-		FORGE_ENERGY = cap;
-	}
+    @CapabilityInject(IEnergyStorage.class)
+    private static void capIEnergyStorageRegistered(Capability<IEnergyStorage> cap) {
+        FORGE_ENERGY = cap;
+    }
 
-	// Create a storage implementation that does not do anything
-	private static <T> Capability.IStorage<T> createNullStorage()
-	{
-		return new Capability.IStorage<T>()
-		{
-			@Override
-			public INBT writeNBT( Capability<T> capability, T instance, Direction side )
-			{
-				return null;
-			}
+    // Create a storage implementation that does not do anything
+    private static <T> Capability.IStorage<T> createNullStorage() {
+        return new Capability.IStorage<T>() {
+            @Override
+            public INBT writeNBT(Capability<T> capability, T instance, Direction side) {
+                return null;
+            }
 
-			@Override
-			public void readNBT( Capability<T> capability, T instance, Direction side, INBT nbt )
-			{
+            @Override
+            public void readNBT(Capability<T> capability, T instance, Direction side, INBT nbt) {
 
-			}
-		};
-	}
+            }
+        };
+    }
 }

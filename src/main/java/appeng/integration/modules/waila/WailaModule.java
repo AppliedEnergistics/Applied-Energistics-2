@@ -18,32 +18,31 @@
 
 package appeng.integration.modules.waila;
 
+import java.util.List;
 
-import appeng.entity.EntityGrowingCrystal;
-import appeng.items.misc.ItemCrystalSeed;
-import mcp.mobius.waila.api.*;
-import appeng.tile.AEBaseTile;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
-import java.util.List;
+import mcp.mobius.waila.api.*;
+
+import appeng.entity.EntityGrowingCrystal;
+import appeng.items.misc.ItemCrystalSeed;
+import appeng.tile.AEBaseTile;
 
 @WailaPlugin
-public class WailaModule implements IWailaPlugin
-{
+public class WailaModule implements IWailaPlugin {
 
-	public void register( final IRegistrar registrar )
-	{
-		final PartWailaDataProvider partHost = new PartWailaDataProvider();
+    public void register(final IRegistrar registrar) {
+        final PartWailaDataProvider partHost = new PartWailaDataProvider();
 
-		registrar.registerStackProvider( partHost, AEBaseTile.class );
-		registrar.registerComponentProvider( partHost, TooltipPosition.BODY, AEBaseTile.class );
-		registrar.registerBlockDataProvider( partHost, AEBaseTile.class );
+        registrar.registerStackProvider(partHost, AEBaseTile.class);
+        registrar.registerComponentProvider(partHost, TooltipPosition.BODY, AEBaseTile.class);
+        registrar.registerBlockDataProvider(partHost, AEBaseTile.class);
 
-		final TileWailaDataProvider tile = new TileWailaDataProvider();
-		registrar.registerComponentProvider( tile, TooltipPosition.BODY, AEBaseTile.class );
-		registrar.registerBlockDataProvider( tile, AEBaseTile.class );
-	}
+        final TileWailaDataProvider tile = new TileWailaDataProvider();
+        registrar.registerComponentProvider(tile, TooltipPosition.BODY, AEBaseTile.class);
+        registrar.registerBlockDataProvider(tile, AEBaseTile.class);
+    }
 
 }

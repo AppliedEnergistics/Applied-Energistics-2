@@ -23,7 +23,6 @@
 
 package appeng.api.parts;
 
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
@@ -32,25 +31,23 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+public interface IPartHelper {
+    /**
+     * use in use item, to try and place a IBusItem
+     *
+     * @param is     ItemStack of an item which implements {@link IPartItem}
+     * @param pos    pos of part
+     * @param side   side which the part should be on
+     * @param player player placing part
+     * @param world  part in world
+     *
+     * @return true if placing was successful
+     */
+    // TODO, this should probably take ItemStack + ItemUseContext
+    ActionResultType placeBus(ItemStack is, BlockPos pos, Direction side, PlayerEntity player, Hand hand, World world);
 
-public interface IPartHelper
-{
-	/**
-	 * use in use item, to try and place a IBusItem
-	 *
-	 * @param is ItemStack of an item which implements {@link IPartItem}
-	 * @param pos pos of part
-	 * @param side side which the part should be on
-	 * @param player player placing part
-	 * @param world part in world
-	 *
-	 * @return true if placing was successful
-	 */
-	//TODO, this should probably take ItemStack + ItemUseContext
-	ActionResultType placeBus( ItemStack is, BlockPos pos, Direction side, PlayerEntity player, Hand hand, World world );
-
-	/**
-	 * @return the render mode
-	 */
-	CableRenderMode getCableRenderMode();
+    /**
+     * @return the render mode
+     */
+    CableRenderMode getCableRenderMode();
 }

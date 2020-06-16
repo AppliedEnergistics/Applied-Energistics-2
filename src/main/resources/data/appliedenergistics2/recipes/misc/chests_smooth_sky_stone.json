@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:smooth_sky_stone_chest"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aaa",
-    "a a",
-    "aaa"
-  ],
+  "pattern": ["aaa", "a a", "aaa"],
   "key": {
     "a": {
       "item": "appliedenergistics2:smooth_sky_stone_block"

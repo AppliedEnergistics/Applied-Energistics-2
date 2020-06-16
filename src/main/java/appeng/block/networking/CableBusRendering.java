@@ -18,7 +18,6 @@
 
 package appeng.block.networking;
 
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -28,28 +27,24 @@ import appeng.bootstrap.IItemRendering;
 import appeng.client.render.cablebus.CableBusModel;
 import appeng.core.features.registries.PartModels;
 
-
 /**
- * Customizes the rendering behavior for cable busses, which are the biggest multipart of AE2.
+ * Customizes the rendering behavior for cable busses, which are the biggest
+ * multipart of AE2.
  */
-public class CableBusRendering extends BlockRenderingCustomizer
-{
+public class CableBusRendering extends BlockRenderingCustomizer {
 
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
-	{
-		/* FIXME this was previously
-		 *
-		 @Override
-		 public boolean canRenderInLayer( BlockState state, BlockRenderLayer layer )
-		 {
-		 return true;
-		 }
-		 */
-		rendering.renderType(rt -> true);
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
+        /*
+         * FIXME this was previously
+         *
+         * @Override public boolean canRenderInLayer( BlockState state, BlockRenderLayer
+         * layer ) { return true; }
+         */
+        rendering.renderType(rt -> true);
 
-		rendering.blockColor( new CableBusColor() );
-		rendering.modelCustomizer( ( loc, model ) -> model );
-	}
+        rendering.blockColor(new CableBusColor());
+        rendering.modelCustomizer((loc, model) -> model);
+    }
 }

@@ -18,7 +18,6 @@
 
 package appeng.block.misc;
 
-
 import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -30,16 +29,13 @@ import appeng.bootstrap.IItemRendering;
 import appeng.client.render.ColorableTileBlockColor;
 import appeng.client.render.StaticItemColor;
 
+public class SecurityStationRendering extends BlockRenderingCustomizer {
 
-public class SecurityStationRendering extends BlockRenderingCustomizer
-{
-
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
-	{
-		rendering.renderType(RenderType.getCutout());
-		rendering.blockColor( ColorableTileBlockColor.INSTANCE );
-		itemRendering.color( new StaticItemColor( AEColor.TRANSPARENT ) );
-	}
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
+        rendering.renderType(RenderType.getCutout());
+        rendering.blockColor(ColorableTileBlockColor.INSTANCE);
+        itemRendering.color(new StaticItemColor(AEColor.TRANSPARENT));
+    }
 }

@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:drive"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aba",
-    "c c",
-    "aba"
-  ],
+  "pattern": ["aba", "c c", "aba"],
   "key": {
     "b": {
       "item": "appliedenergistics2:engineering_processor"

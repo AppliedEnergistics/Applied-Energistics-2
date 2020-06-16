@@ -18,14 +18,8 @@
 
 package appeng.block.misc;
 
+import javax.annotation.Nullable;
 
-import appeng.block.AEBaseTileBlock;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.ContainerInscriber;
-import appeng.container.implementations.ContainerInterface;
-import appeng.fluids.container.ContainerFluidLevelEmitter;
-import appeng.tile.misc.TileInscriber;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -36,7 +30,13 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
+import appeng.block.AEBaseTileBlock;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerInscriber;
+import appeng.container.implementations.ContainerInterface;
+import appeng.fluids.container.ContainerFluidLevelEmitter;
+import appeng.tile.misc.TileInscriber;
 
 public class BlockInscriber extends AEBaseTileBlock<TileInscriber> {
 
@@ -46,17 +46,20 @@ public class BlockInscriber extends AEBaseTileBlock<TileInscriber> {
 
     @Override
     public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos) {
-        return 2; // FIXME validate this. a) possibly not required because of getShape b) value range. was 2 in 1.10
+        return 2; // FIXME validate this. a) possibly not required because of getShape b) value
+                  // range. was 2 in 1.10
     }
 
     @Override
-    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         if (!p.isCrouching()) {
             final TileInscriber tg = this.getTileEntity(w, pos);
             if (tg != null) {
-				if (!tg.isRemote()) {
-                    ContainerOpener.openContainer(ContainerInscriber.TYPE, p, ContainerLocator.forTileEntitySide(tg, hit.getFace()));
-				}
+                if (!tg.isRemote()) {
+                    ContainerOpener.openContainer(ContainerInscriber.TYPE, p,
+                            ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+                }
                 return ActionResultType.SUCCESS;
             }
         }

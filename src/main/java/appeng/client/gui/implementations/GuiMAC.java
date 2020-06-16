@@ -18,69 +18,61 @@
 
 package appeng.client.gui.implementations;
 
-
-import appeng.client.gui.widgets.GuiServerSettingToggleButton;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.client.gui.widgets.GuiProgressBar;
 import appeng.client.gui.widgets.GuiProgressBar.Direction;
+import appeng.client.gui.widgets.GuiServerSettingToggleButton;
 import appeng.container.implementations.ContainerMAC;
 import appeng.core.localization.GuiText;
-import net.minecraft.util.text.ITextComponent;
 
+public class GuiMAC extends GuiUpgradeable<ContainerMAC> {
 
-public class GuiMAC extends GuiUpgradeable<ContainerMAC>
-{
+    private GuiProgressBar pb;
 
-	private GuiProgressBar pb;
+    public GuiMAC(ContainerMAC container, PlayerInventory playerInventory, ITextComponent title) {
+        super(container, playerInventory, title);
+        this.ySize = 197;
+    }
 
-	public GuiMAC(ContainerMAC container, PlayerInventory playerInventory, ITextComponent title) {
-		super(container, playerInventory, title);
-		this.ySize = 197;
-	}
+    @Override
+    public void init() {
+        super.init();
 
-	@Override
-	public void init()
-	{
-		super.init();
+        this.pb = new GuiProgressBar(this.container, "guis/mac.png", 139, 36, 148, 201, 6, 18, Direction.VERTICAL);
+        this.addButton(this.pb);
+    }
 
-		this.pb = new GuiProgressBar( this.container, "guis/mac.png", 139, 36, 148, 201, 6, 18, Direction.VERTICAL );
-		this.addButton( this.pb );
-	}
+    @Override
+    protected void addButtons() {
+        this.redstoneMode = new GuiServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 8,
+                Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
+        addButton(this.redstoneMode);
+    }
 
-	@Override
-	protected void addButtons()
-	{
-		this.redstoneMode = new GuiServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 8, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
-		addButton(this.redstoneMode);
-	}
+    @Override
+    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+        this.pb.setFullMsg(this.container.getCurrentProgress() + "%");
+        super.drawFG(offsetX, offsetY, mouseX, mouseY);
+    }
 
-	@Override
-	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
-	{
-		this.pb.setFullMsg( this.container.getCurrentProgress() + "%" );
-		super.drawFG( offsetX, offsetY, mouseX, mouseY );
-	}
+    @Override
+    public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+        this.pb.x = 148 + this.guiLeft;
+        this.pb.y = 48 + this.guiTop;
+        super.drawBG(offsetX, offsetY, mouseX, mouseY, partialTicks);
+    }
 
-	@Override
-	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
-	{
-		this.pb.x = 148 + this.guiLeft;
-		this.pb.y = 48 + this.guiTop;
-		super.drawBG( offsetX, offsetY, mouseX, mouseY, partialTicks);
-	}
+    @Override
+    protected String getBackground() {
+        return "guis/mac.png";
+    }
 
-	@Override
-	protected String getBackground()
-	{
-		return "guis/mac.png";
-	}
-
-	@Override
-	protected GuiText getName()
-	{
-		return GuiText.MolecularAssembler;
-	}
+    @Override
+    protected GuiText getName() {
+        return GuiText.MolecularAssembler;
+    }
 }

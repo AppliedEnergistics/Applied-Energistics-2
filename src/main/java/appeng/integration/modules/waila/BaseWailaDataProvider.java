@@ -18,11 +18,8 @@
 
 package appeng.integration.modules.waila;
 
+import java.util.List;
 
-import mcp.mobius.waila.api.IComponentProvider;
-import mcp.mobius.waila.api.IDataAccessor;
-import mcp.mobius.waila.api.IPluginConfig;
-import mcp.mobius.waila.api.IServerDataProvider;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -30,8 +27,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
-import java.util.List;
-
+import mcp.mobius.waila.api.IComponentProvider;
+import mcp.mobius.waila.api.IDataAccessor;
+import mcp.mobius.waila.api.IPluginConfig;
+import mcp.mobius.waila.api.IServerDataProvider;
 
 /**
  * Base implementation for {@link mcp.mobius.waila.api.IComponentProvider}
@@ -40,33 +39,32 @@ import java.util.List;
  * @version rv2
  * @since rv2
  */
-public abstract class BaseWailaDataProvider implements IComponentProvider, IServerDataProvider<TileEntity>
-{
+public abstract class BaseWailaDataProvider implements IComponentProvider, IServerDataProvider<TileEntity> {
 
-	@Override
-	public ItemStack getStack( final IDataAccessor accessor, final IPluginConfig config )
-	{
-		return ItemStack.EMPTY;
-	}
+    @Override
+    public ItemStack getStack(final IDataAccessor accessor, final IPluginConfig config) {
+        return ItemStack.EMPTY;
+    }
 
-	@Override
-	public void appendServerData(CompoundNBT compoundNBT, ServerPlayerEntity serverPlayerEntity, World world, TileEntity tileEntity) {
+    @Override
+    public void appendServerData(CompoundNBT compoundNBT, ServerPlayerEntity serverPlayerEntity, World world,
+            TileEntity tileEntity) {
 
-	}
+    }
 
-	@Override
-	public void appendHead(List<ITextComponent> tooltip, IDataAccessor accessor, IPluginConfig config) {
+    @Override
+    public void appendHead(List<ITextComponent> tooltip, IDataAccessor accessor, IPluginConfig config) {
 
-	}
+    }
 
-	@Override
-	public void appendBody(List<ITextComponent> tooltip, IDataAccessor accessor, IPluginConfig config) {
+    @Override
+    public void appendBody(List<ITextComponent> tooltip, IDataAccessor accessor, IPluginConfig config) {
 
-	}
+    }
 
-	@Override
-	public void appendTail(List<ITextComponent> tooltip, IDataAccessor accessor, IPluginConfig config) {
+    @Override
+    public void appendTail(List<ITextComponent> tooltip, IDataAccessor accessor, IPluginConfig config) {
 
-	}
+    }
 
 }

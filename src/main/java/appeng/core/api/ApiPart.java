@@ -18,7 +18,6 @@
 
 package appeng.core.api;
 
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
@@ -32,19 +31,16 @@ import appeng.api.parts.IPartHelper;
 import appeng.core.AppEng;
 import appeng.parts.PartPlacement;
 
+public class ApiPart implements IPartHelper {
 
-public class ApiPart implements IPartHelper
-{
+    @Override
+    public ActionResultType placeBus(final ItemStack is, final BlockPos pos, final Direction side,
+            final PlayerEntity player, final Hand hand, final World w) {
+        return PartPlacement.place(is, pos, side, player, hand, w, PartPlacement.PlaceType.PLACE_ITEM, 0);
+    }
 
-	@Override
-	public ActionResultType placeBus( final ItemStack is, final BlockPos pos, final Direction side, final PlayerEntity player, final Hand hand, final World w )
-	{
-		return PartPlacement.place( is, pos, side, player, hand, w, PartPlacement.PlaceType.PLACE_ITEM, 0 );
-	}
-
-	@Override
-	public CableRenderMode getCableRenderMode()
-	{
-		return AppEng.proxy.getRenderMode();
-	}
+    @Override
+    public CableRenderMode getCableRenderMode() {
+        return AppEng.proxy.getRenderMode();
+    }
 }

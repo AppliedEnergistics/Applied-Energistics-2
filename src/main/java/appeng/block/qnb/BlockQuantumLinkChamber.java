@@ -18,16 +18,12 @@
 
 package appeng.block.qnb;
 
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.ContainerQNB;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -46,67 +42,61 @@ import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
 import appeng.client.EffectType;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerQNB;
 import appeng.core.AppEng;
-
 import appeng.helpers.AEGlassMaterial;
 import appeng.tile.qnb.TileQuantumBridge;
 import appeng.util.Platform;
 
+public class BlockQuantumLinkChamber extends BlockQuantumBase {
 
-public class BlockQuantumLinkChamber extends BlockQuantumBase
-{
+    private static final VoxelShape SHAPE;
 
-	private static final VoxelShape SHAPE;
+    static {
+        final double onePixel = 2.0 / 16.0;
+        SHAPE = VoxelShapes.create(
+                new AxisAlignedBB(onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel));
+    }
 
-	static {
-		final double onePixel = 2.0 / 16.0;
-		SHAPE = VoxelShapes.create( new AxisAlignedBB( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );
-	}
+    public BlockQuantumLinkChamber() {
+        super(defaultProps(AEGlassMaterial.INSTANCE));
+    }
 
-	public BlockQuantumLinkChamber()
-	{
-		super(defaultProps(AEGlassMaterial.INSTANCE) );
-	}
+    @Override
+    public void animateTick(final BlockState state, final World w, final BlockPos pos, final Random rand) {
+        final TileQuantumBridge bridge = this.getTileEntity(w, pos);
+        if (bridge != null) {
+            if (bridge.hasQES()) {
+                if (AppEng.proxy.shouldAddParticles(rand)) {
+                    AppEng.proxy.spawnEffect(EffectType.Energy, w, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
+                            null);
+                }
+            }
+        }
+    }
 
-	@Override
-	public void animateTick( final BlockState state, final World w, final BlockPos pos, final Random rand )
-	{
-		final TileQuantumBridge bridge = this.getTileEntity( w, pos );
-		if( bridge != null )
-		{
-			if( bridge.hasQES() )
-			{
-				if( AppEng.proxy.shouldAddParticles( rand ) )
-				{
-					AppEng.proxy.spawnEffect( EffectType.Energy, w, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, null );
-				}
-			}
-		}
-	}
+    @Override
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+        if (p.isCrouching()) {
+            return ActionResultType.PASS;
+        }
 
-	@Override
-	public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit)
-	{
-		if( p.isCrouching() )
-		{
-			return ActionResultType.PASS;
-		}
+        final TileQuantumBridge tg = this.getTileEntity(w, pos);
+        if (tg != null) {
+            if (Platform.isServer()) {
+                ContainerOpener.openContainer(ContainerQNB.TYPE, p, ContainerLocator.forTileEntity(tg));
+            }
+            return ActionResultType.SUCCESS;
+        }
+        return ActionResultType.PASS;
+    }
 
-		final TileQuantumBridge tg = this.getTileEntity( w, pos );
-		if( tg != null )
-		{
-			if( Platform.isServer() )
-			{
-				ContainerOpener.openContainer(ContainerQNB.TYPE, p, ContainerLocator.forTileEntity(tg));
-			}
-			return ActionResultType.SUCCESS;
-		}
-		return ActionResultType.PASS;
-	}
-
-	@Override
-	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-		return SHAPE;
-	}
+    @Override
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+        return SHAPE;
+    }
 
 }

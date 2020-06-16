@@ -18,7 +18,6 @@
 
 package appeng.util.item;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -26,61 +25,50 @@ import java.util.NoSuchElementException;
 
 import appeng.api.storage.data.IAEItemStack;
 
+public class MeaningfulItemIterator<T extends IAEItemStack> implements Iterator<T> {
 
-public class MeaningfulItemIterator<T extends IAEItemStack> implements Iterator<T>
-{
+    private final Collection<T> collection;
+    private final Iterator<T> parent;
+    private T next;
+    private final Collection<T> toRemove = new ArrayList<>();
 
-	private final Collection<T> collection;
-	private final Iterator<T> parent;
-	private T next;
-	private final Collection<T> toRemove = new ArrayList<>();
+    public MeaningfulItemIterator(final Collection<T> collection) {
+        this.collection = collection;
+        this.parent = collection.iterator();
+    }
 
-	public MeaningfulItemIterator( final Collection<T> collection )
-	{
-		this.collection = collection;
-		this.parent = collection.iterator();
-	}
+    @Override
+    public boolean hasNext() {
+        while (this.parent.hasNext()) {
+            this.next = this.parent.next();
 
-	@Override
-	public boolean hasNext()
-	{
-		while( this.parent.hasNext() )
-		{
-			this.next = this.parent.next();
+            if (this.next.isMeaningful()) {
+                return true;
+            } else {
+                // TODO: Avoid if possible
+                this.toRemove.add(this.next);
+                // this.parent.remove(); // self cleaning :3
+            }
+        }
 
-			if( this.next.isMeaningful() )
-			{
-				return true;
-			}
-			else
-			{
-				// TODO: Avoid if possible
-				this.toRemove.add( this.next );
-				// this.parent.remove(); // self cleaning :3
-			}
-		}
+        // Cleanup afterwards to avoid CMEs
+        this.toRemove.forEach(entry -> this.collection.remove(entry));
 
-		// Cleanup afterwards to avoid CMEs
-		this.toRemove.forEach( entry -> this.collection.remove( entry ) );
+        this.next = null;
+        return false;
+    }
 
-		this.next = null;
-		return false;
-	}
+    @Override
+    public T next() {
+        if (this.next == null) {
+            throw new NoSuchElementException();
+        }
 
-	@Override
-	public T next()
-	{
-		if( this.next == null )
-		{
-			throw new NoSuchElementException();
-		}
+        return this.next;
+    }
 
-		return this.next;
-	}
-
-	@Override
-	public void remove()
-	{
-		this.parent.remove();
-	}
+    @Override
+    public void remove() {
+        this.parent.remove();
+    }
 }

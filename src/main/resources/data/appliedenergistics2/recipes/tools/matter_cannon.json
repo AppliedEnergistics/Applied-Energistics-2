@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:matter_cannon"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aab",
-    "cd ",
-    "a  "
-  ],
+  "pattern": ["aab", "cd ", "a  "],
   "key": {
     "b": {
       "item": "appliedenergistics2:formation_core"

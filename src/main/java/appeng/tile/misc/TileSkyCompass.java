@@ -18,16 +18,14 @@
 
 package appeng.tile.misc;
 
-
-import appeng.tile.AEBaseTile;
 import net.minecraft.tileentity.TileEntityType;
 
+import appeng.tile.AEBaseTile;
 
-public class TileSkyCompass extends AEBaseTile
-{
+public class TileSkyCompass extends AEBaseTile {
 
-	public TileSkyCompass(TileEntityType<?> tileEntityTypeIn) {
-		super(tileEntityTypeIn);
-	}
+    public TileSkyCompass(TileEntityType<?> tileEntityTypeIn) {
+        super(tileEntityTypeIn);
+    }
 
 }

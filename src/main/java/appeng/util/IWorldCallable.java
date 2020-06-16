@@ -18,35 +18,34 @@
 
 package appeng.util;
 
-
 import java.util.concurrent.Callable;
 
 import javax.annotation.Nullable;
 
 import net.minecraft.world.World;
 
-
 /**
- * An interface similar to {@link Callable}, but allowing to pass the {@link World} when calling.
+ * An interface similar to {@link Callable}, but allowing to pass the
+ * {@link World} when calling.
  *
  * @author yueh
  * @version rv3
  * @see Callable
  * @since rv3
  */
-public interface IWorldCallable<T>
-{
-	/**
-	 * Similar to {@link Callable#call()}
-	 *
-	 * @param world this param is given to not hold a reference to the world but let the caller handle it. Do not expect
-	 * a world here thus can be <tt>null</tt>.
-	 *
-	 * @return result of call on the world. Can be <tt>null</tt>.
-	 *
-	 * @throws Exception if the call fails
-	 * @see Callable#call()
-	 */
-	@Nullable
-	T call( @Nullable World world ) throws Exception;
+public interface IWorldCallable<T> {
+    /**
+     * Similar to {@link Callable#call()}
+     *
+     * @param world this param is given to not hold a reference to the world but let
+     *              the caller handle it. Do not expect a world here thus can be
+     *              <tt>null</tt>.
+     *
+     * @return result of call on the world. Can be <tt>null</tt>.
+     *
+     * @throws Exception if the call fails
+     * @see Callable#call()
+     */
+    @Nullable
+    T call(@Nullable World world) throws Exception;
 }

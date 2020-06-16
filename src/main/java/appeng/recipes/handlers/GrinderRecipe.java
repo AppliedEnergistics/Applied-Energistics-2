@@ -1,6 +1,9 @@
 package appeng.recipes.handlers;
 
+import java.util.List;
+
 import com.google.common.collect.ImmutableList;
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -10,8 +13,6 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-
-import java.util.List;
 
 public class GrinderRecipe implements IRecipe<IInventory> {
 
@@ -25,7 +26,8 @@ public class GrinderRecipe implements IRecipe<IInventory> {
     private final List<GrinderOptionalResult> optionalResults;
     private final int turns;
 
-    public GrinderRecipe(ResourceLocation id, String group, Ingredient ingredient, int ingredientCount, ItemStack result, int turns, List<GrinderOptionalResult> optionalResults) {
+    public GrinderRecipe(ResourceLocation id, String group, Ingredient ingredient, int ingredientCount,
+            ItemStack result, int turns, List<GrinderOptionalResult> optionalResults) {
         this.id = id;
         this.group = group;
         this.ingredient = ingredient;

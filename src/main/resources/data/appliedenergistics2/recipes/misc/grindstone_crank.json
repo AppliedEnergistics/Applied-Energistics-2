@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:crank"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aaa",
-    "  a",
-    "  a"
-  ],
+  "pattern": ["aaa", "  a", "  a"],
   "key": {
     "a": {
       "tag": "forge:rods/wooden"

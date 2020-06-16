@@ -1,7 +1,7 @@
 {
-    "variants": {
-        "": {
-            "model": "appliedenergistics2:block/inscriber"
-        }
+  "variants": {
+    "": {
+      "model": "appliedenergistics2:block/inscriber"
     }
+  }
 }

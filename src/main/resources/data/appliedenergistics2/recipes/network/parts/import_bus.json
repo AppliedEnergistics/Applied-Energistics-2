@@ -3,10 +3,7 @@
     "item": "appliedenergistics2:import_bus"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    " a ",
-    "bcb"
-  ],
+  "pattern": [" a ", "bcb"],
   "key": {
     "c": {
       "item": "minecraft:sticky_piston"

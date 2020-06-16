@@ -23,71 +23,70 @@
 
 package appeng.api.recipes;
 
-
 import net.minecraft.item.ItemStack;
 
 import appeng.api.exceptions.MissingIngredientException;
 import appeng.api.exceptions.RegistrationException;
 
-
 @Deprecated
-public interface IIngredient
-{
+public interface IIngredient {
 
-	/**
-	 * Acquire a single input stack for the current recipe, if more then one ItemStack is possible a
-	 * RegistrationError exception will be thrown, ignore these and let the system handle the error.
-	 *
-	 * @return a single ItemStack for the recipe handler.
-	 *
-	 * @throws RegistrationException
-	 * @throws MissingIngredientException
-	 */
-	ItemStack getItemStack() throws RegistrationException, MissingIngredientException;
+    /**
+     * Acquire a single input stack for the current recipe, if more then one
+     * ItemStack is possible a RegistrationError exception will be thrown, ignore
+     * these and let the system handle the error.
+     *
+     * @return a single ItemStack for the recipe handler.
+     *
+     * @throws RegistrationException
+     * @throws MissingIngredientException
+     */
+    ItemStack getItemStack() throws RegistrationException, MissingIngredientException;
 
-	/**
-	 * Acquire a list of all the input stacks for the current recipe, this is for handlers that support
-	 * multiple inputs per slot.
-	 *
-	 * @return an array of ItemStacks for the recipe handler.
-	 *
-	 * @throws RegistrationException
-	 * @throws MissingIngredientException
-	 */
-	ItemStack[] getItemStackSet() throws RegistrationException, MissingIngredientException;
+    /**
+     * Acquire a list of all the input stacks for the current recipe, this is for
+     * handlers that support multiple inputs per slot.
+     *
+     * @return an array of ItemStacks for the recipe handler.
+     *
+     * @throws RegistrationException
+     * @throws MissingIngredientException
+     */
+    ItemStack[] getItemStackSet() throws RegistrationException, MissingIngredientException;
 
-	/**
-	 * If you wish to support air, you must test before getting the ItemStack, or ItemStackSet
-	 *
-	 * @return true if this slot contains no ItemStack, this is passed as "_"
-	 */
-	boolean isAir();
+    /**
+     * If you wish to support air, you must test before getting the ItemStack, or
+     * ItemStackSet
+     *
+     * @return true if this slot contains no ItemStack, this is passed as "_"
+     */
+    boolean isAir();
 
-	/**
-	 * @return The Name Space of the item. Prefer getItemStack or getItemStackSet
-	 */
-	String getNameSpace();
+    /**
+     * @return The Name Space of the item. Prefer getItemStack or getItemStackSet
+     */
+    String getNameSpace();
 
-	/**
-	 * @return The Name of the item. Prefer getItemStack or getItemStackSet
-	 */
-	String getItemName();
+    /**
+     * @return The Name of the item. Prefer getItemStack or getItemStackSet
+     */
+    String getItemName();
 
-	/**
-	 * @return The Damage Value of the item. Prefer getItemStack or getItemStackSet
-	 */
-	int getDamageValue();
+    /**
+     * @return The Damage Value of the item. Prefer getItemStack or getItemStackSet
+     */
+    int getDamageValue();
 
-	/**
-	 * @return The Damage Value of the item. Prefer getItemStack or getItemStackSet
-	 */
-	int getQty();
+    /**
+     * @return The Damage Value of the item. Prefer getItemStack or getItemStackSet
+     */
+    int getQty();
 
-	/**
-	 * Bakes the lists in for faster runtime look-ups.
-	 *
-	 * @throws MissingIngredientException
-	 * @throws RegistrationException
-	 */
-	void bake() throws RegistrationException, MissingIngredientException;
+    /**
+     * Bakes the lists in for faster runtime look-ups.
+     *
+     * @throws MissingIngredientException
+     * @throws RegistrationException
+     */
+    void bake() throws RegistrationException, MissingIngredientException;
 }

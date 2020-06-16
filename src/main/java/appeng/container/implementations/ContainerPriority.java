@@ -18,8 +18,6 @@
 
 package appeng.container.implementations;
 
-
-import appeng.container.ContainerLocator;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -32,81 +30,72 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.parts.IPart;
 import appeng.container.AEBaseContainer;
+import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.helpers.IPriorityHost;
 import appeng.util.Platform;
 
+public class ContainerPriority extends AEBaseContainer {
 
-public class ContainerPriority extends AEBaseContainer
-{
+    public static ContainerType<ContainerPriority> TYPE;
 
-public static ContainerType<ContainerPriority> TYPE;
+    private static final ContainerHelper<ContainerPriority, IPriorityHost> helper = new ContainerHelper<>(
+            ContainerPriority::new, IPriorityHost.class, SecurityPermissions.BUILD);
 
-	private static final ContainerHelper<ContainerPriority, IPriorityHost> helper
-			= new ContainerHelper<>(ContainerPriority::new, IPriorityHost.class, SecurityPermissions.BUILD);
+    public static ContainerPriority fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+        return helper.fromNetwork(windowId, inv, buf);
+    }
 
-	public static ContainerPriority fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-		return helper.fromNetwork(windowId, inv, buf);
-	}
+    public static boolean open(PlayerEntity player, ContainerLocator locator) {
+        return helper.open(player, locator);
+    }
 
-	public static boolean open(PlayerEntity player, ContainerLocator locator) {
-		return helper.open(player, locator);
-	}
+    private final IPriorityHost priHost;
 
-	private final IPriorityHost priHost;
+    @OnlyIn(Dist.CLIENT)
+    private TextFieldWidget textField;
+    @GuiSync(2)
+    public long PriorityValue = -1;
 
-	@OnlyIn( Dist.CLIENT )
-	private TextFieldWidget textField;
-	@GuiSync( 2 )
-	public long PriorityValue = -1;
+    public ContainerPriority(int id, final PlayerInventory ip, final IPriorityHost te) {
+        super(TYPE, id, ip, (TileEntity) (te instanceof TileEntity ? te : null),
+                (IPart) (te instanceof IPart ? te : null));
+        this.priHost = te;
+    }
 
-	public ContainerPriority(int id, final PlayerInventory ip, final IPriorityHost te )
-	{
-		super( TYPE, id, ip, (TileEntity) ( te instanceof TileEntity ? te : null ), (IPart) ( te instanceof IPart ? te : null ) );
-		this.priHost = te;
-	}
+    @OnlyIn(Dist.CLIENT)
+    public void setTextField(final TextFieldWidget level) {
+        this.textField = level;
+        this.textField.setText(String.valueOf(this.PriorityValue));
+    }
 
-	@OnlyIn( Dist.CLIENT )
-	public void setTextField( final TextFieldWidget level )
-	{
-		this.textField = level;
-		this.textField.setText( String.valueOf( this.PriorityValue ) );
-	}
+    public void setPriority(final int newValue, final PlayerEntity player) {
+        this.priHost.setPriority(newValue);
+        this.PriorityValue = newValue;
+    }
 
-	public void setPriority( final int newValue, final PlayerEntity player )
-	{
-		this.priHost.setPriority( newValue );
-		this.PriorityValue = newValue;
-	}
+    @Override
+    public void detectAndSendChanges() {
+        super.detectAndSendChanges();
+        this.verifyPermissions(SecurityPermissions.BUILD, false);
 
-	@Override
-	public void detectAndSendChanges()
-	{
-		super.detectAndSendChanges();
-		this.verifyPermissions( SecurityPermissions.BUILD, false );
+        if (Platform.isServer()) {
+            this.PriorityValue = this.priHost.getPriority();
+        }
+    }
 
-		if( Platform.isServer() )
-		{
-			this.PriorityValue = this.priHost.getPriority();
-		}
-	}
+    @Override
+    public void onUpdate(final String field, final Object oldValue, final Object newValue) {
+        if (field.equals("PriorityValue")) {
+            if (this.textField != null) {
+                this.textField.setText(String.valueOf(this.PriorityValue));
+            }
+        }
 
-	@Override
-	public void onUpdate( final String field, final Object oldValue, final Object newValue )
-	{
-		if( field.equals( "PriorityValue" ) )
-		{
-			if( this.textField != null )
-			{
-				this.textField.setText( String.valueOf( this.PriorityValue ) );
-			}
-		}
+        super.onUpdate(field, oldValue, newValue);
+    }
 
-		super.onUpdate( field, oldValue, newValue );
-	}
-
-	public IPriorityHost getPriorityHost()
-	{
-		return this.priHost;
-	}
+    public IPriorityHost getPriorityHost() {
+        return this.priHost;
+    }
 }

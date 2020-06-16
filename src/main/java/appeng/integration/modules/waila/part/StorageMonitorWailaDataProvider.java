@@ -18,11 +18,12 @@
 
 package appeng.integration.modules.waila.part;
 
-
 import java.util.List;
 
-import mcp.mobius.waila.api.IPluginConfig;
+import net.minecraft.util.text.ITextComponent;
+
 import mcp.mobius.waila.api.IDataAccessor;
+import mcp.mobius.waila.api.IPluginConfig;
 
 import appeng.api.implementations.parts.IPartStorageMonitor;
 import appeng.api.parts.IPart;
@@ -30,8 +31,6 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.core.localization.WailaText;
-import net.minecraft.util.text.ITextComponent;
-
 
 /**
  * Storage monitor provider for WAILA
@@ -40,40 +39,37 @@ import net.minecraft.util.text.ITextComponent;
  * @version rv2
  * @since rv2
  */
-public final class StorageMonitorWailaDataProvider extends BasePartWailaDataProvider
-{
-	/**
-	 * Displays the stack if present and if the monitor is locked.
-	 * Can handle fluids and items.
-	 *
-	 * @param part maybe storage monitor
-	 * @param tooltip to be written to tooltip
-	 * @param accessor information wrapper
-	 * @param config config option
-	 */
-	@Override
-	public void appendBody(final IPart part, final List<ITextComponent> tooltip, final IDataAccessor accessor, final IPluginConfig config )
-	{
-		if( part instanceof IPartStorageMonitor )
-		{
-			final IPartStorageMonitor monitor = (IPartStorageMonitor) part;
+public final class StorageMonitorWailaDataProvider extends BasePartWailaDataProvider {
+    /**
+     * Displays the stack if present and if the monitor is locked. Can handle fluids
+     * and items.
+     *
+     * @param part     maybe storage monitor
+     * @param tooltip  to be written to tooltip
+     * @param accessor information wrapper
+     * @param config   config option
+     */
+    @Override
+    public void appendBody(final IPart part, final List<ITextComponent> tooltip, final IDataAccessor accessor,
+            final IPluginConfig config) {
+        if (part instanceof IPartStorageMonitor) {
+            final IPartStorageMonitor monitor = (IPartStorageMonitor) part;
 
-			final IAEStack<?> displayed = monitor.getDisplayed();
-			final boolean isLocked = monitor.isLocked();
+            final IAEStack<?> displayed = monitor.getDisplayed();
+            final boolean isLocked = monitor.isLocked();
 
-			// TODO: generalize
-			if( displayed instanceof IAEItemStack )
-			{
-				final IAEItemStack ais = (IAEItemStack) displayed;
-				tooltip.add( WailaText.Showing.textComponent().appendText(": ").appendSibling(ais.asItemStackRepresentation().getDisplayName()) );
-			}
-			else if( displayed instanceof IAEFluidStack )
-			{
-				final IAEFluidStack ais = (IAEFluidStack) displayed;
-				tooltip.add( WailaText.Showing.textComponent().appendText(": ").appendSibling(ais.getFluid().getAttributes().getDisplayName( ais.getFluidStack() )) );
-			}
+            // TODO: generalize
+            if (displayed instanceof IAEItemStack) {
+                final IAEItemStack ais = (IAEItemStack) displayed;
+                tooltip.add(WailaText.Showing.textComponent().appendText(": ")
+                        .appendSibling(ais.asItemStackRepresentation().getDisplayName()));
+            } else if (displayed instanceof IAEFluidStack) {
+                final IAEFluidStack ais = (IAEFluidStack) displayed;
+                tooltip.add(WailaText.Showing.textComponent().appendText(": ")
+                        .appendSibling(ais.getFluid().getAttributes().getDisplayName(ais.getFluidStack())));
+            }
 
-			tooltip.add( ( isLocked ) ? WailaText.Locked.textComponent() : WailaText.Unlocked.textComponent() );
-		}
-	}
+            tooltip.add((isLocked) ? WailaText.Locked.textComponent() : WailaText.Unlocked.textComponent());
+        }
+    }
 }

@@ -18,12 +18,8 @@
 
 package appeng.recipes.game;
 
+import javax.annotation.Nonnull;
 
-import appeng.api.AEApi;
-import appeng.api.definitions.IComparableDefinition;
-import appeng.api.definitions.IDefinitions;
-import appeng.core.AppEng;
-import appeng.items.parts.ItemFacade;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -33,78 +29,70 @@ import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-import javax.annotation.Nonnull;
+import appeng.api.AEApi;
+import appeng.api.definitions.IComparableDefinition;
+import appeng.api.definitions.IDefinitions;
+import appeng.core.AppEng;
+import appeng.items.parts.ItemFacade;
 
+public final class FacadeRecipe extends SpecialRecipe {
+    public static SpecialRecipeSerializer<FacadeRecipe> SERIALIZER = null;
 
-public final class FacadeRecipe extends SpecialRecipe
-{
-	public static SpecialRecipeSerializer<FacadeRecipe> SERIALIZER = null;
+    private final IComparableDefinition anchor;
+    private final ItemFacade facade;
 
-	private final IComparableDefinition anchor;
-	private final ItemFacade facade;
+    public FacadeRecipe(ResourceLocation id, ItemFacade facade) {
+        super(id);
+        this.facade = facade;
+        final IDefinitions definitions = AEApi.instance().definitions();
 
-	public FacadeRecipe( ResourceLocation id, ItemFacade facade )
-	{
-		super( id );
-		this.facade = facade;
-		final IDefinitions definitions = AEApi.instance().definitions();
+        this.anchor = definitions.parts().cableAnchor();
+    }
 
-		this.anchor = definitions.parts().cableAnchor();
-	}
+    @Override
+    public boolean matches(@Nonnull final CraftingInventory inv, @Nonnull final World w) {
+        return !this.getOutput(inv, false).isEmpty();
+    }
 
-	@Override
-	public boolean matches( @Nonnull final CraftingInventory inv, @Nonnull final World w )
-	{
-		return !this.getOutput( inv, false ).isEmpty();
-	}
+    @Nonnull
+    private ItemStack getOutput(final IInventory inv, final boolean createFacade) {
+        if (inv.getStackInSlot(0).isEmpty() && inv.getStackInSlot(2).isEmpty() && inv.getStackInSlot(6).isEmpty()
+                && inv.getStackInSlot(8).isEmpty()) {
+            if (this.anchor.isSameAs(inv.getStackInSlot(1)) && this.anchor.isSameAs(inv.getStackInSlot(3))
+                    && this.anchor.isSameAs(inv.getStackInSlot(5)) && this.anchor.isSameAs(inv.getStackInSlot(7))) {
+                final ItemStack facades = this.facade.createFacadeForItem(inv.getStackInSlot(4), !createFacade);
+                if (!facades.isEmpty() && createFacade) {
+                    facades.setCount(4);
+                }
+                return facades;
+            }
+        }
 
-	@Nonnull
-	private ItemStack getOutput( final IInventory inv, final boolean createFacade )
-	{
-		if( inv.getStackInSlot( 0 ).isEmpty() && inv.getStackInSlot( 2 ).isEmpty() && inv.getStackInSlot( 6 ).isEmpty() && inv.getStackInSlot( 8 ).isEmpty() )
-		{
-			if( this.anchor.isSameAs( inv.getStackInSlot( 1 ) ) && this.anchor.isSameAs( inv.getStackInSlot( 3 ) ) && this.anchor
-					.isSameAs( inv.getStackInSlot( 5 ) ) && this.anchor.isSameAs( inv.getStackInSlot( 7 ) ) )
-			{
-				final ItemStack facades = this.facade.createFacadeForItem( inv.getStackInSlot( 4 ), !createFacade );
-				if( !facades.isEmpty() && createFacade )
-				{
-					facades.setCount( 4 );
-				}
-				return facades;
-			}
-		}
+        return ItemStack.EMPTY;
+    }
 
-		return ItemStack.EMPTY;
-	}
+    @Override
+    public ItemStack getCraftingResult(@Nonnull final CraftingInventory inv) {
+        return this.getOutput(inv, true);
+    }
 
-	@Override
-	public ItemStack getCraftingResult( @Nonnull final CraftingInventory inv )
-	{
-		return this.getOutput( inv, true );
-	}
+    @Override
+    public boolean canFit(int i, int i1) {
+        return false;
+    }
 
-	@Override
-	public boolean canFit( int i, int i1 )
-	{
-		return false;
-	}
+    @Nonnull
+    @Override
+    public IRecipeSerializer<FacadeRecipe> getSerializer() {
+        return getSerializer(facade);
+    }
 
-	@Nonnull
-	@Override
-	public IRecipeSerializer<FacadeRecipe> getSerializer()
-	{
-		return getSerializer( facade );
-	}
-
-	public static IRecipeSerializer<FacadeRecipe> getSerializer( ItemFacade facade )
-	{
-		if( SERIALIZER == null )
-		{
-			SERIALIZER = new SpecialRecipeSerializer<>( id -> new FacadeRecipe( id, facade ) );
-			SERIALIZER.setRegistryName( new ResourceLocation( AppEng.MOD_ID, "facade_recipe" ) );
-		}
-		return SERIALIZER;
-	}
+    public static IRecipeSerializer<FacadeRecipe> getSerializer(ItemFacade facade) {
+        if (SERIALIZER == null) {
+            SERIALIZER = new SpecialRecipeSerializer<>(id -> new FacadeRecipe(id, facade));
+            SERIALIZER.setRegistryName(new ResourceLocation(AppEng.MOD_ID, "facade_recipe"));
+        }
+        return SERIALIZER;
+    }
 
 }

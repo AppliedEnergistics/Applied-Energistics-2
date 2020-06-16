@@ -1,10 +1,10 @@
 package appeng.client.render.model;
 
-
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Random;
+
 import javax.annotation.Nullable;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -20,120 +20,100 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.client.model.PerspectiveMapWrapper;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
+class ColorApplicatorBakedModel implements IBakedModel {
 
-class ColorApplicatorBakedModel implements IBakedModel
-{
+    private final IBakedModel baseModel;
 
-	private final IBakedModel baseModel;
+    private final IModelTransform transforms;
 
-	private final IModelTransform transforms;
+    private final EnumMap<Direction, List<BakedQuad>> quadsBySide;
 
-	private final EnumMap<Direction, List<BakedQuad>> quadsBySide;
+    private final List<BakedQuad> generalQuads;
 
-	private final List<BakedQuad> generalQuads;
+    ColorApplicatorBakedModel(IBakedModel baseModel, IModelTransform transforms, TextureAtlasSprite texDark,
+            TextureAtlasSprite texMedium, TextureAtlasSprite texBright) {
+        this.baseModel = baseModel;
+        this.transforms = transforms;
 
-	ColorApplicatorBakedModel( IBakedModel baseModel, IModelTransform transforms, TextureAtlasSprite texDark, TextureAtlasSprite texMedium, TextureAtlasSprite texBright )
-	{
-		this.baseModel = baseModel;
-		this.transforms = transforms;
+        // Put the tint indices in... Since this is an item model, we are ignoring rand
+        this.generalQuads = this.fixQuadTint(null, texDark, texMedium, texBright);
+        this.quadsBySide = new EnumMap<>(Direction.class);
+        for (Direction facing : Direction.values()) {
+            this.quadsBySide.put(facing, this.fixQuadTint(facing, texDark, texMedium, texBright));
+        }
+    }
 
-		// Put the tint indices in... Since this is an item model, we are ignoring rand
-		this.generalQuads = this.fixQuadTint( null, texDark, texMedium, texBright );
-		this.quadsBySide = new EnumMap<>( Direction.class );
-		for( Direction facing : Direction.values() )
-		{
-			this.quadsBySide.put( facing, this.fixQuadTint( facing, texDark, texMedium, texBright ) );
-		}
-	}
+    private List<BakedQuad> fixQuadTint(Direction facing, TextureAtlasSprite texDark, TextureAtlasSprite texMedium,
+            TextureAtlasSprite texBright) {
+        List<BakedQuad> quads = this.baseModel.getQuads(null, facing, new Random(0), EmptyModelData.INSTANCE);
+        List<BakedQuad> result = new ArrayList<>(quads.size());
+        for (BakedQuad quad : quads) {
+            int tint;
 
-	private List<BakedQuad> fixQuadTint( Direction facing, TextureAtlasSprite texDark, TextureAtlasSprite texMedium, TextureAtlasSprite texBright )
-	{
-		List<BakedQuad> quads = this.baseModel.getQuads( null, facing, new Random( 0 ), EmptyModelData.INSTANCE );
-		List<BakedQuad> result = new ArrayList<>( quads.size() );
-		for( BakedQuad quad : quads )
-		{
-			int tint;
+            if (quad.func_187508_a() == texDark) {
+                tint = 1;
+            } else if (quad.func_187508_a() == texMedium) {
+                tint = 2;
+            } else if (quad.func_187508_a() == texBright) {
+                tint = 3;
+            } else {
+                result.add(quad);
+                continue;
+            }
 
-			if( quad.func_187508_a() == texDark )
-			{
-				tint = 1;
-			}
-			else if( quad.func_187508_a() == texMedium )
-			{
-				tint = 2;
-			}
-			else if( quad.func_187508_a() == texBright )
-			{
-				tint = 3;
-			}
-			else
-			{
-				result.add( quad );
-				continue;
-			}
+            BakedQuad newQuad = new BakedQuad(quad.getVertexData(), tint, quad.getFace(), quad.func_187508_a(),
+                    quad.shouldApplyDiffuseLighting());
+            result.add(newQuad);
+        }
 
-			BakedQuad newQuad = new BakedQuad( quad.getVertexData(), tint, quad.getFace(), quad.func_187508_a(), quad.shouldApplyDiffuseLighting() );
-			result.add( newQuad );
-		}
+        return result;
+    }
 
-		return result;
-	}
+    @Override
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
+        if (side == null) {
+            return this.generalQuads;
+        }
+        return this.quadsBySide.get(side);
+    }
 
-	@Override
-	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, Random rand )
-	{
-		if( side == null )
-		{
-			return this.generalQuads;
-		}
-		return this.quadsBySide.get( side );
-	}
+    @Override
+    public boolean isAmbientOcclusion() {
+        return this.baseModel.isAmbientOcclusion();
+    }
 
-	@Override
-	public boolean isAmbientOcclusion()
-	{
-		return this.baseModel.isAmbientOcclusion();
-	}
+    @Override
+    public boolean isGui3d() {
+        return this.baseModel.isGui3d();
+    }
 
-	@Override
-	public boolean isGui3d()
-	{
-		return this.baseModel.isGui3d();
-	}
+    @Override
+    public boolean func_230044_c_() {
+        return false;// TODO
+    }
 
-	@Override
-	public boolean func_230044_c_()
-	{
-		return false;//TODO
-	}
+    @Override
+    public boolean isBuiltInRenderer() {
+        return this.baseModel.isBuiltInRenderer();
+    }
 
-	@Override
-	public boolean isBuiltInRenderer()
-	{
-		return this.baseModel.isBuiltInRenderer();
-	}
+    @Override
+    public TextureAtlasSprite getParticleTexture() {
+        return this.baseModel.getParticleTexture();
+    }
 
-	@Override
-	public TextureAtlasSprite getParticleTexture()
-	{
-		return this.baseModel.getParticleTexture();
-	}
+    @Override
+    public ItemCameraTransforms getItemCameraTransforms() {
+        return this.baseModel.getItemCameraTransforms();
+    }
 
-	@Override
-	public ItemCameraTransforms getItemCameraTransforms()
-	{
-		return this.baseModel.getItemCameraTransforms();
-	}
+    @Override
+    public ItemOverrideList getOverrides() {
+        return this.baseModel.getOverrides();
+    }
 
-	@Override
-	public ItemOverrideList getOverrides()
-	{
-		return this.baseModel.getOverrides();
-	}
-
-	@Override
-	public IBakedModel handlePerspective( ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat )
-	{
-		return PerspectiveMapWrapper.handlePerspective( this, transforms, cameraTransformType, mat );
-	}
+    @Override
+    public IBakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
+        return PerspectiveMapWrapper.handlePerspective(this, transforms, cameraTransformType, mat);
+    }
 }

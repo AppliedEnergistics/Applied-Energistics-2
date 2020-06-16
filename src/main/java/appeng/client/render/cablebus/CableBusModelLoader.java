@@ -1,10 +1,12 @@
 package appeng.client.render.cablebus;
 
-import appeng.core.features.registries.PartModels;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
+
 import net.minecraft.resources.IResourceManager;
 import net.minecraftforge.client.model.IModelLoader;
+
+import appeng.core.features.registries.PartModels;
 
 public class CableBusModelLoader implements IModelLoader<CableBusModel> {
 

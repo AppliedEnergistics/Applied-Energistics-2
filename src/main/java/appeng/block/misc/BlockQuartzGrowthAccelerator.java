@@ -18,14 +18,8 @@
 
 package appeng.block.misc;
 
+import java.util.Random;
 
-import appeng.api.util.IOrientableBlock;
-import appeng.block.AEBaseTileBlock;
-import appeng.client.render.effects.LightningFX;
-import appeng.core.AEConfig;
-import appeng.core.AppEng;
-import appeng.tile.misc.TileQuartzGrowthAccelerator;
-import appeng.util.Platform;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -40,110 +34,109 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.Random;
+import appeng.api.util.IOrientableBlock;
+import appeng.block.AEBaseTileBlock;
+import appeng.client.render.effects.LightningFX;
+import appeng.core.AEConfig;
+import appeng.core.AppEng;
+import appeng.tile.misc.TileQuartzGrowthAccelerator;
+import appeng.util.Platform;
 
+public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock<TileQuartzGrowthAccelerator>
+        implements IOrientableBlock {
 
-public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock<TileQuartzGrowthAccelerator> implements IOrientableBlock
-{
+    private static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
-	private static final BooleanProperty POWERED = BooleanProperty.create( "powered" );
+    public BlockQuartzGrowthAccelerator() {
+        super(defaultProps(Material.ROCK).sound(SoundType.METAL));
+        this.setDefaultState(this.getDefaultState().with(POWERED, false));
+    }
 
-	public BlockQuartzGrowthAccelerator()
-	{
-		super( defaultProps(Material.ROCK).sound(SoundType.METAL) );
-		this.setDefaultState( this.getDefaultState().with( POWERED, false ) );
-	}
+    @Override
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, TileQuartzGrowthAccelerator te) {
+        return currentState.with(POWERED, te.isPowered());
+    }
 
-	@Override
-	protected BlockState updateBlockStateFromTileEntity(BlockState currentState, TileQuartzGrowthAccelerator te) {
-		return currentState.with( POWERED, te.isPowered() );
-	}
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
+        builder.add(POWERED);
+    }
 
-	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-		super.fillStateContainer(builder);
-		builder.add(POWERED);
-	}
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void animateTick(final BlockState state, final World w, final BlockPos pos, final Random r) {
+        if (!AEConfig.instance().isEnableEffects()) {
+            return;
+        }
 
-	@OnlyIn( Dist.CLIENT )
-	@Override
-	public void animateTick( final BlockState state, final World w, final BlockPos pos, final Random r )
-	{
-		if( !AEConfig.instance().isEnableEffects() )
-		{
-			return;
-		}
+        final TileQuartzGrowthAccelerator cga = this.getTileEntity(w, pos);
 
-		final TileQuartzGrowthAccelerator cga = this.getTileEntity( w, pos );
+        if (cga != null && cga.isPowered() && AppEng.proxy.shouldAddParticles(r)) {
+            final double d0 = r.nextFloat() - 0.5F;
+            final double d1 = r.nextFloat() - 0.5F;
 
-		if( cga != null && cga.isPowered() && AppEng.proxy.shouldAddParticles( r ) )
-		{
-			final double d0 = r.nextFloat() - 0.5F;
-			final double d1 = r.nextFloat() - 0.5F;
+            final Direction up = cga.getUp();
+            final Direction forward = cga.getForward();
+            final Direction west = Platform.crossProduct(forward, up);
 
-			final Direction up = cga.getUp();
-			final Direction forward = cga.getForward();
-			final Direction west = Platform.crossProduct( forward, up );
+            double rx = 0.5 + pos.getX();
+            double ry = 0.5 + pos.getY();
+            double rz = 0.5 + pos.getZ();
 
-			double rx = 0.5 + pos.getX();
-			double ry = 0.5 + pos.getY();
-			double rz = 0.5 + pos.getZ();
+            rx += up.getXOffset() * d0;
+            ry += up.getYOffset() * d0;
+            rz += up.getZOffset() * d0;
 
-			rx += up.getXOffset() * d0;
-			ry += up.getYOffset() * d0;
-			rz += up.getZOffset() * d0;
+            final int x = pos.getX();
+            final int y = pos.getY();
+            final int z = pos.getZ();
 
-			final int x = pos.getX();
-			final int y = pos.getY();
-			final int z = pos.getZ();
+            double dz = 0;
+            double dx = 0;
+            BlockPos pt = null;
 
-			double dz = 0;
-			double dx = 0;
-			BlockPos pt = null;
+            switch (r.nextInt(4)) {
+                case 0:
+                    dx = 0.6;
+                    dz = d1;
+                    pt = new BlockPos(x + west.getXOffset(), y + west.getYOffset(), z + west.getZOffset());
 
-			switch( r.nextInt( 4 ) )
-			{
-				case 0:
-					dx = 0.6;
-					dz = d1;
-					pt = new BlockPos( x + west.getXOffset(), y + west.getYOffset(), z + west.getZOffset() );
+                    break;
+                case 1:
+                    dx = d1;
+                    dz += 0.6;
+                    pt = new BlockPos(x + forward.getXOffset(), y + forward.getYOffset(), z + forward.getZOffset());
 
-					break;
-				case 1:
-					dx = d1;
-					dz += 0.6;
-					pt = new BlockPos( x + forward.getXOffset(), y + forward.getYOffset(), z + forward.getZOffset() );
+                    break;
+                case 2:
+                    dx = d1;
+                    dz = -0.6;
+                    pt = new BlockPos(x - forward.getXOffset(), y - forward.getYOffset(), z - forward.getZOffset());
 
-					break;
-				case 2:
-					dx = d1;
-					dz = -0.6;
-					pt = new BlockPos( x - forward.getXOffset(), y - forward.getYOffset(), z - forward.getZOffset() );
+                    break;
+                case 3:
+                    dx = -0.6;
+                    dz = d1;
+                    pt = new BlockPos(x - west.getXOffset(), y - west.getYOffset(), z - west.getZOffset());
 
-					break;
-				case 3:
-					dx = -0.6;
-					dz = d1;
-					pt = new BlockPos( x - west.getXOffset(), y - west.getYOffset(), z - west.getZOffset() );
+                    break;
+            }
 
-					break;
-			}
+            if (!w.getBlockState(pt).getBlock().isAir(w.getBlockState(pt), w, pt)) {
+                return;
+            }
 
-			if( !w.getBlockState( pt ).getBlock().isAir( w.getBlockState( pt ), w, pt ) )
-			{
-				return;
-			}
+            rx += dx * west.getXOffset();
+            ry += dx * west.getYOffset();
+            rz += dx * west.getZOffset();
 
-			rx += dx * west.getXOffset();
-			ry += dx * west.getYOffset();
-			rz += dx * west.getZOffset();
+            rx += dz * forward.getXOffset();
+            ry += dz * forward.getYOffset();
+            rz += dz * forward.getZOffset();
 
-			rx += dz * forward.getXOffset();
-			ry += dz * forward.getYOffset();
-			rz += dz * forward.getZOffset();
-
-			Minecraft.getInstance().particles.addParticle(LightningFX.TYPE, rx, ry, rz, 0.0D, 0.0D, 0.0D);
-		}
-	}
+            Minecraft.getInstance().particles.addParticle(LightningFX.TYPE, rx, ry, rz, 0.0D, 0.0D, 0.0D);
+        }
+    }
 
 }

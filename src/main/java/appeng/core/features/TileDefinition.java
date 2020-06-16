@@ -18,33 +18,29 @@
 
 package appeng.core.features;
 
-
 import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import appeng.api.features.AEFeature;
 import net.minecraft.item.BlockItem;
 import net.minecraft.tileentity.TileEntity;
 
 import appeng.api.definitions.ITileDefinition;
+import appeng.api.features.AEFeature;
 import appeng.block.AEBaseTileBlock;
 
+public final class TileDefinition extends BlockDefinition implements ITileDefinition {
+    private final AEBaseTileBlock<?> block;
 
-public final class TileDefinition extends BlockDefinition implements ITileDefinition
-{
-	private final AEBaseTileBlock<?> block;
+    public TileDefinition(@Nonnull String registryName, AEBaseTileBlock<?> block, BlockItem item,
+            Set<AEFeature> features) {
+        super(registryName, block, item, features);
+        this.block = block;
+    }
 
-	public TileDefinition( @Nonnull String registryName, AEBaseTileBlock<?> block, BlockItem item, Set<AEFeature> features )
-	{
-		super( registryName, block, item, features );
-		this.block = block;
-	}
-
-	@Override
-	public Optional<? extends Class<? extends TileEntity>> maybeEntity()
-	{
-		return Optional.of(this.block.getTileEntityClass());
-	}
+    @Override
+    public Optional<? extends Class<? extends TileEntity>> maybeEntity() {
+        return Optional.of(this.block.getTileEntityClass());
+    }
 }

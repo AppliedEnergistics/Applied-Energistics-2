@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:16k_fluid_cell_component"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aba",
-    "cdc",
-    "aca"
-  ],
+  "pattern": ["aba", "cdc", "aca"],
   "key": {
     "d": {
       "item": "appliedenergistics2:quartz_glass"

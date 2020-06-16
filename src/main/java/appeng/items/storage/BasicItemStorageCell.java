@@ -18,7 +18,6 @@
 
 package appeng.items.storage;
 
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
@@ -29,69 +28,59 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.items.materials.MaterialType;
 import appeng.util.InventoryAdaptor;
 
+public final class BasicItemStorageCell extends AbstractStorageCell<IAEItemStack> {
 
-public final class BasicItemStorageCell extends AbstractStorageCell<IAEItemStack>
-{
+    protected final int perType;
+    protected final double idleDrain;
 
-	protected final int perType;
-	protected final double idleDrain;
+    public BasicItemStorageCell(Properties props, final MaterialType whichCell, final int kilobytes) {
+        super(props, whichCell, kilobytes);
+        switch (whichCell) {
+            case ITEM_1K_CELL_COMPONENT:
+                this.idleDrain = 0.5;
+                this.perType = 8;
+                break;
+            case ITEM_4K_CELL_COMPONENT:
+                this.idleDrain = 1.0;
+                this.perType = 32;
+                break;
+            case ITEM_16K_CELL_COMPONENT:
+                this.idleDrain = 1.5;
+                this.perType = 128;
+                break;
+            case ITEM_64K_CELL_COMPONENT:
+                this.idleDrain = 2.0;
+                this.perType = 512;
+                break;
+            default:
+                this.idleDrain = 0.0;
+                this.perType = 8;
+        }
 
-	public BasicItemStorageCell( Properties props, final MaterialType whichCell, final int kilobytes )
-	{
-		super( props, whichCell, kilobytes );
-		switch( whichCell )
-		{
-			case ITEM_1K_CELL_COMPONENT:
-				this.idleDrain = 0.5;
-				this.perType = 8;
-				break;
-			case ITEM_4K_CELL_COMPONENT:
-				this.idleDrain = 1.0;
-				this.perType = 32;
-				break;
-			case ITEM_16K_CELL_COMPONENT:
-				this.idleDrain = 1.5;
-				this.perType = 128;
-				break;
-			case ITEM_64K_CELL_COMPONENT:
-				this.idleDrain = 2.0;
-				this.perType = 512;
-				break;
-			default:
-				this.idleDrain = 0.0;
-				this.perType = 8;
-		}
+    }
 
-	}
+    @Override
+    public int getBytesPerType(ItemStack cellItem) {
+        return this.perType;
+    }
 
-	@Override
-	public int getBytesPerType( ItemStack cellItem )
-	{
-		return this.perType;
-	}
+    @Override
+    public double getIdleDrain() {
+        return this.idleDrain;
+    }
 
-	@Override
-	public double getIdleDrain()
-	{
-		return this.idleDrain;
-	}
+    @Override
+    public IStorageChannel<IAEItemStack> getChannel() {
+        return AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
+    }
 
-	@Override
-	public IStorageChannel<IAEItemStack> getChannel()
-	{
-		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
-	}
-
-	@Override
-	protected void dropEmptyStorageCellCase( final InventoryAdaptor ia, final PlayerEntity player )
-	{
-		AEApi.instance().definitions().materials().emptyStorageCell().maybeStack( 1 ).ifPresent( is ->
-		{
-			final ItemStack extraA = ia.addItems( is );
-			if( !extraA.isEmpty() )
-			{
-				player.dropItem( extraA, false );
-			}
-		} );
-	}
+    @Override
+    protected void dropEmptyStorageCellCase(final InventoryAdaptor ia, final PlayerEntity player) {
+        AEApi.instance().definitions().materials().emptyStorageCell().maybeStack(1).ifPresent(is -> {
+            final ItemStack extraA = ia.addItems(is);
+            if (!extraA.isEmpty()) {
+                player.dropItem(extraA, false);
+            }
+        });
+    }
 }

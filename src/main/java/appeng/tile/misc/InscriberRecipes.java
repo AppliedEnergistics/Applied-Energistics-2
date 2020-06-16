@@ -1,11 +1,11 @@
 package appeng.tile.misc;
 
-import appeng.api.AEApi;
-import appeng.api.definitions.IComparableDefinition;
-import appeng.api.features.InscriberProcessType;
-import appeng.core.AppEng;
-import appeng.recipes.handlers.InscriberRecipe;
+import java.util.Collection;
+
+import javax.annotation.Nullable;
+
 import com.google.common.collect.Iterables;
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -14,12 +14,16 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
-import java.util.Collection;
+import appeng.api.AEApi;
+import appeng.api.definitions.IComparableDefinition;
+import appeng.api.features.InscriberProcessType;
+import appeng.core.AppEng;
+import appeng.recipes.handlers.InscriberRecipe;
 
 /**
- * This class indexes all inscriber recipes to find valid inputs for the top and bottom
- * optional slots. This speeds up checks whether inputs for those two slots are valid.
+ * This class indexes all inscriber recipes to find valid inputs for the top and
+ * bottom optional slots. This speeds up checks whether inputs for those two
+ * slots are valid.
  */
 public final class InscriberRecipes {
 
@@ -32,12 +36,14 @@ public final class InscriberRecipes {
      * Returns an unmodifiable view of all registered inscriber recipes.
      */
     public static Iterable<InscriberRecipe> getRecipes(World world) {
-        Collection<IRecipe<IInventory>> unfilteredRecipes = world.getRecipeManager().getRecipes(InscriberRecipe.TYPE).values();
+        Collection<IRecipe<IInventory>> unfilteredRecipes = world.getRecipeManager().getRecipes(InscriberRecipe.TYPE)
+                .values();
         return Iterables.filter(unfilteredRecipes, InscriberRecipe.class);
     }
 
     @Nullable
-    public static InscriberRecipe findRecipe(World world, ItemStack input, ItemStack plateA, ItemStack plateB, boolean supportNamePress) {
+    public static InscriberRecipe findRecipe(World world, ItemStack input, ItemStack plateA, ItemStack plateB,
+            boolean supportNamePress) {
         if (supportNamePress) {
             IComparableDefinition namePress = AEApi.instance().definitions().materials().namePress();
             boolean isNameA = namePress.isSameAs(plateA);
@@ -50,14 +56,12 @@ public final class InscriberRecipes {
             }
         }
 
-        for( final InscriberRecipe recipe : getRecipes(world) )
-        {
+        for (final InscriberRecipe recipe : getRecipes(world)) {
             // The recipe can be flipped at will
             final boolean matchA = recipe.getTopOptional().test(plateA) && recipe.getBottomOptional().test(plateB);
             final boolean matchB = recipe.getTopOptional().test(plateB) && recipe.getBottomOptional().test(plateA);
 
-            if( matchA || matchB )
-            {
+            if (matchA || matchB) {
                 if (recipe.getMiddleInput().test(input)) {
                     return recipe;
                 }
@@ -67,57 +71,45 @@ public final class InscriberRecipes {
         return null;
     }
 
-    private static InscriberRecipe makeNamePressRecipe( ItemStack input, ItemStack plateA, ItemStack plateB )
-    {
+    private static InscriberRecipe makeNamePressRecipe(ItemStack input, ItemStack plateA, ItemStack plateB) {
         String name = "";
 
-        if( !plateA.isEmpty() )
-        {
+        if (!plateA.isEmpty()) {
             final CompoundNBT tag = plateA.getOrCreateTag();
-            name += tag.getString( "InscribeName" );
+            name += tag.getString("InscribeName");
         }
 
-        if( !plateB.isEmpty() )
-        {
+        if (!plateB.isEmpty()) {
             final CompoundNBT tag = plateB.getOrCreateTag();
-            name += " " + tag.getString( "InscribeName" );
+            name += " " + tag.getString("InscribeName");
         }
 
         final Ingredient startingItem = Ingredient.fromStacks(input.copy());
         final ItemStack renamedItem = input.copy();
 
-        final CompoundNBT display = renamedItem.getOrCreateChildTag( "display" );
-        if( !name.isEmpty() )
-        {
+        final CompoundNBT display = renamedItem.getOrCreateChildTag("display");
+        if (!name.isEmpty()) {
             display.putString("Name", name);
-        }
-        else
-        {
-            display.remove( "Name" );
+        } else {
+            display.remove("Name");
         }
 
         final InscriberProcessType type = InscriberProcessType.INSCRIBE;
 
-        return new InscriberRecipe(
-                NAMEPLATE_RECIPE_ID,
-                "",
-                startingItem,
-                renamedItem,
+        return new InscriberRecipe(NAMEPLATE_RECIPE_ID, "", startingItem, renamedItem,
                 plateA.isEmpty() ? Ingredient.EMPTY : Ingredient.fromStacks(plateA),
-                plateB.isEmpty() ? Ingredient.EMPTY : Ingredient.fromStacks(plateB),
-                type
-        );
+                plateB.isEmpty() ? Ingredient.EMPTY : Ingredient.fromStacks(plateB), type);
     }
 
     /**
-     * Checks if there is an inscriber recipe that supports the given combination of top/bottom presses.
-     * Both the given combination and the reverse will be searched.
+     * Checks if there is an inscriber recipe that supports the given combination of
+     * top/bottom presses. Both the given combination and the reverse will be
+     * searched.
      */
     public static boolean isValidOptionalIngredientCombination(World world, ItemStack pressA, ItemStack pressB) {
         for (InscriberRecipe recipe : getRecipes(world)) {
             if (recipe.getTopOptional().test(pressA) && recipe.getBottomOptional().test(pressB)
-                    || recipe.getTopOptional().test(pressB) && recipe.getBottomOptional().test(pressA))
-            {
+                    || recipe.getTopOptional().test(pressB) && recipe.getBottomOptional().test(pressA)) {
                 return true;
             }
         }
@@ -126,14 +118,13 @@ public final class InscriberRecipes {
     }
 
     /**
-     * Checks if there is an inscriber recipe that would use the given item stack as an optional ingredient.
-     * Bottom and top can be used interchangeably here, because the inscriber will flip the recipe if needed.
+     * Checks if there is an inscriber recipe that would use the given item stack as
+     * an optional ingredient. Bottom and top can be used interchangeably here,
+     * because the inscriber will flip the recipe if needed.
      */
     public static boolean isValidOptionalIngredient(World world, ItemStack is) {
         for (InscriberRecipe recipe : getRecipes(world)) {
-            if (recipe.getTopOptional().test(is)
-            || recipe.getBottomOptional().test(is))
-            {
+            if (recipe.getTopOptional().test(is) || recipe.getBottomOptional().test(is)) {
                 return true;
             }
         }

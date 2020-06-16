@@ -1,11 +1,13 @@
 package appeng.tile.crafting;
 
-import appeng.api.util.AEColor;
-import com.google.common.base.Preconditions;
-import net.minecraft.util.Direction;
-
 import java.util.EnumSet;
 import java.util.Objects;
+
+import com.google.common.base.Preconditions;
+
+import net.minecraft.util.Direction;
+
+import appeng.api.util.AEColor;
 
 public class CraftingMonitorModelData extends CraftingCubeModelData {
 
@@ -22,9 +24,12 @@ public class CraftingMonitorModelData extends CraftingCubeModelData {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        if (!super.equals(o))
+            return false;
         CraftingMonitorModelData that = (CraftingMonitorModelData) o;
         return color == that.color;
     }

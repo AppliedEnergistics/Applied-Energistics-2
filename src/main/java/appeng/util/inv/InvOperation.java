@@ -18,8 +18,6 @@
 
 package appeng.util.inv;
 
-
-public enum InvOperation
-{
-	EXTRACT, INSERT, SET
+public enum InvOperation {
+    EXTRACT, INSERT, SET
 }

@@ -23,56 +23,49 @@
 
 package appeng.api.networking.events;
 
-
 import appeng.api.networking.IGrid;
-
 
 /**
  * Part of AE's Event Bus.
  *
  * Posted via {@link IGrid}.postEvent or {@link IGrid}.postEventTo
  */
-public class MENetworkEvent
-{
+public class MENetworkEvent {
 
-	private int visited = 0;
-	private boolean canceled = false;
+    private int visited = 0;
+    private boolean canceled = false;
 
-	/**
-	 * Call to prevent AE from posting the event to any further objects.
-	 */
-	public void cancel()
-	{
-		this.canceled = true;
-	}
+    /**
+     * Call to prevent AE from posting the event to any further objects.
+     */
+    public void cancel() {
+        this.canceled = true;
+    }
 
-	/**
-	 * called by AE after each object is called to cancel any future calls.
-	 *
-	 * @return true to cancel future calls
-	 */
-	public boolean isCanceled()
-	{
-		return this.canceled;
-	}
+    /**
+     * called by AE after each object is called to cancel any future calls.
+     *
+     * @return true to cancel future calls
+     */
+    public boolean isCanceled() {
+        return this.canceled;
+    }
 
-	/**
-	 * the number of objects that were visited by the event.
-	 *
-	 * @return number of visitors
-	 */
-	public int getVisitedObjects()
-	{
-		return this.visited;
-	}
+    /**
+     * the number of objects that were visited by the event.
+     *
+     * @return number of visitors
+     */
+    public int getVisitedObjects() {
+        return this.visited;
+    }
 
-	/**
-	 * Called by AE after iterating the event subscribers.
-	 *
-	 * @param v current number of visitors
-	 */
-	public void setVisitedObjects( final int v )
-	{
-		this.visited = v;
-	}
+    /**
+     * Called by AE after iterating the event subscribers.
+     *
+     * @param v current number of visitors
+     */
+    public void setVisitedObjects(final int v) {
+        this.visited = v;
+    }
 }

@@ -18,53 +18,47 @@
 
 package appeng.client.gui.implementations;
 
-
-import appeng.container.implementations.ContainerPriority;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.container.implementations.ContainerChest;
+import appeng.container.implementations.ContainerPriority;
 import appeng.core.localization.GuiText;
-
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketSwitchGuis;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
+public class GuiChest extends AEBaseGui<ContainerChest> {
 
-public class GuiChest extends AEBaseGui<ContainerChest>
-{
+    public GuiChest(ContainerChest container, PlayerInventory playerInventory, ITextComponent title) {
+        super(container, playerInventory, title);
+        this.ySize = 166;
+    }
 
-	public GuiChest(ContainerChest container, PlayerInventory playerInventory, ITextComponent title) {
-		super(container, playerInventory, title);
-		this.ySize = 166;
-	}
+    @Override
+    public void init() {
+        super.init();
 
-	@Override
-	public void init()
-	{
-		super.init();
+        this.addButton(new GuiTabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(),
+                this.itemRenderer, btn -> openPriority()));
+    }
 
-		this.addButton( new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRenderer, btn -> openPriority() ) );
-	}
+    private void openPriority() {
+        NetworkHandler.instance().sendToServer(new PacketSwitchGuis(ContainerPriority.TYPE));
+    }
 
-	private void openPriority() {
-		NetworkHandler.instance().sendToServer( new PacketSwitchGuis( ContainerPriority.TYPE ) );
-	}
+    @Override
+    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+        this.font.drawString(this.getGuiDisplayName(GuiText.Chest.getLocal()), 8, 6, 4210752);
+        this.font.drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+    }
 
-	@Override
-	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
-	{
-		this.font.drawString( this.getGuiDisplayName( GuiText.Chest.getLocal() ), 8, 6, 4210752 );
-		this.font.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
-	}
-
-	@Override
-	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
-	{
-		this.bindTexture( "guis/chest.png" );
-		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset() );
-	}
+    @Override
+    public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+        this.bindTexture("guis/chest.png");
+        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());
+    }
 }

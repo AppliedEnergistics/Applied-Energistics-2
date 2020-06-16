@@ -18,14 +18,13 @@
 
 package appeng.server;
 
+import static net.minecraft.command.Commands.literal;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+
 import net.minecraft.command.CommandSource;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
-
-import static net.minecraft.command.Commands.literal;
-
 
 public final class AECommand {
 
@@ -41,8 +40,7 @@ public final class AECommand {
 
     private void add(LiteralArgumentBuilder<net.minecraft.command.CommandSource> builder, Commands subCommand) {
 
-        builder.then(literal(subCommand.name().toLowerCase())
-                .requires(src -> src.hasPermissionLevel(subCommand.level))
+        builder.then(literal(subCommand.name().toLowerCase()).requires(src -> src.hasPermissionLevel(subCommand.level))
                 .executes(ctx -> {
                     subCommand.command.call(ServerLifecycleHooks.getCurrentServer(), new String[0], ctx.getSource());
                     return 1;

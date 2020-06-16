@@ -18,7 +18,6 @@
 
 package appeng.tile.misc;
 
-
 import java.io.IOException;
 import java.util.EnumSet;
 import java.util.List;
@@ -27,8 +26,8 @@ import java.util.Map;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
@@ -81,299 +80,256 @@ import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 import appeng.util.item.AEItemStack;
 
+public class TileSecurityStation extends AENetworkTile implements ITerminalHost, IAEAppEngInventory, ILocatable,
+        IConfigManagerHost, ISecurityProvider, IColorableTile {
 
-public class TileSecurityStation extends AENetworkTile implements ITerminalHost, IAEAppEngInventory, ILocatable, IConfigManagerHost, ISecurityProvider, IColorableTile
-{
+    private static int difference = 0;
+    private final AppEngInternalInventory configSlot = new AppEngInternalInventory(this, 1);
+    private final IConfigManager cm = new ConfigManager(this);
+    private final SecurityStationInventory inventory = new SecurityStationInventory(this);
+    private final MEMonitorHandler<IAEItemStack> securityMonitor = new MEMonitorHandler<>(this.inventory);
+    private long securityKey;
+    private AEColor paintedColor = AEColor.TRANSPARENT;
+    private boolean isActive = false;
 
-	private static int difference = 0;
-	private final AppEngInternalInventory configSlot = new AppEngInternalInventory( this, 1 );
-	private final IConfigManager cm = new ConfigManager( this );
-	private final SecurityStationInventory inventory = new SecurityStationInventory( this );
-	private final MEMonitorHandler<IAEItemStack> securityMonitor = new MEMonitorHandler<>( this.inventory );
-	private long securityKey;
-	private AEColor paintedColor = AEColor.TRANSPARENT;
-	private boolean isActive = false;
+    public TileSecurityStation(TileEntityType<?> tileEntityTypeIn) {
+        super(tileEntityTypeIn);
+        this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
+        this.getProxy().setIdlePowerUsage(2.0);
+        difference++;
 
-	public TileSecurityStation(TileEntityType<?> tileEntityTypeIn) {
-		super(tileEntityTypeIn);
-		this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
-		this.getProxy().setIdlePowerUsage( 2.0 );
-		difference++;
+        this.securityKey = System.currentTimeMillis() * 10 + difference;
+        if (difference > 10) {
+            difference = 0;
+        }
 
-		this.securityKey = System.currentTimeMillis() * 10 + difference;
-		if( difference > 10 )
-		{
-			difference = 0;
-		}
+        this.cm.registerSetting(Settings.SORT_BY, SortOrder.NAME);
+        this.cm.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
+        this.cm.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
+    }
 
-		this.cm.registerSetting( Settings.SORT_BY, SortOrder.NAME );
-		this.cm.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
-		this.cm.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
-	}
+    @Override
+    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+            final ItemStack removedStack, final ItemStack newStack) {
 
-	@Override
-	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
-	{
+    }
 
-	}
+    @Override
+    public void getDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
+        if (!ItemHandlerUtil.isEmpty(this.getConfigSlot())) {
+            drops.add(this.getConfigSlot().getStackInSlot(0));
+        }
 
-	@Override
-	public void getDrops( final World w, final BlockPos pos, final List<ItemStack> drops )
-	{
-		if( !ItemHandlerUtil.isEmpty( this.getConfigSlot() ) )
-		{
-			drops.add( this.getConfigSlot().getStackInSlot( 0 ) );
-		}
+        for (final IAEItemStack ais : this.inventory.getStoredItems()) {
+            drops.add(ais.createItemStack());
+        }
+    }
 
-		for( final IAEItemStack ais : this.inventory.getStoredItems() )
-		{
-			drops.add( ais.createItemStack() );
-		}
-	}
+    IMEInventoryHandler<IAEItemStack> getSecurityInventory() {
+        return this.inventory;
+    }
 
-	IMEInventoryHandler<IAEItemStack> getSecurityInventory()
-	{
-		return this.inventory;
-	}
+    @Override
+    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+        final boolean c = super.readFromStream(data);
+        final boolean wasActive = this.isActive;
+        this.isActive = data.readBoolean();
 
-	@Override
-	protected boolean readFromStream( final PacketBuffer data ) throws IOException
-	{
-		final boolean c = super.readFromStream( data );
-		final boolean wasActive = this.isActive;
-		this.isActive = data.readBoolean();
+        final AEColor oldPaintedColor = this.paintedColor;
+        this.paintedColor = AEColor.values()[data.readByte()];
 
-		final AEColor oldPaintedColor = this.paintedColor;
-		this.paintedColor = AEColor.values()[data.readByte()];
+        return oldPaintedColor != this.paintedColor || wasActive != this.isActive || c;
+    }
 
-		return oldPaintedColor != this.paintedColor || wasActive != this.isActive || c;
-	}
+    @Override
+    protected void writeToStream(final PacketBuffer data) throws IOException {
+        super.writeToStream(data);
+        data.writeBoolean(this.getProxy().isActive());
+        data.writeByte(this.paintedColor.ordinal());
+    }
 
-	@Override
-	protected void writeToStream( final PacketBuffer data ) throws IOException
-	{
-		super.writeToStream( data );
-		data.writeBoolean( this.getProxy().isActive() );
-		data.writeByte( this.paintedColor.ordinal() );
-	}
+    @Override
+    public CompoundNBT write(final CompoundNBT data) {
+        super.write(data);
+        this.cm.writeToNBT(data);
+        data.putByte("paintedColor", (byte) this.paintedColor.ordinal());
 
-	@Override
-	public CompoundNBT write(final CompoundNBT data )
-	{
-		super.write( data );
-		this.cm.writeToNBT( data );
-		data.putByte( "paintedColor", (byte) this.paintedColor.ordinal() );
+        data.putLong("securityKey", this.securityKey);
+        this.getConfigSlot().writeToNBT(data, "config");
 
-		data.putLong( "securityKey", this.securityKey );
-		this.getConfigSlot().writeToNBT( data, "config" );
+        final CompoundNBT storedItems = new CompoundNBT();
 
-		final CompoundNBT storedItems = new CompoundNBT();
+        int offset = 0;
+        for (final IAEItemStack ais : this.inventory.getStoredItems()) {
+            final CompoundNBT it = new CompoundNBT();
+            ais.createItemStack().write(it);
+            storedItems.put(String.valueOf(offset), it);
+            offset++;
+        }
 
-		int offset = 0;
-		for( final IAEItemStack ais : this.inventory.getStoredItems() )
-		{
-			final CompoundNBT it = new CompoundNBT();
-			ais.createItemStack().write(it);
-			storedItems.put( String.valueOf( offset ), it );
-			offset++;
-		}
+        data.put("storedItems", storedItems);
+        return data;
+    }
 
-		data.put( "storedItems", storedItems );
-		return data;
-	}
+    @Override
+    public void read(final CompoundNBT data) {
+        super.read(data);
+        this.cm.readFromNBT(data);
+        if (data.contains("paintedColor")) {
+            this.paintedColor = AEColor.values()[data.getByte("paintedColor")];
+        }
 
-	@Override
-	public void read(final CompoundNBT data )
-	{
-		super.read( data );
-		this.cm.readFromNBT( data );
-		if( data.contains("paintedColor") )
-		{
-			this.paintedColor = AEColor.values()[data.getByte( "paintedColor" )];
-		}
+        this.securityKey = data.getLong("securityKey");
+        this.getConfigSlot().readFromNBT(data, "config");
 
-		this.securityKey = data.getLong( "securityKey" );
-		this.getConfigSlot().readFromNBT( data, "config" );
+        final CompoundNBT storedItems = data.getCompound("storedItems");
+        for (final Object key : storedItems.keySet()) {
+            final INBT obj = storedItems.get((String) key);
+            if (obj instanceof CompoundNBT) {
+                this.inventory.getStoredItems().add(AEItemStack.fromItemStack(ItemStack.read((CompoundNBT) obj)));
+            }
+        }
+    }
 
-		final CompoundNBT storedItems = data.getCompound( "storedItems" );
-		for( final Object key : storedItems.keySet() )
-		{
-			final INBT obj = storedItems.get( (String) key );
-			if( obj instanceof CompoundNBT )
-			{
-				this.inventory.getStoredItems().add( AEItemStack.fromItemStack( ItemStack.read((CompoundNBT) obj) ) );
-			}
-		}
-	}
+    public void inventoryChanged() {
+        try {
+            this.saveChanges();
+            this.getProxy().getGrid().postEvent(new MENetworkSecurityChange());
+        } catch (final GridAccessException e) {
+            // :P
+        }
+    }
 
-	public void inventoryChanged()
-	{
-		try
-		{
-			this.saveChanges();
-			this.getProxy().getGrid().postEvent( new MENetworkSecurityChange() );
-		}
-		catch( final GridAccessException e )
-		{
-			// :P
-		}
-	}
+    @MENetworkEventSubscribe
+    public void bootUpdate(final MENetworkChannelsChanged changed) {
+        this.markForUpdate();
+    }
 
-	@MENetworkEventSubscribe
-	public void bootUpdate( final MENetworkChannelsChanged changed )
-	{
-		this.markForUpdate();
-	}
+    @MENetworkEventSubscribe
+    public void powerUpdate(final MENetworkPowerStatusChange changed) {
+        this.markForUpdate();
+    }
 
-	@MENetworkEventSubscribe
-	public void powerUpdate( final MENetworkPowerStatusChange changed )
-	{
-		this.markForUpdate();
-	}
+    @Override
+    public AECableType getCableConnectionType(final AEPartLocation dir) {
+        return AECableType.SMART;
+    }
 
-	@Override
-	public AECableType getCableConnectionType( final AEPartLocation dir )
-	{
-		return AECableType.SMART;
-	}
+    @Override
+    public void onChunkUnloaded() {
+        super.onChunkUnloaded();
+        MinecraftForge.EVENT_BUS.post(new LocatableEventAnnounce(this, LocatableEvent.UNREGISTER));
+        this.isActive = false;
+    }
 
-	@Override
-	public void onChunkUnloaded()
-	{
-		super.onChunkUnloaded();
-		MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.UNREGISTER ) );
-		this.isActive = false;
-	}
+    @Override
+    public void onReady() {
+        super.onReady();
+        if (Platform.isServer()) {
+            this.isActive = true;
+            MinecraftForge.EVENT_BUS.post(new LocatableEventAnnounce(this, LocatableEvent.REGISTER));
+        }
+    }
 
-	@Override
-	public void onReady()
-	{
-		super.onReady();
-		if( Platform.isServer() )
-		{
-			this.isActive = true;
-			MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.REGISTER ) );
-		}
-	}
+    @Override
+    public void remove() {
+        super.remove();
+        MinecraftForge.EVENT_BUS.post(new LocatableEventAnnounce(this, LocatableEvent.UNREGISTER));
+        this.isActive = false;
+    }
 
-	@Override
-	public void remove()
-	{
-		super.remove();
-		MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.UNREGISTER ) );
-		this.isActive = false;
-	}
+    @Override
+    public DimensionalCoord getLocation() {
+        return new DimensionalCoord(this);
+    }
 
-	@Override
-	public DimensionalCoord getLocation()
-	{
-		return new DimensionalCoord( this );
-	}
+    public boolean isActive() {
+        if (world != null && !world.isRemote) {
+            return isPowered();
+        } else {
+            return this.isActive;
+        }
+    }
 
-	public boolean isActive()
-	{
-		if (world != null && !world.isRemote) {
-			return isPowered();
-		} else {
-			return this.isActive;
-		}
-	}
+    @Override
+    public <T extends IAEStack<T>> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
+        if (channel == AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)) {
+            return (IMEMonitor<T>) this.securityMonitor;
+        }
+        return null;
 
-	@Override
-	public <T extends IAEStack<T>> IMEMonitor<T> getInventory( IStorageChannel<T> channel )
-	{
-		if( channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
-		{
-			return (IMEMonitor<T>) this.securityMonitor;
-		}
-		return null;
+    }
 
-	}
+    @Override
+    public long getLocatableSerial() {
+        return this.securityKey;
+    }
 
-	@Override
-	public long getLocatableSerial()
-	{
-		return this.securityKey;
-	}
+    public boolean isPowered() {
+        return this.getProxy().isActive();
+    }
 
-	public boolean isPowered()
-	{
-		return this.getProxy().isActive();
-	}
+    @Override
+    public IConfigManager getConfigManager() {
+        return this.cm;
+    }
 
-	@Override
-	public IConfigManager getConfigManager()
-	{
-		return this.cm;
-	}
+    @Override
+    public void updateSetting(final IConfigManager manager, final Settings settingName, final Enum<?> newValue) {
 
-	@Override
-	public void updateSetting(final IConfigManager manager, final Settings settingName, final Enum<?> newValue )
-	{
+    }
 
-	}
+    @Override
+    public long getSecurityKey() {
+        return this.securityKey;
+    }
 
-	@Override
-	public long getSecurityKey()
-	{
-		return this.securityKey;
-	}
+    @Override
+    public void readPermissions(final Map<Integer, EnumSet<SecurityPermissions>> playerPerms) {
+        final IPlayerRegistry pr = AEApi.instance().registries().players();
 
-	@Override
-	public void readPermissions( final Map<Integer, EnumSet<SecurityPermissions>> playerPerms )
-	{
-		final IPlayerRegistry pr = AEApi.instance().registries().players();
+        // read permissions
+        for (final IAEItemStack ais : this.inventory.getStoredItems()) {
+            final ItemStack is = ais.createItemStack();
+            final Item i = is.getItem();
+            if (i instanceof IBiometricCard) {
+                final IBiometricCard bc = (IBiometricCard) i;
+                bc.registerPermissions(new PlayerSecurityWrapper(playerPerms), pr, is);
+            }
+        }
 
-		// read permissions
-		for( final IAEItemStack ais : this.inventory.getStoredItems() )
-		{
-			final ItemStack is = ais.createItemStack();
-			final Item i = is.getItem();
-			if( i instanceof IBiometricCard )
-			{
-				final IBiometricCard bc = (IBiometricCard) i;
-				bc.registerPermissions( new PlayerSecurityWrapper( playerPerms ), pr, is );
-			}
-		}
+        // make sure thea admin is Boss.
+        playerPerms.put(this.getProxy().getNode().getPlayerID(), EnumSet.allOf(SecurityPermissions.class));
+    }
 
-		// make sure thea admin is Boss.
-		playerPerms.put( this.getProxy().getNode().getPlayerID(), EnumSet.allOf( SecurityPermissions.class ) );
-	}
+    @Override
+    public boolean isSecurityEnabled() {
+        return this.isActive && this.getProxy().isActive();
+    }
 
-	@Override
-	public boolean isSecurityEnabled()
-	{
-		return this.isActive && this.getProxy().isActive();
-	}
+    @Override
+    public int getOwner() {
+        return this.getProxy().getNode().getPlayerID();
+    }
 
-	@Override
-	public int getOwner()
-	{
-		return this.getProxy().getNode().getPlayerID();
-	}
+    @Override
+    public AEColor getColor() {
+        return this.paintedColor;
+    }
 
-	@Override
-	public AEColor getColor()
-	{
-		return this.paintedColor;
-	}
+    @Override
+    public boolean recolourBlock(final Direction side, final AEColor newPaintedColor, final PlayerEntity who) {
+        if (this.paintedColor == newPaintedColor) {
+            return false;
+        }
 
-	@Override
-	public boolean recolourBlock( final Direction side, final AEColor newPaintedColor, final PlayerEntity who )
-	{
-		if( this.paintedColor == newPaintedColor )
-		{
-			return false;
-		}
+        this.paintedColor = newPaintedColor;
+        this.saveChanges();
+        this.markForUpdate();
+        return true;
+    }
 
-		this.paintedColor = newPaintedColor;
-		this.saveChanges();
-		this.markForUpdate();
-		return true;
-	}
-
-	public AppEngInternalInventory getConfigSlot()
-	{
-		return this.configSlot;
-	}
+    public AppEngInternalInventory getConfigSlot() {
+        return this.configSlot;
+    }
 }

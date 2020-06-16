@@ -3,10 +3,7 @@
     "item": "appliedenergistics2:tiny_tnt"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "ab",
-    "ba"
-  ],
+  "pattern": ["ab", "ba"],
   "key": {
     "b": {
       "item": "minecraft:gunpowder"

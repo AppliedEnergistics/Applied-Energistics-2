@@ -18,7 +18,6 @@
 
 package appeng.core;
 
-
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItems;
 import appeng.api.definitions.IMaterials;
@@ -30,53 +29,45 @@ import appeng.core.api.definitions.ApiMaterials;
 import appeng.core.api.definitions.ApiParts;
 import appeng.core.features.registries.PartModels;
 
-
 /**
  * Internal implementation of the definitions for the API
  */
-public final class ApiDefinitions implements IDefinitions
-{
-	private final ApiBlocks blocks;
-	private final ApiItems items;
-	private final ApiMaterials materials;
-	private final ApiParts parts;
+public final class ApiDefinitions implements IDefinitions {
+    private final ApiBlocks blocks;
+    private final ApiItems items;
+    private final ApiMaterials materials;
+    private final ApiParts parts;
 
-	private final FeatureFactory registry = new FeatureFactory();
+    private final FeatureFactory registry = new FeatureFactory();
 
-	public ApiDefinitions( final PartModels partModels )
-	{
-		this.blocks = new ApiBlocks( this.registry);
-		this.materials = new ApiMaterials( this.registry );
-		this.items = new ApiItems( this.registry, this.materials );
-		this.parts = new ApiParts( this.registry, partModels );
-	}
+    public ApiDefinitions(final PartModels partModels) {
+        this.blocks = new ApiBlocks(this.registry);
+        this.materials = new ApiMaterials(this.registry);
+        this.items = new ApiItems(this.registry, this.materials);
+        this.parts = new ApiParts(this.registry, partModels);
+    }
 
-	public FeatureFactory getRegistry()
-	{
-		return registry;
-	}
+    public FeatureFactory getRegistry() {
+        return registry;
+    }
 
-	@Override
-	public ApiBlocks blocks()
-	{
-		return this.blocks;
-	}
+    @Override
+    public ApiBlocks blocks() {
+        return this.blocks;
+    }
 
-	@Override
-	public IItems items()
-	{
-		return items;
-	}
+    @Override
+    public IItems items() {
+        return items;
+    }
 
-	@Override
-	public IMaterials materials()
-	{
-		return materials;
-	}
+    @Override
+    public IMaterials materials() {
+        return materials;
+    }
 
-	@Override
-	public IParts parts()
-	{
-		return parts;
-	}
+    @Override
+    public IParts parts() {
+        return parts;
+    }
 }

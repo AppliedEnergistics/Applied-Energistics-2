@@ -18,7 +18,6 @@
 
 package appeng.tile;
 
-
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -39,94 +38,78 @@ import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 
+public abstract class AEBaseInvTile extends AEBaseTile implements IAEAppEngInventory {
 
-public abstract class AEBaseInvTile extends AEBaseTile implements IAEAppEngInventory
-{
+    public AEBaseInvTile(TileEntityType<?> tileEntityTypeIn) {
+        super(tileEntityTypeIn);
+    }
 
-	public AEBaseInvTile(TileEntityType<?> tileEntityTypeIn) {
-		super(tileEntityTypeIn);
-	}
+    @Override
+    public void read(final CompoundNBT data) {
+        super.read(data);
+        final IItemHandler inv = this.getInternalInventory();
+        if (inv != EmptyHandler.INSTANCE) {
+            final CompoundNBT opt = data.getCompound("inv");
+            for (int x = 0; x < inv.getSlots(); x++) {
+                final CompoundNBT item = opt.getCompound("item" + x);
+                ItemHandlerUtil.setStackInSlot(inv, x, ItemStack.read(item));
+            }
+        }
+    }
 
-	@Override
-	public void read(final CompoundNBT data )
-	{
-		super.read( data );
-		final IItemHandler inv = this.getInternalInventory();
-		if( inv != EmptyHandler.INSTANCE )
-		{
-			final CompoundNBT opt = data.getCompound( "inv" );
-			for( int x = 0; x < inv.getSlots(); x++ )
-			{
-				final CompoundNBT item = opt.getCompound( "item" + x );
-				ItemHandlerUtil.setStackInSlot( inv, x, ItemStack.read(item) );
-			}
-		}
-	}
+    public abstract @Nonnull IItemHandler getInternalInventory();
 
-	public abstract @Nonnull IItemHandler getInternalInventory();
+    @Override
+    public CompoundNBT write(final CompoundNBT data) {
+        super.write(data);
+        final IItemHandler inv = this.getInternalInventory();
+        if (inv != EmptyHandler.INSTANCE) {
+            final CompoundNBT opt = new CompoundNBT();
+            for (int x = 0; x < inv.getSlots(); x++) {
+                final CompoundNBT item = new CompoundNBT();
+                final ItemStack is = inv.getStackInSlot(x);
+                if (!is.isEmpty()) {
+                    is.write(item);
+                }
+                opt.put("item" + x, item);
+            }
+            data.put("inv", opt);
+        }
+        return data;
+    }
 
-	@Override
-	public CompoundNBT write(final CompoundNBT data )
-	{
-		super.write( data );
-		final IItemHandler inv = this.getInternalInventory();
-		if( inv != EmptyHandler.INSTANCE )
-		{
-			final CompoundNBT opt = new CompoundNBT();
-			for( int x = 0; x < inv.getSlots(); x++ )
-			{
-				final CompoundNBT item = new CompoundNBT();
-				final ItemStack is = inv.getStackInSlot( x );
-				if( !is.isEmpty() )
-				{
-					is.write(item);
-				}
-				opt.put( "item" + x, item );
-			}
-			data.put( "inv", opt );
-		}
-		return data;
-	}
+    @Override
+    public void getDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
+        final IItemHandler inv = this.getInternalInventory();
 
-	@Override
-	public void getDrops( final World w, final BlockPos pos, final List<ItemStack> drops )
-	{
-		final IItemHandler inv = this.getInternalInventory();
+        for (int l = 0; l < inv.getSlots(); l++) {
+            final ItemStack is = inv.getStackInSlot(l);
+            if (!is.isEmpty()) {
+                drops.add(is);
+            }
+        }
+    }
 
-		for( int l = 0; l < inv.getSlots(); l++ )
-		{
-			final ItemStack is = inv.getStackInSlot( l );
-			if( !is.isEmpty() )
-			{
-				drops.add( is );
-			}
-		}
-	}
+    @Override
+    public abstract void onChangeInventory(IItemHandler inv, int slot, InvOperation mc, ItemStack removed,
+            ItemStack added);
 
-	@Override
-	public abstract void onChangeInventory( IItemHandler inv, int slot, InvOperation mc, ItemStack removed, ItemStack added );
+    protected @Nonnull IItemHandler getItemHandlerForSide(@Nonnull Direction side) {
+        return this.getInternalInventory();
+    }
 
-	protected @Nonnull IItemHandler getItemHandlerForSide( @Nonnull Direction side )
-	{
-		return this.getInternalInventory();
-	}
-
-	@SuppressWarnings("unchecked")
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {
-		if( capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
-		{
-			if( facing == null )
-			{
-				return (LazyOptional<T>) LazyOptional.of(this::getInternalInventory);
-			}
-			else
-			{
-				return (LazyOptional<T>) LazyOptional.of(() -> getItemHandlerForSide( facing ));
-			}
-		}
-		return super.getCapability( capability, facing );
-	}
+    @SuppressWarnings("unchecked")
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            if (facing == null) {
+                return (LazyOptional<T>) LazyOptional.of(this::getInternalInventory);
+            } else {
+                return (LazyOptional<T>) LazyOptional.of(() -> getItemHandlerForSide(facing));
+            }
+        }
+        return super.getCapability(capability, facing);
+    }
 
 }

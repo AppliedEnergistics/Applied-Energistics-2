@@ -18,7 +18,6 @@
 
 package appeng.facade;
 
-
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
@@ -33,119 +32,98 @@ import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.util.AEPartLocation;
 
+public class FacadePart implements IFacadePart, IBoxProvider {
 
-public class FacadePart implements IFacadePart, IBoxProvider
-{
+    private final ItemStack facade;
+    private final AEPartLocation side;
 
-	private final ItemStack facade;
-	private final AEPartLocation side;
+    public FacadePart(final ItemStack facade, final AEPartLocation side) {
+        if (facade == null) {
+            throw new IllegalArgumentException("Facade Part constructed on null item.");
+        }
+        this.facade = facade.copy();
+        this.facade.setCount(1);
+        this.side = side;
+    }
 
-	public FacadePart( final ItemStack facade, final AEPartLocation side )
-	{
-		if( facade == null )
-		{
-			throw new IllegalArgumentException( "Facade Part constructed on null item." );
-		}
-		this.facade = facade.copy();
-		this.facade.setCount( 1 );
-		this.side = side;
-	}
+    public static boolean isFacade(final ItemStack is) {
+        return is.getItem() instanceof IFacadeItem;
+    }
 
-	public static boolean isFacade( final ItemStack is )
-	{
-		return is.getItem() instanceof IFacadeItem;
-	}
+    @Override
+    public ItemStack getItemStack() {
+        return this.facade;
+    }
 
-	@Override
-	public ItemStack getItemStack()
-	{
-		return this.facade;
-	}
+    @Override
+    public void getBoxes(final IPartCollisionHelper ch, final Entity e) {
+        if (e instanceof LivingEntity) {
+            // prevent weird snag behavior
+            ch.addBox(0.0, 0.0, 14, 16.0, 16.0, 16.0);
+        } else {
+            // the box is 15.9 for transition planes to pick up collision events.
+            ch.addBox(0.0, 0.0, 14, 16.0, 16.0, 15.9);
+        }
+    }
 
-	@Override
-	public void getBoxes( final IPartCollisionHelper ch, final Entity e )
-	{
-		if( e instanceof LivingEntity )
-		{
-			// prevent weird snag behavior
-			ch.addBox( 0.0, 0.0, 14, 16.0, 16.0, 16.0 );
-		}
-		else
-		{
-			// the box is 15.9 for transition planes to pick up collision events.
-			ch.addBox( 0.0, 0.0, 14, 16.0, 16.0, 15.9 );
-		}
-	}
+    @Override
+    public AEPartLocation getSide() {
+        return this.side;
+    }
 
-	@Override
-	public AEPartLocation getSide()
-	{
-		return this.side;
-	}
+    @Override
+    public Item getItem() {
+        final ItemStack is = this.getTextureItem();
+        if (is.isEmpty()) {
+            return Items.AIR;
+        }
+        return is.getItem();
+    }
 
-	@Override
-	public Item getItem()
-	{
-		final ItemStack is = this.getTextureItem();
-		if( is.isEmpty() )
-		{
-			return Items.AIR;
-		}
-		return is.getItem();
-	}
+    @Override
+    public boolean notAEFacade() {
+        return !(this.facade.getItem() instanceof IFacadeItem);
+    }
 
-	@Override
-	public boolean notAEFacade()
-	{
-		return !( this.facade.getItem() instanceof IFacadeItem );
-	}
+    @Override
+    public boolean isTransparent() {
+        if (AEApi.instance().partHelper().getCableRenderMode().transparentFacades) {
+            return true;
+        }
 
-	@Override
-	public boolean isTransparent()
-	{
-		if( AEApi.instance().partHelper().getCableRenderMode().transparentFacades )
-		{
-			return true;
-		}
+        return false; // FIXME this.getBlockState().isOpaqueCube();
+    }
 
-		return false; // FIXME this.getBlockState().isOpaqueCube();
-	}
+    @Override
+    public ItemStack getTextureItem() {
+        final Item maybeFacade = this.facade.getItem();
 
-	@Override
-	public ItemStack getTextureItem()
-	{
-		final Item maybeFacade = this.facade.getItem();
+        // AE Facade
+        if (maybeFacade instanceof IFacadeItem) {
+            final IFacadeItem facade = (IFacadeItem) maybeFacade;
 
-		// AE Facade
-		if( maybeFacade instanceof IFacadeItem )
-		{
-			final IFacadeItem facade = (IFacadeItem) maybeFacade;
+            return facade.getTextureItem(this.facade);
+        }
 
-			return facade.getTextureItem( this.facade );
-		}
+        return ItemStack.EMPTY;
+    }
 
-		return ItemStack.EMPTY;
-	}
+    @Override
+    public BlockState getBlockState() {
+        final Item maybeFacade = this.facade.getItem();
 
-	@Override
-	public BlockState getBlockState()
-	{
-		final Item maybeFacade = this.facade.getItem();
+        // AE Facade
+        if (maybeFacade instanceof IFacadeItem) {
+            final IFacadeItem facade = (IFacadeItem) maybeFacade;
 
-		// AE Facade
-		if( maybeFacade instanceof IFacadeItem )
-		{
-			final IFacadeItem facade = (IFacadeItem) maybeFacade;
+            return facade.getTextureBlockState(this.facade);
+        }
 
-			return facade.getTextureBlockState( this.facade );
-		}
+        return Blocks.GLASS.getDefaultState();
+    }
 
-		return Blocks.GLASS.getDefaultState();
-	}
-
-	@Override
-	public void getBoxes( final IPartCollisionHelper bch )
-	{
-		this.getBoxes( bch, null );
-	}
+    @Override
+    public void getBoxes(final IPartCollisionHelper bch) {
+        this.getBoxes(bch, null);
+    }
 }

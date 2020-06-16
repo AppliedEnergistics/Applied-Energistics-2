@@ -23,17 +23,14 @@
 
 package appeng.api.networking;
 
-
 import javax.annotation.Nonnull;
 
+public interface IGridConnectionVisitor extends IGridVisitor {
 
-public interface IGridConnectionVisitor extends IGridVisitor
-{
-
-	/**
-	 * Called for each connection on the network.
-	 *
-	 * @param n the connection.
-	 */
-	void visitConnection( @Nonnull IGridConnection n );
+    /**
+     * Called for each connection on the network.
+     *
+     * @param n the connection.
+     */
+    void visitConnection(@Nonnull IGridConnection n);
 }

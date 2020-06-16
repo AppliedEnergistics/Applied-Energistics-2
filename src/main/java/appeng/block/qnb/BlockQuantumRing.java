@@ -18,8 +18,6 @@
 
 package appeng.block.qnb;
 
-
-import appeng.tile.qnb.TileQuantumBridge;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -29,6 +27,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 
+import appeng.tile.qnb.TileQuantumBridge;
 
 public class BlockQuantumRing extends BlockQuantumBase {
 
@@ -52,6 +51,7 @@ public class BlockQuantumRing extends BlockQuantumBase {
     }
 
     private static VoxelShape createShape(double onePixel) {
-        return VoxelShapes.create(new AxisAlignedBB(onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel));
+        return VoxelShapes.create(
+                new AxisAlignedBB(onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel));
     }
 }

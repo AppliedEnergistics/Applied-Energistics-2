@@ -18,7 +18,6 @@
 
 package appeng.util.item;
 
-
 import java.util.List;
 import java.util.Objects;
 
@@ -41,297 +40,248 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.util.Platform;
 
+public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemStack {
+    private static final String NBT_STACKSIZE = "cnt";
+    private static final String NBT_REQUESTABLE = "req";
+    private static final String NBT_CRAFTABLE = "craft";
+    private static final String NBT_ITEMSTACK = "is";
 
-public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemStack
-{
-	private static final String NBT_STACKSIZE = "cnt";
-	private static final String NBT_REQUESTABLE = "req";
-	private static final String NBT_CRAFTABLE = "craft";
-	private static final String NBT_ITEMSTACK = "is";
+    private final AESharedItemStack sharedStack;
 
-	private final AESharedItemStack sharedStack;
+    @OnlyIn(Dist.CLIENT)
+    private ITextComponent displayName;
+    @OnlyIn(Dist.CLIENT)
+    private List<ITextComponent> tooltip;
 
-	@OnlyIn( Dist.CLIENT )
-	private ITextComponent displayName;
-	@OnlyIn( Dist.CLIENT )
-	private List<ITextComponent> tooltip;
+    private AEItemStack(final AEItemStack is) {
+        this.setStackSize(is.getStackSize());
+        this.setCraftable(is.isCraftable());
+        this.setCountRequestable(is.getCountRequestable());
+        this.sharedStack = is.sharedStack;
+    }
 
-	private AEItemStack( final AEItemStack is )
-	{
-		this.setStackSize( is.getStackSize() );
-		this.setCraftable( is.isCraftable() );
-		this.setCountRequestable( is.getCountRequestable() );
-		this.sharedStack = is.sharedStack;
-	}
+    private AEItemStack(final AESharedItemStack is, long size) {
+        this.sharedStack = is;
+        this.setStackSize(size);
+        this.setCraftable(false);
+        this.setCountRequestable(0);
+    }
 
-	private AEItemStack( final AESharedItemStack is, long size )
-	{
-		this.sharedStack = is;
-		this.setStackSize( size );
-		this.setCraftable( false );
-		this.setCountRequestable( 0 );
-	}
+    @Nullable
+    public static AEItemStack fromItemStack(@Nonnull final ItemStack stack) {
+        if (stack.isEmpty()) {
+            return null;
+        }
 
-	@Nullable
-	public static AEItemStack fromItemStack( @Nonnull final ItemStack stack )
-	{
-		if( stack.isEmpty() )
-		{
-			return null;
-		}
+        return new AEItemStack(AEItemStackRegistry.getRegisteredStack(stack), stack.getCount());
+    }
 
-		return new AEItemStack( AEItemStackRegistry.getRegisteredStack( stack ), stack.getCount() );
-	}
+    public static IAEItemStack fromNBT(final CompoundNBT i) {
+        if (i == null) {
+            return null;
+        }
 
-	public static IAEItemStack fromNBT( final CompoundNBT i )
-	{
-		if( i == null )
-		{
-			return null;
-		}
+        final ItemStack itemstack = ItemStack.read(i.getCompound(NBT_ITEMSTACK));
+        if (itemstack.isEmpty()) {
+            return null;
+        }
 
-		final ItemStack itemstack = ItemStack.read( i.getCompound( NBT_ITEMSTACK ) );
-		if( itemstack.isEmpty() )
-		{
-			return null;
-		}
+        final AEItemStack item = AEItemStack.fromItemStack(itemstack);
+        item.setStackSize(i.getLong(NBT_STACKSIZE));
+        item.setCountRequestable(i.getLong(NBT_REQUESTABLE));
+        item.setCraftable(i.getBoolean(NBT_CRAFTABLE));
+        return item;
+    }
 
-		final AEItemStack item = AEItemStack.fromItemStack( itemstack );
-		item.setStackSize( i.getLong( NBT_STACKSIZE ) );
-		item.setCountRequestable( i.getLong( NBT_REQUESTABLE ) );
-		item.setCraftable( i.getBoolean( NBT_CRAFTABLE ) );
-		return item;
-	}
+    @Override
+    public void writeToNBT(final CompoundNBT i) {
+        final CompoundNBT itemStack = new CompoundNBT();
+        this.getDefinition().write(itemStack);
 
-	@Override
-	public void writeToNBT( final CompoundNBT i )
-	{
-		final CompoundNBT itemStack = new CompoundNBT();
-		this.getDefinition().write( itemStack );
+        i.put(NBT_ITEMSTACK, itemStack);
+        i.putLong(NBT_STACKSIZE, this.getStackSize());
+        i.putLong(NBT_REQUESTABLE, this.getCountRequestable());
+        i.putBoolean(NBT_CRAFTABLE, this.isCraftable());
+    }
 
-		i.put( NBT_ITEMSTACK, itemStack );
-		i.putLong( NBT_STACKSIZE, this.getStackSize() );
-		i.putLong( NBT_REQUESTABLE, this.getCountRequestable() );
-		i.putBoolean( NBT_CRAFTABLE, this.isCraftable() );
-	}
+    public static AEItemStack fromPacket(final PacketBuffer buffer) {
+        final boolean isCraftable = buffer.readBoolean();
+        final long stackSize = buffer.readVarLong();
+        final long countRequestable = buffer.readVarLong();
+        final ItemStack itemstack = buffer.readItemStack();
 
-	public static AEItemStack fromPacket( final PacketBuffer buffer )
-	{
-		final boolean isCraftable = buffer.readBoolean();
-		final long stackSize = buffer.readVarLong();
-		final long countRequestable = buffer.readVarLong();
-		final ItemStack itemstack = buffer.readItemStack();
+        if (itemstack.isEmpty()) {
+            return null;
+        }
 
-		if( itemstack.isEmpty() )
-		{
-			return null;
-		}
+        final AEItemStack item = new AEItemStack(AEItemStackRegistry.getRegisteredStack(itemstack), stackSize);
+        item.setCountRequestable(countRequestable);
+        item.setCraftable(isCraftable);
+        return item;
+    }
 
-		final AEItemStack item = new AEItemStack( AEItemStackRegistry.getRegisteredStack( itemstack ), stackSize );
-		item.setCountRequestable( countRequestable );
-		item.setCraftable( isCraftable );
-		return item;
-	}
+    @Override
+    public void writeToPacket(final PacketBuffer buffer) {
+        buffer.writeBoolean(this.isCraftable());
+        buffer.writeVarLong(this.getStackSize());
+        buffer.writeVarLong(this.getCountRequestable());
+        buffer.writeItemStack(getDefinition());
+    }
 
-	@Override
-	public void writeToPacket( final PacketBuffer buffer )
-	{
-		buffer.writeBoolean( this.isCraftable() );
-		buffer.writeVarLong( this.getStackSize() );
-		buffer.writeVarLong( this.getCountRequestable() );
-		buffer.writeItemStack( getDefinition() );
-	}
+    @Override
+    public void add(final IAEItemStack option) {
+        if (option == null) {
+            return;
+        }
 
-	@Override
-	public void add( final IAEItemStack option )
-	{
-		if( option == null )
-		{
-			return;
-		}
+        this.incStackSize(option.getStackSize());
+        this.setCountRequestable(this.getCountRequestable() + option.getCountRequestable());
+        this.setCraftable(this.isCraftable() || option.isCraftable());
+    }
 
-		this.incStackSize( option.getStackSize() );
-		this.setCountRequestable( this.getCountRequestable() + option.getCountRequestable() );
-		this.setCraftable( this.isCraftable() || option.isCraftable() );
-	}
+    @Override
+    public boolean fuzzyComparison(final IAEItemStack other, final FuzzyMode mode) {
+        final ItemStack itemStack = this.getDefinition();
+        final ItemStack otherStack = other.getDefinition();
 
-	@Override
-	public boolean fuzzyComparison( final IAEItemStack other, final FuzzyMode mode )
-	{
-		final ItemStack itemStack = this.getDefinition();
-		final ItemStack otherStack = other.getDefinition();
+        return this.fuzzyItemStackComparison(itemStack, otherStack, mode);
+    }
 
-		return this.fuzzyItemStackComparison( itemStack, otherStack, mode );
-	}
+    @Override
+    public IAEItemStack copy() {
+        return new AEItemStack(this);
+    }
 
-	@Override
-	public IAEItemStack copy()
-	{
-		return new AEItemStack( this );
-	}
+    @Override
+    public boolean isItem() {
+        return true;
+    }
 
-	@Override
-	public boolean isItem()
-	{
-		return true;
-	}
+    @Override
+    public boolean isFluid() {
+        return false;
+    }
 
-	@Override
-	public boolean isFluid()
-	{
-		return false;
-	}
+    @Override
+    public IStorageChannel<IAEItemStack> getChannel() {
+        return AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
+    }
 
-	@Override
-	public IStorageChannel<IAEItemStack> getChannel()
-	{
-		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
-	}
+    @Override
+    public ItemStack createItemStack() {
+        return ItemHandlerHelper.copyStackWithSize(this.getDefinition(),
+                (int) Math.min(Integer.MAX_VALUE, this.getStackSize()));
+    }
 
-	@Override
-	public ItemStack createItemStack()
-	{
-		return ItemHandlerHelper.copyStackWithSize( this.getDefinition(), (int) Math.min( Integer.MAX_VALUE, this.getStackSize() ) );
-	}
+    @Override
+    public Item getItem() {
+        return this.getDefinition().getItem();
+    }
 
-	@Override
-	public Item getItem()
-	{
-		return this.getDefinition().getItem();
-	}
+    @Override
+    public int getItemDamage() {
+        return this.sharedStack.getItemDamage();
+    }
 
-	@Override
-	public int getItemDamage()
-	{
-		return this.sharedStack.getItemDamage();
-	}
+    @Override
+    public boolean isSameType(final IAEItemStack otherStack) {
+        if (otherStack == null) {
+            return false;
+        }
 
-	@Override
-	public boolean isSameType( final IAEItemStack otherStack )
-	{
-		if( otherStack == null )
-		{
-			return false;
-		}
+        return Objects.equals(this.sharedStack, ((AEItemStack) otherStack).sharedStack);
+    }
 
-		return Objects.equals( this.sharedStack, ( (AEItemStack) otherStack ).sharedStack );
-	}
+    @Override
+    public boolean isSameType(final ItemStack otherStack) {
+        if (otherStack.isEmpty()) {
+            return false;
+        }
+        int oldSize = otherStack.getCount();
 
-	@Override
-	public boolean isSameType( final ItemStack otherStack )
-	{
-		if( otherStack.isEmpty() )
-		{
-			return false;
-		}
-		int oldSize = otherStack.getCount();
+        otherStack.setCount(1);
+        boolean ret = ItemStack.areItemStacksEqual(this.getDefinition(), otherStack);
+        otherStack.setCount(oldSize);
 
-		otherStack.setCount( 1 );
-		boolean ret = ItemStack.areItemStacksEqual( this.getDefinition(), otherStack );
-		otherStack.setCount( oldSize );
+        return ret;
+    }
 
-		return ret;
-	}
+    @Override
+    public int hashCode() {
+        return this.sharedStack.hashCode();
+    }
 
-	@Override
-	public int hashCode()
-	{
-		return this.sharedStack.hashCode();
-	}
+    @Override
+    public boolean equals(final Object ia) {
+        if (ia instanceof AEItemStack) {
+            return this.isSameType((AEItemStack) ia);
+        } else if (ia instanceof ItemStack) {
+            return this.isSameType((ItemStack) ia);
+        }
+        return false;
+    }
 
-	@Override
-	public boolean equals( final Object ia )
-	{
-		if( ia instanceof AEItemStack )
-		{
-			return this.isSameType( (AEItemStack) ia );
-		}
-		else if( ia instanceof ItemStack )
-		{
-			return this.isSameType( (ItemStack) ia );
-		}
-		return false;
-	}
+    @Override
+    public String toString() {
+        return this.getStackSize() + "x" + this.getDefinition().getItem().getRegistryName();
+    }
 
-	@Override
-	public String toString()
-	{
-		return this.getStackSize() + "x" + this.getDefinition().getItem().getRegistryName();
-	}
+    @OnlyIn(Dist.CLIENT)
+    public List<ITextComponent> getToolTip() {
+        if (this.tooltip == null) {
+            this.tooltip = Platform.getTooltip(this.asItemStackRepresentation());
+        }
+        return this.tooltip;
+    }
 
-	@OnlyIn( Dist.CLIENT )
-	public List<ITextComponent> getToolTip()
-	{
-		if( this.tooltip == null )
-		{
-			this.tooltip = Platform.getTooltip( this.asItemStackRepresentation() );
-		}
-		return this.tooltip;
-	}
+    @OnlyIn(Dist.CLIENT)
+    public ITextComponent getDisplayName() {
+        if (this.displayName == null) {
+            this.displayName = Platform.getItemDisplayName(this.asItemStackRepresentation());
+        }
+        return this.displayName;
+    }
 
-	@OnlyIn( Dist.CLIENT )
-	public ITextComponent getDisplayName()
-	{
-		if( this.displayName == null )
-		{
-			this.displayName = Platform.getItemDisplayName( this.asItemStackRepresentation() );
-		}
-		return this.displayName;
-	}
+    @OnlyIn(Dist.CLIENT)
+    public String getModID() {
+        return this.getDefinition().getItem().getRegistryName().getNamespace();
+    }
 
-	@OnlyIn( Dist.CLIENT )
-	public String getModID()
-	{
-		return this.getDefinition().getItem().getRegistryName().getNamespace();
-	}
+    @Override
+    public boolean hasTagCompound() {
+        return this.getDefinition().hasTag();
+    }
 
-	@Override
-	public boolean hasTagCompound()
-	{
-		return this.getDefinition().hasTag();
-	}
+    @Override
+    public ItemStack asItemStackRepresentation() {
+        return this.getDefinition().copy();
+    }
 
-	@Override
-	public ItemStack asItemStackRepresentation()
-	{
-		return this.getDefinition().copy();
-	}
+    @Override
+    public ItemStack getDefinition() {
+        return this.sharedStack.getDefinition();
+    }
 
-	@Override
-	public ItemStack getDefinition()
-	{
-		return this.sharedStack.getDefinition();
-	}
+    AESharedItemStack getSharedStack() {
+        return this.sharedStack;
+    }
 
-	AESharedItemStack getSharedStack()
-	{
-		return this.sharedStack;
-	}
+    private boolean fuzzyItemStackComparison(ItemStack a, ItemStack b, FuzzyMode mode) {
+        if (a.getItem() == b.getItem()) {
+            if (a.getItem().isDamageable()) {
+                if (mode == FuzzyMode.IGNORE_ALL) {
+                    return true;
+                } else if (mode == FuzzyMode.PERCENT_99) {
+                    return (a.getDamage() > 1) == (b.getDamage() > 1);
+                } else {
+                    final float percentDamageOfA = (float) a.getDamage() / a.getMaxDamage();
+                    final float percentDamageOfB = (float) b.getDamage() / b.getMaxDamage();
 
-	private boolean fuzzyItemStackComparison( ItemStack a, ItemStack b, FuzzyMode mode )
-	{
-		if( a.getItem() == b.getItem() )
-		{
-			if( a.getItem().isDamageable() )
-			{
-				if( mode == FuzzyMode.IGNORE_ALL )
-				{
-					return true;
-				}
-				else if( mode == FuzzyMode.PERCENT_99 )
-				{
-					return ( a.getDamage() > 1 ) == ( b.getDamage() > 1 );
-				}
-				else
-				{
-					final float percentDamageOfA = (float) a.getDamage() / a.getMaxDamage();
-					final float percentDamageOfB = (float) b.getDamage() / b.getMaxDamage();
+                    return (percentDamageOfA > mode.breakPoint) == (percentDamageOfB > mode.breakPoint);
+                }
+            }
+        }
 
-					return ( percentDamageOfA > mode.breakPoint ) == ( percentDamageOfB > mode.breakPoint );
-				}
-			}
-		}
-
-		return false;
-	}
+        return false;
+    }
 }

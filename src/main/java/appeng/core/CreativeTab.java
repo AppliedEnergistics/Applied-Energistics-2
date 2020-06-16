@@ -18,14 +18,12 @@
 
 package appeng.core;
 
+public final class CreativeTab {
 
-public final class CreativeTab
-{
+    public static AEItemGroup INSTANCE;
 
-	public static AEItemGroup INSTANCE;
-
-	public static void init() {
-		INSTANCE = new AEItemGroup( "appliedenergistics2" );
-	}
+    public static void init() {
+        INSTANCE = new AEItemGroup("appliedenergistics2");
+    }
 
 }

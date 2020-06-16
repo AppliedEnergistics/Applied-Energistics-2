@@ -23,14 +23,11 @@
 
 package appeng.api.exceptions;
 
+public class RecipeException extends Exception {
 
-public class RecipeException extends Exception
-{
+    private static final long serialVersionUID = -6602870588617670262L;
 
-	private static final long serialVersionUID = -6602870588617670262L;
-
-	public RecipeException( final String n )
-	{
-		super( n );
-	}
+    public RecipeException(final String n) {
+        super(n);
+    }
 }

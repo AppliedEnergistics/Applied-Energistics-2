@@ -18,7 +18,6 @@
 
 package appeng.parts.reporting;
 
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -26,40 +25,38 @@ import appeng.api.util.AEColor;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 
-
 /**
  * A very simple part for emitting light.
  *
- * Opposed to the other subclass of {@link AbstractPartReporting}, it will only use the bright front texture.
+ * Opposed to the other subclass of {@link AbstractPartReporting}, it will only
+ * use the bright front texture.
  *
  * @author AlgorithmX2
  * @author yueh
  * @version rv3
  * @since rv3
  */
-public abstract class AbstractPartPanel extends AbstractPartReporting
-{
+public abstract class AbstractPartPanel extends AbstractPartReporting {
 
-	@PartModels
-	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/monitor_base" );
+    @PartModels
+    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/monitor_base");
 
-	public AbstractPartPanel( final ItemStack is )
-	{
-		super( is, false );
-	}
+    public AbstractPartPanel(final ItemStack is) {
+        super(is, false);
+    }
 
-	@Override
-	public boolean isLightSource()
-	{
-		return true;
-	}
+    @Override
+    public boolean isLightSource() {
+        return true;
+    }
 
-	/**
-	 * How bright the color the panel should appear. Usually it depends on a {@link AEColor} variant.
-	 * This does not affect the actual light level of the part.
-	 *
-	 * @return the brightness to be used.
-	 */
-	protected abstract int getBrightnessColor();
+    /**
+     * How bright the color the panel should appear. Usually it depends on a
+     * {@link AEColor} variant. This does not affect the actual light level of the
+     * part.
+     *
+     * @return the brightness to be used.
+     */
+    protected abstract int getBrightnessColor();
 
 }

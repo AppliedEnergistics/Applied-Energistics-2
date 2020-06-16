@@ -18,14 +18,14 @@
 
 package appeng.bootstrap;
 
+import java.util.function.Function;
 
-import appeng.tile.AEBaseTile;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.function.Function;
+import appeng.tile.AEBaseTile;
 
 public class TileEntityRendering<T extends AEBaseTile> {
 
@@ -33,7 +33,8 @@ public class TileEntityRendering<T extends AEBaseTile> {
     Function<TileEntityRendererDispatcher, TileEntityRenderer<T>> tileEntityRenderer;
 
     @OnlyIn(Dist.CLIENT)
-    public TileEntityRendering<T> tileEntityRenderer(Function<TileEntityRendererDispatcher, TileEntityRenderer<T>> tileEntityRenderer) {
+    public TileEntityRendering<T> tileEntityRenderer(
+            Function<TileEntityRendererDispatcher, TileEntityRenderer<T>> tileEntityRenderer) {
         this.tileEntityRenderer = tileEntityRenderer;
         return this;
     }

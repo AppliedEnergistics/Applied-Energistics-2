@@ -18,7 +18,6 @@
 
 package appeng.block.networking;
 
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -28,21 +27,17 @@ import appeng.bootstrap.BlockRenderingCustomizer;
 import appeng.bootstrap.IBlockRendering;
 import appeng.bootstrap.IItemRendering;
 
-
 // FIXME REMOVE
-public class BlockEnergyCellRendering extends BlockRenderingCustomizer
-{
+public class BlockEnergyCellRendering extends BlockRenderingCustomizer {
 
-	private final ResourceLocation baseModel;
+    private final ResourceLocation baseModel;
 
-	public BlockEnergyCellRendering( ResourceLocation baseModel )
-	{
-		this.baseModel = baseModel;
-	}
+    public BlockEnergyCellRendering(ResourceLocation baseModel) {
+        this.baseModel = baseModel;
+    }
 
-	@Override
-	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
-	{
-		// Note: Since we use the block models, we dont need to register custom variants
-	}
+    @Override
+    public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
+        // Note: Since we use the block models, we dont need to register custom variants
+    }
 }

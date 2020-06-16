@@ -18,21 +18,16 @@
 
 package appeng.integration;
 
+public interface IIntegrationModule {
 
-public interface IIntegrationModule
-{
+    default boolean isEnabled() {
+        return true;
+    }
 
-	default boolean isEnabled()
-	{
-		return true;
-	}
-
-	class Stub implements IIntegrationModule
-	{
-		@Override
-		public boolean isEnabled()
-		{
-			return false;
-		}
-	}
+    class Stub implements IIntegrationModule {
+        @Override
+        public boolean isEnabled() {
+            return false;
+        }
+    }
 }

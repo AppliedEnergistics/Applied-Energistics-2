@@ -18,7 +18,6 @@
 
 package appeng.worldgen.meteorite;
 
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
@@ -26,30 +25,28 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
+public interface IMeteoriteWorld {
+    int minX(int in);
 
-public interface IMeteoriteWorld
-{
-	int minX( int in );
+    int minZ(int in);
 
-	int minZ( int in );
+    int maxX(int in);
 
-	int maxX( int in );
+    int maxZ(int in);
 
-	int maxZ( int in );
+    boolean contains(BlockPos pos);
 
-	boolean contains( BlockPos pos );
+    Block getBlock(BlockPos pos);
 
-	Block getBlock( BlockPos pos );
+    boolean canBlockSeeTheSky(BlockPos pos);
 
-	boolean canBlockSeeTheSky( BlockPos pos );
+    TileEntity getTileEntity(BlockPos pos);
 
-	TileEntity getTileEntity( BlockPos pos );
+    IWorld getWorld();
 
-	IWorld getWorld();
+    void setBlock(BlockPos pos, final BlockState state, final int flags);
 
-	void setBlock( BlockPos pos, final BlockState state, final int flags );
+    void setBlock(BlockPos pos, BlockState blk);
 
-	void setBlock( BlockPos pos, BlockState blk );
-
-	BlockState getBlockState( BlockPos pos );
+    BlockState getBlockState(BlockPos pos);
 }

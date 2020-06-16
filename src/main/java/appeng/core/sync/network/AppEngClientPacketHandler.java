@@ -18,7 +18,6 @@
 
 package appeng.core.sync.network;
 
-
 import java.lang.reflect.InvocationTargetException;
 
 import net.minecraft.client.Minecraft;
@@ -30,22 +29,17 @@ import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.AppEngPacketHandlerBase;
 
+public class AppEngClientPacketHandler extends AppEngPacketHandlerBase implements IPacketHandler {
 
-public class AppEngClientPacketHandler extends AppEngPacketHandlerBase implements IPacketHandler
-{
-
-	@Override
-	public void onPacketData( final INetworkInfo manager, final INetHandler handler, final PacketBuffer packet, final PlayerEntity player )
-	{
-		try
-		{
-			final int packetType = packet.readInt();
-			final AppEngPacket pack = PacketTypes.getPacket( packetType ).parsePacket( packet );
-			pack.clientPacketData( manager, Minecraft.getInstance().player );
-		}
-		catch( final IllegalArgumentException e )
-		{
-			AELog.debug( e );
-		}
-	}
+    @Override
+    public void onPacketData(final INetworkInfo manager, final INetHandler handler, final PacketBuffer packet,
+            final PlayerEntity player) {
+        try {
+            final int packetType = packet.readInt();
+            final AppEngPacket pack = PacketTypes.getPacket(packetType).parsePacket(packet);
+            pack.clientPacketData(manager, Minecraft.getInstance().player);
+        } catch (final IllegalArgumentException e) {
+            AELog.debug(e);
+        }
+    }
 }

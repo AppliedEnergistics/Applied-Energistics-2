@@ -18,7 +18,6 @@
 
 package appeng.tile.inventory;
 
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -34,185 +33,152 @@ import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.IAEItemFilter;
 
+public class AppEngInternalInventory extends ItemStackHandler implements Iterable<ItemStack> {
+    private boolean enableClientEvents = false;
+    private IAEAppEngInventory te;
+    private final int[] maxStack;
+    private ItemStack previousStack = ItemStack.EMPTY;
+    private IAEItemFilter filter;
+    private boolean dirtyFlag = false;
 
-public class AppEngInternalInventory extends ItemStackHandler implements Iterable<ItemStack>
-{
-	private boolean enableClientEvents = false;
-	private IAEAppEngInventory te;
-	private final int[] maxStack;
-	private ItemStack previousStack = ItemStack.EMPTY;
-	private IAEItemFilter filter;
-	private boolean dirtyFlag = false;
+    public AppEngInternalInventory(final IAEAppEngInventory inventory, final int size, final int maxStack,
+            IAEItemFilter filter) {
+        super(size);
+        this.setTileEntity(inventory);
+        this.setFilter(filter);
+        this.maxStack = new int[size];
+        Arrays.fill(this.maxStack, maxStack);
+    }
 
-	public AppEngInternalInventory( final IAEAppEngInventory inventory, final int size, final int maxStack, IAEItemFilter filter )
-	{
-		super( size );
-		this.setTileEntity( inventory );
-		this.setFilter( filter );
-		this.maxStack = new int[size];
-		Arrays.fill( this.maxStack, maxStack );
-	}
+    public AppEngInternalInventory(final IAEAppEngInventory inventory, final int size, final int maxStack) {
+        this(inventory, size, maxStack, null);
+    }
 
-	public AppEngInternalInventory( final IAEAppEngInventory inventory, final int size, final int maxStack )
-	{
-		this( inventory, size, maxStack, null );
-	}
+    public AppEngInternalInventory(final IAEAppEngInventory inventory, final int size) {
+        this(inventory, size, 64);
+    }
 
-	public AppEngInternalInventory( final IAEAppEngInventory inventory, final int size )
-	{
-		this( inventory, size, 64 );
-	}
+    public void setFilter(IAEItemFilter filter) {
+        this.filter = filter;
+    }
 
-	public void setFilter( IAEItemFilter filter )
-	{
-		this.filter = filter;
-	}
+    @Override
+    public int getSlotLimit(int slot) {
+        return this.maxStack[slot];
+    }
 
-	@Override
-	public int getSlotLimit( int slot )
-	{
-		return this.maxStack[slot];
-	}
+    @Override
+    public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+        this.previousStack = this.getStackInSlot(slot).copy();
+        super.setStackInSlot(slot, stack);
+    }
 
-	@Override
-	public void setStackInSlot( int slot, @Nonnull ItemStack stack )
-	{
-		this.previousStack = this.getStackInSlot( slot ).copy();
-		super.setStackInSlot( slot, stack );
-	}
+    @Override
+    @Nonnull
+    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+        if (this.filter != null && !this.filter.allowInsert(this, slot, stack)) {
+            return stack;
+        }
 
-	@Override
-	@Nonnull
-	public ItemStack insertItem( int slot, @Nonnull ItemStack stack, boolean simulate )
-	{
-		if( this.filter != null && !this.filter.allowInsert( this, slot, stack ) )
-		{
-			return stack;
-		}
+        if (!simulate) {
+            this.previousStack = this.getStackInSlot(slot).copy();
+        }
+        return super.insertItem(slot, stack, simulate);
+    }
 
-		if( !simulate )
-		{
-			this.previousStack = this.getStackInSlot( slot ).copy();
-		}
-		return super.insertItem( slot, stack, simulate );
-	}
+    @Override
+    @Nonnull
+    public ItemStack extractItem(int slot, int amount, boolean simulate) {
+        if (this.filter != null && !this.filter.allowExtract(this, slot, amount)) {
+            return ItemStack.EMPTY;
+        }
 
-	@Override
-	@Nonnull
-	public ItemStack extractItem( int slot, int amount, boolean simulate )
-	{
-		if( this.filter != null && !this.filter.allowExtract( this, slot, amount ) )
-		{
-			return ItemStack.EMPTY;
-		}
+        if (!simulate) {
+            this.previousStack = this.getStackInSlot(slot).copy();
+        }
+        return super.extractItem(slot, amount, simulate);
+    }
 
-		if( !simulate )
-		{
-			this.previousStack = this.getStackInSlot( slot ).copy();
-		}
-		return super.extractItem( slot, amount, simulate );
-	}
+    @Override
+    protected void onContentsChanged(int slot) {
+        if (this.getTileEntity() != null && this.eventsEnabled() && !this.dirtyFlag) {
+            this.dirtyFlag = true;
+            ItemStack newStack = this.getStackInSlot(slot).copy();
+            ItemStack oldStack = this.previousStack;
+            InvOperation op = InvOperation.SET;
 
-	@Override
-	protected void onContentsChanged( int slot )
-	{
-		if( this.getTileEntity() != null && this.eventsEnabled() && !this.dirtyFlag )
-		{
-			this.dirtyFlag = true;
-			ItemStack newStack = this.getStackInSlot( slot ).copy();
-			ItemStack oldStack = this.previousStack;
-			InvOperation op = InvOperation.SET;
+            if (newStack.isEmpty() || oldStack.isEmpty() || ItemStack.areItemsEqual(newStack, oldStack)) {
+                if (newStack.getCount() > oldStack.getCount()) {
+                    newStack.shrink(oldStack.getCount());
+                    oldStack = ItemStack.EMPTY;
+                    op = InvOperation.INSERT;
+                } else {
+                    oldStack.shrink(newStack.getCount());
+                    newStack = ItemStack.EMPTY;
+                    op = InvOperation.EXTRACT;
+                }
+            }
 
-			if( newStack.isEmpty() || oldStack.isEmpty() || ItemStack.areItemsEqual( newStack, oldStack ) )
-			{
-				if( newStack.getCount() > oldStack.getCount() )
-				{
-					newStack.shrink( oldStack.getCount() );
-					oldStack = ItemStack.EMPTY;
-					op = InvOperation.INSERT;
-				}
-				else
-				{
-					oldStack.shrink( newStack.getCount() );
-					newStack = ItemStack.EMPTY;
-					op = InvOperation.EXTRACT;
-				}
-			}
+            this.getTileEntity().onChangeInventory(this, slot, op, oldStack, newStack);
+            this.getTileEntity().saveChanges();
+            this.previousStack = ItemStack.EMPTY;
+            this.dirtyFlag = false;
+        }
+        super.onContentsChanged(slot);
+    }
 
-			this.getTileEntity().onChangeInventory( this, slot, op, oldStack, newStack );
-			this.getTileEntity().saveChanges();
-			this.previousStack = ItemStack.EMPTY;
-			this.dirtyFlag = false;
-		}
-		super.onContentsChanged( slot );
-	}
+    protected boolean eventsEnabled() {
+        return Platform.isServer() || this.isEnableClientEvents();
+    }
 
-	protected boolean eventsEnabled()
-	{
-		return Platform.isServer() || this.isEnableClientEvents();
-	}
+    public void setMaxStackSize(final int slot, final int size) {
+        this.maxStack[slot] = size;
+    }
 
-	public void setMaxStackSize( final int slot, final int size )
-	{
-		this.maxStack[slot] = size;
-	}
+    @Override
+    public boolean isItemValid(int slot, ItemStack stack) {
+        if (this.maxStack[slot] == 0) {
+            return false;
+        }
+        if (this.filter != null) {
+            return this.filter.allowInsert(this, slot, stack);
+        }
+        return true;
+    }
 
-	@Override
-	public boolean isItemValid( int slot, ItemStack stack )
-	{
-		if( this.maxStack[slot] == 0 )
-		{
-			return false;
-		}
-		if( this.filter != null )
-		{
-			return this.filter.allowInsert( this, slot, stack );
-		}
-		return true;
-	}
+    public void writeToNBT(final CompoundNBT data, final String name) {
+        data.put(name, this.serializeNBT());
+    }
 
-	public void writeToNBT( final CompoundNBT data, final String name )
-	{
-		data.put( name, this.serializeNBT() );
-	}
+    public void readFromNBT(final CompoundNBT data, final String name) {
+        final CompoundNBT c = data.getCompound(name);
+        if (c != null) {
+            this.readFromNBT(c);
+        }
+    }
 
-	public void readFromNBT( final CompoundNBT data, final String name )
-	{
-		final CompoundNBT c = data.getCompound( name );
-		if( c != null )
-		{
-			this.readFromNBT( c );
-		}
-	}
+    public void readFromNBT(final CompoundNBT data) {
+        this.deserializeNBT(data);
+    }
 
-	public void readFromNBT( final CompoundNBT data )
-	{
-		this.deserializeNBT( data );
-	}
+    @Override
+    public Iterator<ItemStack> iterator() {
+        return Collections.unmodifiableList(super.stacks).iterator();
+    }
 
-	@Override
-	public Iterator<ItemStack> iterator()
-	{
-		return Collections.unmodifiableList( super.stacks ).iterator();
-	}
+    private boolean isEnableClientEvents() {
+        return this.enableClientEvents;
+    }
 
-	private boolean isEnableClientEvents()
-	{
-		return this.enableClientEvents;
-	}
+    public void setEnableClientEvents(final boolean enableClientEvents) {
+        this.enableClientEvents = enableClientEvents;
+    }
 
-	public void setEnableClientEvents( final boolean enableClientEvents )
-	{
-		this.enableClientEvents = enableClientEvents;
-	}
+    private IAEAppEngInventory getTileEntity() {
+        return this.te;
+    }
 
-	private IAEAppEngInventory getTileEntity()
-	{
-		return this.te;
-	}
-
-	public void setTileEntity( final IAEAppEngInventory te )
-	{
-		this.te = te;
-	}
+    public void setTileEntity(final IAEAppEngInventory te) {
+        this.te = te;
+    }
 }

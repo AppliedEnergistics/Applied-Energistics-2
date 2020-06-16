@@ -18,7 +18,6 @@
 
 package appeng.client.me;
 
-
 import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -29,78 +28,65 @@ import net.minecraftforge.items.SlotItemHandler;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.fluids.container.slots.IMEFluidSlot;
 
-
 /**
  * @author BrockWS
  * @version rv6 - 22/05/2018
  * @since rv6 22/05/2018
  */
-public class SlotFluidME extends SlotItemHandler implements IMEFluidSlot
-{
+public class SlotFluidME extends SlotItemHandler implements IMEFluidSlot {
 
-	private InternalFluidSlotME slot;
+    private InternalFluidSlotME slot;
 
-	public SlotFluidME( InternalFluidSlotME slot )
-	{
-		super( null, 0, slot.getxPosition(), slot.getyPosition() );
-		this.slot = slot;
-	}
+    public SlotFluidME(InternalFluidSlotME slot) {
+        super(null, 0, slot.getxPosition(), slot.getyPosition());
+        this.slot = slot;
+    }
 
-	@Override
-	public IAEFluidStack getAEFluidStack()
-	{
-		if( this.slot.hasPower() )
-		{
-			return this.slot.getAEStack();
-		}
-		return null;
-	}
+    @Override
+    public IAEFluidStack getAEFluidStack() {
+        if (this.slot.hasPower()) {
+            return this.slot.getAEStack();
+        }
+        return null;
+    }
 
-	@Override
-	public boolean isItemValid( final ItemStack par1ItemStack )
-	{
-		return false;
-	}
+    @Override
+    public boolean isItemValid(final ItemStack par1ItemStack) {
+        return false;
+    }
 
-	@Nonnull
-	@Override
-	public ItemStack getStack()
-	{
-		return ItemStack.EMPTY;
-	}
+    @Nonnull
+    @Override
+    public ItemStack getStack() {
+        return ItemStack.EMPTY;
+    }
 
-	@Override
-	public boolean getHasStack()
-	{
-		if( this.slot.hasPower() )
-		{
-			return this.getAEFluidStack() != null;
-		}
-		return false;
-	}
+    @Override
+    public boolean getHasStack() {
+        if (this.slot.hasPower()) {
+            return this.getAEFluidStack() != null;
+        }
+        return false;
+    }
 
-	@Override
-	public void putStack( final ItemStack par1ItemStack )
-	{
+    @Override
+    public void putStack(final ItemStack par1ItemStack) {
 
-	}
+    }
 
-	@Override
-	public int getSlotStackLimit()
-	{
-		return 0;
-	}
+    @Override
+    public int getSlotStackLimit() {
+        return 0;
+    }
 
-	@Nonnull
-	@Override
-	public ItemStack decrStackSize( final int par1 )
-	{
-		return ItemStack.EMPTY;
-	}
+    @Nonnull
+    @Override
+    public ItemStack decrStackSize(final int par1) {
+        return ItemStack.EMPTY;
+    }
 
-	@Override
-	public boolean canTakeStack( final PlayerEntity par1PlayerEntity )
-	{
-		return false;
-	}
+    @Override
+    public boolean canTakeStack(final PlayerEntity par1PlayerEntity) {
+        return false;
+    }
 }

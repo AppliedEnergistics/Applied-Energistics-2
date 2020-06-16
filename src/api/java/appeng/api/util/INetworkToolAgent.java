@@ -23,15 +23,13 @@
 
 package appeng.api.util;
 
-
 import net.minecraft.util.math.RayTraceResult;
 
-
 /**
- * Implement on Tile or part to customize if the info gui opens, or an action is preformed.
+ * Implement on Tile or part to customize if the info gui opens, or an action is
+ * preformed.
  */
-public interface INetworkToolAgent
-{
+public interface INetworkToolAgent {
 
-	boolean showNetworkInfo( RayTraceResult where );
+    boolean showNetworkInfo(RayTraceResult where);
 }

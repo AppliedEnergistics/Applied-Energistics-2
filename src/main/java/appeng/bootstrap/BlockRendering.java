@@ -18,11 +18,9 @@
 
 package appeng.bootstrap;
 
+import java.util.function.BiFunction;
+import java.util.function.Predicate;
 
-import appeng.block.AEBaseTileBlock;
-import appeng.bootstrap.components.BlockColorComponent;
-import appeng.bootstrap.components.RenderTypeComponent;
-import appeng.client.render.model.AutoRotatingBakedModel;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.color.IBlockColor;
@@ -35,74 +33,68 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.function.BiFunction;
-import java.util.function.Predicate;
+import appeng.block.AEBaseTileBlock;
+import appeng.bootstrap.components.BlockColorComponent;
+import appeng.bootstrap.components.RenderTypeComponent;
+import appeng.client.render.model.AutoRotatingBakedModel;
 
+class BlockRendering implements IBlockRendering {
 
-class BlockRendering implements IBlockRendering
-{
+    @OnlyIn(Dist.CLIENT)
+    private BiFunction<ResourceLocation, IBakedModel, IBakedModel> modelCustomizer;
 
-	@OnlyIn( Dist.CLIENT )
-	private BiFunction<ResourceLocation, IBakedModel, IBakedModel> modelCustomizer;
+    @OnlyIn(Dist.CLIENT)
+    private IBlockColor blockColor;
 
-	@OnlyIn( Dist.CLIENT )
-	private IBlockColor blockColor;
+    @OnlyIn(Dist.CLIENT)
+    private RenderType renderType;
 
-	@OnlyIn( Dist.CLIENT )
-	private RenderType renderType;
+    @OnlyIn(Dist.CLIENT)
+    private Predicate<RenderType> renderTypes;
 
-	@OnlyIn( Dist.CLIENT )
-	private Predicate<RenderType> renderTypes;
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public IBlockRendering modelCustomizer(BiFunction<ResourceLocation, IBakedModel, IBakedModel> customizer) {
+        this.modelCustomizer = customizer;
+        return this;
+    }
 
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public IBlockRendering modelCustomizer( BiFunction<ResourceLocation, IBakedModel, IBakedModel> customizer )
-	{
-		this.modelCustomizer = customizer;
-		return this;
-	}
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public IBlockRendering blockColor(IBlockColor blockColor) {
+        this.blockColor = blockColor;
+        return this;
+    }
 
-	@OnlyIn( Dist.CLIENT )
-	@Override
-	public IBlockRendering blockColor( IBlockColor blockColor )
-	{
-		this.blockColor = blockColor;
-		return this;
-	}
+    @Override
+    public IBlockRendering renderType(RenderType type) {
+        this.renderType = type;
+        return this;
+    }
 
-	@Override
-	public IBlockRendering renderType(RenderType type) {
-		this.renderType = type;
-		return this;
-	}
+    @Override
+    public IBlockRendering renderType(Predicate<RenderType> typePredicate) {
+        this.renderTypes = typePredicate;
+        return this;
+    }
 
-	@Override
-	public IBlockRendering renderType(Predicate<RenderType> typePredicate) {
-		this.renderTypes = typePredicate;
-		return this;
-	}
+    void apply(FeatureFactory factory, Block block) {
+        if (this.modelCustomizer != null) {
+            factory.addModelOverride(block.getRegistryName().getPath(), this.modelCustomizer);
+        } else if (block instanceof AEBaseTileBlock) {
+            // This is a default rotating model if the base-block uses an AE tile entity
+            // which exposes UP/FRONT as
+            // extended props
+            factory.addModelOverride(block.getRegistryName().getPath(), (l, m) -> new AutoRotatingBakedModel(m));
+        }
 
-	void apply( FeatureFactory factory, Block block )
-	{
-		if( this.modelCustomizer != null )
-		{
-			factory.addModelOverride( block.getRegistryName().getPath(), this.modelCustomizer );
-		}
-		else if( block instanceof AEBaseTileBlock )
-		{
-			// This is a default rotating model if the base-block uses an AE tile entity which exposes UP/FRONT as
-			// extended props
-			factory.addModelOverride( block.getRegistryName().getPath(), ( l, m ) -> new AutoRotatingBakedModel( m ) );
-		}
+        // TODO : 1.12
+        if (this.blockColor != null) {
+            factory.addBootstrapComponent(new BlockColorComponent(block, this.blockColor));
+        }
 
-		// TODO : 1.12
-		if( this.blockColor != null )
-		{
-			factory.addBootstrapComponent( new BlockColorComponent( block, this.blockColor ) );
-		}
-
-		if (this.renderType != null || this.renderTypes != null) {
-			factory.addBootstrapComponent( new RenderTypeComponent( block, this.renderType, this.renderTypes));
-		}
-	}
+        if (this.renderType != null || this.renderTypes != null) {
+            factory.addBootstrapComponent(new RenderTypeComponent(block, this.renderType, this.renderTypes));
+        }
+    }
 }

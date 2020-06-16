@@ -18,31 +18,27 @@
 
 package appeng.helpers;
 
-
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 
+public interface IPriorityHost {
 
+    /**
+     * get current priority.
+     */
+    int getPriority();
 
+    /**
+     * set new priority
+     */
+    void setPriority(int newValue);
 
-public interface IPriorityHost
-{
+    ItemStack getItemStackRepresentation();
 
-	/**
-	 * get current priority.
-	 */
-	int getPriority();
-
-	/**
-	 * set new priority
-	 */
-	void setPriority( int newValue );
-
-	ItemStack getItemStackRepresentation();
-
-	/**
-	 * Used to show the user interface of this part when returning from the priority GUI.
-	 */
-	ContainerType<?> getContainerType();
+    /**
+     * Used to show the user interface of this part when returning from the priority
+     * GUI.
+     */
+    ContainerType<?> getContainerType();
 
 }

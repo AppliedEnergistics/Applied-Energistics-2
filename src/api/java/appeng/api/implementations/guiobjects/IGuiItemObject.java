@@ -23,12 +23,9 @@
 
 package appeng.api.implementations.guiobjects;
 
-
 import net.minecraft.item.ItemStack;
 
+public interface IGuiItemObject {
 
-public interface IGuiItemObject
-{
-
-	ItemStack getItemStack();
+    ItemStack getItemStack();
 }

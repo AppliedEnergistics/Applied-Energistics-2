@@ -23,54 +23,45 @@
 
 package appeng.api;
 
-
 import java.lang.reflect.Field;
 
 import appeng.api.exceptions.CoreInaccessibleException;
 
-
 /**
  * Entry point for api.
  */
-public enum AEApi
-{
-	;
+public enum AEApi {
+    ;
 
-	private static final String CORE_API_FQN = "appeng.core.Api";
-	private static final String CORE_API_FIELD = "INSTANCE";
-	private static final IAppEngApi HELD_API;
+    private static final String CORE_API_FQN = "appeng.core.Api";
+    private static final String CORE_API_FIELD = "INSTANCE";
+    private static final IAppEngApi HELD_API;
 
-	static
-	{
-		try
-		{
-			final Class<?> apiClass = Class.forName( CORE_API_FQN );
-			final Field apiField = apiClass.getField( CORE_API_FIELD );
+    static {
+        try {
+            final Class<?> apiClass = Class.forName(CORE_API_FQN);
+            final Field apiField = apiClass.getField(CORE_API_FIELD);
 
-			HELD_API = (IAppEngApi) apiField.get( apiClass );
-		}
-		catch( final ClassNotFoundException e )
-		{
-			throw new CoreInaccessibleException( "AE2 API tried to access the " + CORE_API_FQN + " class, without it being declared." );
-		}
-		catch( final NoSuchFieldException e )
-		{
-			throw new CoreInaccessibleException( "AE2 API tried to access the " + CORE_API_FIELD + " field in " + CORE_API_FQN + " without it being declared." );
-		}
-		catch( final IllegalAccessException e )
-		{
-			throw new CoreInaccessibleException( "AE2 API tried to access the " + CORE_API_FIELD + " field in " + CORE_API_FQN + " without enough access permissions." );
-		}
-	}
+            HELD_API = (IAppEngApi) apiField.get(apiClass);
+        } catch (final ClassNotFoundException e) {
+            throw new CoreInaccessibleException(
+                    "AE2 API tried to access the " + CORE_API_FQN + " class, without it being declared.");
+        } catch (final NoSuchFieldException e) {
+            throw new CoreInaccessibleException("AE2 API tried to access the " + CORE_API_FIELD + " field in "
+                    + CORE_API_FQN + " without it being declared.");
+        } catch (final IllegalAccessException e) {
+            throw new CoreInaccessibleException("AE2 API tried to access the " + CORE_API_FIELD + " field in "
+                    + CORE_API_FQN + " without enough access permissions.");
+        }
+    }
 
-	/**
-	 * API Entry Point.
-	 *
-	 * @return the {@link IAppEngApi}
-	 */
-	public static IAppEngApi instance()
-	{
-		return HELD_API;
-	}
+    /**
+     * API Entry Point.
+     *
+     * @return the {@link IAppEngApi}
+     */
+    public static IAppEngApi instance() {
+        return HELD_API;
+    }
 
 }

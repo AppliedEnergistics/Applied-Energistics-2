@@ -18,7 +18,6 @@
 
 package appeng.util.item;
 
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.IdentityHashMap;
@@ -32,194 +31,155 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 
+public final class ItemList implements IItemList<IAEItemStack> {
 
-public final class ItemList implements IItemList<IAEItemStack>
-{
+    private final static IItemList<IAEItemStack> NULL_ITEMLIST = new NullItemList();
 
-	private final static IItemList<IAEItemStack> NULL_ITEMLIST = new NullItemList();
+    private final Map<Item, IItemList<IAEItemStack>> records = new IdentityHashMap<>();
 
-	private final Map<Item, IItemList<IAEItemStack>> records = new IdentityHashMap<>();
+    @Override
+    public IAEItemStack findPrecise(final IAEItemStack itemStack) {
+        if (itemStack == null) {
+            return null;
+        }
 
-	@Override
-	public IAEItemStack findPrecise( final IAEItemStack itemStack )
-	{
-		if( itemStack == null )
-		{
-			return null;
-		}
+        return this.getRecord(itemStack.getItem()).findPrecise(itemStack);
+    }
 
-		return this.getRecord( itemStack.getItem() ).findPrecise( itemStack );
-	}
+    @Override
+    public Collection<IAEItemStack> findFuzzy(final IAEItemStack filter, final FuzzyMode fuzzy) {
+        if (filter == null) {
+            return Collections.emptyList();
+        }
 
-	@Override
-	public Collection<IAEItemStack> findFuzzy( final IAEItemStack filter, final FuzzyMode fuzzy )
-	{
-		if( filter == null )
-		{
-			return Collections.emptyList();
-		}
+        return this.getRecord(filter.getItem()).findFuzzy(filter, fuzzy);
+    }
 
-		return this.getRecord( filter.getItem() ).findFuzzy( filter, fuzzy );
-	}
+    @Override
+    public boolean isEmpty() {
+        return !this.iterator().hasNext();
+    }
 
-	@Override
-	public boolean isEmpty()
-	{
-		return !this.iterator().hasNext();
-	}
+    @Override
+    public void add(final IAEItemStack itemStack) {
+        if (itemStack == null) {
+            return;
+        }
 
-	@Override
-	public void add( final IAEItemStack itemStack )
-	{
-		if( itemStack == null )
-		{
-			return;
-		}
+        this.getOrCreateRecord(itemStack.getItem()).add(itemStack);
+    }
 
-		this.getOrCreateRecord( itemStack.getItem() ).add( itemStack );
-	}
+    @Override
+    public void addStorage(final IAEItemStack itemStack) {
+        if (itemStack == null) {
+            return;
+        }
 
-	@Override
-	public void addStorage( final IAEItemStack itemStack )
-	{
-		if( itemStack == null )
-		{
-			return;
-		}
+        this.getOrCreateRecord(itemStack.getItem()).addStorage(itemStack);
+    }
 
-		this.getOrCreateRecord( itemStack.getItem() ).addStorage( itemStack );
-	}
+    @Override
+    public void addCrafting(final IAEItemStack itemStack) {
+        if (itemStack == null) {
+            return;
+        }
 
-	@Override
-	public void addCrafting( final IAEItemStack itemStack )
-	{
-		if( itemStack == null )
-		{
-			return;
-		}
+        this.getOrCreateRecord(itemStack.getItem()).addCrafting(itemStack);
+    }
 
-		this.getOrCreateRecord( itemStack.getItem() ).addCrafting( itemStack );
-	}
+    @Override
+    public void addRequestable(final IAEItemStack itemStack) {
+        if (itemStack == null) {
+            return;
+        }
 
-	@Override
-	public void addRequestable( final IAEItemStack itemStack )
-	{
-		if( itemStack == null )
-		{
-			return;
-		}
+        this.getOrCreateRecord(itemStack.getItem()).addRequestable(itemStack);
+    }
 
-		this.getOrCreateRecord( itemStack.getItem() ).addRequestable( itemStack );
-	}
+    @Override
+    public IAEItemStack getFirstItem() {
+        for (final IAEItemStack stackType : this) {
+            return stackType;
+        }
 
-	@Override
-	public IAEItemStack getFirstItem()
-	{
-		for( final IAEItemStack stackType : this )
-		{
-			return stackType;
-		}
+        return null;
+    }
 
-		return null;
-	}
+    @Override
+    public int size() {
+        int size = 0;
+        for (IItemList<IAEItemStack> entry : records.values()) {
+            size += entry.size();
+        }
 
-	@Override
-	public int size()
-	{
-		int size = 0;
-		for( IItemList<IAEItemStack> entry : records.values() )
-		{
-			size += entry.size();
-		}
+        return size;
+    }
 
-		return size;
-	}
+    @Override
+    public Iterator<IAEItemStack> iterator() {
+        return new ChainedIterator(this.records.values().iterator());
+    }
 
-	@Override
-	public Iterator<IAEItemStack> iterator()
-	{
-		return new ChainedIterator( this.records.values().iterator() );
-	}
+    @Override
+    public void resetStatus() {
+        for (final IAEItemStack i : this) {
+            i.reset();
+        }
+    }
 
-	@Override
-	public void resetStatus()
-	{
-		for( final IAEItemStack i : this )
-		{
-			i.reset();
-		}
-	}
+    private IItemList<IAEItemStack> getRecord(Item item) {
+        return this.records.getOrDefault(item, NULL_ITEMLIST);
+    }
 
-	private IItemList<IAEItemStack> getRecord( Item item )
-	{
-		return this.records.getOrDefault( item, NULL_ITEMLIST );
-	}
+    private IItemList<IAEItemStack> getOrCreateRecord(Item item) {
+        return this.records.computeIfAbsent(item, this::makeRecordMap);
+    }
 
-	private IItemList<IAEItemStack> getOrCreateRecord( Item item )
-	{
-		return this.records.computeIfAbsent( item, this::makeRecordMap );
-	}
+    private IItemList<IAEItemStack> makeRecordMap(Item item) {
+        if (item.isDamageable()) {
+            return new FuzzyItemList();
+        } else {
+            return new StrictItemList();
+        }
+    }
 
-	private IItemList<IAEItemStack> makeRecordMap( Item item )
-	{
-		if( item.isDamageable() )
-		{
-			return new FuzzyItemList();
-		}
-		else
-		{
-			return new StrictItemList();
-		}
-	}
+    private class ChainedIterator implements Iterator<IAEItemStack> {
 
-	private class ChainedIterator implements Iterator<IAEItemStack>
-	{
+        private final Iterator<IItemList<IAEItemStack>> parent;
+        private Iterator<IAEItemStack> next;
 
-		private final Iterator<IItemList<IAEItemStack>> parent;
-		private Iterator<IAEItemStack> next;
+        public ChainedIterator(Iterator<IItemList<IAEItemStack>> iterator) {
+            this.parent = iterator;
+            if (this.parent.hasNext()) {
+                this.next = this.parent.next().iterator();
+            }
+        }
 
-		public ChainedIterator( Iterator<IItemList<IAEItemStack>> iterator )
-		{
-			this.parent = iterator;
-			if( this.parent.hasNext() )
-			{
-				this.next = this.parent.next().iterator();
-			}
-		}
+        @Override
+        public boolean hasNext() {
+            while (this.next != null) {
+                if (this.next.hasNext()) {
+                    return true;
+                }
 
-		@Override
-		public boolean hasNext()
-		{
-			while( this.next != null )
-			{
-				if( this.next.hasNext() )
-				{
-					return true;
-				}
+                if (this.parent.hasNext()) {
+                    this.next = this.parent.next().iterator();
+                } else {
+                    this.next = null;
+                }
+            }
 
-				if( this.parent.hasNext() )
-				{
-					this.next = this.parent.next().iterator();
-				}
-				else
-				{
-					this.next = null;
-				}
-			}
+            return false;
+        }
 
-			return false;
-		}
+        @Override
+        public IAEItemStack next() {
+            if (this.next == null) {
+                throw new NoSuchElementException();
+            }
 
-		@Override
-		public IAEItemStack next()
-		{
-			if( this.next == null )
-			{
-				throw new NoSuchElementException();
-			}
+            return this.next.next();
+        }
 
-			return this.next.next();
-		}
-
-	}
+    }
 }

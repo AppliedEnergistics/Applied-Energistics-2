@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:toggle_bus"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    " a ",
-    "bcb",
-    " a "
-  ],
+  "pattern": [" a ", "bcb", " a "],
   "key": {
     "c": {
       "item": "minecraft:lever"

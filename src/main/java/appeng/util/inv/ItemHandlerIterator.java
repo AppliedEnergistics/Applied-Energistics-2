@@ -18,45 +18,38 @@
 
 package appeng.util.inv;
 
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import net.minecraftforge.items.IItemHandler;
 
+class ItemHandlerIterator implements Iterator<ItemSlot> {
 
-class ItemHandlerIterator implements Iterator<ItemSlot>
-{
+    private final IItemHandler itemHandler;
 
-	private final IItemHandler itemHandler;
+    private final ItemSlot itemSlot = new ItemSlot();
 
-	private final ItemSlot itemSlot = new ItemSlot();
+    private int slot = 0;
 
-	private int slot = 0;
+    ItemHandlerIterator(IItemHandler itemHandler) {
+        this.itemHandler = itemHandler;
+    }
 
-	ItemHandlerIterator( IItemHandler itemHandler )
-	{
-		this.itemHandler = itemHandler;
-	}
+    @Override
+    public boolean hasNext() {
+        return this.slot < this.itemHandler.getSlots();
+    }
 
-	@Override
-	public boolean hasNext()
-	{
-		return this.slot < this.itemHandler.getSlots();
-	}
-
-	@Override
-	public ItemSlot next()
-	{
-		if( this.slot >= this.itemHandler.getSlots() )
-		{
-			throw new NoSuchElementException();
-		}
-		this.itemSlot.setExtractable( !this.itemHandler.extractItem( this.slot, 1, true ).isEmpty() );
-		this.itemSlot.setItemStack( this.itemHandler.getStackInSlot( this.slot ) );
-		this.itemSlot.setSlot( this.slot );
-		this.slot++;
-		return this.itemSlot;
-	}
+    @Override
+    public ItemSlot next() {
+        if (this.slot >= this.itemHandler.getSlots()) {
+            throw new NoSuchElementException();
+        }
+        this.itemSlot.setExtractable(!this.itemHandler.extractItem(this.slot, 1, true).isEmpty());
+        this.itemSlot.setItemStack(this.itemHandler.getStackInSlot(this.slot));
+        this.itemSlot.setSlot(this.slot);
+        this.slot++;
+        return this.itemSlot;
+    }
 
 }

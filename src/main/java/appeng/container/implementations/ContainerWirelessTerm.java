@@ -18,60 +18,52 @@
 
 package appeng.container.implementations;
 
-
-import appeng.container.ContainerLocator;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 
+import appeng.container.ContainerLocator;
 import appeng.core.AEConfig;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.util.Platform;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
 
+public class ContainerWirelessTerm extends ContainerMEPortableCell {
 
-public class ContainerWirelessTerm extends ContainerMEPortableCell
-{
+    public static ContainerType<ContainerWirelessTerm> TYPE;
 
-	public static ContainerType<ContainerWirelessTerm> TYPE;
+    private static final ContainerHelper<ContainerWirelessTerm, WirelessTerminalGuiObject> helper = new ContainerHelper<>(
+            ContainerWirelessTerm::new, WirelessTerminalGuiObject.class);
 
-	private static final ContainerHelper<ContainerWirelessTerm, WirelessTerminalGuiObject> helper
-			= new ContainerHelper<>(ContainerWirelessTerm::new, WirelessTerminalGuiObject.class);
+    public static ContainerWirelessTerm fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+        return helper.fromNetwork(windowId, inv, buf);
+    }
 
-	public static ContainerWirelessTerm fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-		return helper.fromNetwork(windowId, inv, buf);
-	}
+    public static boolean open(PlayerEntity player, ContainerLocator locator) {
+        return helper.open(player, locator);
+    }
 
-	public static boolean open(PlayerEntity player, ContainerLocator locator) {
-		return helper.open(player, locator);
-	}
+    private final WirelessTerminalGuiObject wirelessTerminalGUIObject;
 
-	private final WirelessTerminalGuiObject wirelessTerminalGUIObject;
+    public ContainerWirelessTerm(int id, final PlayerInventory ip, final WirelessTerminalGuiObject gui) {
+        super(TYPE, id, ip, gui);
+        this.wirelessTerminalGUIObject = gui;
+    }
 
-	public ContainerWirelessTerm(int id, final PlayerInventory ip, final WirelessTerminalGuiObject gui )
-	{
-		super( TYPE, id, ip, gui );
-		this.wirelessTerminalGUIObject = gui;
-	}
+    @Override
+    public void detectAndSendChanges() {
+        super.detectAndSendChanges();
 
-	@Override
-	public void detectAndSendChanges()
-	{
-		super.detectAndSendChanges();
+        if (!this.wirelessTerminalGUIObject.rangeCheck()) {
+            if (Platform.isServer() && this.isValidContainer()) {
+                this.getPlayerInv().player.sendMessage(PlayerMessages.OutOfRange.get());
+            }
 
-		if( !this.wirelessTerminalGUIObject.rangeCheck() )
-		{
-			if( Platform.isServer() && this.isValidContainer() )
-			{
-				this.getPlayerInv().player.sendMessage( PlayerMessages.OutOfRange.get() );
-			}
-
-			this.setValidContainer( false );
-		}
-		else
-		{
-			this.setPowerMultiplier( AEConfig.instance().wireless_getDrainRate( this.wirelessTerminalGUIObject.getRange() ) );
-		}
-	}
+            this.setValidContainer(false);
+        } else {
+            this.setPowerMultiplier(
+                    AEConfig.instance().wireless_getDrainRate(this.wirelessTerminalGUIObject.getRange()));
+        }
+    }
 }

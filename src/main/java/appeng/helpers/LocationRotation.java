@@ -18,55 +18,46 @@
 
 package appeng.helpers;
 
-
 import net.minecraft.util.Direction;
 import net.minecraft.world.IBlockReader;
 
 import appeng.api.util.IOrientable;
 
+public class LocationRotation implements IOrientable {
 
-public class LocationRotation implements IOrientable
-{
+    private final IBlockReader w;
+    private final int x;
+    private final int y;
+    private final int z;
 
-	private final IBlockReader w;
-	private final int x;
-	private final int y;
-	private final int z;
+    public LocationRotation(final IBlockReader world, final int x, final int y, final int z) {
+        this.w = world;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
 
-	public LocationRotation( final IBlockReader world, final int x, final int y, final int z )
-	{
-		this.w = world;
-		this.x = x;
-		this.y = y;
-		this.z = z;
-	}
+    @Override
+    public boolean canBeRotated() {
+        return false;
+    }
 
-	@Override
-	public boolean canBeRotated()
-	{
-		return false;
-	}
+    @Override
+    public Direction getForward() {
+        if (this.getUp().getYOffset() == 0) {
+            return Direction.UP;
+        }
+        return Direction.SOUTH;
+    }
 
-	@Override
-	public Direction getForward()
-	{
-		if( this.getUp().getYOffset() == 0 )
-		{
-			return Direction.UP;
-		}
-		return Direction.SOUTH;
-	}
+    @Override
+    public Direction getUp() {
+        final int num = Math.abs(this.x + this.y + this.z) % 6;
+        return Direction.values()[num];
+    }
 
-	@Override
-	public Direction getUp()
-	{
-		final int num = Math.abs( this.x + this.y + this.z ) % 6;
-		return Direction.values()[num];
-	}
+    @Override
+    public void setOrientation(final Direction forward, final Direction up) {
 
-	@Override
-	public void setOrientation( final Direction forward, final Direction up )
-	{
-
-	}
+    }
 }

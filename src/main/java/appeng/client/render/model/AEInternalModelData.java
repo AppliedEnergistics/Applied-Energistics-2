@@ -1,9 +1,9 @@
 package appeng.client.render.model;
 
+import javax.annotation.Nullable;
+
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
-
-import javax.annotation.Nullable;
 
 public abstract class AEInternalModelData implements IModelData {
 

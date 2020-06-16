@@ -23,49 +23,46 @@
 
 package appeng.api.config;
 
-
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
-public enum PowerUnits
-{
-	AE( "gui.appliedenergistics2.units.appliedenergstics" ), // Native Units - AE Energy
-	EU( "gui.appliedenergistics2.units.ic2" ), // IndustrialCraft 2 - Energy Units
-	RF( "gui.appliedenergistics2.units.rf" ); // RF - Redstone Flux
+public enum PowerUnits {
+    AE("gui.appliedenergistics2.units.appliedenergstics"), // Native Units - AE Energy
+    EU("gui.appliedenergistics2.units.ic2"), // IndustrialCraft 2 - Energy Units
+    RF("gui.appliedenergistics2.units.rf"); // RF - Redstone Flux
 
-	/**
-	 * unlocalized name for the power unit.
-	 */
-	public final String unlocalizedName;
-	/**
-	 * please do not edit this value, it is set when AE loads its config files.
-	 */
-	public double conversionRatio = 1.0;
+    /**
+     * unlocalized name for the power unit.
+     */
+    public final String unlocalizedName;
+    /**
+     * please do not edit this value, it is set when AE loads its config files.
+     */
+    public double conversionRatio = 1.0;
 
-	PowerUnits( final String un )
-	{
-		this.unlocalizedName = un;
-	}
+    PowerUnits(final String un) {
+        this.unlocalizedName = un;
+    }
 
-	/**
-	 * do power conversion using AE's conversion rates.
-	 *
-	 * Example: PowerUnits.EU.convertTo( PowerUnits.AE, 32 );
-	 *
-	 * will normally returns 64, as it will convert the EU, to AE with AE's power settings.
-	 *
-	 * @param target target power unit
-	 * @param value value
-	 *
-	 * @return value converted to target units, from this units.
-	 */
-	public double convertTo( final PowerUnits target, final double value )
-	{
-		return ( value * this.conversionRatio ) / target.conversionRatio;
-	}
+    /**
+     * do power conversion using AE's conversion rates.
+     *
+     * Example: PowerUnits.EU.convertTo( PowerUnits.AE, 32 );
+     *
+     * will normally returns 64, as it will convert the EU, to AE with AE's power
+     * settings.
+     *
+     * @param target target power unit
+     * @param value  value
+     *
+     * @return value converted to target units, from this units.
+     */
+    public double convertTo(final PowerUnits target, final double value) {
+        return (value * this.conversionRatio) / target.conversionRatio;
+    }
 
-	public ITextComponent textComponent() {
-		return new TranslationTextComponent(unlocalizedName);
-	}
+    public ITextComponent textComponent() {
+        return new TranslationTextComponent(unlocalizedName);
+    }
 
 }

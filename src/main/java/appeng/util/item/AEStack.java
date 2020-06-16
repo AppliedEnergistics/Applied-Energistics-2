@@ -18,102 +18,86 @@
 
 package appeng.util.item;
 
-
 import appeng.api.storage.data.IAEStack;
 
+public abstract class AEStack<T extends IAEStack<T>> implements IAEStack<T> {
 
-public abstract class AEStack<T extends IAEStack<T>> implements IAEStack<T>
-{
+    private boolean isCraftable;
+    private long stackSize;
+    private long countRequestable;
 
-	private boolean isCraftable;
-	private long stackSize;
-	private long countRequestable;
+    @Override
+    public long getStackSize() {
+        return this.stackSize;
+    }
 
-	@Override
-	public long getStackSize()
-	{
-		return this.stackSize;
-	}
+    @Override
+    public T setStackSize(final long ss) {
+        this.stackSize = ss;
+        return (T) this;
+    }
 
-	@Override
-	public T setStackSize( final long ss )
-	{
-		this.stackSize = ss;
-		return (T) this;
-	}
+    @Override
+    public long getCountRequestable() {
+        return this.countRequestable;
+    }
 
-	@Override
-	public long getCountRequestable()
-	{
-		return this.countRequestable;
-	}
+    @Override
+    public T setCountRequestable(final long countRequestable) {
+        this.countRequestable = countRequestable;
+        return (T) this;
+    }
 
-	@Override
-	public T setCountRequestable( final long countRequestable )
-	{
-		this.countRequestable = countRequestable;
-		return (T) this;
-	}
+    @Override
+    public boolean isCraftable() {
+        return this.isCraftable;
+    }
 
-	@Override
-	public boolean isCraftable()
-	{
-		return this.isCraftable;
-	}
+    @Override
+    public T setCraftable(final boolean isCraftable) {
+        this.isCraftable = isCraftable;
+        return (T) this;
+    }
 
-	@Override
-	public T setCraftable( final boolean isCraftable )
-	{
-		this.isCraftable = isCraftable;
-		return (T) this;
-	}
+    @Override
+    public T reset() {
+        this.stackSize = 0;
+        this.setCountRequestable(0);
+        this.setCraftable(false);
+        return (T) this;
+    }
 
-	@Override
-	public T reset()
-	{
-		this.stackSize = 0;
-		this.setCountRequestable( 0 );
-		this.setCraftable( false );
-		return (T) this;
-	}
+    @Override
+    public T empty() {
+        final T dup = this.copy();
+        dup.reset();
+        return dup;
+    }
 
-	@Override
-	public T empty()
-	{
-		final T dup = this.copy();
-		dup.reset();
-		return dup;
-	}
+    @Override
+    public boolean isMeaningful() {
+        return this.stackSize != 0 || this.countRequestable > 0 || this.isCraftable;
+    }
 
-	@Override
-	public boolean isMeaningful()
-	{
-		return this.stackSize != 0 || this.countRequestable > 0 || this.isCraftable;
-	}
+    @Override
+    public void incStackSize(final long i) {
+        this.stackSize += i;
+    }
 
-	@Override
-	public void incStackSize( final long i )
-	{
-		this.stackSize += i;
-	}
+    @Override
+    public void decStackSize(final long i) {
+        this.stackSize -= i;
+    }
 
-	@Override
-	public void decStackSize( final long i )
-	{
-		this.stackSize -= i;
-	}
+    @Override
+    public void incCountRequestable(final long i) {
+        this.countRequestable += i;
+    }
 
-	@Override
-	public void incCountRequestable( final long i )
-	{
-		this.countRequestable += i;
-	}
+    @Override
+    public void decCountRequestable(final long i) {
+        this.countRequestable -= i;
+    }
 
-	@Override
-	public void decCountRequestable( final long i )
-	{
-		this.countRequestable -= i;
-	}
-
-	protected abstract boolean hasTagCompound();
+    protected abstract boolean hasTagCompound();
 }

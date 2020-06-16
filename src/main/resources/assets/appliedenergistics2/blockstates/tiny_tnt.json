@@ -1,7 +1,7 @@
 {
-    "variants": {
-        "": {
-            "model": "appliedenergistics2:block/tiny_tnt"
-        }
+  "variants": {
+    "": {
+      "model": "appliedenergistics2:block/tiny_tnt"
     }
+  }
 }

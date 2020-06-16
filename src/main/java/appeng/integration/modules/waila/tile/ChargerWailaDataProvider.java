@@ -18,7 +18,6 @@
 
 package appeng.integration.modules.waila.tile;
 
-
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -31,13 +30,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.items.IItemHandler;
 
-import mcp.mobius.waila.api.IPluginConfig;
 import mcp.mobius.waila.api.IDataAccessor;
+import mcp.mobius.waila.api.IPluginConfig;
 
 import appeng.core.localization.WailaText;
 import appeng.integration.modules.waila.BaseWailaDataProvider;
 import appeng.tile.misc.TileCharger;
-
 
 /**
  * Charger provider for WAILA
@@ -46,31 +44,28 @@ import appeng.tile.misc.TileCharger;
  * @version rv2
  * @since rv2
  */
-public final class ChargerWailaDataProvider extends BaseWailaDataProvider
-{
+public final class ChargerWailaDataProvider extends BaseWailaDataProvider {
 
-	@Override
-	public void appendBody(List<ITextComponent> tooltip, IDataAccessor accessor, IPluginConfig config) {
+    @Override
+    public void appendBody(List<ITextComponent> tooltip, IDataAccessor accessor, IPluginConfig config) {
 
-		final TileEntity te = accessor.getTileEntity();
-		if( te instanceof TileCharger )
-		{
-			final TileCharger charger = (TileCharger) te;
-			final IItemHandler chargerInventory = charger.getInternalInventory();
-			final ItemStack chargingItem = chargerInventory.getStackInSlot( 0 );
+        final TileEntity te = accessor.getTileEntity();
+        if (te instanceof TileCharger) {
+            final TileCharger charger = (TileCharger) te;
+            final IItemHandler chargerInventory = charger.getInternalInventory();
+            final ItemStack chargingItem = chargerInventory.getStackInSlot(0);
 
-			if( !chargingItem.isEmpty() )
-			{
-				final ITextComponent currentInventory = chargingItem.getDisplayName();
-				final PlayerEntity player = accessor.getPlayer();
+            if (!chargingItem.isEmpty()) {
+                final ITextComponent currentInventory = chargingItem.getDisplayName();
+                final PlayerEntity player = accessor.getPlayer();
 
-				tooltip.add( WailaText.Contains.textComponent().appendText(": ")
-						.appendSibling(currentInventory) );
-				ITooltipFlag.TooltipFlags tooltipFlag = Minecraft
-						.getInstance().gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL;
-				chargingItem.getItem().addInformation( chargingItem, player.world, tooltip, tooltipFlag );
-			}
-		}
+                tooltip.add(WailaText.Contains.textComponent().appendText(": ").appendSibling(currentInventory));
+                ITooltipFlag.TooltipFlags tooltipFlag = Minecraft.getInstance().gameSettings.advancedItemTooltips
+                        ? ITooltipFlag.TooltipFlags.ADVANCED
+                        : ITooltipFlag.TooltipFlags.NORMAL;
+                chargingItem.getItem().addInformation(chargingItem, player.world, tooltip, tooltipFlag);
+            }
+        }
 
-	}
+    }
 }

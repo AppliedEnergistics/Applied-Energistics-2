@@ -15,7 +15,8 @@ public class CableBusBreakingParticle extends SpriteTexturedParticle {
     private final float field_217571_C;
     private final float field_217572_F;
 
-    public CableBusBreakingParticle(World world, double x, double y, double z, double speedX, double speedY, double speedZ, TextureAtlasSprite sprite) {
+    public CableBusBreakingParticle(World world, double x, double y, double z, double speedX, double speedY,
+            double speedZ, TextureAtlasSprite sprite) {
         super(world, x, y, z, speedX, speedY, speedZ);
         this.setSprite(sprite);
         this.particleGravity = 1.0F;

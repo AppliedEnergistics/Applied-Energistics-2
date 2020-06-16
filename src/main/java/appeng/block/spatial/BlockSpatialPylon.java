@@ -18,45 +18,38 @@
 
 package appeng.block.spatial;
 
-
-import appeng.block.AEBaseTileBlock;
-import appeng.helpers.AEGlassMaterial;
-import appeng.tile.spatial.TileSpatialPylon;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
+import appeng.block.AEBaseTileBlock;
+import appeng.helpers.AEGlassMaterial;
+import appeng.tile.spatial.TileSpatialPylon;
 
-public class BlockSpatialPylon extends AEBaseTileBlock<TileSpatialPylon>
-{
+public class BlockSpatialPylon extends AEBaseTileBlock<TileSpatialPylon> {
 
+    public BlockSpatialPylon() {
+        super(defaultProps(AEGlassMaterial.INSTANCE));
+    }
 
-	public BlockSpatialPylon()
-	{
-		super( defaultProps(AEGlassMaterial.INSTANCE) );
-	}
+    @Override
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
+            boolean isMoving) {
+        final TileSpatialPylon tsp = this.getTileEntity(world, pos);
+        if (tsp != null) {
+            tsp.neighborChanged();
+        }
+    }
 
-	@Override
-	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving )
-	{
-		final TileSpatialPylon tsp = this.getTileEntity( world, pos );
-		if( tsp != null )
-		{
-			tsp.neighborChanged();
-		}
-	}
-
-	@Override
-	public int getLightValue( final BlockState state, final IBlockReader w, final BlockPos pos )
-	{
-		final TileSpatialPylon tsp = this.getTileEntity( w, pos );
-		if( tsp != null )
-		{
-			return tsp.getLightValue();
-		}
-		return super.getLightValue( state, w, pos );
-	}
+    @Override
+    public int getLightValue(final BlockState state, final IBlockReader w, final BlockPos pos) {
+        final TileSpatialPylon tsp = this.getTileEntity(w, pos);
+        if (tsp != null) {
+            return tsp.getLightValue();
+        }
+        return super.getLightValue(state, w, pos);
+    }
 
 }

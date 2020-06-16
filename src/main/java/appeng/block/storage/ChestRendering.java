@@ -18,7 +18,6 @@
 
 package appeng.block.storage;
 
-
 import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -30,19 +29,16 @@ import appeng.bootstrap.IItemRendering;
 import appeng.client.render.ColorableTileBlockColor;
 import appeng.client.render.StaticItemColor;
 
+public class ChestRendering extends BlockRenderingCustomizer {
 
-public class ChestRendering extends BlockRenderingCustomizer
-{
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
+        rendering.renderType(RenderType.getCutout());
 
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
-	{
-		rendering.renderType(RenderType.getCutout());
-
-		// I checked, the ME chest doesn't keep its color in item form
-		itemRendering.color( new StaticItemColor( AEColor.TRANSPARENT ) );
-		rendering.blockColor( new ColorableTileBlockColor() );
-	}
+        // I checked, the ME chest doesn't keep its color in item form
+        itemRendering.color(new StaticItemColor(AEColor.TRANSPARENT));
+        rendering.blockColor(new ColorableTileBlockColor());
+    }
 
 }

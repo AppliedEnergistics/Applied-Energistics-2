@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:molecular_assembler"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aba",
-    "cde",
-    "aba"
-  ],
+  "pattern": ["aba", "cde", "aba"],
   "key": {
     "e": {
       "item": "appliedenergistics2:formation_core"

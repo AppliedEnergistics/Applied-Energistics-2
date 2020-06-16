@@ -18,7 +18,6 @@
 
 package appeng.core.features.registries;
 
-
 import java.util.HashMap;
 
 import net.minecraft.item.ItemStack;
@@ -26,36 +25,29 @@ import net.minecraft.item.Items;
 
 import appeng.api.features.IMatterCannonAmmoRegistry;
 
+public class MatterCannonAmmoRegistry implements /* FIXME IOreListener, */ IMatterCannonAmmoRegistry {
 
-public class MatterCannonAmmoRegistry implements /* FIXME IOreListener, */ IMatterCannonAmmoRegistry
-{
+    private final HashMap<ItemStack, Double> DamageModifiers = new HashMap<>();
 
-	private final HashMap<ItemStack, Double> DamageModifiers = new HashMap<>();
+    public MatterCannonAmmoRegistry() {
+        // FIXME OreDictionaryHandler.INSTANCE.observe( this );
+        this.registerAmmo(new ItemStack(Items.GOLD_NUGGET), 196.96655);
+    }
 
-	public MatterCannonAmmoRegistry()
-	{
-		// FIXME OreDictionaryHandler.INSTANCE.observe( this );
-		this.registerAmmo( new ItemStack( Items.GOLD_NUGGET ), 196.96655 );
-	}
+    @Override
+    public void registerAmmo(final ItemStack ammo, final double weight) {
+        this.DamageModifiers.put(ammo, weight);
+    }
 
-	@Override
-	public void registerAmmo( final ItemStack ammo, final double weight )
-	{
-		this.DamageModifiers.put( ammo, weight );
-	}
-
-	@Override
-	public float getPenetration( final ItemStack is )
-	{
-		for( final ItemStack o : this.DamageModifiers.keySet() )
-		{
-			if( ItemStack.areItemsEqual( o, is ) )
-			{
-				return this.DamageModifiers.get( o ).floatValue();
-			}
-		}
-		return 0;
-	}
+    @Override
+    public float getPenetration(final ItemStack is) {
+        for (final ItemStack o : this.DamageModifiers.keySet()) {
+            if (ItemStack.areItemsEqual(o, is)) {
+                return this.DamageModifiers.get(o).floatValue();
+            }
+        }
+        return 0;
+    }
 
 // FIXME	@Override
 // FIXME	public void oreRegistered( final String name, final ItemStack item )
@@ -138,11 +130,9 @@ public class MatterCannonAmmoRegistry implements /* FIXME IOreListener, */ IMatt
 // FIXME		this.considerItem( name, item, "Electrum", ( 107.8682 + 196.96655 ) / 2.0 );
 // FIXME	}
 
-	private void considerItem( final String ore, final ItemStack item, final String name, final double weight )
-	{
-		if( ore.equals( "berry" + name ) || ore.equals( "nugget" + name ) )
-		{
-			this.registerAmmo( item, weight );
-		}
-	}
+    private void considerItem(final String ore, final ItemStack item, final String name, final double weight) {
+        if (ore.equals("berry" + name) || ore.equals("nugget" + name)) {
+            this.registerAmmo(item, weight);
+        }
+    }
 }

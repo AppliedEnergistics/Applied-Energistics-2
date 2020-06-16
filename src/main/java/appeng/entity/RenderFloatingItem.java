@@ -18,7 +18,6 @@
 
 package appeng.entity;
 
-
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.Minecraft;
@@ -30,45 +29,36 @@ import net.minecraft.item.BlockItem;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
+public class RenderFloatingItem extends ItemRenderer {
 
-@OnlyIn( Dist.CLIENT )
-public class RenderFloatingItem extends ItemRenderer
-{
+    public RenderFloatingItem(final EntityRendererManager manager) {
+        super(manager, Minecraft.getInstance().getItemRenderer());
+        this.shadowOpaque = 0.0F;
+    }
 
-	public RenderFloatingItem( final EntityRendererManager manager )
-	{
-		super( manager, Minecraft.getInstance().getItemRenderer() );
-		this.shadowOpaque = 0.0F;
-	}
+    @Override
+    public void render(ItemEntity entityIn, float entityYaw, float partialTicks, MatrixStack mStack,
+            IRenderTypeBuffer buffers, int packedLightIn) {
+        if (entityIn instanceof EntityFloatingItem) {
+            final EntityFloatingItem efi = (EntityFloatingItem) entityIn;
+            if (efi.getProgress() > 0.0) {
+                mStack.push();
 
-	@Override
-	public void render( ItemEntity entityIn, float entityYaw, float partialTicks, MatrixStack mStack, IRenderTypeBuffer buffers, int packedLightIn )
-	{
-		if( entityIn instanceof EntityFloatingItem )
-		{
-			final EntityFloatingItem efi = (EntityFloatingItem) entityIn;
-			if( efi.getProgress() > 0.0 )
-			{
-				mStack.push();
+                if (!(efi.getItem().getItem() instanceof BlockItem)) {
+                    mStack.translate(0, -0.3f, 0);
+                } else {
+                    mStack.translate(0, -0.2f, 0);
+                }
 
-				if( !( efi.getItem().getItem() instanceof BlockItem ) )
-				{
-					mStack.translate( 0, -0.3f, 0 );
-				}
-				else
-				{
-					mStack.translate( 0, -0.2f, 0 );
-				}
+                super.render(entityIn, entityYaw, 0, mStack, buffers, packedLightIn);
+                mStack.pop();
+            }
+        }
+    }
 
-				super.render( entityIn, entityYaw, 0, mStack, buffers, packedLightIn );
-				mStack.pop();
-			}
-		}
-	}
-
-	@Override
-	public boolean shouldBob()
-	{
-		return false;
-	}
+    @Override
+    public boolean shouldBob() {
+        return false;
+    }
 }

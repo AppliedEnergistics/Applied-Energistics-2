@@ -18,42 +18,39 @@
 
 package appeng.api.definitions;
 
+import java.util.Optional;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 
-import java.util.Optional;
+public interface IBlockDefinition extends IItemDefinition {
+    /**
+     * @return the {@link Block} implementation if applicable
+     */
+    default Optional<Block> maybeBlock() {
+        return Optional.of(block());
+    }
 
+    Block block();
 
-public interface IBlockDefinition extends IItemDefinition
-{
-	/**
-	 * @return the {@link Block} implementation if applicable
-	 */
-	default Optional<Block> maybeBlock() {
-		return Optional.of(block());
-	}
+    /**
+     * @return the {@link BlockItem} implementation if applicable
+     */
+    default Optional<BlockItem> maybeBlockItem() {
+        return Optional.of(blockItem());
+    }
 
-	Block block();
+    BlockItem blockItem();
 
-	/**
-	 * @return the {@link BlockItem} implementation if applicable
-	 */
-	default Optional<BlockItem> maybeBlockItem() {
-		return Optional.of(blockItem());
-	}
-
-	BlockItem blockItem();
-
-	/**
-	 * Compare Block with world.
-	 *
-	 * @param world world of block
-	 * @param pos location
-	 *
-	 * @return if the block is placed in the world at the specific location.
-	 */
-	boolean isSameAs( IBlockReader world, BlockPos pos );
+    /**
+     * Compare Block with world.
+     *
+     * @param world world of block
+     * @param pos   location
+     *
+     * @return if the block is placed in the world at the specific location.
+     */
+    boolean isSameAs(IBlockReader world, BlockPos pos);
 }

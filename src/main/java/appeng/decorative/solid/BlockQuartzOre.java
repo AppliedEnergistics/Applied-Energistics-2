@@ -18,20 +18,18 @@
 
 package appeng.decorative.solid;
 
-
-import appeng.block.AEBaseBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 
+import appeng.block.AEBaseBlock;
 
-public class BlockQuartzOre extends AEBaseBlock
-{
-	public BlockQuartzOre(Properties props) {
-		super(props);
-	}
+public class BlockQuartzOre extends AEBaseBlock {
+    public BlockQuartzOre(Properties props) {
+        super(props);
+    }
 
-	// FIXME: Loot Tables
+    // FIXME: Loot Tables
 //	@Override
 //	public int quantityDropped( BlockState state, int fortune, Random rand )
 //	{
@@ -59,12 +57,13 @@ public class BlockQuartzOre extends AEBaseBlock
 //	}
 //
 
-	@Override
-	public int getExpDrop(BlockState state, net.minecraft.world.IWorldReader reader, BlockPos pos, int fortune, int silktouch) {
-		return silktouch == 0 ? MathHelper.nextInt(RANDOM, 2, 5) : 0;
-	}
+    @Override
+    public int getExpDrop(BlockState state, net.minecraft.world.IWorldReader reader, BlockPos pos, int fortune,
+            int silktouch) {
+        return silktouch == 0 ? MathHelper.nextInt(RANDOM, 2, 5) : 0;
+    }
 
-	// FIXME: loot tables
+    // FIXME: loot tables
 //	@Override
 //	public Item getItemDropped( final BlockState state, final Random rand, final int fortune )
 //	{
@@ -76,7 +75,7 @@ public class BlockQuartzOre extends AEBaseBlock
 //				.orElseThrow( () -> new MissingDefinitionException( "Tried to access certus quartz crystal, even though they are disabled" ) );
 //	}
 
-	// FIXME: loot tables
+    // FIXME: loot tables
 //	@Override
 //	public int damageDropped( final BlockState state )
 //	{

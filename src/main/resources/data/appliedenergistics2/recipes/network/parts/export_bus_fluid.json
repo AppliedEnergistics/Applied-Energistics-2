@@ -3,10 +3,7 @@
     "item": "appliedenergistics2:fluid_export_bus"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aba",
-    "lcl"
-  ],
+  "pattern": ["aba", "lcl"],
   "key": {
     "b": {
       "item": "appliedenergistics2:formation_core"

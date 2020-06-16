@@ -18,11 +18,6 @@
 
 package appeng.fluids.registries;
 
-
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.ContainerFormationPlane;
-import appeng.fluids.container.ContainerFluidTerminal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -36,22 +31,23 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AEPartLocation;
-
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerFormationPlane;
+import appeng.fluids.container.ContainerFluidTerminal;
 import appeng.util.Platform;
 
+public class BasicFluidCellGuiHandler implements ICellGuiHandler {
 
-public class BasicFluidCellGuiHandler implements ICellGuiHandler
-{
+    @Override
+    public <T extends IAEStack<T>> boolean isHandlerFor(final IStorageChannel<T> channel) {
+        return channel == AEApi.instance().storage().getStorageChannel(IFluidStorageChannel.class);
+    }
 
-	@Override
-	public <T extends IAEStack<T>> boolean isHandlerFor( final IStorageChannel<T> channel )
-	{
-		return channel == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class );
-	}
-
-	@Override
-	public void openChestGui( final PlayerEntity player, final IChestOrDrive chest, final ICellHandler cellHandler, final IMEInventoryHandler inv, final ItemStack is, final IStorageChannel chan )
-	{
-		ContainerOpener.openContainer(ContainerFluidTerminal.TYPE, player, ContainerLocator.forTileEntitySide((TileEntity) chest, chest.getUp()));
-	}
+    @Override
+    public void openChestGui(final PlayerEntity player, final IChestOrDrive chest, final ICellHandler cellHandler,
+            final IMEInventoryHandler inv, final ItemStack is, final IStorageChannel chan) {
+        ContainerOpener.openContainer(ContainerFluidTerminal.TYPE, player,
+                ContainerLocator.forTileEntitySide((TileEntity) chest, chest.getUp()));
+    }
 }

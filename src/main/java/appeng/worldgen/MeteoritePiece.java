@@ -1,5 +1,7 @@
 package appeng.worldgen;
 
+import java.util.Random;
+
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
@@ -9,8 +11,6 @@ import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.ScatteredStructurePiece;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
 import net.minecraft.world.gen.feature.template.TemplateManager;
-
-import java.util.Random;
 
 public class MeteoritePiece extends ScatteredStructurePiece {
 
@@ -25,7 +25,8 @@ public class MeteoritePiece extends ScatteredStructurePiece {
     }
 
     @Override
-    public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGeneratorIn, Random randomIn, MutableBoundingBox mutableBoundingBoxIn, ChunkPos chunkPosIn) {
+    public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGeneratorIn, Random randomIn,
+            MutableBoundingBox mutableBoundingBoxIn, ChunkPos chunkPosIn) {
         return false;
     }
 

@@ -23,7 +23,6 @@
 
 package appeng.api.networking.events;
 
-
 /**
  * Posted by storage devices to inform AE to refresh its storage structure.
  *
@@ -33,7 +32,6 @@ package appeng.api.networking.events;
  * you do not need to send this event when your node is added / removed from the
  * grid.
  */
-public class MENetworkCellArrayUpdate extends MENetworkEvent
-{
+public class MENetworkCellArrayUpdate extends MENetworkEvent {
 
 }

@@ -23,67 +23,65 @@
 
 package appeng.api.util;
 
-
 import java.util.Set;
 
 import net.minecraft.nbt.CompoundNBT;
 
 import appeng.api.config.Settings;
 
-
 /**
  * Used to adjust settings on an object,
  *
  * Obtained via {@link IConfigurableObject}
  */
-public interface IConfigManager
-{
+public interface IConfigManager {
 
-	/**
-	 * get a list of different settings
-	 *
-	 * @return enum set of settings
-	 */
-	Set<Settings> getSettings();
+    /**
+     * get a list of different settings
+     *
+     * @return enum set of settings
+     */
+    Set<Settings> getSettings();
 
-	/**
-	 * used to initialize the configuration manager, should be called for all settings.
-	 *
-	 * @param settingName name of setting
-	 * @param defaultValue default value of setting
-	 */
-	void registerSetting( Settings settingName, Enum<?> defaultValue );
+    /**
+     * used to initialize the configuration manager, should be called for all
+     * settings.
+     *
+     * @param settingName  name of setting
+     * @param defaultValue default value of setting
+     */
+    void registerSetting(Settings settingName, Enum<?> defaultValue);
 
-	/**
-	 * Get Value of a particular setting
-	 *
-	 * @param settingName name of setting
-	 *
-	 * @return value of setting
-	 */
-	Enum<?> getSetting( Settings settingName );
+    /**
+     * Get Value of a particular setting
+     *
+     * @param settingName name of setting
+     *
+     * @return value of setting
+     */
+    Enum<?> getSetting(Settings settingName);
 
-	/**
-	 * Change setting
-	 *
-	 * @param settingName to be changed setting
-	 * @param newValue new value for setting
-	 *
-	 * @return changed setting
-	 */
-	Enum<?> putSetting( Settings settingName, Enum<?> newValue );
+    /**
+     * Change setting
+     *
+     * @param settingName to be changed setting
+     * @param newValue    new value for setting
+     *
+     * @return changed setting
+     */
+    Enum<?> putSetting(Settings settingName, Enum<?> newValue);
 
-	/**
-	 * write all settings to the NBT Tag so they can be read later.
-	 *
-	 * @param destination to be written nbt tag
-	 */
-	void writeToNBT( CompoundNBT destination );
+    /**
+     * write all settings to the NBT Tag so they can be read later.
+     *
+     * @param destination to be written nbt tag
+     */
+    void writeToNBT(CompoundNBT destination);
 
-	/**
-	 * Only works after settings have been registered
-	 *
-	 * @param src to be read nbt tag
-	 */
-	void readFromNBT( CompoundNBT src );
+    /**
+     * Only works after settings have been registered
+     *
+     * @param src to be read nbt tag
+     */
+    void readFromNBT(CompoundNBT src);
 }

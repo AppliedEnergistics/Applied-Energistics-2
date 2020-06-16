@@ -18,7 +18,6 @@
 
 package appeng.entity;
 
-
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.block.Blocks;
@@ -34,58 +33,52 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
+public class RenderTinyTNTPrimed extends EntityRenderer<EntityTinyTNTPrimed> {
 
-@OnlyIn( Dist.CLIENT )
-public class RenderTinyTNTPrimed extends EntityRenderer<EntityTinyTNTPrimed>
-{
+    public RenderTinyTNTPrimed(final EntityRendererManager manager) {
+        super(manager);
+        this.shadowSize = 0.5F;
+    }
 
-	public RenderTinyTNTPrimed( final EntityRendererManager manager )
-	{
-		super( manager );
-		this.shadowSize = 0.5F;
-	}
+    @Override
+    public void render(EntityTinyTNTPrimed tnt, float entityYaw, float partialTicks, MatrixStack mStack,
+            IRenderTypeBuffer buffers, int packedLight) {
+        final BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
+        mStack.push();
+        mStack.translate(0, 0.25F, 0);
+        float f2;
 
-	@Override
-	public void render( EntityTinyTNTPrimed tnt, float entityYaw, float partialTicks, MatrixStack mStack, IRenderTypeBuffer buffers, int packedLight )
-	{
-		final BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
-		mStack.push();
-		mStack.translate( 0, 0.25F, 0 );
-		float f2;
+        if (tnt.getFuse() - partialTicks + 1.0F < 10.0F) {
+            f2 = 1.0F - (tnt.getFuse() - partialTicks + 1.0F) / 10.0F;
 
-		if( tnt.getFuse() - partialTicks + 1.0F < 10.0F )
-		{
-			f2 = 1.0F - ( tnt.getFuse() - partialTicks + 1.0F ) / 10.0F;
+            if (f2 < 0.0F) {
+                f2 = 0.0F;
+            }
 
-			if( f2 < 0.0F )
-			{
-				f2 = 0.0F;
-			}
+            if (f2 > 1.0F) {
+                f2 = 1.0F;
+            }
 
-			if( f2 > 1.0F )
-			{
-				f2 = 1.0F;
-			}
+            f2 *= f2;
+            f2 *= f2;
+            final float f3 = 1.0F + f2 * 0.3F;
+            mStack.scale(f3, f3, f3);
+        }
 
-			f2 *= f2;
-			f2 *= f2;
-			final float f3 = 1.0F + f2 * 0.3F;
-			mStack.scale( f3, f3, f3 );
-		}
+        mStack.scale(0.5f, 0.5f, 0.5f);
+        f2 = (1.0F - (tnt.getFuse() - partialTicks + 1.0F) / 100.0F) * 0.8F;
+        mStack.rotate(Vector3f.YP.rotationDegrees(-90.0F));
+        mStack.translate(-0.5D, -0.5D, 0.5D);
+        mStack.rotate(Vector3f.YP.rotationDegrees(90.0F));
+        TNTMinecartRenderer.renderTntFlash(Blocks.TNT.getDefaultState(), mStack, buffers, packedLight,
+                tnt.getFuse() / 5 % 2 == 0);
+        mStack.pop();
+        super.render(tnt, entityYaw, partialTicks, mStack, buffers, packedLight);
+    }
 
-		mStack.scale( 0.5f, 0.5f, 0.5f );
-		f2 = ( 1.0F - ( tnt.getFuse() - partialTicks + 1.0F ) / 100.0F ) * 0.8F;
-		mStack.rotate( Vector3f.YP.rotationDegrees( -90.0F ) );
-		mStack.translate( -0.5D, -0.5D, 0.5D );
-		mStack.rotate( Vector3f.YP.rotationDegrees( 90.0F ) );
-		TNTMinecartRenderer.renderTntFlash( Blocks.TNT.getDefaultState(), mStack, buffers, packedLight, tnt.getFuse() / 5 % 2 == 0 );
-		mStack.pop();
-		super.render( tnt, entityYaw, partialTicks, mStack, buffers, packedLight );
-	}
-
-	@Override
-	public ResourceLocation getEntityTexture( final EntityTinyTNTPrimed entity )
-	{
-		return AtlasTexture.LOCATION_BLOCKS_TEXTURE;
-	}
+    @Override
+    public ResourceLocation getEntityTexture(final EntityTinyTNTPrimed entity) {
+        return AtlasTexture.LOCATION_BLOCKS_TEXTURE;
+    }
 }

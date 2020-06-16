@@ -18,60 +18,50 @@
 
 package appeng.fluids.util;
 
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.util.Platform;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 
+public class AEFluidTank extends FluidTank implements IAEFluidTank {
+    private final IAEFluidInventory host;
 
-public class AEFluidTank extends FluidTank implements IAEFluidTank
-{
-	private final IAEFluidInventory host;
-
-	public AEFluidTank( IAEFluidInventory host, int capacity )
-	{
-		super( capacity );
-		this.host = host;
+    public AEFluidTank(IAEFluidInventory host, int capacity) {
+        super(capacity);
+        this.host = host;
 // FIXME		if( host instanceof TileEntity )
 // FIXME		{
 // FIXME			this.setTileEntity( (TileEntity) host );
 // FIXME		}
-	}
+    }
 
-	@Override
-	protected void onContentsChanged()
-	{
-		if( this.host != null && Platform.isServer() )
-		{
-			this.host.onFluidInventoryChanged( this, 0 );
-		}
-		super.onContentsChanged();
-	}
+    @Override
+    protected void onContentsChanged() {
+        if (this.host != null && Platform.isServer()) {
+            this.host.onFluidInventoryChanged(this, 0);
+        }
+        super.onContentsChanged();
+    }
 
-	@Override
-	public void setFluidInSlot( int slot, IAEFluidStack fluid )
-	{
-		if( slot == 0 )
-		{
-			this.setFluid( fluid == null ? null : fluid.getFluidStack() );
-			this.onContentsChanged();
-		}
-	}
+    @Override
+    public void setFluidInSlot(int slot, IAEFluidStack fluid) {
+        if (slot == 0) {
+            this.setFluid(fluid == null ? null : fluid.getFluidStack());
+            this.onContentsChanged();
+        }
+    }
 
-	@Override
-	public IAEFluidStack getFluidInSlot( int slot )
-	{
-		if( slot == 0 )
-		{
-			return AEFluidStack.fromFluidStack( this.getFluid() );
-		}
-		return null;
-	}
+    @Override
+    public IAEFluidStack getFluidInSlot(int slot) {
+        if (slot == 0) {
+            return AEFluidStack.fromFluidStack(this.getFluid());
+        }
+        return null;
+    }
 
-	@Override
-	public int getSlots()
-	{
-		return 1;
-	}
+    @Override
+    public int getSlots() {
+        return 1;
+    }
 
 }

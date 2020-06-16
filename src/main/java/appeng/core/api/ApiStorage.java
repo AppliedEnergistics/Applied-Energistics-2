@@ -18,7 +18,6 @@
 
 package appeng.core.api;
 
-
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
@@ -56,177 +55,152 @@ import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import appeng.util.item.ItemList;
 
+public class ApiStorage implements IStorageHelper {
 
-public class ApiStorage implements IStorageHelper
-{
+    private final ClassToInstanceMap<IStorageChannel<?>> channels;
 
-	private final ClassToInstanceMap<IStorageChannel<?>> channels;
+    public ApiStorage() {
+        this.channels = MutableClassToInstanceMap.create();
+        this.registerStorageChannel(IItemStorageChannel.class, new ItemStorageChannel());
+        this.registerStorageChannel(IFluidStorageChannel.class, new FluidStorageChannel());
+    }
 
-	public ApiStorage()
-	{
-		this.channels = MutableClassToInstanceMap.create();
-		this.registerStorageChannel( IItemStorageChannel.class, new ItemStorageChannel() );
-		this.registerStorageChannel( IFluidStorageChannel.class, new FluidStorageChannel() );
-	}
+    @Override
+    public <T extends IAEStack<T>, C extends IStorageChannel<T>> void registerStorageChannel(Class<C> channel,
+            C factory) {
+        Preconditions.checkNotNull(channel);
+        Preconditions.checkNotNull(factory);
+        Preconditions.checkArgument(channel.isInstance(factory));
+        Preconditions.checkArgument(!this.channels.containsKey(channel));
 
-	@Override
-	public <T extends IAEStack<T>, C extends IStorageChannel<T>> void registerStorageChannel( Class<C> channel, C factory )
-	{
-		Preconditions.checkNotNull( channel );
-		Preconditions.checkNotNull( factory );
-		Preconditions.checkArgument( channel.isInstance( factory ) );
-		Preconditions.checkArgument( !this.channels.containsKey( channel ) );
+        this.channels.putInstance(channel, factory);
+    }
 
-		this.channels.putInstance( channel, factory );
-	}
+    @Override
+    public <T extends IAEStack<T>, C extends IStorageChannel<T>> C getStorageChannel(Class<C> channel) {
+        Preconditions.checkNotNull(channel);
 
-	@Override
-	public <T extends IAEStack<T>, C extends IStorageChannel<T>> C getStorageChannel( Class<C> channel )
-	{
-		Preconditions.checkNotNull( channel );
+        final C type = this.channels.getInstance(channel);
 
-		final C type = this.channels.getInstance( channel );
+        Preconditions.checkNotNull(type);
 
-		Preconditions.checkNotNull( type );
+        return type;
+    }
 
-		return type;
-	}
+    @Override
+    public Collection<IStorageChannel<? extends IAEStack<?>>> storageChannels() {
+        return Collections.unmodifiableCollection(this.channels.values());
+    }
 
-	@Override
-	public Collection<IStorageChannel<? extends IAEStack<?>>> storageChannels()
-	{
-		return Collections.unmodifiableCollection( this.channels.values() );
-	}
+    @Override
+    public ICraftingLink loadCraftingLink(final CompoundNBT data, final ICraftingRequester req) {
+        Preconditions.checkNotNull(data);
+        Preconditions.checkNotNull(req);
 
-	@Override
-	public ICraftingLink loadCraftingLink( final CompoundNBT data, final ICraftingRequester req )
-	{
-		Preconditions.checkNotNull( data );
-		Preconditions.checkNotNull( req );
+        return new CraftingLink(data, req);
+    }
 
-		return new CraftingLink( data, req );
-	}
+    @Override
+    public <T extends IAEStack<T>> T poweredInsert(IEnergySource energy, IMEInventory<T> inv, T input,
+            IActionSource src, Actionable mode) {
+        return Platform.poweredInsert(energy, inv, input, src, mode);
+    }
 
-	@Override
-	public <T extends IAEStack<T>> T poweredInsert( IEnergySource energy, IMEInventory<T> inv, T input, IActionSource src, Actionable mode )
-	{
-		return Platform.poweredInsert( energy, inv, input, src, mode );
-	}
+    @Override
+    public <T extends IAEStack<T>> T poweredExtraction(IEnergySource energy, IMEInventory<T> inv, T request,
+            IActionSource src, Actionable mode) {
+        return Platform.poweredExtraction(energy, inv, request, src, mode);
+    }
 
-	@Override
-	public <T extends IAEStack<T>> T poweredExtraction( IEnergySource energy, IMEInventory<T> inv, T request, IActionSource src, Actionable mode )
-	{
-		return Platform.poweredExtraction( energy, inv, request, src, mode );
-	}
+    @Override
+    public void postChanges(IStorageGrid gs, ItemStack removedCell, ItemStack addedCell, IActionSource src) {
+        Preconditions.checkNotNull(gs);
+        Preconditions.checkNotNull(removedCell);
+        Preconditions.checkNotNull(addedCell);
+        Preconditions.checkNotNull(src);
 
-	@Override
-	public void postChanges( IStorageGrid gs, ItemStack removedCell, ItemStack addedCell, IActionSource src )
-	{
-		Preconditions.checkNotNull( gs );
-		Preconditions.checkNotNull( removedCell );
-		Preconditions.checkNotNull( addedCell );
-		Preconditions.checkNotNull( src );
+        Platform.postChanges(gs, removedCell, addedCell, src);
+    }
 
-		Platform.postChanges( gs, removedCell, addedCell, src );
-	}
+    private static final class ItemStorageChannel implements IItemStorageChannel {
 
-	private static final class ItemStorageChannel implements IItemStorageChannel
-	{
+        @Override
+        public IItemList<IAEItemStack> createList() {
+            return new ItemList();
+        }
 
-		@Override
-		public IItemList<IAEItemStack> createList()
-		{
-			return new ItemList();
-		}
+        @Override
+        public IAEItemStack createStack(Object input) {
+            Preconditions.checkNotNull(input);
 
-		@Override
-		public IAEItemStack createStack( Object input )
-		{
-			Preconditions.checkNotNull( input );
+            if (input instanceof ItemStack) {
+                return AEItemStack.fromItemStack((ItemStack) input);
+            }
 
-			if( input instanceof ItemStack )
-			{
-				return AEItemStack.fromItemStack( (ItemStack) input );
-			}
+            return null;
+        }
 
-			return null;
-		}
+        @Override
+        public IAEItemStack createFromNBT(CompoundNBT nbt) {
+            Preconditions.checkNotNull(nbt);
+            return AEItemStack.fromNBT(nbt);
+        }
 
-		@Override
-		public IAEItemStack createFromNBT( CompoundNBT nbt )
-		{
-			Preconditions.checkNotNull( nbt );
-			return AEItemStack.fromNBT( nbt );
-		}
+        @Override
+        public IAEItemStack readFromPacket(PacketBuffer input) {
+            Preconditions.checkNotNull(input);
 
-		@Override
-		public IAEItemStack readFromPacket( PacketBuffer input )
-		{
-			Preconditions.checkNotNull( input );
+            return AEItemStack.fromPacket(input);
+        }
+    }
 
-			return AEItemStack.fromPacket( input );
-		}
-	}
+    private static final class FluidStorageChannel implements IFluidStorageChannel {
 
-	private static final class FluidStorageChannel implements IFluidStorageChannel
-	{
+        @Override
+        public int transferFactor() {
+            return 125;
+        }
 
-		@Override
-		public int transferFactor()
-		{
-			return 125;
-		}
+        @Override
+        public int getUnitsPerByte() {
+            return 8000;
+        }
 
-		@Override
-		public int getUnitsPerByte()
-		{
-			return 8000;
-		}
+        @Override
+        public IItemList<IAEFluidStack> createList() {
+            return new FluidList();
+        }
 
-		@Override
-		public IItemList<IAEFluidStack> createList()
-		{
-			return new FluidList();
-		}
+        @Override
+        public IAEFluidStack createStack(Object input) {
+            Preconditions.checkNotNull(input);
 
-		@Override
-		public IAEFluidStack createStack( Object input )
-		{
-			Preconditions.checkNotNull( input );
+            if (input instanceof FluidStack) {
+                return AEFluidStack.fromFluidStack((FluidStack) input);
+            }
+            if (input instanceof ItemStack) {
+                final ItemStack is = (ItemStack) input;
+                if (is.getItem() instanceof FluidDummyItem) {
+                    return AEFluidStack.fromFluidStack(((FluidDummyItem) is.getItem()).getFluidStack(is));
+                } else {
+                    return AEFluidStack.fromFluidStack(FluidUtil.getFluidContained(is).orElse(null));
+                }
+            }
 
-			if( input instanceof FluidStack )
-			{
-				return AEFluidStack.fromFluidStack( (FluidStack) input );
-			}
-			if( input instanceof ItemStack )
-			{
-				final ItemStack is = (ItemStack) input;
-				if( is.getItem() instanceof FluidDummyItem )
-				{
-					return AEFluidStack.fromFluidStack( ( (FluidDummyItem) is.getItem() ).getFluidStack( is ) );
-				}
-				else
-				{
-					return AEFluidStack.fromFluidStack( FluidUtil.getFluidContained( is ).orElse( null ) );
-				}
-			}
+            return null;
+        }
 
-			return null;
-		}
+        @Override
+        public IAEFluidStack readFromPacket(PacketBuffer input) {
+            Preconditions.checkNotNull(input);
 
-		@Override
-		public IAEFluidStack readFromPacket( PacketBuffer input )
-		{
-			Preconditions.checkNotNull( input );
+            return AEFluidStack.fromPacket(input);
+        }
 
-			return AEFluidStack.fromPacket( input );
-		}
-
-		@Override
-		public IAEFluidStack createFromNBT( CompoundNBT nbt )
-		{
-			Preconditions.checkNotNull( nbt );
-			return AEFluidStack.fromNBT( nbt );
-		}
-	}
+        @Override
+        public IAEFluidStack createFromNBT(CompoundNBT nbt) {
+            Preconditions.checkNotNull(nbt);
+            return AEFluidStack.fromNBT(nbt);
+        }
+    }
 }

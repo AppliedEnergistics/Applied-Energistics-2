@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:formation_plane"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "ab",
-    "cb",
-    "ab"
-  ],
+  "pattern": ["ab", "cb", "ab"],
   "key": {
     "c": {
       "item": "appliedenergistics2:formation_core"

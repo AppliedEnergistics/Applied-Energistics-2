@@ -18,7 +18,6 @@
 
 package appeng.core.sync.packets;
 
-
 import java.io.IOException;
 
 import io.netty.buffer.Unpooled;
@@ -55,188 +54,154 @@ import appeng.util.inv.WrapperInvItemHandler;
 import appeng.util.item.AEItemStack;
 import appeng.util.prioritylist.IPartitionList;
 
+public class PacketJEIRecipe extends AppEngPacket {
 
-public class PacketJEIRecipe extends AppEngPacket
-{
+    private ItemStack[][] recipe;
 
-	private ItemStack[][] recipe;
+    public PacketJEIRecipe(final PacketBuffer stream) {
+        final CompoundNBT comp = stream.readCompoundTag();
+        if (comp != null) {
+            this.recipe = new ItemStack[9][];
+            for (int x = 0; x < this.recipe.length; x++) {
+                final ListNBT list = comp.getList("#" + x, 10);
+                if (list.size() > 0) {
+                    this.recipe[x] = new ItemStack[list.size()];
+                    for (int y = 0; y < list.size(); y++) {
+                        this.recipe[x][y] = ItemStack.read(list.getCompound(y));
+                    }
+                }
+            }
+        }
+    }
 
-	public PacketJEIRecipe( final PacketBuffer stream )
-	{
-		final CompoundNBT comp = stream.readCompoundTag();
-		if( comp != null )
-		{
-			this.recipe = new ItemStack[9][];
-			for( int x = 0; x < this.recipe.length; x++ )
-			{
-				final ListNBT list = comp.getList( "#" + x, 10 );
-				if( list.size() > 0 )
-				{
-					this.recipe[x] = new ItemStack[list.size()];
-					for( int y = 0; y < list.size(); y++ )
-					{
-						this.recipe[x][y] = ItemStack.read( list.getCompound( y ) );
-					}
-				}
-			}
-		}
-	}
+    // api
+    public PacketJEIRecipe(final CompoundNBT recipe) {
+        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
-	// api
-	public PacketJEIRecipe( final CompoundNBT recipe )
-	{
-		final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        data.writeInt(this.getPacketID());
 
-		data.writeInt( this.getPacketID() );
+        data.writeCompoundTag(recipe);
 
-		data.writeCompoundTag( recipe );
+        this.configureWrite(data);
+    }
 
-		this.configureWrite( data );
-	}
+    @Override
+    public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
+        final ServerPlayerEntity pmp = (ServerPlayerEntity) player;
+        final Container con = pmp.openContainer;
 
-	@Override
-	public void serverPacketData( final INetworkInfo manager, final PlayerEntity player )
-	{
-		final ServerPlayerEntity pmp = (ServerPlayerEntity) player;
-		final Container con = pmp.openContainer;
+        if (!(con instanceof IContainerCraftingPacket)) {
+            return;
+        }
 
-		if( !( con instanceof IContainerCraftingPacket ) )
-		{
-			return;
-		}
+        final IContainerCraftingPacket cct = (IContainerCraftingPacket) con;
+        final IGridNode node = cct.getNetworkNode();
 
-		final IContainerCraftingPacket cct = (IContainerCraftingPacket) con;
-		final IGridNode node = cct.getNetworkNode();
+        if (node == null) {
+            return;
+        }
 
-		if( node == null )
-		{
-			return;
-		}
+        final IGrid grid = node.getGrid();
+        if (grid == null) {
+            return;
+        }
 
-		final IGrid grid = node.getGrid();
-		if( grid == null )
-		{
-			return;
-		}
+        final IStorageGrid inv = grid.getCache(IStorageGrid.class);
+        final IEnergyGrid energy = grid.getCache(IEnergyGrid.class);
+        final ISecurityGrid security = grid.getCache(ISecurityGrid.class);
+        final ICraftingGrid crafting = grid.getCache(ICraftingGrid.class);
+        final IItemHandler craftMatrix = cct.getInventoryByName("crafting");
+        final IItemHandler playerInventory = cct.getInventoryByName("player");
 
-		final IStorageGrid inv = grid.getCache( IStorageGrid.class );
-		final IEnergyGrid energy = grid.getCache( IEnergyGrid.class );
-		final ISecurityGrid security = grid.getCache( ISecurityGrid.class );
-		final ICraftingGrid crafting = grid.getCache( ICraftingGrid.class );
-		final IItemHandler craftMatrix = cct.getInventoryByName( "crafting" );
-		final IItemHandler playerInventory = cct.getInventoryByName( "player" );
+        if (inv != null && this.recipe != null && security != null) {
+            final IMEMonitor<IAEItemStack> storage = inv
+                    .getInventory(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
+            final IPartitionList<IAEItemStack> filter = ItemViewCell.createFilter(cct.getViewCells());
 
-		if( inv != null && this.recipe != null && security != null )
-		{
-			final IMEMonitor<IAEItemStack> storage = inv.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
-			final IPartitionList<IAEItemStack> filter = ItemViewCell.createFilter( cct.getViewCells() );
+            for (int x = 0; x < craftMatrix.getSlots(); x++) {
+                ItemStack currentItem = craftMatrix.getStackInSlot(x);
 
-			for( int x = 0; x < craftMatrix.getSlots(); x++ )
-			{
-				ItemStack currentItem = craftMatrix.getStackInSlot( x );
+                // prepare slots
+                if (!currentItem.isEmpty()) {
+                    // already the correct item?
+                    ItemStack newItem = this.canUseInSlot(x, currentItem);
 
-				// prepare slots
-				if( !currentItem.isEmpty() )
-				{
-					// already the correct item?
-					ItemStack newItem = this.canUseInSlot( x, currentItem );
+                    // put away old item
+                    if (newItem != currentItem && security.hasPermission(player, SecurityPermissions.INJECT)) {
+                        final IAEItemStack in = AEItemStack.fromItemStack(currentItem);
+                        final IAEItemStack out = cct.useRealItems()
+                                ? Platform.poweredInsert(energy, storage, in, cct.getActionSource())
+                                : null;
+                        if (out != null) {
+                            currentItem = out.createItemStack();
+                        } else {
+                            currentItem = ItemStack.EMPTY;
+                        }
+                    }
+                }
 
-					// put away old item
-					if( newItem != currentItem && security.hasPermission( player, SecurityPermissions.INJECT ) )
-					{
-						final IAEItemStack in = AEItemStack.fromItemStack( currentItem );
-						final IAEItemStack out = cct.useRealItems() ? Platform.poweredInsert( energy, storage, in, cct.getActionSource() ) : null;
-						if( out != null )
-						{
-							currentItem = out.createItemStack();
-						}
-						else
-						{
-							currentItem = ItemStack.EMPTY;
-						}
-					}
-				}
+                if (currentItem.isEmpty() && this.recipe[x] != null) {
+                    // for each variant
+                    for (int y = 0; y < this.recipe[x].length && currentItem.isEmpty(); y++) {
+                        final IAEItemStack request = AEItemStack.fromItemStack(this.recipe[x][y]);
+                        if (request != null) {
+                            // try ae
+                            if ((filter == null || filter.isListed(request))
+                                    && security.hasPermission(player, SecurityPermissions.EXTRACT)) {
+                                request.setStackSize(1);
+                                IAEItemStack out;
 
-				if( currentItem.isEmpty() && this.recipe[x] != null )
-				{
-					// for each variant
-					for( int y = 0; y < this.recipe[x].length && currentItem.isEmpty(); y++ )
-					{
-						final IAEItemStack request = AEItemStack.fromItemStack( this.recipe[x][y] );
-						if( request != null )
-						{
-							// try ae
-							if( ( filter == null || filter.isListed( request ) ) && security.hasPermission( player, SecurityPermissions.EXTRACT ) )
-							{
-								request.setStackSize( 1 );
-								IAEItemStack out;
+                                if (cct.useRealItems()) {
+                                    out = Platform.poweredExtraction(energy, storage, request, cct.getActionSource());
+                                } else {
+                                    // Query the crafting grid if there is a pattern providing the item
+                                    if (!crafting.getCraftingFor(request, null, 0, null).isEmpty()) {
+                                        out = request;
+                                    } else {
+                                        // Fall back using an existing item
+                                        out = storage.extractItems(request, Actionable.SIMULATE, cct.getActionSource());
+                                    }
+                                }
 
-								if( cct.useRealItems() )
-								{
-									out = Platform.poweredExtraction( energy, storage, request, cct.getActionSource() );
-								}
-								else
-								{
-									// Query the crafting grid if there is a pattern providing the item
-									if( !crafting.getCraftingFor( request, null, 0, null ).isEmpty() )
-									{
-										out = request;
-									}
-									else
-									{
-										// Fall back using an existing item
-										out = storage.extractItems( request, Actionable.SIMULATE, cct.getActionSource() );
-									}
-								}
+                                if (out != null) {
+                                    currentItem = out.createItemStack();
+                                }
+                            }
 
-								if( out != null )
-								{
-									currentItem = out.createItemStack();
-								}
-							}
+                            // try inventory
+                            if (currentItem.isEmpty()) {
+                                AdaptorItemHandler ad = new AdaptorItemHandler(playerInventory);
 
-							// try inventory
-							if( currentItem.isEmpty() )
-							{
-								AdaptorItemHandler ad = new AdaptorItemHandler( playerInventory );
+                                if (cct.useRealItems()) {
+                                    currentItem = ad.removeItems(1, this.recipe[x][y], null);
+                                } else {
+                                    currentItem = ad.simulateRemove(1, this.recipe[x][y], null);
+                                }
+                            }
+                        }
+                    }
+                }
+                ItemHandlerUtil.setStackInSlot(craftMatrix, x, currentItem);
+            }
+            con.onCraftMatrixChanged(new WrapperInvItemHandler(craftMatrix));
+        }
+    }
 
-								if( cct.useRealItems() )
-								{
-									currentItem = ad.removeItems( 1, this.recipe[x][y], null );
-								}
-								else
-								{
-									currentItem = ad.simulateRemove( 1, this.recipe[x][y], null );
-								}
-							}
-						}
-					}
-				}
-				ItemHandlerUtil.setStackInSlot( craftMatrix, x, currentItem );
-			}
-			con.onCraftMatrixChanged( new WrapperInvItemHandler( craftMatrix ) );
-		}
-	}
-
-	/**
-	 * 
-	 * @param slot
-	 * @param is itemstack
-	 * @return is if it can be used, else EMPTY
-	 */
-	private ItemStack canUseInSlot( int slot, ItemStack is )
-	{
-		if( this.recipe[slot] != null )
-		{
-			for( ItemStack option : this.recipe[slot] )
-			{
-				if( is.isItemEqual( option ) )
-				{
-					return is;
-				}
-			}
-		}
-		return ItemStack.EMPTY;
-	}
+    /**
+     * 
+     * @param slot
+     * @param is   itemstack
+     * @return is if it can be used, else EMPTY
+     */
+    private ItemStack canUseInSlot(int slot, ItemStack is) {
+        if (this.recipe[slot] != null) {
+            for (ItemStack option : this.recipe[slot]) {
+                if (is.isItemEqual(option)) {
+                    return is;
+                }
+            }
+        }
+        return ItemStack.EMPTY;
+    }
 
 }

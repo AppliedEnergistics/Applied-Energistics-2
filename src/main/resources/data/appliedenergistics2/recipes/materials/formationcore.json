@@ -10,9 +10,7 @@
     "count": 2
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "abc"
-  ],
+  "pattern": ["abc"],
   "key": {
     "b": {
       "tag": "appliedenergistics2:dusts/fluix"

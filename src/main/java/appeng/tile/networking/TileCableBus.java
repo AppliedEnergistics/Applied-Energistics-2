@@ -18,23 +18,13 @@
 
 package appeng.tile.networking;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 
-import appeng.api.networking.IGridNode;
-import appeng.api.parts.IFacadeContainer;
-import appeng.api.parts.IPart;
-import appeng.api.parts.LayerFlags;
-import appeng.api.parts.SelectedPart;
-import appeng.api.util.AECableType;
-import appeng.api.util.AEColor;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
-import appeng.block.networking.BlockCableBus;
-import appeng.client.render.cablebus.CableBusRenderState;
-import appeng.helpers.AEMultiTile;
-import appeng.hooks.TickHandler;
-import appeng.parts.CableBusContainer;
-import appeng.tile.AEBaseTile;
-import appeng.util.Platform;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -52,69 +42,73 @@ import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.io.IOException;
-import java.util.List;
-import java.util.Set;
+import appeng.api.networking.IGridNode;
+import appeng.api.parts.IFacadeContainer;
+import appeng.api.parts.IPart;
+import appeng.api.parts.LayerFlags;
+import appeng.api.parts.SelectedPart;
+import appeng.api.util.AECableType;
+import appeng.api.util.AEColor;
+import appeng.api.util.AEPartLocation;
+import appeng.api.util.DimensionalCoord;
+import appeng.block.networking.BlockCableBus;
+import appeng.client.render.cablebus.CableBusRenderState;
+import appeng.helpers.AEMultiTile;
+import appeng.hooks.TickHandler;
+import appeng.parts.CableBusContainer;
+import appeng.tile.AEBaseTile;
+import appeng.util.Platform;
 
+public class TileCableBus extends AEBaseTile implements AEMultiTile {
 
-public class TileCableBus extends AEBaseTile implements AEMultiTile
-{
+    private CableBusContainer cb = new CableBusContainer(this);
 
-	private CableBusContainer cb = new CableBusContainer( this );
+    private int oldLV = -1; // on re-calculate light when it changes
 
-	private int oldLV = -1; // on re-calculate light when it changes
+    public TileCableBus(TileEntityType<?> tileEntityTypeIn) {
+        super(tileEntityTypeIn);
+    }
 
-	public TileCableBus(TileEntityType<?> tileEntityTypeIn) {
-		super(tileEntityTypeIn);
-	}
+    @Override
+    public void read(final CompoundNBT data) {
+        super.read(data);
+        this.getCableBus().readFromNBT(data);
+    }
 
-	@Override
-	public void read(final CompoundNBT data )
-	{
-		super.read( data );
-		this.getCableBus().readFromNBT( data );
-	}
+    @Override
+    public CompoundNBT write(final CompoundNBT data) {
+        super.write(data);
+        this.getCableBus().writeToNBT(data);
+        return data;
+    }
 
-	@Override
-	public CompoundNBT write(final CompoundNBT data )
-	{
-		super.write( data );
-		this.getCableBus().writeToNBT( data );
-		return data;
-	}
+    @Override
+    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+        final boolean c = super.readFromStream(data);
+        boolean ret = this.getCableBus().readFromStream(data);
 
-	@Override
-	protected boolean readFromStream( final PacketBuffer data ) throws IOException
-	{
-		final boolean c = super.readFromStream( data );
-		boolean ret = this.getCableBus().readFromStream( data );
+        final int newLV = this.getCableBus().getLightValue();
+        if (newLV != this.oldLV) {
+            this.oldLV = newLV;
+            this.world.getLightManager().checkBlock(this.pos);
+            ret = true;
+        }
 
-		final int newLV = this.getCableBus().getLightValue();
-		if( newLV != this.oldLV )
-		{
-			this.oldLV = newLV;
-			this.world.getLightManager().checkBlock( this.pos );
-			ret = true;
-		}
+        this.updateTileSetting();
+        return ret || c;
+    }
 
-		this.updateTileSetting();
-		return ret || c;
-	}
+    @Override
+    protected void writeToStream(final PacketBuffer data) throws IOException {
+        super.writeToStream(data);
+        this.getCableBus().writeToStream(data);
+    }
 
-	@Override
-	protected void writeToStream( final PacketBuffer data ) throws IOException
-	{
-		super.writeToStream( data );
-		this.getCableBus().writeToStream( data );
-	}
-
-	/**
-	 * Changes this tile to the TESR version if any of the parts require dynamic rendering.
-	 */
-	protected void updateTileSetting()
-	{
+    /**
+     * Changes this tile to the TESR version if any of the parts require dynamic
+     * rendering.
+     */
+    protected void updateTileSetting() {
 // FIXME		if( this.getCableBus().isRequiresDynamicRender() )
 // FIXME		{
 // FIXME			try
@@ -128,279 +122,234 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile
 // FIXME
 // FIXME			}
 // FIXME		}
-	}
+    }
 
-	protected void copyFrom( final TileCableBus oldTile )
-	{
-		final CableBusContainer tmpCB = this.getCableBus();
-		this.setCableBus( oldTile.getCableBus() );
-		this.oldLV = oldTile.oldLV;
-		oldTile.setCableBus( tmpCB );
-	}
+    protected void copyFrom(final TileCableBus oldTile) {
+        final CableBusContainer tmpCB = this.getCableBus();
+        this.setCableBus(oldTile.getCableBus());
+        this.oldLV = oldTile.oldLV;
+        oldTile.setCableBus(tmpCB);
+    }
 
-	@Override
-	public double getMaxRenderDistanceSquared()
-	{
-		return 900.0;
-	}
+    @Override
+    public double getMaxRenderDistanceSquared() {
+        return 900.0;
+    }
 
-	@Override
-	public void remove()
-	{
-		super.remove();
-		this.getCableBus().removeFromWorld();
-	}
+    @Override
+    public void remove() {
+        super.remove();
+        this.getCableBus().removeFromWorld();
+    }
 
-	@Override
-	public void validate()
-	{
-		super.validate();
-		TickHandler.INSTANCE.addInit( this );
-	}
+    @Override
+    public void validate() {
+        super.validate();
+        TickHandler.INSTANCE.addInit(this);
+    }
 
-	@Override
-	public IGridNode getGridNode( final AEPartLocation dir )
-	{
-		return this.getCableBus().getGridNode( dir );
-	}
+    @Override
+    public IGridNode getGridNode(final AEPartLocation dir) {
+        return this.getCableBus().getGridNode(dir);
+    }
 
-	@Override
-	public AECableType getCableConnectionType( final AEPartLocation side )
-	{
-		return this.getCableBus().getCableConnectionType( side );
-	}
+    @Override
+    public AECableType getCableConnectionType(final AEPartLocation side) {
+        return this.getCableBus().getCableConnectionType(side);
+    }
 
-	@Override
-	public float getCableConnectionLength( AECableType cable )
-	{
-		return this.getCableBus().getCableConnectionLength( cable );
-	}
+    @Override
+    public float getCableConnectionLength(AECableType cable) {
+        return this.getCableBus().getCableConnectionLength(cable);
+    }
 
-	@Override
-	public void onChunkUnloaded()
-	{
-		super.onChunkUnloaded();
-		this.getCableBus().removeFromWorld();
-	}
+    @Override
+    public void onChunkUnloaded() {
+        super.onChunkUnloaded();
+        this.getCableBus().removeFromWorld();
+    }
 
-	@Override
-	public void markForUpdate()
-	{
-		if( this.world == null )
-		{
-			return;
-		}
+    @Override
+    public void markForUpdate() {
+        if (this.world == null) {
+            return;
+        }
 
-		final int newLV = this.getCableBus().getLightValue();
-		if( newLV != this.oldLV )
-		{
-			this.oldLV = newLV;
-			this.world.getLightManager().checkBlock( this.pos );
-		}
+        final int newLV = this.getCableBus().getLightValue();
+        if (newLV != this.oldLV) {
+            this.oldLV = newLV;
+            this.world.getLightManager().checkBlock(this.pos);
+        }
 
-		super.markForUpdate();
-	}
+        super.markForUpdate();
+    }
 
-	@Override
-	public boolean canBeRotated()
-	{
-		return false;
-	}
+    @Override
+    public boolean canBeRotated() {
+        return false;
+    }
 
-	@Override
-	public void getDrops( final World w, final BlockPos pos, final List drops )
-	{
-		this.getCableBus().getDrops( drops );
-	}
+    @Override
+    public void getDrops(final World w, final BlockPos pos, final List drops) {
+        this.getCableBus().getDrops(drops);
+    }
 
-	@Override
-	public void getNoDrops( final World w, final BlockPos pos, final List<ItemStack> drops )
-	{
-		this.getCableBus().getNoDrops( drops );
-	}
+    @Override
+    public void getNoDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
+        this.getCableBus().getNoDrops(drops);
+    }
 
-	@Override
-	public void onReady()
-	{
-		super.onReady();
-		if( this.getCableBus().isEmpty() )
-		{
-			if( this.world.getTileEntity( this.pos ) == this )
-			{
-				this.world.destroyBlock( this.pos, true );
-			}
-		}
-		else
-		{
-			this.getCableBus().addToWorld();
-		}
-	}
+    @Override
+    public void onReady() {
+        super.onReady();
+        if (this.getCableBus().isEmpty()) {
+            if (this.world.getTileEntity(this.pos) == this) {
+                this.world.destroyBlock(this.pos, true);
+            }
+        } else {
+            this.getCableBus().addToWorld();
+        }
+    }
 
-	@Override
-	public IFacadeContainer getFacadeContainer()
-	{
-		return this.getCableBus().getFacadeContainer();
-	}
+    @Override
+    public IFacadeContainer getFacadeContainer() {
+        return this.getCableBus().getFacadeContainer();
+    }
 
-	@Override
-	public boolean canAddPart( final ItemStack is, final AEPartLocation side )
-	{
-		return this.getCableBus().canAddPart( is, side );
-	}
+    @Override
+    public boolean canAddPart(final ItemStack is, final AEPartLocation side) {
+        return this.getCableBus().canAddPart(is, side);
+    }
 
-	@Override
-	public AEPartLocation addPart( final ItemStack is, final AEPartLocation side, final PlayerEntity player, final Hand hand )
-	{
-		return this.getCableBus().addPart( is, side, player, hand );
-	}
+    @Override
+    public AEPartLocation addPart(final ItemStack is, final AEPartLocation side, final PlayerEntity player,
+            final Hand hand) {
+        return this.getCableBus().addPart(is, side, player, hand);
+    }
 
-	@Override
-	public IPart getPart( final AEPartLocation side )
-	{
-		return this.cb.getPart( side );
-	}
+    @Override
+    public IPart getPart(final AEPartLocation side) {
+        return this.cb.getPart(side);
+    }
 
-	@Override
-	public IPart getPart( final Direction side )
-	{
-		return this.getCableBus().getPart( side );
-	}
+    @Override
+    public IPart getPart(final Direction side) {
+        return this.getCableBus().getPart(side);
+    }
 
-	@Override
-	public void removePart( final AEPartLocation side, final boolean suppressUpdate )
-	{
-		this.getCableBus().removePart( side, suppressUpdate );
-	}
+    @Override
+    public void removePart(final AEPartLocation side, final boolean suppressUpdate) {
+        this.getCableBus().removePart(side, suppressUpdate);
+    }
 
-	@Override
-	public DimensionalCoord getLocation()
-	{
-		return new DimensionalCoord( this );
-	}
+    @Override
+    public DimensionalCoord getLocation() {
+        return new DimensionalCoord(this);
+    }
 
-	@Override
-	public AEColor getColor()
-	{
-		return this.getCableBus().getColor();
-	}
+    @Override
+    public AEColor getColor() {
+        return this.getCableBus().getColor();
+    }
 
-	@Override
-	public void clearContainer()
-	{
-		this.setCableBus( new CableBusContainer( this ) );
-	}
+    @Override
+    public void clearContainer() {
+        this.setCableBus(new CableBusContainer(this));
+    }
 
-	@Override
-	public boolean isBlocked( final Direction side )
-	{
-		// TODO 1.10.2-R - Stuff.
-		return false;
-	}
+    @Override
+    public boolean isBlocked(final Direction side) {
+        // TODO 1.10.2-R - Stuff.
+        return false;
+    }
 
-	@Override
-	public SelectedPart selectPart( final Vec3d pos )
-	{
-		return this.getCableBus().selectPart( pos );
-	}
+    @Override
+    public SelectedPart selectPart(final Vec3d pos) {
+        return this.getCableBus().selectPart(pos);
+    }
 
-	@Override
-	public void markForSave()
-	{
-		this.saveChanges();
-	}
+    @Override
+    public void markForSave() {
+        this.saveChanges();
+    }
 
-	@Override
-	public void partChanged()
-	{
-		this.notifyNeighbors();
-	}
+    @Override
+    public void partChanged() {
+        this.notifyNeighbors();
+    }
 
-	@Override
-	public boolean hasRedstone( final AEPartLocation side )
-	{
-		return this.getCableBus().hasRedstone( side );
-	}
+    @Override
+    public boolean hasRedstone(final AEPartLocation side) {
+        return this.getCableBus().hasRedstone(side);
+    }
 
-	@Override
-	public boolean isEmpty()
-	{
-		return this.getCableBus().isEmpty();
-	}
+    @Override
+    public boolean isEmpty() {
+        return this.getCableBus().isEmpty();
+    }
 
-	@Override
-	public Set<LayerFlags> getLayerFlags()
-	{
-		return this.getCableBus().getLayerFlags();
-	}
+    @Override
+    public Set<LayerFlags> getLayerFlags() {
+        return this.getCableBus().getLayerFlags();
+    }
 
-	@Override
-	public void cleanup()
-	{
-		this.getWorld().removeBlock(this.pos, false);
-	}
+    @Override
+    public void cleanup() {
+        this.getWorld().removeBlock(this.pos, false);
+    }
 
-	@Override
-	public void notifyNeighbors()
-	{
-		if( this.world != null && this.world.isBlockLoaded( this.pos ) && !CableBusContainer.isLoading() )
-		{
-			Platform.notifyBlocksOfNeighbors( this.world, this.pos );
-		}
-	}
+    @Override
+    public void notifyNeighbors() {
+        if (this.world != null && this.world.isBlockLoaded(this.pos) && !CableBusContainer.isLoading()) {
+            Platform.notifyBlocksOfNeighbors(this.world, this.pos);
+        }
+    }
 
-	@Override
-	public boolean isInWorld()
-	{
-		return this.getCableBus().isInWorld();
-	}
+    @Override
+    public boolean isInWorld() {
+        return this.getCableBus().isInWorld();
+    }
 
-	@Override
-	public boolean recolourBlock( final Direction side, final AEColor colour, final PlayerEntity who )
-	{
-		return this.getCableBus().recolourBlock( side, colour, who );
-	}
+    @Override
+    public boolean recolourBlock(final Direction side, final AEColor colour, final PlayerEntity who) {
+        return this.getCableBus().recolourBlock(side, colour, who);
+    }
 
-	public CableBusContainer getCableBus()
-	{
-		return this.cb;
-	}
+    public CableBusContainer getCableBus() {
+        return this.cb;
+    }
 
-	private void setCableBus( final CableBusContainer cb )
-	{
-		this.cb = cb;
-	}
+    private void setCableBus(final CableBusContainer cb) {
+        this.cb = cb;
+    }
 
-	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass, @Nullable Direction fromSide )
-	{
-		// Note that null will be translated to INTERNAL here
-		AEPartLocation partLocation = AEPartLocation.fromFacing( fromSide );
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass, @Nullable Direction fromSide) {
+        // Note that null will be translated to INTERNAL here
+        AEPartLocation partLocation = AEPartLocation.fromFacing(fromSide);
 
-		IPart part = this.getPart( partLocation );
-		LazyOptional<T> result = part == null ? LazyOptional.empty() : part.getCapability(capabilityClass);
+        IPart part = this.getPart(partLocation);
+        LazyOptional<T> result = part == null ? LazyOptional.empty() : part.getCapability(capabilityClass);
 
-		if( result != null )
-		{
-			return result;
-		}
+        if (result != null) {
+            return result;
+        }
 
-		return super.getCapability( capabilityClass, fromSide );
-	}
+        return super.getCapability(capabilityClass, fromSide);
+    }
 
-	@Nonnull
-	@Override
-	public IModelData getModelData() {
-		World world = getWorld();
-		if (world == null) {
-			return EmptyModelData.INSTANCE;
-		}
+    @Nonnull
+    @Override
+    public IModelData getModelData() {
+        World world = getWorld();
+        if (world == null) {
+            return EmptyModelData.INSTANCE;
+        }
 
-		CableBusRenderState renderState = this.cb.getRenderState();
-		renderState.setWorld(world);
-		renderState.setPos(pos);
-		return new ModelDataMap.Builder()
-				.withInitial(CableBusRenderState.PROPERTY, renderState)
-				.build();
+        CableBusRenderState renderState = this.cb.getRenderState();
+        renderState.setWorld(world);
+        renderState.setPos(pos);
+        return new ModelDataMap.Builder().withInitial(CableBusRenderState.PROPERTY, renderState).build();
 
-	}
+    }
 }

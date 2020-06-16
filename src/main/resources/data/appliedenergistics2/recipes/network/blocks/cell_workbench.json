@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:cell_workbench"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aba",
-    "cdc",
-    "ccc"
-  ],
+  "pattern": ["aba", "cdc", "ccc"],
   "key": {
     "c": {
       "tag": "forge:ingots/iron"

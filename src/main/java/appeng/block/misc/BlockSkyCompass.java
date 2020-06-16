@@ -18,8 +18,6 @@
 
 package appeng.block.misc;
 
-
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -37,137 +35,124 @@ import net.minecraft.world.World;
 import appeng.block.AEBaseTileBlock;
 import appeng.tile.misc.TileSkyCompass;
 
+public class BlockSkyCompass extends AEBaseTileBlock<TileSkyCompass> {
 
-public class BlockSkyCompass extends AEBaseTileBlock<TileSkyCompass>
-{
+    public BlockSkyCompass(Block.Properties props) {
+        super(props);
+    }
 
-	public BlockSkyCompass(Block.Properties props)
-	{
-		super(props);
-	}
+    @Override
+    public boolean isValidOrientation(final IWorld w, final BlockPos pos, final Direction forward, final Direction up) {
+        final TileSkyCompass sc = this.getTileEntity(w, pos);
+        if (sc != null) {
+            return false;
+        }
+        return this.canPlaceAt(w, pos, forward.getOpposite());
+    }
 
-	@Override
-	public boolean isValidOrientation(final IWorld w, final BlockPos pos, final Direction forward, final Direction up )
-	{
-		final TileSkyCompass sc = this.getTileEntity( w, pos );
-		if( sc != null )
-		{
-			return false;
-		}
-		return this.canPlaceAt( w, pos, forward.getOpposite() );
-	}
+    private boolean canPlaceAt(final IBlockReader w, final BlockPos pos, final Direction dir) {
+        final BlockPos test = pos.offset(dir);
+        BlockState blockstate = w.getBlockState(test);
+        return blockstate.isSolidSide(w, test, dir.getOpposite());
+    }
 
-	private boolean canPlaceAt( final IBlockReader w, final BlockPos pos, final Direction dir )
-	{
-		final BlockPos test = pos.offset( dir );
-		BlockState blockstate = w.getBlockState(test);
-		return blockstate.isSolidSide(w, test, dir.getOpposite());
-	}
+    @Override
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
+            boolean isMoving) {
+        final TileSkyCompass sc = this.getTileEntity(world, pos);
+        final Direction forward = sc.getForward();
+        if (!this.canPlaceAt(world, pos, forward.getOpposite())) {
+            this.dropTorch(world, pos);
+        }
+    }
 
-	@Override
-	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving )
-	{
-		final TileSkyCompass sc = this.getTileEntity( world, pos );
-		final Direction forward = sc.getForward();
-		if( !this.canPlaceAt( world, pos, forward.getOpposite() ) )
-		{
-			this.dropTorch( world, pos );
-		}
-	}
+    private void dropTorch(final World w, final BlockPos pos) {
+        final BlockState prev = w.getBlockState(pos);
+        w.destroyBlock(pos, true);
+        w.notifyBlockUpdate(pos, prev, w.getBlockState(pos), 3);
+    }
 
-	private void dropTorch( final World w, final BlockPos pos )
-	{
-		final BlockState prev = w.getBlockState( pos );
-		w.destroyBlock( pos, true );
-		w.notifyBlockUpdate( pos, prev, w.getBlockState( pos ), 3 );
-	}
+    @Override
+    public boolean isValidPosition(BlockState state, IWorldReader w, BlockPos pos) {
+        for (final Direction dir : Direction.values()) {
+            if (this.canPlaceAt(w, pos, dir)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	@Override
-	public boolean isValidPosition(BlockState state, IWorldReader w, BlockPos pos)
-	{
-		for( final Direction dir : Direction.values() )
-		{
-			if( this.canPlaceAt( w, pos, dir ) )
-			{
-				return true;
-			}
-		}
-		return false;
-	}
+    @Override
+    public VoxelShape getShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
 
-	@Override
-	public VoxelShape getShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
+        // TODO: This definitely needs to be memoized
 
-		// TODO: This definitely needs to be memoized
+        final TileSkyCompass tile = this.getTileEntity(w, pos);
+        if (tile != null) {
+            final Direction forward = tile.getForward();
 
-		final TileSkyCompass tile = this.getTileEntity( w, pos );
-		if( tile != null )
-		{
-			final Direction forward = tile.getForward();
+            double minX = 0;
+            double minY = 0;
+            double minZ = 0;
+            double maxX = 1;
+            double maxY = 1;
+            double maxZ = 1;
 
-			double minX = 0;
-			double minY = 0;
-			double minZ = 0;
-			double maxX = 1;
-			double maxY = 1;
-			double maxZ = 1;
+            switch (forward) {
+                case DOWN:
+                    minZ = minX = 5.0 / 16.0;
+                    maxZ = maxX = 11.0 / 16.0;
+                    maxY = 1.0;
+                    minY = 14.0 / 16.0;
+                    break;
+                case EAST:
+                    minZ = minY = 5.0 / 16.0;
+                    maxZ = maxY = 11.0 / 16.0;
+                    maxX = 2.0 / 16.0;
+                    minX = 0.0;
+                    break;
+                case NORTH:
+                    minY = minX = 5.0 / 16.0;
+                    maxY = maxX = 11.0 / 16.0;
+                    maxZ = 1.0;
+                    minZ = 14.0 / 16.0;
+                    break;
+                case SOUTH:
+                    minY = minX = 5.0 / 16.0;
+                    maxY = maxX = 11.0 / 16.0;
+                    maxZ = 2.0 / 16.0;
+                    minZ = 0.0;
+                    break;
+                case UP:
+                    minZ = minX = 5.0 / 16.0;
+                    maxZ = maxX = 11.0 / 16.0;
+                    maxY = 2.0 / 16.0;
+                    minY = 0.0;
+                    break;
+                case WEST:
+                    minZ = minY = 5.0 / 16.0;
+                    maxZ = maxY = 11.0 / 16.0;
+                    maxX = 1.0;
+                    minX = 14.0 / 16.0;
+                    break;
+                default:
+                    break;
+            }
 
-			switch( forward )
-			{
-				case DOWN:
-					minZ = minX = 5.0 / 16.0;
-					maxZ = maxX = 11.0 / 16.0;
-					maxY = 1.0;
-					minY = 14.0 / 16.0;
-					break;
-				case EAST:
-					minZ = minY = 5.0 / 16.0;
-					maxZ = maxY = 11.0 / 16.0;
-					maxX = 2.0 / 16.0;
-					minX = 0.0;
-					break;
-				case NORTH:
-					minY = minX = 5.0 / 16.0;
-					maxY = maxX = 11.0 / 16.0;
-					maxZ = 1.0;
-					minZ = 14.0 / 16.0;
-					break;
-				case SOUTH:
-					minY = minX = 5.0 / 16.0;
-					maxY = maxX = 11.0 / 16.0;
-					maxZ = 2.0 / 16.0;
-					minZ = 0.0;
-					break;
-				case UP:
-					minZ = minX = 5.0 / 16.0;
-					maxZ = maxX = 11.0 / 16.0;
-					maxY = 2.0 / 16.0;
-					minY = 0.0;
-					break;
-				case WEST:
-					minZ = minY = 5.0 / 16.0;
-					maxZ = maxY = 11.0 / 16.0;
-					maxX = 1.0;
-					minX = 14.0 / 16.0;
-					break;
-				default:
-					break;
-			}
+            return VoxelShapes.create(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ));
+        }
+        return VoxelShapes.empty();
+    }
 
-			return VoxelShapes.create(new AxisAlignedBB( minX, minY, minZ, maxX, maxY, maxZ ) );
-		}
-		return VoxelShapes.empty();
-	}
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos,
+            ISelectionContext context) {
+        return VoxelShapes.empty();
+    }
 
-	@Override
-	public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-		return VoxelShapes.empty();
-	}
-
-	@Override
-	public BlockRenderType getRenderType(BlockState state )
-	{
-		return BlockRenderType.ENTITYBLOCK_ANIMATED;
-	}
+    @Override
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.ENTITYBLOCK_ANIMATED;
+    }
 
 }

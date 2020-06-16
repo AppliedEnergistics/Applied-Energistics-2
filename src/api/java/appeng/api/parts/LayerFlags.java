@@ -23,13 +23,11 @@
 
 package appeng.api.parts;
 
-
 /**
  * TODO: Consider removing and replacing with capabilities.
  */
-public enum LayerFlags
-{
+public enum LayerFlags {
 
-	IC2_ENET
+    IC2_ENET
 
 }

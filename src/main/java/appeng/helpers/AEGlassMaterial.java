@@ -18,15 +18,13 @@
 
 package appeng.helpers;
 
-
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.block.material.PushReaction;
 
+public class AEGlassMaterial {
 
-public class AEGlassMaterial
-{
-
-	public static final Material INSTANCE = new Material( MaterialColor.AIR, false, false, true, false, true, false, false, PushReaction.NORMAL );
+    public static final Material INSTANCE = new Material(MaterialColor.AIR, false, false, true, false, true, false,
+            false, PushReaction.NORMAL);
 
 }

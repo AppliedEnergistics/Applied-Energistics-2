@@ -1,13 +1,14 @@
 package appeng.container;
 
-import appeng.core.AELog;
+import java.util.HashMap;
+import java.util.Map;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 
-import java.util.HashMap;
-import java.util.Map;
+import appeng.core.AELog;
 
 /**
  * Allows opening containers generically.

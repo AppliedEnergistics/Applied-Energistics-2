@@ -18,47 +18,40 @@
 
 package appeng.client.gui.implementations;
 
-
-import appeng.core.AppEng;
 import net.minecraft.entity.player.PlayerInventory;
-
-import appeng.client.gui.AEBaseGui;
-import appeng.container.implementations.ContainerSkyChest;
-import appeng.core.localization.GuiText;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
+import appeng.client.gui.AEBaseGui;
+import appeng.container.implementations.ContainerSkyChest;
+import appeng.core.AppEng;
+import appeng.core.localization.GuiText;
 
-public class GuiSkyChest extends AEBaseGui<ContainerSkyChest>
-{
+public class GuiSkyChest extends AEBaseGui<ContainerSkyChest> {
 
-	private static final ResourceLocation TEXTURE = new ResourceLocation(AppEng.MOD_ID, "textures/guis/skychest.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(AppEng.MOD_ID, "textures/guis/skychest.png");
 
-	public GuiSkyChest( ContainerSkyChest container, PlayerInventory playerInv, ITextComponent title )
-	{
-		super( container, playerInv, title );
-		this.ySize = 195;
-	}
+    public GuiSkyChest(ContainerSkyChest container, PlayerInventory playerInv, ITextComponent title) {
+        super(container, playerInv, title);
+        this.ySize = 195;
+    }
 
-	@Override
-	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
-	{
-		this.font.drawString( this.getGuiDisplayName( GuiText.SkyChest.getLocal() ), 8, 8, 4210752 );
-		this.font.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 2, 4210752 );
-	}
+    @Override
+    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+        this.font.drawString(this.getGuiDisplayName(GuiText.SkyChest.getLocal()), 8, 8, 4210752);
+        this.font.drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96 + 2, 4210752);
+    }
 
-	@Override
-	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
-	{
-		bindTexture(TEXTURE);
-		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 );
-	}
+    @Override
+    public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+        bindTexture(TEXTURE);
+        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0);
+    }
 
-	@Override
-	protected boolean enableSpaceClicking()
-	{
-		// FIXME return !Integrations.invTweaks().isEnabled();
-		return true;
-	}
+    @Override
+    protected boolean enableSpaceClicking() {
+        // FIXME return !Integrations.invTweaks().isEnabled();
+        return true;
+    }
 }

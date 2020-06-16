@@ -18,25 +18,20 @@
 
 package appeng.container;
 
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
-
 
 /*
  * Totally useless container that does nothing.
  */
-public class ContainerNull extends Container
-{
+public class ContainerNull extends Container {
 
-	public ContainerNull()
-	{
-		super( null, 0 );
-	}
+    public ContainerNull() {
+        super(null, 0);
+    }
 
-	@Override
-	public boolean canInteractWith( final PlayerEntity PlayerEntity )
-	{
-		return false;
-	}
+    @Override
+    public boolean canInteractWith(final PlayerEntity PlayerEntity) {
+        return false;
+    }
 }

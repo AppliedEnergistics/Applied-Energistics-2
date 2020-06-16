@@ -18,12 +18,8 @@
 
 package appeng.parts.reporting;
 
-
 import java.util.List;
 
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.ContainerMEMonitorable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
@@ -42,7 +38,9 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.IConfigManager;
-
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerMEMonitorable;
 import appeng.me.GridAccessException;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;
@@ -50,116 +48,98 @@ import appeng.util.IConfigManagerHost;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 
-
 /**
  * Anything resembling an network terminal with view cells can reuse this.
  *
- * Note this applies only to terminals like the ME Terminal. It does not apply for more specialized terminals like the
- * Interface Terminal.
+ * Note this applies only to terminals like the ME Terminal. It does not apply
+ * for more specialized terminals like the Interface Terminal.
  *
  * @author AlgorithmX2
  * @author yueh
  * @version rv3
  * @since rv3
  */
-public abstract class AbstractPartTerminal extends AbstractPartDisplay implements ITerminalHost, IConfigManagerHost, IViewCellStorage, IAEAppEngInventory
-{
+public abstract class AbstractPartTerminal extends AbstractPartDisplay
+        implements ITerminalHost, IConfigManagerHost, IViewCellStorage, IAEAppEngInventory {
 
-	private final IConfigManager cm = new ConfigManager( this );
-	private final AppEngInternalInventory viewCell = new AppEngInternalInventory( this, 5 );
+    private final IConfigManager cm = new ConfigManager(this);
+    private final AppEngInternalInventory viewCell = new AppEngInternalInventory(this, 5);
 
-	public AbstractPartTerminal( final ItemStack is )
-	{
-		super( is );
+    public AbstractPartTerminal(final ItemStack is) {
+        super(is);
 
-		this.cm.registerSetting( Settings.SORT_BY, SortOrder.NAME );
-		this.cm.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
-		this.cm.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
-	}
+        this.cm.registerSetting(Settings.SORT_BY, SortOrder.NAME);
+        this.cm.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
+        this.cm.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
+    }
 
-	@Override
-	public void getDrops( final List<ItemStack> drops, final boolean wrenched )
-	{
-		super.getDrops( drops, wrenched );
+    @Override
+    public void getDrops(final List<ItemStack> drops, final boolean wrenched) {
+        super.getDrops(drops, wrenched);
 
-		for( final ItemStack is : this.viewCell )
-		{
-			if( !is.isEmpty() )
-			{
-				drops.add( is );
-			}
-		}
-	}
+        for (final ItemStack is : this.viewCell) {
+            if (!is.isEmpty()) {
+                drops.add(is);
+            }
+        }
+    }
 
-	@Override
-	public IConfigManager getConfigManager()
-	{
-		return this.cm;
-	}
+    @Override
+    public IConfigManager getConfigManager() {
+        return this.cm;
+    }
 
-	@Override
-	public void readFromNBT( final CompoundNBT data )
-	{
-		super.readFromNBT( data );
-		this.cm.readFromNBT( data );
-		this.viewCell.readFromNBT( data, "viewCell" );
-	}
+    @Override
+    public void readFromNBT(final CompoundNBT data) {
+        super.readFromNBT(data);
+        this.cm.readFromNBT(data);
+        this.viewCell.readFromNBT(data, "viewCell");
+    }
 
-	@Override
-	public void writeToNBT( final CompoundNBT data )
-	{
-		super.writeToNBT( data );
-		this.cm.writeToNBT( data );
-		this.viewCell.writeToNBT( data, "viewCell" );
-	}
+    @Override
+    public void writeToNBT(final CompoundNBT data) {
+        super.writeToNBT(data);
+        this.cm.writeToNBT(data);
+        this.viewCell.writeToNBT(data, "viewCell");
+    }
 
-	@Override
-	public boolean onPartActivate( final PlayerEntity player, final Hand hand, final Vec3d pos )
-	{
-		if( !super.onPartActivate( player, hand, pos ) )
-		{
-			if( !player.world.isRemote )
-			{
-				ContainerOpener.openContainer(getContainerType(player), player, ContainerLocator.forPart(this));
-			}
-		}
-		return true;
-	}
+    @Override
+    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
+        if (!super.onPartActivate(player, hand, pos)) {
+            if (!player.world.isRemote) {
+                ContainerOpener.openContainer(getContainerType(player), player, ContainerLocator.forPart(this));
+            }
+        }
+        return true;
+    }
 
-	public ContainerType<?> getContainerType(final PlayerEntity player )
-	{
-		return ContainerMEMonitorable.TYPE;
-	}
+    public ContainerType<?> getContainerType(final PlayerEntity player) {
+        return ContainerMEMonitorable.TYPE;
+    }
 
-	@Override
-	public <T extends IAEStack<T>> IMEMonitor<T> getInventory( IStorageChannel<T> channel )
-	{
-		try
-		{
-			return this.getProxy().getStorage().getInventory( channel );
-		}
-		catch( final GridAccessException e )
-		{
-			// err nope?
-		}
-		return null;
-	}
+    @Override
+    public <T extends IAEStack<T>> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
+        try {
+            return this.getProxy().getStorage().getInventory(channel);
+        } catch (final GridAccessException e) {
+            // err nope?
+        }
+        return null;
+    }
 
-	@Override
-	public void updateSetting(final IConfigManager manager, final Settings settingName, final Enum<?> newValue )
-	{
+    @Override
+    public void updateSetting(final IConfigManager manager, final Settings settingName, final Enum<?> newValue) {
 
-	}
+    }
 
-	@Override
-	public IItemHandler getViewCellStorage()
-	{
-		return this.viewCell;
-	}
+    @Override
+    public IItemHandler getViewCellStorage() {
+        return this.viewCell;
+    }
 
-	@Override
-	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
-	{
-		this.getHost().markForSave();
-	}
+    @Override
+    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+            final ItemStack removedStack, final ItemStack newStack) {
+        this.getHost().markForSave();
+    }
 }

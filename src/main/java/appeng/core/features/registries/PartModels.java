@@ -18,7 +18,6 @@
 
 package appeng.core.features.registries;
 
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,32 +26,26 @@ import net.minecraft.util.ResourceLocation;
 
 import appeng.api.parts.IPartModels;
 
+public class PartModels implements IPartModels {
 
-public class PartModels implements IPartModels
-{
+    private final Set<ResourceLocation> models = new HashSet<>();
 
-	private final Set<ResourceLocation> models = new HashSet<>();
+    private boolean initialized = false;
 
-	private boolean initialized = false;
+    @Override
+    public void registerModels(Collection<ResourceLocation> partModels) {
+        if (this.initialized) {
+            throw new IllegalStateException("Cannot register models after the pre-initialization phase!");
+        }
 
-	@Override
-	public void registerModels( Collection<ResourceLocation> partModels )
-	{
-		if( this.initialized )
-		{
-			throw new IllegalStateException( "Cannot register models after the pre-initialization phase!" );
-		}
+        this.models.addAll(partModels);
+    }
 
-		this.models.addAll( partModels );
-	}
+    public Set<ResourceLocation> getModels() {
+        return this.models;
+    }
 
-	public Set<ResourceLocation> getModels()
-	{
-		return this.models;
-	}
-
-	public void setInitialized( boolean initialized )
-	{
-		this.initialized = initialized;
-	}
+    public void setInitialized(boolean initialized) {
+        this.initialized = initialized;
+    }
 }

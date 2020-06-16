@@ -18,32 +18,27 @@
 
 package appeng.block.crafting;
 
-
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 
-import appeng.block.AEBaseBlockItem;
-import appeng.core.AEConfig;
 import appeng.api.AEApi;
 import appeng.api.features.AEFeature;
+import appeng.block.AEBaseBlockItem;
+import appeng.core.AEConfig;
 
+public class ItemCraftingStorage extends AEBaseBlockItem {
 
-public class ItemCraftingStorage extends AEBaseBlockItem
-{
+    public ItemCraftingStorage(Block id, Properties props) {
+        super(id, props);
+    }
 
-	public ItemCraftingStorage(Block id, Properties props) {
-		super(id, props);
-	}
+    @Override
+    public ItemStack getContainerItem(final ItemStack itemStack) {
+        return AEApi.instance().definitions().blocks().craftingUnit().maybeStack(1).orElse(ItemStack.EMPTY);
+    }
 
-	@Override
-	public ItemStack getContainerItem( final ItemStack itemStack )
-	{
-		return AEApi.instance().definitions().blocks().craftingUnit().maybeStack( 1 ).orElse( ItemStack.EMPTY );
-	}
-
-	@Override
-	public boolean hasContainerItem( final ItemStack stack )
-	{
-		return AEConfig.instance().isFeatureEnabled( AEFeature.ENABLE_DISASSEMBLY_CRAFTING );
-	}
+    @Override
+    public boolean hasContainerItem(final ItemStack stack) {
+        return AEConfig.instance().isFeatureEnabled(AEFeature.ENABLE_DISASSEMBLY_CRAFTING);
+    }
 }

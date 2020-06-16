@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:quantum_ring"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aba",
-    "cde",
-    "aba"
-  ],
+  "pattern": ["aba", "cde", "aba"],
   "key": {
     "c": {
       "item": "appliedenergistics2:engineering_processor"

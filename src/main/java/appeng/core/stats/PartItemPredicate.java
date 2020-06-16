@@ -18,7 +18,6 @@
 
 package appeng.core.stats;
 
-
 import com.google.gson.JsonObject;
 
 import net.minecraft.advancements.criterion.ItemPredicate;
@@ -30,41 +29,31 @@ import appeng.core.AppEng;
 import appeng.items.parts.ItemPart;
 import appeng.items.parts.PartType;
 
+public class PartItemPredicate extends ItemPredicate {
+    private final PartType partType;
 
-public class PartItemPredicate extends ItemPredicate
-{
-	private final PartType partType;
+    public PartItemPredicate(String partName) {
+        this.partType = PartType.valueOf(partName.toUpperCase());
+    }
 
-	public PartItemPredicate( String partName )
-	{
-		this.partType = PartType.valueOf( partName.toUpperCase() );
-	}
+    @Override
+    public boolean test(ItemStack item) {
+        if (item.getItem() instanceof ItemPart) {
+            ItemPart<?> itemPart = (ItemPart<?>) item.getItem();
+            return itemPart.getType() == partType;
+        }
+        return false;
+    }
 
-	@Override
-	public boolean test( ItemStack item )
-	{
-		if( item.getItem() instanceof ItemPart )
-		{
-			ItemPart<?> itemPart = (ItemPart<?>) item.getItem();
-			return itemPart.getType() == partType;
-		}
-		return false;
-	}
+    public static ItemPredicate deserialize(JsonObject jsonobject) {
+        if (jsonobject.has("part")) {
+            return new PartItemPredicate(JSONUtils.getString(jsonobject, "part"));
+        } else {
+            return ItemPredicate.ANY;
+        }
+    }
 
-	public static ItemPredicate deserialize( JsonObject jsonobject )
-	{
-		if( jsonobject.has( "part" ) )
-		{
-			return new PartItemPredicate( JSONUtils.getString( jsonobject, "part" ) );
-		}
-		else
-		{
-			return ItemPredicate.ANY;
-		}
-	}
-
-	public static void register()
-	{
-		ItemPredicate.register( new ResourceLocation( AppEng.MOD_ID, "part" ), PartItemPredicate::deserialize );
-	}
+    public static void register() {
+        ItemPredicate.register(new ResourceLocation(AppEng.MOD_ID, "part"), PartItemPredicate::deserialize);
+    }
 }

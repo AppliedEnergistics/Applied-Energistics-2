@@ -18,7 +18,6 @@
 
 package appeng.core.features.registries.cell;
 
-
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
@@ -30,36 +29,30 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.items.storage.ItemCreativeStorageCell;
 import appeng.me.storage.CreativeCellInventory;
 
+public final class CreativeCellHandler implements ICellHandler {
 
-public final class CreativeCellHandler implements ICellHandler
-{
+    @Override
+    public boolean isCell(final ItemStack is) {
+        return !is.isEmpty() && is.getItem() instanceof ItemCreativeStorageCell;
+    }
 
-	@Override
-	public boolean isCell( final ItemStack is )
-	{
-		return !is.isEmpty() && is.getItem() instanceof ItemCreativeStorageCell;
-	}
+    @Override
+    public ICellInventoryHandler getCellInventory(final ItemStack is, final ISaveProvider container,
+            final IStorageChannel channel) {
+        if (channel == AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class) && !is.isEmpty()
+                && is.getItem() instanceof ItemCreativeStorageCell) {
+            return CreativeCellInventory.getCell(is);
+        }
+        return null;
+    }
 
-	@Override
-	public ICellInventoryHandler getCellInventory( final ItemStack is, final ISaveProvider container, final IStorageChannel channel )
-	{
-		if( channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) && !is.isEmpty() && is
-				.getItem() instanceof ItemCreativeStorageCell )
-		{
-			return CreativeCellInventory.getCell( is );
-		}
-		return null;
-	}
+    @Override
+    public int getStatusForCell(final ItemStack is, final ICellInventoryHandler handler) {
+        return 2;
+    }
 
-	@Override
-	public int getStatusForCell( final ItemStack is, final ICellInventoryHandler handler )
-	{
-		return 2;
-	}
-
-	@Override
-	public double cellIdleDrain( final ItemStack is, final ICellInventoryHandler handler )
-	{
-		return 0;
-	}
+    @Override
+    public double cellIdleDrain(final ItemStack is, final ICellInventoryHandler handler) {
+        return 0;
+    }
 }

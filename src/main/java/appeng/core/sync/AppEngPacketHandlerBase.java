@@ -18,7 +18,6 @@
 
 package appeng.core.sync;
 
-
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,86 +52,78 @@ import appeng.core.sync.packets.PacketTargetItemStack;
 import appeng.core.sync.packets.PacketTransitionEffect;
 import appeng.core.sync.packets.PacketValueConfig;
 
+public class AppEngPacketHandlerBase {
+    private static final Map<Class<? extends AppEngPacket>, PacketTypes> REVERSE_LOOKUP = new HashMap<>();
 
-public class AppEngPacketHandlerBase
-{
-	private static final Map<Class<? extends AppEngPacket>, PacketTypes> REVERSE_LOOKUP = new HashMap<>();
+    public enum PacketTypes {
+        PACKET_COMPASS_REQUEST(PacketCompassRequest.class, PacketCompassRequest::new),
 
+        PACKET_COMPASS_RESPONSE(PacketCompassResponse.class, PacketCompassResponse::new),
 
-	public enum PacketTypes
-	{
-		PACKET_COMPASS_REQUEST( PacketCompassRequest.class, PacketCompassRequest::new ),
+        PACKET_INVENTORY_ACTION(PacketInventoryAction.class, PacketInventoryAction::new),
 
-		PACKET_COMPASS_RESPONSE( PacketCompassResponse.class, PacketCompassResponse::new ),
+        PACKET_ME_INVENTORY_UPDATE(PacketMEInventoryUpdate.class, PacketMEInventoryUpdate::new),
 
-		PACKET_INVENTORY_ACTION( PacketInventoryAction.class, PacketInventoryAction::new ),
+        PACKET_ME_FLUID_INVENTORY_UPDATE(PacketMEFluidInventoryUpdate.class, PacketMEFluidInventoryUpdate::new),
 
-		PACKET_ME_INVENTORY_UPDATE( PacketMEInventoryUpdate.class, PacketMEInventoryUpdate::new ),
+        PACKET_CONFIG_BUTTON(PacketConfigButton.class, PacketConfigButton::new),
 
-		PACKET_ME_FLUID_INVENTORY_UPDATE( PacketMEFluidInventoryUpdate.class, PacketMEFluidInventoryUpdate::new ),
+        PACKET_PART_PLACEMENT(PacketPartPlacement.class, PacketPartPlacement::new),
 
-		PACKET_CONFIG_BUTTON( PacketConfigButton.class, PacketConfigButton::new ),
+        PACKET_LIGHTNING(PacketLightning.class, PacketLightning::new),
 
-		PACKET_PART_PLACEMENT( PacketPartPlacement.class, PacketPartPlacement::new ),
+        PACKET_MATTER_CANNON(PacketMatterCannon.class, PacketMatterCannon::new),
 
-		PACKET_LIGHTNING( PacketLightning.class, PacketLightning::new ),
+        PACKET_MOCK_EXPLOSION(PacketMockExplosion.class, PacketMockExplosion::new),
 
-		PACKET_MATTER_CANNON( PacketMatterCannon.class, PacketMatterCannon::new ),
+        PACKET_VALUE_CONFIG(PacketValueConfig.class, PacketValueConfig::new),
 
-		PACKET_MOCK_EXPLOSION( PacketMockExplosion.class, PacketMockExplosion::new ),
+        PACKET_TRANSITION_EFFECT(PacketTransitionEffect.class, PacketTransitionEffect::new),
 
-		PACKET_VALUE_CONFIG( PacketValueConfig.class, PacketValueConfig::new ),
+        PACKET_PROGRESS_VALUE(PacketProgressBar.class, PacketProgressBar::new),
 
-		PACKET_TRANSITION_EFFECT( PacketTransitionEffect.class, PacketTransitionEffect::new ),
+        PACKET_CLICK(PacketClick.class, PacketClick::new),
 
-		PACKET_PROGRESS_VALUE( PacketProgressBar.class, PacketProgressBar::new ),
+        PACKET_SWITCH_GUIS(PacketSwitchGuis.class, PacketSwitchGuis::new),
 
-		PACKET_CLICK( PacketClick.class, PacketClick::new ),
+        PACKET_SWAP_SLOTS(PacketSwapSlots.class, PacketSwapSlots::new),
 
-		PACKET_SWITCH_GUIS( PacketSwitchGuis.class, PacketSwitchGuis::new ),
+        PACKET_PATTERN_SLOT(PacketPatternSlot.class, PacketPatternSlot::new),
 
-		PACKET_SWAP_SLOTS( PacketSwapSlots.class, PacketSwapSlots::new ),
+        PACKET_RECIPE_JEI(PacketJEIRecipe.class, PacketJEIRecipe::new),
 
-		PACKET_PATTERN_SLOT( PacketPatternSlot.class, PacketPatternSlot::new ),
+        PACKET_TARGET_ITEM(PacketTargetItemStack.class, PacketTargetItemStack::new),
 
-		PACKET_RECIPE_JEI( PacketJEIRecipe.class, PacketJEIRecipe::new ),
+        PACKET_TARGET_FLUID(PacketTargetFluidStack.class, PacketTargetFluidStack::new),
 
-		PACKET_TARGET_ITEM( PacketTargetItemStack.class, PacketTargetItemStack::new ),
+        PACKET_CRAFTING_REQUEST(PacketCraftRequest.class, PacketCraftRequest::new),
 
-		PACKET_TARGET_FLUID( PacketTargetFluidStack.class, PacketTargetFluidStack::new ),
+        PACKET_ASSEMBLER_ANIMATION(PacketAssemblerAnimation.class, PacketAssemblerAnimation::new),
 
-		PACKET_CRAFTING_REQUEST( PacketCraftRequest.class, PacketCraftRequest::new ),
+        PACKET_COMPRESSED_NBT(PacketCompressedNBT.class, PacketCompressedNBT::new),
 
-		PACKET_ASSEMBLER_ANIMATION( PacketAssemblerAnimation.class, PacketAssemblerAnimation::new ),
+        PACKET_PAINTED_ENTITY(PacketPaintedEntity.class, PacketPaintedEntity::new),
 
-		PACKET_COMPRESSED_NBT( PacketCompressedNBT.class, PacketCompressedNBT::new ),
+        PACKET_FLUID_TANK(PacketFluidSlot.class, PacketFluidSlot::new);
 
-		PACKET_PAINTED_ENTITY( PacketPaintedEntity.class, PacketPaintedEntity::new ),
+        private final Function<PacketBuffer, AppEngPacket> factory;
 
-		PACKET_FLUID_TANK( PacketFluidSlot.class, PacketFluidSlot::new );
+        PacketTypes(Class<? extends AppEngPacket> packetClass, Function<PacketBuffer, AppEngPacket> factory) {
+            this.factory = factory;
 
-		private final Function<PacketBuffer, AppEngPacket> factory;
+            REVERSE_LOOKUP.put(packetClass, this);
+        }
 
-		PacketTypes( Class<? extends AppEngPacket> packetClass, Function<PacketBuffer, AppEngPacket> factory )
-		{
-			this.factory = factory;
+        public static PacketTypes getPacket(final int id) {
+            return (values())[id];
+        }
 
-			REVERSE_LOOKUP.put(packetClass, this );
-		}
+        static PacketTypes getID(final Class<? extends AppEngPacket> c) {
+            return REVERSE_LOOKUP.get(c);
+        }
 
-		public static PacketTypes getPacket( final int id )
-		{
-			return ( values() )[id];
-		}
-
-		static PacketTypes getID( final Class<? extends AppEngPacket> c )
-		{
-			return REVERSE_LOOKUP.get( c );
-		}
-
-		public AppEngPacket parsePacket( final PacketBuffer in ) throws IllegalArgumentException
-		{
-			return this.factory.apply( in );
-		}
-	}
+        public AppEngPacket parsePacket(final PacketBuffer in) throws IllegalArgumentException {
+            return this.factory.apply(in);
+        }
+    }
 }

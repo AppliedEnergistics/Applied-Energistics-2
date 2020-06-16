@@ -18,14 +18,9 @@
 
 package appeng.core.features.registries;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.ContainerMEPortableCell;
-import appeng.container.implementations.ContainerWirelessTerm;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
@@ -35,92 +30,76 @@ import appeng.api.AEApi;
 import appeng.api.features.ILocatable;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.features.IWirelessTermRegistry;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerMEPortableCell;
+import appeng.container.implementations.ContainerWirelessTerm;
 import appeng.core.localization.PlayerMessages;
-
 import appeng.util.Platform;
 
+public final class WirelessRegistry implements IWirelessTermRegistry {
+    private final List<IWirelessTermHandler> handlers;
 
-public final class WirelessRegistry implements IWirelessTermRegistry
-{
-	private final List<IWirelessTermHandler> handlers;
+    public WirelessRegistry() {
+        this.handlers = new ArrayList<>();
+    }
 
-	public WirelessRegistry()
-	{
-		this.handlers = new ArrayList<>();
-	}
+    @Override
+    public void registerWirelessHandler(final IWirelessTermHandler handler) {
+        if (handler != null) {
+            this.handlers.add(handler);
+        }
+    }
 
-	@Override
-	public void registerWirelessHandler( final IWirelessTermHandler handler )
-	{
-		if( handler != null )
-		{
-			this.handlers.add( handler );
-		}
-	}
+    @Override
+    public boolean isWirelessTerminal(final ItemStack is) {
+        for (final IWirelessTermHandler h : this.handlers) {
+            if (h.canHandle(is)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	@Override
-	public boolean isWirelessTerminal( final ItemStack is )
-	{
-		for( final IWirelessTermHandler h : this.handlers )
-		{
-			if( h.canHandle( is ) )
-			{
-				return true;
-			}
-		}
-		return false;
-	}
+    @Override
+    public IWirelessTermHandler getWirelessTerminalHandler(final ItemStack is) {
+        for (final IWirelessTermHandler h : this.handlers) {
+            if (h.canHandle(is)) {
+                return h;
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public IWirelessTermHandler getWirelessTerminalHandler( final ItemStack is )
-	{
-		for( final IWirelessTermHandler h : this.handlers )
-		{
-			if( h.canHandle( is ) )
-			{
-				return h;
-			}
-		}
-		return null;
-	}
+    @Override
+    public void openWirelessTerminalGui(ItemStack item, IBlockReader world, PlayerEntity player, Hand hand) {
+        if (Platform.isClient()) {
+            return;
+        }
 
-	@Override
-	public void openWirelessTerminalGui( ItemStack item, IBlockReader world, PlayerEntity player, Hand hand )
-	{
-		if( Platform.isClient() )
-		{
-			return;
-		}
+        if (!this.isWirelessTerminal(item)) {
+            player.sendMessage(PlayerMessages.DeviceNotWirelessTerminal.get());
+            return;
+        }
 
-		if( !this.isWirelessTerminal( item ) )
-		{
-			player.sendMessage( PlayerMessages.DeviceNotWirelessTerminal.get() );
-			return;
-		}
+        final IWirelessTermHandler handler = this.getWirelessTerminalHandler(item);
+        final String unparsedKey = handler.getEncryptionKey(item);
+        if (unparsedKey.isEmpty()) {
+            player.sendMessage(PlayerMessages.DeviceNotLinked.get());
+            return;
+        }
 
-		final IWirelessTermHandler handler = this.getWirelessTerminalHandler( item );
-		final String unparsedKey = handler.getEncryptionKey( item );
-		if( unparsedKey.isEmpty() )
-		{
-			player.sendMessage( PlayerMessages.DeviceNotLinked.get() );
-			return;
-		}
+        final long parsedKey = Long.parseLong(unparsedKey);
+        final ILocatable securityStation = AEApi.instance().registries().locatable().getLocatableBy(parsedKey);
+        if (securityStation == null) {
+            player.sendMessage(PlayerMessages.StationCanNotBeLocated.get());
+            return;
+        }
 
-		final long parsedKey = Long.parseLong( unparsedKey );
-		final ILocatable securityStation = AEApi.instance().registries().locatable().getLocatableBy( parsedKey );
-		if( securityStation == null )
-		{
-			player.sendMessage( PlayerMessages.StationCanNotBeLocated.get() );
-			return;
-		}
-
-		if( handler.hasPower( player, 0.5, item ) )
-		{
-			ContainerOpener.openContainer(ContainerWirelessTerm.TYPE, player, ContainerLocator.forHand(player, hand));
-		}
-		else
-		{
-			player.sendMessage( PlayerMessages.DeviceNotPowered.get() );
-		}
-	}
+        if (handler.hasPower(player, 0.5, item)) {
+            ContainerOpener.openContainer(ContainerWirelessTerm.TYPE, player, ContainerLocator.forHand(player, hand));
+        } else {
+            player.sendMessage(PlayerMessages.DeviceNotPowered.get());
+        }
+    }
 }

@@ -18,7 +18,6 @@
 
 package appeng.me.storage;
 
-
 import net.minecraft.item.ItemStack;
 
 import appeng.api.config.Actionable;
@@ -28,65 +27,56 @@ import appeng.api.storage.ICellHandler;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.data.IAEStack;
 
+public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T> {
 
-public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
-{
+    private int oldStatus = 0;
+    private final ItemStack is;
+    private final ICellHandler handler;
+    private final IChestOrDrive cord;
 
-	private int oldStatus = 0;
-	private final ItemStack is;
-	private final ICellHandler handler;
-	private final IChestOrDrive cord;
+    public DriveWatcher(final ICellInventoryHandler<T> i, final ItemStack is, final ICellHandler han,
+            final IChestOrDrive cod) {
+        super(i, i.getChannel());
+        this.is = is;
+        this.handler = han;
+        this.cord = cod;
+    }
 
-	public DriveWatcher( final ICellInventoryHandler<T> i, final ItemStack is, final ICellHandler han, final IChestOrDrive cod )
-	{
-		super( i, i.getChannel() );
-		this.is = is;
-		this.handler = han;
-		this.cord = cod;
-	}
+    public int getStatus() {
+        return this.handler.getStatusForCell(this.is, (ICellInventoryHandler) this.getInternal());
+    }
 
-	public int getStatus()
-	{
-		return this.handler.getStatusForCell( this.is, (ICellInventoryHandler) this.getInternal() );
-	}
+    @Override
+    public T injectItems(final T input, final Actionable type, final IActionSource src) {
+        final long size = input.getStackSize();
 
-	@Override
-	public T injectItems( final T input, final Actionable type, final IActionSource src )
-	{
-		final long size = input.getStackSize();
+        final T a = super.injectItems(input, type, src);
 
-		final T a = super.injectItems( input, type, src );
+        if (type == Actionable.MODULATE && (a == null || a.getStackSize() != size)) {
+            final int newStatus = this.getStatus();
 
-		if( type == Actionable.MODULATE && ( a == null || a.getStackSize() != size ) )
-		{
-			final int newStatus = this.getStatus();
+            if (newStatus != this.oldStatus) {
+                this.cord.blinkCell(this.getSlot());
+                this.oldStatus = newStatus;
+            }
+        }
 
-			if( newStatus != this.oldStatus )
-			{
-				this.cord.blinkCell( this.getSlot() );
-				this.oldStatus = newStatus;
-			}
-		}
+        return a;
+    }
 
-		return a;
-	}
+    @Override
+    public T extractItems(final T request, final Actionable type, final IActionSource src) {
+        final T a = super.extractItems(request, type, src);
 
-	@Override
-	public T extractItems( final T request, final Actionable type, final IActionSource src )
-	{
-		final T a = super.extractItems( request, type, src );
+        if (type == Actionable.MODULATE && a != null) {
+            final int newStatus = this.getStatus();
 
-		if( type == Actionable.MODULATE && a != null )
-		{
-			final int newStatus = this.getStatus();
+            if (newStatus != this.oldStatus) {
+                this.cord.blinkCell(this.getSlot());
+                this.oldStatus = newStatus;
+            }
+        }
 
-			if( newStatus != this.oldStatus )
-			{
-				this.cord.blinkCell( this.getSlot() );
-				this.oldStatus = newStatus;
-			}
-		}
-
-		return a;
-	}
+        return a;
+    }
 }

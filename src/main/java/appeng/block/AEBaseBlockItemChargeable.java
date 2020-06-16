@@ -18,14 +18,9 @@
 
 package appeng.block;
 
+import java.text.MessageFormat;
+import java.util.List;
 
-import appeng.api.AEApi;
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerUnits;
-import appeng.api.definitions.IBlockDefinition;
-import appeng.api.implementations.items.IAEItemPowerStorage;
-import appeng.core.localization.GuiText;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
@@ -37,128 +32,116 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.text.MessageFormat;
-import java.util.List;
+import appeng.api.AEApi;
+import appeng.api.config.AccessRestriction;
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerUnits;
+import appeng.api.definitions.IBlockDefinition;
+import appeng.api.implementations.items.IAEItemPowerStorage;
+import appeng.core.localization.GuiText;
 
+public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEItemPowerStorage {
 
-public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEItemPowerStorage
-{
+    public AEBaseBlockItemChargeable(Block id, Properties props) {
+        super(id, props);
 
-	public AEBaseBlockItemChargeable(Block id, Properties props) {
-		super(id, props);
+        addPropertyOverride(new ResourceLocation("appliedenergistics2:fill_level"), (is, world, entity) -> {
+            double curPower = getAECurrentPower(is);
+            double maxPower = getAEMaxPower(is);
 
-		addPropertyOverride(new ResourceLocation("appliedenergistics2:fill_level"), (is, world, entity) -> {
-			double curPower = getAECurrentPower(is);
-			double maxPower = getAEMaxPower(is);
+            return (int) Math.round(100 * curPower / maxPower);
+        });
+    }
 
-			return (int) Math.round(100 * curPower / maxPower);
-		});
-	}
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void addCheckedInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+            final ITooltipFlag advancedTooltips) {
+        double internalCurrentPower = 0;
+        final double internalMaxPower = this.getMaxEnergyCapacity();
 
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public void addCheckedInformation(final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
-	{
-		double internalCurrentPower = 0;
-		final double internalMaxPower = this.getMaxEnergyCapacity();
+        if (internalMaxPower > 0) {
+            final CompoundNBT tag = stack.getTag();
+            if (tag != null) {
+                internalCurrentPower = tag.getDouble("internalCurrentPower");
+            }
 
-		if( internalMaxPower > 0 )
-		{
-			final CompoundNBT tag = stack.getTag();
-			if( tag != null )
-			{
-				internalCurrentPower = tag.getDouble( "internalCurrentPower" );
-			}
+            final double percent = internalCurrentPower / internalMaxPower;
 
-			final double percent = internalCurrentPower / internalMaxPower;
+            lines.add(GuiText.StoredEnergy.textComponent()
+                    .appendText(':' + MessageFormat.format(" {0,number,#} ", internalCurrentPower))
+                    .appendSibling(new TranslationTextComponent(PowerUnits.AE.unlocalizedName))
+                    .appendText(" - " + MessageFormat.format("{0,number,#.##%}", percent)));
+        }
+    }
 
-			lines.add( GuiText.StoredEnergy.textComponent().appendText(':' + MessageFormat.format( " {0,number,#} ", internalCurrentPower ))
-				.appendSibling(new TranslationTextComponent( PowerUnits.AE.unlocalizedName ))
-					.appendText(" - " + MessageFormat.format( "{0,number,#.##%}", percent )));
-		}
-	}
+    @Override
+    public double injectAEPower(final ItemStack is, double amount, Actionable mode) {
+        final double internalCurrentPower = this.getInternal(is);
+        final double internalMaxPower = this.getAEMaxPower(is);
+        final double required = internalMaxPower - internalCurrentPower;
+        final double overflow = Math.max(0, amount - required);
 
-	@Override
-	public double injectAEPower( final ItemStack is, double amount, Actionable mode )
-	{
-		final double internalCurrentPower = this.getInternal( is );
-		final double internalMaxPower = this.getAEMaxPower( is );
-		final double required = internalMaxPower - internalCurrentPower;
-		final double overflow = Math.max( 0, amount - required );
+        if (mode == Actionable.MODULATE) {
+            final double toAdd = Math.min(required, amount);
+            final double newPowerStored = internalCurrentPower + toAdd;
 
-		if( mode == Actionable.MODULATE )
-		{
-			final double toAdd = Math.min( required, amount );
-			final double newPowerStored = internalCurrentPower + toAdd;
+            this.setInternal(is, newPowerStored);
+        }
 
-			this.setInternal( is, newPowerStored );
-		}
+        return overflow;
+    }
 
-		return overflow;
-	}
+    @Override
+    public double extractAEPower(final ItemStack is, double amount, Actionable mode) {
+        final double internalCurrentPower = this.getInternal(is);
+        final double fulfillable = Math.min(amount, internalCurrentPower);
 
-	@Override
-	public double extractAEPower( final ItemStack is, double amount, Actionable mode )
-	{
-		final double internalCurrentPower = this.getInternal( is );
-		final double fulfillable = Math.min( amount, internalCurrentPower );
+        if (mode == Actionable.MODULATE) {
+            final double newPowerStored = internalCurrentPower - fulfillable;
 
-		if( mode == Actionable.MODULATE )
-		{
-			final double newPowerStored = internalCurrentPower - fulfillable;
+            this.setInternal(is, newPowerStored);
+        }
 
-			this.setInternal( is, newPowerStored );
-		}
+        return fulfillable;
+    }
 
-		return fulfillable;
-	}
+    @Override
+    public double getAEMaxPower(final ItemStack is) {
+        return this.getMaxEnergyCapacity();
+    }
 
-	@Override
-	public double getAEMaxPower( final ItemStack is )
-	{
-		return this.getMaxEnergyCapacity();
-	}
+    @Override
+    public double getAECurrentPower(final ItemStack is) {
+        return this.getInternal(is);
+    }
 
-	@Override
-	public double getAECurrentPower( final ItemStack is )
-	{
-		return this.getInternal( is );
-	}
+    @Override
+    public AccessRestriction getPowerFlow(final ItemStack is) {
+        return AccessRestriction.WRITE;
+    }
 
-	@Override
-	public AccessRestriction getPowerFlow( final ItemStack is )
-	{
-		return AccessRestriction.WRITE;
-	}
+    private double getMaxEnergyCapacity() {
+        final Block blockID = Block.getBlockFromItem(this);
+        final IBlockDefinition energyCell = AEApi.instance().definitions().blocks().energyCell();
 
-	private double getMaxEnergyCapacity()
-	{
-		final Block blockID = Block.getBlockFromItem( this );
-		final IBlockDefinition energyCell = AEApi.instance().definitions().blocks().energyCell();
+        return energyCell.maybeBlock().map(block -> {
+            if (blockID == block) {
+                return 200000;
+            } else {
+                return 8 * 200000;
+            }
+        }).orElse(0);
+    }
 
-		return energyCell.maybeBlock().map( block ->
-		{
-			if( blockID == block )
-			{
-				return 200000;
-			}
-			else
-			{
-				return 8 * 200000;
-			}
-		} ).orElse( 0 );
-	}
+    private double getInternal(final ItemStack is) {
+        final CompoundNBT nbt = is.getOrCreateTag();
+        return nbt.getDouble("internalCurrentPower");
+    }
 
-	private double getInternal( final ItemStack is )
-	{
-		final CompoundNBT nbt = is.getOrCreateTag();
-		return nbt.getDouble( "internalCurrentPower" );
-	}
-
-	private void setInternal( final ItemStack is, final double amt )
-	{
-		final CompoundNBT nbt = is.getOrCreateTag();
-		nbt.putDouble("internalCurrentPower", amt);
-	}
+    private void setInternal(final ItemStack is, final double amt) {
+        final CompoundNBT nbt = is.getOrCreateTag();
+        nbt.putDouble("internalCurrentPower", amt);
+    }
 
 }

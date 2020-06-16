@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:spatial_pylon"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aba",
-    "cdc",
-    "aba"
-  ],
+  "pattern": ["aba", "cdc", "aba"],
   "key": {
     "a": {
       "item": "appliedenergistics2:quartz_glass"

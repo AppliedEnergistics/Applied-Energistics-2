@@ -18,49 +18,48 @@
 
 package appeng.parts.reporting;
 
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 
-
 /**
  * A more sophisticated part overlapping all 3 textures.
  *
- * Subclass this if you need want a new part and need all 3 textures.
- * For more concrete implementations, the direct abstract subclasses might be a better alternative.
+ * Subclass this if you need want a new part and need all 3 textures. For more
+ * concrete implementations, the direct abstract subclasses might be a better
+ * alternative.
  *
  * @author AlgorithmX2
  * @author yueh
  * @version rv3
  * @since rv3
  */
-public abstract class AbstractPartDisplay extends AbstractPartReporting
-{
+public abstract class AbstractPartDisplay extends AbstractPartReporting {
 
-	// The base chassis of all display parts
-	@PartModels
-	protected static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/display_base" );
+    // The base chassis of all display parts
+    @PartModels
+    protected static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/display_base");
 
-	// Models that contain the status indicator light
-	@PartModels
-	protected static final ResourceLocation MODEL_STATUS_OFF = new ResourceLocation( AppEng.MOD_ID, "part/display_status_off" );
-	@PartModels
-	protected static final ResourceLocation MODEL_STATUS_ON = new ResourceLocation( AppEng.MOD_ID, "part/display_status_on" );
-	@PartModels
-	protected static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = new ResourceLocation( AppEng.MOD_ID, "part/display_status_has_channel" );
+    // Models that contain the status indicator light
+    @PartModels
+    protected static final ResourceLocation MODEL_STATUS_OFF = new ResourceLocation(AppEng.MOD_ID,
+            "part/display_status_off");
+    @PartModels
+    protected static final ResourceLocation MODEL_STATUS_ON = new ResourceLocation(AppEng.MOD_ID,
+            "part/display_status_on");
+    @PartModels
+    protected static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = new ResourceLocation(AppEng.MOD_ID,
+            "part/display_status_has_channel");
 
-	public AbstractPartDisplay( final ItemStack is )
-	{
-		super( is, true );
-	}
+    public AbstractPartDisplay(final ItemStack is) {
+        super(is, true);
+    }
 
-	@Override
-	public boolean isLightSource()
-	{
-		return false;
-	}
+    @Override
+    public boolean isLightSource() {
+        return false;
+    }
 
 }

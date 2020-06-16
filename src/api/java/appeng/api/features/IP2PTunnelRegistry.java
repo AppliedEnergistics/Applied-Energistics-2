@@ -23,7 +23,6 @@
 
 package appeng.api.features;
 
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -32,33 +31,32 @@ import net.minecraftforge.common.capabilities.Capability;
 
 import appeng.api.config.TunnelType;
 
-
 /**
  * A Registry for how p2p Tunnels are attuned
  */
-public interface IP2PTunnelRegistry
-{
+public interface IP2PTunnelRegistry {
 
-	/**
-	 * Allows third parties to register items from their mod as potential
-	 * attunements for AE's P2P Tunnels
-	 *
-	 * @param trigger - the item which triggers attunement. Nullable, but then ignored
-	 * @param type - the type of tunnel. Nullable, but then ignored
-	 */
-	void addNewAttunement( @Nonnull ItemStack trigger, @Nullable TunnelType type );
+    /**
+     * Allows third parties to register items from their mod as potential
+     * attunements for AE's P2P Tunnels
+     *
+     * @param trigger - the item which triggers attunement. Nullable, but then
+     *                ignored
+     * @param type    - the type of tunnel. Nullable, but then ignored
+     */
+    void addNewAttunement(@Nonnull ItemStack trigger, @Nullable TunnelType type);
 
-	void addNewAttunement( @Nonnull String ModId, @Nullable TunnelType type );
+    void addNewAttunement(@Nonnull String ModId, @Nullable TunnelType type);
 
-	void addNewAttunement( @Nonnull Capability<?> cap, @Nullable TunnelType type );
+    void addNewAttunement(@Nonnull Capability<?> cap, @Nullable TunnelType type);
 
-	/**
-	 * returns null if no attunement can be found.
-	 *
-	 * @param trigger attunement trigger
-	 *
-	 * @return null if no attunement can be found or attunement
-	 */
-	@Nonnull
-	TunnelType getTunnelTypeByItem( ItemStack trigger );
+    /**
+     * returns null if no attunement can be found.
+     *
+     * @param trigger attunement trigger
+     *
+     * @return null if no attunement can be found or attunement
+     */
+    @Nonnull
+    TunnelType getTunnelTypeByItem(ItemStack trigger);
 }

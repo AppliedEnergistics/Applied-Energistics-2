@@ -18,8 +18,6 @@
 
 package appeng.core.sync.packets;
 
-
-import appeng.container.ContainerOpener;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -27,51 +25,44 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
 import appeng.core.sync.AppEngPacket;
-
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.Platform;
-import net.minecraftforge.registries.ForgeRegistries;
 
+public class PacketSwitchGuis extends AppEngPacket {
 
-public class PacketSwitchGuis extends AppEngPacket
-{
+    private final ContainerType<?> newGui;
 
-	private final ContainerType<?> newGui;
+    public PacketSwitchGuis(final PacketBuffer stream) {
+        this.newGui = ForgeRegistries.CONTAINERS.getValue(stream.readResourceLocation());
+    }
 
-	public PacketSwitchGuis( final PacketBuffer stream )
-	{
-		this.newGui = ForgeRegistries.CONTAINERS.getValue(stream.readResourceLocation());
-	}
+    // api
+    public PacketSwitchGuis(final ContainerType<?> newGui) {
+        this.newGui = newGui;
 
-	// api
-	public PacketSwitchGuis( final ContainerType<?> newGui )
-	{
-		this.newGui = newGui;
+        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
-		final PacketBuffer data = new PacketBuffer( Unpooled.buffer() );
+        data.writeInt(this.getPacketID());
+        data.writeResourceLocation(newGui.getRegistryName());
 
-		data.writeInt( this.getPacketID() );
-		data.writeResourceLocation(newGui.getRegistryName());
+        this.configureWrite(data);
+    }
 
-		this.configureWrite( data );
-	}
-
-	@Override
-	public void serverPacketData( final INetworkInfo manager, final PlayerEntity player )
-	{
-		final Container c = player.openContainer;
-		if( c instanceof AEBaseContainer )
-		{
-			final AEBaseContainer bc = (AEBaseContainer) c;
-			final ContainerLocator locator = bc.getLocator();
-			if( locator != null )
-			{
-				ContainerOpener.openContainer(newGui, player, locator);
-			}
-		}
-	}
+    @Override
+    public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
+        final Container c = player.openContainer;
+        if (c instanceof AEBaseContainer) {
+            final AEBaseContainer bc = (AEBaseContainer) c;
+            final ContainerLocator locator = bc.getLocator();
+            if (locator != null) {
+                ContainerOpener.openContainer(newGui, player, locator);
+            }
+        }
+    }
 }

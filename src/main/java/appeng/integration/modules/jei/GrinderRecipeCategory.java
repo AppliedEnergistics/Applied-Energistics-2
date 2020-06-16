@@ -18,11 +18,15 @@
 
 package appeng.integration.modules.jei;
 
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import appeng.core.Api;
-import appeng.core.AppEng;
-import appeng.recipes.handlers.GrinderOptionalResult;
-import appeng.recipes.handlers.GrinderRecipe;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -30,88 +34,78 @@ import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import appeng.core.Api;
+import appeng.core.AppEng;
+import appeng.recipes.handlers.GrinderOptionalResult;
+import appeng.recipes.handlers.GrinderRecipe;
 
+class GrinderRecipeCategory implements IRecipeCategory<GrinderRecipe> {
 
-class GrinderRecipeCategory implements IRecipeCategory<GrinderRecipe>
-{
+    public static final ResourceLocation UID = new ResourceLocation(AppEng.MOD_ID, "grinder");
 
-	public static final ResourceLocation UID = new ResourceLocation(AppEng.MOD_ID, "grinder");
+    private final String localizedName;
 
-	private final String localizedName;
+    private final IDrawable background;
 
-	private final IDrawable background;
+    private final IDrawable icon;
 
-	private final IDrawable icon;
+    public GrinderRecipeCategory(IGuiHelper guiHelper) {
+        this.localizedName = I18n.format("block.appliedenergistics2.grindstone");
 
-	public GrinderRecipeCategory( IGuiHelper guiHelper )
-	{
-		this.localizedName = I18n.format( "block.appliedenergistics2.grindstone" );
+        ResourceLocation location = new ResourceLocation(AppEng.MOD_ID, "textures/guis/grinder.png");
+        this.background = guiHelper.createDrawable(location, 11, 16, 154, 70);
 
-		ResourceLocation location = new ResourceLocation( AppEng.MOD_ID, "textures/guis/grinder.png" );
-		this.background = guiHelper.createDrawable( location, 11, 16, 154, 70 );
+        this.icon = guiHelper.createDrawableIngredient(Api.INSTANCE.definitions().blocks().grindstone().stack(1));
+    }
 
-		this.icon = guiHelper.createDrawableIngredient(Api.INSTANCE.definitions().blocks().grindstone().stack(1));
-	}
+    @Override
+    public ResourceLocation getUid() {
+        return GrinderRecipeCategory.UID;
+    }
 
-	@Override
-	public ResourceLocation getUid()
-	{
-		return GrinderRecipeCategory.UID;
-	}
+    @Override
+    public String getTitle() {
+        return this.localizedName;
+    }
 
-	@Override
-	public String getTitle()
-	{
-		return this.localizedName;
-	}
+    @Override
+    public IDrawable getBackground() {
+        return this.background;
+    }
 
-	@Override
-	public IDrawable getBackground()
-	{
-		return this.background;
-	}
+    @Override
+    public void setRecipe(IRecipeLayout recipeLayout, GrinderRecipe recipe, IIngredients ingredients) {
+        IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
 
-	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, GrinderRecipe recipe, IIngredients ingredients )
-	{
-		IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
+        itemStacks.init(0, true, 0, 0);
+        itemStacks.init(1, false, 100, 46);
+        itemStacks.init(2, false, 118, 46);
+        itemStacks.init(3, false, 136, 46);
 
-		itemStacks.init( 0, true, 0, 0 );
-		itemStacks.init( 1, false, 100, 46 );
-		itemStacks.init( 2, false, 118, 46 );
-		itemStacks.init( 3, false, 136, 46 );
+        itemStacks.set(ingredients);
+    }
 
-		itemStacks.set( ingredients );
-	}
+    @Override
+    public Class<? extends GrinderRecipe> getRecipeClass() {
+        return GrinderRecipe.class;
+    }
 
-	@Override
-	public Class<? extends GrinderRecipe> getRecipeClass() {
-		return GrinderRecipe.class;
-	}
+    @Override
+    public IDrawable getIcon() {
+        return icon;
+    }
 
-	@Override
-	public IDrawable getIcon() {
-		return icon;
-	}
-
-	@Override
-	public void setIngredients(GrinderRecipe recipe, IIngredients ingredients) {
-		ingredients.setInputIngredients(Collections.singletonList(recipe.getIngredient()));
-		List<ItemStack> outputs = new ArrayList<>( 3 );
-		outputs.add( recipe.getRecipeOutput() );
-		for (GrinderOptionalResult optionalResult : recipe.getOptionalResults()) {
-			outputs.add(optionalResult.getResult());
-		}
-		ingredients.setOutputs( VanillaTypes.ITEM, outputs );
-	}
+    @Override
+    public void setIngredients(GrinderRecipe recipe, IIngredients ingredients) {
+        ingredients.setInputIngredients(Collections.singletonList(recipe.getIngredient()));
+        List<ItemStack> outputs = new ArrayList<>(3);
+        outputs.add(recipe.getRecipeOutput());
+        for (GrinderOptionalResult optionalResult : recipe.getOptionalResults()) {
+            outputs.add(optionalResult.getResult());
+        }
+        ingredients.setOutputs(VanillaTypes.ITEM, outputs);
+    }
 
 // FIXME USE SPECIAL INGREDIENT TYPE
 // FIXME	@Override

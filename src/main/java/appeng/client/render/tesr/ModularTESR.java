@@ -18,6 +18,7 @@
 
 package appeng.client.render.tesr;
 
+import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -32,34 +33,28 @@ import appeng.client.render.FacingToRotation;
 import appeng.client.render.renderable.Renderable;
 import appeng.tile.AEBaseTile;
 
-import java.util.List;
+@OnlyIn(Dist.CLIENT)
+public class ModularTESR<T extends AEBaseTile> extends TileEntityRenderer<T> {
 
+    private final List<Renderable<? super T>> renderables;
 
-@OnlyIn( Dist.CLIENT )
-public class ModularTESR<T extends AEBaseTile> extends TileEntityRenderer<T>
-{
+    @SafeVarargs
+    public ModularTESR(TileEntityRendererDispatcher rendererDispatcherIn, Renderable<? super T>... renderables) {
+        super(rendererDispatcherIn);
+        this.renderables = ImmutableList.copyOf(renderables);
+    }
 
-	private final List<Renderable<? super T>> renderables;
-
-	@SafeVarargs
-	public ModularTESR( TileEntityRendererDispatcher rendererDispatcherIn, Renderable<? super  T>... renderables )
-	{
-		super( rendererDispatcherIn );
-		this.renderables = ImmutableList.copyOf(renderables);
-	}
-
-	@Override
-	public void render( T te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers, int combinedLight, int combinedOverlay )
-	{
-		ms.push();
-		ms.translate( 0.5, 0.5, 0.5 );
-		FacingToRotation.get( te.getForward(), te.getUp() ).push(ms);
-		ms.translate( -0.5, -0.5, -0.5 );
-		for( Renderable<? super T> renderable : this.renderables )
-		{
-			renderable.renderTileEntityAt( te, partialTicks, ms, buffers, combinedLight, combinedOverlay);
-		}
-		ms.pop();
-	}
+    @Override
+    public void render(T te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers, int combinedLight,
+            int combinedOverlay) {
+        ms.push();
+        ms.translate(0.5, 0.5, 0.5);
+        FacingToRotation.get(te.getForward(), te.getUp()).push(ms);
+        ms.translate(-0.5, -0.5, -0.5);
+        for (Renderable<? super T> renderable : this.renderables) {
+            renderable.renderTileEntityAt(te, partialTicks, ms, buffers, combinedLight, combinedOverlay);
+        }
+        ms.pop();
+    }
 
 }

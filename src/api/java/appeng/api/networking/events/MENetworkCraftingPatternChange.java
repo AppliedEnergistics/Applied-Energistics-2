@@ -23,20 +23,16 @@
 
 package appeng.api.networking.events;
 
-
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingProvider;
 
+public class MENetworkCraftingPatternChange extends MENetworkEvent {
 
-public class MENetworkCraftingPatternChange extends MENetworkEvent
-{
+    public final ICraftingProvider provider;
+    public final IGridNode node;
 
-	public final ICraftingProvider provider;
-	public final IGridNode node;
-
-	public MENetworkCraftingPatternChange( final ICraftingProvider p, final IGridNode n )
-	{
-		this.provider = p;
-		this.node = n;
-	}
+    public MENetworkCraftingPatternChange(final ICraftingProvider p, final IGridNode n) {
+        this.provider = p;
+        this.node = n;
+    }
 }

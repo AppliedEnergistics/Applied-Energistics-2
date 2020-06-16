@@ -18,38 +18,31 @@
 
 package appeng.worldgen.meteorite;
 
-
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-
-import appeng.api.definitions.IBlockDefinition;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 
+import appeng.api.definitions.IBlockDefinition;
 
-public class FalloutSand extends FalloutCopy
-{
-	private static final double GLASS_THRESHOLD = 0.66;
-	private final MeteoriteBlockPutter putter;
+public class FalloutSand extends FalloutCopy {
+    private static final double GLASS_THRESHOLD = 0.66;
+    private final MeteoriteBlockPutter putter;
 
-	public FalloutSand(final IWorld w, BlockPos pos, final MeteoriteBlockPutter putter, final BlockState skyStone )
-	{
-		super( w, pos, putter, skyStone );
-		this.putter = putter;
-	}
+    public FalloutSand(final IWorld w, BlockPos pos, final MeteoriteBlockPutter putter, final BlockState skyStone) {
+        super(w, pos, putter, skyStone);
+        this.putter = putter;
+    }
 
-	@Override
-	public int adjustCrater()
-	{
-		return 2;
-	}
+    @Override
+    public int adjustCrater() {
+        return 2;
+    }
 
-	@Override
-	public void getOther( final IWorld w, BlockPos pos, final double a )
-	{
-		if( a > GLASS_THRESHOLD )
-		{
-			this.putter.put( w, pos, Blocks.GLASS.getDefaultState() );
-		}
-	}
+    @Override
+    public void getOther(final IWorld w, BlockPos pos, final double a) {
+        if (a > GLASS_THRESHOLD) {
+            this.putter.put(w, pos, Blocks.GLASS.getDefaultState());
+        }
+    }
 }

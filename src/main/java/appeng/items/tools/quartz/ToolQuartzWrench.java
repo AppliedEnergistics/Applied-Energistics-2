@@ -18,12 +18,6 @@
 
 package appeng.items.tools.quartz;
 
-
-import appeng.api.implementations.items.IAEWrench;
-import appeng.api.util.DimensionalCoord;
-import appeng.block.AEBaseBlock;
-import appeng.items.AEBaseItem;
-import appeng.util.Platform;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -32,42 +26,43 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
 
+import appeng.api.implementations.items.IAEWrench;
+import appeng.api.util.DimensionalCoord;
+import appeng.block.AEBaseBlock;
+import appeng.items.AEBaseItem;
+import appeng.util.Platform;
 
-public class ToolQuartzWrench extends AEBaseItem implements IAEWrench
-{
+public class ToolQuartzWrench extends AEBaseItem implements IAEWrench {
 
-	public ToolQuartzWrench(Item.Properties props)
-	{
-		super( props );
-	}
+    public ToolQuartzWrench(Item.Properties props) {
+        super(props);
+    }
 
-	@Override
-	public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-		if( !context.getPlayer().isCrouching() && Platform.hasPermissions( new DimensionalCoord( context.getWorld(), context.getPos() ),
-				context.getPlayer() ) )
-		{
+    @Override
+    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
+        if (!context.getPlayer().isCrouching() && Platform
+                .hasPermissions(new DimensionalCoord(context.getWorld(), context.getPos()), context.getPlayer())) {
 
-			Block block = context.getWorld().getBlockState(context.getPos()).getBlock();
-			if (block instanceof AEBaseBlock) {
-				if( Platform.isClient() )
-				{
-					// TODO 1.10-R - if we return FAIL on client, action will not be sent to server. Fix that in all Block#onItemUseFirst overrides.
-					return !context.getWorld().isRemote ? ActionResultType.SUCCESS : ActionResultType.PASS;
-				}
+            Block block = context.getWorld().getBlockState(context.getPos()).getBlock();
+            if (block instanceof AEBaseBlock) {
+                if (Platform.isClient()) {
+                    // TODO 1.10-R - if we return FAIL on client, action will not be sent to server.
+                    // Fix that in all Block#onItemUseFirst overrides.
+                    return !context.getWorld().isRemote ? ActionResultType.SUCCESS : ActionResultType.PASS;
+                }
 
-				AEBaseBlock aeBlock = (AEBaseBlock) block;
-				if (aeBlock.rotateAroundFaceAxis(context.getWorld(), context.getPos(), context.getFace())) {
-					context.getPlayer().swingArm(context.getHand());
-					return !context.getWorld().isRemote ? ActionResultType.SUCCESS : ActionResultType.FAIL;
-				}
-			}
-		}
-		return ActionResultType.PASS;
-	}
+                AEBaseBlock aeBlock = (AEBaseBlock) block;
+                if (aeBlock.rotateAroundFaceAxis(context.getWorld(), context.getPos(), context.getFace())) {
+                    context.getPlayer().swingArm(context.getHand());
+                    return !context.getWorld().isRemote ? ActionResultType.SUCCESS : ActionResultType.FAIL;
+                }
+            }
+        }
+        return ActionResultType.PASS;
+    }
 
-	@Override
-	public boolean canWrench( final ItemStack wrench, final PlayerEntity player, final BlockPos pos )
-	{
-		return true;
-	}
+    @Override
+    public boolean canWrench(final ItemStack wrench, final PlayerEntity player, final BlockPos pos) {
+        return true;
+    }
 }

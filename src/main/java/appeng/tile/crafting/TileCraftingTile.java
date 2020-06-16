@@ -18,12 +18,13 @@
 
 package appeng.tile.crafting;
 
-
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Optional;
+
+import javax.annotation.Nonnull;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
@@ -31,6 +32,12 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
+import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.common.util.Constants;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -55,380 +62,312 @@ import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.AENetworkProxyMultiblock;
 import appeng.tile.grid.AENetworkTile;
 import appeng.util.Platform;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraftforge.client.model.data.EmptyModelData;
-import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.data.ModelDataMap;
-import net.minecraftforge.common.util.Constants;
 
-import javax.annotation.Nonnull;
+public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IPowerChannelState {
 
+    private final CraftingCPUCalculator calc = new CraftingCPUCalculator(this);
+    private CompoundNBT previousState = null;
+    private boolean isCoreBlock = false;
+    private CraftingCPUCluster cluster;
 
-public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IPowerChannelState
-{
+    public TileCraftingTile(TileEntityType<?> tileEntityTypeIn) {
+        super(tileEntityTypeIn);
+        this.getProxy().setFlags(GridFlags.MULTIBLOCK, GridFlags.REQUIRE_CHANNEL);
+        this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));
+    }
 
-	private final CraftingCPUCalculator calc = new CraftingCPUCalculator( this );
-	private CompoundNBT previousState = null;
-	private boolean isCoreBlock = false;
-	private CraftingCPUCluster cluster;
+    @Override
+    protected AENetworkProxy createProxy() {
+        return new AENetworkProxyMultiblock(this, "proxy", this.getItemFromTile(this), true);
+    }
 
-	public TileCraftingTile(TileEntityType<?> tileEntityTypeIn) {
-		super(tileEntityTypeIn);
-		this.getProxy().setFlags( GridFlags.MULTIBLOCK, GridFlags.REQUIRE_CHANNEL );
-		this.getProxy().setValidSides( EnumSet.noneOf( Direction.class ) );
-	}
+    @Override
+    protected ItemStack getItemFromTile(final Object obj) {
+        Optional<ItemStack> is;
 
-	@Override
-	protected AENetworkProxy createProxy()
-	{
-		return new AENetworkProxyMultiblock( this, "proxy", this.getItemFromTile( this ), true );
-	}
+        if (((TileCraftingTile) obj).isAccelerator()) {
+            is = AEApi.instance().definitions().blocks().craftingAccelerator().maybeStack(1);
+        } else {
+            is = AEApi.instance().definitions().blocks().craftingUnit().maybeStack(1);
+        }
 
-	@Override
-	protected ItemStack getItemFromTile( final Object obj )
-	{
-		Optional<ItemStack> is;
+        return is.orElseGet(() -> super.getItemFromTile(obj));
+    }
 
-		if( ( (TileCraftingTile) obj ).isAccelerator() )
-		{
-			is = AEApi.instance().definitions().blocks().craftingAccelerator().maybeStack( 1 );
-		}
-		else
-		{
-			is = AEApi.instance().definitions().blocks().craftingUnit().maybeStack( 1 );
-		}
+    @Override
+    public boolean canBeRotated() {
+        return true;// return BlockCraftingUnit.checkType( world.getBlockMetadata( xCoord, yCoord,
+                    // zCoord ),
+        // BlockCraftingUnit.BASE_MONITOR );
+    }
 
-		return is.orElseGet( () -> super.getItemFromTile( obj ) );
-	}
+    @Override
+    public void setName(final String name) {
+        super.setName(name);
+        if (this.cluster != null) {
+            this.cluster.updateName();
+        }
+    }
 
-	@Override
-	public boolean canBeRotated()
-	{
-		return true;// return BlockCraftingUnit.checkType( world.getBlockMetadata( xCoord, yCoord, zCoord ),
-		// BlockCraftingUnit.BASE_MONITOR );
-	}
+    public boolean isAccelerator() {
+        if (this.world == null) {
+            return false;
+        }
 
-	@Override
-	public void setName( final String name )
-	{
-		super.setName( name );
-		if( this.cluster != null )
-		{
-			this.cluster.updateName();
-		}
-	}
+        final AbstractCraftingUnitBlock unit = (AbstractCraftingUnitBlock) this.world.getBlockState(this.pos)
+                .getBlock();
+        return unit.type == CraftingUnitType.ACCELERATOR;
+    }
 
-	public boolean isAccelerator()
-	{
-		if( this.world == null )
-		{
-			return false;
-		}
+    @Override
+    public void onReady() {
+        super.onReady();
+        this.getProxy().setVisualRepresentation(this.getItemFromTile(this));
+        this.updateMultiBlock();
+    }
 
-		final AbstractCraftingUnitBlock unit = (AbstractCraftingUnitBlock) this.world.getBlockState( this.pos ).getBlock();
-		return unit.type == CraftingUnitType.ACCELERATOR;
-	}
+    public void updateMultiBlock() {
+        this.calc.calculateMultiblock(this.world, this.getLocation());
+    }
 
-	@Override
-	public void onReady()
-	{
-		super.onReady();
-		this.getProxy().setVisualRepresentation( this.getItemFromTile( this ) );
-		this.updateMultiBlock();
-	}
+    public void updateStatus(final CraftingCPUCluster c) {
+        if (this.cluster != null && this.cluster != c) {
+            this.cluster.breakCluster();
+        }
 
-	public void updateMultiBlock()
-	{
-		this.calc.calculateMultiblock( this.world, this.getLocation() );
-	}
+        this.cluster = c;
+        this.updateMeta(true);
+    }
 
-	public void updateStatus( final CraftingCPUCluster c )
-	{
-		if( this.cluster != null && this.cluster != c )
-		{
-			this.cluster.breakCluster();
-		}
+    public void updateMeta(final boolean updateFormed) {
+        if (this.world == null || this.notLoaded() || this.isRemoved()) {
+            return;
+        }
 
-		this.cluster = c;
-		this.updateMeta( true );
-	}
+        final boolean formed = this.isFormed();
+        boolean power = false;
 
-	public void updateMeta( final boolean updateFormed )
-	{
-		if( this.world == null || this.notLoaded() || this.isRemoved() )
-		{
-			return;
-		}
+        if (this.getProxy().isReady()) {
+            power = this.getProxy().isActive();
+        }
 
-		final boolean formed = this.isFormed();
-		boolean power = false;
+        final BlockState current = this.world.getBlockState(this.pos);
 
-		if( this.getProxy().isReady() )
-		{
-			power = this.getProxy().isActive();
-		}
+        // The tile might try to update while being destroyed
+        if (current.getBlock() instanceof AbstractCraftingUnitBlock) {
+            final BlockState newState = current.with(AbstractCraftingUnitBlock.POWERED, power)
+                    .with(AbstractCraftingUnitBlock.FORMED, formed);
 
-		final BlockState current = this.world.getBlockState( this.pos );
+            if (current != newState) {
+                // Not using flag 2 here (only send to clients, prevent block update) will cause
+                // infinite loops
+                // In case there is an inconsistency in the crafting clusters.
+                this.world.setBlockState(this.pos, newState, Constants.BlockFlags.BLOCK_UPDATE);
+            }
+        }
 
-		// The tile might try to update while being destroyed
-		if( current.getBlock() instanceof AbstractCraftingUnitBlock)
-		{
-			final BlockState newState = current.with( AbstractCraftingUnitBlock.POWERED, power ).with( AbstractCraftingUnitBlock.FORMED, formed );
+        if (updateFormed) {
+            if (formed) {
+                this.getProxy().setValidSides(EnumSet.allOf(Direction.class));
+            } else {
+                this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));
+            }
+        }
+    }
 
-			if( current != newState )
-			{
-				// Not using flag 2 here (only send to clients, prevent block update) will cause infinite loops
-				// In case there is an inconsistency in the crafting clusters.
-				this.world.setBlockState( this.pos, newState, Constants.BlockFlags.BLOCK_UPDATE);
-			}
-		}
+    public boolean isFormed() {
+        if (isRemote()) {
+            return this.world.getBlockState(this.pos).get(AbstractCraftingUnitBlock.FORMED);
+        }
+        return this.cluster != null;
+    }
 
-		if( updateFormed )
-		{
-			if( formed )
-			{
-				this.getProxy().setValidSides( EnumSet.allOf( Direction.class ) );
-			}
-			else
-			{
-				this.getProxy().setValidSides( EnumSet.noneOf( Direction.class ) );
-			}
-		}
-	}
+    @Override
+    public CompoundNBT write(final CompoundNBT data) {
+        super.write(data);
+        data.putBoolean("core", this.isCoreBlock());
+        if (this.isCoreBlock() && this.cluster != null) {
+            this.cluster.writeToNBT(data);
+        }
+        return data;
+    }
 
-	public boolean isFormed()
-	{
-		if( isRemote() )
-		{
-			return this.world.getBlockState( this.pos ).get( AbstractCraftingUnitBlock.FORMED );
-		}
-		return this.cluster != null;
-	}
+    @Override
+    public void read(final CompoundNBT data) {
+        super.read(data);
+        this.setCoreBlock(data.getBoolean("core"));
+        if (this.isCoreBlock()) {
+            if (this.cluster != null) {
+                this.cluster.readFromNBT(data);
+            } else {
+                this.setPreviousState(data.copy());
+            }
+        }
+    }
 
-	@Override
-	public CompoundNBT write(final CompoundNBT data )
-	{
-		super.write( data );
-		data.putBoolean("core", this.isCoreBlock());
-		if( this.isCoreBlock() && this.cluster != null )
-		{
-			this.cluster.writeToNBT( data );
-		}
-		return data;
-	}
+    @Override
+    public void disconnect(final boolean update) {
+        if (this.cluster != null) {
+            this.cluster.destroy();
+            if (update) {
+                this.updateMeta(true);
+            }
+        }
+    }
 
-	@Override
-	public void read(final CompoundNBT data )
-	{
-		super.read( data );
-		this.setCoreBlock( data.getBoolean( "core" ) );
-		if( this.isCoreBlock() )
-		{
-			if( this.cluster != null )
-			{
-				this.cluster.readFromNBT( data );
-			}
-			else
-			{
-				this.setPreviousState( data.copy() );
-			}
-		}
-	}
+    @Override
+    public IAECluster getCluster() {
+        return this.cluster;
+    }
 
-	@Override
-	public void disconnect( final boolean update )
-	{
-		if( this.cluster != null )
-		{
-			this.cluster.destroy();
-			if( update )
-			{
-				this.updateMeta( true );
-			}
-		}
-	}
+    @Override
+    public boolean isValid() {
+        return true;
+    }
 
-	@Override
-	public IAECluster getCluster()
-	{
-		return this.cluster;
-	}
+    @MENetworkEventSubscribe
+    public void onPowerStateChange(final MENetworkChannelsChanged ev) {
+        this.updateMeta(false);
+    }
 
-	@Override
-	public boolean isValid()
-	{
-		return true;
-	}
+    @MENetworkEventSubscribe
+    public void onPowerStateChange(final MENetworkPowerStatusChange ev) {
+        this.updateMeta(false);
+    }
 
-	@MENetworkEventSubscribe
-	public void onPowerStateChange( final MENetworkChannelsChanged ev )
-	{
-		this.updateMeta( false );
-	}
+    public boolean isStatus() {
+        return false;
+    }
 
-	@MENetworkEventSubscribe
-	public void onPowerStateChange( final MENetworkPowerStatusChange ev )
-	{
-		this.updateMeta( false );
-	}
+    public boolean isStorage() {
+        return false;
+    }
 
-	public boolean isStatus()
-	{
-		return false;
-	}
+    public int getStorageBytes() {
+        return 0;
+    }
 
-	public boolean isStorage()
-	{
-		return false;
-	}
+    public void breakCluster() {
+        if (this.cluster != null) {
+            this.cluster.cancel();
+            final IMEInventory<IAEItemStack> inv = this.cluster.getInventory();
 
-	public int getStorageBytes()
-	{
-		return 0;
-	}
+            final LinkedList<WorldCoord> places = new LinkedList<>();
 
-	public void breakCluster()
-	{
-		if( this.cluster != null )
-		{
-			this.cluster.cancel();
-			final IMEInventory<IAEItemStack> inv = this.cluster.getInventory();
+            final Iterator<IGridHost> i = this.cluster.getTiles();
+            while (i.hasNext()) {
+                final IGridHost h = i.next();
+                if (h == this) {
+                    places.add(new WorldCoord(this));
+                } else {
+                    final TileEntity te = (TileEntity) h;
 
-			final LinkedList<WorldCoord> places = new LinkedList<>();
+                    for (final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS) {
+                        final WorldCoord wc = new WorldCoord(te);
+                        wc.add(d, 1);
+                        if (this.world.isAirBlock(wc.getPos())) {
+                            places.add(wc);
+                        }
+                    }
+                }
+            }
 
-			final Iterator<IGridHost> i = this.cluster.getTiles();
-			while( i.hasNext() )
-			{
-				final IGridHost h = i.next();
-				if( h == this )
-				{
-					places.add( new WorldCoord( this ) );
-				}
-				else
-				{
-					final TileEntity te = (TileEntity) h;
+            Collections.shuffle(places);
 
-					for( final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS )
-					{
-						final WorldCoord wc = new WorldCoord( te );
-						wc.add( d, 1 );
-						if( this.world.isAirBlock( wc.getPos() ) )
-						{
-							places.add( wc );
-						}
-					}
-				}
-			}
+            if (places.isEmpty()) {
+                throw new IllegalStateException(
+                        this.cluster + " does not contain any kind of blocks, which were destroyed.");
+            }
 
-			Collections.shuffle( places );
+            for (IAEItemStack ais : inv.getAvailableItems(
+                    AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList())) {
+                ais = ais.copy();
+                ais.setStackSize(ais.getDefinition().getMaxStackSize());
+                while (true) {
+                    final IAEItemStack g = inv.extractItems(ais.copy(), Actionable.MODULATE,
+                            this.cluster.getActionSource());
+                    if (g == null) {
+                        break;
+                    }
 
-			if( places.isEmpty() )
-			{
-				throw new IllegalStateException( this.cluster + " does not contain any kind of blocks, which were destroyed." );
-			}
+                    final WorldCoord wc = places.poll();
+                    places.add(wc);
 
-			for( IAEItemStack ais : inv.getAvailableItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() ) )
-			{
-				ais = ais.copy();
-				ais.setStackSize( ais.getDefinition().getMaxStackSize() );
-				while( true )
-				{
-					final IAEItemStack g = inv.extractItems( ais.copy(), Actionable.MODULATE, this.cluster.getActionSource() );
-					if( g == null )
-					{
-						break;
-					}
+                    Platform.spawnDrops(this.world, wc.getPos(), Collections.singletonList(g.createItemStack()));
+                }
+            }
 
-					final WorldCoord wc = places.poll();
-					places.add( wc );
+            this.cluster.destroy();
+        }
+    }
 
-					Platform.spawnDrops( this.world, wc.getPos(), Collections.singletonList( g.createItemStack() ) );
-				}
-			}
+    @Override
+    public boolean isPowered() {
+        if (isRemote()) {
+            return this.world.getBlockState(this.pos).get(AbstractCraftingUnitBlock.POWERED);
+        }
+        return this.getProxy().isActive();
+    }
 
-			this.cluster.destroy();
-		}
-	}
+    @Override
+    public boolean isActive() {
+        if (Platform.isServer()) {
+            return this.getProxy().isActive();
+        }
+        return this.isPowered() && this.isFormed();
+    }
 
-	@Override
-	public boolean isPowered()
-	{
-		if( isRemote() )
-		{
-			return this.world.getBlockState( this.pos ).get( AbstractCraftingUnitBlock.POWERED );
-		}
-		return this.getProxy().isActive();
-	}
+    public boolean isCoreBlock() {
+        return this.isCoreBlock;
+    }
 
-	@Override
-	public boolean isActive()
-	{
-		if( Platform.isServer() )
-		{
-			return this.getProxy().isActive();
-		}
-		return this.isPowered() && this.isFormed();
-	}
+    public void setCoreBlock(final boolean isCoreBlock) {
+        this.isCoreBlock = isCoreBlock;
+    }
 
-	public boolean isCoreBlock()
-	{
-		return this.isCoreBlock;
-	}
+    public CompoundNBT getPreviousState() {
+        return this.previousState;
+    }
 
-	public void setCoreBlock( final boolean isCoreBlock )
-	{
-		this.isCoreBlock = isCoreBlock;
-	}
+    public void setPreviousState(final CompoundNBT previousState) {
+        this.previousState = previousState;
+    }
 
-	public CompoundNBT getPreviousState()
-	{
-		return this.previousState;
-	}
+    @Nonnull
+    @Override
+    public IModelData getModelData() {
+        return new CraftingCubeModelData(getUp(), getForward(), getConnections());
+    }
 
-	public void setPreviousState( final CompoundNBT previousState )
-	{
-		this.previousState = previousState;
-	}
+    protected EnumSet<Direction> getConnections() {
+        if (world == null) {
+            return EnumSet.noneOf(Direction.class);
+        }
 
-	@Nonnull
-	@Override
-	public IModelData getModelData() {
-		return new CraftingCubeModelData(getUp(), getForward(), getConnections());
-	}
+        EnumSet<Direction> connections = EnumSet.noneOf(Direction.class);
 
-	protected EnumSet<Direction> getConnections() {
-		if (world == null) {
-			return EnumSet.noneOf(Direction.class);
-		}
+        for (Direction facing : Direction.values()) {
+            if (this.isConnected(world, pos, facing)) {
+                connections.add(facing);
+            }
+        }
 
-		EnumSet<Direction> connections = EnumSet.noneOf( Direction.class );
+        return connections;
+    }
 
-		for( Direction facing : Direction.values() )
-		{
-			if( this.isConnected( world, pos, facing ) )
-			{
-				connections.add( facing );
-			}
-		}
+    private boolean isConnected(IBlockReader world, BlockPos pos, Direction side) {
+        BlockPos adjacentPos = pos.offset(side);
+        return world.getBlockState(adjacentPos).getBlock() instanceof AbstractCraftingUnitBlock;
+    }
 
-		return connections;
-	}
-
-	private boolean isConnected( IBlockReader world, BlockPos pos, Direction side )
-	{
-		BlockPos adjacentPos = pos.offset( side );
-		return world.getBlockState( adjacentPos ).getBlock() instanceof AbstractCraftingUnitBlock;
-	}
-
-	/**
-	 * When the block state changes (i.e. becoming formed or unformed), we need to update the
-	 * model data since it contains connections to neighboring tiles.
-	 */
-	@Override
-	public void updateContainingBlockInfo() {
-		super.updateContainingBlockInfo();
-		requestModelDataUpdate();
-	}
+    /**
+     * When the block state changes (i.e. becoming formed or unformed), we need to
+     * update the model data since it contains connections to neighboring tiles.
+     */
+    @Override
+    public void updateContainingBlockInfo() {
+        super.updateContainingBlockInfo();
+        requestModelDataUpdate();
+    }
 
 }

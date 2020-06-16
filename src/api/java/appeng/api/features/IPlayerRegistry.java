@@ -23,40 +23,38 @@
 
 package appeng.api.features;
 
-
 import javax.annotation.Nullable;
 
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.entity.player.PlayerEntity;
 
-
 /**
- * Maintains a save specific list of userids and username combinations this greatly simplifies storage internally and
- * gives a common place to look up and get IDs for the security framework.
+ * Maintains a save specific list of userids and username combinations this
+ * greatly simplifies storage internally and gives a common place to look up and
+ * get IDs for the security framework.
  */
-public interface IPlayerRegistry
-{
+public interface IPlayerRegistry {
 
-	/**
-	 * @param gameProfile user game profile
-	 *
-	 * @return user id of a username.
-	 */
-	int getID( GameProfile gameProfile );
+    /**
+     * @param gameProfile user game profile
+     *
+     * @return user id of a username.
+     */
+    int getID(GameProfile gameProfile);
 
-	/**
-	 * @param player player
-	 *
-	 * @return user id of a player entity.
-	 */
-	int getID( PlayerEntity player );
+    /**
+     * @param player player
+     *
+     * @return user id of a player entity.
+     */
+    int getID(PlayerEntity player);
 
-	/**
-	 * @param playerID to be found player id
-	 *
-	 * @return PlayerEntity, or null if the player could not be found.
-	 */
-	@Nullable
-	PlayerEntity findPlayer( int playerID );
+    /**
+     * @param playerID to be found player id
+     *
+     * @return PlayerEntity, or null if the player could not be found.
+     */
+    @Nullable
+    PlayerEntity findPlayer(int playerID);
 }

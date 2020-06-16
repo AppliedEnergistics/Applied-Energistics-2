@@ -18,8 +18,6 @@
 
 package appeng.core.sync.network;
 
-
-public interface INetworkInfo
-{
+public interface INetworkInfo {
 
 }

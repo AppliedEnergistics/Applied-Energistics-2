@@ -18,7 +18,6 @@
 
 package appeng.parts.misc;
 
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Random;
@@ -50,206 +49,172 @@ import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 
+public class PartCableAnchor implements IPart {
 
-public class PartCableAnchor implements IPart
-{
+    @PartModels
+    public static final PartModel DEFAULT_MODELS = new PartModel(false,
+            new ResourceLocation(AppEng.MOD_ID, "part/cable_anchor"));
 
-	@PartModels
-	public static final PartModel DEFAULT_MODELS = new PartModel( false, new ResourceLocation( AppEng.MOD_ID, "part/cable_anchor" ) );
+    @PartModels
+    public static final PartModel FACADE_MODELS = new PartModel(false,
+            new ResourceLocation(AppEng.MOD_ID, "part/cable_anchor_short"));
 
-	@PartModels
-	public static final PartModel FACADE_MODELS = new PartModel( false, new ResourceLocation( AppEng.MOD_ID, "part/cable_anchor_short" ) );
+    private ItemStack is = ItemStack.EMPTY;
+    private IPartHost host = null;
+    private AEPartLocation mySide = AEPartLocation.UP;
 
-	private ItemStack is = ItemStack.EMPTY;
-	private IPartHost host = null;
-	private AEPartLocation mySide = AEPartLocation.UP;
+    public PartCableAnchor(final ItemStack is) {
+        this.is = is;
+    }
 
-	public PartCableAnchor( final ItemStack is )
-	{
-		this.is = is;
-	}
+    @Override
+    public void getBoxes(final IPartCollisionHelper bch) {
+        if (this.host != null && this.host.getFacadeContainer().getFacade(this.mySide) != null) {
+            bch.addBox(7, 7, 10, 9, 9, 14);
+        } else {
+            bch.addBox(7, 7, 10, 9, 9, 16);
+        }
+    }
 
-	@Override
-	public void getBoxes( final IPartCollisionHelper bch )
-	{
-		if( this.host != null && this.host.getFacadeContainer().getFacade( this.mySide ) != null )
-		{
-			bch.addBox( 7, 7, 10, 9, 9, 14 );
-		}
-		else
-		{
-			bch.addBox( 7, 7, 10, 9, 9, 16 );
-		}
-	}
+    @Override
+    public ItemStack getItemStack(final PartItemStack wrenched) {
+        return this.is;
+    }
 
-	@Override
-	public ItemStack getItemStack( final PartItemStack wrenched )
-	{
-		return this.is;
-	}
+    @Override
+    public boolean requireDynamicRender() {
+        return false;
+    }
 
-	@Override
-	public boolean requireDynamicRender()
-	{
-		return false;
-	}
+    @Override
+    public boolean isSolid() {
+        return false;
+    }
 
-	@Override
-	public boolean isSolid()
-	{
-		return false;
-	}
+    @Override
+    public boolean canConnectRedstone() {
+        return false;
+    }
 
-	@Override
-	public boolean canConnectRedstone()
-	{
-		return false;
-	}
+    @Override
+    public void writeToNBT(final CompoundNBT data) {
 
-	@Override
-	public void writeToNBT( final CompoundNBT data )
-	{
+    }
 
-	}
+    @Override
+    public void readFromNBT(final CompoundNBT data) {
 
-	@Override
-	public void readFromNBT( final CompoundNBT data )
-	{
+    }
 
-	}
+    @Override
+    public int getLightLevel() {
+        return 0;
+    }
 
-	@Override
-	public int getLightLevel()
-	{
-		return 0;
-	}
+    @Override
+    public boolean isLadder(final LivingEntity entity) {
+        return this.mySide.yOffset == 0 && (entity.collidedHorizontally || !entity.onGround);
+    }
 
-	@Override
-	public boolean isLadder( final LivingEntity entity )
-	{
-		return this.mySide.yOffset == 0 && ( entity.collidedHorizontally || !entity.onGround );
-	}
+    @Override
+    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
 
-	@Override
-	public void onNeighborChanged( IBlockReader w, BlockPos pos, BlockPos neighbor )
-	{
+    }
 
-	}
+    @Override
+    public int isProvidingStrongPower() {
+        return 0;
+    }
 
-	@Override
-	public int isProvidingStrongPower()
-	{
-		return 0;
-	}
+    @Override
+    public int isProvidingWeakPower() {
+        return 0;
+    }
 
-	@Override
-	public int isProvidingWeakPower()
-	{
-		return 0;
-	}
+    @Override
+    public void writeToStream(final PacketBuffer data) throws IOException {
 
-	@Override
-	public void writeToStream( final PacketBuffer data ) throws IOException
-	{
+    }
 
-	}
+    @Override
+    public boolean readFromStream(final PacketBuffer data) throws IOException {
+        return false;
+    }
 
-	@Override
-	public boolean readFromStream( final PacketBuffer data ) throws IOException
-	{
-		return false;
-	}
+    @Override
+    public IGridNode getGridNode() {
+        return null;
+    }
 
-	@Override
-	public IGridNode getGridNode()
-	{
-		return null;
-	}
+    @Override
+    public void onEntityCollision(final Entity entity) {
 
-	@Override
-	public void onEntityCollision( final Entity entity )
-	{
+    }
 
-	}
+    @Override
+    public void removeFromWorld() {
 
-	@Override
-	public void removeFromWorld()
-	{
+    }
 
-	}
+    @Override
+    public void addToWorld() {
 
-	@Override
-	public void addToWorld()
-	{
+    }
 
-	}
+    @Override
+    public IGridNode getExternalFacingNode() {
+        return null;
+    }
 
-	@Override
-	public IGridNode getExternalFacingNode()
-	{
-		return null;
-	}
+    @Override
+    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final TileEntity tile) {
+        this.host = host;
+        this.mySide = side;
+    }
 
-	@Override
-	public void setPartHostInfo( final AEPartLocation side, final IPartHost host, final TileEntity tile )
-	{
-		this.host = host;
-		this.mySide = side;
-	}
+    @Override
+    public boolean onActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
+        return false;
+    }
 
-	@Override
-	public boolean onActivate( final PlayerEntity player, final Hand hand, final Vec3d pos )
-	{
-		return false;
-	}
+    @Override
+    public boolean onShiftActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
+        return false;
+    }
 
-	@Override
-	public boolean onShiftActivate( final PlayerEntity player, final Hand hand, final Vec3d pos )
-	{
-		return false;
-	}
+    @Override
+    public void getDrops(final List<ItemStack> drops, final boolean wrenched) {
 
-	@Override
-	public void getDrops( final List<ItemStack> drops, final boolean wrenched )
-	{
+    }
 
-	}
+    @Override
+    public float getCableConnectionLength(AECableType cable) {
+        return 0;
+    }
 
-	@Override
-	public float getCableConnectionLength( AECableType cable )
-	{
-		return 0;
-	}
+    @Override
+    public void animateTick(final World world, final BlockPos pos, final Random r) {
 
-	@Override
-	public void animateTick( final World world, final BlockPos pos, final Random r )
-	{
+    }
 
-	}
+    @Override
+    public void onPlacement(final PlayerEntity player, final Hand hand, final ItemStack held,
+            final AEPartLocation side) {
 
-	@Override
-	public void onPlacement( final PlayerEntity player, final Hand hand, final ItemStack held, final AEPartLocation side )
-	{
+    }
 
-	}
+    @Override
+    public boolean canBePlacedOn(final BusSupport what) {
+        return what == BusSupport.CABLE || what == BusSupport.DENSE_CABLE;
+    }
 
-	@Override
-	public boolean canBePlacedOn( final BusSupport what )
-	{
-		return what == BusSupport.CABLE || what == BusSupport.DENSE_CABLE;
-	}
-
-	@Override
-	public IPartModel getStaticModels()
-	{
-		if( this.host != null && this.host.getFacadeContainer().getFacade( this.mySide ) != null )
-		{
-			return FACADE_MODELS;
-		}
-		else
-		{
-			return DEFAULT_MODELS;
-		}
-	}
+    @Override
+    public IPartModel getStaticModels() {
+        if (this.host != null && this.host.getFacadeContainer().getFacade(this.mySide) != null) {
+            return FACADE_MODELS;
+        } else {
+            return DEFAULT_MODELS;
+        }
+    }
 
 }

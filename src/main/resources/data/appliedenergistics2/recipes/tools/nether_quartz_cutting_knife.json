@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:nether_quartz_cutting_knife"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "  a",
-    "ba ",
-    "cc "
-  ],
+  "pattern": ["  a", "ba ", "cc "],
   "key": {
     "b": {
       "tag": "forge:ingots/iron"

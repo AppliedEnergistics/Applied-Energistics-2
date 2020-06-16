@@ -18,11 +18,10 @@
 
 package appeng.core.crash;
 
-
-import appeng.core.AEConfig;
 import net.minecraftforge.fml.common.ICrashCallable;
 import net.minecraftforge.versions.forge.ForgeVersion;
 
+import appeng.core.AEConfig;
 
 public class ModCrashEnhancement implements ICrashCallable {
 
@@ -33,8 +32,7 @@ public class ModCrashEnhancement implements ICrashCallable {
 
     @Override
     public String call() throws Exception {
-        return AEConfig.CHANNEL + ' ' + AEConfig.VERSION + " for Forge " +
-                ForgeVersion.getVersion();
+        return AEConfig.CHANNEL + ' ' + AEConfig.VERSION + " for Forge " + ForgeVersion.getVersion();
     }
 
 }

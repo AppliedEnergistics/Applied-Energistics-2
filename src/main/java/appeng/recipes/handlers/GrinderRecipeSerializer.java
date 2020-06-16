@@ -1,10 +1,15 @@
 package appeng.recipes.handlers;
 
-import appeng.core.AEConfig;
-import appeng.core.AppEng;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
@@ -14,12 +19,11 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import appeng.core.AEConfig;
+import appeng.core.AppEng;
 
-public class GrinderRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<GrinderRecipe> {
+public class GrinderRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>>
+        implements IRecipeSerializer<GrinderRecipe> {
 
     public static final GrinderRecipeSerializer INSTANCE = new GrinderRecipeSerializer();
 

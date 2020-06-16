@@ -18,57 +18,51 @@
 
 package appeng.fluids.container;
 
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.container.ContainerLocator;
 import appeng.container.implementations.ContainerHelper;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-
 import appeng.fluids.parts.PartSharedFluidBus;
 import appeng.fluids.util.IAEFluidTank;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
-
 
 /**
  * @author BrockWS
  * @version rv5 - 1/05/2018
  * @since rv5 1/05/2018
  */
-public class ContainerFluidIO extends ContainerFluidConfigurable
-{
+public class ContainerFluidIO extends ContainerFluidConfigurable {
 
-	public static ContainerType<ContainerFluidIO> TYPE;
+    public static ContainerType<ContainerFluidIO> TYPE;
 
-	private static final ContainerHelper<ContainerFluidIO, PartSharedFluidBus> helper
-			= new ContainerHelper<>(ContainerFluidIO::new, PartSharedFluidBus.class, SecurityPermissions.BUILD);
+    private static final ContainerHelper<ContainerFluidIO, PartSharedFluidBus> helper = new ContainerHelper<>(
+            ContainerFluidIO::new, PartSharedFluidBus.class, SecurityPermissions.BUILD);
 
-	public static ContainerFluidIO fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-		return helper.fromNetwork(windowId, inv, buf);
-	}
+    public static ContainerFluidIO fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+        return helper.fromNetwork(windowId, inv, buf);
+    }
 
-	public static boolean open(PlayerEntity player, ContainerLocator locator) {
-		return helper.open(player, locator);
-	}
+    public static boolean open(PlayerEntity player, ContainerLocator locator) {
+        return helper.open(player, locator);
+    }
 
-	private final PartSharedFluidBus bus;
+    private final PartSharedFluidBus bus;
 
-	public ContainerFluidIO(int id, PlayerInventory ip, PartSharedFluidBus te )
-	{
-		super( TYPE, id,ip, te );
-		this.bus = te;
-	}
+    public ContainerFluidIO(int id, PlayerInventory ip, PartSharedFluidBus te) {
+        super(TYPE, id, ip, te);
+        this.bus = te;
+    }
 
-	@Override
-	public IAEFluidTank getFluidConfigInventory()
-	{
-		return this.bus.getConfig();
-	}
+    @Override
+    public IAEFluidTank getFluidConfigInventory() {
+        return this.bus.getConfig();
+    }
 
-	@Override
-	protected void setupConfig()
-	{
-		this.setupUpgrades();
-	}
+    @Override
+    protected void setupConfig() {
+        this.setupUpgrades();
+    }
 }

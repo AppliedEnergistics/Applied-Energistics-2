@@ -18,7 +18,6 @@
 
 package appeng.tile.misc;
 
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -62,340 +61,295 @@ import appeng.util.inv.WrapperChainedItemHandler;
 import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.filter.AEItemFilters;
 
+public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, IConfigurableObject {
 
-public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, IConfigurableObject
-{
+    public static final int BYTE_MULTIPLIER = 8;
 
-	public static final int BYTE_MULTIPLIER = 8;
+    private final ConfigManager cm = new ConfigManager(this);
 
-	private final ConfigManager cm = new ConfigManager( this );
+    private final AppEngInternalInventory outputSlot = new AppEngInternalInventory(this, 1);
+    private final AppEngInternalInventory storageSlot = new AppEngInternalInventory(this, 1);
+    private final IItemHandler inputSlot = new CondenseItemHandler();
+    private final IFluidHandler fluidHandler = new FluidHandler();
+    private final MEHandler meHandler = new MEHandler();
 
-	private final AppEngInternalInventory outputSlot = new AppEngInternalInventory( this, 1 );
-	private final AppEngInternalInventory storageSlot = new AppEngInternalInventory( this, 1 );
-	private final IItemHandler inputSlot = new CondenseItemHandler();
-	private final IFluidHandler fluidHandler = new FluidHandler();
-	private final MEHandler meHandler = new MEHandler();
+    private final IItemHandler externalInv = new WrapperChainedItemHandler(this.inputSlot,
+            new WrapperFilteredItemHandler(this.outputSlot, AEItemFilters.EXTRACT_ONLY));
+    private final IItemHandler combinedInv = new WrapperChainedItemHandler(this.inputSlot, this.outputSlot,
+            this.storageSlot);
 
-	private final IItemHandler externalInv = new WrapperChainedItemHandler( this.inputSlot, new WrapperFilteredItemHandler( this.outputSlot, AEItemFilters.EXTRACT_ONLY ) );
-	private final IItemHandler combinedInv = new WrapperChainedItemHandler( this.inputSlot, this.outputSlot, this.storageSlot );
+    private double storedPower = 0;
 
-	private double storedPower = 0;
+    public TileCondenser(TileEntityType<?> tileEntityTypeIn) {
+        super(tileEntityTypeIn);
+        this.cm.registerSetting(Settings.CONDENSER_OUTPUT, CondenserOutput.TRASH);
+    }
 
-	public TileCondenser(TileEntityType<?> tileEntityTypeIn) {
-		super(tileEntityTypeIn);
-		this.cm.registerSetting( Settings.CONDENSER_OUTPUT, CondenserOutput.TRASH );
-	}
+    @Override
+    public CompoundNBT write(final CompoundNBT data) {
+        super.write(data);
+        this.cm.writeToNBT(data);
+        data.putDouble("storedPower", this.getStoredPower());
+        return data;
+    }
 
-	@Override
-	public CompoundNBT write(final CompoundNBT data )
-	{
-		super.write( data );
-		this.cm.writeToNBT( data );
-		data.putDouble("storedPower", this.getStoredPower());
-		return data;
-	}
+    @Override
+    public void read(final CompoundNBT data) {
+        super.read(data);
+        this.cm.readFromNBT(data);
+        this.setStoredPower(data.getDouble("storedPower"));
+    }
 
-	@Override
-	public void read(final CompoundNBT data )
-	{
-		super.read( data );
-		this.cm.readFromNBT( data );
-		this.setStoredPower( data.getDouble( "storedPower" ) );
-	}
+    public double getStorage() {
+        final ItemStack is = this.storageSlot.getStackInSlot(0);
+        if (!is.isEmpty()) {
+            if (is.getItem() instanceof IStorageComponent) {
+                final IStorageComponent sc = (IStorageComponent) is.getItem();
+                if (sc.isStorageComponent(is)) {
+                    return sc.getBytes(is) * BYTE_MULTIPLIER;
+                }
+            }
+        }
+        return 0;
+    }
 
-	public double getStorage()
-	{
-		final ItemStack is = this.storageSlot.getStackInSlot( 0 );
-		if( !is.isEmpty() )
-		{
-			if( is.getItem() instanceof IStorageComponent )
-			{
-				final IStorageComponent sc = (IStorageComponent) is.getItem();
-				if( sc.isStorageComponent( is ) )
-				{
-					return sc.getBytes( is ) * BYTE_MULTIPLIER;
-				}
-			}
-		}
-		return 0;
-	}
+    public void addPower(final double rawPower) {
+        this.setStoredPower(this.getStoredPower() + rawPower);
+        this.setStoredPower(Math.max(0.0, Math.min(this.getStorage(), this.getStoredPower())));
 
-	public void addPower( final double rawPower )
-	{
-		this.setStoredPower( this.getStoredPower() + rawPower );
-		this.setStoredPower( Math.max( 0.0, Math.min( this.getStorage(), this.getStoredPower() ) ) );
+        final double requiredPower = this.getRequiredPower();
+        final ItemStack output = this.getOutput();
+        while (requiredPower <= this.getStoredPower() && !output.isEmpty() && requiredPower > 0) {
+            if (this.canAddOutput(output)) {
+                this.setStoredPower(this.getStoredPower() - requiredPower);
+                this.addOutput(output);
+            } else {
+                break;
+            }
+        }
+    }
 
-		final double requiredPower = this.getRequiredPower();
-		final ItemStack output = this.getOutput();
-		while( requiredPower <= this.getStoredPower() && !output.isEmpty() && requiredPower > 0 )
-		{
-			if( this.canAddOutput( output ) )
-			{
-				this.setStoredPower( this.getStoredPower() - requiredPower );
-				this.addOutput( output );
-			}
-			else
-			{
-				break;
-			}
-		}
-	}
+    private boolean canAddOutput(final ItemStack output) {
+        return this.outputSlot.insertItem(0, output, true).isEmpty();
+    }
 
-	private boolean canAddOutput( final ItemStack output )
-	{
-		return this.outputSlot.insertItem( 0, output, true ).isEmpty();
-	}
+    /**
+     * make sure you validate with canAddOutput prior to this.
+     *
+     * @param output to be added output
+     */
+    private void addOutput(final ItemStack output) {
+        this.outputSlot.insertItem(0, output, false);
+    }
 
-	/**
-	 * make sure you validate with canAddOutput prior to this.
-	 *
-	 * @param output to be added output
-	 */
-	private void addOutput( final ItemStack output )
-	{
-		this.outputSlot.insertItem( 0, output, false );
-	}
+    IItemHandler getOutputSlot() {
+        return this.outputSlot;
+    }
 
-	IItemHandler getOutputSlot()
-	{
-		return this.outputSlot;
-	}
+    private ItemStack getOutput() {
+        final IMaterials materials = AEApi.instance().definitions().materials();
 
-	private ItemStack getOutput()
-	{
-		final IMaterials materials = AEApi.instance().definitions().materials();
+        switch ((CondenserOutput) this.cm.getSetting(Settings.CONDENSER_OUTPUT)) {
+            case MATTER_BALLS:
+                return materials.matterBall().maybeStack(1).orElse(ItemStack.EMPTY);
 
-		switch( (CondenserOutput) this.cm.getSetting( Settings.CONDENSER_OUTPUT ) )
-		{
-			case MATTER_BALLS:
-				return materials.matterBall().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+            case SINGULARITY:
+                return materials.singularity().maybeStack(1).orElse(ItemStack.EMPTY);
 
-			case SINGULARITY:
-				return materials.singularity().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+            case TRASH:
+            default:
+                return ItemStack.EMPTY;
+        }
+    }
 
-			case TRASH:
-			default:
-				return ItemStack.EMPTY;
-		}
-	}
+    public double getRequiredPower() {
+        return ((CondenserOutput) this.cm.getSetting(Settings.CONDENSER_OUTPUT)).requiredPower;
+    }
 
-	public double getRequiredPower()
-	{
-		return ( (CondenserOutput) this.cm.getSetting( Settings.CONDENSER_OUTPUT ) ).requiredPower;
-	}
+    @Override
+    public IItemHandler getInternalInventory() {
+        return this.combinedInv;
+    }
 
-	@Override
-	public IItemHandler getInternalInventory()
-	{
-		return this.combinedInv;
-	}
+    @Override
+    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+            final ItemStack removed, final ItemStack added) {
+        if (inv == this.outputSlot) {
+            this.meHandler.outputChanged(added, removed);
+        }
+    }
 
-	@Override
-	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
-	{
-		if( inv == this.outputSlot )
-		{
-			this.meHandler.outputChanged( added, removed );
-		}
-	}
+    @Override
+    public void updateSetting(final IConfigManager manager, final Settings settingName, final Enum<?> newValue) {
+        this.addPower(0);
+    }
 
-	@Override
-	public void updateSetting(final IConfigManager manager, final Settings settingName, final Enum<?> newValue )
-	{
-		this.addPower( 0 );
-	}
+    @Override
+    public IConfigManager getConfigManager() {
+        return this.cm;
+    }
 
-	@Override
-	public IConfigManager getConfigManager()
-	{
-		return this.cm;
-	}
+    public double getStoredPower() {
+        return this.storedPower;
+    }
 
-	public double getStoredPower()
-	{
-		return this.storedPower;
-	}
+    private void setStoredPower(final double storedPower) {
+        this.storedPower = storedPower;
+    }
 
-	private void setStoredPower( final double storedPower )
-	{
-		this.storedPower = storedPower;
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return (LazyOptional<T>) LazyOptional.of(() -> this.externalInv);
+        } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+            return (LazyOptional<T>) LazyOptional.of(() -> this.fluidHandler);
+        } else if (capability == Capabilities.STORAGE_MONITORABLE_ACCESSOR) {
+            return (LazyOptional<T>) LazyOptional.of(() -> this.meHandler);
+        }
+        return super.getCapability(capability, facing);
+    }
 
-	@SuppressWarnings( "unchecked" )
-	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing )
-	{
-		if( capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
-		{
-			return (LazyOptional<T>) LazyOptional.of(() -> this.externalInv);
-		}
-		else if( capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY )
-		{
-			return (LazyOptional<T>) LazyOptional.of(() -> this.fluidHandler);
-		}
-		else if( capability == Capabilities.STORAGE_MONITORABLE_ACCESSOR )
-		{
-			return (LazyOptional<T>) LazyOptional.of(() -> this.meHandler);
-		}
-		return super.getCapability( capability, facing );
-	}
+    private class CondenseItemHandler implements IItemHandler {
 
-	private class CondenseItemHandler implements IItemHandler
-	{
+        @Override
+        public int getSlots() {
+            // We only expose the void slot
+            return 1;
+        }
 
-		@Override
-		public int getSlots()
-		{
-			// We only expose the void slot
-			return 1;
-		}
+        @Override
+        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+            return slot == 0;
+        }
 
-		@Override
-		public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-			return slot == 0;
-		}
+        @Override
+        public ItemStack getStackInSlot(int slot) {
+            // The void slot never has any content
+            return ItemStack.EMPTY;
+        }
 
-		@Override
-		public ItemStack getStackInSlot( int slot )
-		{
-			// The void slot never has any content
-			return ItemStack.EMPTY;
-		}
+        @Override
+        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+            if (slot != 0) {
+                return stack;
+            }
+            if (!simulate && !stack.isEmpty()) {
+                TileCondenser.this.addPower(stack.getCount());
+            }
+            return ItemStack.EMPTY;
+        }
 
-		@Override
-		public ItemStack insertItem( int slot, ItemStack stack, boolean simulate )
-		{
-			if( slot != 0 )
-			{
-				return stack;
-			}
-			if( !simulate && !stack.isEmpty() )
-			{
-				TileCondenser.this.addPower( stack.getCount() );
-			}
-			return ItemStack.EMPTY;
-		}
+        @Override
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+            return ItemStack.EMPTY;
+        }
 
-		@Override
-		public ItemStack extractItem( int slot, int amount, boolean simulate )
-		{
-			return ItemStack.EMPTY;
-		}
+        @Override
+        public int getSlotLimit(int slot) {
+            return 64;
+        }
+    }
 
-		@Override
-		public int getSlotLimit( int slot )
-		{
-			return 64;
-		}
-	}
+    /**
+     * A fluid handler that exposes a 1 bucket tank that can only be filled, and -
+     * when filled - will add power to this condenser.
+     */
+    private class FluidHandler implements IFluidTank, IFluidHandler {
 
-	/**
-	 * A fluid handler that exposes a 1 bucket tank that can only be filled, and - when filled - will add power
-	 * to this condenser.
-	 */
-	private class FluidHandler implements IFluidTank, IFluidHandler
-	{
+        @Nonnull
+        @Override
+        public FluidStack getFluid() {
+            return FluidStack.EMPTY;
+        }
 
-		@Nonnull
-		@Override
-		public FluidStack getFluid() {
-			return FluidStack.EMPTY;
-		}
+        @Override
+        public int getFluidAmount() {
+            return 0;
+        }
 
-		@Override
-		public int getFluidAmount() {
-			return 0;
-		}
+        @Override
+        public int getCapacity() {
+            return FluidAttributes.BUCKET_VOLUME;
+        }
 
-		@Override
-		public int getCapacity() {
-			return FluidAttributes.BUCKET_VOLUME;
-		}
+        @Override
+        public boolean isFluidValid(FluidStack stack) {
+            return stack != FluidStack.EMPTY;
+        }
 
-		@Override
-		public boolean isFluidValid(FluidStack stack) {
-			return stack != FluidStack.EMPTY;
-		}
+        @Override
+        public int fill(FluidStack resource, FluidAction action) {
+            if (action == FluidAction.EXECUTE) {
+                final IStorageChannel<IAEFluidStack> chan = AEApi.instance().storage()
+                        .getStorageChannel(IFluidStorageChannel.class);
+                TileCondenser.this
+                        .addPower((resource == null ? 0.0 : (double) resource.getAmount()) / chan.transferFactor());
+            }
 
-		@Override
-		public int fill(FluidStack resource, FluidAction action) {
-			if( action == FluidAction.EXECUTE )
-			{
-				final IStorageChannel<IAEFluidStack> chan = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class );
-				TileCondenser.this.addPower( ( resource == null ? 0.0 : (double) resource.getAmount() ) / chan.transferFactor() );
-			}
+            return resource == null ? 0 : resource.getAmount();
+        }
 
-			return resource == null ? 0 : resource.getAmount();
-		}
+        @Nonnull
+        @Override
+        public FluidStack drain(int maxDrain, FluidAction action) {
+            return FluidStack.EMPTY;
+        }
 
-		@Nonnull
-		@Override
-		public FluidStack drain(int maxDrain, FluidAction action) {
-			return FluidStack.EMPTY;
-		}
+        @Nonnull
+        @Override
+        public FluidStack drain(FluidStack resource, FluidAction action) {
+            return FluidStack.EMPTY;
+        }
 
-		@Nonnull
-		@Override
-		public FluidStack drain(FluidStack resource, FluidAction action) {
-			return FluidStack.EMPTY;
-		}
+        @Override
+        public int getTanks() {
+            return 1;
+        }
 
-		@Override
-		public int getTanks() {
-			return 1;
-		}
+        @Nonnull
+        @Override
+        public FluidStack getFluidInTank(int tank) {
+            return FluidStack.EMPTY;
+        }
 
-		@Nonnull
-		@Override
-		public FluidStack getFluidInTank(int tank) {
-			return FluidStack.EMPTY;
-		}
+        @Override
+        public int getTankCapacity(int tank) {
+            return tank == 0 ? getCapacity() : 0;
+        }
 
-		@Override
-		public int getTankCapacity(int tank) {
-			return tank == 0 ? getCapacity() : 0;
-		}
+        @Override
+        public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
+            return tank == 0 && isFluidValid(stack);
+        }
+    }
 
-		@Override
-		public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-			return tank == 0 && isFluidValid(stack);
-		}
-	}
+    /**
+     * This is used to expose a fake ME subnetwork that is only composed of this
+     * condenser tile. The purpose of this is to enable the condenser to override
+     * the {@link appeng.api.storage.IMEInventoryHandler#validForPass(int)} method
+     * to make sure a condenser is only ever used if an item can't go anywhere else.
+     */
+    private class MEHandler implements IStorageMonitorableAccessor, IStorageMonitorable {
+        private final CondenserItemInventory itemInventory = new CondenserItemInventory(TileCondenser.this);
 
-	/**
-	 * This is used to expose a fake ME subnetwork that is only composed of this condenser tile. The purpose of this is
-	 * to enable the condenser to
-	 * override the {@link appeng.api.storage.IMEInventoryHandler#validForPass(int)} method to make sure a condenser is
-	 * only ever used if an item
-	 * can't go anywhere else.
-	 */
-	private class MEHandler implements IStorageMonitorableAccessor, IStorageMonitorable
-	{
-		private final CondenserItemInventory itemInventory = new CondenserItemInventory( TileCondenser.this );
+        void outputChanged(ItemStack added, ItemStack removed) {
+            this.itemInventory.updateOutput(added, removed);
+        }
 
-		void outputChanged( ItemStack added, ItemStack removed )
-		{
-			this.itemInventory.updateOutput( added, removed );
-		}
+        @Nullable
+        @Override
+        public IStorageMonitorable getInventory(IActionSource src) {
+            return this;
+        }
 
-		@Nullable
-		@Override
-		public IStorageMonitorable getInventory( IActionSource src )
-		{
-			return this;
-		}
-
-		@Override
-		public <T extends IAEStack<T>> IMEMonitor<T> getInventory( IStorageChannel<T> channel )
-		{
-			if( channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
-			{
-				return (IMEMonitor<T>) this.itemInventory;
-			}
-			else
-			{
-				return new CondenserVoidInventory<>( TileCondenser.this, channel );
-			}
-		}
-	}
+        @Override
+        public <T extends IAEStack<T>> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
+            if (channel == AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)) {
+                return (IMEMonitor<T>) this.itemInventory;
+            } else {
+                return new CondenserVoidInventory<>(TileCondenser.this, channel);
+            }
+        }
+    }
 }

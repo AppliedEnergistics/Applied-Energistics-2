@@ -18,11 +18,11 @@
 
 package appeng.client.render;
 
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
+
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
@@ -47,79 +47,69 @@ import net.minecraftforge.fluids.FluidStack;
 
 import appeng.fluids.items.FluidDummyItem;
 
-
 /**
- * This baked model class is used as a dispatcher to redirect the renderer to the *real* model that should be used based
- * on the item stack.
- * A custom Item Override List is used to accomplish this.
+ * This baked model class is used as a dispatcher to redirect the renderer to
+ * the *real* model that should be used based on the item stack. A custom Item
+ * Override List is used to accomplish this.
  */
-public class DummyFluidDispatcherBakedModel extends DelegateBakedModel
-{
-	private final Function<Material, TextureAtlasSprite> bakedTextureGetter;
+public class DummyFluidDispatcherBakedModel extends DelegateBakedModel {
+    private final Function<Material, TextureAtlasSprite> bakedTextureGetter;
 
-	public DummyFluidDispatcherBakedModel( IBakedModel baseModel, Function<Material, TextureAtlasSprite> bakedTextureGetter )
-	{
-		super( baseModel );
-		this.bakedTextureGetter = bakedTextureGetter;
-	}
+    public DummyFluidDispatcherBakedModel(IBakedModel baseModel,
+            Function<Material, TextureAtlasSprite> bakedTextureGetter) {
+        super(baseModel);
+        this.bakedTextureGetter = bakedTextureGetter;
+    }
 
-	// This is never used. See the item override list below.
-	@Override
-	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, Random rand )
-	{
-		return Collections.emptyList();
-	}
+    // This is never used. See the item override list below.
+    @Override
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
+        return Collections.emptyList();
+    }
 
-	@Override
-	public boolean isGui3d()
-	{
-		return this.getBaseModel().isGui3d();
-	}
+    @Override
+    public boolean isGui3d() {
+        return this.getBaseModel().isGui3d();
+    }
 
-	@Override
-	public boolean func_230044_c_()
-	{
-		return getBaseModel().func_230044_c_();
-	}
+    @Override
+    public boolean func_230044_c_() {
+        return getBaseModel().func_230044_c_();
+    }
 
-	@Override
-	public boolean isBuiltInRenderer()
-	{
-		return false;
-	}
+    @Override
+    public boolean isBuiltInRenderer() {
+        return false;
+    }
 
-	@Override
-	public ItemOverrideList getOverrides()
-	{
-		return new ItemOverrideList()
-		{
-			@Override
-			public IBakedModel getModelWithOverrides( IBakedModel originalModel, ItemStack stack, World world, LivingEntity entity )
-			{
-				if( !( stack.getItem() instanceof FluidDummyItem ) )
-				{
-					return originalModel;
-				}
+    @Override
+    public ItemOverrideList getOverrides() {
+        return new ItemOverrideList() {
+            @Override
+            public IBakedModel getModelWithOverrides(IBakedModel originalModel, ItemStack stack, World world,
+                    LivingEntity entity) {
+                if (!(stack.getItem() instanceof FluidDummyItem)) {
+                    return originalModel;
+                }
 
-				FluidDummyItem itemFacade = (FluidDummyItem) stack.getItem();
+                FluidDummyItem itemFacade = (FluidDummyItem) stack.getItem();
 
-				FluidStack fluidStack = itemFacade.getFluidStack( stack );
-				if( fluidStack == null )
-				{
-					fluidStack = new FluidStack( Fluids.WATER, FluidAttributes.BUCKET_VOLUME );
-				}
+                FluidStack fluidStack = itemFacade.getFluidStack(stack);
+                if (fluidStack == null) {
+                    fluidStack = new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME);
+                }
 
-				FluidAttributes attributes = fluidStack.getFluid().getAttributes();
-				ResourceLocation stillTexture = attributes.getStillTexture(fluidStack);
-				Material stillMaterial = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, stillTexture);
-				TextureAtlasSprite sprite = DummyFluidDispatcherBakedModel.this.bakedTextureGetter.apply(stillMaterial);
-				if( sprite == null )
-				{
-					return new DummyFluidBakedModel( ImmutableList.of() );
-				}
+                FluidAttributes attributes = fluidStack.getFluid().getAttributes();
+                ResourceLocation stillTexture = attributes.getStillTexture(fluidStack);
+                Material stillMaterial = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, stillTexture);
+                TextureAtlasSprite sprite = DummyFluidDispatcherBakedModel.this.bakedTextureGetter.apply(stillMaterial);
+                if (sprite == null) {
+                    return new DummyFluidBakedModel(ImmutableList.of());
+                }
 
-				return new DummyFluidBakedModel( ItemLayerModel.getQuadsForSprite( 0, sprite, TransformationMatrix.identity() ) );
-			}
-		};
-	}
+                return new DummyFluidBakedModel(
+                        ItemLayerModel.getQuadsForSprite(0, sprite, TransformationMatrix.identity()));
+            }
+        };
+    }
 }

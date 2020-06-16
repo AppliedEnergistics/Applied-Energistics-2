@@ -18,7 +18,6 @@
 
 package appeng.fluids.items;
 
-
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -29,7 +28,6 @@ import net.minecraftforge.fluids.FluidStack;
 
 import appeng.items.AEBaseItem;
 
-
 /**
  * Dummy item to display the fluid Icon
  *
@@ -37,49 +35,41 @@ import appeng.items.AEBaseItem;
  * @version rv6 - 2018-01-22
  * @since rv6 2018-01-22
  */
-public class FluidDummyItem extends AEBaseItem
-{
+public class FluidDummyItem extends AEBaseItem {
 
-	public FluidDummyItem(Properties properties) {
-		super(properties);
-	}
+    public FluidDummyItem(Properties properties) {
+        super(properties);
+    }
 
-	@Override
-	public String getTranslationKey(ItemStack stack) {
-		FluidStack fluidStack = this.getFluidStack( stack );
-		if( fluidStack == null )
-		{
-			fluidStack = new FluidStack( Fluids.WATER, FluidAttributes.BUCKET_VOLUME );
-		}
-		return fluidStack.getTranslationKey();
-	}
+    @Override
+    public String getTranslationKey(ItemStack stack) {
+        FluidStack fluidStack = this.getFluidStack(stack);
+        if (fluidStack == null) {
+            fluidStack = new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME);
+        }
+        return fluidStack.getTranslationKey();
+    }
 
-	public FluidStack getFluidStack( ItemStack is )
-	{
-		if( is.hasTag() )
-		{
-			CompoundNBT tag = is.getTag();
-			return FluidStack.loadFluidStackFromNBT( tag );
-		}
-		return null;
-	}
+    public FluidStack getFluidStack(ItemStack is) {
+        if (is.hasTag()) {
+            CompoundNBT tag = is.getTag();
+            return FluidStack.loadFluidStackFromNBT(tag);
+        }
+        return null;
+    }
 
-	public void setFluidStack( ItemStack is, FluidStack fs )
-	{
-		if( fs == null )
-		{
-			is.setTag( null );
-		}
-		else
-		{
-			CompoundNBT tag = new CompoundNBT();
-			fs.writeToNBT( tag );
-			is.setTag( tag );
-		}
-	}
+    public void setFluidStack(ItemStack is, FluidStack fs) {
+        if (fs == null) {
+            is.setTag(null);
+        } else {
+            CompoundNBT tag = new CompoundNBT();
+            fs.writeToNBT(tag);
+            is.setTag(tag);
+        }
+    }
 
-	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		// Don't show this item in CreativeTabs
-	}
+    @Override
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+        // Don't show this item in CreativeTabs
+    }
 }

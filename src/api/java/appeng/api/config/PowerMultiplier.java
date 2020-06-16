@@ -23,23 +23,19 @@
 
 package appeng.api.config;
 
+public enum PowerMultiplier {
+    ONE, CONFIG;
 
-public enum PowerMultiplier
-{
-	ONE, CONFIG;
+    /**
+     * please do not edit this value, it is set when AE loads its config files.
+     */
+    public double multiplier = 1.0;
 
-	/**
-	 * please do not edit this value, it is set when AE loads its config files.
-	 */
-	public double multiplier = 1.0;
+    public double multiply(final double in) {
+        return in * this.multiplier;
+    }
 
-	public double multiply( final double in )
-	{
-		return in * this.multiplier;
-	}
-
-	public double divide( final double in )
-	{
-		return in / this.multiplier;
-	}
+    public double divide(final double in) {
+        return in / this.multiplier;
+    }
 }

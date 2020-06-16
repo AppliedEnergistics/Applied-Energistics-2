@@ -18,14 +18,8 @@
 
 package appeng.block.storage;
 
+import javax.annotation.Nullable;
 
-import appeng.block.AEBaseTileBlock;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.ContainerDrive;
-import appeng.container.implementations.ContainerQuartzKnife;
-import appeng.tile.storage.TileDrive;
-import appeng.util.Platform;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -35,34 +29,34 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
+import appeng.block.AEBaseTileBlock;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerDrive;
+import appeng.container.implementations.ContainerQuartzKnife;
+import appeng.tile.storage.TileDrive;
+import appeng.util.Platform;
 
+public class BlockDrive extends AEBaseTileBlock<TileDrive> {
 
-public class BlockDrive extends AEBaseTileBlock<TileDrive>
-{
+    public BlockDrive() {
+        super(defaultProps(Material.IRON));
+    }
 
-	public BlockDrive()
-	{
-		super( defaultProps(Material.IRON) );
-	}
+    @Override
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+        if (p.isCrouching()) {
+            return ActionResultType.PASS;
+        }
 
-	@Override
-	public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit)
-	{
-		if( p.isCrouching() )
-		{
-			return ActionResultType.PASS;
-		}
-
-		final TileDrive tg = this.getTileEntity( w, pos );
-		if( tg != null )
-		{
-			if( Platform.isServer() )
-			{
-				ContainerOpener.openContainer(ContainerDrive.TYPE, p, ContainerLocator.forTileEntity(tg));
-			}
-			return ActionResultType.SUCCESS;
-		}
-		return ActionResultType.PASS;
-	}
+        final TileDrive tg = this.getTileEntity(w, pos);
+        if (tg != null) {
+            if (Platform.isServer()) {
+                ContainerOpener.openContainer(ContainerDrive.TYPE, p, ContainerLocator.forTileEntity(tg));
+            }
+            return ActionResultType.SUCCESS;
+        }
+        return ActionResultType.PASS;
+    }
 }

@@ -1,7 +1,6 @@
 
 package appeng.client.gui;
 
-
 import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -11,77 +10,66 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.SlotItemHandler;
 
-
 /**
- * A proxy for a slot that will always return an itemstack with size 1, if there is an item in the slot.
- * Used to prevent the default item count from rendering.
+ * A proxy for a slot that will always return an itemstack with size 1, if there
+ * is an item in the slot. Used to prevent the default item count from
+ * rendering.
  */
-class Size1Slot extends SlotItemHandler
-{
+class Size1Slot extends SlotItemHandler {
 
-	private final SlotItemHandler delegate;
+    private final SlotItemHandler delegate;
 
-	public Size1Slot( SlotItemHandler delegate )
-	{
-		super( delegate.getItemHandler(), delegate.getSlotIndex(), delegate.xPos, delegate.yPos );
-		this.delegate = delegate;
-	}
+    public Size1Slot(SlotItemHandler delegate) {
+        super(delegate.getItemHandler(), delegate.getSlotIndex(), delegate.xPos, delegate.yPos);
+        this.delegate = delegate;
+    }
 
-	@Override
-	@Nonnull
-	public ItemStack getStack()
-	{
-		ItemStack orgStack = this.delegate.getStack();
-		if( !orgStack.isEmpty() )
-		{
-			ItemStack modifiedStack = orgStack.copy();
-			modifiedStack.setCount( 1 );
-			return modifiedStack;
-		}
+    @Override
+    @Nonnull
+    public ItemStack getStack() {
+        ItemStack orgStack = this.delegate.getStack();
+        if (!orgStack.isEmpty()) {
+            ItemStack modifiedStack = orgStack.copy();
+            modifiedStack.setCount(1);
+            return modifiedStack;
+        }
 
-		return ItemStack.EMPTY;
-	}
+        return ItemStack.EMPTY;
+    }
 
-	@Override
-	public boolean getHasStack()
-	{
-		return this.delegate.getHasStack();
-	}
+    @Override
+    public boolean getHasStack() {
+        return this.delegate.getHasStack();
+    }
 
-	@Override
-	public int getSlotStackLimit()
-	{
-		return this.delegate.getSlotStackLimit();
-	}
+    @Override
+    public int getSlotStackLimit() {
+        return this.delegate.getSlotStackLimit();
+    }
 
-	@Override
-	public int getItemStackLimit( ItemStack stack )
-	{
-		return this.delegate.getItemStackLimit( stack );
-	}
+    @Override
+    public int getItemStackLimit(ItemStack stack) {
+        return this.delegate.getItemStackLimit(stack);
+    }
 
-	@Override
-	public boolean canTakeStack( PlayerEntity playerIn )
-	{
-		return this.delegate.canTakeStack( playerIn );
-	}
+    @Override
+    public boolean canTakeStack(PlayerEntity playerIn) {
+        return this.delegate.canTakeStack(playerIn);
+    }
 
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public boolean isEnabled()
-	{
-		return this.delegate.isEnabled();
-	}
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public boolean isEnabled() {
+        return this.delegate.isEnabled();
+    }
 
-	@Override
-	public int getSlotIndex()
-	{
-		return this.delegate.getSlotIndex();
-	}
+    @Override
+    public int getSlotIndex() {
+        return this.delegate.getSlotIndex();
+    }
 
-	@Override
-	public boolean isSameInventory( Slot other )
-	{
-		return this.delegate.isSameInventory( other );
-	}
+    @Override
+    public boolean isSameInventory(Slot other) {
+        return this.delegate.isSameInventory(other);
+    }
 }

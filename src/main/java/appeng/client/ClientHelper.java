@@ -18,14 +18,8 @@
 
 package appeng.client;
 
-
 import java.util.*;
 
-import appeng.client.render.effects.*;
-import appeng.core.AEConfig;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketAssemblerAnimation;
-import appeng.core.sync.packets.PacketValueConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
@@ -39,160 +33,144 @@ import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-
-import appeng.api.parts.CableRenderMode;
-import appeng.block.AEBaseBlock;
-import appeng.core.AppEng;
-import appeng.helpers.IMouseWheelItem;
-import appeng.server.ServerHelper;
-import appeng.util.Platform;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
+import appeng.api.parts.CableRenderMode;
+import appeng.block.AEBaseBlock;
+import appeng.client.render.effects.*;
+import appeng.core.AEConfig;
+import appeng.core.AppEng;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketAssemblerAnimation;
+import appeng.core.sync.packets.PacketValueConfig;
+import appeng.helpers.IMouseWheelItem;
+import appeng.server.ServerHelper;
+import appeng.util.Platform;
 
-public class ClientHelper extends ServerHelper
-{
-	private final static String KEY_CATEGORY = "key.appliedenergistics2.category";
+public class ClientHelper extends ServerHelper {
+    private final static String KEY_CATEGORY = "key.appliedenergistics2.category";
 
-	private final EnumMap<ActionKey, KeyBinding> bindings = new EnumMap<>( ActionKey.class );
+    private final EnumMap<ActionKey, KeyBinding> bindings = new EnumMap<>(ActionKey.class);
 
-	public void clientInit()
-	{
-		MinecraftForge.EVENT_BUS.addListener(this::postPlayerRender);
-		MinecraftForge.EVENT_BUS.addListener(this::wheelEvent);
+    public void clientInit() {
+        MinecraftForge.EVENT_BUS.addListener(this::postPlayerRender);
+        MinecraftForge.EVENT_BUS.addListener(this::wheelEvent);
 
-		for( ActionKey key : ActionKey.values() )
-		{
-			final KeyBinding binding = new KeyBinding( key.getTranslationKey(), key.getDefaultKey(), KEY_CATEGORY );
-			ClientRegistry.registerKeyBinding( binding );
-			this.bindings.put( key, binding );
-		}
-	}
+        for (ActionKey key : ActionKey.values()) {
+            final KeyBinding binding = new KeyBinding(key.getTranslationKey(), key.getDefaultKey(), KEY_CATEGORY);
+            ClientRegistry.registerKeyBinding(binding);
+            this.bindings.put(key, binding);
+        }
+    }
 
-	@Override
-	public World getWorld()
-	{
-		if( Platform.isClient() )
-		{
-			return Minecraft.getInstance().world;
-		}
-		else
-		{
-			return super.getWorld();
-		}
-	}
+    @Override
+    public World getWorld() {
+        if (Platform.isClient()) {
+            return Minecraft.getInstance().world;
+        } else {
+            return super.getWorld();
+        }
+    }
 
-	@Override
-	public void bindTileEntitySpecialRenderer( final Class<? extends TileEntity> tile, final AEBaseBlock blk )
-	{
+    @Override
+    public void bindTileEntitySpecialRenderer(final Class<? extends TileEntity> tile, final AEBaseBlock blk) {
 
-	}
+    }
 
-	@Override
-	public List<? extends PlayerEntity> getPlayers()
-	{
-		if( Platform.isClient() )
-		{
-			return Collections.singletonList(Minecraft.getInstance().player);
-		}
-		else
-		{
-			return super.getPlayers();
-		}
-	}
+    @Override
+    public List<? extends PlayerEntity> getPlayers() {
+        if (Platform.isClient()) {
+            return Collections.singletonList(Minecraft.getInstance().player);
+        } else {
+            return super.getPlayers();
+        }
+    }
 
-	// FIXME: Instead of doing a custom packet and this dispatcher, we can use the vanilla particle system
-	@Override
-	public void spawnEffect( final EffectType effect, final World world, final double posX, final double posY, final double posZ, final Object o )
-	{
-		if( AEConfig.instance().isEnableEffects() )
-		{
-			switch( effect )
-			{
-				case Assembler:
-					this.spawnAssembler( world, posX, posY, posZ, o );
-					return;
-				case Vibrant:
-					this.spawnVibrant( world, posX, posY, posZ );
-					return;
-				case Crafting:
-					this.spawnCrafting( world, posX, posY, posZ );
-					return;
-				case Energy:
-					this.spawnEnergy( world, posX, posY, posZ );
-					return;
-				case Lightning:
-					this.spawnLightning( world, posX, posY, posZ );
-					return;
-				case LightningArc:
-					this.spawnLightningArc( world, posX, posY, posZ, (Vec3d) o );
-					return;
-				default:
-			}
-		}
-	}
+    // FIXME: Instead of doing a custom packet and this dispatcher, we can use the
+    // vanilla particle system
+    @Override
+    public void spawnEffect(final EffectType effect, final World world, final double posX, final double posY,
+            final double posZ, final Object o) {
+        if (AEConfig.instance().isEnableEffects()) {
+            switch (effect) {
+                case Assembler:
+                    this.spawnAssembler(world, posX, posY, posZ, o);
+                    return;
+                case Vibrant:
+                    this.spawnVibrant(world, posX, posY, posZ);
+                    return;
+                case Crafting:
+                    this.spawnCrafting(world, posX, posY, posZ);
+                    return;
+                case Energy:
+                    this.spawnEnergy(world, posX, posY, posZ);
+                    return;
+                case Lightning:
+                    this.spawnLightning(world, posX, posY, posZ);
+                    return;
+                case LightningArc:
+                    this.spawnLightningArc(world, posX, posY, posZ, (Vec3d) o);
+                    return;
+                default:
+            }
+        }
+    }
 
-	@Override
-	public boolean shouldAddParticles( final Random r )
-	{
-		switch (Minecraft.getInstance().gameSettings.particles) {
-			default:
-			case ALL:
-				return true;
-			case DECREASED:
-				return r.nextBoolean();
-			case MINIMAL:
-				return false;
-		}
-	}
+    @Override
+    public boolean shouldAddParticles(final Random r) {
+        switch (Minecraft.getInstance().gameSettings.particles) {
+            default:
+            case ALL:
+                return true;
+            case DECREASED:
+                return r.nextBoolean();
+            case MINIMAL:
+                return false;
+        }
+    }
 
-	@Override
-	public RayTraceResult getRTR()
-	{
-		return Minecraft.getInstance().objectMouseOver;
-	}
+    @Override
+    public RayTraceResult getRTR() {
+        return Minecraft.getInstance().objectMouseOver;
+    }
 
-	@Override
-	public void postInit()
-	{
-	}
+    @Override
+    public void postInit() {
+    }
 
-	@Override
-	public CableRenderMode getRenderMode()
-	{
-		if( Platform.isServer() )
-		{
-			return super.getRenderMode();
-		}
+    @Override
+    public CableRenderMode getRenderMode() {
+        if (Platform.isServer()) {
+            return super.getRenderMode();
+        }
 
-		final Minecraft mc = Minecraft.getInstance();
-		final PlayerEntity player = mc.player;
+        final Minecraft mc = Minecraft.getInstance();
+        final PlayerEntity player = mc.player;
 
-		return this.renderModeForPlayer( player );
-	}
+        return this.renderModeForPlayer(player);
+    }
 
-	@Override
-	public void triggerUpdates()
-	{
-		final Minecraft mc = Minecraft.getInstance();
-		if( mc.player == null || mc.world == null )
-		{
-			return;
-		}
+    @Override
+    public void triggerUpdates() {
+        final Minecraft mc = Minecraft.getInstance();
+        if (mc.player == null || mc.world == null) {
+            return;
+        }
 
-		final PlayerEntity player = mc.player;
+        final PlayerEntity player = mc.player;
 
-		final int x = (int) player.getPosX();
-		final int y = (int) player.getPosY();
-		final int z = (int) player.getPosZ();
+        final int x = (int) player.getPosX();
+        final int y = (int) player.getPosY();
+        final int z = (int) player.getPosZ();
 
-		final int range = 16 * 16;
+        final int range = 16 * 16;
 
-		mc.worldRenderer.markBlockRangeForRenderUpdate( x - range, y - range, z - range, x + range, y + range, z + range );
-	}
+        mc.worldRenderer.markBlockRangeForRenderUpdate(x - range, y - range, z - range, x + range, y + range,
+                z + range);
+    }
 
-	private void postPlayerRender( final RenderLivingEvent.Pre p )
-	{
+    private void postPlayerRender(final RenderLivingEvent.Pre p) {
 //	FIXME	final PlayerColor player = TickHandler.INSTANCE.getPlayerColors().get( p.getEntity().getEntityId() );
 //	FIXME	if( player != null )
 //	FIXME	{
@@ -203,83 +181,80 @@ public class ClientHelper extends ServerHelper
 //	FIXME		// FIXME: This is most certainly not going to work!
 //	FIXME		GlStateManager.color4f( r / 255.0f, g / 255.0f, b / 255.0f, 1.0f );
 //	FIXME	}
-	}
+    }
 
-	// FIXME: double check all of these particle spawns, also move any of these that are triggered as part of a packet to the vanilla way of spawning particles from the server directly
-	private void spawnAssembler( final World world, final double posX, final double posY, final double posZ, final Object o )
-	{
-		final PacketAssemblerAnimation paa = (PacketAssemblerAnimation) o;
+    // FIXME: double check all of these particle spawns, also move any of these that
+    // are triggered as part of a packet to the vanilla way of spawning particles
+    // from the server directly
+    private void spawnAssembler(final World world, final double posX, final double posY, final double posZ,
+            final Object o) {
+        final PacketAssemblerAnimation paa = (PacketAssemblerAnimation) o;
 
-		final AssemblerFX fx = new AssemblerFX( world, posX, posY, posZ, 0.0D, 0.0D, 0.0D, paa.rate, paa.is.asItemStackRepresentation() );
-		Minecraft.getInstance().particles.addEffect( fx );
-	}
+        final AssemblerFX fx = new AssemblerFX(world, posX, posY, posZ, 0.0D, 0.0D, 0.0D, paa.rate,
+                paa.is.asItemStackRepresentation());
+        Minecraft.getInstance().particles.addEffect(fx);
+    }
 
-	private void spawnVibrant( final World w, final double x, final double y, final double z )
-	{
-		if( AppEng.proxy.shouldAddParticles( Platform.getRandom() ) )
-		{
-			final double d0 = ( Platform.getRandomFloat() - 0.5F ) * 0.26D;
-			final double d1 = ( Platform.getRandomFloat() - 0.5F ) * 0.26D;
-			final double d2 = ( Platform.getRandomFloat() - 0.5F ) * 0.26D;
+    private void spawnVibrant(final World w, final double x, final double y, final double z) {
+        if (AppEng.proxy.shouldAddParticles(Platform.getRandom())) {
+            final double d0 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
+            final double d1 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
+            final double d2 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
 
-			Minecraft.getInstance().particles.addParticle(VibrantFX.TYPE, x + d0, y + d1, z + d2, 0.0D, 0.0D, 0.0D);
-		}
-	}
+            Minecraft.getInstance().particles.addParticle(VibrantFX.TYPE, x + d0, y + d1, z + d2, 0.0D, 0.0D, 0.0D);
+        }
+    }
 
-	private void spawnCrafting( final World w, final double posX, final double posY, final double posZ )
-	{
-		final float x = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
-		final float y = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
-		final float z = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
+    private void spawnCrafting(final World w, final double posX, final double posY, final double posZ) {
+        final float x = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
+        final float y = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
+        final float z = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
 
-		Minecraft.getInstance().particles.addParticle(CraftingFx.TYPE, posX + x, posY + y, posZ + z, -x * 0.2, -y * 0.2, -z * 0.2);
-	}
+        Minecraft.getInstance().particles.addParticle(CraftingFx.TYPE, posX + x, posY + y, posZ + z, -x * 0.2, -y * 0.2,
+                -z * 0.2);
+    }
 
-	private void spawnEnergy( final World w, final double posX, final double posY, final double posZ )
-	{
-		final float x = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
-		final float y = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
-		final float z = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
+    private void spawnEnergy(final World w, final double posX, final double posY, final double posZ) {
+        final float x = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
+        final float y = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
+        final float z = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
 
-		Minecraft.getInstance().particles.addParticle(EnergyFx.TYPE, posX + x, posY + y, posZ + z, -x * 0.1, -y * 0.1, -z * 0.1);
-	}
+        Minecraft.getInstance().particles.addParticle(EnergyFx.TYPE, posX + x, posY + y, posZ + z, -x * 0.1, -y * 0.1,
+                -z * 0.1);
+    }
 
-	private void spawnLightning( final World world, final double posX, final double posY, final double posZ )
-	{
-		Minecraft.getInstance().particles.addParticle(LightningFX.TYPE, posX, posY + 0.3f, posZ, 0.0f, 0.0f, 0.0f);
-	}
+    private void spawnLightning(final World world, final double posX, final double posY, final double posZ) {
+        Minecraft.getInstance().particles.addParticle(LightningFX.TYPE, posX, posY + 0.3f, posZ, 0.0f, 0.0f, 0.0f);
+    }
 
-	private void spawnLightningArc( final World world, final double posX, final double posY, final double posZ, final Vec3d second )
-	{
-		final LightningFX fx = new LightningArcFX( world, posX, posY, posZ, second.x, second.y, second.z, 0.0f, 0.0f, 0.0f );
-		Minecraft.getInstance().particles.addEffect( fx );
-	}
+    private void spawnLightningArc(final World world, final double posX, final double posY, final double posZ,
+            final Vec3d second) {
+        final LightningFX fx = new LightningArcFX(world, posX, posY, posZ, second.x, second.y, second.z, 0.0f, 0.0f,
+                0.0f);
+        Minecraft.getInstance().particles.addEffect(fx);
+    }
 
-	private void wheelEvent( final InputEvent.MouseScrollEvent me )
-	{
-		if( me.getScrollDelta() == 0 )
-		{
-			return;
-		}
+    private void wheelEvent(final InputEvent.MouseScrollEvent me) {
+        if (me.getScrollDelta() == 0) {
+            return;
+        }
 
-		final Minecraft mc = Minecraft.getInstance();
-		final PlayerEntity player = mc.player;
-		if( player.isCrouching() )
-		{
-			final boolean mainHand = player.getHeldItem( Hand.MAIN_HAND ).getItem() instanceof IMouseWheelItem;
-			final boolean offHand = player.getHeldItem( Hand.OFF_HAND ).getItem() instanceof IMouseWheelItem;
+        final Minecraft mc = Minecraft.getInstance();
+        final PlayerEntity player = mc.player;
+        if (player.isCrouching()) {
+            final boolean mainHand = player.getHeldItem(Hand.MAIN_HAND).getItem() instanceof IMouseWheelItem;
+            final boolean offHand = player.getHeldItem(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem;
 
-			if( mainHand || offHand )
-			{
-				NetworkHandler.instance().sendToServer( new PacketValueConfig( "Item", me.getScrollDelta() > 0 ? "WheelUp" : "WheelDown" ) );
-				me.setCanceled( true );
-			}
-		}
-	}
+            if (mainHand || offHand) {
+                NetworkHandler.instance()
+                        .sendToServer(new PacketValueConfig("Item", me.getScrollDelta() > 0 ? "WheelUp" : "WheelDown"));
+                me.setCanceled(true);
+            }
+        }
+    }
 
-	@Override
-	public boolean isActionKey( ActionKey key, InputMappings.Input pressedKey )
-	{
-		return this.bindings.get( key ).isActiveAndMatches( pressedKey );
-	}
+    @Override
+    public boolean isActionKey(ActionKey key, InputMappings.Input pressedKey) {
+        return this.bindings.get(key).isActiveAndMatches(pressedKey);
+    }
 }

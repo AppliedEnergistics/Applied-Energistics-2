@@ -18,7 +18,6 @@
 
 package appeng.util.inv;
 
-
 import java.util.Iterator;
 
 import net.minecraft.item.ItemStack;
@@ -28,240 +27,200 @@ import appeng.api.config.FuzzyMode;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 
+public class AdaptorItemHandler extends InventoryAdaptor {
+    protected final IItemHandler itemHandler;
 
-public class AdaptorItemHandler extends InventoryAdaptor
-{
-	protected final IItemHandler itemHandler;
+    public AdaptorItemHandler(IItemHandler itemHandler) {
+        this.itemHandler = itemHandler;
+    }
 
-	public AdaptorItemHandler( IItemHandler itemHandler )
-	{
-		this.itemHandler = itemHandler;
-	}
+    @Override
+    public boolean hasSlots() {
+        return this.itemHandler.getSlots() > 0;
+    }
 
-	@Override
-	public boolean hasSlots()
-	{
-		return this.itemHandler.getSlots() > 0;
-	}
+    @Override
+    public ItemStack removeItems(int amount, ItemStack filter, IInventoryDestination destination) {
+        int slots = this.itemHandler.getSlots();
+        ItemStack rv = ItemStack.EMPTY;
 
-	@Override
-	public ItemStack removeItems( int amount, ItemStack filter, IInventoryDestination destination )
-	{
-		int slots = this.itemHandler.getSlots();
-		ItemStack rv = ItemStack.EMPTY;
+        for (int slot = 0; slot < slots && amount > 0; slot++) {
+            final ItemStack is = this.itemHandler.getStackInSlot(slot);
+            if (is.isEmpty() || (!filter.isEmpty() && !Platform.itemComparisons().isSameItem(is, filter))) {
+                continue;
+            }
 
-		for( int slot = 0; slot < slots && amount > 0; slot++ )
-		{
-			final ItemStack is = this.itemHandler.getStackInSlot( slot );
-			if( is.isEmpty() || ( !filter.isEmpty() && !Platform.itemComparisons().isSameItem( is, filter ) ) )
-			{
-				continue;
-			}
+            if (destination != null) {
+                ItemStack extracted = this.itemHandler.extractItem(slot, amount, true);
+                if (extracted.isEmpty()) {
+                    continue;
+                }
 
-			if( destination != null )
-			{
-				ItemStack extracted = this.itemHandler.extractItem( slot, amount, true );
-				if( extracted.isEmpty() )
-				{
-					continue;
-				}
+                if (!destination.canInsert(extracted)) {
+                    continue;
+                }
+            }
 
-				if( !destination.canInsert( extracted ) )
-				{
-					continue;
-				}
-			}
+            // Attempt extracting it
+            ItemStack extracted = this.itemHandler.extractItem(slot, amount, false);
 
-			// Attempt extracting it
-			ItemStack extracted = this.itemHandler.extractItem( slot, amount, false );
+            if (extracted.isEmpty()) {
+                continue;
+            }
 
-			if( extracted.isEmpty() )
-			{
-				continue;
-			}
+            if (rv.isEmpty()) {
+                // Use the first stack as a template for the result
+                rv = extracted;
+                filter = extracted;
+                amount -= extracted.getCount();
+            } else {
+                // Subsequent stacks will just increase the extracted size
+                rv.grow(extracted.getCount());
+                amount -= extracted.getCount();
+            }
+        }
 
-			if( rv.isEmpty() )
-			{
-				// Use the first stack as a template for the result
-				rv = extracted;
-				filter = extracted;
-				amount -= extracted.getCount();
-			}
-			else
-			{
-				// Subsequent stacks will just increase the extracted size
-				rv.grow( extracted.getCount() );
-				amount -= extracted.getCount();
-			}
-		}
+        return rv;
+    }
 
-		return rv;
-	}
+    @Override
+    public ItemStack simulateRemove(int amount, ItemStack filter, IInventoryDestination destination) {
+        int slots = this.itemHandler.getSlots();
+        ItemStack rv = ItemStack.EMPTY;
 
-	@Override
-	public ItemStack simulateRemove( int amount, ItemStack filter, IInventoryDestination destination )
-	{
-		int slots = this.itemHandler.getSlots();
-		ItemStack rv = ItemStack.EMPTY;
+        for (int slot = 0; slot < slots && amount > 0; slot++) {
+            final ItemStack is = this.itemHandler.getStackInSlot(slot);
+            if (!is.isEmpty() && (filter.isEmpty() || Platform.itemComparisons().isSameItem(is, filter))) {
+                ItemStack extracted = this.itemHandler.extractItem(slot, amount, true);
 
-		for( int slot = 0; slot < slots && amount > 0; slot++ )
-		{
-			final ItemStack is = this.itemHandler.getStackInSlot( slot );
-			if( !is.isEmpty() && ( filter.isEmpty() || Platform.itemComparisons().isSameItem( is, filter ) ) )
-			{
-				ItemStack extracted = this.itemHandler.extractItem( slot, amount, true );
+                if (extracted.isEmpty()) {
+                    continue;
+                }
 
-				if( extracted.isEmpty() )
-				{
-					continue;
-				}
+                if (destination != null) {
+                    if (!destination.canInsert(extracted)) {
+                        continue;
+                    }
+                }
 
-				if( destination != null )
-				{
-					if( !destination.canInsert( extracted ) )
-					{
-						continue;
-					}
-				}
+                if (rv.isEmpty()) {
+                    // Use the first stack as a template for the result
+                    rv = extracted.copy();
+                    filter = extracted;
+                    amount -= extracted.getCount();
+                } else {
+                    // Subsequent stacks will just increase the extracted size
+                    rv.grow(extracted.getCount());
+                    amount -= extracted.getCount();
+                }
+            }
+        }
 
-				if( rv.isEmpty() )
-				{
-					// Use the first stack as a template for the result
-					rv = extracted.copy();
-					filter = extracted;
-					amount -= extracted.getCount();
-				}
-				else
-				{
-					// Subsequent stacks will just increase the extracted size
-					rv.grow( extracted.getCount() );
-					amount -= extracted.getCount();
-				}
-			}
-		}
+        return rv;
+    }
 
-		return rv;
-	}
+    /**
+     * For fuzzy extract, we will only ever extract one slot, since we're afraid of
+     * merging two item stacks with different damage values.
+     */
+    @Override
+    public ItemStack removeSimilarItems(int amount, ItemStack filter, FuzzyMode fuzzyMode,
+            IInventoryDestination destination) {
+        int slots = this.itemHandler.getSlots();
+        ItemStack extracted = ItemStack.EMPTY;
 
-	/**
-	 * For fuzzy extract, we will only ever extract one slot, since we're afraid of merging two item stacks with
-	 * different damage values.
-	 */
-	@Override
-	public ItemStack removeSimilarItems( int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
-	{
-		int slots = this.itemHandler.getSlots();
-		ItemStack extracted = ItemStack.EMPTY;
+        for (int slot = 0; slot < slots && extracted.isEmpty(); slot++) {
+            final ItemStack is = this.itemHandler.getStackInSlot(slot);
+            if (is.isEmpty()
+                    || (!filter.isEmpty() && !Platform.itemComparisons().isFuzzyEqualItem(is, filter, fuzzyMode))) {
+                continue;
+            }
 
-		for( int slot = 0; slot < slots && extracted.isEmpty(); slot++ )
-		{
-			final ItemStack is = this.itemHandler.getStackInSlot( slot );
-			if( is.isEmpty() || ( !filter.isEmpty() && !Platform.itemComparisons().isFuzzyEqualItem( is, filter, fuzzyMode ) ) )
-			{
-				continue;
-			}
+            if (destination != null) {
+                ItemStack simulated = this.itemHandler.extractItem(slot, amount, true);
+                if (simulated.isEmpty()) {
+                    continue;
+                }
 
-			if( destination != null )
-			{
-				ItemStack simulated = this.itemHandler.extractItem( slot, amount, true );
-				if( simulated.isEmpty() )
-				{
-					continue;
-				}
+                if (!destination.canInsert(simulated)) {
+                    continue;
+                }
+            }
 
-				if( !destination.canInsert( simulated ) )
-				{
-					continue;
-				}
-			}
+            // Attempt extracting it
+            extracted = this.itemHandler.extractItem(slot, amount, false);
+        }
 
-			// Attempt extracting it
-			extracted = this.itemHandler.extractItem( slot, amount, false );
-		}
+        return extracted;
+    }
 
-		return extracted;
-	}
+    @Override
+    public ItemStack simulateSimilarRemove(int amount, ItemStack filter, FuzzyMode fuzzyMode,
+            IInventoryDestination destination) {
+        int slots = this.itemHandler.getSlots();
+        ItemStack extracted = ItemStack.EMPTY;
 
-	@Override
-	public ItemStack simulateSimilarRemove( int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
-	{
-		int slots = this.itemHandler.getSlots();
-		ItemStack extracted = ItemStack.EMPTY;
+        for (int slot = 0; slot < slots && extracted.isEmpty(); slot++) {
+            final ItemStack is = this.itemHandler.getStackInSlot(slot);
+            if (is.isEmpty()
+                    || (!filter.isEmpty() && !Platform.itemComparisons().isFuzzyEqualItem(is, filter, fuzzyMode))) {
+                continue;
+            }
 
-		for( int slot = 0; slot < slots && extracted.isEmpty(); slot++ )
-		{
-			final ItemStack is = this.itemHandler.getStackInSlot( slot );
-			if( is.isEmpty() || ( !filter.isEmpty() && !Platform.itemComparisons().isFuzzyEqualItem( is, filter, fuzzyMode ) ) )
-			{
-				continue;
-			}
+            // Attempt extracting it
+            extracted = this.itemHandler.extractItem(slot, amount, true);
 
-			// Attempt extracting it
-			extracted = this.itemHandler.extractItem( slot, amount, true );
+            if (!extracted.isEmpty() && destination != null) {
+                if (!destination.canInsert(extracted)) {
+                    extracted = ItemStack.EMPTY; // Keep on looking...
+                }
+            }
+        }
 
-			if( !extracted.isEmpty() && destination != null )
-			{
-				if( !destination.canInsert( extracted ) )
-				{
-					extracted = ItemStack.EMPTY; // Keep on looking...
-				}
-			}
-		}
+        return extracted;
+    }
 
-		return extracted;
-	}
+    @Override
+    public ItemStack addItems(ItemStack toBeAdded) {
+        return this.addItems(toBeAdded, false);
+    }
 
-	@Override
-	public ItemStack addItems( ItemStack toBeAdded )
-	{
-		return this.addItems( toBeAdded, false );
-	}
+    @Override
+    public ItemStack simulateAdd(ItemStack toBeSimulated) {
+        return this.addItems(toBeSimulated, true);
+    }
 
-	@Override
-	public ItemStack simulateAdd( ItemStack toBeSimulated )
-	{
-		return this.addItems( toBeSimulated, true );
-	}
+    protected ItemStack addItems(final ItemStack itemsToAdd, final boolean simulate) {
+        if (itemsToAdd.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
 
-	protected ItemStack addItems( final ItemStack itemsToAdd, final boolean simulate )
-	{
-		if( itemsToAdd.isEmpty() )
-		{
-			return ItemStack.EMPTY;
-		}
+        ItemStack left = itemsToAdd.copy();
 
-		ItemStack left = itemsToAdd.copy();
+        for (int slot = 0; slot < this.itemHandler.getSlots(); slot++) {
+            left = this.itemHandler.insertItem(slot, left, simulate);
 
-		for( int slot = 0; slot < this.itemHandler.getSlots(); slot++ )
-		{
-			left = this.itemHandler.insertItem( slot, left, simulate );
+            if (left.isEmpty()) {
+                return ItemStack.EMPTY;
+            }
+        }
 
-			if( left.isEmpty() )
-			{
-				return ItemStack.EMPTY;
-			}
-		}
+        return left;
+    }
 
-		return left;
-	}
+    @Override
+    public boolean containsItems() {
+        int slots = this.itemHandler.getSlots();
+        for (int slot = 0; slot < slots; slot++) {
+            if (!this.itemHandler.getStackInSlot(slot).isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	@Override
-	public boolean containsItems()
-	{
-		int slots = this.itemHandler.getSlots();
-		for( int slot = 0; slot < slots; slot++ )
-		{
-			if( !this.itemHandler.getStackInSlot( slot ).isEmpty() )
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-
-	@Override
-	public Iterator<ItemSlot> iterator()
-	{
-		return new ItemHandlerIterator( this.itemHandler );
-	}
+    @Override
+    public Iterator<ItemSlot> iterator() {
+        return new ItemHandlerIterator(this.itemHandler);
+    }
 }

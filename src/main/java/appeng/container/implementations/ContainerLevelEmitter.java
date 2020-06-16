@@ -18,8 +18,6 @@
 
 package appeng.container.implementations;
 
-
-import appeng.container.ContainerLocator;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -35,155 +33,133 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
+import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.SlotFakeTypeOnly;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.parts.automation.PartLevelEmitter;
 import appeng.util.Platform;
 
+public class ContainerLevelEmitter extends ContainerUpgradeable {
 
-public class ContainerLevelEmitter extends ContainerUpgradeable
-{
+    public static ContainerType<ContainerLevelEmitter> TYPE;
 
-	public static ContainerType<ContainerLevelEmitter> TYPE;
+    private static final ContainerHelper<ContainerLevelEmitter, PartLevelEmitter> helper = new ContainerHelper<>(
+            ContainerLevelEmitter::new, PartLevelEmitter.class, SecurityPermissions.BUILD);
 
-	private static final ContainerHelper<ContainerLevelEmitter, PartLevelEmitter> helper
-			= new ContainerHelper<>(ContainerLevelEmitter::new, PartLevelEmitter.class, SecurityPermissions.BUILD);
+    public static ContainerLevelEmitter fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+        return helper.fromNetwork(windowId, inv, buf);
+    }
 
-	public static ContainerLevelEmitter fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-		return helper.fromNetwork(windowId, inv, buf);
-	}
+    public static boolean open(PlayerEntity player, ContainerLocator locator) {
+        return helper.open(player, locator);
+    }
 
-	public static boolean open(PlayerEntity player, ContainerLocator locator) {
-		return helper.open(player, locator);
-	}
+    private final PartLevelEmitter lvlEmitter;
 
-	private final PartLevelEmitter lvlEmitter;
+    @OnlyIn(Dist.CLIENT)
+    private TextFieldWidget textField;
+    @GuiSync(2)
+    public LevelType lvType;
+    @GuiSync(3)
+    public long EmitterValue = -1;
+    @GuiSync(4)
+    public YesNo cmType;
 
-	@OnlyIn( Dist.CLIENT )
-	private TextFieldWidget textField;
-	@GuiSync( 2 )
-	public LevelType lvType;
-	@GuiSync( 3 )
-	public long EmitterValue = -1;
-	@GuiSync( 4 )
-	public YesNo cmType;
+    public ContainerLevelEmitter(int id, final PlayerInventory ip, final PartLevelEmitter te) {
+        super(TYPE, id, ip, te);
+        this.lvlEmitter = te;
+    }
 
-	public ContainerLevelEmitter( int id, final PlayerInventory ip, final PartLevelEmitter te )
-	{
-		super( TYPE, id, ip, te );
-		this.lvlEmitter = te;
-	}
+    @OnlyIn(Dist.CLIENT)
+    public void setTextField(final TextFieldWidget level) {
+        this.textField = level;
+        this.textField.setText(String.valueOf(this.EmitterValue));
+    }
 
-	@OnlyIn( Dist.CLIENT )
-	public void setTextField( final TextFieldWidget level )
-	{
-		this.textField = level;
-		this.textField.setText( String.valueOf( this.EmitterValue ) );
-	}
+    public void setLevel(final long l, final PlayerEntity player) {
+        this.lvlEmitter.setReportingValue(l);
+        this.EmitterValue = l;
+    }
 
-	public void setLevel( final long l, final PlayerEntity player )
-	{
-		this.lvlEmitter.setReportingValue( l );
-		this.EmitterValue = l;
-	}
+    @Override
+    protected void setupConfig() {
+        final IItemHandler upgrades = this.getUpgradeable().getInventoryByName("upgrades");
+        if (this.availableUpgrades() > 0) {
+            this.addSlot((new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8,
+                    this.getPlayerInventory())).setNotDraggable());
+        }
+        if (this.availableUpgrades() > 1) {
+            this.addSlot((new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187,
+                    8 + 18, this.getPlayerInventory())).setNotDraggable());
+        }
+        if (this.availableUpgrades() > 2) {
+            this.addSlot((new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187,
+                    8 + 18 * 2, this.getPlayerInventory())).setNotDraggable());
+        }
+        if (this.availableUpgrades() > 3) {
+            this.addSlot((new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187,
+                    8 + 18 * 3, this.getPlayerInventory())).setNotDraggable());
+        }
 
-	@Override
-	protected void setupConfig()
-	{
-		final IItemHandler upgrades = this.getUpgradeable().getInventoryByName( "upgrades" );
-		if( this.availableUpgrades() > 0 )
-		{
-			this.addSlot(
-					( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.getPlayerInventory() ) )
-							.setNotDraggable() );
-		}
-		if( this.availableUpgrades() > 1 )
-		{
-			this.addSlot(
-					( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.getPlayerInventory() ) )
-							.setNotDraggable() );
-		}
-		if( this.availableUpgrades() > 2 )
-		{
-			this.addSlot(
-					( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.getPlayerInventory() ) )
-							.setNotDraggable() );
-		}
-		if( this.availableUpgrades() > 3 )
-		{
-			this.addSlot(
-					( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.getPlayerInventory() ) )
-							.setNotDraggable() );
-		}
+        final IItemHandler inv = this.getUpgradeable().getInventoryByName("config");
+        final int y = 40;
+        final int x = 80 + 44;
+        this.addSlot(new SlotFakeTypeOnly(inv, 0, x, y));
+    }
 
-		final IItemHandler inv = this.getUpgradeable().getInventoryByName( "config" );
-		final int y = 40;
-		final int x = 80 + 44;
-		this.addSlot( new SlotFakeTypeOnly( inv, 0, x, y ) );
-	}
+    @Override
+    protected boolean supportCapacity() {
+        return false;
+    }
 
-	@Override
-	protected boolean supportCapacity()
-	{
-		return false;
-	}
+    @Override
+    public int availableUpgrades() {
 
-	@Override
-	public int availableUpgrades()
-	{
+        return 1;
+    }
 
-		return 1;
-	}
+    @Override
+    public void detectAndSendChanges() {
+        this.verifyPermissions(SecurityPermissions.BUILD, false);
 
-	@Override
-	public void detectAndSendChanges()
-	{
-		this.verifyPermissions( SecurityPermissions.BUILD, false );
+        if (Platform.isServer()) {
+            this.EmitterValue = this.lvlEmitter.getReportingValue();
+            this.setCraftingMode(
+                    (YesNo) this.getUpgradeable().getConfigManager().getSetting(Settings.CRAFT_VIA_REDSTONE));
+            this.setLevelMode((LevelType) this.getUpgradeable().getConfigManager().getSetting(Settings.LEVEL_TYPE));
+            this.setFuzzyMode((FuzzyMode) this.getUpgradeable().getConfigManager().getSetting(Settings.FUZZY_MODE));
+            this.setRedStoneMode(
+                    (RedstoneMode) this.getUpgradeable().getConfigManager().getSetting(Settings.REDSTONE_EMITTER));
+        }
 
-		if( Platform.isServer() )
-		{
-			this.EmitterValue = this.lvlEmitter.getReportingValue();
-			this.setCraftingMode( (YesNo) this.getUpgradeable().getConfigManager().getSetting( Settings.CRAFT_VIA_REDSTONE ) );
-			this.setLevelMode( (LevelType) this.getUpgradeable().getConfigManager().getSetting( Settings.LEVEL_TYPE ) );
-			this.setFuzzyMode( (FuzzyMode) this.getUpgradeable().getConfigManager().getSetting( Settings.FUZZY_MODE ) );
-			this.setRedStoneMode( (RedstoneMode) this.getUpgradeable().getConfigManager().getSetting( Settings.REDSTONE_EMITTER ) );
-		}
+        this.standardDetectAndSendChanges();
+    }
 
-		this.standardDetectAndSendChanges();
-	}
+    @Override
+    public void onUpdate(final String field, final Object oldValue, final Object newValue) {
+        if (field.equals("EmitterValue")) {
+            if (this.textField != null) {
+                this.textField.setText(String.valueOf(this.EmitterValue));
+            }
+        }
+    }
 
-	@Override
-	public void onUpdate( final String field, final Object oldValue, final Object newValue )
-	{
-		if( field.equals( "EmitterValue" ) )
-		{
-			if( this.textField != null )
-			{
-				this.textField.setText( String.valueOf( this.EmitterValue ) );
-			}
-		}
-	}
+    @Override
+    public YesNo getCraftingMode() {
+        return this.cmType;
+    }
 
-	@Override
-	public YesNo getCraftingMode()
-	{
-		return this.cmType;
-	}
+    @Override
+    public void setCraftingMode(final YesNo cmType) {
+        this.cmType = cmType;
+    }
 
-	@Override
-	public void setCraftingMode( final YesNo cmType )
-	{
-		this.cmType = cmType;
-	}
+    public LevelType getLevelMode() {
+        return this.lvType;
+    }
 
-	public LevelType getLevelMode()
-	{
-		return this.lvType;
-	}
-
-	private void setLevelMode( final LevelType lvType )
-	{
-		this.lvType = lvType;
-	}
+    private void setLevelMode(final LevelType lvType) {
+        this.lvType = lvType;
+    }
 }

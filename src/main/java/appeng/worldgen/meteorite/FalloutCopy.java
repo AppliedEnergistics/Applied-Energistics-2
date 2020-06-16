@@ -18,67 +18,52 @@
 
 package appeng.worldgen.meteorite;
 
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-
-import appeng.api.definitions.IBlockDefinition;
-import appeng.util.Platform;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 
+import appeng.api.definitions.IBlockDefinition;
+import appeng.util.Platform;
 
-public class FalloutCopy extends Fallout
-{
-	private static final double SPECIFIED_BLOCK_THRESHOLD = 0.9;
-	private static final double AIR_BLOCK_THRESHOLD = 0.8;
-	private static final double BLOCK_THRESHOLD_STEP = 0.1;
+public class FalloutCopy extends Fallout {
+    private static final double SPECIFIED_BLOCK_THRESHOLD = 0.9;
+    private static final double AIR_BLOCK_THRESHOLD = 0.8;
+    private static final double BLOCK_THRESHOLD_STEP = 0.1;
 
-	private final BlockState block;
-	private final MeteoriteBlockPutter putter;
+    private final BlockState block;
+    private final MeteoriteBlockPutter putter;
 
-	public FalloutCopy(final IWorld w, BlockPos pos, final MeteoriteBlockPutter putter, final BlockState skyStone )
-	{
-		super( putter, skyStone );
-		this.putter = putter;
-		this.block = w.getBlockState( pos );
-	}
+    public FalloutCopy(final IWorld w, BlockPos pos, final MeteoriteBlockPutter putter, final BlockState skyStone) {
+        super(putter, skyStone);
+        this.putter = putter;
+        this.block = w.getBlockState(pos);
+    }
 
-	@Override
-	public void getRandomFall( final IWorld w, BlockPos pos )
-	{
-		final double a = Math.random();
-		if( a > SPECIFIED_BLOCK_THRESHOLD )
-		{
-			this.putter.put( w, pos, this.block );
-		}
-		else
-		{
-			this.getOther( w, pos, a );
-		}
-	}
+    @Override
+    public void getRandomFall(final IWorld w, BlockPos pos) {
+        final double a = Math.random();
+        if (a > SPECIFIED_BLOCK_THRESHOLD) {
+            this.putter.put(w, pos, this.block);
+        } else {
+            this.getOther(w, pos, a);
+        }
+    }
 
-	public void getOther( final IWorld w, BlockPos pos, final double a )
-	{
+    public void getOther(final IWorld w, BlockPos pos, final double a) {
 
-	}
+    }
 
-	@Override
-	public void getRandomInset( final IWorld w, BlockPos pos )
-	{
-		final double a = Math.random();
-		if( a > SPECIFIED_BLOCK_THRESHOLD )
-		{
-			this.putter.put( w, pos, this.block );
-		}
-		else if( a > AIR_BLOCK_THRESHOLD )
-		{
-			this.putter.put( w, pos, Blocks.AIR.getDefaultState() );
-		}
-		else
-		{
-			this.getOther( w, pos, a - BLOCK_THRESHOLD_STEP );
-		}
-	}
+    @Override
+    public void getRandomInset(final IWorld w, BlockPos pos) {
+        final double a = Math.random();
+        if (a > SPECIFIED_BLOCK_THRESHOLD) {
+            this.putter.put(w, pos, this.block);
+        } else if (a > AIR_BLOCK_THRESHOLD) {
+            this.putter.put(w, pos, Blocks.AIR.getDefaultState());
+        } else {
+            this.getOther(w, pos, a - BLOCK_THRESHOLD_STEP);
+        }
+    }
 }

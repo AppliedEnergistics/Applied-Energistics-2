@@ -3,10 +3,7 @@
     "item": "appliedenergistics2:annihilation_plane"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aaa",
-    "bcb"
-  ],
+  "pattern": ["aaa", "bcb"],
   "key": {
     "b": {
       "tag": "forge:ingots/iron"

@@ -18,114 +18,95 @@
 
 package appeng.recipes.conditions;
 
-
-import appeng.core.AEConfig;
-import appeng.core.AppEng;
-import appeng.api.features.AEFeature;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.crafting.conditions.ICondition;
-import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
-
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Set;
 import java.util.stream.StreamSupport;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
-public class FeaturesEnabled implements ICondition
-{
-	private static final ResourceLocation NAME = new ResourceLocation( AppEng.MOD_ID, "feature" );
-	private final AEFeature[] features;
+import net.minecraft.util.JSONUtils;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.conditions.ICondition;
+import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
 
-	public FeaturesEnabled( AEFeature... features )
-	{
-		this.features = features;
-	}
+import appeng.api.features.AEFeature;
+import appeng.core.AEConfig;
+import appeng.core.AppEng;
 
-	public FeaturesEnabled( Set<AEFeature> features ) {
-		this(features.toArray(new AEFeature[0]));
-	}
+public class FeaturesEnabled implements ICondition {
+    private static final ResourceLocation NAME = new ResourceLocation(AppEng.MOD_ID, "feature");
+    private final AEFeature[] features;
 
-	@Override
-	public ResourceLocation getID()
-	{
-		return NAME;
-	}
+    public FeaturesEnabled(AEFeature... features) {
+        this.features = features;
+    }
 
-	@Override
-	public boolean test()
-	{
-		for( AEFeature feature : features )
-		{
-			if( !AEConfig.instance().isFeatureEnabled( feature ) )
-			{
-				return false;
-			}
-		}
+    public FeaturesEnabled(Set<AEFeature> features) {
+        this(features.toArray(new AEFeature[0]));
+    }
 
-		return true;
-	}
+    @Override
+    public ResourceLocation getID() {
+        return NAME;
+    }
 
-	public static class Serializer implements IConditionSerializer<FeaturesEnabled>
-	{
-		private static final String JSON_FEATURES_KEY = "features";
+    @Override
+    public boolean test() {
+        for (AEFeature feature : features) {
+            if (!AEConfig.instance().isFeatureEnabled(feature)) {
+                return false;
+            }
+        }
 
-		public static final Serializer INSTANCE = new Serializer();
+        return true;
+    }
 
-		private Serializer()
-		{
-		}
+    public static class Serializer implements IConditionSerializer<FeaturesEnabled> {
+        private static final String JSON_FEATURES_KEY = "features";
 
-		@Override
-		public void write( JsonObject json, FeaturesEnabled value )
-		{
-			json.add( JSON_FEATURES_KEY, Arrays.stream( value.features )
-					.map( AEFeature::toString )
-					.reduce( new JsonArray(), ( JsonArray array, String string ) -> {
-						array.add( string );
-						return array;
-					}, ( a, b ) -> b ) );
-		}
+        public static final Serializer INSTANCE = new Serializer();
 
-		@Override
-		public FeaturesEnabled read( JsonObject jsonObject )
-		{
-			AEFeature[] features;
+        private Serializer() {
+        }
 
-			if( JSONUtils.isJsonArray( jsonObject, JSON_FEATURES_KEY ) )
-			{
-				final JsonArray featuresArray = JSONUtils.getJsonArray( jsonObject, JSON_FEATURES_KEY );
+        @Override
+        public void write(JsonObject json, FeaturesEnabled value) {
+            json.add(JSON_FEATURES_KEY, Arrays.stream(value.features).map(AEFeature::toString).reduce(new JsonArray(),
+                    (JsonArray array, String string) -> {
+                        array.add(string);
+                        return array;
+                    }, (a, b) -> b));
+        }
 
-				features = StreamSupport.stream( featuresArray.spliterator(), false )
-						.filter( JsonElement::isJsonPrimitive )
-						.map( JsonElement::getAsString )
-						.map( s -> s.toUpperCase( Locale.ENGLISH ) )
-						.map( AEFeature::valueOf )
-						.toArray( AEFeature[]::new );
-			}
-			else if( JSONUtils.isString( jsonObject, JSON_FEATURES_KEY ) )
-			{
-				final String featureName = JSONUtils.getString( jsonObject, JSON_FEATURES_KEY ).toUpperCase( Locale.ENGLISH );
-				features = new AEFeature[] { AEFeature.valueOf( featureName ) };
-			}
-			else
-			{
-				features = new AEFeature[] {};
-			}
+        @Override
+        public FeaturesEnabled read(JsonObject jsonObject) {
+            AEFeature[] features;
 
-			return new FeaturesEnabled( features );
-		}
+            if (JSONUtils.isJsonArray(jsonObject, JSON_FEATURES_KEY)) {
+                final JsonArray featuresArray = JSONUtils.getJsonArray(jsonObject, JSON_FEATURES_KEY);
 
-		@Override
-		public ResourceLocation getID()
-		{
-			return NAME;
-		}
+                features = StreamSupport.stream(featuresArray.spliterator(), false).filter(JsonElement::isJsonPrimitive)
+                        .map(JsonElement::getAsString).map(s -> s.toUpperCase(Locale.ENGLISH)).map(AEFeature::valueOf)
+                        .toArray(AEFeature[]::new);
+            } else if (JSONUtils.isString(jsonObject, JSON_FEATURES_KEY)) {
+                final String featureName = JSONUtils.getString(jsonObject, JSON_FEATURES_KEY)
+                        .toUpperCase(Locale.ENGLISH);
+                features = new AEFeature[] { AEFeature.valueOf(featureName) };
+            } else {
+                features = new AEFeature[] {};
+            }
 
-	}
+            return new FeaturesEnabled(features);
+        }
+
+        @Override
+        public ResourceLocation getID() {
+            return NAME;
+        }
+
+    }
 
 }

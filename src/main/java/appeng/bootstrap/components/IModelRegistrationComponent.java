@@ -18,19 +18,16 @@
 
 package appeng.bootstrap.components;
 
-
 import net.minecraftforge.api.distmarker.Dist;
 
 import appeng.bootstrap.IBootstrapComponent;
 import appeng.bootstrap.IModelRegistry;
-
 
 /**
  * @author GuntherDW
  */
 
 @FunctionalInterface
-public interface IModelRegistrationComponent extends IBootstrapComponent
-{
-	void modelRegistration( Dist dist, IModelRegistry registry );
+public interface IModelRegistrationComponent extends IBootstrapComponent {
+    void modelRegistration(Dist dist, IModelRegistry registry);
 }

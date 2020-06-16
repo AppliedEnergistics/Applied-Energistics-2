@@ -18,10 +18,8 @@
 
 package appeng.container.implementations;
 
-
 import java.util.Iterator;
 
-import appeng.container.ContainerLocator;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -40,6 +38,7 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.OptionalSlotFakeTypeOnly;
 import appeng.container.slot.SlotFakeTypeOnly;
@@ -49,171 +48,143 @@ import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.iterators.NullIterator;
 
+public class ContainerStorageBus extends ContainerUpgradeable {
 
-public class ContainerStorageBus extends ContainerUpgradeable
-{
+    public static ContainerType<ContainerStorageBus> TYPE;
 
-	public static ContainerType<ContainerStorageBus> TYPE;
+    private static final ContainerHelper<ContainerStorageBus, PartStorageBus> helper = new ContainerHelper<>(
+            ContainerStorageBus::new, PartStorageBus.class, SecurityPermissions.BUILD);
 
-	private static final ContainerHelper<ContainerStorageBus, PartStorageBus> helper
-			= new ContainerHelper<>(ContainerStorageBus::new, PartStorageBus.class, SecurityPermissions.BUILD);
+    public static ContainerStorageBus fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+        return helper.fromNetwork(windowId, inv, buf);
+    }
 
-	public static ContainerStorageBus fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-		return helper.fromNetwork(windowId, inv, buf);
-	}
+    public static boolean open(PlayerEntity player, ContainerLocator locator) {
+        return helper.open(player, locator);
+    }
 
-	public static boolean open(PlayerEntity player, ContainerLocator locator) {
-		return helper.open(player, locator);
-	}
+    private final PartStorageBus storageBus;
 
-	private final PartStorageBus storageBus;
+    @GuiSync(3)
+    public AccessRestriction rwMode = AccessRestriction.READ_WRITE;
 
-	@GuiSync( 3 )
-	public AccessRestriction rwMode = AccessRestriction.READ_WRITE;
+    @GuiSync(4)
+    public StorageFilter storageFilter = StorageFilter.EXTRACTABLE_ONLY;
 
-	@GuiSync( 4 )
-	public StorageFilter storageFilter = StorageFilter.EXTRACTABLE_ONLY;
+    public ContainerStorageBus(int id, final PlayerInventory ip, final PartStorageBus te) {
+        super(TYPE, id, ip, te);
+        this.storageBus = te;
+    }
 
-	public ContainerStorageBus(int id, final PlayerInventory ip, final PartStorageBus te )
-	{
-		super( TYPE, id, ip, te );
-		this.storageBus = te;
-	}
+    @Override
+    protected int getHeight() {
+        return 251;
+    }
 
-	@Override
-	protected int getHeight()
-	{
-		return 251;
-	}
+    @Override
+    protected void setupConfig() {
+        final int xo = 8;
+        final int yo = 23 + 6;
 
-	@Override
-	protected void setupConfig()
-	{
-		final int xo = 8;
-		final int yo = 23 + 6;
+        final IItemHandler config = this.getUpgradeable().getInventoryByName("config");
+        for (int y = 0; y < 7; y++) {
+            for (int x = 0; x < 9; x++) {
+                if (y < 2) {
+                    this.addSlot(new SlotFakeTypeOnly(config, y * 9 + x, xo + x * 18, yo + y * 18));
+                } else {
+                    this.addSlot(new OptionalSlotFakeTypeOnly(config, this, y * 9 + x, xo, yo, x, y, y - 2));
+                }
+            }
+        }
 
-		final IItemHandler config = this.getUpgradeable().getInventoryByName( "config" );
-		for( int y = 0; y < 7; y++ )
-		{
-			for( int x = 0; x < 9; x++ )
-			{
-				if( y < 2 )
-				{
-					this.addSlot( new SlotFakeTypeOnly( config, y * 9 + x, xo + x * 18, yo + y * 18 ) );
-				}
-				else
-				{
-					this.addSlot( new OptionalSlotFakeTypeOnly( config, this, y * 9 + x, xo, yo, x, y, y - 2 ) );
-				}
-			}
-		}
+        final IItemHandler upgrades = this.getUpgradeable().getInventoryByName("upgrades");
+        this.addSlot((new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8,
+                this.getPlayerInventory())).setNotDraggable());
+        this.addSlot((new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18,
+                this.getPlayerInventory())).setNotDraggable());
+        this.addSlot((new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187,
+                8 + 18 * 2, this.getPlayerInventory())).setNotDraggable());
+        this.addSlot((new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187,
+                8 + 18 * 3, this.getPlayerInventory())).setNotDraggable());
+        this.addSlot((new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 4, 187,
+                8 + 18 * 4, this.getPlayerInventory())).setNotDraggable());
+    }
 
-		final IItemHandler upgrades = this.getUpgradeable().getInventoryByName( "upgrades" );
-		this.addSlot( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.getPlayerInventory() ) )
-				.setNotDraggable() );
-		this.addSlot(
-				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.getPlayerInventory() ) )
-						.setNotDraggable() );
-		this.addSlot(
-				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.getPlayerInventory() ) )
-						.setNotDraggable() );
-		this.addSlot(
-				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.getPlayerInventory() ) )
-						.setNotDraggable() );
-		this.addSlot(
-				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 4, 187, 8 + 18 * 4, this.getPlayerInventory() ) )
-						.setNotDraggable() );
-	}
+    @Override
+    protected boolean supportCapacity() {
+        return true;
+    }
 
-	@Override
-	protected boolean supportCapacity()
-	{
-		return true;
-	}
+    @Override
+    public int availableUpgrades() {
+        return 5;
+    }
 
-	@Override
-	public int availableUpgrades()
-	{
-		return 5;
-	}
+    @Override
+    public void detectAndSendChanges() {
+        this.verifyPermissions(SecurityPermissions.BUILD, false);
 
-	@Override
-	public void detectAndSendChanges()
-	{
-		this.verifyPermissions( SecurityPermissions.BUILD, false );
+        if (Platform.isServer()) {
+            this.setFuzzyMode((FuzzyMode) this.getUpgradeable().getConfigManager().getSetting(Settings.FUZZY_MODE));
+            this.setReadWriteMode(
+                    (AccessRestriction) this.getUpgradeable().getConfigManager().getSetting(Settings.ACCESS));
+            this.setStorageFilter(
+                    (StorageFilter) this.getUpgradeable().getConfigManager().getSetting(Settings.STORAGE_FILTER));
+        }
 
-		if( Platform.isServer() )
-		{
-			this.setFuzzyMode( (FuzzyMode) this.getUpgradeable().getConfigManager().getSetting( Settings.FUZZY_MODE ) );
-			this.setReadWriteMode( (AccessRestriction) this.getUpgradeable().getConfigManager().getSetting( Settings.ACCESS ) );
-			this.setStorageFilter( (StorageFilter) this.getUpgradeable().getConfigManager().getSetting( Settings.STORAGE_FILTER ) );
-		}
+        this.standardDetectAndSendChanges();
+    }
 
-		this.standardDetectAndSendChanges();
-	}
+    @Override
+    public boolean isSlotEnabled(final int idx) {
+        final int upgrades = this.getUpgradeable().getInstalledUpgrades(Upgrades.CAPACITY);
 
-	@Override
-	public boolean isSlotEnabled( final int idx )
-	{
-		final int upgrades = this.getUpgradeable().getInstalledUpgrades( Upgrades.CAPACITY );
+        return upgrades > idx;
+    }
 
-		return upgrades > idx;
-	}
+    public void clear() {
+        ItemHandlerUtil.clear(this.getUpgradeable().getInventoryByName("config"));
+        this.detectAndSendChanges();
+    }
 
-	public void clear()
-	{
-		ItemHandlerUtil.clear( this.getUpgradeable().getInventoryByName( "config" ) );
-		this.detectAndSendChanges();
-	}
+    public void partition() {
+        final IItemHandler inv = this.getUpgradeable().getInventoryByName("config");
 
-	public void partition()
-	{
-		final IItemHandler inv = this.getUpgradeable().getInventoryByName( "config" );
+        final IMEInventory<IAEItemStack> cellInv = this.storageBus.getInternalHandler();
 
-		final IMEInventory<IAEItemStack> cellInv = this.storageBus.getInternalHandler();
+        Iterator<IAEItemStack> i = new NullIterator<>();
+        if (cellInv != null) {
+            final IItemList<IAEItemStack> list = cellInv.getAvailableItems(
+                    AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList());
+            i = list.iterator();
+        }
 
-		Iterator<IAEItemStack> i = new NullIterator<>();
-		if( cellInv != null )
-		{
-			final IItemList<IAEItemStack> list = cellInv
-					.getAvailableItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() );
-			i = list.iterator();
-		}
+        for (int x = 0; x < inv.getSlots(); x++) {
+            if (i.hasNext() && this.isSlotEnabled((x / 9) - 2)) {
+                // TODO: check if ok
+                final ItemStack g = i.next().asItemStackRepresentation();
+                ItemHandlerUtil.setStackInSlot(inv, x, g);
+            } else {
+                ItemHandlerUtil.setStackInSlot(inv, x, ItemStack.EMPTY);
+            }
+        }
 
-		for( int x = 0; x < inv.getSlots(); x++ )
-		{
-			if( i.hasNext() && this.isSlotEnabled( ( x / 9 ) - 2 ) )
-			{
-				// TODO: check if ok
-				final ItemStack g = i.next().asItemStackRepresentation();
-				ItemHandlerUtil.setStackInSlot( inv, x, g );
-			}
-			else
-			{
-				ItemHandlerUtil.setStackInSlot( inv, x, ItemStack.EMPTY );
-			}
-		}
+        this.detectAndSendChanges();
+    }
 
-		this.detectAndSendChanges();
-	}
+    public AccessRestriction getReadWriteMode() {
+        return this.rwMode;
+    }
 
-	public AccessRestriction getReadWriteMode()
-	{
-		return this.rwMode;
-	}
+    private void setReadWriteMode(final AccessRestriction rwMode) {
+        this.rwMode = rwMode;
+    }
 
-	private void setReadWriteMode( final AccessRestriction rwMode )
-	{
-		this.rwMode = rwMode;
-	}
+    public StorageFilter getStorageFilter() {
+        return this.storageFilter;
+    }
 
-	public StorageFilter getStorageFilter()
-	{
-		return this.storageFilter;
-	}
-
-	private void setStorageFilter( final StorageFilter storageFilter )
-	{
-		this.storageFilter = storageFilter;
-	}
+    private void setStorageFilter(final StorageFilter storageFilter) {
+        this.storageFilter = storageFilter;
+    }
 }

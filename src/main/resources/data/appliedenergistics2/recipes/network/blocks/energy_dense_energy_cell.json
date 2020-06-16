@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:dense_energy_cell"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aaa",
-    "aba",
-    "aaa"
-  ],
+  "pattern": ["aaa", "aba", "aaa"],
   "key": {
     "a": {
       "item": "appliedenergistics2:energy_cell"

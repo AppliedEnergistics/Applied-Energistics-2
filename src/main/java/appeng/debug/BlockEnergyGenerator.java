@@ -18,19 +18,15 @@
 
 package appeng.debug;
 
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 
 import appeng.block.AEBaseTileBlock;
 
+public class BlockEnergyGenerator extends AEBaseTileBlock<TileEnergyGenerator> {
 
-public class BlockEnergyGenerator extends AEBaseTileBlock<TileEnergyGenerator>
-{
-
-	public BlockEnergyGenerator()
-	{
-		super( defaultProps(Material.IRON) );
-	}
+    public BlockEnergyGenerator() {
+        super(defaultProps(Material.IRON));
+    }
 
 }

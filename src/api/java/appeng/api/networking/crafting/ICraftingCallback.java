@@ -23,17 +23,14 @@
 
 package appeng.api.networking.crafting;
 
-
 import javax.annotation.Nonnull;
 
+public interface ICraftingCallback {
 
-public interface ICraftingCallback
-{
-
-	/**
-	 * this call back is synchronized with the world you passed.
-	 *
-	 * @param job - final job
-	 */
-	void calculationComplete( @Nonnull ICraftingJob job );
+    /**
+     * this call back is synchronized with the world you passed.
+     *
+     * @param job - final job
+     */
+    void calculationComplete(@Nonnull ICraftingJob job);
 }

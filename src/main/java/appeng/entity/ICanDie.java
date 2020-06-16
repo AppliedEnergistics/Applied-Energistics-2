@@ -18,10 +18,8 @@
 
 package appeng.entity;
 
+public interface ICanDie {
 
-public interface ICanDie
-{
-
-	public boolean isDead();
+    public boolean isDead();
 
 }

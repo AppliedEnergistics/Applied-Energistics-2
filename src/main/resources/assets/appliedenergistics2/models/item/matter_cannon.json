@@ -1,22 +1,14 @@
 {
-    "parent": "item/handheld",
-    "textures": {
-        "layer0": "appliedenergistics2:item/matter_cannon"
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "appliedenergistics2:item/matter_cannon"
+  },
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [0, -90, 0]
     },
-    "display": {
-        "thirdperson_righthand": {
-            "rotation": [
-                0,
-                -90,
-                0
-            ]
-        },
-        "thirdperson_lefthand": {
-            "rotation": [
-                0,
-                90,
-                0
-            ]
-        }
+    "thirdperson_lefthand": {
+      "rotation": [0, 90, 0]
     }
+  }
 }

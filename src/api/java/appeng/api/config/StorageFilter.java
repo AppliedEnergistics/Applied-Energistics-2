@@ -23,12 +23,10 @@
 
 package appeng.api.config;
 
+public enum StorageFilter {
 
-public enum StorageFilter
-{
+    NONE,
 
-	NONE,
-
-	EXTRACTABLE_ONLY
+    EXTRACTABLE_ONLY
 
 }

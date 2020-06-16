@@ -23,15 +23,13 @@
 
 package appeng.api.exceptions;
 
-
 import appeng.api.networking.IGridNode;
-
 
 /**
  * Exception indicating a failed connection between two {@link IGridNode}s.
  *
- * Intended to signal an internal exception and not intended to be thrown by
- * any 3rd party module.
+ * Intended to signal an internal exception and not intended to be thrown by any
+ * 3rd party module.
  *
  * See any subclass for a more specific reason.
  *
@@ -40,17 +38,14 @@ import appeng.api.networking.IGridNode;
  * @version rv3
  * @since rv0
  */
-public class FailedConnectionException extends Exception
-{
+public class FailedConnectionException extends Exception {
 
-	private static final long serialVersionUID = -2544208090248293753L;
+    private static final long serialVersionUID = -2544208090248293753L;
 
-	public FailedConnectionException()
-	{
-	}
+    public FailedConnectionException() {
+    }
 
-	public FailedConnectionException( String message )
-	{
-		super( message );
-	}
+    public FailedConnectionException(String message) {
+        super(message);
+    }
 }

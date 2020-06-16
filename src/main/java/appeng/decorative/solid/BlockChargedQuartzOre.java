@@ -18,10 +18,8 @@
 
 package appeng.decorative.solid;
 
+import java.util.Random;
 
-import appeng.client.render.effects.ChargedOreFX;
-import appeng.core.AEConfig;
-import appeng.core.AppEng;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.BlockPos;
@@ -29,16 +27,16 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.Random;
+import appeng.client.render.effects.ChargedOreFX;
+import appeng.core.AEConfig;
+import appeng.core.AppEng;
 
+public class BlockChargedQuartzOre extends BlockQuartzOre {
+    public BlockChargedQuartzOre(Properties props) {
+        super(props);
+    }
 
-public class BlockChargedQuartzOre extends BlockQuartzOre
-{
-	public BlockChargedQuartzOre(Properties props) {
-		super(props);
-	}
-
-	// FIXME: Loot tables
+    // FIXME: Loot tables
 //	@Override
 //	public Item getItemDropped( final BlockState state, final Random rand, final int fortune )
 //	{
@@ -73,47 +71,44 @@ public class BlockChargedQuartzOre extends BlockQuartzOre
 //				.orElseThrow( () -> new MissingDefinitionException( "Tried to access charged certus quartz ore, even though they are disabled" ) );
 //	}
 
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public void animateTick( final BlockState state, final World w, final BlockPos pos, final Random r )
-	{
-		if( !AEConfig.instance().isEnableEffects() )
-		{
-			return;
-		}
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void animateTick(final BlockState state, final World w, final BlockPos pos, final Random r) {
+        if (!AEConfig.instance().isEnableEffects()) {
+            return;
+        }
 
-		double xOff = ( r.nextFloat() );
-		double yOff = ( r.nextFloat() );
-		double zOff = ( r.nextFloat() );
+        double xOff = (r.nextFloat());
+        double yOff = (r.nextFloat());
+        double zOff = (r.nextFloat());
 
-		switch( r.nextInt( 6 ) )
-		{
-			case 0:
-				xOff = -0.01;
-				break;
-			case 1:
-				yOff = -0.01;
-				break;
-			case 2:
-				xOff = -0.01;
-				break;
-			case 3:
-				zOff = -0.01;
-				break;
-			case 4:
-				xOff = 1.01;
-				break;
-			case 5:
-				yOff = 1.01;
-				break;
-			case 6:
-				zOff = 1.01;
-				break;
-		}
+        switch (r.nextInt(6)) {
+            case 0:
+                xOff = -0.01;
+                break;
+            case 1:
+                yOff = -0.01;
+                break;
+            case 2:
+                xOff = -0.01;
+                break;
+            case 3:
+                zOff = -0.01;
+                break;
+            case 4:
+                xOff = 1.01;
+                break;
+            case 5:
+                yOff = 1.01;
+                break;
+            case 6:
+                zOff = 1.01;
+                break;
+        }
 
-		if( AppEng.proxy.shouldAddParticles( r ) )
-		{
-			Minecraft.getInstance().particles.addParticle(ChargedOreFX.TYPE, pos.getX() + xOff, pos.getY() + yOff, pos.getZ() + zOff, 0.0f, 0.0f, 0.0f);
-		}
-	}
+        if (AppEng.proxy.shouldAddParticles(r)) {
+            Minecraft.getInstance().particles.addParticle(ChargedOreFX.TYPE, pos.getX() + xOff, pos.getY() + yOff,
+                    pos.getZ() + zOff, 0.0f, 0.0f, 0.0f);
+        }
+    }
 }

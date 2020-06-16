@@ -18,62 +18,54 @@
 
 package appeng.entity;
 
-
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 // This is not supposed to ever spawn on the server-side
-public final class EntityFloatingItem extends AEBaseEntityItem
-{
+public final class EntityFloatingItem extends AEBaseEntityItem {
 
-	public static EntityType<EntityFloatingItem> TYPE;
+    public static EntityType<EntityFloatingItem> TYPE;
 
-	private ICanDie parent;
-	private int superDeath = 0;
-	private float progress = 0;
+    private ICanDie parent;
+    private int superDeath = 0;
+    private float progress = 0;
 
-	public EntityFloatingItem(EntityType<? extends AEBaseEntityItem> entityType, World world) {
-		super(entityType, world);
-	}
+    public EntityFloatingItem(EntityType<? extends AEBaseEntityItem> entityType, World world) {
+        super(entityType, world);
+    }
 
-	public EntityFloatingItem(final ICanDie parent, final World world, final double x, final double y, final double z, final ItemStack stack )
-	{
-		super( TYPE, world, x, y, z, stack );
-		this.setMotion( 0, 0, 0 );
-		this.rotationYaw = 0;
-		this.parent = parent;
-	}
+    public EntityFloatingItem(final ICanDie parent, final World world, final double x, final double y, final double z,
+            final ItemStack stack) {
+        super(TYPE, world, x, y, z, stack);
+        this.setMotion(0, 0, 0);
+        this.rotationYaw = 0;
+        this.parent = parent;
+    }
 
-	@Override
-	public void tick()
-	{
-		if( !this.removed && this.parent.isDead() )
-		{
-			this.remove();
-		}
+    @Override
+    public void tick() {
+        if (!this.removed && this.parent.isDead()) {
+            this.remove();
+        }
 
-		if( this.superDeath > 100 )
-		{
-			this.remove();
-		}
-		this.superDeath++;
+        if (this.superDeath > 100) {
+            this.remove();
+        }
+        this.superDeath++;
 
-		this.setNoDespawn();
-	}
+        this.setNoDespawn();
+    }
 
-	public void setProgress( final float progress )
-	{
-		this.progress = progress;
-		if( this.progress > 0.99 )
-		{
-			this.remove();
-		}
-	}
+    public void setProgress(final float progress) {
+        this.progress = progress;
+        if (this.progress > 0.99) {
+            this.remove();
+        }
+    }
 
-	float getProgress()
-	{
-		return this.progress;
-	}
+    float getProgress() {
+        return this.progress;
+    }
 }

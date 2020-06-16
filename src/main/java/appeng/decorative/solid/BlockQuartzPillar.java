@@ -18,8 +18,6 @@
 
 package appeng.decorative.solid;
 
-
-import appeng.decorative.AEDecorativeBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.EnumProperty;
@@ -31,30 +29,28 @@ import net.minecraft.world.IBlockReader;
 
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
+import appeng.decorative.AEDecorativeBlock;
 import appeng.helpers.MetaRotation;
 
+public class BlockQuartzPillar extends AEDecorativeBlock implements IOrientableBlock {
+    public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.AXIS;
 
-public class BlockQuartzPillar extends AEDecorativeBlock implements IOrientableBlock
-{
-	public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.AXIS;
+    public BlockQuartzPillar(Properties props) {
+        super(props);
 
-	public BlockQuartzPillar(Properties props) {
-		super(props);
+        // The upwards facing pillar is the default (i.e. for the item model)
+        this.setDefaultState(this.getDefaultState().with(AXIS, Direction.Axis.Y));
+    }
 
-		// The upwards facing pillar is the default (i.e. for the item model)
-		this.setDefaultState( this.getDefaultState().with( AXIS, Direction.Axis.Y ) );
-	}
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
+        builder.add(AXIS);
+    }
 
-	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-		super.fillStateContainer(builder);
-		builder.add(AXIS);
-	}
-
-	@Override
-	public IOrientable getOrientable( final IBlockReader w, final BlockPos pos )
-	{
-		return new MetaRotation( w, pos, null );
-	}
+    @Override
+    public IOrientable getOrientable(final IBlockReader w, final BlockPos pos) {
+        return new MetaRotation(w, pos, null);
+    }
 
 }

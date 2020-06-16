@@ -18,7 +18,6 @@
 
 package appeng.core.sync.packets;
 
-
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -30,59 +29,43 @@ import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.item.AEItemStack;
 
+public class PacketTargetItemStack extends AppEngPacket {
+    private AEItemStack stack;
 
-public class PacketTargetItemStack extends AppEngPacket
-{
-	private AEItemStack stack;
+    public PacketTargetItemStack(final PacketBuffer stream) {
+        try {
+            if (stream.readableBytes() > 0) {
+                this.stack = AEItemStack.fromPacket(stream);
+            } else {
+                this.stack = null;
+            }
+        } catch (Exception ex) {
+            AELog.debug(ex);
+            this.stack = null;
+        }
+    }
 
-	public PacketTargetItemStack( final PacketBuffer stream )
-	{
-		try
-		{
-			if( stream.readableBytes() > 0 )
-			{
-				this.stack = AEItemStack.fromPacket( stream );
-			}
-			else
-			{
-				this.stack = null;
-			}
-		}
-		catch( Exception ex )
-		{
-			AELog.debug( ex );
-			this.stack = null;
-		}
-	}
+    // api
+    public PacketTargetItemStack(AEItemStack stack) {
 
-	// api
-	public PacketTargetItemStack( AEItemStack stack )
-	{
+        this.stack = stack;
 
-		this.stack = stack;
+        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        data.writeInt(this.getPacketID());
+        if (stack != null) {
+            try {
+                stack.writeToPacket(data);
+            } catch (Exception ex) {
+                AELog.debug(ex);
+            }
+        }
+        this.configureWrite(data);
+    }
 
-		final PacketBuffer data = new PacketBuffer( Unpooled.buffer() );
-		data.writeInt( this.getPacketID() );
-		if( stack != null )
-		{
-			try
-			{
-				stack.writeToPacket( data );
-			}
-			catch( Exception ex )
-			{
-				AELog.debug( ex );
-			}
-		}
-		this.configureWrite( data );
-	}
-
-	@Override
-	public void serverPacketData( final INetworkInfo manager, final PlayerEntity player )
-	{
-		if( player.openContainer instanceof AEBaseContainer )
-		{
-			( (AEBaseContainer) player.openContainer ).setTargetStack( this.stack );
-		}
-	}
+    @Override
+    public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
+        if (player.openContainer instanceof AEBaseContainer) {
+            ((AEBaseContainer) player.openContainer).setTargetStack(this.stack);
+        }
+    }
 }

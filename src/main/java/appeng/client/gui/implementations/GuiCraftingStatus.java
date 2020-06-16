@@ -22,88 +22,78 @@
 
 package appeng.client.gui.implementations;
 
+import java.io.IOException;
+
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 
 import appeng.container.implementations.ContainerCraftingStatus;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
 
-import java.io.IOException;
+public class GuiCraftingStatus extends GuiCraftingCPU<ContainerCraftingStatus> {
 
+    private final AESubGui subGui;
 
-public class GuiCraftingStatus extends GuiCraftingCPU<ContainerCraftingStatus>
-{
+    private Button selectCPU;
 
-	private final AESubGui subGui;
+    public GuiCraftingStatus(ContainerCraftingStatus container, PlayerInventory playerInventory, ITextComponent title) {
+        super(container, playerInventory, title);
+        this.subGui = new AESubGui(this, container.getTarget());
+    }
 
-	private Button selectCPU;
+    @Override
+    public void init() {
+        super.init();
 
-	public GuiCraftingStatus(ContainerCraftingStatus container, PlayerInventory playerInventory, ITextComponent title) {
-		super(container, playerInventory, title);
-		this.subGui = new AESubGui(this, container.getTarget());
-	}
+        this.selectCPU = new Button(this.guiLeft + 8, this.guiTop + this.ySize - 25, 150, 20,
+                GuiText.CraftingCPU.getLocal() + ": " + GuiText.NoCraftingCPUs, btn -> selectNextCpu());
+        this.addButton(this.selectCPU);
 
-	@Override
-	public void init()
-	{
-		super.init();
+        subGui.addBackButton(btn -> {
+            addButton(btn);
+            btn.setHideEdge(13);
+        }, 213, -4);
+    }
 
-		this.selectCPU = new Button(this.guiLeft + 8, this.guiTop + this.ySize - 25, 150, 20, GuiText.CraftingCPU
-				.getLocal() + ": " + GuiText.NoCraftingCPUs, btn -> selectNextCpu() );
-		this.addButton( this.selectCPU );
+    @Override
+    public void render(final int mouseX, final int mouseY, final float btn) {
+        this.updateCPUButtonText();
+        super.render(mouseX, mouseY, btn);
+    }
 
-		subGui.addBackButton(btn -> {
-			addButton(btn);
-			btn.setHideEdge( 13 );
-		}, 213, -4);
-	}
+    private void updateCPUButtonText() {
+        String btnTextText = GuiText.NoCraftingJobs.getLocal();
 
-	@Override
-	public void render(final int mouseX, final int mouseY, final float btn )
-	{
-		this.updateCPUButtonText();
-		super.render( mouseX, mouseY, btn );
-	}
+        if (this.container.selectedCpu >= 0)// && status.selectedCpu < status.cpus.size() )
+        {
+            if (this.container.myName.length() > 0) {
+                final String name = this.container.myName.substring(0, Math.min(20, this.container.myName.length()));
+                btnTextText = GuiText.CPUs.getLocal() + ": " + name;
+            } else {
+                btnTextText = GuiText.CPUs.getLocal() + ": #" + this.container.selectedCpu;
+            }
+        }
 
-	private void updateCPUButtonText()
-	{
-		String btnTextText = GuiText.NoCraftingJobs.getLocal();
+        if (this.container.noCPU) {
+            btnTextText = GuiText.NoCraftingJobs.getLocal();
+        }
 
-		if( this.container.selectedCpu >= 0 )// && status.selectedCpu < status.cpus.size() )
-		{
-			if( this.container.myName.length() > 0 )
-			{
-				final String name = this.container.myName.substring( 0, Math.min( 20, this.container.myName.length() ) );
-				btnTextText = GuiText.CPUs.getLocal() + ": " + name;
-			}
-			else
-			{
-				btnTextText = GuiText.CPUs.getLocal() + ": #" + this.container.selectedCpu;
-			}
-		}
+        this.selectCPU.setMessage(btnTextText);
+    }
 
-		if( this.container.noCPU )
-		{
-			btnTextText = GuiText.NoCraftingJobs.getLocal();
-		}
+    @Override
+    protected String getGuiDisplayName(final String in) {
+        return in; // the cup name is on the button
+    }
 
-		this.selectCPU.setMessage(btnTextText);
-	}
-
-	@Override
-	protected String getGuiDisplayName( final String in )
-	{
-		return in; // the cup name is on the button
-	}
-
-	// FIXME: Extract to separate class? Shared with GuiCraftConfirm
-	private void selectNextCpu() {
-		final boolean backwards = minecraft.mouseHelper.isRightDown();
-		NetworkHandler.instance().sendToServer( new PacketValueConfig( "Terminal.Cpu", backwards ? "Prev" : "Next" ) );
-	}
+    // FIXME: Extract to separate class? Shared with GuiCraftConfirm
+    private void selectNextCpu() {
+        final boolean backwards = minecraft.mouseHelper.isRightDown();
+        NetworkHandler.instance().sendToServer(new PacketValueConfig("Terminal.Cpu", backwards ? "Prev" : "Next"));
+    }
 
 }

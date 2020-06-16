@@ -18,7 +18,6 @@
 
 package appeng.spatial;
 
-
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -27,36 +26,31 @@ import net.minecraft.world.chunk.Chunk;
 
 import appeng.api.movable.IMovableHandler;
 
+public class DefaultSpatialHandler implements IMovableHandler {
 
-public class DefaultSpatialHandler implements IMovableHandler
-{
+    /**
+     * never called for the default.
+     *
+     * @param tile tile entity
+     *
+     * @return true
+     */
+    @Override
+    public boolean canHandle(final Class<? extends TileEntity> myClass, final TileEntity tile) {
+        return true;
+    }
 
-	/**
-	 * never called for the default.
-	 *
-	 * @param tile tile entity
-	 *
-	 * @return true
-	 */
-	@Override
-	public boolean canHandle( final Class<? extends TileEntity> myClass, final TileEntity tile )
-	{
-		return true;
-	}
+    @Override
+    public void moveTile(final TileEntity te, final World w, final BlockPos newPosition) {
+        te.setWorldAndPos(w, newPosition);
 
-	@Override
-	public void moveTile( final TileEntity te, final World w, final BlockPos newPosition )
-	{
-		te.setWorldAndPos( w, newPosition );
+        final Chunk c = w.getChunkAt(newPosition);
+        c.addTileEntity(newPosition, te);
 
-		final Chunk c = w.getChunkAt( newPosition );
-		c.addTileEntity( newPosition, te );
-
-		if( w.getChunkProvider().isChunkLoaded(c.getPos()) )
-		{
-			final BlockState state = w.getBlockState( newPosition );
-			w.addTileEntity( te );
-			w.notifyBlockUpdate( newPosition, state, state, 1 );
-		}
-	}
+        if (w.getChunkProvider().isChunkLoaded(c.getPos())) {
+            final BlockState state = w.getBlockState(newPosition);
+            w.addTileEntity(te);
+            w.notifyBlockUpdate(newPosition, state, state, 1);
+        }
+    }
 }

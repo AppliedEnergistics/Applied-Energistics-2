@@ -23,14 +23,11 @@
 
 package appeng.api.exceptions;
 
+public class MissingIngredientException extends Exception {
 
-public class MissingIngredientException extends Exception
-{
+    private static final long serialVersionUID = -998858343831371697L;
 
-	private static final long serialVersionUID = -998858343831371697L;
-
-	public MissingIngredientException( final String n )
-	{
-		super( n );
-	}
+    public MissingIngredientException(final String n) {
+        super(n);
+    }
 }

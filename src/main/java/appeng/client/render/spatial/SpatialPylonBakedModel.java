@@ -18,10 +18,15 @@
 
 package appeng.client.render.spatial;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
-import appeng.client.render.cablebus.CubeBuilder;
-import appeng.tile.spatial.TileSpatialPylon;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.google.common.collect.ImmutableMap;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.ItemOverrideList;
@@ -30,217 +35,174 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
+import appeng.client.render.cablebus.CubeBuilder;
+import appeng.tile.spatial.TileSpatialPylon;
 
 /**
  * The baked model that will be used for rendering the spatial pylon.
  */
-class SpatialPylonBakedModel implements IDynamicBakedModel
-{
+class SpatialPylonBakedModel implements IDynamicBakedModel {
 
-	private final Map<SpatialPylonTextureType, TextureAtlasSprite> textures;
+    private final Map<SpatialPylonTextureType, TextureAtlasSprite> textures;
 
-	SpatialPylonBakedModel( Map<SpatialPylonTextureType, TextureAtlasSprite> textures )
-	{
-		this.textures = ImmutableMap.copyOf( textures );
-	}
+    SpatialPylonBakedModel(Map<SpatialPylonTextureType, TextureAtlasSprite> textures) {
+        this.textures = ImmutableMap.copyOf(textures);
+    }
 
-	@Nonnull
-	@Override
-	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData) {
-		int flags = this.getFlags( extraData );
+    @Nonnull
+    @Override
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand,
+            @Nonnull IModelData extraData) {
+        int flags = this.getFlags(extraData);
 
-		CubeBuilder builder = new CubeBuilder();
+        CubeBuilder builder = new CubeBuilder();
 
-		if( flags != 0 )
-		{
-			Direction ori = null;
-			int displayAxis = flags & TileSpatialPylon.DISPLAY_Z;
-			if( displayAxis == TileSpatialPylon.DISPLAY_X )
-			{
-				ori = Direction.EAST;
+        if (flags != 0) {
+            Direction ori = null;
+            int displayAxis = flags & TileSpatialPylon.DISPLAY_Z;
+            if (displayAxis == TileSpatialPylon.DISPLAY_X) {
+                ori = Direction.EAST;
 
-				if( ( flags & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_END_MAX )
-				{
-					builder.setUvRotation( Direction.SOUTH, 1 );
-					builder.setUvRotation( Direction.NORTH, 1 );
-					builder.setUvRotation( Direction.UP, 2 );
-					builder.setUvRotation( Direction.DOWN, 2 );
-				}
-				else if( ( flags & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_END_MIN )
-				{
-					builder.setUvRotation( Direction.SOUTH, 2 );
-					builder.setUvRotation( Direction.NORTH, 2 );
-					builder.setUvRotation( Direction.UP, 1 );
-					builder.setUvRotation( Direction.DOWN, 1 );
-				}
-				else
-				{
-					builder.setUvRotation( Direction.SOUTH, 1 );
-					builder.setUvRotation( Direction.NORTH, 1 );
-					builder.setUvRotation( Direction.UP, 1 );
-					builder.setUvRotation( Direction.DOWN, 1 );
-				}
-			}
+                if ((flags & TileSpatialPylon.DISPLAY_MIDDLE) == TileSpatialPylon.DISPLAY_END_MAX) {
+                    builder.setUvRotation(Direction.SOUTH, 1);
+                    builder.setUvRotation(Direction.NORTH, 1);
+                    builder.setUvRotation(Direction.UP, 2);
+                    builder.setUvRotation(Direction.DOWN, 2);
+                } else if ((flags & TileSpatialPylon.DISPLAY_MIDDLE) == TileSpatialPylon.DISPLAY_END_MIN) {
+                    builder.setUvRotation(Direction.SOUTH, 2);
+                    builder.setUvRotation(Direction.NORTH, 2);
+                    builder.setUvRotation(Direction.UP, 1);
+                    builder.setUvRotation(Direction.DOWN, 1);
+                } else {
+                    builder.setUvRotation(Direction.SOUTH, 1);
+                    builder.setUvRotation(Direction.NORTH, 1);
+                    builder.setUvRotation(Direction.UP, 1);
+                    builder.setUvRotation(Direction.DOWN, 1);
+                }
+            }
 
-			else if( displayAxis == TileSpatialPylon.DISPLAY_Y )
-			{
-				ori = Direction.UP;
-				if( ( flags & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_END_MAX )
-				{
-					builder.setUvRotation( Direction.NORTH, 3 );
-					builder.setUvRotation( Direction.SOUTH, 3 );
-					builder.setUvRotation( Direction.EAST, 3 );
-					builder.setUvRotation( Direction.WEST, 3 );
-				}
-			}
+            else if (displayAxis == TileSpatialPylon.DISPLAY_Y) {
+                ori = Direction.UP;
+                if ((flags & TileSpatialPylon.DISPLAY_MIDDLE) == TileSpatialPylon.DISPLAY_END_MAX) {
+                    builder.setUvRotation(Direction.NORTH, 3);
+                    builder.setUvRotation(Direction.SOUTH, 3);
+                    builder.setUvRotation(Direction.EAST, 3);
+                    builder.setUvRotation(Direction.WEST, 3);
+                }
+            }
 
-			else if( displayAxis == TileSpatialPylon.DISPLAY_Z )
-			{
-				ori = Direction.NORTH;
-				if( ( flags & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_END_MAX )
-				{
-					builder.setUvRotation( Direction.EAST, 2 );
-					builder.setUvRotation( Direction.WEST, 1 );
-				}
-				else if( ( flags & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_END_MIN )
-				{
-					builder.setUvRotation( Direction.EAST, 1 );
-					builder.setUvRotation( Direction.WEST, 2 );
-					builder.setUvRotation( Direction.UP, 3 );
-					builder.setUvRotation( Direction.DOWN, 3 );
-				}
-				else
-				{
-					builder.setUvRotation( Direction.EAST, 1 );
-					builder.setUvRotation( Direction.WEST, 2 );
-				}
-			}
+            else if (displayAxis == TileSpatialPylon.DISPLAY_Z) {
+                ori = Direction.NORTH;
+                if ((flags & TileSpatialPylon.DISPLAY_MIDDLE) == TileSpatialPylon.DISPLAY_END_MAX) {
+                    builder.setUvRotation(Direction.EAST, 2);
+                    builder.setUvRotation(Direction.WEST, 1);
+                } else if ((flags & TileSpatialPylon.DISPLAY_MIDDLE) == TileSpatialPylon.DISPLAY_END_MIN) {
+                    builder.setUvRotation(Direction.EAST, 1);
+                    builder.setUvRotation(Direction.WEST, 2);
+                    builder.setUvRotation(Direction.UP, 3);
+                    builder.setUvRotation(Direction.DOWN, 3);
+                } else {
+                    builder.setUvRotation(Direction.EAST, 1);
+                    builder.setUvRotation(Direction.WEST, 2);
+                }
+            }
 
-			builder.setTextures( this.textures.get( getTextureTypeFromSideOutside( flags, ori, Direction.UP ) ),
-					this.textures.get( getTextureTypeFromSideOutside( flags, ori, Direction.DOWN ) ),
-					this.textures.get( getTextureTypeFromSideOutside( flags, ori, Direction.NORTH ) ),
-					this.textures.get( getTextureTypeFromSideOutside( flags, ori, Direction.SOUTH ) ),
-					this.textures.get( getTextureTypeFromSideOutside( flags, ori, Direction.EAST ) ),
-					this.textures.get( getTextureTypeFromSideOutside( flags, ori, Direction.WEST ) ) );
-			builder.addCube( 0, 0, 0, 16, 16, 16 );
+            builder.setTextures(this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.UP)),
+                    this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.DOWN)),
+                    this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.NORTH)),
+                    this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.SOUTH)),
+                    this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.EAST)),
+                    this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.WEST)));
+            builder.addCube(0, 0, 0, 16, 16, 16);
 
-			if( ( flags & TileSpatialPylon.DISPLAY_POWERED_ENABLED ) == TileSpatialPylon.DISPLAY_POWERED_ENABLED )
-			{
-				builder.setRenderFullBright( true );
-			}
+            if ((flags & TileSpatialPylon.DISPLAY_POWERED_ENABLED) == TileSpatialPylon.DISPLAY_POWERED_ENABLED) {
+                builder.setRenderFullBright(true);
+            }
 
-			builder.setTextures( this.textures.get( getTextureTypeFromSideInside( flags, ori, Direction.UP ) ),
-					this.textures.get( getTextureTypeFromSideInside( flags, ori, Direction.DOWN ) ),
-					this.textures.get( getTextureTypeFromSideInside( flags, ori, Direction.NORTH ) ),
-					this.textures.get( getTextureTypeFromSideInside( flags, ori, Direction.SOUTH ) ),
-					this.textures.get( getTextureTypeFromSideInside( flags, ori, Direction.EAST ) ),
-					this.textures.get( getTextureTypeFromSideInside( flags, ori, Direction.WEST ) ) );
-			builder.addCube( 0, 0, 0, 16, 16, 16 );
-		}
-		else
-		{
-			builder.setTexture( this.textures.get( SpatialPylonTextureType.BASE ) );
-			builder.addCube( 0, 0, 0, 16, 16, 16 );
+            builder.setTextures(this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.UP)),
+                    this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.DOWN)),
+                    this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.NORTH)),
+                    this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.SOUTH)),
+                    this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.EAST)),
+                    this.textures.get(getTextureTypeFromSideInside(flags, ori, Direction.WEST)));
+            builder.addCube(0, 0, 0, 16, 16, 16);
+        } else {
+            builder.setTexture(this.textures.get(SpatialPylonTextureType.BASE));
+            builder.addCube(0, 0, 0, 16, 16, 16);
 
-			builder.setTexture( this.textures.get( SpatialPylonTextureType.DIM ) );
-			builder.addCube( 0, 0, 0, 16, 16, 16 );
-		}
+            builder.setTexture(this.textures.get(SpatialPylonTextureType.DIM));
+            builder.addCube(0, 0, 0, 16, 16, 16);
+        }
 
-		return builder.getOutput();
-	}
+        return builder.getOutput();
+    }
 
-	private int getFlags( IModelData modelData )
-	{
-		Integer flags = modelData.getData(TileSpatialPylon.STATE);
-		return flags != null ? flags : 0;
-	}
+    private int getFlags(IModelData modelData) {
+        Integer flags = modelData.getData(TileSpatialPylon.STATE);
+        return flags != null ? flags : 0;
+    }
 
-	private static SpatialPylonTextureType getTextureTypeFromSideOutside( int flags, Direction ori, Direction dir )
-	{
-		if( ori == dir || ori.getOpposite() == dir )
-		{
-			return SpatialPylonTextureType.BASE;
-		}
+    private static SpatialPylonTextureType getTextureTypeFromSideOutside(int flags, Direction ori, Direction dir) {
+        if (ori == dir || ori.getOpposite() == dir) {
+            return SpatialPylonTextureType.BASE;
+        }
 
-		if( ( flags & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_MIDDLE )
-		{
-			return SpatialPylonTextureType.BASE_SPANNED;
-		}
-		else if( ( flags & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_END_MIN )
-		{
-			return SpatialPylonTextureType.BASE_END;
-		}
-		else if( ( flags & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_END_MAX )
-		{
-			return SpatialPylonTextureType.BASE_END;
-		}
+        if ((flags & TileSpatialPylon.DISPLAY_MIDDLE) == TileSpatialPylon.DISPLAY_MIDDLE) {
+            return SpatialPylonTextureType.BASE_SPANNED;
+        } else if ((flags & TileSpatialPylon.DISPLAY_MIDDLE) == TileSpatialPylon.DISPLAY_END_MIN) {
+            return SpatialPylonTextureType.BASE_END;
+        } else if ((flags & TileSpatialPylon.DISPLAY_MIDDLE) == TileSpatialPylon.DISPLAY_END_MAX) {
+            return SpatialPylonTextureType.BASE_END;
+        }
 
-		return SpatialPylonTextureType.BASE;
-	}
+        return SpatialPylonTextureType.BASE;
+    }
 
-	private static SpatialPylonTextureType getTextureTypeFromSideInside( int flags, Direction ori, Direction dir )
-	{
-		final boolean good = ( flags & TileSpatialPylon.DISPLAY_ENABLED ) == TileSpatialPylon.DISPLAY_ENABLED;
+    private static SpatialPylonTextureType getTextureTypeFromSideInside(int flags, Direction ori, Direction dir) {
+        final boolean good = (flags & TileSpatialPylon.DISPLAY_ENABLED) == TileSpatialPylon.DISPLAY_ENABLED;
 
-		if( ori == dir || ori.getOpposite() == dir )
-		{
-			return good ? SpatialPylonTextureType.DIM : SpatialPylonTextureType.RED;
-		}
+        if (ori == dir || ori.getOpposite() == dir) {
+            return good ? SpatialPylonTextureType.DIM : SpatialPylonTextureType.RED;
+        }
 
-		if( ( flags & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_MIDDLE )
-		{
-			return good ? SpatialPylonTextureType.DIM_SPANNED : SpatialPylonTextureType.RED_SPANNED;
-		}
-		else if( ( flags & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_END_MIN )
-		{
-			return good ? SpatialPylonTextureType.DIM_END : SpatialPylonTextureType.RED_END;
-		}
-		else if( ( flags & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_END_MAX )
-		{
-			return good ? SpatialPylonTextureType.DIM_END : SpatialPylonTextureType.RED_END;
-		}
+        if ((flags & TileSpatialPylon.DISPLAY_MIDDLE) == TileSpatialPylon.DISPLAY_MIDDLE) {
+            return good ? SpatialPylonTextureType.DIM_SPANNED : SpatialPylonTextureType.RED_SPANNED;
+        } else if ((flags & TileSpatialPylon.DISPLAY_MIDDLE) == TileSpatialPylon.DISPLAY_END_MIN) {
+            return good ? SpatialPylonTextureType.DIM_END : SpatialPylonTextureType.RED_END;
+        } else if ((flags & TileSpatialPylon.DISPLAY_MIDDLE) == TileSpatialPylon.DISPLAY_END_MAX) {
+            return good ? SpatialPylonTextureType.DIM_END : SpatialPylonTextureType.RED_END;
+        }
 
-		return SpatialPylonTextureType.BASE;
-	}
+        return SpatialPylonTextureType.BASE;
+    }
 
-	@Override
-	public boolean func_230044_c_() {
-		return false;
-	}
+    @Override
+    public boolean func_230044_c_() {
+        return false;
+    }
 
-	@Override
-	public boolean isAmbientOcclusion()
-	{
-		return true;
-	}
+    @Override
+    public boolean isAmbientOcclusion() {
+        return true;
+    }
 
-	@Override
-	public boolean isGui3d()
-	{
-		return false;
-	}
+    @Override
+    public boolean isGui3d() {
+        return false;
+    }
 
-	@Override
-	public boolean isBuiltInRenderer()
-	{
-		return false;
-	}
+    @Override
+    public boolean isBuiltInRenderer() {
+        return false;
+    }
 
-	@Override
-	public TextureAtlasSprite getParticleTexture()
-	{
-		return this.textures.get( SpatialPylonTextureType.DIM );
-	}
+    @Override
+    public TextureAtlasSprite getParticleTexture() {
+        return this.textures.get(SpatialPylonTextureType.DIM);
+    }
 
-	@Override
-	public ItemOverrideList getOverrides()
-	{
-		return ItemOverrideList.EMPTY;
-	}
+    @Override
+    public ItemOverrideList getOverrides() {
+        return ItemOverrideList.EMPTY;
+    }
 }

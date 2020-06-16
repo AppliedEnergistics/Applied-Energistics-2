@@ -18,33 +18,30 @@
 
 package appeng.client.render.crafting;
 
-
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
-
-import appeng.client.render.cablebus.CubeBuilder;
 import net.minecraftforge.client.model.data.IModelData;
 
+import appeng.client.render.cablebus.CubeBuilder;
 
 /**
  * A simple crafting unit model that uses an un-lit texture for the inner block.
  */
-class UnitBakedModel extends CraftingCubeBakedModel
-{
+class UnitBakedModel extends CraftingCubeBakedModel {
 
-	private final TextureAtlasSprite unitTexture;
+    private final TextureAtlasSprite unitTexture;
 
-	UnitBakedModel( TextureAtlasSprite ringCorner, TextureAtlasSprite ringHor, TextureAtlasSprite ringVer, TextureAtlasSprite unitTexture )
-	{
-		super( ringCorner, ringHor, ringVer );
-		this.unitTexture = unitTexture;
-	}
+    UnitBakedModel(TextureAtlasSprite ringCorner, TextureAtlasSprite ringHor, TextureAtlasSprite ringVer,
+            TextureAtlasSprite unitTexture) {
+        super(ringCorner, ringHor, ringVer);
+        this.unitTexture = unitTexture;
+    }
 
-	@Override
-	protected void addInnerCube(Direction facing, BlockState state, IModelData modelData, CubeBuilder builder, float x1, float y1, float z1, float x2, float y2, float z2)
-	{
-		builder.setTexture( this.unitTexture );
-		builder.addCube( x1, y1, z1, x2, y2, z2 );
-	}
+    @Override
+    protected void addInnerCube(Direction facing, BlockState state, IModelData modelData, CubeBuilder builder, float x1,
+            float y1, float z1, float x2, float y2, float z2) {
+        builder.setTexture(this.unitTexture);
+        builder.addCube(x1, y1, z1, x2, y2, z2);
+    }
 }

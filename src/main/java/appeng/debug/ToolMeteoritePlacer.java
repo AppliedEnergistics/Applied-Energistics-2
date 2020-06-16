@@ -18,11 +18,6 @@
 
 package appeng.debug;
 
-
-import appeng.worldgen.MeteoritePlacer;
-import appeng.worldgen.MeteoriteSpawner;
-import appeng.worldgen.PlacedMeteoriteSettings;
-import appeng.worldgen.meteorite.StandardWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -33,55 +28,55 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
-
-import appeng.items.AEBaseItem;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
 import net.minecraft.world.server.ServerWorld;
 
+import appeng.items.AEBaseItem;
+import appeng.worldgen.MeteoritePlacer;
+import appeng.worldgen.MeteoriteSpawner;
+import appeng.worldgen.PlacedMeteoriteSettings;
+import appeng.worldgen.meteorite.StandardWorld;
 
-public class ToolMeteoritePlacer extends AEBaseItem
-{
+public class ToolMeteoritePlacer extends AEBaseItem {
 
-	public ToolMeteoritePlacer(Properties properties) {
-		super(properties);
-	}
+    public ToolMeteoritePlacer(Properties properties) {
+        super(properties);
+    }
 
-	@Override
-	public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-		if( context.getWorld().isRemote() )
-		{
-			return ActionResultType.PASS;
-		}
+    @Override
+    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
+        if (context.getWorld().isRemote()) {
+            return ActionResultType.PASS;
+        }
 
-		ServerPlayerEntity player = (ServerPlayerEntity) context.getPlayer();
-		ServerWorld world = (ServerWorld) context.getWorld();
-		BlockPos pos = context.getPos();
+        ServerPlayerEntity player = (ServerPlayerEntity) context.getPlayer();
+        ServerWorld world = (ServerWorld) context.getWorld();
+        BlockPos pos = context.getPos();
 
-		if (player == null) {
-			return ActionResultType.PASS;
-		}
+        if (player == null) {
+            return ActionResultType.PASS;
+        }
 
- 		final MeteoriteSpawner ms = new MeteoriteSpawner();
-		PlacedMeteoriteSettings spawned = ms.trySpawnMeteorite(world, pos);
+        final MeteoriteSpawner ms = new MeteoriteSpawner();
+        PlacedMeteoriteSettings spawned = ms.trySpawnMeteorite(world, pos);
 
- 		if( spawned == null )
- 		{
- 			player.sendMessage( new StringTextComponent( "Un-suitable Location." ) );
- 			return ActionResultType.FAIL;
- 		}
+        if (spawned == null) {
+            player.sendMessage(new StringTextComponent("Un-suitable Location."));
+            return ActionResultType.FAIL;
+        }
 
-		final MeteoritePlacer placer = new MeteoritePlacer(world, spawned);
-		placer.place();
+        final MeteoritePlacer placer = new MeteoritePlacer(world, spawned);
+        placer.place();
 
-		// The placer will not send chunks to the player since it's used as part
-		// of world-gen normally, so we'll have to do it ourselves. Since this
-		// is a debug tool, we'll not care about being terribly efficient here
-		ChunkPos.getAllInBox(new ChunkPos(spawned.getPos()), 1).forEach(cp -> {
-			Chunk c = world.getChunk(cp.x, cp.z);
-			player.connection.sendPacket(new SChunkDataPacket(c, 65535)); // 65535 == full chunk
-		});
+        // The placer will not send chunks to the player since it's used as part
+        // of world-gen normally, so we'll have to do it ourselves. Since this
+        // is a debug tool, we'll not care about being terribly efficient here
+        ChunkPos.getAllInBox(new ChunkPos(spawned.getPos()), 1).forEach(cp -> {
+            Chunk c = world.getChunk(cp.x, cp.z);
+            player.connection.sendPacket(new SChunkDataPacket(c, 65535)); // 65535 == full chunk
+        });
 
-		return ActionResultType.SUCCESS;
-	}
+        return ActionResultType.SUCCESS;
+    }
 }

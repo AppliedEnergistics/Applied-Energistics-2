@@ -18,6 +18,8 @@
 
 package appeng.client.gui.implementations;
 
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.AEApi;
 import appeng.api.config.FullnessMode;
@@ -29,71 +31,65 @@ import appeng.client.gui.widgets.GuiServerSettingToggleButton;
 import appeng.client.gui.widgets.GuiSettingToggleButton;
 import appeng.container.implementations.ContainerIOPort;
 import appeng.core.localization.GuiText;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
 
+public class GuiIOPort extends GuiUpgradeable<ContainerIOPort> {
 
-public class GuiIOPort extends GuiUpgradeable<ContainerIOPort>
-{
+    private GuiSettingToggleButton<FullnessMode> fullMode;
+    private GuiSettingToggleButton<OperationMode> operationMode;
 
-	private GuiSettingToggleButton<FullnessMode> fullMode;
-	private GuiSettingToggleButton<OperationMode> operationMode;
+    public GuiIOPort(ContainerIOPort container, PlayerInventory playerInventory, ITextComponent title) {
+        super(container, playerInventory, title);
+        this.ySize = 166;
+    }
 
-	public GuiIOPort(ContainerIOPort container, PlayerInventory playerInventory, ITextComponent title) {
-		super(container, playerInventory, title);
-		this.ySize = 166;
-	}
+    @Override
+    protected void addButtons() {
+        this.fullMode = new GuiServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 8, Settings.FULLNESS_MODE,
+                FullnessMode.EMPTY);
+        this.operationMode = new GuiServerSettingToggleButton<>(this.guiLeft + 80, this.guiTop + 17,
+                Settings.OPERATION_MODE, OperationMode.EMPTY);
 
-	@Override
-	protected void addButtons()
-	{
-		this.fullMode = new GuiServerSettingToggleButton<>( this.guiLeft - 18, this.guiTop + 8, Settings.FULLNESS_MODE, FullnessMode.EMPTY );
-		this.operationMode = new GuiServerSettingToggleButton<>( this.guiLeft + 80, this.guiTop + 17, Settings.OPERATION_MODE, OperationMode.EMPTY );
+        this.addButton(this.operationMode);
+        this.addButton(this.fullMode);
+        this.redstoneMode = new GuiServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 28,
+                Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
+        addButton(this.redstoneMode);
+    }
 
-		this.addButton( this.operationMode );
-		this.addButton( this.fullMode );
-		this.redstoneMode = new GuiServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 28, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
-		addButton(this.redstoneMode);
-	}
+    @Override
+    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+        this.font.drawString(this.getGuiDisplayName(GuiText.IOPort.getLocal()), 8, 6, 4210752);
+        this.font.drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
 
-	@Override
-	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
-	{
-		this.font.drawString( this.getGuiDisplayName( GuiText.IOPort.getLocal() ), 8, 6, 4210752 );
-		this.font.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
+        if (this.redstoneMode != null) {
+            this.redstoneMode.set(this.cvb.getRedStoneMode());
+        }
 
-		if( this.redstoneMode != null )
-		{
-			this.redstoneMode.set( this.cvb.getRedStoneMode() );
-		}
+        if (this.operationMode != null) {
+            this.operationMode.set(((ContainerIOPort) this.cvb).getOperationMode());
+        }
 
-		if( this.operationMode != null )
-		{
-			this.operationMode.set( ( (ContainerIOPort) this.cvb ).getOperationMode() );
-		}
+        if (this.fullMode != null) {
+            this.fullMode.set(((ContainerIOPort) this.cvb).getFullMode());
+        }
+    }
 
-		if( this.fullMode != null )
-		{
-			this.fullMode.set( ( (ContainerIOPort) this.cvb ).getFullMode() );
-		}
-	}
+    @Override
+    public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+        super.drawBG(offsetX, offsetY, mouseX, mouseY, partialTicks);
 
-	@Override
-	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
-	{
-		super.drawBG( offsetX, offsetY, mouseX, mouseY, partialTicks);
+        final IDefinitions definitions = AEApi.instance().definitions();
 
-		final IDefinitions definitions = AEApi.instance().definitions();
+        definitions.items().cell1k().maybeStack(1)
+                .ifPresent(cell1kStack -> this.drawItem(offsetX + 66 - 8, offsetY + 17, cell1kStack));
 
-		definitions.items().cell1k().maybeStack( 1 ).ifPresent( cell1kStack -> this.drawItem( offsetX + 66 - 8, offsetY + 17, cell1kStack ) );
+        definitions.blocks().drive().maybeStack(1)
+                .ifPresent(driveStack -> this.drawItem(offsetX + 94 + 8, offsetY + 17, driveStack));
+    }
 
-		definitions.blocks().drive().maybeStack( 1 ).ifPresent( driveStack -> this.drawItem( offsetX + 94 + 8, offsetY + 17, driveStack ) );
-	}
-
-	@Override
-	protected String getBackground()
-	{
-		return "guis/io_port.png";
-	}
+    @Override
+    protected String getBackground() {
+        return "guis/io_port.png";
+    }
 
 }

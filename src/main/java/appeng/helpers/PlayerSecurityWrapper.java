@@ -18,27 +18,22 @@
 
 package appeng.helpers;
 
-
 import java.util.EnumSet;
 import java.util.Map;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.security.ISecurityRegistry;
 
+public class PlayerSecurityWrapper implements ISecurityRegistry {
 
-public class PlayerSecurityWrapper implements ISecurityRegistry
-{
+    private final Map<Integer, EnumSet<SecurityPermissions>> target;
 
-	private final Map<Integer, EnumSet<SecurityPermissions>> target;
+    public PlayerSecurityWrapper(final Map<Integer, EnumSet<SecurityPermissions>> playerPerms) {
+        this.target = playerPerms;
+    }
 
-	public PlayerSecurityWrapper( final Map<Integer, EnumSet<SecurityPermissions>> playerPerms )
-	{
-		this.target = playerPerms;
-	}
-
-	@Override
-	public void addPlayer( final int playerID, final EnumSet<SecurityPermissions> permissions )
-	{
-		this.target.put( playerID, permissions );
-	}
+    @Override
+    public void addPlayer(final int playerID, final EnumSet<SecurityPermissions> permissions) {
+        this.target.put(playerID, permissions);
+    }
 }

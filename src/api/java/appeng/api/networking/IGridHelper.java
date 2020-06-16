@@ -23,46 +23,45 @@
 
 package appeng.api.networking;
 
-
 import javax.annotation.Nonnull;
 
 import appeng.api.exceptions.FailedConnectionException;
 
-
 /**
- * A helper responsible for creating new {@link IGridNode}, {@link IGridConnection} or potentially similar tasks.
+ * A helper responsible for creating new {@link IGridNode},
+ * {@link IGridConnection} or potentially similar tasks.
  *
  * @author yueh
  * @version rv5
  * @since rv5
  */
-public interface IGridHelper
-{
+public interface IGridHelper {
 
-	/**
-	 * Create a grid node for your {@link IGridHost}
-	 *
-	 * The passed {@link IGridBlock} represents the definition for properties like connectable sides.
-	 * Refer to its documentation for further details.
-	 *
-	 * @param block grid block
-	 *
-	 * @return grid node of block
-	 */
-	@Nonnull
-	IGridNode createGridNode( @Nonnull IGridBlock block );
+    /**
+     * Create a grid node for your {@link IGridHost}
+     *
+     * The passed {@link IGridBlock} represents the definition for properties like
+     * connectable sides. Refer to its documentation for further details.
+     *
+     * @param block grid block
+     *
+     * @return grid node of block
+     */
+    @Nonnull
+    IGridNode createGridNode(@Nonnull IGridBlock block);
 
-	/**
-	 * Create a direct connection between two {@link IGridNode}.
-	 *
-	 * This will be considered as having a distance of 1, regardless of the location of both nodes.
-	 *
-	 * @param a to be connected gridnode
-	 * @param b to be connected gridnode
-	 *
-	 * @throws appeng.api.exceptions.FailedConnectionException
-	 */
-	@Nonnull
-	IGridConnection createGridConnection( @Nonnull IGridNode a, @Nonnull IGridNode b ) throws FailedConnectionException;
+    /**
+     * Create a direct connection between two {@link IGridNode}.
+     *
+     * This will be considered as having a distance of 1, regardless of the location
+     * of both nodes.
+     *
+     * @param a to be connected gridnode
+     * @param b to be connected gridnode
+     *
+     * @throws appeng.api.exceptions.FailedConnectionException
+     */
+    @Nonnull
+    IGridConnection createGridConnection(@Nonnull IGridNode a, @Nonnull IGridNode b) throws FailedConnectionException;
 
 }

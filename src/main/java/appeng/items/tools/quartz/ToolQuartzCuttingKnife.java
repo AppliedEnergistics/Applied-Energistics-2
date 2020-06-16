@@ -18,16 +18,6 @@
 
 package appeng.items.tools.quartz;
 
-
-import appeng.api.features.AEFeature;
-import appeng.api.implementations.guiobjects.IGuiItem;
-import appeng.api.implementations.guiobjects.IGuiItemObject;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.ContainerQuartzKnife;
-import appeng.items.AEBaseItem;
-import appeng.items.contents.QuartzKnifeObj;
-import appeng.util.Platform;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -38,63 +28,64 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import appeng.api.features.AEFeature;
+import appeng.api.implementations.guiobjects.IGuiItem;
+import appeng.api.implementations.guiobjects.IGuiItemObject;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerQuartzKnife;
+import appeng.items.AEBaseItem;
+import appeng.items.contents.QuartzKnifeObj;
+import appeng.util.Platform;
 
-public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
-{
-	private final AEFeature type;
+public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem {
+    private final AEFeature type;
 
-	public ToolQuartzCuttingKnife( Item.Properties props, final AEFeature type )
-	{
-		super(props);
-		this.type = type;
-	}
+    public ToolQuartzCuttingKnife(Item.Properties props, final AEFeature type) {
+        super(props);
+        this.type = type;
+    }
 
-	@Override
-	public ActionResultType onItemUse(ItemUseContext context )
-	{
-		PlayerEntity player = context.getPlayer();
-		if( Platform.isServer() && player != null )
-		{
-			ContainerOpener.openContainer(ContainerQuartzKnife.TYPE, context.getPlayer(), ContainerLocator.forItemUseContext(context));
-		}
-		return ActionResultType.SUCCESS;
-	}
+    @Override
+    public ActionResultType onItemUse(ItemUseContext context) {
+        PlayerEntity player = context.getPlayer();
+        if (Platform.isServer() && player != null) {
+            ContainerOpener.openContainer(ContainerQuartzKnife.TYPE, context.getPlayer(),
+                    ContainerLocator.forItemUseContext(context));
+        }
+        return ActionResultType.SUCCESS;
+    }
 
-	@Override
-	public ActionResult<ItemStack> onItemRightClick( final World w, final PlayerEntity p, final Hand hand )
-	{
-		if( Platform.isServer() )
-		{
-			ContainerOpener.openContainer(ContainerQuartzKnife.TYPE, p, ContainerLocator.forHand(p, hand));
-		}
-		p.swingArm( hand );
-		return new ActionResult<>( ActionResultType.SUCCESS, p.getHeldItem( hand ) );
-	}
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
+        if (Platform.isServer()) {
+            ContainerOpener.openContainer(ContainerQuartzKnife.TYPE, p, ContainerLocator.forHand(p, hand));
+        }
+        p.swingArm(hand);
+        return new ActionResult<>(ActionResultType.SUCCESS, p.getHeldItem(hand));
+    }
 
-	@Override
-	public boolean getIsRepairable( final ItemStack a, final ItemStack b )
-	{
-		return Platform.canRepair( this.type, a, b );
-	}
+    @Override
+    public boolean getIsRepairable(final ItemStack a, final ItemStack b) {
+        return Platform.canRepair(this.type, a, b);
+    }
 
-	@Override
-	public ItemStack getContainerItem( final ItemStack itemStack )
-	{
-		ItemStack copy = itemStack.copy();
-		copy.setDamage( itemStack.getDamage() + 1 );
+    @Override
+    public ItemStack getContainerItem(final ItemStack itemStack) {
+        ItemStack copy = itemStack.copy();
+        copy.setDamage(itemStack.getDamage() + 1);
 
-		return copy;
-	}
+        return copy;
+    }
 
-	@Override
-	public boolean hasContainerItem( final ItemStack stack )
-	{
-		return true;
-	}
+    @Override
+    public boolean hasContainerItem(final ItemStack stack) {
+        return true;
+    }
 
-	@Override
-	public IGuiItemObject getGuiObject( final ItemStack is, int playerInventorySlot, final World world, final BlockPos pos )
-	{
-		return new QuartzKnifeObj( is );
-	}
+    @Override
+    public IGuiItemObject getGuiObject(final ItemStack is, int playerInventorySlot, final World world,
+            final BlockPos pos) {
+        return new QuartzKnifeObj(is);
+    }
 }

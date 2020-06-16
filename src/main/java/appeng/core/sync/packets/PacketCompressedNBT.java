@@ -18,7 +18,6 @@
 
 package appeng.core.sync.packets;
 
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -27,7 +26,6 @@ import java.io.OutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import appeng.client.gui.implementations.GuiInterfaceTerminal;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
@@ -39,83 +37,70 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import appeng.client.gui.implementations.GuiInterfaceTerminal;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 
-
 //TODO, this is pointless, NBT is already compressed when written to a PacketBuffer.
-public class PacketCompressedNBT extends AppEngPacket
-{
+public class PacketCompressedNBT extends AppEngPacket {
 
-	// input.
-	private final CompoundNBT in;
-	// output...
-	private final PacketBuffer data;
-	private final GZIPOutputStream compressFrame;
+    // input.
+    private final CompoundNBT in;
+    // output...
+    private final PacketBuffer data;
+    private final GZIPOutputStream compressFrame;
 
-	public PacketCompressedNBT( final PacketBuffer stream )
-	{
-		this.data = null;
-		this.compressFrame = null;
+    public PacketCompressedNBT(final PacketBuffer stream) {
+        this.data = null;
+        this.compressFrame = null;
 
-		try( DataInputStream inStream = new DataInputStream( new GZIPInputStream( new InputStream()
-		{
+        try (DataInputStream inStream = new DataInputStream(new GZIPInputStream(new InputStream() {
 
-			@Override
-			public int read()
-			{
-				if( stream.readableBytes() <= 0 )
-				{
-					return -1;
-				}
+            @Override
+            public int read() {
+                if (stream.readableBytes() <= 0) {
+                    return -1;
+                }
 
-				return stream.readByte() & 0xff;
-			}
-		} ) ) )
-		{
-			this.in = CompressedStreamTools.read( inStream );
-		}
-		catch( IOException e )
-		{
-			throw new RuntimeException( "Failed to decompress packet.", e );
-		}
-	}
+                return stream.readByte() & 0xff;
+            }
+        }))) {
+            this.in = CompressedStreamTools.read(inStream);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to decompress packet.", e);
+        }
+    }
 
-	// FIXME: this is pointless, PacketBuffer.writeNBT will already compress
-	// api
-	public PacketCompressedNBT( final CompoundNBT din ) throws IOException
-	{
+    // FIXME: this is pointless, PacketBuffer.writeNBT will already compress
+    // api
+    public PacketCompressedNBT(final CompoundNBT din) throws IOException {
 
-		this.data = new PacketBuffer( Unpooled.buffer( 2048 ) );
-		this.data.writeInt( this.getPacketID() );
+        this.data = new PacketBuffer(Unpooled.buffer(2048));
+        this.data.writeInt(this.getPacketID());
 
-		this.in = din;
+        this.in = din;
 
-		this.compressFrame = new GZIPOutputStream( new OutputStream()
-		{
+        this.compressFrame = new GZIPOutputStream(new OutputStream() {
 
-			@Override
-			public void write( final int value )
-			{
-				PacketCompressedNBT.this.data.writeByte( value );
-			}
-		} );
+            @Override
+            public void write(final int value) {
+                PacketCompressedNBT.this.data.writeByte(value);
+            }
+        });
 
-		CompressedStreamTools.write( din, new DataOutputStream( this.compressFrame ) );
-		this.compressFrame.close();
+        CompressedStreamTools.write(din, new DataOutputStream(this.compressFrame));
+        this.compressFrame.close();
 
-		this.configureWrite( this.data );
-	}
+        this.configureWrite(this.data);
+    }
 
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public void clientPacketData( final INetworkInfo network, final PlayerEntity player )
-	{
-		final Screen gs = Minecraft.getInstance().currentScreen;
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
+        final Screen gs = Minecraft.getInstance().currentScreen;
 
-		if( gs instanceof GuiInterfaceTerminal)
-		{
-			( (GuiInterfaceTerminal) gs ).postUpdate( this.in );
-		}
-	}
+        if (gs instanceof GuiInterfaceTerminal) {
+            ((GuiInterfaceTerminal) gs).postUpdate(this.in);
+        }
+    }
 }

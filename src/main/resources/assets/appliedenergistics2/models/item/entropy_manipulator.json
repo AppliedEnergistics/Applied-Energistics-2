@@ -1,6 +1,6 @@
 {
-    "parent": "item/handheld",
-    "textures": {
-        "layer0": "appliedenergistics2:item/entropy_manipulator"
-    }
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "appliedenergistics2:item/entropy_manipulator"
+  }
 }

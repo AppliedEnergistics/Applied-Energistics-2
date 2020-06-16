@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:entropy_manipulator"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "ab ",
-    "cd ",
-    "  d"
-  ],
+  "pattern": ["ab ", "cd ", "  d"],
   "key": {
     "c": {
       "item": "appliedenergistics2:engineering_processor"

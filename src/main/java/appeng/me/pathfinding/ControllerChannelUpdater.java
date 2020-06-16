@@ -18,29 +18,24 @@
 
 package appeng.me.pathfinding;
 
-
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridConnectionVisitor;
 import appeng.api.networking.IGridNode;
 import appeng.me.GridConnection;
 import appeng.me.GridNode;
 
+public class ControllerChannelUpdater implements IGridConnectionVisitor {
 
-public class ControllerChannelUpdater implements IGridConnectionVisitor
-{
+    @Override
+    public boolean visitNode(final IGridNode n) {
+        final GridNode gn = (GridNode) n;
+        gn.finalizeChannels();
+        return true;
+    }
 
-	@Override
-	public boolean visitNode( final IGridNode n )
-	{
-		final GridNode gn = (GridNode) n;
-		gn.finalizeChannels();
-		return true;
-	}
-
-	@Override
-	public void visitConnection( final IGridConnection gcc )
-	{
-		final GridConnection gc = (GridConnection) gcc;
-		gc.finalizeChannels();
-	}
+    @Override
+    public void visitConnection(final IGridConnection gcc) {
+        final GridConnection gc = (GridConnection) gcc;
+        gc.finalizeChannels();
+    }
 }

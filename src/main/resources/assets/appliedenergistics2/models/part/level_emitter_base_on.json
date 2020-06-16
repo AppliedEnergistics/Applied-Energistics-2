@@ -1,177 +1,100 @@
 {
-    "loader": "appliedenergistics2:uvlightmap",
-    "ambientocclusion": false,
-    "textures": {
-        "emitter": "appliedenergistics2:parts/level_emitter_on",
-        "particle": "appliedenergistics2:parts/level_emitter_on"
-    },
-    "elements": [
-        {
-            "from": [
-                7,
-                7,
-                3
-            ],
-            "to": [
-                9,
-                9,
-                4
-            ],
-            "faces": {
-                "up": {
-                    "texture": "#emitter",
-                    "uv": [
-                        9,
-                        7,
-                        10,
-                        9
-                    ],
-                    "rotation": 90
-                },
-                "down": {
-                    "texture": "#emitter",
-                    "uv": [
-                        9,
-                        7,
-                        10,
-                        9
-                    ],
-                    "rotation": 270
-                },
-                "east": {
-                    "texture": "#emitter",
-                    "uv": [
-                        9,
-                        7,
-                        10,
-                        9
-                    ],
-                    "rotation": 180
-                },
-                "west": {
-                    "texture": "#emitter",
-                    "uv": [
-                        9,
-                        7,
-                        10,
-                        9
-                    ]
-                }
-            }
+  "loader": "appliedenergistics2:uvlightmap",
+  "ambientocclusion": false,
+  "textures": {
+    "emitter": "appliedenergistics2:parts/level_emitter_on",
+    "particle": "appliedenergistics2:parts/level_emitter_on"
+  },
+  "elements": [
+    {
+      "from": [7, 7, 3],
+      "to": [9, 9, 4],
+      "faces": {
+        "up": {
+          "texture": "#emitter",
+          "uv": [9, 7, 10, 9],
+          "rotation": 90
         },
-        {
-            "from": [
-                7,
-                7,
-                0
-            ],
-            "to": [
-                9,
-                9,
-                3
-            ],
-            "shade": false,
-            "faces": {
-                "north": {
-                    "texture": "#emitter",
-                    "uv": [
-                        6,
-                        7,
-                        8,
-                        9
-                    ],
-                    "rotation": 270,
-                    "uvlightmap": {
-                        "sky": 0.007,
-                        "block": 0.007
-                    }
-                }
-            }
+        "down": {
+          "texture": "#emitter",
+          "uv": [9, 7, 10, 9],
+          "rotation": 270
         },
-        {
-            "from": [
-                6,
-                7,
-                -1
-            ],
-            "to": [
-                10,
-                9,
-                3
-            ],
-            "shade": false,
-            "faces": {
-                "up": {
-                    "texture": "#emitter",
-                    "uv": [
-                        5,
-                        6,
-                        9,
-                        10
-                    ],
-                    "rotation": 90,
-                    "uvlightmap": {
-                        "sky": 0.007,
-                        "block": 0.007
-                    }
-                },
-                "down": {
-                    "texture": "#emitter",
-                    "uv": [
-                        5,
-                        6,
-                        9,
-                        10
-                    ],
-                    "rotation": 270,
-                    "uvlightmap": {
-                        "sky": 0.007,
-                        "block": 0.007
-                    }
-                }
-            }
+        "east": {
+          "texture": "#emitter",
+          "uv": [9, 7, 10, 9],
+          "rotation": 180
         },
-        {
-            "from": [
-                7,
-                6,
-                -1
-            ],
-            "to": [
-                9,
-                10,
-                3
-            ],
-            "shade": false,
-            "faces": {
-                "west": {
-                    "texture": "#emitter",
-                    "uv": [
-                        5,
-                        6,
-                        9,
-                        10
-                    ],
-                    "uvlightmap": {
-                        "sky": 0.007,
-                        "block": 0.007
-                    }
-                },
-                "east": {
-                    "texture": "#emitter",
-                    "uv": [
-                        5,
-                        6,
-                        9,
-                        10
-                    ],
-                    "rotation": 180,
-                    "uvlightmap": {
-                        "sky": 0.007,
-                        "block": 0.007
-                    }
-                }
-            }
+        "west": {
+          "texture": "#emitter",
+          "uv": [9, 7, 10, 9]
         }
-    ]
+      }
+    },
+    {
+      "from": [7, 7, 0],
+      "to": [9, 9, 3],
+      "shade": false,
+      "faces": {
+        "north": {
+          "texture": "#emitter",
+          "uv": [6, 7, 8, 9],
+          "rotation": 270,
+          "uvlightmap": {
+            "sky": 0.007,
+            "block": 0.007
+          }
+        }
+      }
+    },
+    {
+      "from": [6, 7, -1],
+      "to": [10, 9, 3],
+      "shade": false,
+      "faces": {
+        "up": {
+          "texture": "#emitter",
+          "uv": [5, 6, 9, 10],
+          "rotation": 90,
+          "uvlightmap": {
+            "sky": 0.007,
+            "block": 0.007
+          }
+        },
+        "down": {
+          "texture": "#emitter",
+          "uv": [5, 6, 9, 10],
+          "rotation": 270,
+          "uvlightmap": {
+            "sky": 0.007,
+            "block": 0.007
+          }
+        }
+      }
+    },
+    {
+      "from": [7, 6, -1],
+      "to": [9, 10, 3],
+      "shade": false,
+      "faces": {
+        "west": {
+          "texture": "#emitter",
+          "uv": [5, 6, 9, 10],
+          "uvlightmap": {
+            "sky": 0.007,
+            "block": 0.007
+          }
+        },
+        "east": {
+          "texture": "#emitter",
+          "uv": [5, 6, 9, 10],
+          "rotation": 180,
+          "uvlightmap": {
+            "sky": 0.007,
+            "block": 0.007
+          }
+        }
+      }
+    }
+  ]
 }

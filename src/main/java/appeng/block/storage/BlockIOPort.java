@@ -18,14 +18,8 @@
 
 package appeng.block.storage;
 
+import javax.annotation.Nullable;
 
-import appeng.block.AEBaseTileBlock;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.ContainerIOPort;
-import appeng.fluids.container.ContainerFluidInterface;
-import appeng.tile.storage.TileIOPort;
-import appeng.util.Platform;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -37,44 +31,44 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
+import appeng.block.AEBaseTileBlock;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerIOPort;
+import appeng.fluids.container.ContainerFluidInterface;
+import appeng.tile.storage.TileIOPort;
+import appeng.util.Platform;
 
+public class BlockIOPort extends AEBaseTileBlock<TileIOPort> {
 
-public class BlockIOPort extends AEBaseTileBlock<TileIOPort>
-{
+    public BlockIOPort() {
+        super(defaultProps(Material.IRON));
+    }
 
-	public BlockIOPort()
-	{
-		super( defaultProps(Material.IRON) );
-	}
+    @Override
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
+            boolean isMoving) {
+        final TileIOPort te = this.getTileEntity(world, pos);
+        if (te != null) {
+            te.updateRedstoneState();
+        }
+    }
 
-	@Override
-	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving )
-	{
-		final TileIOPort te = this.getTileEntity( world, pos );
-		if( te != null )
-		{
-			te.updateRedstoneState();
-		}
-	}
+    @Override
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+        if (p.isCrouching()) {
+            return ActionResultType.PASS;
+        }
 
-	@Override
-	public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit)
-	{
-		if( p.isCrouching() )
-		{
-			return ActionResultType.PASS;
-		}
-
-		final TileIOPort tg = this.getTileEntity( w, pos );
-		if( tg != null )
-		{
-			if( Platform.isServer() )
-			{
-				ContainerOpener.openContainer(ContainerIOPort.TYPE, p, ContainerLocator.forTileEntitySide(tg, hit.getFace()));
-			}
-			return ActionResultType.SUCCESS;
-		}
-		return ActionResultType.PASS;
-	}
+        final TileIOPort tg = this.getTileEntity(w, pos);
+        if (tg != null) {
+            if (Platform.isServer()) {
+                ContainerOpener.openContainer(ContainerIOPort.TYPE, p,
+                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+            }
+            return ActionResultType.SUCCESS;
+        }
+        return ActionResultType.PASS;
+    }
 }

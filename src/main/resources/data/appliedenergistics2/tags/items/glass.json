@@ -1,6 +1,3 @@
 {
-  "values": [
-    "minecraft:glass",
-    "#forge:glass"
-  ]
+  "values": ["minecraft:glass", "#forge:glass"]
 }

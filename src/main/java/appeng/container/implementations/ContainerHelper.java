@@ -1,18 +1,5 @@
 package appeng.container.implementations;
 
-import appeng.api.AEApi;
-import appeng.api.config.SecurityPermissions;
-import appeng.api.features.IWirelessTermHandler;
-import appeng.api.implementations.guiobjects.IGuiItem;
-import appeng.api.implementations.guiobjects.IGuiItemObject;
-import appeng.api.parts.IPart;
-import appeng.api.parts.IPartHost;
-import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
-import appeng.core.AELog;
-import appeng.helpers.ICustomNameObject;
-import appeng.helpers.WirelessTerminalGuiObject;
-import appeng.util.Platform;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -27,9 +14,23 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
+import appeng.api.AEApi;
+import appeng.api.config.SecurityPermissions;
+import appeng.api.features.IWirelessTermHandler;
+import appeng.api.implementations.guiobjects.IGuiItem;
+import appeng.api.implementations.guiobjects.IGuiItemObject;
+import appeng.api.parts.IPart;
+import appeng.api.parts.IPartHost;
+import appeng.container.AEBaseContainer;
+import appeng.container.ContainerLocator;
+import appeng.core.AELog;
+import appeng.helpers.ICustomNameObject;
+import appeng.helpers.WirelessTerminalGuiObject;
+import appeng.util.Platform;
+
 /**
- * Helper for containers that can be opened for a part <em>or</em> tile given that either
- * implements a given interface.
+ * Helper for containers that can be opened for a part <em>or</em> tile given
+ * that either implements a given interface.
  *
  * @param <C>
  */
@@ -45,15 +46,16 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
         this(factory, interfaceClass, null);
     }
 
-    public ContainerHelper(ContainerFactory<C, I> factory, Class<I> interfaceClass, SecurityPermissions requiredPermission) {
+    public ContainerHelper(ContainerFactory<C, I> factory, Class<I> interfaceClass,
+            SecurityPermissions requiredPermission) {
         this.requiredPermission = requiredPermission;
         this.interfaceClass = interfaceClass;
         this.factory = factory;
     }
 
     /**
-     * Opens a container that is based around a single tile entity.
-     * The tile entity's position is encoded in the packet buffer.
+     * Opens a container that is based around a single tile entity. The tile
+     * entity's position is encoded in the packet buffer.
      */
     public C fromNetwork(int windowId, PlayerInventory inv, PacketBuffer packetBuf) {
         I host = getHostFromLocator(inv.player, ContainerLocator.read(packetBuf));
@@ -82,15 +84,13 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
 
         ITextComponent title = findContainerTitle(player.world, locator, accessInterface);
 
-        INamedContainerProvider container = new SimpleNamedContainerProvider(
-                (wnd, p, pl) -> {
-                    C c = factory.create(wnd, p, accessInterface);
-                    // Set the original locator on the opened server-side container for it to more
-                    // easily remember how to re-open after being closed.
-                    c.setLocator(locator);
-                    return c;
-                }, title
-        );
+        INamedContainerProvider container = new SimpleNamedContainerProvider((wnd, p, pl) -> {
+            C c = factory.create(wnd, p, accessInterface);
+            // Set the original locator on the opened server-side container for it to more
+            // easily remember how to re-open after being closed.
+            c.setLocator(locator);
+            return c;
+        }, title);
         NetworkHooks.openGui((ServerPlayerEntity) player, container, locator::write);
 
         return true;
@@ -106,8 +106,10 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
         }
 
         // Use block name at position
-        // FIXME: this is not right, we'd need to check the part's item stack, or custom naming interface impl
-        // FIXME: Should move this up, because at this point, it's hard to know where the terminal host came from (part or tile)
+        // FIXME: this is not right, we'd need to check the part's item stack, or custom
+        // naming interface impl
+        // FIXME: Should move this up, because at this point, it's hard to know where
+        // the terminal host came from (part or tile)
         if (locator.hasBlockPos()) {
             return world.getBlockState(locator.getBlockPos()).getBlock().getNameTextComponent();
         }
@@ -147,8 +149,8 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
             if (interfaceClass.isInstance(part)) {
                 return interfaceClass.cast(part);
             } else {
-                AELog.debug("Trying to open a container @ %s for a %s, but the container requires %s",
-                        locator, part.getClass(), interfaceClass);
+                AELog.debug("Trying to open a container @ %s for a %s, but the container requires %s", locator,
+                        part.getClass(), interfaceClass);
                 return null;
             }
         } else {
@@ -162,13 +164,12 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
         ItemStack it = player.inventory.getStackInSlot(locator.getItemIndex());
 
         if (it.isEmpty()) {
-            AELog.debug("Cannot open container for player %s since they no longer hold the item in slot %d",
-                    player, locator.hasItemIndex());
+            AELog.debug("Cannot open container for player %s since they no longer hold the item in slot %d", player,
+                    locator.hasItemIndex());
             return null;
         }
 
-        if ( it.getItem() instanceof IGuiItem )
-        {
+        if (it.getItem() instanceof IGuiItem) {
             IGuiItem guiItem = (IGuiItem) it.getItem();
             // Optionally contains the block the item was used on to open the container
             BlockPos blockPos = locator.hasBlockPos() ? locator.getBlockPos() : null;
@@ -178,10 +179,9 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
             }
         }
 
-        if( interfaceClass.isAssignableFrom(WirelessTerminalGuiObject.class) )
-        {
-            final IWirelessTermHandler wh = AEApi.instance().registries().wireless().getWirelessTerminalHandler( it );
-            if ( wh != null) {
+        if (interfaceClass.isAssignableFrom(WirelessTerminalGuiObject.class)) {
+            final IWirelessTermHandler wh = AEApi.instance().registries().wireless().getWirelessTerminalHandler(it);
+            if (wh != null) {
                 return interfaceClass.cast(new WirelessTerminalGuiObject(wh, it, player, locator.getItemIndex()));
             }
         }
@@ -196,8 +196,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
 
     private boolean checkPermission(PlayerEntity player, Object accessInterface) {
 
-        if (requiredPermission != null)
-        {
+        if (requiredPermission != null) {
             return Platform.checkPermissions(player, accessInterface, requiredPermission, true);
         }
 

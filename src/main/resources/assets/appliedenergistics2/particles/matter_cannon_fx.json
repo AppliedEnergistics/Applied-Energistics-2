@@ -1,5 +1,3 @@
 {
-  "textures": [
-    "appliedenergistics2:particles/matter_cannon"
-  ]
+  "textures": ["appliedenergistics2:particles/matter_cannon"]
 }

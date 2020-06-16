@@ -18,11 +18,10 @@
 
 package appeng.fluids.helper;
 
-
 import javax.annotation.Nonnull;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
@@ -32,81 +31,72 @@ import appeng.api.AEApi;
 import appeng.fluids.items.FluidDummyItem;
 import appeng.items.contents.CellConfig;
 
-
 /**
  * @author DrummerMC
  * @version rv6 - 2018-01-22
  * @since rv6 2018-01-22
  */
-public class FluidCellConfig extends CellConfig
-{
-	public FluidCellConfig( ItemStack is )
-	{
-		super( is );
-	}
+public class FluidCellConfig extends CellConfig {
+    public FluidCellConfig(ItemStack is) {
+        super(is);
+    }
 
-	@Override
-	@Nonnull
-	public ItemStack insertItem( int slot, @Nonnull ItemStack stack, boolean simulate )
-	{
-		if( stack.isEmpty() || stack.getItem() instanceof FluidDummyItem )
-		{
-			super.insertItem( slot, stack, simulate );
-		}
-		LazyOptional<FluidStack> fluidOpt = FluidUtil.getFluidContained( stack );
-		if( !fluidOpt.isPresent() || !AEApi.instance().definitions().items().dummyFluidItem().maybeStack( 1 ).isPresent() )
-		{
-			return stack;
-		}
-		FluidStack fluid = fluidOpt.orElse( null );
+    @Override
+    @Nonnull
+    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+        if (stack.isEmpty() || stack.getItem() instanceof FluidDummyItem) {
+            super.insertItem(slot, stack, simulate);
+        }
+        LazyOptional<FluidStack> fluidOpt = FluidUtil.getFluidContained(stack);
+        if (!fluidOpt.isPresent()
+                || !AEApi.instance().definitions().items().dummyFluidItem().maybeStack(1).isPresent()) {
+            return stack;
+        }
+        FluidStack fluid = fluidOpt.orElse(null);
 
-		fluid.setAmount( FluidAttributes.BUCKET_VOLUME );
-		ItemStack is = AEApi.instance().definitions().items().dummyFluidItem().maybeStack( 1 ).get();
-		FluidDummyItem item = (FluidDummyItem) is.getItem();
-		item.setFluidStack( is, fluid );
-		return super.insertItem( slot, is, simulate );
-	}
+        fluid.setAmount(FluidAttributes.BUCKET_VOLUME);
+        ItemStack is = AEApi.instance().definitions().items().dummyFluidItem().maybeStack(1).get();
+        FluidDummyItem item = (FluidDummyItem) is.getItem();
+        item.setFluidStack(is, fluid);
+        return super.insertItem(slot, is, simulate);
+    }
 
-	@Override
-	public void setStackInSlot( int slot, @Nonnull ItemStack stack )
-	{
-		if( stack.isEmpty() || stack.getItem() instanceof FluidDummyItem )
-		{
-			super.setStackInSlot( slot, stack );
-		}
-		LazyOptional<FluidStack> fluidOpt = FluidUtil.getFluidContained( stack );
-		if( !fluidOpt.isPresent() || !AEApi.instance().definitions().items().dummyFluidItem().maybeStack( 1 ).isPresent() )
-		{
-			return;
-		}
-		FluidStack fluid = fluidOpt.orElse( null );
+    @Override
+    public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+        if (stack.isEmpty() || stack.getItem() instanceof FluidDummyItem) {
+            super.setStackInSlot(slot, stack);
+        }
+        LazyOptional<FluidStack> fluidOpt = FluidUtil.getFluidContained(stack);
+        if (!fluidOpt.isPresent()
+                || !AEApi.instance().definitions().items().dummyFluidItem().maybeStack(1).isPresent()) {
+            return;
+        }
+        FluidStack fluid = fluidOpt.orElse(null);
 
-		fluid.setAmount( FluidAttributes.BUCKET_VOLUME );
-		ItemStack is = AEApi.instance().definitions().items().dummyFluidItem().maybeStack( 1 ).get();
-		FluidDummyItem item = (FluidDummyItem) is.getItem();
-		item.setFluidStack( is, fluid );
-		super.setStackInSlot( slot, is );
-	}
+        fluid.setAmount(FluidAttributes.BUCKET_VOLUME);
+        ItemStack is = AEApi.instance().definitions().items().dummyFluidItem().maybeStack(1).get();
+        FluidDummyItem item = (FluidDummyItem) is.getItem();
+        item.setFluidStack(is, fluid);
+        super.setStackInSlot(slot, is);
+    }
 
-	@Override
-	public boolean isItemValid( int slot, ItemStack stack )
-	{
-		if( stack.isEmpty() || stack.getItem() instanceof FluidDummyItem )
-		{
-			super.isItemValid( slot, stack );
-		}
-		LazyOptional<FluidStack> fluidOpt = FluidUtil.getFluidContained( stack );
-		if( !fluidOpt.isPresent() || !AEApi.instance().definitions().items().dummyFluidItem().maybeStack( 1 ).isPresent() )
-		{
-			return false;
-		}
-		FluidStack fluid = fluidOpt.orElse( null );
+    @Override
+    public boolean isItemValid(int slot, ItemStack stack) {
+        if (stack.isEmpty() || stack.getItem() instanceof FluidDummyItem) {
+            super.isItemValid(slot, stack);
+        }
+        LazyOptional<FluidStack> fluidOpt = FluidUtil.getFluidContained(stack);
+        if (!fluidOpt.isPresent()
+                || !AEApi.instance().definitions().items().dummyFluidItem().maybeStack(1).isPresent()) {
+            return false;
+        }
+        FluidStack fluid = fluidOpt.orElse(null);
 
-		fluid.setAmount( FluidAttributes.BUCKET_VOLUME );
-		ItemStack is = AEApi.instance().definitions().items().dummyFluidItem().maybeStack( 1 ).get();
-		FluidDummyItem item = (FluidDummyItem) is.getItem();
-		item.setFluidStack( is, fluid );
-		return super.isItemValid( slot, is );
-	}
+        fluid.setAmount(FluidAttributes.BUCKET_VOLUME);
+        ItemStack is = AEApi.instance().definitions().items().dummyFluidItem().maybeStack(1).get();
+        FluidDummyItem item = (FluidDummyItem) is.getItem();
+        item.setFluidStack(is, fluid);
+        return super.isItemValid(slot, is);
+    }
 
 }

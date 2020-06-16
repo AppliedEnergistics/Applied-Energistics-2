@@ -18,7 +18,6 @@
 
 package appeng.bootstrap;
 
-
 import java.util.function.BiFunction;
 
 import net.minecraft.block.Block;
@@ -26,28 +25,26 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 
 import appeng.api.definitions.IBlockDefinition;
-import appeng.bootstrap.definitions.TileEntityDefinition;
 import appeng.api.features.AEFeature;
+import appeng.bootstrap.definitions.TileEntityDefinition;
 
+public interface IBlockBuilder {
+    IBlockBuilder bootstrap(BiFunction<Block, Item, IBootstrapComponent> component);
 
-public interface IBlockBuilder
-{
-	IBlockBuilder bootstrap( BiFunction<Block, Item, IBootstrapComponent> component );
+    IBlockBuilder features(AEFeature... features);
 
-	IBlockBuilder features( AEFeature... features );
+    IBlockBuilder addFeatures(AEFeature... features);
 
-	IBlockBuilder addFeatures( AEFeature... features );
+    IBlockBuilder rendering(BlockRenderingCustomizer callback);
 
-	IBlockBuilder rendering( BlockRenderingCustomizer callback );
+    IBlockBuilder tileEntity(TileEntityDefinition tileEntityDefinition);
 
-	IBlockBuilder tileEntity( TileEntityDefinition tileEntityDefinition );
+    /**
+     * Don't register an item for this block.
+     */
+    IBlockBuilder disableItem();
 
-	/**
-	 * Don't register an item for this block.
-	 */
-	IBlockBuilder disableItem();
+    IBlockBuilder item(BiFunction<Block, Item.Properties, BlockItem> factory);
 
-	IBlockBuilder item( BiFunction<Block, Item.Properties, BlockItem> factory );
-
-	<T extends IBlockDefinition> T build();
+    <T extends IBlockDefinition> T build();
 }

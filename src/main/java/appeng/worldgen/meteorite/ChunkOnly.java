@@ -18,56 +18,48 @@
 
 package appeng.worldgen.meteorite;
 
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-
-import appeng.util.Platform;
 import net.minecraft.world.chunk.IChunk;
 
+import appeng.util.Platform;
 
-public class ChunkOnly extends StandardWorld
-{
+public class ChunkOnly extends StandardWorld {
 
-	private final IChunk target;
-	private final int cx;
-	private final int cz;
+    private final IChunk target;
+    private final int cx;
+    private final int cz;
 
-	public ChunkOnly(final IWorld w, final int cx, final int cz )
-	{
-		super( w );
-		this.target = w.getChunk( cx, cz );
-		this.cx = cx;
-		this.cz = cz;
-	}
+    public ChunkOnly(final IWorld w, final int cx, final int cz) {
+        super(w);
+        this.target = w.getChunk(cx, cz);
+        this.cx = cx;
+        this.cz = cz;
+    }
 
-	@Override
-	public int minX( final int in )
-	{
-		return Math.max( in, this.cx << 4 );
-	}
+    @Override
+    public int minX(final int in) {
+        return Math.max(in, this.cx << 4);
+    }
 
-	@Override
-	public int minZ( final int in )
-	{
-		return Math.max( in, this.cz << 4 );
-	}
+    @Override
+    public int minZ(final int in) {
+        return Math.max(in, this.cz << 4);
+    }
 
-	@Override
-	public int maxX( final int in )
-	{
-		return Math.min( in, ( this.cx + 1 ) << 4 );
-	}
+    @Override
+    public int maxX(final int in) {
+        return Math.min(in, (this.cx + 1) << 4);
+    }
 
-	@Override
-	public int maxZ( final int in )
-	{
-		return Math.min( in, ( this.cz + 1 ) << 4 );
-	}
+    @Override
+    public int maxZ(final int in) {
+        return Math.min(in, (this.cz + 1) << 4);
+    }
 
     @Override
     public boolean contains(BlockPos pos) {
@@ -75,36 +67,29 @@ public class ChunkOnly extends StandardWorld
     }
 
     @Override
-	public Block getBlock( BlockPos pos )
-	{
-		if( this.range( pos ) )
-		{
-			return this.target.getBlockState( new BlockPos(pos) ).getBlock();
-		}
-		return Platform.AIR_BLOCK;
-	}
+    public Block getBlock(BlockPos pos) {
+        if (this.range(pos)) {
+            return this.target.getBlockState(new BlockPos(pos)).getBlock();
+        }
+        return Platform.AIR_BLOCK;
+    }
 
-	@Override
-	public void setBlock( BlockPos pos, final BlockState blk )
-	{
-		if( this.range( pos ) )
-		{
-			target.setBlockState(new BlockPos( pos ), blk, false);
-		}
-	}
+    @Override
+    public void setBlock(BlockPos pos, final BlockState blk) {
+        if (this.range(pos)) {
+            target.setBlockState(new BlockPos(pos), blk, false);
+        }
+    }
 
-	@Override
-	public void setBlock( BlockPos pos, final BlockState state, final int flags )
-	{
-		if( this.range( pos ) )
-		{
-			this.getWorld().setBlockState( new BlockPos( pos ), state, flags & ( ~2 ) );
-		}
-	}
+    @Override
+    public void setBlock(BlockPos pos, final BlockState state, final int flags) {
+        if (this.range(pos)) {
+            this.getWorld().setBlockState(new BlockPos(pos), state, flags & (~2));
+        }
+    }
 
-	@Override
-	public boolean range( BlockPos pos )
-	{
-		return this.cx == ( pos.getX() >> 4 ) && this.cz == ( pos.getZ() >> 4 );
-	}
+    @Override
+    public boolean range(BlockPos pos) {
+        return this.cx == (pos.getX() >> 4) && this.cz == (pos.getZ() >> 4);
+    }
 }

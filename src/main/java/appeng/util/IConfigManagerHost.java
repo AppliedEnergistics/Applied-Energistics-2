@@ -18,13 +18,10 @@
 
 package appeng.util;
 
-
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
 
+public interface IConfigManagerHost {
 
-public interface IConfigManagerHost
-{
-
-	void updateSetting(IConfigManager manager, Settings settingName, Enum<?> newValue );
+    void updateSetting(IConfigManager manager, Settings settingName, Enum<?> newValue);
 }

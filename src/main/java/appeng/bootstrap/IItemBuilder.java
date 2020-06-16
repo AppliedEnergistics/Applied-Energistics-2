@@ -18,7 +18,6 @@
 
 package appeng.bootstrap;
 
-
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -30,29 +29,27 @@ import net.minecraft.item.ItemGroup;
 import appeng.api.features.AEFeature;
 import appeng.core.features.ItemDefinition;
 
-
 /**
- * Allows an item to be defined and registered with the game.
- * The item is only registered once build is called.
+ * Allows an item to be defined and registered with the game. The item is only
+ * registered once build is called.
  */
-public interface IItemBuilder
-{
-	IItemBuilder bootstrap( Function<Item, IBootstrapComponent> component );
+public interface IItemBuilder {
+    IItemBuilder bootstrap(Function<Item, IBootstrapComponent> component);
 
-	IItemBuilder features( AEFeature... features );
+    IItemBuilder features(AEFeature... features);
 
-	IItemBuilder addFeatures( AEFeature... features );
+    IItemBuilder addFeatures(AEFeature... features);
 
-	IItemBuilder itemGroup( ItemGroup tab );
+    IItemBuilder itemGroup(ItemGroup tab);
 
-	IItemBuilder props(Consumer<Item.Properties> customizer);
+    IItemBuilder props(Consumer<Item.Properties> customizer);
 
-	IItemBuilder rendering( ItemRenderingCustomizer callback );
+    IItemBuilder rendering(ItemRenderingCustomizer callback);
 
-	/**
-	 * Registers a custom dispenser behavior for this item.
-	 */
-	IItemBuilder dispenserBehavior( Supplier<IDispenseItemBehavior> behavior );
+    /**
+     * Registers a custom dispenser behavior for this item.
+     */
+    IItemBuilder dispenserBehavior(Supplier<IDispenseItemBehavior> behavior);
 
-	ItemDefinition build();
+    ItemDefinition build();
 }

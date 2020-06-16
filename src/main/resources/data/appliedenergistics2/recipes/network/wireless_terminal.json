@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:wireless_terminal"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "a",
-    "b",
-    "c"
-  ],
+  "pattern": ["a", "b", "c"],
   "key": {
     "b": {
       "item": "appliedenergistics2:terminal"

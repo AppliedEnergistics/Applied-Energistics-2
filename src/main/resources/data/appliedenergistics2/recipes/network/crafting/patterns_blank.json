@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:blank_pattern"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aba",
-    "bcb",
-    "ddd"
-  ],
+  "pattern": ["aba", "bcb", "ddd"],
   "key": {
     "a": {
       "item": "appliedenergistics2:quartz_glass"

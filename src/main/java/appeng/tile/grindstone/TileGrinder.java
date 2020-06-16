@@ -18,6 +18,15 @@
 
 package appeng.tile.grindstone;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.RangedWrapper;
 
 import appeng.api.implementations.tiles.ICrankable;
 import appeng.recipes.handlers.GrinderOptionalResult;
@@ -31,173 +40,140 @@ import appeng.util.inv.AdaptorItemHandler;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.filter.IAEItemFilter;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.RangedWrapper;
 
-import java.util.ArrayList;
-import java.util.List;
+public class TileGrinder extends AEBaseInvTile implements ICrankable {
+    private static final int SLOT_PROCESSING = 6;
 
+    private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 7);
+    private final IItemHandler invExt = new WrapperFilteredItemHandler(this.inv, new GrinderFilter());
+    private int points;
 
-public class TileGrinder extends AEBaseInvTile implements ICrankable
-{
-	private static final int SLOT_PROCESSING = 6;
+    public TileGrinder(TileEntityType<?> tileEntityTypeIn) {
+        super(tileEntityTypeIn);
+    }
 
-	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 7 );
-	private final IItemHandler invExt = new WrapperFilteredItemHandler( this.inv, new GrinderFilter() );
-	private int points;
+    @Override
+    public void setOrientation(final Direction inForward, final Direction inUp) {
+        super.setOrientation(inForward, inUp);
+        final BlockState state = this.world.getBlockState(this.pos);
+        state.getBlock().neighborChanged(state, this.world, this.pos, state.getBlock(), this.pos, false);
+    }
 
-	public TileGrinder(TileEntityType<?> tileEntityTypeIn) {
-		super(tileEntityTypeIn);
-	}
+    @Override
+    public IItemHandler getInternalInventory() {
+        return this.inv;
+    }
 
-	@Override
-	public void setOrientation( final Direction inForward, final Direction inUp )
-	{
-		super.setOrientation( inForward, inUp );
-		final BlockState state = this.world.getBlockState( this.pos );
-		state.getBlock().neighborChanged( state, this.world, this.pos, state.getBlock(), this.pos, false );
-	}
+    @Override
+    protected IItemHandler getItemHandlerForSide(Direction side) {
+        return this.invExt;
+    }
 
-	@Override
-	public IItemHandler getInternalInventory()
-	{
-		return this.inv;
-	}
+    @Override
+    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+            final ItemStack removed, final ItemStack added) {
 
-	@Override
-	protected IItemHandler getItemHandlerForSide( Direction side )
-	{
-		return this.invExt;
-	}
+    }
 
-	@Override
-	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
-	{
+    @Override
+    public boolean canTurn() {
+        if (isRemote()) {
+            return false;
+        }
 
-	}
+        if (this.inv.getStackInSlot(6).isEmpty()) // Add if there isn't one...
+        {
+            for (int x = 0; x < 3; x++) {
+                ItemStack item = this.inv.getStackInSlot(x);
+                if (item.isEmpty()) {
+                    continue;
+                }
 
-	@Override
-	public boolean canTurn()
-	{
-		if( isRemote() )
-		{
-			return false;
-		}
+                GrinderRecipe r = GrinderRecipes.findForInput(world, item);
+                if (r != null) {
+                    final ItemStack ais = item.copy();
+                    ais.setCount(r.getIngredientCount());
+                    item.shrink(r.getIngredientCount());
 
-		if( this.inv.getStackInSlot( 6 ).isEmpty() ) // Add if there isn't one...
-		{
-			for( int x = 0; x < 3; x++ )
-			{
-				ItemStack item = this.inv.getStackInSlot( x );
-				if( item.isEmpty() )
-				{
-					continue;
-				}
+                    if (item.getCount() <= 0) {
+                        item = ItemStack.EMPTY;
+                    }
 
-				GrinderRecipe r = GrinderRecipes.findForInput(world, item);
-				if( r != null )
-				{
-					final ItemStack ais = item.copy();
-					ais.setCount( r.getIngredientCount() );
-					item.shrink( r.getIngredientCount() );
+                    this.inv.setStackInSlot(x, item);
+                    this.inv.setStackInSlot(6, ais);
+                    return true;
+                }
+            }
+            return false;
+        }
+        return true;
+    }
 
-					if( item.getCount() <= 0 )
-					{
-						item = ItemStack.EMPTY;
-					}
+    @Override
+    public void applyTurn() {
+        if (isRemote()) {
+            return;
+        }
 
-					this.inv.setStackInSlot( x, item );
-					this.inv.setStackInSlot( 6, ais );
-					return true;
-				}
-			}
-			return false;
-		}
-		return true;
-	}
+        this.points++;
 
-	@Override
-	public void applyTurn()
-	{
-		if( isRemote() )
-		{
-			return;
-		}
+        final ItemStack processing = this.inv.getStackInSlot(SLOT_PROCESSING);
+        GrinderRecipe r = GrinderRecipes.findForInput(world, processing);
+        if (r != null) {
+            if (r.getTurns() > this.points) {
+                return;
+            }
 
-		this.points++;
+            this.points = 0;
+            final InventoryAdaptor sia = new AdaptorItemHandler(new RangedWrapper(this.inv, 3, 6));
 
-		final ItemStack processing = this.inv.getStackInSlot(SLOT_PROCESSING);
-		GrinderRecipe r = GrinderRecipes.findForInput(world, processing);
-		if( r != null )
-		{
-			if( r.getTurns() > this.points )
-			{
-				return;
-			}
+            this.addItem(sia, r.getRecipeOutput());
 
-			this.points = 0;
-			final InventoryAdaptor sia = new AdaptorItemHandler( new RangedWrapper( this.inv, 3, 6 ) );
+            for (GrinderOptionalResult optionalResult : r.getOptionalResults()) {
+                final float chance = (Platform.getRandomInt() % 2000) / 2000.0f;
 
-			this.addItem( sia, r.getRecipeOutput());
+                if (chance <= optionalResult.getChance()) {
+                    this.addItem(sia, optionalResult.getResult());
+                }
+            }
 
-			for (GrinderOptionalResult optionalResult : r.getOptionalResults()) {
-				final float chance = ( Platform.getRandomInt() % 2000 ) / 2000.0f;
+            this.inv.setStackInSlot(6, ItemStack.EMPTY);
+        }
+    }
 
-				if( chance <= optionalResult.getChance() )
-				{
-					this.addItem( sia, optionalResult.getResult() );
-				}
-			}
+    private void addItem(final InventoryAdaptor sia, final ItemStack output) {
+        if (output.isEmpty()) {
+            return;
+        }
 
-			this.inv.setStackInSlot( 6, ItemStack.EMPTY );
-		}
-	}
+        final ItemStack notAdded = sia.addItems(output);
+        if (!notAdded.isEmpty()) {
+            final List<ItemStack> out = new ArrayList<>();
+            out.add(notAdded);
 
-	private void addItem( final InventoryAdaptor sia, final ItemStack output )
-	{
-		if( output.isEmpty() )
-		{
-			return;
-		}
+            Platform.spawnDrops(this.world, this.pos.offset(this.getForward()), out);
+        }
+    }
 
-		final ItemStack notAdded = sia.addItems( output );
-		if( !notAdded.isEmpty() )
-		{
-			final List<ItemStack> out = new ArrayList<>();
-			out.add( notAdded );
+    @Override
+    public boolean canCrankAttach(final Direction directionToCrank) {
+        return this.getUp() == directionToCrank;
+    }
 
-			Platform.spawnDrops( this.world, this.pos.offset( this.getForward() ), out );
-		}
-	}
+    private class GrinderFilter implements IAEItemFilter {
+        @Override
+        public boolean allowExtract(IItemHandler inv, int slotIndex, int amount) {
+            return slotIndex >= 3 && slotIndex <= 5;
+        }
 
-	@Override
-	public boolean canCrankAttach( final Direction directionToCrank )
-	{
-		return this.getUp() == directionToCrank;
-	}
+        @Override
+        public boolean allowInsert(IItemHandler inv, int slotIndex, ItemStack stack) {
+            if (!GrinderRecipes.isValidIngredient(world, stack)) {
+                return false;
+            }
 
-	private class GrinderFilter implements IAEItemFilter
-	{
-		@Override
-		public boolean allowExtract( IItemHandler inv, int slotIndex, int amount )
-		{
-			return slotIndex >= 3 && slotIndex <= 5;
-		}
-
-		@Override
-		public boolean allowInsert( IItemHandler inv, int slotIndex, ItemStack stack )
-		{
-			if( !GrinderRecipes.isValidIngredient(world, stack) )
-			{
-				return false;
-			}
-
-			return slotIndex >= 0 && slotIndex <= 2;
-		}
-	}
+            return slotIndex >= 0 && slotIndex <= 2;
+        }
+    }
 
 }

@@ -23,7 +23,6 @@
 
 package appeng.api.parts;
 
-
 import java.io.IOException;
 
 import net.minecraft.nbt.CompoundNBT;
@@ -31,73 +30,71 @@ import net.minecraft.network.PacketBuffer;
 
 import appeng.api.util.AEPartLocation;
 
-
 /**
  * Used Internally.
  *
  * not intended for implementation.
  */
-public interface IFacadeContainer
-{
+public interface IFacadeContainer {
 
-	/**
-	 * Attempts to add the {@link IFacadePart} to the given side.
-	 *
-	 * @return true if the facade as successfully added.
-	 */
-	boolean addFacade( IFacadePart a );
+    /**
+     * Attempts to add the {@link IFacadePart} to the given side.
+     *
+     * @return true if the facade as successfully added.
+     */
+    boolean addFacade(IFacadePart a);
 
-	/**
-	 * Removed the facade on the given side, or does nothing.
-	 */
-	void removeFacade( IPartHost host, AEPartLocation side );
+    /**
+     * Removed the facade on the given side, or does nothing.
+     */
+    void removeFacade(IPartHost host, AEPartLocation side);
 
-	/**
-	 * @return the {@link IFacadePart} for a given side, or null.
-	 */
-	IFacadePart getFacade( AEPartLocation s );
+    /**
+     * @return the {@link IFacadePart} for a given side, or null.
+     */
+    IFacadePart getFacade(AEPartLocation s);
 
-	/**
-	 * rotate the facades left.
-	 */
-	void rotateLeft();
+    /**
+     * rotate the facades left.
+     */
+    void rotateLeft();
 
-	/**
-	 * write nbt data
-	 *
-	 * @param data to be written data
-	 */
-	void writeToNBT( CompoundNBT data );
+    /**
+     * write nbt data
+     *
+     * @param data to be written data
+     */
+    void writeToNBT(CompoundNBT data);
 
-	/**
-	 * read from stream
-	 *
-	 * @param data to be read data
-	 *
-	 * @return true if it was readable
-	 *
-	 * @throws IOException
-	 */
-	boolean readFromStream( PacketBuffer data ) throws IOException;
+    /**
+     * read from stream
+     *
+     * @param data to be read data
+     *
+     * @return true if it was readable
+     *
+     * @throws IOException
+     */
+    boolean readFromStream(PacketBuffer data) throws IOException;
 
-	/**
-	 * read from NBT
-	 *
-	 * @param data to be read data
-	 */
-	void readFromNBT( CompoundNBT data );
+    /**
+     * read from NBT
+     *
+     * @param data to be read data
+     */
+    void readFromNBT(CompoundNBT data);
 
-	/**
-	 * write to stream
-	 *
-	 * @param data to be written data
-	 *
-	 * @throws IOException
-	 */
-	void writeToStream( PacketBuffer data ) throws IOException;
+    /**
+     * write to stream
+     *
+     * @param data to be written data
+     *
+     * @throws IOException
+     */
+    void writeToStream(PacketBuffer data) throws IOException;
 
-	/**
-	 * @return true if there are no facades.
-	 */
-	boolean isEmpty();
+    /**
+     * @return true if there are no facades.
+     */
+    boolean isEmpty();
 }

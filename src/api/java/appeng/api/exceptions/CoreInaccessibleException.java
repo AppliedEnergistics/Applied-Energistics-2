@@ -18,13 +18,10 @@
 
 package appeng.api.exceptions;
 
+public class CoreInaccessibleException extends RuntimeException {
+    private static final long serialVersionUID = -7434641554655517242L;
 
-public class CoreInaccessibleException extends RuntimeException
-{
-	private static final long serialVersionUID = -7434641554655517242L;
-
-	public CoreInaccessibleException( final String message )
-	{
-		super( message );
-	}
+    public CoreInaccessibleException(final String message) {
+        super(message);
+    }
 }
