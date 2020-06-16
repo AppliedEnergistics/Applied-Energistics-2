@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2013 AlgorithmX2
+ * Copyright (c) 2020 AlgorithmX2
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -21,22 +21,20 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.storage;
-
-
-import javax.annotation.Nullable;
-
+package appeng.api.storage.cells;
 
 /**
- * Tells the cell provider that changes have been made an the cell must be persisted
+ * Indicates the state of a cell
+ * 
+ * MISSING: No cell at all
+ * EMPTY: A cell without anything stored
+ * USED: Stored something, but neither types nor totally full
+ * TYPES_FULL: Available types exhausted
+ * FULL: Full cell, technically could have free types
+ * 
+ * @author yueh
  *
  */
-public interface ISaveProvider
-{
-	/**
-	 * Cell has changed and needs to be changed.
-	 * 
-	 * @param cellInventory can be null for custom cells.
-	 */
-	void saveChanges( @Nullable ICellInventory<?> cellInventory );
+public enum CellState {
+	MISSING, EMPTY, USED, TYPES_FULL, FULL,
 }

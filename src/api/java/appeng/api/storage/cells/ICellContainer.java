@@ -21,33 +21,22 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.storage;
+package appeng.api.storage.cells;
 
 
-import java.util.List;
+import appeng.api.networking.security.IActionHost;
 
 
 /**
- * Allows you to provide cells via non IGridHosts directly to the storage system, drives, and similar features should go
- * though {@link ICellContainer} and be automatically handled by the storage system.
+ * Represents an {@link appeng.api.networking.IGridHost} that contributes to storage, such as a ME Chest, or ME Drive.
  */
-public interface ICellProvider
+public interface ICellContainer extends IActionHost, ICellProvider, ISaveProvider
 {
 
 	/**
-	 * Inventory of the tile for use with ME, should always return an valid list, never NULL.
+	 * tell the Cell container that this slot should blink, the slot number is relative to the
 	 *
-	 * You must return the correct Handler for the correct channel, if your handler returns a IAEItemStack handler, for
-	 * a Fluid Channel stuffs going to explode, same with the reverse.
-	 *
-	 * @return a valid list of handlers, NEVER NULL
+	 * @param slot slot index
 	 */
-	List<IMEInventoryHandler> getCellArray( IStorageChannel<?> channel );
-
-	/**
-	 * the storage's priority.
-	 *
-	 * Positive and negative are supported
-	 */
-	int getPriority();
+	void blinkCell( int slot );
 }

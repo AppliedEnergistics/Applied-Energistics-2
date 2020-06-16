@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020 AlgorithmX2
+ * Copyright (c) 2013 AlgorithmX2
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -21,38 +21,30 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.util;
+package appeng.api.storage.cells;
 
 
-import java.util.List;
+import javax.annotation.Nullable;
 
-import javax.annotation.Nonnull;
-
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.cells.ICellInventoryHandler;
+import appeng.api.config.IncludeExclude;
+import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.data.IAEStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
 
 
-public interface IClientHelper
+public interface ICellInventoryHandler<T extends IAEStack<T>> extends IMEInventoryHandler<T>
 {
-	/**
-	 * Add cell information to the provided list. Used for tooltip content.
-	 * 
-	 * @param handler Cell handler.
-	 * @param lines List of lines to add to.
-	 */
-	<T extends IAEStack<T>> void addCellInformation( ICellInventoryHandler<T> handler, List<ITextComponent> lines );
-	
-	/**
-	 * Register a texture for a specific {@link IStorageChannel} using a {@link ResourceLocation}
-	 */
-	<T extends IAEStack<T>, C extends IStorageChannel<T>> void registerCellTexture( @Nonnull Class<C> channel, @Nonnull ResourceLocation texture );
-	
-	/**
-	 * Get the {@link ResourceLocation} for the cell texture of a specific {@link IStorageChannel}
-	 */
-	<T extends IAEStack<T>, C extends IStorageChannel<T>> ResourceLocation getCellTexture( @Nonnull Class<C> channel );
 
+	/**
+	 * Get access to the ICellInventory. Can be null for custom cells.
+	 * 
+	 * @return get access to the Cell Inventory.
+	 */
+	@Nullable
+	ICellInventory<T> getCellInv();
+
+	boolean isPreformatted();
+
+	boolean isFuzzy();
+
+	IncludeExclude getIncludeExcludeMode();
 }

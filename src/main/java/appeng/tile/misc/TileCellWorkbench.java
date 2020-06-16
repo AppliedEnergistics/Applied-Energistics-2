@@ -32,7 +32,7 @@ import appeng.api.config.CopyMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
-import appeng.api.storage.ICellWorkbenchItem;
+import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.api.util.IConfigManager;
 import appeng.tile.AEBaseTile;
 import appeng.tile.inventory.AppEngInternalAEInventory;

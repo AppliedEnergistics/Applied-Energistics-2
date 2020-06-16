@@ -52,7 +52,7 @@ public final class Api implements IAppEngApi
 		this.registryContainer = new RegistryContainer();
 		this.partHelper = new ApiPart();
 		this.definitions = new ApiDefinitions( (PartModels) this.registryContainer.partModels() );
-		this.client = new ApiClientHelper();
+		this.client = new ApiClientHelper( this.storageHelper );
 	}
 
 	public PartModels getPartModels()

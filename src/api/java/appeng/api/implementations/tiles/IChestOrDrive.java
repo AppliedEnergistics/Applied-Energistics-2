@@ -25,7 +25,9 @@ package appeng.api.implementations.tiles;
 
 
 import appeng.api.networking.IGridHost;
-import appeng.api.storage.ICellContainer;
+import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.cells.CellState;
+import appeng.api.storage.cells.ICellContainer;
 import appeng.api.util.IOrientable;
 import net.minecraft.item.Item;
 
@@ -53,7 +55,7 @@ public interface IChestOrDrive extends ICellContainer, IGridHost, IOrientable
 	 *
 	 * @return status of the slot, one of the above indices.
 	 */
-	int getCellStatus( int slot );
+	CellState getCellStatus( int slot );
 
 	/**
 	 * @return if the device is online you should check this before providing any other information.
@@ -71,6 +73,8 @@ public interface IChestOrDrive extends ICellContainer, IGridHost, IOrientable
 	 * Returns the item of the cell in the given slot or null.
 	 */
 	@Nullable
-	Item getCellItem(int slot );
+	Item getCellItem( int slot );
+
+	IStorageChannel<?> getCellChannel( int slot );
 
 }

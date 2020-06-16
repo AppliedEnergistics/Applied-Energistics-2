@@ -1,11 +1,13 @@
 
-package appeng.api.storage;
+package appeng.api.storage.cells;
 
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.implementations.tiles.IChestOrDrive;
+import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 
 

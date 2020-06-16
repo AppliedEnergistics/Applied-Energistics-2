@@ -20,6 +20,8 @@ package appeng.block.storage;
 
 
 import appeng.api.implementations.tiles.IChestOrDrive;
+import appeng.api.storage.cells.CellState;
+
 import com.google.common.base.Preconditions;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -77,7 +79,7 @@ public class DriveSlotsState
 
 			if( !chestOrDrive.isPowered() )
 			{
-				if( chestOrDrive.getCellStatus( i ) != 0 )
+				if( chestOrDrive.getCellStatus( i ) != CellState.MISSING )
 				{
 					states[i] = DriveSlotState.OFFLINE;
 				}

@@ -21,13 +21,14 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.storage;
+package appeng.api.storage.cells;
 
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
+import appeng.api.storage.IMEInventory;
 import appeng.api.storage.data.IAEStack;
 
 
@@ -125,7 +126,7 @@ public interface ICellInventory<T extends IAEStack<T>> extends IMEInventory<T>
 	 *
 	 * @return get the status of the cell based on its contents.
 	 */
-	int getStatusForCell();
+	CellState getStatusForCell();
 
 	/**
 	 * Tells the cell to persist to NBT

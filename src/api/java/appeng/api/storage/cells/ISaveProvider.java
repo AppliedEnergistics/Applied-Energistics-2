@@ -21,29 +21,22 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.storage;
+package appeng.api.storage.cells;
 
 
 import javax.annotation.Nullable;
 
-import appeng.api.config.IncludeExclude;
-import appeng.api.storage.data.IAEStack;
 
-
-public interface ICellInventoryHandler<T extends IAEStack<T>> extends IMEInventoryHandler<T>
+/**
+ * Tells the cell provider that changes have been made an the cell must be persisted
+ *
+ */
+public interface ISaveProvider
 {
-
 	/**
-	 * Get access to the ICellInventory. Can be null for custom cells.
+	 * Cell has changed and needs to be changed.
 	 * 
-	 * @return get access to the Cell Inventory.
+	 * @param cellInventory can be null for custom cells.
 	 */
-	@Nullable
-	ICellInventory<T> getCellInv();
-
-	boolean isPreformatted();
-
-	boolean isFuzzy();
-
-	IncludeExclude getIncludeExcludeMode();
+	void saveChanges( @Nullable ICellInventory<?> cellInventory );
 }
