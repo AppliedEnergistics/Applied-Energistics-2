@@ -24,7 +24,6 @@ import appeng.api.features.IMatterCannonAmmoRegistry;
 import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.features.IRegistryContainer;
-import appeng.api.features.ISpecialComparisonRegistry;
 import appeng.api.features.IWirelessTermRegistry;
 import appeng.api.features.IWorldGen;
 import appeng.api.movable.IMovableRegistry;
@@ -47,7 +46,6 @@ public class RegistryContainer implements IRegistryContainer {
     private final IChargerRegistry charger = new ChargerRegistry();
     private final ICellRegistry cell = new CellRegistry();
     private final ILocatableRegistry locatable = new LocatableRegistry();
-    private final ISpecialComparisonRegistry comparison = new SpecialComparisonRegistry();
     private final IWirelessTermRegistry wireless = new WirelessRegistry();
     private final IGridCacheRegistry gridCache = new GridCacheRegistry();
     private final IP2PTunnelRegistry p2pTunnel = new P2PTunnelRegistry();
@@ -64,11 +62,6 @@ public class RegistryContainer implements IRegistryContainer {
     @Override
     public IGridCacheRegistry gridCache() {
         return this.gridCache;
-    }
-
-    @Override
-    public ISpecialComparisonRegistry specialComparison() {
-        return this.comparison;
     }
 
     @Override

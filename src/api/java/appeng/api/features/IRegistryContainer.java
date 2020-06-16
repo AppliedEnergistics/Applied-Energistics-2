@@ -33,7 +33,7 @@ import appeng.api.storage.ICellRegistry;
  * @author AlgorithmX2
  * @author thatsIch
  * @author yueh
- * @version rv5
+ * @version 7
  * @since rv0
  */
 @AEInjectable
@@ -48,12 +48,6 @@ public interface IRegistryContainer {
      * Add new Grid Caches for use during run time, only use during loading phase.
      */
     IGridCacheRegistry gridCache();
-
-    /**
-     * Add additional special comparison functionality, AE Uses this internally for
-     * Bees.
-     */
-    ISpecialComparisonRegistry specialComparison();
 
     /**
      * Lets you register your items as wireless terminals
