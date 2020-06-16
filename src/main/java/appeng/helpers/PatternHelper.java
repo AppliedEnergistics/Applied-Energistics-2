@@ -19,33 +19,23 @@
 package appeng.helpers;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringJoiner;
-
+import appeng.api.AEApi;
+import appeng.api.networking.crafting.ICraftingPatternDetails;
+import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.container.ContainerNull;
+import appeng.util.Platform;
+import appeng.util.item.AEItemStack;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.world.World;
 
-import appeng.api.networking.crafting.ICraftingPatternDetails;
-import appeng.api.storage.channels.IItemStorageChannel;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.container.ContainerNull;
-import appeng.core.AEConfig;
-import appeng.core.AELog;
-import appeng.api.AEApi;
-import appeng.api.features.AEFeature;
-import appeng.util.Platform;
-import appeng.util.item.AEItemStack;
+import java.util.*;
 
 
 public class PatternHelper implements ICraftingPatternDetails, Comparable<PatternHelper>
@@ -55,7 +45,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	private final CraftingInventory crafting = new CraftingInventory( new ContainerNull(), 3, 3 );
 	private final CraftingInventory testFrame = new CraftingInventory( new ContainerNull(), 3, 3 );
 	private final ItemStack correctOutput;
-	private final IRecipe standardRecipe;
+	private final ICraftingRecipe standardRecipe;
 	private final IAEItemStack[] condensedInputs;
 	private final IAEItemStack[] condensedOutputs;
 	private final IAEItemStack[] inputs;
@@ -110,7 +100,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
 		if( this.isCrafting )
 		{
-			this.standardRecipe = w.getServer().getRecipeManager().getRecipe( IRecipeType.CRAFTING, this.crafting, w ).orElse( null );
+			this.standardRecipe = w.getRecipeManager().getRecipe( IRecipeType.CRAFTING, this.crafting, w ).orElse( null );
 
 			if( this.standardRecipe != null )
 			{
@@ -144,8 +134,8 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			}
 		}
 
-		this.outputs = out.toArray( new IAEItemStack[out.size()] );
-		this.inputs = in.toArray( new IAEItemStack[in.size()] );
+		this.outputs = out.toArray(new IAEItemStack[0]);
+		this.inputs = in.toArray(new IAEItemStack[0]);
 
 		final Map<IAEItemStack, IAEItemStack> tmpOutputs = new HashMap<>();
 
@@ -268,28 +258,6 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 				return true;
 			}
 		}
-		else if( AEConfig.instance().isFeatureEnabled( AEFeature.CRAFTING_MANAGER_FALLBACK ) )
-		{
-
-			// TODO: REMOVE
-
-			// final ItemStack testOutput = CraftingManager.findMatchingResult( this.testFrame, w );
-			//
-			// if( Platform.itemComparisons().isSameItem( this.correctOutput, testOutput ) )
-			// {
-			// this.testFrame.setInventorySlotContents( slotIndex, this.crafting.getStackInSlot( slotIndex ) );
-			// this.markItemAs( slotIndex, i, TestStatus.ACCEPT );
-			//
-			// if( AELog.isCraftingDebugLogEnabled() )
-			// {
-			// this.warnAboutCraftingManager( true );
-			// }
-			//
-			// return true;
-			// }
-			//
-			// this.warnAboutCraftingManager( false );
-		}
 
 		this.markItemAs( slotIndex, i, TestStatus.DECLINE );
 		return false;
@@ -407,24 +375,6 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	public int hashCode()
 	{
 		return this.pattern.hashCode();
-	}
-
-	private void warnAboutCraftingManager( boolean foundAlternative )
-	{
-		final String foundAlternativeRecipe = foundAlternative ? "Found alternative recipe." : "NOT FOUND, please report.";
-
-		final StringJoiner joinActualInputs = new StringJoiner( ", " );
-		for( int j = 0; j < this.testFrame.getSizeInventory(); j++ )
-		{
-			final ItemStack stack = this.testFrame.getStackInSlot( j );
-			if( !stack.isEmpty() )
-			{
-				joinActualInputs.add( stack.toString() );
-			}
-		}
-
-		AELog.warn( "Using CraftingManager fallback: Recipe <%s> for output <%s> rejected inputs [%s]. %s",
-				this.standardRecipe.getId(), this.standardRecipe.getRecipeOutput(), joinActualInputs, foundAlternativeRecipe );
 	}
 
 	@Override
