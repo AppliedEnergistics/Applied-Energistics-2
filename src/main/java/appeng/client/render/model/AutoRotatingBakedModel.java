@@ -166,7 +166,7 @@ public class AutoRotatingBakedModel implements IBakedModel
 		}
 
 		AEModelData aeModelData = (AEModelData) extraData;
-
+		quadCache.invalidateAll(); // FIXME
 		if (aeModelData.isCacheable()) {
 			return quadCache.getUnchecked(new AutoRotatingCacheKey(state, aeModelData, side));
 		} else {
@@ -323,7 +323,7 @@ public class AutoRotatingBakedModel implements IBakedModel
 		@Override
 		public void setQuadOrientation( Direction orientation )
 		{
-			this.parent.setQuadOrientation( orientation );
+			this.parent.setQuadOrientation( f2r.rotate(orientation) );
 		}
 
 		@Override
