@@ -120,7 +120,7 @@ public class InvalidPatternHelper
 
 		public ITextComponent getName()
 		{
-			return this.isValid() ? Platform.getItemDisplayName( this.stack.getDisplayName() )
+			return this.isValid() ? Platform.getItemDisplayName( this.stack )
 					: new StringTextComponent(this.id + '@' + this.getDamage());
 		}
 
