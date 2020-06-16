@@ -212,6 +212,14 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
         this.testFrame.setInventorySlotContents(slotIndex, i);
 
+        // If we cannot substitute, the items must match exactly
+        if (!canSubstitute && slotIndex < inputs.length) {
+            if (!inputs[slotIndex].isSameType(i)) {
+                this.markItemAs(slotIndex, i, TestStatus.DECLINE);
+                return false;
+            }
+        }
+
         if (this.standardRecipe.matches(this.testFrame, w)) {
             final ItemStack testOutput = this.standardRecipe.getCraftingResult(this.testFrame);
 
