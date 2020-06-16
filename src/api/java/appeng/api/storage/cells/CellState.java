@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2013 AlgorithmX2
+ * Copyright (c) 2020 AlgorithmX2
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -21,21 +21,34 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.storage;
-
-import appeng.api.networking.security.IActionHost;
+package appeng.api.storage.cells;
 
 /**
- * Represents an {@link appeng.api.networking.IGridHost} that contributes to
- * storage, such as a ME Chest, or ME Drive.
+ * @author yueh
  */
-public interface ICellContainer extends IActionHost, ICellProvider, ISaveProvider {
+public enum CellState {
+    /**
+     * No cell at all
+     */
+    ABSENT,
 
     /**
-     * tell the Cell container that this slot should blink, the slot number is
-     * relative to the
-     *
-     * @param slot slot index
+     * A cell without anything stored
      */
-    void blinkCell(int slot);
+    EMPTY,
+
+    /**
+     * Stored something, but neither types nor totally full
+     */
+    NOT_EMPTY,
+
+    /**
+     * Available types exhausted
+     */
+    TYPES_FULL,
+
+    /**
+     * Full cell, technically could have free types
+     */
+    FULL,
 }

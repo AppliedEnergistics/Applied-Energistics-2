@@ -26,10 +26,10 @@ package appeng.api.networking.storage;
 import appeng.api.networking.IGridCache;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.ICellContainer;
-import appeng.api.storage.ICellProvider;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMonitorable;
+import appeng.api.storage.cells.ICellContainer;
+import appeng.api.storage.cells.ICellProvider;
 import appeng.api.storage.data.IAEStack;
 
 /**

@@ -28,7 +28,8 @@ import javax.annotation.Nullable;
 import net.minecraft.item.Item;
 
 import appeng.api.networking.IGridHost;
-import appeng.api.storage.ICellContainer;
+import appeng.api.storage.cells.CellState;
+import appeng.api.storage.cells.ICellContainer;
 import appeng.api.util.IOrientable;
 
 public interface IChestOrDrive extends ICellContainer, IGridHost, IOrientable {
@@ -39,19 +40,11 @@ public interface IChestOrDrive extends ICellContainer, IGridHost, IOrientable {
     int getCellCount();
 
     /**
-     * 0 - cell is missing.
-     *
-     * 1 - green,
-     *
-     * 2 - orange,
-     *
-     * 3 - red
-     *
      * @param slot slot index
      *
      * @return status of the slot, one of the above indices.
      */
-    int getCellStatus(int slot);
+    CellState getCellStatus(int slot);
 
     /**
      * @return if the device is online you should check this before providing any

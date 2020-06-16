@@ -49,11 +49,12 @@ import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageGrid;
-import appeng.api.storage.ICellHandler;
-import appeng.api.storage.ICellInventory;
-import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.cells.CellState;
+import appeng.api.storage.cells.ICellHandler;
+import appeng.api.storage.cells.ICellInventory;
+import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
@@ -119,7 +120,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
             newState |= BIT_POWER_MASK;
         }
         for (int x = 0; x < this.getCellCount(); x++) {
-            newState |= (this.getCellStatus(x) << (3 * x));
+            newState |= (this.getCellStatus(x).ordinal() << (3 * x));
         }
         data.writeInt(newState);
 
@@ -213,14 +214,14 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
     }
 
     @Override
-    public int getCellStatus(final int slot) {
+    public CellState getCellStatus(final int slot) {
         if (Platform.isClient()) {
-            return (this.state >> (slot * 3)) & 3;
+            return CellState.values()[(this.state >> (slot * 3)) & 3];
         }
 
         final DriveWatcher handler = this.invBySlot[slot];
         if (handler == null) {
-            return 0;
+            return CellState.ABSENT;
         }
 
         return handler.getStatus();
@@ -277,7 +278,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
         }
 
         for (int x = 0; x < this.getCellCount(); x++) {
-            newState |= (this.getCellStatus(x) << (3 * x));
+            newState |= (this.getCellStatus(x).ordinal() << (3 * x));
         }
 
         if (newState != this.state) {
@@ -446,4 +447,5 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
     public ContainerType<?> getContainerType() {
         return DriveContainer.TYPE;
     }
+
 }

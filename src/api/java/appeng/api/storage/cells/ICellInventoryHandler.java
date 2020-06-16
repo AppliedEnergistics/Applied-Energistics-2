@@ -21,11 +21,12 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.storage;
+package appeng.api.storage.cells;
 
 import javax.annotation.Nullable;
 
 import appeng.api.config.IncludeExclude;
+import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.data.IAEStack;
 
 public interface ICellInventoryHandler<T extends IAEStack<T>> extends IMEInventoryHandler<T> {

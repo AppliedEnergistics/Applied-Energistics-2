@@ -24,6 +24,7 @@
 package appeng.api.storage;
 
 import appeng.api.config.AccessRestriction;
+import appeng.api.storage.cells.ICellContainer;
 import appeng.api.storage.data.IAEStack;
 
 /**

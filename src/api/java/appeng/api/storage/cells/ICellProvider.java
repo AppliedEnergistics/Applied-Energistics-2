@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2020 AlgorithmX2
+ * Copyright (c) 2013 AlgorithmX2
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -21,22 +21,36 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.util;
+package appeng.api.storage.cells;
 
 import java.util.List;
 
-import net.minecraft.util.text.ITextComponent;
+import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.storage.IStorageChannel;
 
-import appeng.api.storage.cells.ICellInventoryHandler;
-import appeng.api.storage.data.IAEStack;
+/**
+ * Allows you to provide cells via non IGridHosts directly to the storage
+ * system, drives, and similar features should go though {@link ICellContainer}
+ * and be automatically handled by the storage system.
+ */
+public interface ICellProvider {
 
-public interface IClientHelper {
     /**
-     * Add cell information to the provided list. Used for tooltip content.
+     * Inventory of the tile for use with ME, should always return an valid list,
+     * never NULL.
      *
-     * @param handler Cell handler.
-     * @param lines   List of lines to add to.
+     * You must return the correct Handler for the correct channel, if your handler
+     * returns a IAEItemStack handler, for a Fluid Channel stuffs going to explode,
+     * same with the reverse.
+     *
+     * @return a valid list of handlers, NEVER NULL
      */
-    <T extends IAEStack<T>> void addCellInformation(ICellInventoryHandler<T> handler, List<ITextComponent> lines);
+    List<IMEInventoryHandler> getCellArray(IStorageChannel<?> channel);
 
+    /**
+     * the storage's priority.
+     *
+     * Positive and negative are supported
+     */
+    int getPriority();
 }
