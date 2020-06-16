@@ -18,7 +18,6 @@
 
 package appeng.items.materials;
 
-
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -27,190 +26,180 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-import appeng.core.AppEng;
 import appeng.api.features.AEFeature;
+import appeng.core.AppEng;
 import appeng.core.features.MaterialStackSrc;
 import appeng.entity.EntityChargedQuartz;
 import appeng.entity.EntitySingularity;
 
+public enum MaterialType {
+    CERTUS_QUARTZ_CRYSTAL("certus_quartz_crystal", EnumSet.of(AEFeature.CERTUS), "crystalCertusQuartz"),
+    CERTUS_QUARTZ_CRYSTAL_CHARGED("charged_certus_quartz_crystal", EnumSet.of(AEFeature.CERTUS),
+            EntityChargedQuartz.class),
 
-public enum MaterialType
-{
-	CERTUS_QUARTZ_CRYSTAL("certus_quartz_crystal", EnumSet.of( AEFeature.CERTUS ), "crystalCertusQuartz" ),
-	CERTUS_QUARTZ_CRYSTAL_CHARGED("charged_certus_quartz_crystal", EnumSet.of( AEFeature.CERTUS ), EntityChargedQuartz.class ),
+    CERTUS_QUARTZ_DUST("certus_quartz_dust", EnumSet.of(AEFeature.DUSTS, AEFeature.CERTUS), "dustCertusQuartz"),
+    NETHER_QUARTZ_DUST("nether_quartz_dust", EnumSet.of(AEFeature.DUSTS), "dustNetherQuartz,dustQuartz"),
+    FLOUR("flour", EnumSet.of(AEFeature.FLOUR), "dustWheat"),
+    GOLD_DUST("gold_dust", EnumSet.of(AEFeature.DUSTS), "dustGold"),
+    IRON_DUST("iron_dust", EnumSet.of(AEFeature.DUSTS), "dustIron"),
 
-	CERTUS_QUARTZ_DUST("certus_quartz_dust", EnumSet.of( AEFeature.DUSTS, AEFeature.CERTUS ), "dustCertusQuartz" ),
-	NETHER_QUARTZ_DUST("nether_quartz_dust", EnumSet.of( AEFeature.DUSTS ), "dustNetherQuartz,dustQuartz" ),
-	FLOUR("flour", EnumSet.of( AEFeature.FLOUR ), "dustWheat" ),
-	GOLD_DUST("gold_dust", EnumSet.of( AEFeature.DUSTS ), "dustGold" ),
-	IRON_DUST("iron_dust", EnumSet.of( AEFeature.DUSTS ), "dustIron" ),
+    SILICON("silicon", EnumSet.of(AEFeature.SILICON), "itemSilicon"),
+    MATTER_BALL("matter_ball", EnumSet.of(AEFeature.MATTER_BALL)),
 
-	SILICON("silicon", EnumSet.of( AEFeature.SILICON ), "itemSilicon" ),
-	MATTER_BALL("matter_ball", EnumSet.of( AEFeature.MATTER_BALL ) ),
+    FLUIX_CRYSTAL("fluix_crystal", EnumSet.of(AEFeature.FLUIX), "crystalFluix"),
+    FLUIX_DUST("fluix_dust", EnumSet.of(AEFeature.FLUIX, AEFeature.DUSTS), "dustFluix"),
+    FLUIX_PEARL("fluix_pearl", EnumSet.of(AEFeature.FLUIX), "pearlFluix"),
 
-	FLUIX_CRYSTAL("fluix_crystal", EnumSet.of( AEFeature.FLUIX ), "crystalFluix" ),
-	FLUIX_DUST("fluix_dust", EnumSet.of( AEFeature.FLUIX, AEFeature.DUSTS ), "dustFluix" ),
-	FLUIX_PEARL("fluix_pearl", EnumSet.of( AEFeature.FLUIX ), "pearlFluix" ),
+    PURIFIED_CERTUS_QUARTZ_CRYSTAL("purified_certus_quartz_crystal",
+            EnumSet.of(AEFeature.CERTUS, AEFeature.PURE_CRYSTALS), "crystalPureCertusQuartz"),
+    PURIFIED_NETHER_QUARTZ_CRYSTAL("purified_nether_quartz_crystal", EnumSet.of(AEFeature.PURE_CRYSTALS),
+            "crystalPureNetherQuartz"),
+    PURIFIED_FLUIX_CRYSTAL("purified_fluix_crystal", EnumSet.of(AEFeature.FLUIX, AEFeature.PURE_CRYSTALS),
+            "crystalPureFluix"),
 
-	PURIFIED_CERTUS_QUARTZ_CRYSTAL("purified_certus_quartz_crystal", EnumSet.of( AEFeature.CERTUS,
-			AEFeature.PURE_CRYSTALS ), "crystalPureCertusQuartz" ),
-	PURIFIED_NETHER_QUARTZ_CRYSTAL("purified_nether_quartz_crystal", EnumSet.of( AEFeature.PURE_CRYSTALS ), "crystalPureNetherQuartz" ),
-	PURIFIED_FLUIX_CRYSTAL("purified_fluix_crystal", EnumSet.of( AEFeature.FLUIX, AEFeature.PURE_CRYSTALS ), "crystalPureFluix" ),
+    CALCULATION_PROCESSOR_PRESS("calculation_processor_press", EnumSet.of(AEFeature.PRESSES)),
+    ENGINEERING_PROCESSOR_PRESS("engineering_processor_press", EnumSet.of(AEFeature.PRESSES)),
+    LOGIC_PROCESSOR_PRESS("logic_processor_press", EnumSet.of(AEFeature.PRESSES)),
 
-	CALCULATION_PROCESSOR_PRESS("calculation_processor_press", EnumSet.of( AEFeature.PRESSES ) ),
-	ENGINEERING_PROCESSOR_PRESS("engineering_processor_press", EnumSet.of( AEFeature.PRESSES ) ),
-	LOGIC_PROCESSOR_PRESS("logic_processor_press", EnumSet.of( AEFeature.PRESSES ) ),
+    CALCULATION_PROCESSOR_PRINT("printed_calculation_processor", EnumSet.of(AEFeature.PRINTED_CIRCUITS)),
+    ENGINEERING_PROCESSOR_PRINT("printed_engineering_processor", EnumSet.of(AEFeature.PRINTED_CIRCUITS)),
+    LOGIC_PROCESSOR_PRINT("printed_logic_processor", EnumSet.of(AEFeature.PRINTED_CIRCUITS)),
 
-	CALCULATION_PROCESSOR_PRINT("printed_calculation_processor", EnumSet.of( AEFeature.PRINTED_CIRCUITS ) ),
-	ENGINEERING_PROCESSOR_PRINT("printed_engineering_processor", EnumSet.of( AEFeature.PRINTED_CIRCUITS ) ),
-	LOGIC_PROCESSOR_PRINT("printed_logic_processor", EnumSet.of( AEFeature.PRINTED_CIRCUITS ) ),
+    SILICON_PRESS("silicon_press", EnumSet.of(AEFeature.PRESSES)),
+    SILICON_PRINT("printed_silicon", EnumSet.of(AEFeature.PRINTED_CIRCUITS)),
 
-	SILICON_PRESS("silicon_press", EnumSet.of( AEFeature.PRESSES ) ),
-	SILICON_PRINT("printed_silicon", EnumSet.of( AEFeature.PRINTED_CIRCUITS ) ),
+    NAME_PRESS("name_press", EnumSet.of(AEFeature.PRESSES)),
 
-	NAME_PRESS("name_press", EnumSet.of( AEFeature.PRESSES ) ),
+    LOGIC_PROCESSOR("logic_processor", EnumSet.of(AEFeature.PROCESSORS)),
+    CALCULATION_PROCESSOR("calculation_processor", EnumSet.of(AEFeature.PROCESSORS)),
+    ENGINEERING_PROCESSOR("engineering_processor", EnumSet.of(AEFeature.PROCESSORS)),
 
-	LOGIC_PROCESSOR("logic_processor", EnumSet.of( AEFeature.PROCESSORS ) ),
-	CALCULATION_PROCESSOR("calculation_processor", EnumSet.of( AEFeature.PROCESSORS ) ),
-	ENGINEERING_PROCESSOR("engineering_processor", EnumSet.of( AEFeature.PROCESSORS ) ),
+    // Basic Cards
+    BASIC_CARD("basic_card", EnumSet.of(AEFeature.BASIC_CARDS)),
+    CARD_REDSTONE("redstone_card", EnumSet.of(AEFeature.BASIC_CARDS)),
+    CARD_CAPACITY("capacity_card", EnumSet.of(AEFeature.BASIC_CARDS)),
 
-	// Basic Cards
-	BASIC_CARD("basic_card", EnumSet.of( AEFeature.BASIC_CARDS ) ),
-	CARD_REDSTONE("redstone_card", EnumSet.of( AEFeature.BASIC_CARDS ) ),
-	CARD_CAPACITY("capacity_card", EnumSet.of( AEFeature.BASIC_CARDS ) ),
+    // Adv Cards
+    ADVANCED_CARD("advanced_card", EnumSet.of(AEFeature.ADVANCED_CARDS)),
+    CARD_FUZZY("fuzzy_card", EnumSet.of(AEFeature.ADVANCED_CARDS)),
+    CARD_SPEED("speed_card", EnumSet.of(AEFeature.ADVANCED_CARDS)),
+    CARD_INVERTER("inverter_card", EnumSet.of(AEFeature.ADVANCED_CARDS)),
 
-	// Adv Cards
-	ADVANCED_CARD("advanced_card", EnumSet.of( AEFeature.ADVANCED_CARDS ) ),
-	CARD_FUZZY("fuzzy_card", EnumSet.of( AEFeature.ADVANCED_CARDS ) ),
-	CARD_SPEED("speed_card", EnumSet.of( AEFeature.ADVANCED_CARDS ) ),
-	CARD_INVERTER("inverter_card", EnumSet.of( AEFeature.ADVANCED_CARDS ) ),
+    SPATIAL_2_CELL_COMPONENT("2_cubed_spatial_cell_component", EnumSet.of(AEFeature.SPATIAL_IO)),
+    SPATIAL_16_CELL_COMPONENT("16_cubed_spatial_cell_component", EnumSet.of(AEFeature.SPATIAL_IO)),
+    SPATIAL_128_CELL_COMPONENT("128_cubed_spatial_cell_component", EnumSet.of(AEFeature.SPATIAL_IO)),
 
-	SPATIAL_2_CELL_COMPONENT("2_cubed_spatial_cell_component", EnumSet.of( AEFeature.SPATIAL_IO ) ),
-	SPATIAL_16_CELL_COMPONENT("16_cubed_spatial_cell_component", EnumSet.of( AEFeature.SPATIAL_IO ) ),
-	SPATIAL_128_CELL_COMPONENT("128_cubed_spatial_cell_component", EnumSet.of( AEFeature.SPATIAL_IO ) ),
+    ITEM_1K_CELL_COMPONENT("1k_cell_component", EnumSet.of(AEFeature.STORAGE_CELLS)),
+    ITEM_4K_CELL_COMPONENT("4k_cell_component", EnumSet.of(AEFeature.STORAGE_CELLS)),
+    ITEM_16K_CELL_COMPONENT("16k_cell_component", EnumSet.of(AEFeature.STORAGE_CELLS)),
+    ITEM_64K_CELL_COMPONENT("64k_cell_component", EnumSet.of(AEFeature.STORAGE_CELLS)),
+    EMPTY_STORAGE_CELL("empty_storage_cell", EnumSet.of(AEFeature.STORAGE_CELLS)),
 
-	ITEM_1K_CELL_COMPONENT("1k_cell_component", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
-	ITEM_4K_CELL_COMPONENT("4k_cell_component", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
-	ITEM_16K_CELL_COMPONENT("16k_cell_component", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
-	ITEM_64K_CELL_COMPONENT("64k_cell_component", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
-	EMPTY_STORAGE_CELL("empty_storage_cell", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
+    WOODEN_GEAR("wooden_gear", EnumSet.of(AEFeature.GRIND_STONE), "gearWood"),
 
-	WOODEN_GEAR("wooden_gear", EnumSet.of( AEFeature.GRIND_STONE ), "gearWood" ),
+    WIRELESS_RECEIVER("wireless_receiver", EnumSet.of(AEFeature.WIRELESS_ACCESS_TERMINAL)),
+    WIRELESS_BOOSTER("wireless_booster", EnumSet.of(AEFeature.WIRELESS_ACCESS_TERMINAL)),
 
-	WIRELESS_RECEIVER("wireless_receiver", EnumSet.of( AEFeature.WIRELESS_ACCESS_TERMINAL ) ),
-	WIRELESS_BOOSTER("wireless_booster", EnumSet.of( AEFeature.WIRELESS_ACCESS_TERMINAL ) ),
+    FORMATION_CORE("formation_core", EnumSet.of(AEFeature.CORES)),
+    ANNIHILATION_CORE("annihilation_core", EnumSet.of(AEFeature.CORES)),
 
-	FORMATION_CORE("formation_core", EnumSet.of( AEFeature.CORES ) ),
-	ANNIHILATION_CORE("annihilation_core", EnumSet.of( AEFeature.CORES ) ),
+    SKY_DUST("sky_dust", EnumSet.of(AEFeature.DUSTS)),
 
-	SKY_DUST("sky_dust", EnumSet.of( AEFeature.DUSTS ) ),
+    ENDER_DUST("ender_dust", EnumSet.of(AEFeature.QUANTUM_NETWORK_BRIDGE), "dustEnder,dustEnderPearl",
+            EntitySingularity.class),
+    SINGULARITY("singularity", EnumSet.of(AEFeature.QUANTUM_NETWORK_BRIDGE), EntitySingularity.class),
+    QUANTUM_ENTANGLED_SINGULARITY("quantum_entangled_singularity", EnumSet.of(AEFeature.QUANTUM_NETWORK_BRIDGE),
+            EntitySingularity.class),
 
-	ENDER_DUST("ender_dust", EnumSet.of( AEFeature.QUANTUM_NETWORK_BRIDGE ), "dustEnder,dustEnderPearl", EntitySingularity.class ),
-	SINGULARITY("singularity", EnumSet.of( AEFeature.QUANTUM_NETWORK_BRIDGE ), EntitySingularity.class ),
-	QUANTUM_ENTANGLED_SINGULARITY("quantum_entangled_singularity", EnumSet.of( AEFeature.QUANTUM_NETWORK_BRIDGE ), EntitySingularity.class ),
+    BLANK_PATTERN("blank_pattern", EnumSet.of(AEFeature.PATTERNS)),
+    CARD_CRAFTING("crafting_card", EnumSet.of(AEFeature.ADVANCED_CARDS, AEFeature.CRAFTING_CPU)),
 
-	BLANK_PATTERN("blank_pattern", EnumSet.of( AEFeature.PATTERNS ) ),
-	CARD_CRAFTING("crafting_card", EnumSet.of( AEFeature.ADVANCED_CARDS, AEFeature.CRAFTING_CPU ) ),
+    FLUID_1K_CELL_COMPONENT("1k_fluid_cell_component", EnumSet.of(AEFeature.STORAGE_CELLS)),
+    FLUID_4K_CELL_COMPONENT("4k_fluid_cell_component", EnumSet.of(AEFeature.STORAGE_CELLS)),
+    FLUID_16K_CELL_COMPONENT("16k_fluid_cell_component", EnumSet.of(AEFeature.STORAGE_CELLS)),
+    FLUID_64K_CELL_COMPONENT("64k_fluid_cell_component", EnumSet.of(AEFeature.STORAGE_CELLS));
 
-	FLUID_1K_CELL_COMPONENT("1k_fluid_cell_component", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
-	FLUID_4K_CELL_COMPONENT("4k_fluid_cell_component", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
-	FLUID_16K_CELL_COMPONENT("16k_fluid_cell_component", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
-	FLUID_64K_CELL_COMPONENT("64k_fluid_cell_component", EnumSet.of( AEFeature.STORAGE_CELLS ) );
+    private final Set<AEFeature> features;
+    private final ResourceLocation registryName;
+    private Item itemInstance;
+    // stack!
+    private MaterialStackSrc stackSrc;
+    private String oreName;
+    private Class<? extends Entity> droppedEntity;
+    private boolean isRegistered = false;
 
-	private final Set<AEFeature> features;
-	private final ResourceLocation registryName;
-	private Item itemInstance;
-	// stack!
-	private MaterialStackSrc stackSrc;
-	private String oreName;
-	private Class<? extends Entity> droppedEntity;
-	private boolean isRegistered = false;
+    MaterialType(String id, final Set<AEFeature> features) {
+        this.features = features;
+        this.registryName = new ResourceLocation(AppEng.MOD_ID, id);
+    }
 
-	MaterialType(String id, final Set<AEFeature> features)
-	{
-		this.features = features;
-		this.registryName = new ResourceLocation( AppEng.MOD_ID, id);
-	}
+    MaterialType(String id, final Set<AEFeature> features, final Class<? extends Entity> c) {
+        this(id, features);
+        this.droppedEntity = c;
+    }
 
-	MaterialType(String id, final Set<AEFeature> features, final Class<? extends Entity> c)
-	{
-		this(id, features );
-		this.droppedEntity = c;
-	}
+    MaterialType(String id, final Set<AEFeature> features, final String oreDictionary,
+            final Class<? extends Entity> c) {
+        this(id, features);
+        this.oreName = oreDictionary;
+        this.droppedEntity = c;
+    }
 
-	MaterialType(String id, final Set<AEFeature> features, final String oreDictionary, final Class<? extends Entity> c)
-	{
-		this(id, features );
-		this.oreName = oreDictionary;
-		this.droppedEntity = c;
-	}
+    MaterialType(String id, final Set<AEFeature> features, final String oreDictionary) {
+        this(id, features);
+        this.oreName = oreDictionary;
+    }
 
-	MaterialType(String id, final Set<AEFeature> features, final String oreDictionary)
-	{
-		this(id, features );
-		this.oreName = oreDictionary;
-	}
+    public ItemStack stack(final int size) {
+        return new ItemStack(this.getItemInstance(), size);
+    }
 
-	public ItemStack stack( final int size )
-	{
-		return new ItemStack( this.getItemInstance(), size );
-	}
+    public Set<AEFeature> getFeature() {
+        return this.features;
+    }
 
-	public Set<AEFeature> getFeature()
-	{
-		return this.features;
-	}
+    public String getOreName() {
+        return this.oreName;
+    }
 
-	public String getOreName()
-	{
-		return this.oreName;
-	}
+    boolean hasCustomEntity() {
+        return this.droppedEntity != null;
+    }
 
-	boolean hasCustomEntity()
-	{
-		return this.droppedEntity != null;
-	}
+    Class<? extends Entity> getCustomEntityClass() {
+        return this.droppedEntity;
+    }
 
-	Class<? extends Entity> getCustomEntityClass()
-	{
-		return this.droppedEntity;
-	}
+    public boolean isRegistered() {
+        return this.isRegistered;
+    }
 
-	public boolean isRegistered()
-	{
-		return this.isRegistered;
-	}
+    public void markReady() {
+        this.isRegistered = true;
+    }
 
-	public void markReady()
-	{
-		this.isRegistered = true;
-	}
+    public Item getItemInstance() {
+        return this.itemInstance;
+    }
 
-	public Item getItemInstance()
-	{
-		return this.itemInstance;
-	}
+    public void setItemInstance(final Item itemInstance) {
+        this.itemInstance = itemInstance;
+    }
 
-	public void setItemInstance( final Item itemInstance )
-	{
-		this.itemInstance = itemInstance;
-	}
+    public MaterialStackSrc getStackSrc() {
+        return this.stackSrc;
+    }
 
-	public MaterialStackSrc getStackSrc()
-	{
-		return this.stackSrc;
-	}
+    public void setStackSrc(final MaterialStackSrc stackSrc) {
+        this.stackSrc = stackSrc;
+    }
 
-	public void setStackSrc( final MaterialStackSrc stackSrc )
-	{
-		this.stackSrc = stackSrc;
-	}
+    public String getId() {
+        return registryName.getPath();
+    }
 
-	public String getId() { return registryName.getPath(); }
-
-	public ResourceLocation getRegistryName()
-	{
-		return this.registryName;
-	}
+    public ResourceLocation getRegistryName() {
+        return this.registryName;
+    }
 
 }

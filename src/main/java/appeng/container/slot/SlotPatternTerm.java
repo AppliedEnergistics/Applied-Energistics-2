@@ -18,7 +18,6 @@
 
 package appeng.container.slot;
 
-
 import java.io.IOException;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -34,49 +33,44 @@ import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.packets.PacketPatternSlot;
 import appeng.helpers.IContainerCraftingPacket;
 
+public class SlotPatternTerm extends SlotCraftingTerm {
 
-public class SlotPatternTerm extends SlotCraftingTerm
-{
+    private final int groupNum;
+    private final IOptionalSlotHost host;
 
-	private final int groupNum;
-	private final IOptionalSlotHost host;
+    public SlotPatternTerm(final PlayerEntity player, final IActionSource mySrc, final IEnergySource energySrc,
+            final IStorageMonitorable storage, final IItemHandler cMatrix, final IItemHandler secondMatrix,
+            final IItemHandler output, final int x, final int y, final IOptionalSlotHost h, final int groupNumber,
+            final IContainerCraftingPacket c) {
+        super(player, mySrc, energySrc, storage, cMatrix, secondMatrix, output, x, y, c);
 
-	public SlotPatternTerm( final PlayerEntity player, final IActionSource mySrc, final IEnergySource energySrc, final IStorageMonitorable storage, final IItemHandler cMatrix, final IItemHandler secondMatrix, final IItemHandler output, final int x, final int y, final IOptionalSlotHost h, final int groupNumber, final IContainerCraftingPacket c )
-	{
-		super( player, mySrc, energySrc, storage, cMatrix, secondMatrix, output, x, y, c );
+        this.host = h;
+        this.groupNum = groupNumber;
+    }
 
-		this.host = h;
-		this.groupNum = groupNumber;
-	}
+    public AppEngPacket getRequest(final boolean shift) {
+        return new PacketPatternSlot(this.getPattern(),
+                AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(this.getStack()),
+                shift);
+    }
 
-	public AppEngPacket getRequest( final boolean shift )
-	{
-		return new PacketPatternSlot( this
-				.getPattern(), AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( this.getStack() ), shift );
-	}
+    @Override
+    public ItemStack getStack() {
+        if (!this.isSlotEnabled()) {
+            if (!this.getDisplayStack().isEmpty()) {
+                this.clearStack();
+            }
+        }
 
-	@Override
-	public ItemStack getStack()
-	{
-		if( !this.isSlotEnabled() )
-		{
-			if( !this.getDisplayStack().isEmpty() )
-			{
-				this.clearStack();
-			}
-		}
+        return super.getStack();
+    }
 
-		return super.getStack();
-	}
+    @Override
+    public boolean isSlotEnabled() {
+        if (this.host == null) {
+            return false;
+        }
 
-	@Override
-	public boolean isSlotEnabled()
-	{
-		if( this.host == null )
-		{
-			return false;
-		}
-
-		return this.host.isSlotEnabled( this.groupNum );
-	}
+        return this.host.isSlotEnabled(this.groupNum);
+    }
 }

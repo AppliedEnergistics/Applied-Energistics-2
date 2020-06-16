@@ -23,7 +23,6 @@
 
 package appeng.util.item;
 
-
 import java.lang.ref.WeakReference;
 import java.util.WeakHashMap;
 
@@ -33,54 +32,43 @@ import net.minecraft.item.ItemStack;
 
 import appeng.util.Platform;
 
+public final class AEItemStackRegistry {
+    private static final WeakHashMap<AESharedItemStack, WeakReference<AESharedItemStack>> SERVER_REGISTRY = new WeakHashMap<>();
+    private static final WeakHashMap<AESharedItemStack, WeakReference<AESharedItemStack>> CLIENT_REGISTRY = new WeakHashMap<>();
 
-public final class AEItemStackRegistry
-{
-	private static final WeakHashMap<AESharedItemStack, WeakReference<AESharedItemStack>> SERVER_REGISTRY = new WeakHashMap<>();
-	private static final WeakHashMap<AESharedItemStack, WeakReference<AESharedItemStack>> CLIENT_REGISTRY = new WeakHashMap<>();
+    private AEItemStackRegistry() {
+    }
 
-	private AEItemStackRegistry()
-	{
-	}
+    private static WeakHashMap<AESharedItemStack, WeakReference<AESharedItemStack>> registry() {
+        if (Platform.isClient()) {
+            return CLIENT_REGISTRY;
+        } else {
+            return SERVER_REGISTRY;
+        }
+    }
 
-	private static WeakHashMap<AESharedItemStack, WeakReference<AESharedItemStack>> registry()
-	{
-		if( Platform.isClient() )
-		{
-			return CLIENT_REGISTRY;
-		}
-		else
-		{
-			return SERVER_REGISTRY;
-		}
-	}
+    static synchronized AESharedItemStack getRegisteredStack(final @Nonnull ItemStack itemStack) {
+        if (itemStack.isEmpty()) {
+            throw new IllegalArgumentException("stack cannot be empty");
+        }
 
-	static synchronized AESharedItemStack getRegisteredStack( final @Nonnull ItemStack itemStack )
-	{
-		if( itemStack.isEmpty() )
-		{
-			throw new IllegalArgumentException( "stack cannot be empty" );
-		}
+        int oldStackSize = itemStack.getCount();
+        itemStack.setCount(1);
 
-		int oldStackSize = itemStack.getCount();
-		itemStack.setCount( 1 );
+        AESharedItemStack search = new AESharedItemStack(itemStack);
+        WeakReference<AESharedItemStack> weak = registry().get(search);
+        AESharedItemStack ret = null;
 
-		AESharedItemStack search = new AESharedItemStack( itemStack );
-		WeakReference<AESharedItemStack> weak = registry().get( search );
-		AESharedItemStack ret = null;
+        if (weak != null) {
+            ret = weak.get();
+        }
 
-		if( weak != null )
-		{
-			ret = weak.get();
-		}
+        if (ret == null) {
+            ret = new AESharedItemStack(itemStack.copy());
+            registry().put(ret, new WeakReference<>(ret));
+        }
+        itemStack.setCount(oldStackSize);
 
-		if( ret == null )
-		{
-			ret = new AESharedItemStack( itemStack.copy() );
-			registry().put( ret, new WeakReference<>( ret ) );
-		}
-		itemStack.setCount( oldStackSize );
-
-		return ret;
-	}
+        return ret;
+    }
 }

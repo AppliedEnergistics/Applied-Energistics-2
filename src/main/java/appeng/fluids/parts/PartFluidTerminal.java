@@ -18,8 +18,6 @@
 
 package appeng.fluids.parts;
 
-
-import appeng.fluids.container.ContainerFluidTerminal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
@@ -27,43 +25,38 @@ import net.minecraft.util.ResourceLocation;
 
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
-
+import appeng.fluids.container.ContainerFluidTerminal;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 import appeng.parts.reporting.AbstractPartTerminal;
-
 
 /**
  * @author BrockWS
  * @version rv6 - 12/05/2018
  * @since rv6 12/05/2018
  */
-public class PartFluidTerminal extends AbstractPartTerminal
-{
+public class PartFluidTerminal extends AbstractPartTerminal {
 
-	@PartModels
-	public static final ResourceLocation MODEL_OFF = new ResourceLocation( AppEng.MOD_ID, "part/fluid_terminal_off" );
-	@PartModels
-	public static final ResourceLocation MODEL_ON = new ResourceLocation( AppEng.MOD_ID, "part/fluid_terminal_on" );
+    @PartModels
+    public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID, "part/fluid_terminal_off");
+    @PartModels
+    public static final ResourceLocation MODEL_ON = new ResourceLocation(AppEng.MOD_ID, "part/fluid_terminal_on");
 
-	public static final IPartModel MODELS_OFF = new PartModel( MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF );
-	public static final IPartModel MODELS_ON = new PartModel( MODEL_BASE, MODEL_ON, MODEL_STATUS_ON );
-	public static final IPartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL );
+    public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
+    public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);
+    public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL);
 
-	public PartFluidTerminal( ItemStack is )
-	{
-		super( is );
-	}
+    public PartFluidTerminal(ItemStack is) {
+        super(is);
+    }
 
-	@Override
-	public ContainerType<?> getContainerType(PlayerEntity player )
-	{
-		return ContainerFluidTerminal.TYPE;
-	}
+    @Override
+    public ContainerType<?> getContainerType(PlayerEntity player) {
+        return ContainerFluidTerminal.TYPE;
+    }
 
-	@Override
-	public IPartModel getStaticModels()
-	{
-		return this.selectModel( MODELS_OFF, MODELS_ON, MODELS_HAS_CHANNEL );
-	}
+    @Override
+    public IPartModel getStaticModels() {
+        return this.selectModel(MODELS_OFF, MODELS_ON, MODELS_HAS_CHANNEL);
+    }
 }

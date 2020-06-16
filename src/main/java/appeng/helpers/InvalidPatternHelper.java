@@ -18,8 +18,9 @@
 
 package appeng.helpers;
 
+import java.util.ArrayList;
+import java.util.List;
 
-import appeng.util.Platform;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -27,133 +28,110 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 
-import java.util.ArrayList;
-import java.util.List;
+import appeng.util.Platform;
 
+public class InvalidPatternHelper {
 
-public class InvalidPatternHelper
-{
+    private final List<PatternIngredient> outputs = new ArrayList<>();
+    private final List<PatternIngredient> inputs = new ArrayList<>();
+    private final boolean isCrafting;
+    private final boolean canSubstitute;
 
-	private final List<PatternIngredient> outputs = new ArrayList<>();
-	private final List<PatternIngredient> inputs = new ArrayList<>();
-	private final boolean isCrafting;
-	private final boolean canSubstitute;
+    public InvalidPatternHelper(final ItemStack is) {
+        final CompoundNBT encodedValue = is.getTag();
 
-	public InvalidPatternHelper( final ItemStack is )
-	{
-		final CompoundNBT encodedValue = is.getTag();
+        if (encodedValue == null) {
+            throw new IllegalArgumentException("No pattern here!");
+        }
 
-		if( encodedValue == null )
-		{
-			throw new IllegalArgumentException( "No pattern here!" );
-		}
+        final ListNBT inTag = encodedValue.getList("in", 10);
+        final ListNBT outTag = encodedValue.getList("out", 10);
+        this.isCrafting = encodedValue.getBoolean("crafting");
 
-		final ListNBT inTag = encodedValue.getList( "in", 10 );
-		final ListNBT outTag = encodedValue.getList( "out", 10 );
-		this.isCrafting = encodedValue.getBoolean( "crafting" );
+        this.canSubstitute = this.isCrafting && encodedValue.getBoolean("substitute");
 
-		this.canSubstitute = this.isCrafting && encodedValue.getBoolean( "substitute" );
+        for (int i = 0; i < outTag.size(); i++) {
+            this.outputs.add(new PatternIngredient(outTag.getCompound(i)));
+        }
 
-		for( int i = 0; i < outTag.size(); i++ )
-		{
-			this.outputs.add( new PatternIngredient( outTag.getCompound( i ) ) );
-		}
+        for (int i = 0; i < inTag.size(); i++) {
+            CompoundNBT in = inTag.getCompound(i);
 
-		for( int i = 0; i < inTag.size(); i++ )
-		{
-			CompoundNBT in = inTag.getCompound( i );
+            // skip empty slots in the crafting grid
+            if (in.isEmpty()) {
+                continue;
+            }
 
-			// skip empty slots in the crafting grid
-			if( in.isEmpty() )
-			{
-				continue;
-			}
+            this.inputs.add(new PatternIngredient(in));
+        }
+    }
 
-			this.inputs.add( new PatternIngredient( in ) );
-		}
-	}
+    public List<PatternIngredient> getOutputs() {
+        return this.outputs;
+    }
 
-	public List<PatternIngredient> getOutputs()
-	{
-		return this.outputs;
-	}
+    public List<PatternIngredient> getInputs() {
+        return this.inputs;
+    }
 
-	public List<PatternIngredient> getInputs()
-	{
-		return this.inputs;
-	}
+    public boolean isCraftable() {
+        return this.isCrafting;
+    }
 
-	public boolean isCraftable()
-	{
-		return this.isCrafting;
-	}
+    public boolean canSubstitute() {
+        return this.canSubstitute;
+    }
 
-	public boolean canSubstitute()
-	{
-		return this.canSubstitute;
-	}
+    public class PatternIngredient {
+        private String id;
+        private int count;
+        private int damage;
 
-	public class PatternIngredient
-	{
-		private String id;
-		private int count;
-		private int damage;
+        private ItemStack stack;
 
-		private ItemStack stack;
+        public PatternIngredient(CompoundNBT tag) {
+            this.stack = ItemStack.read(tag);
 
-		public PatternIngredient( CompoundNBT tag )
-		{
-			this.stack = ItemStack.read( tag );
+            if (this.stack.isEmpty()) {
+                this.id = tag.getString("id");
+                this.count = tag.getByte("Count");
+                this.damage = Math.max(0, tag.getShort("Damage"));
+            }
+        }
 
-			if( this.stack.isEmpty() )
-			{
-				this.id = tag.getString( "id" );
-				this.count = tag.getByte( "Count" );
-				this.damage = Math.max( 0, tag.getShort( "Damage" ) );
-			}
-		}
+        public boolean isValid() {
+            return !this.stack.isEmpty();
+        }
 
-		public boolean isValid()
-		{
-			return !this.stack.isEmpty();
-		}
+        public ITextComponent getName() {
+            return this.isValid() ? Platform.getItemDisplayName(this.stack)
+                    : new StringTextComponent(this.id + '@' + this.getDamage());
+        }
 
-		public ITextComponent getName()
-		{
-			return this.isValid() ? Platform.getItemDisplayName( this.stack )
-					: new StringTextComponent(this.id + '@' + this.getDamage());
-		}
+        public int getDamage() {
+            return this.isValid() ? this.stack.getDamage() : this.damage;
+        }
 
-		public int getDamage()
-		{
-			return this.isValid() ? this.stack.getDamage() : this.damage;
-		}
+        public int getCount() {
+            return this.isValid() ? this.stack.getCount() : this.count;
+        }
 
-		public int getCount()
-		{
-			return this.isValid() ? this.stack.getCount() : this.count;
-		}
+        public ItemStack getItem() {
+            if (!this.isValid()) {
+                throw new IllegalArgumentException("There is no valid ItemStack for this PatternIngredient");
+            }
 
-		public ItemStack getItem()
-		{
-			if( !this.isValid() )
-			{
-				throw new IllegalArgumentException( "There is no valid ItemStack for this PatternIngredient" );
-			}
+            return this.stack;
+        }
 
-			return this.stack;
-		}
+        public ITextComponent getFormattedToolTip() {
+            ITextComponent result = new StringTextComponent(this.getCount() + " ").appendSibling(this.getName());
 
-		public ITextComponent getFormattedToolTip()
-		{
-			ITextComponent result = new StringTextComponent( this.getCount() + " " ).appendSibling( this.getName() );
+            if (!this.isValid()) {
+                result.applyTextStyle(TextFormatting.RED);
+            }
 
-			if( !this.isValid() )
-			{
-				result.applyTextStyle(TextFormatting.RED);
-			}
-
-			return result;
-		}
-	}
+            return result;
+        }
+    }
 }

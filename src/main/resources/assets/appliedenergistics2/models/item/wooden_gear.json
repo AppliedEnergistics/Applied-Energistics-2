@@ -1,6 +1,6 @@
 {
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "appliedenergistics2:item/wooden_gear"
-    }
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "appliedenergistics2:item/wooden_gear"
+  }
 }

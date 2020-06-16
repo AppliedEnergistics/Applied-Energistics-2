@@ -1,7 +1,7 @@
 {
-    "variants": {
-        "": {
-            "model": "appliedenergistics2:block/quartz_ore"
-        }
+  "variants": {
+    "": {
+      "model": "appliedenergistics2:block/quartz_ore"
     }
+  }
 }

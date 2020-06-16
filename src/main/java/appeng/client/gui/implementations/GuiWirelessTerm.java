@@ -18,18 +18,16 @@
 
 package appeng.client.gui.implementations;
 
-
-import appeng.container.implementations.ContainerMEPortableCell;
 import net.minecraft.entity.player.PlayerInventory;
-
 import net.minecraft.util.text.ITextComponent;
 
-// FIXME: Extended from GuiPortableCell before... Why?
-public class GuiWirelessTerm extends GuiMEMonitorable<ContainerMEPortableCell>
-{
+import appeng.container.implementations.ContainerMEPortableCell;
 
-	public GuiWirelessTerm(ContainerMEPortableCell container, PlayerInventory playerInventory, ITextComponent title) {
-		super(container, playerInventory, title);
-	}
+// FIXME: Extended from GuiPortableCell before... Why?
+public class GuiWirelessTerm extends GuiMEMonitorable<ContainerMEPortableCell> {
+
+    public GuiWirelessTerm(ContainerMEPortableCell container, PlayerInventory playerInventory, ITextComponent title) {
+        super(container, playerInventory, title);
+    }
 
 }

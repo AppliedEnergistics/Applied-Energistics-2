@@ -18,35 +18,30 @@
 
 package appeng.client.gui.implementations;
 
-
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.client.gui.AEBaseGui;
 import appeng.container.implementations.ContainerGrinder;
 import appeng.core.localization.GuiText;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
+public class GuiGrinder extends AEBaseGui<ContainerGrinder> {
 
-public class GuiGrinder extends AEBaseGui<ContainerGrinder>
-{
+    public GuiGrinder(ContainerGrinder container, PlayerInventory playerInventory, ITextComponent title) {
+        super(container, playerInventory, title);
+        this.ySize = 176;
+    }
 
-	public GuiGrinder(ContainerGrinder container, PlayerInventory playerInventory, ITextComponent title) {
-		super(container, playerInventory, title);
-		this.ySize = 176;
-	}
+    @Override
+    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+        this.font.drawString(this.getGuiDisplayName(GuiText.GrindStone.getLocal()), 8, 6, 4210752);
+        this.font.drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+    }
 
-	@Override
-	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
-	{
-		this.font.drawString( this.getGuiDisplayName( GuiText.GrindStone.getLocal() ), 8, 6, 4210752 );
-		this.font.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
-	}
-
-	@Override
-	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
-	{
-		this.bindTexture( "guis/grinder.png" );
-		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset() );
-	}
+    @Override
+    public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+        this.bindTexture("guis/grinder.png");
+        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());
+    }
 }

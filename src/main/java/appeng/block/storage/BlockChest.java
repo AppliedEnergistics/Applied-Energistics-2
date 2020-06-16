@@ -18,15 +18,8 @@
 
 package appeng.block.storage;
 
+import javax.annotation.Nullable;
 
-import appeng.block.AEBaseTileBlock;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.ContainerChest;
-import appeng.container.implementations.ContainerQNB;
-import appeng.core.localization.PlayerMessages;
-import appeng.tile.storage.TileChest;
-import appeng.util.Platform;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -42,66 +35,67 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
+import appeng.block.AEBaseTileBlock;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerChest;
+import appeng.container.implementations.ContainerQNB;
+import appeng.core.localization.PlayerMessages;
+import appeng.tile.storage.TileChest;
+import appeng.util.Platform;
 
+public class BlockChest extends AEBaseTileBlock<TileChest> {
 
-public class BlockChest extends AEBaseTileBlock<TileChest>
-{
+    private final static EnumProperty<DriveSlotState> SLOT_STATE = EnumProperty.create("slot_state",
+            DriveSlotState.class);
 
-	private final static EnumProperty<DriveSlotState> SLOT_STATE = EnumProperty.create( "slot_state", DriveSlotState.class );
+    public BlockChest() {
+        super(defaultProps(Material.IRON));
+        this.setDefaultState(this.getDefaultState().with(SLOT_STATE, DriveSlotState.EMPTY));
+    }
 
-	public BlockChest()
-	{
-		super( defaultProps(Material.IRON) );
-		this.setDefaultState( this.getDefaultState().with( SLOT_STATE, DriveSlotState.EMPTY ) );
-	}
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
+        builder.add(SLOT_STATE);
+    }
 
-	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-		super.fillStateContainer(builder);
-		builder.add(SLOT_STATE);
-	}
+    @Override
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, TileChest te) {
+        DriveSlotState slotState = DriveSlotState.EMPTY;
 
-	@Override
-	protected BlockState updateBlockStateFromTileEntity(BlockState currentState, TileChest te) {
-		DriveSlotState slotState = DriveSlotState.EMPTY;
+        if (te.getCellCount() >= 1) {
+            slotState = DriveSlotState.fromCellStatus(te.getCellStatus(0));
+        }
+        // Power-state has to be checked separately
+        if (!te.isPowered() && slotState != DriveSlotState.EMPTY) {
+            slotState = DriveSlotState.OFFLINE;
+        }
 
-		if( te.getCellCount() >= 1 )
-		{
-			slotState = DriveSlotState.fromCellStatus( te.getCellStatus( 0 ) );
-		}
-		// Power-state has to be checked separately
-		if( !te.isPowered() && slotState != DriveSlotState.EMPTY )
-		{
-			slotState = DriveSlotState.OFFLINE;
-		}
+        return currentState.with(SLOT_STATE, slotState);
+    }
 
-		return currentState.with( SLOT_STATE, slotState );
-	}
+    @Override
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+        final TileChest tg = this.getTileEntity(w, pos);
+        if (tg != null && !p.isCrouching()) {
+            if (w.isRemote()) {
+                return ActionResultType.SUCCESS;
+            }
 
-	@Override
-	public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit)
-	{
-		final TileChest tg = this.getTileEntity( w, pos );
-		if( tg != null && !p.isCrouching() )
-		{
-			if( w.isRemote() )
-			{
-				return ActionResultType.SUCCESS;
-			}
+            if (hit.getFace() == tg.getUp()) {
+                if (!tg.openGui(p)) {
+                    p.sendMessage(PlayerMessages.ChestCannotReadStorageCell.get());
+                }
+            } else {
+                ContainerOpener.openContainer(ContainerChest.TYPE, p,
+                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+            }
 
-			if (hit.getFace() == tg.getUp()) {
-				if( !tg.openGui( p ) )
-				{
-					p.sendMessage( PlayerMessages.ChestCannotReadStorageCell.get() );
-				}
-			} else {
-				ContainerOpener.openContainer(ContainerChest.TYPE, p, ContainerLocator.forTileEntitySide(tg, hit.getFace()));
-			}
+            return ActionResultType.SUCCESS;
+        }
 
-			return ActionResultType.SUCCESS;
-		}
-
-		return ActionResultType.PASS;
-	}
+        return ActionResultType.PASS;
+    }
 }

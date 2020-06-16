@@ -1,17 +1,20 @@
 package appeng.spatial;
 
-import appeng.core.AELog;
+import javax.annotation.Nullable;
+
 import io.netty.buffer.Unpooled;
+
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 
-import javax.annotation.Nullable;
+import appeng.core.AELog;
 
 /**
- * Helps with encoding and decoding the extra data we attach to the
- * spatial {@link net.minecraft.world.dimension.DimensionType} as "extra data".
- * Keep in mind this data will also be sent to the client unless
- * {@link net.minecraftforge.common.ModDimension#write(PacketBuffer, boolean)} is overridden.
+ * Helps with encoding and decoding the extra data we attach to the spatial
+ * {@link net.minecraft.world.dimension.DimensionType} as "extra data". Keep in
+ * mind this data will also be sent to the client unless
+ * {@link net.minecraftforge.common.ModDimension#write(PacketBuffer, boolean)}
+ * is overridden.
  */
 public final class SpatialDimensionExtraData {
 
@@ -19,8 +22,9 @@ public final class SpatialDimensionExtraData {
     private static final int CURRENT_FORMAT = 1;
 
     /**
-     * The storage size of this dimension. This is dicateted by the pylon structure size used to perform
-     * the first transfer into this dimension. Once it's set, it cannot be changed anymore.
+     * The storage size of this dimension. This is dicateted by the pylon structure
+     * size used to perform the first transfer into this dimension. Once it's set,
+     * it cannot be changed anymore.
      */
     private final BlockPos size;
 
@@ -50,7 +54,8 @@ public final class SpatialDimensionExtraData {
             buf.readerIndex(0);
             byte version = buf.readByte();
             if (version != CURRENT_FORMAT) {
-                // Currently no new format has been defined, as such anything but the current version is invalid
+                // Currently no new format has been defined, as such anything but the current
+                // version is invalid
                 return null;
             }
 

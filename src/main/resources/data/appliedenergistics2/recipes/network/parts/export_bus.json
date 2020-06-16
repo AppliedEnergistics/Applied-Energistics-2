@@ -3,10 +3,7 @@
     "item": "appliedenergistics2:export_bus"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aba",
-    " c "
-  ],
+  "pattern": ["aba", " c "],
   "key": {
     "b": {
       "item": "appliedenergistics2:formation_core"

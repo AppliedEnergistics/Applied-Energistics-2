@@ -1,10 +1,10 @@
 {
-    "variants": {
-        "active=false": {
-            "model": "appliedenergistics2:block/vibration_chamber_off"
-        },
-        "active=true": {
-            "model": "appliedenergistics2:block/vibration_chamber_on"
-        }
+  "variants": {
+    "active=false": {
+      "model": "appliedenergistics2:block/vibration_chamber_off"
+    },
+    "active=true": {
+      "model": "appliedenergistics2:block/vibration_chamber_on"
     }
+  }
 }

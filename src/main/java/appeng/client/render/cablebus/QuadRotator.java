@@ -18,7 +18,6 @@
 
 package appeng.client.render.cablebus;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,73 +33,62 @@ import appeng.thirdparty.codechicken.lib.model.Quad;
 import appeng.thirdparty.codechicken.lib.model.pipeline.BakedPipeline;
 import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadMatrixTransformer;
 
-
 /**
- * Assuming a default-orientation of forward=NORTH and up=UP, this class rotates a given list of quads to the desired
- * facing
+ * Assuming a default-orientation of forward=NORTH and up=UP, this class rotates
+ * a given list of quads to the desired facing
  */
-public class QuadRotator
-{
-	private static final ThreadLocal<BakedPipeline> pipelines = ThreadLocal.withInitial( () -> //
-			BakedPipeline.builder()//
-					.addElement( "transformer", QuadMatrixTransformer.FACTORY )//
-					.build() );
-	private static final ThreadLocal<Quad> collectors = ThreadLocal.withInitial( Quad::new );
+public class QuadRotator {
+    private static final ThreadLocal<BakedPipeline> pipelines = ThreadLocal.withInitial(() -> //
+    BakedPipeline.builder()//
+            .addElement("transformer", QuadMatrixTransformer.FACTORY)//
+            .build());
+    private static final ThreadLocal<Quad> collectors = ThreadLocal.withInitial(Quad::new);
 
-	public List<BakedQuad> rotateQuads( List<BakedQuad> quads, Direction newForward, Direction newUp )
-	{
-		if( newForward == Direction.NORTH && newUp == Direction.UP )
-		{
-			return quads; // This is the default orientation
-		}
-		FacingToRotation rotation = getRotation( newForward, newUp );
-		if( rotation.isRedundant() )
-		{
-			return quads;
-		}
+    public List<BakedQuad> rotateQuads(List<BakedQuad> quads, Direction newForward, Direction newUp) {
+        if (newForward == Direction.NORTH && newUp == Direction.UP) {
+            return quads; // This is the default orientation
+        }
+        FacingToRotation rotation = getRotation(newForward, newUp);
+        if (rotation.isRedundant()) {
+            return quads;
+        }
 
-		List<BakedQuad> result = new ArrayList<>( quads.size() );
+        List<BakedQuad> result = new ArrayList<>(quads.size());
 
-		CachedFormat format = CachedFormat.lookup( DefaultVertexFormats.BLOCK );
-		BakedPipeline pipeline = pipelines.get();
-		Quad collector = collectors.get();
-		QuadMatrixTransformer transformer = pipeline.getElement( "transformer", QuadMatrixTransformer.class );
+        CachedFormat format = CachedFormat.lookup(DefaultVertexFormats.BLOCK);
+        BakedPipeline pipeline = pipelines.get();
+        Quad collector = collectors.get();
+        QuadMatrixTransformer transformer = pipeline.getElement("transformer", QuadMatrixTransformer.class);
 
-		// FIXME: Temporary rotation fix
-		Matrix4f mat = new Matrix4f();
-		mat.setTranslation(-0.5f, -0.5f, -0.5f);
-		mat.multiplyBackward(rotation.getMat());
-		mat.translate(new Vector3f(0.5f, 0.5f, 0.5f));
+        // FIXME: Temporary rotation fix
+        Matrix4f mat = new Matrix4f();
+        mat.setTranslation(-0.5f, -0.5f, -0.5f);
+        mat.multiplyBackward(rotation.getMat());
+        mat.translate(new Vector3f(0.5f, 0.5f, 0.5f));
 
-		for( BakedQuad quad : quads )
-		{
-			pipeline.reset( format );
-			collector.reset( format );
+        for (BakedQuad quad : quads) {
+            pipeline.reset(format);
+            collector.reset(format);
 
-			transformer.setMatrix( mat );
-			pipeline.prepare( collector );
-			quad.pipe( pipeline );
-			result.add( collector.bake() );
-		}
+            transformer.setMatrix(mat);
+            pipeline.prepare(collector);
+            quad.pipe(pipeline);
+            result.add(collector.bake());
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	private FacingToRotation getRotation( Direction forward, Direction up )
-	{
-		// Sanitize forward/up
-		if( forward.getAxis() == up.getAxis() )
-		{
-			if( up.getAxis() == Direction.Axis.Y )
-			{
-				up = Direction.NORTH;
-			}
-			else
-			{
-				up = Direction.UP;
-			}
-		}
+    private FacingToRotation getRotation(Direction forward, Direction up) {
+        // Sanitize forward/up
+        if (forward.getAxis() == up.getAxis()) {
+            if (up.getAxis() == Direction.Axis.Y) {
+                up = Direction.NORTH;
+            } else {
+                up = Direction.UP;
+            }
+        }
 
-		return FacingToRotation.get( forward, up );
-	}
+        return FacingToRotation.get(forward, up);
+    }
 }

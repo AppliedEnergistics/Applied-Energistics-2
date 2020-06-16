@@ -23,40 +23,38 @@
 
 package appeng.api.networking.security;
 
-
 import java.util.EnumSet;
 import java.util.Map;
 
 import appeng.api.config.SecurityPermissions;
 
-
 /**
  * Implemented on Security Terminal to interface with security cache.
  */
-public interface ISecurityProvider
-{
+public interface ISecurityProvider {
 
-	/**
-	 * used to represent the security key for the network, should be based on a unique timestamp.
-	 *
-	 * @return unique key.
-	 */
-	long getSecurityKey();
+    /**
+     * used to represent the security key for the network, should be based on a
+     * unique timestamp.
+     *
+     * @return unique key.
+     */
+    long getSecurityKey();
 
-	/**
-	 * Push permission data into security cache.
-	 *
-	 * @param playerPerms player permissions
-	 */
-	void readPermissions( Map<Integer, EnumSet<SecurityPermissions>> playerPerms );
+    /**
+     * Push permission data into security cache.
+     *
+     * @param playerPerms player permissions
+     */
+    void readPermissions(Map<Integer, EnumSet<SecurityPermissions>> playerPerms);
 
-	/**
-	 * @return is security on or off?
-	 */
-	boolean isSecurityEnabled();
+    /**
+     * @return is security on or off?
+     */
+    boolean isSecurityEnabled();
 
-	/**
-	 * @return player ID for who placed the security provider.
-	 */
-	int getOwner();
+    /**
+     * @return player ID for who placed the security provider.
+     */
+    int getOwner();
 }

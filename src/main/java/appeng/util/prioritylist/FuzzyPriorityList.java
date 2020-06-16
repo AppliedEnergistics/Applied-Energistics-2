@@ -18,42 +18,35 @@
 
 package appeng.util.prioritylist;
 
-
 import java.util.Collection;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
+public class FuzzyPriorityList<T extends IAEStack<T>> implements IPartitionList<T> {
 
-public class FuzzyPriorityList<T extends IAEStack<T>> implements IPartitionList<T>
-{
+    private final IItemList<T> list;
+    private final FuzzyMode mode;
 
-	private final IItemList<T> list;
-	private final FuzzyMode mode;
+    public FuzzyPriorityList(final IItemList<T> in, final FuzzyMode mode) {
+        this.list = in;
+        this.mode = mode;
+    }
 
-	public FuzzyPriorityList( final IItemList<T> in, final FuzzyMode mode )
-	{
-		this.list = in;
-		this.mode = mode;
-	}
+    @Override
+    public boolean isListed(final T input) {
+        final Collection<T> out = this.list.findFuzzy(input, this.mode);
+        return out != null && !out.isEmpty();
+    }
 
-	@Override
-	public boolean isListed( final T input )
-	{
-		final Collection<T> out = this.list.findFuzzy( input, this.mode );
-		return out != null && !out.isEmpty();
-	}
+    @Override
+    public boolean isEmpty() {
+        return this.list.isEmpty();
+    }
 
-	@Override
-	public boolean isEmpty()
-	{
-		return this.list.isEmpty();
-	}
-
-	@Override
-	public Iterable<T> getItems()
-	{
-		return this.list;
-	}
+    @Override
+    public Iterable<T> getItems() {
+        return this.list;
+    }
 }

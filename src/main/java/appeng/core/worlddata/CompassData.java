@@ -18,7 +18,6 @@
 
 package appeng.core.worlddata;
 
-
 import java.io.File;
 
 import javax.annotation.Nonnull;
@@ -27,28 +26,24 @@ import com.google.common.base.Preconditions;
 
 import appeng.services.CompassService;
 
-
 /**
  * @author thatsIch
  * @version rv3 - 30.05.2015
  * @since rv3 30.05.2015
  */
-final class CompassData implements IWorldCompassData
-{
-	@Nonnull
-	private final CompassService service;
+final class CompassData implements IWorldCompassData {
+    @Nonnull
+    private final CompassService service;
 
-	public CompassData( @Nonnull final CompassService service )
-	{
-		Preconditions.checkNotNull( service );
+    public CompassData(@Nonnull final CompassService service) {
+        Preconditions.checkNotNull(service);
 
-		this.service = service;
-	}
+        this.service = service;
+    }
 
-	@Override
-	public CompassService service()
-	{
-		return this.service;
-	}
+    @Override
+    public CompassService service() {
+        return this.service;
+    }
 
 }

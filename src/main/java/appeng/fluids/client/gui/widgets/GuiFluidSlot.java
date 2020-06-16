@@ -1,6 +1,5 @@
 package appeng.fluids.client.gui.widgets;
 
-
 import java.util.Collections;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -17,6 +16,7 @@ import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.client.gui.widgets.GuiCustomSlot;
@@ -24,92 +24,79 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketFluidSlot;
 import appeng.fluids.util.AEFluidStack;
 import appeng.fluids.util.IAEFluidTank;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
+public class GuiFluidSlot extends GuiCustomSlot {
+    private final IAEFluidTank fluids;
+    private final int slot;
 
-public class GuiFluidSlot extends GuiCustomSlot
-{
-	private final IAEFluidTank fluids;
-	private final int slot;
+    public GuiFluidSlot(final IAEFluidTank fluids, final int slot, final int id, final int x, final int y) {
+        super(id, x, y);
+        this.fluids = fluids;
+        this.slot = slot;
+    }
 
-	public GuiFluidSlot( final IAEFluidTank fluids, final int slot, final int id, final int x, final int y )
-	{
-		super( id, x, y );
-		this.fluids = fluids;
-		this.slot = slot;
-	}
+    @Override
+    public void drawContent(final Minecraft mc, final int mouseX, final int mouseY, final float partialTicks) {
+        final IAEFluidStack fs = this.getFluidStack();
+        if (fs != null) {
+            RenderSystem.disableBlend();
+            final Fluid fluid = fs.getFluid();
+            final FluidAttributes attributes = fluid.getAttributes();
+            mc.getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            final TextureAtlasSprite sprite = mc.getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE)
+                    .apply(attributes.getStillTexture(fs.getFluidStack()));
 
-	@Override
-	public void drawContent( final Minecraft mc, final int mouseX, final int mouseY, final float partialTicks )
-	{
-		final IAEFluidStack fs = this.getFluidStack();
-		if( fs != null )
-		{
-			RenderSystem.disableBlend();
-			final Fluid fluid = fs.getFluid();
-			final FluidAttributes attributes = fluid.getAttributes();
-			mc.getTextureManager().bindTexture( AtlasTexture.LOCATION_BLOCKS_TEXTURE );
-			final TextureAtlasSprite sprite = mc.getAtlasSpriteGetter( AtlasTexture.LOCATION_BLOCKS_TEXTURE ).apply( attributes.getStillTexture(fs.getFluidStack()) );
+            // Set color for dynamic fluids
+            // Convert int color to RGB
+            final float red = (attributes.getColor() >> 16 & 255) / 255.0F;
+            final float green = (attributes.getColor() >> 8 & 255) / 255.0F;
+            final float blue = (attributes.getColor() & 255) / 255.0F;
+            RenderSystem.color3f(red, green, blue);
 
-			// Set color for dynamic fluids
-			// Convert int color to RGB
-			final float red = ( attributes.getColor() >> 16 & 255 ) / 255.0F;
-			final float green = ( attributes.getColor() >> 8 & 255 ) / 255.0F;
-			final float blue = ( attributes.getColor() & 255 ) / 255.0F;
-			RenderSystem.color3f( red, green, blue );
+            blit(xPos(), yPos(), this.getBlitOffset(), getWidth(), getHeight(), sprite);
+        }
+    }
 
-			blit(xPos(), yPos(), this.getBlitOffset(), getWidth(), getHeight(), sprite);
-		}
-	}
+    @Override
+    public boolean canClick(final PlayerEntity player) {
+        final ItemStack mouseStack = player.inventory.getItemStack();
+        return mouseStack.isEmpty()
+                || mouseStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent();
+    }
 
-	@Override
-	public boolean canClick( final PlayerEntity player )
-	{
-		final ItemStack mouseStack = player.inventory.getItemStack();
-		return mouseStack.isEmpty() || mouseStack.getCapability( CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY ).isPresent();
-	}
+    @Override
+    public void slotClicked(final ItemStack clickStack, int mouseButton) {
+        if (clickStack.isEmpty() || mouseButton == 1) {
+            this.setFluidStack(null);
+        } else if (mouseButton == 0) {
+            final LazyOptional<FluidStack> fluidOpt = FluidUtil.getFluidContained(clickStack);
+            fluidOpt.ifPresent(fluid -> {
+                this.setFluidStack(AEFluidStack.fromFluidStack(fluid));
+            });
+        }
+    }
 
-	@Override
-	public void slotClicked( final ItemStack clickStack, int mouseButton )
-	{
-		if( clickStack.isEmpty() || mouseButton == 1 )
-		{
-			this.setFluidStack( null );
-		}
-		else if( mouseButton == 0 )
-		{
-			final LazyOptional<FluidStack> fluidOpt = FluidUtil.getFluidContained( clickStack );
-			fluidOpt.ifPresent( fluid -> {
-				this.setFluidStack( AEFluidStack.fromFluidStack( fluid ) );
-			} );
-		}
-	}
+    @Override
+    public String getMessage() {
+        final IAEFluidStack fluid = this.getFluidStack();
+        if (fluid != null) {
+            return I18n.format(fluid.getFluidStack().getTranslationKey());
+        }
+        return null;
+    }
 
-	@Override
-	public String getMessage()
-	{
-		final IAEFluidStack fluid = this.getFluidStack();
-		if( fluid != null )
-		{
-			return I18n.format( fluid.getFluidStack().getTranslationKey() );
-		}
-		return null;
-	}
+    @Override
+    public boolean isVisible() {
+        return true;
+    }
 
-	@Override
-	public boolean isVisible()
-	{
-		return true;
-	}
+    public IAEFluidStack getFluidStack() {
+        return this.fluids.getFluidInSlot(this.slot);
+    }
 
-	public IAEFluidStack getFluidStack()
-	{
-		return this.fluids.getFluidInSlot( this.slot );
-	}
-
-	public void setFluidStack( final IAEFluidStack stack )
-	{
-		this.fluids.setFluidInSlot( this.slot, stack );
-		NetworkHandler.instance().sendToServer( new PacketFluidSlot( Collections.singletonMap( this.getId(), this.getFluidStack() ) ) );
-	}
+    public void setFluidStack(final IAEFluidStack stack) {
+        this.fluids.setFluidInSlot(this.slot, stack);
+        NetworkHandler.instance()
+                .sendToServer(new PacketFluidSlot(Collections.singletonMap(this.getId(), this.getFluidStack())));
+    }
 }

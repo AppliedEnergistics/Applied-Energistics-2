@@ -23,42 +23,40 @@
 
 package appeng.api.networking.crafting;
 
-
 import net.minecraft.nbt.CompoundNBT;
 
+public interface ICraftingLink {
 
-public interface ICraftingLink
-{
+    /**
+     * @return true if the job was canceled.
+     */
+    boolean isCanceled();
 
-	/**
-	 * @return true if the job was canceled.
-	 */
-	boolean isCanceled();
+    /**
+     * @return true if the job was completed.
+     */
+    boolean isDone();
 
-	/**
-	 * @return true if the job was completed.
-	 */
-	boolean isDone();
+    /**
+     * cancels the job.
+     */
+    void cancel();
 
-	/**
-	 * cancels the job.
-	 */
-	void cancel();
+    /**
+     * @return true if this link was generated without a requesting machine, such as
+     *         a player generated request.
+     */
+    boolean isStandalone();
 
-	/**
-	 * @return true if this link was generated without a requesting machine, such as a player generated request.
-	 */
-	boolean isStandalone();
+    /**
+     * write the link to an NBT Tag
+     *
+     * @param tag to be written data
+     */
+    void writeToNBT(CompoundNBT tag);
 
-	/**
-	 * write the link to an NBT Tag
-	 *
-	 * @param tag to be written data
-	 */
-	void writeToNBT( CompoundNBT tag );
-
-	/**
-	 * @return the crafting ID for this link.
-	 */
-	String getCraftingID();
+    /**
+     * @return the crafting ID for this link.
+     */
+    String getCraftingID();
 }

@@ -18,7 +18,6 @@
 
 package appeng.decorative.solid;
 
-
 import java.util.Random;
 
 import net.minecraft.block.BlockState;
@@ -31,30 +30,25 @@ import appeng.client.render.effects.VibrantFX;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 
+public class BlockQuartzLamp extends BlockQuartzGlass {
 
-public class BlockQuartzLamp extends BlockQuartzGlass
-{
+    public BlockQuartzLamp(Properties props) {
+        super(props);
+    }
 
-	public BlockQuartzLamp(Properties props) {
-		super(props);
-	}
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void animateTick(final BlockState state, final World w, final BlockPos pos, final Random r) {
+        if (!AEConfig.instance().isEnableEffects()) {
+            return;
+        }
 
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public void animateTick( final BlockState state, final World w, final BlockPos pos, final Random r )
-	{
-		if( !AEConfig.instance().isEnableEffects() )
-		{
-			return;
-		}
+        if (AppEng.proxy.shouldAddParticles(r)) {
+            final double d0 = (r.nextFloat() - 0.5F) * 0.96D;
+            final double d1 = (r.nextFloat() - 0.5F) * 0.96D;
+            final double d2 = (r.nextFloat() - 0.5F) * 0.96D;
 
-		if( AppEng.proxy.shouldAddParticles( r ) )
-		{
-			final double d0 = ( r.nextFloat() - 0.5F ) * 0.96D;
-			final double d1 = ( r.nextFloat() - 0.5F ) * 0.96D;
-			final double d2 = ( r.nextFloat() - 0.5F ) * 0.96D;
-
-			w.addParticle(VibrantFX.TYPE, 0.5 + pos.getX() + d0, 0.5 + pos.getY() + d1, 0.5 + pos.getZ() + d2, 0, 0, 0);
-		}
-	}
+            w.addParticle(VibrantFX.TYPE, 0.5 + pos.getX() + d0, 0.5 + pos.getY() + d1, 0.5 + pos.getZ() + d2, 0, 0, 0);
+        }
+    }
 }

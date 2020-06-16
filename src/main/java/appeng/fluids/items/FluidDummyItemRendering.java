@@ -18,21 +18,18 @@
 
 package appeng.fluids.items;
 
-
 import appeng.bootstrap.IItemRendering;
 import appeng.bootstrap.ItemRenderingCustomizer;
-
 
 /**
  * @author DrummerMC
  * @version rv6 - 2018-01-22
  * @since rv6 2018-01-22
  */
-public class FluidDummyItemRendering extends ItemRenderingCustomizer
-{
-	@Override
-	public void customize( IItemRendering rendering )
-	{
-		// FIXME rendering.builtInModel( "models/item/dummy_fluid_item", new DummyFluidItemModel() );
-	}
+public class FluidDummyItemRendering extends ItemRenderingCustomizer {
+    @Override
+    public void customize(IItemRendering rendering) {
+        // FIXME rendering.builtInModel( "models/item/dummy_fluid_item", new
+        // DummyFluidItemModel() );
+    }
 }

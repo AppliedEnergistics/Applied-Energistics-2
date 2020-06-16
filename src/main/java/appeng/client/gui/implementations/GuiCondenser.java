@@ -18,60 +18,54 @@
 
 package appeng.client.gui.implementations;
 
-
-import appeng.api.config.CondenserOutput;
-import appeng.client.gui.widgets.GuiServerSettingToggleButton;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
-import net.minecraft.entity.player.PlayerInventory;
-
+import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
 import appeng.client.gui.AEBaseGui;
-import appeng.client.gui.widgets.GuiSettingToggleButton;
 import appeng.client.gui.widgets.GuiProgressBar;
 import appeng.client.gui.widgets.GuiProgressBar.Direction;
+import appeng.client.gui.widgets.GuiServerSettingToggleButton;
+import appeng.client.gui.widgets.GuiSettingToggleButton;
 import appeng.container.implementations.ContainerCondenser;
 import appeng.core.localization.GuiText;
 
+public class GuiCondenser extends AEBaseGui<ContainerCondenser> {
 
-public class GuiCondenser extends AEBaseGui<ContainerCondenser>
-{
+    private GuiSettingToggleButton<CondenserOutput> mode;
 
-	private GuiSettingToggleButton<CondenserOutput> mode;
+    public GuiCondenser(ContainerCondenser container, PlayerInventory playerInventory, ITextComponent title) {
+        super(container, playerInventory, title);
+        this.ySize = 197;
+    }
 
-	public GuiCondenser(ContainerCondenser container, PlayerInventory playerInventory, ITextComponent title) {
-		super(container, playerInventory, title);
-		this.ySize = 197;
-	}
+    @Override
+    public void init() {
+        super.init();
 
-	@Override
-	public void init()
-	{
-		super.init();
+        this.mode = new GuiServerSettingToggleButton<>(128 + this.guiLeft, 52 + this.guiTop, Settings.CONDENSER_OUTPUT,
+                this.container.getOutput());
 
-		this.mode = new GuiServerSettingToggleButton<>( 128 + this.guiLeft, 52 + this.guiTop, Settings.CONDENSER_OUTPUT, this.container.getOutput());
+        this.addButton(new GuiProgressBar(this.container, "guis/condenser.png", 120 + this.guiLeft, 25 + this.guiTop,
+                178, 25, 6, 18, Direction.VERTICAL, GuiText.StoredEnergy.getLocal()));
+        this.addButton(this.mode);
+    }
 
-		this.addButton(new GuiProgressBar(this.container, "guis/condenser.png", 120 + this.guiLeft, 25 + this.guiTop, 178, 25, 6, 18, Direction.VERTICAL, GuiText.StoredEnergy
-				.getLocal()));
-		this.addButton( this.mode );
-	}
+    @Override
+    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+        this.font.drawString(this.getGuiDisplayName(GuiText.Condenser.getLocal()), 8, 6, 4210752);
+        this.font.drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
 
-	@Override
-	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
-	{
-		this.font.drawString( this.getGuiDisplayName( GuiText.Condenser.getLocal() ), 8, 6, 4210752 );
-		this.font.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
+        this.mode.set(this.container.getOutput());
+        this.mode.setFillVar(String.valueOf(this.container.getOutput().requiredPower));
+    }
 
-		this.mode.set( this.container.getOutput() );
-		this.mode.setFillVar( String.valueOf( this.container.getOutput().requiredPower ) );
-	}
+    @Override
+    public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+        this.bindTexture("guis/condenser.png");
 
-	@Override
-	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
-	{
-		this.bindTexture( "guis/condenser.png" );
-
-		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset() );
-	}
+        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());
+    }
 }

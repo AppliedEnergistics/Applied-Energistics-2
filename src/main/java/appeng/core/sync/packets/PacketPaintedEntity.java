@@ -18,7 +18,6 @@
 
 package appeng.core.sync.packets;
 
-
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -30,39 +29,34 @@ import appeng.core.sync.network.INetworkInfo;
 import appeng.hooks.TickHandler;
 import appeng.hooks.TickHandler.PlayerColor;
 
+public class PacketPaintedEntity extends AppEngPacket {
 
-public class PacketPaintedEntity extends AppEngPacket
-{
+    private final AEColor myColor;
+    private final int entityId;
+    private int ticks;
 
-	private final AEColor myColor;
-	private final int entityId;
-	private int ticks;
+    public PacketPaintedEntity(final PacketBuffer stream) {
+        this.entityId = stream.readInt();
+        this.myColor = AEColor.values()[stream.readByte()];
+        this.ticks = stream.readInt();
+    }
 
-	public PacketPaintedEntity( final PacketBuffer stream )
-	{
-		this.entityId = stream.readInt();
-		this.myColor = AEColor.values()[stream.readByte()];
-		this.ticks = stream.readInt();
-	}
+    // api
+    public PacketPaintedEntity(final int myEntity, final AEColor myColor, final int ticksLeft) {
 
-	// api
-	public PacketPaintedEntity( final int myEntity, final AEColor myColor, final int ticksLeft )
-	{
+        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
-		final PacketBuffer data = new PacketBuffer( Unpooled.buffer() );
+        data.writeInt(this.getPacketID());
+        data.writeInt(this.entityId = myEntity);
+        data.writeByte((this.myColor = myColor).ordinal());
+        data.writeInt(ticksLeft);
 
-		data.writeInt( this.getPacketID() );
-		data.writeInt( this.entityId = myEntity );
-		data.writeByte( ( this.myColor = myColor ).ordinal() );
-		data.writeInt( ticksLeft );
+        this.configureWrite(data);
+    }
 
-		this.configureWrite( data );
-	}
-
-	@Override
-	public void clientPacketData( final INetworkInfo network, final PlayerEntity player )
-	{
-		final PlayerColor pc = new PlayerColor( this.entityId, this.myColor, this.ticks );
-		TickHandler.INSTANCE.getPlayerColors().put( this.entityId, pc );
-	}
+    @Override
+    public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
+        final PlayerColor pc = new PlayerColor(this.entityId, this.myColor, this.ticks);
+        TickHandler.INSTANCE.getPlayerColors().put(this.entityId, pc);
+    }
 }

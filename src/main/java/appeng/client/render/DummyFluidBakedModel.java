@@ -18,7 +18,6 @@
 
 package appeng.client.render;
 
-
 import java.util.List;
 import java.util.Random;
 
@@ -33,60 +32,50 @@ import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
 
-
 /**
  * @author DrummerMC
  * @version rv6 - 2018-01-22
  * @since rv6 2018-01-22
  */
-public class DummyFluidBakedModel implements IBakedModel
-{
-	private final ImmutableList<BakedQuad> quads;
+public class DummyFluidBakedModel implements IBakedModel {
+    private final ImmutableList<BakedQuad> quads;
 
-	public DummyFluidBakedModel( ImmutableList<BakedQuad> quads )
-	{
-		this.quads = quads;
-	}
+    public DummyFluidBakedModel(ImmutableList<BakedQuad> quads) {
+        this.quads = quads;
+    }
 
-	@Override
-	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, Random rand )
-	{
-		return this.quads;
-	}
+    @Override
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
+        return this.quads;
+    }
 
-	@Override
-	public boolean isAmbientOcclusion()
-	{
-		return false;
-	}
+    @Override
+    public boolean isAmbientOcclusion() {
+        return false;
+    }
 
-	@Override
-	public boolean isGui3d()
-	{
-		return false;
-	}
+    @Override
+    public boolean isGui3d() {
+        return false;
+    }
 
-	@Override
-	public boolean func_230044_c_()
-	{
-		return false;
-	}
+    @Override
+    public boolean func_230044_c_() {
+        return false;
+    }
 
-	@Override
-	public boolean isBuiltInRenderer()
-	{
-		return false;
-	}
+    @Override
+    public boolean isBuiltInRenderer() {
+        return false;
+    }
 
-	@Override
-	public TextureAtlasSprite getParticleTexture()
-	{
-		return null;
-	}
+    @Override
+    public TextureAtlasSprite getParticleTexture() {
+        return null;
+    }
 
-	@Override
-	public ItemOverrideList getOverrides()
-	{
-		return null;
-	}
+    @Override
+    public ItemOverrideList getOverrides() {
+        return null;
+    }
 }

@@ -53,12 +53,5 @@
       }
     }
   },
-  "requirements": [
-    [
-      "calc",
-      "eng",
-      "logic",
-      "silicon"
-    ]
-  ]
+  "requirements": [["calc", "eng", "logic", "silicon"]]
 }

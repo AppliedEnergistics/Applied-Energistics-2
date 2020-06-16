@@ -18,7 +18,6 @@
 
 package appeng.items.tools.quartz;
 
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -28,20 +27,16 @@ import net.minecraft.item.PickaxeItem;
 import appeng.api.features.AEFeature;
 import appeng.util.Platform;
 
+public class ToolQuartzPickaxe extends PickaxeItem {
+    private final AEFeature type;
 
-public class ToolQuartzPickaxe extends PickaxeItem
-{
-	private final AEFeature type;
+    public ToolQuartzPickaxe(Item.Properties props, final AEFeature type) {
+        super(ItemTier.IRON, 1, -2.8F, props);
+        this.type = type;
+    }
 
-	public ToolQuartzPickaxe( Item.Properties props, final AEFeature type )
-	{
-		super( ItemTier.IRON, 1, -2.8F, props );
-		this.type = type;
-	}
-
-	@Override
-	public boolean getIsRepairable( final ItemStack a, final ItemStack b )
-	{
-		return Platform.canRepair( this.type, a, b );
-	}
+    @Override
+    public boolean getIsRepairable(final ItemStack a, final ItemStack b) {
+        return Platform.canRepair(this.type, a, b);
+    }
 }

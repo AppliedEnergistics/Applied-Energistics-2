@@ -23,17 +23,14 @@
 
 package appeng.api.implementations.tiles;
 
-
 import net.minecraftforge.items.IItemHandler;
 
+public interface IViewCellStorage {
 
-public interface IViewCellStorage
-{
-
-	/**
-	 * should contains at least 5 slot, the first 5
-	 *
-	 * @return inventory with at least 5 slot
-	 */
-	IItemHandler getViewCellStorage();
+    /**
+     * should contains at least 5 slot, the first 5
+     *
+     * @return inventory with at least 5 slot
+     */
+    IItemHandler getViewCellStorage();
 }

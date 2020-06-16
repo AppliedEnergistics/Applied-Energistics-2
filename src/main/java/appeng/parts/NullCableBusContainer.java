@@ -18,7 +18,6 @@
 
 package appeng.parts;
 
-
 import java.util.EnumSet;
 import java.util.Random;
 
@@ -36,98 +35,81 @@ import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEColor;
 import appeng.client.render.cablebus.CableBusRenderState;
 
+public class NullCableBusContainer implements ICableBusContainer {
 
-public class NullCableBusContainer implements ICableBusContainer
-{
+    @Override
+    public int isProvidingStrongPower(final Direction opposite) {
+        return 0;
+    }
 
-	@Override
-	public int isProvidingStrongPower( final Direction opposite )
-	{
-		return 0;
-	}
+    @Override
+    public int isProvidingWeakPower(final Direction opposite) {
+        return 0;
+    }
 
-	@Override
-	public int isProvidingWeakPower( final Direction opposite )
-	{
-		return 0;
-	}
+    @Override
+    public boolean canConnectRedstone(final EnumSet<Direction> of) {
+        return false;
+    }
 
-	@Override
-	public boolean canConnectRedstone( final EnumSet<Direction> of )
-	{
-		return false;
-	}
+    @Override
+    public void onEntityCollision(final Entity e) {
 
-	@Override
-	public void onEntityCollision( final Entity e )
-	{
+    }
 
-	}
+    @Override
+    public boolean activate(final PlayerEntity player, final Hand hand, final Vec3d vecFromPool) {
+        return false;
+    }
 
-	@Override
-	public boolean activate( final PlayerEntity player, final Hand hand, final Vec3d vecFromPool )
-	{
-		return false;
-	}
+    @Override
+    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
 
-	@Override
-	public void onNeighborChanged( IBlockReader w, BlockPos pos, BlockPos neighbor )
-	{
+    }
 
-	}
+    @Override
+    public boolean isSolidOnSide(final Direction side) {
+        return false;
+    }
 
-	@Override
-	public boolean isSolidOnSide( final Direction side )
-	{
-		return false;
-	}
+    @Override
+    public boolean isEmpty() {
+        return true;
+    }
 
-	@Override
-	public boolean isEmpty()
-	{
-		return true;
-	}
+    @Override
+    public SelectedPart selectPart(final Vec3d v3) {
+        return new SelectedPart();
+    }
 
-	@Override
-	public SelectedPart selectPart( final Vec3d v3 )
-	{
-		return new SelectedPart();
-	}
+    @Override
+    public boolean recolourBlock(final Direction side, final AEColor colour, final PlayerEntity who) {
+        return false;
+    }
 
-	@Override
-	public boolean recolourBlock( final Direction side, final AEColor colour, final PlayerEntity who )
-	{
-		return false;
-	}
+    @Override
+    public boolean isLadder(final LivingEntity entity) {
+        return false;
+    }
 
-	@Override
-	public boolean isLadder( final LivingEntity entity )
-	{
-		return false;
-	}
+    @Override
+    public void animateTick(final World world, final BlockPos pos, final Random r) {
 
-	@Override
-	public void animateTick( final World world, final BlockPos pos, final Random r )
-	{
+    }
 
-	}
+    @Override
+    public int getLightValue() {
+        return 0;
+    }
 
-	@Override
-	public int getLightValue()
-	{
-		return 0;
-	}
+    @Override
+    public CableBusRenderState getRenderState() {
+        return new CableBusRenderState();
+    }
 
-	@Override
-	public CableBusRenderState getRenderState()
-	{
-		return new CableBusRenderState();
-	}
-
-	@Override
-	public boolean clicked( PlayerEntity player, Hand hand, Vec3d hitVec )
-	{
-		return false;
-	}
+    @Override
+    public boolean clicked(PlayerEntity player, Hand hand, Vec3d hitVec) {
+        return false;
+    }
 
 }

@@ -18,39 +18,32 @@
 
 package appeng.util.iterators;
 
-
 import java.util.Iterator;
 
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.util.AEPartLocation;
 
+public final class ProxyNodeIterator implements Iterator<IGridNode> {
+    private final Iterator<IGridHost> hosts;
 
-public final class ProxyNodeIterator implements Iterator<IGridNode>
-{
-	private final Iterator<IGridHost> hosts;
+    public ProxyNodeIterator(final Iterator<IGridHost> hosts) {
+        this.hosts = hosts;
+    }
 
-	public ProxyNodeIterator( final Iterator<IGridHost> hosts )
-	{
-		this.hosts = hosts;
-	}
+    @Override
+    public boolean hasNext() {
+        return this.hosts.hasNext();
+    }
 
-	@Override
-	public boolean hasNext()
-	{
-		return this.hosts.hasNext();
-	}
+    @Override
+    public IGridNode next() {
+        final IGridHost host = this.hosts.next();
+        return host.getGridNode(AEPartLocation.INTERNAL);
+    }
 
-	@Override
-	public IGridNode next()
-	{
-		final IGridHost host = this.hosts.next();
-		return host.getGridNode( AEPartLocation.INTERNAL );
-	}
-
-	@Override
-	public void remove()
-	{
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public void remove() {
+        throw new UnsupportedOperationException();
+    }
 }

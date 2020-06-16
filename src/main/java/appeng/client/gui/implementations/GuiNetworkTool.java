@@ -18,6 +18,9 @@
 
 package appeng.client.gui.implementations;
 
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiToggleButton;
@@ -25,52 +28,44 @@ import appeng.container.implementations.ContainerNetworkTool;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
+public class GuiNetworkTool extends AEBaseGui<ContainerNetworkTool> {
 
-public class GuiNetworkTool extends AEBaseGui<ContainerNetworkTool>
-{
+    private GuiToggleButton tFacades;
 
-	private GuiToggleButton tFacades;
+    public GuiNetworkTool(ContainerNetworkTool container, PlayerInventory playerInventory, ITextComponent title) {
+        super(container, playerInventory, title);
+        this.ySize = 166;
+    }
 
-	public GuiNetworkTool(ContainerNetworkTool container, PlayerInventory playerInventory, ITextComponent title) {
-		super(container, playerInventory, title);
-		this.ySize = 166;
-	}
+    @Override
+    public void init() {
+        super.init();
 
-	@Override
-	public void init()
-	{
-		super.init();
+        this.tFacades = new GuiToggleButton(this.guiLeft - 18, this.guiTop + 8, 23, 22,
+                GuiText.TransparentFacades.getLocal(), GuiText.TransparentFacadesHint.getLocal(),
+                btn -> toggleFacades());
 
-		this.tFacades = new GuiToggleButton( this.guiLeft - 18, this.guiTop + 8, 23, 22, GuiText.TransparentFacades.getLocal(), GuiText.TransparentFacadesHint
-				.getLocal(), btn -> toggleFacades() );
+        this.addButton(this.tFacades);
+    }
 
-		this.addButton( this.tFacades );
-	}
+    private void toggleFacades() {
+        NetworkHandler.instance().sendToServer(new PacketValueConfig("NetworkTool", "Toggle"));
+    }
 
-	private void toggleFacades() {
-		NetworkHandler.instance().sendToServer( new PacketValueConfig( "NetworkTool", "Toggle" ) );
-	}
+    @Override
+    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+        if (this.tFacades != null) {
+            this.tFacades.setState(container.isFacadeMode());
+        }
 
-	@Override
-	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
-	{
-		if( this.tFacades != null )
-		{
-			this.tFacades.setState( container.isFacadeMode() );
-		}
+        this.font.drawString(this.getGuiDisplayName(GuiText.NetworkTool.getLocal()), 8, 6, 4210752);
+        this.font.drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+    }
 
-		this.font.drawString( this.getGuiDisplayName( GuiText.NetworkTool.getLocal() ), 8, 6, 4210752 );
-		this.font.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
-	}
-
-	@Override
-	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
-	{
-		this.bindTexture( "guis/toolbox.png" );
-		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset() );
-	}
+    @Override
+    public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+        this.bindTexture("guis/toolbox.png");
+        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());
+    }
 }

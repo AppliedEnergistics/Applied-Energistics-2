@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:charger"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aba",
-    "a  ",
-    "aba"
-  ],
+  "pattern": ["aba", "a  ", "aba"],
   "key": {
     "a": {
       "tag": "forge:ingots/iron"

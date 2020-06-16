@@ -18,7 +18,6 @@
 
 package appeng.core;
 
-
 import java.util.Optional;
 
 import net.minecraft.block.Blocks;
@@ -28,28 +27,25 @@ import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
 
+public final class CreativeTabFacade {
+    public static ItemGroup instance = null;
 
-public final class CreativeTabFacade
-{
-	public static ItemGroup instance = null;
+    static void init() {
+        instance = new ItemGroup("appliedenergistics2.facades") {
 
-	static void init()
-	{
-		instance = new ItemGroup("appliedenergistics2.facades") {
+            @Override
+            public ItemStack createIcon() {
 
-			@Override
-			public ItemStack createIcon()
-			{
+                // FIXME final Optional<Item> maybeFacade =
+                // AEApi.instance().definitions().items().facade().maybeItem();
+                // FIXME if( maybeFacade.isPresent() )
+                {
+                    // FIXME return ( (ItemFacade) maybeFacade.get() ).getCreativeTabIcon();
+                }
 
-				// FIXME final Optional<Item> maybeFacade = AEApi.instance().definitions().items().facade().maybeItem();
-				// FIXME if( maybeFacade.isPresent() )
-				{
-					// FIXME return ( (ItemFacade) maybeFacade.get() ).getCreativeTabIcon();
-				}
-
-				return new ItemStack( Blocks.OAK_PLANKS );
-			}
-		};
-	}
+                return new ItemStack(Blocks.OAK_PLANKS);
+            }
+        };
+    }
 
 }

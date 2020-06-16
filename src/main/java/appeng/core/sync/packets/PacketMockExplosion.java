@@ -18,7 +18,6 @@
 
 package appeng.core.sync.packets;
 
-
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -32,43 +31,38 @@ import appeng.core.AppEng;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 
+public class PacketMockExplosion extends AppEngPacket {
 
-public class PacketMockExplosion extends AppEngPacket
-{
+    private final double x;
+    private final double y;
+    private final double z;
 
-	private final double x;
-	private final double y;
-	private final double z;
+    public PacketMockExplosion(final PacketBuffer stream) {
+        this.x = stream.readDouble();
+        this.y = stream.readDouble();
+        this.z = stream.readDouble();
+    }
 
-	public PacketMockExplosion( final PacketBuffer stream )
-	{
-		this.x = stream.readDouble();
-		this.y = stream.readDouble();
-		this.z = stream.readDouble();
-	}
+    // api
+    public PacketMockExplosion(final double x, final double y, final double z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
 
-	// api
-	public PacketMockExplosion( final double x, final double y, final double z )
-	{
-		this.x = x;
-		this.y = y;
-		this.z = z;
+        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
-		final PacketBuffer data = new PacketBuffer( Unpooled.buffer() );
+        data.writeInt(this.getPacketID());
+        data.writeDouble(x);
+        data.writeDouble(y);
+        data.writeDouble(z);
 
-		data.writeInt( this.getPacketID() );
-		data.writeDouble( x );
-		data.writeDouble( y );
-		data.writeDouble( z );
+        this.configureWrite(data);
+    }
 
-		this.configureWrite( data );
-	}
-
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public void clientPacketData( final INetworkInfo network, final PlayerEntity player )
-	{
-		final World world = AppEng.proxy.getWorld();
-		world.addParticle( ParticleTypes.EXPLOSION, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D );
-	}
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
+        final World world = AppEng.proxy.getWorld();
+        world.addParticle(ParticleTypes.EXPLOSION, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
+    }
 }

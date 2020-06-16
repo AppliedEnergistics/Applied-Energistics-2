@@ -18,10 +18,6 @@
 
 package appeng.block.paint;
 
-
-import appeng.block.AEBaseTileBlock;
-import appeng.tile.misc.TilePaint;
-import appeng.util.Platform;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -40,75 +36,69 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import appeng.block.AEBaseTileBlock;
+import appeng.tile.misc.TilePaint;
+import appeng.util.Platform;
 
-public class BlockPaint extends AEBaseTileBlock<TilePaint>
-{
-	public BlockPaint()
-	{
-		super(defaultProps(Material.WATER, MaterialColor.AIR));
-		this.setFullSize( false );
-		this.setOpaque( false );
-	}
+public class BlockPaint extends AEBaseTileBlock<TilePaint> {
+    public BlockPaint() {
+        super(defaultProps(Material.WATER, MaterialColor.AIR));
+        this.setFullSize(false);
+        this.setOpaque(false);
+    }
 
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> itemStacks)
-	{
-		// do nothing
-	}
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> itemStacks) {
+        // do nothing
+    }
 
-	@Override
-	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-		return VoxelShapes.empty();
-	}
+    @Override
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+        return VoxelShapes.empty();
+    }
 
-	@Override
-	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving )
-	{
-		final TilePaint tp = this.getTileEntity( world, pos );
+    @Override
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
+            boolean isMoving) {
+        final TilePaint tp = this.getTileEntity(world, pos);
 
-		if( tp != null )
-		{
-			tp.neighborChanged();
-		}
-	}
+        if (tp != null) {
+            tp.neighborChanged();
+        }
+    }
 
-	@Override
-	public void fillWithRain( final World w, final BlockPos pos )
-	{
-		if( Platform.isServer() )
-		{
-			w.removeBlock(pos, false);
-		}
-	}
+    @Override
+    public void fillWithRain(final World w, final BlockPos pos) {
+        if (Platform.isServer()) {
+            w.removeBlock(pos, false);
+        }
+    }
 
-	@Override
-	public int getLightValue( final BlockState state, final IBlockReader w, final BlockPos pos )
-	{
-		final TilePaint tp = this.getTileEntity( w, pos );
+    @Override
+    public int getLightValue(final BlockState state, final IBlockReader w, final BlockPos pos) {
+        final TilePaint tp = this.getTileEntity(w, pos);
 
-		if( tp != null )
-		{
-			return tp.getLightLevel();
-		}
+        if (tp != null) {
+            return tp.getLightLevel();
+        }
 
-		return 0;
-	}
+        return 0;
+    }
 
-	@Override
-	public boolean isAir( final BlockState state, final IBlockReader world, final BlockPos pos )
-	{
-		return true;
-	}
+    @Override
+    public boolean isAir(final BlockState state, final IBlockReader world, final BlockPos pos) {
+        return true;
+    }
 
-	@Override
-	public boolean isReplaceable(BlockState state, BlockItemUseContext useContext) {
-		return true;
-	}
+    @Override
+    public boolean isReplaceable(BlockState state, BlockItemUseContext useContext) {
+        return true;
+    }
 
-	@Override
-	public boolean isReplaceable(BlockState p_225541_1_, Fluid p_225541_2_) {
-		return true;
-	}
+    @Override
+    public boolean isReplaceable(BlockState p_225541_1_, Fluid p_225541_2_) {
+        return true;
+    }
 
 }

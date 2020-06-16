@@ -23,28 +23,27 @@
 
 package appeng.api.implementations.guiobjects;
 
+import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
-
-
 /**
  * Implemented on Item objects, to return objects used to manage, and interact
  * with the contents.
  */
-public interface IGuiItem
-{
-	/**
-	 *
-	 * @param is The item used to open the container.
-	 * @param playerInventorySlot The slot in the player's inventory the item is in.
-	 * @param world The world the player is in.
-	 * @param pos If the item was used on a block in the world, has that block's position. Null if no block was targetted.
-	 * @return Null if no GUI object is available.
-	 */
-	@Nullable
-	IGuiItemObject getGuiObject( ItemStack is, int playerInventorySlot, World world, @Nullable BlockPos pos );
+public interface IGuiItem {
+    /**
+     *
+     * @param is                  The item used to open the container.
+     * @param playerInventorySlot The slot in the player's inventory the item is in.
+     * @param world               The world the player is in.
+     * @param pos                 If the item was used on a block in the world, has
+     *                            that block's position. Null if no block was
+     *                            targetted.
+     * @return Null if no GUI object is available.
+     */
+    @Nullable
+    IGuiItemObject getGuiObject(ItemStack is, int playerInventorySlot, World world, @Nullable BlockPos pos);
 }

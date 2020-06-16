@@ -23,50 +23,44 @@
 
 package appeng.api.parts;
 
-
 import appeng.api.util.AEPartLocation;
-
 
 /**
  * Reports a selected part from the IPartHost
  *
  */
-public class SelectedPart
-{
+public class SelectedPart {
 
-	/**
-	 * selected part.
-	 */
-	public final IPart part;
+    /**
+     * selected part.
+     */
+    public final IPart part;
 
-	/**
-	 * facade part.
-	 */
-	public final IFacadePart facade;
+    /**
+     * facade part.
+     */
+    public final IFacadePart facade;
 
-	/**
-	 * side the part is mounted too, or {@link AEPartLocation}.UNKNOWN for cables.
-	 */
-	public final AEPartLocation side;
+    /**
+     * side the part is mounted too, or {@link AEPartLocation}.UNKNOWN for cables.
+     */
+    public final AEPartLocation side;
 
-	public SelectedPart()
-	{
-		this.part = null;
-		this.facade = null;
-		this.side = AEPartLocation.INTERNAL;
-	}
+    public SelectedPart() {
+        this.part = null;
+        this.facade = null;
+        this.side = AEPartLocation.INTERNAL;
+    }
 
-	public SelectedPart( final IPart part, final AEPartLocation side )
-	{
-		this.part = part;
-		this.facade = null;
-		this.side = side;
-	}
+    public SelectedPart(final IPart part, final AEPartLocation side) {
+        this.part = part;
+        this.facade = null;
+        this.side = side;
+    }
 
-	public SelectedPart( final IFacadePart facade, final AEPartLocation side )
-	{
-		this.part = null;
-		this.facade = facade;
-		this.side = side;
-	}
+    public SelectedPart(final IFacadePart facade, final AEPartLocation side) {
+        this.part = null;
+        this.facade = facade;
+        this.side = side;
+    }
 }

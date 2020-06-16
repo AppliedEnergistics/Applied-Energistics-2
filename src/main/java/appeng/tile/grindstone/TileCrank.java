@@ -18,9 +18,8 @@
 
 package appeng.tile.grindstone;
 
+import java.io.IOException;
 
-import appeng.api.implementations.tiles.ICrankable;
-import appeng.tile.AEBaseTile;
 import net.minecraft.block.BlockState;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -28,130 +27,107 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 
-import java.io.IOException;
+import appeng.api.implementations.tiles.ICrankable;
+import appeng.tile.AEBaseTile;
 
+public class TileCrank extends AEBaseTile implements ITickableTileEntity {
 
-public class TileCrank extends AEBaseTile implements ITickableTileEntity
-{
+    private final int ticksPerRotation = 18;
 
-	private final int ticksPerRotation = 18;
+    // sided values..
+    private float visibleRotation = 0; // This is in degrees
+    private int charge = 0;
 
-	// sided values..
-	private float visibleRotation = 0; // This is in degrees
-	private int charge = 0;
+    private int hits = 0;
+    private int rotation = 0;
 
-	private int hits = 0;
-	private int rotation = 0;
+    public TileCrank(TileEntityType<?> tileEntityTypeIn) {
+        super(tileEntityTypeIn);
+    }
 
-	public TileCrank(TileEntityType<?> tileEntityTypeIn) {
-		super(tileEntityTypeIn);
-	}
+    @Override
+    public void tick() {
+        if (this.rotation > 0) {
+            this.setVisibleRotation(this.getVisibleRotation() - 360.0f / (this.ticksPerRotation));
+            this.charge++;
+            if (this.charge >= this.ticksPerRotation) {
+                this.charge -= this.ticksPerRotation;
+                final ICrankable g = this.getGrinder();
+                if (g != null) {
+                    g.applyTurn();
+                }
+            }
 
-	@Override
-	public void tick()
-	{
-		if( this.rotation > 0 )
-		{
-			this.setVisibleRotation( this.getVisibleRotation() - 360.0f / ( this.ticksPerRotation ) );
-			this.charge++;
-			if( this.charge >= this.ticksPerRotation )
-			{
-				this.charge -= this.ticksPerRotation;
-				final ICrankable g = this.getGrinder();
-				if( g != null )
-				{
-					g.applyTurn();
-				}
-			}
+            this.rotation--;
+        }
+    }
 
-			this.rotation--;
-		}
-	}
+    private ICrankable getGrinder() {
+        if (isRemote()) {
+            return null;
+        }
 
-	private ICrankable getGrinder()
-	{
-		if( isRemote() )
-		{
-			return null;
-		}
+        final Direction grinder = this.getUp().getOpposite();
+        final TileEntity te = this.world.getTileEntity(this.pos.offset(grinder));
+        if (te instanceof ICrankable) {
+            return (ICrankable) te;
+        }
+        return null;
+    }
 
-		final Direction grinder = this.getUp().getOpposite();
-		final TileEntity te = this.world.getTileEntity( this.pos.offset( grinder ) );
-		if( te instanceof ICrankable )
-		{
-			return (ICrankable) te;
-		}
-		return null;
-	}
+    @Override
+    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+        final boolean c = super.readFromStream(data);
+        this.rotation = data.readInt();
+        return c;
+    }
 
-	@Override
-	protected boolean readFromStream( final PacketBuffer data ) throws IOException
-	{
-		final boolean c = super.readFromStream( data );
-		this.rotation = data.readInt();
-		return c;
-	}
+    @Override
+    protected void writeToStream(final PacketBuffer data) throws IOException {
+        super.writeToStream(data);
+        data.writeInt(this.rotation);
+    }
 
-	@Override
-	protected void writeToStream( final PacketBuffer data ) throws IOException
-	{
-		super.writeToStream( data );
-		data.writeInt( this.rotation );
-	}
+    @Override
+    public void setOrientation(final Direction inForward, final Direction inUp) {
+        super.setOrientation(inForward, inUp);
+        final BlockState state = this.world.getBlockState(this.pos);
+        state.getBlock().neighborChanged(state, this.world, this.pos, state.getBlock(), this.pos, false);
+    }
 
-	@Override
-	public void setOrientation( final Direction inForward, final Direction inUp )
-	{
-		super.setOrientation( inForward, inUp );
-		final BlockState state = this.world.getBlockState( this.pos );
-		state.getBlock().neighborChanged( state, this.world, this.pos, state.getBlock(), this.pos, false );
-	}
+    /**
+     * return true if this should count towards stats.
+     */
+    public boolean power() {
+        if (isRemote()) {
+            return false;
+        }
 
-	/**
-	 * return true if this should count towards stats.
-	 */
-	public boolean power()
-	{
-		if( isRemote() )
-		{
-			return false;
-		}
+        if (this.rotation < 3) {
+            final ICrankable g = this.getGrinder();
+            if (g != null) {
+                if (g.canTurn()) {
+                    this.hits = 0;
+                    this.rotation += this.ticksPerRotation;
+                    this.markForUpdate();
+                    return true;
+                } else {
+                    this.hits++;
+                    if (this.hits > 10) {
+                        this.world.destroyBlock(this.pos, false);
+                    }
+                }
+            }
+        }
 
-		if( this.rotation < 3 )
-		{
-			final ICrankable g = this.getGrinder();
-			if( g != null )
-			{
-				if( g.canTurn() )
-				{
-					this.hits = 0;
-					this.rotation += this.ticksPerRotation;
-					this.markForUpdate();
-					return true;
-				}
-				else
-				{
-					this.hits++;
-					if( this.hits > 10 )
-					{
-						this.world.destroyBlock( this.pos, false );
-					}
-				}
-			}
-		}
+        return false;
+    }
 
-		return false;
-	}
+    public float getVisibleRotation() {
+        return this.visibleRotation;
+    }
 
-
-
-	public float getVisibleRotation()
-	{
-		return this.visibleRotation;
-	}
-
-	private void setVisibleRotation( final float visibleRotation )
-	{
-		this.visibleRotation = visibleRotation;
-	}
+    private void setVisibleRotation(final float visibleRotation) {
+        this.visibleRotation = visibleRotation;
+    }
 }

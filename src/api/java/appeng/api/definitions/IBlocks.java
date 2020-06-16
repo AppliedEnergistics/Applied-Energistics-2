@@ -23,169 +23,167 @@
 
 package appeng.api.definitions;
 
-
 /**
  * A list of all blocks in AE
  */
-public interface IBlocks
-{
-	/*
-	 * world gen
-	 */
-	IBlockDefinition quartzOre();
+public interface IBlocks {
+    /*
+     * world gen
+     */
+    IBlockDefinition quartzOre();
 
-	IBlockDefinition quartzOreCharged();
+    IBlockDefinition quartzOreCharged();
 
-	IBlockDefinition matrixFrame();
+    IBlockDefinition matrixFrame();
 
-	/*
-	 * decorative
-	 */
-	IBlockDefinition quartzBlock();
+    /*
+     * decorative
+     */
+    IBlockDefinition quartzBlock();
 
-	IBlockDefinition quartzPillar();
+    IBlockDefinition quartzPillar();
 
-	IBlockDefinition chiseledQuartzBlock();
+    IBlockDefinition chiseledQuartzBlock();
 
-	IBlockDefinition quartzGlass();
+    IBlockDefinition quartzGlass();
 
-	IBlockDefinition quartzVibrantGlass();
+    IBlockDefinition quartzVibrantGlass();
 
-	IBlockDefinition quartzFixture();
+    IBlockDefinition quartzFixture();
 
-	IBlockDefinition fluixBlock();
+    IBlockDefinition fluixBlock();
 
-	IBlockDefinition skyStoneBlock();
+    IBlockDefinition skyStoneBlock();
 
-	IBlockDefinition smoothSkyStoneBlock();
+    IBlockDefinition smoothSkyStoneBlock();
 
-	IBlockDefinition skyStoneBrick();
+    IBlockDefinition skyStoneBrick();
 
-	IBlockDefinition skyStoneSmallBrick();
+    IBlockDefinition skyStoneSmallBrick();
 
-	IBlockDefinition skyStoneChest();
+    IBlockDefinition skyStoneChest();
 
-	IBlockDefinition smoothSkyStoneChest();
+    IBlockDefinition smoothSkyStoneChest();
 
-	IBlockDefinition skyCompass();
+    IBlockDefinition skyCompass();
 
-	IBlockDefinition skyStoneStairs();
+    IBlockDefinition skyStoneStairs();
 
-	IBlockDefinition smoothSkyStoneStairs();
+    IBlockDefinition smoothSkyStoneStairs();
 
-	IBlockDefinition skyStoneBrickStairs();
+    IBlockDefinition skyStoneBrickStairs();
 
-	IBlockDefinition skyStoneSmallBrickStairs();
+    IBlockDefinition skyStoneSmallBrickStairs();
 
-	IBlockDefinition fluixStairs();
+    IBlockDefinition fluixStairs();
 
-	IBlockDefinition quartzStairs();
+    IBlockDefinition quartzStairs();
 
-	IBlockDefinition chiseledQuartzStairs();
+    IBlockDefinition chiseledQuartzStairs();
 
-	IBlockDefinition quartzPillarStairs();
+    IBlockDefinition quartzPillarStairs();
 
-	IBlockDefinition skyStoneSlab();
+    IBlockDefinition skyStoneSlab();
 
-	IBlockDefinition smoothSkyStoneSlab();
+    IBlockDefinition smoothSkyStoneSlab();
 
-	IBlockDefinition skyStoneBrickSlab();
+    IBlockDefinition skyStoneBrickSlab();
 
-	IBlockDefinition skyStoneSmallBrickSlab();
+    IBlockDefinition skyStoneSmallBrickSlab();
 
-	IBlockDefinition fluixSlab();
+    IBlockDefinition fluixSlab();
 
-	IBlockDefinition quartzSlab();
+    IBlockDefinition quartzSlab();
 
-	IBlockDefinition chiseledQuartzSlab();
+    IBlockDefinition chiseledQuartzSlab();
 
-	IBlockDefinition quartzPillarSlab();
+    IBlockDefinition quartzPillarSlab();
 
-	/*
-	 * misc
-	 */
-	ITileDefinition grindstone();
+    /*
+     * misc
+     */
+    ITileDefinition grindstone();
 
-	ITileDefinition crank();
+    ITileDefinition crank();
 
-	ITileDefinition inscriber();
+    ITileDefinition inscriber();
 
-	ITileDefinition wirelessAccessPoint();
+    ITileDefinition wirelessAccessPoint();
 
-	ITileDefinition charger();
+    ITileDefinition charger();
 
-	IBlockDefinition tinyTNT();
+    IBlockDefinition tinyTNT();
 
-	ITileDefinition securityStation();
+    ITileDefinition securityStation();
 
-	/*
-	 * quantum Network Bridge
-	 */
-	ITileDefinition quantumRing();
+    /*
+     * quantum Network Bridge
+     */
+    ITileDefinition quantumRing();
 
-	ITileDefinition quantumLink();
+    ITileDefinition quantumLink();
 
-	/*
-	 * spatial iO
-	 */
-	ITileDefinition spatialPylon();
+    /*
+     * spatial iO
+     */
+    ITileDefinition spatialPylon();
 
-	ITileDefinition spatialIOPort();
+    ITileDefinition spatialIOPort();
 
-	/*
-	 * Bus / cables
-	 */
-	ITileDefinition multiPart();
+    /*
+     * Bus / cables
+     */
+    ITileDefinition multiPart();
 
-	/*
-	 * machines
-	 */
-	ITileDefinition controller();
+    /*
+     * machines
+     */
+    ITileDefinition controller();
 
-	ITileDefinition drive();
+    ITileDefinition drive();
 
-	ITileDefinition chest();
+    ITileDefinition chest();
 
-	ITileDefinition iface();
+    ITileDefinition iface();
 
-	ITileDefinition fluidIface();
+    ITileDefinition fluidIface();
 
-	ITileDefinition cellWorkbench();
+    ITileDefinition cellWorkbench();
 
-	ITileDefinition iOPort();
+    ITileDefinition iOPort();
 
-	ITileDefinition condenser();
+    ITileDefinition condenser();
 
-	ITileDefinition energyAcceptor();
+    ITileDefinition energyAcceptor();
 
-	ITileDefinition vibrationChamber();
+    ITileDefinition vibrationChamber();
 
-	ITileDefinition quartzGrowthAccelerator();
+    ITileDefinition quartzGrowthAccelerator();
 
-	ITileDefinition energyCell();
+    ITileDefinition energyCell();
 
-	ITileDefinition energyCellDense();
+    ITileDefinition energyCellDense();
 
-	ITileDefinition energyCellCreative();
+    ITileDefinition energyCellCreative();
 
-	// rv1
-	ITileDefinition craftingUnit();
+    // rv1
+    ITileDefinition craftingUnit();
 
-	ITileDefinition craftingAccelerator();
+    ITileDefinition craftingAccelerator();
 
-	ITileDefinition craftingStorage1k();
+    ITileDefinition craftingStorage1k();
 
-	ITileDefinition craftingStorage4k();
+    ITileDefinition craftingStorage4k();
 
-	ITileDefinition craftingStorage16k();
+    ITileDefinition craftingStorage16k();
 
-	ITileDefinition craftingStorage64k();
+    ITileDefinition craftingStorage64k();
 
-	ITileDefinition craftingMonitor();
+    ITileDefinition craftingMonitor();
 
-	ITileDefinition molecularAssembler();
+    ITileDefinition molecularAssembler();
 
-	ITileDefinition lightDetector();
+    ITileDefinition lightDetector();
 
-	ITileDefinition paint();
+    ITileDefinition paint();
 }

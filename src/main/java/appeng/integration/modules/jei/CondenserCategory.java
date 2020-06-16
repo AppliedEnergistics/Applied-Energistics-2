@@ -18,15 +18,15 @@
 
 package appeng.integration.modules.jei;
 
+import java.util.*;
 
-import appeng.api.AEApi;
-import appeng.api.config.CondenserOutput;
-import appeng.api.definitions.IMaterials;
-import appeng.api.implementations.items.IStorageComponent;
-import appeng.core.Api;
-import appeng.core.AppEng;
-import appeng.tile.misc.TileCondenser;
 import com.google.common.base.Splitter;
+
+import net.minecraft.client.resources.I18n;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.client.gui.HoverChecker;
+
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -36,178 +36,169 @@ import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.client.gui.HoverChecker;
 
-import java.util.*;
+import appeng.api.AEApi;
+import appeng.api.config.CondenserOutput;
+import appeng.api.definitions.IMaterials;
+import appeng.api.implementations.items.IStorageComponent;
+import appeng.core.Api;
+import appeng.core.AppEng;
+import appeng.tile.misc.TileCondenser;
 
+class CondenserCategory implements IRecipeCategory<CondenserOutput> {
 
-class CondenserCategory implements IRecipeCategory<CondenserOutput>
-{
+    public static final ResourceLocation UID = new ResourceLocation(AppEng.MOD_ID, "condenser");
 
-	public static final ResourceLocation UID = new ResourceLocation(AppEng.MOD_ID, "condenser");
+    private final String localizedName;
 
-	private final String localizedName;
+    private final IDrawable background;
 
-	private final IDrawable background;
+    private final IDrawable iconTrash;
 
-	private final IDrawable iconTrash;
+    private final IDrawableAnimated progress;
 
-	private final IDrawableAnimated progress;
+    private final IDrawable iconButton;
 
-	private final IDrawable iconButton;
+    private final IDrawable icon;
 
-	private final IDrawable icon;
+    private final HoverChecker buttonHoverChecker;
 
-	private final HoverChecker buttonHoverChecker;
+    private final Map<CondenserOutput, IDrawable> buttonIcons;
 
-	private final Map<CondenserOutput, IDrawable> buttonIcons;
+    public CondenserCategory(IGuiHelper guiHelper) {
+        this.localizedName = I18n.format("gui.appliedenergistics2.Condenser");
+        this.icon = guiHelper.createDrawableIngredient(Api.INSTANCE.definitions().blocks().condenser().stack(1));
 
-	public CondenserCategory( IGuiHelper guiHelper )
-	{
-		this.localizedName = I18n.format( "gui.appliedenergistics2.Condenser" );
-		this.icon = guiHelper.createDrawableIngredient(Api.INSTANCE.definitions().blocks().condenser().stack(1));
+        ResourceLocation location = new ResourceLocation(AppEng.MOD_ID, "textures/guis/condenser.png");
+        this.background = guiHelper.createDrawable(location, 50, 25, 94, 48);
 
-		ResourceLocation location = new ResourceLocation( AppEng.MOD_ID, "textures/guis/condenser.png" );
-		this.background = guiHelper.createDrawable( location, 50, 25, 94, 48 );
+        ResourceLocation statesLocation = new ResourceLocation(AppEng.MOD_ID, "textures/guis/states.png");
+        this.iconTrash = guiHelper.drawableBuilder(statesLocation, 241, 81, 14, 14).addPadding(28, 0, 2, 0).build();
+        this.iconButton = guiHelper.drawableBuilder(statesLocation, 240, 240, 16, 16).addPadding(28, 0, 78, 0).build();
 
-		ResourceLocation statesLocation = new ResourceLocation( AppEng.MOD_ID, "textures/guis/states.png" );
-		this.iconTrash = guiHelper.drawableBuilder( statesLocation, 241, 81, 14, 14 )
-				.addPadding(28, 0, 2, 0)
-				.build();
-		this.iconButton = guiHelper.drawableBuilder( statesLocation, 240, 240, 16, 16 )
-				.addPadding(28, 0, 78, 0)
-				.build();
+        IDrawableStatic progressDrawable = guiHelper.drawableBuilder(location, 178, 25, 6, 18).addPadding(0, 0, 70, 0)
+                .build();
+        this.progress = guiHelper.createAnimatedDrawable(progressDrawable, 40, IDrawableAnimated.StartDirection.BOTTOM,
+                false);
 
-		IDrawableStatic progressDrawable = guiHelper.drawableBuilder( location, 178, 25, 6, 18 )
-				.addPadding(0, 0, 70, 0)
-				.build();
-		this.progress = guiHelper.createAnimatedDrawable( progressDrawable, 40, IDrawableAnimated.StartDirection.BOTTOM, false );
+        this.buttonIcons = new EnumMap<>(CondenserOutput.class);
 
-		this.buttonIcons = new EnumMap<>(CondenserOutput.class);
+        this.buttonIcons.put(CondenserOutput.MATTER_BALLS,
+                guiHelper.drawableBuilder(statesLocation, 16, 112, 14, 14).addPadding(28, 0, 78, 0).build());
+        this.buttonIcons.put(CondenserOutput.SINGULARITY,
+                guiHelper.drawableBuilder(statesLocation, 32, 112, 14, 14).addPadding(28, 0, 78, 0).build());
+        this.buttonHoverChecker = new HoverChecker(28, 28 + 16, 78, 78 + 16, 0);
+    }
 
-		this.buttonIcons.put(CondenserOutput.MATTER_BALLS, guiHelper.drawableBuilder( statesLocation, 16, 112, 14, 14 ).addPadding(28, 0, 78, 0).build());
-		this.buttonIcons.put(CondenserOutput.SINGULARITY, guiHelper.drawableBuilder( statesLocation, 32, 112, 14, 14).addPadding(28, 0, 78, 0).build());
-		this.buttonHoverChecker = new HoverChecker( 28, 28 + 16, 78, 78 + 16, 0 );
-	}
+    private ItemStack getOutput(CondenserOutput recipe) {
+        switch (recipe) {
+            case MATTER_BALLS:
+                return Api.INSTANCE.definitions().materials().matterBall().stack(1);
+            case SINGULARITY:
+                return Api.INSTANCE.definitions().materials().singularity().stack(1);
+            default:
+                return ItemStack.EMPTY;
+        }
+    }
 
-	private ItemStack getOutput( CondenserOutput recipe )
-	{
-		switch( recipe )
-		{
-			case MATTER_BALLS:
-				return Api.INSTANCE.definitions().materials().matterBall().stack(1);
-			case SINGULARITY:
-				return Api.INSTANCE.definitions().materials().singularity().stack(1);
-			default:
-				return ItemStack.EMPTY;
-		}
-	}
+    @Override
+    public ResourceLocation getUid() {
+        return CondenserCategory.UID;
+    }
 
-	@Override
-	public ResourceLocation getUid()
-	{
-		return CondenserCategory.UID;
-	}
+    @Override
+    public Class<? extends CondenserOutput> getRecipeClass() {
+        return CondenserOutput.class;
+    }
 
-	@Override
-	public Class<? extends CondenserOutput> getRecipeClass() {
-		return CondenserOutput.class;
-	}
+    @Override
+    public String getTitle() {
+        return this.localizedName;
+    }
 
-	@Override
-	public String getTitle()
-	{
-		return this.localizedName;
-	}
+    @Override
+    public IDrawable getBackground() {
+        return this.background;
+    }
 
-	@Override
-	public IDrawable getBackground()
-	{
-		return this.background;
-	}
+    @Override
+    public IDrawable getIcon() {
+        return icon;
+    }
 
-	@Override
-	public IDrawable getIcon() {
-		return icon;
-	}
+    @Override
+    public void setIngredients(CondenserOutput recipe, IIngredients ingredients) {
+        ingredients.setOutput(VanillaTypes.ITEM, getOutput(recipe));
+    }
 
-	@Override
-	public void setIngredients(CondenserOutput recipe, IIngredients ingredients) {
-		ingredients.setOutput(VanillaTypes.ITEM, getOutput(recipe) );
-	}
+    @Override
+    public void draw(CondenserOutput recipe, double mouseX, double mouseY) {
+        this.progress.draw();
+        this.iconTrash.draw();
+        this.iconButton.draw();
 
-	@Override
-	public void draw(CondenserOutput recipe, double mouseX, double mouseY) {
-		this.progress.draw();
-		this.iconTrash.draw();
-		this.iconButton.draw();
+        IDrawable buttonIcon = this.buttonIcons.get(recipe);
+        if (buttonIcon != null) {
+            buttonIcon.draw();
+        }
+    }
 
-		IDrawable buttonIcon = this.buttonIcons.get(recipe);
-		if (buttonIcon != null) {
-			buttonIcon.draw();
-		}
-	}
+    @Override
+    public void setRecipe(IRecipeLayout recipeLayout, CondenserOutput output, IIngredients ingredients) {
+        IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
+        itemStacks.init(0, false, 54, 26);
 
-	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, CondenserOutput output, IIngredients ingredients )
-	{
-		IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-		itemStacks.init( 0, false, 54, 26 );
+        // Get all storage cells and cycle them through a fake input slot
+        itemStacks.init(1, true, 50, 0);
+        itemStacks.set(1, this.getViableStorageComponents(output));
 
-		// Get all storage cells and cycle them through a fake input slot
-		itemStacks.init( 1, true, 50, 0 );
-		itemStacks.set( 1, this.getViableStorageComponents( output ) );
+        // This only sets the output
+        itemStacks.set(ingredients);
+    }
 
-		// This only sets the output
-		itemStacks.set( ingredients );
-	}
+    private List<ItemStack> getViableStorageComponents(CondenserOutput condenserOutput) {
+        IMaterials materials = AEApi.instance().definitions().materials();
+        List<ItemStack> viableComponents = new ArrayList<>();
+        materials.cell1kPart().maybeStack(1)
+                .ifPresent(itemStack -> this.addViableComponent(condenserOutput, viableComponents, itemStack));
+        materials.cell4kPart().maybeStack(1)
+                .ifPresent(itemStack -> this.addViableComponent(condenserOutput, viableComponents, itemStack));
+        materials.cell16kPart().maybeStack(1)
+                .ifPresent(itemStack -> this.addViableComponent(condenserOutput, viableComponents, itemStack));
+        materials.cell64kPart().maybeStack(1)
+                .ifPresent(itemStack -> this.addViableComponent(condenserOutput, viableComponents, itemStack));
+        return viableComponents;
+    }
 
-	private List<ItemStack> getViableStorageComponents(CondenserOutput condenserOutput )
-	{
-		IMaterials materials = AEApi.instance().definitions().materials();
-		List<ItemStack> viableComponents = new ArrayList<>();
-		materials.cell1kPart().maybeStack( 1 ).ifPresent( itemStack -> this.addViableComponent( condenserOutput, viableComponents, itemStack ) );
-		materials.cell4kPart().maybeStack( 1 ).ifPresent( itemStack -> this.addViableComponent( condenserOutput, viableComponents, itemStack ) );
-		materials.cell16kPart().maybeStack( 1 ).ifPresent( itemStack -> this.addViableComponent( condenserOutput, viableComponents, itemStack ) );
-		materials.cell64kPart().maybeStack( 1 ).ifPresent( itemStack -> this.addViableComponent( condenserOutput, viableComponents, itemStack ) );
-		return viableComponents;
-	}
+    private void addViableComponent(CondenserOutput condenserOutput, List<ItemStack> viableComponents,
+            ItemStack itemStack) {
+        IStorageComponent comp = (IStorageComponent) itemStack.getItem();
+        int storage = comp.getBytes(itemStack) * TileCondenser.BYTE_MULTIPLIER;
+        if (storage >= condenserOutput.requiredPower) {
+            viableComponents.add(itemStack);
+        }
+    }
 
-	private void addViableComponent(CondenserOutput condenserOutput, List<ItemStack> viableComponents, ItemStack itemStack )
-	{
-		IStorageComponent comp = (IStorageComponent) itemStack.getItem();
-		int storage = comp.getBytes( itemStack ) * TileCondenser.BYTE_MULTIPLIER;
-		if( storage >= condenserOutput.requiredPower )
-		{
-			viableComponents.add( itemStack );
-		}
-	}
+    @Override
+    public List<String> getTooltipStrings(CondenserOutput output, double mouseX, double mouseY) {
 
-	@Override
-	public List<String> getTooltipStrings(CondenserOutput output, double mouseX, double mouseY) {
+        if (this.buttonHoverChecker.checkHover((int) mouseX, (int) mouseY)) {
+            String key;
 
-		if( this.buttonHoverChecker.checkHover( (int) mouseX, (int) mouseY ) )
-		{
-			String key;
+            switch (output) {
+                case MATTER_BALLS:
+                    key = "gui.tooltips.appliedenergistics2.MatterBalls";
+                    break;
+                case SINGULARITY:
+                    key = "gui.tooltips.appliedenergistics2.Singularity";
+                    break;
+                default:
+                    return Collections.emptyList();
+            }
 
-			switch( output )
-			{
-				case MATTER_BALLS:
-					key = "gui.tooltips.appliedenergistics2.MatterBalls";
-					break;
-				case SINGULARITY:
-					key = "gui.tooltips.appliedenergistics2.Singularity";
-					break;
-				default:
-					return Collections.emptyList();
-			}
-
-			return Splitter.on( "\\n" ).splitToList( I18n.format( key, output.requiredPower ) );
-		}
-		return Collections.emptyList();
-	}
+            return Splitter.on("\\n").splitToList(I18n.format(key, output.requiredPower));
+        }
+        return Collections.emptyList();
+    }
 
 }

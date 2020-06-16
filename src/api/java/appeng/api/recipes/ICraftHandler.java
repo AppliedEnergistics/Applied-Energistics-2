@@ -23,33 +23,32 @@
 
 package appeng.api.recipes;
 
-
 import java.util.List;
 
 import appeng.api.exceptions.MissingIngredientException;
 import appeng.api.exceptions.RecipeException;
 import appeng.api.exceptions.RegistrationException;
 
-
 @Deprecated
-public interface ICraftHandler
-{
+public interface ICraftHandler {
 
-	/**
-	 * Called when your recipe handler receives a newly parsed list of inputs/outputs.
-	 *
-	 * @param input parsed inputs
-	 * @param output parsed outputs
-	 *
-	 * @throws RecipeException
-	 */
-	void setup( List<List<IIngredient>> input, List<List<IIngredient>> output ) throws RecipeException;
+    /**
+     * Called when your recipe handler receives a newly parsed list of
+     * inputs/outputs.
+     *
+     * @param input  parsed inputs
+     * @param output parsed outputs
+     *
+     * @throws RecipeException
+     */
+    void setup(List<List<IIngredient>> input, List<List<IIngredient>> output) throws RecipeException;
 
-	/**
-	 * called when all recipes are parsed, and your required to register your recipe.
-	 *
-	 * @throws RegistrationException
-	 * @throws MissingIngredientException
-	 */
-	void register() throws RegistrationException, MissingIngredientException;
+    /**
+     * called when all recipes are parsed, and your required to register your
+     * recipe.
+     *
+     * @throws RegistrationException
+     * @throws MissingIngredientException
+     */
+    void register() throws RegistrationException, MissingIngredientException;
 }

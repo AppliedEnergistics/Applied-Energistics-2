@@ -4,11 +4,7 @@
     "count": 4
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aba",
-    "bab",
-    "aba"
-  ],
+  "pattern": ["aba", "bab", "aba"],
   "key": {
     "b": {
       "tag": "appliedenergistics2:glass"

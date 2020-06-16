@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:certus_quartz_shovel"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "a",
-    "b",
-    "b"
-  ],
+  "pattern": ["a", "b", "b"],
   "key": {
     "a": {
       "tag": "appliedenergistics2:crystals/certus_quartz"

@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:fluid_formation_plane"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aaa",
-    "ddd",
-    "bcb"
-  ],
+  "pattern": ["aaa", "ddd", "bcb"],
   "key": {
     "c": {
       "item": "appliedenergistics2:formation_core"

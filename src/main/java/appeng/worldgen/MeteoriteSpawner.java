@@ -1,18 +1,20 @@
 package appeng.worldgen;
 
-import appeng.api.AEApi;
-import appeng.api.definitions.IBlocks;
-import appeng.core.AEConfig;
-import appeng.worldgen.meteorite.IMeteoriteWorld;
-import appeng.worldgen.meteorite.StandardWorld;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
 
-import javax.annotation.Nullable;
-import java.util.HashSet;
-import java.util.Set;
+import appeng.api.AEApi;
+import appeng.api.definitions.IBlocks;
+import appeng.core.AEConfig;
+import appeng.worldgen.meteorite.IMeteoriteWorld;
+import appeng.worldgen.meteorite.StandardWorld;
 
 /**
  * Makes decisions about spawning meteorites in the world.
@@ -22,50 +24,47 @@ public class MeteoriteSpawner {
     private final Set<Block> validSpawn = new HashSet<>();
     private final Set<Block> invalidSpawn = new HashSet<>();
 
-    public MeteoriteSpawner()
-    {
+    public MeteoriteSpawner() {
         final IBlocks blocks = AEApi.instance().definitions().blocks();
 
-        this.validSpawn.add( Blocks.STONE );
-        this.validSpawn.add( Blocks.COBBLESTONE );
-        this.validSpawn.add( Blocks.GRASS );
-        this.validSpawn.add( Blocks.SAND );
-        this.validSpawn.add( Blocks.DIRT );
-        this.validSpawn.add( Blocks.GRAVEL );
-        this.validSpawn.add( Blocks.NETHERRACK );
-        this.validSpawn.add( Blocks.IRON_ORE );
-        this.validSpawn.add( Blocks.GOLD_ORE );
-        this.validSpawn.add( Blocks.DIAMOND_ORE );
-        this.validSpawn.add( Blocks.REDSTONE_ORE );
-        this.validSpawn.add( Blocks.ICE );
-        this.validSpawn.add( Blocks.SNOW );
+        this.validSpawn.add(Blocks.STONE);
+        this.validSpawn.add(Blocks.COBBLESTONE);
+        this.validSpawn.add(Blocks.GRASS);
+        this.validSpawn.add(Blocks.SAND);
+        this.validSpawn.add(Blocks.DIRT);
+        this.validSpawn.add(Blocks.GRAVEL);
+        this.validSpawn.add(Blocks.NETHERRACK);
+        this.validSpawn.add(Blocks.IRON_ORE);
+        this.validSpawn.add(Blocks.GOLD_ORE);
+        this.validSpawn.add(Blocks.DIAMOND_ORE);
+        this.validSpawn.add(Blocks.REDSTONE_ORE);
+        this.validSpawn.add(Blocks.ICE);
+        this.validSpawn.add(Blocks.SNOW);
 
-        this.invalidSpawn.add( blocks.skyStoneBlock().block() );
-        this.invalidSpawn.add( Blocks.IRON_DOOR );
-        this.invalidSpawn.add( Blocks.IRON_BARS );
-        this.invalidSpawn.add( Blocks.OAK_DOOR );
-        this.invalidSpawn.add( Blocks.ACACIA_DOOR );
-        this.invalidSpawn.add( Blocks.BIRCH_DOOR );
-        this.invalidSpawn.add( Blocks.DARK_OAK_DOOR );
-        this.invalidSpawn.add( Blocks.JUNGLE_DOOR );
-        this.invalidSpawn.add( Blocks.SPRUCE_DOOR );
-        this.invalidSpawn.add( Blocks.BRICKS );
-        this.invalidSpawn.add( Blocks.CLAY );
-        this.invalidSpawn.add( Blocks.WATER );
+        this.invalidSpawn.add(blocks.skyStoneBlock().block());
+        this.invalidSpawn.add(Blocks.IRON_DOOR);
+        this.invalidSpawn.add(Blocks.IRON_BARS);
+        this.invalidSpawn.add(Blocks.OAK_DOOR);
+        this.invalidSpawn.add(Blocks.ACACIA_DOOR);
+        this.invalidSpawn.add(Blocks.BIRCH_DOOR);
+        this.invalidSpawn.add(Blocks.DARK_OAK_DOOR);
+        this.invalidSpawn.add(Blocks.JUNGLE_DOOR);
+        this.invalidSpawn.add(Blocks.SPRUCE_DOOR);
+        this.invalidSpawn.add(Blocks.BRICKS);
+        this.invalidSpawn.add(Blocks.CLAY);
+        this.invalidSpawn.add(Blocks.WATER);
     }
 
     public PlacedMeteoriteSettings trySpawnMeteoriteAtSuitableHeight(IWorldReader world, int x, int y, int z) {
 
-        for( int tries = 0; tries < 20; tries++ )
-        {
+        for (int tries = 0; tries < 20; tries++) {
             PlacedMeteoriteSettings spawned = trySpawnMeteorite(world, new BlockPos(x, y, z));
             if (spawned != null) {
                 return spawned;
             }
 
             y -= 15;
-            if( y < 40 )
-            {
+            if (y < 40) {
                 return null;
             }
         }
@@ -74,15 +73,13 @@ public class MeteoriteSpawner {
     }
 
     @Nullable
-    public PlacedMeteoriteSettings trySpawnMeteorite(IWorldReader world, BlockPos pos )
-    {
+    public PlacedMeteoriteSettings trySpawnMeteorite(IWorldReader world, BlockPos pos) {
         Block blk = world.getBlockState(pos).getBlock();
-        if( !this.validSpawn.contains( blk ) )
-        {
+        if (!this.validSpawn.contains(blk)) {
             return null; // must spawn on a valid block..
         }
 
-        double meteoriteSize = ( Math.random() * 6.0 ) + 2;
+        double meteoriteSize = (Math.random() * 6.0) + 2;
         double realCrater = meteoriteSize * 2 + 5;
         boolean lava = Math.random() > 0.9;
 
@@ -95,8 +92,7 @@ public class MeteoriteSpawner {
 
         boolean solid = !isAirBelowSpawnPoint(world, pos);
 
-        if( !solid )
-        {
+        if (!solid) {
             skyMode = 0;
         }
 
@@ -105,11 +101,9 @@ public class MeteoriteSpawner {
 
     private static boolean isAirBelowSpawnPoint(IWorldReader w, BlockPos pos) {
         BlockPos.Mutable testPos = new BlockPos.Mutable(pos);
-        for( int j = pos.getY() - 15; j < pos.getY() - 1; j++ )
-        {
+        for (int j = pos.getY() - 15; j < pos.getY() - 1; j++) {
             testPos.setY(j);
-            if( w.isAirBlock(testPos) )
-            {
+            if (w.isAirBlock(testPos)) {
                 return true;
             }
         }
@@ -120,17 +114,13 @@ public class MeteoriteSpawner {
         int skyMode = 0;
 
         BlockPos.Mutable testPos = new BlockPos.Mutable();
-        for( int i = pos.getX() - 15; i < pos.getX() + 15; i++ )
-        {
+        for (int i = pos.getX() - 15; i < pos.getX() + 15; i++) {
             testPos.setX(i);
-            for( int j = pos.getY() - 15; j < pos.getY() + 11; j++ )
-            {
+            for (int j = pos.getY() - 15; j < pos.getY() + 11; j++) {
                 testPos.setY(j);
-                for( int k = pos.getZ() - 15; k < pos.getZ() + 15; k++ )
-                {
+                for (int k = pos.getZ() - 15; k < pos.getZ() + 15; k++) {
                     testPos.setZ(k);
-                    if( w.canBlockSeeSky( testPos ) )
-                    {
+                    if (w.canBlockSeeSky(testPos)) {
                         skyMode++;
                     }
                 }
@@ -143,18 +133,14 @@ public class MeteoriteSpawner {
         int realValidBlocks = 0;
 
         BlockPos.Mutable testPos = new BlockPos.Mutable();
-        for( int i = pos.getX() - 6; i < pos.getX() + 6; i++ )
-        {
+        for (int i = pos.getX() - 6; i < pos.getX() + 6; i++) {
             testPos.setX(i);
-            for( int j = pos.getY() - 6; j < pos.getY() + 6; j++ )
-            {
+            for (int j = pos.getY() - 6; j < pos.getY() + 6; j++) {
                 testPos.setY(j);
-                for( int k = pos.getZ() - 6; k < pos.getZ() + 6; k++ )
-                {
+                for (int k = pos.getZ() - 6; k < pos.getZ() + 6; k++) {
                     testPos.setZ(k);
                     Block testBlk = w.getBlockState(testPos).getBlock();
-                    if( this.validSpawn.contains( testBlk ) )
-                    {
+                    if (this.validSpawn.contains(testBlk)) {
                         realValidBlocks++;
                     }
                 }
@@ -162,22 +148,17 @@ public class MeteoriteSpawner {
         }
 
         int validBlocks = 0;
-        for( int i = pos.getX() - 15; i < pos.getX() + 15; i++ )
-        {
+        for (int i = pos.getX() - 15; i < pos.getX() + 15; i++) {
             testPos.setX(i);
-            for( int j = pos.getY() - 15; j < pos.getY() + 15; j++ )
-            {
+            for (int j = pos.getY() - 15; j < pos.getY() + 15; j++) {
                 testPos.setY(j);
-                for( int k = pos.getZ() - 15; k < pos.getZ() + 15; k++ )
-                {
+                for (int k = pos.getZ() - 15; k < pos.getZ() + 15; k++) {
                     testPos.setZ(k);
-                    Block testBlk = w.getBlockState( testPos ).getBlock();
-                    if( this.invalidSpawn.contains( testBlk ) )
-                    {
+                    Block testBlk = w.getBlockState(testPos).getBlock();
+                    if (this.invalidSpawn.contains(testBlk)) {
                         return false;
                     }
-                    if( this.validSpawn.contains( testBlk ) )
-                    {
+                    if (this.validSpawn.contains(testBlk)) {
                         validBlocks++;
                     }
                 }

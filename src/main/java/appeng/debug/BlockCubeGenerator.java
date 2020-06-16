@@ -18,7 +18,6 @@
 
 package appeng.debug;
 
-
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
@@ -33,25 +32,21 @@ import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
 
+public class BlockCubeGenerator extends AEBaseTileBlock<TileCubeGenerator> {
 
-public class BlockCubeGenerator extends AEBaseTileBlock<TileCubeGenerator>
-{
+    public BlockCubeGenerator() {
+        super(defaultProps(Material.IRON));
+    }
 
-	public BlockCubeGenerator()
-	{
-		super(defaultProps(Material.IRON) );
-	}
+    @Override
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+        final TileCubeGenerator tcg = this.getTileEntity(w, pos);
+        if (tcg != null) {
+            tcg.click(player);
+        }
 
-	@Override
-	public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit)
-	{
-		final TileCubeGenerator tcg = this.getTileEntity( w, pos );
-		if( tcg != null )
-		{
-			tcg.click( player );
-		}
-
-		return ActionResultType.SUCCESS;
-	}
+        return ActionResultType.SUCCESS;
+    }
 
 }

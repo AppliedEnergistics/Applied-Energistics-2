@@ -18,13 +18,10 @@
 
 package appeng.decorative;
 
-
 import appeng.block.AEBaseBlock;
 
-
-public class AEDecorativeBlock extends AEBaseBlock
-{
-	public AEDecorativeBlock(Properties props) {
-		super(props);
-	}
+public class AEDecorativeBlock extends AEBaseBlock {
+    public AEDecorativeBlock(Properties props) {
+        super(props);
+    }
 }

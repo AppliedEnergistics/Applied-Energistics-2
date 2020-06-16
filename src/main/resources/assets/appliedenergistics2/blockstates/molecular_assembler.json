@@ -1,17 +1,17 @@
 {
-    "multipart": [
-        {
-            "apply": {
-                "model":"appliedenergistics2:block/molecular_assembler"
-            }
-        },
-        {
-            "when": {
-                "powered": "true"
-            },
-            "apply": {
-                "model":"appliedenergistics2:block/molecular_assembler_lights"
-            }
-        }
-    ]
+  "multipart": [
+    {
+      "apply": {
+        "model": "appliedenergistics2:block/molecular_assembler"
+      }
+    },
+    {
+      "when": {
+        "powered": "true"
+      },
+      "apply": {
+        "model": "appliedenergistics2:block/molecular_assembler_lights"
+      }
+    }
+  ]
 }

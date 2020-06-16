@@ -18,25 +18,22 @@
 
 package appeng.core.worlddata;
 
-
 import java.util.Collection;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.dimension.Dimension;
-
 
 /**
  * @author thatsIch
  * @version rv3 - 30.05.2015
  * @since rv3 30.05.2015
  */
-public interface IWorldSpawnData
-{
-	void setGenerated( Dimension dim, int chunkX, int chunkZ );
+public interface IWorldSpawnData {
+    void setGenerated(Dimension dim, int chunkX, int chunkZ);
 
-	boolean hasGenerated( Dimension dim, int chunkX, int chunkZ );
+    boolean hasGenerated(Dimension dim, int chunkX, int chunkZ);
 
-	boolean addNearByMeteorites( Dimension dim, int chunkX, int chunkZ, CompoundNBT newData );
+    boolean addNearByMeteorites(Dimension dim, int chunkX, int chunkZ, CompoundNBT newData);
 
-	Collection<CompoundNBT> getNearByMeteorites( Dimension dim, int chunkX, int chunkZ );
+    Collection<CompoundNBT> getNearByMeteorites(Dimension dim, int chunkX, int chunkZ);
 }

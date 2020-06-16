@@ -18,19 +18,15 @@
 
 package appeng.bootstrap.components;
 
-
-
 import net.minecraftforge.api.distmarker.Dist;
 
 import appeng.bootstrap.IModelRegistry;
 
-
 /**
- * Registers a custom item mesh definition that can be used to dynamically determine the item model based on
- * item stack properties.
+ * Registers a custom item mesh definition that can be used to dynamically
+ * determine the item model based on item stack properties.
  */
-public class ItemMeshDefinitionComponent implements IModelRegistrationComponent
-{
+public class ItemMeshDefinitionComponent implements IModelRegistrationComponent {
 
 // FIXME	private final Item item;
 // FIXME
@@ -42,9 +38,8 @@ public class ItemMeshDefinitionComponent implements IModelRegistrationComponent
 // FIXME		this.meshDefinition = meshDefinition;
 // FIXME	}
 
-	@Override
-	public void modelRegistration( Dist dist, IModelRegistry registry )
-	{
-	// FIXME	registry.setCustomMeshDefinition( this.item, this.meshDefinition );
-	}
+    @Override
+    public void modelRegistration(Dist dist, IModelRegistry registry) {
+        // FIXME registry.setCustomMeshDefinition( this.item, this.meshDefinition );
+    }
 }

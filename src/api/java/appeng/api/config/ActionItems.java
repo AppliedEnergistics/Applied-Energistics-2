@@ -23,8 +23,6 @@
 
 package appeng.api.config;
 
-
-public enum ActionItems
-{
-	WRENCH, CLOSE, STASH, ENCODE, ENABLE_SUBSTITUTION, DISABLE_SUBSTITUTION
+public enum ActionItems {
+    WRENCH, CLOSE, STASH, ENCODE, ENABLE_SUBSTITUTION, DISABLE_SUBSTITUTION
 }

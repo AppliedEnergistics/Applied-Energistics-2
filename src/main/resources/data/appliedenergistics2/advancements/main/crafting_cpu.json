@@ -53,12 +53,5 @@
       }
     }
   },
-  "requirements": [
-    [
-      "c1k",
-      "c4k",
-      "c16k",
-      "c64k"
-    ]
-  ]
+  "requirements": [["c1k", "c4k", "c16k", "c64k"]]
 }

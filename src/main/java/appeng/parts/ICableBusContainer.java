@@ -18,7 +18,6 @@
 
 package appeng.parts;
 
-
 import java.util.EnumSet;
 import java.util.Random;
 
@@ -38,39 +37,37 @@ import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEColor;
 import appeng.client.render.cablebus.CableBusRenderState;
 
+public interface ICableBusContainer {
 
-public interface ICableBusContainer
-{
+    int isProvidingStrongPower(Direction opposite);
 
-	int isProvidingStrongPower( Direction opposite );
+    int isProvidingWeakPower(Direction opposite);
 
-	int isProvidingWeakPower( Direction opposite );
+    boolean canConnectRedstone(EnumSet<Direction> of);
 
-	boolean canConnectRedstone( EnumSet<Direction> of );
+    void onEntityCollision(Entity e);
 
-	void onEntityCollision( Entity e );
+    boolean activate(PlayerEntity player, Hand hand, Vec3d vecFromPool);
 
-	boolean activate( PlayerEntity player, Hand hand, Vec3d vecFromPool );
+    boolean clicked(PlayerEntity player, Hand hand, Vec3d hitVec);
 
-	boolean clicked( PlayerEntity player, Hand hand, Vec3d hitVec );
+    void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor);
 
-	void onNeighborChanged( IBlockReader w, BlockPos pos, BlockPos neighbor );
+    boolean isSolidOnSide(Direction side);
 
-	boolean isSolidOnSide( Direction side );
+    boolean isEmpty();
 
-	boolean isEmpty();
+    SelectedPart selectPart(Vec3d v3);
 
-	SelectedPart selectPart( Vec3d v3 );
+    boolean recolourBlock(Direction side, AEColor colour, PlayerEntity who);
 
-	boolean recolourBlock( Direction side, AEColor colour, PlayerEntity who );
+    boolean isLadder(LivingEntity entity);
 
-	boolean isLadder( LivingEntity entity );
+    @OnlyIn(Dist.CLIENT)
+    void animateTick(World world, BlockPos pos, Random r);
 
-	@OnlyIn( Dist.CLIENT )
-	void animateTick( World world, BlockPos pos, Random r );
+    int getLightValue();
 
-	int getLightValue();
-
-	CableBusRenderState getRenderState();
+    CableBusRenderState getRenderState();
 
 }

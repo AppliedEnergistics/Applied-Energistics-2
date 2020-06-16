@@ -18,7 +18,6 @@
 
 package appeng.items.tools;
 
-
 import java.util.List;
 
 import net.minecraft.client.resources.I18n;
@@ -47,192 +46,154 @@ import appeng.core.localization.PlayerMessages;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 
+public class ToolMemoryCard extends AEBaseItem implements IMemoryCard {
 
-public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
-{
+    private static final AEColor[] DEFAULT_COLOR_CODE = new AEColor[] { AEColor.TRANSPARENT, AEColor.TRANSPARENT,
+            AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT,
+            AEColor.TRANSPARENT, };
 
-	private static final AEColor[] DEFAULT_COLOR_CODE = new AEColor[] {
-			AEColor.TRANSPARENT,
-			AEColor.TRANSPARENT,
-			AEColor.TRANSPARENT,
-			AEColor.TRANSPARENT,
-			AEColor.TRANSPARENT,
-			AEColor.TRANSPARENT,
-			AEColor.TRANSPARENT,
-			AEColor.TRANSPARENT,
-			};
+    public ToolMemoryCard(Properties properties) {
+        super(properties);
+    }
 
-	public ToolMemoryCard(Properties properties) {
-		super(properties);
-	}
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+            final ITooltipFlag advancedTooltips) {
+        String firstLineKey = this.getFirstValidTranslationKey(this.getSettingsName(stack) + ".name",
+                this.getSettingsName(stack));
+        lines.add(new TranslationTextComponent(firstLineKey));
 
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public void addInformation( final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
-	{
-		String firstLineKey = this.getFirstValidTranslationKey( this.getSettingsName( stack ) + ".name", this.getSettingsName( stack ) );
-		lines.add( new TranslationTextComponent(firstLineKey));
+        final CompoundNBT data = this.getData(stack);
+        if (data.contains("tooltip")) {
+            String tooltipKey = getFirstValidTranslationKey(data.getString("tooltip") + ".name",
+                    data.getString("tooltip"));
+            lines.add(new TranslationTextComponent(tooltipKey));
+        }
 
-		final CompoundNBT data = this.getData( stack );
-		if( data.contains( "tooltip" ) )
-		{
-			String tooltipKey = getFirstValidTranslationKey( data.getString( "tooltip" ) + ".name", data.getString( "tooltip" ) );
-			lines.add( new TranslationTextComponent(tooltipKey) );
-		}
+        if (data.contains("freq")) {
+            final short freq = data.getShort("freq");
+            final String freqTooltip = TextFormatting.BOLD + Platform.p2p().toHexString(freq);
 
-		if( data.contains( "freq" ) )
-		{
-			final short freq = data.getShort( "freq" );
-			final String freqTooltip = TextFormatting.BOLD + Platform.p2p().toHexString( freq );
+            lines.add(new TranslationTextComponent("gui.tooltips.appliedenergistics2.P2PFrequency", freqTooltip));
+        }
+    }
 
-			lines.add( new TranslationTextComponent( "gui.tooltips.appliedenergistics2.P2PFrequency", freqTooltip ) );
-		}
-	}
+    /**
+     * Find the localized string...
+     *
+     * @param name possible names for the localized string
+     *
+     * @return localized name
+     */
+    private String getFirstValidTranslationKey(final String... name) {
+        for (final String n : name) {
+            if (I18n.hasKey(n)) {
+                return n;
+            }
+        }
 
-	/**
-	 * Find the localized string...
-	 *
-	 * @param name possible names for the localized string
-	 *
-	 * @return localized name
-	 */
-	private String getFirstValidTranslationKey( final String... name )
-	{
-		for( final String n : name )
-		{
-			if( I18n.hasKey(n) )
-			{
-				return n;
-			}
-		}
+        for (final String n : name) {
+            return n;
+        }
 
-		for( final String n : name )
-		{
-			return n;
-		}
+        return "";
+    }
 
-		return "";
-	}
+    @Override
+    public void setMemoryCardContents(final ItemStack is, final String settingsName, final CompoundNBT data) {
+        final CompoundNBT c = is.getOrCreateTag();
+        c.putString("Config", settingsName);
+        c.put("Data", data);
+    }
 
-	@Override
-	public void setMemoryCardContents( final ItemStack is, final String settingsName, final CompoundNBT data )
-	{
-		final CompoundNBT c = is.getOrCreateTag();
-		c.putString( "Config", settingsName );
-		c.put( "Data", data );
-	}
+    @Override
+    public String getSettingsName(final ItemStack is) {
+        final CompoundNBT c = is.getOrCreateTag();
+        final String name = c.getString("Config");
+        return name.isEmpty() ? GuiText.Blank.getTranslationKey() : name;
+    }
 
-	@Override
-	public String getSettingsName( final ItemStack is )
-	{
-		final CompoundNBT c = is.getOrCreateTag();
-		final String name = c.getString( "Config" );
-		return name.isEmpty() ? GuiText.Blank.getTranslationKey() : name;
-	}
+    @Override
+    public CompoundNBT getData(final ItemStack is) {
+        final CompoundNBT c = is.getOrCreateTag();
+        CompoundNBT o = c.getCompound("Data");
+        return o.copy();
+    }
 
-	@Override
-	public CompoundNBT getData( final ItemStack is )
-	{
-		final CompoundNBT c = is.getOrCreateTag();
-		CompoundNBT o = c.getCompound( "Data" );
-		return o.copy();
-	}
+    @Override
+    public AEColor[] getColorCode(ItemStack is) {
+        final CompoundNBT tag = this.getData(is);
 
-	@Override
-	public AEColor[] getColorCode( ItemStack is )
-	{
-		final CompoundNBT tag = this.getData( is );
+        if (tag.contains("colorCode")) {
+            final int[] frequency = tag.getIntArray("colorCode");
+            final AEColor[] colorArray = AEColor.values();
 
-		if( tag.contains( "colorCode" ) )
-		{
-			final int[] frequency = tag.getIntArray( "colorCode" );
-			final AEColor[] colorArray = AEColor.values();
+            return new AEColor[] { colorArray[frequency[0]], colorArray[frequency[1]], colorArray[frequency[2]],
+                    colorArray[frequency[3]], colorArray[frequency[4]], colorArray[frequency[5]],
+                    colorArray[frequency[6]], colorArray[frequency[7]], };
+        }
 
-			return new AEColor[] {
-					colorArray[frequency[0]],
-					colorArray[frequency[1]],
-					colorArray[frequency[2]],
-					colorArray[frequency[3]],
-					colorArray[frequency[4]],
-					colorArray[frequency[5]],
-					colorArray[frequency[6]],
-					colorArray[frequency[7]],
-					};
-		}
+        return DEFAULT_COLOR_CODE;
+    }
 
-		return DEFAULT_COLOR_CODE;
-	}
+    @Override
+    public void notifyUser(final PlayerEntity player, final MemoryCardMessages msg) {
+        if (Platform.isClient()) {
+            return;
+        }
 
-	@Override
-	public void notifyUser( final PlayerEntity player, final MemoryCardMessages msg )
-	{
-		if( Platform.isClient() )
-		{
-			return;
-		}
+        switch (msg) {
+            case SETTINGS_CLEARED:
+                player.sendMessage(PlayerMessages.SettingCleared.get());
+                break;
+            case INVALID_MACHINE:
+                player.sendMessage(PlayerMessages.InvalidMachine.get());
+                break;
+            case SETTINGS_LOADED:
+                player.sendMessage(PlayerMessages.LoadedSettings.get());
+                break;
+            case SETTINGS_SAVED:
+                player.sendMessage(PlayerMessages.SavedSettings.get());
+                break;
+            case SETTINGS_RESET:
+                player.sendMessage(PlayerMessages.ResetSettings.get());
+                break;
+            default:
+        }
+    }
 
-		switch( msg )
-		{
-			case SETTINGS_CLEARED:
-				player.sendMessage( PlayerMessages.SettingCleared.get() );
-				break;
-			case INVALID_MACHINE:
-				player.sendMessage( PlayerMessages.InvalidMachine.get() );
-				break;
-			case SETTINGS_LOADED:
-				player.sendMessage( PlayerMessages.LoadedSettings.get() );
-				break;
-			case SETTINGS_SAVED:
-				player.sendMessage( PlayerMessages.SavedSettings.get() );
-				break;
-			case SETTINGS_RESET:
-				player.sendMessage( PlayerMessages.ResetSettings.get() );
-				break;
-			default:
-		}
-	}
+    @Override
+    public ActionResultType onItemUse(ItemUseContext context) {
+        if (context.getPlayer().isCrouching()) {
+            if (!context.getPlayer().world.isRemote) {
+                this.clearCard(context.getPlayer(), context.getWorld(), context.getHand());
+            }
+            return ActionResultType.SUCCESS;
+        } else {
+            return super.onItemUse(context);
+        }
+    }
 
-	@Override
-	public ActionResultType onItemUse( ItemUseContext context )
-	{
-		if( context.getPlayer().isCrouching() )
-		{
-			if( !context.getPlayer().world.isRemote )
-			{
-				this.clearCard( context.getPlayer(), context.getWorld(), context.getHand() );
-			}
-			return ActionResultType.SUCCESS;
-		}
-		else
-		{
-			return super.onItemUse( context );
-		}
-	}
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(World w, PlayerEntity player, Hand hand) {
+        if (player.isCrouching()) {
+            if (!w.isRemote) {
+                this.clearCard(player, w, hand);
+            }
+        }
 
-	@Override
-	public ActionResult<ItemStack> onItemRightClick( World w, PlayerEntity player, Hand hand )
-	{
-		if( player.isCrouching() )
-		{
-			if( !w.isRemote )
-			{
-				this.clearCard( player, w, hand );
-			}
-		}
+        return super.onItemRightClick(w, player, hand);
+    }
 
-		return super.onItemRightClick( w, player, hand );
-	}
+    @Override
+    public boolean doesSneakBypassUse(ItemStack stack, IWorldReader world, BlockPos pos, PlayerEntity player) {
+        return true;
+    }
 
-	@Override
-	public boolean doesSneakBypassUse( ItemStack stack, IWorldReader world, BlockPos pos, PlayerEntity player )
-	{
-		return true;
-	}
-
-	private void clearCard( final PlayerEntity player, final World w, final Hand hand )
-	{
-		final IMemoryCard mem = (IMemoryCard) player.getHeldItem( hand ).getItem();
-		mem.notifyUser( player, MemoryCardMessages.SETTINGS_CLEARED );
-		player.getHeldItem( hand ).setTag( null );
-	}
+    private void clearCard(final PlayerEntity player, final World w, final Hand hand) {
+        final IMemoryCard mem = (IMemoryCard) player.getHeldItem(hand).getItem();
+        mem.notifyUser(player, MemoryCardMessages.SETTINGS_CLEARED);
+        player.getHeldItem(hand).setTag(null);
+    }
 }

@@ -23,31 +23,27 @@
 
 package appeng.api.exceptions;
 
-
 /**
  * Exception due to trying to connect one or more null values.
  *
- * Intended to signal an internal exception and not intended to be thrown by
- * any 3rd party module.
+ * Intended to signal an internal exception and not intended to be thrown by any
+ * 3rd party module.
  *
  * @author yueh
  * @version rv3
  * @since rv3
  */
-public class NullNodeConnectionException extends FailedConnectionException
-{
+public class NullNodeConnectionException extends FailedConnectionException {
 
-	private static final long serialVersionUID = -2143719383495321764L;
-	private static final String DEFAULT_MESSAGE = "Connection forged between null entities.";
+    private static final long serialVersionUID = -2143719383495321764L;
+    private static final String DEFAULT_MESSAGE = "Connection forged between null entities.";
 
-	public NullNodeConnectionException()
-	{
-		super( DEFAULT_MESSAGE );
-	}
+    public NullNodeConnectionException() {
+        super(DEFAULT_MESSAGE);
+    }
 
-	public NullNodeConnectionException( String message )
-	{
-		super( message );
-	}
+    public NullNodeConnectionException(String message) {
+        super(message);
+    }
 
 }

@@ -18,7 +18,6 @@
 
 package appeng.items.tools.quartz;
 
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -28,20 +27,16 @@ import net.minecraft.item.SwordItem;
 import appeng.api.features.AEFeature;
 import appeng.util.Platform;
 
+public class ToolQuartzSword extends SwordItem {
+    private final AEFeature type;
 
-public class ToolQuartzSword extends SwordItem
-{
-	private final AEFeature type;
+    public ToolQuartzSword(Item.Properties props, AEFeature type) {
+        super(ItemTier.IRON, 3, -2.4F, props);
+        this.type = type;
+    }
 
-	public ToolQuartzSword( Item.Properties props, AEFeature type )
-	{
-		super( ItemTier.IRON, 3, -2.4F, props );
-		this.type = type;
-	}
-
-	@Override
-	public boolean getIsRepairable( final ItemStack a, final ItemStack b )
-	{
-		return Platform.canRepair( this.type, a, b );
-	}
+    @Override
+    public boolean getIsRepairable(final ItemStack a, final ItemStack b) {
+        return Platform.canRepair(this.type, a, b);
+    }
 }

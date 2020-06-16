@@ -18,9 +18,8 @@
 
 package appeng.client.render.effects;
 
-
-import appeng.core.AppEng;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+
 import net.minecraft.client.particle.BreakingParticle;
 import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
@@ -32,74 +31,71 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.world.World;
-
-import appeng.api.util.AEPartLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import appeng.api.util.AEPartLocation;
+import appeng.core.AppEng;
 
-public class MatterCannonFX extends BreakingParticle
-{
+public class MatterCannonFX extends BreakingParticle {
 
-	public static final BasicParticleType TYPE = new BasicParticleType(false);
+    public static final BasicParticleType TYPE = new BasicParticleType(false);
 
-	static {
-		TYPE.setRegistryName(AppEng.MOD_ID, "matter_cannon_fx");
-	}
+    static {
+        TYPE.setRegistryName(AppEng.MOD_ID, "matter_cannon_fx");
+    }
 
-	public MatterCannonFX( final World par1World, final double x, final double y, final double z, IAnimatedSprite sprite )
-	{
-		super( par1World, x, y, z, new ItemStack(Items.DIAMOND) );
-		this.particleGravity = 0;
-		this.particleBlue = 1;
-		this.particleGreen = 1;
-		this.particleRed = 1;
-		this.particleAlpha = 1.4f;
-		this.particleScale = 1.1f;
-		this.motionX = 0.0f;
-		this.motionY = 0.0f;
-		this.motionZ = 0.0f;
-		this.selectSpriteRandomly(sprite);
-	}
+    public MatterCannonFX(final World par1World, final double x, final double y, final double z,
+            IAnimatedSprite sprite) {
+        super(par1World, x, y, z, new ItemStack(Items.DIAMOND));
+        this.particleGravity = 0;
+        this.particleBlue = 1;
+        this.particleGreen = 1;
+        this.particleRed = 1;
+        this.particleAlpha = 1.4f;
+        this.particleScale = 1.1f;
+        this.motionX = 0.0f;
+        this.motionY = 0.0f;
+        this.motionZ = 0.0f;
+        this.selectSpriteRandomly(sprite);
+    }
 
-	public void fromItem( final AEPartLocation d )
-	{
-		this.particleScale *= 1.2f;
-	}
+    public void fromItem(final AEPartLocation d) {
+        this.particleScale *= 1.2f;
+    }
 
-	@Override
-	public void tick()
-	{
-		this.prevPosX = this.posX;
-		this.prevPosY = this.posY;
-		this.prevPosZ = this.posZ;
+    @Override
+    public void tick() {
+        this.prevPosX = this.posX;
+        this.prevPosY = this.posY;
+        this.prevPosZ = this.posZ;
 
-		if( this.age++ >= this.maxAge )
-		{
-			this.setExpired();
-		}
+        if (this.age++ >= this.maxAge) {
+            this.setExpired();
+        }
 
-		this.motionY -= 0.04D * this.particleGravity;
-		this.move( this.motionX, this.motionY, this.motionZ );
-		this.motionX *= 0.9800000190734863D;
-		this.motionY *= 0.9800000190734863D;
-		this.motionZ *= 0.9800000190734863D;
+        this.motionY -= 0.04D * this.particleGravity;
+        this.move(this.motionX, this.motionY, this.motionZ);
+        this.motionX *= 0.9800000190734863D;
+        this.motionY *= 0.9800000190734863D;
+        this.motionZ *= 0.9800000190734863D;
 
-		this.particleScale *= 1.19f;
-		this.particleAlpha *= 0.59f;
-	}
+        this.particleScale *= 1.19f;
+        this.particleAlpha *= 0.59f;
+    }
 
-	@OnlyIn(Dist.CLIENT)
-	public static class Factory implements IParticleFactory<BasicParticleType> {
-		private final IAnimatedSprite spriteSet;
+    @OnlyIn(Dist.CLIENT)
+    public static class Factory implements IParticleFactory<BasicParticleType> {
+        private final IAnimatedSprite spriteSet;
 
-		public Factory(IAnimatedSprite spriteSet) {
-			this.spriteSet = spriteSet;
-		}
+        public Factory(IAnimatedSprite spriteSet) {
+            this.spriteSet = spriteSet;
+        }
 
-		public Particle makeParticle(BasicParticleType data, World world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-			return new MatterCannonFX(world, x, y, z, spriteSet);
-		}
-	}
+        public Particle makeParticle(BasicParticleType data, World world, double x, double y, double z, double xSpeed,
+                double ySpeed, double zSpeed) {
+            return new MatterCannonFX(world, x, y, z, spriteSet);
+        }
+    }
 
 }

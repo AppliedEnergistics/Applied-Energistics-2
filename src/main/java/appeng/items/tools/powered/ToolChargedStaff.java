@@ -18,7 +18,6 @@
 
 package appeng.items.tools.powered;
 
-
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -32,36 +31,30 @@ import appeng.core.sync.packets.PacketLightning;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.Platform;
 
+public class ToolChargedStaff extends AEBasePoweredItem {
 
-public class ToolChargedStaff extends AEBasePoweredItem
-{
+    public ToolChargedStaff(Item.Properties props) {
+        super(AEConfig.instance().getChargedStaffBattery(), props);
+    }
 
-	public ToolChargedStaff(Item.Properties props)
-	{
-		super( AEConfig.instance().getChargedStaffBattery(), props );
-	}
+    @Override
+    public boolean hitEntity(final ItemStack item, final LivingEntity target, final LivingEntity hitter) {
+        if (this.getAECurrentPower(item) > 300) {
+            this.extractAEPower(item, 300, Actionable.MODULATE);
+            if (Platform.isServer()) {
+                for (int x = 0; x < 2; x++) {
+                    final AxisAlignedBB entityBoundingBox = target.getBoundingBox();
+                    final float dx = (float) (Platform.getRandomFloat() * target.getWidth() + entityBoundingBox.minX);
+                    final float dy = (float) (Platform.getRandomFloat() * target.getHeight() + entityBoundingBox.minY);
+                    final float dz = (float) (Platform.getRandomFloat() * target.getWidth() + entityBoundingBox.minZ);
+                    AppEng.proxy.sendToAllNearExcept(null, dx, dy, dz, 32.0, target.world,
+                            new PacketLightning(dx, dy, dz));
+                }
+            }
+            target.attackEntityFrom(DamageSource.MAGIC, 6);
+            return true;
+        }
 
-	@Override
-	public boolean hitEntity( final ItemStack item, final LivingEntity target, final LivingEntity hitter )
-	{
-		if( this.getAECurrentPower( item ) > 300 )
-		{
-			this.extractAEPower( item, 300, Actionable.MODULATE );
-			if( Platform.isServer() )
-			{
-				for( int x = 0; x < 2; x++ )
-				{
-					final AxisAlignedBB entityBoundingBox = target.getBoundingBox();
-					final float dx = (float) ( Platform.getRandomFloat() * target.getWidth() + entityBoundingBox.minX );
-					final float dy = (float) ( Platform.getRandomFloat() * target.getHeight() + entityBoundingBox.minY );
-					final float dz = (float) ( Platform.getRandomFloat() * target.getWidth() + entityBoundingBox.minZ );
-					AppEng.proxy.sendToAllNearExcept( null, dx, dy, dz, 32.0, target.world, new PacketLightning( dx, dy, dz ) );
-				}
-			}
-			target.attackEntityFrom( DamageSource.MAGIC, 6 );
-			return true;
-		}
-
-		return false;
-	}
+        return false;
+    }
 }

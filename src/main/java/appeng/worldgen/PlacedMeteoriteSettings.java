@@ -1,12 +1,12 @@
 package appeng.worldgen;
 
+import java.util.Objects;
+
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.INBTSerializable;
-
-import java.util.Objects;
 
 public final class PlacedMeteoriteSettings {
 
@@ -17,7 +17,8 @@ public final class PlacedMeteoriteSettings {
     private final double meteoriteRadius;
     private final double craterRadius;
 
-    public PlacedMeteoriteSettings(BlockPos pos, ResourceLocation blk, boolean lava, int skyMode, double meteoriteRadius, double craterRadius) {
+    public PlacedMeteoriteSettings(BlockPos pos, ResourceLocation blk, boolean lava, int skyMode,
+            double meteoriteRadius, double craterRadius) {
         this.pos = pos;
         this.blk = blk;
         this.lava = lava;
@@ -54,13 +55,13 @@ public final class PlacedMeteoriteSettings {
         tag.putInt("x", pos.getX());
         tag.putInt("y", pos.getY());
         tag.putInt("z", pos.getZ());
-        tag.putString( "blk", blk.toString() );
+        tag.putString("blk", blk.toString());
 
-        tag.putDouble( "meteoriteRadius", meteoriteRadius );
-        tag.putDouble( "craterRadius", craterRadius );
+        tag.putDouble("meteoriteRadius", meteoriteRadius);
+        tag.putDouble("craterRadius", craterRadius);
 
-        tag.putBoolean( "lava", lava );
-        tag.putInt( "skyMode", skyMode );
+        tag.putBoolean("lava", lava);
+        tag.putInt("skyMode", skyMode);
         return tag;
     }
 

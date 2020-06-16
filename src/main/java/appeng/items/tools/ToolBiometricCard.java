@@ -18,7 +18,6 @@
 
 package appeng.items.tools;
 
-
 import java.util.EnumSet;
 import java.util.List;
 
@@ -46,163 +45,132 @@ import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 
+public class ToolBiometricCard extends AEBaseItem implements IBiometricCard {
+    public ToolBiometricCard(Properties properties) {
+        super(properties);
+    }
 
-public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
-{
-	public ToolBiometricCard(Properties properties) {
-		super(properties);
-	}
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
+        if (p.isCrouching()) {
+            this.encode(p.getHeldItem(hand), p);
+            p.swingArm(hand);
+            return ActionResult.resultSuccess(p.getHeldItem(hand));
+        }
 
-	@Override
-	public ActionResult<ItemStack> onItemRightClick( final World w, final PlayerEntity p, final Hand hand )
-	{
-		if( p.isCrouching() )
-		{
-			this.encode( p.getHeldItem( hand ), p );
-			p.swingArm( hand );
-			return ActionResult.resultSuccess( p.getHeldItem( hand ) );
-		}
+        return ActionResult.resultPass(p.getHeldItem(hand));
+    }
 
-		return ActionResult.resultPass( p.getHeldItem( hand ) );
-	}
+    @Override
+    public boolean itemInteractionForEntity(ItemStack is, final PlayerEntity player, final LivingEntity target,
+            final Hand hand) {
+        if (target instanceof PlayerEntity && !player.isCrouching()) {
+            if (player.isCreative()) {
+                is = player.getHeldItem(hand);
+            }
+            this.encode(is, (PlayerEntity) target);
+            player.swingArm(hand);
+            return true;
+        }
+        return false;
+    }
 
-	@Override
-	public boolean itemInteractionForEntity( ItemStack is, final PlayerEntity player, final LivingEntity target, final Hand hand )
-	{
-		if( target instanceof PlayerEntity && !player.isCrouching() )
-		{
-			if( player.isCreative() )
-			{
-				is = player.getHeldItem( hand );
-			}
-			this.encode( is, (PlayerEntity) target );
-			player.swingArm( hand );
-			return true;
-		}
-		return false;
-	}
+    @Override
+    public ITextComponent getDisplayName(final ItemStack is) {
+        final GameProfile username = this.getProfile(is);
+        return username != null ? super.getDisplayName(is).appendText(" - " + username.getName())
+                : super.getDisplayName(is);
+    }
 
-	@Override
-	public ITextComponent getDisplayName( final ItemStack is )
-	{
-		final GameProfile username = this.getProfile( is );
-		return username != null ? super.getDisplayName( is ).appendText( " - " + username.getName() ) : super.getDisplayName( is );
-	}
+    private void encode(final ItemStack is, final PlayerEntity p) {
+        final GameProfile username = this.getProfile(is);
 
-	private void encode( final ItemStack is, final PlayerEntity p )
-	{
-		final GameProfile username = this.getProfile( is );
+        if (username != null && username.equals(p.getGameProfile())) {
+            this.setProfile(is, null);
+        } else {
+            this.setProfile(is, p.getGameProfile());
+        }
+    }
 
-		if( username != null && username.equals( p.getGameProfile() ) )
-		{
-			this.setProfile( is, null );
-		}
-		else
-		{
-			this.setProfile( is, p.getGameProfile() );
-		}
-	}
+    @Override
+    public void setProfile(final ItemStack itemStack, final GameProfile profile) {
+        final CompoundNBT tag = itemStack.getOrCreateTag();
 
-	@Override
-	public void setProfile( final ItemStack itemStack, final GameProfile profile )
-	{
-		final CompoundNBT tag = itemStack.getOrCreateTag();
+        if (profile != null) {
+            final CompoundNBT pNBT = new CompoundNBT();
+            NBTUtil.writeGameProfile(pNBT, profile);
+            tag.put("profile", pNBT);
+        } else {
+            tag.remove("profile");
+        }
+    }
 
-		if( profile != null )
-		{
-			final CompoundNBT pNBT = new CompoundNBT();
-			NBTUtil.writeGameProfile( pNBT, profile );
-			tag.put( "profile", pNBT );
-		}
-		else
-		{
-			tag.remove( "profile" );
-		}
-	}
+    @Override
+    public GameProfile getProfile(final ItemStack is) {
+        final CompoundNBT tag = is.getOrCreateTag();
+        if (tag.contains("profile")) {
+            return NBTUtil.readGameProfile(tag.getCompound("profile"));
+        }
+        return null;
+    }
 
-	@Override
-	public GameProfile getProfile( final ItemStack is )
-	{
-		final CompoundNBT tag = is.getOrCreateTag();
-		if( tag.contains( "profile" ) )
-		{
-			return NBTUtil.readGameProfile( tag.getCompound( "profile" ) );
-		}
-		return null;
-	}
+    @Override
+    public EnumSet<SecurityPermissions> getPermissions(final ItemStack is) {
+        final CompoundNBT tag = is.getOrCreateTag();
+        final EnumSet<SecurityPermissions> result = EnumSet.noneOf(SecurityPermissions.class);
 
-	@Override
-	public EnumSet<SecurityPermissions> getPermissions( final ItemStack is )
-	{
-		final CompoundNBT tag = is.getOrCreateTag();
-		final EnumSet<SecurityPermissions> result = EnumSet.noneOf( SecurityPermissions.class );
+        for (final SecurityPermissions sp : SecurityPermissions.values()) {
+            if (tag.getBoolean(sp.name())) {
+                result.add(sp);
+            }
+        }
 
-		for( final SecurityPermissions sp : SecurityPermissions.values() )
-		{
-			if( tag.getBoolean( sp.name() ) )
-			{
-				result.add( sp );
-			}
-		}
+        return result;
+    }
 
-		return result;
-	}
+    @Override
+    public boolean hasPermission(final ItemStack is, final SecurityPermissions permission) {
+        final CompoundNBT tag = is.getOrCreateTag();
+        return tag.getBoolean(permission.name());
+    }
 
-	@Override
-	public boolean hasPermission( final ItemStack is, final SecurityPermissions permission )
-	{
-		final CompoundNBT tag = is.getOrCreateTag();
-		return tag.getBoolean( permission.name() );
-	}
+    @Override
+    public void removePermission(final ItemStack itemStack, final SecurityPermissions permission) {
+        final CompoundNBT tag = itemStack.getOrCreateTag();
+        if (tag.contains(permission.name())) {
+            tag.remove(permission.name());
+        }
+    }
 
-	@Override
-	public void removePermission( final ItemStack itemStack, final SecurityPermissions permission )
-	{
-		final CompoundNBT tag = itemStack.getOrCreateTag();
-		if( tag.contains( permission.name() ) )
-		{
-			tag.remove( permission.name() );
-		}
-	}
+    @Override
+    public void addPermission(final ItemStack itemStack, final SecurityPermissions permission) {
+        final CompoundNBT tag = itemStack.getOrCreateTag();
+        tag.putBoolean(permission.name(), true);
+    }
 
-	@Override
-	public void addPermission( final ItemStack itemStack, final SecurityPermissions permission )
-	{
-		final CompoundNBT tag = itemStack.getOrCreateTag();
-		tag.putBoolean( permission.name(), true );
-	}
+    @Override
+    public void registerPermissions(final ISecurityRegistry register, final IPlayerRegistry pr, final ItemStack is) {
+        register.addPlayer(pr.getID(this.getProfile(is)), this.getPermissions(is));
+    }
 
-	@Override
-	public void registerPermissions( final ISecurityRegistry register, final IPlayerRegistry pr, final ItemStack is )
-	{
-		register.addPlayer( pr.getID( this.getProfile( is ) ), this.getPermissions( is ) );
-	}
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+            final ITooltipFlag advancedTooltips) {
+        final EnumSet<SecurityPermissions> perms = this.getPermissions(stack);
+        if (perms.isEmpty()) {
+            lines.add(new TranslationTextComponent(GuiText.NoPermissions.getLocal()));
+        } else {
+            ITextComponent msg = null;
 
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public void addInformation( final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
-	{
-		final EnumSet<SecurityPermissions> perms = this.getPermissions( stack );
-		if( perms.isEmpty() )
-		{
-			lines.add( new TranslationTextComponent( GuiText.NoPermissions.getLocal() ) );
-		}
-		else
-		{
-			ITextComponent msg = null;
-
-			for( final SecurityPermissions sp : perms )
-			{
-				if( msg == null )
-				{
-					msg = new TranslationTextComponent( sp.getTranslatedName() );
-				}
-				else
-				{
-					msg = msg.appendText( ", " ).appendSibling( new TranslationTextComponent( sp.getTranslatedName() ) );
-				}
-			}
-			lines.add( msg );
-		}
-	}
+            for (final SecurityPermissions sp : perms) {
+                if (msg == null) {
+                    msg = new TranslationTextComponent(sp.getTranslatedName());
+                } else {
+                    msg = msg.appendText(", ").appendSibling(new TranslationTextComponent(sp.getTranslatedName()));
+                }
+            }
+            lines.add(msg);
+        }
+    }
 }

@@ -18,82 +18,73 @@
 
 package appeng.container.implementations;
 
-
-import appeng.api.config.SecurityPermissions;
-import appeng.container.ContainerLocator;
-import appeng.container.implementations.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-
-import appeng.container.AEBaseContainer;
-import appeng.container.guisync.GuiSync;
-import appeng.container.slot.SlotRestrictedInput;
-import appeng.core.AEConfig;
-import appeng.tile.networking.TileWireless;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.network.PacketBuffer;
 
+import appeng.api.config.SecurityPermissions;
+import appeng.container.AEBaseContainer;
+import appeng.container.ContainerLocator;
+import appeng.container.guisync.GuiSync;
+import appeng.container.implementations.ContainerHelper;
+import appeng.container.slot.SlotRestrictedInput;
+import appeng.core.AEConfig;
+import appeng.tile.networking.TileWireless;
 
-public class ContainerWireless extends AEBaseContainer
-{
+public class ContainerWireless extends AEBaseContainer {
 
-	public static ContainerType<ContainerWireless> TYPE;
+    public static ContainerType<ContainerWireless> TYPE;
 
-	private static final ContainerHelper<ContainerWireless, TileWireless> helper
-			= new ContainerHelper<>(ContainerWireless::new, TileWireless.class, SecurityPermissions.BUILD);
+    private static final ContainerHelper<ContainerWireless, TileWireless> helper = new ContainerHelper<>(
+            ContainerWireless::new, TileWireless.class, SecurityPermissions.BUILD);
 
-	public static ContainerWireless fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-		return helper.fromNetwork(windowId, inv, buf);
-	}
+    public static ContainerWireless fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+        return helper.fromNetwork(windowId, inv, buf);
+    }
 
-	public static boolean open(PlayerEntity player, ContainerLocator locator) {
-		return helper.open(player, locator);
-	}
+    public static boolean open(PlayerEntity player, ContainerLocator locator) {
+        return helper.open(player, locator);
+    }
 
-	private final SlotRestrictedInput boosterSlot;
-	@GuiSync( 1 )
-	public long range = 0;
-	@GuiSync( 2 )
-	public long drain = 0;
+    private final SlotRestrictedInput boosterSlot;
+    @GuiSync(1)
+    public long range = 0;
+    @GuiSync(2)
+    public long drain = 0;
 
-	public ContainerWireless(int id, final PlayerInventory ip, final TileWireless te )
-	{
-		super( TYPE, id, ip, te, null );
+    public ContainerWireless(int id, final PlayerInventory ip, final TileWireless te) {
+        super(TYPE, id, ip, te, null);
 
-		this.addSlot( this.boosterSlot = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.RANGE_BOOSTER, te
-				.getInternalInventory(), 0, 80, 47, this.getPlayerInventory() ) );
+        this.addSlot(this.boosterSlot = new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.RANGE_BOOSTER,
+                te.getInternalInventory(), 0, 80, 47, this.getPlayerInventory()));
 
-		this.bindPlayerInventory( ip, 0, 166 - /* height of player inventory */82 );
-	}
+        this.bindPlayerInventory(ip, 0, 166 - /* height of player inventory */82);
+    }
 
-	@Override
-	public void detectAndSendChanges()
-	{
-		final int boosters = this.boosterSlot.getStack().isEmpty() ? 0 : this.boosterSlot.getStack().getCount();
+    @Override
+    public void detectAndSendChanges() {
+        final int boosters = this.boosterSlot.getStack().isEmpty() ? 0 : this.boosterSlot.getStack().getCount();
 
-		this.setRange( (long) ( 10 * AEConfig.instance().wireless_getMaxRange( boosters ) ) );
-		this.setDrain( (long) ( 100 * AEConfig.instance().wireless_getPowerDrain( boosters ) ) );
+        this.setRange((long) (10 * AEConfig.instance().wireless_getMaxRange(boosters)));
+        this.setDrain((long) (100 * AEConfig.instance().wireless_getPowerDrain(boosters)));
 
-		super.detectAndSendChanges();
-	}
+        super.detectAndSendChanges();
+    }
 
-	public long getRange()
-	{
-		return this.range;
-	}
+    public long getRange() {
+        return this.range;
+    }
 
-	private void setRange( final long range )
-	{
-		this.range = range;
-	}
+    private void setRange(final long range) {
+        this.range = range;
+    }
 
-	public long getDrain()
-	{
-		return this.drain;
-	}
+    public long getDrain() {
+        return this.drain;
+    }
 
-	private void setDrain( final long drain )
-	{
-		this.drain = drain;
-	}
+    private void setDrain(final long drain) {
+        this.drain = drain;
+    }
 }

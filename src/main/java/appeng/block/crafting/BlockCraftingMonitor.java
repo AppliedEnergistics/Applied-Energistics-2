@@ -18,13 +18,10 @@
 
 package appeng.block.crafting;
 
-
 import appeng.tile.crafting.TileCraftingMonitorTile;
 
-public class BlockCraftingMonitor extends AbstractCraftingUnitBlock<TileCraftingMonitorTile>
-{
-	public BlockCraftingMonitor(Properties props)
-	{
-		super( props, CraftingUnitType.MONITOR );
-	}
+public class BlockCraftingMonitor extends AbstractCraftingUnitBlock<TileCraftingMonitorTile> {
+    public BlockCraftingMonitor(Properties props) {
+        super(props, CraftingUnitType.MONITOR);
+    }
 }

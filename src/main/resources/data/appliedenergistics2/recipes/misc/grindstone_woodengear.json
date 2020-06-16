@@ -9,11 +9,7 @@
     "item": "appliedenergistics2:wooden_gear"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    " a ",
-    "a a",
-    " a "
-  ],
+  "pattern": [" a ", "a a", " a "],
   "key": {
     "a": {
       "tag": "forge:rods/wooden"

@@ -18,7 +18,6 @@
 
 package appeng.bootstrap;
 
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,44 +31,37 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import appeng.bootstrap.components.ItemColorComponent;
 import appeng.bootstrap.components.ItemVariantsComponent;
 
+class ItemRendering implements IItemRendering {
 
-class ItemRendering implements IItemRendering
-{
+    @OnlyIn(Dist.CLIENT)
+    private IItemColor itemColor;
 
-	@OnlyIn( Dist.CLIENT )
-	private IItemColor itemColor;
+    @OnlyIn(Dist.CLIENT)
+    private Set<ResourceLocation> variants = new HashSet<>();
 
-	@OnlyIn( Dist.CLIENT )
-	private Set<ResourceLocation> variants = new HashSet<>();
+    @Override
+    public IItemRendering variants(Collection<ResourceLocation> resources) {
+        this.variants.addAll(resources);
+        return this;
+    }
 
-	@Override
-	public IItemRendering variants( Collection<ResourceLocation> resources )
-	{
-		this.variants.addAll( resources );
-		return this;
-	}
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public IItemRendering color(IItemColor itemColor) {
+        this.itemColor = itemColor;
+        return this;
+    }
 
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public IItemRendering color( IItemColor itemColor )
-	{
-		this.itemColor = itemColor;
-		return this;
-	}
+    void apply(FeatureFactory factory, Item item) {
+        Set<ResourceLocation> resources = new HashSet<>(this.variants);
 
-	void apply( FeatureFactory factory, Item item )
-	{
-		Set<ResourceLocation> resources = new HashSet<>( this.variants );
+        if (!resources.isEmpty()) {
+            factory.addBootstrapComponent(new ItemVariantsComponent(item, resources));
+        }
 
-		if( !resources.isEmpty() )
-		{
-			factory.addBootstrapComponent( new ItemVariantsComponent( item, resources ) );
-		}
-
-		if( this.itemColor != null )
-		{
-			factory.addBootstrapComponent( new ItemColorComponent( item, this.itemColor ) );
-		}
-	}
+        if (this.itemColor != null) {
+            factory.addBootstrapComponent(new ItemColorComponent(item, this.itemColor));
+        }
+    }
 
 }

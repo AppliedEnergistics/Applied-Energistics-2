@@ -18,27 +18,22 @@
 
 package appeng.items.contents;
 
-
 import net.minecraft.item.ItemStack;
 
 import appeng.tile.inventory.AppEngInternalInventory;
 
+public class CellConfig extends AppEngInternalInventory {
 
-public class CellConfig extends AppEngInternalInventory
-{
+    private final ItemStack is;
 
-	private final ItemStack is;
+    public CellConfig(final ItemStack is) {
+        super(null, 63);
+        this.is = is;
+        this.readFromNBT(is.getOrCreateTag(), "list");
+    }
 
-	public CellConfig( final ItemStack is )
-	{
-		super( null, 63 );
-		this.is = is;
-        this.readFromNBT(is.getOrCreateTag(), "list" );
-	}
-
-	@Override
-	protected void onContentsChanged( int slot )
-	{
-        this.writeToNBT(this.is.getOrCreateTag(), "list" );
-	}
+    @Override
+    protected void onContentsChanged(int slot) {
+        this.writeToNBT(this.is.getOrCreateTag(), "list");
+    }
 }

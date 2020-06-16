@@ -18,6 +18,7 @@
 
 package appeng.spatial;
 
+import javax.annotation.Nullable;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -28,123 +29,107 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.IRenderHandler;
 
 import appeng.client.render.SpatialSkyRender;
 import appeng.core.AppEng;
 
-import javax.annotation.Nullable;
+public class StorageCellDimension extends Dimension {
 
-public class StorageCellDimension extends Dimension
-{
+    // A region file is 512x512 blocks (32x32 chunks),
+    // to avoid creating the 4 regions around 0,0,0,
+    // we move the origin to the middle of region 0,0
+    public static final BlockPos REGION_CENTER = new BlockPos(512 / 2, 64, 512 / 2);
 
-	// A region file is 512x512 blocks (32x32 chunks),
-	// to avoid creating the 4 regions around 0,0,0,
-	// we move the origin to the middle of region 0,0
-	public static final BlockPos REGION_CENTER = new BlockPos(512 / 2, 64, 512 / 2);
+    public StorageCellDimension(World world, DimensionType dimensionType) {
+        // FIXME: check light value
+        super(world, dimensionType, 1.0f);
+    }
 
-	public StorageCellDimension(World world, DimensionType dimensionType) {
-		// FIXME: check light value
-		super(world, dimensionType, 1.0f);
-	}
+    @Override
+    public ChunkGenerator createChunkGenerator() {
+        return new StorageChunkGenerator(this.world);
+    }
 
-	@Override
-	public ChunkGenerator createChunkGenerator()
-	{
-		return new StorageChunkGenerator( this.world );
-	}
+    @Override
+    public float calculateCelestialAngle(final long par1, final float par3) {
+        return 0;
+    }
 
-	@Override
-	public float calculateCelestialAngle( final long par1, final float par3 )
-	{
-		return 0;
-	}
+    @Override
+    public boolean isSurfaceWorld() {
+        return false;
+    }
 
-	@Override
-	public boolean isSurfaceWorld()
-	{
-		return false;
-	}
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public float[] calcSunriseSunsetColors(final float celestialAngle, final float partialTicks) {
+        return null;
+    }
 
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public float[] calcSunriseSunsetColors( final float celestialAngle, final float partialTicks )
-	{
-		return null;
-	}
+    @Override
+    public Vec3d getFogColor(final float par1, final float par2) {
+        return new Vec3d(0.07, 0.07, 0.07);
+    }
 
-	@Override
-	public Vec3d getFogColor( final float par1, final float par2 )
-	{
-		return new Vec3d( 0.07, 0.07, 0.07 );
-	}
+    @Override
+    public boolean canRespawnHere() {
+        return false;
+    }
 
-	@Override
-	public boolean canRespawnHere()
-	{
-		return false;
-	}
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public boolean isSkyColored() {
+        return true;
+    }
 
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public boolean isSkyColored()
-	{
-		return true;
-	}
+    @Override
+    public boolean doesXZShowFog(final int par1, final int par2) {
+        return false;
+    }
 
-	@Override
-	public boolean doesXZShowFog( final int par1, final int par2 )
-	{
-		return false;
-	}
+    @Override
+    public IRenderHandler getSkyRenderer() {
+        return SpatialSkyRender.getInstance();
+    }
 
-	@Override
-	public IRenderHandler getSkyRenderer()
-	{
-		return SpatialSkyRender.getInstance();
-	}
+    @Override
+    public boolean isDaytime() {
+        return false;
+    }
 
-	@Override
-	public boolean isDaytime()
-	{
-		return false;
-	}
+    @Override
+    public BlockPos getSpawnCoordinate() {
+        return REGION_CENTER;
+    }
 
-	@Override
-	public BlockPos getSpawnCoordinate()
-	{
-		return REGION_CENTER;
-	}
+    @Override
+    public boolean isHighHumidity(final BlockPos pos) {
+        return false;
+    }
 
-	@Override
-	public boolean isHighHumidity( final BlockPos pos )
-	{
-		return false;
-	}
+    @Override
+    public boolean canDoLightning(final Chunk chunk) {
+        return false;
+    }
 
-	@Override
-	public boolean canDoLightning( final Chunk chunk )
-	{
-		return false;
-	}
+    @Override
+    public boolean canDoRainSnowIce(Chunk chunk) {
+        return false;
+    }
 
-	@Override
-	public boolean canDoRainSnowIce(Chunk chunk) {
-		return false;
-	}
+    @Nullable
+    @Override
+    public BlockPos findSpawn(ChunkPos chunkPosIn, boolean checkValid) {
+        return getSpawnCoordinate();
+    }
 
-	@Nullable
-	@Override
-	public BlockPos findSpawn(ChunkPos chunkPosIn, boolean checkValid) {
-		return getSpawnCoordinate();
-	}
-
-	@Nullable
-	@Override
-	public BlockPos findSpawn(int posX, int posZ, boolean checkValid) {
-		return getSpawnCoordinate();
-	}
+    @Nullable
+    @Override
+    public BlockPos findSpawn(int posX, int posZ, boolean checkValid) {
+        return getSpawnCoordinate();
+    }
 
 }

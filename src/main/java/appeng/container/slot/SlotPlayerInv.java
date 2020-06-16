@@ -18,19 +18,15 @@
 
 package appeng.container.slot;
 
-
 import net.minecraftforge.items.IItemHandler;
-
 
 // there is nothing special about this slot, its simply used to represent the players inventory, vs a container slot.
 
-public class SlotPlayerInv extends AppEngSlot
-{
+public class SlotPlayerInv extends AppEngSlot {
 
-	public SlotPlayerInv( final IItemHandler par1iInventory, final int idx, final int x, final int y )
-	{
-		super( par1iInventory, idx, x, y );
+    public SlotPlayerInv(final IItemHandler par1iInventory, final int idx, final int x, final int y) {
+        super(par1iInventory, idx, x, y);
 
-		this.setPlayerSide( true );
-	}
+        this.setPlayerSide(true);
+    }
 }

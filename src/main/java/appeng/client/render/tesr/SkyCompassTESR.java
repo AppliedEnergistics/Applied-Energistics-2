@@ -18,11 +18,9 @@
 
 package appeng.client.render.tesr;
 
-
-import appeng.client.render.FacingToRotation;
-import appeng.client.render.model.SkyCompassModel;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Atlases;
@@ -35,91 +33,86 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.common.property.Properties;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.block.misc.BlockSkyCompass;
+import appeng.client.render.FacingToRotation;
 import appeng.client.render.model.SkyCompassBakedModel;
+import appeng.client.render.model.SkyCompassModel;
 import appeng.tile.misc.TileSkyCompass;
 
+@OnlyIn(Dist.CLIENT)
+public class SkyCompassTESR extends TileEntityRenderer<TileSkyCompass> {
 
-@OnlyIn( Dist.CLIENT )
-public class SkyCompassTESR extends TileEntityRenderer<TileSkyCompass>
-{
+    private static BlockRendererDispatcher blockRenderer;
 
-	private static BlockRendererDispatcher blockRenderer;
+    public SkyCompassTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
+        super(rendererDispatcherIn);
+    }
 
-	public SkyCompassTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
-		super(rendererDispatcherIn);
-	}
+    @Override
+    public void render(TileSkyCompass te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
+            int combinedLightIn, int combinedOverlayIn) {
 
-	@Override
-	public void render(TileSkyCompass te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers, int combinedLightIn, int combinedOverlayIn) {
+        if (blockRenderer == null) {
+            blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
+        }
 
-		if( blockRenderer == null )
-		{
-			blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
-		}
+        IVertexBuilder buffer = buffers.getBuffer(Atlases.getTranslucentBlockType());
 
-		IVertexBuilder buffer = buffers.getBuffer(Atlases.getTranslucentBlockType());
+        BlockState blockState = te.getBlockState();
+        IBakedModel model = blockRenderer.getBlockModelShapes().getModel(blockState);
 
-		BlockState blockState = te.getBlockState();
-		IBakedModel model = blockRenderer.getBlockModelShapes().getModel( blockState );
+        // FIXME: Rotation was previously handled by an auto rotating model I think, but
+        // FIXME: Should be handled using matrices instead
+        Direction forward = te.getForward();
+        Direction up = te.getUp();
+        // This ensures the needle isn't flipped by the model rotator. Since the model
+        // is symmetrical, this should
+        // not affect the appearance
+        if (forward == Direction.UP || forward == Direction.DOWN) {
+            up = Direction.NORTH;
+        }
+        // Flip forward/up for rendering, the base model is facing up without any
+        // rotation
+        ms.push();
+        ms.translate(0.5D, 0.5D, 0.5D);
+        FacingToRotation.get(up, forward).push(ms);
+        ms.translate(-0.5D, -0.5D, -0.5D);
 
-		// FIXME: Rotation was previously handled by an auto rotating model I think, but
-		// FIXME: Should be handled using matrices instead
-		Direction forward = te.getForward();
-		Direction up = te.getUp();
-		// This ensures the needle isn't flipped by the model rotator. Since the model is symmetrical, this should
-		// not affect the appearance
-		if( forward == Direction.UP || forward == Direction.DOWN )
-		{
-			up = Direction.NORTH;
-		}
-		// Flip forward/up for rendering, the base model is facing up without any rotation
-		ms.push();
-		ms.translate(0.5D, 0.5D, 0.5D);
-		FacingToRotation.get(up, forward).push(ms);
-		ms.translate(-0.5D, -0.5D, -0.5D);
+        ModelDataMap modelData = new ModelDataMap.Builder().withInitial(SkyCompassBakedModel.ROTATION, getRotation(te))
+                .build();
 
-		ModelDataMap modelData = new ModelDataMap.Builder()
-				.withInitial(SkyCompassBakedModel.ROTATION, getRotation(te))
-				.build();
+        blockRenderer.getBlockModelRenderer().renderModel(ms.getLast(), buffer, null, model, 1, 1, 1, combinedLightIn,
+                combinedOverlayIn, modelData);
+        ms.pop();
 
-		blockRenderer.getBlockModelRenderer().renderModel( ms.getLast(), buffer, null, model, 1, 1, 1, combinedLightIn, combinedOverlayIn, modelData );
-		ms.pop();
+    }
 
-	}
+    private static float getRotation(TileSkyCompass skyCompass) {
+        float rotation;
 
-	private static float getRotation( TileSkyCompass skyCompass )
-	{
-		float rotation;
+        if (skyCompass.getForward() == Direction.UP || skyCompass.getForward() == Direction.DOWN) {
+            rotation = SkyCompassBakedModel.getAnimatedRotation(skyCompass.getPos(), false);
+        } else {
+            rotation = SkyCompassBakedModel.getAnimatedRotation(null, false);
+        }
 
-		if( skyCompass.getForward() == Direction.UP || skyCompass.getForward() == Direction.DOWN )
-		{
-			rotation = SkyCompassBakedModel.getAnimatedRotation( skyCompass.getPos(), false );
-		}
-		else
-		{
-			rotation = SkyCompassBakedModel.getAnimatedRotation( null, false );
-		}
+        if (skyCompass.getForward() == Direction.DOWN) {
+            rotation = flipidiy(rotation);
+        }
 
-		if( skyCompass.getForward() == Direction.DOWN )
-		{
-			rotation = flipidiy( rotation );
-		}
+        return rotation;
+    }
 
-		return rotation;
-	}
-
-	private static float flipidiy( float rad )
-	{
-		float x = (float) Math.cos( rad );
-		float y = (float) Math.sin( rad );
-		return (float) Math.atan2( -y, x );
-	}
+    private static float flipidiy(float rad) {
+        float x = (float) Math.cos(rad);
+        float y = (float) Math.sin(rad);
+        return (float) Math.atan2(-y, x);
+    }
 }

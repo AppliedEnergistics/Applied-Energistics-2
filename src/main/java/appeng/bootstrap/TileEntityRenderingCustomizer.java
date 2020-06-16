@@ -18,20 +18,19 @@
 
 package appeng.bootstrap;
 
-
-import appeng.tile.AEBaseTile;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import appeng.tile.AEBaseTile;
 
 /**
- * A callback that allows the rendering of a tile entity to be customized. Sadly this class is required and no lambdas
- * can be used due to them not being able to be annotated with @OnlyIn(CLIENT).
+ * A callback that allows the rendering of a tile entity to be customized. Sadly
+ * this class is required and no lambdas can be used due to them not being able
+ * to be annotated with @OnlyIn(CLIENT).
  */
-public abstract class TileEntityRenderingCustomizer<T extends AEBaseTile>
-{
+public abstract class TileEntityRenderingCustomizer<T extends AEBaseTile> {
 
-	@OnlyIn( Dist.CLIENT )
-	public abstract void customize( TileEntityRendering<T> rendering );
+    @OnlyIn(Dist.CLIENT)
+    public abstract void customize(TileEntityRendering<T> rendering);
 
 }

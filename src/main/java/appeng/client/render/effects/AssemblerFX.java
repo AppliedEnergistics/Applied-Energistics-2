@@ -18,10 +18,12 @@
 
 package appeng.client.render.effects;
 
+import java.util.Locale;
 
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
 import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.IParticleRenderType;
@@ -39,200 +41,190 @@ import net.minecraft.particles.ItemParticleData;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.EffectType;
 import appeng.core.AppEng;
 import appeng.entity.EntityFloatingItem;
 import appeng.entity.ICanDie;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.Locale;
+public class AssemblerFX extends Particle implements ICanDie {
 
+    public static final ParticleType<AssemblerParticleData> TYPE = new ParticleType<>(false,
+            new AssemblerParticleData.Deserializer());
 
-public class AssemblerFX extends Particle implements ICanDie
-{
+    static {
+        TYPE.setRegistryName(AppEng.MOD_ID, "assembler_fx");
+    }
 
-	public static final ParticleType<AssemblerParticleData> TYPE = new ParticleType<>(false, new AssemblerParticleData.Deserializer());
+    private final EntityFloatingItem fi;
+    private final float speed;
+    private float time = 0;
 
-	static {
-		TYPE.setRegistryName(AppEng.MOD_ID, "assembler_fx");
-	}
+    public AssemblerFX(final World w, final double x, final double y, final double z, final double r, final double g,
+            final double b, final float speed, final ItemStack displayItem) {
+        super(w, x, y, z, r, g, b);
+        this.motionX = 0;
+        this.motionY = 0;
+        this.motionZ = 0;
+        this.speed = speed;
+        this.fi = new EntityFloatingItem(this, w, x, y, z, displayItem);
+        w.addEntity(this.fi);
+        this.maxAge = (int) Math.ceil(Math.max(1, 100.0f / speed)) + 2;
+    }
 
-	private final EntityFloatingItem fi;
-	private final float speed;
-	private float time = 0;
+    @Override
+    public boolean isDead() {
+        return this.isExpired;
+    }
 
-	public AssemblerFX( final World w, final double x, final double y, final double z, final double r, final double g, final double b, final float speed, final ItemStack displayItem )
-	{
-		super( w, x, y, z, r, g, b );
-		this.motionX = 0;
-		this.motionY = 0;
-		this.motionZ = 0;
-		this.speed = speed;
-		this.fi = new EntityFloatingItem( this, w, x, y, z, displayItem );
-		w.addEntity( this.fi );
-		this.maxAge = (int) Math.ceil( Math.max( 1, 100.0f / speed ) ) + 2;
-	}
+    @Override
+    public int getBrightnessForRender(final float par1) {
+        final int j1 = 13;
+        return j1 << 20 | j1 << 4;
+    }
 
-	@Override
-	public boolean isDead()
-	{
-		return this.isExpired;
-	}
+    @Override
+    public void tick() {
+        this.prevPosX = this.posX;
+        this.prevPosY = this.posY;
+        this.prevPosZ = this.posZ;
 
-	@Override
-	public int getBrightnessForRender( final float par1 )
-	{
-		final int j1 = 13;
-		return j1 << 20 | j1 << 4;
-	}
+        if (this.age++ >= this.maxAge) {
+            this.setExpired();
+        }
 
-	@Override
-	public void tick()
-	{
-		this.prevPosX = this.posX;
-		this.prevPosY = this.posY;
-		this.prevPosZ = this.posZ;
+        this.motionY -= 0.04D * this.particleGravity;
+        this.move(this.motionX, this.motionY, this.motionZ);
+        this.motionX *= 0.9800000190734863D;
+        this.motionY *= 0.9800000190734863D;
+        this.motionZ *= 0.9800000190734863D;
 
-		if( this.age++ >= this.maxAge )
-		{
-			this.setExpired();
-		}
+        if (this.isExpired) {
+            this.fi.remove();
+        } else {
+            final float lifeSpan = (float) this.age / (float) this.maxAge;
+            this.fi.setProgress(lifeSpan);
+        }
+    }
 
-		this.motionY -= 0.04D * this.particleGravity;
-		this.move( this.motionX, this.motionY, this.motionZ );
-		this.motionX *= 0.9800000190734863D;
-		this.motionY *= 0.9800000190734863D;
-		this.motionZ *= 0.9800000190734863D;
+    @Override
+    public IParticleRenderType getRenderType() {
+        return IParticleRenderType.NO_RENDER;
+    }
 
-		if( this.isExpired )
-		{
-			this.fi.remove();
-		}
-		else
-		{
-			final float lifeSpan = (float) this.age / (float) this.maxAge;
-			this.fi.setProgress( lifeSpan );
-		}
-	}
+    @Override
+    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
+        this.time += partialTicks;
+        if (this.time > 4.0) {
+            this.time -= 4.0;
+            // if ( AppEng.proxy.shouldAddParticles( r ) )
+            for (int x = 0; x < (int) Math.ceil(this.speed / 5); x++) {
+                AppEng.proxy.spawnEffect(EffectType.Crafting, this.world, this.posX, this.posY, this.posZ, null);
+            }
+        }
+    }
 
-	@Override
-	public IParticleRenderType getRenderType() {
-		return IParticleRenderType.NO_RENDER;
-	}
+    public static class AssemblerParticleData implements IParticleData {
 
-	@Override
-	public void renderParticle( IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks )
-	{
-		this.time += partialTicks;
-		if( this.time > 4.0 )
-		{
-			this.time -= 4.0;
-			// if ( AppEng.proxy.shouldAddParticles( r ) )
-			for( int x = 0; x < (int) Math.ceil( this.speed / 5 ); x++ )
-			{
-				AppEng.proxy.spawnEffect( EffectType.Crafting, this.world, this.posX, this.posY, this.posZ, null );
-			}
-		}
-	}
+        private final float r;
+        private final float g;
+        private final float b;
+        private final float speed;
+        private final ItemStack itemStack;
 
-	public static class AssemblerParticleData implements IParticleData {
+        public AssemblerParticleData(float r, float g, float b, float speed, ItemStack itemStack) {
+            this.r = r;
+            this.g = g;
+            this.b = b;
+            this.speed = speed;
+            this.itemStack = itemStack;
+        }
 
-		private final float r;
-		private final float g;
-		private final float b;
-		private final float speed;
-		private final ItemStack itemStack;
+        @Override
+        public ParticleType<?> getType() {
+            return TYPE;
+        }
 
-		public AssemblerParticleData(float r, float g, float b, float speed, ItemStack itemStack) {
-			this.r = r;
-			this.g = g;
-			this.b = b;
-			this.speed = speed;
-			this.itemStack = itemStack;
-		}
+        @Override
+        public void write(PacketBuffer buffer) {
+            buffer.writeFloat(r);
+            buffer.writeFloat(g);
+            buffer.writeFloat(b);
+            buffer.writeFloat(speed);
+            buffer.writeItemStack(itemStack);
+        }
 
-		@Override
-		public ParticleType<?> getType() {
-			return TYPE;
-		}
+        public static class Deserializer implements IDeserializer<AssemblerParticleData> {
 
-		@Override
-		public void write(PacketBuffer buffer) {
-			buffer.writeFloat(r);
-			buffer.writeFloat(g);
-			buffer.writeFloat(b);
-			buffer.writeFloat(speed);
-			buffer.writeItemStack(itemStack);
-		}
+            @Override
+            public AssemblerParticleData deserialize(ParticleType<AssemblerParticleData> particleTypeIn,
+                    StringReader reader) throws CommandSyntaxException {
+                reader.expect(' ');
+                float r = reader.readFloat();
+                reader.expect(' ');
+                float g = reader.readFloat();
+                reader.expect(' ');
+                float b = reader.readFloat();
+                reader.expect(' ');
+                float speed = reader.readFloat();
+                reader.expect(' ');
+                ItemParser itemparser = (new ItemParser(reader, false)).parse();
+                ItemStack itemstack = (new ItemInput(itemparser.getItem(), itemparser.getNbt())).createStack(1, false);
+                return new AssemblerParticleData(r, g, b, speed, itemstack);
+            }
 
-		public static class Deserializer implements IDeserializer<AssemblerParticleData> {
+            @Override
+            public AssemblerParticleData read(ParticleType<AssemblerParticleData> particleTypeIn, PacketBuffer buffer) {
+                float r = buffer.readFloat();
+                float g = buffer.readFloat();
+                float b = buffer.readFloat();
+                float speed = buffer.readFloat();
+                ItemStack itemStack = buffer.readItemStack();
+                return new AssemblerParticleData(r, g, b, speed, itemStack);
+            }
 
-			@Override
-			public AssemblerParticleData deserialize(ParticleType<AssemblerParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
-				reader.expect(' ');
-				float r = reader.readFloat();
-				reader.expect(' ');
-				float g = reader.readFloat();
-				reader.expect(' ');
-				float b = reader.readFloat();
-				reader.expect(' ');
-				float speed = reader.readFloat();
-				reader.expect(' ');
-				ItemParser itemparser = (new ItemParser(reader, false)).parse();
-				ItemStack itemstack = (new ItemInput(itemparser.getItem(), itemparser.getNbt())).createStack(1, false);
-				return new AssemblerParticleData(r, g, b, speed, itemstack);
-			}
+        }
 
-			@Override
-			public AssemblerParticleData read(ParticleType<AssemblerParticleData> particleTypeIn, PacketBuffer buffer) {
-				float r = buffer.readFloat();
-				float g = buffer.readFloat();
-				float b = buffer.readFloat();
-				float speed = buffer.readFloat();
-				ItemStack itemStack = buffer.readItemStack();
-				return new AssemblerParticleData(r, g, b, speed, itemStack);
-			}
+        @Override
+        public String getParameters() {
+            return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f ", Registry.PARTICLE_TYPE.getKey(this.getType()),
+                    this.r, this.g, this.b, this.speed)
+                    + (new ItemInput(this.itemStack.getItem(), this.itemStack.getTag())).serialize();
+        }
 
-		}
+        public float getR() {
+            return r;
+        }
 
-		@Override
-		public String getParameters() {
-			return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f ", Registry.PARTICLE_TYPE.getKey(this.getType()), this.r, this.g, this.b, this.speed)
-					+ (new ItemInput(this.itemStack.getItem(), this.itemStack.getTag())).serialize();
-		}
+        public float getG() {
+            return g;
+        }
 
-		public float getR() {
-			return r;
-		}
+        public float getB() {
+            return b;
+        }
 
-		public float getG() {
-			return g;
-		}
+        public float getSpeed() {
+            return speed;
+        }
 
-		public float getB() {
-			return b;
-		}
+        public ItemStack getItemStack() {
+            return itemStack;
+        }
+    }
 
-		public float getSpeed() {
-			return speed;
-		}
+    @OnlyIn(Dist.CLIENT)
+    public static class Factory implements IParticleFactory<AssemblerParticleData> {
+        public Factory(IAnimatedSprite spriteSet) {
+        }
 
-		public ItemStack getItemStack() {
-			return itemStack;
-		}
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	public static class Factory implements IParticleFactory<AssemblerParticleData> {
-		public Factory(IAnimatedSprite spriteSet) {
-		}
-
-		public Particle makeParticle(AssemblerParticleData data, World world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-			return new AssemblerFX(world, x, y, z, data.r, data.g, data.b, data.speed, data.itemStack);
-		}
-	}
+        public Particle makeParticle(AssemblerParticleData data, World world, double x, double y, double z,
+                double xSpeed, double ySpeed, double zSpeed) {
+            return new AssemblerFX(world, x, y, z, data.r, data.g, data.b, data.speed, data.itemStack);
+        }
+    }
 
 }

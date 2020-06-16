@@ -18,9 +18,6 @@
 
 package appeng.items.misc;
 
-
-import appeng.api.util.AEColor;
-import appeng.items.AEBaseItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -29,28 +26,27 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
+import appeng.api.util.AEColor;
+import appeng.items.AEBaseItem;
 
-public class ItemPaintBall extends AEBaseItem
-{
+public class ItemPaintBall extends AEBaseItem {
 
-	private final AEColor color;
+    private final AEColor color;
 
-	private final boolean lumen;
+    private final boolean lumen;
 
-	public ItemPaintBall(Properties properties, AEColor color, boolean lumen) {
-		super(properties);
-		this.color = color;
-		this.lumen = lumen;
-	}
+    public ItemPaintBall(Properties properties, AEColor color, boolean lumen) {
+        super(properties);
+        this.color = color;
+        this.lumen = lumen;
+    }
 
-	public AEColor getColor()
-	{
-		return color;
-	}
+    public AEColor getColor() {
+        return color;
+    }
 
-	public boolean isLumen()
-	{
-		return lumen;
-	}
+    public boolean isLumen() {
+        return lumen;
+    }
 
 }

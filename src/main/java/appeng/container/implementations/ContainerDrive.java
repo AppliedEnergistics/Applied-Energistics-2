@@ -18,49 +18,43 @@
 
 package appeng.container.implementations;
 
-
-import appeng.container.ContainerLocator;
-import appeng.container.implementations.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-
-import appeng.container.AEBaseContainer;
-import appeng.container.slot.SlotRestrictedInput;
-import appeng.tile.storage.TileDrive;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.network.PacketBuffer;
 
+import appeng.container.AEBaseContainer;
+import appeng.container.ContainerLocator;
+import appeng.container.implementations.ContainerHelper;
+import appeng.container.slot.SlotRestrictedInput;
+import appeng.tile.storage.TileDrive;
 
-public class ContainerDrive extends AEBaseContainer
-{
+public class ContainerDrive extends AEBaseContainer {
 
-public static ContainerType<ContainerDrive> TYPE;
+    public static ContainerType<ContainerDrive> TYPE;
 
-	private static final ContainerHelper<ContainerDrive, TileDrive> helper
-			= new ContainerHelper<>(ContainerDrive::new, TileDrive.class);
+    private static final ContainerHelper<ContainerDrive, TileDrive> helper = new ContainerHelper<>(ContainerDrive::new,
+            TileDrive.class);
 
-	public static ContainerDrive fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-		return helper.fromNetwork(windowId, inv, buf);
-	}
+    public static ContainerDrive fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+        return helper.fromNetwork(windowId, inv, buf);
+    }
 
-	public static boolean open(PlayerEntity player, ContainerLocator locator) {
-		return helper.open(player, locator);
-	}
+    public static boolean open(PlayerEntity player, ContainerLocator locator) {
+        return helper.open(player, locator);
+    }
 
-	public ContainerDrive(int id, final PlayerInventory ip, final TileDrive drive )
-	{
-		super( TYPE, id, ip, drive, null );
+    public ContainerDrive(int id, final PlayerInventory ip, final TileDrive drive) {
+        super(TYPE, id, ip, drive, null);
 
-		for( int y = 0; y < 5; y++ )
-		{
-			for( int x = 0; x < 2; x++ )
-			{
-				this.addSlot( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_CELLS, drive
-						.getInternalInventory(), x + y * 2, 71 + x * 18, 14 + y * 18, this.getPlayerInventory() ) );
-			}
-		}
+        for (int y = 0; y < 5; y++) {
+            for (int x = 0; x < 2; x++) {
+                this.addSlot(new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.STORAGE_CELLS,
+                        drive.getInternalInventory(), x + y * 2, 71 + x * 18, 14 + y * 18, this.getPlayerInventory()));
+            }
+        }
 
-		this.bindPlayerInventory( ip, 0, 199 - /* height of player inventory */82 );
-	}
+        this.bindPlayerInventory(ip, 0, 199 - /* height of player inventory */82);
+    }
 
 }

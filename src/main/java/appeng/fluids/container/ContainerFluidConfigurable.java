@@ -1,7 +1,6 @@
 
 package appeng.fluids.container;
 
-
 import java.util.Collections;
 import java.util.Map;
 
@@ -22,98 +21,79 @@ import appeng.fluids.util.AEFluidStack;
 import appeng.fluids.util.IAEFluidTank;
 import appeng.util.Platform;
 
+public abstract class ContainerFluidConfigurable extends ContainerUpgradeable implements IFluidSyncContainer {
+    private FluidSyncHelper sync = null;
 
-public abstract class ContainerFluidConfigurable extends ContainerUpgradeable implements IFluidSyncContainer
-{
-	private FluidSyncHelper sync = null;
+    public ContainerFluidConfigurable(ContainerType<?> containerType, int id, PlayerInventory ip, IUpgradeableHost te) {
+        super(containerType, id, ip, te);
+    }
 
-	public ContainerFluidConfigurable(ContainerType<?> containerType, int id, PlayerInventory ip, IUpgradeableHost te )
-	{
-		super( containerType, id, ip, te );
-	}
+    public abstract IAEFluidTank getFluidConfigInventory();
 
-	public abstract IAEFluidTank getFluidConfigInventory();
+    private FluidSyncHelper getSyncHelper() {
+        if (this.sync == null) {
+            this.sync = new FluidSyncHelper(this.getFluidConfigInventory(), 0);
+        }
+        return this.sync;
+    }
 
-	private FluidSyncHelper getSyncHelper()
-	{
-		if( this.sync == null )
-		{
-			this.sync = new FluidSyncHelper( this.getFluidConfigInventory(), 0 );
-		}
-		return this.sync;
-	}
+    @Override
+    protected ItemStack transferStackToContainer(ItemStack input) {
+        LazyOptional<FluidStack> fsOpt = FluidUtil.getFluidContained(input);
+        if (fsOpt.isPresent()) {
+            final IAEFluidTank t = this.getFluidConfigInventory();
+            final IAEFluidStack stack = AEFluidStack.fromFluidStack(fsOpt.orElse(null));
+            for (int i = 0; i < t.getSlots(); ++i) {
+                if (t.getFluidInSlot(i) == null && this.isValidForConfig(i, stack)) {
+                    t.setFluidInSlot(i, stack);
+                    break;
+                }
+            }
+        }
+        return input;
+    }
 
-	@Override
-	protected ItemStack transferStackToContainer( ItemStack input )
-	{
-		LazyOptional<FluidStack> fsOpt = FluidUtil.getFluidContained( input );
-		if( fsOpt.isPresent() )
-		{
-			final IAEFluidTank t = this.getFluidConfigInventory();
-			final IAEFluidStack stack = AEFluidStack.fromFluidStack( fsOpt.orElse( null ) );
-			for( int i = 0; i < t.getSlots(); ++i )
-			{
-				if( t.getFluidInSlot( i ) == null && this.isValidForConfig( i, stack ) )
-				{
-					t.setFluidInSlot( i, stack );
-					break;
-				}
-			}
-		}
-		return input;
-	}
+    protected boolean isValidForConfig(int slot, IAEFluidStack fs) {
+        if (this.supportCapacity()) {
+            // assumes 4 slots per upgrade
+            final int upgrades = this.getUpgradeable().getInstalledUpgrades(Upgrades.CAPACITY);
 
-	protected boolean isValidForConfig( int slot, IAEFluidStack fs )
-	{
-		if( this.supportCapacity() )
-		{
-			// assumes 4 slots per upgrade
-			final int upgrades = this.getUpgradeable().getInstalledUpgrades( Upgrades.CAPACITY );
+            if (slot > 0 && upgrades < 1) {
+                return false;
+            }
+            if (slot > 4 && upgrades < 2) {
+                return false;
+            }
+        }
 
-			if( slot > 0 && upgrades < 1 )
-			{
-				return false;
-			}
-			if( slot > 4 && upgrades < 2 )
-			{
-				return false;
-			}
-		}
+        return true;
+    }
 
-		return true;
-	}
+    @Override
+    protected void standardDetectAndSendChanges() {
+        if (Platform.isServer()) {
+            this.getSyncHelper().sendDiff(this.listeners);
 
-	@Override
-	protected void standardDetectAndSendChanges()
-	{
-		if( Platform.isServer() )
-		{
-			this.getSyncHelper().sendDiff( this.listeners );
+            // clear out config items that are no longer valid (eg capacity upgrade removed)
+            final IAEFluidTank t = this.getFluidConfigInventory();
+            for (int i = 0; i < t.getSlots(); ++i) {
+                if (t.getFluidInSlot(i) != null && !this.isValidForConfig(i, t.getFluidInSlot(i))) {
+                    t.setFluidInSlot(i, null);
+                }
+            }
+        }
+        super.standardDetectAndSendChanges();
+    }
 
-			// clear out config items that are no longer valid (eg capacity upgrade removed)
-			final IAEFluidTank t = this.getFluidConfigInventory();
-			for( int i = 0; i < t.getSlots(); ++i )
-			{
-				if( t.getFluidInSlot( i ) != null && !this.isValidForConfig( i, t.getFluidInSlot( i ) ) )
-				{
-					t.setFluidInSlot( i, null );
-				}
-			}
-		}
-		super.standardDetectAndSendChanges();
-	}
+    @Override
+    public void addListener(IContainerListener listener) {
+        super.addListener(listener);
+        this.getSyncHelper().sendFull(Collections.singleton(listener));
+    }
 
-	@Override
-	public void addListener( IContainerListener listener )
-	{
-		super.addListener( listener );
-		this.getSyncHelper().sendFull( Collections.singleton( listener ) );
-	}
-
-	@Override
-	public void receiveFluidSlots( Map<Integer, IAEFluidStack> fluids )
-	{
-		this.getSyncHelper().readPacket( fluids );
-	}
+    @Override
+    public void receiveFluidSlots(Map<Integer, IAEFluidStack> fluids) {
+        this.getSyncHelper().readPacket(fluids);
+    }
 
 }

@@ -18,7 +18,6 @@
 
 package appeng.core.features;
 
-
 import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
@@ -27,39 +26,33 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+public class BlockStackSrc implements IStackSrc {
 
-public class BlockStackSrc implements IStackSrc
-{
+    private final Block block;
+    private final boolean enabled;
 
-	private final Block block;
-	private final boolean enabled;
+    public BlockStackSrc(final Block block, final ActivityState state) {
+        Preconditions.checkNotNull(block);
+        Preconditions.checkNotNull(state);
+        Preconditions.checkArgument(state == ActivityState.Enabled || state == ActivityState.Disabled);
 
-	public BlockStackSrc( final Block block, final ActivityState state )
-	{
-		Preconditions.checkNotNull( block );
-		Preconditions.checkNotNull( state );
-		Preconditions.checkArgument( state == ActivityState.Enabled || state == ActivityState.Disabled );
+        this.block = block;
+        this.enabled = state == ActivityState.Enabled;
+    }
 
-		this.block = block;
-		this.enabled = state == ActivityState.Enabled;
-	}
+    @Nullable
+    @Override
+    public ItemStack stack(final int i) {
+        return new ItemStack(this.block, i);
+    }
 
-	@Nullable
-	@Override
-	public ItemStack stack( final int i )
-	{
-		return new ItemStack( this.block, i );
-	}
+    @Override
+    public Item getItem() {
+        return null;
+    }
 
-	@Override
-	public Item getItem()
-	{
-		return null;
-	}
-
-	@Override
-	public boolean isEnabled()
-	{
-		return this.enabled;
-	}
+    @Override
+    public boolean isEnabled() {
+        return this.enabled;
+    }
 }

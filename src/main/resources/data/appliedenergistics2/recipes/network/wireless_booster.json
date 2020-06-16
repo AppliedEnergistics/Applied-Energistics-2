@@ -4,10 +4,7 @@
     "count": 2
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "abc",
-    "ddd"
-  ],
+  "pattern": ["abc", "ddd"],
   "key": {
     "d": {
       "tag": "forge:ingots/iron"

@@ -18,7 +18,6 @@
 
 package appeng.entity;
 
-
 import java.util.Date;
 import java.util.List;
 
@@ -33,104 +32,86 @@ import net.minecraft.world.World;
 
 import appeng.api.AEApi;
 import appeng.api.definitions.IMaterials;
-import appeng.core.AEConfig;
 import appeng.api.features.AEFeature;
+import appeng.core.AEConfig;
 import appeng.helpers.Reflected;
 import appeng.util.Platform;
 
+public final class EntitySingularity extends AEBaseEntityItem {
 
-public final class EntitySingularity extends AEBaseEntityItem
-{
+    public static EntityType<EntitySingularity> TYPE;
 
-	public static EntityType<EntitySingularity> TYPE;
+    private static int randTickSeed = 0;
 
-	private static int randTickSeed = 0;
+    public EntitySingularity(EntityType<? extends EntitySingularity> entityType, final World w) {
+        super(entityType, w);
+    }
 
-	public EntitySingularity(EntityType<? extends EntitySingularity> entityType, final World w )
-	{
-		super( entityType, w );
-	}
+    public EntitySingularity(final World w, final double x, final double y, final double z, final ItemStack is) {
+        super(TYPE, w, x, y, z, is);
+    }
 
-	public EntitySingularity( final World w, final double x, final double y, final double z, final ItemStack is )
-	{
-		super( TYPE, w, x, y, z, is );
-	}
+    @Override
+    public boolean attackEntityFrom(final DamageSource src, final float dmg) {
+        if (src.isExplosion()) {
+            this.doExplosion();
+            return false;
+        }
 
-	@Override
-	public boolean attackEntityFrom( final DamageSource src, final float dmg )
-	{
-		if( src.isExplosion() )
-		{
-			this.doExplosion();
-			return false;
-		}
+        return super.attackEntityFrom(src, dmg);
+    }
 
-		return super.attackEntityFrom( src, dmg );
-	}
+    private void doExplosion() {
+        if (Platform.isClient()) {
+            return;
+        }
 
-	private void doExplosion()
-	{
-		if( Platform.isClient() )
-		{
-			return;
-		}
+        if (!AEConfig.instance().isFeatureEnabled(AEFeature.IN_WORLD_SINGULARITY)) {
+            return;
+        }
 
-		if( !AEConfig.instance().isFeatureEnabled( AEFeature.IN_WORLD_SINGULARITY ) )
-		{
-			return;
-		}
+        final ItemStack item = this.getItem();
 
-		final ItemStack item = this.getItem();
+        final IMaterials materials = AEApi.instance().definitions().materials();
 
-		final IMaterials materials = AEApi.instance().definitions().materials();
+        if (materials.singularity().isSameAs(item)) {
+            final AxisAlignedBB region = new AxisAlignedBB(this.getPosX() - 4, this.getPosY() - 4, this.getPosZ() - 4,
+                    this.getPosX() + 4, this.getPosY() + 4, this.getPosZ() + 4);
+            final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity(region);
 
-		if( materials.singularity().isSameAs( item ) )
-		{
-			final AxisAlignedBB region = new AxisAlignedBB( this.getPosX() - 4, this.getPosY() - 4, this.getPosZ() - 4, this.getPosX() + 4, this
-					.getPosY() + 4, this.getPosZ() + 4 );
-			final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity( region );
+            for (final Entity e : l) {
+                if (e instanceof ItemEntity) {
+                    final ItemStack other = ((ItemEntity) e).getItem();
+                    if (!other.isEmpty()) {
+                        boolean matches = false;
 
-			for( final Entity e : l )
-			{
-				if( e instanceof ItemEntity )
-				{
-					final ItemStack other = ( (ItemEntity) e ).getItem();
-					if( !other.isEmpty() )
-					{
-						boolean matches = false;
+                        if (matches) {
+                            while (item.getCount() > 0 && other.getCount() > 0) {
+                                other.grow(-1);
+                                ;
+                                if (other.getCount() == 0) {
+                                    e.remove();
+                                }
 
-						if( matches )
-						{
-							while( item.getCount() > 0 && other.getCount() > 0 )
-							{
-								other.grow( -1 );
-								;
-								if( other.getCount() == 0 )
-								{
-									e.remove();
-								}
+                                materials.qESingularity().maybeStack(2).ifPresent(singularityStack -> {
+                                    final CompoundNBT cmp = singularityStack.getOrCreateTag();
+                                    cmp.putLong("freq", (new Date()).getTime() * 100 + (randTickSeed) % 100);
+                                    randTickSeed++;
+                                    item.grow(-1);
 
-								materials.qESingularity().maybeStack( 2 ).ifPresent( singularityStack ->
-								{
-									final CompoundNBT cmp = singularityStack.getOrCreateTag();
-									cmp.putLong( "freq", ( new Date() ).getTime() * 100 + ( randTickSeed ) % 100 );
-									randTickSeed++;
-									item.grow( -1 );
+                                    final EntitySingularity entity = new EntitySingularity(this.world, this.getPosX(),
+                                            this.getPosY(), this.getPosZ(), singularityStack);
+                                    this.world.addEntity(entity);
+                                });
+                            }
 
-									final EntitySingularity entity = new EntitySingularity( this.world, this.getPosX(), this.getPosY(), this
-											.getPosZ(), singularityStack );
-									this.world.addEntity( entity );
-								} );
-							}
-
-							if( item.getCount() <= 0 )
-							{
-								this.remove();
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+                            if (item.getCount() <= 0) {
+                                this.remove();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

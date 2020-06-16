@@ -18,13 +18,12 @@
 
 package appeng.block.spatial;
 
-
 import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.Entity;
@@ -46,66 +45,64 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import appeng.block.AEBaseBlock;
 
 /**
- * This block is used to fill empty space in spatial dimensions
- * and delinates the border of a spatial dimensions's usable space.
+ * This block is used to fill empty space in spatial dimensions and delinates
+ * the border of a spatial dimensions's usable space.
  */
-public class BlockMatrixFrame extends AEBaseBlock
-{
+public class BlockMatrixFrame extends AEBaseBlock {
 
-	private static final Material MATERIAL = new Material(MaterialColor.AIR, false, true, true, false, false, false, false, PushReaction.PUSH_ONLY);
+    private static final Material MATERIAL = new Material(MaterialColor.AIR, false, true, true, false, false, false,
+            false, PushReaction.PUSH_ONLY);
 
-	public BlockMatrixFrame()
-	{
-		super( Properties.create(MATERIAL).hardnessAndResistance(-1.0F, 6000000.0F).notSolid().noDrops() );
-	}
+    public BlockMatrixFrame() {
+        super(Properties.create(MATERIAL).hardnessAndResistance(-1.0F, 6000000.0F).notSolid().noDrops());
+    }
 
-	@Override
-	public BlockRenderType getRenderType(BlockState state) {
-		return BlockRenderType.INVISIBLE;
-	}
+    @Override
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.INVISIBLE;
+    }
 
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> itemStacks)
-	{
-		// do nothing
-	}
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> itemStacks) {
+        // do nothing
+    }
 
-	@Override
-	public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-		return VoxelShapes.fullCube();
-	}
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos,
+            ISelectionContext context) {
+        return VoxelShapes.fullCube();
+    }
 
-	@Override
-	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-		// This also prevents any blocks from being placed on this block!
-		return VoxelShapes.empty();
-	}
+    @Override
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+        // This also prevents any blocks from being placed on this block!
+        return VoxelShapes.empty();
+    }
 
-	@Override
-	public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
-		return false;
-	}
+    @Override
+    public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
+        return false;
+    }
 
-	@Override
-	public void onExplosionDestroy( final World world, final BlockPos pos, final Explosion explosion )
-	{
-		// Don't explode.
-	}
+    @Override
+    public void onExplosionDestroy(final World world, final BlockPos pos, final Explosion explosion) {
+        // Don't explode.
+    }
 
-	@Override
-	public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
-		return true;
-	}
+    @Override
+    public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
+        return true;
+    }
 
-	@Override
-	public float getAmbientOcclusionLightValue(BlockState state, IBlockReader worldIn, BlockPos pos) {
-		return 1.0f;
-	}
+    @Override
+    public float getAmbientOcclusionLightValue(BlockState state, IBlockReader worldIn, BlockPos pos) {
+        return 1.0f;
+    }
 
-	@Override
-	public boolean canEntityDestroy( final BlockState state, final IBlockReader world, final BlockPos pos, final Entity entity )
-	{
-		return false;
-	}
+    @Override
+    public boolean canEntityDestroy(final BlockState state, final IBlockReader world, final BlockPos pos,
+            final Entity entity) {
+        return false;
+    }
 }

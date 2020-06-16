@@ -18,7 +18,6 @@
 
 package appeng.hooks;
 
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
@@ -27,13 +26,13 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+public interface IBlockTool {
+    // Workaround for dispenser logic.
+    // TODO ItemUseContext
+    ActionResultType onItemUse(ItemStack is, PlayerEntity p, World w, BlockPos pos, Hand hand, Direction side,
+            float hitX, float hitY, float hitZ);
 
-public interface IBlockTool
-{
-	// Workaround for dispenser logic.
-	//TODO ItemUseContext
-	ActionResultType onItemUse( ItemStack is, PlayerEntity p, World w, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ );
-
-	ActionResultType onItemUse( PlayerEntity p, World w, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ );
+    ActionResultType onItemUse(PlayerEntity p, World w, BlockPos pos, Hand hand, Direction side, float hitX, float hitY,
+            float hitZ);
 
 }

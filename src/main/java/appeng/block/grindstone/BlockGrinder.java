@@ -18,12 +18,8 @@
 
 package appeng.block.grindstone;
 
+import javax.annotation.Nullable;
 
-import appeng.block.AEBaseTileBlock;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.ContainerGrinder;
-import appeng.tile.grindstone.TileGrinder;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -33,27 +29,29 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
+import appeng.block.AEBaseTileBlock;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerGrinder;
+import appeng.tile.grindstone.TileGrinder;
 
+public class BlockGrinder extends AEBaseTileBlock<TileGrinder> {
 
-public class BlockGrinder extends AEBaseTileBlock<TileGrinder>
-{
+    public BlockGrinder(Properties props) {
+        super(props);
+    }
 
-	public BlockGrinder(Properties props) {
-		super(props);
-	}
-
-	@Override
-	public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit)
-	{
-		final TileGrinder tg = this.getTileEntity( w, pos );
-		if( tg != null && !p.isCrouching() )
-		{
-			if (p instanceof ServerPlayerEntity) {
-				ContainerOpener.openContainer(ContainerGrinder.TYPE, p, ContainerLocator.forTileEntitySide(tg, hit.getFace()));
-			}
-			return ActionResultType.SUCCESS;
-		}
-		return ActionResultType.PASS;
-	}
+    @Override
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+        final TileGrinder tg = this.getTileEntity(w, pos);
+        if (tg != null && !p.isCrouching()) {
+            if (p instanceof ServerPlayerEntity) {
+                ContainerOpener.openContainer(ContainerGrinder.TYPE, p,
+                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+            }
+            return ActionResultType.SUCCESS;
+        }
+        return ActionResultType.PASS;
+    }
 }

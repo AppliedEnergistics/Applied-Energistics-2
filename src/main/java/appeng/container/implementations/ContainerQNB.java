@@ -18,44 +18,40 @@
 
 package appeng.container.implementations;
 
-
-import appeng.api.config.SecurityPermissions;
-import appeng.container.ContainerLocator;
-import appeng.container.implementations.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-
-import appeng.container.AEBaseContainer;
-import appeng.container.slot.SlotRestrictedInput;
-import appeng.tile.qnb.TileQuantumBridge;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.network.PacketBuffer;
 
+import appeng.api.config.SecurityPermissions;
+import appeng.container.AEBaseContainer;
+import appeng.container.ContainerLocator;
+import appeng.container.implementations.ContainerHelper;
+import appeng.container.slot.SlotRestrictedInput;
+import appeng.tile.qnb.TileQuantumBridge;
 
-public class ContainerQNB extends AEBaseContainer
-{
+public class ContainerQNB extends AEBaseContainer {
 
-public static ContainerType<ContainerQNB> TYPE;
+    public static ContainerType<ContainerQNB> TYPE;
 
-	private static final ContainerHelper<ContainerQNB, TileQuantumBridge> helper
-			= new ContainerHelper<>(ContainerQNB::new, TileQuantumBridge.class, SecurityPermissions.BUILD);
+    private static final ContainerHelper<ContainerQNB, TileQuantumBridge> helper = new ContainerHelper<>(
+            ContainerQNB::new, TileQuantumBridge.class, SecurityPermissions.BUILD);
 
-	public static ContainerQNB fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-		return helper.fromNetwork(windowId, inv, buf);
-	}
+    public static ContainerQNB fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+        return helper.fromNetwork(windowId, inv, buf);
+    }
 
-	public static boolean open(PlayerEntity player, ContainerLocator locator) {
-		return helper.open(player, locator);
-	}
+    public static boolean open(PlayerEntity player, ContainerLocator locator) {
+        return helper.open(player, locator);
+    }
 
-	public ContainerQNB(int id, final PlayerInventory ip, final TileQuantumBridge quantumBridge )
-	{
-		super( TYPE, id,  ip, quantumBridge, null );
+    public ContainerQNB(int id, final PlayerInventory ip, final TileQuantumBridge quantumBridge) {
+        super(TYPE, id, ip, quantumBridge, null);
 
-		this.addSlot( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.QE_SINGULARITY, quantumBridge
-				.getInternalInventory(), 0, 80, 37, this.getPlayerInventory() ) ).setStackLimit( 1 ) );
+        this.addSlot((new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.QE_SINGULARITY,
+                quantumBridge.getInternalInventory(), 0, 80, 37, this.getPlayerInventory())).setStackLimit(1));
 
-		this.bindPlayerInventory( ip, 0, 166 - /* height of player inventory */82 );
-	}
+        this.bindPlayerInventory(ip, 0, 166 - /* height of player inventory */82);
+    }
 
 }

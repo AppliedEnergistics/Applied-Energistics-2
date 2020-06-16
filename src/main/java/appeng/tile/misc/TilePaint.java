@@ -18,7 +18,6 @@
 
 package appeng.tile.misc;
 
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,7 +25,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import appeng.block.paint.PaintSplotches;
+import javax.annotation.Nonnull;
+
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.block.BlockState;
@@ -38,266 +38,220 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.LightType;
-
-import appeng.api.util.AEColor;
-import appeng.helpers.Splotch;
-import appeng.items.misc.ItemPaintBall;
-import appeng.tile.AEBaseTile;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
 
-import javax.annotation.Nonnull;
+import appeng.api.util.AEColor;
+import appeng.block.paint.PaintSplotches;
+import appeng.helpers.Splotch;
+import appeng.items.misc.ItemPaintBall;
+import appeng.tile.AEBaseTile;
 
+public class TilePaint extends AEBaseTile {
 
-public class TilePaint extends AEBaseTile
-{
+    public static final ModelProperty<PaintSplotches> SPLOTCHES = new ModelProperty<>();
 
-	public static final ModelProperty<PaintSplotches> SPLOTCHES = new ModelProperty<>();
+    private static final int LIGHT_PER_DOT = 12;
 
-	private static final int LIGHT_PER_DOT = 12;
+    private int isLit = 0;
+    private List<Splotch> dots = null;
 
-	private int isLit = 0;
-	private List<Splotch> dots = null;
+    public TilePaint(TileEntityType<?> tileEntityTypeIn) {
+        super(tileEntityTypeIn);
+    }
 
-	public TilePaint(TileEntityType<?> tileEntityTypeIn) {
-		super(tileEntityTypeIn);
-	}
+    @Override
+    public boolean canBeRotated() {
+        return false;
+    }
 
-	@Override
-	public boolean canBeRotated()
-	{
-		return false;
-	}
+    @Override
+    public CompoundNBT write(final CompoundNBT data) {
+        super.write(data);
+        final PacketBuffer myDat = new PacketBuffer(Unpooled.buffer());
+        this.writeBuffer(myDat);
+        if (myDat.hasArray()) {
+            data.putByteArray("dots", myDat.array());
+        }
+        return data;
+    }
 
-	@Override
-	public CompoundNBT write( final CompoundNBT data )
-	{
-		super.write( data );
-		final PacketBuffer myDat = new PacketBuffer( Unpooled.buffer() );
-		this.writeBuffer( myDat );
-		if( myDat.hasArray() )
-		{
-			data.putByteArray( "dots", myDat.array() );
-		}
-		return data;
-	}
+    private void writeBuffer(final PacketBuffer out) {
+        if (this.dots == null) {
+            out.writeByte(0);
+            return;
+        }
 
-	private void writeBuffer( final PacketBuffer out )
-	{
-		if( this.dots == null )
-		{
-			out.writeByte( 0 );
-			return;
-		}
+        out.writeByte(this.dots.size());
 
-		out.writeByte( this.dots.size() );
+        for (final Splotch s : this.dots) {
+            s.writeToStream(out);
+        }
+    }
 
-		for( final Splotch s : this.dots )
-		{
-			s.writeToStream( out );
-		}
-	}
+    @Override
+    public void read(final CompoundNBT data) {
+        super.read(data);
+        if (data.contains("dots")) {
+            this.readBuffer(new PacketBuffer(Unpooled.copiedBuffer(data.getByteArray("dots"))));
+        }
+    }
 
-	@Override
-	public void read( final CompoundNBT data )
-	{
-		super.read( data );
-		if( data.contains( "dots" ) )
-		{
-			this.readBuffer( new PacketBuffer( Unpooled.copiedBuffer( data.getByteArray( "dots" ) ) ) );
-		}
-	}
+    private void readBuffer(final PacketBuffer in) {
+        final byte howMany = in.readByte();
 
-	private void readBuffer( final PacketBuffer in )
-	{
-		final byte howMany = in.readByte();
+        if (howMany == 0) {
+            this.isLit = 0;
+            this.dots = null;
+            return;
+        }
 
-		if( howMany == 0 )
-		{
-			this.isLit = 0;
-			this.dots = null;
-			return;
-		}
+        this.dots = new ArrayList(howMany);
+        for (int x = 0; x < howMany; x++) {
+            this.dots.add(new Splotch(in));
+        }
 
-		this.dots = new ArrayList( howMany );
-		for( int x = 0; x < howMany; x++ )
-		{
-			this.dots.add( new Splotch( in ) );
-		}
+        this.isLit = 0;
+        for (final Splotch s : this.dots) {
+            if (s.isLumen()) {
+                this.isLit += LIGHT_PER_DOT;
+            }
+        }
 
-		this.isLit = 0;
-		for( final Splotch s : this.dots )
-		{
-			if( s.isLumen() )
-			{
-				this.isLit += LIGHT_PER_DOT;
-			}
-		}
+        this.maxLit();
+    }
 
-		this.maxLit();
-	}
+    private void maxLit() {
+        if (this.isLit > 14) {
+            this.isLit = 14;
+        }
 
-	private void maxLit()
-	{
-		if( this.isLit > 14 )
-		{
-			this.isLit = 14;
-		}
+        if (this.world != null) {
+            this.world.getLightFor(LightType.BLOCK, this.pos);
+        }
+    }
 
-		if( this.world != null )
-		{
-			this.world.getLightFor( LightType.BLOCK, this.pos );
-		}
-	}
+    @Override
+    protected void writeToStream(final PacketBuffer data) throws IOException {
+        super.writeToStream(data);
+        this.writeBuffer(data);
+    }
 
-	@Override
-	protected void writeToStream( final PacketBuffer data ) throws IOException
-	{
-		super.writeToStream( data );
-		this.writeBuffer( data );
-	}
+    @Override
+    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+        super.readFromStream(data);
+        this.readBuffer(data);
+        return true;
+    }
 
-	@Override
-	protected boolean readFromStream( final PacketBuffer data ) throws IOException
-	{
-		super.readFromStream( data );
-		this.readBuffer( data );
-		return true;
-	}
+    public void neighborChanged() {
+        if (this.dots == null) {
+            return;
+        }
 
-	public void neighborChanged()
-	{
-		if( this.dots == null )
-		{
-			return;
-		}
+        for (final Direction side : Direction.values()) {
+            if (!this.isSideValid(side)) {
+                this.removeSide(side);
+            }
+        }
 
-		for( final Direction side : Direction.values() )
-		{
-			if( !this.isSideValid( side ) )
-			{
-				this.removeSide( side );
-			}
-		}
+        this.updateData();
+    }
 
-		this.updateData();
-	}
+    public boolean isSideValid(final Direction side) {
+        final BlockPos p = this.pos.offset(side);
+        final BlockState blk = this.world.getBlockState(p);
+        return blk.isSolidSide(world, p, side.getOpposite());
+    }
 
-	public boolean isSideValid( final Direction side )
-	{
-		final BlockPos p = this.pos.offset( side );
-		final BlockState blk = this.world.getBlockState( p );
-		return blk.isSolidSide( world, p, side.getOpposite() );
-	}
+    private void removeSide(final Direction side) {
+        final Iterator<Splotch> i = this.dots.iterator();
+        while (i.hasNext()) {
+            final Splotch s = i.next();
+            if (s.getSide() == side) {
+                i.remove();
+            }
+        }
 
-	private void removeSide( final Direction side )
-	{
-		final Iterator<Splotch> i = this.dots.iterator();
-		while( i.hasNext() )
-		{
-			final Splotch s = i.next();
-			if( s.getSide() == side )
-			{
-				i.remove();
-			}
-		}
+        this.markForUpdate();
+        this.saveChanges();
+    }
 
-		this.markForUpdate();
-		this.saveChanges();
-	}
+    private void updateData() {
+        this.isLit = 0;
+        for (final Splotch s : this.dots) {
+            if (s.isLumen()) {
+                this.isLit += LIGHT_PER_DOT;
+            }
+        }
 
-	private void updateData()
-	{
-		this.isLit = 0;
-		for( final Splotch s : this.dots )
-		{
-			if( s.isLumen() )
-			{
-				this.isLit += LIGHT_PER_DOT;
-			}
-		}
+        this.maxLit();
 
-		this.maxLit();
+        if (this.dots.isEmpty()) {
+            this.dots = null;
+        }
 
-		if( this.dots.isEmpty() )
-		{
-			this.dots = null;
-		}
+        if (this.dots == null) {
+            this.world.removeBlock(this.pos, false);
+        }
+    }
 
-		if( this.dots == null )
-		{
-			this.world.removeBlock( this.pos, false );
-		}
-	}
+    public void cleanSide(final Direction side) {
+        if (this.dots == null) {
+            return;
+        }
 
-	public void cleanSide( final Direction side )
-	{
-		if( this.dots == null )
-		{
-			return;
-		}
+        this.removeSide(side);
 
-		this.removeSide( side );
+        this.updateData();
+    }
 
-		this.updateData();
-	}
+    public int getLightLevel() {
+        return this.isLit;
+    }
 
-	public int getLightLevel()
-	{
-		return this.isLit;
-	}
+    public void addBlot(final ItemStack type, final Direction side, final Vec3d hitVec) {
+        final BlockPos p = this.pos.offset(side);
 
-	public void addBlot( final ItemStack type, final Direction side, final Vec3d hitVec )
-	{
-		final BlockPos p = this.pos.offset( side );
+        final BlockState blk = this.world.getBlockState(p);
+        if (blk.isSolidSide(this.world, p, side.getOpposite())) {
+            final ItemPaintBall ipb = (ItemPaintBall) type.getItem();
 
-		final BlockState blk = this.world.getBlockState( p );
-		if( blk.isSolidSide( this.world, p, side.getOpposite() ) )
-		{
-			final ItemPaintBall ipb = (ItemPaintBall) type.getItem();
+            final AEColor col = ipb.getColor();
+            final boolean lit = ipb.isLumen();
 
-			final AEColor col = ipb.getColor();
-			final boolean lit = ipb.isLumen();
+            if (this.dots == null) {
+                this.dots = new ArrayList<>();
+            }
 
-			if( this.dots == null )
-			{
-				this.dots = new ArrayList<>();
-			}
+            if (this.dots.size() > 20) {
+                this.dots.remove(0);
+            }
 
-			if( this.dots.size() > 20 )
-			{
-				this.dots.remove( 0 );
-			}
+            this.dots.add(new Splotch(col, lit, side, hitVec));
+            if (lit) {
+                this.isLit += LIGHT_PER_DOT;
+            }
 
-			this.dots.add( new Splotch( col, lit, side, hitVec ) );
-			if( lit )
-			{
-				this.isLit += LIGHT_PER_DOT;
-			}
+            this.maxLit();
+            this.markForUpdate();
+            this.saveChanges();
+        }
+    }
 
-			this.maxLit();
-			this.markForUpdate();
-			this.saveChanges();
-		}
-	}
+    public Collection<Splotch> getDots() {
+        if (this.dots == null) {
+            return Collections.emptyList();
+        }
 
-	public Collection<Splotch> getDots()
-	{
-		if( this.dots == null )
-		{
-			return Collections.emptyList();
-		}
+        return this.dots;
+    }
 
-		return this.dots;
-	}
-
-	@Nonnull
-	@Override
-	public IModelData getModelData() {
-		// FIXME update trigger
-		return new ModelDataMap.Builder()
-				.withInitial(SPLOTCHES, new PaintSplotches(getDots()))
-				.build();
-	}
+    @Nonnull
+    @Override
+    public IModelData getModelData() {
+        // FIXME update trigger
+        return new ModelDataMap.Builder().withInitial(SPLOTCHES, new PaintSplotches(getDots())).build();
+    }
 }

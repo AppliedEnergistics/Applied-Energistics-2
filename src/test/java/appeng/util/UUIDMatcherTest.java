@@ -18,44 +18,37 @@
 
 package appeng.util;
 
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-
 /**
  * Tests for {@link UUIDMatcher}
  */
-public final class UUIDMatcherTest
-{
-	private static final String IS_UUID = "03ba29a1-d6bd-32ba-90b2-375e4d65abc9";
-	private static final String NO_UUID = "no";
-	private static final String INVALID_UUID = "g3ba29a1-d6bd-32ba-90b2-375e4d65abc9";
+public final class UUIDMatcherTest {
+    private static final String IS_UUID = "03ba29a1-d6bd-32ba-90b2-375e4d65abc9";
+    private static final String NO_UUID = "no";
+    private static final String INVALID_UUID = "g3ba29a1-d6bd-32ba-90b2-375e4d65abc9";
 
-	private final UUIDMatcher matcher;
+    private final UUIDMatcher matcher;
 
-	public UUIDMatcherTest()
-	{
-		this.matcher = new UUIDMatcher();
-	}
+    public UUIDMatcherTest() {
+        this.matcher = new UUIDMatcher();
+    }
 
-	@Test
-	public void testUUID_shouldPass()
-	{
-		assertTrue( this.matcher.isUUID( IS_UUID ) );
-	}
+    @Test
+    public void testUUID_shouldPass() {
+        assertTrue(this.matcher.isUUID(IS_UUID));
+    }
 
-	@Test
-	public void testNoUUD_shouldPass()
-	{
-		assertFalse( this.matcher.isUUID( NO_UUID ) );
-	}
+    @Test
+    public void testNoUUD_shouldPass() {
+        assertFalse(this.matcher.isUUID(NO_UUID));
+    }
 
-	@Test
-	public void testInvalidUUID_shouldPass()
-	{
-		assertFalse( this.matcher.isUUID( INVALID_UUID ) );
-	}
+    @Test
+    public void testInvalidUUID_shouldPass() {
+        assertFalse(this.matcher.isUUID(INVALID_UUID));
+    }
 }

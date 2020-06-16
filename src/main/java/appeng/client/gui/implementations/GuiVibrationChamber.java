@@ -18,9 +18,11 @@
 
 package appeng.client.gui.implementations;
 
-
 import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiProgressBar;
@@ -28,54 +30,48 @@ import appeng.client.gui.widgets.GuiProgressBar.Direction;
 import appeng.container.implementations.ContainerVibrationChamber;
 import appeng.core.localization.GuiText;
 import appeng.tile.misc.TileVibrationChamber;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
+public class GuiVibrationChamber extends AEBaseGui<ContainerVibrationChamber> {
 
-public class GuiVibrationChamber extends AEBaseGui<ContainerVibrationChamber>
-{
+    private GuiProgressBar pb;
 
-	private GuiProgressBar pb;
+    public GuiVibrationChamber(ContainerVibrationChamber container, PlayerInventory playerInventory,
+            ITextComponent title) {
+        super(container, playerInventory, title);
+        this.ySize = 166;
+    }
 
-	public GuiVibrationChamber(ContainerVibrationChamber container, PlayerInventory playerInventory, ITextComponent title) {
-		super(container, playerInventory, title);
-		this.ySize = 166;
-	}
+    @Override
+    public void init() {
+        super.init();
 
-	@Override
-	public void init()
-	{
-		super.init();
+        this.pb = new GuiProgressBar(this.container, "guis/vibchamber.png", 99, 36, 176, 14, 6, 18, Direction.VERTICAL);
+        this.addButton(this.pb);
+    }
 
-		this.pb = new GuiProgressBar( this.container, "guis/vibchamber.png", 99, 36, 176, 14, 6, 18, Direction.VERTICAL );
-		this.addButton( this.pb );
-	}
+    @Override
+    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+        this.font.drawString(this.getGuiDisplayName(GuiText.VibrationChamber.getLocal()), 8, 6, 4210752);
+        this.font.drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
 
-	@Override
-	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
-	{
-		this.font.drawString( this.getGuiDisplayName( GuiText.VibrationChamber.getLocal() ), 8, 6, 4210752 );
-		this.font.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
+        this.pb.setFullMsg(TileVibrationChamber.POWER_PER_TICK * this.container.getCurrentProgress()
+                / TileVibrationChamber.DILATION_SCALING + " AE/t");
 
-		this.pb.setFullMsg( TileVibrationChamber.POWER_PER_TICK * this.container.getCurrentProgress() / TileVibrationChamber.DILATION_SCALING + " AE/t" );
+        if (this.container.getRemainingBurnTime() > 0) {
+            final int i1 = this.container.getRemainingBurnTime() * 12 / 100;
+            this.bindTexture("guis/vibchamber.png");
+            RenderSystem.color3f(1, 1, 1);
+            final int l = -15;
+            final int k = 25;
+            GuiUtils.drawTexturedModalRect(k + 56, l + 36 + 12 - i1, 176, 12 - i1, 14, i1 + 2, getBlitOffset());
+        }
+    }
 
-		if( this.container.getRemainingBurnTime() > 0 )
-		{
-			final int i1 = this.container.getRemainingBurnTime() * 12 / 100;
-			this.bindTexture( "guis/vibchamber.png" );
-			RenderSystem.color3f( 1, 1, 1 );
-			final int l = -15;
-			final int k = 25;
-			GuiUtils.drawTexturedModalRect( k + 56, l + 36 + 12 - i1, 176, 12 - i1, 14, i1 + 2, getBlitOffset() );
-		}
-	}
-
-	@Override
-	public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks)
-	{
-		this.bindTexture( "guis/vibchamber.png" );
-		this.pb.x = 99 + this.guiLeft;
-		this.pb.y = 36 + this.guiTop;
-		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset() );
-	}
+    @Override
+    public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+        this.bindTexture("guis/vibchamber.png");
+        this.pb.x = 99 + this.guiLeft;
+        this.pb.y = 36 + this.guiTop;
+        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());
+    }
 }

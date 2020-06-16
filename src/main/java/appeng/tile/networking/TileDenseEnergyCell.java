@@ -18,15 +18,13 @@
 
 package appeng.tile.networking;
 
-
 import net.minecraft.tileentity.TileEntityType;
 
-public class TileDenseEnergyCell extends TileEnergyCell
-{
+public class TileDenseEnergyCell extends TileEnergyCell {
 
-	public TileDenseEnergyCell(TileEntityType<?> tileEntityTypeIn) {
-		super(tileEntityTypeIn);
-		this.setInternalMaxPower( 200000 * 8 );
-	}
+    public TileDenseEnergyCell(TileEntityType<?> tileEntityTypeIn) {
+        super(tileEntityTypeIn);
+        this.setInternalMaxPower(200000 * 8);
+    }
 
 }

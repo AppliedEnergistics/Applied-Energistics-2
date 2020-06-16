@@ -18,6 +18,11 @@
 
 package appeng.container.implementations;
 
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
@@ -30,87 +35,74 @@ import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.tile.misc.TileCondenser;
 import appeng.util.Platform;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.items.IItemHandler;
 
+public class ContainerCondenser extends AEBaseContainer implements IProgressProvider {
 
-public class ContainerCondenser extends AEBaseContainer implements IProgressProvider
-{
+    public static ContainerType<ContainerCondenser> TYPE;
 
-	public static ContainerType<ContainerCondenser> TYPE;
+    private static final ContainerHelper<ContainerCondenser, TileCondenser> helper = new ContainerHelper<>(
+            ContainerCondenser::new, TileCondenser.class);
 
-	private static final ContainerHelper<ContainerCondenser, TileCondenser> helper
-			= new ContainerHelper<>(ContainerCondenser::new, TileCondenser.class);
+    private final TileCondenser condenser;
+    @GuiSync(0)
+    public long requiredEnergy = 0;
+    @GuiSync(1)
+    public long storedPower = 0;
+    @GuiSync(2)
+    public CondenserOutput output = CondenserOutput.TRASH;
 
-	private final TileCondenser condenser;
-	@GuiSync( 0 )
-	public long requiredEnergy = 0;
-	@GuiSync( 1 )
-	public long storedPower = 0;
-	@GuiSync( 2 )
-	public CondenserOutput output = CondenserOutput.TRASH;
+    public ContainerCondenser(int id, final PlayerInventory ip, final TileCondenser condenser) {
+        super(TYPE, id, ip, condenser, null);
+        this.condenser = condenser;
 
-	public ContainerCondenser(int id, final PlayerInventory ip, final TileCondenser condenser )
-	{
-		super( TYPE, id, ip, condenser, null );
-		this.condenser = condenser;
+        IItemHandler inv = condenser.getInternalInventory();
 
-		IItemHandler inv = condenser.getInternalInventory();
+        this.addSlot(new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.TRASH, inv, 0, 51, 52, ip));
+        this.addSlot(new SlotOutput(inv, 1, 105, 52, -1));
+        this.addSlot(
+                (new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.STORAGE_COMPONENT, inv, 2, 101, 26, ip))
+                        .setStackLimit(1));
 
-		this.addSlot( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.TRASH, inv, 0, 51, 52, ip ) );
-		this.addSlot( new SlotOutput( inv, 1, 105, 52, -1 ) );
-		this.addSlot(
-				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_COMPONENT, inv, 2, 101, 26, ip ) ).setStackLimit( 1 ) );
+        this.bindPlayerInventory(ip, 0, 197 - /* height of player inventory */82);
+    }
 
-		this.bindPlayerInventory( ip, 0, 197 - /* height of player inventory */82 );
-	}
+    public static ContainerCondenser fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+        return helper.fromNetwork(windowId, inv, buf);
+    }
 
-	public static ContainerCondenser fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-		return helper.fromNetwork(windowId, inv, buf);
-	}
+    public static boolean open(PlayerEntity player, ContainerLocator locator) {
+        return helper.open(player, locator);
+    }
 
-	public static boolean open(PlayerEntity player, ContainerLocator locator) {
-		return helper.open(player, locator);
-	}
+    @Override
+    public void detectAndSendChanges() {
+        if (Platform.isServer()) {
+            final double maxStorage = this.condenser.getStorage();
+            final double requiredEnergy = this.condenser.getRequiredPower();
 
-	@Override
-	public void detectAndSendChanges()
-	{
-		if( Platform.isServer() )
-		{
-			final double maxStorage = this.condenser.getStorage();
-			final double requiredEnergy = this.condenser.getRequiredPower();
+            this.requiredEnergy = requiredEnergy == 0 ? (int) maxStorage : (int) Math.min(requiredEnergy, maxStorage);
+            this.storedPower = (int) this.condenser.getStoredPower();
+            this.setOutput((CondenserOutput) this.condenser.getConfigManager().getSetting(Settings.CONDENSER_OUTPUT));
+        }
 
-			this.requiredEnergy = requiredEnergy == 0 ? (int) maxStorage : (int) Math.min( requiredEnergy, maxStorage );
-			this.storedPower = (int) this.condenser.getStoredPower();
-			this.setOutput( (CondenserOutput) this.condenser.getConfigManager().getSetting( Settings.CONDENSER_OUTPUT ) );
-		}
+        super.detectAndSendChanges();
+    }
 
-		super.detectAndSendChanges();
-	}
+    @Override
+    public int getCurrentProgress() {
+        return (int) this.storedPower;
+    }
 
-	@Override
-	public int getCurrentProgress()
-	{
-		return (int) this.storedPower;
-	}
+    @Override
+    public int getMaxProgress() {
+        return (int) this.requiredEnergy;
+    }
 
-	@Override
-	public int getMaxProgress()
-	{
-		return (int) this.requiredEnergy;
-	}
+    public CondenserOutput getOutput() {
+        return this.output;
+    }
 
-	public CondenserOutput getOutput()
-	{
-		return this.output;
-	}
-
-	private void setOutput( final CondenserOutput output )
-	{
-		this.output = output;
-	}
+    private void setOutput(final CondenserOutput output) {
+        this.output = output;
+    }
 }

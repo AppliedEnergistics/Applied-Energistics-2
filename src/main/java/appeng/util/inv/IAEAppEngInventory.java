@@ -18,14 +18,11 @@
 
 package appeng.util.inv;
 
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
+public interface IAEAppEngInventory {
+    void saveChanges();
 
-public interface IAEAppEngInventory
-{
-	void saveChanges();
-
-	void onChangeInventory( IItemHandler inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack );
+    void onChangeInventory(IItemHandler inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack);
 }

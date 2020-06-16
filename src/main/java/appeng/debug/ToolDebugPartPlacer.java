@@ -1,12 +1,7 @@
 package appeng.debug;
 
-import appeng.api.parts.IPart;
-import appeng.api.parts.IPartHost;
-import appeng.api.parts.PartItemStack;
-import appeng.api.util.AEPartLocation;
-import appeng.items.AEBaseItem;
-import appeng.items.parts.ColoredPartItem;
-import appeng.items.parts.ItemPart;
+import java.util.Arrays;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -20,11 +15,18 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.Arrays;
+import appeng.api.parts.IPart;
+import appeng.api.parts.IPartHost;
+import appeng.api.parts.PartItemStack;
+import appeng.api.util.AEPartLocation;
+import appeng.items.AEBaseItem;
+import appeng.items.parts.ColoredPartItem;
+import appeng.items.parts.ItemPart;
 
 /**
- * This tool will try to place anything that is registered as a {@link ItemPart} (and not a colored one)
- * onto an existing cable to quickly test parts and their rendering.
+ * This tool will try to place anything that is registered as a {@link ItemPart}
+ * (and not a colored one) onto an existing cable to quickly test parts and
+ * their rendering.
  */
 public class ToolDebugPartPlacer extends AEBaseItem {
 
@@ -89,7 +91,8 @@ public class ToolDebugPartPlacer extends AEBaseItem {
             }
 
             IPartHost partHost = (IPartHost) t;
-            if (partHost.addPart(cable.getItemStack(PartItemStack.PICK), AEPartLocation.INTERNAL, player, null) == null) {
+            if (partHost.addPart(cable.getItemStack(PartItemStack.PICK), AEPartLocation.INTERNAL, player,
+                    null) == null) {
                 continue;
             }
             for (Direction dir : perpendicularFaces) {

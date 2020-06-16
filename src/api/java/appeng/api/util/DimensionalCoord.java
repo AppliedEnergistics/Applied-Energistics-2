@@ -23,87 +23,73 @@
 
 package appeng.api.util;
 
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.dimension.Dimension;
 
-
 /**
  * Represents a location in the Minecraft Universe
  */
-public class DimensionalCoord extends WorldCoord
-{
+public class DimensionalCoord extends WorldCoord {
 
-	private final IWorld world;
-	private final Dimension dimension;
+    private final IWorld world;
+    private final Dimension dimension;
 
-	public DimensionalCoord( final DimensionalCoord coordinate )
-	{
-		super( coordinate.x, coordinate.y, coordinate.z );
-		this.world = coordinate.world;
-		this.dimension = coordinate.dimension;
-	}
+    public DimensionalCoord(final DimensionalCoord coordinate) {
+        super(coordinate.x, coordinate.y, coordinate.z);
+        this.world = coordinate.world;
+        this.dimension = coordinate.dimension;
+    }
 
-	public DimensionalCoord( final TileEntity tileEntity )
-	{
-		super( tileEntity );
-		this.world = tileEntity.getWorld();
-		this.dimension = this.world.getDimension();
-	}
+    public DimensionalCoord(final TileEntity tileEntity) {
+        super(tileEntity);
+        this.world = tileEntity.getWorld();
+        this.dimension = this.world.getDimension();
+    }
 
-	public DimensionalCoord( final IWorld world, final int x, final int y, final int z )
-	{
-		super( x, y, z );
-		this.world = world;
-		this.dimension = world.getDimension();
-	}
+    public DimensionalCoord(final IWorld world, final int x, final int y, final int z) {
+        super(x, y, z);
+        this.world = world;
+        this.dimension = world.getDimension();
+    }
 
-	public DimensionalCoord( final IWorld world, final BlockPos pos )
-	{
-		super( pos );
-		this.world = world;
-		this.dimension = world.getDimension();
-	}
+    public DimensionalCoord(final IWorld world, final BlockPos pos) {
+        super(pos);
+        this.world = world;
+        this.dimension = world.getDimension();
+    }
 
-	@Override
-	public DimensionalCoord copy()
-	{
-		return new DimensionalCoord( this );
-	}
+    @Override
+    public DimensionalCoord copy() {
+        return new DimensionalCoord(this);
+    }
 
-	@Override
-	public int hashCode()
-	{
-		return super.hashCode() ^ this.dimension.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return super.hashCode() ^ this.dimension.hashCode();
+    }
 
-	@Override
-	public boolean equals( final Object obj )
-	{
-		return obj instanceof DimensionalCoord && this.isEqual( (DimensionalCoord) obj );
-	}
+    @Override
+    public boolean equals(final Object obj) {
+        return obj instanceof DimensionalCoord && this.isEqual((DimensionalCoord) obj);
+    }
 
-	@Override
-	public String toString()
-	{
-		return "dimension=" + this.dimension + ", " + super.toString();
-	}
+    @Override
+    public String toString() {
+        return "dimension=" + this.dimension + ", " + super.toString();
+    }
 
-	public boolean isInWorld( final IWorld world )
-	{
-		return this.world == world;
-	}
+    public boolean isInWorld(final IWorld world) {
+        return this.world == world;
+    }
 
-	public IWorld getWorld()
-	{
-		return this.world;
-	}
+    public IWorld getWorld() {
+        return this.world;
+    }
 
-	private boolean isEqual( final DimensionalCoord c )
-	{
-		return this.x == c.x && this.y == c.y && this.z == c.z && c.world == this.world;
-	}
+    private boolean isEqual(final DimensionalCoord c) {
+        return this.x == c.x && this.y == c.y && this.z == c.z && c.world == this.world;
+    }
 
 }

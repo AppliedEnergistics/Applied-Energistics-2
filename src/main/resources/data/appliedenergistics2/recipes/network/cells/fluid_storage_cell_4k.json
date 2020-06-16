@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:4k_fluid_storage_cell"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aba",
-    "bcb",
-    "ddd"
-  ],
+  "pattern": ["aba", "bcb", "ddd"],
   "key": {
     "a": {
       "item": "appliedenergistics2:quartz_glass"

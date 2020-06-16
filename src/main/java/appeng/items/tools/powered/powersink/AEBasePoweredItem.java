@@ -18,7 +18,6 @@
 
 package appeng.items.tools.powered.powersink;
 
-
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.function.DoubleSupplier;
@@ -31,9 +30,9 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -43,137 +42,122 @@ import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 
+public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPowerStorage {
+    private static final String CURRENT_POWER_NBT_KEY = "internalCurrentPower";
+    private static final String MAX_POWER_NBT_KEY = "internalMaxPower";
+    private final DoubleSupplier powerCapacity;
 
-public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPowerStorage
-{
-	private static final String CURRENT_POWER_NBT_KEY = "internalCurrentPower";
-	private static final String MAX_POWER_NBT_KEY = "internalMaxPower";
-	private final DoubleSupplier powerCapacity;
-
-	public AEBasePoweredItem(final DoubleSupplier powerCapacity, Properties props )
-	{
-		super(props);
+    public AEBasePoweredItem(final DoubleSupplier powerCapacity, Properties props) {
+        super(props);
 // FIXME this.setFull3D();
 
-		this.powerCapacity = powerCapacity;
-	}
+        this.powerCapacity = powerCapacity;
+    }
 
-	@OnlyIn( Dist.CLIENT )
-	@Override
-	public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
-	{
-		final CompoundNBT tag = stack.getTag();
-		double internalCurrentPower = 0;
-		final double internalMaxPower = this.getAEMaxPower( stack );
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+            final ITooltipFlag advancedTooltips) {
+        final CompoundNBT tag = stack.getTag();
+        double internalCurrentPower = 0;
+        final double internalMaxPower = this.getAEMaxPower(stack);
 
-		if( tag != null )
-		{
-			internalCurrentPower = tag.getDouble( CURRENT_POWER_NBT_KEY );
-		}
+        if (tag != null) {
+            internalCurrentPower = tag.getDouble(CURRENT_POWER_NBT_KEY);
+        }
 
-		final double percent = internalCurrentPower / internalMaxPower;
+        final double percent = internalCurrentPower / internalMaxPower;
 
-		lines.add( GuiText.StoredEnergy.textComponent().appendText( ':' + MessageFormat.format( " {0,number,#} ", internalCurrentPower ) )
-				.appendSibling( new TranslationTextComponent( PowerUnits.AE.unlocalizedName ) )
-				.appendText( " - " + MessageFormat.format( " {0,number,#.##%} ", percent ) ) );
-	}
+        lines.add(GuiText.StoredEnergy.textComponent()
+                .appendText(':' + MessageFormat.format(" {0,number,#} ", internalCurrentPower))
+                .appendSibling(new TranslationTextComponent(PowerUnits.AE.unlocalizedName))
+                .appendText(" - " + MessageFormat.format(" {0,number,#.##%} ", percent)));
+    }
 
-	@Override
-	public boolean isDamageable()
-	{
-		return true;
-	}
+    @Override
+    public boolean isDamageable() {
+        return true;
+    }
 
-	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		super.fillItemGroup(group, items);
+    @Override
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+        super.fillItemGroup(group, items);
 
-		if (this.isInGroup(group)) {
-			final ItemStack charged = new ItemStack(this, 1);
-			final CompoundNBT tag = charged.getOrCreateTag();
-			tag.putDouble(CURRENT_POWER_NBT_KEY, this.getAEMaxPower(charged));
-			tag.putDouble(MAX_POWER_NBT_KEY, this.getAEMaxPower(charged));
+        if (this.isInGroup(group)) {
+            final ItemStack charged = new ItemStack(this, 1);
+            final CompoundNBT tag = charged.getOrCreateTag();
+            tag.putDouble(CURRENT_POWER_NBT_KEY, this.getAEMaxPower(charged));
+            tag.putDouble(MAX_POWER_NBT_KEY, this.getAEMaxPower(charged));
 
-			items.add(charged);
-		}
-	}
+            items.add(charged);
+        }
+    }
 
-	@Override
-	public double getDurabilityForDisplay( final ItemStack is )
-	{
-		return 1 - this.getAECurrentPower( is ) / this.getAEMaxPower( is );
-	}
+    @Override
+    public double getDurabilityForDisplay(final ItemStack is) {
+        return 1 - this.getAECurrentPower(is) / this.getAEMaxPower(is);
+    }
 
-	@Override
-	public boolean isDamaged( final ItemStack stack )
-	{
-		return true;
-	}
+    @Override
+    public boolean isDamaged(final ItemStack stack) {
+        return true;
+    }
 
-	@Override
-	public void setDamage( final ItemStack stack, final int damage )
-	{
+    @Override
+    public void setDamage(final ItemStack stack, final int damage) {
 
-	}
+    }
 
-	@Override
-	public double injectAEPower( final ItemStack is, final double amount, Actionable mode )
-	{
-		final double maxStorage = this.getAEMaxPower( is );
-		final double currentStorage = this.getAECurrentPower( is );
-		final double required = maxStorage - currentStorage;
-		final double overflow = amount - required;
+    @Override
+    public double injectAEPower(final ItemStack is, final double amount, Actionable mode) {
+        final double maxStorage = this.getAEMaxPower(is);
+        final double currentStorage = this.getAECurrentPower(is);
+        final double required = maxStorage - currentStorage;
+        final double overflow = amount - required;
 
-		if( mode == Actionable.MODULATE )
-		{
+        if (mode == Actionable.MODULATE) {
             final CompoundNBT data = is.getOrCreateTag();
-			final double toAdd = Math.min( amount, required );
+            final double toAdd = Math.min(amount, required);
 
-			data.putDouble(CURRENT_POWER_NBT_KEY, currentStorage + toAdd);
-		}
+            data.putDouble(CURRENT_POWER_NBT_KEY, currentStorage + toAdd);
+        }
 
-		return Math.max( 0, overflow );
-	}
+        return Math.max(0, overflow);
+    }
 
-	@Override
-	public double extractAEPower( final ItemStack is, final double amount, Actionable mode )
-	{
-		final double currentStorage = this.getAECurrentPower( is );
-		final double fulfillable = Math.min( amount, currentStorage );
+    @Override
+    public double extractAEPower(final ItemStack is, final double amount, Actionable mode) {
+        final double currentStorage = this.getAECurrentPower(is);
+        final double fulfillable = Math.min(amount, currentStorage);
 
-		if( mode == Actionable.MODULATE )
-		{
+        if (mode == Actionable.MODULATE) {
             final CompoundNBT data = is.getOrCreateTag();
 
-			data.putDouble(CURRENT_POWER_NBT_KEY, currentStorage - fulfillable);
-		}
+            data.putDouble(CURRENT_POWER_NBT_KEY, currentStorage - fulfillable);
+        }
 
-		return fulfillable;
-	}
+        return fulfillable;
+    }
 
-	@Override
-	public double getAEMaxPower( final ItemStack is )
-	{
-		return this.powerCapacity.getAsDouble();
-	}
+    @Override
+    public double getAEMaxPower(final ItemStack is) {
+        return this.powerCapacity.getAsDouble();
+    }
 
-	@Override
-	public double getAECurrentPower( final ItemStack is )
-	{
+    @Override
+    public double getAECurrentPower(final ItemStack is) {
         final CompoundNBT data = is.getOrCreateTag();
 
-		return data.getDouble( CURRENT_POWER_NBT_KEY );
-	}
+        return data.getDouble(CURRENT_POWER_NBT_KEY);
+    }
 
-	@Override
-	public AccessRestriction getPowerFlow( final ItemStack is )
-	{
-		return AccessRestriction.WRITE;
-	}
+    @Override
+    public AccessRestriction getPowerFlow(final ItemStack is) {
+        return AccessRestriction.WRITE;
+    }
 
-	@Override
-	public ICapabilityProvider initCapabilities( ItemStack stack, CompoundNBT nbt )
-	{
-		return new PoweredItemCapabilities( stack, this );
-	}
+    @Override
+    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
+        return new PoweredItemCapabilities(stack, this);
+    }
 }

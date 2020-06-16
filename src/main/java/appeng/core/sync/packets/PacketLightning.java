@@ -18,7 +18,6 @@
 
 package appeng.core.sync.packets;
 
-
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
@@ -33,51 +32,42 @@ import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.Platform;
 
+public class PacketLightning extends AppEngPacket {
 
-public class PacketLightning extends AppEngPacket
-{
+    private final double x;
+    private final double y;
+    private final double z;
 
-	private final double x;
-	private final double y;
-	private final double z;
+    public PacketLightning(final PacketBuffer stream) {
+        this.x = stream.readFloat();
+        this.y = stream.readFloat();
+        this.z = stream.readFloat();
+    }
 
-	public PacketLightning( final PacketBuffer stream )
-	{
-		this.x = stream.readFloat();
-		this.y = stream.readFloat();
-		this.z = stream.readFloat();
-	}
+    // api
+    public PacketLightning(final double x, final double y, final double z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
 
-	// api
-	public PacketLightning( final double x, final double y, final double z )
-	{
-		this.x = x;
-		this.y = y;
-		this.z = z;
+        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
-		final PacketBuffer data = new PacketBuffer( Unpooled.buffer() );
+        data.writeInt(this.getPacketID());
+        data.writeFloat((float) x);
+        data.writeFloat((float) y);
+        data.writeFloat((float) z);
 
-		data.writeInt( this.getPacketID() );
-		data.writeFloat( (float) x );
-		data.writeFloat( (float) y );
-		data.writeFloat( (float) z );
+        this.configureWrite(data);
+    }
 
-		this.configureWrite( data );
-	}
-
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public void clientPacketData( final INetworkInfo network, final PlayerEntity player )
-	{
-		try
-		{
-			if( Platform.isClient() && AEConfig.instance().isEnableEffects() )
-			{
-				Minecraft.getInstance().world.addParticle( LightningFX.TYPE, this.x, this.y, this.z, 0.0f, 0.0f, 0.0f );
-			}
-		}
-		catch( final Exception ignored )
-		{
-		}
-	}
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
+        try {
+            if (Platform.isClient() && AEConfig.instance().isEnableEffects()) {
+                Minecraft.getInstance().world.addParticle(LightningFX.TYPE, this.x, this.y, this.z, 0.0f, 0.0f, 0.0f);
+            }
+        } catch (final Exception ignored) {
+        }
+    }
 }

@@ -18,8 +18,6 @@
 
 package appeng.spatial;
 
-
-
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
@@ -29,76 +27,70 @@ import net.minecraft.world.biome.provider.SingleBiomeProvider;
 import net.minecraft.world.biome.provider.SingleBiomeProviderSettings;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.gen.ChunkGenerator;
-
-import appeng.api.AEApi;
 import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.WorldGenRegion;
 
+import appeng.api.AEApi;
 
-public class StorageChunkGenerator extends ChunkGenerator<GenerationSettings>
-{
+public class StorageChunkGenerator extends ChunkGenerator<GenerationSettings> {
 
-	private final BlockState defaultBlockState;
+    private final BlockState defaultBlockState;
 
-	public StorageChunkGenerator(final World world )
-	{
-		super( world, createBiomeProvider(), createSettings() );
-		this.defaultBlockState = AEApi.instance().definitions().blocks().matrixFrame().block().getDefaultState();
-	}
+    public StorageChunkGenerator(final World world) {
+        super(world, createBiomeProvider(), createSettings());
+        this.defaultBlockState = AEApi.instance().definitions().blocks().matrixFrame().block().getDefaultState();
+    }
 
-	private static BiomeProvider createBiomeProvider() {
-		SingleBiomeProviderSettings biomeSettings = new SingleBiomeProviderSettings(null);
-		biomeSettings.setBiome(StorageCellBiome.INSTANCE);
-		return new SingleBiomeProvider(biomeSettings);
-	}
+    private static BiomeProvider createBiomeProvider() {
+        SingleBiomeProviderSettings biomeSettings = new SingleBiomeProviderSettings(null);
+        biomeSettings.setBiome(StorageCellBiome.INSTANCE);
+        return new SingleBiomeProvider(biomeSettings);
+    }
 
-	private static GenerationSettings createSettings() {
-		return new GenerationSettings();
-	}
+    private static GenerationSettings createSettings() {
+        return new GenerationSettings();
+    }
 
-	@Override
-	public void generateSurface(WorldGenRegion region, IChunk chunk) {
-		this.fillChunk( chunk );
-		chunk.setModified( false );
-	}
+    @Override
+    public void generateSurface(WorldGenRegion region, IChunk chunk) {
+        this.fillChunk(chunk);
+        chunk.setModified(false);
+    }
 
-	private void fillChunk( IChunk chunk )
-	{
-		BlockPos.Mutable mutPos = new BlockPos.Mutable();
-		for( int cx = 0; cx < 16; cx++ )
-		{
-			mutPos.setX(cx);
-			for( int cz = 0; cz < 16; cz++ )
-			{
-				// FIXME: It's likely a bad idea to fill Y in the inner-loop given the storage layout of chunks
-				mutPos.setZ(cz);
-				for( int cy = 0; cy < 256; cy++ )
-				{
-					mutPos.setY(cy);
-					chunk.setBlockState(mutPos, defaultBlockState, false);
-				}
-			}
-		}
-	}
+    private void fillChunk(IChunk chunk) {
+        BlockPos.Mutable mutPos = new BlockPos.Mutable();
+        for (int cx = 0; cx < 16; cx++) {
+            mutPos.setX(cx);
+            for (int cz = 0; cz < 16; cz++) {
+                // FIXME: It's likely a bad idea to fill Y in the inner-loop given the storage
+                // layout of chunks
+                mutPos.setZ(cz);
+                for (int cy = 0; cy < 256; cy++) {
+                    mutPos.setY(cy);
+                    chunk.setBlockState(mutPos, defaultBlockState, false);
+                }
+            }
+        }
+    }
 
-	@Override
-	public int getGroundHeight() {
-		return 0;
-	}
+    @Override
+    public int getGroundHeight() {
+        return 0;
+    }
 
-	@Override
-	public void makeBase(IWorld worldIn, IChunk chunkIn) {
-	}
+    @Override
+    public void makeBase(IWorld worldIn, IChunk chunkIn) {
+    }
 
-	@Override
-	public int func_222529_a(int p_222529_1_, int p_222529_2_, Heightmap.Type heightmapType) {
-		return 0;
-	}
+    @Override
+    public int func_222529_a(int p_222529_1_, int p_222529_2_, Heightmap.Type heightmapType) {
+        return 0;
+    }
 
-	@Override
-	public void decorate(WorldGenRegion region) {
-		// Do not decorate chunks at all
-	}
+    @Override
+    public void decorate(WorldGenRegion region) {
+        // Do not decorate chunks at all
+    }
 
 }

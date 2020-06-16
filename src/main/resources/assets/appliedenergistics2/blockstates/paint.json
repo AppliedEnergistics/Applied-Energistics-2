@@ -1,7 +1,7 @@
 {
-    "variants": {
-        "": {
-            "model": "appliedenergistics2:block/paint"
-        }
+  "variants": {
+    "": {
+      "model": "appliedenergistics2:block/paint"
     }
+  }
 }

@@ -18,30 +18,24 @@
 
 package appeng.items;
 
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+public abstract class AEBaseItem extends Item {
 
-public abstract class AEBaseItem extends Item
-{
+    public AEBaseItem(Item.Properties properties) {
+        super(properties.setNoRepair());
+    }
 
-	public AEBaseItem( Item.Properties properties )
-	{
-		super( properties.setNoRepair() );
-	}
+    @Override
+    public String toString() {
+        String regName = this.getRegistryName() != null ? this.getRegistryName().getPath() : "unregistered";
+        return this.getClass().getSimpleName() + "[" + regName + "]";
+    }
 
-	@Override
-	public String toString()
-	{
-		String regName = this.getRegistryName() != null ? this.getRegistryName().getPath() : "unregistered";
-		return this.getClass().getSimpleName() + "[" + regName + "]";
-	}
-
-	@Override
-	public boolean isBookEnchantable( final ItemStack itemstack1, final ItemStack itemstack2 )
-	{
-		return false;
-	}
+    @Override
+    public boolean isBookEnchantable(final ItemStack itemstack1, final ItemStack itemstack2) {
+        return false;
+    }
 
 }

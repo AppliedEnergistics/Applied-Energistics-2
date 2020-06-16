@@ -18,7 +18,6 @@
 
 package appeng.items.tools.powered;
 
-
 import java.util.List;
 
 import net.minecraft.client.util.ITooltipFlag;
@@ -48,103 +47,85 @@ import appeng.core.localization.GuiText;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.ConfigManager;
 
+public class ToolWirelessTerminal extends AEBasePoweredItem implements IWirelessTermHandler {
 
-public class ToolWirelessTerminal extends AEBasePoweredItem implements IWirelessTermHandler
-{
+    public ToolWirelessTerminal(Item.Properties props) {
+        super(AEConfig.instance().getWirelessTerminalBattery(), props);
+    }
 
-	public ToolWirelessTerminal(Item.Properties props)
-	{
-		super( AEConfig.instance().getWirelessTerminalBattery(), props );
-	}
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity player, final Hand hand) {
+        AEApi.instance().registries().wireless().openWirelessTerminalGui(player.getHeldItem(hand), w, player, hand);
+        return new ActionResult<>(ActionResultType.SUCCESS, player.getHeldItem(hand));
+    }
 
-	@Override
-	public ActionResult<ItemStack> onItemRightClick( final World w, final PlayerEntity player, final Hand hand )
-	{
-		AEApi.instance().registries().wireless().openWirelessTerminalGui( player.getHeldItem( hand ), w, player, hand );
-		return new ActionResult<>( ActionResultType.SUCCESS, player.getHeldItem( hand ) );
-	}
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+            final ITooltipFlag advancedTooltips) {
+        super.addInformation(stack, world, lines, advancedTooltips);
 
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public void addInformation( final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
-	{
-		super.addInformation( stack, world, lines, advancedTooltips );
+        if (stack.hasTag()) {
+            final CompoundNBT tag = stack.getOrCreateTag();
+            if (tag != null) {
+                final String encKey = tag.getString("encryptionKey");
 
-		if( stack.hasTag() )
-		{
-			final CompoundNBT tag = stack.getOrCreateTag();
-			if( tag != null )
-			{
-				final String encKey = tag.getString( "encryptionKey" );
+                if (encKey == null || encKey.isEmpty()) {
+                    lines.add(GuiText.Unlinked.textComponent());
+                } else {
+                    lines.add(GuiText.Linked.textComponent());
+                }
+            }
+        } else {
+            lines.add(new TranslationTextComponent("AppEng.GuiITooltip.Unlinked"));
+        }
+    }
 
-				if( encKey == null || encKey.isEmpty() )
-				{
-					lines.add( GuiText.Unlinked.textComponent() );
-				}
-				else
-				{
-					lines.add( GuiText.Linked.textComponent() );
-				}
-			}
-		}
-		else
-		{
-			lines.add( new TranslationTextComponent( "AppEng.GuiITooltip.Unlinked" ) );
-		}
-	}
+    @Override
+    public boolean canHandle(final ItemStack is) {
+        return AEApi.instance().definitions().items().wirelessTerminal().isSameAs(is);
+    }
 
-	@Override
-	public boolean canHandle( final ItemStack is )
-	{
-		return AEApi.instance().definitions().items().wirelessTerminal().isSameAs( is );
-	}
+    @Override
+    public boolean usePower(final PlayerEntity player, final double amount, final ItemStack is) {
+        return this.extractAEPower(is, amount, Actionable.MODULATE) >= amount - 0.5;
+    }
 
-	@Override
-	public boolean usePower( final PlayerEntity player, final double amount, final ItemStack is )
-	{
-		return this.extractAEPower( is, amount, Actionable.MODULATE ) >= amount - 0.5;
-	}
+    @Override
+    public boolean hasPower(final PlayerEntity player, final double amt, final ItemStack is) {
+        return this.getAECurrentPower(is) >= amt;
+    }
 
-	@Override
-	public boolean hasPower( final PlayerEntity player, final double amt, final ItemStack is )
-	{
-		return this.getAECurrentPower( is ) >= amt;
-	}
+    @Override
+    public IConfigManager getConfigManager(final ItemStack target) {
+        final ConfigManager out = new ConfigManager((manager, settingName, newValue) -> {
+            final CompoundNBT data = target.getOrCreateTag();
+            manager.writeToNBT(data);
+        });
 
-	@Override
-	public IConfigManager getConfigManager( final ItemStack target )
-	{
-		final ConfigManager out = new ConfigManager( ( manager, settingName, newValue ) -> {
-			final CompoundNBT data = target.getOrCreateTag();
-			manager.writeToNBT( data );
-		} );
+        out.registerSetting(Settings.SORT_BY, SortOrder.NAME);
+        out.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
+        out.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
 
-		out.registerSetting( Settings.SORT_BY, SortOrder.NAME );
-		out.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
-		out.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
+        out.readFromNBT(target.getOrCreateTag().copy());
+        return out;
+    }
 
-		out.readFromNBT( target.getOrCreateTag().copy() );
-		return out;
-	}
+    @Override
+    public String getEncryptionKey(final ItemStack item) {
+        final CompoundNBT tag = item.getOrCreateTag();
+        return tag.getString("encryptionKey");
+    }
 
-	@Override
-	public String getEncryptionKey( final ItemStack item )
-	{
-		final CompoundNBT tag = item.getOrCreateTag();
-		return tag.getString( "encryptionKey" );
-	}
+    @Override
+    public void setEncryptionKey(final ItemStack item, final String encKey, final String name) {
+        final CompoundNBT tag = item.getOrCreateTag();
+        tag.putString("encryptionKey", encKey);
+        tag.putString("name", name);
+    }
 
-	@Override
-	public void setEncryptionKey( final ItemStack item, final String encKey, final String name )
-	{
-		final CompoundNBT tag = item.getOrCreateTag();
-		tag.putString( "encryptionKey", encKey );
-		tag.putString( "name", name );
-	}
-
-	@Override
-	public boolean shouldCauseReequipAnimation( ItemStack oldStack, ItemStack newStack, boolean slotChanged )
-	{
-		return slotChanged;
-	}
+    @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        return slotChanged;
+    }
 }

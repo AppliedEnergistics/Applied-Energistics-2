@@ -1,7 +1,6 @@
 
 package appeng.block.qnb;
 
-
 import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -10,17 +9,15 @@ import appeng.bootstrap.BlockRenderingCustomizer;
 import appeng.bootstrap.IBlockRendering;
 import appeng.bootstrap.IItemRendering;
 
+public class QuantumBridgeRendering extends BlockRenderingCustomizer {
 
-public class QuantumBridgeRendering extends BlockRenderingCustomizer
-{
-
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
-	{
-		rendering.renderType(RenderType.getCutout());
-		// FIXME rendering.builtInModel( "models/block/qnb/qnb_formed", new QnbFormedModel() );
-		// Disable auto rotation
-		rendering.modelCustomizer( ( location, model ) -> model );
-	}
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
+        rendering.renderType(RenderType.getCutout());
+        // FIXME rendering.builtInModel( "models/block/qnb/qnb_formed", new
+        // QnbFormedModel() );
+        // Disable auto rotation
+        rendering.modelCustomizer((location, model) -> model);
+    }
 }

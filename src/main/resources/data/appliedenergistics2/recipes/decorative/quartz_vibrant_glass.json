@@ -3,9 +3,7 @@
     "item": "appliedenergistics2:quartz_vibrant_glass"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aba"
-  ],
+  "pattern": ["aba"],
   "key": {
     "a": {
       "item": "minecraft:glowstone_dust"

@@ -18,52 +18,48 @@
 
 package appeng.core;
 
+import java.io.File;
 
-import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.block.Block;
 import net.minecraft.util.ResourceLocation;
 
-import java.io.File;
+import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 
+public class FacadeConfig {
 
-public class FacadeConfig
-{
+    private static final String CONFIG_VERSION = "1";
+    private static final String CONFIG_COMMON_KEY = "common";
+    private static final String CONFIG_COMMON_COMMENT = "Settings applied to all facades.\n\n" //
+            + "By default full blocks with no tile entity and a model do not need whitelisting.\n"//
+            + "This will only be read once during client startup.";
+    private static final String CONFIG_COMMON_ALLOW_TILEENTITIES_KEY = "allowTileEntityFacades";
+    private static final String CONFIG_COMMON_ALLOW_TILEENTITIES_COMMENT = "Unsupported: Allows whitelisting TileEntity as facades. Could work, have render issues, or corrupt your world. USE AT YOUR OWN RISK.";
+    private static final String CONFIG_FACADES_KEY = "facades";
+    private static final String CONFIG_FACADES_COMMENT = "A way to explicitly handle certain blocks as facades.\n\n" //
+            + "Blocks can be added by their resource location under the following rules.\n" //
+            + " - One category per domain like minecraft or appliedenergistics2\n" //
+            + " - One key per id. E.g. glass in case of minecraft:glass\n" //
+            + " - An integer value ranging from 0 to 16 representing the metadata 0-15 and 16 as wildcard for all" //
+            + " - Multiple entries for the same id but different metadata are possible when needed";
 
-	private static final String CONFIG_VERSION = "1";
-	private static final String CONFIG_COMMON_KEY = "common";
-	private static final String CONFIG_COMMON_COMMENT = "Settings applied to all facades.\n\n" //
-			+ "By default full blocks with no tile entity and a model do not need whitelisting.\n"//
-			+ "This will only be read once during client startup.";
-	private static final String CONFIG_COMMON_ALLOW_TILEENTITIES_KEY = "allowTileEntityFacades";
-	private static final String CONFIG_COMMON_ALLOW_TILEENTITIES_COMMENT = "Unsupported: Allows whitelisting TileEntity as facades. Could work, have render issues, or corrupt your world. USE AT YOUR OWN RISK.";
-	private static final String CONFIG_FACADES_KEY = "facades";
-	private static final String CONFIG_FACADES_COMMENT = "A way to explicitly handle certain blocks as facades.\n\n" //
-			+ "Blocks can be added by their resource location under the following rules.\n" //
-			+ " - One category per domain like minecraft or appliedenergistics2\n" //
-			+ " - One key per id. E.g. glass in case of minecraft:glass\n" //
-			+ " - An integer value ranging from 0 to 16 representing the metadata 0-15 and 16 as wildcard for all" //
-			+ " - Multiple entries for the same id but different metadata are possible when needed";
+    private static FacadeConfig instance;
 
-	private static FacadeConfig instance;
+    private final boolean allowTileEntityFacades;
+    private final Object2IntMap<ResourceLocation> whiteList;
 
-	private final boolean allowTileEntityFacades;
-	private final Object2IntMap<ResourceLocation> whiteList;
+    private FacadeConfig(boolean allowTileEntityFacades, Object2IntMap<ResourceLocation> whiteList) {
+        this.allowTileEntityFacades = allowTileEntityFacades;
+        this.whiteList = whiteList;
+    }
 
-	private FacadeConfig( boolean allowTileEntityFacades, Object2IntMap<ResourceLocation> whiteList )
-	{
-		this.allowTileEntityFacades = allowTileEntityFacades;
-		this.whiteList = whiteList;
-	}
-
-	/**
-	 * Creates a custom confuration based on a {@link Configuration}, but ultimately throws it away after reading it
-	 * once to save a couple MB of memory.
-	 *
-	 * @param configFile
-	 */
-	public static void init( final File configFile )
-	{
+    /**
+     * Creates a custom confuration based on a {@link Configuration}, but ultimately
+     * throws it away after reading it once to save a couple MB of memory.
+     *
+     * @param configFile
+     */
+    public static void init(final File configFile) {
 // FIXME		final Configuration configurartion = migrate( new Configuration( configFile, CONFIG_VERSION ) );
 // FIXME
 // FIXME		final boolean allowTileEntityFacades = configurartion
@@ -91,8 +87,8 @@ public class FacadeConfig
 // FIXME			configurartion.save();
 // FIXME		}
 
-		instance = new FacadeConfig( false, new Object2IntArrayMap<>() ); // FIXME
-	}
+        instance = new FacadeConfig(false, new Object2IntArrayMap<>()); // FIXME
+    }
 
 // FIXME	private static Configuration migrate( Configuration configurartion )
 // FIXME	{
@@ -132,25 +128,21 @@ public class FacadeConfig
 // FIXME		return configurartion;
 // FIXME	}
 
-	public static FacadeConfig instance()
-	{
-		return instance;
-	}
+    public static FacadeConfig instance() {
+        return instance;
+    }
 
-	public boolean allowTileEntityFacades()
-	{
-		return this.allowTileEntityFacades;
-	}
+    public boolean allowTileEntityFacades() {
+        return this.allowTileEntityFacades;
+    }
 
-	public boolean isWhiteListed( final Block block, final int metadata )
-	{
-		final Integer entry = this.whiteList.get( block.getRegistryName() );
+    public boolean isWhiteListed(final Block block, final int metadata) {
+        final Integer entry = this.whiteList.get(block.getRegistryName());
 
-		if( entry != null )
-		{
-			return entry == metadata || entry == 16;
-		}
+        if (entry != null) {
+            return entry == metadata || entry == 16;
+        }
 
-		return false;
-	}
+        return false;
+    }
 }

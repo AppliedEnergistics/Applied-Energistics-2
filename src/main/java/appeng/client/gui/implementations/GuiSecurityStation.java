@@ -18,8 +18,8 @@
 
 package appeng.client.gui.implementations;
 
-
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
@@ -28,76 +28,77 @@ import appeng.container.implementations.ContainerSecurityStation;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
-import net.minecraft.util.text.ITextComponent;
 
+public class GuiSecurityStation extends GuiMEMonitorable<ContainerSecurityStation> {
 
-public class GuiSecurityStation extends GuiMEMonitorable<ContainerSecurityStation>
-{
+    private GuiToggleButton inject;
+    private GuiToggleButton extract;
+    private GuiToggleButton craft;
+    private GuiToggleButton build;
+    private GuiToggleButton security;
 
-	private GuiToggleButton inject;
-	private GuiToggleButton extract;
-	private GuiToggleButton craft;
-	private GuiToggleButton build;
-	private GuiToggleButton security;
+    public GuiSecurityStation(ContainerSecurityStation container, PlayerInventory playerInventory,
+            ITextComponent title) {
+        super(container, playerInventory, title);
+        this.setCustomSortOrder(false);
+        this.setReservedSpace(33);
 
-	public GuiSecurityStation(ContainerSecurityStation container, PlayerInventory playerInventory, ITextComponent title) {
-		super(container, playerInventory, title);
-		this.setCustomSortOrder( false );
-		this.setReservedSpace( 33 );
+        // increase size so that the slot is over the gui.
+        this.xSize += 56;
+        this.setStandardSize(this.xSize);
+    }
 
-		// increase size so that the slot is over the gui.
-		this.xSize += 56;
-		this.setStandardSize( this.xSize );
-	}
+    private void toggleOption(SecurityPermissions permission) {
+        NetworkHandler.instance()
+                .sendToServer(new PacketValueConfig("TileSecurityStation.ToggleOption", permission.name()));
+    }
 
-	private void toggleOption(SecurityPermissions permission) {
-		NetworkHandler.instance().sendToServer( new PacketValueConfig( "TileSecurityStation.ToggleOption", permission.name() ) );
-	}
+    @Override
+    public void init() {
+        super.init();
 
-	@Override
-	public void init()
-	{
-		super.init();
+        final int top = this.guiTop + this.ySize - 116;
+        this.inject = this.addButton(new GuiToggleButton(this.guiLeft + 56, top, 11 * 16, 12 * 16,
+                SecurityPermissions.INJECT.getTranslatedName(), SecurityPermissions.INJECT.getTranslatedTip(),
+                btn -> toggleOption(SecurityPermissions.INJECT)));
 
-		final int top = this.guiTop + this.ySize - 116;
-		this.inject = this.addButton( new GuiToggleButton( this.guiLeft + 56, top, 11 * 16, 12 * 16, SecurityPermissions.INJECT
-				.getTranslatedName(), SecurityPermissions.INJECT.getTranslatedTip(), btn -> toggleOption(SecurityPermissions.INJECT) ) );
+        this.extract = this.addButton(new GuiToggleButton(this.guiLeft + 56 + 18, top, 11 * 16 + 1, 12 * 16 + 1,
+                SecurityPermissions.EXTRACT.getTranslatedName(), SecurityPermissions.EXTRACT.getTranslatedTip(),
+                btn -> toggleOption(SecurityPermissions.EXTRACT)));
 
-		this.extract = this.addButton( new GuiToggleButton( this.guiLeft + 56 + 18, top, 11 * 16 + 1, 12 * 16 + 1, SecurityPermissions.EXTRACT
-				.getTranslatedName(), SecurityPermissions.EXTRACT.getTranslatedTip(), btn -> toggleOption(SecurityPermissions.EXTRACT ) ) );
+        this.craft = this.addButton(new GuiToggleButton(this.guiLeft + 56 + 18 * 2, top, 11 * 16 + 2, 12 * 16 + 2,
+                SecurityPermissions.CRAFT.getTranslatedName(), SecurityPermissions.CRAFT.getTranslatedTip(),
+                btn -> toggleOption(SecurityPermissions.CRAFT)));
 
-		this.craft = this.addButton( new GuiToggleButton( this.guiLeft + 56 + 18 * 2, top, 11 * 16 + 2, 12 * 16 + 2, SecurityPermissions.CRAFT
-				.getTranslatedName(), SecurityPermissions.CRAFT.getTranslatedTip(), btn -> toggleOption(SecurityPermissions.CRAFT ) ) );
+        this.build = this.addButton(new GuiToggleButton(this.guiLeft + 56 + 18 * 3, top, 11 * 16 + 3, 12 * 16 + 3,
+                SecurityPermissions.BUILD.getTranslatedName(), SecurityPermissions.BUILD.getTranslatedTip(),
+                btn -> toggleOption(SecurityPermissions.BUILD)));
 
-		this.build = this.addButton( new GuiToggleButton( this.guiLeft + 56 + 18 * 3, top, 11 * 16 + 3, 12 * 16 + 3, SecurityPermissions.BUILD
-				.getTranslatedName(), SecurityPermissions.BUILD.getTranslatedTip(), btn -> toggleOption(SecurityPermissions.BUILD ) ) );
+        this.security = this.addButton(new GuiToggleButton(this.guiLeft + 56 + 18 * 4, top, 11 * 16 + 4, 12 * 16 + 4,
+                SecurityPermissions.SECURITY.getTranslatedName(), SecurityPermissions.SECURITY.getTranslatedTip(),
+                btn -> toggleOption(SecurityPermissions.SECURITY)));
+    }
 
-		this.security = this.addButton( new GuiToggleButton( this.guiLeft + 56 + 18 * 4, top, 11 * 16 + 4, 12 * 16 + 4, SecurityPermissions.SECURITY
-				.getTranslatedName(), SecurityPermissions.SECURITY.getTranslatedTip(), btn -> toggleOption(SecurityPermissions.SECURITY ) ) );
-	}
+    @Override
+    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+        super.drawFG(offsetX, offsetY, mouseX, mouseY);
+        this.font.drawString(GuiText.SecurityCardEditor.getLocal(), 8, this.ySize - 96 + 1 - this.getReservedSpace(),
+                4210752);
+    }
 
-	@Override
-	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
-	{
-		super.drawFG( offsetX, offsetY, mouseX, mouseY );
-		this.font.drawString( GuiText.SecurityCardEditor.getLocal(), 8, this.ySize - 96 + 1 - this.getReservedSpace(), 4210752 );
-	}
+    @Override
+    protected String getBackground() {
+        this.inject.setState((container.getPermissionMode() & (1 << SecurityPermissions.INJECT.ordinal())) > 0);
+        this.extract.setState((container.getPermissionMode() & (1 << SecurityPermissions.EXTRACT.ordinal())) > 0);
+        this.craft.setState((container.getPermissionMode() & (1 << SecurityPermissions.CRAFT.ordinal())) > 0);
+        this.build.setState((container.getPermissionMode() & (1 << SecurityPermissions.BUILD.ordinal())) > 0);
+        this.security.setState((container.getPermissionMode() & (1 << SecurityPermissions.SECURITY.ordinal())) > 0);
 
-	@Override
-	protected String getBackground()
-	{
-		this.inject.setState( ( container.getPermissionMode() & ( 1 << SecurityPermissions.INJECT.ordinal() ) ) > 0 );
-		this.extract.setState( ( container.getPermissionMode() & ( 1 << SecurityPermissions.EXTRACT.ordinal() ) ) > 0 );
-		this.craft.setState( ( container.getPermissionMode() & ( 1 << SecurityPermissions.CRAFT.ordinal() ) ) > 0 );
-		this.build.setState( ( container.getPermissionMode() & ( 1 << SecurityPermissions.BUILD.ordinal() ) ) > 0 );
-		this.security.setState( ( container.getPermissionMode() & ( 1 << SecurityPermissions.SECURITY.ordinal() ) ) > 0 );
+        return "guis/security_station.png";
+    }
 
-		return "guis/security_station.png";
-	}
-
-	@Override
-	public SortOrder getSortBy()
-	{
-		return SortOrder.NAME;
-	}
+    @Override
+    public SortOrder getSortBy() {
+        return SortOrder.NAME;
+    }
 }

@@ -18,7 +18,6 @@
 
 package appeng.parts;
 
-
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
@@ -27,54 +26,44 @@ import net.minecraft.util.ResourceLocation;
 
 import appeng.api.parts.IPartModel;
 
+public class PartModel implements IPartModel {
+    private final boolean isSolid;
 
-public class PartModel implements IPartModel
-{
-	private final boolean isSolid;
+    private final List<ResourceLocation> resources;
 
-	private final List<ResourceLocation> resources;
+    public PartModel(ResourceLocation resource) {
+        this(true, resource);
+    }
 
-	public PartModel( ResourceLocation resource )
-	{
-		this( true, resource );
-	}
+    public PartModel(ResourceLocation... resources) {
+        this(true, resources);
+    }
 
-	public PartModel( ResourceLocation... resources )
-	{
-		this( true, resources );
-	}
+    public PartModel(boolean isSolid, ResourceLocation resource) {
+        this(isSolid, ImmutableList.of(resource));
+    }
 
-	public PartModel( boolean isSolid, ResourceLocation resource )
-	{
-		this( isSolid, ImmutableList.of( resource ) );
-	}
+    public PartModel(boolean isSolid, ResourceLocation... resources) {
+        this(isSolid, ImmutableList.copyOf(resources));
+    }
 
-	public PartModel( boolean isSolid, ResourceLocation... resources )
-	{
-		this( isSolid, ImmutableList.copyOf( resources ) );
-	}
+    public PartModel(List<ResourceLocation> resources) {
+        this(true, resources);
+    }
 
-	public PartModel( List<ResourceLocation> resources )
-	{
-		this( true, resources );
-	}
+    public PartModel(boolean isSolid, List<ResourceLocation> resources) {
+        this.isSolid = isSolid;
+        this.resources = resources;
+    }
 
-	public PartModel( boolean isSolid, List<ResourceLocation> resources )
-	{
-		this.isSolid = isSolid;
-		this.resources = resources;
-	}
+    @Override
+    public boolean requireCableConnection() {
+        return this.isSolid;
+    }
 
-	@Override
-	public boolean requireCableConnection()
-	{
-		return this.isSolid;
-	}
-
-	@Override
-	public List<ResourceLocation> getModels()
-	{
-		return this.resources;
-	}
+    @Override
+    public List<ResourceLocation> getModels() {
+        return this.resources;
+    }
 
 }

@@ -4,9 +4,7 @@
     "count": 2
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "ab"
-  ],
+  "pattern": ["ab"],
   "key": {
     "b": {
       "item": "minecraft:iron_ingot"

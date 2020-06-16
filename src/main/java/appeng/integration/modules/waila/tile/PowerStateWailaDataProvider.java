@@ -18,20 +18,18 @@
 
 package appeng.integration.modules.waila.tile;
 
-
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.text.ITextComponent;
 
-import mcp.mobius.waila.api.IPluginConfig;
 import mcp.mobius.waila.api.IDataAccessor;
+import mcp.mobius.waila.api.IPluginConfig;
 
 import appeng.api.implementations.IPowerChannelState;
 import appeng.core.localization.WailaText;
 import appeng.integration.modules.waila.BaseWailaDataProvider;
-import net.minecraft.util.text.ITextComponent;
-
 
 /**
  * Power state provider for WAILA
@@ -40,33 +38,26 @@ import net.minecraft.util.text.ITextComponent;
  * @version rv2
  * @since rv2
  */
-public final class PowerStateWailaDataProvider extends BaseWailaDataProvider
-{
+public final class PowerStateWailaDataProvider extends BaseWailaDataProvider {
 
-	@Override
-	public void appendBody(List<ITextComponent> tooltip, IDataAccessor accessor, IPluginConfig config) {
-		final TileEntity te = accessor.getTileEntity();
+    @Override
+    public void appendBody(List<ITextComponent> tooltip, IDataAccessor accessor, IPluginConfig config) {
+        final TileEntity te = accessor.getTileEntity();
 
-		if( te instanceof IPowerChannelState )
-		{
-			final IPowerChannelState state = (IPowerChannelState) te;
+        if (te instanceof IPowerChannelState) {
+            final IPowerChannelState state = (IPowerChannelState) te;
 
-			final boolean isActive = state.isActive();
-			final boolean isPowered = state.isPowered();
+            final boolean isActive = state.isActive();
+            final boolean isPowered = state.isPowered();
 
-			if( isActive && isPowered )
-			{
-				tooltip.add( WailaText.DeviceOnline.textComponent() );
-			}
-			else if( isPowered )
-			{
-				tooltip.add( WailaText.DeviceMissingChannel.textComponent() );
-			}
-			else
-			{
-				tooltip.add( WailaText.DeviceOffline.textComponent() );
-			}
-		}
+            if (isActive && isPowered) {
+                tooltip.add(WailaText.DeviceOnline.textComponent());
+            } else if (isPowered) {
+                tooltip.add(WailaText.DeviceMissingChannel.textComponent());
+            } else {
+                tooltip.add(WailaText.DeviceOffline.textComponent());
+            }
+        }
 
-	}
+    }
 }

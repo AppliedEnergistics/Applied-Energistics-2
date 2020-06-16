@@ -18,6 +18,22 @@
 
 package appeng.integration.modules.jei;
 
+import java.util.Optional;
+
+import com.google.common.collect.ImmutableList;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.RecipeManager;
+import net.minecraft.util.ResourceLocation;
+
+import mezz.jei.api.IModPlugin;
+import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.VanillaRecipeCategoryUid;
+import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.registration.*;
+import mezz.jei.api.runtime.IJeiRuntime;
 
 import appeng.api.AEApi;
 import appeng.api.config.CondenserOutput;
@@ -33,62 +49,42 @@ import appeng.core.localization.GuiText;
 import appeng.integration.abstraction.JEIFacade;
 import appeng.recipes.handlers.GrinderRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
-import com.google.common.collect.ImmutableList;
-import mezz.jei.api.IModPlugin;
-import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.constants.VanillaRecipeCategoryUid;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.registration.*;
-import mezz.jei.api.runtime.IJeiRuntime;
-import net.minecraft.client.Minecraft;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.RecipeManager;
-import net.minecraft.util.ResourceLocation;
-
-import java.util.Optional;
-
 
 @JeiPlugin
-public class JEIPlugin implements IModPlugin
-{
-	private static final ResourceLocation ID = new ResourceLocation(AppEng.MOD_ID, "core");
+public class JEIPlugin implements IModPlugin {
+    private static final ResourceLocation ID = new ResourceLocation(AppEng.MOD_ID, "core");
 
-	@Override
-	public ResourceLocation getPluginUid() {
-		return ID;
-	}
+    @Override
+    public ResourceLocation getPluginUid() {
+        return ID;
+    }
 
-	@Override
-	public void registerItemSubtypes( ISubtypeRegistration subtypeRegistry )
-	{
-		final Optional<Item> maybeFacade = AEApi.instance().definitions().items().facade().maybeItem();
-		maybeFacade.ifPresent( subtypeRegistry::useNbtForSubtypes );
-	}
+    @Override
+    public void registerItemSubtypes(ISubtypeRegistration subtypeRegistry) {
+        final Optional<Item> maybeFacade = AEApi.instance().definitions().items().facade().maybeItem();
+        maybeFacade.ifPresent(subtypeRegistry::useNbtForSubtypes);
+    }
 
-	@Override
-	public void registerCategories( IRecipeCategoryRegistration registry )
-	{
-		registry.addRecipeCategories( new GrinderRecipeCategory( registry.getJeiHelpers().getGuiHelper() ),
-		 new CondenserCategory( registry.getJeiHelpers().getGuiHelper() ),
-		 new InscriberRecipeCategory( registry.getJeiHelpers().getGuiHelper() ) );
-	}
+    @Override
+    public void registerCategories(IRecipeCategoryRegistration registry) {
+        registry.addRecipeCategories(new GrinderRecipeCategory(registry.getJeiHelpers().getGuiHelper()),
+                new CondenserCategory(registry.getJeiHelpers().getGuiHelper()),
+                new InscriberRecipeCategory(registry.getJeiHelpers().getGuiHelper()));
+    }
 
-	@Override
-	public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
-		// Allow recipe transfer from JEI to crafting and pattern terminal
-		registration
-				.addRecipeTransferHandler( new RecipeTransferHandler<>( ContainerCraftingTerm.class ),
-						VanillaRecipeCategoryUid.CRAFTING );
-		registration
-				.addRecipeTransferHandler( new RecipeTransferHandler<>( ContainerPatternTerm.class ),
-						VanillaRecipeCategoryUid.CRAFTING );
-	}
+    @Override
+    public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
+        // Allow recipe transfer from JEI to crafting and pattern terminal
+        registration.addRecipeTransferHandler(new RecipeTransferHandler<>(ContainerCraftingTerm.class),
+                VanillaRecipeCategoryUid.CRAFTING);
+        registration.addRecipeTransferHandler(new RecipeTransferHandler<>(ContainerPatternTerm.class),
+                VanillaRecipeCategoryUid.CRAFTING);
+    }
 
-	@Override
-	public void registerRecipes(IRecipeRegistration registration) {
+    @Override
+    public void registerRecipes(IRecipeRegistration registration) {
 
-		IDefinitions definitions = AEApi.instance().definitions();
+        IDefinitions definitions = AEApi.instance().definitions();
 
 //	FIXME	 Optional<Item> itemFacade = definitions.items().facade().maybeItem();
 //	FIXME	 Optional<ItemStack> cableAnchor = definitions.parts().cableAnchor().maybeStack( 1 );
@@ -97,77 +93,75 @@ public class JEIPlugin implements IModPlugin
 //	FIXME	 	registration.addRecipeRegistryPlugin( new FacadeRegistryPlugin( (ItemFacade) itemFacade.get(), cableAnchor.get() ) );
 //	FIXME	 }
 
-		RecipeManager recipeManager = Minecraft.getInstance().world.getRecipeManager();
-		registration.addRecipes(recipeManager.getRecipes(GrinderRecipe.TYPE).values(), GrinderRecipeCategory.UID);
-		registration.addRecipes(recipeManager.getRecipes(InscriberRecipe.TYPE).values(), InscriberRecipeCategory.UID );
-		registration.addRecipes(ImmutableList.of(CondenserOutput.MATTER_BALLS, CondenserOutput.SINGULARITY), CondenserCategory.UID);
+        RecipeManager recipeManager = Minecraft.getInstance().world.getRecipeManager();
+        registration.addRecipes(recipeManager.getRecipes(GrinderRecipe.TYPE).values(), GrinderRecipeCategory.UID);
+        registration.addRecipes(recipeManager.getRecipes(InscriberRecipe.TYPE).values(), InscriberRecipeCategory.UID);
+        registration.addRecipes(ImmutableList.of(CondenserOutput.MATTER_BALLS, CondenserOutput.SINGULARITY),
+                CondenserCategory.UID);
 
-		registerDescriptions(definitions, registration);
-	}
+        registerDescriptions(definitions, registration);
+    }
 
-	@Override
-	public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-		IDefinitions definitions = AEApi.instance().definitions();
+    @Override
+    public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
+        IDefinitions definitions = AEApi.instance().definitions();
 
-		ItemStack grindstone = definitions.blocks().grindstone().stack(1);
-		registration.addRecipeCatalyst( grindstone, GrinderRecipeCategory.UID );
+        ItemStack grindstone = definitions.blocks().grindstone().stack(1);
+        registration.addRecipeCatalyst(grindstone, GrinderRecipeCategory.UID);
 
-		ItemStack condenser = definitions.blocks().condenser().stack(1);
-		registration.addRecipeCatalyst(condenser, CondenserCategory.UID);
+        ItemStack condenser = definitions.blocks().condenser().stack(1);
+        registration.addRecipeCatalyst(condenser, CondenserCategory.UID);
 
-		ItemStack inscriber = definitions.blocks().inscriber().stack(1);
-		registration.addRecipeCatalyst( inscriber, InscriberRecipeCategory.UID );
-	}
+        ItemStack inscriber = definitions.blocks().inscriber().stack(1);
+        registration.addRecipeCatalyst(inscriber, InscriberRecipeCategory.UID);
+    }
 
-	private void registerDescriptions(IDefinitions definitions, IRecipeRegistration registry )
-	{
-		IMaterials materials = definitions.materials();
+    private void registerDescriptions(IDefinitions definitions, IRecipeRegistration registry) {
+        IMaterials materials = definitions.materials();
 
-		final String[] message;
-		if( AEConfig.instance().isFeatureEnabled( AEFeature.CERTUS_QUARTZ_WORLD_GEN ) )
-		{
-			message = new String[]{GuiText.ChargedQuartz.getTranslationKey(), "", GuiText.ChargedQuartzFind.getTranslationKey()};
-		}
-		else
-		{
-			message = new String[]{GuiText.ChargedQuartzFind.getTranslationKey()};
-		}
-		this.addDescription( registry, materials.certusQuartzCrystalCharged(), message );
+        final String[] message;
+        if (AEConfig.instance().isFeatureEnabled(AEFeature.CERTUS_QUARTZ_WORLD_GEN)) {
+            message = new String[] { GuiText.ChargedQuartz.getTranslationKey(), "",
+                    GuiText.ChargedQuartzFind.getTranslationKey() };
+        } else {
+            message = new String[] { GuiText.ChargedQuartzFind.getTranslationKey() };
+        }
+        this.addDescription(registry, materials.certusQuartzCrystalCharged(), message);
 
-		if( AEConfig.instance().isFeatureEnabled( AEFeature.METEORITE_WORLD_GEN ) )
-		{
-			this.addDescription( registry, materials.logicProcessorPress(), GuiText.inWorldCraftingPresses.getTranslationKey() );
-			this.addDescription( registry, materials.calcProcessorPress(), GuiText.inWorldCraftingPresses.getTranslationKey() );
-			this.addDescription( registry, materials.engProcessorPress(), GuiText.inWorldCraftingPresses.getTranslationKey() );
-		}
+        if (AEConfig.instance().isFeatureEnabled(AEFeature.METEORITE_WORLD_GEN)) {
+            this.addDescription(registry, materials.logicProcessorPress(),
+                    GuiText.inWorldCraftingPresses.getTranslationKey());
+            this.addDescription(registry, materials.calcProcessorPress(),
+                    GuiText.inWorldCraftingPresses.getTranslationKey());
+            this.addDescription(registry, materials.engProcessorPress(),
+                    GuiText.inWorldCraftingPresses.getTranslationKey());
+        }
 
-		if( AEConfig.instance().isFeatureEnabled( AEFeature.IN_WORLD_FLUIX ) )
-		{
-			this.addDescription( registry, materials.fluixCrystal(), GuiText.inWorldFluix.getTranslationKey() );
-		}
+        if (AEConfig.instance().isFeatureEnabled(AEFeature.IN_WORLD_FLUIX)) {
+            this.addDescription(registry, materials.fluixCrystal(), GuiText.inWorldFluix.getTranslationKey());
+        }
 
-		if( AEConfig.instance().isFeatureEnabled( AEFeature.IN_WORLD_SINGULARITY ) )
-		{
-			this.addDescription( registry, materials.qESingularity(), GuiText.inWorldSingularity.getTranslationKey() );
-		}
+        if (AEConfig.instance().isFeatureEnabled(AEFeature.IN_WORLD_SINGULARITY)) {
+            this.addDescription(registry, materials.qESingularity(), GuiText.inWorldSingularity.getTranslationKey());
+        }
 
-		if( AEConfig.instance().isFeatureEnabled( AEFeature.IN_WORLD_PURIFICATION ) )
-		{
-			this.addDescription( registry, materials.purifiedCertusQuartzCrystal(), GuiText.inWorldPurificationCertus.getTranslationKey() );
-			this.addDescription( registry, materials.purifiedNetherQuartzCrystal(), GuiText.inWorldPurificationNether.getTranslationKey() );
-			this.addDescription( registry, materials.purifiedFluixCrystal(), GuiText.inWorldPurificationFluix.getTranslationKey() );
-		}
+        if (AEConfig.instance().isFeatureEnabled(AEFeature.IN_WORLD_PURIFICATION)) {
+            this.addDescription(registry, materials.purifiedCertusQuartzCrystal(),
+                    GuiText.inWorldPurificationCertus.getTranslationKey());
+            this.addDescription(registry, materials.purifiedNetherQuartzCrystal(),
+                    GuiText.inWorldPurificationNether.getTranslationKey());
+            this.addDescription(registry, materials.purifiedFluixCrystal(),
+                    GuiText.inWorldPurificationFluix.getTranslationKey());
+        }
 
-	}
+    }
 
-	private void addDescription(IRecipeRegistration registry, IItemDefinition itemDefinition, String... message )
-	{
-		registry.addIngredientInfo( itemDefinition.stack(1), VanillaTypes.ITEM, message );
-	}
+    private void addDescription(IRecipeRegistration registry, IItemDefinition itemDefinition, String... message) {
+        registry.addIngredientInfo(itemDefinition.stack(1), VanillaTypes.ITEM, message);
+    }
 
-	@Override
-	public void onRuntimeAvailable( IJeiRuntime jeiRuntime )
-	{
-		JEIFacade.setInstance(new JeiRuntimeAdapter(jeiRuntime));
-	}
+    @Override
+    public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
+        JEIFacade.setInstance(new JeiRuntimeAdapter(jeiRuntime));
+    }
 }

@@ -18,57 +18,48 @@
 
 package appeng.container.implementations;
 
-
 import javax.annotation.Nonnull;
 
-import appeng.api.networking.crafting.ICraftingCPU;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.util.text.ITextComponent;
 
+import appeng.api.networking.crafting.ICraftingCPU;
 
-public class CraftingCPURecord implements Comparable<CraftingCPURecord>
-{
-	private final ITextComponent myName;
-	private final ICraftingCPU cpu;
-	private final long size;
-	private final int processors;
+public class CraftingCPURecord implements Comparable<CraftingCPURecord> {
+    private final ITextComponent myName;
+    private final ICraftingCPU cpu;
+    private final long size;
+    private final int processors;
 
-	public CraftingCPURecord( final long size, final int coProcessors, final ICraftingCPU server )
-	{
-		this.size = size;
-		this.processors = coProcessors;
-		this.cpu = server;
-		this.myName = server.getName();
-	}
+    public CraftingCPURecord(final long size, final int coProcessors, final ICraftingCPU server) {
+        this.size = size;
+        this.processors = coProcessors;
+        this.cpu = server;
+        this.myName = server.getName();
+    }
 
-	@Override
-	public int compareTo( @Nonnull final CraftingCPURecord o )
-	{
-		final int a = Long.compare( o.getProcessors(), this.getProcessors() );
-		if( a != 0 )
-		{
-			return a;
-		}
-		return Long.compare( o.getSize(), this.getSize() );
-	}
+    @Override
+    public int compareTo(@Nonnull final CraftingCPURecord o) {
+        final int a = Long.compare(o.getProcessors(), this.getProcessors());
+        if (a != 0) {
+            return a;
+        }
+        return Long.compare(o.getSize(), this.getSize());
+    }
 
-	ICraftingCPU getCpu()
-	{
-		return this.cpu;
-	}
+    ICraftingCPU getCpu() {
+        return this.cpu;
+    }
 
-	ITextComponent getName()
-	{
-		return this.myName;
-	}
+    ITextComponent getName() {
+        return this.myName;
+    }
 
-	int getProcessors()
-	{
-		return this.processors;
-	}
+    int getProcessors() {
+        return this.processors;
+    }
 
-	long getSize()
-	{
-		return this.size;
-	}
+    long getSize() {
+        return this.size;
+    }
 }

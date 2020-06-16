@@ -18,6 +18,14 @@
 
 package appeng.fluids.container;
 
+import java.util.Collections;
+import java.util.Map;
+
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.network.PacketBuffer;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.storage.data.IAEFluidStack;
@@ -29,111 +37,89 @@ import appeng.fluids.helper.FluidSyncHelper;
 import appeng.fluids.helper.IFluidInterfaceHost;
 import appeng.fluids.util.IAEFluidTank;
 import appeng.util.Platform;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.network.PacketBuffer;
 
-import java.util.Collections;
-import java.util.Map;
+public class ContainerFluidInterface extends ContainerFluidConfigurable {
 
+    public static ContainerType<ContainerFluidInterface> TYPE;
 
-public class ContainerFluidInterface extends ContainerFluidConfigurable
-{
+    private static final ContainerHelper<ContainerFluidInterface, IFluidInterfaceHost> helper = new ContainerHelper<>(
+            ContainerFluidInterface::new, IFluidInterfaceHost.class, SecurityPermissions.BUILD);
 
-	public static ContainerType<ContainerFluidInterface> TYPE;
+    public static ContainerFluidInterface fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+        return helper.fromNetwork(windowId, inv, buf);
+    }
 
-	private static final ContainerHelper<ContainerFluidInterface, IFluidInterfaceHost> helper
-			= new ContainerHelper<>(ContainerFluidInterface::new, IFluidInterfaceHost.class, SecurityPermissions.BUILD);
+    public static boolean open(PlayerEntity player, ContainerLocator locator) {
+        return helper.open(player, locator);
+    }
 
-	public static ContainerFluidInterface fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-		return helper.fromNetwork(windowId, inv, buf);
-	}
+    private final DualityFluidInterface myDuality;
+    private final FluidSyncHelper tankSync;
 
-	public static boolean open(PlayerEntity player, ContainerLocator locator) {
-		return helper.open(player, locator);
-	}
+    public ContainerFluidInterface(int id, final PlayerInventory ip, final IFluidInterfaceHost te) {
+        super(TYPE, id, ip, te.getDualityFluidInterface().getHost());
 
-	private final DualityFluidInterface myDuality;
-	private final FluidSyncHelper tankSync;
+        this.myDuality = te.getDualityFluidInterface();
+        this.tankSync = new FluidSyncHelper(this.myDuality.getTanks(), DualityFluidInterface.NUMBER_OF_TANKS);
+    }
 
-	public ContainerFluidInterface(int id, final PlayerInventory ip, final IFluidInterfaceHost te )
-	{
-		super( TYPE, id,ip, te.getDualityFluidInterface().getHost() );
+    @Override
+    protected int getHeight() {
+        return 231;
+    }
 
-		this.myDuality = te.getDualityFluidInterface();
-		this.tankSync = new FluidSyncHelper( this.myDuality.getTanks(), DualityFluidInterface.NUMBER_OF_TANKS );
-	}
+    public IAEFluidTank getTanks() {
+        return myDuality.getTanks();
+    }
 
-	@Override
-	protected int getHeight()
-	{
-		return 231;
-	}
+    @Override
+    public IAEFluidTank getFluidConfigInventory() {
+        return this.myDuality.getConfig();
+    }
 
-	public IAEFluidTank getTanks() {
-		return myDuality.getTanks();
-	}
+    @Override
+    public void detectAndSendChanges() {
+        this.verifyPermissions(SecurityPermissions.BUILD, false);
 
-	@Override
-	public IAEFluidTank getFluidConfigInventory()
-	{
-		return this.myDuality.getConfig();
-	}
+        if (Platform.isServer()) {
+            this.tankSync.sendDiff(this.listeners);
+        }
 
-	@Override
-	public void detectAndSendChanges()
-	{
-		this.verifyPermissions( SecurityPermissions.BUILD, false );
+        super.detectAndSendChanges();
+    }
 
-		if( Platform.isServer() )
-		{
-			this.tankSync.sendDiff( this.listeners );
-		}
+    @Override
+    protected void setupConfig() {
+    }
 
-		super.detectAndSendChanges();
-	}
+    @Override
+    protected void loadSettingsFromHost(final IConfigManager cm) {
+    }
 
-	@Override
-	protected void setupConfig()
-	{
-	}
+    @Override
+    public void addListener(IContainerListener listener) {
+        super.addListener(listener);
+        this.tankSync.sendFull(Collections.singleton(listener));
+    }
 
-	@Override
-	protected void loadSettingsFromHost( final IConfigManager cm )
-	{
-	}
+    @Override
+    public void receiveFluidSlots(Map<Integer, IAEFluidStack> fluids) {
+        super.receiveFluidSlots(fluids);
+        this.tankSync.readPacket(fluids);
+    }
 
-	@Override
-	public void addListener( IContainerListener listener )
-	{
-		super.addListener( listener );
-		this.tankSync.sendFull( Collections.singleton( listener ) );
-	}
+    @Override
+    protected boolean supportCapacity() {
+        return false;
+    }
 
-	@Override
-	public void receiveFluidSlots( Map<Integer, IAEFluidStack> fluids )
-	{
-		super.receiveFluidSlots( fluids );
-		this.tankSync.readPacket( fluids );
-	}
+    @Override
+    public int availableUpgrades() {
+        return 0;
+    }
 
-	@Override
-	protected boolean supportCapacity()
-	{
-		return false;
-	}
-
-	@Override
-	public int availableUpgrades()
-	{
-		return 0;
-	}
-
-	@Override
-	public boolean hasToolbox()
-	{
-		return false;
-	}
+    @Override
+    public boolean hasToolbox() {
+        return false;
+    }
 }

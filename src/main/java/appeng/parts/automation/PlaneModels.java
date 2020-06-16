@@ -18,7 +18,6 @@
 
 package appeng.parts.automation;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,54 +32,46 @@ import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
 import appeng.parts.PartModel;
 
-
 /**
- * Contains a mapping from a Plane's connections to the models to use for that state.
+ * Contains a mapping from a Plane's connections to the models to use for that
+ * state.
  */
-public class PlaneModels
-{
+public class PlaneModels {
 
-	public static final ResourceLocation MODEL_CHASSIS_OFF = new ResourceLocation( AppEng.MOD_ID, "part/transition_plane_off" );
-	public static final ResourceLocation MODEL_CHASSIS_ON = new ResourceLocation( AppEng.MOD_ID, "part/transition_plane_on" );
-	public static final ResourceLocation MODEL_CHASSIS_HAS_CHANNEL = new ResourceLocation( AppEng.MOD_ID, "part/transition_plane_has_channel" );
+    public static final ResourceLocation MODEL_CHASSIS_OFF = new ResourceLocation(AppEng.MOD_ID,
+            "part/transition_plane_off");
+    public static final ResourceLocation MODEL_CHASSIS_ON = new ResourceLocation(AppEng.MOD_ID,
+            "part/transition_plane_on");
+    public static final ResourceLocation MODEL_CHASSIS_HAS_CHANNEL = new ResourceLocation(AppEng.MOD_ID,
+            "part/transition_plane_has_channel");
 
-	private final IPartModel modelOff;
+    private final IPartModel modelOff;
 
-	private final IPartModel modelOn;
+    private final IPartModel modelOn;
 
-	private final IPartModel modelHasChannel;
+    private final IPartModel modelHasChannel;
 
-	public PlaneModels( String planeOffLocation, String planeOnLocation )
-	{
-		ResourceLocation planeOff = new ResourceLocation( AppEng.MOD_ID, planeOffLocation );
-		ResourceLocation planeOn = new ResourceLocation( AppEng.MOD_ID, planeOnLocation );
+    public PlaneModels(String planeOffLocation, String planeOnLocation) {
+        ResourceLocation planeOff = new ResourceLocation(AppEng.MOD_ID, planeOffLocation);
+        ResourceLocation planeOn = new ResourceLocation(AppEng.MOD_ID, planeOnLocation);
 
-		this.modelOff = new PartModel( MODEL_CHASSIS_OFF, planeOff );
-		this.modelOn = new PartModel( MODEL_CHASSIS_ON, planeOff );
-		this.modelHasChannel = new PartModel( MODEL_CHASSIS_HAS_CHANNEL, planeOn );
-	}
+        this.modelOff = new PartModel(MODEL_CHASSIS_OFF, planeOff);
+        this.modelOn = new PartModel(MODEL_CHASSIS_ON, planeOff);
+        this.modelHasChannel = new PartModel(MODEL_CHASSIS_HAS_CHANNEL, planeOn);
+    }
 
-	public IPartModel getModel(boolean hasPower, boolean hasChannel)
-	{
-		if( hasPower && hasChannel )
-		{
-			return modelHasChannel;
-		}
-		else if( hasPower )
-		{
-			return modelOn;
-		}
-		else
-		{
-			return modelOff;
-		}
-	}
+    public IPartModel getModel(boolean hasPower, boolean hasChannel) {
+        if (hasPower && hasChannel) {
+            return modelHasChannel;
+        } else if (hasPower) {
+            return modelOn;
+        } else {
+            return modelOff;
+        }
+    }
 
-	public List<IPartModel> getModels()
-	{
-		return ImmutableList.of(
-				modelOff, modelOn, modelHasChannel
-		);
-	}
+    public List<IPartModel> getModels() {
+        return ImmutableList.of(modelOff, modelOn, modelHasChannel);
+    }
 
 }

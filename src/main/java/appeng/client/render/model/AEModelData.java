@@ -1,16 +1,19 @@
 package appeng.client.render.model;
 
+import java.util.Objects;
+
+import javax.annotation.Nullable;
+
 import com.google.common.base.Preconditions;
+
 import net.minecraft.util.Direction;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 
-import javax.annotation.Nullable;
-import java.util.Objects;
-
 /**
- * This implementation of IModelData allows us to know precisely which data is part of the
- * model data. This is relevant for {@link AutoRotatingBakedModel} and {@link AutoRotatingCacheKey}.
+ * This implementation of IModelData allows us to know precisely which data is
+ * part of the model data. This is relevant for {@link AutoRotatingBakedModel}
+ * and {@link AutoRotatingCacheKey}.
  */
 public class AEModelData implements IModelData {
 
@@ -36,11 +39,12 @@ public class AEModelData implements IModelData {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         AEModelData that = (AEModelData) o;
-        return up == that.up &&
-                forward == that.forward;
+        return up == that.up && forward == that.forward;
     }
 
     @Override

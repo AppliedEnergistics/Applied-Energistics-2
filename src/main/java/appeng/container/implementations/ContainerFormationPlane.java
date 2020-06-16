@@ -18,9 +18,6 @@
 
 package appeng.container.implementations;
 
-
-import appeng.container.ContainerLocator;
-import appeng.container.implementations.ContainerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -32,124 +29,105 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
+import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
+import appeng.container.implementations.ContainerHelper;
 import appeng.container.slot.OptionalSlotFakeTypeOnly;
 import appeng.container.slot.SlotFakeTypeOnly;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.parts.automation.PartFormationPlane;
 import appeng.util.Platform;
 
+public class ContainerFormationPlane extends ContainerUpgradeable {
 
-public class ContainerFormationPlane extends ContainerUpgradeable
-{
+    public static ContainerType<ContainerFormationPlane> TYPE;
 
-	public static ContainerType<ContainerFormationPlane> TYPE;
+    private static final ContainerHelper<ContainerFormationPlane, PartFormationPlane> helper = new ContainerHelper<>(
+            ContainerFormationPlane::new, PartFormationPlane.class, SecurityPermissions.BUILD);
 
-	private static final ContainerHelper<ContainerFormationPlane, PartFormationPlane> helper
-			= new ContainerHelper<>(ContainerFormationPlane::new, PartFormationPlane.class, SecurityPermissions.BUILD);
+    public static ContainerFormationPlane fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+        return helper.fromNetwork(windowId, inv, buf);
+    }
 
-	public static ContainerFormationPlane fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-		return helper.fromNetwork(windowId, inv, buf);
-	}
+    public static boolean open(PlayerEntity player, ContainerLocator locator) {
+        return helper.open(player, locator);
+    }
 
-	public static boolean open(PlayerEntity player, ContainerLocator locator) {
-		return helper.open(player, locator);
-	}
+    @GuiSync(6)
+    public YesNo placeMode;
 
-	@GuiSync( 6 )
-	public YesNo placeMode;
+    public ContainerFormationPlane(int id, final PlayerInventory ip, final PartFormationPlane te) {
+        super(TYPE, id, ip, te);
+    }
 
-	public ContainerFormationPlane(int id, final PlayerInventory ip, final PartFormationPlane te )
-	{
-		super( TYPE, id, ip, te );
-	}
+    @Override
+    protected int getHeight() {
+        return 251;
+    }
 
-	@Override
-	protected int getHeight()
-	{
-		return 251;
-	}
+    @Override
+    protected void setupConfig() {
+        final int xo = 8;
+        final int yo = 23 + 6;
 
-	@Override
-	protected void setupConfig()
-	{
-		final int xo = 8;
-		final int yo = 23 + 6;
+        final IItemHandler config = this.getUpgradeable().getInventoryByName("config");
+        for (int y = 0; y < 7; y++) {
+            for (int x = 0; x < 9; x++) {
+                if (y < 2) {
+                    this.addSlot(new SlotFakeTypeOnly(config, y * 9 + x, xo + x * 18, yo + y * 18));
+                } else {
+                    this.addSlot(new OptionalSlotFakeTypeOnly(config, this, y * 9 + x, xo, yo, x, y, y - 2));
+                }
+            }
+        }
 
-		final IItemHandler config = this.getUpgradeable().getInventoryByName( "config" );
-		for( int y = 0; y < 7; y++ )
-		{
-			for( int x = 0; x < 9; x++ )
-			{
-				if( y < 2 )
-				{
-					this.addSlot( new SlotFakeTypeOnly( config, y * 9 + x, xo + x * 18, yo + y * 18 ) );
-				}
-				else
-				{
-					this.addSlot( new OptionalSlotFakeTypeOnly( config, this, y * 9 + x, xo, yo, x, y, y - 2 ) );
-				}
-			}
-		}
+        final IItemHandler upgrades = this.getUpgradeable().getInventoryByName("upgrades");
+        this.addSlot((new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8,
+                this.getPlayerInventory())).setNotDraggable());
+        this.addSlot((new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18,
+                this.getPlayerInventory())).setNotDraggable());
+        this.addSlot((new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187,
+                8 + 18 * 2, this.getPlayerInventory())).setNotDraggable());
+        this.addSlot((new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187,
+                8 + 18 * 3, this.getPlayerInventory())).setNotDraggable());
+        this.addSlot((new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 4, 187,
+                8 + 18 * 4, this.getPlayerInventory())).setNotDraggable());
+    }
 
-		final IItemHandler upgrades = this.getUpgradeable().getInventoryByName( "upgrades" );
-		this.addSlot( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.getPlayerInventory() ) )
-				.setNotDraggable() );
-		this.addSlot(
-				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.getPlayerInventory() ) )
-						.setNotDraggable() );
-		this.addSlot(
-				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.getPlayerInventory() ) )
-						.setNotDraggable() );
-		this.addSlot(
-				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.getPlayerInventory() ) )
-						.setNotDraggable() );
-		this.addSlot(
-				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 4, 187, 8 + 18 * 4, this.getPlayerInventory() ) )
-						.setNotDraggable() );
-	}
+    @Override
+    protected boolean supportCapacity() {
+        return true;
+    }
 
-	@Override
-	protected boolean supportCapacity()
-	{
-		return true;
-	}
+    @Override
+    public int availableUpgrades() {
+        return 5;
+    }
 
-	@Override
-	public int availableUpgrades()
-	{
-		return 5;
-	}
+    @Override
+    public void detectAndSendChanges() {
+        this.verifyPermissions(SecurityPermissions.BUILD, false);
 
-	@Override
-	public void detectAndSendChanges()
-	{
-		this.verifyPermissions( SecurityPermissions.BUILD, false );
+        if (Platform.isServer()) {
+            this.setFuzzyMode((FuzzyMode) this.getUpgradeable().getConfigManager().getSetting(Settings.FUZZY_MODE));
+            this.setPlaceMode((YesNo) this.getUpgradeable().getConfigManager().getSetting(Settings.PLACE_BLOCK));
+        }
 
-		if( Platform.isServer() )
-		{
-			this.setFuzzyMode( (FuzzyMode) this.getUpgradeable().getConfigManager().getSetting( Settings.FUZZY_MODE ) );
-			this.setPlaceMode( (YesNo) this.getUpgradeable().getConfigManager().getSetting( Settings.PLACE_BLOCK ) );
-		}
+        this.standardDetectAndSendChanges();
+    }
 
-		this.standardDetectAndSendChanges();
-	}
+    @Override
+    public boolean isSlotEnabled(final int idx) {
+        final int upgrades = this.getUpgradeable().getInstalledUpgrades(Upgrades.CAPACITY);
 
-	@Override
-	public boolean isSlotEnabled( final int idx )
-	{
-		final int upgrades = this.getUpgradeable().getInstalledUpgrades( Upgrades.CAPACITY );
+        return upgrades > idx;
+    }
 
-		return upgrades > idx;
-	}
+    public YesNo getPlaceMode() {
+        return this.placeMode;
+    }
 
-	public YesNo getPlaceMode()
-	{
-		return this.placeMode;
-	}
-
-	private void setPlaceMode( final YesNo placeMode )
-	{
-		this.placeMode = placeMode;
-	}
+    private void setPlaceMode(final YesNo placeMode) {
+        this.placeMode = placeMode;
+    }
 }

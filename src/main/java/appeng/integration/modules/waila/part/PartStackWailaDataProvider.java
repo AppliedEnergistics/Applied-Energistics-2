@@ -18,14 +18,12 @@
 
 package appeng.integration.modules.waila.part;
 
-
 import net.minecraft.item.ItemStack;
 
 import mcp.mobius.waila.api.IPluginConfig;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.PartItemStack;
-
 
 /**
  * Part ItemStack provider for WAILA
@@ -34,14 +32,12 @@ import appeng.api.parts.PartItemStack;
  * @version rv2
  * @since rv2
  */
-public class PartStackWailaDataProvider extends BasePartWailaDataProvider
-{
+public class PartStackWailaDataProvider extends BasePartWailaDataProvider {
 
-	@Override
-	public ItemStack getStack( final IPart part, final IPluginConfig config, ItemStack partStack )
-	{
-		partStack = part.getItemStack( PartItemStack.PICK );
-		return partStack;
-	}
+    @Override
+    public ItemStack getStack(final IPart part, final IPluginConfig config, ItemStack partStack) {
+        partStack = part.getItemStack(PartItemStack.PICK);
+        return partStack;
+    }
 
 }

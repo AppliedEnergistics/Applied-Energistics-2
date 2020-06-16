@@ -23,46 +23,44 @@
 
 package appeng.api.definitions;
 
-
 import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import appeng.api.features.AEFeature;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import appeng.api.features.AEFeature;
 
-public interface IItemDefinition extends IComparableDefinition
-{
-	/**
-	 * @return the unique name of the definition which will be used to register the underlying structure. Will never be
-	 * null
-	 */
-	@Nonnull
-	String identifier();
+public interface IItemDefinition extends IComparableDefinition {
+    /**
+     * @return the unique name of the definition which will be used to register the
+     *         underlying structure. Will never be null
+     */
+    @Nonnull
+    String identifier();
 
-	/**
-	 * @return the {@link Item} Implementation if applicable
-	 */
-	default Optional<Item> maybeItem() {
-		return Optional.of(item());
-	}
+    /**
+     * @return the {@link Item} Implementation if applicable
+     */
+    default Optional<Item> maybeItem() {
+        return Optional.of(item());
+    }
 
-	Item item();
+    Item item();
 
-	/**
-	 * @return an {@link ItemStack} with specified quantity of this item.
-	 */
-	default Optional<ItemStack> maybeStack( int stackSize ) {
-		return Optional.of(stack(stackSize));
-	}
+    /**
+     * @return an {@link ItemStack} with specified quantity of this item.
+     */
+    default Optional<ItemStack> maybeStack(int stackSize) {
+        return Optional.of(stack(stackSize));
+    }
 
-	ItemStack stack( int stackSize );
+    ItemStack stack(int stackSize);
 
-	/**
-	 * @return an immutable set of the features of this item
-	 */
-	Set<AEFeature> features();
+    /**
+     * @return an immutable set of the features of this item
+     */
+    Set<AEFeature> features();
 }

@@ -3,11 +3,7 @@
     "item": "minecraft:daylight_detector"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aaa",
-    "bbb",
-    "ccc"
-  ],
+  "pattern": ["aaa", "bbb", "ccc"],
   "key": {
     "a": {
       "tag": "appliedenergistics2:glass"

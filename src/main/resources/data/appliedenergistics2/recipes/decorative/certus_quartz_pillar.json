@@ -4,10 +4,7 @@
     "count": 2
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "a",
-    "a"
-  ],
+  "pattern": ["a", "a"],
   "key": {
     "a": {
       "item": "appliedenergistics2:quartz_block"

@@ -1,12 +1,15 @@
 package appeng.core.worlddata;
 
-import appeng.spatial.SpatialDimensionExtraData;
-import io.netty.buffer.Unpooled;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import io.netty.buffer.Unpooled;
+
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.math.BlockPos;
+
+import appeng.spatial.SpatialDimensionExtraData;
 
 public class SpatialDimensionExtraDataTest {
 

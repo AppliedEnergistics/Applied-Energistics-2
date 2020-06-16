@@ -1,5 +1,10 @@
 package appeng.worldgen;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.server.MinecraftServer;
@@ -9,10 +14,6 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
-
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * This is per-world data to track where Meteorites have been spawned.
@@ -27,7 +28,7 @@ public final class MeteoriteSpawnData {
         this.data = data;
     }
 
-    public void setGenerated( int chunkX, int chunkZ ) {
+    public void setGenerated(int chunkX, int chunkZ) {
         synchronized (data) {
             // edit.
             data.generated.putBoolean(chunkX + "," + chunkZ, true);
@@ -35,10 +36,9 @@ public final class MeteoriteSpawnData {
         }
     }
 
-    public boolean hasGenerated( int chunkX, int chunkZ ) {
-        synchronized( data )
-        {
-            return data.generated.getBoolean( chunkX + "," + chunkZ );
+    public boolean hasGenerated(int chunkX, int chunkZ) {
+        synchronized (data) {
+            return data.generated.getBoolean(chunkX + "," + chunkZ);
         }
     }
 
@@ -61,17 +61,17 @@ public final class MeteoriteSpawnData {
     }
 
     /**
-     * Checks whether another meteorite has spawned within the given block range of the given position.
+     * Checks whether another meteorite has spawned within the given block range of
+     * the given position.
      */
     public boolean isMeteoriteSpawnInRange(BlockPos pos, int rangeSquared) {
-        synchronized( data )
-        {
+        synchronized (data) {
             ChunkPos chunkPos = new ChunkPos(pos);
             CompoundNBT spawnData = getSpawnData(chunkPos.x, chunkPos.z, false);
             if (spawnData == null) {
                 return false;
             }
-            final int size = spawnData.getInt( "num" );
+            final int size = spawnData.getInt("num");
             for (int i = 0; i < size; i++) {
                 CompoundNBT existingSettingsNbt = spawnData.getCompound(String.valueOf(i));
                 BlockPos existingPos = PlacedMeteoriteSettings.read(existingSettingsNbt).getPos();
@@ -86,8 +86,7 @@ public final class MeteoriteSpawnData {
     }
 
     public boolean tryAddSpawnedMeteorite(PlacedMeteoriteSettings settings, int minDistanceSquared) {
-        synchronized( data )
-        {
+        synchronized (data) {
             if (isMeteoriteSpawnInRange(settings.getPos(), minDistanceSquared)) {
                 return false;
             }
@@ -98,13 +97,12 @@ public final class MeteoriteSpawnData {
     }
 
     public void addSpawnedMeteorite(PlacedMeteoriteSettings settings) {
-        synchronized( data )
-        {
+        synchronized (data) {
             ChunkPos chunkPos = new ChunkPos(settings.getPos());
             CompoundNBT spawnData = getSpawnData(chunkPos.x, chunkPos.z, true);
-            final int size = spawnData.getInt( "num" );
-            spawnData.put( String.valueOf( size ), settings.write(new CompoundNBT()) );
-            spawnData.putInt( "num", size + 1 );
+            final int size = spawnData.getInt("num");
+            spawnData.put(String.valueOf(size), settings.write(new CompoundNBT()));
+            spawnData.putInt("num", size + 1);
             data.markDirty();
         }
     }
@@ -112,23 +110,18 @@ public final class MeteoriteSpawnData {
     public Collection<PlacedMeteoriteSettings> getNearByMeteorites(int chunkX, int chunkZ) {
         final Collection<PlacedMeteoriteSettings> ll = new ArrayList<>();
 
-        synchronized( data )
-        {
-            for( int x = -1; x <= 1; x++ )
-            {
-                for( int z = -1; z <= 1; z++ )
-                {
-                    final int cx = x + ( chunkX >> 4 );
-                    final int cz = z + ( chunkZ >> 4 );
+        synchronized (data) {
+            for (int x = -1; x <= 1; x++) {
+                for (int z = -1; z <= 1; z++) {
+                    final int cx = x + (chunkX >> 4);
+                    final int cz = z + (chunkZ >> 4);
 
-                    final CompoundNBT data = getSpawnData( cx << 4, cz << 4, false );
+                    final CompoundNBT data = getSpawnData(cx << 4, cz << 4, false);
 
-                    if( data != null )
-                    {
+                    if (data != null) {
                         // edit.
-                        final int size = data.getInt( "num" );
-                        for( int s = 0; s < size; s++ )
-                        {
+                        final int size = data.getInt("num");
+                        for (int s = 0; s < size; s++) {
                             CompoundNBT settingsNbt = data.getCompound(String.valueOf(s));
                             ll.add(PlacedMeteoriteSettings.read(settingsNbt));
                         }

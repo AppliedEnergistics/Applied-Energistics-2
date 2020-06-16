@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:empty_storage_cell"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aba",
-    "b b",
-    "ccc"
-  ],
+  "pattern": ["aba", "b b", "ccc"],
   "key": {
     "a": {
       "item": "appliedenergistics2:quartz_glass"

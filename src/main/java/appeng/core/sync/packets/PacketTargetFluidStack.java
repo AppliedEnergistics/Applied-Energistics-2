@@ -18,7 +18,6 @@
 
 package appeng.core.sync.packets;
 
-
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -30,64 +29,48 @@ import appeng.core.sync.network.INetworkInfo;
 import appeng.fluids.container.ContainerFluidTerminal;
 import appeng.fluids.util.AEFluidStack;
 
-
 /**
  * @author BrockWS
  * @version rv6 - 23/05/2018
  * @since rv6 23/05/2018
  */
-public class PacketTargetFluidStack extends AppEngPacket
-{
-	private AEFluidStack stack;
+public class PacketTargetFluidStack extends AppEngPacket {
+    private AEFluidStack stack;
 
-	public PacketTargetFluidStack( final PacketBuffer stream )
-	{
-		try
-		{
-			if( stream.readableBytes() > 0 )
-			{
-				this.stack = (AEFluidStack) AEFluidStack.fromPacket( stream );
-			}
-			else
-			{
-				this.stack = null;
-			}
-		}
-		catch( Exception ex )
-		{
-			AELog.debug( ex );
-			this.stack = null;
-		}
-	}
+    public PacketTargetFluidStack(final PacketBuffer stream) {
+        try {
+            if (stream.readableBytes() > 0) {
+                this.stack = (AEFluidStack) AEFluidStack.fromPacket(stream);
+            } else {
+                this.stack = null;
+            }
+        } catch (Exception ex) {
+            AELog.debug(ex);
+            this.stack = null;
+        }
+    }
 
-	// api
-	public PacketTargetFluidStack( AEFluidStack stack )
-	{
+    // api
+    public PacketTargetFluidStack(AEFluidStack stack) {
 
-		this.stack = stack;
+        this.stack = stack;
 
-		final PacketBuffer data = new PacketBuffer( Unpooled.buffer() );
-		data.writeInt( this.getPacketID() );
-		if( stack != null )
-		{
-			try
-			{
-				stack.writeToPacket( data );
-			}
-			catch( Exception ex )
-			{
-				AELog.debug( ex );
-			}
-		}
-		this.configureWrite( data );
-	}
+        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        data.writeInt(this.getPacketID());
+        if (stack != null) {
+            try {
+                stack.writeToPacket(data);
+            } catch (Exception ex) {
+                AELog.debug(ex);
+            }
+        }
+        this.configureWrite(data);
+    }
 
-	@Override
-	public void serverPacketData( final INetworkInfo manager, final PlayerEntity player )
-	{
-		if( player.openContainer instanceof ContainerFluidTerminal )
-		{
-			( (ContainerFluidTerminal) player.openContainer ).setTargetStack( this.stack );
-		}
-	}
+    @Override
+    public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
+        if (player.openContainer instanceof ContainerFluidTerminal) {
+            ((ContainerFluidTerminal) player.openContainer).setTargetStack(this.stack);
+        }
+    }
 }

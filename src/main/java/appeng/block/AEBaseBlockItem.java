@@ -18,16 +18,8 @@
 
 package appeng.block;
 
-
 import java.util.List;
 
-import appeng.api.util.IOrientable;
-import appeng.api.util.IOrientableBlock;
-import appeng.block.misc.BlockLightDetector;
-import appeng.block.misc.BlockSkyCompass;
-import appeng.block.networking.BlockWireless;
-import appeng.me.helpers.IGridProxyable;
-import appeng.tile.AEBaseTile;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
@@ -43,145 +35,128 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import appeng.api.util.IOrientable;
+import appeng.api.util.IOrientableBlock;
+import appeng.block.misc.BlockLightDetector;
+import appeng.block.misc.BlockSkyCompass;
+import appeng.block.networking.BlockWireless;
+import appeng.me.helpers.IGridProxyable;
+import appeng.tile.AEBaseTile;
 
-public class AEBaseBlockItem extends BlockItem
-{
+public class AEBaseBlockItem extends BlockItem {
 
-	private final AEBaseBlock blockType;
+    private final AEBaseBlock blockType;
 
-	public AEBaseBlockItem(final Block id, Item.Properties props )
-	{
-		super( id, props );
-		this.blockType = (AEBaseBlock) id;
-	}
+    public AEBaseBlockItem(final Block id, Item.Properties props) {
+        super(id, props);
+        this.blockType = (AEBaseBlock) id;
+    }
 
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public final void addInformation( final ItemStack itemStack, final World world, final List<ITextComponent> toolTip, final ITooltipFlag advancedTooltips )
-	{
-		this.addCheckedInformation( itemStack, world, toolTip, advancedTooltips );
-	}
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public final void addInformation(final ItemStack itemStack, final World world, final List<ITextComponent> toolTip,
+            final ITooltipFlag advancedTooltips) {
+        this.addCheckedInformation(itemStack, world, toolTip, advancedTooltips);
+    }
 
-	@OnlyIn( Dist.CLIENT )
-	public void addCheckedInformation(final ItemStack itemStack, final World world, final List<ITextComponent> toolTip, final ITooltipFlag advancedTooltips )
-	{
-		this.blockType.addInformation( itemStack, world, toolTip, advancedTooltips );
-	}
+    @OnlyIn(Dist.CLIENT)
+    public void addCheckedInformation(final ItemStack itemStack, final World world, final List<ITextComponent> toolTip,
+            final ITooltipFlag advancedTooltips) {
+        this.blockType.addInformation(itemStack, world, toolTip, advancedTooltips);
+    }
 
-	@Override
-	public boolean isBookEnchantable( final ItemStack itemstack1, final ItemStack itemstack2 )
-	{
-		return false;
-	}
+    @Override
+    public boolean isBookEnchantable(final ItemStack itemstack1, final ItemStack itemstack2) {
+        return false;
+    }
 
-	@Override
-	public String getTranslationKey( final ItemStack is )
-	{
-		return this.blockType.getTranslationKey();
-	}
+    @Override
+    public String getTranslationKey(final ItemStack is) {
+        return this.blockType.getTranslationKey();
+    }
 
-	@Override
-	public ActionResultType tryPlace(BlockItemUseContext context) {
+    @Override
+    public ActionResultType tryPlace(BlockItemUseContext context) {
 
-		Direction up = null;
-		Direction forward = null;
+        Direction up = null;
+        Direction forward = null;
 
-		Direction side = context.getFace();
-		PlayerEntity player = context.getPlayer();
+        Direction side = context.getFace();
+        PlayerEntity player = context.getPlayer();
 
-		if( this.blockType instanceof AEBaseTileBlock )
-		{
-			 if( this.blockType instanceof BlockLightDetector)
-			 {
-			 	up = side;
-			 	if( up == Direction.UP || up == Direction.DOWN )
-			 	{
-			 		forward = Direction.SOUTH;
-			 	}
-			 	else
-			 	{
-			 		forward = Direction.UP;
-			 	}
-			 }
-			else if( this.blockType instanceof BlockWireless || this.blockType instanceof BlockSkyCompass)
-			{
-				forward = side;
-				if( forward == Direction.UP || forward == Direction.DOWN )
-				{
-					up = Direction.SOUTH;
-				}
-				else
-				{
-					up = Direction.UP;
-				}
-			}
-			else
-			{
-				up = Direction.UP;
-				forward = context.getPlacementHorizontalFacing().getOpposite();
+        if (this.blockType instanceof AEBaseTileBlock) {
+            if (this.blockType instanceof BlockLightDetector) {
+                up = side;
+                if (up == Direction.UP || up == Direction.DOWN) {
+                    forward = Direction.SOUTH;
+                } else {
+                    forward = Direction.UP;
+                }
+            } else if (this.blockType instanceof BlockWireless || this.blockType instanceof BlockSkyCompass) {
+                forward = side;
+                if (forward == Direction.UP || forward == Direction.DOWN) {
+                    up = Direction.SOUTH;
+                } else {
+                    up = Direction.UP;
+                }
+            } else {
+                up = Direction.UP;
+                forward = context.getPlacementHorizontalFacing().getOpposite();
 
-				if (player != null) {
-					if (player.rotationPitch > 65) {
-						up = forward.getOpposite();
-						forward = Direction.UP;
-					} else if (player.rotationPitch < -65) {
-						up = forward.getOpposite();
-						forward = Direction.DOWN;
-					}
-				}
-			}
-		}
+                if (player != null) {
+                    if (player.rotationPitch > 65) {
+                        up = forward.getOpposite();
+                        forward = Direction.UP;
+                    } else if (player.rotationPitch < -65) {
+                        up = forward.getOpposite();
+                        forward = Direction.DOWN;
+                    }
+                }
+            }
+        }
 
-		IOrientable ori = null;
-		if( this.blockType instanceof IOrientableBlock)
-		{
-			ori = ( (IOrientableBlock) this.blockType ).getOrientable( context.getWorld(), context.getPos() );
-			up = side;
-			forward = Direction.SOUTH;
-			if( up.getYOffset() == 0 )
-			{
-				forward = Direction.UP;
-			}
-		}
+        IOrientable ori = null;
+        if (this.blockType instanceof IOrientableBlock) {
+            ori = ((IOrientableBlock) this.blockType).getOrientable(context.getWorld(), context.getPos());
+            up = side;
+            forward = Direction.SOUTH;
+            if (up.getYOffset() == 0) {
+                forward = Direction.UP;
+            }
+        }
 
-		if( !this.blockType.isValidOrientation( context.getWorld(), context.getPos(), forward, up ) )
-		{
-			return ActionResultType.FAIL;
-		}
+        if (!this.blockType.isValidOrientation(context.getWorld(), context.getPos(), forward, up)) {
+            return ActionResultType.FAIL;
+        }
 
-		ActionResultType result = super.tryPlace(context);
-		if (result != ActionResultType.SUCCESS) {
-			return result;
-		}
+        ActionResultType result = super.tryPlace(context);
+        if (result != ActionResultType.SUCCESS) {
+            return result;
+        }
 
-		if( this.blockType instanceof AEBaseTileBlock && !( this.blockType instanceof BlockLightDetector ) )
-		{
-			final AEBaseTile tile = ( (AEBaseTileBlock<?>) this.blockType ).getTileEntity( context.getWorld(), context.getPos() );
-			ori = tile;
+        if (this.blockType instanceof AEBaseTileBlock && !(this.blockType instanceof BlockLightDetector)) {
+            final AEBaseTile tile = ((AEBaseTileBlock<?>) this.blockType).getTileEntity(context.getWorld(),
+                    context.getPos());
+            ori = tile;
 
-			if( tile == null )
-			{
-				return ActionResultType.SUCCESS;
-			}
+            if (tile == null) {
+                return ActionResultType.SUCCESS;
+            }
 
-			if( ori.canBeRotated() && !this.blockType.hasCustomRotation() )
-			{
-				ori.setOrientation( forward, up );
-			}
+            if (ori.canBeRotated() && !this.blockType.hasCustomRotation()) {
+                ori.setOrientation(forward, up);
+            }
 
-			if( tile instanceof IGridProxyable)
-			{
-				( (IGridProxyable) tile ).getProxy().setOwner( player );
-			}
+            if (tile instanceof IGridProxyable) {
+                ((IGridProxyable) tile).getProxy().setOwner(player);
+            }
 
-			tile.onPlacement( context );
-		}
-		else if( this.blockType instanceof IOrientableBlock )
-		{
-			ori.setOrientation( forward, up );
-		}
+            tile.onPlacement(context);
+        } else if (this.blockType instanceof IOrientableBlock) {
+            ori.setOrientation(forward, up);
+        }
 
-		return ActionResultType.SUCCESS;
+        return ActionResultType.SUCCESS;
 
-	}
+    }
 }

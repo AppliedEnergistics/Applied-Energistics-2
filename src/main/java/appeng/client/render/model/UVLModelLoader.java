@@ -18,9 +18,21 @@
 
 package appeng.client.render.model;
 
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+
+import javax.annotation.Nullable;
 
 import com.google.gson.*;
 import com.mojang.blaze3d.matrix.MatrixStack;
+
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.TransformationMatrix;
@@ -40,160 +52,146 @@ import net.minecraftforge.client.model.geometry.IModelGeometry;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 import net.minecraftforge.client.model.pipeline.VertexLighterFlat;
 import net.minecraftforge.common.model.TransformationHelper;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 
-import javax.annotation.Nullable;
-import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
+public class UVLModelLoader implements IModelLoader<UVLModelLoader.UVLModelWrapper> {
 
+    public static final UVLModelLoader INSTANCE = new UVLModelLoader();
 
-public class UVLModelLoader implements IModelLoader<UVLModelLoader.UVLModelWrapper>
-{
+    @Override
+    public void onResourceManagerReload(IResourceManager resourceManager) {
+    }
 
-	public static final UVLModelLoader INSTANCE = new UVLModelLoader();
+    @Override
+    public UVLModelWrapper read(JsonDeserializationContext deserializationContext, JsonObject modelContents) {
+        modelContents.remove("loader");
+        BlockModel blockModel = UVLSERIALIZER.fromJson(modelContents, BlockModel.class);
+        return new UVLModelWrapper(blockModel);
+    }
 
-	@Override
-	public void onResourceManagerReload(IResourceManager resourceManager) {
-	}
+    final Gson UVLSERIALIZER = (new GsonBuilder())
+            .registerTypeAdapter(BlockModel.class, new ModelLoaderRegistry.ExpandedBlockModelDeserializer())
+            .registerTypeAdapter(BlockPart.class, new BlockPart.Deserializer())
+            .registerTypeAdapter(BlockPartFace.class, new BlockPartFaceOverrideSerializer())
+            .registerTypeAdapter(BlockFaceUV.class, new BlockFaceUV.Deserializer())
+            .registerTypeAdapter(ItemTransformVec3f.class, new ItemTransformVec3f.Deserializer())
+            .registerTypeAdapter(ItemCameraTransforms.class, new ItemCameraTransforms.Deserializer())
+            .registerTypeAdapter(ItemOverride.class, new ItemOverride.Deserializer())
+            .registerTypeAdapter(TransformationMatrix.class, new TransformationHelper.Deserializer()).create();
 
-	@Override
-	public UVLModelWrapper read(JsonDeserializationContext deserializationContext, JsonObject modelContents) {
-		modelContents.remove("loader");
-		BlockModel blockModel = UVLSERIALIZER.fromJson(modelContents, BlockModel.class);
-		return new UVLModelWrapper(blockModel);
-	}
+    private static class BlockPartFaceOverrideSerializer extends BlockPartFace.Deserializer {
+        @Override
+        public BlockPartFace deserialize(JsonElement p_deserialize_1_, Type p_deserialize_2_,
+                JsonDeserializationContext p_deserialize_3_) throws JsonParseException {
+            BlockPartFace blockFace = super.deserialize(p_deserialize_1_, p_deserialize_2_, p_deserialize_3_);
+            Pair<Float, Float> uvl = this.parseUVL(p_deserialize_1_.getAsJsonObject());
+            if (uvl != null) {
+                return new BlockPartFaceWithUVL(blockFace.cullFace, blockFace.tintIndex, blockFace.texture,
+                        blockFace.blockFaceUV, uvl.getLeft(), uvl.getRight());
+            }
+            return blockFace;
+        }
 
-	final Gson UVLSERIALIZER = (new GsonBuilder())
-			.registerTypeAdapter(BlockModel.class, new ModelLoaderRegistry.ExpandedBlockModelDeserializer())
-			.registerTypeAdapter(BlockPart.class, new BlockPart.Deserializer())
-			.registerTypeAdapter(BlockPartFace.class, new BlockPartFaceOverrideSerializer())
-			.registerTypeAdapter(BlockFaceUV.class, new BlockFaceUV.Deserializer())
-			.registerTypeAdapter(ItemTransformVec3f.class, new ItemTransformVec3f.Deserializer())
-			.registerTypeAdapter(ItemCameraTransforms.class, new ItemCameraTransforms.Deserializer())
-			.registerTypeAdapter(ItemOverride.class, new ItemOverride.Deserializer())
-			.registerTypeAdapter(TransformationMatrix.class, new TransformationHelper.Deserializer())
-			.create();
+        protected Pair<Float, Float> parseUVL(JsonObject object) {
+            if (!object.has("uvlightmap")) {
+                return null;
+            }
+            object = object.get("uvlightmap").getAsJsonObject();
+            return new ImmutablePair<>(JSONUtils.getFloat(object, "sky", 0), JSONUtils.getFloat(object, "block", 0));
+        }
+    }
 
-	private static class BlockPartFaceOverrideSerializer extends BlockPartFace.Deserializer
-	{
-		@Override
-		public BlockPartFace deserialize( JsonElement p_deserialize_1_, Type p_deserialize_2_, JsonDeserializationContext p_deserialize_3_ ) throws JsonParseException
-		{
-			BlockPartFace blockFace = super.deserialize(p_deserialize_1_, p_deserialize_2_, p_deserialize_3_);
-			Pair<Float, Float> uvl = this.parseUVL(p_deserialize_1_.getAsJsonObject());
-			if (uvl != null) {
-				return new BlockPartFaceWithUVL(blockFace.cullFace, blockFace.tintIndex, blockFace.texture, blockFace.blockFaceUV, uvl.getLeft(), uvl.getRight());
-			}
-			return blockFace;
-		}
+    private static class BlockPartFaceWithUVL extends BlockPartFace {
 
-		protected Pair<Float, Float> parseUVL( JsonObject object )
-		{
-			if( !object.has( "uvlightmap" ) )
-			{
-				return null;
-			}
-			object = object.get( "uvlightmap" ).getAsJsonObject();
-			return new ImmutablePair<>( JSONUtils.getFloat( object, "sky", 0 ), JSONUtils.getFloat( object, "block", 0 ) );
-		}
-	}
+        private final float sky;
+        private final float block;
 
-	private static class BlockPartFaceWithUVL extends BlockPartFace {
+        public BlockPartFaceWithUVL(@Nullable Direction cullFaceIn, int tintIndexIn, String textureIn,
+                BlockFaceUV blockFaceUVIn, float sky, float block) {
+            super(cullFaceIn, tintIndexIn, textureIn, blockFaceUVIn);
+            this.sky = sky;
+            this.block = block;
+        }
 
-		private final float sky;
-		private final float block;
+        public float getSky() {
+            return sky;
+        }
 
-		public BlockPartFaceWithUVL(@Nullable Direction cullFaceIn, int tintIndexIn, String textureIn, BlockFaceUV blockFaceUVIn, float sky, float block) {
-			super(cullFaceIn, tintIndexIn, textureIn, blockFaceUVIn);
-			this.sky = sky;
-			this.block = block;
-		}
+        public float getBlock() {
+            return block;
+        }
+    }
 
-		public float getSky() {
-			return sky;
-		}
+    public static class UVLModelWrapper implements IModelGeometry<UVLModelWrapper> {
+        private final BlockModel parent;
 
-		public float getBlock() {
-			return block;
-		}
-	}
+        public UVLModelWrapper(BlockModel parent) {
+            this.parent = parent;
+        }
 
-	public static class UVLModelWrapper implements IModelGeometry<UVLModelWrapper>
-	{
-		private final BlockModel parent;
+        @Override
+        public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
+                Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
+                ItemOverrideList overrides, ResourceLocation modelLocation) {
+            TextureAtlasSprite particle = spriteGetter.apply(owner.resolveTexture("particle"));
 
-		public UVLModelWrapper( BlockModel parent )
-		{
-			this.parent = parent;
-		}
+            IModelBuilder<?> builder = IModelBuilder.of(owner, overrides, particle);
+            for (BlockPart blockpart : parent.getElements()) {
+                for (Direction direction : blockpart.mapFaces.keySet()) {
+                    BlockPartFace blockpartface = blockpart.mapFaces.get(direction);
+                    TextureAtlasSprite textureatlassprite1 = spriteGetter
+                            .apply(owner.resolveTexture(blockpartface.texture));
+                    BakedQuad quad = BlockModel.makeBakedQuad(blockpart, blockpartface, textureatlassprite1, direction,
+                            modelTransform, modelLocation);
 
-		@Override
-		public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {
-			TextureAtlasSprite particle = spriteGetter.apply(owner.resolveTexture("particle"));
+                    if (blockpartface instanceof BlockPartFaceWithUVL) {
+                        BlockPartFaceWithUVL uvlFace = (BlockPartFaceWithUVL) blockpartface;
+                        quad = applyPreBakedLighting(quad, textureatlassprite1, uvlFace.sky, uvlFace.block);
+                    }
 
-			IModelBuilder<?> builder = IModelBuilder.of(owner, overrides, particle);
-			for(BlockPart blockpart : parent.getElements()) {
-				for(Direction direction : blockpart.mapFaces.keySet()) {
-					BlockPartFace blockpartface = blockpart.mapFaces.get(direction);
-					TextureAtlasSprite textureatlassprite1 = spriteGetter.apply(owner.resolveTexture(blockpartface.texture));
-					BakedQuad quad = BlockModel.makeBakedQuad(blockpart, blockpartface, textureatlassprite1, direction, modelTransform, modelLocation);
+                    if (blockpartface.cullFace == null) {
+                        builder.addGeneralQuad(quad);
+                    } else {
+                        builder.addFaceQuad(modelTransform.getRotation().rotateTransform(blockpartface.cullFace), quad);
+                    }
+                }
+            }
+            return builder.build();
+        }
 
-					if (blockpartface instanceof BlockPartFaceWithUVL) {
-						BlockPartFaceWithUVL uvlFace = (BlockPartFaceWithUVL) blockpartface;
-						quad = applyPreBakedLighting(quad, textureatlassprite1, uvlFace.sky, uvlFace.block);
-					}
+        private BakedQuad applyPreBakedLighting(BakedQuad quad, TextureAtlasSprite sprite, float sky, float block) {
+            // FIXME: just piping through the quads and manipulating uv index 2 directly
+            // seems way easier than this
+            BakedQuadBuilder builder = new BakedQuadBuilder(sprite);
+            VertexLighterFlat trans = new VertexLighterFlat(Minecraft.getInstance().getBlockColors()) {
 
-					if (blockpartface.cullFace == null) {
-						builder.addGeneralQuad(quad);
-					} else {
-						builder.addFaceQuad(
-								modelTransform.getRotation().rotateTransform(blockpartface.cullFace),
-								quad);
-					}
-				}
-			}
-			return builder.build();
-		}
+                @Override
+                protected void updateLightmap(float[] normal, float[] lightmap, float x, float y, float z) {
+                    lightmap[0] = block;
+                    lightmap[1] = sky;
+                }
 
-		private BakedQuad applyPreBakedLighting(BakedQuad quad, TextureAtlasSprite sprite, float sky, float block) {
-				// FIXME: just piping through the quads and manipulating uv index 2 directly seems way easier than this
-				BakedQuadBuilder builder = new BakedQuadBuilder(sprite);
-				VertexLighterFlat trans = new VertexLighterFlat( Minecraft.getInstance().getBlockColors() )
-				{
+                @Override
+                public void setQuadTint(int tint) {
+                    // Tint requires a block state which we don't have at this point
+                }
+            };
+            MatrixStack identity = new MatrixStack();
+            trans.setTransform(identity.getLast());
+            trans.setParent(builder);
+            quad.pipe(trans);
+            builder.setQuadTint(quad.getTintIndex());
+            builder.setQuadOrientation(quad.getFace());
+            builder.setApplyDiffuseLighting(false);
+            return builder.build();
+        }
 
-					@Override
-					protected void updateLightmap( float[] normal, float[] lightmap, float x, float y, float z )
-					{
-						lightmap[0] = block;
-						lightmap[1] = sky;
-					}
+        @Override
+        public Collection<Material> getTextures(IModelConfiguration owner,
+                Function<ResourceLocation, IUnbakedModel> modelGetter,
+                Set<com.mojang.datafixers.util.Pair<String, String>> missingTextureErrors) {
+            return parent.getTextures(modelGetter, missingTextureErrors);
+        }
 
-					@Override
-					public void setQuadTint( int tint )
-					{
-						// Tint requires a block state which we don't have at this point
-					}
-				};
-				MatrixStack identity = new MatrixStack();
-				trans.setTransform(identity.getLast());
-				trans.setParent( builder );
-				quad.pipe( trans );
-				builder.setQuadTint( quad.getTintIndex() );
-				builder.setQuadOrientation( quad.getFace() );
-				builder.setApplyDiffuseLighting( false );
-				return builder.build();
-		}
-
-		@Override
-		public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<com.mojang.datafixers.util.Pair<String, String>> missingTextureErrors) {
-			return parent.getTextures(modelGetter, missingTextureErrors);
-		}
-
-	}
+    }
 
 }

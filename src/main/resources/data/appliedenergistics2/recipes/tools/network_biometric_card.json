@@ -3,10 +3,7 @@
     "item": "appliedenergistics2:biometric_card"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "abb",
-    "cdc"
-  ],
+  "pattern": ["abb", "cdc"],
   "key": {
     "a": {
       "item": "appliedenergistics2:engineering_processor"

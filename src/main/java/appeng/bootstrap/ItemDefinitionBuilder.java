@@ -18,7 +18,6 @@
 
 package appeng.bootstrap;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -27,151 +26,134 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import appeng.bootstrap.components.IInitComponent;
-import appeng.core.AEItemGroup;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.IDispenseItemBehavior;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-
-import appeng.bootstrap.components.IItemRegistrationComponent;
-import appeng.core.AppEng;
-import appeng.core.CreativeTab;
-import appeng.api.features.AEFeature;
-import appeng.core.features.ItemDefinition;
-import appeng.util.Platform;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import appeng.api.features.AEFeature;
+import appeng.bootstrap.components.IInitComponent;
+import appeng.bootstrap.components.IItemRegistrationComponent;
+import appeng.core.AEItemGroup;
+import appeng.core.AppEng;
+import appeng.core.CreativeTab;
+import appeng.core.features.ItemDefinition;
+import appeng.util.Platform;
 
-class ItemDefinitionBuilder implements IItemBuilder
-{
+class ItemDefinitionBuilder implements IItemBuilder {
 
-	private final FeatureFactory factory;
+    private final FeatureFactory factory;
 
-	private final String registryName;
+    private final String registryName;
 
-	private final Function<Item.Properties, Item> itemFactory;
+    private final Function<Item.Properties, Item> itemFactory;
 
-	private final EnumSet<AEFeature> features = EnumSet.noneOf( AEFeature.class );
+    private final EnumSet<AEFeature> features = EnumSet.noneOf(AEFeature.class);
 
-	private final List<Function<Item, IBootstrapComponent>> boostrapComponents = new ArrayList<>();
+    private final List<Function<Item, IBootstrapComponent>> boostrapComponents = new ArrayList<>();
 
-	private final Item.Properties props = new Item.Properties();
+    private final Item.Properties props = new Item.Properties();
 
-	private Supplier<IDispenseItemBehavior> dispenserBehaviorSupplier;
+    private Supplier<IDispenseItemBehavior> dispenserBehaviorSupplier;
 
-	@OnlyIn( Dist.CLIENT )
-	private ItemRendering itemRendering;
+    @OnlyIn(Dist.CLIENT)
+    private ItemRendering itemRendering;
 
-	private ItemGroup itemGroup = CreativeTab.INSTANCE;
+    private ItemGroup itemGroup = CreativeTab.INSTANCE;
 
-	ItemDefinitionBuilder( FeatureFactory factory, String registryName, Function<Item.Properties, Item> itemFactory )
-	{
-		this.factory = factory;
-		this.registryName = registryName;
-		this.itemFactory = itemFactory;
-		if( Platform.hasClientClasses() )
-		{
-			this.itemRendering = new ItemRendering();
-		}
-	}
+    ItemDefinitionBuilder(FeatureFactory factory, String registryName, Function<Item.Properties, Item> itemFactory) {
+        this.factory = factory;
+        this.registryName = registryName;
+        this.itemFactory = itemFactory;
+        if (Platform.hasClientClasses()) {
+            this.itemRendering = new ItemRendering();
+        }
+    }
 
-	@Override
-	public IItemBuilder bootstrap( Function<Item, IBootstrapComponent> component )
-	{
-		this.boostrapComponents.add( component );
-		return this;
-	}
+    @Override
+    public IItemBuilder bootstrap(Function<Item, IBootstrapComponent> component) {
+        this.boostrapComponents.add(component);
+        return this;
+    }
 
-	@Override
-	public IItemBuilder features( AEFeature... features )
-	{
-		this.features.clear();
-		this.addFeatures( features );
-		return this;
-	}
+    @Override
+    public IItemBuilder features(AEFeature... features) {
+        this.features.clear();
+        this.addFeatures(features);
+        return this;
+    }
 
-	@Override
-	public IItemBuilder addFeatures( AEFeature... features )
-	{
-		Collections.addAll( this.features, features );
-		return this;
-	}
+    @Override
+    public IItemBuilder addFeatures(AEFeature... features) {
+        Collections.addAll(this.features, features);
+        return this;
+    }
 
-	@Override
-	public IItemBuilder itemGroup( ItemGroup itemGroup )
-	{
-		this.itemGroup = itemGroup;
-		return this;
-	}
+    @Override
+    public IItemBuilder itemGroup(ItemGroup itemGroup) {
+        this.itemGroup = itemGroup;
+        return this;
+    }
 
-	@Override
-	public IItemBuilder props( Consumer<Item.Properties> consumer )
-	{
-		consumer.accept(props);
-		return this;
-	}
+    @Override
+    public IItemBuilder props(Consumer<Item.Properties> consumer) {
+        consumer.accept(props);
+        return this;
+    }
 
-	@Override
-	public IItemBuilder rendering( ItemRenderingCustomizer callback )
-	{
-		if( Platform.hasClientClasses() )
-		{
-			this.customizeForClient( callback );
-		}
+    @Override
+    public IItemBuilder rendering(ItemRenderingCustomizer callback) {
+        if (Platform.hasClientClasses()) {
+            this.customizeForClient(callback);
+        }
 
-		return this;
-	}
+        return this;
+    }
 
-	@Override
-	public IItemBuilder dispenserBehavior( Supplier<IDispenseItemBehavior> behavior )
-	{
-		this.dispenserBehaviorSupplier = behavior;
-		return this;
-	}
+    @Override
+    public IItemBuilder dispenserBehavior(Supplier<IDispenseItemBehavior> behavior) {
+        this.dispenserBehaviorSupplier = behavior;
+        return this;
+    }
 
-	@OnlyIn( Dist.CLIENT )
-	private void customizeForClient( ItemRenderingCustomizer callback )
-	{
-		callback.customize( this.itemRendering );
-	}
+    @OnlyIn(Dist.CLIENT)
+    private void customizeForClient(ItemRenderingCustomizer callback) {
+        callback.customize(this.itemRendering);
+    }
 
-	@Override
-	public ItemDefinition build()
-	{
-		props.group(itemGroup);
+    @Override
+    public ItemDefinition build() {
+        props.group(itemGroup);
 
-		Item item = this.itemFactory.apply(props);
-		item.setRegistryName( AppEng.MOD_ID, this.registryName );
+        Item item = this.itemFactory.apply(props);
+        item.setRegistryName(AppEng.MOD_ID, this.registryName);
 
-		ItemDefinition definition = new ItemDefinition( this.registryName, item, features );
+        ItemDefinition definition = new ItemDefinition(this.registryName, item, features);
 
-		// Register all extra handlers
-		this.boostrapComponents.forEach( component -> this.factory.addBootstrapComponent( component.apply( item ) ) );
+        // Register all extra handlers
+        this.boostrapComponents.forEach(component -> this.factory.addBootstrapComponent(component.apply(item)));
 
-		// Register custom dispenser behavior if requested
-		if( this.dispenserBehaviorSupplier != null )
-		{
-			this.factory.addBootstrapComponent( (IInitComponent) () ->
-			{
-				IDispenseItemBehavior behavior = this.dispenserBehaviorSupplier.get();
-				DispenserBlock.registerDispenseBehavior( item, behavior );
-			} );
-		}
+        // Register custom dispenser behavior if requested
+        if (this.dispenserBehaviorSupplier != null) {
+            this.factory.addBootstrapComponent((IInitComponent) () -> {
+                IDispenseItemBehavior behavior = this.dispenserBehaviorSupplier.get();
+                DispenserBlock.registerDispenseBehavior(item, behavior);
+            });
+        }
 
-		this.factory.addBootstrapComponent( (IItemRegistrationComponent) ( side, reg ) -> reg.register( item ) );
+        this.factory.addBootstrapComponent((IItemRegistrationComponent) (side, reg) -> reg.register(item));
 
-		if( Platform.hasClientClasses() )
-		{
-			this.itemRendering.apply( this.factory, item );
-		}
+        if (Platform.hasClientClasses()) {
+            this.itemRendering.apply(this.factory, item);
+        }
 
-		if (itemGroup instanceof AEItemGroup) {
-			((AEItemGroup) itemGroup).add(definition);
-		}
+        if (itemGroup instanceof AEItemGroup) {
+            ((AEItemGroup) itemGroup).add(definition);
+        }
 
-		return definition;
-	}
+        return definition;
+    }
 
 }

@@ -18,7 +18,6 @@
 
 package appeng.client.render;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -37,70 +36,61 @@ import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.client.render.cablebus.FacadeBuilder;
 
-
 /**
- * This model used the provided FacadeBuilder to "slice" the item quads for the facade provided.
+ * This model used the provided FacadeBuilder to "slice" the item quads for the
+ * facade provided.
  *
  * @author covers1624
  */
-public class FacadeBakedItemModel extends DelegateBakedModel
-{
+public class FacadeBakedItemModel extends DelegateBakedModel {
 
-	private final ItemStack textureStack;
-	private final FacadeBuilder facadeBuilder;
-	private List<BakedQuad> quads = null;
+    private final ItemStack textureStack;
+    private final FacadeBuilder facadeBuilder;
+    private List<BakedQuad> quads = null;
 
-	protected FacadeBakedItemModel( IBakedModel base, ItemStack textureStack, FacadeBuilder facadeBuilder )
-	{
-		super( base );
-		this.textureStack = textureStack;
-		this.facadeBuilder = facadeBuilder;
-	}
+    protected FacadeBakedItemModel(IBakedModel base, ItemStack textureStack, FacadeBuilder facadeBuilder) {
+        super(base);
+        this.textureStack = textureStack;
+        this.facadeBuilder = facadeBuilder;
+    }
 
-	@Override
-	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, Random rand )
-	{
-		return getQuads( state, side, rand, EmptyModelData.INSTANCE );
-	}
+    @Override
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
+        return getQuads(state, side, rand, EmptyModelData.INSTANCE);
+    }
 
-	@Override
-	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, Random rand, IModelData data )
-	{
-		if( side != null )
-		{
-			return Collections.emptyList();
-		}
-		if( quads == null )
-		{
-		    quads = new ArrayList<>();
-            quads.addAll( this.facadeBuilder.buildFacadeItemQuads( this.textureStack, Direction.NORTH ) );
-            quads.addAll( this.getBaseModel().getQuads( state, side, rand, data ) );
-            quads = Collections.unmodifiableList( quads );
+    @Override
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand,
+            IModelData data) {
+        if (side != null) {
+            return Collections.emptyList();
         }
-		return quads;
-	}
+        if (quads == null) {
+            quads = new ArrayList<>();
+            quads.addAll(this.facadeBuilder.buildFacadeItemQuads(this.textureStack, Direction.NORTH));
+            quads.addAll(this.getBaseModel().getQuads(state, side, rand, data));
+            quads = Collections.unmodifiableList(quads);
+        }
+        return quads;
+    }
 
-	@Override
-	public boolean isGui3d()
-	{
-		return false;
-	}
+    @Override
+    public boolean isGui3d() {
+        return false;
+    }
 
-	@Override
-	public boolean func_230044_c_()
-	{
-		return false;
-	}
+    @Override
+    public boolean func_230044_c_() {
+        return false;
+    }
 
-	@Override
-	public boolean isBuiltInRenderer()
-	{
-		return false;
-	}
+    @Override
+    public boolean isBuiltInRenderer() {
+        return false;
+    }
 
-	@Override
-	public ItemOverrideList getOverrides()
-	{
-		return ItemOverrideList.EMPTY;
-	}
+    @Override
+    public ItemOverrideList getOverrides() {
+        return ItemOverrideList.EMPTY;
+    }
 }

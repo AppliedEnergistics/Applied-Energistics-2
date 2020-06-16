@@ -3,9 +3,7 @@
     "item": "appliedenergistics2:light_detector"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "ab"
-  ],
+  "pattern": ["ab"],
   "key": {
     "a": {
       "tag": "appliedenergistics2:crystals/nether"

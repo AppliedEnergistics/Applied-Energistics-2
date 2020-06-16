@@ -18,10 +18,8 @@
 
 package appeng.container.implementations;
 
-
 import javax.annotation.Nonnull;
 
-import appeng.container.ContainerLocator;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -36,72 +34,64 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.AEBaseContainer;
+import appeng.container.ContainerLocator;
 import appeng.container.slot.SlotInaccessible;
 import appeng.me.helpers.PlayerSource;
 import appeng.tile.inventory.AppEngInternalInventory;
 
+public class ContainerCraftAmount extends AEBaseContainer {
 
-public class ContainerCraftAmount extends AEBaseContainer
-{
+    public static ContainerType<ContainerCraftAmount> TYPE;
 
-	public static ContainerType<ContainerCraftAmount> TYPE;
+    private static final ContainerHelper<ContainerCraftAmount, ITerminalHost> helper = new ContainerHelper<>(
+            ContainerCraftAmount::new, ITerminalHost.class, SecurityPermissions.CRAFT);
 
-	private static final ContainerHelper<ContainerCraftAmount, ITerminalHost> helper
-			= new ContainerHelper<>(ContainerCraftAmount::new, ITerminalHost.class, SecurityPermissions.CRAFT);
+    private final Slot craftingItem;
+    private IAEItemStack itemToCreate;
 
-	private final Slot craftingItem;
-	private IAEItemStack itemToCreate;
+    public ContainerCraftAmount(int id, PlayerInventory ip, final ITerminalHost te) {
+        super(TYPE, id, ip, te);
 
-	public ContainerCraftAmount(int id, PlayerInventory ip, final ITerminalHost te) {
-		super(TYPE, id, ip, te);
+        this.craftingItem = new SlotInaccessible(new AppEngInternalInventory(null, 1), 0, 34, 53);
+        this.addSlot(this.getCraftingItem());
+    }
 
-		this.craftingItem = new SlotInaccessible( new AppEngInternalInventory( null, 1 ), 0, 34, 53 );
-		this.addSlot( this.getCraftingItem() );
-	}
+    public static ContainerCraftAmount fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+        return helper.fromNetwork(windowId, inv, buf);
+    }
 
-	public static ContainerCraftAmount fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
-		return helper.fromNetwork(windowId, inv, buf);
-	}
+    public static boolean open(PlayerEntity player, ContainerLocator locator) {
+        return helper.open(player, locator);
+    }
 
-	public static boolean open(PlayerEntity player, ContainerLocator locator) {
-		return helper.open(player, locator);
-	}
+    @Override
+    public void detectAndSendChanges() {
+        super.detectAndSendChanges();
+        this.verifyPermissions(SecurityPermissions.CRAFT, false);
+    }
 
-	@Override
-	public void detectAndSendChanges()
-	{
-		super.detectAndSendChanges();
-		this.verifyPermissions( SecurityPermissions.CRAFT, false );
-	}
+    public IGrid getGrid() {
+        final IActionHost h = ((IActionHost) this.getTarget());
+        return h.getActionableNode().getGrid();
+    }
 
-	public IGrid getGrid()
-	{
-		final IActionHost h = ( (IActionHost) this.getTarget() );
-		return h.getActionableNode().getGrid();
-	}
+    public World getWorld() {
+        return this.getPlayerInv().player.world;
+    }
 
-	public World getWorld()
-	{
-		return this.getPlayerInv().player.world;
-	}
+    public IActionSource getActionSrc() {
+        return new PlayerSource(this.getPlayerInv().player, (IActionHost) this.getTarget());
+    }
 
-	public IActionSource getActionSrc()
-	{
-		return new PlayerSource( this.getPlayerInv().player, (IActionHost) this.getTarget() );
-	}
+    public Slot getCraftingItem() {
+        return this.craftingItem;
+    }
 
-	public Slot getCraftingItem()
-	{
-		return this.craftingItem;
-	}
+    public IAEItemStack getItemToCraft() {
+        return this.itemToCreate;
+    }
 
-	public IAEItemStack getItemToCraft()
-	{
-		return this.itemToCreate;
-	}
-
-	public void setItemToCraft( @Nonnull final IAEItemStack itemToCreate )
-	{
-		this.itemToCreate = itemToCreate;
-	}
+    public void setItemToCraft(@Nonnull final IAEItemStack itemToCreate) {
+        this.itemToCreate = itemToCreate;
+    }
 }

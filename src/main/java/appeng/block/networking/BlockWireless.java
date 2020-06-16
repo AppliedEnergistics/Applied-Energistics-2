@@ -18,14 +18,6 @@
 
 package appeng.block.networking;
 
-
-import appeng.block.AEBaseTileBlock;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.ContainerWireless;
-import appeng.helpers.AEGlassMaterial;
-import appeng.tile.networking.TileWireless;
-import appeng.util.Platform;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -46,200 +38,192 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
+import appeng.block.AEBaseTileBlock;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerWireless;
+import appeng.helpers.AEGlassMaterial;
+import appeng.tile.networking.TileWireless;
+import appeng.util.Platform;
 
-public class BlockWireless extends AEBaseTileBlock<TileWireless>
-{
+public class BlockWireless extends AEBaseTileBlock<TileWireless> {
 
-	enum State implements IStringSerializable
-	{
-		OFF,
-		ON,
-		HAS_CHANNEL;
+    enum State implements IStringSerializable {
+        OFF, ON, HAS_CHANNEL;
 
-		@Override
-		public String getName()
-		{
-			return this.name().toLowerCase();
-		}
-	}
+        @Override
+        public String getName() {
+            return this.name().toLowerCase();
+        }
+    }
 
-	public static final EnumProperty<State> STATE = EnumProperty.create( "state", State.class );
+    public static final EnumProperty<State> STATE = EnumProperty.create("state", State.class);
 
-	public BlockWireless()
-	{
-		super( defaultProps(AEGlassMaterial.INSTANCE).notSolid() );
-		this.setFullSize( false );
-		this.setOpaque( false );
-		this.setDefaultState( this.getDefaultState().with( STATE, State.OFF ) );
-	}
+    public BlockWireless() {
+        super(defaultProps(AEGlassMaterial.INSTANCE).notSolid());
+        this.setFullSize(false);
+        this.setOpaque(false);
+        this.setDefaultState(this.getDefaultState().with(STATE, State.OFF));
+    }
 
-	@Override
-	protected BlockState updateBlockStateFromTileEntity(BlockState currentState, TileWireless te) {
-		State teState = State.OFF;
+    @Override
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, TileWireless te) {
+        State teState = State.OFF;
 
-		if( te.isActive() )
-		{
-			teState = State.HAS_CHANNEL;
-		}
-		else if( te.isPowered() )
-		{
-			teState = State.ON;
-		}
+        if (te.isActive()) {
+            teState = State.HAS_CHANNEL;
+        } else if (te.isPowered()) {
+            teState = State.ON;
+        }
 
-		return currentState.with(STATE, teState);
-	}
+        return currentState.with(STATE, teState);
+    }
 
-	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-		super.fillStateContainer(builder);
-		builder.add(STATE);
-	}
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
+        builder.add(STATE);
+    }
 
-	@Override
-	public ActionResultType onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-		final TileWireless tg = this.getTileEntity( w, pos );
+    @Override
+    public ActionResultType onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity player, Hand hand,
+            BlockRayTraceResult hit) {
+        final TileWireless tg = this.getTileEntity(w, pos);
 
-		if( tg != null && !player.isCrouching() )
-		{
-			if( Platform.isServer() )
-			{
-				ContainerOpener.openContainer(ContainerWireless.TYPE, player, ContainerLocator.forTileEntitySide(tg, hit.getFace()));
-			}
-			return ActionResultType.SUCCESS;
-		}
+        if (tg != null && !player.isCrouching()) {
+            if (Platform.isServer()) {
+                ContainerOpener.openContainer(ContainerWireless.TYPE, player,
+                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+            }
+            return ActionResultType.SUCCESS;
+        }
 
-		return super.onBlockActivated( state, w, pos, player, hand, hit );
-	}
+        return super.onBlockActivated(state, w, pos, player, hand, hit);
+    }
 
-	@Override
-	public VoxelShape getShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
-		final TileWireless tile = this.getTileEntity( w, pos );
-		if( tile != null )
-		{
-			final Direction forward = tile.getForward();
+    @Override
+    public VoxelShape getShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
+        final TileWireless tile = this.getTileEntity(w, pos);
+        if (tile != null) {
+            final Direction forward = tile.getForward();
 
-			double minX = 0;
-			double minY = 0;
-			double minZ = 0;
-			double maxX = 1;
-			double maxY = 1;
-			double maxZ = 1;
+            double minX = 0;
+            double minY = 0;
+            double minZ = 0;
+            double maxX = 1;
+            double maxY = 1;
+            double maxZ = 1;
 
-			switch( forward )
-			{
-				case DOWN:
-					minZ = minX = 3.0 / 16.0;
-					maxZ = maxX = 13.0 / 16.0;
-					maxY = 1.0;
-					minY = 5.0 / 16.0;
-					break;
-				case EAST:
-					minZ = minY = 3.0 / 16.0;
-					maxZ = maxY = 13.0 / 16.0;
-					maxX = 11.0 / 16.0;
-					minX = 0.0;
-					break;
-				case NORTH:
-					minY = minX = 3.0 / 16.0;
-					maxY = maxX = 13.0 / 16.0;
-					maxZ = 1.0;
-					minZ = 5.0 / 16.0;
-					break;
-				case SOUTH:
-					minY = minX = 3.0 / 16.0;
-					maxY = maxX = 13.0 / 16.0;
-					maxZ = 11.0 / 16.0;
-					minZ = 0.0;
-					break;
-				case UP:
-					minZ = minX = 3.0 / 16.0;
-					maxZ = maxX = 13.0 / 16.0;
-					maxY = 11.0 / 16.0;
-					minY = 0.0;
-					break;
-				case WEST:
-					minZ = minY = 3.0 / 16.0;
-					maxZ = maxY = 13.0 / 16.0;
-					maxX = 1.0;
-					minX = 5.0 / 16.0;
-					break;
-				default:
-					break;
-			}
+            switch (forward) {
+                case DOWN:
+                    minZ = minX = 3.0 / 16.0;
+                    maxZ = maxX = 13.0 / 16.0;
+                    maxY = 1.0;
+                    minY = 5.0 / 16.0;
+                    break;
+                case EAST:
+                    minZ = minY = 3.0 / 16.0;
+                    maxZ = maxY = 13.0 / 16.0;
+                    maxX = 11.0 / 16.0;
+                    minX = 0.0;
+                    break;
+                case NORTH:
+                    minY = minX = 3.0 / 16.0;
+                    maxY = maxX = 13.0 / 16.0;
+                    maxZ = 1.0;
+                    minZ = 5.0 / 16.0;
+                    break;
+                case SOUTH:
+                    minY = minX = 3.0 / 16.0;
+                    maxY = maxX = 13.0 / 16.0;
+                    maxZ = 11.0 / 16.0;
+                    minZ = 0.0;
+                    break;
+                case UP:
+                    minZ = minX = 3.0 / 16.0;
+                    maxZ = maxX = 13.0 / 16.0;
+                    maxY = 11.0 / 16.0;
+                    minY = 0.0;
+                    break;
+                case WEST:
+                    minZ = minY = 3.0 / 16.0;
+                    maxZ = maxY = 13.0 / 16.0;
+                    maxX = 1.0;
+                    minX = 5.0 / 16.0;
+                    break;
+                default:
+                    break;
+            }
 
-			return VoxelShapes.create( new AxisAlignedBB( minX, minY, minZ, maxX, maxY, maxZ ) );
-		}
-		return VoxelShapes.empty();
-	}
+            return VoxelShapes.create(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ));
+        }
+        return VoxelShapes.empty();
+    }
 
-	@Override
-	public VoxelShape getCollisionShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
 
-		final TileWireless tile = this.getTileEntity( w, pos );
-		if( tile != null )
-		{
-			final Direction forward = tile.getForward();
+        final TileWireless tile = this.getTileEntity(w, pos);
+        if (tile != null) {
+            final Direction forward = tile.getForward();
 
-			double minX = 0;
-			double minY = 0;
-			double minZ = 0;
-			double maxX = 1;
-			double maxY = 1;
-			double maxZ = 1;
+            double minX = 0;
+            double minY = 0;
+            double minZ = 0;
+            double maxX = 1;
+            double maxY = 1;
+            double maxZ = 1;
 
-			switch( forward )
-			{
-				case DOWN:
-					minZ = minX = 3.0 / 16.0;
-					maxZ = maxX = 13.0 / 16.0;
-					maxY = 1.0;
-					minY = 5.0 / 16.0;
-					break;
-				case EAST:
-					minZ = minY = 3.0 / 16.0;
-					maxZ = maxY = 13.0 / 16.0;
-					maxX = 11.0 / 16.0;
-					minX = 0.0;
-					break;
-				case NORTH:
-					minY = minX = 3.0 / 16.0;
-					maxY = maxX = 13.0 / 16.0;
-					maxZ = 1.0;
-					minZ = 5.0 / 16.0;
-					break;
-				case SOUTH:
-					minY = minX = 3.0 / 16.0;
-					maxY = maxX = 13.0 / 16.0;
-					maxZ = 11.0 / 16.0;
-					minZ = 0.0;
-					break;
-				case UP:
-					minZ = minX = 3.0 / 16.0;
-					maxZ = maxX = 13.0 / 16.0;
-					maxY = 11.0 / 16.0;
-					minY = 0.0;
-					break;
-				case WEST:
-					minZ = minY = 3.0 / 16.0;
-					maxZ = maxY = 13.0 / 16.0;
-					maxX = 1.0;
-					minX = 5.0 / 16.0;
-					break;
-				default:
-					break;
-			}
+            switch (forward) {
+                case DOWN:
+                    minZ = minX = 3.0 / 16.0;
+                    maxZ = maxX = 13.0 / 16.0;
+                    maxY = 1.0;
+                    minY = 5.0 / 16.0;
+                    break;
+                case EAST:
+                    minZ = minY = 3.0 / 16.0;
+                    maxZ = maxY = 13.0 / 16.0;
+                    maxX = 11.0 / 16.0;
+                    minX = 0.0;
+                    break;
+                case NORTH:
+                    minY = minX = 3.0 / 16.0;
+                    maxY = maxX = 13.0 / 16.0;
+                    maxZ = 1.0;
+                    minZ = 5.0 / 16.0;
+                    break;
+                case SOUTH:
+                    minY = minX = 3.0 / 16.0;
+                    maxY = maxX = 13.0 / 16.0;
+                    maxZ = 11.0 / 16.0;
+                    minZ = 0.0;
+                    break;
+                case UP:
+                    minZ = minX = 3.0 / 16.0;
+                    maxZ = maxX = 13.0 / 16.0;
+                    maxY = 11.0 / 16.0;
+                    minY = 0.0;
+                    break;
+                case WEST:
+                    minZ = minY = 3.0 / 16.0;
+                    maxZ = maxY = 13.0 / 16.0;
+                    maxX = 1.0;
+                    minX = 5.0 / 16.0;
+                    break;
+                default:
+                    break;
+            }
 
-			return VoxelShapes.create( new AxisAlignedBB( minX, minY, minZ, maxX, maxY, maxZ ) );
-		}
-		else
-		{
-			return VoxelShapes.empty();
-		}
-	}
+            return VoxelShapes.create(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ));
+        } else {
+            return VoxelShapes.empty();
+        }
+    }
 
-	@Override
-	public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
-		return true;
-	}
+    @Override
+    public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
+        return true;
+    }
 
 }

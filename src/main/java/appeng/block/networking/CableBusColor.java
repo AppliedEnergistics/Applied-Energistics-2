@@ -18,9 +18,8 @@
 
 package appeng.block.networking;
 
+import javax.annotation.Nullable;
 
-import appeng.parts.CableBusContainer;
-import appeng.tile.networking.TileCableBus;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.tileentity.TileEntity;
@@ -32,32 +31,31 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.AEColor;
 import appeng.client.render.cablebus.CableBusRenderState;
-
-import javax.annotation.Nullable;
-
+import appeng.parts.CableBusContainer;
+import appeng.tile.networking.TileCableBus;
 
 /**
- * Exposes the cable bus color as tint indices 0 (dark variant), 1 (medium variant) and 2 (bright variant).
+ * Exposes the cable bus color as tint indices 0 (dark variant), 1 (medium
+ * variant) and 2 (bright variant).
  */
-@OnlyIn( Dist.CLIENT )
-public class CableBusColor implements IBlockColor
-{
+@OnlyIn(Dist.CLIENT)
+public class CableBusColor implements IBlockColor {
 
-	@Override
-	public int getColor(BlockState state, @Nullable ILightReader worldIn, @Nullable BlockPos pos, int color) {
+    @Override
+    public int getColor(BlockState state, @Nullable ILightReader worldIn, @Nullable BlockPos pos, int color) {
 
-		// FIXME: Once COLOR becomes part of the block state, change this
-		AEColor busColor = AEColor.TRANSPARENT;
+        // FIXME: Once COLOR becomes part of the block state, change this
+        AEColor busColor = AEColor.TRANSPARENT;
 
-		if (worldIn != null && pos != null) {
-			TileEntity tileEntity = worldIn.getTileEntity(pos);
-			if (tileEntity instanceof TileCableBus) {
-				CableBusContainer container = ((TileCableBus) tileEntity).getCableBus();
-				busColor = container.getColor();
-			}
-		}
+        if (worldIn != null && pos != null) {
+            TileEntity tileEntity = worldIn.getTileEntity(pos);
+            if (tileEntity instanceof TileCableBus) {
+                CableBusContainer container = ((TileCableBus) tileEntity).getCableBus();
+                busColor = container.getColor();
+            }
+        }
 
-		return busColor.getVariantByTintIndex( color );
+        return busColor.getVariantByTintIndex(color);
 
-	}
+    }
 }

@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:nether_quartz_wrench"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "a a",
-    " a ",
-    "a a"
-  ],
+  "pattern": ["a a", " a ", "a a"],
   "key": {
     "a": {
       "tag": "forge:gems/quartz"

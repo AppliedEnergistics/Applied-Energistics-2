@@ -18,13 +18,6 @@
 
 package appeng.block.crafting;
 
-
-import appeng.block.AEBaseTileBlock;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.ContainerInscriber;
-import appeng.container.implementations.ContainerMAC;
-import appeng.tile.crafting.TileMolecularAssembler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -36,41 +29,46 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
+import appeng.block.AEBaseTileBlock;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerInscriber;
+import appeng.container.implementations.ContainerMAC;
+import appeng.tile.crafting.TileMolecularAssembler;
 
-public class BlockMolecularAssembler extends AEBaseTileBlock<TileMolecularAssembler>
-{
+public class BlockMolecularAssembler extends AEBaseTileBlock<TileMolecularAssembler> {
 
-	public static final BooleanProperty POWERED = BooleanProperty.create( "powered" );
+    public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
-	public BlockMolecularAssembler(Block.Properties props)
-	{
-		super( props );
-		setDefaultState(getDefaultState().with(POWERED, false));
-	}
+    public BlockMolecularAssembler(Block.Properties props) {
+        super(props);
+        setDefaultState(getDefaultState().with(POWERED, false));
+    }
 
-	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-		super.fillStateContainer(builder);
-		builder.add(POWERED);
-	}
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
+        builder.add(POWERED);
+    }
 
-	@Override
-	protected BlockState updateBlockStateFromTileEntity(BlockState currentState, TileMolecularAssembler te) {
-		return currentState.with(POWERED, te.isPowered());
-  }
+    @Override
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, TileMolecularAssembler te) {
+        return currentState.with(POWERED, te.isPowered());
+    }
 
-	@Override
-	public ActionResultType onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand, BlockRayTraceResult hit) {
-		final TileMolecularAssembler tg = this.getTileEntity( w, pos );
-		if( tg != null && !p.isCrouching() )
-		{
-			if (!tg.isRemote()) {
-				ContainerOpener.openContainer(ContainerMAC.TYPE, p, ContainerLocator.forTileEntitySide(tg, hit.getFace()));
-			}
-			return ActionResultType.SUCCESS;
-		}
+    @Override
+    public ActionResultType onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand,
+            BlockRayTraceResult hit) {
+        final TileMolecularAssembler tg = this.getTileEntity(w, pos);
+        if (tg != null && !p.isCrouching()) {
+            if (!tg.isRemote()) {
+                ContainerOpener.openContainer(ContainerMAC.TYPE, p,
+                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+            }
+            return ActionResultType.SUCCESS;
+        }
 
-		return super.onBlockActivated(state, w, pos, p, hand, hit);
-	}
+        return super.onBlockActivated(state, w, pos, p, hand, hit);
+    }
 
 }

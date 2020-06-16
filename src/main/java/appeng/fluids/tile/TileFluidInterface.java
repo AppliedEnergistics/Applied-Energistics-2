@@ -18,12 +18,10 @@
 
 package appeng.fluids.tile;
 
-
 import java.util.EnumSet;
 
 import javax.annotation.Nullable;
 
-import appeng.fluids.container.ContainerFluidInterface;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -47,146 +45,123 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
-
+import appeng.fluids.container.ContainerFluidInterface;
 import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.helper.IFluidInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.tile.grid.AENetworkTile;
 
+public class TileFluidInterface extends AENetworkTile implements IGridTickable, IFluidInterfaceHost, IPriorityHost {
+    private final DualityFluidInterface duality = new DualityFluidInterface(this.getProxy(), this);
 
-public class TileFluidInterface extends AENetworkTile implements IGridTickable, IFluidInterfaceHost, IPriorityHost
-{
-	private final DualityFluidInterface duality = new DualityFluidInterface( this.getProxy(), this );
+    public TileFluidInterface(TileEntityType<?> tileEntityTypeIn) {
+        super(tileEntityTypeIn);
+    }
 
-	public TileFluidInterface(TileEntityType<?> tileEntityTypeIn) {
-		super(tileEntityTypeIn);
-	}
+    @MENetworkEventSubscribe
+    public void stateChange(final MENetworkChannelsChanged c) {
+        this.duality.notifyNeighbors();
+    }
 
-	@MENetworkEventSubscribe
-	public void stateChange( final MENetworkChannelsChanged c )
-	{
-		this.duality.notifyNeighbors();
-	}
+    @MENetworkEventSubscribe
+    public void stateChange(final MENetworkPowerStatusChange c) {
+        this.duality.notifyNeighbors();
+    }
 
-	@MENetworkEventSubscribe
-	public void stateChange( final MENetworkPowerStatusChange c )
-	{
-		this.duality.notifyNeighbors();
-	}
+    @Override
+    public TickingRequest getTickingRequest(IGridNode node) {
+        return this.duality.getTickingRequest(node);
+    }
 
-	@Override
-	public TickingRequest getTickingRequest( IGridNode node )
-	{
-		return this.duality.getTickingRequest( node );
-	}
+    @Override
+    public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
+        return this.duality.tickingRequest(node, ticksSinceLastCall);
+    }
 
-	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
-	{
-		return this.duality.tickingRequest( node, ticksSinceLastCall );
-	}
+    @Override
+    public DualityFluidInterface getDualityFluidInterface() {
+        return this.duality;
+    }
 
-	@Override
-	public DualityFluidInterface getDualityFluidInterface()
-	{
-		return this.duality;
-	}
+    @Override
+    public TileEntity getTileEntity() {
+        return this;
+    }
 
-	@Override
-	public TileEntity getTileEntity()
-	{
-		return this;
-	}
+    @Override
+    public void gridChanged() {
+        this.duality.gridChanged();
+    }
 
-	@Override
-	public void gridChanged()
-	{
-		this.duality.gridChanged();
-	}
+    @Override
+    public CompoundNBT write(final CompoundNBT data) {
+        super.write(data);
+        this.duality.writeToNBT(data);
+        return data;
+    }
 
-	@Override
-	public CompoundNBT write(final CompoundNBT data )
-	{
-		super.write( data );
-		this.duality.writeToNBT( data );
-		return data;
-	}
+    @Override
+    public void read(final CompoundNBT data) {
+        super.read(data);
+        this.duality.readFromNBT(data);
+    }
 
-	@Override
-	public void read(final CompoundNBT data )
-	{
-		super.read( data );
-		this.duality.readFromNBT( data );
-	}
+    @Override
+    public AECableType getCableConnectionType(final AEPartLocation dir) {
+        return this.duality.getCableConnectionType(dir);
+    }
 
-	@Override
-	public AECableType getCableConnectionType( final AEPartLocation dir )
-	{
-		return this.duality.getCableConnectionType( dir );
-	}
+    @Override
+    public DimensionalCoord getLocation() {
+        return this.duality.getLocation();
+    }
 
-	@Override
-	public DimensionalCoord getLocation()
-	{
-		return this.duality.getLocation();
-	}
+    @Override
+    public EnumSet<Direction> getTargets() {
+        return EnumSet.allOf(Direction.class);
+    }
 
-	@Override
-	public EnumSet<Direction> getTargets()
-	{
-		return EnumSet.allOf( Direction.class );
-	}
+    @Override
+    public int getPriority() {
+        return this.duality.getPriority();
+    }
 
-	@Override
-	public int getPriority()
-	{
-		return this.duality.getPriority();
-	}
+    @Override
+    public void setPriority(final int newValue) {
+        this.duality.setPriority(newValue);
+    }
 
-	@Override
-	public void setPriority( final int newValue )
-	{
-		this.duality.setPriority( newValue );
-	}
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
+        LazyOptional<T> result = this.duality.getCapability(capability, facing);
+        if (result.isPresent()) {
+            return result;
+        }
+        return super.getCapability(capability, facing);
+    }
 
-	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing )
-	{
-		LazyOptional<T> result = this.duality.getCapability( capability, facing );
-		if( result.isPresent() )
-		{
-			return result;
-		}
-		return super.getCapability( capability, facing );
-	}
+    @Override
+    public int getInstalledUpgrades(Upgrades u) {
+        return this.duality.getInstalledUpgrades(u);
+    }
 
-	@Override
-	public int getInstalledUpgrades( Upgrades u )
-	{
-		return this.duality.getInstalledUpgrades( u );
-	}
+    @Override
+    public IConfigManager getConfigManager() {
+        return this.duality.getConfigManager();
+    }
 
-	@Override
-	public IConfigManager getConfigManager()
-	{
-		return this.duality.getConfigManager();
-	}
+    @Override
+    public IItemHandler getInventoryByName(String name) {
+        return this.duality.getInventoryByName(name);
+    }
 
-	@Override
-	public IItemHandler getInventoryByName( String name )
-	{
-		return this.duality.getInventoryByName( name );
-	}
+    @Override
+    public ItemStack getItemStackRepresentation() {
+        return AEApi.instance().definitions().blocks().fluidIface().maybeStack(1).orElse(ItemStack.EMPTY);
+    }
 
-	@Override
-	public ItemStack getItemStackRepresentation()
-	{
-		return AEApi.instance().definitions().blocks().fluidIface().maybeStack( 1 ).orElse( ItemStack.EMPTY );
-	}
-
-	@Override
-	public ContainerType<?> getContainerType()
-	{
-		return ContainerFluidInterface.TYPE;
-	}
+    @Override
+    public ContainerType<?> getContainerType() {
+        return ContainerFluidInterface.TYPE;
+    }
 }

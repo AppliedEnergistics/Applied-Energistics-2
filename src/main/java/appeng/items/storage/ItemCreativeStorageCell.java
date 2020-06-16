@@ -18,7 +18,6 @@
 
 package appeng.items.storage;
 
-
 import java.util.List;
 
 import net.minecraft.client.util.ITooltipFlag;
@@ -38,66 +37,52 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
 
+public class ItemCreativeStorageCell extends AEBaseItem implements ICellWorkbenchItem {
 
-public class ItemCreativeStorageCell extends AEBaseItem implements ICellWorkbenchItem
-{
+    public ItemCreativeStorageCell(Properties props) {
+        super(props);
+    }
 
-	public ItemCreativeStorageCell(Properties props)
-	{
-		super(props);
-	}
+    @Override
+    public boolean isEditable(final ItemStack is) {
+        return true;
+    }
 
-	@Override
-	public boolean isEditable( final ItemStack is )
-	{
-		return true;
-	}
+    @Override
+    public IItemHandler getUpgradesInventory(final ItemStack is) {
+        return null;
+    }
 
-	@Override
-	public IItemHandler getUpgradesInventory( final ItemStack is )
-	{
-		return null;
-	}
+    @Override
+    public IItemHandler getConfigInventory(final ItemStack is) {
+        return new CellConfig(is);
+    }
 
-	@Override
-	public IItemHandler getConfigInventory( final ItemStack is )
-	{
-		return new CellConfig( is );
-	}
+    @Override
+    public FuzzyMode getFuzzyMode(final ItemStack is) {
+        return FuzzyMode.IGNORE_ALL;
+    }
 
-	@Override
-	public FuzzyMode getFuzzyMode( final ItemStack is )
-	{
-		return FuzzyMode.IGNORE_ALL;
-	}
+    @Override
+    public void setFuzzyMode(final ItemStack is, final FuzzyMode fzMode) {
 
-	@Override
-	public void setFuzzyMode( final ItemStack is, final FuzzyMode fzMode )
-	{
+    }
 
-	}
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+            final ITooltipFlag advancedTooltips) {
+        final IMEInventoryHandler<?> inventory = AEApi.instance().registries().cell().getCellInventory(stack, null,
+                AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
 
-	@OnlyIn( Dist.CLIENT )
-	@Override
-	public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
-	{
-		final IMEInventoryHandler<?> inventory = AEApi.instance()
-				.registries()
-				.cell()
-				.getCellInventory( stack, null,
-						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+        if (inventory instanceof ICellInventoryHandler) {
+            final CellConfig cc = new CellConfig(stack);
 
-		if( inventory instanceof ICellInventoryHandler )
-		{
-			final CellConfig cc = new CellConfig( stack );
-
-			for( final ItemStack is : cc )
-			{
-				if( !is.isEmpty() )
-				{
-					lines.add( is.getDisplayName() );
-				}
-			}
-		}
-	}
+            for (final ItemStack is : cc) {
+                if (!is.isEmpty()) {
+                    lines.add(is.getDisplayName());
+                }
+            }
+        }
+    }
 }

@@ -18,8 +18,6 @@
 
 package appeng.client.render.effects;
 
-
-import appeng.core.AppEng;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -34,37 +32,36 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.AEPartLocation;
+import appeng.core.AppEng;
 
+@OnlyIn(Dist.CLIENT)
+public class EnergyFx extends BreakingParticle {
 
-@OnlyIn( Dist.CLIENT )
-public class EnergyFx extends BreakingParticle
-{
+    public static final BasicParticleType TYPE = new BasicParticleType(false);
 
-	public static final BasicParticleType TYPE = new BasicParticleType(false);
+    static {
+        TYPE.setRegistryName(AppEng.MOD_ID, "energy_fx");
+    }
 
-	static {
-		TYPE.setRegistryName(AppEng.MOD_ID, "energy_fx");
-	}
+    private final int startBlkX;
+    private final int startBlkY;
+    private final int startBlkZ;
 
-	private final int startBlkX;
-	private final int startBlkY;
-	private final int startBlkZ;
+    public EnergyFx(final World par1World, final double par2, final double par4, final double par6,
+            final IAnimatedSprite sprite) {
+        super(par1World, par2, par4, par6, new ItemStack(Items.DIAMOND));
+        this.particleGravity = 0;
+        this.particleBlue = 1;
+        this.particleGreen = 1;
+        this.particleRed = 1;
+        this.particleAlpha = 1.4f;
+        this.particleScale = 3.5f;
+        this.selectSpriteRandomly(sprite);
 
-	public EnergyFx( final World par1World, final double par2, final double par4, final double par6, final IAnimatedSprite sprite )
-	{
-		super( par1World, par2, par4, par6, new ItemStack(Items.DIAMOND) );
-		this.particleGravity = 0;
-		this.particleBlue = 1;
-		this.particleGreen = 1;
-		this.particleRed = 1;
-		this.particleAlpha = 1.4f;
-		this.particleScale = 3.5f;
-		this.selectSpriteRandomly(sprite);
-
-		this.startBlkX = MathHelper.floor( this.posX );
-		this.startBlkY = MathHelper.floor( this.posY );
-		this.startBlkZ = MathHelper.floor( this.posZ );
-	}
+        this.startBlkX = MathHelper.floor(this.posX);
+        this.startBlkY = MathHelper.floor(this.posY);
+        this.startBlkZ = MathHelper.floor(this.posZ);
+    }
 
 // FIXME	@Override
 // FIXME	public int getFXLayer()
@@ -125,13 +122,13 @@ public class EnergyFx extends BreakingParticle
 // FIXME		}
 // FIXME	}
 // FIXME
-			public void fromItem( final AEPartLocation d )
-			{
-				this.posX += 0.2 * d.xOffset;
-				this.posY += 0.2 * d.yOffset;
-				this.posZ += 0.2 * d.zOffset;
-				this.particleScale *= 0.8f;
-			}
+    public void fromItem(final AEPartLocation d) {
+        this.posX += 0.2 * d.xOffset;
+        this.posY += 0.2 * d.yOffset;
+        this.posZ += 0.2 * d.zOffset;
+        this.particleScale *= 0.8f;
+    }
+
 // FIXME
 // FIXME	@Override
 // FIXME	public void tick()
@@ -155,36 +152,34 @@ public class EnergyFx extends BreakingParticle
 // FIXME		this.particleAlpha *= 0.89f;
 // FIXME	}
 // FIXME
-	public void setMotionX( float motionX )
-	{
-		this.motionX = motionX;
-	}
+    public void setMotionX(float motionX) {
+        this.motionX = motionX;
+    }
 
-	public void setMotionY( float motionY )
-	{
-		this.motionY = motionY;
-	}
+    public void setMotionY(float motionY) {
+        this.motionY = motionY;
+    }
 
-	public void setMotionZ( float motionZ )
-	{
-		this.motionZ = motionZ;
-	}
+    public void setMotionZ(float motionZ) {
+        this.motionZ = motionZ;
+    }
 
-	@OnlyIn(Dist.CLIENT)
-	public static class Factory implements IParticleFactory<BasicParticleType> {
-		private final IAnimatedSprite spriteSet;
+    @OnlyIn(Dist.CLIENT)
+    public static class Factory implements IParticleFactory<BasicParticleType> {
+        private final IAnimatedSprite spriteSet;
 
-		public Factory(IAnimatedSprite spriteSet) {
-			this.spriteSet = spriteSet;
-		}
+        public Factory(IAnimatedSprite spriteSet) {
+            this.spriteSet = spriteSet;
+        }
 
-		public Particle makeParticle(BasicParticleType typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-			EnergyFx result = new EnergyFx(worldIn, x, y, z, spriteSet);
-			result.setMotionX((float) xSpeed);
-			result.setMotionY((float) ySpeed);
-			result.setMotionZ((float) zSpeed);
-			return result;
-		}
-	}
+        public Particle makeParticle(BasicParticleType typeIn, World worldIn, double x, double y, double z,
+                double xSpeed, double ySpeed, double zSpeed) {
+            EnergyFx result = new EnergyFx(worldIn, x, y, z, spriteSet);
+            result.setMotionX((float) xSpeed);
+            result.setMotionY((float) ySpeed);
+            result.setMotionZ((float) zSpeed);
+            return result;
+        }
+    }
 
 }

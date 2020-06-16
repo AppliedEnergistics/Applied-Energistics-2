@@ -18,10 +18,8 @@
 
 package appeng.client.render.effects;
 
-
 import java.util.Random;
 
-import appeng.core.AppEng;
 import net.minecraft.client.particle.*;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.particles.ParticleType;
@@ -29,64 +27,66 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import appeng.core.AppEng;
 
-public class LightningArcFX extends LightningFX
-{
-	public static final ParticleType<LightningArcParticleData> TYPE = new ParticleType<>(false, LightningArcParticleData.DESERIALIZER);
+public class LightningArcFX extends LightningFX {
+    public static final ParticleType<LightningArcParticleData> TYPE = new ParticleType<>(false,
+            LightningArcParticleData.DESERIALIZER);
 
-	static {
-		TYPE.setRegistryName(AppEng.MOD_ID, "lightning_arc_fx");
-	}
+    static {
+        TYPE.setRegistryName(AppEng.MOD_ID, "lightning_arc_fx");
+    }
 
-	private static final Random RANDOM_GENERATOR = new Random();
+    private static final Random RANDOM_GENERATOR = new Random();
 
-	private final double rx;
-	private final double ry;
-	private final double rz;
+    private final double rx;
+    private final double ry;
+    private final double rz;
 
-	public LightningArcFX( final World w, final double x, final double y, final double z, final double ex, final double ey, final double ez, final double r, final double g, final double b )
-	{
-		super( w, x, y, z, r, g, b, 6 );
+    public LightningArcFX(final World w, final double x, final double y, final double z, final double ex,
+            final double ey, final double ez, final double r, final double g, final double b) {
+        super(w, x, y, z, r, g, b, 6);
 
-		this.rx = ex - x;
-		this.ry = ey - y;
-		this.rz = ez - z;
+        this.rx = ex - x;
+        this.ry = ey - y;
+        this.rz = ez - z;
 
-		this.regen();
-	}
+        this.regen();
+    }
 
-	@Override
-	protected void regen()
-	{
-		final double i = 1.0 / ( this.getSteps() - 1 );
-		final double lastDirectionX = this.rx * i;
-		final double lastDirectionY = this.ry * i;
-		final double lastDirectionZ = this.rz * i;
+    @Override
+    protected void regen() {
+        final double i = 1.0 / (this.getSteps() - 1);
+        final double lastDirectionX = this.rx * i;
+        final double lastDirectionY = this.ry * i;
+        final double lastDirectionZ = this.rz * i;
 
-		final double len = Math.sqrt( lastDirectionX * lastDirectionX + lastDirectionY * lastDirectionY + lastDirectionZ * lastDirectionZ );
-		for( int s = 0; s < this.getSteps(); s++ )
-		{
-			final double[][] localSteps = this.getPrecomputedSteps();
+        final double len = Math.sqrt(
+                lastDirectionX * lastDirectionX + lastDirectionY * lastDirectionY + lastDirectionZ * lastDirectionZ);
+        for (int s = 0; s < this.getSteps(); s++) {
+            final double[][] localSteps = this.getPrecomputedSteps();
 
-			localSteps[s][0] = ( lastDirectionX + ( RANDOM_GENERATOR.nextDouble() - 0.5 ) * len * 1.2 ) / 2.0;
-			localSteps[s][1] = ( lastDirectionY + ( RANDOM_GENERATOR.nextDouble() - 0.5 ) * len * 1.2 ) / 2.0;
-			localSteps[s][2] = ( lastDirectionZ + ( RANDOM_GENERATOR.nextDouble() - 0.5 ) * len * 1.2 ) / 2.0;
-		}
-	}
+            localSteps[s][0] = (lastDirectionX + (RANDOM_GENERATOR.nextDouble() - 0.5) * len * 1.2) / 2.0;
+            localSteps[s][1] = (lastDirectionY + (RANDOM_GENERATOR.nextDouble() - 0.5) * len * 1.2) / 2.0;
+            localSteps[s][2] = (lastDirectionZ + (RANDOM_GENERATOR.nextDouble() - 0.5) * len * 1.2) / 2.0;
+        }
+    }
 
-	@OnlyIn(Dist.CLIENT)
-	public static class Factory implements IParticleFactory<LightningArcParticleData> {
-		private final IAnimatedSprite spriteSet;
+    @OnlyIn(Dist.CLIENT)
+    public static class Factory implements IParticleFactory<LightningArcParticleData> {
+        private final IAnimatedSprite spriteSet;
 
-		public Factory(IAnimatedSprite spriteSet) {
-			this.spriteSet = spriteSet;
-		}
+        public Factory(IAnimatedSprite spriteSet) {
+            this.spriteSet = spriteSet;
+        }
 
-		public Particle makeParticle(LightningArcParticleData data, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-			SpriteTexturedParticle lightningFX = new LightningArcFX(worldIn, x, y, z, data.target.x, data.target.y, data.target.z, 0, 0, 0);
-			lightningFX.selectSpriteRandomly(this.spriteSet);
-			return lightningFX;
-		}
-	}
+        public Particle makeParticle(LightningArcParticleData data, World worldIn, double x, double y, double z,
+                double xSpeed, double ySpeed, double zSpeed) {
+            SpriteTexturedParticle lightningFX = new LightningArcFX(worldIn, x, y, z, data.target.x, data.target.y,
+                    data.target.z, 0, 0, 0);
+            lightningFX.selectSpriteRandomly(this.spriteSet);
+            return lightningFX;
+        }
+    }
 
 }

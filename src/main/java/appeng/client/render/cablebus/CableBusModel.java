@@ -18,73 +18,72 @@
 
 package appeng.client.render.cablebus;
 
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import appeng.core.AELog;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
-
-import appeng.api.util.AEColor;
-import appeng.core.features.registries.PartModels;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 
+import appeng.api.util.AEColor;
+import appeng.core.AELog;
+import appeng.core.features.registries.PartModels;
 
 /**
  * The built-in model for the cable bus block.
  */
-public class CableBusModel implements IModelGeometry<CableBusModel>
-{
+public class CableBusModel implements IModelGeometry<CableBusModel> {
 
-	private final PartModels partModels;
+    private final PartModels partModels;
 
-	public CableBusModel( PartModels partModels )
-	{
-		this.partModels = partModels;
-	}
+    public CableBusModel(PartModels partModels) {
+        this.partModels = partModels;
+    }
 
-	@Override
-	public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {
-		Map<ResourceLocation, IBakedModel> partModels = this.loadPartModels( bakery, spriteGetter, modelTransform );
+    @Override
+    public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
+            Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
+            ItemOverrideList overrides, ResourceLocation modelLocation) {
+        Map<ResourceLocation, IBakedModel> partModels = this.loadPartModels(bakery, spriteGetter, modelTransform);
 
-		CableBuilder cableBuilder = new CableBuilder( spriteGetter );
-		FacadeBuilder facadeBuilder = new FacadeBuilder();
+        CableBuilder cableBuilder = new CableBuilder(spriteGetter);
+        FacadeBuilder facadeBuilder = new FacadeBuilder();
 
-		// This should normally not be used, but we *have* to provide a particle texture or otherwise damage models will
-		// crash
-		TextureAtlasSprite particleTexture = cableBuilder.getCoreTexture( CableCoreType.GLASS, AEColor.TRANSPARENT );
+        // This should normally not be used, but we *have* to provide a particle texture
+        // or otherwise damage models will
+        // crash
+        TextureAtlasSprite particleTexture = cableBuilder.getCoreTexture(CableCoreType.GLASS, AEColor.TRANSPARENT);
 
-		return new CableBusBakedModel( cableBuilder, facadeBuilder, partModels, particleTexture );
-	}
+        return new CableBusBakedModel(cableBuilder, facadeBuilder, partModels, particleTexture);
+    }
 
-	@Override
-	public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-		return Collections.unmodifiableList( CableBuilder.getTextures() );
-	}
+    @Override
+    public Collection<Material> getTextures(IModelConfiguration owner,
+            Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+        return Collections.unmodifiableList(CableBuilder.getTextures());
+    }
 
-	private Map<ResourceLocation, IBakedModel> loadPartModels( ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetterIn, IModelTransform transformIn )
-	{
-		ImmutableMap.Builder<ResourceLocation, IBakedModel> result = ImmutableMap.builder();
+    private Map<ResourceLocation, IBakedModel> loadPartModels(ModelBakery bakery,
+            Function<Material, TextureAtlasSprite> spriteGetterIn, IModelTransform transformIn) {
+        ImmutableMap.Builder<ResourceLocation, IBakedModel> result = ImmutableMap.builder();
 
-		for( ResourceLocation location : this.partModels.getModels() )
-		{
-			IBakedModel bakedModel = bakery.getBakedModel(location, transformIn, spriteGetterIn);
-			if (bakedModel == null) {
-				AELog.warn("Failed to bake part model {}", location);
-			} else {
-				result.put(location, bakedModel);
-			}
-		}
+        for (ResourceLocation location : this.partModels.getModels()) {
+            IBakedModel bakedModel = bakery.getBakedModel(location, transformIn, spriteGetterIn);
+            if (bakedModel == null) {
+                AELog.warn("Failed to bake part model {}", location);
+            } else {
+                result.put(location, bakedModel);
+            }
+        }
 
-		return result.build();
-	}
+        return result.build();
+    }
 }

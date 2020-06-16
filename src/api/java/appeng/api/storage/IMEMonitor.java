@@ -23,26 +23,24 @@
 
 package appeng.api.storage;
 
-
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
+public interface IMEMonitor<T extends IAEStack<T>> extends IMEInventoryHandler<T>, IBaseMonitor<T> {
 
-public interface IMEMonitor<T extends IAEStack<T>> extends IMEInventoryHandler<T>, IBaseMonitor<T>
-{
+    /**
+     * This method is discouraged when accessing data via a IMEMonitor
+     */
+    @Override
+    @Deprecated
+    IItemList<T> getAvailableItems(IItemList<T> out);
 
-	/**
-	 * This method is discouraged when accessing data via a IMEMonitor
-	 */
-	@Override
-	@Deprecated
-	IItemList<T> getAvailableItems( IItemList<T> out );
-
-	/**
-	 * Get access to the full item list of the network, preferred over {@link IMEInventory} .getAvailableItems(...)
-	 *
-	 * @return full storage list.
-	 */
-	IItemList<T> getStorageList();
+    /**
+     * Get access to the full item list of the network, preferred over
+     * {@link IMEInventory} .getAvailableItems(...)
+     *
+     * @return full storage list.
+     */
+    IItemList<T> getStorageList();
 }

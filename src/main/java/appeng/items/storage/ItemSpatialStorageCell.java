@@ -18,16 +18,8 @@
 
 package appeng.items.storage;
 
+import java.util.List;
 
-import appeng.api.implementations.TransitionResult;
-import appeng.api.implementations.items.ISpatialStorageCell;
-import appeng.api.storage.ISpatialDimension;
-import appeng.api.util.WorldCoord;
-import appeng.core.AELog;
-import appeng.core.localization.GuiText;
-import appeng.spatial.SpatialDimensionManager;
-import appeng.items.AEBaseItem;
-import appeng.spatial.StorageHelper;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -41,130 +33,120 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.List;
+import appeng.api.implementations.TransitionResult;
+import appeng.api.implementations.items.ISpatialStorageCell;
+import appeng.api.storage.ISpatialDimension;
+import appeng.api.util.WorldCoord;
+import appeng.core.AELog;
+import appeng.core.localization.GuiText;
+import appeng.items.AEBaseItem;
+import appeng.spatial.SpatialDimensionManager;
+import appeng.spatial.StorageHelper;
 
+public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorageCell {
+    private static final String TAG_DIMENSION_ID = "dimension_id";
 
-public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorageCell
-{
-	private static final String TAG_DIMENSION_ID = "dimension_id";
+    private final int maxRegion;
 
-	private final int maxRegion;
+    public ItemSpatialStorageCell(Properties props, final int spatialScale) {
+        super(props);
+        this.maxRegion = spatialScale;
+    }
 
-	public ItemSpatialStorageCell( Properties props, final int spatialScale )
-	{
-		super(props);
-		this.maxRegion = spatialScale;
-	}
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+            final ITooltipFlag advancedTooltips) {
+        final DimensionType dimType = this.getStoredDimension(stack);
+        if (dimType == null) {
+            lines.add(GuiText.Unformatted.textComponent().applyTextStyle(TextFormatting.ITALIC));
+            lines.add(GuiText.SpatialCapacity.textComponent(maxRegion, maxRegion, maxRegion));
+        } else {
+            SpatialDimensionManager.INSTANCE.addCellDimensionTooltip(dimType, lines);
+        }
 
-	@OnlyIn( Dist.CLIENT )
-	@Override
-	public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
-	{
-		final DimensionType dimType = this.getStoredDimension(stack);
-		if (dimType == null) {
-			lines.add(GuiText.Unformatted.textComponent().applyTextStyle(TextFormatting.ITALIC));
-			lines.add( GuiText.SpatialCapacity.textComponent(maxRegion, maxRegion, maxRegion));
-		} else {
-			SpatialDimensionManager.INSTANCE.addCellDimensionTooltip(dimType, lines);
-		}
+        if (advancedTooltips.isAdvanced()) {
+            if (dimType != null && dimType.getRegistryName() != null) {
+                lines.add(new StringTextComponent("Dimension: " + dimType.getRegistryName()));
+            }
+        }
+    }
 
-		if (advancedTooltips.isAdvanced()) {
-			if (dimType != null && dimType.getRegistryName() != null) {
-				lines.add(new StringTextComponent("Dimension: " + dimType.getRegistryName()));
-			}
-		}
-	}
+    @Override
+    public boolean isSpatialStorage(final ItemStack is) {
+        return true;
+    }
 
-	@Override
-	public boolean isSpatialStorage( final ItemStack is )
-	{
-		return true;
-	}
+    @Override
+    public int getMaxStoredDim(final ItemStack is) {
+        return this.maxRegion;
+    }
 
-	@Override
-	public int getMaxStoredDim( final ItemStack is )
-	{
-		return this.maxRegion;
-	}
+    @Override
+    public DimensionType getStoredDimension(final ItemStack is) {
+        final CompoundNBT c = is.getTag();
+        if (c != null && c.contains(TAG_DIMENSION_ID)) {
+            try {
+                ResourceLocation dimTypeId = new ResourceLocation(c.getString(TAG_DIMENSION_ID));
+                return DimensionType.byName(dimTypeId);
+            } catch (Exception e) {
+                AELog.warn("Failed to retrieve storage cell dimension.", e);
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public DimensionType getStoredDimension(final ItemStack is )
-	{
-		final CompoundNBT c = is.getTag();
-		if( c != null && c.contains(TAG_DIMENSION_ID) )
-		{
-			try {
-				ResourceLocation dimTypeId = new ResourceLocation(c.getString(TAG_DIMENSION_ID) );
-				return DimensionType.byName(dimTypeId);
-			} catch (Exception e) {
-				AELog.warn("Failed to retrieve storage cell dimension.", e);
-			}
-		}
-		return null;
-	}
+    @Override
+    public TransitionResult doSpatialTransition(final ItemStack is, final World w, final WorldCoord min,
+            final WorldCoord max, int playerId) {
+        final int targetX = max.x - min.x - 1;
+        final int targetY = max.y - min.y - 1;
+        final int targetZ = max.z - min.z - 1;
+        final int maxSize = this.getMaxStoredDim(is);
 
-	@Override
-	public TransitionResult doSpatialTransition( final ItemStack is, final World w, final WorldCoord min, final WorldCoord max, int playerId )
-	{
-		final int targetX = max.x - min.x - 1;
-		final int targetY = max.y - min.y - 1;
-		final int targetZ = max.z - min.z - 1;
-		final int maxSize = this.getMaxStoredDim( is );
+        final BlockPos targetSize = new BlockPos(targetX, targetY, targetZ);
 
-		final BlockPos targetSize = new BlockPos( targetX, targetY, targetZ );
+        ISpatialDimension manager = SpatialDimensionManager.INSTANCE;
 
-		ISpatialDimension manager = SpatialDimensionManager.INSTANCE;
+        DimensionType storedDim = this.getStoredDimension(is);
+        if (storedDim == null) {
+            storedDim = manager.createNewCellDimension(targetSize);
+        }
 
-		DimensionType storedDim = this.getStoredDimension( is );
-		if( storedDim == null )
-		{
-			storedDim = manager.createNewCellDimension( targetSize);
-		}
+        if (storedDim == null) {
+            // Failed to create the dimension
+            return new TransitionResult(false, 0);
+        }
 
-		if (storedDim == null) {
-			// Failed to create the dimension
-			return new TransitionResult(false, 0);
-		}
+        try {
+            if (manager.isCellDimension(storedDim)) {
+                World cellWorld = manager.getWorld(storedDim);
 
-		try
-		{
-			if(  manager.isCellDimension( storedDim ) )
-			{
-				World cellWorld = manager.getWorld(storedDim);
+                BlockPos scale = manager.getCellDimensionSize(storedDim);
 
-				BlockPos scale = manager.getCellDimensionSize( storedDim );
+                if (scale.equals(targetSize)) {
+                    if (targetX <= maxSize && targetY <= maxSize && targetZ <= maxSize) {
+                        BlockPos offset = manager.getCellDimensionOrigin(storedDim);
 
-				if( scale.equals( targetSize ) )
-				{
-					if( targetX <= maxSize && targetY <= maxSize && targetZ <= maxSize )
-					{
-						BlockPos offset = manager.getCellDimensionOrigin( storedDim );
+                        this.setStoredDimension(is, storedDim);
+                        StorageHelper.getInstance().swapRegions(w, min.x + 1, min.y + 1, min.z + 1, cellWorld,
+                                offset.getX(), offset.getY(), offset.getZ(), targetX - 1, targetY - 1, targetZ - 1);
 
-						this.setStoredDimension( is, storedDim);
-						StorageHelper.getInstance()
-								.swapRegions( w, min.x + 1, min.y + 1, min.z + 1, cellWorld, offset.getX(), offset.getY(),
-										offset.getZ(), targetX - 1, targetY - 1,
-										targetZ - 1 );
+                        return new TransitionResult(true, 0);
+                    }
+                }
+            }
+            return new TransitionResult(false, 0);
+        } finally {
+            // clean up newly created dimensions that failed transfer
+            if (manager.isCellDimension(storedDim) && this.getStoredDimension(is) == null) {
+                manager.deleteCellDimension(storedDim);
+            }
+        }
+    }
 
-						return new TransitionResult( true, 0 );
-					}
-				}
-			}
-			return new TransitionResult( false, 0 );
-		}
-		finally
-		{
-			// clean up newly created dimensions that failed transfer
-			if( manager.isCellDimension( storedDim ) && this.getStoredDimension( is ) == null )
-			{
-				manager.deleteCellDimension( storedDim );
-			}
-		}
-	}
-
-	private void setStoredDimension(final ItemStack is, DimensionType dim)
-	{
+    private void setStoredDimension(final ItemStack is, DimensionType dim) {
         final CompoundNBT c = is.getOrCreateTag();
-		c.putString(TAG_DIMENSION_ID, dim.getRegistryName().toString() );
-	}
+        c.putString(TAG_DIMENSION_ID, dim.getRegistryName().toString());
+    }
 }

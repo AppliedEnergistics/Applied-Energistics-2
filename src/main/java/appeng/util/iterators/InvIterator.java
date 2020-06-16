@@ -18,44 +18,37 @@
 
 package appeng.util.iterators;
 
-
 import java.util.Iterator;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
+public final class InvIterator implements Iterator<ItemStack> {
+    private final IItemHandler inventory;
+    private final int size;
 
-public final class InvIterator implements Iterator<ItemStack>
-{
-	private final IItemHandler inventory;
-	private final int size;
+    private int counter = 0;
 
-	private int counter = 0;
+    public InvIterator(final IItemHandler inventory) {
+        this.inventory = inventory;
+        this.size = this.inventory.getSlots();
+    }
 
-	public InvIterator( final IItemHandler inventory )
-	{
-		this.inventory = inventory;
-		this.size = this.inventory.getSlots();
-	}
+    @Override
+    public boolean hasNext() {
+        return this.counter < this.size;
+    }
 
-	@Override
-	public boolean hasNext()
-	{
-		return this.counter < this.size;
-	}
+    @Override
+    public ItemStack next() {
+        final ItemStack result = this.inventory.getStackInSlot(this.counter);
+        this.counter++;
 
-	@Override
-	public ItemStack next()
-	{
-		final ItemStack result = this.inventory.getStackInSlot( this.counter );
-		this.counter++;
+        return result;
+    }
 
-		return result;
-	}
-
-	@Override
-	public void remove()
-	{
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public void remove() {
+        throw new UnsupportedOperationException();
+    }
 }

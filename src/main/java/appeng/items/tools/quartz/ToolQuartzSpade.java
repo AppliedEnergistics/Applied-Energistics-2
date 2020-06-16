@@ -18,7 +18,6 @@
 
 package appeng.items.tools.quartz;
 
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -28,20 +27,16 @@ import net.minecraft.item.ShovelItem;
 import appeng.api.features.AEFeature;
 import appeng.util.Platform;
 
+public class ToolQuartzSpade extends ShovelItem {
+    private final AEFeature type;
 
-public class ToolQuartzSpade extends ShovelItem
-{
-	private final AEFeature type;
+    public ToolQuartzSpade(Item.Properties props, final AEFeature type) {
+        super(ItemTier.IRON, 1.5F, -3.0F, props);
+        this.type = type;
+    }
 
-	public ToolQuartzSpade( Item.Properties props, final AEFeature type )
-	{
-		super( ItemTier.IRON, 1.5F, -3.0F, props );
-		this.type = type;
-	}
-
-	@Override
-	public boolean getIsRepairable( final ItemStack a, final ItemStack b )
-	{
-		return Platform.canRepair( this.type, a, b );
-	}
+    @Override
+    public boolean getIsRepairable(final ItemStack a, final ItemStack b) {
+        return Platform.canRepair(this.type, a, b);
+    }
 }

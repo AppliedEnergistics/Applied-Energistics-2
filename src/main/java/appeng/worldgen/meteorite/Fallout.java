@@ -18,78 +18,53 @@
 
 package appeng.worldgen.meteorite;
 
-
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-
-import appeng.util.Platform;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 
+import appeng.util.Platform;
 
-public class Fallout
-{
-	private final MeteoriteBlockPutter putter;
-	private final BlockState skyStone;
+public class Fallout {
+    private final MeteoriteBlockPutter putter;
+    private final BlockState skyStone;
 
-	public Fallout( final MeteoriteBlockPutter putter, final BlockState skyStone )
-	{
-		this.putter = putter;
-		this.skyStone = skyStone;
-	}
+    public Fallout(final MeteoriteBlockPutter putter, final BlockState skyStone) {
+        this.putter = putter;
+        this.skyStone = skyStone;
+    }
 
-	public int adjustCrater()
-	{
-		return 0;
-	}
+    public int adjustCrater() {
+        return 0;
+    }
 
-	public void getRandomFall(final IWorld w, BlockPos pos )
-	{
-		final double a = Math.random();
-		if( a > 0.9 )
-		{
-			this.putter.put( w, pos, Blocks.STONE.getDefaultState() );
-		}
-		else if( a > 0.8 )
-		{
-			this.putter.put( w, pos, Blocks.COBBLESTONE.getDefaultState() );
-		}
-		else if( a > 0.7 )
-		{
-			this.putter.put( w, pos, Blocks.DIRT.getDefaultState() );
-		}
-		else
-		{
-			this.putter.put( w, pos, Blocks.GRAVEL.getDefaultState() );
-		}
-	}
+    public void getRandomFall(final IWorld w, BlockPos pos) {
+        final double a = Math.random();
+        if (a > 0.9) {
+            this.putter.put(w, pos, Blocks.STONE.getDefaultState());
+        } else if (a > 0.8) {
+            this.putter.put(w, pos, Blocks.COBBLESTONE.getDefaultState());
+        } else if (a > 0.7) {
+            this.putter.put(w, pos, Blocks.DIRT.getDefaultState());
+        } else {
+            this.putter.put(w, pos, Blocks.GRAVEL.getDefaultState());
+        }
+    }
 
-	public void getRandomInset( final IWorld w, BlockPos pos )
-	{
-		final double a = Math.random();
-		if( a > 0.9 )
-		{
-			this.putter.put( w, pos, Blocks.COBBLESTONE.getDefaultState() );
-		}
-		else if( a > 0.8 )
-		{
-			this.putter.put( w, pos, Blocks.STONE.getDefaultState() );
-		}
-		else if( a > 0.7 )
-		{
-			this.putter.put( w, pos, Blocks.GRASS_BLOCK.getDefaultState() );
-		}
-		else if( a > 0.6 )
-		{
-			this.putter.put( w, pos, this.skyStone );
-		}
-		else if( a > 0.5 )
-		{
-			this.putter.put( w, pos, Blocks.GRAVEL.getDefaultState() );
-		}
-		else
-		{
-			this.putter.put( w, pos, Platform.AIR_BLOCK.getDefaultState() );
-		}
-	}
+    public void getRandomInset(final IWorld w, BlockPos pos) {
+        final double a = Math.random();
+        if (a > 0.9) {
+            this.putter.put(w, pos, Blocks.COBBLESTONE.getDefaultState());
+        } else if (a > 0.8) {
+            this.putter.put(w, pos, Blocks.STONE.getDefaultState());
+        } else if (a > 0.7) {
+            this.putter.put(w, pos, Blocks.GRASS_BLOCK.getDefaultState());
+        } else if (a > 0.6) {
+            this.putter.put(w, pos, this.skyStone);
+        } else if (a > 0.5) {
+            this.putter.put(w, pos, Blocks.GRAVEL.getDefaultState());
+        } else {
+            this.putter.put(w, pos, Platform.AIR_BLOCK.getDefaultState());
+        }
+    }
 }

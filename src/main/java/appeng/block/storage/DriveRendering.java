@@ -18,18 +18,15 @@
 
 package appeng.block.storage;
 
+import net.minecraft.client.renderer.RenderType;
 
 import appeng.bootstrap.BlockRenderingCustomizer;
 import appeng.bootstrap.IBlockRendering;
 import appeng.bootstrap.IItemRendering;
-import net.minecraft.client.renderer.RenderType;
 
-
-public class DriveRendering extends BlockRenderingCustomizer
-{
-	@Override
-	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
-	{
-		rendering.renderType(RenderType.getCutout());
-	}
+public class DriveRendering extends BlockRenderingCustomizer {
+    @Override
+    public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
+        rendering.renderType(RenderType.getCutout());
+    }
 }

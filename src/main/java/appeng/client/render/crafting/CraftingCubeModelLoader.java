@@ -18,44 +18,44 @@
 
 package appeng.client.render.crafting;
 
-
-import appeng.block.crafting.AbstractCraftingUnitBlock;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+
 import net.minecraft.resources.IResourceManager;
 import net.minecraftforge.client.model.IModelLoader;
 
+import appeng.block.crafting.AbstractCraftingUnitBlock;
 
 /**
- * Loader that allows access to the built-in crafting cube model from block-model JSONs.
+ * Loader that allows access to the built-in crafting cube model from
+ * block-model JSONs.
  */
-public class CraftingCubeModelLoader implements IModelLoader<CraftingCubeModel>
-{
+public class CraftingCubeModelLoader implements IModelLoader<CraftingCubeModel> {
 
-	public static final CraftingCubeModelLoader INSTANCE = new CraftingCubeModelLoader();
+    public static final CraftingCubeModelLoader INSTANCE = new CraftingCubeModelLoader();
 
-	@Override
-	public void onResourceManagerReload(IResourceManager resourceManager) {
-	}
+    @Override
+    public void onResourceManagerReload(IResourceManager resourceManager) {
+    }
 
-	@Override
-	public CraftingCubeModel read(JsonDeserializationContext deserializationContext, JsonObject modelContents) {
-		AbstractCraftingUnitBlock.CraftingUnitType unitType = null;
+    @Override
+    public CraftingCubeModel read(JsonDeserializationContext deserializationContext, JsonObject modelContents) {
+        AbstractCraftingUnitBlock.CraftingUnitType unitType = null;
 
-		JsonElement typeEl = modelContents.get("type");
-		if (typeEl != null) {
-			String typeName = deserializationContext.deserialize(typeEl, String.class);
-			if (typeName != null) {
-				unitType = AbstractCraftingUnitBlock.CraftingUnitType.valueOf(typeName.toUpperCase());
-			}
-		}
-		if (unitType == null) {
-			throw new JsonParseException("type property is missing");
-		}
+        JsonElement typeEl = modelContents.get("type");
+        if (typeEl != null) {
+            String typeName = deserializationContext.deserialize(typeEl, String.class);
+            if (typeName != null) {
+                unitType = AbstractCraftingUnitBlock.CraftingUnitType.valueOf(typeName.toUpperCase());
+            }
+        }
+        if (unitType == null) {
+            throw new JsonParseException("type property is missing");
+        }
 
-		return new CraftingCubeModel(unitType);
-	}
+        return new CraftingCubeModel(unitType);
+    }
 
 }

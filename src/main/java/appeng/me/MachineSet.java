@@ -18,29 +18,24 @@
 
 package appeng.me;
 
-
 import java.util.HashSet;
 
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IMachineSet;
 
+public class MachineSet extends HashSet<IGridNode> implements IMachineSet {
 
-public class MachineSet extends HashSet<IGridNode> implements IMachineSet
-{
+    private static final long serialVersionUID = 3224660708327386933L;
 
-	private static final long serialVersionUID = 3224660708327386933L;
+    private final Class<? extends IGridHost> machine;
 
-	private final Class<? extends IGridHost> machine;
+    MachineSet(final Class<? extends IGridHost> m) {
+        this.machine = m;
+    }
 
-	MachineSet( final Class<? extends IGridHost> m )
-	{
-		this.machine = m;
-	}
-
-	@Override
-	public Class<? extends IGridHost> getMachineClass()
-	{
-		return this.machine;
-	}
+    @Override
+    public Class<? extends IGridHost> getMachineClass() {
+        return this.machine;
+    }
 }

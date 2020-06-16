@@ -18,10 +18,9 @@
 
 package appeng.debug;
 
+import java.util.ArrayList;
+import java.util.List;
 
-import appeng.core.AELog;
-import appeng.items.AEBaseItem;
-import appeng.util.Platform;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -30,66 +29,61 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.List;
+import appeng.core.AELog;
+import appeng.items.AEBaseItem;
+import appeng.util.Platform;
 
+public class ToolEraser extends AEBaseItem {
 
-public class ToolEraser extends AEBaseItem
-{
+    private static final int BLOCK_ERASE_LIMIT = 90000;
 
-	private static final int BLOCK_ERASE_LIMIT = 90000;
+    public ToolEraser(Properties properties) {
+        super(properties);
+    }
 
-	public ToolEraser(Properties properties) {
-		super(properties);
-	}
+    @Override
+    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
+        if (context.getWorld().isRemote()) {
+            return ActionResultType.PASS;
+        }
 
-	@Override
-	public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-		if( context.getWorld().isRemote() )
-		{
-			return ActionResultType.PASS;
-		}
+        PlayerEntity player = context.getPlayer();
+        World world = context.getWorld();
+        BlockPos pos = context.getPos();
 
-		PlayerEntity player = context.getPlayer();
-		World world = context.getWorld();
-		BlockPos pos = context.getPos();
+        if (player == null) {
+            return ActionResultType.PASS;
+        }
 
-		if (player == null) {
-			return ActionResultType.PASS;
-		}
+        final BlockState state = world.getBlockState(pos);
 
-		final BlockState state = world.getBlockState( pos );
+        List<BlockPos> next = new ArrayList<>();
+        next.add(pos);
 
-		List<BlockPos> next = new ArrayList<>();
-		next.add( pos );
+        int blocks = 0;
+        while (blocks < BLOCK_ERASE_LIMIT && !next.isEmpty()) {
+            final List<BlockPos> c = next;
+            next = new ArrayList<>();
 
-		int blocks = 0;
-		while( blocks < BLOCK_ERASE_LIMIT && !next.isEmpty() )
-		{
-			final List<BlockPos> c = next;
-			next = new ArrayList<>();
+            for (final BlockPos wc : c) {
+                final BlockState c_state = world.getBlockState(wc);
 
-			for( final BlockPos wc : c )
-			{
-				final BlockState c_state = world.getBlockState( wc );
+                if (state == c_state) {
+                    blocks++;
+                    world.removeBlock(wc, false);
 
-				if( state == c_state )
-				{
-					blocks++;
-					world.removeBlock(wc, false);
+                    next.add(wc.add(1, 0, 0));
+                    next.add(wc.add(-1, 0, 0));
+                    next.add(wc.add(0, 1, 0));
+                    next.add(wc.add(0, -1, 0));
+                    next.add(wc.add(0, 0, 1));
+                    next.add(wc.add(0, 0, -1));
+                }
+            }
+        }
 
-					next.add( wc.add( 1, 0, 0 ) );
-					next.add( wc.add( -1, 0, 0 ) );
-					next.add( wc.add( 0, 1, 0 ) );
-					next.add( wc.add( 0, -1, 0 ) );
-					next.add( wc.add( 0, 0, 1 ) );
-					next.add( wc.add( 0, 0, -1 ) );
-				}
-			}
-		}
+        AELog.info("Delete " + blocks + " blocks");
 
-		AELog.info( "Delete " + blocks + " blocks" );
-
-		return ActionResultType.SUCCESS;
-	}
+        return ActionResultType.SUCCESS;
+    }
 }

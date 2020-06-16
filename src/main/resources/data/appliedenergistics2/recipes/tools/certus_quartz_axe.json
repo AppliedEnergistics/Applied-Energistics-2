@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:certus_quartz_axe"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aa",
-    "ab",
-    " b"
-  ],
+  "pattern": ["aa", "ab", " b"],
   "key": {
     "a": {
       "tag": "appliedenergistics2:crystals/certus_quartz"

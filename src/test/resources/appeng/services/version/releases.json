@@ -31,9 +31,7 @@
     "prerelease": true,
     "created_at": "2015-03-15T17:38:03Z",
     "published_at": "2015-03-16T06:32:39Z",
-    "assets": [
-
-    ],
+    "assets": [],
     "tarball_url": "https://api.github.com/repos/AppliedEnergistics/Applied-Energistics-2/tarball/rv2.beta.12",
     "zipball_url": "https://api.github.com/repos/AppliedEnergistics/Applied-Energistics-2/zipball/rv2.beta.12",
     "body": "Fixes #1024 Added zinc to the grindstone - thatsIch\r\n\r\nUpdate zh_CN.lang - bakaxyf"
@@ -70,9 +68,7 @@
     "prerelease": true,
     "created_at": "2015-03-13T22:49:12Z",
     "published_at": "2015-03-14T23:53:49Z",
-    "assets": [
-
-    ],
+    "assets": [],
     "tarball_url": "https://api.github.com/repos/AppliedEnergistics/Applied-Energistics-2/tarball/rv2.beta.11",
     "zipball_url": "https://api.github.com/repos/AppliedEnergistics/Applied-Energistics-2/zipball/rv2.beta.11",
     "body": "Fixes #1015 Pattern terminal destroying a single item when not able to satisfy a NEI recipe - yueh\r\n\r\nFixes #1011 skip null values returned by the oredictionary - yueh\r\n\r\nUpdate zh_CN.lang - bakaxyf"
@@ -109,9 +105,7 @@
     "prerelease": true,
     "created_at": "2015-03-11T15:40:32Z",
     "published_at": "2015-03-11T15:53:37Z",
-    "assets": [
-
-    ],
+    "assets": [],
     "tarball_url": "https://api.github.com/repos/AppliedEnergistics/Applied-Energistics-2/tarball/rv2.beta.10",
     "zipball_url": "https://api.github.com/repos/AppliedEnergistics/Applied-Energistics-2/zipball/rv2.beta.10",
     "body": "Fixes #861 Wireless Terminal notifies player, if it is unlinked - thatsIch\r\n\r\nFixes #920 Increased GUI close distance to match Vanilla MC distance - thatsIch\r\n\r\nFixes #743 Crash with BC plugs\r\n\r\nFixes #942 BC builder can build AE networks again\r\n\r\nUpdate #319 Now compiled against BC 6.4.2, with that MJ is gone"
@@ -148,9 +142,7 @@
     "prerelease": true,
     "created_at": "2015-03-09T14:05:21Z",
     "published_at": "2015-03-10T09:42:09Z",
-    "assets": [
-
-    ],
+    "assets": [],
     "tarball_url": "https://api.github.com/repos/AppliedEnergistics/Applied-Energistics-2/tarball/rv2.beta.9",
     "zipball_url": "https://api.github.com/repos/AppliedEnergistics/Applied-Energistics-2/zipball/rv2.beta.9",
     "body": "Enhancement #817 Crafting CPU GUI now shows a green background on items being crafted, and a yellow background on scheduled items - Eearslya\r\n\r\nEnhancement Added an option to disable the colored crafting status - yueh\r\n\r\nEnhancement Added more information to the security audit - yueh\r\n\r\nEnhancement Improved performance - yueh\r\n\r\nFixes #972 Level Emitter tool-tip now corresponds to the actual behavior - thatsIch\r\n\r\nFixes #982 Auto-crafting lag reduced - yueh\r\n\r\nFixes #910 Dense cables render correctly with FMP now - yueh\r\n\r\nFixes #943 Reduced lag when breaking multiple blocks at once using Annihilation Plane - yueh\r\n\r\nFixes cable render crash and covered cables render as smart - yueh\r\n\r\nUpdate fr_FR.lang - Mazdallier\r\n\r\nUpdate zh_CN.lang - bakaxyf\r\n\r\nUpdated Texture / Model License to be more specific - AlgorithmX2\r\n\r\nUpdated Forge to recommended 10.13.2.1291 and other dependencies - yueh"
@@ -187,9 +179,7 @@
     "prerelease": true,
     "created_at": "2015-01-22T16:05:23Z",
     "published_at": "2015-01-24T16:46:55Z",
-    "assets": [
-
-    ],
+    "assets": [],
     "tarball_url": "https://api.github.com/repos/AppliedEnergistics/Applied-Energistics-2/tarball/rv2.beta.8",
     "zipball_url": "https://api.github.com/repos/AppliedEnergistics/Applied-Energistics-2/zipball/rv2.beta.8",
     "body": "Update pt_BR.lang - al-myr\r\n\r\nImproved the logged warning for FailledConnection Now displays to coordinates of the affected tunnels. - yueh\r\n\r\nFix #701 - Changed harvest tool to axe - TheJulianJES\r\n\r\nFormation plane can now drop blocks as items - yueh\r\n\r\nDisable level emitter on offline networks Turns off level emitters if the goes offline because it runs out of power, channels or similar. - yueh\r\n\r\nFixes #304 WAILA Integration updated and fixed WAILA offers a new interface to sync the server data to the client. - thatsIch\r\n\r\nRemoved buffer from annihilation plane - yueh\r\n\r\nEffects should not collide with anything - yueh\r\n\r\nImprove code quality - thatsIch"
@@ -226,9 +216,7 @@
     "prerelease": true,
     "created_at": "2015-01-01T14:35:57Z",
     "published_at": "2015-01-01T17:56:50Z",
-    "assets": [
-
-    ],
+    "assets": [],
     "tarball_url": "https://api.github.com/repos/AppliedEnergistics/Applied-Energistics-2/tarball/rv2.beta.7",
     "zipball_url": "https://api.github.com/repos/AppliedEnergistics/Applied-Energistics-2/zipball/rv2.beta.7",
     "body": "Fixes #666 vanishing microblocks with Immibis-Microblocks - yueh"

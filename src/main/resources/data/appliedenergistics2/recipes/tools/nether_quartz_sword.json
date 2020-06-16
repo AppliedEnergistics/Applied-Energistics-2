@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:nether_quartz_sword"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "a",
-    "a",
-    "b"
-  ],
+  "pattern": ["a", "a", "b"],
   "key": {
     "a": {
       "tag": "forge:gems/quartz"

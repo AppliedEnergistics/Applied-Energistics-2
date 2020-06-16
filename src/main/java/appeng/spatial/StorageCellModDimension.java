@@ -18,27 +18,26 @@
 
 package appeng.spatial;
 
+import java.util.function.BiFunction;
 
-import appeng.core.AppEng;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.ModDimension;
 
-import java.util.function.BiFunction;
+import appeng.core.AppEng;
 
-public class StorageCellModDimension extends ModDimension
-{
+public class StorageCellModDimension extends ModDimension {
 
-	public static final StorageCellModDimension INSTANCE = new StorageCellModDimension();
+    public static final StorageCellModDimension INSTANCE = new StorageCellModDimension();
 
-	static {
-		INSTANCE.setRegistryName(AppEng.MOD_ID, "storage_cell");
-	}
+    static {
+        INSTANCE.setRegistryName(AppEng.MOD_ID, "storage_cell");
+    }
 
-	@Override
-	public BiFunction<World, DimensionType, ? extends Dimension> getFactory() {
-		return StorageCellDimension::new;
-	}
+    @Override
+    public BiFunction<World, DimensionType, ? extends Dimension> getFactory() {
+        return StorageCellDimension::new;
+    }
 
 }

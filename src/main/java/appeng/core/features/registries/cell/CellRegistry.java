@@ -18,7 +18,6 @@
 
 package appeng.core.features.registries.cell;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,108 +34,88 @@ import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 
+public class CellRegistry implements ICellRegistry {
 
-public class CellRegistry implements ICellRegistry
-{
+    private final List<ICellHandler> handlers;
+    private final List<ICellGuiHandler> guiHandlers;
 
-	private final List<ICellHandler> handlers;
-	private final List<ICellGuiHandler> guiHandlers;
+    public CellRegistry() {
+        this.handlers = new ArrayList<>();
+        this.guiHandlers = new ArrayList<>();
+    }
 
-	public CellRegistry()
-	{
-		this.handlers = new ArrayList<>();
-		this.guiHandlers = new ArrayList<>();
-	}
+    @Override
+    public void addCellHandler(final ICellHandler handler) {
+        Preconditions.checkNotNull(handler, "Called before FMLCommonSetupEvent.");
+        Preconditions.checkArgument(!this.handlers.contains(handler),
+                "Tried to register the same handler instance twice.");
 
-	@Override
-	public void addCellHandler( final ICellHandler handler )
-	{
-		Preconditions.checkNotNull( handler, "Called before FMLCommonSetupEvent." );
-		Preconditions.checkArgument( !this.handlers.contains( handler ), "Tried to register the same handler instance twice." );
+        this.handlers.add(handler);
 
-		this.handlers.add( handler );
+        // Verify that the first entry is always our own handler.
+        Verify.verify(this.handlers.get(0) instanceof BasicCellHandler);
+    }
 
-		// Verify that the first entry is always our own handler.
-		Verify.verify( this.handlers.get( 0 ) instanceof BasicCellHandler );
-	}
+    @Override
+    public boolean isCellHandled(final ItemStack is) {
+        if (is.isEmpty()) {
+            return false;
+        }
+        for (final ICellHandler ch : this.handlers) {
+            if (ch.isCell(is)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	@Override
-	public boolean isCellHandled( final ItemStack is )
-	{
-		if( is.isEmpty() )
-		{
-			return false;
-		}
-		for( final ICellHandler ch : this.handlers )
-		{
-			if( ch.isCell( is ) )
-			{
-				return true;
-			}
-		}
-		return false;
-	}
+    @Override
+    public ICellHandler getHandler(final ItemStack is) {
+        if (is.isEmpty()) {
+            return null;
+        }
+        for (final ICellHandler ch : this.handlers) {
+            if (ch.isCell(is)) {
+                return ch;
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public ICellHandler getHandler( final ItemStack is )
-	{
-		if( is.isEmpty() )
-		{
-			return null;
-		}
-		for( final ICellHandler ch : this.handlers )
-		{
-			if( ch.isCell( is ) )
-			{
-				return ch;
-			}
-		}
-		return null;
-	}
+    @Override
+    public <T extends IAEStack<T>> ICellInventoryHandler<T> getCellInventory(final ItemStack is,
+            final ISaveProvider container, final IStorageChannel<T> chan) {
+        if (is.isEmpty()) {
+            return null;
+        }
+        for (final ICellHandler ch : this.handlers) {
+            if (ch.isCell(is)) {
+                return ch.getCellInventory(is, container, chan);
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public <T extends IAEStack<T>> ICellInventoryHandler<T> getCellInventory( final ItemStack is, final ISaveProvider container, final IStorageChannel<T> chan )
-	{
-		if( is.isEmpty() )
-		{
-			return null;
-		}
-		for( final ICellHandler ch : this.handlers )
-		{
-			if( ch.isCell( is ) )
-			{
-				return ch.getCellInventory( is, container, chan );
-			}
-		}
-		return null;
-	}
+    @Override
+    public void addCellGuiHandler(ICellGuiHandler handler) {
+        this.guiHandlers.add(handler);
+    }
 
-	@Override
-	public void addCellGuiHandler( ICellGuiHandler handler )
-	{
-		this.guiHandlers.add( handler );
-	}
+    @Override
+    public <T extends IAEStack<T>> ICellGuiHandler getGuiHandler(final IStorageChannel<T> channel, final ItemStack is) {
+        ICellGuiHandler fallBack = null;
 
-	@Override
-	public <T extends IAEStack<T>> ICellGuiHandler getGuiHandler( final IStorageChannel<T> channel, final ItemStack is )
-	{
-		ICellGuiHandler fallBack = null;
+        for (final ICellGuiHandler ch : this.guiHandlers) {
+            if (ch.isHandlerFor(channel)) {
+                if (ch.isSpecializedFor(is)) {
+                    return ch;
+                }
 
-		for( final ICellGuiHandler ch : this.guiHandlers )
-		{
-			if( ch.isHandlerFor( channel ) )
-			{
-				if( ch.isSpecializedFor( is ) )
-				{
-					return ch;
-				}
-
-				if( fallBack == null )
-				{
-					fallBack = ch;
-				}
-			}
-		}
-		return fallBack;
-	}
+                if (fallBack == null) {
+                    fallBack = ch;
+                }
+            }
+        }
+        return fallBack;
+    }
 }

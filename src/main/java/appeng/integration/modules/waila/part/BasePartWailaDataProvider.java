@@ -18,10 +18,8 @@
 
 package appeng.integration.modules.waila.part;
 
+import java.util.List;
 
-import appeng.api.parts.IPart;
-import mcp.mobius.waila.api.IDataAccessor;
-import mcp.mobius.waila.api.IPluginConfig;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -30,40 +28,42 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
-import java.util.List;
+import mcp.mobius.waila.api.IDataAccessor;
+import mcp.mobius.waila.api.IPluginConfig;
 
+import appeng.api.parts.IPart;
 
 /**
- * Default implementation of {@link appeng.integration.modules.waila.part.IPartWailaDataProvider}
+ * Default implementation of
+ * {@link appeng.integration.modules.waila.part.IPartWailaDataProvider}
  *
  * @author thatsIch
  * @version rv2
  * @since rv2
  */
-public abstract class BasePartWailaDataProvider implements IPartWailaDataProvider
-{
-	@Override
-	public ItemStack getStack( final IPart part, final IPluginConfig config, final ItemStack partStack )
-	{
-		return ItemStack.EMPTY;
-	}
+public abstract class BasePartWailaDataProvider implements IPartWailaDataProvider {
+    @Override
+    public ItemStack getStack(final IPart part, final IPluginConfig config, final ItemStack partStack) {
+        return ItemStack.EMPTY;
+    }
 
-	@Override
-	public void appendHead(final IPart part, final List<ITextComponent> tooltip, final IDataAccessor accessor, final IPluginConfig config )
-	{
-	}
+    @Override
+    public void appendHead(final IPart part, final List<ITextComponent> tooltip, final IDataAccessor accessor,
+            final IPluginConfig config) {
+    }
 
-	@Override
-	public void appendBody(final IPart part, final List<ITextComponent> tooltip, final IDataAccessor accessor, final IPluginConfig config )
-	{
-	}
+    @Override
+    public void appendBody(final IPart part, final List<ITextComponent> tooltip, final IDataAccessor accessor,
+            final IPluginConfig config) {
+    }
 
-	@Override
-	public void appendTail(final IPart part, final List<ITextComponent> tooltip, final IDataAccessor accessor, final IPluginConfig config )
-	{
-	}
+    @Override
+    public void appendTail(final IPart part, final List<ITextComponent> tooltip, final IDataAccessor accessor,
+            final IPluginConfig config) {
+    }
 
-	@Override
-	public void appendServerData(ServerPlayerEntity player, IPart part, TileEntity te, CompoundNBT tag, World world, BlockPos pos) {
-	}
+    @Override
+    public void appendServerData(ServerPlayerEntity player, IPart part, TileEntity te, CompoundNBT tag, World world,
+            BlockPos pos) {
+    }
 }

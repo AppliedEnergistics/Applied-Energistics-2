@@ -23,39 +23,34 @@
 
 package appeng.api.events;
 
-
 import net.minecraftforge.eventbus.api.Event;
 
 import appeng.api.features.ILocatable;
-
 
 /**
  * Input Event:
  *
  * Used to Notify the Location Registry of objects, and their availability.
  */
-public class LocatableEventAnnounce extends Event
-{
+public class LocatableEventAnnounce extends Event {
 
-	public final ILocatable target;
-	public final LocatableEvent change;
+    public final ILocatable target;
+    public final LocatableEvent change;
 
-	public LocatableEventAnnounce( final ILocatable o, final LocatableEvent ev )
-	{
-		this.target = o;
-		this.change = ev;
-	}
+    public LocatableEventAnnounce(final ILocatable o, final LocatableEvent ev) {
+        this.target = o;
+        this.change = ev;
+    }
 
-	public enum LocatableEvent
-	{
-		/**
-		 * Adds the locatable to the registry
-		 */
-		REGISTER,
+    public enum LocatableEvent {
+        /**
+         * Adds the locatable to the registry
+         */
+        REGISTER,
 
-		/**
-		 * Removes the locatable from the registry
-		 */
-		UNREGISTER
-	}
+        /**
+         * Removes the locatable from the registry
+         */
+        UNREGISTER
+    }
 }

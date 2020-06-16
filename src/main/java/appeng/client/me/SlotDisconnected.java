@@ -18,84 +18,69 @@
 
 package appeng.client.me;
 
-
-import appeng.items.misc.ItemEncodedPattern;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
 import appeng.container.slot.AppEngSlot;
+import appeng.items.misc.ItemEncodedPattern;
 import appeng.util.Platform;
 
+public class SlotDisconnected extends AppEngSlot {
 
-public class SlotDisconnected extends AppEngSlot
-{
+    private final ClientDCInternalInv mySlot;
 
-	private final ClientDCInternalInv mySlot;
+    public SlotDisconnected(final ClientDCInternalInv me, final int which, final int x, final int y) {
+        super(me.getInventory(), which, x, y);
+        this.mySlot = me;
+    }
 
-	public SlotDisconnected( final ClientDCInternalInv me, final int which, final int x, final int y )
-	{
-		super( me.getInventory(), which, x, y );
-		this.mySlot = me;
-	}
+    @Override
+    public boolean isItemValid(final ItemStack par1ItemStack) {
+        return false;
+    }
 
-	@Override
-	public boolean isItemValid( final ItemStack par1ItemStack )
-	{
-		return false;
-	}
+    @Override
+    public void putStack(final ItemStack par1ItemStack) {
 
-	@Override
-	public void putStack( final ItemStack par1ItemStack )
-	{
+    }
 
-	}
+    @Override
+    public boolean canTakeStack(final PlayerEntity par1PlayerEntity) {
+        return false;
+    }
 
-	@Override
-	public boolean canTakeStack( final PlayerEntity par1PlayerEntity )
-	{
-		return false;
-	}
+    @Override
+    public ItemStack getDisplayStack() {
+        if (Platform.isClient()) {
+            final ItemStack is = super.getStack();
+            if (!is.isEmpty() && is.getItem() instanceof ItemEncodedPattern) {
+                final ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
+                final ItemStack out = iep.getOutput(is);
+                if (!out.isEmpty()) {
+                    return out;
+                }
+            }
+        }
+        return super.getStack();
+    }
 
-	@Override
-	public ItemStack getDisplayStack()
-	{
-		if( Platform.isClient() )
-		{
-			final ItemStack is = super.getStack();
-			if( !is.isEmpty() && is.getItem() instanceof ItemEncodedPattern)
-			{
-				final ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
-				final ItemStack out = iep.getOutput( is );
-				if( !out.isEmpty() )
-				{
-					return out;
-				}
-			}
-		}
-		return super.getStack();
-	}
+    @Override
+    public boolean getHasStack() {
+        return !this.getStack().isEmpty();
+    }
 
-	@Override
-	public boolean getHasStack()
-	{
-		return !this.getStack().isEmpty();
-	}
+    @Override
+    public int getSlotStackLimit() {
+        return 0;
+    }
 
-	@Override
-	public int getSlotStackLimit()
-	{
-		return 0;
-	}
+    @Override
+    public ItemStack decrStackSize(final int par1) {
+        return ItemStack.EMPTY;
+    }
 
-	@Override
-	public ItemStack decrStackSize( final int par1 )
-	{
-		return ItemStack.EMPTY;
-	}
-
-	public ClientDCInternalInv getSlot()
-	{
-		return this.mySlot;
-	}
+    public ClientDCInternalInv getSlot() {
+        return this.mySlot;
+    }
 }

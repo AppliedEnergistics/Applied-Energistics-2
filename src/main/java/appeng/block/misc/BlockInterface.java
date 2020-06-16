@@ -18,15 +18,8 @@
 
 package appeng.block.misc;
 
+import javax.annotation.Nullable;
 
-import appeng.api.util.IOrientable;
-import appeng.block.AEBaseTileBlock;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.ContainerDrive;
-import appeng.container.implementations.ContainerInterface;
-import appeng.tile.misc.TileInterface;
-import appeng.util.Platform;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -42,62 +35,61 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
+import appeng.api.util.IOrientable;
+import appeng.block.AEBaseTileBlock;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerDrive;
+import appeng.container.implementations.ContainerInterface;
+import appeng.tile.misc.TileInterface;
+import appeng.util.Platform;
 
+public class BlockInterface extends AEBaseTileBlock<TileInterface> {
 
-public class BlockInterface extends AEBaseTileBlock<TileInterface>
-{
+    private static final BooleanProperty OMNIDIRECTIONAL = BooleanProperty.create("omnidirectional");
 
-	private static final BooleanProperty OMNIDIRECTIONAL = BooleanProperty.create( "omnidirectional" );
+    public BlockInterface() {
+        super(defaultProps(Material.IRON));
+    }
 
-	public BlockInterface()
-	{
-		super( defaultProps(Material.IRON) );
-	}
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
+        builder.add(OMNIDIRECTIONAL);
+    }
 
-	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-		super.fillStateContainer(builder);
-		builder.add(OMNIDIRECTIONAL);
-	}
+    @Override
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, TileInterface te) {
+        return currentState.with(OMNIDIRECTIONAL, te.isOmniDirectional());
+    }
 
-	@Override
-	protected BlockState updateBlockStateFromTileEntity(BlockState currentState, TileInterface te) {
-		return currentState.with(OMNIDIRECTIONAL, te.isOmniDirectional());
-	}
+    @Override
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+        if (p.isCrouching()) {
+            return ActionResultType.PASS;
+        }
 
-	@Override
-	public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit)
-	{
-		if( p.isCrouching() )
-		{
-			return ActionResultType.PASS;
-		}
+        final TileInterface tg = this.getTileEntity(w, pos);
+        if (tg != null) {
+            if (Platform.isServer()) {
+                ContainerOpener.openContainer(ContainerInterface.TYPE, p,
+                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+            }
+            return ActionResultType.SUCCESS;
+        }
+        return ActionResultType.PASS;
+    }
 
-		final TileInterface tg = this.getTileEntity( w, pos );
-		if( tg != null )
-		{
-			if( Platform.isServer() )
-			{
-				ContainerOpener.openContainer(ContainerInterface.TYPE, p, ContainerLocator.forTileEntitySide(tg, hit.getFace()));
-			}
-			return ActionResultType.SUCCESS;
-		}
-		return ActionResultType.PASS;
-	}
+    @Override
+    protected boolean hasCustomRotation() {
+        return true;
+    }
 
-	@Override
-	protected boolean hasCustomRotation()
-	{
-		return true;
-	}
-
-	@Override
-	protected void customRotateBlock( final IOrientable rotatable, final Direction axis )
-	{
-		if( rotatable instanceof TileInterface )
-		{
-			( (TileInterface) rotatable ).setSide( axis );
-		}
-	}
+    @Override
+    protected void customRotateBlock(final IOrientable rotatable, final Direction axis) {
+        if (rotatable instanceof TileInterface) {
+            ((TileInterface) rotatable).setSide(axis);
+        }
+    }
 }

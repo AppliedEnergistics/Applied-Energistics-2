@@ -23,7 +23,6 @@
 
 package appeng.api.implementations.items;
 
-
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
@@ -31,7 +30,6 @@ import net.minecraft.item.ItemStack;
 import appeng.api.storage.ICellWorkbenchItem;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
-
 
 /**
  * Any item which implements this can be treated as an IMEInventory via
@@ -43,79 +41,77 @@ import appeng.api.storage.data.IAEStack;
  *
  * The standard AE implementation only provides 1-63 Types
  */
-public interface IStorageCell<T extends IAEStack<T>> extends ICellWorkbenchItem
-{
+public interface IStorageCell<T extends IAEStack<T>> extends ICellWorkbenchItem {
 
-	/**
-	 * It wont work if the return is not a multiple of 8.
-	 * The limit is ({@link Integer#MAX_VALUE} + 1) / 8.
-	 *
-	 * @param cellItem item
-	 *
-	 * @return number of bytes
-	 */
-	int getBytes( @Nonnull ItemStack cellItem );
+    /**
+     * It wont work if the return is not a multiple of 8. The limit is
+     * ({@link Integer#MAX_VALUE} + 1) / 8.
+     *
+     * @param cellItem item
+     *
+     * @return number of bytes
+     */
+    int getBytes(@Nonnull ItemStack cellItem);
 
-	/**
-	 * Determines the number of bytes used for any type included on the cell.
-	 *
-	 * @param cellItem item
-	 *
-	 * @return number of bytes
-	 */
-	int getBytesPerType( @Nonnull ItemStack cellItem );
+    /**
+     * Determines the number of bytes used for any type included on the cell.
+     *
+     * @param cellItem item
+     *
+     * @return number of bytes
+     */
+    int getBytesPerType(@Nonnull ItemStack cellItem);
 
-	/**
-	 * Must be between 1 and 63, indicates how many types you want to store on
-	 * the item.
-	 *
-	 * @param cellItem item
-	 *
-	 * @return number of types
-	 */
-	int getTotalTypes( @Nonnull ItemStack cellItem );
+    /**
+     * Must be between 1 and 63, indicates how many types you want to store on the
+     * item.
+     *
+     * @param cellItem item
+     *
+     * @return number of types
+     */
+    int getTotalTypes(@Nonnull ItemStack cellItem);
 
-	/**
-	 * Allows you to fine tune which items are allowed on a given cell, if you
-	 * don't care, just return false; As the handler for this type of cell is
-	 * still the default cells, the normal AE black list is also applied.
-	 *
-	 * @param cellItem item
-	 * @param requestedAddition requested addition
-	 *
-	 * @return true to preventAdditionOfItem
-	 */
-	boolean isBlackListed( @Nonnull ItemStack cellItem, @Nonnull T requestedAddition );
+    /**
+     * Allows you to fine tune which items are allowed on a given cell, if you don't
+     * care, just return false; As the handler for this type of cell is still the
+     * default cells, the normal AE black list is also applied.
+     *
+     * @param cellItem          item
+     * @param requestedAddition requested addition
+     *
+     * @return true to preventAdditionOfItem
+     */
+    boolean isBlackListed(@Nonnull ItemStack cellItem, @Nonnull T requestedAddition);
 
-	/**
-	 * Allows you to specify if this storage cell can be stored inside other
-	 * storage cells, only set this for special items like the matter cannon
-	 * that are not general purpose storage.
-	 *
-	 * @return true if the storage cell can be stored inside other storage
-	 * cells, this is generally false, except for certain situations
-	 * such as the matter cannon.
-	 */
-	boolean storableInStorageCell();
+    /**
+     * Allows you to specify if this storage cell can be stored inside other storage
+     * cells, only set this for special items like the matter cannon that are not
+     * general purpose storage.
+     *
+     * @return true if the storage cell can be stored inside other storage cells,
+     *         this is generally false, except for certain situations such as the
+     *         matter cannon.
+     */
+    boolean storableInStorageCell();
 
-	/**
-	 * Allows an item to selectively enable or disable its status as a storage
-	 * cell.
-	 *
-	 * @param i item
-	 *
-	 * @return if the ItemStack should behavior as a storage cell.
-	 */
-	boolean isStorageCell( @Nonnull ItemStack i );
+    /**
+     * Allows an item to selectively enable or disable its status as a storage cell.
+     *
+     * @param i item
+     *
+     * @return if the ItemStack should behavior as a storage cell.
+     */
+    boolean isStorageCell(@Nonnull ItemStack i);
 
-	/**
-	 * @return drain in ae/t this storage cell will use.
-	 */
-	double getIdleDrain();
+    /**
+     * @return drain in ae/t this storage cell will use.
+     */
+    double getIdleDrain();
 
-	/**
-	 * @return the type of channel your cell should be part of
-	 */
-	@Nonnull
-	IStorageChannel<T> getChannel();
+    /**
+     * @return the type of channel your cell should be part of
+     */
+    @Nonnull
+    IStorageChannel<T> getChannel();
 }

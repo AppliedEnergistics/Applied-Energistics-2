@@ -18,6 +18,42 @@
 
 package appeng.core;
 
+import java.util.Objects;
+
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.EntityType;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.Item;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.particles.ParticleType;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.IFeatureConfig;
+import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.gen.placement.Placement;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.*;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.ModDimension;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.extensions.IForgeContainerType;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.network.IContainerFactory;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.IForgeRegistry;
 
 import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
@@ -73,493 +109,285 @@ import appeng.spatial.StorageCellBiome;
 import appeng.spatial.StorageCellModDimension;
 import appeng.tile.AEBaseTile;
 import appeng.worldgen.MeteoriteWorldGen;
-import net.minecraft.advancements.CriteriaTriggers;
-import appeng.worldgen.MeteoriteWorldGen;
-import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.Item;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.particles.ParticleType;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.IFeatureConfig;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.IFeatureConfig;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.placement.Placement;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.*;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.common.ModDimension;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.extensions.IForgeContainerType;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.fml.network.IContainerFactory;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
 
-import java.util.Objects;
+final class Registration {
 
+    public Registration() {
+        AeStats.register();
+        advancementTriggers = new AdvancementTriggers(CriteriaTriggers::register);
+    }
 
-final class Registration
-{
+    AdvancementTriggers advancementTriggers;
 
-	public Registration() {
-		AeStats.register();
-		advancementTriggers = new AdvancementTriggers( CriteriaTriggers::register );
-	}
+    public static void setupInternalRegistries() {
+        // TODO: Do not use the internal API
+        final Api api = Api.INSTANCE;
+        final IRegistryContainer registries = api.registries();
 
-	AdvancementTriggers advancementTriggers;
+        final IGridCacheRegistry gcr = registries.gridCache();
+        gcr.registerGridCache(ITickManager.class, TickManagerCache.class);
+        gcr.registerGridCache(IEnergyGrid.class, EnergyGridCache.class);
+        gcr.registerGridCache(IPathingGrid.class, PathGridCache.class);
+        gcr.registerGridCache(IStorageGrid.class, GridStorageCache.class);
+        gcr.registerGridCache(P2PCache.class, P2PCache.class);
+        gcr.registerGridCache(ISpatialCache.class, SpatialPylonCache.class);
+        gcr.registerGridCache(ISecurityGrid.class, SecurityCache.class);
+        gcr.registerGridCache(ICraftingGrid.class, CraftingGridCache.class);
 
-	public static void setupInternalRegistries()
-	{
-		// TODO: Do not use the internal API
-		final Api api = Api.INSTANCE;
-		final IRegistryContainer registries = api.registries();
+        registries.cell().addCellHandler(new BasicCellHandler());
+        registries.cell().addCellHandler(new CreativeCellHandler());
+        registries.cell().addCellGuiHandler(new BasicItemCellGuiHandler());
+        registries.cell().addCellGuiHandler(new BasicFluidCellGuiHandler());
 
-		final IGridCacheRegistry gcr = registries.gridCache();
-		gcr.registerGridCache( ITickManager.class, TickManagerCache.class );
-		gcr.registerGridCache( IEnergyGrid.class, EnergyGridCache.class );
-		gcr.registerGridCache( IPathingGrid.class, PathGridCache.class );
-		gcr.registerGridCache( IStorageGrid.class, GridStorageCache.class );
-		gcr.registerGridCache( P2PCache.class, P2PCache.class );
-		gcr.registerGridCache( ISpatialCache.class, SpatialPylonCache.class );
-		gcr.registerGridCache( ISecurityGrid.class, SecurityCache.class );
-		gcr.registerGridCache( ICraftingGrid.class, CraftingGridCache.class );
+        api.definitions().materials().matterBall().maybeStack(1).ifPresent(ammoStack -> {
+            final double weight = 32;
 
-		registries.cell().addCellHandler( new BasicCellHandler() );
-		registries.cell().addCellHandler( new CreativeCellHandler() );
-		registries.cell().addCellGuiHandler( new BasicItemCellGuiHandler() );
-		registries.cell().addCellGuiHandler( new BasicFluidCellGuiHandler() );
+            registries.matterCannon().registerAmmo(ammoStack, weight);
+        });
 
-		api.definitions().materials().matterBall().maybeStack( 1 ).ifPresent( ammoStack ->
-		{
-			final double weight = 32;
+        PartItemPredicate.register();
+    }
 
-			registries.matterCannon().registerAmmo( ammoStack, weight );
-		} );
+    @OnlyIn(Dist.CLIENT)
+    public void modelRegistryEvent(ModelRegistryEvent event) {
+        registerSpecialModels();
 
-		PartItemPredicate.register();
-	}
-
-	@OnlyIn( Dist.CLIENT )
-	public void modelRegistryEvent( ModelRegistryEvent event )
-	{
-		registerSpecialModels();
-
-		// TODO: Do not use the internal API
-		final ApiDefinitions definitions = Api.INSTANCE.definitions();
-		final IModelRegistry registry = new IModelRegistry() {
-			@Override
-			public void registerItemVariants(Item item, ResourceLocation... names) {
+        // TODO: Do not use the internal API
+        final ApiDefinitions definitions = Api.INSTANCE.definitions();
+        final IModelRegistry registry = new IModelRegistry() {
+            @Override
+            public void registerItemVariants(Item item, ResourceLocation... names) {
 // FIXME REMOVE OR IMPL
-			}
+            }
 
-		};
-		final Dist dist = FMLEnvironment.dist;
-		definitions.getRegistry().getBootstrapComponents( IModelRegistrationComponent.class ).forEachRemaining(b -> b.modelRegistration( dist, registry ) );
-	}
+        };
+        final Dist dist = FMLEnvironment.dist;
+        definitions.getRegistry().getBootstrapComponents(IModelRegistrationComponent.class)
+                .forEachRemaining(b -> b.modelRegistration(dist, registry));
+    }
 
-	/**
-	 * Registers any JSON model files with Minecraft that are not referenced via blockstates or item IDs
-	 */
-	@OnlyIn(Dist.CLIENT)
-	private void registerSpecialModels() {
-		SkyCompassModel.DEPENDENCIES.forEach(ModelLoader::addSpecialModel);
-		ModelLoader.addSpecialModel(BiometricCardModel.MODEL_BASE);
-		ModelLoader.addSpecialModel(MemoryCardModel.MODEL_BASE);
-		DriveModel.DEPENDENCIES.forEach(ModelLoader::addSpecialModel);
+    /**
+     * Registers any JSON model files with Minecraft that are not referenced via
+     * blockstates or item IDs
+     */
+    @OnlyIn(Dist.CLIENT)
+    private void registerSpecialModels() {
+        SkyCompassModel.DEPENDENCIES.forEach(ModelLoader::addSpecialModel);
+        ModelLoader.addSpecialModel(BiometricCardModel.MODEL_BASE);
+        ModelLoader.addSpecialModel(MemoryCardModel.MODEL_BASE);
+        DriveModel.DEPENDENCIES.forEach(ModelLoader::addSpecialModel);
 
-		PartModels partModels = (PartModels) Api.INSTANCE.registries().partModels();
-		partModels.getModels().forEach(ModelLoader::addSpecialModel);
-		partModels.setInitialized(true);
-	}
+        PartModels partModels = (PartModels) Api.INSTANCE.registries().partModels();
+        partModels.getModels().forEach(ModelLoader::addSpecialModel);
+        partModels.setInitialized(true);
+    }
 
-	public void registerBlocks( RegistryEvent.Register<Block> event )
-	{
-		final IForgeRegistry<Block> registry = event.getRegistry();
-		// TODO: Do not use the internal API
-		final ApiDefinitions definitions = Api.INSTANCE.definitions();
-		final Dist dist = FMLEnvironment.dist;
-		definitions.getRegistry().getBootstrapComponents( IBlockRegistrationComponent.class ).forEachRemaining( b -> b.blockRegistration( dist, registry ) );
-	}
+    public void registerBlocks(RegistryEvent.Register<Block> event) {
+        final IForgeRegistry<Block> registry = event.getRegistry();
+        // TODO: Do not use the internal API
+        final ApiDefinitions definitions = Api.INSTANCE.definitions();
+        final Dist dist = FMLEnvironment.dist;
+        definitions.getRegistry().getBootstrapComponents(IBlockRegistrationComponent.class)
+                .forEachRemaining(b -> b.blockRegistration(dist, registry));
+    }
 
-	public void registerItems( RegistryEvent.Register<Item> event )
-	{
-		final IForgeRegistry<Item> registry = event.getRegistry();
-		// TODO: Do not use the internal API
-		final ApiDefinitions definitions = Api.INSTANCE.definitions();
-		final Dist dist = FMLEnvironment.dist;
-		definitions.getRegistry().getBootstrapComponents( IItemRegistrationComponent.class ).forEachRemaining( b -> b.itemRegistration( dist, registry ) );
-	}
+    public void registerItems(RegistryEvent.Register<Item> event) {
+        final IForgeRegistry<Item> registry = event.getRegistry();
+        // TODO: Do not use the internal API
+        final ApiDefinitions definitions = Api.INSTANCE.definitions();
+        final Dist dist = FMLEnvironment.dist;
+        definitions.getRegistry().getBootstrapComponents(IItemRegistrationComponent.class)
+                .forEachRemaining(b -> b.itemRegistration(dist, registry));
+    }
 
-	public void registerTileEntities( RegistryEvent.Register<TileEntityType<?>> event )
-	{
-		final IForgeRegistry<TileEntityType<?>> registry = event.getRegistry();
-		// TODO: Do not use the internal API
-		final ApiDefinitions definitions = Api.INSTANCE.definitions();
-		definitions.getRegistry().getBootstrapComponents( ITileEntityRegistrationComponent.class ).forEachRemaining(b -> b.register( registry ) );
-	}
+    public void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
+        final IForgeRegistry<TileEntityType<?>> registry = event.getRegistry();
+        // TODO: Do not use the internal API
+        final ApiDefinitions definitions = Api.INSTANCE.definitions();
+        definitions.getRegistry().getBootstrapComponents(ITileEntityRegistrationComponent.class)
+                .forEachRemaining(b -> b.register(registry));
+    }
 
-	public void registerContainerTypes( RegistryEvent.Register<ContainerType<?>> event ) {
-		final IForgeRegistry<ContainerType<?>> registry = event.getRegistry();
+    public void registerContainerTypes(RegistryEvent.Register<ContainerType<?>> event) {
+        final IForgeRegistry<ContainerType<?>> registry = event.getRegistry();
 
-		ContainerCellWorkbench.TYPE = registerContainer(
-				registry,
-				"cellworkbench",
-				ContainerCellWorkbench::fromNetwork,
-				ContainerCellWorkbench::open
-		);
-		ContainerChest.TYPE = registerContainer(
-				registry,
-				"chest",
-				ContainerChest::fromNetwork,
-				ContainerChest::open
-		);
-		ContainerCondenser.TYPE = registerContainer(
-				registry,
-				"condenser",
-				ContainerCondenser::fromNetwork,
-				ContainerCondenser::open
-		);
-		ContainerCraftAmount.TYPE = registerContainer(
-				registry,
-				"craftamount",
-				ContainerCraftAmount::fromNetwork,
-				ContainerCraftAmount::open
-		);
-		ContainerCraftConfirm.TYPE = registerContainer(
-				registry,
-				"craftconfirm",
-				ContainerCraftConfirm::fromNetwork,
-				ContainerCraftConfirm::open
-		);
-		ContainerCraftingCPU.TYPE = registerContainer(
-				registry,
-				"craftingcpu",
-				ContainerCraftingCPU::fromNetwork,
-				ContainerCraftingCPU::open
-		);
-		ContainerCraftingStatus.TYPE = registerContainer(
-				registry,
-				"craftingstatus",
-				ContainerCraftingStatus::fromNetwork,
-				ContainerCraftingStatus::open
-		);
-		ContainerCraftingTerm.TYPE = registerContainer(
-				registry,
-				"craftingterm",
-				ContainerCraftingTerm::fromNetwork,
-				ContainerCraftingTerm::open
-		);
-		ContainerDrive.TYPE = registerContainer(
-				registry,
-				"drive",
-				ContainerDrive::fromNetwork,
-				ContainerDrive::open
-		);
-		ContainerFormationPlane.TYPE = registerContainer(
-				registry,
-				"formationplane",
-				ContainerFormationPlane::fromNetwork,
-				ContainerFormationPlane::open
-		);
-		ContainerGrinder.TYPE = registerContainer(
-				registry,
-				"grinder",
-				ContainerGrinder::fromNetwork,
-				ContainerGrinder::open
-		);
-		ContainerInscriber.TYPE = registerContainer(
-				registry,
-				"inscriber",
-				ContainerInscriber::fromNetwork,
-				ContainerInscriber::open
-		);
-		ContainerInterface.TYPE = registerContainer(
-				registry,
-				"interface",
-				ContainerInterface::fromNetwork,
-				ContainerInterface::open
-		);
-		ContainerInterfaceTerminal.TYPE = registerContainer(
-				registry,
-				"interfaceterminal",
-				ContainerInterfaceTerminal::fromNetwork,
-				ContainerInterfaceTerminal::open
-		);
-		ContainerIOPort.TYPE = registerContainer(
-				registry,
-				"ioport",
-				ContainerIOPort::fromNetwork,
-				ContainerIOPort::open
-		);
-		ContainerLevelEmitter.TYPE = registerContainer(
-				registry,
-				"levelemitter",
-				ContainerLevelEmitter::fromNetwork,
-				ContainerLevelEmitter::open
-		);
-		ContainerMAC.TYPE = registerContainer(
-				registry,
-				"mac",
-				ContainerMAC::fromNetwork,
-				ContainerMAC::open
-		);
-		ContainerMEMonitorable.TYPE = registerContainer(
-				registry,
-				"memonitorable",
-				ContainerMEMonitorable::fromNetwork,
-				ContainerMEMonitorable::open
-		);
-		ContainerMEPortableCell.TYPE = registerContainer(
-				registry,
-				"meportablecell",
-				ContainerMEPortableCell::fromNetwork,
-				ContainerMEPortableCell::open
-		);
-		ContainerNetworkStatus.TYPE = registerContainer(
-				registry,
-				"networkstatus",
-				ContainerNetworkStatus::fromNetwork,
-				ContainerNetworkStatus::open
-		);
-		ContainerNetworkTool.TYPE = registerContainer(
-				registry,
-				"networktool",
-				ContainerNetworkTool::fromNetwork,
-				ContainerNetworkTool::open
-		);
-		ContainerPatternTerm.TYPE = registerContainer(
-				registry,
-				"patternterm",
-				ContainerPatternTerm::fromNetwork,
-				ContainerPatternTerm::open
-		);
-		ContainerPriority.TYPE = registerContainer(
-				registry,
-				"priority",
-				ContainerPriority::fromNetwork,
-				ContainerPriority::open
-		);
-		ContainerQNB.TYPE = registerContainer(
-				registry,
-				"qnb",
-				ContainerQNB::fromNetwork,
-				ContainerQNB::open
-		);
-		ContainerQuartzKnife.TYPE = registerContainer(
-				registry,
-				"quartzknife",
-				ContainerQuartzKnife::fromNetwork,
-				ContainerQuartzKnife::open
-		);
-		ContainerSecurityStation.TYPE = registerContainer(
-				registry,
-				"securitystation",
-				ContainerSecurityStation::fromNetwork,
-				ContainerSecurityStation::open
-		);
-		ContainerSkyChest.TYPE = registerContainer(
-				registry,
-				"skychest",
-				ContainerSkyChest::fromNetwork,
-				ContainerSkyChest::open
-		);
-		ContainerSpatialIOPort.TYPE = registerContainer(
-				registry,
-				"spatialioport",
-				ContainerSpatialIOPort::fromNetwork,
-				ContainerSpatialIOPort::open
-		);
-		ContainerStorageBus.TYPE = registerContainer(
-				registry,
-				"storagebus",
-				ContainerStorageBus::fromNetwork,
-				ContainerStorageBus::open
-		);
-		ContainerUpgradeable.TYPE = registerContainer(
-				registry,
-				"upgradeable",
-				ContainerUpgradeable::fromNetwork,
-				ContainerUpgradeable::open
-		);
-		ContainerVibrationChamber.TYPE = registerContainer(
-				registry,
-				"vibrationchamber",
-				ContainerVibrationChamber::fromNetwork,
-				ContainerVibrationChamber::open
-		);
-		ContainerWireless.TYPE = registerContainer(
-				registry,
-				"wireless",
-				ContainerWireless::fromNetwork,
-				ContainerWireless::open
-		);
-		ContainerWirelessTerm.TYPE = registerContainer(
-				registry,
-				"wirelessterm",
-				ContainerWirelessTerm::fromNetwork,
-				ContainerWirelessTerm::open
-		);
+        ContainerCellWorkbench.TYPE = registerContainer(registry, "cellworkbench", ContainerCellWorkbench::fromNetwork,
+                ContainerCellWorkbench::open);
+        ContainerChest.TYPE = registerContainer(registry, "chest", ContainerChest::fromNetwork, ContainerChest::open);
+        ContainerCondenser.TYPE = registerContainer(registry, "condenser", ContainerCondenser::fromNetwork,
+                ContainerCondenser::open);
+        ContainerCraftAmount.TYPE = registerContainer(registry, "craftamount", ContainerCraftAmount::fromNetwork,
+                ContainerCraftAmount::open);
+        ContainerCraftConfirm.TYPE = registerContainer(registry, "craftconfirm", ContainerCraftConfirm::fromNetwork,
+                ContainerCraftConfirm::open);
+        ContainerCraftingCPU.TYPE = registerContainer(registry, "craftingcpu", ContainerCraftingCPU::fromNetwork,
+                ContainerCraftingCPU::open);
+        ContainerCraftingStatus.TYPE = registerContainer(registry, "craftingstatus",
+                ContainerCraftingStatus::fromNetwork, ContainerCraftingStatus::open);
+        ContainerCraftingTerm.TYPE = registerContainer(registry, "craftingterm", ContainerCraftingTerm::fromNetwork,
+                ContainerCraftingTerm::open);
+        ContainerDrive.TYPE = registerContainer(registry, "drive", ContainerDrive::fromNetwork, ContainerDrive::open);
+        ContainerFormationPlane.TYPE = registerContainer(registry, "formationplane",
+                ContainerFormationPlane::fromNetwork, ContainerFormationPlane::open);
+        ContainerGrinder.TYPE = registerContainer(registry, "grinder", ContainerGrinder::fromNetwork,
+                ContainerGrinder::open);
+        ContainerInscriber.TYPE = registerContainer(registry, "inscriber", ContainerInscriber::fromNetwork,
+                ContainerInscriber::open);
+        ContainerInterface.TYPE = registerContainer(registry, "interface", ContainerInterface::fromNetwork,
+                ContainerInterface::open);
+        ContainerInterfaceTerminal.TYPE = registerContainer(registry, "interfaceterminal",
+                ContainerInterfaceTerminal::fromNetwork, ContainerInterfaceTerminal::open);
+        ContainerIOPort.TYPE = registerContainer(registry, "ioport", ContainerIOPort::fromNetwork,
+                ContainerIOPort::open);
+        ContainerLevelEmitter.TYPE = registerContainer(registry, "levelemitter", ContainerLevelEmitter::fromNetwork,
+                ContainerLevelEmitter::open);
+        ContainerMAC.TYPE = registerContainer(registry, "mac", ContainerMAC::fromNetwork, ContainerMAC::open);
+        ContainerMEMonitorable.TYPE = registerContainer(registry, "memonitorable", ContainerMEMonitorable::fromNetwork,
+                ContainerMEMonitorable::open);
+        ContainerMEPortableCell.TYPE = registerContainer(registry, "meportablecell",
+                ContainerMEPortableCell::fromNetwork, ContainerMEPortableCell::open);
+        ContainerNetworkStatus.TYPE = registerContainer(registry, "networkstatus", ContainerNetworkStatus::fromNetwork,
+                ContainerNetworkStatus::open);
+        ContainerNetworkTool.TYPE = registerContainer(registry, "networktool", ContainerNetworkTool::fromNetwork,
+                ContainerNetworkTool::open);
+        ContainerPatternTerm.TYPE = registerContainer(registry, "patternterm", ContainerPatternTerm::fromNetwork,
+                ContainerPatternTerm::open);
+        ContainerPriority.TYPE = registerContainer(registry, "priority", ContainerPriority::fromNetwork,
+                ContainerPriority::open);
+        ContainerQNB.TYPE = registerContainer(registry, "qnb", ContainerQNB::fromNetwork, ContainerQNB::open);
+        ContainerQuartzKnife.TYPE = registerContainer(registry, "quartzknife", ContainerQuartzKnife::fromNetwork,
+                ContainerQuartzKnife::open);
+        ContainerSecurityStation.TYPE = registerContainer(registry, "securitystation",
+                ContainerSecurityStation::fromNetwork, ContainerSecurityStation::open);
+        ContainerSkyChest.TYPE = registerContainer(registry, "skychest", ContainerSkyChest::fromNetwork,
+                ContainerSkyChest::open);
+        ContainerSpatialIOPort.TYPE = registerContainer(registry, "spatialioport", ContainerSpatialIOPort::fromNetwork,
+                ContainerSpatialIOPort::open);
+        ContainerStorageBus.TYPE = registerContainer(registry, "storagebus", ContainerStorageBus::fromNetwork,
+                ContainerStorageBus::open);
+        ContainerUpgradeable.TYPE = registerContainer(registry, "upgradeable", ContainerUpgradeable::fromNetwork,
+                ContainerUpgradeable::open);
+        ContainerVibrationChamber.TYPE = registerContainer(registry, "vibrationchamber",
+                ContainerVibrationChamber::fromNetwork, ContainerVibrationChamber::open);
+        ContainerWireless.TYPE = registerContainer(registry, "wireless", ContainerWireless::fromNetwork,
+                ContainerWireless::open);
+        ContainerWirelessTerm.TYPE = registerContainer(registry, "wirelessterm", ContainerWirelessTerm::fromNetwork,
+                ContainerWirelessTerm::open);
 
-		ContainerFluidFormationPlane.TYPE = registerContainer(
-				registry,
-				"fluid_formation_plane",
-				ContainerFluidFormationPlane::fromNetwork,
-				ContainerFluidFormationPlane::open
-		);
-		ContainerFluidIO.TYPE = registerContainer(
-				registry,
-				"fluid_io",
-				ContainerFluidIO::fromNetwork,
-				ContainerFluidIO::open
-		);
-		ContainerFluidInterface.TYPE = registerContainer(
-				registry,
-				"fluid_interface",
-				ContainerFluidInterface::fromNetwork,
-				ContainerFluidInterface::open
-		);
-		ContainerFluidLevelEmitter.TYPE = registerContainer(
-				registry,
-				"fluid_level_emitter",
-				ContainerFluidLevelEmitter::fromNetwork,
-				ContainerFluidLevelEmitter::open
-		);
-		ContainerFluidStorageBus.TYPE = registerContainer(
-				registry,
-				"fluid_storage_bus",
-				ContainerFluidStorageBus::fromNetwork,
-				ContainerFluidStorageBus::open
-		);
-		ContainerFluidTerminal.TYPE = registerContainer(
-				registry,
-				"fluid_terminal",
-				ContainerFluidTerminal::fromNetwork,
-				ContainerFluidTerminal::open
-		);
+        ContainerFluidFormationPlane.TYPE = registerContainer(registry, "fluid_formation_plane",
+                ContainerFluidFormationPlane::fromNetwork, ContainerFluidFormationPlane::open);
+        ContainerFluidIO.TYPE = registerContainer(registry, "fluid_io", ContainerFluidIO::fromNetwork,
+                ContainerFluidIO::open);
+        ContainerFluidInterface.TYPE = registerContainer(registry, "fluid_interface",
+                ContainerFluidInterface::fromNetwork, ContainerFluidInterface::open);
+        ContainerFluidLevelEmitter.TYPE = registerContainer(registry, "fluid_level_emitter",
+                ContainerFluidLevelEmitter::fromNetwork, ContainerFluidLevelEmitter::open);
+        ContainerFluidStorageBus.TYPE = registerContainer(registry, "fluid_storage_bus",
+                ContainerFluidStorageBus::fromNetwork, ContainerFluidStorageBus::open);
+        ContainerFluidTerminal.TYPE = registerContainer(registry, "fluid_terminal", ContainerFluidTerminal::fromNetwork,
+                ContainerFluidTerminal::open);
 
-		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-			ScreenManager.registerFactory(ContainerGrinder.TYPE, GuiGrinder::new);
-			ScreenManager.registerFactory(ContainerQNB.TYPE, GuiQNB::new);
-			ScreenManager.registerFactory(ContainerSkyChest.TYPE, GuiSkyChest::new);
-			ScreenManager.registerFactory(ContainerChest.TYPE, GuiChest::new);
-			ScreenManager.registerFactory(ContainerWireless.TYPE, GuiWireless::new);
-			ScreenManager.<ContainerMEMonitorable, GuiMEMonitorable<ContainerMEMonitorable>>registerFactory(ContainerMEMonitorable.TYPE, GuiMEMonitorable::new);
-			ScreenManager.registerFactory(ContainerMEPortableCell.TYPE, GuiMEPortableCell::new);
-			ScreenManager.registerFactory(ContainerWirelessTerm.TYPE, GuiWirelessTerm::new);
-			ScreenManager.registerFactory(ContainerNetworkStatus.TYPE, GuiNetworkStatus::new);
-			ScreenManager.<ContainerCraftingCPU,GuiCraftingCPU<ContainerCraftingCPU>>registerFactory(ContainerCraftingCPU.TYPE, GuiCraftingCPU::new);
-			ScreenManager.registerFactory(ContainerNetworkTool.TYPE, GuiNetworkTool::new);
-			ScreenManager.registerFactory(ContainerQuartzKnife.TYPE, GuiQuartzKnife::new);
-			ScreenManager.registerFactory(ContainerDrive.TYPE, GuiDrive::new);
-			ScreenManager.registerFactory(ContainerVibrationChamber.TYPE, GuiVibrationChamber::new);
-			ScreenManager.registerFactory(ContainerCondenser.TYPE, GuiCondenser::new);
-			ScreenManager.registerFactory(ContainerInterface.TYPE, GuiInterface::new);
-			ScreenManager.registerFactory(ContainerFluidInterface.TYPE, GuiFluidInterface::new);
-			ScreenManager.<ContainerUpgradeable, GuiUpgradeable<ContainerUpgradeable>>registerFactory(ContainerUpgradeable.TYPE, GuiUpgradeable::new);
-			ScreenManager.registerFactory(ContainerFluidIO.TYPE, GuiFluidIO::new);
-			ScreenManager.registerFactory(ContainerIOPort.TYPE, GuiIOPort::new);
-			ScreenManager.registerFactory(ContainerStorageBus.TYPE, GuiStorageBus::new);
-			ScreenManager.registerFactory(ContainerFluidStorageBus.TYPE, GuiFluidStorageBus::new);
-			ScreenManager.registerFactory(ContainerFormationPlane.TYPE, GuiFormationPlane::new);
-			ScreenManager.registerFactory(ContainerFluidFormationPlane.TYPE, GuiFluidFormationPlane::new);
-			ScreenManager.registerFactory(ContainerPriority.TYPE, GuiPriority::new);
-			ScreenManager.registerFactory(ContainerSecurityStation.TYPE, GuiSecurityStation::new);
-			ScreenManager.registerFactory(ContainerCraftingTerm.TYPE, GuiCraftingTerm::new);
-			ScreenManager.registerFactory(ContainerPatternTerm.TYPE, GuiPatternTerm::new);
-			ScreenManager.registerFactory(ContainerFluidTerminal.TYPE, GuiFluidTerminal::new);
-			ScreenManager.registerFactory(ContainerLevelEmitter.TYPE, GuiLevelEmitter::new);
-			ScreenManager.registerFactory(ContainerFluidLevelEmitter.TYPE, GuiFluidLevelEmitter::new);
-			ScreenManager.registerFactory(ContainerSpatialIOPort.TYPE, GuiSpatialIOPort::new);
-			ScreenManager.registerFactory(ContainerInscriber.TYPE, GuiInscriber::new);
-			ScreenManager.registerFactory(ContainerCellWorkbench.TYPE, GuiCellWorkbench::new);
-			ScreenManager.registerFactory(ContainerMAC.TYPE, GuiMAC::new);
-			ScreenManager.registerFactory(ContainerCraftAmount.TYPE, GuiCraftAmount::new);
-			ScreenManager.registerFactory(ContainerCraftConfirm.TYPE, GuiCraftConfirm::new);
-			ScreenManager.registerFactory(ContainerInterfaceTerminal.TYPE, GuiInterfaceTerminal::new);
-			ScreenManager.registerFactory(ContainerCraftingStatus.TYPE, GuiCraftingStatus::new);
-		});
-	}
+        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+            ScreenManager.registerFactory(ContainerGrinder.TYPE, GuiGrinder::new);
+            ScreenManager.registerFactory(ContainerQNB.TYPE, GuiQNB::new);
+            ScreenManager.registerFactory(ContainerSkyChest.TYPE, GuiSkyChest::new);
+            ScreenManager.registerFactory(ContainerChest.TYPE, GuiChest::new);
+            ScreenManager.registerFactory(ContainerWireless.TYPE, GuiWireless::new);
+            ScreenManager.<ContainerMEMonitorable, GuiMEMonitorable<ContainerMEMonitorable>>registerFactory(
+                    ContainerMEMonitorable.TYPE, GuiMEMonitorable::new);
+            ScreenManager.registerFactory(ContainerMEPortableCell.TYPE, GuiMEPortableCell::new);
+            ScreenManager.registerFactory(ContainerWirelessTerm.TYPE, GuiWirelessTerm::new);
+            ScreenManager.registerFactory(ContainerNetworkStatus.TYPE, GuiNetworkStatus::new);
+            ScreenManager.<ContainerCraftingCPU, GuiCraftingCPU<ContainerCraftingCPU>>registerFactory(
+                    ContainerCraftingCPU.TYPE, GuiCraftingCPU::new);
+            ScreenManager.registerFactory(ContainerNetworkTool.TYPE, GuiNetworkTool::new);
+            ScreenManager.registerFactory(ContainerQuartzKnife.TYPE, GuiQuartzKnife::new);
+            ScreenManager.registerFactory(ContainerDrive.TYPE, GuiDrive::new);
+            ScreenManager.registerFactory(ContainerVibrationChamber.TYPE, GuiVibrationChamber::new);
+            ScreenManager.registerFactory(ContainerCondenser.TYPE, GuiCondenser::new);
+            ScreenManager.registerFactory(ContainerInterface.TYPE, GuiInterface::new);
+            ScreenManager.registerFactory(ContainerFluidInterface.TYPE, GuiFluidInterface::new);
+            ScreenManager.<ContainerUpgradeable, GuiUpgradeable<ContainerUpgradeable>>registerFactory(
+                    ContainerUpgradeable.TYPE, GuiUpgradeable::new);
+            ScreenManager.registerFactory(ContainerFluidIO.TYPE, GuiFluidIO::new);
+            ScreenManager.registerFactory(ContainerIOPort.TYPE, GuiIOPort::new);
+            ScreenManager.registerFactory(ContainerStorageBus.TYPE, GuiStorageBus::new);
+            ScreenManager.registerFactory(ContainerFluidStorageBus.TYPE, GuiFluidStorageBus::new);
+            ScreenManager.registerFactory(ContainerFormationPlane.TYPE, GuiFormationPlane::new);
+            ScreenManager.registerFactory(ContainerFluidFormationPlane.TYPE, GuiFluidFormationPlane::new);
+            ScreenManager.registerFactory(ContainerPriority.TYPE, GuiPriority::new);
+            ScreenManager.registerFactory(ContainerSecurityStation.TYPE, GuiSecurityStation::new);
+            ScreenManager.registerFactory(ContainerCraftingTerm.TYPE, GuiCraftingTerm::new);
+            ScreenManager.registerFactory(ContainerPatternTerm.TYPE, GuiPatternTerm::new);
+            ScreenManager.registerFactory(ContainerFluidTerminal.TYPE, GuiFluidTerminal::new);
+            ScreenManager.registerFactory(ContainerLevelEmitter.TYPE, GuiLevelEmitter::new);
+            ScreenManager.registerFactory(ContainerFluidLevelEmitter.TYPE, GuiFluidLevelEmitter::new);
+            ScreenManager.registerFactory(ContainerSpatialIOPort.TYPE, GuiSpatialIOPort::new);
+            ScreenManager.registerFactory(ContainerInscriber.TYPE, GuiInscriber::new);
+            ScreenManager.registerFactory(ContainerCellWorkbench.TYPE, GuiCellWorkbench::new);
+            ScreenManager.registerFactory(ContainerMAC.TYPE, GuiMAC::new);
+            ScreenManager.registerFactory(ContainerCraftAmount.TYPE, GuiCraftAmount::new);
+            ScreenManager.registerFactory(ContainerCraftConfirm.TYPE, GuiCraftConfirm::new);
+            ScreenManager.registerFactory(ContainerInterfaceTerminal.TYPE, GuiInterfaceTerminal::new);
+            ScreenManager.registerFactory(ContainerCraftingStatus.TYPE, GuiCraftingStatus::new);
+        });
+    }
 
-	private <T extends AEBaseContainer> ContainerType<T> registerContainer(IForgeRegistry<ContainerType<?>> registry,
-																		   String id,
-																		   IContainerFactory<T> factory,
-																		   ContainerOpener.Opener<T> opener) {
-		ContainerType<T> type = IForgeContainerType.create(factory);
-		type.setRegistryName(AppEng.MOD_ID, id);
-		registry.register(type);
-		ContainerOpener.addOpener(type, opener);
-		return type;
-	}
-	public void registerRecipeSerializers( RegistryEvent.Register<IRecipeSerializer<?>> event )
-	{
-		IForgeRegistry<IRecipeSerializer<?>> r = event.getRegistry();
+    private <T extends AEBaseContainer> ContainerType<T> registerContainer(IForgeRegistry<ContainerType<?>> registry,
+            String id, IContainerFactory<T> factory, ContainerOpener.Opener<T> opener) {
+        ContainerType<T> type = IForgeContainerType.create(factory);
+        type.setRegistryName(AppEng.MOD_ID, id);
+        registry.register(type);
+        ContainerOpener.addOpener(type, opener);
+        return type;
+    }
 
-		// TODO: Do not use the internal API
-		final ApiDefinitions definitions = Api.INSTANCE.definitions();
+    public void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
+        IForgeRegistry<IRecipeSerializer<?>> r = event.getRegistry();
 
-		GrinderRecipe.TYPE = new AERecipeType<>(GrinderRecipeSerializer.INSTANCE.getRegistryName());
-		InscriberRecipe.TYPE = new AERecipeType<>(InscriberRecipeSerializer.INSTANCE.getRegistryName());
+        // TODO: Do not use the internal API
+        final ApiDefinitions definitions = Api.INSTANCE.definitions();
 
-		r.registerAll(
-				DisassembleRecipe.SERIALIZER,
-				GrinderRecipeSerializer.INSTANCE,
-				InscriberRecipeSerializer.INSTANCE
+        GrinderRecipe.TYPE = new AERecipeType<>(GrinderRecipeSerializer.INSTANCE.getRegistryName());
+        InscriberRecipe.TYPE = new AERecipeType<>(InscriberRecipeSerializer.INSTANCE.getRegistryName());
+
+        r.registerAll(DisassembleRecipe.SERIALIZER, GrinderRecipeSerializer.INSTANCE, InscriberRecipeSerializer.INSTANCE
 //				FacadeRecipe.getSerializer( (ItemFacade) definitions.items().facade().item() ) FIXME reimplement facades
-		);
+        );
 
-		CraftingHelper.register( FeaturesEnabled.Serializer.INSTANCE );
-	}
+        CraftingHelper.register(FeaturesEnabled.Serializer.INSTANCE);
+    }
 
-	public void registerEntities( RegistryEvent.Register<EntityType<?>> event )
-	{
-		// Special case only used on the client-side
-		EntityFloatingItem.TYPE = EntityType.Builder.<EntityFloatingItem>create(EntityFloatingItem::new, EntityClassification.MISC)
-				.build("appliedenergistics2:floating_item");
+    public void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
+        // Special case only used on the client-side
+        EntityFloatingItem.TYPE = EntityType.Builder
+                .<EntityFloatingItem>create(EntityFloatingItem::new, EntityClassification.MISC)
+                .build("appliedenergistics2:floating_item");
 
-		final IForgeRegistry<EntityType<?>> registry = event.getRegistry();
-		// TODO: Do not use the internal API
-		final ApiDefinitions definitions = Api.INSTANCE.definitions();
-		definitions.getRegistry().getBootstrapComponents( IEntityRegistrationComponent.class ).forEachRemaining(b -> b.entityRegistration( registry ) );
-	}
+        final IForgeRegistry<EntityType<?>> registry = event.getRegistry();
+        // TODO: Do not use the internal API
+        final ApiDefinitions definitions = Api.INSTANCE.definitions();
+        definitions.getRegistry().getBootstrapComponents(IEntityRegistrationComponent.class)
+                .forEachRemaining(b -> b.entityRegistration(registry));
+    }
 
-	public void registerParticleTypes( RegistryEvent.Register<ParticleType<?>> event )
-	{
-		final IForgeRegistry<ParticleType<?>> registry = event.getRegistry();
-		registry.register(ChargedOreFX.TYPE);
-		registry.register(VibrantFX.TYPE);
-		registry.register(LightningFX.TYPE);
-	}
+    public void registerParticleTypes(RegistryEvent.Register<ParticleType<?>> event) {
+        final IForgeRegistry<ParticleType<?>> registry = event.getRegistry();
+        registry.register(ChargedOreFX.TYPE);
+        registry.register(VibrantFX.TYPE);
+        registry.register(LightningFX.TYPE);
+    }
 
-	public void registerParticleFactories(ParticleFactoryRegisterEvent event) {
-		Minecraft.getInstance().particles.registerFactory(AssemblerFX.TYPE, AssemblerFX.Factory::new);
-		Minecraft.getInstance().particles.registerFactory(ChargedOreFX.TYPE, ChargedOreFX.Factory::new);
-		Minecraft.getInstance().particles.registerFactory(CraftingFx.TYPE, CraftingFx.Factory::new);
-		Minecraft.getInstance().particles.registerFactory(EnergyFx.TYPE, EnergyFx.Factory::new);
-		Minecraft.getInstance().particles.registerFactory(LightningArcFX.TYPE, LightningArcFX.Factory::new);
-		Minecraft.getInstance().particles.registerFactory(LightningFX.TYPE, LightningFX.Factory::new);
-		Minecraft.getInstance().particles.registerFactory(MatterCannonFX.TYPE, MatterCannonFX.Factory::new);
-		Minecraft.getInstance().particles.registerFactory(VibrantFX.TYPE, VibrantFX.Factory::new);
-	}
+    public void registerParticleFactories(ParticleFactoryRegisterEvent event) {
+        Minecraft.getInstance().particles.registerFactory(AssemblerFX.TYPE, AssemblerFX.Factory::new);
+        Minecraft.getInstance().particles.registerFactory(ChargedOreFX.TYPE, ChargedOreFX.Factory::new);
+        Minecraft.getInstance().particles.registerFactory(CraftingFx.TYPE, CraftingFx.Factory::new);
+        Minecraft.getInstance().particles.registerFactory(EnergyFx.TYPE, EnergyFx.Factory::new);
+        Minecraft.getInstance().particles.registerFactory(LightningArcFX.TYPE, LightningArcFX.Factory::new);
+        Minecraft.getInstance().particles.registerFactory(LightningFX.TYPE, LightningFX.Factory::new);
+        Minecraft.getInstance().particles.registerFactory(MatterCannonFX.TYPE, MatterCannonFX.Factory::new);
+        Minecraft.getInstance().particles.registerFactory(VibrantFX.TYPE, VibrantFX.Factory::new);
+    }
 
 //
 //	@SubscribeEvent
@@ -572,112 +400,116 @@ final class Registration
 //		}
 //	}
 
-	// FIXME LATER
-	public static void postInit()
-	{
-		final IRegistryContainer registries = AEApi.instance().registries();
-		// TODO: Do not use the internal API
-		ApiDefinitions definitions = Api.INSTANCE.definitions();
-		final IParts parts = definitions.parts();
-		final IBlocks blocks = definitions.blocks();
-		final IItems items = definitions.items();
+    // FIXME LATER
+    public static void postInit() {
+        final IRegistryContainer registries = AEApi.instance().registries();
+        // TODO: Do not use the internal API
+        ApiDefinitions definitions = Api.INSTANCE.definitions();
+        final IParts parts = definitions.parts();
+        final IBlocks blocks = definitions.blocks();
+        final IItems items = definitions.items();
 
-		// FIXME this.registerSpatialDimension();
+        // FIXME this.registerSpatialDimension();
 
-		// default settings..
-		( (P2PTunnelRegistry) registries.p2pTunnel() ).configure();
+        // default settings..
+        ((P2PTunnelRegistry) registries.p2pTunnel()).configure();
 
-		// Interface
-		Upgrades.CRAFTING.registerItem( parts.iface(), 1 );
-		Upgrades.CRAFTING.registerItem( blocks.iface(), 1 );
+        // Interface
+        Upgrades.CRAFTING.registerItem(parts.iface(), 1);
+        Upgrades.CRAFTING.registerItem(blocks.iface(), 1);
 
-		// IO Port!
-		Upgrades.SPEED.registerItem( blocks.iOPort(), 3 );
-		Upgrades.REDSTONE.registerItem( blocks.iOPort(), 1 );
+        // IO Port!
+        Upgrades.SPEED.registerItem(blocks.iOPort(), 3);
+        Upgrades.REDSTONE.registerItem(blocks.iOPort(), 1);
 
-		// Level Emitter!
-		Upgrades.FUZZY.registerItem( parts.levelEmitter(), 1 );
-		Upgrades.CRAFTING.registerItem( parts.levelEmitter(), 1 );
+        // Level Emitter!
+        Upgrades.FUZZY.registerItem(parts.levelEmitter(), 1);
+        Upgrades.CRAFTING.registerItem(parts.levelEmitter(), 1);
 
-		// Import Bus
-		Upgrades.FUZZY.registerItem( parts.importBus(), 1 );
-		Upgrades.REDSTONE.registerItem( parts.importBus(), 1 );
-		Upgrades.CAPACITY.registerItem( parts.importBus(), 2 );
-		Upgrades.SPEED.registerItem( parts.importBus(), 4 );
+        // Import Bus
+        Upgrades.FUZZY.registerItem(parts.importBus(), 1);
+        Upgrades.REDSTONE.registerItem(parts.importBus(), 1);
+        Upgrades.CAPACITY.registerItem(parts.importBus(), 2);
+        Upgrades.SPEED.registerItem(parts.importBus(), 4);
 
-		// Fluid Import Bus
-		Upgrades.CAPACITY.registerItem( parts.fluidImportBus(), 2 );
-		Upgrades.REDSTONE.registerItem( parts.fluidImportBus(), 1 );
-		Upgrades.SPEED.registerItem( parts.fluidImportBus(), 4 );
+        // Fluid Import Bus
+        Upgrades.CAPACITY.registerItem(parts.fluidImportBus(), 2);
+        Upgrades.REDSTONE.registerItem(parts.fluidImportBus(), 1);
+        Upgrades.SPEED.registerItem(parts.fluidImportBus(), 4);
 
-		// Export Bus
-		Upgrades.FUZZY.registerItem( parts.exportBus(), 1 );
-		Upgrades.REDSTONE.registerItem( parts.exportBus(), 1 );
-		Upgrades.CAPACITY.registerItem( parts.exportBus(), 2 );
-		Upgrades.SPEED.registerItem( parts.exportBus(), 4 );
-		Upgrades.CRAFTING.registerItem( parts.exportBus(), 1 );
+        // Export Bus
+        Upgrades.FUZZY.registerItem(parts.exportBus(), 1);
+        Upgrades.REDSTONE.registerItem(parts.exportBus(), 1);
+        Upgrades.CAPACITY.registerItem(parts.exportBus(), 2);
+        Upgrades.SPEED.registerItem(parts.exportBus(), 4);
+        Upgrades.CRAFTING.registerItem(parts.exportBus(), 1);
 
-		// Fluid Export Bus
-		Upgrades.CAPACITY.registerItem( parts.fluidExportBus(), 2 );
-		Upgrades.REDSTONE.registerItem( parts.fluidExportBus(), 1 );
-		Upgrades.SPEED.registerItem( parts.fluidExportBus(), 4 );
+        // Fluid Export Bus
+        Upgrades.CAPACITY.registerItem(parts.fluidExportBus(), 2);
+        Upgrades.REDSTONE.registerItem(parts.fluidExportBus(), 1);
+        Upgrades.SPEED.registerItem(parts.fluidExportBus(), 4);
 
-		// Storage Cells
-		Upgrades.FUZZY.registerItem( items.cell1k(), 1 );
-		Upgrades.INVERTER.registerItem( items.cell1k(), 1 );
+        // Storage Cells
+        Upgrades.FUZZY.registerItem(items.cell1k(), 1);
+        Upgrades.INVERTER.registerItem(items.cell1k(), 1);
 
-		Upgrades.FUZZY.registerItem( items.cell4k(), 1 );
-		Upgrades.INVERTER.registerItem( items.cell4k(), 1 );
+        Upgrades.FUZZY.registerItem(items.cell4k(), 1);
+        Upgrades.INVERTER.registerItem(items.cell4k(), 1);
 
-		Upgrades.FUZZY.registerItem( items.cell16k(), 1 );
-		Upgrades.INVERTER.registerItem( items.cell16k(), 1 );
+        Upgrades.FUZZY.registerItem(items.cell16k(), 1);
+        Upgrades.INVERTER.registerItem(items.cell16k(), 1);
 
-		Upgrades.FUZZY.registerItem( items.cell64k(), 1 );
-		Upgrades.INVERTER.registerItem( items.cell64k(), 1 );
+        Upgrades.FUZZY.registerItem(items.cell64k(), 1);
+        Upgrades.INVERTER.registerItem(items.cell64k(), 1);
 
-		Upgrades.FUZZY.registerItem( items.portableCell(), 1 );
-		Upgrades.INVERTER.registerItem( items.portableCell(), 1 );
+        Upgrades.FUZZY.registerItem(items.portableCell(), 1);
+        Upgrades.INVERTER.registerItem(items.portableCell(), 1);
 
-		Upgrades.FUZZY.registerItem( items.viewCell(), 1 );
-		Upgrades.INVERTER.registerItem( items.viewCell(), 1 );
+        Upgrades.FUZZY.registerItem(items.viewCell(), 1);
+        Upgrades.INVERTER.registerItem(items.viewCell(), 1);
 
-		// Storage Bus
-		Upgrades.FUZZY.registerItem( parts.storageBus(), 1 );
-		Upgrades.INVERTER.registerItem( parts.storageBus(), 1 );
-		Upgrades.CAPACITY.registerItem( parts.storageBus(), 5 );
+        // Storage Bus
+        Upgrades.FUZZY.registerItem(parts.storageBus(), 1);
+        Upgrades.INVERTER.registerItem(parts.storageBus(), 1);
+        Upgrades.CAPACITY.registerItem(parts.storageBus(), 5);
 
-		// Storage Bus Fluids
-		Upgrades.INVERTER.registerItem( parts.fluidStorageBus(), 1 );
-		Upgrades.CAPACITY.registerItem( parts.fluidStorageBus(), 5 );
+        // Storage Bus Fluids
+        Upgrades.INVERTER.registerItem(parts.fluidStorageBus(), 1);
+        Upgrades.CAPACITY.registerItem(parts.fluidStorageBus(), 5);
 
-		// Formation Plane
-		Upgrades.FUZZY.registerItem( parts.formationPlane(), 1 );
-		Upgrades.INVERTER.registerItem( parts.formationPlane(), 1 );
-		Upgrades.CAPACITY.registerItem( parts.formationPlane(), 5 );
+        // Formation Plane
+        Upgrades.FUZZY.registerItem(parts.formationPlane(), 1);
+        Upgrades.INVERTER.registerItem(parts.formationPlane(), 1);
+        Upgrades.CAPACITY.registerItem(parts.formationPlane(), 5);
 
-		// Matter Cannon
-		Upgrades.FUZZY.registerItem( items.massCannon(), 1 );
-		Upgrades.INVERTER.registerItem( items.massCannon(), 1 );
-		Upgrades.SPEED.registerItem( items.massCannon(), 4 );
+        // Matter Cannon
+        Upgrades.FUZZY.registerItem(items.massCannon(), 1);
+        Upgrades.INVERTER.registerItem(items.massCannon(), 1);
+        Upgrades.SPEED.registerItem(items.massCannon(), 4);
 
-		// Molecular Assembler
-		Upgrades.SPEED.registerItem( blocks.molecularAssembler(), 5 );
+        // Molecular Assembler
+        Upgrades.SPEED.registerItem(blocks.molecularAssembler(), 5);
 
-		// Inscriber
-		Upgrades.SPEED.registerItem( blocks.inscriber(), 3 );
+        // Inscriber
+        Upgrades.SPEED.registerItem(blocks.inscriber(), 3);
 
-		// Wireless Terminal Handler
-		items.wirelessTerminal().maybeItem().ifPresent( terminal -> registries.wireless().registerWirelessHandler( (IWirelessTermHandler) terminal ) );
+        // Wireless Terminal Handler
+        items.wirelessTerminal().maybeItem()
+                .ifPresent(terminal -> registries.wireless().registerWirelessHandler((IWirelessTermHandler) terminal));
 
-		// Charge Rates
-		items.chargedStaff().maybeItem().ifPresent( chargedStaff -> registries.charger().addChargeRate( chargedStaff, 320d ) );
-		items.portableCell().maybeItem().ifPresent( chargedStaff -> registries.charger().addChargeRate( chargedStaff, 800d ) );
-		items.colorApplicator().maybeItem().ifPresent( colorApplicator -> registries.charger().addChargeRate( colorApplicator, 800d ) );
-		items.wirelessTerminal().maybeItem().ifPresent( terminal -> registries.charger().addChargeRate( terminal, 8000d ) );
-		items.entropyManipulator().maybeItem().ifPresent( entropyManipulator -> registries.charger().addChargeRate( entropyManipulator, 8000d ) );
-		items.massCannon().maybeItem().ifPresent( massCannon -> registries.charger().addChargeRate( massCannon, 8000d ) );
-		blocks.energyCell().maybeItem().ifPresent( cell -> registries.charger().addChargeRate( cell, 8000d ) );
-		blocks.energyCellDense().maybeItem().ifPresent( cell -> registries.charger().addChargeRate( cell, 16000d ) );
+        // Charge Rates
+        items.chargedStaff().maybeItem()
+                .ifPresent(chargedStaff -> registries.charger().addChargeRate(chargedStaff, 320d));
+        items.portableCell().maybeItem()
+                .ifPresent(chargedStaff -> registries.charger().addChargeRate(chargedStaff, 800d));
+        items.colorApplicator().maybeItem()
+                .ifPresent(colorApplicator -> registries.charger().addChargeRate(colorApplicator, 800d));
+        items.wirelessTerminal().maybeItem().ifPresent(terminal -> registries.charger().addChargeRate(terminal, 8000d));
+        items.entropyManipulator().maybeItem()
+                .ifPresent(entropyManipulator -> registries.charger().addChargeRate(entropyManipulator, 8000d));
+        items.massCannon().maybeItem().ifPresent(massCannon -> registries.charger().addChargeRate(massCannon, 8000d));
+        blocks.energyCell().maybeItem().ifPresent(cell -> registries.charger().addChargeRate(cell, 8000d));
+        blocks.energyCellDense().maybeItem().ifPresent(cell -> registries.charger().addChargeRate(cell, 16000d));
 
 // FIXME		// add villager trading to black smiths for a few basic materials
 // FIXME		if( AEConfig.instance().isFeatureEnabled( AEFeature.VILLAGER_TRADING ) )
@@ -686,110 +518,104 @@ final class Registration
 // FIXME			// VillagerRegistry.instance().getRegisteredVillagers().registerVillageTradeHandler( 3, new AETrading() );
 // FIXME		}
 
-		final IMovableRegistry mr = registries.movable();
+        final IMovableRegistry mr = registries.movable();
 
-		/*
-		 * You can't move bed rock.
-		 */
-		mr.blacklistBlock( net.minecraft.block.Blocks.BEDROCK );
+        /*
+         * You can't move bed rock.
+         */
+        mr.blacklistBlock(net.minecraft.block.Blocks.BEDROCK);
 
-		/*
-		 * White List Vanilla...
-		 */
-		mr.whiteListTileEntity( net.minecraft.tileentity.BannerTileEntity.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.BeaconTileEntity.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.BrewingStandTileEntity.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.ChestTileEntity.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.CommandBlockTileEntity.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.ComparatorTileEntity.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.DaylightDetectorTileEntity.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.DispenserTileEntity.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.DropperTileEntity.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.EnchantingTableTileEntity.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.EnderChestTileEntity.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.EndPortalTileEntity.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.FurnaceTileEntity.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.HopperTileEntity.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.MobSpawnerTileEntity.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.PistonTileEntity.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.ShulkerBoxTileEntity.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.SignTileEntity.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.SkullTileEntity.class );
+        /*
+         * White List Vanilla...
+         */
+        mr.whiteListTileEntity(net.minecraft.tileentity.BannerTileEntity.class);
+        mr.whiteListTileEntity(net.minecraft.tileentity.BeaconTileEntity.class);
+        mr.whiteListTileEntity(net.minecraft.tileentity.BrewingStandTileEntity.class);
+        mr.whiteListTileEntity(net.minecraft.tileentity.ChestTileEntity.class);
+        mr.whiteListTileEntity(net.minecraft.tileentity.CommandBlockTileEntity.class);
+        mr.whiteListTileEntity(net.minecraft.tileentity.ComparatorTileEntity.class);
+        mr.whiteListTileEntity(net.minecraft.tileentity.DaylightDetectorTileEntity.class);
+        mr.whiteListTileEntity(net.minecraft.tileentity.DispenserTileEntity.class);
+        mr.whiteListTileEntity(net.minecraft.tileentity.DropperTileEntity.class);
+        mr.whiteListTileEntity(net.minecraft.tileentity.EnchantingTableTileEntity.class);
+        mr.whiteListTileEntity(net.minecraft.tileentity.EnderChestTileEntity.class);
+        mr.whiteListTileEntity(net.minecraft.tileentity.EndPortalTileEntity.class);
+        mr.whiteListTileEntity(net.minecraft.tileentity.FurnaceTileEntity.class);
+        mr.whiteListTileEntity(net.minecraft.tileentity.HopperTileEntity.class);
+        mr.whiteListTileEntity(net.minecraft.tileentity.MobSpawnerTileEntity.class);
+        mr.whiteListTileEntity(net.minecraft.tileentity.PistonTileEntity.class);
+        mr.whiteListTileEntity(net.minecraft.tileentity.ShulkerBoxTileEntity.class);
+        mr.whiteListTileEntity(net.minecraft.tileentity.SignTileEntity.class);
+        mr.whiteListTileEntity(net.minecraft.tileentity.SkullTileEntity.class);
 
-		/*
-		 * Whitelist AE2
-		 */
-		mr.whiteListTileEntity( AEBaseTile.class );
+        /*
+         * Whitelist AE2
+         */
+        mr.whiteListTileEntity(AEBaseTile.class);
 
-		/*
-		 * world gen
-		 */
-		for( final IWorldGen.WorldGenType type : IWorldGen.WorldGenType.values() )
-		{
-			// FIXME: registries.worldgen().disableWorldGenForProviderID( type, StorageWorldProvider.class );
+        /*
+         * world gen
+         */
+        for (final IWorldGen.WorldGenType type : IWorldGen.WorldGenType.values()) {
+            // FIXME: registries.worldgen().disableWorldGenForProviderID( type,
+            // StorageWorldProvider.class );
 
-			registries.worldgen().disableWorldGenForDimension( type, DimensionType.THE_NETHER.getRegistryName() );
+            registries.worldgen().disableWorldGenForDimension(type, DimensionType.THE_NETHER.getRegistryName());
 
-			registries.worldgen().disableWorldGenForDimension( type, DimensionType.THE_NETHER.getRegistryName() );
-		}
+            registries.worldgen().disableWorldGenForDimension(type, DimensionType.THE_NETHER.getRegistryName());
+        }
 
-		// whitelist from config
-		for( final String dimension : AEConfig.instance().getMeteoriteDimensionWhitelist() )
-		{
-			registries.worldgen().enableWorldGenForDimension( IWorldGen.WorldGenType.METEORITES, new ResourceLocation( dimension ) );
-		}
+        // whitelist from config
+        for (final String dimension : AEConfig.instance().getMeteoriteDimensionWhitelist()) {
+            registries.worldgen().enableWorldGenForDimension(IWorldGen.WorldGenType.METEORITES,
+                    new ResourceLocation(dimension));
+        }
 
-		ForgeRegistries.BIOMES.forEach(
-				b -> {
-					b.addFeature(GenerationStage.Decoration.TOP_LAYER_MODIFICATION,
-							new ConfiguredFeature<NoFeatureConfig, Feature<NoFeatureConfig>>(
-									MeteoriteWorldGen.INSTANCE,
-									IFeatureConfig.NO_FEATURE_CONFIG
-							)
-					);
-				}
-		);
+        ForgeRegistries.BIOMES.forEach(b -> {
+            b.addFeature(GenerationStage.Decoration.TOP_LAYER_MODIFICATION,
+                    new ConfiguredFeature<NoFeatureConfig, Feature<NoFeatureConfig>>(MeteoriteWorldGen.INSTANCE,
+                            IFeatureConfig.NO_FEATURE_CONFIG));
+        });
 
-	}
+    }
 
-	public void registerWorldGen( RegistryEvent.Register<Feature<?>> evt )
-	{
-		IForgeRegistry<Feature<?>> r = evt.getRegistry();
+    public void registerWorldGen(RegistryEvent.Register<Feature<?>> evt) {
+        IForgeRegistry<Feature<?>> r = evt.getRegistry();
 
-		r.register( MeteoriteWorldGen.INSTANCE );
-	}
+        r.register(MeteoriteWorldGen.INSTANCE);
+    }
 
-	public void registerBiomes(RegistryEvent.Register<Biome> evt) {
-		evt.getRegistry().register(StorageCellBiome.INSTANCE);
-	}
+    public void registerBiomes(RegistryEvent.Register<Biome> evt) {
+        evt.getRegistry().register(StorageCellBiome.INSTANCE);
+    }
 
-	public void registerModDimension(RegistryEvent.Register<ModDimension> evt)
-	{
-		evt.getRegistry().register(StorageCellModDimension.INSTANCE);
-	}
+    public void registerModDimension(RegistryEvent.Register<ModDimension> evt) {
+        evt.getRegistry().register(StorageCellModDimension.INSTANCE);
+    }
 
-	public void registerTextures(TextureStitchEvent.Pre event) {
-		SkyChestTESR.registerTextures(event);
-		InscriberTESR.registerTexture(event);
-	}
+    public void registerTextures(TextureStitchEvent.Pre event) {
+        SkyChestTESR.registerTextures(event);
+        InscriberTESR.registerTexture(event);
+    }
 
-	public void registerCommands( final FMLServerStartingEvent evt )
-	{
-		new AECommand().register(evt.getCommandDispatcher());
-	}
+    public void registerCommands(final FMLServerStartingEvent evt) {
+        new AECommand().register(evt.getCommandDispatcher());
+    }
 
-	@OnlyIn(Dist.CLIENT)
-	public void registerItemColors(ColorHandlerEvent.Item event) {
-		// TODO: Do not use the internal API
-		final ApiDefinitions definitions = Api.INSTANCE.definitions();
-		definitions.getRegistry().getBootstrapComponents( IItemColorRegistrationComponent.class ).forEachRemaining(c -> c.register(event.getItemColors(), event.getBlockColors()));
-	}
+    @OnlyIn(Dist.CLIENT)
+    public void registerItemColors(ColorHandlerEvent.Item event) {
+        // TODO: Do not use the internal API
+        final ApiDefinitions definitions = Api.INSTANCE.definitions();
+        definitions.getRegistry().getBootstrapComponents(IItemColorRegistrationComponent.class)
+                .forEachRemaining(c -> c.register(event.getItemColors(), event.getBlockColors()));
+    }
 
-	@OnlyIn(Dist.CLIENT)
-	public void handleModelBake(ModelBakeEvent event) {
-		// TODO: Do not use the internal API
-		final ApiDefinitions definitions = Api.INSTANCE.definitions();
-		definitions.getRegistry().getBootstrapComponents( IModelBakeComponent.class ).forEachRemaining(c -> c.onModelBakeEvent(event));
-	}
+    @OnlyIn(Dist.CLIENT)
+    public void handleModelBake(ModelBakeEvent event) {
+        // TODO: Do not use the internal API
+        final ApiDefinitions definitions = Api.INSTANCE.definitions();
+        definitions.getRegistry().getBootstrapComponents(IModelBakeComponent.class)
+                .forEachRemaining(c -> c.onModelBakeEvent(event));
+    }
 
 }

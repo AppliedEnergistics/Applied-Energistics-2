@@ -18,7 +18,6 @@
 
 package appeng.util.item;
 
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -27,69 +26,56 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 
+public class NullItemList implements IItemList<IAEItemStack> {
 
-public class NullItemList implements IItemList<IAEItemStack>
-{
+    @Override
+    public void add(IAEItemStack option) {
+    }
 
-	@Override
-	public void add( IAEItemStack option )
-	{
-	}
+    @Override
+    public IAEItemStack findPrecise(IAEItemStack i) {
+        return null;
+    }
 
-	@Override
-	public IAEItemStack findPrecise( IAEItemStack i )
-	{
-		return null;
-	}
+    @Override
+    public Collection<IAEItemStack> findFuzzy(IAEItemStack input, FuzzyMode fuzzy) {
+        return Collections.emptyList();
+    }
 
-	@Override
-	public Collection<IAEItemStack> findFuzzy( IAEItemStack input, FuzzyMode fuzzy )
-	{
-		return Collections.emptyList();
-	}
+    @Override
+    public boolean isEmpty() {
+        return true;
+    }
 
-	@Override
-	public boolean isEmpty()
-	{
-		return true;
-	}
+    @Override
+    public void addStorage(IAEItemStack option) {
+    }
 
-	@Override
-	public void addStorage( IAEItemStack option )
-	{
-	}
+    @Override
+    public void addCrafting(IAEItemStack option) {
+    }
 
-	@Override
-	public void addCrafting( IAEItemStack option )
-	{
-	}
+    @Override
+    public void addRequestable(IAEItemStack option) {
+    }
 
-	@Override
-	public void addRequestable( IAEItemStack option )
-	{
-	}
+    @Override
+    public IAEItemStack getFirstItem() {
+        return null;
+    }
 
-	@Override
-	public IAEItemStack getFirstItem()
-	{
-		return null;
-	}
+    @Override
+    public int size() {
+        return 0;
+    }
 
-	@Override
-	public int size()
-	{
-		return 0;
-	}
+    @Override
+    public Iterator<IAEItemStack> iterator() {
+        return Collections.emptyIterator();
+    }
 
-	@Override
-	public Iterator<IAEItemStack> iterator()
-	{
-		return Collections.emptyIterator();
-	}
-
-	@Override
-	public void resetStatus()
-	{
-	}
+    @Override
+    public void resetStatus() {
+    }
 
 }

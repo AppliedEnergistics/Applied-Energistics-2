@@ -18,7 +18,6 @@
 
 package appeng.hooks;
 
-
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.dispenser.IBlockSource;
@@ -33,39 +32,33 @@ import appeng.api.util.AEPartLocation;
 import appeng.items.tools.powered.ToolMatterCannon;
 import appeng.util.Platform;
 
+public final class DispenserMatterCannon extends DefaultDispenseItemBehavior {
 
-public final class DispenserMatterCannon extends DefaultDispenseItemBehavior
-{
+    @Override
+    protected ItemStack dispenseStack(final IBlockSource dispenser, ItemStack dispensedItem) {
+        final Item i = dispensedItem.getItem();
+        if (i instanceof ToolMatterCannon) {
+            final Direction Direction = dispenser.getBlockState().get(DispenserBlock.FACING);
+            AEPartLocation dir = AEPartLocation.INTERNAL;
+            for (final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS) {
+                if (Direction.getXOffset() == d.xOffset && Direction.getYOffset() == d.yOffset
+                        && Direction.getZOffset() == d.zOffset) {
+                    dir = d;
+                }
+            }
 
-	@Override
-	protected ItemStack dispenseStack( final IBlockSource dispenser, ItemStack dispensedItem )
-	{
-		final Item i = dispensedItem.getItem();
-		if( i instanceof ToolMatterCannon )
-		{
-			final Direction Direction = dispenser.getBlockState().get( DispenserBlock.FACING );
-			AEPartLocation dir = AEPartLocation.INTERNAL;
-			for( final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS )
-			{
-				if( Direction.getXOffset() == d.xOffset && Direction.getYOffset() == d.yOffset && Direction.getZOffset() == d.zOffset )
-				{
-					dir = d;
-				}
-			}
+            final ToolMatterCannon tm = (ToolMatterCannon) i;
 
-			final ToolMatterCannon tm = (ToolMatterCannon) i;
+            final World w = dispenser.getWorld();
+            if (w instanceof ServerWorld) {
+                final PlayerEntity p = Platform.getPlayer((ServerWorld) w);
+                Platform.configurePlayer(p, dir, dispenser.getBlockTileEntity());
 
-			final World w = dispenser.getWorld();
-			if( w instanceof ServerWorld )
-			{
-				final PlayerEntity p = Platform.getPlayer( (ServerWorld) w );
-				Platform.configurePlayer( p, dir, dispenser.getBlockTileEntity() );
+                p.setPosition(p.getPosX() + dir.xOffset, p.getPosY() + dir.yOffset, p.getPosZ() + dir.zOffset);
 
-				p.setPosition( p.getPosX() + dir.xOffset, p.getPosY() + dir.yOffset, p.getPosZ() + dir.zOffset );
-
-				dispensedItem = tm.onItemRightClick( w, p, null ).getResult();
-			}
-		}
-		return dispensedItem;
-	}
+                dispensedItem = tm.onItemRightClick(w, p, null).getResult();
+            }
+        }
+        return dispensedItem;
+    }
 }

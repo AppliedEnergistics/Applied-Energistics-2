@@ -18,77 +18,67 @@
 
 package appeng.core.features;
 
-
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import appeng.api.features.AEFeature;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.definitions.IItemDefinition;
+import appeng.api.features.AEFeature;
 
+public final class DamagedItemDefinition implements IItemDefinition {
+    private final String identifier;
+    private final IStackSrc source;
 
-public final class DamagedItemDefinition implements IItemDefinition
-{
-	private final String identifier;
-	private final IStackSrc source;
+    public DamagedItemDefinition(@Nonnull final String identifier, @Nonnull final IStackSrc source) {
+        this.identifier = Preconditions.checkNotNull(identifier);
+        this.source = Preconditions.checkNotNull(source);
+    }
 
-	public DamagedItemDefinition( @Nonnull final String identifier, @Nonnull final IStackSrc source )
-	{
-		this.identifier = Preconditions.checkNotNull( identifier );
-		this.source = Preconditions.checkNotNull( source );
-	}
+    @Override
+    public Item item() {
+        return source.getItem();
+    }
 
-	@Override
-	public Item item() {
-		return source.getItem();
-	}
+    @Override
+    public ItemStack stack(int stackSize) {
+        return source.stack(stackSize);
+    }
 
-	@Override
-	public ItemStack stack(int stackSize) {
-		return source.stack(stackSize);
-	}
+    @Nonnull
+    @Override
+    public String identifier() {
+        return this.identifier;
+    }
 
-	@Nonnull
-	@Override
-	public String identifier()
-	{
-		return this.identifier;
-	}
+    @Override
+    public Optional<Item> maybeItem() {
+        return Optional.of(this.source.getItem());
+    }
 
-	@Override
-	public Optional<Item> maybeItem()
-	{
-		return Optional.of(this.source.getItem());
-	}
+    @Override
+    public Optional<ItemStack> maybeStack(final int stackSize) {
+        return Optional.of(this.source.stack(stackSize));
+    }
 
-	@Override
-	public Optional<ItemStack> maybeStack( final int stackSize )
-	{
-		return Optional.of(this.source.stack(stackSize));
-	}
+    @Override
+    public Set<AEFeature> features() {
+        return Collections.emptySet();
+    }
 
-	@Override
-	public Set<AEFeature> features()
-	{
-		return Collections.emptySet();
-	}
+    @Override
+    public boolean isSameAs(final ItemStack comparableStack) {
+        if (comparableStack.isEmpty()) {
+            return false;
+        }
 
-	@Override
-	public boolean isSameAs( final ItemStack comparableStack )
-	{
-		if( comparableStack.isEmpty() )
-		{
-			return false;
-		}
-
-		return comparableStack.getItem() == this.source.getItem();
-	}
+        return comparableStack.getItem() == this.source.getItem();
+    }
 
 }

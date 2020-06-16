@@ -23,14 +23,12 @@
 
 package appeng.api.config;
 
+public enum NetworkEmitterMode {
 
-public enum NetworkEmitterMode
-{
+    POWER_LEVEL,
 
-	POWER_LEVEL,
+    BOOTING,
 
-	BOOTING,
-
-	CHANNEL_ERROR
+    CHANNEL_ERROR
 
 }

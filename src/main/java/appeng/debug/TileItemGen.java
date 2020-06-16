@@ -18,16 +18,15 @@
 
 package appeng.debug;
 
-
 import java.util.ArrayDeque;
 import java.util.Queue;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.item.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
@@ -36,117 +35,98 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-
-import appeng.tile.AEBaseTile;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import appeng.tile.AEBaseTile;
 
-public class TileItemGen extends AEBaseTile
-{
+public class TileItemGen extends AEBaseTile {
 
-	private static final Queue<ItemStack> POSSIBLE_ITEMS = new ArrayDeque<>();
+    private static final Queue<ItemStack> POSSIBLE_ITEMS = new ArrayDeque<>();
 
-	private final IItemHandler handler = new QueuedItemHandler();
+    private final IItemHandler handler = new QueuedItemHandler();
 
-	public TileItemGen(TileEntityType<?> tileEntityTypeIn) {
-		super(tileEntityTypeIn);
-		if( POSSIBLE_ITEMS.isEmpty() )
-		{
-			for( final Item mi : ForgeRegistries.ITEMS)
-			{
-				if( mi != null && mi != Items.AIR )
-				{
-					if( mi.isDamageable() )
-					{
-						// FIXME: Rethink if this branch is necessary
-						for( int dmg = 0; dmg < mi.getMaxDamage(); dmg++ )
-						{
-							ItemStack item = new ItemStack(mi, 1);
-							item.setDamage(dmg);
-							POSSIBLE_ITEMS.add(item);
-						}
-					}
-					else
-					{
-						if (mi.getGroup() == null) {
-							continue;
-						}
+    public TileItemGen(TileEntityType<?> tileEntityTypeIn) {
+        super(tileEntityTypeIn);
+        if (POSSIBLE_ITEMS.isEmpty()) {
+            for (final Item mi : ForgeRegistries.ITEMS) {
+                if (mi != null && mi != Items.AIR) {
+                    if (mi.isDamageable()) {
+                        // FIXME: Rethink if this branch is necessary
+                        for (int dmg = 0; dmg < mi.getMaxDamage(); dmg++) {
+                            ItemStack item = new ItemStack(mi, 1);
+                            item.setDamage(dmg);
+                            POSSIBLE_ITEMS.add(item);
+                        }
+                    } else {
+                        if (mi.getGroup() == null) {
+                            continue;
+                        }
 
-						final NonNullList<ItemStack> list = NonNullList.create();
-						mi.fillItemGroup( mi.getGroup(), list );
-						POSSIBLE_ITEMS.addAll( list );
-					}
-				}
-			}
-		}
-	}
+                        final NonNullList<ItemStack> list = NonNullList.create();
+                        mi.fillItemGroup(mi.getGroup(), list);
+                        POSSIBLE_ITEMS.addAll(list);
+                    }
+                }
+            }
+        }
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	@Nullable
-	public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing )
-	{
-		if( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY == capability )
-		{
-			return (LazyOptional<T>) LazyOptional.of(() ->this.handler);
-		}
-		return super.getCapability( capability, facing );
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    @Nullable
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
+        if (CapabilityItemHandler.ITEM_HANDLER_CAPABILITY == capability) {
+            return (LazyOptional<T>) LazyOptional.of(() -> this.handler);
+        }
+        return super.getCapability(capability, facing);
+    }
 
-	class QueuedItemHandler implements IItemHandler
-	{
+    class QueuedItemHandler implements IItemHandler {
 
-		@Override
-		@Nonnull
-		public ItemStack insertItem( int slot, @Nonnull ItemStack stack, boolean simulate )
-		{
-			return stack;
-		}
+        @Override
+        @Nonnull
+        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+            return stack;
+        }
 
-		@Override
-		@Nonnull
-		public ItemStack getStackInSlot( int slot )
-		{
-			return POSSIBLE_ITEMS.peek() != null ? POSSIBLE_ITEMS.peek().copy() : ItemStack.EMPTY;
-		}
+        @Override
+        @Nonnull
+        public ItemStack getStackInSlot(int slot) {
+            return POSSIBLE_ITEMS.peek() != null ? POSSIBLE_ITEMS.peek().copy() : ItemStack.EMPTY;
+        }
 
-		@Override
-		public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-			return false;
-		}
+        @Override
+        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+            return false;
+        }
 
-		@Override
-		public int getSlots()
-		{
-			return 1;
-		}
+        @Override
+        public int getSlots() {
+            return 1;
+        }
 
-		@Override
-		public int getSlotLimit( int slot )
-		{
-			return 1;
-		}
+        @Override
+        public int getSlotLimit(int slot) {
+            return 1;
+        }
 
-		@Override
-		@Nonnull
-		public ItemStack extractItem( int slot, int amount, boolean simulate )
-		{
-			final ItemStack is = POSSIBLE_ITEMS.peek();
+        @Override
+        @Nonnull
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+            final ItemStack is = POSSIBLE_ITEMS.peek();
 
-			if( is == null )
-			{
-				return ItemStack.EMPTY;
-			}
+            if (is == null) {
+                return ItemStack.EMPTY;
+            }
 
-			return simulate ? is.copy() : this.getNextItem();
-		}
+            return simulate ? is.copy() : this.getNextItem();
+        }
 
-		private ItemStack getNextItem()
-		{
-			final ItemStack is = POSSIBLE_ITEMS.poll();
+        private ItemStack getNextItem() {
+            final ItemStack is = POSSIBLE_ITEMS.poll();
 
-			POSSIBLE_ITEMS.add( is );
-			return is.copy();
-		}
-	};
+            POSSIBLE_ITEMS.add(is);
+            return is.copy();
+        }
+    };
 }

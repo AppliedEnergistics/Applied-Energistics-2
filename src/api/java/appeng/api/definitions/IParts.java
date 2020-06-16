@@ -23,94 +23,91 @@
 
 package appeng.api.definitions;
 
-
 import appeng.api.util.AEColoredItemDefinition;
-
 
 /**
  * A list of all parts in AE
  */
-public interface IParts
-{
-	AEColoredItemDefinition cableSmart();
+public interface IParts {
+    AEColoredItemDefinition cableSmart();
 
-	AEColoredItemDefinition cableCovered();
+    AEColoredItemDefinition cableCovered();
 
-	AEColoredItemDefinition cableGlass();
+    AEColoredItemDefinition cableGlass();
 
-	AEColoredItemDefinition cableDenseCovered();
+    AEColoredItemDefinition cableDenseCovered();
 
-	AEColoredItemDefinition cableDenseSmart();
+    AEColoredItemDefinition cableDenseSmart();
 
-	IItemDefinition quartzFiber();
+    IItemDefinition quartzFiber();
 
-	IItemDefinition toggleBus();
+    IItemDefinition toggleBus();
 
-	IItemDefinition invertedToggleBus();
+    IItemDefinition invertedToggleBus();
 
-	IItemDefinition storageBus();
+    IItemDefinition storageBus();
 
-	IItemDefinition importBus();
+    IItemDefinition importBus();
 
-	IItemDefinition exportBus();
+    IItemDefinition exportBus();
 
-	IItemDefinition iface();
+    IItemDefinition iface();
 
-	IItemDefinition fluidIface();
+    IItemDefinition fluidIface();
 
-	IItemDefinition levelEmitter();
+    IItemDefinition levelEmitter();
 
-	IItemDefinition annihilationPlane();
+    IItemDefinition annihilationPlane();
 
-	IItemDefinition identityAnnihilationPlane();
+    IItemDefinition identityAnnihilationPlane();
 
-	IItemDefinition formationPlane();
+    IItemDefinition formationPlane();
 
-	IItemDefinition p2PTunnelME();
+    IItemDefinition p2PTunnelME();
 
-	IItemDefinition p2PTunnelRedstone();
+    IItemDefinition p2PTunnelRedstone();
 
-	IItemDefinition p2PTunnelItems();
+    IItemDefinition p2PTunnelItems();
 
-	IItemDefinition p2PTunnelFluids();
+    IItemDefinition p2PTunnelFluids();
 
-	IItemDefinition p2PTunnelEU();
+    IItemDefinition p2PTunnelEU();
 
-	IItemDefinition p2PTunnelFE();
+    IItemDefinition p2PTunnelFE();
 
-	IItemDefinition p2PTunnelLight();
+    IItemDefinition p2PTunnelLight();
 
-	IItemDefinition cableAnchor();
+    IItemDefinition cableAnchor();
 
-	IItemDefinition monitor();
+    IItemDefinition monitor();
 
-	IItemDefinition semiDarkMonitor();
+    IItemDefinition semiDarkMonitor();
 
-	IItemDefinition darkMonitor();
+    IItemDefinition darkMonitor();
 
-	IItemDefinition interfaceTerminal();
+    IItemDefinition interfaceTerminal();
 
-	IItemDefinition patternTerminal();
+    IItemDefinition patternTerminal();
 
-	IItemDefinition craftingTerminal();
+    IItemDefinition craftingTerminal();
 
-	IItemDefinition terminal();
+    IItemDefinition terminal();
 
-	IItemDefinition storageMonitor();
+    IItemDefinition storageMonitor();
 
-	IItemDefinition conversionMonitor();
+    IItemDefinition conversionMonitor();
 
-	IItemDefinition fluidTerminal();
+    IItemDefinition fluidTerminal();
 
-	IItemDefinition fluidImportBus();
+    IItemDefinition fluidImportBus();
 
-	IItemDefinition fluidExportBus();
+    IItemDefinition fluidExportBus();
 
-	IItemDefinition fluidStorageBus();
+    IItemDefinition fluidStorageBus();
 
-	IItemDefinition fluidLevelEmitter();
+    IItemDefinition fluidLevelEmitter();
 
-	IItemDefinition fluidAnnihilationPlane();
+    IItemDefinition fluidAnnihilationPlane();
 
-	IItemDefinition fluidFormationnPlane();
+    IItemDefinition fluidFormationnPlane();
 }

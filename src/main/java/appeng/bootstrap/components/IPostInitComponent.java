@@ -18,12 +18,9 @@
 
 package appeng.bootstrap.components;
 
-
 import appeng.bootstrap.IBootstrapComponent;
 
-
 @FunctionalInterface
-public interface IPostInitComponent extends IBootstrapComponent
-{
-	void postInitialize();
+public interface IPostInitComponent extends IBootstrapComponent {
+    void postInitialize();
 }

@@ -1,16 +1,18 @@
 package appeng.client.render.effects;
 
+import java.util.Locale;
+
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.Locale;
-
 /**
- * Contains the target point of the lightning arc (the source point is infered from the particle starting position).
+ * Contains the target point of the lightning arc (the source point is infered
+ * from the particle starting position).
  */
 public class LightningArcParticleData implements IParticleData {
 
@@ -22,7 +24,8 @@ public class LightningArcParticleData implements IParticleData {
 
     public static final IDeserializer<LightningArcParticleData> DESERIALIZER = new IDeserializer<LightningArcParticleData>() {
         @Override
-        public LightningArcParticleData deserialize(ParticleType<LightningArcParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
+        public LightningArcParticleData deserialize(ParticleType<LightningArcParticleData> particleTypeIn,
+                StringReader reader) throws CommandSyntaxException {
             reader.expect(' ');
             float x = reader.readFloat();
             reader.expect(' ');
@@ -33,7 +36,8 @@ public class LightningArcParticleData implements IParticleData {
         }
 
         @Override
-        public LightningArcParticleData read(ParticleType<LightningArcParticleData> particleTypeIn, PacketBuffer buffer) {
+        public LightningArcParticleData read(ParticleType<LightningArcParticleData> particleTypeIn,
+                PacketBuffer buffer) {
             float x = buffer.readFloat();
             float y = buffer.readFloat();
             float z = buffer.readFloat();

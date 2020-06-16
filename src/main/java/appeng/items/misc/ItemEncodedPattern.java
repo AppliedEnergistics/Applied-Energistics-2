@@ -18,17 +18,10 @@
 
 package appeng.items.misc;
 
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 
-import appeng.api.AEApi;
-import appeng.api.implementations.ICraftingPatternItem;
-import appeng.api.networking.crafting.ICraftingPatternDetails;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.core.AppEng;
-import appeng.core.localization.GuiText;
-import appeng.helpers.InvalidPatternHelper;
-import appeng.helpers.PatternHelper;
-import appeng.items.AEBaseItem;
-import appeng.util.Platform;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -44,189 +37,176 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
+import appeng.api.AEApi;
+import appeng.api.implementations.ICraftingPatternItem;
+import appeng.api.networking.crafting.ICraftingPatternDetails;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.core.AppEng;
+import appeng.core.localization.GuiText;
+import appeng.helpers.InvalidPatternHelper;
+import appeng.helpers.PatternHelper;
+import appeng.items.AEBaseItem;
+import appeng.util.Platform;
 
+public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternItem {
+    // rather simple client side caching.
+    private static final Map<ItemStack, ItemStack> SIMPLE_CACHE = new WeakHashMap<>();
 
-public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternItem
-{
-	// rather simple client side caching.
-	private static final Map<ItemStack, ItemStack> SIMPLE_CACHE = new WeakHashMap<>();
+    public ItemEncodedPattern(Properties properties) {
+        super(properties);
+    }
 
-	public ItemEncodedPattern(Properties properties) {
-		super(properties);
-	}
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity player, final Hand hand) {
+        this.clearPattern(player.getHeldItem(hand), player);
 
-	@Override
-	public ActionResult<ItemStack> onItemRightClick( final World w, final PlayerEntity player, final Hand hand )
-	{
-		this.clearPattern( player.getHeldItem( hand ), player );
+        return new ActionResult<>(ActionResultType.SUCCESS, player.getHeldItem(hand));
+    }
 
-		return new ActionResult<>( ActionResultType.SUCCESS, player.getHeldItem( hand ) );
-	}
+    @Override
+    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
+        return this.clearPattern(stack, context.getPlayer()) ? ActionResultType.SUCCESS : ActionResultType.PASS;
+    }
 
-	@Override
-	public ActionResultType onItemUseFirst( ItemStack stack, ItemUseContext context )
-	{
-		return this.clearPattern( stack, context.getPlayer() ) ? ActionResultType.SUCCESS : ActionResultType.PASS;
-	}
+    private boolean clearPattern(final ItemStack stack, final PlayerEntity player) {
+        if (player.isCrouching()) {
+            if (Platform.isClient()) {
+                return false;
+            }
 
-	private boolean clearPattern( final ItemStack stack, final PlayerEntity player )
-	{
-		if( player.isCrouching() )
-		{
-			if( Platform.isClient() )
-			{
-				return false;
-			}
+            final PlayerInventory inv = player.inventory;
 
-			final PlayerInventory inv = player.inventory;
+            ItemStack is = AEApi.instance().definitions().materials().blankPattern().maybeStack(stack.getCount())
+                    .orElse(ItemStack.EMPTY);
+            if (!is.isEmpty()) {
+                for (int s = 0; s < player.inventory.getSizeInventory(); s++) {
+                    if (inv.getStackInSlot(s) == stack) {
+                        inv.setInventorySlotContents(s, is);
+                        return true;
+                    }
+                }
+            }
+        }
 
-			ItemStack is = AEApi.instance().definitions().materials().blankPattern().maybeStack( stack.getCount() ).orElse( ItemStack.EMPTY );
-			if( !is.isEmpty() )
-			{
-				for( int s = 0; s < player.inventory.getSizeInventory(); s++ )
-				{
-					if( inv.getStackInSlot( s ) == stack )
-					{
-						inv.setInventorySlotContents( s, is );
-						return true;
-					}
-				}
-			}
-		}
+        return false;
+    }
 
-		return false;
-	}
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+            final ITooltipFlag advancedTooltips) {
+        final ICraftingPatternDetails details = this.getPatternForItem(stack, world);
 
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public void addInformation( final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
-	{
-		final ICraftingPatternDetails details = this.getPatternForItem( stack, world );
+        if (details == null) {
+            if (!stack.hasTag()) {
+                return;
+            }
 
-		if( details == null )
-		{
-			if( !stack.hasTag() )
-			{
-				return;
-			}
+            stack.setDisplayName(GuiText.InvalidPattern.textComponent().applyTextStyle(TextFormatting.RED));
 
-			stack.setDisplayName(GuiText.InvalidPattern.textComponent().applyTextStyle(TextFormatting.RED));
+            InvalidPatternHelper invalid = new InvalidPatternHelper(stack);
 
-			InvalidPatternHelper invalid = new InvalidPatternHelper( stack );
+            final ITextComponent label = (invalid.isCraftable() ? GuiText.Crafts.textComponent()
+                    : GuiText.Creates.textComponent()).appendText(": ");
+            final ITextComponent and = new StringTextComponent(" ").appendSibling(GuiText.And.textComponent())
+                    .appendText(" ");
+            final ITextComponent with = GuiText.With.textComponent().appendText(": ");
 
-			final ITextComponent label = (invalid.isCraftable() ? GuiText.Crafts.textComponent() : GuiText.Creates.textComponent()).appendText(": ");
-			final ITextComponent and = new StringTextComponent(" ").appendSibling(GuiText.And.textComponent()).appendText(" ");
-			final ITextComponent with = GuiText.With.textComponent().appendText(": ");
+            boolean first = true;
+            for (final InvalidPatternHelper.PatternIngredient output : invalid.getOutputs()) {
+                lines.add((first ? label : and).deepCopy().appendSibling(output.getFormattedToolTip()));
+                first = false;
+            }
 
-			boolean first = true;
-			for( final InvalidPatternHelper.PatternIngredient output : invalid.getOutputs() )
-			{
-				lines.add( ( first ? label : and ).deepCopy().appendSibling(output.getFormattedToolTip()) );
-				first = false;
-			}
+            first = true;
+            for (final InvalidPatternHelper.PatternIngredient input : invalid.getInputs()) {
+                lines.add((first ? with : and).deepCopy().appendSibling(input.getFormattedToolTip()));
+                first = false;
+            }
 
-			first = true;
-			for( final InvalidPatternHelper.PatternIngredient input : invalid.getInputs() )
-			{
-				lines.add( ( first ? with : and ).deepCopy().appendSibling(input.getFormattedToolTip()) );
-				first = false;
-			}
+            if (invalid.isCraftable()) {
+                final ITextComponent substitutionLabel = GuiText.Substitute.textComponent().appendText(" ");
+                final ITextComponent canSubstitute = invalid.canSubstitute() ? GuiText.Yes.textComponent()
+                        : GuiText.No.textComponent();
 
-			if( invalid.isCraftable() )
-			{
-				final ITextComponent substitutionLabel = GuiText.Substitute.textComponent().appendText(" ");
-				final ITextComponent canSubstitute = invalid.canSubstitute() ? GuiText.Yes.textComponent() : GuiText.No.textComponent();
+                lines.add(substitutionLabel.appendSibling(canSubstitute));
+            }
 
-				lines.add( substitutionLabel.appendSibling(canSubstitute) );
-			}
+            return;
+        }
 
-			return;
-		}
+        if (stack.hasDisplayName()) {
+            stack.removeChildTag("display");
+        }
 
-		if( stack.hasDisplayName() )
-		{
-			stack.removeChildTag( "display" );
-		}
+        final boolean isCrafting = details.isCraftable();
+        final boolean substitute = details.canSubstitute();
 
-		final boolean isCrafting = details.isCraftable();
-		final boolean substitute = details.canSubstitute();
+        final IAEItemStack[] in = details.getCondensedInputs();
+        final IAEItemStack[] out = details.getCondensedOutputs();
 
-		final IAEItemStack[] in = details.getCondensedInputs();
-		final IAEItemStack[] out = details.getCondensedOutputs();
+        final ITextComponent label = (isCrafting ? GuiText.Crafts.textComponent() : GuiText.Creates.textComponent())
+                .appendText(": ");
+        final ITextComponent and = new StringTextComponent(" ").appendSibling(GuiText.And.textComponent())
+                .appendText(" ");
+        final ITextComponent with = GuiText.With.textComponent().appendText(": ");
 
-		final ITextComponent label = ( isCrafting ? GuiText.Crafts.textComponent() : GuiText.Creates.textComponent() ).appendText(": ");
-		final ITextComponent and = new StringTextComponent(" ").appendSibling(GuiText.And.textComponent()).appendText(" ");
-		final ITextComponent with = GuiText.With.textComponent().appendText(": ");
+        boolean first = true;
+        for (final IAEItemStack anOut : out) {
+            if (anOut == null) {
+                continue;
+            }
 
-		boolean first = true;
-		for( final IAEItemStack anOut : out )
-		{
-			if( anOut == null )
-			{
-				continue;
-			}
+            lines.add((first ? label : and).deepCopy().appendText(anOut.getStackSize() + "x ")
+                    .appendSibling(Platform.getItemDisplayName(anOut)));
+            first = false;
+        }
 
-			lines.add( ( first ? label : and ).deepCopy().appendText(anOut.getStackSize() + "x ").appendSibling(Platform.getItemDisplayName( anOut )));
-			first = false;
-		}
+        first = true;
+        for (final IAEItemStack anIn : in) {
+            if (anIn == null) {
+                continue;
+            }
 
-		first = true;
-		for( final IAEItemStack anIn : in )
-		{
-			if( anIn == null )
-			{
-				continue;
-			}
+            lines.add((first ? with : and).deepCopy().appendText(anIn.getStackSize() + "x ")
+                    .appendSibling(Platform.getItemDisplayName(anIn)));
+            first = false;
+        }
 
-			lines.add((first ? with : and).deepCopy().appendText(anIn.getStackSize() + "x ").appendSibling(Platform.getItemDisplayName(anIn)));
-			first = false;
-		}
+        if (isCrafting) {
+            final ITextComponent substitutionLabel = GuiText.Substitute.textComponent().appendText(" ");
+            final ITextComponent canSubstitute = substitute ? GuiText.Yes.textComponent() : GuiText.No.textComponent();
 
-		if( isCrafting )
-		{
-			final ITextComponent substitutionLabel = GuiText.Substitute.textComponent().appendText(" ");
-			final ITextComponent canSubstitute = substitute ? GuiText.Yes.textComponent() : GuiText.No.textComponent();
+            lines.add(substitutionLabel.appendSibling(canSubstitute));
+        }
+    }
 
-			lines.add( substitutionLabel.appendSibling(canSubstitute) );
-		}
-	}
+    @Override
+    public ICraftingPatternDetails getPatternForItem(final ItemStack is, final World w) {
+        try {
+            return new PatternHelper(is, w);
+        } catch (final Throwable t) {
+            return null;
+        }
+    }
 
-	@Override
-	public ICraftingPatternDetails getPatternForItem( final ItemStack is, final World w )
-	{
-		try
-		{
-			return new PatternHelper( is, w );
-		}
-		catch( final Throwable t )
-		{
-			return null;
-		}
-	}
+    public ItemStack getOutput(final ItemStack item) {
+        ItemStack out = SIMPLE_CACHE.get(item);
 
-	public ItemStack getOutput( final ItemStack item )
-	{
-		ItemStack out = SIMPLE_CACHE.get( item );
+        if (out != null) {
+            return out;
+        }
 
-		if( out != null )
-		{
-			return out;
-		}
+        final World w = AppEng.proxy.getWorld();
+        if (w == null) {
+            return ItemStack.EMPTY;
+        }
 
-		final World w = AppEng.proxy.getWorld();
-		if( w == null )
-		{
-			return ItemStack.EMPTY;
-		}
+        final ICraftingPatternDetails details = this.getPatternForItem(item, w);
 
-		final ICraftingPatternDetails details = this.getPatternForItem( item, w );
+        out = details != null ? details.getOutputs()[0].createItemStack() : ItemStack.EMPTY;
 
-		out = details != null ? details.getOutputs()[0].createItemStack() : ItemStack.EMPTY;
-
-		SIMPLE_CACHE.put( item, out );
-		return out;
-	}
+        SIMPLE_CACHE.put(item, out);
+        return out;
+    }
 }

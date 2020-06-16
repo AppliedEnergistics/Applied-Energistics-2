@@ -1,8 +1,9 @@
 package appeng.recipes.handlers;
 
-import appeng.api.features.InscriberProcessType;
-import appeng.core.AppEng;
+import javax.annotation.Nullable;
+
 import com.google.gson.JsonObject;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
@@ -12,9 +13,11 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-import javax.annotation.Nullable;
+import appeng.api.features.InscriberProcessType;
+import appeng.core.AppEng;
 
-public class InscriberRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<InscriberRecipe> {
+public class InscriberRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>>
+        implements IRecipeSerializer<InscriberRecipe> {
 
     public static final InscriberRecipeSerializer INSTANCE = new InscriberRecipeSerializer();
 
@@ -26,7 +29,7 @@ public class InscriberRecipeSerializer extends ForgeRegistryEntry<IRecipeSeriali
     }
 
     private static InscriberProcessType getMode(JsonObject json) {
-        String mode = JSONUtils.getString( json, "mode", "inscribe" );
+        String mode = JSONUtils.getString(json, "mode", "inscribe");
         switch (mode) {
             case "inscribe":
                 return InscriberProcessType.INSCRIBE;
@@ -47,18 +50,16 @@ public class InscriberRecipeSerializer extends ForgeRegistryEntry<IRecipeSeriali
         ItemStack result = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, "result"));
 
         // Deserialize the three parts of the input
-        JsonObject ingredients = JSONUtils.getJsonObject( json, "ingredients" );
-		Ingredient middle = Ingredient.deserialize( ingredients.get( "middle" ) );
-		Ingredient top = Ingredient.EMPTY;
-		if( ingredients.has( "top" ) )
-		{
-			top = Ingredient.deserialize( ingredients.get( "top" ) );
-		}
-		Ingredient bottom = Ingredient.EMPTY;
-		if( ingredients.has( "bottom" ) )
-		{
-			bottom = Ingredient.deserialize( ingredients.get( "bottom" ) );
-		}
+        JsonObject ingredients = JSONUtils.getJsonObject(json, "ingredients");
+        Ingredient middle = Ingredient.deserialize(ingredients.get("middle"));
+        Ingredient top = Ingredient.EMPTY;
+        if (ingredients.has("top")) {
+            top = Ingredient.deserialize(ingredients.get("top"));
+        }
+        Ingredient bottom = Ingredient.EMPTY;
+        if (ingredients.has("bottom")) {
+            bottom = Ingredient.deserialize(ingredients.get("bottom"));
+        }
 
         return new InscriberRecipe(recipeId, group, middle, result, top, bottom, mode);
     }

@@ -18,13 +18,8 @@
 
 package appeng.block.misc;
 
-
 import javax.annotation.Nullable;
 
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.ContainerCondenser;
-import appeng.container.implementations.ContainerDrive;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -36,37 +31,35 @@ import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
-
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerCondenser;
+import appeng.container.implementations.ContainerDrive;
 import appeng.tile.misc.TileCondenser;
 import appeng.util.Platform;
 
+public class BlockCondenser extends AEBaseTileBlock<TileCondenser> {
 
-public class BlockCondenser extends AEBaseTileBlock<TileCondenser>
-{
+    public BlockCondenser() {
+        super(defaultProps(Material.IRON));
+    }
 
-	public BlockCondenser()
-	{
-		super( defaultProps(Material.IRON) );
-	}
+    @Override
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+        if (player.isCrouching()) {
+            return ActionResultType.PASS;
+        }
 
-	@Override
-	public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit)
-	{
-		if( player.isCrouching() )
-		{
-			return ActionResultType.PASS;
-		}
+        if (Platform.isServer()) {
+            final TileCondenser tc = this.getTileEntity(w, pos);
+            if (tc != null && !player.isCrouching()) {
+                ContainerOpener.openContainer(ContainerCondenser.TYPE, player,
+                        ContainerLocator.forTileEntitySide(tc, hit.getFace()));
+                return ActionResultType.SUCCESS;
+            }
+        }
 
-		if( Platform.isServer() )
-		{
-			final TileCondenser tc = this.getTileEntity( w, pos );
-			if( tc != null && !player.isCrouching() )
-			{
-				ContainerOpener.openContainer(ContainerCondenser.TYPE, player, ContainerLocator.forTileEntitySide(tc, hit.getFace()));
-				return ActionResultType.SUCCESS;
-			}
-		}
-
-		return ActionResultType.SUCCESS;
-	}
+        return ActionResultType.SUCCESS;
+    }
 }

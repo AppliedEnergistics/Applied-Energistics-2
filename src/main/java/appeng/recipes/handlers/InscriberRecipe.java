@@ -1,6 +1,7 @@
 package appeng.recipes.handlers;
 
-import appeng.api.features.InscriberProcessType;
+import javax.annotation.Nullable;
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -11,7 +12,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
+import appeng.api.features.InscriberProcessType;
 
 public class InscriberRecipe implements IRecipe<IInventory> {
 
@@ -26,7 +27,8 @@ public class InscriberRecipe implements IRecipe<IInventory> {
     private ItemStack output;
     private InscriberProcessType processType;
 
-    public InscriberRecipe(ResourceLocation id, String group, Ingredient middleInput, ItemStack output, Ingredient topOptional, Ingredient bottomOptional, InscriberProcessType processType) {
+    public InscriberRecipe(ResourceLocation id, String group, Ingredient middleInput, ItemStack output,
+            Ingredient topOptional, Ingredient bottomOptional, InscriberProcessType processType) {
         this.id = id;
         this.group = group;
         this.middleInput = middleInput;

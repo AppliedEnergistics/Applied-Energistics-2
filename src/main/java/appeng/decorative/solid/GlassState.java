@@ -18,51 +18,43 @@
 
 package appeng.decorative.solid;
 
-
 import java.util.EnumSet;
 
 import net.minecraft.util.Direction;
 
-
 /**
- * Immutable (and thus thread-safe) class that encapsulates the rendering state required for a connected texture
- * glass block.
+ * Immutable (and thus thread-safe) class that encapsulates the rendering state
+ * required for a connected texture glass block.
  */
-public final class GlassState
-{
+public final class GlassState {
 
-	private final int x;
-	private final int y;
-	private final int z;
+    private final int x;
+    private final int y;
+    private final int z;
 
-	private final EnumSet<Direction> flushWith = EnumSet.noneOf( Direction.class );
+    private final EnumSet<Direction> flushWith = EnumSet.noneOf(Direction.class);
 
-	public GlassState( int x, int y, int z, EnumSet<Direction> flushWith )
-	{
-		this.x = x;
-		this.y = y;
-		this.z = z;
-		this.flushWith.addAll( flushWith );
-	}
+    public GlassState(int x, int y, int z, EnumSet<Direction> flushWith) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.flushWith.addAll(flushWith);
+    }
 
-	public int getX()
-	{
-		return this.x;
-	}
+    public int getX() {
+        return this.x;
+    }
 
-	public int getY()
-	{
-		return this.y;
-	}
+    public int getY() {
+        return this.y;
+    }
 
-	public int getZ()
-	{
-		return this.z;
-	}
+    public int getZ() {
+        return this.z;
+    }
 
-	public boolean isFlushWith( Direction side )
-	{
-		return this.flushWith.contains( side );
-	}
+    public boolean isFlushWith(Direction side) {
+        return this.flushWith.contains(side);
+    }
 
 }

@@ -18,10 +18,8 @@
 
 package appeng.integration.modules.waila.part;
 
+import java.util.List;
 
-import appeng.api.parts.IPart;
-import mcp.mobius.waila.api.IDataAccessor;
-import mcp.mobius.waila.api.IPluginConfig;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -30,26 +28,29 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
-import java.util.List;
+import mcp.mobius.waila.api.IDataAccessor;
+import mcp.mobius.waila.api.IPluginConfig;
 
+import appeng.api.parts.IPart;
 
 /**
- * An abstraction layer of the {@link appeng.integration.modules.waila.part.IPartWailaDataProvider} for
+ * An abstraction layer of the
+ * {@link appeng.integration.modules.waila.part.IPartWailaDataProvider} for
  * {@link appeng.api.parts.IPart}.
  *
  * @author thatsIch
  * @version rv2
  * @since rv2
  */
-public interface IPartWailaDataProvider
-{
-	ItemStack getStack( IPart part, IPluginConfig config, ItemStack partStack );
+public interface IPartWailaDataProvider {
+    ItemStack getStack(IPart part, IPluginConfig config, ItemStack partStack);
 
-	void appendHead(IPart part, List<ITextComponent> tooltip, IDataAccessor accessor, IPluginConfig config );
+    void appendHead(IPart part, List<ITextComponent> tooltip, IDataAccessor accessor, IPluginConfig config);
 
-	void appendBody(IPart part, List<ITextComponent> tooltip, IDataAccessor accessor, IPluginConfig config );
+    void appendBody(IPart part, List<ITextComponent> tooltip, IDataAccessor accessor, IPluginConfig config);
 
-	void appendTail(IPart part, List<ITextComponent> tooltip, IDataAccessor accessor, IPluginConfig config );
+    void appendTail(IPart part, List<ITextComponent> tooltip, IDataAccessor accessor, IPluginConfig config);
 
-	void appendServerData(ServerPlayerEntity player, IPart part, TileEntity te, CompoundNBT tag, World world, BlockPos pos );
+    void appendServerData(ServerPlayerEntity player, IPart part, TileEntity te, CompoundNBT tag, World world,
+            BlockPos pos);
 }

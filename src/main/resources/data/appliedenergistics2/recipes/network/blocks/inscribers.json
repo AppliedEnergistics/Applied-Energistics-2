@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:inscriber"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aba",
-    "c a",
-    "aba"
-  ],
+  "pattern": ["aba", "c a", "aba"],
   "key": {
     "b": {
       "item": "minecraft:sticky_piston"

@@ -18,7 +18,6 @@
 
 package appeng.core.sync.packets;
 
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,60 +34,49 @@ import appeng.core.sync.network.INetworkInfo;
 import appeng.fluids.container.IFluidSyncContainer;
 import appeng.fluids.util.AEFluidStack;
 
+public class PacketFluidSlot extends AppEngPacket {
+    private final Map<Integer, IAEFluidStack> list;
 
-public class PacketFluidSlot extends AppEngPacket
-{
-	private final Map<Integer, IAEFluidStack> list;
+    public PacketFluidSlot(final PacketBuffer stream) {
+        this.list = new HashMap<>();
+        CompoundNBT tag = stream.readCompoundTag();
 
-	public PacketFluidSlot( final PacketBuffer stream )
-	{
-		this.list = new HashMap<>();
-		CompoundNBT tag = stream.readCompoundTag();
+        for (final String key : tag.keySet()) {
+            this.list.put(Integer.parseInt(key), AEFluidStack.fromNBT(tag.getCompound(key)));
+        }
+    }
 
-		for( final String key : tag.keySet() )
-		{
-			this.list.put( Integer.parseInt( key ), AEFluidStack.fromNBT( tag.getCompound( key ) ) );
-		}
-	}
+    // api
+    public PacketFluidSlot(final Map<Integer, IAEFluidStack> list) {
+        this.list = list;
+        final CompoundNBT sendTag = new CompoundNBT();
+        for (Map.Entry<Integer, IAEFluidStack> fs : list.entrySet()) {
+            final CompoundNBT tag = new CompoundNBT();
+            if (fs.getValue() != null) {
+                fs.getValue().writeToNBT(tag);
+            }
+            sendTag.put(fs.getKey().toString(), tag);
+        }
 
-	// api
-	public PacketFluidSlot( final Map<Integer, IAEFluidStack> list )
-	{
-		this.list = list;
-		final CompoundNBT sendTag = new CompoundNBT();
-		for( Map.Entry<Integer, IAEFluidStack> fs : list.entrySet() )
-		{
-			final CompoundNBT tag = new CompoundNBT();
-			if( fs.getValue() != null )
-			{
-				fs.getValue().writeToNBT( tag );
-			}
-			sendTag.put( fs.getKey().toString(), tag );
-		}
+        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        data.writeInt(this.getPacketID());
+        data.writeCompoundTag(sendTag);
+        this.configureWrite(data);
+    }
 
-		final PacketBuffer data = new PacketBuffer( Unpooled.buffer() );
-		data.writeInt( this.getPacketID() );
-		data.writeCompoundTag( sendTag );
-		this.configureWrite( data );
-	}
+    @Override
+    public void clientPacketData(final INetworkInfo manager, final PlayerEntity player) {
+        final Container c = player.openContainer;
+        if (c instanceof IFluidSyncContainer) {
+            ((IFluidSyncContainer) c).receiveFluidSlots(this.list);
+        }
+    }
 
-	@Override
-	public void clientPacketData( final INetworkInfo manager, final PlayerEntity player )
-	{
-		final Container c = player.openContainer;
-		if( c instanceof IFluidSyncContainer )
-		{
-			( (IFluidSyncContainer) c ).receiveFluidSlots( this.list );
-		}
-	}
-
-	@Override
-	public void serverPacketData( INetworkInfo manager, PlayerEntity player )
-	{
-		final Container c = player.openContainer;
-		if( c instanceof IFluidSyncContainer )
-		{
-			( (IFluidSyncContainer) c ).receiveFluidSlots( this.list );
-		}
-	}
+    @Override
+    public void serverPacketData(INetworkInfo manager, PlayerEntity player) {
+        final Container c = player.openContainer;
+        if (c instanceof IFluidSyncContainer) {
+            ((IFluidSyncContainer) c).receiveFluidSlots(this.list);
+        }
+    }
 }

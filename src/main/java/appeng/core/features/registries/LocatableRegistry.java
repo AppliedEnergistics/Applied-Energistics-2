@@ -18,7 +18,6 @@
 
 package appeng.core.features.registries;
 
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,38 +30,29 @@ import appeng.api.features.ILocatable;
 import appeng.api.features.ILocatableRegistry;
 import appeng.util.Platform;
 
+public final class LocatableRegistry implements ILocatableRegistry {
+    private final Map<Long, ILocatable> set;
 
-public final class LocatableRegistry implements ILocatableRegistry
-{
-	private final Map<Long, ILocatable> set;
+    public LocatableRegistry() {
+        this.set = new HashMap<>();
+        MinecraftForge.EVENT_BUS.register(this);
+    }
 
-	public LocatableRegistry()
-	{
-		this.set = new HashMap<>();
-		MinecraftForge.EVENT_BUS.register( this );
-	}
+    @SubscribeEvent
+    public void updateLocatable(final LocatableEventAnnounce e) {
+        if (Platform.isClient()) {
+            return; // IGNORE!
+        }
 
-	@SubscribeEvent
-	public void updateLocatable( final LocatableEventAnnounce e )
-	{
-		if( Platform.isClient() )
-		{
-			return; // IGNORE!
-		}
+        if (e.change == LocatableEvent.REGISTER) {
+            this.set.put(e.target.getLocatableSerial(), e.target);
+        } else if (e.change == LocatableEvent.UNREGISTER) {
+            this.set.remove(e.target.getLocatableSerial());
+        }
+    }
 
-		if( e.change == LocatableEvent.REGISTER )
-		{
-			this.set.put( e.target.getLocatableSerial(), e.target );
-		}
-		else if( e.change == LocatableEvent.UNREGISTER )
-		{
-			this.set.remove( e.target.getLocatableSerial() );
-		}
-	}
-
-	@Override
-	public ILocatable getLocatableBy( final long serial )
-	{
-		return this.set.get( serial );
-	}
+    @Override
+    public ILocatable getLocatableBy(final long serial) {
+        return this.set.get(serial);
+    }
 }

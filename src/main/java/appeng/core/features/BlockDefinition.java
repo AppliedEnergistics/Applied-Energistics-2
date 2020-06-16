@@ -18,10 +18,8 @@
 
 package appeng.core.features;
 
-
 import java.util.Set;
 
-import appeng.api.features.AEFeature;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.block.Block;
@@ -31,44 +29,38 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 
 import appeng.api.definitions.IBlockDefinition;
+import appeng.api.features.AEFeature;
 
+public class BlockDefinition extends ItemDefinition implements IBlockDefinition {
+    private final Block block;
 
-public class BlockDefinition extends ItemDefinition implements IBlockDefinition
-{
-	private final Block block;
+    private final BlockItem blockItem;
 
-	private final BlockItem blockItem;
+    public BlockDefinition(String registryName, Block block, BlockItem item, Set<AEFeature> features) {
+        super(registryName, item, features);
+        this.block = block;
+        this.blockItem = item;
+    }
 
-	public BlockDefinition( String registryName, Block block, BlockItem item, Set<AEFeature> features )
-	{
-		super( registryName, item, features );
-		this.block = block;
-		this.blockItem = item;
-	}
+    @Override
+    public final Block block() {
+        return this.block;
+    }
 
-	@Override
-	public final Block block()
-	{
-		return this.block;
-	}
+    @Override
+    public BlockItem blockItem() {
+        return blockItem;
+    }
 
-	@Override
-	public BlockItem blockItem()
-	{
-		return blockItem;
-	}
+    @Override
+    public final ItemStack stack(int stackSize) {
+        Preconditions.checkArgument(stackSize > 0);
 
-	@Override
-	public final ItemStack stack( int stackSize )
-	{
-		Preconditions.checkArgument( stackSize > 0 );
+        return new ItemStack(block, stackSize);
+    }
 
-		return new ItemStack(block, stackSize);
-	}
-
-	@Override
-	public final boolean isSameAs( final IBlockReader world, final BlockPos pos )
-	{
-		return world.getBlockState( pos ).getBlock() == this.block;
-	}
+    @Override
+    public final boolean isSameAs(final IBlockReader world, final BlockPos pos) {
+        return world.getBlockState(pos).getBlock() == this.block;
+    }
 }

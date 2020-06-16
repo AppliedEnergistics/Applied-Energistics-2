@@ -18,24 +18,22 @@
 
 package appeng.tile.networking;
 
-
-import appeng.block.networking.BlockCableBus;
 import net.minecraft.tileentity.TileEntityType;
 
+import appeng.block.networking.BlockCableBus;
 
-public class TileCableBusTESR extends TileCableBus
-{
+public class TileCableBusTESR extends TileCableBus {
 
-	public TileCableBusTESR(TileEntityType<?> tileEntityTypeIn) {
-		super(tileEntityTypeIn);
-	}
+    public TileCableBusTESR(TileEntityType<?> tileEntityTypeIn) {
+        super(tileEntityTypeIn);
+    }
 
-	/**
-	 * Changes this tile to the non-TESR version, if none of the parts require dynamic rendering.
-	 */
-	@Override
-	protected void updateTileSetting()
-	{
+    /**
+     * Changes this tile to the non-TESR version, if none of the parts require
+     * dynamic rendering.
+     */
+    @Override
+    protected void updateTileSetting() {
 // FIXME		if( !this.getCableBus().isRequiresDynamicRender() )
 // FIXME		{
 // FIXME			try
@@ -49,5 +47,5 @@ public class TileCableBusTESR extends TileCableBus
 // FIXME
 // FIXME			}
 // FIXME		}
-	}
+    }
 }

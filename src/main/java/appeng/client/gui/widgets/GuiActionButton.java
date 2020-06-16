@@ -18,10 +18,14 @@
 
 package appeng.client.gui.widgets;
 
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
+import java.util.regex.Pattern;
 
-import appeng.api.config.*;
-import appeng.core.localization.ButtonToolTips;
 import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -29,87 +33,77 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Consumer;
-import java.util.regex.Pattern;
+import appeng.api.config.*;
+import appeng.core.localization.ButtonToolTips;
 
+public class GuiActionButton extends GuiIconButton implements ITooltip {
+    private static final Pattern PATTERN_NEW_LINE = Pattern.compile("\\n", Pattern.LITERAL);
+    private final int iconIndex;
 
-public class GuiActionButton extends GuiIconButton implements ITooltip
-{
-	private static final Pattern PATTERN_NEW_LINE = Pattern.compile( "\\n", Pattern.LITERAL );
-	private final int iconIndex;
+    public GuiActionButton(final int x, final int y, final ActionItems action, Consumer<ActionItems> onPress) {
+        super(x, y, btn -> onPress.accept(action));
 
-	public GuiActionButton(final int x, final int y, final ActionItems action, Consumer<ActionItems> onPress )
-	{
-		super( x, y, btn -> onPress.accept(action) );
+        ButtonToolTips displayName;
+        ButtonToolTips displayValue;
+        switch (action) {
+            case WRENCH:
+                iconIndex = 66;
+                displayName = ButtonToolTips.PartitionStorage;
+                displayValue = ButtonToolTips.PartitionStorageHint;
+                break;
+            case CLOSE:
+                iconIndex = 6;
+                displayName = ButtonToolTips.Clear;
+                displayValue = ButtonToolTips.ClearSettings;
+                break;
+            case STASH:
+                iconIndex = 6;
+                displayName = ButtonToolTips.Stash;
+                displayValue = ButtonToolTips.StashDesc;
+                break;
+            case ENCODE:
+                iconIndex = 8;
+                displayName = ButtonToolTips.Encode;
+                displayValue = ButtonToolTips.EncodeDescription;
+                break;
+            case ENABLE_SUBSTITUTION:
+                iconIndex = 4 + 3 * 16;
+                displayName = ButtonToolTips.Substitutions;
+                displayValue = ButtonToolTips.SubstitutionsDescEnabled;
+                break;
+            case DISABLE_SUBSTITUTION:
+                iconIndex = 7 + 3 * 16;
+                displayName = ButtonToolTips.Substitutions;
+                displayValue = ButtonToolTips.SubstitutionsDescDisabled;
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown ActionItem: " + action);
+        }
 
-		ButtonToolTips displayName;
-		ButtonToolTips displayValue;
-		switch (action) {
-			case WRENCH:
-				iconIndex = 66;
-				displayName = ButtonToolTips.PartitionStorage;
-				displayValue = ButtonToolTips.PartitionStorageHint;
-				break;
-			case CLOSE:
-				iconIndex = 6;
-				displayName = ButtonToolTips.Clear;
-				displayValue = ButtonToolTips.ClearSettings;
-				break;
-			case STASH:
-				iconIndex = 6;
-				displayName = ButtonToolTips.Stash;
-				displayValue = ButtonToolTips.StashDesc;
-				break;
-			case ENCODE:
-				iconIndex = 8;
-				displayName = ButtonToolTips.Encode;
-				displayValue = ButtonToolTips.EncodeDescription;
-				break;
-			case ENABLE_SUBSTITUTION:
-				iconIndex = 4 + 3 * 16;
-				displayName = ButtonToolTips.Substitutions;
-				displayValue = ButtonToolTips.SubstitutionsDescEnabled;
-				break;
-			case DISABLE_SUBSTITUTION:
-				iconIndex = 7 + 3 * 16;
-				displayName = ButtonToolTips.Substitutions;
-				displayValue = ButtonToolTips.SubstitutionsDescDisabled;
-				break;
-			default:
-				throw new IllegalArgumentException("Unknown ActionItem: " + action);
-		}
+        setMessage(buildMessage(displayName, displayValue));
+    }
 
-		setMessage(buildMessage(displayName, displayValue));
-	}
+    @Override
+    protected int getIconIndex() {
+        return iconIndex;
+    }
 
-	@Override
-	protected int getIconIndex()
-	{
-		return iconIndex;
-	}
+    private String buildMessage(ButtonToolTips displayName, ButtonToolTips displayValue) {
+        String name = displayName.getTranslationKey().getString();
+        String value = displayValue.getTranslationKey().getString();
 
-	private String buildMessage(ButtonToolTips displayName, ButtonToolTips displayValue)
-	{
-		String name = displayName.getTranslationKey().getString();
-		String value = displayValue.getTranslationKey().getString();
+        value = PATTERN_NEW_LINE.matcher(value).replaceAll("\n");
+        final StringBuilder sb = new StringBuilder(value);
 
-		value = PATTERN_NEW_LINE.matcher( value ).replaceAll( "\n" );
-		final StringBuilder sb = new StringBuilder( value );
+        int i = sb.lastIndexOf("\n");
+        if (i <= 0) {
+            i = 0;
+        }
+        while (i + 30 < sb.length() && (i = sb.lastIndexOf(" ", i + 30)) != -1) {
+            sb.replace(i, i + 1, "\n");
+        }
 
-		int i = sb.lastIndexOf( "\n" );
-		if( i <= 0 )
-		{
-			i = 0;
-		}
-		while( i + 30 < sb.length() && ( i = sb.lastIndexOf( " ", i + 30 ) ) != -1 )
-		{
-			sb.replace( i, i + 1, "\n" );
-		}
-
-		return name + '\n' + sb;
-	}
+        return name + '\n' + sb;
+    }
 
 }

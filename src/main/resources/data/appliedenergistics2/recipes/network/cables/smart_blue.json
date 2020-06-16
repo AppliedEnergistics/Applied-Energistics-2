@@ -4,11 +4,7 @@
     "count": 8
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aaa",
-    "aba",
-    "aaa"
-  ],
+  "pattern": ["aaa", "aba", "aaa"],
   "key": {
     "a": {
       "item": "appliedenergistics2:fluix_smart_cable"

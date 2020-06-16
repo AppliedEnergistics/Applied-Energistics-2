@@ -1,12 +1,13 @@
 package appeng.client.render;
 
+import java.util.function.Supplier;
+
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
+
 import net.minecraft.resources.IResourceManager;
 import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
-
-import java.util.function.Supplier;
 
 /**
  * A quaint model loader that does not accept any additional parameters in JSON.

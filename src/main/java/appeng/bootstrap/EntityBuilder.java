@@ -1,5 +1,16 @@
 package appeng.bootstrap;
 
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.function.Consumer;
+
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.EntityType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
+
 import appeng.api.features.AEFeature;
 import appeng.bootstrap.components.IClientSetupComponent;
 import appeng.bootstrap.components.IEntityRegistrationComponent;
@@ -8,16 +19,6 @@ import appeng.entity.EntityFloatingItem;
 import appeng.entity.EntityTinyTNTPrimed;
 import appeng.entity.RenderFloatingItem;
 import appeng.entity.RenderTinyTNTPrimed;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
-
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.function.Consumer;
 
 /**
  * Helper to register a custom Entity with Minecraft.
@@ -32,7 +33,8 @@ public class EntityBuilder<T extends Entity> {
 
     private final EnumSet<AEFeature> features = EnumSet.noneOf(AEFeature.class);
 
-    public EntityBuilder(FeatureFactory factory, String id, EntityType.IFactory<T> entityFactory, EntityClassification classification) {
+    public EntityBuilder(FeatureFactory factory, String id, EntityType.IFactory<T> entityFactory,
+            EntityClassification classification) {
         this.factory = factory;
         this.id = id;
         this.builder = EntityType.Builder.create(entityFactory, classification);

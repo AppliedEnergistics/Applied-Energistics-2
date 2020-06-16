@@ -23,16 +23,14 @@
 
 package appeng.api.config;
 
-
-public enum TunnelType
-{
-	ME, // Network Tunnel
-	IC2_POWER, // EU Tunnel
-	FE_POWER, // Forge Energy tunnel
-	REDSTONE, // Redstone Tunnel
-	FLUID, // Fluid Tunnel
-	ITEM, // Item Tunnel
-	LIGHT, // Light Tunnel
-	BUNDLED_REDSTONE, // Bundled Redstone Tunnel
-	COMPUTER_MESSAGE // Computer Message Tunnel
+public enum TunnelType {
+    ME, // Network Tunnel
+    IC2_POWER, // EU Tunnel
+    FE_POWER, // Forge Energy tunnel
+    REDSTONE, // Redstone Tunnel
+    FLUID, // Fluid Tunnel
+    ITEM, // Item Tunnel
+    LIGHT, // Light Tunnel
+    BUNDLED_REDSTONE, // Bundled Redstone Tunnel
+    COMPUTER_MESSAGE // Computer Message Tunnel
 }

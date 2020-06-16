@@ -18,15 +18,14 @@
 
 package appeng.debug;
 
-
-import appeng.core.AELog;
-import appeng.tile.AEBaseTile;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
+import appeng.core.AELog;
+import appeng.tile.AEBaseTile;
 
 public class TileChunkLoader extends AEBaseTile implements ITickableTileEntity {
 
@@ -63,7 +62,8 @@ public class TileChunkLoader extends AEBaseTile implements ITickableTileEntity {
             ServerWorld serverWorld = (ServerWorld) world;
 
             if (!serverWorld.getForcedChunks().contains(chunkPos.asLong())) {
-                AELog.debug("Force-loading chunk @ %d,%d in %s", chunkPos.x, chunkPos.z, serverWorld.dimension.getType().getRegistryName());
+                AELog.debug("Force-loading chunk @ %d,%d in %s", chunkPos.x, chunkPos.z,
+                        serverWorld.dimension.getType().getRegistryName());
                 serverWorld.forceChunk(chunkPos.x, chunkPos.z, false);
             }
         }

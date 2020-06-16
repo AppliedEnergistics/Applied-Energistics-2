@@ -18,6 +18,9 @@
 
 package appeng.fluids.client.gui;
 
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.client.gui.implementations.GuiUpgradeable;
 import appeng.client.gui.widgets.GuiTabButton;
@@ -30,65 +33,55 @@ import appeng.fluids.client.gui.widgets.GuiFluidTank;
 import appeng.fluids.container.ContainerFluidInterface;
 import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.util.IAEFluidTank;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
-public class GuiFluidInterface extends GuiUpgradeable<ContainerFluidInterface>
-{
-	public GuiFluidInterface(ContainerFluidInterface container, PlayerInventory playerInventory, ITextComponent title)
-	{
-		super(container, playerInventory, title);
-		this.ySize = 231;
-	}
+public class GuiFluidInterface extends GuiUpgradeable<ContainerFluidInterface> {
+    public GuiFluidInterface(ContainerFluidInterface container, PlayerInventory playerInventory, ITextComponent title) {
+        super(container, playerInventory, title);
+        this.ySize = 231;
+    }
 
-	@Override
-	public void init()
-	{
-		super.init();
+    @Override
+    public void init() {
+        super.init();
 
-		final IAEFluidTank configFluids = this.container.getFluidConfigInventory();
-		final IAEFluidTank fluidTank = this.container.getTanks();
+        final IAEFluidTank configFluids = this.container.getFluidConfigInventory();
+        final IAEFluidTank fluidTank = this.container.getTanks();
 
-		for( int i = 0; i < DualityFluidInterface.NUMBER_OF_TANKS; ++i )
-		{
-			final GuiFluidTank guiTank = new GuiFluidTank( fluidTank, i, this.getGuiLeft() + 35 + 18 * i, this
-					.getGuiTop() + 53, 16, 68 );
-			this.addButton( guiTank );
-			this.guiSlots.add( new GuiFluidSlot( configFluids, i, i, 35 + 18 * i, 35 ) );
-		}
+        for (int i = 0; i < DualityFluidInterface.NUMBER_OF_TANKS; ++i) {
+            final GuiFluidTank guiTank = new GuiFluidTank(fluidTank, i, this.getGuiLeft() + 35 + 18 * i,
+                    this.getGuiTop() + 53, 16, 68);
+            this.addButton(guiTank);
+            this.guiSlots.add(new GuiFluidSlot(configFluids, i, i, 35 + 18 * i, 35));
+        }
 
-		this.addButton( new GuiTabButton( this.getGuiLeft() + 154, this.getGuiTop(), 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRenderer, btn -> openPriorityGui() ) );
-	}
+        this.addButton(new GuiTabButton(this.getGuiLeft() + 154, this.getGuiTop(), 2 + 4 * 16,
+                GuiText.Priority.getLocal(), this.itemRenderer, btn -> openPriorityGui()));
+    }
 
-	@Override
-	protected void addButtons()
-	{
-	}
+    @Override
+    protected void addButtons() {
+    }
 
-	@Override
-	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
-	{
-		this.font.drawString( this.getGuiDisplayName( GuiText.FluidInterface.getLocal() ), 8, 6, 4210752 );
-		this.font.drawString( GuiText.Config.getLocal(), 35, 6 + 11 + 7, 4210752 );
-		this.font.drawString( GuiText.StoredFluids.getLocal(), 35, 6 + 112 + 7, 4210752 );
-		this.font.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
-	}
+    @Override
+    public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY) {
+        this.font.drawString(this.getGuiDisplayName(GuiText.FluidInterface.getLocal()), 8, 6, 4210752);
+        this.font.drawString(GuiText.Config.getLocal(), 35, 6 + 11 + 7, 4210752);
+        this.font.drawString(GuiText.StoredFluids.getLocal(), 35, 6 + 112 + 7, 4210752);
+        this.font.drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+    }
 
-	@Override
-	public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks)
-	{
-		this.bindTexture( "guis/interfacefluid.png" );
-		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME ZINDEX */ );
-	}
+    @Override
+    public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks) {
+        this.bindTexture("guis/interfacefluid.png");
+        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME ZINDEX */ );
+    }
 
-	private void openPriorityGui() {
-		NetworkHandler.instance().sendToServer( new PacketSwitchGuis( ContainerPriority.TYPE ) );
-	}
+    private void openPriorityGui() {
+        NetworkHandler.instance().sendToServer(new PacketSwitchGuis(ContainerPriority.TYPE));
+    }
 
-	@Override
-	protected boolean drawUpgrades()
-	{
-		return false;
-	}
+    @Override
+    protected boolean drawUpgrades() {
+        return false;
+    }
 }

@@ -18,15 +18,14 @@
 
 package appeng.client.render.renderable;
 
-
 import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.tileentity.TileEntity;
 
+public interface Renderable<T extends TileEntity> {
 
-public interface Renderable<T extends TileEntity>
-{
-
-	void renderTileEntityAt(T te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffers, int combinedLight, int combinedOverlay);
+    void renderTileEntityAt(T te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffers,
+            int combinedLight, int combinedOverlay);
 
 }

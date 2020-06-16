@@ -18,7 +18,6 @@
 
 package appeng.bootstrap.components;
 
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -33,49 +32,40 @@ import net.minecraftforge.client.event.ModelBakeEvent;
 
 import appeng.core.AppEng;
 
+public class ModelOverrideComponent implements IModelBakeComponent {
 
-public class ModelOverrideComponent implements IModelBakeComponent
-{
+    // Maps from resource path to customizer
+    private final Map<String, BiFunction<ResourceLocation, IBakedModel, IBakedModel>> customizer = new HashMap<>();
 
-	// Maps from resource path to customizer
-	private final Map<String, BiFunction<ResourceLocation, IBakedModel, IBakedModel>> customizer = new HashMap<>();
+    public void addOverride(String resourcePath, BiFunction<ResourceLocation, IBakedModel, IBakedModel> customizer) {
+        this.customizer.put(resourcePath, customizer);
+    }
 
-	public void addOverride( String resourcePath, BiFunction<ResourceLocation, IBakedModel, IBakedModel> customizer )
-	{
-		this.customizer.put( resourcePath, customizer );
-	}
+    public void onModelBakeEvent(final ModelBakeEvent event) {
+        Map<ResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
+        Set<ResourceLocation> keys = Sets.newHashSet(modelRegistry.keySet());
+        IBakedModel missingModel = modelRegistry.get(ModelBakery.MODEL_MISSING);
 
-	public void onModelBakeEvent( final ModelBakeEvent event )
-	{
-		Map<ResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
-		Set<ResourceLocation> keys = Sets.newHashSet( modelRegistry.keySet() );
-		IBakedModel missingModel = modelRegistry.get(ModelBakery.MODEL_MISSING);
+        for (ResourceLocation location : keys) {
+            if (!location.getNamespace().equals(AppEng.MOD_ID)) {
+                continue;
+            }
 
-		for( ResourceLocation location : keys )
-		{
-			if( !location.getNamespace().equals( AppEng.MOD_ID ) )
-			{
-				continue;
-			}
+            IBakedModel orgModel = modelRegistry.get(location);
 
-			IBakedModel orgModel = modelRegistry.get( location );
+            // Don't customize the missing model. This causes Forge to swallow exceptions
+            if (orgModel == missingModel) {
+                continue;
+            }
 
-			// Don't customize the missing model. This causes Forge to swallow exceptions
-			if( orgModel == missingModel )
-			{
-				continue;
-			}
+            BiFunction<ResourceLocation, IBakedModel, IBakedModel> customizer = this.customizer.get(location.getPath());
+            if (customizer != null) {
+                IBakedModel newModel = customizer.apply(location, orgModel);
 
-			BiFunction<ResourceLocation, IBakedModel, IBakedModel> customizer = this.customizer.get( location.getPath() );
-			if( customizer != null )
-			{
-				IBakedModel newModel = customizer.apply( location, orgModel );
-
-				if( newModel != orgModel )
-				{
-					modelRegistry.put( location, newModel );
-				}
-			}
-		}
-	}
+                if (newModel != orgModel) {
+                    modelRegistry.put(location, newModel);
+                }
+            }
+        }
+    }
 }

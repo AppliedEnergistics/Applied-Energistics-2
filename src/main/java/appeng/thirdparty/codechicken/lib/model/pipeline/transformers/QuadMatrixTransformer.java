@@ -18,7 +18,6 @@
 
 package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
-
 import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.util.Direction;
@@ -28,67 +27,58 @@ import appeng.thirdparty.codechicken.lib.model.Quad;
 import appeng.thirdparty.codechicken.lib.model.pipeline.IPipelineElementFactory;
 import appeng.thirdparty.codechicken.lib.model.pipeline.QuadTransformer;
 
-
 /**
  * Created by covers1624 on 2/6/20.
  */
-public class QuadMatrixTransformer extends QuadTransformer
-{
-	public static IPipelineElementFactory<QuadMatrixTransformer> FACTORY = QuadMatrixTransformer::new;
-	private static final Matrix4f identity;
+public class QuadMatrixTransformer extends QuadTransformer {
+    public static IPipelineElementFactory<QuadMatrixTransformer> FACTORY = QuadMatrixTransformer::new;
+    private static final Matrix4f identity;
 
-	static
-	{
-		identity = new Matrix4f();
-		identity.setIdentity();
-	}
+    static {
+        identity = new Matrix4f();
+        identity.setIdentity();
+    }
 
-	private final Vector4f storage = new Vector4f();
-	private Matrix4f matrix;
-	private boolean identityMatrix;
+    private final Vector4f storage = new Vector4f();
+    private Matrix4f matrix;
+    private boolean identityMatrix;
 
-	QuadMatrixTransformer()
-	{
-		super();
-	}
+    QuadMatrixTransformer() {
+        super();
+    }
 
-	public QuadMatrixTransformer( IVertexConsumer parent, Matrix4f matrix )
-	{
-		super( parent );
-		this.matrix = matrix;
-		this.identityMatrix = matrix.equals( identity );
-	}
+    public QuadMatrixTransformer(IVertexConsumer parent, Matrix4f matrix) {
+        super(parent);
+        this.matrix = matrix;
+        this.identityMatrix = matrix.equals(identity);
+    }
 
-	public void setMatrix( Matrix4f matrix )
-	{
-		this.matrix = matrix;
-		this.identityMatrix = matrix.equals( identity );
-	}
+    public void setMatrix(Matrix4f matrix) {
+        this.matrix = matrix;
+        this.identityMatrix = matrix.equals(identity);
+    }
 
-	@Override
-	public boolean transform()
-	{
-		if( identityMatrix )
-		{
-			return true;
-		}
-		for( Quad.Vertex vertex : this.quad.vertices )
-		{
-			storage.set( vertex.vec[0], vertex.vec[1], vertex.vec[2], 1 );
-			storage.transform( matrix );
-			vertex.vec[0] = storage.getX();
-			vertex.vec[1] = storage.getY();
-			vertex.vec[2] = storage.getZ();
+    @Override
+    public boolean transform() {
+        if (identityMatrix) {
+            return true;
+        }
+        for (Quad.Vertex vertex : this.quad.vertices) {
+            storage.set(vertex.vec[0], vertex.vec[1], vertex.vec[2], 1);
+            storage.transform(matrix);
+            vertex.vec[0] = storage.getX();
+            vertex.vec[1] = storage.getY();
+            vertex.vec[2] = storage.getZ();
 
-			storage.set( vertex.normal[0], vertex.normal[1], vertex.normal[2], 0 );
-			storage.transform( matrix );
-			storage.normalize();
-			vertex.normal[0] = storage.getX();
-			vertex.normal[1] = storage.getY();
-			vertex.normal[2] = storage.getZ();
-		}
-		Quad.Vertex v0 = quad.vertices[0];
-		quad.orientation = Direction.getFacingFromVector( v0.normal[0], v0.normal[1], v0.normal[2] );
-		return true;
-	}
+            storage.set(vertex.normal[0], vertex.normal[1], vertex.normal[2], 0);
+            storage.transform(matrix);
+            storage.normalize();
+            vertex.normal[0] = storage.getX();
+            vertex.normal[1] = storage.getY();
+            vertex.normal[2] = storage.getZ();
+        }
+        Quad.Vertex v0 = quad.vertices[0];
+        quad.orientation = Direction.getFacingFromVector(v0.normal[0], v0.normal[1], v0.normal[2]);
+        return true;
+    }
 }

@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:energy_acceptor"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aba",
-    "bcb",
-    "aba"
-  ],
+  "pattern": ["aba", "bcb", "aba"],
   "key": {
     "b": {
       "item": "appliedenergistics2:quartz_glass"

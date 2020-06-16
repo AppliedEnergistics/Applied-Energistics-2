@@ -18,15 +18,13 @@
 
 package appeng.parts.automation;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.ContainerFormationPlane;
-import appeng.fluids.container.ContainerFluidInterface;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -68,8 +66,11 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerFormationPlane;
 import appeng.core.AEConfig;
-
+import appeng.fluids.container.ContainerFluidInterface;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.storage.MEInventoryHandler;
@@ -79,336 +80,289 @@ import appeng.util.inv.InvOperation;
 import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack> {
 
+    private static final PlaneModels MODELS = new PlaneModels("part/formation_plane", "part/formation_plane_on");
 
-public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
-{
+    @PartModels
+    public static List<IPartModel> getModels() {
+        return MODELS.getModels();
+    }
 
-	private static final PlaneModels MODELS = new PlaneModels( "part/formation_plane", "part/formation_plane_on" );
+    private final MEInventoryHandler<IAEItemStack> myHandler = new MEInventoryHandler<>(this,
+            AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
+    private final AppEngInternalAEInventory Config = new AppEngInternalAEInventory(this, 63);
 
-	@PartModels
-	public static List<IPartModel> getModels()
-	{
-		return MODELS.getModels();
-	}
+    public PartFormationPlane(final ItemStack is) {
+        super(is);
 
-	private final MEInventoryHandler<IAEItemStack> myHandler = new MEInventoryHandler<>( this, AEApi.instance()
-			.storage()
-			.getStorageChannel( IItemStorageChannel.class ) );
-	private final AppEngInternalAEInventory Config = new AppEngInternalAEInventory( this, 63 );
+        this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
+        this.getConfigManager().registerSetting(Settings.PLACE_BLOCK, YesNo.YES);
+        this.updateHandler();
+    }
 
-	public PartFormationPlane( final ItemStack is )
-	{
-		super( is );
+    @Override
+    protected void updateHandler() {
+        this.myHandler.setBaseAccess(AccessRestriction.WRITE);
+        this.myHandler.setWhitelist(
+                this.getInstalledUpgrades(Upgrades.INVERTER) > 0 ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST);
+        this.myHandler.setPriority(this.getPriority());
 
-		this.getConfigManager().registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
-		this.getConfigManager().registerSetting( Settings.PLACE_BLOCK, YesNo.YES );
-		this.updateHandler();
-	}
+        final IItemList<IAEItemStack> priorityList = AEApi.instance().storage()
+                .getStorageChannel(IItemStorageChannel.class).createList();
 
-	@Override
-	protected void updateHandler()
-	{
-		this.myHandler.setBaseAccess( AccessRestriction.WRITE );
-		this.myHandler.setWhitelist( this.getInstalledUpgrades( Upgrades.INVERTER ) > 0 ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST );
-		this.myHandler.setPriority( this.getPriority() );
+        final int slotsToUse = 18 + this.getInstalledUpgrades(Upgrades.CAPACITY) * 9;
+        for (int x = 0; x < this.Config.getSlots() && x < slotsToUse; x++) {
+            final IAEItemStack is = this.Config.getAEStackInSlot(x);
+            if (is != null) {
+                priorityList.add(is);
+            }
+        }
 
-		final IItemList<IAEItemStack> priorityList = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+        if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
+            this.myHandler.setPartitionList(new FuzzyPriorityList<IAEItemStack>(priorityList,
+                    (FuzzyMode) this.getConfigManager().getSetting(Settings.FUZZY_MODE)));
+        } else {
+            this.myHandler.setPartitionList(new PrecisePriorityList<IAEItemStack>(priorityList));
+        }
 
-		final int slotsToUse = 18 + this.getInstalledUpgrades( Upgrades.CAPACITY ) * 9;
-		for( int x = 0; x < this.Config.getSlots() && x < slotsToUse; x++ )
-		{
-			final IAEItemStack is = this.Config.getAEStackInSlot( x );
-			if( is != null )
-			{
-				priorityList.add( is );
-			}
-		}
+        try {
+            this.getProxy().getGrid().postEvent(new MENetworkCellArrayUpdate());
+        } catch (final GridAccessException e) {
+            // :P
+        }
+    }
 
-		if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
-		{
-			this.myHandler.setPartitionList(
-					new FuzzyPriorityList<IAEItemStack>( priorityList, (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) ) );
-		}
-		else
-		{
-			this.myHandler.setPartitionList( new PrecisePriorityList<IAEItemStack>( priorityList ) );
-		}
+    @Override
+    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
+            final ItemStack removedStack, final ItemStack newStack) {
+        super.onChangeInventory(inv, slot, mc, removedStack, newStack);
 
-		try
-		{
-			this.getProxy().getGrid().postEvent( new MENetworkCellArrayUpdate() );
-		}
-		catch( final GridAccessException e )
-		{
-			// :P
-		}
-	}
+        if (inv == this.Config) {
+            this.updateHandler();
+        }
+    }
 
-	@Override
-	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
-	{
-		super.onChangeInventory( inv, slot, mc, removedStack, newStack );
+    @Override
+    public void readFromNBT(final CompoundNBT data) {
+        super.readFromNBT(data);
+        this.Config.readFromNBT(data, "config");
+        this.updateHandler();
+    }
 
-		if( inv == this.Config )
-		{
-			this.updateHandler();
-		}
-	}
+    @Override
+    public void writeToNBT(final CompoundNBT data) {
+        super.writeToNBT(data);
+        this.Config.writeToNBT(data, "config");
+    }
 
-	@Override
-	public void readFromNBT( final CompoundNBT data )
-	{
-		super.readFromNBT( data );
-		this.Config.readFromNBT( data, "config" );
-		this.updateHandler();
-	}
+    @Override
+    public IItemHandler getInventoryByName(final String name) {
+        if (name.equals("config")) {
+            return this.Config;
+        }
 
-	@Override
-	public void writeToNBT( final CompoundNBT data )
-	{
-		super.writeToNBT( data );
-		this.Config.writeToNBT( data, "config" );
-	}
+        return super.getInventoryByName(name);
+    }
 
-	@Override
-	public IItemHandler getInventoryByName( final String name )
-	{
-		if( name.equals( "config" ) )
-		{
-			return this.Config;
-		}
+    @Override
+    @MENetworkEventSubscribe
+    public void powerRender(final MENetworkPowerStatusChange c) {
+        this.stateChanged();
+    }
 
-		return super.getInventoryByName( name );
-	}
+    @MENetworkEventSubscribe
+    public void updateChannels(final MENetworkChannelsChanged changedChannels) {
+        this.stateChanged();
+    }
 
-	@Override
-	@MENetworkEventSubscribe
-	public void powerRender( final MENetworkPowerStatusChange c )
-	{
-		this.stateChanged();
-	}
+    @Override
+    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
+        if (Platform.isServer()) {
+            ContainerOpener.openContainer(ContainerFormationPlane.TYPE, player, ContainerLocator.forPart(this));
+        }
+        return true;
+    }
 
-	@MENetworkEventSubscribe
-	public void updateChannels( final MENetworkChannelsChanged changedChannels )
-	{
-		this.stateChanged();
-	}
+    @Override
+    public List<IMEInventoryHandler> getCellArray(final IStorageChannel channel) {
+        if (this.getProxy().isActive()
+                && channel == AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)) {
+            final List<IMEInventoryHandler> handler = new ArrayList<>(1);
+            handler.add(this.myHandler);
+            return handler;
+        }
+        return Collections.emptyList();
+    }
 
-	@Override
-	public boolean onPartActivate( final PlayerEntity player, final Hand hand, final Vec3d pos )
-	{
-		if( Platform.isServer() )
-		{
-			ContainerOpener.openContainer(ContainerFormationPlane.TYPE, player, ContainerLocator.forPart(this));
-		}
-		return true;
-	}
+    @Override
+    public IAEItemStack injectItems(final IAEItemStack input, final Actionable type, final IActionSource src) {
+        if (this.blocked || input == null || input.getStackSize() <= 0) {
+            return input;
+        }
 
-	@Override
-	public List<IMEInventoryHandler> getCellArray( final IStorageChannel channel )
-	{
-		if( this.getProxy().isActive() && channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
-		{
-			final List<IMEInventoryHandler> handler = new ArrayList<>( 1 );
-			handler.add( this.myHandler );
-			return handler;
-		}
-		return Collections.emptyList();
-	}
+        final YesNo placeBlock = (YesNo) this.getConfigManager().getSetting(Settings.PLACE_BLOCK);
 
-	@Override
-	public IAEItemStack injectItems( final IAEItemStack input, final Actionable type, final IActionSource src )
-	{
-		if( this.blocked || input == null || input.getStackSize() <= 0 )
-		{
-			return input;
-		}
+        final ItemStack is = input.createItemStack();
+        final Item i = is.getItem();
 
-		final YesNo placeBlock = (YesNo) this.getConfigManager().getSetting( Settings.PLACE_BLOCK );
+        long maxStorage = Math.min(input.getStackSize(), is.getMaxStackSize());
+        boolean worked = false;
 
-		final ItemStack is = input.createItemStack();
-		final Item i = is.getItem();
+        final TileEntity te = this.getHost().getTile();
+        final World w = te.getWorld();
+        final AEPartLocation side = this.getSide();
 
-		long maxStorage = Math.min( input.getStackSize(), is.getMaxStackSize() );
-		boolean worked = false;
+        final BlockPos placePos = te.getPos().offset(side.getFacing());
 
-		final TileEntity te = this.getHost().getTile();
-		final World w = te.getWorld();
-		final AEPartLocation side = this.getSide();
+        if (w.getBlockState(placePos).getMaterial().isReplaceable()) {
+            if (placeBlock == YesNo.YES && (i instanceof BlockItem || i instanceof IPlantable
+                    || i instanceof FireworkStarItem || i instanceof FireworkRocketItem || i instanceof IPartItem)) {
+                final PlayerEntity player = Platform.getPlayer((ServerWorld) w);
+                Platform.configurePlayer(player, side, this.getTile());
+                Hand hand = player.getActiveHand();
+                player.setHeldItem(hand, is);
 
-		final BlockPos placePos = te.getPos().offset( side.getFacing() );
+                maxStorage = is.getCount();
+                worked = true;
+                if (type == Actionable.MODULATE) {
+                    // The side the plane is attached to will be considered the look direction
+                    // in terms of placing an item
+                    Direction lookDirection = side.getFacing();
 
-		if( w.getBlockState( placePos ).getMaterial().isReplaceable() )
-		{
-			if( placeBlock == YesNo.YES && ( i instanceof BlockItem || i instanceof IPlantable || i instanceof FireworkStarItem || i instanceof FireworkRocketItem || i instanceof IPartItem ) )
-			{
-				final PlayerEntity player = Platform.getPlayer( (ServerWorld) w );
-				Platform.configurePlayer( player, side, this.getTile() );
-				Hand hand = player.getActiveHand();
-				player.setHeldItem( hand, is );
+                    // FIXME No idea what any of this is _supposed_ to do, comment badly needed
+                    if (i instanceof IPlantable || i instanceof WallOrFloorItem) {
+                        boolean Worked = false;
 
-				maxStorage = is.getCount();
-				worked = true;
-				if( type == Actionable.MODULATE )
-				{
-					// The side the plane is attached to will be considered the look direction
-					// in terms of placing an item
-					Direction lookDirection = side.getFacing();
+                        // Up or Down, Attempt 1??
+                        if (side.xOffset == 0 && side.zOffset == 0) {
+                            Worked = i.onItemUse(new DirectionalPlaceContext(w, placePos.offset(side.getFacing()),
+                                    lookDirection, is, side.getFacing())) == ActionResultType.SUCCESS;
+                        }
 
-					// FIXME No idea what any of this is _supposed_ to do, comment badly needed
-					if ( i instanceof IPlantable || i instanceof WallOrFloorItem )
-					{
-						boolean Worked = false;
+                        // Up or Down, Attempt 2??
+                        if (!Worked && side.xOffset == 0 && side.zOffset == 0) {
+                            Worked = i.onItemUse(new DirectionalPlaceContext(w,
+                                    placePos.offset(side.getFacing().getOpposite()), lookDirection, is,
+                                    side.getFacing().getOpposite())) == ActionResultType.SUCCESS;
+                        }
 
-						// Up or Down, Attempt 1??
-						if( side.xOffset == 0 && side.zOffset == 0 )
-						{
-							Worked = i.onItemUse( new DirectionalPlaceContext(w, placePos.offset( side.getFacing() ), lookDirection, is, side.getFacing()) ) == ActionResultType.SUCCESS;
-						}
+                        // Horizontal, attempt 1??
+                        if (!Worked && side.yOffset == 0) {
+                            Worked = i.onItemUse(new DirectionalPlaceContext(w, placePos.offset(Direction.DOWN),
+                                    lookDirection, is, Direction.DOWN)) == ActionResultType.SUCCESS;
+                        }
 
-						// Up or Down, Attempt 2??
-						if( !Worked && side.xOffset == 0 && side.zOffset == 0 )
-						{
-							Worked = i.onItemUse( new DirectionalPlaceContext(w, placePos.offset( side.getFacing().getOpposite() ), lookDirection, is, side.getFacing().getOpposite()) )
-								== ActionResultType.SUCCESS;
-						}
+                        if (!Worked) {
+                            i.onItemUse(new DirectionalPlaceContext(w, placePos, lookDirection, is,
+                                    lookDirection.getOpposite()));
+                        }
 
-						// Horizontal, attempt 1??
-						if( !Worked && side.yOffset == 0 )
-						{
-							Worked = i.onItemUse( new DirectionalPlaceContext(w, placePos.offset( Direction.DOWN ), lookDirection, is, Direction.DOWN) ) == ActionResultType.SUCCESS;
-						}
+                        maxStorage -= is.getCount();
+                    } else {
+                        i.onItemUse(new DirectionalPlaceContext(w, placePos, lookDirection, is,
+                                lookDirection.getOpposite()));
+                        maxStorage -= is.getCount();
+                    }
+                } else {
+                    maxStorage = 1;
+                }
 
-						if( !Worked )
-						{
-							i.onItemUse( new DirectionalPlaceContext(w, placePos, lookDirection, is, lookDirection.getOpposite()) );
-						}
+                // Safe keeping
+                player.setHeldItem(hand, ItemStack.EMPTY);
+            } else {
+                worked = true;
 
-						maxStorage -= is.getCount();
-					}
-					else
-					{
-						i.onItemUse( new DirectionalPlaceContext(w, placePos, lookDirection, is, lookDirection.getOpposite()) );
-						maxStorage -= is.getCount();
-					}
-				}
-				else
-				{
-					maxStorage = 1;
-				}
+                final int sum = this.countEntitesAround(w, placePos);
 
-				// Safe keeping
-				player.setHeldItem( hand, ItemStack.EMPTY );
-			}
-			else
-			{
-				worked = true;
+                if (sum < AEConfig.instance().getFormationPlaneEntityLimit()) {
+                    if (type == Actionable.MODULATE) {
+                        is.setCount((int) maxStorage);
+                        final double x = (side.xOffset != 0 ? 0 : .7 * (Platform.getRandomFloat() - .5)) + side.xOffset
+                                + .5 + te.getPos().getX();
+                        final double y = (side.yOffset != 0 ? 0 : .7 * (Platform.getRandomFloat() - .5)) + side.yOffset
+                                + .5 + te.getPos().getY();
+                        final double z = (side.zOffset != 0 ? 0 : .7 * (Platform.getRandomFloat() - .5)) + side.zOffset
+                                + .5 + te.getPos().getZ();
 
-				final int sum = this.countEntitesAround( w, placePos );
+                        final ItemEntity ei = new ItemEntity(w, x, y, z, is.copy());
 
-				if( sum < AEConfig.instance().getFormationPlaneEntityLimit() )
-				{
-					if( type == Actionable.MODULATE )
-					{
-						is.setCount( (int) maxStorage );
-						final double x = ( side.xOffset != 0 ? 0 : .7 * ( Platform.getRandomFloat() - .5 ) ) + side.xOffset + .5 + te.getPos().getX();
-						final double y = ( side.yOffset != 0 ? 0 : .7 * ( Platform.getRandomFloat() - .5 ) ) + side.yOffset + .5 + te.getPos().getY();
-						final double z = ( side.zOffset != 0 ? 0 : .7 * ( Platform.getRandomFloat() - .5 ) ) + side.zOffset + .5 + te.getPos().getZ();
+                        Entity result = ei;
 
-						final ItemEntity ei = new ItemEntity( w, x, y, z, is.copy() );
+                        ei.setMotion(side.xOffset * 0.2, side.yOffset * 0.2, side.zOffset * 0.2);
 
-						Entity result = ei;
+                        if (is.getItem().hasCustomEntity(is)) {
+                            result = is.getItem().createEntity(w, ei, is);
+                            if (result != null) {
+                                ei.remove();
+                            } else {
+                                result = ei;
+                            }
+                        }
 
-						ei.setMotion( side.xOffset * 0.2, side.yOffset * 0.2, side.zOffset * 0.2 );
+                        if (!w.addEntity(result)) {
+                            result.remove();
+                            worked = false;
+                        }
+                    }
+                } else {
+                    worked = false;
+                }
+            }
+        }
 
-						if( is.getItem().hasCustomEntity( is ) )
-						{
-							result = is.getItem().createEntity( w, ei, is );
-							if( result != null )
-							{
-								ei.remove();
-							}
-							else
-							{
-								result = ei;
-							}
-						}
+        this.blocked = !w.getBlockState(placePos).getMaterial().isReplaceable();
 
-						if( !w.addEntity( result ) )
-						{
-							result.remove();
-							worked = false;
-						}
-					}
-				}
-				else
-				{
-					worked = false;
-				}
-			}
-		}
+        if (worked) {
+            final IAEItemStack out = input.copy();
+            out.decStackSize(maxStorage);
+            if (out.getStackSize() == 0) {
+                return null;
+            }
+            return out;
+        }
 
-		this.blocked = !w.getBlockState( placePos ).getMaterial().isReplaceable();
+        return input;
+    }
 
-		if( worked )
-		{
-			final IAEItemStack out = input.copy();
-			out.decStackSize( maxStorage );
-			if( out.getStackSize() == 0 )
-			{
-				return null;
-			}
-			return out;
-		}
+    @Override
+    public IStorageChannel<IAEItemStack> getChannel() {
+        return AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
+    }
 
-		return input;
-	}
+    @Override
+    public IPartModel getStaticModels() {
+        return MODELS.getModel(this.isPowered(), this.isActive());
+    }
 
-	@Override
-	public IStorageChannel<IAEItemStack> getChannel()
-	{
-		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
-	}
+    @Nonnull
+    @Override
+    public IModelData getModelData() {
+        return new PlaneModelData(getConnections());
+    }
 
-	@Override
-	public IPartModel getStaticModels()
-	{
-		return MODELS.getModel( this.isPowered(), this.isActive() );
-	}
+    @Override
+    public ItemStack getItemStackRepresentation() {
+        return AEApi.instance().definitions().parts().formationPlane().maybeStack(1).orElse(ItemStack.EMPTY);
+    }
 
-	@Nonnull
-	@Override
-	public IModelData getModelData() {
-		return new PlaneModelData(getConnections());
-	}
+    @Override
+    public ContainerType<?> getContainerType() {
+        return ContainerFormationPlane.TYPE;
+    }
 
-	@Override
-	public ItemStack getItemStackRepresentation()
-	{
-		return AEApi.instance().definitions().parts().formationPlane().maybeStack( 1 ).orElse( ItemStack.EMPTY );
-	}
+    private int countEntitesAround(World world, BlockPos pos) {
+        final AxisAlignedBB t = new AxisAlignedBB(pos).grow(8);
+        final List<Entity> list = world.getEntitiesWithinAABB(Entity.class, t);
 
-	@Override
-	public ContainerType<?> getContainerType()
-	{
-		return ContainerFormationPlane.TYPE;
-	}
+        return list.size();
+    }
 
-	private int countEntitesAround( World world, BlockPos pos )
-	{
-		final AxisAlignedBB t = new AxisAlignedBB( pos ).grow( 8 );
-		final List<Entity> list = world.getEntitiesWithinAABB( Entity.class, t );
-
-		return list.size();
-	}
-
-	private class ForcedItemUseContext extends ItemUseContext {
-		protected ForcedItemUseContext(World worldIn, @Nullable PlayerEntity player, Hand handIn, ItemStack heldItem, BlockRayTraceResult rayTraceResultIn) {
-			super(worldIn, player, handIn, heldItem, rayTraceResultIn);
-		}
-	}
+    private class ForcedItemUseContext extends ItemUseContext {
+        protected ForcedItemUseContext(World worldIn, @Nullable PlayerEntity player, Hand handIn, ItemStack heldItem,
+                BlockRayTraceResult rayTraceResultIn) {
+            super(worldIn, player, handIn, heldItem, rayTraceResultIn);
+        }
+    }
 
 }

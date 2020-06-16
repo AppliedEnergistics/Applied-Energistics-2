@@ -23,57 +23,54 @@
 
 package appeng.api.implementations.items;
 
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 
 import appeng.api.implementations.TransitionResult;
 import appeng.api.storage.ISpatialDimension;
 import appeng.api.util.WorldCoord;
-import net.minecraft.world.dimension.DimensionType;
-
 
 /**
  * Implemented on a {@link Item}
  */
-public interface ISpatialStorageCell
-{
+public interface ISpatialStorageCell {
 
-	/**
-	 * @param is spatial storage cell
-	 *
-	 * @return true if this item is a spatial storage cell
-	 */
-	boolean isSpatialStorage( ItemStack is );
+    /**
+     * @param is spatial storage cell
+     *
+     * @return true if this item is a spatial storage cell
+     */
+    boolean isSpatialStorage(ItemStack is);
 
-	/**
-	 * @param is spatial storage cell
-	 *
-	 * @return the maximum size of the spatial storage cell along any given axis
-	 */
-	int getMaxStoredDim( ItemStack is );
+    /**
+     * @param is spatial storage cell
+     *
+     * @return the maximum size of the spatial storage cell along any given axis
+     */
+    int getMaxStoredDim(ItemStack is);
 
-	/**
-	 * get the currently stored Dimension id.
-	 *
-	 * @param is spatial storage cell
-	 *
-	 * @return dimension id or -1
-	 */
-	DimensionType getStoredDimension(ItemStack is );
+    /**
+     * get the currently stored Dimension id.
+     *
+     * @param is spatial storage cell
+     *
+     * @return dimension id or -1
+     */
+    DimensionType getStoredDimension(ItemStack is);
 
-	/**
-	 * Perform a spatial swap with the contents of the cell, and the world.
-	 *
-	 * @param is spatial storage cell
-	 * @param w world of spatial
-	 * @param min min coord
-	 * @param max max coord
-	 * @param playerId owner of current grid or -1
-	 *
-	 * @return result of transition
-	 */
-	TransitionResult doSpatialTransition( ItemStack is, World w, WorldCoord min, WorldCoord max, int playerId );
+    /**
+     * Perform a spatial swap with the contents of the cell, and the world.
+     *
+     * @param is       spatial storage cell
+     * @param w        world of spatial
+     * @param min      min coord
+     * @param max      max coord
+     * @param playerId owner of current grid or -1
+     *
+     * @return result of transition
+     */
+    TransitionResult doSpatialTransition(ItemStack is, World w, WorldCoord min, WorldCoord max, int playerId);
 }

@@ -18,55 +18,47 @@
 
 package appeng.capabilities;
 
+import java.util.List;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
-
-import appeng.api.storage.ISpatialDimension;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 
-import java.util.List;
+import appeng.api.storage.ISpatialDimension;
 
+class NullSpatialDimension implements ISpatialDimension {
+    @Override
+    public DimensionType createNewCellDimension(BlockPos size) {
+        return null;
+    }
 
-class NullSpatialDimension implements ISpatialDimension
-{
-	@Override
-	public DimensionType createNewCellDimension(BlockPos size)
-	{
-		return null;
-	}
+    @Override
+    public void deleteCellDimension(DimensionType cellStorageId) {
+    }
 
-	@Override
-	public void deleteCellDimension( DimensionType cellStorageId )
-	{
-	}
+    @Override
+    public BlockPos getCellDimensionOrigin(DimensionType cellStorageId) {
+        return null;
+    }
 
-	@Override
-	public BlockPos getCellDimensionOrigin( DimensionType cellStorageId )
-	{
-		return null;
-	}
-
-	@Override
-	public BlockPos getCellDimensionSize(DimensionType cellDim) {
-		return BlockPos.ZERO;
-	}
+    @Override
+    public BlockPos getCellDimensionSize(DimensionType cellDim) {
+        return BlockPos.ZERO;
+    }
 
     @Override
     public void addCellDimensionTooltip(DimensionType cellDim, List<ITextComponent> tooltip) {
     }
 
     @Override
-	public ServerWorld getWorld(DimensionType cellStorageId )
-	{
-		return null;
-	}
+    public ServerWorld getWorld(DimensionType cellStorageId) {
+        return null;
+    }
 
-	@Override
-	public boolean isCellDimension( DimensionType cellDimID )
-	{
-		return false;
-	}
+    @Override
+    public boolean isCellDimension(DimensionType cellDimID) {
+        return false;
+    }
 }

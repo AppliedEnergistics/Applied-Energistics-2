@@ -18,109 +18,91 @@
 
 package appeng.core.features.registries;
 
-
 import java.util.HashSet;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.Dimension;
-
-import appeng.api.features.IWorldGen;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.extensions.IForgeDimension;
 
+import appeng.api.features.IWorldGen;
 
-public final class WorldGenRegistry implements IWorldGen
-{
+public final class WorldGenRegistry implements IWorldGen {
 
-	public static final WorldGenRegistry INSTANCE = new WorldGenRegistry();
-	private final TypeSet[] types;
+    public static final WorldGenRegistry INSTANCE = new WorldGenRegistry();
+    private final TypeSet[] types;
 
-	private WorldGenRegistry()
-	{
+    private WorldGenRegistry() {
 
-		this.types = new TypeSet[WorldGenType.values().length];
+        this.types = new TypeSet[WorldGenType.values().length];
 
-		for( final WorldGenType type : WorldGenType.values() )
-		{
-			this.types[type.ordinal()] = new TypeSet();
-		}
-	}
+        for (final WorldGenType type : WorldGenType.values()) {
+            this.types[type.ordinal()] = new TypeSet();
+        }
+    }
 
-	@Override
-	public void disableWorldGenForProviderID( WorldGenType type, Class<? extends Dimension> provider )
-	{
-		if( type == null )
-		{
-			throw new IllegalArgumentException( "Bad Type Passed" );
-		}
+    @Override
+    public void disableWorldGenForProviderID(WorldGenType type, Class<? extends Dimension> provider) {
+        if (type == null) {
+            throw new IllegalArgumentException("Bad Type Passed");
+        }
 
-		if( provider == null )
-		{
-			throw new IllegalArgumentException( "Bad Provider Passed" );
-		}
+        if (provider == null) {
+            throw new IllegalArgumentException("Bad Provider Passed");
+        }
 
-		this.types[type.ordinal()].badProviders.add( provider );
-	}
+        this.types[type.ordinal()].badProviders.add(provider);
+    }
 
-	@Override
-	public void enableWorldGenForDimension( final WorldGenType type, final ResourceLocation dimensionID )
-	{
-		if( type == null )
-		{
-			throw new IllegalArgumentException( "Bad Type Passed" );
-		}
+    @Override
+    public void enableWorldGenForDimension(final WorldGenType type, final ResourceLocation dimensionID) {
+        if (type == null) {
+            throw new IllegalArgumentException("Bad Type Passed");
+        }
 
-		this.types[type.ordinal()].enabledDimensions.add( dimensionID );
-	}
+        this.types[type.ordinal()].enabledDimensions.add(dimensionID);
+    }
 
-	@Override
-	public void disableWorldGenForDimension( final WorldGenType type, final ResourceLocation dimensionID )
-	{
-		if( type == null )
-		{
-			throw new IllegalArgumentException( "Bad Type Passed" );
-		}
+    @Override
+    public void disableWorldGenForDimension(final WorldGenType type, final ResourceLocation dimensionID) {
+        if (type == null) {
+            throw new IllegalArgumentException("Bad Type Passed");
+        }
 
-		this.types[type.ordinal()].badDimensions.add( dimensionID );
-	}
+        this.types[type.ordinal()].badDimensions.add(dimensionID);
+    }
 
-	@Override
-	public boolean isWorldGenEnabled( final WorldGenType type, final World w )
-	{
-		if( type == null )
-		{
-			throw new IllegalArgumentException( "Bad Type Passed" );
-		}
+    @Override
+    public boolean isWorldGenEnabled(final WorldGenType type, final World w) {
+        if (type == null) {
+            throw new IllegalArgumentException("Bad Type Passed");
+        }
 
-		if( w == null )
-		{
-			throw new IllegalArgumentException( "Bad Provider Passed" );
-		}
+        if (w == null) {
+            throw new IllegalArgumentException("Bad Provider Passed");
+        }
 
-		ResourceLocation id = w.dimension.getDimension().getType().getRegistryName();
-		final boolean isBadProvider = this.types[type.ordinal()].badProviders.contains( w.dimension.getClass() );
-		final boolean isBadDimension = this.types[type.ordinal()].badDimensions.contains( id );
-		final boolean isGoodDimension = this.types[type.ordinal()].enabledDimensions.contains( id );
+        ResourceLocation id = w.dimension.getDimension().getType().getRegistryName();
+        final boolean isBadProvider = this.types[type.ordinal()].badProviders.contains(w.dimension.getClass());
+        final boolean isBadDimension = this.types[type.ordinal()].badDimensions.contains(id);
+        final boolean isGoodDimension = this.types[type.ordinal()].enabledDimensions.contains(id);
 
-		if( isBadProvider || isBadDimension )
-		{
-			return false;
-		}
+        if (isBadProvider || isBadDimension) {
+            return false;
+        }
 
-		if( !isGoodDimension && type == WorldGenType.METEORITES )
-		{
-			return false;
-		}
+        if (!isGoodDimension && type == WorldGenType.METEORITES) {
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	private static class TypeSet
-	{
+    private static class TypeSet {
 
-		final HashSet<Class<? extends Dimension>> badProviders = new HashSet<>();
-		final HashSet<ResourceLocation> badDimensions = new HashSet<>();
-		final HashSet<ResourceLocation> enabledDimensions = new HashSet<>();
-	}
+        final HashSet<Class<? extends Dimension>> badProviders = new HashSet<>();
+        final HashSet<ResourceLocation> badDimensions = new HashSet<>();
+        final HashSet<ResourceLocation> enabledDimensions = new HashSet<>();
+    }
 }

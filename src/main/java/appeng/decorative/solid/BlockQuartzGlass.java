@@ -18,8 +18,6 @@
 
 package appeng.decorative.solid;
 
-
-import appeng.helpers.AEGlassMaterial;
 import net.minecraft.block.AbstractGlassBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -27,22 +25,24 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.Direction;
 
+import appeng.helpers.AEGlassMaterial;
+
 public class BlockQuartzGlass extends AbstractGlassBlock {
 
-	public BlockQuartzGlass(Properties props) {
-		super(props);
-	}
+    public BlockQuartzGlass(Properties props) {
+        super(props);
+    }
 
-	@Override
-	public boolean isSideInvisible(BlockState state, BlockState adjacentBlockState, Direction side) {
-		final Material mat = adjacentBlockState.getMaterial();
-		if (mat == Material.GLASS || mat == AEGlassMaterial.INSTANCE) {
-			if (adjacentBlockState.getRenderType() == state.getRenderType()) {
-				return true;
-			}
-		}
+    @Override
+    public boolean isSideInvisible(BlockState state, BlockState adjacentBlockState, Direction side) {
+        final Material mat = adjacentBlockState.getMaterial();
+        if (mat == Material.GLASS || mat == AEGlassMaterial.INSTANCE) {
+            if (adjacentBlockState.getRenderType() == state.getRenderType()) {
+                return true;
+            }
+        }
 
-		return super.isSideInvisible(state, adjacentBlockState, side);
-	}
+        return super.isSideInvisible(state, adjacentBlockState, side);
+    }
 
 }

@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:nether_quartz_hoe"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aa",
-    " b",
-    " b"
-  ],
+  "pattern": ["aa", " b", " b"],
   "key": {
     "a": {
       "tag": "forge:gems/quartz"

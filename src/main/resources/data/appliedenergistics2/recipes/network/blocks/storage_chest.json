@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:chest"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aba",
-    "c c",
-    "ded"
-  ],
+  "pattern": ["aba", "c c", "ded"],
   "key": {
     "a": {
       "tag": "appliedenergistics2:glass"

@@ -18,14 +18,8 @@
 
 package appeng.parts.reporting;
 
-
 import java.util.List;
 
-import appeng.api.config.SecurityPermissions;
-import appeng.api.networking.security.IActionHost;
-import appeng.container.implementations.ContainerCraftingTerm;
-import appeng.container.implementations.ContainerMEMonitorable;
-import appeng.util.Platform;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
@@ -33,87 +27,78 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.config.SecurityPermissions;
+import appeng.api.networking.security.IActionHost;
 import appeng.api.parts.IPartModel;
+import appeng.container.implementations.ContainerCraftingTerm;
+import appeng.container.implementations.ContainerMEMonitorable;
 import appeng.core.AppEng;
-
 import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 import appeng.tile.inventory.AppEngInternalInventory;
+import appeng.util.Platform;
 
+public class PartCraftingTerminal extends AbstractPartTerminal {
 
-public class PartCraftingTerminal extends AbstractPartTerminal
-{
+    @PartModels
+    public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID, "part/crafting_terminal_off");
+    @PartModels
+    public static final ResourceLocation MODEL_ON = new ResourceLocation(AppEng.MOD_ID, "part/crafting_terminal_on");
 
-	@PartModels
-	public static final ResourceLocation MODEL_OFF = new ResourceLocation( AppEng.MOD_ID, "part/crafting_terminal_off" );
-	@PartModels
-	public static final ResourceLocation MODEL_ON = new ResourceLocation( AppEng.MOD_ID, "part/crafting_terminal_on" );
+    public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
+    public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);
+    public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL);
 
-	public static final IPartModel MODELS_OFF = new PartModel( MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF );
-	public static final IPartModel MODELS_ON = new PartModel( MODEL_BASE, MODEL_ON, MODEL_STATUS_ON );
-	public static final IPartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL );
+    private final AppEngInternalInventory craftingGrid = new AppEngInternalInventory(this, 9);
 
-	private final AppEngInternalInventory craftingGrid = new AppEngInternalInventory( this, 9 );
+    @Reflected
+    public PartCraftingTerminal(final ItemStack is) {
+        super(is);
+    }
 
-	@Reflected
-	public PartCraftingTerminal( final ItemStack is )
-	{
-		super( is );
-	}
+    @Override
+    public void getDrops(final List<ItemStack> drops, final boolean wrenched) {
+        super.getDrops(drops, wrenched);
 
-	@Override
-	public void getDrops( final List<ItemStack> drops, final boolean wrenched )
-	{
-		super.getDrops( drops, wrenched );
+        for (final ItemStack is : this.craftingGrid) {
+            if (!is.isEmpty()) {
+                drops.add(is);
+            }
+        }
+    }
 
-		for( final ItemStack is : this.craftingGrid )
-		{
-			if( !is.isEmpty() )
-			{
-				drops.add( is );
-			}
-		}
-	}
+    @Override
+    public void readFromNBT(final CompoundNBT data) {
+        super.readFromNBT(data);
+        this.craftingGrid.readFromNBT(data, "craftingGrid");
+    }
 
-	@Override
-	public void readFromNBT( final CompoundNBT data )
-	{
-		super.readFromNBT( data );
-		this.craftingGrid.readFromNBT( data, "craftingGrid" );
-	}
+    @Override
+    public void writeToNBT(final CompoundNBT data) {
+        super.writeToNBT(data);
+        this.craftingGrid.writeToNBT(data, "craftingGrid");
+    }
 
-	@Override
-	public void writeToNBT( final CompoundNBT data )
-	{
-		super.writeToNBT( data );
-		this.craftingGrid.writeToNBT( data, "craftingGrid" );
-	}
+    @Override
+    public ContainerType<?> getContainerType(final PlayerEntity p) {
+        if (Platform.checkPermissions(p, this, SecurityPermissions.CRAFT, false)) {
+            return ContainerCraftingTerm.TYPE;
+        }
+        return ContainerMEMonitorable.TYPE;
+    }
 
-	@Override
-	public ContainerType<?> getContainerType(final PlayerEntity p )
-	{
-		if( Platform.checkPermissions( p, this, SecurityPermissions.CRAFT, false) )
-		{
-			return ContainerCraftingTerm.TYPE;
-		}
-		return ContainerMEMonitorable.TYPE;
-	}
+    @Override
+    public IItemHandler getInventoryByName(final String name) {
+        if (name.equals("crafting")) {
+            return this.craftingGrid;
+        }
+        return super.getInventoryByName(name);
+    }
 
-	@Override
-	public IItemHandler getInventoryByName( final String name )
-	{
-		if( name.equals( "crafting" ) )
-		{
-			return this.craftingGrid;
-		}
-		return super.getInventoryByName( name );
-	}
-
-	@Override
-	public IPartModel getStaticModels()
-	{
-		return this.selectModel( MODELS_OFF, MODELS_ON, MODELS_HAS_CHANNEL );
-	}
+    @Override
+    public IPartModel getStaticModels() {
+        return this.selectModel(MODELS_OFF, MODELS_ON, MODELS_HAS_CHANNEL);
+    }
 
 }

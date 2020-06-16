@@ -18,7 +18,6 @@
 
 package appeng.core.sync.packets;
 
-
 import java.io.IOException;
 
 import io.netty.buffer.Unpooled;
@@ -36,50 +35,46 @@ import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.item.AEItemStack;
 
+public class PacketAssemblerAnimation extends AppEngPacket {
 
-public class PacketAssemblerAnimation extends AppEngPacket
-{
+    private final int x;
+    private final int y;
+    private final int z;
+    public final byte rate;
+    public final IAEItemStack is;
 
-	private final int x;
-	private final int y;
-	private final int z;
-	public final byte rate;
-	public final IAEItemStack is;
+    public PacketAssemblerAnimation(final PacketBuffer stream) {
+        this.x = stream.readInt();
+        this.y = stream.readInt();
+        this.z = stream.readInt();
+        this.rate = stream.readByte();
+        this.is = AEItemStack.fromPacket(stream);
+    }
 
-	public PacketAssemblerAnimation( final PacketBuffer stream )
-	{
-		this.x = stream.readInt();
-		this.y = stream.readInt();
-		this.z = stream.readInt();
-		this.rate = stream.readByte();
-		this.is = AEItemStack.fromPacket( stream );
-	}
+    // api
+    public PacketAssemblerAnimation(final BlockPos pos, final byte rate, final IAEItemStack is) {
 
-	// api
-	public PacketAssemblerAnimation( final BlockPos pos, final byte rate, final IAEItemStack is )
-	{
+        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
-		final PacketBuffer data = new PacketBuffer( Unpooled.buffer() );
+        data.writeInt(this.getPacketID());
+        data.writeInt(this.x = pos.getX());
+        data.writeInt(this.y = pos.getY());
+        data.writeInt(this.z = pos.getZ());
+        data.writeByte(this.rate = rate);
+        is.writeToPacket(data);
+        this.is = is;
 
-		data.writeInt( this.getPacketID() );
-		data.writeInt( this.x = pos.getX() );
-		data.writeInt( this.y = pos.getY() );
-		data.writeInt( this.z = pos.getZ() );
-		data.writeByte( this.rate = rate );
-		is.writeToPacket( data );
-		this.is = is;
+        this.configureWrite(data);
+    }
 
-		this.configureWrite( data );
-	}
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
+        final double d0 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
+        final double d1 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
+        final double d2 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
 
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public void clientPacketData( final INetworkInfo network, final PlayerEntity player )
-	{
-		final double d0 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
-		final double d1 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
-		final double d2 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
-
-		AppEng.proxy.spawnEffect( EffectType.Assembler, player.getEntityWorld(), this.x + d0, this.y + d1, this.z + d2, this );
-	}
+        AppEng.proxy.spawnEffect(EffectType.Assembler, player.getEntityWorld(), this.x + d0, this.y + d1, this.z + d2,
+                this);
+    }
 }

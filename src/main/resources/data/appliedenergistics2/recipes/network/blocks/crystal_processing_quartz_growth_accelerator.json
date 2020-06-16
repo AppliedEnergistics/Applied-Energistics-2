@@ -3,11 +3,7 @@
     "item": "appliedenergistics2:quartz_growth_accelerator"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aba",
-    "cdc",
-    "aba"
-  ],
+  "pattern": ["aba", "cdc", "aba"],
   "key": {
     "c": {
       "item": "appliedenergistics2:quartz_glass"

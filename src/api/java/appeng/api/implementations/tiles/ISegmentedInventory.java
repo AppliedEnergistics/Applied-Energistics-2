@@ -23,20 +23,18 @@
 
 package appeng.api.implementations.tiles;
 
-
 import net.minecraftforge.items.IItemHandler;
 
+public interface ISegmentedInventory {
 
-public interface ISegmentedInventory
-{
-
-	/**
-	 * Access an internal inventory, note, not all inventories contain real items, some may be ghost items, and treating
-	 * them a real inventories will result in duplication.
-	 *
-	 * @param name inventory name
-	 *
-	 * @return inventory with inventory name
-	 */
-	IItemHandler getInventoryByName( String name );
+    /**
+     * Access an internal inventory, note, not all inventories contain real items,
+     * some may be ghost items, and treating them a real inventories will result in
+     * duplication.
+     *
+     * @param name inventory name
+     *
+     * @return inventory with inventory name
+     */
+    IItemHandler getInventoryByName(String name);
 }

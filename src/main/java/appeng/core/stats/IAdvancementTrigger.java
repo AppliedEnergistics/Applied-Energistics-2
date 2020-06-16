@@ -18,13 +18,10 @@
 
 package appeng.core.stats;
 
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 
-
 @FunctionalInterface
-public interface IAdvancementTrigger
-{
-	void trigger( ServerPlayerEntity parPlayer );
+public interface IAdvancementTrigger {
+    void trigger(ServerPlayerEntity parPlayer);
 }

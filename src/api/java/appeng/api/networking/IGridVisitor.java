@@ -23,24 +23,22 @@
 
 package appeng.api.networking;
 
-
 import javax.annotation.Nonnull;
-
 
 /**
  * Simple Visitor pattern access to network nodes.
  */
-public interface IGridVisitor
-{
+public interface IGridVisitor {
 
-	/**
-	 * Called for each node on the network.
-	 *
-	 * By returning false your informing the host to stop visiting nodes beyond the current node.
-	 *
-	 * @param n the current node.
-	 *
-	 * @return true to continue visiting nodes beyond this node.
-	 */
-	boolean visitNode( @Nonnull IGridNode n );
+    /**
+     * Called for each node on the network.
+     *
+     * By returning false your informing the host to stop visiting nodes beyond the
+     * current node.
+     *
+     * @param n the current node.
+     *
+     * @return true to continue visiting nodes beyond this node.
+     */
+    boolean visitNode(@Nonnull IGridNode n);
 }

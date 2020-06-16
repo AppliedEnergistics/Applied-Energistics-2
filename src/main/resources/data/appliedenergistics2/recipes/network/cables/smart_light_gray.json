@@ -4,11 +4,7 @@
     "count": 8
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aaa",
-    "aba",
-    "aaa"
-  ],
+  "pattern": ["aaa", "aba", "aaa"],
   "key": {
     "b": {
       "tag": "forge:dyes/light_gray"

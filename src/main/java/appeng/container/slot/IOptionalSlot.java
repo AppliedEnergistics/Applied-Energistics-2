@@ -18,20 +18,17 @@
 
 package appeng.container.slot;
 
-
 /**
  * @author BrockWS
  * @version rv6 - 2/05/2018
  * @since rv6 2/05/2018
  */
-public interface IOptionalSlot
-{
-	default boolean isRenderDisabled()
-	{
-		return false;
-	}
+public interface IOptionalSlot {
+    default boolean isRenderDisabled() {
+        return false;
+    }
 
-	int getSourceX();
+    int getSourceX();
 
-	int getSourceY();
+    int getSourceY();
 }

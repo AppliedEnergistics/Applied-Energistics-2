@@ -3,9 +3,7 @@
     "item": "appliedenergistics2:portable_cell"
   },
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "abc"
-  ],
+  "pattern": ["abc"],
   "key": {
     "a": {
       "item": "appliedenergistics2:chest"

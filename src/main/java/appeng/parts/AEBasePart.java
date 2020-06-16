@@ -18,7 +18,6 @@
 
 package appeng.parts;
 
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -77,471 +76,393 @@ import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
-
-public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradeableHost, ICustomNameObject
-{
-
-	private final AENetworkProxy proxy;
-	private final ItemStack is;
-	private TileEntity tile = null;
-	private IPartHost host = null;
-	private AEPartLocation side = null;
-
-	public AEBasePart( final ItemStack is )
-	{
-		Preconditions.checkNotNull( is );
-
-		this.is = is;
-		this.proxy = new AENetworkProxy( this, "part", is, this instanceof PartCable );
-		this.proxy.setValidSides( EnumSet.noneOf( Direction.class ) );
-	}
-
-	public IPartHost getHost()
-	{
-		return this.host;
-	}
-
-	public PartType getType()
-	{
-		Item item = this.is.getItem();
-		if (!(item instanceof ItemPart)) {
-			return PartType.INVALID_TYPE;
-		}
-
-		return ((ItemPart<?>) item).getType();
-	}
-
-	@Override
-	public IGridNode getGridNode( final AEPartLocation dir )
-	{
-		return this.proxy.getNode();
-	}
-
-	@Override
-	public AECableType getCableConnectionType( final AEPartLocation dir )
-	{
-		return AECableType.GLASS;
-	}
-
-	@Override
-	public void securityBreak()
-	{
-		if( this.getItemStack().getCount() > 0 && this.getGridNode() != null )
-		{
-			final List<ItemStack> items = new ArrayList<>();
-			items.add( this.is.copy() );
-			this.host.removePart( this.side, false );
-			Platform.spawnDrops( this.tile.getWorld(), this.tile.getPos(), items );
-			this.is.setCount( 0 );
-		}
-	}
-
-	protected AEColor getColor()
-	{
-		if( this.host == null )
-		{
-			return AEColor.TRANSPARENT;
-		}
-		return this.host.getColor();
-	}
-
-	@Override
-	public void getBoxes( final IPartCollisionHelper bch )
-	{
-
-	}
-
-	@Override
-	public int getInstalledUpgrades( final Upgrades u )
-	{
-		return 0;
-	}
-
-	@Override
-	public TileEntity getTile()
-	{
-		return this.tile;
-	}
-
-	@Override
-	public AENetworkProxy getProxy()
-	{
-		return this.proxy;
-	}
-
-	@Override
-	public DimensionalCoord getLocation()
-	{
-		return new DimensionalCoord( this.tile );
-	}
-
-	@Override
-	public void gridChanged()
-	{
-
-	}
-
-	@Override
-	public IGridNode getActionableNode()
-	{
-		return this.proxy.getNode();
-	}
-
-	public void saveChanges()
-	{
-		this.host.markForSave();
-	}
-
-	@Override
-	public ITextComponent getCustomInventoryName()
-	{
-		return this.getItemStack().getDisplayName();
-	}
-
-	@Override
-	public boolean hasCustomInventoryName()
-	{
-		return this.getItemStack().hasDisplayName();
-	}
-
-	public void addEntityCrashInfo( final CrashReportCategory crashreportcategory )
-	{
-		crashreportcategory.addDetail( "Part Side", this.getSide() );
-	}
-
-	@Override
-	public ItemStack getItemStack( final PartItemStack type )
-	{
-		if( type == PartItemStack.NETWORK )
-		{
-			final ItemStack copy = this.is.copy();
-			copy.setTag( null );
-			return copy;
-		}
-		return this.is;
-	}
-
-	@Override
-	public boolean isSolid()
-	{
-		return false;
-	}
-
-	@Override
-	public void onNeighborChanged( IBlockReader w, BlockPos pos, BlockPos neighbor )
-	{
-
-	}
-
-	@Override
-	public boolean canConnectRedstone()
-	{
-		return false;
-	}
-
-	@Override
-	public void readFromNBT( final CompoundNBT data )
-	{
-		this.proxy.readFromNBT( data );
-	}
-
-	@Override
-	public void writeToNBT( final CompoundNBT data )
-	{
-		this.proxy.writeToNBT( data );
-	}
-
-	@Override
-	public int isProvidingStrongPower()
-	{
-		return 0;
-	}
-
-	@Override
-	public int isProvidingWeakPower()
-	{
-		return 0;
-	}
-
-	@Override
-	public void writeToStream( final PacketBuffer data ) throws IOException
-	{
-
-	}
-
-	@Override
-	public boolean readFromStream( final PacketBuffer data ) throws IOException
-	{
-		return false;
-	}
-
-	@Override
-	public IGridNode getGridNode()
-	{
-		return this.proxy.getNode();
-	}
-
-	@Override
-	public void onEntityCollision( final Entity entity )
-	{
-
-	}
-
-	@Override
-	public void removeFromWorld()
-	{
-		this.proxy.remove();
-	}
-
-	@Override
-	public void addToWorld()
-	{
-		this.proxy.onReady();
-	}
-
-	@Override
-	public void setPartHostInfo( final AEPartLocation side, final IPartHost host, final TileEntity tile )
-	{
-		this.setSide( side );
-		this.tile = tile;
-		this.host = host;
-	}
-
-	@Override
-	public IGridNode getExternalFacingNode()
-	{
-		return null;
-	}
-
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public void animateTick( final World world, final BlockPos pos, final Random r )
-	{
-
-	}
-
-	@Override
-	public int getLightLevel()
-	{
-		return 0;
-	}
-
-	@Override
-	public void getDrops( final List<ItemStack> drops, final boolean wrenched )
-	{
-
-	}
-
-	@Override
-	public float getCableConnectionLength( AECableType cable )
-	{
-		return 3;
-	}
-
-	@Override
-	public boolean isLadder( final LivingEntity entity )
-	{
-		return false;
-	}
-
-	@Override
-	public IConfigManager getConfigManager()
-	{
-		return null;
-	}
-
-	@Override
-	public IItemHandler getInventoryByName( final String name )
-	{
-		return null;
-	}
-
-	/**
-	 * depending on the from, different settings will be accepted, don't call this with null
-	 *
-	 * @param from source of settings
-	 * @param compound compound of source
-	 */
-	private void uploadSettings( final SettingsFrom from, final CompoundNBT compound )
-	{
-		if( compound != null )
-		{
-			final IConfigManager cm = this.getConfigManager();
-			if( cm != null )
-			{
-				cm.readFromNBT( compound );
-			}
-		}
-
-		if( this instanceof IPriorityHost )
-		{
-			final IPriorityHost pHost = (IPriorityHost) this;
-			pHost.setPriority( compound.getInt( "priority" ) );
-		}
-
-		final IItemHandler inv = this.getInventoryByName( "config" );
-		if( inv instanceof AppEngInternalAEInventory )
-		{
-			final AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
-			final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory( null, target.getSlots() );
-			tmp.readFromNBT( compound, "config" );
-			for( int x = 0; x < tmp.getSlots(); x++ )
-			{
-				target.setStackInSlot( x, tmp.getStackInSlot( x ) );
-			}
-		}
-	}
-
-	/**
-	 * null means nothing to store...
-	 *
-	 * @param from source of settings
-	 *
-	 * @return compound of source
-	 */
-	private CompoundNBT downloadSettings( final SettingsFrom from )
-	{
-		final CompoundNBT output = new CompoundNBT();
-
-		final IConfigManager cm = this.getConfigManager();
-		if( cm != null )
-		{
-			cm.writeToNBT( output );
-		}
-
-		if( this instanceof IPriorityHost )
-		{
-			final IPriorityHost pHost = (IPriorityHost) this;
-			output.putInt( "priority", pHost.getPriority() );
-		}
-
-		final IItemHandler inv = this.getInventoryByName( "config" );
-		if( inv instanceof AppEngInternalAEInventory )
-		{
-			( (AppEngInternalAEInventory) inv ).writeToNBT( output, "config" );
-		}
-
-		return output.isEmpty() ? null : output;
-	}
-
-	public boolean useStandardMemoryCard()
-	{
-		return true;
-	}
-
-	private boolean useMemoryCard( final PlayerEntity player )
-	{
-		final ItemStack memCardIS = player.inventory.getCurrentItem();
-
-		if( !memCardIS.isEmpty() && this.useStandardMemoryCard() && memCardIS.getItem() instanceof IMemoryCard )
-		{
-			final IMemoryCard memoryCard = (IMemoryCard) memCardIS.getItem();
-
-			ItemStack is = this.getItemStack( PartItemStack.NETWORK );
-
-			// Blocks and parts share the same soul!
-			final IDefinitions definitions = AEApi.instance().definitions();
-			if( definitions.parts().iface().isSameAs( is ) )
-			{
-				Optional<ItemStack> iface = definitions.blocks().iface().maybeStack( 1 );
-				if( iface.isPresent() )
-				{
-					is = iface.get();
-				}
-			}
-
-			final String name = is.getTranslationKey();
-
-			if( player.isCrouching() )
-			{
-				final CompoundNBT data = this.downloadSettings( SettingsFrom.MEMORY_CARD );
-				if( data != null )
-				{
-					memoryCard.setMemoryCardContents( memCardIS, name, data );
-					memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_SAVED );
-				}
-			}
-			else
-			{
-				final String storedName = memoryCard.getSettingsName( memCardIS );
-				final CompoundNBT data = memoryCard.getData( memCardIS );
-				if( name.equals( storedName ) )
-				{
-					this.uploadSettings( SettingsFrom.MEMORY_CARD, data );
-					memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );
-				}
-				else
-				{
-					memoryCard.notifyUser( player, MemoryCardMessages.INVALID_MACHINE );
-				}
-			}
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public final boolean onActivate( final PlayerEntity player, final Hand hand, final Vec3d pos )
-	{
-		if( this.useMemoryCard( player ) )
-		{
-			return true;
-		}
-
-		return this.onPartActivate( player, hand, pos );
-	}
-
-	@Override
-	public final boolean onShiftActivate( final PlayerEntity player, final Hand hand, final Vec3d pos )
-	{
-		if( this.useMemoryCard( player ) )
-		{
-			return true;
-		}
-
-		return this.onPartShiftActivate( player, hand, pos );
-	}
-
-	public boolean onPartActivate( final PlayerEntity player, final Hand hand, final Vec3d pos )
-	{
-		return false;
-	}
-
-	public boolean onPartShiftActivate( final PlayerEntity player, final Hand hand, final Vec3d pos )
-	{
-		return false;
-	}
-
-	@Override
-	public void onPlacement( final PlayerEntity player, final Hand hand, final ItemStack held, final AEPartLocation side )
-	{
-		this.proxy.setOwner( player );
-	}
-
-	@Override
-	public boolean canBePlacedOn( final BusSupport what )
-	{
-		return what == BusSupport.CABLE;
-	}
-
-	@Override
-	public boolean requireDynamicRender()
-	{
-		return false;
-	}
-
-	public AEPartLocation getSide()
-	{
-		return this.side;
-	}
-
-	private void setSide( final AEPartLocation side )
-	{
-		this.side = side;
-	}
-
-	public ItemStack getItemStack()
-	{
-		return this.is;
-	}
+public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradeableHost, ICustomNameObject {
+
+    private final AENetworkProxy proxy;
+    private final ItemStack is;
+    private TileEntity tile = null;
+    private IPartHost host = null;
+    private AEPartLocation side = null;
+
+    public AEBasePart(final ItemStack is) {
+        Preconditions.checkNotNull(is);
+
+        this.is = is;
+        this.proxy = new AENetworkProxy(this, "part", is, this instanceof PartCable);
+        this.proxy.setValidSides(EnumSet.noneOf(Direction.class));
+    }
+
+    public IPartHost getHost() {
+        return this.host;
+    }
+
+    public PartType getType() {
+        Item item = this.is.getItem();
+        if (!(item instanceof ItemPart)) {
+            return PartType.INVALID_TYPE;
+        }
+
+        return ((ItemPart<?>) item).getType();
+    }
+
+    @Override
+    public IGridNode getGridNode(final AEPartLocation dir) {
+        return this.proxy.getNode();
+    }
+
+    @Override
+    public AECableType getCableConnectionType(final AEPartLocation dir) {
+        return AECableType.GLASS;
+    }
+
+    @Override
+    public void securityBreak() {
+        if (this.getItemStack().getCount() > 0 && this.getGridNode() != null) {
+            final List<ItemStack> items = new ArrayList<>();
+            items.add(this.is.copy());
+            this.host.removePart(this.side, false);
+            Platform.spawnDrops(this.tile.getWorld(), this.tile.getPos(), items);
+            this.is.setCount(0);
+        }
+    }
+
+    protected AEColor getColor() {
+        if (this.host == null) {
+            return AEColor.TRANSPARENT;
+        }
+        return this.host.getColor();
+    }
+
+    @Override
+    public void getBoxes(final IPartCollisionHelper bch) {
+
+    }
+
+    @Override
+    public int getInstalledUpgrades(final Upgrades u) {
+        return 0;
+    }
+
+    @Override
+    public TileEntity getTile() {
+        return this.tile;
+    }
+
+    @Override
+    public AENetworkProxy getProxy() {
+        return this.proxy;
+    }
+
+    @Override
+    public DimensionalCoord getLocation() {
+        return new DimensionalCoord(this.tile);
+    }
+
+    @Override
+    public void gridChanged() {
+
+    }
+
+    @Override
+    public IGridNode getActionableNode() {
+        return this.proxy.getNode();
+    }
+
+    public void saveChanges() {
+        this.host.markForSave();
+    }
+
+    @Override
+    public ITextComponent getCustomInventoryName() {
+        return this.getItemStack().getDisplayName();
+    }
+
+    @Override
+    public boolean hasCustomInventoryName() {
+        return this.getItemStack().hasDisplayName();
+    }
+
+    public void addEntityCrashInfo(final CrashReportCategory crashreportcategory) {
+        crashreportcategory.addDetail("Part Side", this.getSide());
+    }
+
+    @Override
+    public ItemStack getItemStack(final PartItemStack type) {
+        if (type == PartItemStack.NETWORK) {
+            final ItemStack copy = this.is.copy();
+            copy.setTag(null);
+            return copy;
+        }
+        return this.is;
+    }
+
+    @Override
+    public boolean isSolid() {
+        return false;
+    }
+
+    @Override
+    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+
+    }
+
+    @Override
+    public boolean canConnectRedstone() {
+        return false;
+    }
+
+    @Override
+    public void readFromNBT(final CompoundNBT data) {
+        this.proxy.readFromNBT(data);
+    }
+
+    @Override
+    public void writeToNBT(final CompoundNBT data) {
+        this.proxy.writeToNBT(data);
+    }
+
+    @Override
+    public int isProvidingStrongPower() {
+        return 0;
+    }
+
+    @Override
+    public int isProvidingWeakPower() {
+        return 0;
+    }
+
+    @Override
+    public void writeToStream(final PacketBuffer data) throws IOException {
+
+    }
+
+    @Override
+    public boolean readFromStream(final PacketBuffer data) throws IOException {
+        return false;
+    }
+
+    @Override
+    public IGridNode getGridNode() {
+        return this.proxy.getNode();
+    }
+
+    @Override
+    public void onEntityCollision(final Entity entity) {
+
+    }
+
+    @Override
+    public void removeFromWorld() {
+        this.proxy.remove();
+    }
+
+    @Override
+    public void addToWorld() {
+        this.proxy.onReady();
+    }
+
+    @Override
+    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final TileEntity tile) {
+        this.setSide(side);
+        this.tile = tile;
+        this.host = host;
+    }
+
+    @Override
+    public IGridNode getExternalFacingNode() {
+        return null;
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void animateTick(final World world, final BlockPos pos, final Random r) {
+
+    }
+
+    @Override
+    public int getLightLevel() {
+        return 0;
+    }
+
+    @Override
+    public void getDrops(final List<ItemStack> drops, final boolean wrenched) {
+
+    }
+
+    @Override
+    public float getCableConnectionLength(AECableType cable) {
+        return 3;
+    }
+
+    @Override
+    public boolean isLadder(final LivingEntity entity) {
+        return false;
+    }
+
+    @Override
+    public IConfigManager getConfigManager() {
+        return null;
+    }
+
+    @Override
+    public IItemHandler getInventoryByName(final String name) {
+        return null;
+    }
+
+    /**
+     * depending on the from, different settings will be accepted, don't call this
+     * with null
+     *
+     * @param from     source of settings
+     * @param compound compound of source
+     */
+    private void uploadSettings(final SettingsFrom from, final CompoundNBT compound) {
+        if (compound != null) {
+            final IConfigManager cm = this.getConfigManager();
+            if (cm != null) {
+                cm.readFromNBT(compound);
+            }
+        }
+
+        if (this instanceof IPriorityHost) {
+            final IPriorityHost pHost = (IPriorityHost) this;
+            pHost.setPriority(compound.getInt("priority"));
+        }
+
+        final IItemHandler inv = this.getInventoryByName("config");
+        if (inv instanceof AppEngInternalAEInventory) {
+            final AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
+            final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory(null, target.getSlots());
+            tmp.readFromNBT(compound, "config");
+            for (int x = 0; x < tmp.getSlots(); x++) {
+                target.setStackInSlot(x, tmp.getStackInSlot(x));
+            }
+        }
+    }
+
+    /**
+     * null means nothing to store...
+     *
+     * @param from source of settings
+     *
+     * @return compound of source
+     */
+    private CompoundNBT downloadSettings(final SettingsFrom from) {
+        final CompoundNBT output = new CompoundNBT();
+
+        final IConfigManager cm = this.getConfigManager();
+        if (cm != null) {
+            cm.writeToNBT(output);
+        }
+
+        if (this instanceof IPriorityHost) {
+            final IPriorityHost pHost = (IPriorityHost) this;
+            output.putInt("priority", pHost.getPriority());
+        }
+
+        final IItemHandler inv = this.getInventoryByName("config");
+        if (inv instanceof AppEngInternalAEInventory) {
+            ((AppEngInternalAEInventory) inv).writeToNBT(output, "config");
+        }
+
+        return output.isEmpty() ? null : output;
+    }
+
+    public boolean useStandardMemoryCard() {
+        return true;
+    }
+
+    private boolean useMemoryCard(final PlayerEntity player) {
+        final ItemStack memCardIS = player.inventory.getCurrentItem();
+
+        if (!memCardIS.isEmpty() && this.useStandardMemoryCard() && memCardIS.getItem() instanceof IMemoryCard) {
+            final IMemoryCard memoryCard = (IMemoryCard) memCardIS.getItem();
+
+            ItemStack is = this.getItemStack(PartItemStack.NETWORK);
+
+            // Blocks and parts share the same soul!
+            final IDefinitions definitions = AEApi.instance().definitions();
+            if (definitions.parts().iface().isSameAs(is)) {
+                Optional<ItemStack> iface = definitions.blocks().iface().maybeStack(1);
+                if (iface.isPresent()) {
+                    is = iface.get();
+                }
+            }
+
+            final String name = is.getTranslationKey();
+
+            if (player.isCrouching()) {
+                final CompoundNBT data = this.downloadSettings(SettingsFrom.MEMORY_CARD);
+                if (data != null) {
+                    memoryCard.setMemoryCardContents(memCardIS, name, data);
+                    memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_SAVED);
+                }
+            } else {
+                final String storedName = memoryCard.getSettingsName(memCardIS);
+                final CompoundNBT data = memoryCard.getData(memCardIS);
+                if (name.equals(storedName)) {
+                    this.uploadSettings(SettingsFrom.MEMORY_CARD, data);
+                    memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
+                } else {
+                    memoryCard.notifyUser(player, MemoryCardMessages.INVALID_MACHINE);
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public final boolean onActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
+        if (this.useMemoryCard(player)) {
+            return true;
+        }
+
+        return this.onPartActivate(player, hand, pos);
+    }
+
+    @Override
+    public final boolean onShiftActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
+        if (this.useMemoryCard(player)) {
+            return true;
+        }
+
+        return this.onPartShiftActivate(player, hand, pos);
+    }
+
+    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
+        return false;
+    }
+
+    public boolean onPartShiftActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
+        return false;
+    }
+
+    @Override
+    public void onPlacement(final PlayerEntity player, final Hand hand, final ItemStack held,
+            final AEPartLocation side) {
+        this.proxy.setOwner(player);
+    }
+
+    @Override
+    public boolean canBePlacedOn(final BusSupport what) {
+        return what == BusSupport.CABLE;
+    }
+
+    @Override
+    public boolean requireDynamicRender() {
+        return false;
+    }
+
+    public AEPartLocation getSide() {
+        return this.side;
+    }
+
+    private void setSide(final AEPartLocation side) {
+        this.side = side;
+    }
+
+    public ItemStack getItemStack() {
+        return this.is;
+    }
 }

@@ -23,112 +23,109 @@
 
 package appeng.api.storage;
 
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEStack;
 
+public interface ICellInventory<T extends IAEStack<T>> extends IMEInventory<T> {
 
-public interface ICellInventory<T extends IAEStack<T>> extends IMEInventory<T>
-{
+    /**
+     * @return the item stack of this storage cell.
+     */
+    ItemStack getItemStack();
 
-	/**
-	 * @return the item stack of this storage cell.
-	 */
-	ItemStack getItemStack();
+    /**
+     * @return the ae/t to drain for this storage cell inside a chest/drive.
+     */
+    double getIdleDrain();
 
-	/**
-	 * @return the ae/t to drain for this storage cell inside a chest/drive.
-	 */
-	double getIdleDrain();
+    /**
+     * @return fuzzy setting
+     */
+    FuzzyMode getFuzzyMode();
 
-	/**
-	 * @return fuzzy setting
-	 */
-	FuzzyMode getFuzzyMode();
+    /**
+     * @return access configured list
+     */
+    IItemHandler getConfigInventory();
 
-	/**
-	 * @return access configured list
-	 */
-	IItemHandler getConfigInventory();
+    /**
+     * @return access installed upgrades.
+     */
+    IItemHandler getUpgradesInventory();
 
-	/**
-	 * @return access installed upgrades.
-	 */
-	IItemHandler getUpgradesInventory();
+    /**
+     * @return How many bytes are used for each type?
+     */
+    int getBytesPerType();
 
-	/**
-	 * @return How many bytes are used for each type?
-	 */
-	int getBytesPerType();
+    /**
+     * @return true if a new item type can be added.
+     */
+    boolean canHoldNewItem();
 
-	/**
-	 * @return true if a new item type can be added.
-	 */
-	boolean canHoldNewItem();
+    /**
+     * @return total byte storage.
+     */
+    long getTotalBytes();
 
-	/**
-	 * @return total byte storage.
-	 */
-	long getTotalBytes();
+    /**
+     * @return how many bytes are free.
+     */
+    long getFreeBytes();
 
-	/**
-	 * @return how many bytes are free.
-	 */
-	long getFreeBytes();
+    /**
+     * @return how many bytes are in use.
+     */
+    long getUsedBytes();
 
-	/**
-	 * @return how many bytes are in use.
-	 */
-	long getUsedBytes();
+    /**
+     * @return max number of types.
+     */
+    long getTotalItemTypes();
 
-	/**
-	 * @return max number of types.
-	 */
-	long getTotalItemTypes();
+    /**
+     * @return how many items are stored.
+     */
+    long getStoredItemCount();
 
-	/**
-	 * @return how many items are stored.
-	 */
-	long getStoredItemCount();
+    /**
+     * @return how many items types are currently stored.
+     */
+    long getStoredItemTypes();
 
-	/**
-	 * @return how many items types are currently stored.
-	 */
-	long getStoredItemTypes();
+    /**
+     * @return how many item types remain.
+     */
+    long getRemainingItemTypes();
 
-	/**
-	 * @return how many item types remain.
-	 */
-	long getRemainingItemTypes();
+    /**
+     * @return how many more items can be stored.
+     */
+    long getRemainingItemCount();
 
-	/**
-	 * @return how many more items can be stored.
-	 */
-	long getRemainingItemCount();
+    /**
+     * @return how many items can be added without consuming another byte.
+     */
+    int getUnusedItemCount();
 
-	/**
-	 * @return how many items can be added without consuming another byte.
-	 */
-	int getUnusedItemCount();
+    /**
+     * 0 - cell is missing.
+     *
+     * 1 - green, ( usually means available room for types or items. )
+     *
+     * 2 - orange, ( usually means available room for items, but not types. )
+     *
+     * 3 - red, ( usually means the cell is 100% full )
+     *
+     * @return get the status of the cell based on its contents.
+     */
+    int getStatusForCell();
 
-	/**
-	 * 0 - cell is missing.
-	 *
-	 * 1 - green, ( usually means available room for types or items. )
-	 *
-	 * 2 - orange, ( usually means available room for items, but not types. )
-	 *
-	 * 3 - red, ( usually means the cell is 100% full )
-	 *
-	 * @return get the status of the cell based on its contents.
-	 */
-	int getStatusForCell();
-
-	/**
-	 * Tells the cell to persist to NBT
-	 */
-	void persist();
+    /**
+     * Tells the cell to persist to NBT
+     */
+    void persist();
 }

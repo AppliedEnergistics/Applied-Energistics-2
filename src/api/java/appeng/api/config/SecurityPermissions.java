@@ -23,49 +23,48 @@
 
 package appeng.api.config;
 
-
 /**
- * Represent the security systems basic permissions, these are not for anti-griefing, they are part of the mod as a
- * gameplay feature.
+ * Represent the security systems basic permissions, these are not for
+ * anti-griefing, they are part of the mod as a gameplay feature.
  */
-public enum SecurityPermissions
-{
-	/**
-	 * required to insert items into the network via terminal ( also used for machines based on the owner of the
-	 * network, which is determined by its Security Block. )
-	 */
-	INJECT,
+public enum SecurityPermissions {
+    /**
+     * required to insert items into the network via terminal ( also used for
+     * machines based on the owner of the network, which is determined by its
+     * Security Block. )
+     */
+    INJECT,
 
-	/**
-	 * required to extract items from the network via terminal ( also used for machines based on the owner of the
-	 * network, which is determined by its Security Block. )
-	 */
-	EXTRACT,
+    /**
+     * required to extract items from the network via terminal ( also used for
+     * machines based on the owner of the network, which is determined by its
+     * Security Block. )
+     */
+    EXTRACT,
 
-	/**
-	 * required to request crafting from the network via terminal.
-	 */
-	CRAFT,
+    /**
+     * required to request crafting from the network via terminal.
+     */
+    CRAFT,
 
-	/**
-	 * required to modify automation, and make modifications to the networks physical layout.
-	 */
-	BUILD,
+    /**
+     * required to modify automation, and make modifications to the networks
+     * physical layout.
+     */
+    BUILD,
 
-	/**
-	 * required to modify the security blocks settings.
-	 */
-	SECURITY;
+    /**
+     * required to modify the security blocks settings.
+     */
+    SECURITY;
 
-	private final String translationKey = "gui.appliedenergistics2.security." + this.name().toLowerCase();
+    private final String translationKey = "gui.appliedenergistics2.security." + this.name().toLowerCase();
 
-	public String getTranslatedName()
-	{
-		return this.translationKey + ".name";
-	}
+    public String getTranslatedName() {
+        return this.translationKey + ".name";
+    }
 
-	public String getTranslatedTip()
-	{
-		return this.translationKey + ".tip";
-	}
+    public String getTranslatedTip() {
+        return this.translationKey + ".tip";
+    }
 }

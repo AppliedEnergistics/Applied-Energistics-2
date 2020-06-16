@@ -23,9 +23,7 @@
 
 package appeng.api.implementations.tiles;
 
+public interface ICrystalGrowthAccelerator {
 
-public interface ICrystalGrowthAccelerator
-{
-
-	boolean isPowered();
+    boolean isPowered();
 }

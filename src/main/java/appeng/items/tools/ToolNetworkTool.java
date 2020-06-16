@@ -18,11 +18,6 @@
 
 package appeng.items.tools;
 
-
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.ContainerNetworkStatus;
-import appeng.container.implementations.ContainerNetworkTool;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -50,149 +45,126 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.INetworkToolAgent;
 import appeng.container.AEBaseContainer;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ContainerNetworkStatus;
+import appeng.container.implementations.ContainerNetworkTool;
 import appeng.core.AppEng;
-
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketClick;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.NetworkToolViewer;
 import appeng.util.Platform;
 
+public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench {
 
-public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench
-{
+    public ToolNetworkTool(Properties properties) {
+        super(properties);
+    }
 
-	public ToolNetworkTool(Properties properties) {
-		super(properties);
-	}
+    @Override
+    public IGuiItemObject getGuiObject(final ItemStack is, int playerInventorySlot, final World world,
+            final BlockPos pos) {
+        if (pos == null) {
+            return new NetworkToolViewer(is, null);
+        }
+        final TileEntity te = world.getTileEntity(pos);
+        return new NetworkToolViewer(is, (IGridHost) (te instanceof IGridHost ? te : null));
+    }
 
-	@Override
-	public IGuiItemObject getGuiObject( final ItemStack is, int playerInventorySlot, final World world, final BlockPos pos )
-	{
-		if (pos == null) {
-			return new NetworkToolViewer( is, null );
-		}
-		final TileEntity te = world.getTileEntity( pos );
-		return new NetworkToolViewer( is, (IGridHost) ( te instanceof IGridHost ? te : null ) );
-	}
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
+        if (Platform.isClient()) {
+            final RayTraceResult mop = AppEng.proxy.getRTR();
 
-	@Override
-	public ActionResult<ItemStack> onItemRightClick( final World w, final PlayerEntity p, final Hand hand )
-	{
-		if( Platform.isClient() )
-		{
-			final RayTraceResult mop = AppEng.proxy.getRTR();
+            if (mop == null || mop.getType() == RayTraceResult.Type.MISS) {
+                NetworkHandler.instance().sendToServer(new PacketClick(hand));
+            }
+        }
 
-			if( mop == null || mop.getType() == RayTraceResult.Type.MISS )
-			{
-				NetworkHandler.instance().sendToServer( new PacketClick( hand ) );
-			}
-		}
+        return new ActionResult<>(ActionResultType.SUCCESS, p.getHeldItem(hand));
+    }
 
-		return new ActionResult<>( ActionResultType.SUCCESS, p.getHeldItem( hand ) );
-	}
+    @Override
+    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
+        final BlockRayTraceResult mop = new BlockRayTraceResult(context.getHitVec(), context.getFace(),
+                context.getPos(), context.isInside());
+        final TileEntity te = context.getWorld().getTileEntity(context.getPos());
 
-	@Override
-	public ActionResultType onItemUseFirst( ItemStack stack, ItemUseContext context )
-	{
-		final BlockRayTraceResult mop = new BlockRayTraceResult( context.getHitVec(), context.getFace(), context.getPos(), context.isInside() );
-		final TileEntity te = context.getWorld().getTileEntity( context.getPos() );
+        if (te instanceof IPartHost) {
+            final SelectedPart part = ((IPartHost) te).selectPart(mop.getHitVec());
 
-		if( te instanceof IPartHost )
-		{
-			final SelectedPart part = ( (IPartHost) te ).selectPart( mop.getHitVec() );
+            if (part.part != null || part.facade != null) {
+                if (part.part instanceof INetworkToolAgent && !((INetworkToolAgent) part.part).showNetworkInfo(mop)) {
+                    return ActionResultType.FAIL;
+                } else if (context.getPlayer().isCrouching()) {
+                    return ActionResultType.PASS;
+                }
+            }
+        } else if (te instanceof INetworkToolAgent && !((INetworkToolAgent) te).showNetworkInfo(mop)) {
+            return ActionResultType.FAIL;
+        }
 
-			if( part.part != null || part.facade != null )
-			{
-				if( part.part instanceof INetworkToolAgent && !( (INetworkToolAgent) part.part ).showNetworkInfo( mop ) )
-				{
-					return ActionResultType.FAIL;
-				}
-				else if( context.getPlayer().isCrouching() )
-				{
-					return ActionResultType.PASS;
-				}
-			}
-		}
-		else if( te instanceof INetworkToolAgent && !( (INetworkToolAgent) te ).showNetworkInfo( mop ) )
-		{
-			return ActionResultType.FAIL;
-		}
+        if (Platform.isClient()) {
+            NetworkHandler.instance().sendToServer(new PacketClick(context));
+        }
 
-		if( Platform.isClient() )
-		{
-			NetworkHandler.instance().sendToServer( new PacketClick( context ) );
-		}
+        return ActionResultType.SUCCESS;
+    }
 
-		return ActionResultType.SUCCESS;
-	}
+    @Override
+    public boolean doesSneakBypassUse(ItemStack stack, IWorldReader world, BlockPos pos, PlayerEntity player) {
+        return true;
+    }
 
-	@Override
-	public boolean doesSneakBypassUse( ItemStack stack, IWorldReader world, BlockPos pos, PlayerEntity player )
-	{
-		return true;
-	}
+    public boolean serverSideToolLogic(ItemUseContext useContext) {
+        BlockPos pos = useContext.getPos();
+        PlayerEntity p = useContext.getPlayer();
+        World w = p.world;
+        Hand hand = useContext.getHand();
+        Direction side = useContext.getFace();
 
-	public boolean serverSideToolLogic( ItemUseContext useContext )
-	{
-		BlockPos pos = useContext.getPos();
-		PlayerEntity p = useContext.getPlayer();
-		World w = p.world;
-		Hand hand = useContext.getHand();
-		Direction side = useContext.getFace();
+        if (!Platform.hasPermissions(new DimensionalCoord(w, pos), p)) {
+            return false;
+        }
 
-		if( !Platform.hasPermissions( new DimensionalCoord( w, pos ), p ) )
-		{
-			return false;
-		}
+        final BlockState bs = w.getBlockState(pos);
+        if (!p.isCrouching()) {
+            final TileEntity te = w.getTileEntity(pos);
+            if (!(te instanceof IGridHost)) {
+                if (bs.rotate(w, pos, Rotation.CLOCKWISE_90) != bs) {
+                    bs.neighborChanged(w, pos, Platform.AIR_BLOCK, pos, false);
+                    p.swingArm(hand);
+                    return !w.isRemote;
+                }
+            }
+        }
 
-		final BlockState bs = w.getBlockState( pos );
-		if( !p.isCrouching() )
-		{
-			final TileEntity te = w.getTileEntity( pos );
-			if( !( te instanceof IGridHost ) )
-			{
-				if( bs.rotate( w, pos, Rotation.CLOCKWISE_90 ) != bs )
-				{
-					bs.neighborChanged( w, pos, Platform.AIR_BLOCK, pos, false );
-					p.swingArm( hand );
-					return !w.isRemote;
-				}
-			}
-		}
+        if (!p.isCrouching()) {
+            if (p.openContainer instanceof AEBaseContainer) {
+                return true;
+            }
 
-		if( !p.isCrouching() )
-		{
-			if( p.openContainer instanceof AEBaseContainer )
-			{
-				return true;
-			}
+            final TileEntity te = w.getTileEntity(pos);
 
-			final TileEntity te = w.getTileEntity( pos );
+            if (te instanceof IGridHost) {
+                ContainerOpener.openContainer(ContainerNetworkStatus.TYPE, p,
+                        ContainerLocator.forItemUseContext(useContext));
+            } else {
+                ContainerOpener.openContainer(ContainerNetworkTool.TYPE, p, ContainerLocator.forHand(p, hand));
+            }
 
-			if( te instanceof IGridHost )
-			{
-				ContainerOpener.openContainer(ContainerNetworkStatus.TYPE, p, ContainerLocator.forItemUseContext(useContext));
-			}
-			else
-			{
-				ContainerOpener.openContainer(ContainerNetworkTool.TYPE, p, ContainerLocator.forHand(p, hand));
-			}
+            return true;
+        } else {
+            BlockRayTraceResult rtr = new BlockRayTraceResult(useContext.getHitVec(), side, pos, false);
+            bs.onBlockActivated(w, p, hand, rtr);
+        }
 
-			return true;
-		}
-		else
-		{
-			BlockRayTraceResult rtr = new BlockRayTraceResult(useContext.getHitVec(), side, pos, false);
-			bs.onBlockActivated( w, p, hand, rtr );
-		}
+        return false;
+    }
 
-		return false;
-	}
-
-	@Override
-	public boolean canWrench( final ItemStack wrench, final PlayerEntity player, final BlockPos pos )
-	{
-		return true;
-	}
+    @Override
+    public boolean canWrench(final ItemStack wrench, final PlayerEntity player, final BlockPos pos) {
+        return true;
+    }
 }

@@ -18,9 +18,6 @@
 
 package appeng.block.qnb;
 
-
-import appeng.block.AEBaseTileBlock;
-import appeng.tile.qnb.TileQuantumBridge;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.BooleanProperty;
@@ -35,64 +32,63 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
+import appeng.block.AEBaseTileBlock;
+import appeng.tile.qnb.TileQuantumBridge;
 
-public abstract class BlockQuantumBase extends AEBaseTileBlock<TileQuantumBridge>
-{
+public abstract class BlockQuantumBase extends AEBaseTileBlock<TileQuantumBridge> {
 
-	public static final BooleanProperty FORMED = BooleanProperty.create( "formed" );
+    public static final BooleanProperty FORMED = BooleanProperty.create("formed");
 
-	private static final VoxelShape SHAPE;
+    private static final VoxelShape SHAPE;
 
-	static {
-		final float shave = 2.0f / 16.0f;
-		SHAPE = VoxelShapes.create(new AxisAlignedBB(shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave));
-	}
+    static {
+        final float shave = 2.0f / 16.0f;
+        SHAPE = VoxelShapes.create(new AxisAlignedBB(shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave));
+    }
 
-	public BlockQuantumBase(Block.Properties props) {
-		super(props);
-		this.setFullSize(this.setOpaque(false));
-		this.setDefaultState(this.getDefaultState().with(FORMED, false));
-	}
+    public BlockQuantumBase(Block.Properties props) {
+        super(props);
+        this.setFullSize(this.setOpaque(false));
+        this.setDefaultState(this.getDefaultState().with(FORMED, false));
+    }
 
-	@Override
-	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-		return SHAPE;
-	}
+    @Override
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+        return SHAPE;
+    }
 
-	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-		super.fillStateContainer(builder);
-		builder.add(FORMED);
-	}
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
+        builder.add(FORMED);
+    }
 
-	@Override
-	protected BlockState updateBlockStateFromTileEntity(BlockState currentState, TileQuantumBridge te) {
-		return currentState.with(FORMED, te.isFormed());
-	}
+    @Override
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, TileQuantumBridge te) {
+        return currentState.with(FORMED, te.isFormed());
+    }
 
-	@Override
-	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving )
-	{
-		final TileQuantumBridge bridge = this.getTileEntity( world, pos );
-		if( bridge != null )
-		{
-			bridge.neighborUpdate();
-		}
-	}
+    @Override
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
+            boolean isMoving) {
+        final TileQuantumBridge bridge = this.getTileEntity(world, pos);
+        if (bridge != null) {
+            bridge.neighborUpdate();
+        }
+    }
 
-	@Override
-	public void onReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
-		if (newState.getBlock() == state.getBlock()) {
-			return; // Just a block state change
-		}
+    @Override
+    public void onReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (newState.getBlock() == state.getBlock()) {
+            return; // Just a block state change
+        }
 
-		final TileQuantumBridge bridge = this.getTileEntity( w, pos );
-		if( bridge != null )
-		{
-			bridge.breakCluster();
-		}
+        final TileQuantumBridge bridge = this.getTileEntity(w, pos);
+        if (bridge != null) {
+            bridge.breakCluster();
+        }
 
-		super.onReplaced( state, w, pos, newState, isMoving );
-	}
+        super.onReplaced(state, w, pos, newState, isMoving);
+    }
 
 }

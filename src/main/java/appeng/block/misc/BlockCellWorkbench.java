@@ -18,11 +18,8 @@
 
 package appeng.block.misc;
 
-
 import javax.annotation.Nullable;
 
-import appeng.container.ContainerLocator;
-import appeng.container.implementations.ContainerCellWorkbench;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -33,36 +30,31 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
-
+import appeng.container.ContainerLocator;
+import appeng.container.implementations.ContainerCellWorkbench;
 import appeng.tile.misc.TileCellWorkbench;
 import appeng.util.Platform;
 
+public class BlockCellWorkbench extends AEBaseTileBlock<TileCellWorkbench> {
 
-public class BlockCellWorkbench extends AEBaseTileBlock<TileCellWorkbench>
-{
+    public BlockCellWorkbench() {
+        super(defaultProps(Material.IRON));
+    }
 
-	public BlockCellWorkbench()
-	{
-		super( defaultProps(Material.IRON) );
-	}
+    @Override
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+        if (p.isCrouching()) {
+            return ActionResultType.PASS;
+        }
 
-	@Override
-	public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit)
-	{
-		if( p.isCrouching() )
-		{
-			return ActionResultType.PASS;
-		}
-
-		final TileCellWorkbench tg = this.getTileEntity( w, pos );
-		if( tg != null )
-		{
-			if( Platform.isServer() )
-			{
-				ContainerCellWorkbench.open(p, ContainerLocator.forTileEntity(tg));
-			}
-			return ActionResultType.SUCCESS;
-		}
-		return ActionResultType.PASS;
-	}
+        final TileCellWorkbench tg = this.getTileEntity(w, pos);
+        if (tg != null) {
+            if (Platform.isServer()) {
+                ContainerCellWorkbench.open(p, ContainerLocator.forTileEntity(tg));
+            }
+            return ActionResultType.SUCCESS;
+        }
+        return ActionResultType.PASS;
+    }
 }
