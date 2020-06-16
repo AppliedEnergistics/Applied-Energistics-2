@@ -73,7 +73,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 			final ItemStack in = this.getTextureItem( is );
 			if( !in.isEmpty() )
 			{
-				return super.getDisplayName( is ).shallowCopy().appendText(" - ").appendSibling(in.getDisplayName());
+				return super.getDisplayName( is ).deepCopy().appendText(" - ").appendSibling(in.getDisplayName());
 			}
 		}
 		catch( final Throwable ignored )

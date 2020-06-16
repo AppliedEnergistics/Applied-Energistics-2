@@ -32,7 +32,6 @@ import appeng.util.Platform;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResult;
@@ -41,7 +40,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -115,33 +113,32 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 				return;
 			}
 
-			stack.setDisplayName(new TranslationTextComponent(GuiText.InvalidPattern.getTranslationKey())
-				.applyTextStyle(TextFormatting.RED));
+			stack.setDisplayName(GuiText.InvalidPattern.textComponent().applyTextStyle(TextFormatting.RED));
 
 			InvalidPatternHelper invalid = new InvalidPatternHelper( stack );
 
-			final ITextComponent label = new TranslationTextComponent( invalid.isCraftable() ? GuiText.Crafts.getTranslationKey() : GuiText.Creates.getTranslationKey() ).appendText(": ");
-			final ITextComponent and = new StringTextComponent(" ").appendSibling(new TranslationTextComponent(GuiText.And.getTranslationKey())).appendText(" ");
-			final ITextComponent with = new TranslationTextComponent(GuiText.With.getTranslationKey()).appendText(": ");
+			final ITextComponent label = (invalid.isCraftable() ? GuiText.Crafts.textComponent() : GuiText.Creates.textComponent()).appendText(": ");
+			final ITextComponent and = new StringTextComponent(" ").appendSibling(GuiText.And.textComponent()).appendText(" ");
+			final ITextComponent with = GuiText.With.textComponent().appendText(": ");
 
 			boolean first = true;
 			for( final InvalidPatternHelper.PatternIngredient output : invalid.getOutputs() )
 			{
-				lines.add( ( first ? label : and ).shallowCopy().appendSibling(output.getFormattedToolTip()) );
+				lines.add( ( first ? label : and ).deepCopy().appendSibling(output.getFormattedToolTip()) );
 				first = false;
 			}
 
 			first = true;
 			for( final InvalidPatternHelper.PatternIngredient input : invalid.getInputs() )
 			{
-				lines.add( ( first ? with : and ).shallowCopy().appendSibling(input.getFormattedToolTip()) );
+				lines.add( ( first ? with : and ).deepCopy().appendSibling(input.getFormattedToolTip()) );
 				first = false;
 			}
 
 			if( invalid.isCraftable() )
 			{
-				final ITextComponent substitutionLabel = new TranslationTextComponent(GuiText.Substitute.getTranslationKey()).appendText(" ");
-				final ITextComponent canSubstitute = new TranslationTextComponent(invalid.canSubstitute() ? GuiText.Yes.getTranslationKey() : GuiText.No.getTranslationKey());
+				final ITextComponent substitutionLabel = GuiText.Substitute.textComponent().appendText(" ");
+				final ITextComponent canSubstitute = invalid.canSubstitute() ? GuiText.Yes.textComponent() : GuiText.No.textComponent();
 
 				lines.add( substitutionLabel.appendSibling(canSubstitute) );
 			}
@@ -172,7 +169,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 				continue;
 			}
 
-			lines.add( ( first ? label : and ).shallowCopy().appendText(anOut.getStackSize() + " ").appendSibling(Platform.getItemDisplayName( anOut )));
+			lines.add( ( first ? label : and ).deepCopy().appendText(anOut.getStackSize() + "x ").appendSibling(Platform.getItemDisplayName( anOut )));
 			first = false;
 		}
 
@@ -184,7 +181,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 				continue;
 			}
 
-			lines.add((first ? with : and).shallowCopy().appendText(anIn.getStackSize() + " ").appendSibling(Platform.getItemDisplayName(anIn)));
+			lines.add((first ? with : and).deepCopy().appendText(anIn.getStackSize() + "x ").appendSibling(Platform.getItemDisplayName(anIn)));
 			first = false;
 		}
 

@@ -1271,7 +1271,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 				}
 				else
 				{
-					this.myName = te.getCustomInventoryName().shallowCopy();
+					this.myName = te.getCustomInventoryName().deepCopy();
 				}
 			}
 		}
