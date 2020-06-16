@@ -18,8 +18,6 @@
 
 package appeng.core;
 
-import java.util.Objects;
-
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -39,7 +37,6 @@ import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
@@ -241,7 +238,8 @@ final class Registration {
                 ContainerIOPort::open);
         ContainerLevelEmitter.TYPE = registerContainer(registry, "levelemitter", ContainerLevelEmitter::fromNetwork,
                 ContainerLevelEmitter::open);
-        ContainerMAC.TYPE = registerContainer(registry, "mac", ContainerMAC::fromNetwork, ContainerMAC::open);
+        ContainerMolecularAssembler.TYPE = registerContainer(registry, "molecular_assembler",
+                ContainerMolecularAssembler::fromNetwork, ContainerMolecularAssembler::open);
         ContainerMEMonitorable.TYPE = registerContainer(registry, "memonitorable", ContainerMEMonitorable::fromNetwork,
                 ContainerMEMonitorable::open);
         ContainerMEPortableCell.TYPE = registerContainer(registry, "meportablecell",
@@ -325,7 +323,7 @@ final class Registration {
             ScreenManager.registerFactory(ContainerSpatialIOPort.TYPE, GuiSpatialIOPort::new);
             ScreenManager.registerFactory(ContainerInscriber.TYPE, GuiInscriber::new);
             ScreenManager.registerFactory(ContainerCellWorkbench.TYPE, GuiCellWorkbench::new);
-            ScreenManager.registerFactory(ContainerMAC.TYPE, GuiMAC::new);
+            ScreenManager.registerFactory(ContainerMolecularAssembler.TYPE, GuiMolecularAssembler::new);
             ScreenManager.registerFactory(ContainerCraftAmount.TYPE, GuiCraftAmount::new);
             ScreenManager.registerFactory(ContainerCraftConfirm.TYPE, GuiCraftConfirm::new);
             ScreenManager.registerFactory(ContainerInterfaceTerminal.TYPE, GuiInterfaceTerminal::new);

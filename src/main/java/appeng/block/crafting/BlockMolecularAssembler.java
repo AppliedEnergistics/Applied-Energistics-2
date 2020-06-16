@@ -32,8 +32,7 @@ import net.minecraft.world.World;
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
-import appeng.container.implementations.ContainerInscriber;
-import appeng.container.implementations.ContainerMAC;
+import appeng.container.implementations.ContainerMolecularAssembler;
 import appeng.tile.crafting.TileMolecularAssembler;
 
 public class BlockMolecularAssembler extends AEBaseTileBlock<TileMolecularAssembler> {
@@ -62,7 +61,7 @@ public class BlockMolecularAssembler extends AEBaseTileBlock<TileMolecularAssemb
         final TileMolecularAssembler tg = this.getTileEntity(w, pos);
         if (tg != null && !p.isCrouching()) {
             if (!tg.isRemote()) {
-                ContainerOpener.openContainer(ContainerMAC.TYPE, p,
+                ContainerOpener.openContainer(ContainerMolecularAssembler.TYPE, p,
                         ContainerLocator.forTileEntitySide(tg, hit.getFace()));
             }
             return ActionResultType.SUCCESS;

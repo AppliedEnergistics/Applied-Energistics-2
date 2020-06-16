@@ -27,10 +27,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.exceptions.AppEngException;
-import appeng.api.features.IWirelessTermHandler;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.INetworkTool;
@@ -47,7 +45,6 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.client.gui.AEBaseGui;
 import appeng.container.AEBaseContainer;
-import appeng.container.ContainerLocator;
 import appeng.container.ContainerNull;
 import appeng.container.implementations.ContainerCellWorkbench;
 import appeng.container.implementations.ContainerChest;
@@ -65,9 +62,9 @@ import appeng.container.implementations.ContainerInscriber;
 import appeng.container.implementations.ContainerInterface;
 import appeng.container.implementations.ContainerInterfaceTerminal;
 import appeng.container.implementations.ContainerLevelEmitter;
-import appeng.container.implementations.ContainerMAC;
 import appeng.container.implementations.ContainerMEMonitorable;
 import appeng.container.implementations.ContainerMEPortableCell;
+import appeng.container.implementations.ContainerMolecularAssembler;
 import appeng.container.implementations.ContainerNetworkStatus;
 import appeng.container.implementations.ContainerNetworkTool;
 import appeng.container.implementations.ContainerPatternTerm;
@@ -202,7 +199,7 @@ public enum GuiBridge {
 
     GUI_CELL_WORKBENCH(ContainerCellWorkbench.class, TileCellWorkbench.class, GuiHostType.WORLD, null),
 
-    GUI_MAC(ContainerMAC.class, TileMolecularAssembler.class, GuiHostType.WORLD, null),
+    GUI_MAC(ContainerMolecularAssembler.class, TileMolecularAssembler.class, GuiHostType.WORLD, null),
 
     GUI_CRAFTING_AMOUNT(ContainerCraftAmount.class, ITerminalHost.class, GuiHostType.ITEM_OR_WORLD,
             SecurityPermissions.CRAFT),

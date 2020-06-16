@@ -32,23 +32,22 @@ import appeng.api.config.Settings;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
-import appeng.container.implementations.ContainerHelper;
 import appeng.container.interfaces.IProgressProvider;
-import appeng.container.slot.SlotMACPattern;
+import appeng.container.slot.SlotMolecularAssemblerPattern;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.items.misc.ItemEncodedPattern;
 import appeng.tile.crafting.TileMolecularAssembler;
 import appeng.util.Platform;
 
-public class ContainerMAC extends ContainerUpgradeable implements IProgressProvider {
+public class ContainerMolecularAssembler extends ContainerUpgradeable implements IProgressProvider {
 
-    public static ContainerType<ContainerMAC> TYPE;
+    public static ContainerType<ContainerMolecularAssembler> TYPE;
 
-    private static final ContainerHelper<ContainerMAC, TileMolecularAssembler> helper = new ContainerHelper<>(
-            ContainerMAC::new, TileMolecularAssembler.class);
+    private static final ContainerHelper<ContainerMolecularAssembler, TileMolecularAssembler> helper = new ContainerHelper<>(
+            ContainerMolecularAssembler::new, TileMolecularAssembler.class);
 
-    public static ContainerMAC fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static ContainerMolecularAssembler fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -61,13 +60,13 @@ public class ContainerMAC extends ContainerUpgradeable implements IProgressProvi
     @GuiSync(4)
     public int craftProgress = 0;
 
-    public ContainerMAC(int id, final PlayerInventory ip, final TileMolecularAssembler te) {
+    public ContainerMolecularAssembler(int id, final PlayerInventory ip, final TileMolecularAssembler te) {
         super(TYPE, id, ip, te);
         this.tma = te;
     }
 
     public boolean isValidItemForSlot(final int slotIndex, final ItemStack i) {
-        final IItemHandler mac = this.getUpgradeable().getInventoryByName("mac");
+        final IItemHandler mac = this.getUpgradeable().getInventoryByName(TileMolecularAssembler.INVENTORY_MAIN);
 
         final ItemStack is = mac.getStackInSlot(10);
         if (is.isEmpty()) {
@@ -96,11 +95,12 @@ public class ContainerMAC extends ContainerUpgradeable implements IProgressProvi
         int offX = 29;
         int offY = 30;
 
-        final IItemHandler mac = this.getUpgradeable().getInventoryByName("mac");
+        final IItemHandler mac = this.getUpgradeable().getInventoryByName(TileMolecularAssembler.INVENTORY_MAIN);
 
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 3; x++) {
-                final SlotMACPattern s = new SlotMACPattern(this, mac, x + y * 3, offX + x * 18, offY + y * 18);
+                final SlotMolecularAssemblerPattern s = new SlotMolecularAssemblerPattern(this, mac, x + y * 3,
+                        offX + x * 18, offY + y * 18);
                 this.addSlot(s);
             }
         }

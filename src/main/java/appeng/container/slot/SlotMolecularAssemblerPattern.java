@@ -21,13 +21,14 @@ package appeng.container.slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.container.implementations.ContainerMAC;
+import appeng.container.implementations.ContainerMolecularAssembler;
 
-public class SlotMACPattern extends AppEngSlot {
+public class SlotMolecularAssemblerPattern extends AppEngSlot {
 
-    private final ContainerMAC mac;
+    private final ContainerMolecularAssembler mac;
 
-    public SlotMACPattern(final ContainerMAC mac, final IItemHandler i, final int slotIdx, final int x, final int y) {
+    public SlotMolecularAssemblerPattern(final ContainerMolecularAssembler mac, final IItemHandler i, final int slotIdx,
+            final int x, final int y) {
         super(i, slotIdx, x, y);
         this.mac = mac;
     }

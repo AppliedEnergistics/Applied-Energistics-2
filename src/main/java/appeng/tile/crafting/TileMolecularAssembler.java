@@ -79,6 +79,9 @@ import appeng.util.item.AEItemStack;
 
 public class TileMolecularAssembler extends AENetworkInvTile
         implements IUpgradeableHost, IConfigManagerHost, IGridTickable, ICraftingMachine, IPowerChannelState {
+
+    public static final String INVENTORY_MAIN = "molecular_assembler";
+
     private final CraftingInventory craftingInv;
     private final AppEngInternalInventory gridInv = new AppEngInternalInventory(this, 9 + 1, 1);
     private final AppEngInternalInventory patternInv = new AppEngInternalInventory(this, 1, 1);
@@ -284,7 +287,7 @@ public class TileMolecularAssembler extends AENetworkInvTile
             return this.upgrades;
         }
 
-        if (name.equals("mac")) {
+        if (name.equals("molecular_assembler")) {
             return this.internalInv;
         }
 

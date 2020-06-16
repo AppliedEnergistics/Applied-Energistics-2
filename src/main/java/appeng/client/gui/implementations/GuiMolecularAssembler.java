@@ -26,14 +26,15 @@ import appeng.api.config.Settings;
 import appeng.client.gui.widgets.GuiProgressBar;
 import appeng.client.gui.widgets.GuiProgressBar.Direction;
 import appeng.client.gui.widgets.GuiServerSettingToggleButton;
-import appeng.container.implementations.ContainerMAC;
+import appeng.container.implementations.ContainerMolecularAssembler;
 import appeng.core.localization.GuiText;
 
-public class GuiMAC extends GuiUpgradeable<ContainerMAC> {
+public class GuiMolecularAssembler extends GuiUpgradeable<ContainerMolecularAssembler> {
 
     private GuiProgressBar pb;
 
-    public GuiMAC(ContainerMAC container, PlayerInventory playerInventory, ITextComponent title) {
+    public GuiMolecularAssembler(ContainerMolecularAssembler container, PlayerInventory playerInventory,
+            ITextComponent title) {
         super(container, playerInventory, title);
         this.ySize = 197;
     }
@@ -42,7 +43,8 @@ public class GuiMAC extends GuiUpgradeable<ContainerMAC> {
     public void init() {
         super.init();
 
-        this.pb = new GuiProgressBar(this.container, "guis/mac.png", 139, 36, 148, 201, 6, 18, Direction.VERTICAL);
+        this.pb = new GuiProgressBar(this.container, "guis/molecular_assembler.png", 139, 36, 148, 201, 6, 18,
+                Direction.VERTICAL);
         this.addButton(this.pb);
     }
 
@@ -68,7 +70,7 @@ public class GuiMAC extends GuiUpgradeable<ContainerMAC> {
 
     @Override
     protected String getBackground() {
-        return "guis/mac.png";
+        return "guis/molecular_assembler.png";
     }
 
     @Override
