@@ -25,8 +25,6 @@ import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
 import appeng.bootstrap.FeatureFactory;
 import appeng.api.features.AEFeature;
-import appeng.client.render.crafting.EncodedPatternRenderer;
-import appeng.client.render.crafting.ItemEncodedPatternRendering;
 import appeng.core.CreativeTabFacade;
 import appeng.core.features.ActivityState;
 import appeng.core.features.ColoredItemDefinition;
@@ -288,10 +286,8 @@ public final class ApiItems implements IItems
 
 		// rv1
 		this.encodedPattern = registry.item( "encoded_pattern", ItemEncodedPattern::new )
-				.props(props -> props.maxStackSize(1)
-					.setISTER(() -> EncodedPatternRenderer::new))
+				.props(props -> props.maxStackSize(1))
 				.features( AEFeature.PATTERNS )
-				.rendering( new ItemEncodedPatternRendering() )
 				.build();
 
 		this.coloredPaintBall = createPaintBalls(registry, "_paint_ball", false);
