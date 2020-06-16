@@ -2,23 +2,18 @@ package appeng.client.render.tesr;
 
 import appeng.block.storage.DriveSlotState;
 import appeng.client.render.FacingToRotation;
-import appeng.client.render.cablebus.CubeBuilder;
 import appeng.tile.storage.TileDrive;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import javafx.scene.DepthTest;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import org.lwjgl.system.MathUtil;
 
 import java.util.EnumMap;
-import java.util.EnumSet;
 
 /**
  * Renders the drive cell status indicators.
