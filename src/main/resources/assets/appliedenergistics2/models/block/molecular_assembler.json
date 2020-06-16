@@ -1,5 +1,6 @@
 {
   "parent": "block/block",
+  "ambientocclusion": false,
   "textures": {
     "particle": "appliedenergistics2:block/molecular_assembler",
     "outside": "appliedenergistics2:block/molecular_assembler"
