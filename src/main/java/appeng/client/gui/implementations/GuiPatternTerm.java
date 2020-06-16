@@ -20,9 +20,7 @@ package appeng.client.gui.implementations;
 
 
 import appeng.api.config.ActionItems;
-import appeng.api.config.Settings;
 import appeng.client.gui.widgets.GuiActionButton;
-import appeng.client.gui.widgets.GuiSettingToggleButton;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.container.implementations.ContainerPatternTerm;
 import appeng.container.slot.AppEngSlot;
@@ -151,4 +149,5 @@ public class GuiPatternTerm extends GuiMEMonitorable<ContainerPatternTerm>
 
 		s.yPos = s.getY() + this.ySize - 78 - offsetPlayerSide;
 	}
+
 }

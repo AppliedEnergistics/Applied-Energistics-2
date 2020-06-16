@@ -147,20 +147,20 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	{
 		if( !this.isCraftingMode() )
 		{
-			// FIXME this.craftSlot.xPos = -9000;
+			this.craftSlot.xPos = -9000;
 
 			for( int y = 0; y < 3; y++ )
 			{
-				// FIXME this.outputSlots[y].xPos = this.outputSlots[y].getX();
+				this.outputSlots[y].xPos = this.outputSlots[y].getX();
 			}
 		}
 		else
 		{
-			// FIXME this.craftSlot.xPos = this.craftSlot.getX();
+			this.craftSlot.xPos = this.craftSlot.getX();
 
 			for( int y = 0; y < 3; y++ )
 			{
-				// FIXME this.outputSlots[y].xPos = -9000;
+				this.outputSlots[y].xPos = -9000;
 			}
 		}
 	}
