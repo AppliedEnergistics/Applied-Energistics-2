@@ -1,4 +1,4 @@
-[![Build master](https://img.shields.io/github/workflow/status/AppliedEnergistics/Applied-Energistics-2/Build master?style=flat-square)](https://github.com/AppliedEnergistics/Applied-Energistics-2/actions?query=workflow%3A%22Build+master%22)
+[![Build master](https://img.shields.io/github/workflow/status/AppliedEnergistics/Applied-Energistics-2/Build%20master?style=flat-square)](https://github.com/AppliedEnergistics/Applied-Energistics-2/actions?query=workflow%3A%22Build+master%22)
 [![Latest Release](https://img.shields.io/github/v/release/AppliedEnergistics/Applied-Energistics-2?label=Latest%20Release&style=flat-square)](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases)
 
 # Applied Energistics 2
