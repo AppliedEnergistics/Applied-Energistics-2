@@ -12,12 +12,14 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
 import appeng.api.definitions.IComparableDefinition;
 import appeng.api.features.InscriberProcessType;
 import appeng.core.AppEng;
+import appeng.items.materials.ItemMaterial;
 import appeng.recipes.handlers.InscriberRecipe;
 
 /**
@@ -76,22 +78,21 @@ public final class InscriberRecipes {
 
         if (!plateA.isEmpty()) {
             final CompoundNBT tag = plateA.getOrCreateTag();
-            name += tag.getString("InscribeName");
+            name += tag.getString(ItemMaterial.TAG_INSCRIBE_NAME);
         }
 
         if (!plateB.isEmpty()) {
             final CompoundNBT tag = plateB.getOrCreateTag();
-            name += " " + tag.getString("InscribeName");
+            name += " " + tag.getString(ItemMaterial.TAG_INSCRIBE_NAME);
         }
 
         final Ingredient startingItem = Ingredient.fromStacks(input.copy());
         final ItemStack renamedItem = input.copy();
 
-        final CompoundNBT display = renamedItem.getOrCreateChildTag("display");
         if (!name.isEmpty()) {
-            display.putString("Name", name);
+            renamedItem.setDisplayName(new StringTextComponent(name));
         } else {
-            display.remove("Name");
+            renamedItem.setDisplayName(null);
         }
 
         final InscriberProcessType type = InscriberProcessType.INSCRIBE;
