@@ -7,18 +7,10 @@ import java.util.function.Consumer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
 import appeng.api.features.AEFeature;
-import appeng.bootstrap.components.IClientSetupComponent;
 import appeng.bootstrap.components.IEntityRegistrationComponent;
 import appeng.core.AppEng;
-import appeng.entity.EntityFloatingItem;
-import appeng.entity.EntityTinyTNTPrimed;
-import appeng.entity.RenderFloatingItem;
-import appeng.entity.RenderTinyTNTPrimed;
 
 /**
  * Helper to register a custom Entity with Minecraft.

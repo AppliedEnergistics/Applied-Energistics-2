@@ -18,35 +18,28 @@
 
 package appeng.core.sync.packets;
 
-import java.io.IOException;
-
+import appeng.api.storage.data.IAEItemStack;
+import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.network.INetworkInfo;
+import appeng.tile.crafting.AssemblerAnimationStatus;
+import appeng.tile.crafting.TileMolecularAssembler;
+import appeng.util.item.AEItemStack;
 import io.netty.buffer.Unpooled;
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.api.storage.data.IAEItemStack;
-import appeng.client.EffectType;
-import appeng.core.AppEng;
-import appeng.core.sync.AppEngPacket;
-import appeng.core.sync.network.INetworkInfo;
-import appeng.util.item.AEItemStack;
-
 public class PacketAssemblerAnimation extends AppEngPacket {
 
-    private final int x;
-    private final int y;
-    private final int z;
+    private final BlockPos pos;
     public final byte rate;
     public final IAEItemStack is;
 
     public PacketAssemblerAnimation(final PacketBuffer stream) {
-        this.x = stream.readInt();
-        this.y = stream.readInt();
-        this.z = stream.readInt();
+        this.pos = stream.readBlockPos();
         this.rate = stream.readByte();
         this.is = AEItemStack.fromPacket(stream);
     }
@@ -57,9 +50,7 @@ public class PacketAssemblerAnimation extends AppEngPacket {
         final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
-        data.writeInt(this.x = pos.getX());
-        data.writeInt(this.y = pos.getY());
-        data.writeInt(this.z = pos.getZ());
+        data.writeBlockPos(this.pos = pos);
         data.writeByte(this.rate = rate);
         is.writeToPacket(data);
         this.is = is;
@@ -70,11 +61,10 @@ public class PacketAssemblerAnimation extends AppEngPacket {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
-        final double d0 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
-        final double d1 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
-        final double d2 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
-
-        AppEng.proxy.spawnEffect(EffectType.Assembler, player.getEntityWorld(), this.x + d0, this.y + d1, this.z + d2,
-                this);
+        TileEntity te = player.getEntityWorld().getTileEntity(pos);
+        if (te instanceof TileMolecularAssembler) {
+            TileMolecularAssembler ma = (TileMolecularAssembler) te;
+            ma.setAnimationStatus(new AssemblerAnimationStatus(rate, is.asItemStackRepresentation()));
+        }
     }
 }

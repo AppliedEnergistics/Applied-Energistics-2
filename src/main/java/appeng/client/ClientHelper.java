@@ -42,7 +42,6 @@ import appeng.client.render.effects.*;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketAssemblerAnimation;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.helpers.IMouseWheelItem;
 import appeng.server.ServerHelper;
@@ -94,14 +93,8 @@ public class ClientHelper extends ServerHelper {
             final double posZ, final Object o) {
         if (AEConfig.instance().isEnableEffects()) {
             switch (effect) {
-                case Assembler:
-                    this.spawnAssembler(world, posX, posY, posZ, o);
-                    return;
                 case Vibrant:
                     this.spawnVibrant(world, posX, posY, posZ);
-                    return;
-                case Crafting:
-                    this.spawnCrafting(world, posX, posY, posZ);
                     return;
                 case Energy:
                     this.spawnEnergy(world, posX, posY, posZ);
@@ -183,18 +176,6 @@ public class ClientHelper extends ServerHelper {
 //	FIXME	}
     }
 
-    // FIXME: double check all of these particle spawns, also move any of these that
-    // are triggered as part of a packet to the vanilla way of spawning particles
-    // from the server directly
-    private void spawnAssembler(final World world, final double posX, final double posY, final double posZ,
-            final Object o) {
-        final PacketAssemblerAnimation paa = (PacketAssemblerAnimation) o;
-
-        final AssemblerFX fx = new AssemblerFX(world, posX, posY, posZ, 0.0D, 0.0D, 0.0D, paa.rate,
-                paa.is.asItemStackRepresentation());
-        Minecraft.getInstance().particles.addEffect(fx);
-    }
-
     private void spawnVibrant(final World w, final double x, final double y, final double z) {
         if (AppEng.proxy.shouldAddParticles(Platform.getRandom())) {
             final double d0 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
@@ -203,15 +184,6 @@ public class ClientHelper extends ServerHelper {
 
             Minecraft.getInstance().particles.addParticle(VibrantFX.TYPE, x + d0, y + d1, z + d2, 0.0D, 0.0D, 0.0D);
         }
-    }
-
-    private void spawnCrafting(final World w, final double posX, final double posY, final double posZ) {
-        final float x = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
-        final float y = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
-        final float z = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
-
-        Minecraft.getInstance().particles.addParticle(CraftingFx.TYPE, posX + x, posY + y, posZ + z, -x * 0.2, -y * 0.2,
-                -z * 0.2);
     }
 
     private void spawnEnergy(final World w, final double posX, final double posY, final double posZ) {

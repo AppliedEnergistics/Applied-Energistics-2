@@ -18,6 +18,7 @@
 
 package appeng.core;
 
+import appeng.tile.crafting.MolecularAssemblerRenderer;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -90,7 +91,6 @@ import appeng.core.features.registries.cell.CreativeCellHandler;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.core.stats.AeStats;
 import appeng.core.stats.PartItemPredicate;
-import appeng.entity.EntityFloatingItem;
 import appeng.fluids.client.gui.*;
 import appeng.fluids.container.*;
 import appeng.fluids.registries.BasicFluidCellGuiHandler;
@@ -173,6 +173,7 @@ final class Registration {
         ModelLoader.addSpecialModel(BiometricCardModel.MODEL_BASE);
         ModelLoader.addSpecialModel(MemoryCardModel.MODEL_BASE);
         DriveModel.DEPENDENCIES.forEach(ModelLoader::addSpecialModel);
+        ModelLoader.addSpecialModel(MolecularAssemblerRenderer.LIGHTS_MODEL);
 
         PartModels partModels = (PartModels) Api.INSTANCE.registries().partModels();
         partModels.getModels().forEach(ModelLoader::addSpecialModel);
@@ -357,11 +358,6 @@ final class Registration {
     }
 
     public void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
-        // Special case only used on the client-side
-        EntityFloatingItem.TYPE = EntityType.Builder
-                .<EntityFloatingItem>create(EntityFloatingItem::new, EntityClassification.MISC)
-                .build("appliedenergistics2:floating_item");
-
         final IForgeRegistry<EntityType<?>> registry = event.getRegistry();
         // TODO: Do not use the internal API
         final ApiDefinitions definitions = Api.INSTANCE.definitions();
@@ -372,12 +368,15 @@ final class Registration {
     public void registerParticleTypes(RegistryEvent.Register<ParticleType<?>> event) {
         final IForgeRegistry<ParticleType<?>> registry = event.getRegistry();
         registry.register(ChargedOreFX.TYPE);
-        registry.register(VibrantFX.TYPE);
+        registry.register(CraftingFx.TYPE);
+        registry.register(EnergyFx.TYPE);
+        registry.register(LightningArcFX.TYPE);
         registry.register(LightningFX.TYPE);
+        registry.register(MatterCannonFX.TYPE);
+        registry.register(VibrantFX.TYPE);
     }
 
     public void registerParticleFactories(ParticleFactoryRegisterEvent event) {
-        Minecraft.getInstance().particles.registerFactory(AssemblerFX.TYPE, AssemblerFX.Factory::new);
         Minecraft.getInstance().particles.registerFactory(ChargedOreFX.TYPE, ChargedOreFX.Factory::new);
         Minecraft.getInstance().particles.registerFactory(CraftingFx.TYPE, CraftingFx.Factory::new);
         Minecraft.getInstance().particles.registerFactory(EnergyFx.TYPE, EnergyFx.Factory::new);

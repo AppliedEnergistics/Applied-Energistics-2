@@ -22,6 +22,7 @@ import static appeng.block.AEBaseBlock.defaultProps;
 import static appeng.block.crafting.AbstractCraftingUnitBlock.CraftingUnitType;
 import static appeng.decorative.solid.BlockSkyStone.SkystoneType;
 
+import appeng.tile.crafting.*;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.RenderType;
@@ -69,10 +70,6 @@ import appeng.entity.EntityTinyTNTPrimed;
 import appeng.fluids.block.BlockFluidInterface;
 import appeng.fluids.tile.TileFluidInterface;
 import appeng.hooks.DispenserBehaviorTinyTNT;
-import appeng.tile.crafting.TileCraftingMonitorTile;
-import appeng.tile.crafting.TileCraftingStorageTile;
-import appeng.tile.crafting.TileCraftingTile;
-import appeng.tile.crafting.TileMolecularAssembler;
 import appeng.tile.grindstone.TileCrank;
 import appeng.tile.grindstone.TileGrinder;
 import appeng.tile.misc.*;
@@ -459,18 +456,18 @@ public final class ApiBlocks implements IBlocks {
                     @OnlyIn(Dist.CLIENT)
                     @Override
                     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
-                        // FIXME: This is an old comment, check if it still applies
-                        /**
-                         * NOTE: This is only used to determine how to render an item being held in
-                         * hand. For determining block rendering, the method below is used
-                         * (canRenderInLayer).
-                         */
                         rendering.renderType(RenderType.getCutout());
-                        rendering.renderType(rt -> rt == RenderType.getCutout() || rt == RenderType.getTranslucent());
                     }
                 })
                 .tileEntity(registry
                         .tileEntity("molecular_assembler", TileMolecularAssembler.class, TileMolecularAssembler::new)
+                        .rendering(new TileEntityRenderingCustomizer<TileMolecularAssembler>() {
+                            @Override
+                            @OnlyIn(Dist.CLIENT)
+                            public void customize(TileEntityRendering<TileMolecularAssembler> rendering) {
+                                rendering.tileEntityRenderer(MolecularAssemblerRenderer::new);
+                            }
+                        })
                         .build())
                 .build();
 

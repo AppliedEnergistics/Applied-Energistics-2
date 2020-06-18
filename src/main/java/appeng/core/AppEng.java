@@ -182,7 +182,6 @@ public final class AppEng {
         ((ClientHelper) proxy).clientInit();
 
         RenderingRegistry.registerEntityRenderingHandler(EntityTinyTNTPrimed.TYPE, RenderTinyTNTPrimed::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityFloatingItem.TYPE, RenderFloatingItem::new);
         RenderingRegistry.registerEntityRenderingHandler(EntitySingularity.TYPE,
                 m -> new ItemRenderer(m, Minecraft.getInstance().getItemRenderer()));
         RenderingRegistry.registerEntityRenderingHandler(EntityGrowingCrystal.TYPE,

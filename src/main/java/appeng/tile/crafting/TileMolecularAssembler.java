@@ -31,6 +31,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.hooks.BasicEventHooks;
 import net.minecraftforge.items.IItemHandler;
 
@@ -77,6 +79,8 @@ import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.filter.IAEItemFilter;
 import appeng.util.item.AEItemStack;
 
+import javax.annotation.Nullable;
+
 public class TileMolecularAssembler extends AENetworkInvTile
         implements IUpgradeableHost, IConfigManagerHost, IGridTickable, ICraftingMachine, IPowerChannelState {
 
@@ -97,6 +101,9 @@ public class TileMolecularAssembler extends AENetworkInvTile
     private boolean isAwake = false;
     private boolean forcePlan = false;
     private boolean reboot = true;
+
+    @OnlyIn(Dist.CLIENT)
+    private AssemblerAnimationStatus animationStatus;
 
     public TileMolecularAssembler(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
@@ -417,11 +424,13 @@ public class TileMolecularAssembler extends AENetworkInvTile
 
                 this.ejectHeldItems();
 
-                final TargetPoint where = new TargetPoint(this.pos.getX(), this.pos.getY(), this.pos.getZ(), 32,
-                        this.world.getDimension().getType());
                 final IAEItemStack item = AEItemStack.fromItemStack(output);
-                NetworkHandler.instance().sendToAllAround(new PacketAssemblerAnimation(this.pos, (byte) speed, item),
-                        where);
+                if (item != null) {
+                    final TargetPoint where = new TargetPoint(this.pos.getX(), this.pos.getY(), this.pos.getZ(), 32,
+                            this.world.getDimension().getType());
+                    NetworkHandler.instance().sendToAllAround(new PacketAssemblerAnimation(this.pos, (byte) speed, item),
+                            where);
+                }
 
                 this.saveChanges();
                 this.updateSleepiness();
@@ -531,6 +540,17 @@ public class TileMolecularAssembler extends AENetworkInvTile
     @Override
     public boolean isActive() {
         return this.isPowered;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void setAnimationStatus(@Nullable AssemblerAnimationStatus status) {
+        this.animationStatus = status;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Nullable
+    public AssemblerAnimationStatus getAnimationStatus() {
+        return this.animationStatus;
     }
 
     private class CraftingGridFilter implements IAEItemFilter {
