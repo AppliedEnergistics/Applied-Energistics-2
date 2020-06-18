@@ -79,6 +79,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.worlddata.WorldData;
 import appeng.entity.*;
 import appeng.hooks.TickHandler;
+import appeng.integration.Integrations;
 import appeng.parts.PartPlacement;
 import appeng.parts.automation.PlaneModelLoader;
 import appeng.server.ServerHelper;
@@ -142,6 +143,8 @@ public final class AppEng {
         modEventBus.addListener(registration::registerParticleFactories);
         modEventBus.addListener(registration::registerTextures);
         modEventBus.addListener(registration::registerCommands);
+
+        modEventBus.addListener(Integrations::enqueueIMC);
 
         modEventBus.addListener(this::commonSetup);
 
