@@ -23,6 +23,9 @@ import java.util.*;
 import com.google.common.collect.HashMultimap;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import org.lwjgl.glfw.GLFW;
+
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -32,12 +35,14 @@ import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.api.AEApi;
 import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.client.ActionKey;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiScrollbar;
 import appeng.client.gui.widgets.MEGuiTextField;
 import appeng.client.me.ClientDCInternalInv;
 import appeng.client.me.SlotDisconnected;
 import appeng.container.implementations.ContainerInterfaceTerminal;
+import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
 
@@ -162,6 +167,35 @@ public class GuiInterfaceTerminal extends AEBaseGui<ContainerInterfaceTerminal> 
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
+
+        InputMappings.Input input = InputMappings.getInputByCode(keyCode, scanCode);
+
+        if (keyCode != GLFW.GLFW_KEY_ESCAPE) {
+            if (AppEng.proxy.isActionKey(ActionKey.TOGGLE_FOCUS, input)) {
+                this.searchField.setFocused2(!this.searchField.isFocused());
+                return true;
+            }
+
+            // Forward keypresses to the search field
+            if (this.searchField.isFocused()) {
+                if (keyCode == GLFW.GLFW_KEY_ENTER) {
+                    this.searchField.setFocused2(false);
+                    return true;
+                }
+
+                this.searchField.keyPressed(keyCode, scanCode, p_keyPressed_3_);
+
+                // We need to swallow key presses if the field is focused because typing 'e'
+                // would otherwise close the screen
+                return true;
+            }
+        }
+
+        return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);
     }
 
     public void postUpdate(final CompoundNBT in) {
