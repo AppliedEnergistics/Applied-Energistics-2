@@ -71,6 +71,11 @@ import appeng.util.inv.AdaptorItemHandler;
 
 public final class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgradeModule {
 
+    /**
+     * NBT property used by the name press to store the name to be inscribed.
+     */
+    public static final String TAG_INSCRIBE_NAME = "InscribeName";
+
     private static final int KILO_SCALAR = 1024;
 
     private final MaterialType materialType;
@@ -88,8 +93,8 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 
         if (materialType == MaterialType.NAME_PRESS) {
             final CompoundNBT c = stack.getOrCreateTag();
-            if (c.contains("InscriberName")) {
-                lines.add(new StringTextComponent(c.getString("InscribeName")));
+            if (c.contains(TAG_INSCRIBE_NAME)) {
+                lines.add(new StringTextComponent(c.getString(TAG_INSCRIBE_NAME)));
             }
         }
 
