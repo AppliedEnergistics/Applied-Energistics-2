@@ -26,6 +26,7 @@ spotless {
     }
     format 'json', {
         target 'src/*/resources/**/*.json'
+        targetExclude 'src/generated/resources/**'
         prettier().config(['parser': 'json'])
     }
 }
