@@ -18,7 +18,6 @@
 
 package appeng.client.gui.implementations;
 
-import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -41,7 +40,6 @@ import appeng.api.storage.data.IItemList;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiScrollbar;
 import appeng.container.implementations.ContainerCraftConfirm;
-import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
@@ -62,7 +60,6 @@ public class GuiCraftConfirm extends AEBaseGui<ContainerCraftConfirm> {
 
     private final List<IAEItemStack> visual = new ArrayList<>();
 
-    private Button cancel;
     private Button start;
     private Button selectCPU;
     private int tooltip = -1;
@@ -95,9 +92,8 @@ public class GuiCraftConfirm extends AEBaseGui<ContainerCraftConfirm> {
         this.selectCPU.active = false;
         this.addButton(this.selectCPU);
 
-        subGui.addBackButton(this::addButton, 6, this.ySize - 25, GuiText.Cancel.getLocal());
-
-        this.addButton(this.cancel);
+        addButton(new Button(this.guiLeft + 6, this.guiTop + this.ySize - 25, 50, 20, GuiText.Cancel.getLocal(),
+                btn -> subGui.goBack()));
     }
 
     @Override
