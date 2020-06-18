@@ -70,8 +70,8 @@ public class GuiCraftingStatus extends GuiCraftingCPU<ContainerCraftingStatus> {
 
         if (this.container.selectedCpu >= 0)// && status.selectedCpu < status.cpus.size() )
         {
-            if (this.container.myName.length() > 0) {
-                final String name = this.container.myName.substring(0, Math.min(20, this.container.myName.length()));
+            if (this.container.myName != null) {
+                final String name = this.container.myName.getStringTruncated(20);
                 btnTextText = GuiText.CPUs.getLocal() + ": " + name;
             } else {
                 btnTextText = GuiText.CPUs.getLocal() + ": #" + this.container.selectedCpu;

@@ -137,9 +137,8 @@ public class GuiCraftConfirm extends AEBaseGui<ContainerCraftConfirm> {
         String btnTextText = GuiText.CraftingCPU.getLocal() + ": " + GuiText.Automatic.getLocal();
         if (this.container.getSelectedCpu() >= 0)// && status.selectedCpu < status.cpus.size() )
         {
-            if (this.container.getName().length() > 0) {
-                final String name = this.container.getName().substring(0,
-                        Math.min(20, this.container.getName().length()));
+            if (this.container.getName() != null) {
+                final String name = this.container.getName().getStringTruncated(20);
                 btnTextText = GuiText.CraftingCPU.getLocal() + ": " + name;
             } else {
                 btnTextText = GuiText.CraftingCPU.getLocal() + ": #" + this.container.getSelectedCpu();

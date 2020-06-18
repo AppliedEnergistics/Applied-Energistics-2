@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.concurrent.Future;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -33,6 +34,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
@@ -99,7 +101,7 @@ public class ContainerCraftConfirm extends AEBaseContainer {
     @GuiSync(6)
     public boolean noCPU = true;
     @GuiSync(7)
-    public String myName = "";
+    public ITextComponent myName;
 
     public ContainerCraftConfirm(int id, PlayerInventory ip, ITerminalHost te) {
         super(TYPE, id, ip, te);
@@ -121,11 +123,12 @@ public class ContainerCraftConfirm extends AEBaseContainer {
         if (this.getSelectedCpu() == -1) {
             this.setCpuAvailableBytes(0);
             this.setCpuCoProcessors(0);
-            this.setName("");
+            this.setName(null);
         } else {
-            this.setName(this.cpus.get(this.getSelectedCpu()).getName().getString());
-            this.setCpuAvailableBytes(this.cpus.get(this.getSelectedCpu()).getSize());
-            this.setCpuCoProcessors(this.cpus.get(this.getSelectedCpu()).getProcessors());
+            CraftingCPURecord cpu = this.cpus.get(this.getSelectedCpu());
+            this.setName(cpu.getName());
+            this.setCpuAvailableBytes(cpu.getSize());
+            this.setCpuCoProcessors(cpu.getProcessors());
         }
     }
 
@@ -145,6 +148,7 @@ public class ContainerCraftConfirm extends AEBaseContainer {
             for (final CraftingCPURecord ccr : this.cpus) {
                 if (ccr.getCpu() == c) {
                     found = true;
+                    break;
                 }
             }
 
@@ -280,11 +284,12 @@ public class ContainerCraftConfirm extends AEBaseContainer {
             this.setSelectedCpu(-1);
             this.setCpuAvailableBytes(0);
             this.setCpuCoProcessors(0);
-            this.setName("");
+            this.setName(null);
         } else if (this.getSelectedCpu() != -1) {
-            this.setName(this.cpus.get(this.getSelectedCpu()).getName().getString());
-            this.setCpuAvailableBytes(this.cpus.get(this.getSelectedCpu()).getSize());
-            this.setCpuCoProcessors(this.cpus.get(this.getSelectedCpu()).getProcessors());
+            CraftingCPURecord cpu = this.cpus.get(this.getSelectedCpu());
+            this.setName(cpu.getName());
+            this.setCpuAvailableBytes(cpu.getSize());
+            this.setCpuCoProcessors(cpu.getProcessors());
         }
     }
 
@@ -386,11 +391,11 @@ public class ContainerCraftConfirm extends AEBaseContainer {
         this.selectedCpu = selectedCpu;
     }
 
-    public String getName() {
+    public ITextComponent getName() {
         return this.myName;
     }
 
-    private void setName(@Nonnull final String myName) {
+    private void setName(@Nullable final ITextComponent myName) {
         this.myName = myName;
     }
 

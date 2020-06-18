@@ -28,6 +28,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.crafting.ICraftingCPU;
@@ -58,7 +59,7 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU {
     @GuiSync(6)
     public boolean noCPU = true;
     @GuiSync(7)
-    public String myName = "";
+    public ITextComponent myName;
 
     public ContainerCraftingStatus(int id, final PlayerInventory ip, final ITerminalHost te) {
         super(TYPE, id, ip, te);
@@ -117,9 +118,9 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU {
 
         if (this.selectedCpu >= this.cpus.size()) {
             this.selectedCpu = -1;
-            this.myName = "";
+            this.myName = null;
         } else if (this.selectedCpu != -1) {
-            this.myName = this.cpus.get(this.selectedCpu).getName().getString();
+            this.myName = this.cpus.get(this.selectedCpu).getName();
         }
 
         if (this.selectedCpu == -1 && this.cpus.size() > 0) {
@@ -153,10 +154,10 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU {
         }
 
         if (this.selectedCpu == -1) {
-            this.myName = "";
+            this.myName = null;
             this.setCPU(null);
         } else {
-            this.myName = this.cpus.get(this.selectedCpu).getName().getString();
+            this.myName = this.cpus.get(this.selectedCpu).getName();
             this.setCPU(this.cpus.get(this.selectedCpu).getCpu());
         }
     }

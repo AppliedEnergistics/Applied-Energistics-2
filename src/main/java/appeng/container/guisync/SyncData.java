@@ -18,12 +18,14 @@
 
 package appeng.container.guisync;
 
-import java.io.IOException;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
-import java.util.EnumSet;
+import java.util.Objects;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.util.text.ITextComponent;
 
 import appeng.container.AEBaseContainer;
 import appeng.core.AELog;
@@ -31,18 +33,33 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketProgressBar;
 import appeng.core.sync.packets.PacketValueConfig;
 
+/**
+ * This class is responsible for synchronizing Container-fields from server to
+ * client.
+ */
 public class SyncData {
 
     private final AEBaseContainer source;
     private final Field field;
+    private final Class<?> fieldType;
     private final int channel;
+    private final MethodHandle getter;
+    private final MethodHandle setter;
     private Object clientVersion;
 
     public SyncData(final AEBaseContainer container, final Field field, final GuiSync annotation) {
         this.clientVersion = null;
         this.source = container;
-        this.field = field;
         this.channel = annotation.value();
+        this.field = field;
+        this.fieldType = field.getType();
+        try {
+            this.getter = MethodHandles.publicLookup().unreflectGetter(field);
+            this.setter = MethodHandles.publicLookup().unreflectSetter(field);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(
+                    "Failed to get accessor for field " + field + ". Did you forget to make it public?");
+        }
     }
 
     public int getChannel() {
@@ -50,96 +67,119 @@ public class SyncData {
     }
 
     public void tick(final IContainerListener c) {
+
         try {
-            final Object val = this.field.get(this.source);
-            if (val != null && this.clientVersion == null) {
-                this.send(c, val);
-            } else if (!val.equals(this.clientVersion)) {
+            final Object val = this.getter.invoke(source);
+            if (!Objects.equals(val, this.clientVersion)) {
                 this.send(c, val);
             }
-        } catch (final IllegalArgumentException | IllegalAccessException e) {
+        } catch (Throwable e) {
             AELog.debug(e);
         }
 
     }
 
-    private void send(final IContainerListener o, final Object val) {
-        if (val instanceof String) {
+    private void send(final IContainerListener o, Object val) {
+        if (fieldType.isAssignableFrom(ITextComponent.class)) {
+            if (o instanceof ServerPlayerEntity) {
+                String json = "";
+                if (val != null) {
+                    json = ITextComponent.Serializer.toJson((ITextComponent) val);
+                }
+                NetworkHandler.instance().sendTo(new PacketValueConfig("SyncDat." + this.channel, json),
+                        (ServerPlayerEntity) o);
+            }
+        }
+
+        // Types other than ITextComponent must be non-null
+        if (val == null) {
+            return;
+        }
+
+        if (fieldType.equals(String.class)) {
             if (o instanceof ServerPlayerEntity) {
                 NetworkHandler.instance().sendTo(new PacketValueConfig("SyncDat." + this.channel, (String) val),
                         (ServerPlayerEntity) o);
             }
-        } else if (this.field.getType().isEnum()) {
-            o.sendWindowProperty(this.source, this.channel, ((Enum) val).ordinal());
-        } else if (val instanceof Long || val.getClass() == long.class) {
+        } else if (this.fieldType.isEnum()) {
+            o.sendWindowProperty(this.source, this.channel, ((Enum<?>) val).ordinal());
+        } else if (val instanceof Long) {
             if (o instanceof ServerPlayerEntity) {
                 NetworkHandler.instance().sendTo(new PacketProgressBar(this.channel, (Long) val),
                         (ServerPlayerEntity) o);
             }
-        } else if (val instanceof Boolean || val.getClass() == boolean.class) {
+        } else if (fieldType.equals(Boolean.class) || fieldType.equals(boolean.class)) {
             o.sendWindowProperty(this.source, this.channel, ((Boolean) val) ? 1 : 0);
-        } else {
+        } else if (fieldType.equals(Integer.class) || fieldType.equals(int.class)) {
             o.sendWindowProperty(this.source, this.channel, (Integer) val);
+        } else {
+            throw new IllegalStateException("Unknown field type: " + fieldType);
         }
 
         this.clientVersion = val;
     }
 
-    public void update(final Object val) {
+    public void update(Object val) {
         try {
-            final Object oldValue = this.field.get(this.source);
+            final Object oldValue = this.getter.invoke(source);
             if (val instanceof String) {
-                this.updateString(oldValue, (String) val);
+                if (this.fieldType.isAssignableFrom(ITextComponent.class)) {
+                    String json = (String) val;
+                    ITextComponent text = null;
+                    if (!json.isEmpty()) {
+                        text = ITextComponent.Serializer.fromJson((String) val);
+                    }
+                    this.updateTextComponent(text);
+                } else {
+                    this.updateString((String) val);
+                }
             } else {
                 this.updateValue(oldValue, (Long) val);
             }
-        } catch (final IllegalArgumentException e) {
-            AELog.debug(e);
-        } catch (final IllegalAccessException e) {
+        } catch (Throwable e) {
             AELog.debug(e);
         }
     }
 
-    private void updateString(final Object oldValue, final String val) {
+    private void updateString(final String val) {
         try {
-            this.field.set(this.source, val);
-        } catch (final IllegalArgumentException e) {
+            this.setter.invoke(source, val);
+        } catch (Throwable e) {
             AELog.debug(e);
-        } catch (final IllegalAccessException e) {
+        }
+    }
+
+    private void updateTextComponent(final ITextComponent val) {
+        try {
+            this.setter.invoke(source, val);
+        } catch (Throwable e) {
             AELog.debug(e);
         }
     }
 
     private void updateValue(final Object oldValue, final long val) {
         try {
-            if (this.field.getType().isEnum()) {
-                final EnumSet<? extends Enum> valList = EnumSet.allOf((Class<? extends Enum>) this.field.getType());
-                for (final Enum e : valList) {
-                    if (e.ordinal() == val) {
-                        this.field.set(this.source, e);
-                        break;
-                    }
-                }
+            if (this.fieldType.isEnum()) {
+                Object e = this.fieldType.getEnumConstants()[(int) val];
+                this.setter.invoke(source, e);
             } else {
-                if (this.field.getType().equals(int.class)) {
-                    this.field.set(this.source, (int) val);
-                } else if (this.field.getType().equals(long.class)) {
-                    this.field.set(this.source, val);
-                } else if (this.field.getType().equals(boolean.class)) {
-                    this.field.set(this.source, val == 1);
-                } else if (this.field.getType().equals(Integer.class)) {
-                    this.field.set(this.source, (int) val);
-                } else if (this.field.getType().equals(Long.class)) {
-                    this.field.set(this.source, val);
-                } else if (this.field.getType().equals(Boolean.class)) {
-                    this.field.set(this.source, val == 1);
+                if (this.fieldType.equals(int.class)) {
+                    this.setter.invoke(source, (int) val);
+                } else if (this.fieldType.equals(long.class)) {
+                    this.setter.invoke(source, val);
+                } else if (this.fieldType.equals(boolean.class)) {
+                    this.setter.invoke(source, val == 1);
+                } else if (this.fieldType.equals(Integer.class)) {
+                    this.setter.invoke(source, (int) val);
+                } else if (this.fieldType.equals(Long.class)) {
+                    this.setter.invoke(source, val);
+                } else if (this.fieldType.equals(Boolean.class)) {
+                    this.setter.invoke(source, val == 1);
                 }
             }
 
-            this.source.onUpdate(this.field.getName(), oldValue, this.field.get(this.source));
-        } catch (final IllegalArgumentException e) {
-            AELog.debug(e);
-        } catch (final IllegalAccessException e) {
+            this.source.onUpdate(this.field.getName(), oldValue, this.getter.invoke(source));
+        } catch (Throwable e) {
             AELog.debug(e);
         }
     }

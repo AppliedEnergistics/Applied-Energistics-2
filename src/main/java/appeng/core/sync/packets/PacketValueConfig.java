@@ -61,7 +61,6 @@ public class PacketValueConfig extends AppEngPacket {
     public PacketValueConfig(final PacketBuffer stream) {
         this.Name = stream.readString();
         this.Value = stream.readString();
-        // dis.close();
     }
 
     // api
@@ -202,7 +201,7 @@ public class PacketValueConfig extends AppEngPacket {
         } else if (this.Name.equals("CraftingStatus") && this.Value.equals("Clear")) {
             final Screen gs = Minecraft.getInstance().currentScreen;
             if (gs instanceof GuiCraftingCPU) {
-                ((GuiCraftingCPU) gs).clearItems();
+                ((GuiCraftingCPU<?>) gs).clearItems();
             }
         } else if (c instanceof IConfigurableObject) {
             final IConfigManager cm = ((IConfigurableObject) c).getConfigManager();
