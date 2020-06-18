@@ -239,7 +239,10 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay
         Direction facing = this.getSide().getFacing();
 
         TesrRenderHelper.rotateToFace(matrixStack, facing, this.getSpin());
-        TesrRenderHelper.renderItem2dWithAmount(matrixStack, buffers, ais, 0.8f, 0.17f, combinedLightIn,
+
+        matrixStack.translate(0, 0.05, 0.5);
+
+        TesrRenderHelper.renderItem2dWithAmount(matrixStack, buffers, ais, 0.4f, -0.23f, 15728880,
                 combinedOverlayIn);
 
         matrixStack.pop();

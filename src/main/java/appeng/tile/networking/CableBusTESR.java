@@ -18,6 +18,7 @@
 
 package appeng.tile.networking;
 
+import appeng.client.render.TesrRenderHelper;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.renderer.IRenderTypeBuffer;
