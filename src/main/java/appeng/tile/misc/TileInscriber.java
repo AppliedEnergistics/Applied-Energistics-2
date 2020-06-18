@@ -250,6 +250,10 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
             ItemStack input = this.sideItemHandler.getStackInSlot(0);
             ItemStack plateA = this.topItemHandler.getStackInSlot(0);
             ItemStack plateB = this.bottomItemHandler.getStackInSlot(0);
+            if (input.isEmpty()) {
+                return null; // No input to handle
+            }
+
             // If the player somehow managed to insert more than one item, we bail here
             if (input.getCount() > 1 || plateA.getCount() > 1 || plateB.getCount() > 1) {
                 return null;
