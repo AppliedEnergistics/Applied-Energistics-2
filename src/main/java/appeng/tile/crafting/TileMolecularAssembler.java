@@ -21,6 +21,8 @@ package appeng.tile.crafting;
 import java.io.IOException;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -78,8 +80,6 @@ import appeng.util.inv.WrapperChainedItemHandler;
 import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.filter.IAEItemFilter;
 import appeng.util.item.AEItemStack;
-
-import javax.annotation.Nullable;
 
 public class TileMolecularAssembler extends AENetworkInvTile
         implements IUpgradeableHost, IConfigManagerHost, IGridTickable, ICraftingMachine, IPowerChannelState {
@@ -428,8 +428,8 @@ public class TileMolecularAssembler extends AENetworkInvTile
                 if (item != null) {
                     final TargetPoint where = new TargetPoint(this.pos.getX(), this.pos.getY(), this.pos.getZ(), 32,
                             this.world.getDimension().getType());
-                    NetworkHandler.instance().sendToAllAround(new PacketAssemblerAnimation(this.pos, (byte) speed, item),
-                            where);
+                    NetworkHandler.instance()
+                            .sendToAllAround(new PacketAssemblerAnimation(this.pos, (byte) speed, item), where);
                 }
 
                 this.saveChanges();

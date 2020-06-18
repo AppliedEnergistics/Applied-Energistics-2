@@ -18,7 +18,6 @@
 
 package appeng.core;
 
-import appeng.tile.crafting.MolecularAssemblerRenderer;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -105,6 +104,7 @@ import appeng.server.AECommand;
 import appeng.spatial.StorageCellBiome;
 import appeng.spatial.StorageCellModDimension;
 import appeng.tile.AEBaseTile;
+import appeng.tile.crafting.MolecularAssemblerRenderer;
 import appeng.worldgen.MeteoriteWorldGen;
 
 final class Registration {

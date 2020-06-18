@@ -18,10 +18,13 @@
 
 package appeng.tile.crafting;
 
-import appeng.client.render.effects.CraftingFx;
-import appeng.core.AppEng;
+import java.util.Random;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.ItemRenderer;
@@ -41,18 +44,19 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import org.lwjgl.opengl.GL11;
 
-import java.util.Random;
+import appeng.client.render.effects.CraftingFx;
+import appeng.core.AppEng;
 
 /**
- * Renders the item currently being crafted by the molecular assembler, as well as
- * the light strip when it's powered.
+ * Renders the item currently being crafted by the molecular assembler, as well
+ * as the light strip when it's powered.
  */
 @OnlyIn(Dist.CLIENT)
 public class MolecularAssemblerRenderer extends TileEntityRenderer<TileMolecularAssembler> {
 
-    public static final ResourceLocation LIGHTS_MODEL = new ResourceLocation(AppEng.MOD_ID, "block/molecular_assembler_lights");
+    public static final ResourceLocation LIGHTS_MODEL = new ResourceLocation(AppEng.MOD_ID,
+            "block/molecular_assembler_lights");
 
     private static final RenderType MC_161917_RENDERTYPE_FIX = createRenderType();
 
@@ -63,7 +67,8 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<TileMolecular
     }
 
     @Override
-    public void render(TileMolecularAssembler molecularAssembler, float partialTicks, MatrixStack ms, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(TileMolecularAssembler molecularAssembler, float partialTicks, MatrixStack ms,
+            IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
 
         AssemblerAnimationStatus status = molecularAssembler.getAnimationStatus();
         if (status != null) {
@@ -84,21 +89,24 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<TileMolecular
         }
     }
 
-    private void renderPowerLight(MatrixStack ms, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
-        // Render the translucent light overlay here instead of in the block, because thanks to the following MC
-        // bug, our particles would otherwise not be visible (because the glass pane would also render as translucent,
+    private void renderPowerLight(MatrixStack ms, IRenderTypeBuffer bufferIn, int combinedLightIn,
+            int combinedOverlayIn) {
+        // Render the translucent light overlay here instead of in the block, because
+        // thanks to the following MC
+        // bug, our particles would otherwise not be visible (because the glass pane
+        // would also render as translucent,
         // even the fully transparent part)
         // https://bugs.mojang.com/browse/MC-161917
         Minecraft minecraft = Minecraft.getInstance();
         IBakedModel lightsModel = minecraft.getModelManager().getModel(LIGHTS_MODEL);
         IVertexBuilder buffer = bufferIn.getBuffer(MC_161917_RENDERTYPE_FIX);
 
-        minecraft.getBlockRendererDispatcher().getBlockModelRenderer().renderModel(
-                ms.getLast(), buffer, null, lightsModel, 1, 1, 1, combinedLightIn, combinedOverlayIn, EmptyModelData.INSTANCE
-        );
+        minecraft.getBlockRendererDispatcher().getBlockModelRenderer().renderModel(ms.getLast(), buffer, null,
+                lightsModel, 1, 1, 1, combinedLightIn, combinedOverlayIn, EmptyModelData.INSTANCE);
     }
 
-    private void renderStatus(TileMolecularAssembler molecularAssembler, MatrixStack ms, IRenderTypeBuffer bufferIn, int combinedLightIn, AssemblerAnimationStatus status) {
+    private void renderStatus(TileMolecularAssembler molecularAssembler, MatrixStack ms, IRenderTypeBuffer bufferIn,
+            int combinedLightIn, AssemblerAnimationStatus status) {
         double centerX = molecularAssembler.getPos().getX() + 0.5f;
         double centerY = molecularAssembler.getPos().getY() + 0.5f;
         double centerZ = molecularAssembler.getPos().getZ() + 0.5f;
@@ -110,11 +118,7 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<TileMolecular
 
             if (AppEng.proxy.shouldAddParticles(particleRandom)) {
                 for (int x = 0; x < (int) Math.ceil(status.getSpeed() / 5.0); x++) {
-                    minecraft.particles.addParticle(
-                            CraftingFx.TYPE,
-                            centerX, centerY, centerZ,
-                            0, 0, 0
-                    );
+                    minecraft.particles.addParticle(CraftingFx.TYPE, centerX, centerY, centerZ, 0, 0, 0);
                 }
             }
         }
@@ -131,24 +135,29 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<TileMolecular
             ms.translate(0, -0.2f, 0);
         }
 
-        itemRenderer.renderItem(is, ItemCameraTransforms.TransformType.GROUND, combinedLightIn, OverlayTexture.NO_OVERLAY,
-                ms, bufferIn);
+        itemRenderer.renderItem(is, ItemCameraTransforms.TransformType.GROUND, combinedLightIn,
+                OverlayTexture.NO_OVERLAY, ms, bufferIn);
         ms.pop();
     }
 
     /**
-     * See above for when this can be removed.
-     * It creates a RenderType that is equivalent to {@link RenderType#getTranslucent()}, but enables
-     * alpha testing. This prevents the fully transparents parts of the rendered block model from
+     * See above for when this can be removed. It creates a RenderType that is
+     * equivalent to {@link RenderType#getTranslucent()}, but enables alpha testing.
+     * This prevents the fully transparents parts of the rendered block model from
      * occluding our particles.
      */
     private static RenderType createRenderType() {
-        RenderState.TransparencyState TRANSLUCENT_TRANSPARENCY = ObfuscationReflectionHelper.getPrivateValue(RenderState.class, null, "field_228515_g_");
-        RenderState.TextureState mipmapBlockAtlasTexture = new RenderState.TextureState(AtlasTexture.LOCATION_BLOCKS_TEXTURE, false, true);
+        RenderState.TransparencyState TRANSLUCENT_TRANSPARENCY = ObfuscationReflectionHelper
+                .getPrivateValue(RenderState.class, null, "field_228515_g_");
+        RenderState.TextureState mipmapBlockAtlasTexture = new RenderState.TextureState(
+                AtlasTexture.LOCATION_BLOCKS_TEXTURE, false, true);
         RenderState.LightmapState disableLightmap = new RenderState.LightmapState(false);
-        RenderType.State glState = RenderType.State.getBuilder().texture(mipmapBlockAtlasTexture).transparency(TRANSLUCENT_TRANSPARENCY).alpha(new RenderState.AlphaState(0.05F)).lightmap(disableLightmap).build(true);
+        RenderType.State glState = RenderType.State.getBuilder().texture(mipmapBlockAtlasTexture)
+                .transparency(TRANSLUCENT_TRANSPARENCY).alpha(new RenderState.AlphaState(0.05F))
+                .lightmap(disableLightmap).build(true);
 
-        return RenderType.makeType("ae2_translucent_alphatest", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, glState);
+        return RenderType.makeType("ae2_translucent_alphatest", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP,
+                GL11.GL_QUADS, 256, glState);
     }
 
 }

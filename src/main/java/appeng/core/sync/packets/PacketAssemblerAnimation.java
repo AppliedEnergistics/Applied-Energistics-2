@@ -18,19 +18,21 @@
 
 package appeng.core.sync.packets;
 
-import appeng.api.storage.data.IAEItemStack;
-import appeng.core.sync.AppEngPacket;
-import appeng.core.sync.network.INetworkInfo;
-import appeng.tile.crafting.AssemblerAnimationStatus;
-import appeng.tile.crafting.TileMolecularAssembler;
-import appeng.util.item.AEItemStack;
 import io.netty.buffer.Unpooled;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import appeng.api.storage.data.IAEItemStack;
+import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.network.INetworkInfo;
+import appeng.tile.crafting.AssemblerAnimationStatus;
+import appeng.tile.crafting.TileMolecularAssembler;
+import appeng.util.item.AEItemStack;
 
 public class PacketAssemblerAnimation extends AppEngPacket {
 

@@ -18,8 +18,8 @@
 
 package appeng.client.render.effects;
 
-import appeng.core.AppEng;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.Vector3f;
@@ -30,6 +30,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import appeng.core.AppEng;
+
 @OnlyIn(Dist.CLIENT)
 public class CraftingFx extends SpriteTexturedParticle {
 
@@ -39,7 +41,8 @@ public class CraftingFx extends SpriteTexturedParticle {
         TYPE.setRegistryName(AppEng.MOD_ID, "crafting_fx");
     }
 
-    // Offset relative to center of block, is the starting point of the particle movement
+    // Offset relative to center of block, is the starting point of the particle
+    // movement
     private final float offsetX;
     private final float offsetY;
     private final float offsetZ;
@@ -49,11 +52,7 @@ public class CraftingFx extends SpriteTexturedParticle {
         super(par1World, x, y, z);
 
         // Pick a random normal, offset it by 0.35 and use that as the particle origin
-        Vector3f off = new Vector3f(
-                rand.nextFloat() - 0.5f,
-                rand.nextFloat() - 0.5f,
-                rand.nextFloat() - 0.5f
-        );
+        Vector3f off = new Vector3f(rand.nextFloat() - 0.5f, rand.nextFloat() - 0.5f, rand.nextFloat() - 0.5f);
         off.normalize();
         off.mul(0.35f);
         offsetX = off.getX();
@@ -104,17 +103,13 @@ public class CraftingFx extends SpriteTexturedParticle {
         float maxV = this.getMaxV();
         int j = 15728880; // full brightness
         buffer.pos(avector3f[0].getX(), avector3f[0].getY(), avector3f[0].getZ()).tex(maxU, maxV)
-                .color(this.particleRed, this.particleGreen, this.particleBlue, alpha).lightmap(j)
-                .endVertex();
+                .color(this.particleRed, this.particleGreen, this.particleBlue, alpha).lightmap(j).endVertex();
         buffer.pos(avector3f[1].getX(), avector3f[1].getY(), avector3f[1].getZ()).tex(maxU, minV)
-                .color(this.particleRed, this.particleGreen, this.particleBlue, alpha).lightmap(j)
-                .endVertex();
+                .color(this.particleRed, this.particleGreen, this.particleBlue, alpha).lightmap(j).endVertex();
         buffer.pos(avector3f[2].getX(), avector3f[2].getY(), avector3f[2].getZ()).tex(minU, minV)
-                .color(this.particleRed, this.particleGreen, this.particleBlue, alpha).lightmap(j)
-                .endVertex();
+                .color(this.particleRed, this.particleGreen, this.particleBlue, alpha).lightmap(j).endVertex();
         buffer.pos(avector3f[3].getX(), avector3f[3].getY(), avector3f[3].getZ()).tex(minU, maxV)
-                .color(this.particleRed, this.particleGreen, this.particleBlue, alpha).lightmap(j)
-                .endVertex();
+                .color(this.particleRed, this.particleGreen, this.particleBlue, alpha).lightmap(j).endVertex();
     }
 
     // https://easings.net/#easeOutCirc

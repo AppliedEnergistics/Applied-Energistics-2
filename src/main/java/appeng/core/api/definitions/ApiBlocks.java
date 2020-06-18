@@ -22,7 +22,6 @@ import static appeng.block.AEBaseBlock.defaultProps;
 import static appeng.block.crafting.AbstractCraftingUnitBlock.CraftingUnitType;
 import static appeng.decorative.solid.BlockSkyStone.SkystoneType;
 
-import appeng.tile.crafting.*;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.RenderType;
@@ -70,6 +69,7 @@ import appeng.entity.EntityTinyTNTPrimed;
 import appeng.fluids.block.BlockFluidInterface;
 import appeng.fluids.tile.TileFluidInterface;
 import appeng.hooks.DispenserBehaviorTinyTNT;
+import appeng.tile.crafting.*;
 import appeng.tile.grindstone.TileCrank;
 import appeng.tile.grindstone.TileGrinder;
 import appeng.tile.misc.*;
@@ -467,8 +467,7 @@ public final class ApiBlocks implements IBlocks {
                             public void customize(TileEntityRendering<TileMolecularAssembler> rendering) {
                                 rendering.tileEntityRenderer(MolecularAssemblerRenderer::new);
                             }
-                        })
-                        .build())
+                        }).build())
                 .build();
 
         this.lightDetector = registry.block("light_detector", BlockLightDetector::new)
