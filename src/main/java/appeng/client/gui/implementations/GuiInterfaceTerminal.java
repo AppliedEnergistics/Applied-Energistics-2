@@ -24,7 +24,6 @@ import com.google.common.collect.HashMultimap;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -45,9 +44,6 @@ import appeng.util.Platform;
 public class GuiInterfaceTerminal extends AEBaseGui<ContainerInterfaceTerminal> {
 
     private static final int LINES_ON_PAGE = 6;
-
-    // TODO: copied from GuiMEMonitorable. It looks not changed, maybe unneeded?
-    private final int offsetX = 9;
 
     private final HashMap<Long, ClientDCInternalInv> byId = new HashMap<>();
     private final HashMultimap<String, ClientDCInternalInv> byName = HashMultimap.create();
@@ -76,8 +72,7 @@ public class GuiInterfaceTerminal extends AEBaseGui<ContainerInterfaceTerminal> 
         this.getScrollBar().setHeight(106);
         this.getScrollBar().setTop(18);
 
-        this.searchField = new MEGuiTextField(this.font, this.guiLeft + Math.max(104, this.offsetX), this.guiTop + 4,
-                65, 12);
+        this.searchField = new MEGuiTextField(this.font, this.guiLeft + 104, this.guiTop + 4, 65, 12);
         this.searchField.setEnableBackgroundDrawing(false);
         this.searchField.setMaxStringLength(25);
         this.searchField.setTextColor(0xFFFFFF);
@@ -92,12 +87,7 @@ public class GuiInterfaceTerminal extends AEBaseGui<ContainerInterfaceTerminal> 
 
         final int ex = this.getScrollBar().getCurrentScroll();
 
-        final Iterator<Slot> o = this.container.inventorySlots.iterator();
-        while (o.hasNext()) {
-            if (o.next() instanceof SlotDisconnected) {
-                o.remove();
-            }
-        }
+        this.container.inventorySlots.removeIf(slot -> slot instanceof SlotDisconnected);
 
         int offset = 17;
         for (int x = 0; x < LINES_ON_PAGE && ex + x < this.lines.size(); x++) {
@@ -186,8 +176,8 @@ public class GuiInterfaceTerminal extends AEBaseGui<ContainerInterfaceTerminal> 
                 try {
                     final long id = Long.parseLong(key.substring(1), Character.MAX_RADIX);
                     final CompoundNBT invData = in.getCompound(key);
-                    final ClientDCInternalInv current = this.getById(id, invData.getLong("sortBy"),
-                            invData.getString("un"));
+                    ITextComponent un = ITextComponent.Serializer.fromJson(invData.getString("un"));
+                    final ClientDCInternalInv current = this.getById(id, invData.getLong("sortBy"), un);
 
                     for (int x = 0; x < current.getInventory().getSlots(); x++) {
                         final String which = Integer.toString(x);
@@ -243,8 +233,8 @@ public class GuiInterfaceTerminal extends AEBaseGui<ContainerInterfaceTerminal> 
             }
 
             // if found, filter skipped or machine name matching the search term, add it
-            if (found || entry.getName().toLowerCase().contains(searchFilterLowerCase)) {
-                this.byName.put(entry.getName(), entry);
+            if (found || entry.getSearchName().contains(searchFilterLowerCase)) {
+                this.byName.put(entry.getFormattedName(), entry);
                 cachedSearch.add(entry);
             } else {
                 cachedSearch.remove(entry);
@@ -262,8 +252,7 @@ public class GuiInterfaceTerminal extends AEBaseGui<ContainerInterfaceTerminal> 
         for (final String n : this.names) {
             this.lines.add(n);
 
-            final ArrayList<ClientDCInternalInv> clientInventories = new ArrayList<>();
-            clientInventories.addAll(this.byName.get(n));
+            List<ClientDCInternalInv> clientInventories = new ArrayList<>(this.byName.get(n));
 
             Collections.sort(clientInventories);
             this.lines.addAll(clientInventories);
@@ -337,11 +326,11 @@ public class GuiInterfaceTerminal extends AEBaseGui<ContainerInterfaceTerminal> 
         return this.names.size() + this.byId.size();
     }
 
-    private ClientDCInternalInv getById(final long id, final long sortBy, final String string) {
+    private ClientDCInternalInv getById(final long id, final long sortBy, final ITextComponent name) {
         ClientDCInternalInv o = this.byId.get(id);
 
         if (o == null) {
-            this.byId.put(id, o = new ClientDCInternalInv(9, id, sortBy, string));
+            this.byId.put(id, o = new ClientDCInternalInv(9, id, sortBy, name));
             this.refreshList = true;
         }
 

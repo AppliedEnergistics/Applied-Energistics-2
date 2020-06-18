@@ -20,31 +20,33 @@ package appeng.client.me;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.client.resources.I18n;
+import net.minecraft.util.text.ITextComponent;
 
 import appeng.tile.inventory.AppEngInternalInventory;
 
 public class ClientDCInternalInv implements Comparable<ClientDCInternalInv> {
 
-    private final String unlocalizedName;
+    private final String searchName;
+    private final String formattedName;
     private final AppEngInternalInventory inventory;
 
     private final long id;
     private final long sortBy;
 
-    public ClientDCInternalInv(final int size, final long id, final long sortBy, final String unlocalizedName) {
+    public ClientDCInternalInv(final int size, final long id, final long sortBy, final ITextComponent name) {
         this.inventory = new AppEngInternalInventory(null, size);
-        this.unlocalizedName = unlocalizedName;
+        this.searchName = name.getString().toLowerCase();
+        this.formattedName = name.getFormattedText();
         this.id = id;
         this.sortBy = sortBy;
     }
 
-    public String getName() {
-        final String s = I18n.format(this.unlocalizedName + ".name");
-        if (s.equals(this.unlocalizedName + ".name")) {
-            return I18n.format(this.unlocalizedName);
-        }
-        return s;
+    public String getSearchName() {
+        return searchName;
+    }
+
+    public String getFormattedName() {
+        return formattedName;
     }
 
     @Override
@@ -58,5 +60,9 @@ public class ClientDCInternalInv implements Comparable<ClientDCInternalInv> {
 
     public long getId() {
         return this.id;
+    }
+
+    public boolean matchesSearch(String searchFilterLowerCase) {
+        return this.searchName.contains(searchFilterLowerCase);
     }
 }

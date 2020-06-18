@@ -30,6 +30,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.SecurityPermissions;
@@ -127,7 +128,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer {
                             missing = true;
                         } else {
                             final DualityInterface dual = ih.getInterfaceDuality();
-                            if (!t.unlocalizedName.equals(dual.getTermName())) {
+                            if (!t.name.equals(dual.getTermName())) {
                                 missing = true;
                             }
                         }
@@ -150,7 +151,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer {
                             missing = true;
                         } else {
                             final DualityInterface dual = ih.getInterfaceDuality();
-                            if (!t.unlocalizedName.equals(dual.getTermName())) {
+                            if (!t.name.equals(dual.getTermName())) {
                                 missing = true;
                             }
                         }
@@ -291,7 +292,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer {
                     final IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
                     final DualityInterface dual = ih.getInterfaceDuality();
                     if (gn.isActive() && dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.YES) {
-                        this.diList.put(ih, new InvTracker(dual, dual.getPatterns(), dual.getTermName().getString()));
+                        this.diList.put(ih, new InvTracker(dual, dual.getPatterns(), dual.getTermName()));
                     }
                 }
 
@@ -299,7 +300,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer {
                     final IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
                     final DualityInterface dual = ih.getInterfaceDuality();
                     if (gn.isActive() && dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.YES) {
-                        this.diList.put(ih, new InvTracker(dual, dual.getPatterns(), dual.getTermName().getString()));
+                        this.diList.put(ih, new InvTracker(dual, dual.getPatterns(), dual.getTermName()));
                     }
                 }
             }
@@ -332,7 +333,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer {
 
         if (tag.isEmpty()) {
             tag.putLong("sortBy", inv.sortBy);
-            tag.putString("un", inv.unlocalizedName);
+            tag.putString("un", ITextComponent.Serializer.toJson(inv.name));
         }
 
         for (int x = 0; x < length; x++) {
@@ -357,14 +358,14 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer {
 
         private final long sortBy;
         private final long which = autoBase++;
-        private final String unlocalizedName;
+        private final ITextComponent name;
         private final IItemHandler client;
         private final IItemHandler server;
 
-        public InvTracker(final DualityInterface dual, final IItemHandler patterns, final String unlocalizedName) {
+        public InvTracker(final DualityInterface dual, final IItemHandler patterns, final ITextComponent name) {
             this.server = patterns;
             this.client = new AppEngInternalInventory(null, this.server.getSlots());
-            this.unlocalizedName = unlocalizedName;
+            this.name = name;
             this.sortBy = dual.getSortValue();
         }
     }
