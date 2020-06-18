@@ -36,6 +36,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.items.contents.QuartzKnifeObj;
+import appeng.items.materials.ItemMaterial;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
 
@@ -120,7 +121,7 @@ public class ContainerQuartzKnife extends AEBaseContainer {
                 if (ContainerQuartzKnife.this.myName.length() > 0) {
                     return AEApi.instance().definitions().materials().namePress().maybeStack(1).map(namePressStack -> {
                         final CompoundNBT compound = namePressStack.getOrCreateTag();
-                        compound.putString("InscribeName", ContainerQuartzKnife.this.myName);
+                        compound.putString(ItemMaterial.TAG_INSCRIBE_NAME, ContainerQuartzKnife.this.myName);
 
                         return namePressStack;
                     }).orElse(ItemStack.EMPTY);
