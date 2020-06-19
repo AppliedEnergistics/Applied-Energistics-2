@@ -24,8 +24,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
-import appeng.client.ActionKey;
-import appeng.core.AppEng;
+import org.lwjgl.glfw.GLFW;
+
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
@@ -39,6 +39,7 @@ import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.util.IConfigManager;
+import appeng.client.ActionKey;
 import appeng.client.gui.AEBaseMEGui;
 import appeng.client.gui.widgets.GuiScrollbar;
 import appeng.client.gui.widgets.GuiSettingToggleButton;
@@ -48,6 +49,7 @@ import appeng.client.me.FluidRepo;
 import appeng.client.me.InternalFluidSlotME;
 import appeng.client.me.SlotFluidME;
 import appeng.core.AELog;
+import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketInventoryAction;
@@ -57,7 +59,6 @@ import appeng.fluids.container.slots.IMEFluidSlot;
 import appeng.helpers.InventoryAction;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
-import org.lwjgl.glfw.GLFW;
 
 /**
  * @author BrockWS
@@ -94,8 +95,7 @@ public class GuiFluidTerminal extends AEBaseMEGui<ContainerFluidTerminal> implem
         this.guiLeft = (this.width - this.xSize) / 2;
         this.guiTop = (this.height - this.ySize) / 2;
 
-        this.searchField = new MEGuiTextField(this.font, this.guiLeft + 80, this.guiTop + 4, 90,
-                12);
+        this.searchField = new MEGuiTextField(this.font, this.guiLeft + 80, this.guiTop + 4, 90, 12);
         this.searchField.setEnableBackgroundDrawing(false);
         this.searchField.setMaxStringLength(25);
         this.searchField.setTextColor(0xFFFFFF);
@@ -113,9 +113,8 @@ public class GuiFluidTerminal extends AEBaseMEGui<ContainerFluidTerminal> implem
 
         for (int y = 0; y < ROWS; y++) {
             for (int x = 0; x < COLS; x++) {
-                SlotFluidME slot = new SlotFluidME(
-                        new InternalFluidSlotME(this.repo, x + y * COLS, GRID_OFFSET_X + x * 18, GRID_OFFSET_Y + y * 18)
-                );
+                SlotFluidME slot = new SlotFluidME(new InternalFluidSlotME(this.repo, x + y * COLS,
+                        GRID_OFFSET_X + x * 18, GRID_OFFSET_Y + y * 18));
                 this.getMeFluidSlots().add(slot);
                 this.container.inventorySlots.add(slot);
             }
