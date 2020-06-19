@@ -18,13 +18,14 @@
 
 package appeng.client.render.effects;
 
-import appeng.api.util.AEPartLocation;
-import appeng.core.AppEng;
 import net.minecraft.client.particle.*;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import appeng.api.util.AEPartLocation;
+import appeng.core.AppEng;
 
 public class MatterCannonFX extends SpriteTexturedParticle {
 

@@ -11,8 +11,11 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -56,6 +59,10 @@ import appeng.parts.automation.PlaneModels;
 import appeng.util.Platform;
 
 public class PartFluidAnnihilationPlane extends PartBasicState implements IGridTickable {
+
+    public static final ResourceLocation TAG_BLACKLIST = new ResourceLocation(AppEng.MOD_ID,
+            "blacklisted/fluid_annihilation_plane");
+
     private static final PlaneModels MODELS = new PlaneModels("part/fluid_annihilation_plane",
             "part/fluid_annihilation_plane_on");
 
@@ -227,8 +234,11 @@ public class PartFluidAnnihilationPlane extends PartBasicState implements IGridT
             IFluidState fluidState = blockstate.getFluidState();
 
             Fluid fluid = fluidState.getFluid();
-            if (fluid != Fluids.EMPTY && fluidState.isSource()) {
+            if (isFluidBlacklisted(fluid)) {
+                return TickRateModulation.SLEEP;
+            }
 
+            if (fluid != Fluids.EMPTY && fluidState.isSource()) {
                 // Attempt to store the fluid in the network
                 final IAEFluidStack blockFluid = AEFluidStack
                         .fromFluidStack(new FluidStack(fluidState.getFluid(), FluidAttributes.BUCKET_VOLUME));
@@ -236,8 +246,7 @@ public class PartFluidAnnihilationPlane extends PartBasicState implements IGridT
                     // If that would succeed, actually slurp up the liquid as if we were using a
                     // bucket
                     // This _MIGHT_ change the liquid, and if it does, and we dont have enough
-                    // space,
-                    // tough luck. you loose the source block.
+                    // space, tough luck. you loose the source block.
                     fluid = ((IBucketPickupHandler) blockstate.getBlock()).pickupFluid(w, pos, blockstate);
                     this.storeFluid(AEFluidStack.fromFluidStack(new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME)),
                             true);
@@ -301,6 +310,11 @@ public class PartFluidAnnihilationPlane extends PartBasicState implements IGridT
     @Override
     public IModelData getModelData() {
         return new PlaneModelData(getConnections());
+    }
+
+    private boolean isFluidBlacklisted(Fluid fluid) {
+        Tag<Fluid> tag = FluidTags.getCollection().getOrCreate(TAG_BLACKLIST);
+        return fluid.isIn(tag);
     }
 
 }
