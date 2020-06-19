@@ -29,6 +29,7 @@ import java.util.zip.GZIPOutputStream;
 
 import javax.annotation.Nullable;
 
+import appeng.fluids.client.gui.GuiFluidTerminal;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
@@ -136,10 +137,10 @@ public class PacketMEFluidInventoryUpdate extends AppEngPacket {
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         final Screen gs = Minecraft.getInstance().currentScreen;
 
-        // FIXME if( gs instanceof GuiFluidTerminal )
-        // FIXME {
-        // FIXME ( (GuiFluidTerminal) gs ).postUpdate( this.list );
-        // FIXME }
+        if( gs instanceof GuiFluidTerminal)
+        {
+            ( (GuiFluidTerminal) gs ).postUpdate( this.list );
+        }
     }
 
     @Nullable
