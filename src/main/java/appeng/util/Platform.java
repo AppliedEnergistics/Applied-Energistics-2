@@ -797,6 +797,11 @@ public class Platform {
 //	}
 
     public static LookDirection getPlayerRay(final PlayerEntity playerIn) {
+        double reachDistance = playerIn.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
+        return getPlayerRay(playerIn, reachDistance);
+    }
+
+    public static LookDirection getPlayerRay(final PlayerEntity playerIn, double reachDistance) {
         final double x = playerIn.prevPosX + (playerIn.getPosX() - playerIn.prevPosX);
         final double y = playerIn.prevPosY + (playerIn.getPosY() - playerIn.prevPosY) + playerIn.getEyeHeight();
         final double z = playerIn.prevPosZ + (playerIn.getPosZ() - playerIn.prevPosZ);
@@ -811,8 +816,6 @@ public class Platform {
         final float eyeRayY = MathHelper.sin(-playerPitch * 0.017453292F);
         final float eyeRayX = yawRayX * pitchMultiplier;
         final float eyeRayZ = yawRayZ * pitchMultiplier;
-
-        double reachDistance = playerIn.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
 
         final Vec3d from = new Vec3d(x, y, z);
         final Vec3d to = from.add(eyeRayX * reachDistance, eyeRayY * reachDistance, eyeRayZ * reachDistance);

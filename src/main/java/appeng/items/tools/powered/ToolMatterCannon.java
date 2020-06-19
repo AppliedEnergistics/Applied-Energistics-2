@@ -83,6 +83,11 @@ import appeng.util.Platform;
 
 public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<IAEItemStack> {
 
+    /**
+     * AE energy units consumer per shot fired.
+     */
+    private static final int ENERGY_PER_SHOT = 1600;
+
     public ToolMatterCannon(Item.Properties props) {
         super(AEConfig.instance().getMatterCannonBattery(), props);
     }
@@ -101,7 +106,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final @Nullable Hand hand) {
-        if (this.getAECurrentPower(p.getHeldItem(hand)) > 1600) {
+        if (this.getAECurrentPower(p.getHeldItem(hand)) > ENERGY_PER_SHOT) {
             int shots = 1;
 
             final CellUpgrades cu = (CellUpgrades) this.getUpgradesInventory(p.getHeldItem(hand));
@@ -119,7 +124,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
                     shots = Math.min(shots, (int) req.getStackSize());
                     for (int sh = 0; sh < shots; sh++) {
                         IAEItemStack aeAmmo = req.copy();
-                        this.extractAEPower(p.getHeldItem(hand), 1600, Actionable.MODULATE);
+                        this.extractAEPower(p.getHeldItem(hand), ENERGY_PER_SHOT, Actionable.MODULATE);
 
                         if (Platform.isClient()) {
                             return new ActionResult<>(ActionResultType.SUCCESS, p.getHeldItem(hand));
@@ -127,7 +132,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 
                         aeAmmo.setStackSize(1);
                         final ItemStack ammo = aeAmmo.createItemStack();
-                        if (ammo == null) {
+                        if (ammo.isEmpty()) {
                             return new ActionResult<>(ActionResultType.SUCCESS, p.getHeldItem(hand));
                         }
 
@@ -136,26 +141,26 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
                             return new ActionResult<>(ActionResultType.SUCCESS, p.getHeldItem(hand));
                         }
 
-                        final LookDirection dir = Platform.getPlayerRay(p);
+                        final LookDirection dir = Platform.getPlayerRay(p, 32);
 
-                        final Vec3d Vec3d = dir.getA();
-                        final Vec3d Vec3d1 = dir.getB();
-                        final Vec3d direction = Vec3d1.subtract(Vec3d);
+                        final Vec3d rayFrom = dir.getA();
+                        final Vec3d rayTo = dir.getB();
+                        final Vec3d direction = rayTo.subtract(rayFrom);
                         direction.normalize();
 
-                        final double d0 = Vec3d.x;
-                        final double d1 = Vec3d.y;
-                        final double d2 = Vec3d.z;
+                        final double d0 = rayFrom.x;
+                        final double d1 = rayFrom.y;
+                        final double d2 = rayFrom.z;
 
                         final float penetration = AEApi.instance().registries().matterCannon().getPenetration(ammo); // 196.96655f;
                         if (penetration <= 0) {
                             final ItemStack type = aeAmmo.asItemStackRepresentation();
                             if (type.getItem() instanceof ItemPaintBall) {
-                                this.shootPaintBalls(type, w, p, Vec3d, Vec3d1, direction, d0, d1, d2);
+                                this.shootPaintBalls(type, w, p, rayFrom, rayTo, direction, d0, d1, d2);
                             }
                             return new ActionResult<>(ActionResultType.SUCCESS, p.getHeldItem(hand));
                         } else {
-                            this.standardAmmo(penetration, w, p, Vec3d, Vec3d1, direction, d0, d1, d2);
+                            this.standardAmmo(penetration, w, p, rayFrom, rayTo, direction, d0, d1, d2);
                         }
                     }
                 } else {
