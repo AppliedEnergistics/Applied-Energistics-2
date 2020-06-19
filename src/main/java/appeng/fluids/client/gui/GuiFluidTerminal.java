@@ -24,6 +24,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
+import appeng.client.ActionKey;
+import appeng.core.AppEng;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
@@ -55,6 +57,7 @@ import appeng.fluids.container.slots.IMEFluidSlot;
 import appeng.helpers.InventoryAction;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
+import org.lwjgl.glfw.GLFW;
 
 /**
  * @author BrockWS
@@ -65,9 +68,11 @@ public class GuiFluidTerminal extends AEBaseMEGui<ContainerFluidTerminal> implem
     private final List<SlotFluidME> meFluidSlots = new LinkedList<>();
     private final FluidRepo repo;
     private final IConfigManager configSrc;
-    private final int offsetX = 9;
-    private int rows = 6;
-    private int perRow = 9;
+
+    private static final int GRID_OFFSET_X = 9;
+    private static final int GRID_OFFSET_Y = 18;
+    private static final int ROWS = 6;
+    private static final int COLS = 9;
 
     private MEGuiTextField searchField;
     private GuiSettingToggleButton<SortOrder> sortByBox;
@@ -89,7 +94,7 @@ public class GuiFluidTerminal extends AEBaseMEGui<ContainerFluidTerminal> implem
         this.guiLeft = (this.width - this.xSize) / 2;
         this.guiTop = (this.height - this.ySize) / 2;
 
-        this.searchField = new MEGuiTextField(this.font, this.guiLeft + Math.max(80, this.offsetX), this.guiTop + 4, 90,
+        this.searchField = new MEGuiTextField(this.font, this.guiLeft + 80, this.guiTop + 4, 90,
                 12);
         this.searchField.setEnableBackgroundDrawing(false);
         this.searchField.setMaxStringLength(25);
@@ -106,10 +111,11 @@ public class GuiFluidTerminal extends AEBaseMEGui<ContainerFluidTerminal> implem
         this.sortDirBox = this.addButton(new GuiSettingToggleButton<>(this.guiLeft - 18, offset,
                 Settings.SORT_DIRECTION, getSortDir(), this::toggleServerSetting));
 
-        for (int y = 0; y < this.rows; y++) {
-            for (int x = 0; x < this.perRow; x++) {
+        for (int y = 0; y < ROWS; y++) {
+            for (int x = 0; x < COLS; x++) {
                 SlotFluidME slot = new SlotFluidME(
-                        new InternalFluidSlotME(this.repo, x + y * this.perRow, this.offsetX + x * 18, 18 + y * 18));
+                        new InternalFluidSlotME(this.repo, x + y * COLS, GRID_OFFSET_X + x * 18, GRID_OFFSET_Y + y * 18)
+                );
                 this.getMeFluidSlots().add(slot);
                 this.container.inventorySlots.add(slot);
             }
@@ -208,32 +214,49 @@ public class GuiFluidTerminal extends AEBaseMEGui<ContainerFluidTerminal> implem
     }
 
     @Override
-    public boolean charTyped(char character, int keyCode) {
+    public boolean charTyped(char character, int p_charTyped_2_) {
         if (character == ' ' && this.searchField.getText().isEmpty()) {
-            // Swallow spaces if the text field is still empty
             return true;
         }
 
-        if (this.searchField.charTyped(character, keyCode)) {
+        if (this.searchField.isFocused() && this.searchField.charTyped(character, p_charTyped_2_)) {
             this.repo.setSearchString(this.searchField.getText());
             this.repo.updateView();
             this.setScrollBar();
             return true;
         }
 
-        return super.charTyped(character, keyCode);
+        return false;
     }
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
+
         InputMappings.Input input = InputMappings.getInputByCode(keyCode, scanCode);
-        if (!this.checkHotbarKeys(input)) {
-            if (this.searchField.keyPressed(keyCode, scanCode, p_keyPressed_3_)) {
-                this.repo.setSearchString(this.searchField.getText());
-                this.repo.updateView();
-                this.setScrollBar();
+
+        if (keyCode != GLFW.GLFW_KEY_ESCAPE && !this.checkHotbarKeys(input)) {
+            if (AppEng.proxy.isActionKey(ActionKey.TOGGLE_FOCUS, input)) {
+                this.searchField.setFocused2(!this.searchField.isFocused());
+                return true;
             }
-            return true;
+
+            if (this.searchField.isFocused()) {
+                if (keyCode == GLFW.GLFW_KEY_ENTER) {
+                    this.searchField.setFocused2(false);
+                    return true;
+                }
+
+                if (this.searchField.keyPressed(keyCode, scanCode, p_keyPressed_3_)) {
+                    this.repo.setSearchString(this.searchField.getText());
+                    this.repo.updateView();
+                    this.setScrollBar();
+                }
+
+                // We need to swallow key presses if the field is focused because typing 'e'
+                // would otherwise close
+                // the screen
+                return true;
+            }
         }
 
         return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);
@@ -264,9 +287,8 @@ public class GuiFluidTerminal extends AEBaseMEGui<ContainerFluidTerminal> implem
     }
 
     private void setScrollBar() {
-        this.getScrollBar().setTop(18).setLeft(175).setHeight(this.rows * 18 - 2);
-        this.getScrollBar().setRange(0, (this.repo.size() + this.perRow - 1) / this.perRow - this.rows,
-                Math.max(1, this.rows / 6));
+        this.getScrollBar().setTop(18).setLeft(175).setHeight(ROWS * 18 - 2);
+        this.getScrollBar().setRange(0, (this.repo.size() + COLS - 1) / COLS - ROWS, ROWS / 6);
     }
 
     @Override
