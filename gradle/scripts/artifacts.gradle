@@ -40,6 +40,7 @@ jar {
 }
 
 task javadocs(type: Javadoc) {
+    classpath = sourceSets.main.compileClasspath
     source = sourceSets.api.java
     include "appeng/api/**"
 
