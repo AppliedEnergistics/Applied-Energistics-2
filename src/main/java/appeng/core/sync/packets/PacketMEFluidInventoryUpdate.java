@@ -29,7 +29,6 @@ import java.util.zip.GZIPOutputStream;
 
 import javax.annotation.Nullable;
 
-import appeng.fluids.client.gui.GuiFluidTerminal;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
@@ -45,6 +44,7 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
+import appeng.fluids.client.gui.GuiFluidTerminal;
 import appeng.fluids.util.AEFluidStack;
 
 /**
@@ -137,9 +137,8 @@ public class PacketMEFluidInventoryUpdate extends AppEngPacket {
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         final Screen gs = Minecraft.getInstance().currentScreen;
 
-        if( gs instanceof GuiFluidTerminal)
-        {
-            ( (GuiFluidTerminal) gs ).postUpdate( this.list );
+        if (gs instanceof GuiFluidTerminal) {
+            ((GuiFluidTerminal) gs).postUpdate(this.list);
         }
     }
 

@@ -39,10 +39,7 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.block.AEBaseBlock;
-import appeng.client.render.effects.EnergyFx;
-import appeng.client.render.effects.LightningArcFX;
-import appeng.client.render.effects.LightningFX;
-import appeng.client.render.effects.VibrantFX;
+import appeng.client.render.effects.*;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
@@ -195,8 +192,8 @@ public class ClientHelper extends ServerHelper {
         final float y = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
         final float z = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
 
-        Minecraft.getInstance().particles.addParticle(EnergyFx.TYPE, posX + x, posY + y, posZ + z, -x * 0.1, -y * 0.1,
-                -z * 0.1);
+        Minecraft.getInstance().particles.addParticle(EnergyParticleData.FOR_BLOCK, posX + x, posY + y, posZ + z,
+                -x * 0.1, -y * 0.1, -z * 0.1);
     }
 
     private void spawnLightning(final World world, final double posX, final double posY, final double posZ) {

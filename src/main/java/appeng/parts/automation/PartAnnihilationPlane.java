@@ -23,25 +23,27 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.common.ToolType;
-import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 
 import appeng.api.AEApi;
@@ -67,7 +69,8 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
-import appeng.core.sync.packets.PacketTransitionEffect;
+import appeng.core.sync.packets.PacketBlockTransitionEffect;
+import appeng.core.sync.packets.PacketItemTransitionEffect;
 import appeng.hooks.TickHandler;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
@@ -78,6 +81,9 @@ import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
 public class PartAnnihilationPlane extends PartBasicState implements IGridTickable, IWorldCallable<TickRateModulation> {
+
+    public static final ResourceLocation TAG_BLACKLIST = new ResourceLocation(AppEng.MOD_ID,
+            "blacklisted/annihilation_plane");
 
     private static final PlaneModels MODELS = new PlaneModels("part/annihilation_plane", "part/annihilation_plane_on");
 
@@ -218,6 +224,12 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
     public void onEntityCollision(final Entity entity) {
         if (this.isAccepting && entity instanceof ItemEntity && entity.isAlive() && Platform.isServer()
                 && this.getProxy().isActive()) {
+
+            ItemEntity itemEntity = (ItemEntity) entity;
+            if (isItemBlacklisted(itemEntity.getItem().getItem())) {
+                return;
+            }
+
             boolean capture = false;
             final BlockPos pos = this.getTile().getPos();
 
@@ -267,12 +279,12 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
             }
 
             if (capture) {
-                final boolean changed = this.storeEntityItem((ItemEntity) entity);
+                final boolean changed = this.storeEntityItem(itemEntity);
 
                 if (changed) {
                     AppEng.proxy.sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64,
-                            this.getTile().getWorld(), new PacketTransitionEffect(entity.getPosX(), entity.getPosY(),
-                                    entity.getPosZ(), this.getSide(), false));
+                            this.getTile().getWorld(), new PacketItemTransitionEffect(entity.getPosX(),
+                                    entity.getPosY(), entity.getPosZ(), this.getSide().getOpposite()));
                 }
             }
         }
@@ -381,7 +393,9 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
                 final BlockPos pos = te.getPos().offset(this.getSide().getFacing());
                 final IEnergyGrid energy = this.getProxy().getEnergy();
 
-                if (this.canHandleBlock(w, pos)) {
+                final BlockState blockState = w.getBlockState(pos);
+                if (this.canHandleBlock(w, pos, blockState)) {
+                    // Query the loot-table and get a potential outcome of the loot-table evaluation
                     final List<ItemStack> items = this.obtainBlockDrops(w, pos);
                     final float requiredPower = this.calculateEnergyUsage(w, pos, items);
 
@@ -391,11 +405,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
                     if (hasPower && canStore) {
                         if (modulate) {
-                            energy.extractAEPower(requiredPower, Actionable.MODULATE, PowerMultiplier.CONFIG);
-                            this.breakBlockAndStoreItems(w, pos);
-                            AppEng.proxy.sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64, w,
-                                    new PacketTransitionEffect(pos.getX(), pos.getY(), pos.getZ(), this.getSide(),
-                                            true));
+                            performBreakBlock(w, pos, blockState, energy, requiredPower, items);
                         } else {
                             this.breaking = true;
                             TickHandler.INSTANCE.addCallable(this.getTile().getWorld(), this);
@@ -410,6 +420,31 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
         // nothing to do here :)
         return TickRateModulation.IDLE;
+    }
+
+    private void performBreakBlock(ServerWorld w, BlockPos pos, BlockState blockState, IEnergyGrid energy,
+            float requiredPower, List<ItemStack> items) {
+
+        if (!this.breakBlockAndStoreExtraItems(w, pos)) {
+            // We failed to actually replace the block with air or it already was the case
+            return;
+        }
+
+        for (ItemStack item : items) {
+            IAEItemStack overflow = storeItemStack(item);
+            // If inserting the item fully was not possible, drop it as an item entity
+            // instead
+            // if the storage clears up, we'll pick it up that way
+            if (overflow != null) {
+                Platform.spawnDrops(w, pos, Collections.singletonList(overflow.createItemStack()));
+            }
+        }
+
+        energy.extractAEPower(requiredPower, Actionable.MODULATE, PowerMultiplier.CONFIG);
+
+        AppEng.proxy.sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64, w,
+                new PacketBlockTransitionEffect(pos, blockState, this.getSide().getOpposite(),
+                        PacketBlockTransitionEffect.SoundMode.NONE));
     }
 
     @Override
@@ -431,36 +466,44 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
     /**
      * Checks if this plane can handle the block at the specific coordinates.
      */
-    private boolean canHandleBlock(final ServerWorld w, final BlockPos pos) {
-        final BlockState state = w.getBlockState(pos);
+    private boolean canHandleBlock(final ServerWorld w, final BlockPos pos, final BlockState state) {
+        if (state.isAir(w, pos)) {
+            return false;
+        }
+
+        if (isBlockBlacklisted(state.getBlock())) {
+            return false;
+        }
+
         final Material material = state.getMaterial();
         final float hardness = state.getBlockHardness(w, pos);
         final boolean ignoreMaterials = material == Material.AIR || material == Material.LAVA
                 || material == Material.WATER || material.isLiquid();
-        final boolean ignoreBlocks = state.getBlock() == Blocks.BEDROCK || state.getBlock() == Blocks.END_PORTAL
-                || state.getBlock() == Blocks.END_PORTAL_FRAME || state.getBlock() == Blocks.COMMAND_BLOCK;
 
-        return !ignoreMaterials && !ignoreBlocks && hardness >= 0f && !w.isAirBlock(pos) && w.isBlockLoaded(pos)
+        return !ignoreMaterials && hardness >= 0f && w.isBlockLoaded(pos)
                 && w.canMineBlockBody(Platform.getPlayer(w), pos);
     }
 
     protected List<ItemStack> obtainBlockDrops(final ServerWorld w, final BlockPos pos) {
-        final FakePlayer fakePlayer = FakePlayerFactory.getMinecraft(w);
+
+        Entity fakePlayer = FakePlayerFactory.getMinecraft(w);
+
         final BlockState state = w.getBlockState(pos);
+
         ItemStack harvestTool = createHarvestTool(state);
 
-        // In case the block does NOT allow us to harvest it without a tool, or the
-        // proper tool,
-        // do not return anything.
-        if (harvestTool == null && !state.getMaterial().isToolNotRequired()) {
-            return Collections.emptyList();
+        if (harvestTool == null) {
+            if (!state.getMaterial().isToolNotRequired()) {
+                harvestTool = ItemStack.EMPTY;
+            } else {
+                // In case the block does NOT allow us to harvest it without a tool, or the
+                // proper tool, do not return anything.
+                return Collections.emptyList();
+            }
         }
 
-        LootContext.Builder lootContext = new LootContext.Builder(w).withRandom(w.rand)
-                .withParameter(LootParameters.POSITION, pos).withNullableParameter(LootParameters.TOOL, harvestTool)
-                .withNullableParameter(LootParameters.THIS_ENTITY, fakePlayer)
-                .withNullableParameter(LootParameters.BLOCK_ENTITY, w.getTileEntity(pos));
-        return state.getDrops(lootContext);
+        TileEntity te = w.getTileEntity(pos);
+        return Block.getDrops(state, w, pos, te, fakePlayer, harvestTool);
     }
 
     /**
@@ -511,9 +554,16 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
         return canStore;
     }
 
-    private void breakBlockAndStoreItems(final ServerWorld w, final BlockPos pos) {
-        w.destroyBlock(pos, true);
+    private boolean breakBlockAndStoreExtraItems(final ServerWorld w, final BlockPos pos) {
+        // Kill the block, but signal no drops
+        if (!w.destroyBlock(pos, false)) {
+            // The block was no longer there
+            return false;
+        }
 
+        // This handles items that do not spawn via loot-tables but rather normal block
+        // breaking
+        // i.e. our cable-buses do this (bad practice, really)
         final AxisAlignedBB box = new AxisAlignedBB(pos).grow(0.2);
         for (final Object ei : w.getEntitiesWithinAABB(ItemEntity.class, box)) {
             if (ei instanceof ItemEntity) {
@@ -521,6 +571,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
                 this.storeEntityItem(entityItem);
             }
         }
+        return true;
     }
 
     private void refresh() {
@@ -564,6 +615,16 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
         } else {
             return null;
         }
+    }
+
+    public static boolean isBlockBlacklisted(Block b) {
+        Tag<Block> tag = BlockTags.getCollection().getOrCreate(TAG_BLACKLIST);
+        return b.isIn(tag);
+    }
+
+    public static boolean isItemBlacklisted(Item i) {
+        Tag<Item> tag = ItemTags.getCollection().getOrCreate(TAG_BLACKLIST);
+        return i.isIn(tag);
     }
 
 }

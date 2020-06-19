@@ -44,7 +44,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
-import appeng.core.sync.packets.PacketTransitionEffect;
+import appeng.core.sync.packets.PacketBlockTransitionEffect;
 import appeng.fluids.util.AEFluidStack;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
@@ -243,7 +243,8 @@ public class PartFluidAnnihilationPlane extends PartBasicState implements IGridT
                             true);
 
                     AppEng.proxy.sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64, w,
-                            new PacketTransitionEffect(pos.getX(), pos.getY(), pos.getZ(), this.getSide(), true));
+                            new PacketBlockTransitionEffect(pos, blockstate, this.getSide().getOpposite(),
+                                    PacketBlockTransitionEffect.SoundMode.FLUID));
 
                     return TickRateModulation.URGENT;
                 }

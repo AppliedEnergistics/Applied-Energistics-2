@@ -24,31 +24,7 @@ import java.util.function.Function;
 
 import net.minecraft.network.PacketBuffer;
 
-import appeng.core.sync.packets.PacketAssemblerAnimation;
-import appeng.core.sync.packets.PacketClick;
-import appeng.core.sync.packets.PacketCompassRequest;
-import appeng.core.sync.packets.PacketCompassResponse;
-import appeng.core.sync.packets.PacketCompressedNBT;
-import appeng.core.sync.packets.PacketConfigButton;
-import appeng.core.sync.packets.PacketCraftRequest;
-import appeng.core.sync.packets.PacketFluidSlot;
-import appeng.core.sync.packets.PacketInventoryAction;
-import appeng.core.sync.packets.PacketJEIRecipe;
-import appeng.core.sync.packets.PacketLightning;
-import appeng.core.sync.packets.PacketMEFluidInventoryUpdate;
-import appeng.core.sync.packets.PacketMEInventoryUpdate;
-import appeng.core.sync.packets.PacketMatterCannon;
-import appeng.core.sync.packets.PacketMockExplosion;
-import appeng.core.sync.packets.PacketPaintedEntity;
-import appeng.core.sync.packets.PacketPartPlacement;
-import appeng.core.sync.packets.PacketPatternSlot;
-import appeng.core.sync.packets.PacketProgressBar;
-import appeng.core.sync.packets.PacketSwapSlots;
-import appeng.core.sync.packets.PacketSwitchGuis;
-import appeng.core.sync.packets.PacketTargetFluidStack;
-import appeng.core.sync.packets.PacketTargetItemStack;
-import appeng.core.sync.packets.PacketTransitionEffect;
-import appeng.core.sync.packets.PacketValueConfig;
+import appeng.core.sync.packets.*;
 
 public class AppEngPacketHandlerBase {
     private static final Map<Class<? extends AppEngPacket>, PacketTypes> REVERSE_LOOKUP = new HashMap<>();
@@ -76,7 +52,9 @@ public class AppEngPacketHandlerBase {
 
         PACKET_VALUE_CONFIG(PacketValueConfig.class, PacketValueConfig::new),
 
-        PACKET_TRANSITION_EFFECT(PacketTransitionEffect.class, PacketTransitionEffect::new),
+        PACKET_ITEM_TRANSITION_EFFECT(PacketItemTransitionEffect.class, PacketItemTransitionEffect::new),
+
+        PACKET_BLOCK_TRANSITION_EFFECT(PacketBlockTransitionEffect.class, PacketBlockTransitionEffect::new),
 
         PACKET_PROGRESS_VALUE(PacketProgressBar.class, PacketProgressBar::new),
 

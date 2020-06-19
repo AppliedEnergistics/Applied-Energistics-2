@@ -23,6 +23,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.particles.BasicParticleType;
+import net.minecraft.particles.ParticleType;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -34,7 +35,8 @@ import appeng.core.AppEng;
 @OnlyIn(Dist.CLIENT)
 public class EnergyFx extends SpriteTexturedParticle {
 
-    public static final BasicParticleType TYPE = new BasicParticleType(false);
+    public static final ParticleType<EnergyParticleData> TYPE = new ParticleType<>(false,
+            EnergyParticleData.DESERIALIZER);
 
     static {
         TYPE.setRegistryName(AppEng.MOD_ID, "energy_fx");
@@ -85,13 +87,6 @@ public class EnergyFx extends SpriteTexturedParticle {
         }
     }
 
-    public void fromItem(final AEPartLocation d) {
-        this.posX += 0.2 * d.xOffset;
-        this.posY += 0.2 * d.yOffset;
-        this.posZ += 0.2 * d.zOffset;
-        this.particleScale *= 0.8f;
-    }
-
     @Override
     public void tick() {
         super.tick();
@@ -114,7 +109,7 @@ public class EnergyFx extends SpriteTexturedParticle {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static class Factory implements IParticleFactory<BasicParticleType> {
+    public static class Factory implements IParticleFactory<EnergyParticleData> {
         private final IAnimatedSprite spriteSet;
 
         public Factory(IAnimatedSprite spriteSet) {
@@ -122,12 +117,18 @@ public class EnergyFx extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle makeParticle(BasicParticleType typeIn, World worldIn, double x, double y, double z,
+        public Particle makeParticle(EnergyParticleData data, World worldIn, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
             EnergyFx result = new EnergyFx(worldIn, x, y, z, spriteSet);
             result.setMotionX((float) xSpeed);
             result.setMotionY((float) ySpeed);
             result.setMotionZ((float) zSpeed);
+            if (data.forItem) {
+                result.posX += -0.2 * data.direction.xOffset;
+                result.posY += -0.2 * data.direction.yOffset;
+                result.posZ += -0.2 * data.direction.zOffset;
+                result.particleScale *= 0.8f;
+            }
             return result;
         }
     }
