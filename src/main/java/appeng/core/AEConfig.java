@@ -115,8 +115,6 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
     private final int[] levelByMillibuckets = { 10, 100, 1000, 10000 };
 
     // Spatial IO/Dimension
-    private String storageProviderID;
-    private String storageDimensionID;
     private double spatialPowerExponent;
     private double spatialPowerMultiplier;
 
@@ -237,8 +235,6 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
             tr.setMax(config.tickRateMin.get(tr).get());
         }
 
-        this.storageProviderID = Strings.emptyToNull(config.storageProviderID.get());
-        this.storageDimensionID = Strings.emptyToNull(config.storageDimensionID.get());
         this.spatialPowerMultiplier = config.spatialPowerMultiplier.get();
         this.spatialPowerExponent = config.spatialPowerExponent.get();
 
@@ -345,11 +341,6 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
 // FIXME	}
 
     public void save() {
-        if (this.isFeatureEnabled(AEFeature.SPATIAL_IO)) {
-            CLIENT.storageProviderID.set(Strings.nullToEmpty(this.storageProviderID));
-            CLIENT.storageDimensionID.set(Strings.nullToEmpty(this.storageDimensionID));
-        }
-
         CLIENT.selectedPowerUnit.set(this.selectedPowerUnit);
 
         CLIENT_SPEC.save();
@@ -479,14 +470,6 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
         return this.levelByStacks;
     }
 
-    public String getStorageProviderID() {
-        return this.storageProviderID;
-    }
-
-    public String getStorageDimensionID() {
-        return this.storageDimensionID;
-    }
-
     public double getSpatialPowerExponent() {
         return this.spatialPowerExponent;
     }
@@ -593,14 +576,6 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
 
     // Setters keep visibility as low as possible.
 
-    void setStorageProviderID(String id) {
-        this.storageProviderID = id;
-    }
-
-    void setStorageDimensionID(String id) {
-        this.storageDimensionID = id;
-    }
-
     private static class ClientConfig {
 
         // Feature toggles
@@ -623,8 +598,6 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
         public final List<ConfigValue<Integer>> levelByStacks;
 
         // Spatial IO/Dimension
-        public final ConfigValue<String> storageProviderID;
-        public final ConfigValue<String> storageDimensionID;
         public final ConfigValue<Double> spatialPowerExponent;
         public final ConfigValue<Double> spatialPowerMultiplier;
 
@@ -740,8 +713,6 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
             builder.pop();
 
             builder.push("spatialio");
-            this.storageProviderID = builder.define("storageProviderID", "");
-            this.storageDimensionID = builder.define("storageDimensionID", "");
             this.spatialPowerMultiplier = builder.define("spatialPowerMultiplier", 1250.0);
             this.spatialPowerExponent = builder.define("spatialPowerExponent", 1.35);
             builder.pop();
@@ -766,11 +737,11 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
 
             builder.push("battery");
             this.wirelessTerminalBattery = builder.define("wirelessTerminal", 1600000);
-            this.chargedStaffBattery = builder.define("chargedStaff", 200000);
+            this.chargedStaffBattery = builder.define("chargedStaff", 8000);
             this.entropyManipulatorBattery = builder.define("entropyManipulator", 200000);
             this.portableCellBattery = builder.define("portableCell", 20000);
             this.colorApplicatorBattery = builder.define("colorApplicator", 20000);
-            this.matterCannonBattery = builder.define("matterCannon", 8000);
+            this.matterCannonBattery = builder.define("matterCannon", 200000);
             builder.pop();
 
             builder.push("worldGen");
@@ -792,10 +763,10 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
             builder.push("wireless");
             this.wirelessBaseCost = builder.define("wirelessBaseCost", 8.0);
             this.wirelessCostMultiplier = builder.define("wirelessCostMultiplier", 1.0);
-            this.wirelessBaseRange = builder.define("wirelessBaseRange", 1.0);
-            this.wirelessBoosterRangeMultiplier = builder.define("wirelessBoosterRangeMultiplier", 16.0);
-            this.wirelessBoosterExp = builder.define("wirelessBoosterExp", 1.0);
-            this.wirelessTerminalDrainMultiplier = builder.define("wirelessTerminalDrainMultiplier", 1.5);
+            this.wirelessBaseRange = builder.define("wirelessBaseRange", 16.0);
+            this.wirelessBoosterRangeMultiplier = builder.define("wirelessBoosterRangeMultiplier", 1.0);
+            this.wirelessBoosterExp = builder.define("wirelessBoosterExp", 1.5);
+            this.wirelessTerminalDrainMultiplier = builder.define("wirelessTerminalDrainMultiplier", 1.0);
             builder.pop();
 
             builder.push("PowerRatios");
