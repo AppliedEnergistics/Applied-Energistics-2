@@ -95,7 +95,7 @@ public class DummyFluidDispatcherBakedModel extends DelegateBakedModel {
                 FluidDummyItem itemFacade = (FluidDummyItem) stack.getItem();
 
                 FluidStack fluidStack = itemFacade.getFluidStack(stack);
-                if (fluidStack == null) {
+                if (fluidStack.isEmpty()) {
                     fluidStack = new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME);
                 }
 

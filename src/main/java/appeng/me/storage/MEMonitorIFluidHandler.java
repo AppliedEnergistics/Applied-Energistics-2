@@ -92,7 +92,7 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
     public IAEFluidStack extractItems(final IAEFluidStack request, final Actionable type, final IActionSource src) {
         final FluidStack removed = this.handler.drain(request.getFluidStack(), type.getFluidAction());
 
-        if (removed == null || removed.getAmount() == 0) {
+        if (removed.isEmpty() || removed.getAmount() == 0) {
             return null;
         }
 
@@ -203,7 +203,7 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
         if (a == b) {
             return false;
         }
-        if (a == null || b == null) {
+        if (a.isEmpty() || b.isEmpty()) {
             return true;
         }
         return !a.getFluid().equals(b.getFluid());
@@ -292,8 +292,8 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
         private final IAEFluidStack aeStack;
 
         CachedFluidStack(final FluidStack is) {
-            if (is == null) {
-                this.fluidStack = null;
+            if (is.isEmpty()) {
+                this.fluidStack = FluidStack.EMPTY;
                 this.aeStack = null;
             } else {
                 this.fluidStack = is.copy();

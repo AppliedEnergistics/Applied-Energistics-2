@@ -23,10 +23,10 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import appeng.client.render.effects.MatterCannonFX;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 
@@ -82,14 +82,9 @@ public class PacketMatterCannon extends AppEngPacket {
     @OnlyIn(Dist.CLIENT)
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         try {
-
-            final World world = Minecraft.getInstance().world;
             for (int a = 1; a < this.len; a++) {
-                // FIXME final MatterCannonFX fx = new MatterCannonFX( world, this.x + this.dx *
-                // a, this.y + this.dy * a, this.z + this.dz * a, new ItemStack( Items.DIAMOND )
-                // );
-
-                // FIXME Minecraft.getInstance().particles.addEffect( fx );
+                Minecraft.getInstance().particles.addParticle(MatterCannonFX.TYPE, this.x + this.dx * a,
+                        this.y + this.dy * a, this.z + this.dz * a, 0, 0, 0);
             }
         } catch (final Exception ignored) {
         }

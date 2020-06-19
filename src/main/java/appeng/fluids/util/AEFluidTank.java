@@ -29,10 +29,6 @@ public class AEFluidTank extends FluidTank implements IAEFluidTank {
     public AEFluidTank(IAEFluidInventory host, int capacity) {
         super(capacity);
         this.host = host;
-// FIXME		if( host instanceof TileEntity )
-// FIXME		{
-// FIXME			this.setTileEntity( (TileEntity) host );
-// FIXME		}
     }
 
     @Override

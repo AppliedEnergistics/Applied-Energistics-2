@@ -71,7 +71,6 @@ public class PacketCompressedNBT extends AppEngPacket {
         }
     }
 
-    // FIXME: this is pointless, PacketBuffer.writeNBT will already compress
     // api
     public PacketCompressedNBT(final CompoundNBT din) throws IOException {
 

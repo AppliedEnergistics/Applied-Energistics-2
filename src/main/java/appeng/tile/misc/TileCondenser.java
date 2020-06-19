@@ -275,7 +275,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 
         @Override
         public boolean isFluidValid(FluidStack stack) {
-            return stack != FluidStack.EMPTY;
+            return !stack.isEmpty();
         }
 
         @Override
@@ -284,10 +284,10 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
                 final IStorageChannel<IAEFluidStack> chan = AEApi.instance().storage()
                         .getStorageChannel(IFluidStorageChannel.class);
                 TileCondenser.this
-                        .addPower((resource == null ? 0.0 : (double) resource.getAmount()) / chan.transferFactor());
+                        .addPower((resource.isEmpty() ? 0.0 : (double) resource.getAmount()) / chan.transferFactor());
             }
 
-            return resource == null ? 0 : resource.getAmount();
+            return resource.isEmpty() ? 0 : resource.getAmount();
         }
 
         @Nonnull

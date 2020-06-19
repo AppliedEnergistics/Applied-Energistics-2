@@ -443,7 +443,7 @@ public class Platform {
     }
 
     public static String getModId(final IAEFluidStack fs) {
-        if (fs == null || fs.getFluidStack() == null) {
+        if (fs == null || fs.getFluidStack().isEmpty()) {
             return "** Null";
         }
 

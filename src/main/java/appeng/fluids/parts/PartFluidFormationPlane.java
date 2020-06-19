@@ -8,6 +8,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
@@ -17,10 +18,14 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import appeng.api.AEApi;
@@ -117,8 +122,11 @@ public class PartFluidFormationPlane extends PartAbstractFormationPlane<IAEFluid
                 final FluidStack fs = input.getFluidStack();
                 fs.setAmount(FluidAttributes.BUCKET_VOLUME);
 
-                final FluidTank tank = new FluidTank(FluidAttributes.BUCKET_VOLUME, e -> e.isFluidEqual(fs));
-                if (!FluidUtil.tryPlaceFluid(null, w, Hand.MAIN_HAND, pos, tank, fs)) {
+                final FluidTank tank = new FluidTank(FluidAttributes.BUCKET_VOLUME);
+                tank.fill(fs, IFluidHandler.FluidAction.EXECUTE);
+
+                FakePlayer fakePlayer = FakePlayerFactory.getMinecraft((ServerWorld) w);
+                if (!FluidUtil.tryPlaceFluid(fakePlayer, w, Hand.MAIN_HAND, pos, tank, fs)) {
                     return input;
                 }
             }

@@ -18,6 +18,8 @@
 
 package appeng.core.sync.packets;
 
+import java.util.EnumSet;
+
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -25,8 +27,12 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 
 import appeng.api.config.Settings;
+import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigurableObject;
+import appeng.container.AEBaseContainer;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
+import appeng.util.EnumCycler;
 
 public final class PacketConfigButton extends AppEngPacket {
     private final Settings option;
@@ -54,18 +60,16 @@ public final class PacketConfigButton extends AppEngPacket {
     @Override
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
         final ServerPlayerEntity sender = (ServerPlayerEntity) player;
-        // FIXME if( sender.openContainer instanceof AEBaseContainer )
-        // FIXME {
-        // FIXME final AEBaseContainer baseContainer = (AEBaseContainer)
-        // sender.openContainer;
-        // FIXME if( baseContainer.getTarget() instanceof IConfigurableObject )
-        // FIXME {
-        // FIXME final IConfigManager cm = ( (IConfigurableObject)
-        // baseContainer.getTarget() ).getConfigManager();
-        // FIXME final Enum<?> newState = EnumCycler.rotateEnum( cm.getSetting(
-        // this.option ), this.rotationDirection, this.option.getPossibleValues() );
-        // FIXME cm.putSetting( this.option, newState );
-        // FIXME }
-        // FIXME }
+        if (sender.openContainer instanceof AEBaseContainer) {
+            final AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
+            if (baseContainer.getTarget() instanceof IConfigurableObject) {
+                final IConfigManager cm = ((IConfigurableObject) baseContainer.getTarget()).getConfigManager();
+                Enum setting = cm.getSetting(this.option);
+                Enum newState = EnumCycler.rotateEnum(setting, this.rotationDirection,
+                        (EnumSet) this.option.getPossibleValues());
+                cm.putSetting(this.option, newState);
+            }
+        }
     }
+
 }

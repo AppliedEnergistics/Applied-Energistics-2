@@ -102,7 +102,8 @@ public class PartFluidExportBus extends PartSharedFluidBus {
         final TileEntity te = this.getConnectedTE();
         LazyOptional<IFluidHandler> fhOpt = LazyOptional.empty();
         if (te != null) {
-            te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, this.getSide().getFacing().getOpposite());
+            fhOpt = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
+                    this.getSide().getFacing().getOpposite());
         }
         if (fhOpt.isPresent()) {
             try {

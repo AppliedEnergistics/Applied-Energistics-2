@@ -335,7 +335,7 @@ public class DualityFluidInterface
 
                 // make sure strange things didn't happen...
                 final FluidStack canExtract = this.tanks.drain(slot, toStore.getFluidStack(), false);
-                if (canExtract == null || canExtract.getAmount() != toStore.getStackSize()) {
+                if (canExtract.isEmpty() || canExtract.getAmount() != toStore.getStackSize()) {
                     changed = true;
                 } else {
                     IAEFluidStack notStored = Platform.poweredInsert(src, dest, toStore, this.interfaceRequestSource);
@@ -345,7 +345,7 @@ public class DualityFluidInterface
                         // extract items!
                         changed = true;
                         final FluidStack removed = this.tanks.drain(slot, toStore.getFluidStack(), true);
-                        if (removed == null || toStore.getStackSize() != removed.getAmount()) {
+                        if (removed.isEmpty() || toStore.getStackSize() != removed.getAmount()) {
                             throw new IllegalStateException("bad attempt at managing tanks. ( drain )");
                         }
                     }

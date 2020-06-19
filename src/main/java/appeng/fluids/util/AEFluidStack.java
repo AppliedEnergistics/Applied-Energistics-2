@@ -19,12 +19,20 @@
 package appeng.fluids.util;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import com.google.common.base.Preconditions;
+
+import net.minecraft.fluid.EmptyFluid;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
@@ -39,7 +47,8 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
     private static final String NBT_STACKSIZE = "cnt";
     private static final String NBT_REQUESTABLE = "req";
     private static final String NBT_CRAFTABLE = "craft";
-    private static final String NBT_FLUIDSTACK = "fs";
+    private static final String NBT_FLUID_ID = "f";
+    private static final String NBT_FLUID_TAG = "ft";
 
     private final Fluid fluid;
     private CompoundNBT tagCompound;
@@ -57,47 +66,53 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
         }
     }
 
-    private AEFluidStack(@Nonnull final FluidStack fluidStack) {
-        this.fluid = fluidStack.getFluid();
-
-        if (this.fluid == null) {
-            throw new IllegalArgumentException("Fluid is null.");
+    private AEFluidStack(@Nonnull Fluid fluid, long amount, @Nullable CompoundNBT tag) {
+        if (fluid == Fluids.EMPTY) {
+            System.out.println();
         }
-
-        this.setStackSize(fluidStack.getAmount());
+        this.fluid = Preconditions.checkNotNull(fluid);
+        this.setStackSize(amount);
         this.setCraftable(false);
         this.setCountRequestable(0);
-
-        if (fluidStack.getTag() != null) {
-            this.tagCompound = fluidStack.getTag().copy();
-        }
+        this.tagCompound = tag;
     }
 
     public static AEFluidStack fromFluidStack(final FluidStack input) {
-        if (input == null) {
+        if (input.isEmpty()) {
             return null;
         }
 
-        return new AEFluidStack(input);
+        Fluid fluid = input.getFluid();
+        if (fluid == null) {
+            throw new IllegalArgumentException("Fluid is null.");
+        }
+
+        long amount = input.getAmount();
+        CompoundNBT tag = null;
+        if (input.getTag() != null) {
+            tag = input.getTag().copy();
+        }
+        return new AEFluidStack(fluid, amount, tag);
     }
 
     public static IAEFluidStack fromNBT(final CompoundNBT data) {
-        final FluidStack fluidStack = FluidStack.loadFluidStackFromNBT(data.getCompound(NBT_FLUIDSTACK));
-
-        if (fluidStack == null) {
+        ResourceLocation fluidId = new ResourceLocation(data.getString(NBT_FLUID_ID));
+        Fluid fluid = ForgeRegistries.FLUIDS.getValue(fluidId);
+        if (fluid == null || fluid == Fluids.EMPTY) {
             return null;
         }
 
-        final AEFluidStack fluid = AEFluidStack.fromFluidStack(fluidStack);
-        fluid.setStackSize(data.getLong(NBT_STACKSIZE));
-        fluid.setCountRequestable(data.getLong(NBT_REQUESTABLE));
-        fluid.setCraftable(data.getBoolean(NBT_CRAFTABLE));
-
-        if (fluid.hasTagCompound()) {
-            fluid.tagCompound = fluid.tagCompound.copy();
+        CompoundNBT tag = null;
+        if (data.contains(NBT_FLUID_TAG, Constants.NBT.TAG_COMPOUND)) {
+            tag = data.getCompound(NBT_FLUID_TAG);
         }
 
-        return fluid;
+        long amount = data.getLong(NBT_STACKSIZE);
+
+        AEFluidStack fluidStack = new AEFluidStack(fluid, amount, tag);
+        fluidStack.setCountRequestable(data.getLong(NBT_REQUESTABLE));
+        fluidStack.setCraftable(data.getBoolean(NBT_CRAFTABLE));
+        return fluidStack;
     }
 
     @Override
@@ -112,14 +127,10 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 
     @Override
     public void writeToNBT(final CompoundNBT data) {
-        data.getCompound(NBT_FLUIDSTACK).putString("FluidName", this.fluid.getRegistryName().toString());
-        data.getCompound(NBT_FLUIDSTACK).putInt("Amount", 0);
+        data.putString(NBT_FLUID_ID, this.fluid.getRegistryName().toString());
         if (this.hasTagCompound()) {
-            data.getCompound(NBT_FLUIDSTACK).put("Tag", this.tagCompound);
-        } else {
-            data.getCompound(NBT_FLUIDSTACK).remove("Tag");
+            data.put(NBT_FLUID_TAG, this.tagCompound);
         }
-
         data.putLong(NBT_STACKSIZE, this.getStackSize());
         data.putLong(NBT_REQUESTABLE, this.getCountRequestable());
         data.putBoolean(NBT_CRAFTABLE, this.isCraftable());
@@ -234,7 +245,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
         final long stackSize = buffer.readVarLong();
         final long countRequestable = buffer.readVarLong();
 
-        if (fluidStack == null) {
+        if (fluidStack.isEmpty()) {
             return null;
         }
 

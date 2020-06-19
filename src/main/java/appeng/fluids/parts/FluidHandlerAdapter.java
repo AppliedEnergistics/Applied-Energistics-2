@@ -96,7 +96,7 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 
         // Drain the fluid from the tank
         FluidStack gathered = this.fluidHandler.drain(requestedFluidStack, mode.getFluidAction());
-        if (gathered == null) {
+        if (gathered.isEmpty()) {
             // If nothing was pulled from the tank, return null
             return null;
         }

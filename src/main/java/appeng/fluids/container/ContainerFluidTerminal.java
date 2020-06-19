@@ -366,7 +366,7 @@ public class ContainerFluidTerminal extends AEBaseContainer
         } else if (action == InventoryAction.EMPTY_ITEM) {
             // See how much we can drain from the item
             final FluidStack extract = fh.drain(Integer.MAX_VALUE, FluidAction.SIMULATE);
-            if (extract == null || extract.getAmount() < 1) {
+            if (extract.isEmpty() || extract.getAmount() < 1) {
                 return;
             }
 
@@ -378,7 +378,7 @@ public class ContainerFluidTerminal extends AEBaseContainer
                 final int toStore = (int) (extract.getAmount() - notStorable.getStackSize());
                 final FluidStack storable = fh.drain(toStore, FluidAction.SIMULATE);
 
-                if (storable == null || storable.getAmount() == 0) {
+                if (storable.isEmpty() || storable.getAmount() == 0) {
                     return;
                 } else {
                     extract.setAmount(storable.getAmount());

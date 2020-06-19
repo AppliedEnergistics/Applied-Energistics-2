@@ -18,21 +18,15 @@
 
 package appeng.client.render.effects;
 
-import net.minecraft.client.particle.BreakingParticle;
-import net.minecraft.client.particle.IAnimatedSprite;
-import net.minecraft.client.particle.IParticleFactory;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import appeng.api.util.AEPartLocation;
+import appeng.core.AppEng;
+import net.minecraft.client.particle.*;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.api.util.AEPartLocation;
-import appeng.core.AppEng;
-
-public class MatterCannonFX extends BreakingParticle {
+public class MatterCannonFX extends SpriteTexturedParticle {
 
     public static final BasicParticleType TYPE = new BasicParticleType(false);
 
@@ -42,7 +36,7 @@ public class MatterCannonFX extends BreakingParticle {
 
     public MatterCannonFX(final World par1World, final double x, final double y, final double z,
             IAnimatedSprite sprite) {
-        super(par1World, x, y, z, new ItemStack(Items.DIAMOND));
+        super(par1World, x, y, z);
         this.particleGravity = 0;
         this.particleBlue = 1;
         this.particleGreen = 1;
@@ -57,6 +51,11 @@ public class MatterCannonFX extends BreakingParticle {
 
     public void fromItem(final AEPartLocation d) {
         this.particleScale *= 1.2f;
+    }
+
+    @Override
+    public IParticleRenderType getRenderType() {
+        return IParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
     @Override

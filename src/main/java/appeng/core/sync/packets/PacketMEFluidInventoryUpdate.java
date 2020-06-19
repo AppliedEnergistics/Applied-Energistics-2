@@ -24,6 +24,7 @@ import java.io.OutputStream;
 import java.nio.BufferOverflowException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 

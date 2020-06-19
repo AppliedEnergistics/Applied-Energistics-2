@@ -124,7 +124,7 @@ public class AEFluidInventory implements IAEFluidTank {
 
     @Override
     public int fill(FluidStack resource, FluidAction action) {
-        if (resource == null || resource.isEmpty() || resource.getAmount() <= 0) {
+        if (resource.isEmpty() || resource.getAmount() <= 0) {
             return 0;
         }
 
@@ -161,7 +161,7 @@ public class AEFluidInventory implements IAEFluidTank {
 
     @Override
     public FluidStack drain(final FluidStack fluid, final FluidAction action) {
-        if (fluid == null || fluid.getAmount() <= 0) {
+        if (fluid.isEmpty() || fluid.getAmount() <= 0) {
             return FluidStack.EMPTY;
         }
 
