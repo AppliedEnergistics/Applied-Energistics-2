@@ -1,0 +1,42 @@
+name: 'Release'
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Validate semver
+        env:
+          RELEASE: ${{ github.event.release.tag_name }}
+        run: echo $RELEASE | grep -oP '^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Use gradle cache for faster builds
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+      - name: Generate assets
+        uses: GabrielBB/xvfb-action@v1.2
+        env:
+          RELEASE: ${{ github.event.release.tag_name }}
+        with:
+          run: ./gradlew runData --no-daemon
+      - name: Build with Gradle
+        env:
+          RELEASE: ${{ github.event.release.tag_name }}
+        run: ./gradlew build --no-daemon
+      - name: Publish package
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE: ${{ github.event.release.tag_name }}
+        run: ./gradlew publish --no-daemon
