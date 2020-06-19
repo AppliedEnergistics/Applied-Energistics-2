@@ -22,8 +22,6 @@ import java.util.function.Consumer;
 
 import net.minecraft.block.Block;
 
-import appeng.tile.AEBaseTile;
-
 /**
  * @author GuntherDW
  */

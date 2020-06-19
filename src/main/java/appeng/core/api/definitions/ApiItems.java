@@ -35,7 +35,11 @@ import appeng.core.CreativeTabFacade;
 import appeng.core.features.ActivityState;
 import appeng.core.features.ColoredItemDefinition;
 import appeng.core.features.ItemStackSrc;
-import appeng.debug.*;
+import appeng.debug.ToolDebugCard;
+import appeng.debug.ToolDebugPartPlacer;
+import appeng.debug.ToolEraser;
+import appeng.debug.ToolMeteoritePlacer;
+import appeng.debug.ToolReplicatorCard;
 import appeng.entity.EntityGrowingCrystal;
 import appeng.fluids.items.BasicFluidStorageCell;
 import appeng.fluids.items.FluidDummyItem;
@@ -43,16 +47,33 @@ import appeng.fluids.items.FluidDummyItemRendering;
 import appeng.hooks.DispenserBlockTool;
 import appeng.hooks.DispenserMatterCannon;
 import appeng.items.materials.MaterialType;
-import appeng.items.misc.*;
+import appeng.items.misc.ItemCrystalSeed;
+import appeng.items.misc.ItemEncodedPattern;
+import appeng.items.misc.ItemPaintBall;
+import appeng.items.misc.ItemPaintBallRendering;
 import appeng.items.parts.FacadeRendering;
 import appeng.items.parts.ItemFacade;
 import appeng.items.storage.BasicItemStorageCell;
 import appeng.items.storage.ItemCreativeStorageCell;
 import appeng.items.storage.ItemSpatialStorageCell;
 import appeng.items.storage.ItemViewCell;
-import appeng.items.tools.*;
-import appeng.items.tools.powered.*;
-import appeng.items.tools.quartz.*;
+import appeng.items.tools.ToolBiometricCard;
+import appeng.items.tools.ToolMemoryCard;
+import appeng.items.tools.ToolNetworkTool;
+import appeng.items.tools.powered.ToolChargedStaff;
+import appeng.items.tools.powered.ToolColorApplicator;
+import appeng.items.tools.powered.ToolColorApplicatorRendering;
+import appeng.items.tools.powered.ToolEntropyManipulator;
+import appeng.items.tools.powered.ToolMatterCannon;
+import appeng.items.tools.powered.ToolPortableCell;
+import appeng.items.tools.powered.ToolWirelessTerminal;
+import appeng.items.tools.quartz.ToolQuartzAxe;
+import appeng.items.tools.quartz.ToolQuartzCuttingKnife;
+import appeng.items.tools.quartz.ToolQuartzHoe;
+import appeng.items.tools.quartz.ToolQuartzPickaxe;
+import appeng.items.tools.quartz.ToolQuartzSpade;
+import appeng.items.tools.quartz.ToolQuartzSword;
+import appeng.items.tools.quartz.ToolQuartzWrench;
 
 /**
  * Internal implementation for the API items
@@ -540,6 +561,7 @@ public final class ApiItems implements IItems {
         return this.toolReplicatorCard;
     }
 
+    @Override
     public IItemDefinition dummyFluidItem() {
         return this.dummyFluidItem;
     }

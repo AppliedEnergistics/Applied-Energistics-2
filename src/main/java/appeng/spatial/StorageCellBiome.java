@@ -48,6 +48,7 @@ public class StorageCellBiome extends Biome {
 // FIXME		this.spawnableCaveCreatureList.clear();
     }
 
+    @Override
     @OnlyIn(Dist.CLIENT)
     public int getSkyColor() {
         return 0x111111;

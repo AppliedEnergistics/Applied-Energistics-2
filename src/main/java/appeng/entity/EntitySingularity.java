@@ -34,7 +34,6 @@ import appeng.api.AEApi;
 import appeng.api.definitions.IMaterials;
 import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
-import appeng.helpers.Reflected;
 import appeng.util.Platform;
 
 public final class EntitySingularity extends AEBaseEntityItem {

@@ -12,9 +12,6 @@ import net.minecraft.world.IWorldReader;
 
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlocks;
-import appeng.core.AEConfig;
-import appeng.worldgen.meteorite.IMeteoriteWorld;
-import appeng.worldgen.meteorite.StandardWorld;
 
 /**
  * Makes decisions about spawning meteorites in the world.

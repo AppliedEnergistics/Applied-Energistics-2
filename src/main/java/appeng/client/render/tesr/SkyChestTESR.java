@@ -67,6 +67,7 @@ public class SkyChestTESR extends TileEntityRenderer<TileSkyChest> {
         this.singleLatch.rotationPointY = 8.0F;
     }
 
+    @Override
     public void render(TileSkyChest tileEntityIn, float partialTicks, MatrixStack matrixStackIn,
             IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
         matrixStackIn.push();

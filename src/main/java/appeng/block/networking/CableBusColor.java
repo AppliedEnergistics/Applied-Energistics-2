@@ -24,13 +24,11 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.ILightReader;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.AEColor;
-import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.parts.CableBusContainer;
 import appeng.tile.networking.TileCableBus;
 

@@ -23,8 +23,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 
-import appeng.api.definitions.IBlockDefinition;
-
 public class FalloutSnow extends FalloutCopy {
     private static final double SNOW_THRESHOLD = 0.7;
     private static final double ICE_THRESHOLD = 0.5;

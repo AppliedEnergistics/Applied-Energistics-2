@@ -33,7 +33,7 @@ import javax.annotation.Nullable;
 public interface ISaveProvider {
     /**
      * Cell has changed and needs to be changed.
-     * 
+     *
      * @param cellInventory can be null for custom cells.
      */
     void saveChanges(@Nullable ICellInventory<?> cellInventory);

@@ -18,11 +18,8 @@
 
 package appeng.block.networking;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-import appeng.api.implementations.items.IAEItemPowerStorage;
-import appeng.block.AEBaseBlockItemChargeable;
 import appeng.bootstrap.BlockRenderingCustomizer;
 import appeng.bootstrap.IBlockRendering;
 import appeng.bootstrap.IItemRendering;

@@ -23,8 +23,6 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import com.google.common.collect.Lists;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
@@ -551,7 +549,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
     /**
      * Creates the fake (and temporary) tool that will be used to calculate the loot
      * tables of a block this plane wants to break.
-     * 
+     *
      * @param state The state of the block about to be broken.
      */
     protected ItemStack createHarvestTool(BlockState state) {

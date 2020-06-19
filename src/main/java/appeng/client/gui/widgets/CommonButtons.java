@@ -1,8 +1,6 @@
 package appeng.client.gui.widgets;
 
-import appeng.api.config.FuzzyMode;
 import appeng.api.config.PowerUnits;
-import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.core.AEConfig;
 

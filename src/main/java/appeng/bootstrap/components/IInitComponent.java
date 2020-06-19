@@ -18,8 +18,6 @@
 
 package appeng.bootstrap.components;
 
-import net.minecraftforge.api.distmarker.Dist;
-
 import appeng.bootstrap.IBootstrapComponent;
 
 @FunctionalInterface

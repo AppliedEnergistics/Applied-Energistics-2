@@ -19,30 +19,22 @@
 package appeng.items.materials;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.google.common.base.Preconditions;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -52,7 +44,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Upgrades;
-import appeng.api.features.AEFeature;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.items.IItemGroup;
 import appeng.api.implementations.items.IStorageComponent;
@@ -60,13 +51,8 @@ import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.SelectedPart;
-import appeng.core.AEConfig;
-import appeng.core.features.IStackSrc;
-import appeng.core.features.MaterialStackSrc;
-import appeng.entity.EntitySingularity;
 import appeng.items.AEBaseItem;
 import appeng.util.InventoryAdaptor;
-import appeng.util.Platform;
 import appeng.util.inv.AdaptorItemHandler;
 
 public final class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgradeModule {

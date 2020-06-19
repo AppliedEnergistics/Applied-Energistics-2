@@ -29,22 +29,27 @@ public class CableBusBreakingParticle extends SpriteTexturedParticle {
         this(world, x, y, z, 0, 0, 0, sprite);
     }
 
+    @Override
     public IParticleRenderType getRenderType() {
         return IParticleRenderType.TERRAIN_SHEET;
     }
 
+    @Override
     protected float getMinU() {
         return this.sprite.getInterpolatedU((this.field_217571_C + 1.0F) / 4.0F * 16.0F);
     }
 
+    @Override
     protected float getMaxU() {
         return this.sprite.getInterpolatedU(this.field_217571_C / 4.0F * 16.0F);
     }
 
+    @Override
     protected float getMinV() {
         return this.sprite.getInterpolatedV(this.field_217572_F / 4.0F * 16.0F);
     }
 
+    @Override
     protected float getMaxV() {
         return this.sprite.getInterpolatedV((this.field_217572_F + 1.0F) / 4.0F * 16.0F);
     }

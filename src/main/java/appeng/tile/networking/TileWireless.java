@@ -42,7 +42,6 @@ import appeng.core.AEConfig;
 import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.AEItemDefinitionFilter;
 

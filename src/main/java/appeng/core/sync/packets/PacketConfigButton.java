@@ -25,11 +25,8 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 
 import appeng.api.config.Settings;
-import appeng.api.util.IConfigManager;
-import appeng.api.util.IConfigurableObject;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
-import appeng.util.Platform;
 
 public final class PacketConfigButton extends AppEngPacket {
     private final Settings option;

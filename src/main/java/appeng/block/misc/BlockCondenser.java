@@ -29,12 +29,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
-import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.ContainerCondenser;
-import appeng.container.implementations.ContainerDrive;
 import appeng.tile.misc.TileCondenser;
 import appeng.util.Platform;
 

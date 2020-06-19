@@ -23,8 +23,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 
-import appeng.api.definitions.IBlockDefinition;
-
 public class FalloutSand extends FalloutCopy {
     private static final double GLASS_THRESHOLD = 0.66;
     private final MeteoriteBlockPutter putter;

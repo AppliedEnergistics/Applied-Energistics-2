@@ -18,8 +18,6 @@
 
 package appeng.core.sync.network;
 
-import java.lang.reflect.InvocationTargetException;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.INetHandler;

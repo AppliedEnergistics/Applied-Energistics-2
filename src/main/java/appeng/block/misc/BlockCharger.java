@@ -52,7 +52,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import appeng.api.AEApi;
 import appeng.api.util.AEAxisAlignedBB;
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.effects.ChargedOreFX;
 import appeng.client.render.effects.LightningFX;
 import appeng.client.render.renderable.ItemRenderable;
 import appeng.client.render.tesr.ModularTESR;

@@ -26,7 +26,6 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
-import appeng.container.implementations.ContainerHelper;
 import appeng.container.slot.SlotInaccessible;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;

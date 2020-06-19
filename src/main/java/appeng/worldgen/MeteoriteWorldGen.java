@@ -29,7 +29,6 @@ import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.server.ServerWorld;
 
 import appeng.api.features.AEFeature;
 import appeng.api.features.IWorldGen.WorldGenType;

@@ -68,7 +68,6 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
-import appeng.fluids.container.ContainerFluidInterface;
 import appeng.fluids.container.ContainerFluidStorageBus;
 import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.IAEFluidInventory;

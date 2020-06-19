@@ -18,13 +18,9 @@
 
 package appeng.parts.automation;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.util.ResourceLocation;
 

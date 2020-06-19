@@ -33,7 +33,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import appeng.block.AEBaseBlock;
 import appeng.core.worlddata.WorldData;
-import appeng.util.Platform;
 
 public class BlockSkyStone extends AEBaseBlock {
     private static final float BREAK_SPEAK_SCALAR = 0.1f;
@@ -67,8 +66,8 @@ public class BlockSkyStone extends AEBaseBlock {
     public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn,
             BlockPos currentPos, BlockPos facingPos) {
         if (worldIn instanceof ServerWorld) {
-            WorldData.instance().compassData().service().updateArea((ServerWorld) worldIn, currentPos.getX(),
-                    currentPos.getY(), currentPos.getZ());
+            WorldData.instance().compassData().service().updateArea(worldIn, currentPos.getX(), currentPos.getY(),
+                    currentPos.getZ());
         }
 
         return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
@@ -83,8 +82,7 @@ public class BlockSkyStone extends AEBaseBlock {
         super.onReplaced(state, w, pos, newState, isMoving);
 
         if (w instanceof ServerWorld) {
-            WorldData.instance().compassData().service().updateArea((ServerWorld) w, pos.getX(), pos.getY(),
-                    pos.getZ());
+            WorldData.instance().compassData().service().updateArea(w, pos.getX(), pos.getY(), pos.getZ());
         }
     }
 

@@ -18,10 +18,7 @@
 
 package appeng.core.api.definitions;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -32,21 +29,56 @@ import appeng.api.parts.IPart;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
 import appeng.bootstrap.FeatureFactory;
-import appeng.client.render.cablebus.P2PTunnelFrequencyModel;
 import appeng.core.AppEng;
 import appeng.core.CreativeTab;
-import appeng.core.features.*;
+import appeng.core.features.ActivityState;
+import appeng.core.features.ColoredItemDefinition;
+import appeng.core.features.ItemStackSrc;
 import appeng.core.features.registries.PartModels;
-import appeng.fluids.parts.*;
+import appeng.fluids.parts.PartFluidAnnihilationPlane;
+import appeng.fluids.parts.PartFluidExportBus;
+import appeng.fluids.parts.PartFluidFormationPlane;
+import appeng.fluids.parts.PartFluidImportBus;
+import appeng.fluids.parts.PartFluidInterface;
+import appeng.fluids.parts.PartFluidLevelEmitter;
+import appeng.fluids.parts.PartFluidStorageBus;
+import appeng.fluids.parts.PartFluidTerminal;
 import appeng.items.parts.ColoredPartItem;
 import appeng.items.parts.ItemPart;
 import appeng.items.parts.ItemPartRendering;
 import appeng.items.parts.PartType;
-import appeng.parts.automation.*;
-import appeng.parts.misc.*;
-import appeng.parts.networking.*;
-import appeng.parts.p2p.*;
-import appeng.parts.reporting.*;
+import appeng.parts.automation.PartAnnihilationPlane;
+import appeng.parts.automation.PartExportBus;
+import appeng.parts.automation.PartFormationPlane;
+import appeng.parts.automation.PartIdentityAnnihilationPlane;
+import appeng.parts.automation.PartImportBus;
+import appeng.parts.automation.PartLevelEmitter;
+import appeng.parts.misc.PartCableAnchor;
+import appeng.parts.misc.PartInterface;
+import appeng.parts.misc.PartInvertedToggleBus;
+import appeng.parts.misc.PartStorageBus;
+import appeng.parts.misc.PartToggleBus;
+import appeng.parts.networking.PartCableCovered;
+import appeng.parts.networking.PartCableGlass;
+import appeng.parts.networking.PartCableSmart;
+import appeng.parts.networking.PartDenseCableCovered;
+import appeng.parts.networking.PartDenseCableSmart;
+import appeng.parts.networking.PartQuartzFiber;
+import appeng.parts.p2p.PartP2PFEPower;
+import appeng.parts.p2p.PartP2PFluids;
+import appeng.parts.p2p.PartP2PItems;
+import appeng.parts.p2p.PartP2PLight;
+import appeng.parts.p2p.PartP2PRedstone;
+import appeng.parts.p2p.PartP2PTunnelME;
+import appeng.parts.reporting.PartConversionMonitor;
+import appeng.parts.reporting.PartCraftingTerminal;
+import appeng.parts.reporting.PartDarkPanel;
+import appeng.parts.reporting.PartInterfaceTerminal;
+import appeng.parts.reporting.PartPanel;
+import appeng.parts.reporting.PartPatternTerminal;
+import appeng.parts.reporting.PartSemiDarkPanel;
+import appeng.parts.reporting.PartStorageMonitor;
+import appeng.parts.reporting.PartTerminal;
 
 /**
  * Internal implementation for the API parts

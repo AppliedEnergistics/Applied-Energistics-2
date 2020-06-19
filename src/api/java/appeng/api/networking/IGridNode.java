@@ -29,7 +29,6 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
 
 import appeng.api.IAppEngApi;
 import appeng.api.util.AEPartLocation;

@@ -18,8 +18,6 @@
 
 package appeng.debug;
 
-import java.util.EnumSet;
-
 import javax.annotation.Nullable;
 
 import com.google.common.math.IntMath;
@@ -28,7 +26,6 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;

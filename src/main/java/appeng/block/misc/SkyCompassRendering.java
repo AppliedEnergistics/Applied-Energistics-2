@@ -21,7 +21,8 @@ package appeng.block.misc;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.bootstrap.*;
+import appeng.bootstrap.TileEntityRendering;
+import appeng.bootstrap.TileEntityRenderingCustomizer;
 import appeng.client.render.tesr.SkyCompassTESR;
 import appeng.tile.misc.TileSkyCompass;
 

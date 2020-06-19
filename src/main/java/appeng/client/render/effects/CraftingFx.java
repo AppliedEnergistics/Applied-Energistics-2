@@ -20,7 +20,11 @@ package appeng.client.render.effects;
 
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
-import net.minecraft.client.particle.*;
+import net.minecraft.client.particle.IAnimatedSprite;
+import net.minecraft.client.particle.IParticleFactory;
+import net.minecraft.client.particle.IParticleRenderType;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.particles.BasicParticleType;
@@ -71,7 +75,7 @@ public class CraftingFx extends SpriteTexturedParticle {
     @Override
     public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
 
-        float f = (this.age + partialTicks) / (float) this.maxAge;
+        float f = (this.age + partialTicks) / this.maxAge;
 
         float offX = (float) posX + MathHelper.lerp(f, offsetX, 0);
         float offY = (float) posY + MathHelper.lerp(f, offsetY, 0);
@@ -137,6 +141,7 @@ public class CraftingFx extends SpriteTexturedParticle {
             this.spriteSet = p_i50477_1_;
         }
 
+        @Override
         public Particle makeParticle(BasicParticleType data, World worldIn, double x, double y, double z, double xSpeed,
                 double ySpeed, double zSpeed) {
             return new CraftingFx(worldIn, x, y, z, spriteSet);

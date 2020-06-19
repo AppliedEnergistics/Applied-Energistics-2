@@ -20,7 +20,6 @@ package appeng.container.implementations;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.networking.crafting.ICraftingCPU;

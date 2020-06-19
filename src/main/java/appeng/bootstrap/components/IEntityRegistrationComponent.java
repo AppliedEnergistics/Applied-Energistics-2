@@ -1,7 +1,6 @@
 
 package appeng.bootstrap.components;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraftforge.registries.IForgeRegistry;
 

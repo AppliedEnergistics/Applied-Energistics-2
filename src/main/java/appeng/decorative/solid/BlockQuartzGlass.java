@@ -19,9 +19,7 @@
 package appeng.decorative.solid;
 
 import net.minecraft.block.AbstractGlassBlock;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.Direction;
 

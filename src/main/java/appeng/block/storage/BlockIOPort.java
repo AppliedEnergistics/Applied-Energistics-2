@@ -35,7 +35,6 @@ import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.ContainerIOPort;
-import appeng.fluids.container.ContainerFluidInterface;
 import appeng.tile.storage.TileIOPort;
 import appeng.util.Platform;
 

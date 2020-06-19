@@ -50,7 +50,6 @@ import appeng.me.GridNode;
 import appeng.me.cache.TickManagerCache;
 import appeng.parts.p2p.PartP2PTunnel;
 import appeng.tile.networking.TileController;
-import appeng.util.Platform;
 
 public class ToolDebugCard extends AEBaseItem {
 

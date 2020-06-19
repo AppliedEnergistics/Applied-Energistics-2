@@ -23,8 +23,6 @@
 
 package appeng.api.parts;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.item.ItemStack;
 
 //@formatter:off

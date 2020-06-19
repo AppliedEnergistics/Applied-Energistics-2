@@ -18,12 +18,6 @@
 
 package appeng.client.render.spatial;
 
-import java.util.Map;
-
-import com.google.common.collect.ImmutableMap;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;

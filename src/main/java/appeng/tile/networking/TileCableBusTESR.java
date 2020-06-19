@@ -20,8 +20,6 @@ package appeng.tile.networking;
 
 import net.minecraft.tileentity.TileEntityType;
 
-import appeng.block.networking.BlockCableBus;
-
 public class TileCableBusTESR extends TileCableBus {
 
     public TileCableBusTESR(TileEntityType<?> tileEntityTypeIn) {

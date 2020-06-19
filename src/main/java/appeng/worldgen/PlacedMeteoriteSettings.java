@@ -1,12 +1,8 @@
 package appeng.worldgen;
 
-import java.util.Objects;
-
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.util.INBTSerializable;
 
 public final class PlacedMeteoriteSettings {
 

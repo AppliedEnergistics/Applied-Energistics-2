@@ -58,7 +58,6 @@ import appeng.container.implementations.ContainerUpgradeable;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
-import appeng.fluids.container.ContainerFluidInterface;
 import appeng.helpers.MultiCraftingTracker;
 import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;

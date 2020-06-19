@@ -535,7 +535,7 @@ public class PartStorageBus extends PartUpgradeable
     // TODO: BC PIPE INTEGRATION
     /*
      * @Override
-     * 
+     *
      * @Method( iname = IntegrationType.BuildCraftTransport ) public ConnectOverride
      * overridePipeConnection( PipeType type, ForgeDirection with ) { return type ==
      * PipeType.ITEM && with == this.getSide() ? ConnectOverride.CONNECT :

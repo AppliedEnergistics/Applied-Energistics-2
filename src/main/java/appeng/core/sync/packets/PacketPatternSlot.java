@@ -18,8 +18,6 @@
 
 package appeng.core.sync.packets;
 
-import java.io.IOException;
-
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;

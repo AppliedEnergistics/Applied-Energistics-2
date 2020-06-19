@@ -18,15 +18,11 @@
 
 package appeng.integration.modules.jei;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.*;
+import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.drawable.IDrawableStatic;

@@ -18,7 +18,6 @@
 
 package appeng.block.networking;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 
 import appeng.block.AEBaseTileBlock;

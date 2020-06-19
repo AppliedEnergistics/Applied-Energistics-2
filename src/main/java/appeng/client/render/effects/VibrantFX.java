@@ -18,7 +18,11 @@
 
 package appeng.client.render.effects;
 
-import net.minecraft.client.particle.*;
+import net.minecraft.client.particle.IAnimatedSprite;
+import net.minecraft.client.particle.IParticleFactory;
+import net.minecraft.client.particle.IParticleRenderType;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -91,6 +95,7 @@ public class VibrantFX extends SpriteTexturedParticle {
             this.spriteSet = spriteSet;
         }
 
+        @Override
         public Particle makeParticle(BasicParticleType typeIn, World worldIn, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
             return new VibrantFX(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet);

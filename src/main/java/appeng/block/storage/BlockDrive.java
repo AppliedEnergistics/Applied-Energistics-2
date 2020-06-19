@@ -33,7 +33,6 @@ import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.ContainerDrive;
-import appeng.container.implementations.ContainerQuartzKnife;
 import appeng.tile.storage.TileDrive;
 import appeng.util.Platform;
 

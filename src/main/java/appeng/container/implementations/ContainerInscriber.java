@@ -30,7 +30,6 @@ import appeng.api.AEApi;
 import appeng.api.definitions.IItemDefinition;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
-import appeng.container.implementations.ContainerHelper;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;

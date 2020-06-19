@@ -28,21 +28,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.ContainerChest;
-import appeng.container.implementations.ContainerQNB;
 import appeng.core.localization.PlayerMessages;
 import appeng.tile.storage.TileChest;
-import appeng.util.Platform;
 
 public class BlockChest extends AEBaseTileBlock<TileChest> {
 

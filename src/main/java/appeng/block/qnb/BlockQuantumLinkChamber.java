@@ -18,15 +18,11 @@
 
 package appeng.block.qnb;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
@@ -40,7 +36,6 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-import appeng.api.util.AEPartLocation;
 import appeng.client.EffectType;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;

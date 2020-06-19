@@ -21,7 +21,6 @@ package appeng.client.gui.implementations;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
-import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.container.implementations.ContainerMEPortableCell;
 
 public class GuiMEPortableCell extends GuiMEMonitorable<ContainerMEPortableCell> {

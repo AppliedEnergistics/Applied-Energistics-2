@@ -23,9 +23,7 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.ActionItems;
-import appeng.api.config.Settings;
 import appeng.client.gui.widgets.GuiActionButton;
-import appeng.client.gui.widgets.GuiSettingToggleButton;
 import appeng.container.implementations.ContainerCraftingTerm;
 import appeng.container.slot.SlotCraftingMatrix;
 import appeng.core.localization.GuiText;

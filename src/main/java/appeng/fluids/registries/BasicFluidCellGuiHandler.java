@@ -30,12 +30,9 @@ import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.util.AEPartLocation;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
-import appeng.container.implementations.ContainerFormationPlane;
 import appeng.fluids.container.ContainerFluidTerminal;
-import appeng.util.Platform;
 
 public class BasicFluidCellGuiHandler implements ICellGuiHandler {
 

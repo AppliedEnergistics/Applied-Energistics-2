@@ -18,16 +18,7 @@
 
 package appeng.client.gui.widgets;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.text.ITextComponent;
-
-import appeng.api.config.*;
-import appeng.core.localization.ButtonToolTips;
+import appeng.api.config.Settings;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketConfigButton;
 

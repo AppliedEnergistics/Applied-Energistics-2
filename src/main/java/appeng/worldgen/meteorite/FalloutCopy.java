@@ -18,14 +18,10 @@
 
 package appeng.worldgen.meteorite;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
-
-import appeng.api.definitions.IBlockDefinition;
-import appeng.util.Platform;
 
 public class FalloutCopy extends Fallout {
     private static final double SPECIFIED_BLOCK_THRESHOLD = 0.9;

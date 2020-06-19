@@ -18,7 +18,6 @@
 
 package appeng.tile.networking;
 
-import appeng.client.render.TesrRenderHelper;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -27,7 +26,6 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
 
 import appeng.api.parts.IPart;
-import appeng.tile.AEBaseTile;
 
 public class CableBusTESR extends TileEntityRenderer<TileCableBus> {
 

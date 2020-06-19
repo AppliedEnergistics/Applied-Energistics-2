@@ -26,7 +26,6 @@ import net.minecraft.network.PacketBuffer;
 import appeng.api.config.SecurityPermissions;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
-import appeng.container.implementations.ContainerHelper;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.tile.storage.TileChest;
 

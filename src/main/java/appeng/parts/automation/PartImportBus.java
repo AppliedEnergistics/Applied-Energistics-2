@@ -48,7 +48,6 @@ import appeng.container.ContainerOpener;
 import appeng.container.implementations.ContainerUpgradeable;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
-import appeng.fluids.container.ContainerFluidInterface;
 import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;

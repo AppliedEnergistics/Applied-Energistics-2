@@ -18,15 +18,12 @@
 
 package appeng.client.render.renderable;
 
-import java.nio.FloatBuffer;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.lwjgl.BufferUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;

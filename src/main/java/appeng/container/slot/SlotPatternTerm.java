@@ -18,8 +18,6 @@
 
 package appeng.container.slot;
 
-import java.io.IOException;
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;

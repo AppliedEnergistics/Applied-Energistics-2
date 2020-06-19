@@ -32,14 +32,12 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 import appeng.api.util.IOrientable;
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
-import appeng.container.implementations.ContainerDrive;
 import appeng.container.implementations.ContainerInterface;
 import appeng.tile.misc.TileInterface;
 import appeng.util.Platform;

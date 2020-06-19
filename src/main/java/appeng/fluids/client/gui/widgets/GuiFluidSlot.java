@@ -16,7 +16,6 @@ import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.client.gui.widgets.GuiCustomSlot;

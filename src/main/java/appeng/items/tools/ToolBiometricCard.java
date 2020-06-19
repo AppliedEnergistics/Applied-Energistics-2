@@ -43,7 +43,6 @@ import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.networking.security.ISecurityRegistry;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
-import appeng.util.Platform;
 
 public class ToolBiometricCard extends AEBaseItem implements IBiometricCard {
     public ToolBiometricCard(Properties properties) {

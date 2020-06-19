@@ -41,7 +41,6 @@ import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.items.AEBaseItem;
-import appeng.util.Platform;
 
 public class ToolReplicatorCard extends AEBaseItem {
 

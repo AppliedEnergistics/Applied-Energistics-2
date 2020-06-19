@@ -19,7 +19,6 @@
 package appeng.client.render.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 

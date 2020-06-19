@@ -27,7 +27,6 @@ import net.minecraft.util.math.Vec3d;
 import appeng.api.parts.IPartModel;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
-import appeng.container.implementations.ContainerInscriber;
 import appeng.container.implementations.ContainerInterfaceTerminal;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;

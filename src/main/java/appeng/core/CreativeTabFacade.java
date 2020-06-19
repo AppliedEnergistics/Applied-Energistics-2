@@ -18,14 +18,9 @@
 
 package appeng.core;
 
-import java.util.Optional;
-
 import net.minecraft.block.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-
-import appeng.api.AEApi;
 
 public final class CreativeTabFacade {
     public static ItemGroup instance = null;

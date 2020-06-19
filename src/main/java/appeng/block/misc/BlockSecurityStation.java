@@ -28,21 +28,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
-import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
-import appeng.container.implementations.ContainerFormationPlane;
 import appeng.container.implementations.ContainerSecurityStation;
 import appeng.tile.misc.TileSecurityStation;
-import appeng.util.Platform;
 
 public class BlockSecurityStation extends AEBaseTileBlock<TileSecurityStation> {
 

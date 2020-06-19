@@ -18,8 +18,6 @@
 
 package appeng.bootstrap.components;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 
 import appeng.bootstrap.IModelRegistry;

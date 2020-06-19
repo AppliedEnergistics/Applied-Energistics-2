@@ -22,14 +22,11 @@
 
 package appeng.client.gui.implementations;
 
-import java.io.IOException;
-
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.container.implementations.ContainerCraftingStatus;
-import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;

@@ -40,7 +40,6 @@ import appeng.api.config.PowerUnits;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
-import appeng.util.Platform;
 
 public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPowerStorage {
     private static final String CURRENT_POWER_NBT_KEY = "internalCurrentPower";

@@ -18,7 +18,6 @@
 
 package appeng.integration.modules.jei;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

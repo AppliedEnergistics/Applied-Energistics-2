@@ -20,7 +20,6 @@ package appeng.fluids.helper;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;

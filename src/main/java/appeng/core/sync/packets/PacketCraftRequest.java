@@ -24,7 +24,6 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -35,7 +34,6 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.ContainerCraftAmount;
 import appeng.container.implementations.ContainerCraftConfirm;
-import appeng.container.implementations.ContainerInscriber;
 import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;

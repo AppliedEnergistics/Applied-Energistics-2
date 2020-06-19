@@ -21,7 +21,11 @@ package appeng.client.gui.implementations;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
-import appeng.api.config.*;
+import appeng.api.config.AccessRestriction;
+import appeng.api.config.ActionItems;
+import appeng.api.config.FuzzyMode;
+import appeng.api.config.Settings;
+import appeng.api.config.StorageFilter;
 import appeng.client.gui.widgets.GuiActionButton;
 import appeng.client.gui.widgets.GuiServerSettingToggleButton;
 import appeng.client.gui.widgets.GuiSettingToggleButton;

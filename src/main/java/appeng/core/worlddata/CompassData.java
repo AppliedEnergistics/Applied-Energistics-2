@@ -18,8 +18,6 @@
 
 package appeng.core.worlddata;
 
-import java.io.File;
-
 import javax.annotation.Nonnull;
 
 import com.google.common.base.Preconditions;

@@ -28,7 +28,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.SecurityPermissions;
-import appeng.api.networking.security.IActionHost;
 import appeng.api.parts.IPartModel;
 import appeng.container.implementations.ContainerCraftingTerm;
 import appeng.container.implementations.ContainerMEMonitorable;

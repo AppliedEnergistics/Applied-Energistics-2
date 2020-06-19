@@ -18,7 +18,11 @@
 
 package appeng.client.render.crafting;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Random;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,7 +37,6 @@ import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.tile.crafting.CraftingCubeModelData;
-import appeng.tile.crafting.TileCraftingTile;
 import appeng.util.Platform;
 
 /**

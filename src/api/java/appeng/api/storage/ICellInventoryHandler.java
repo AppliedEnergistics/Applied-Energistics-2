@@ -32,7 +32,7 @@ public interface ICellInventoryHandler<T extends IAEStack<T>> extends IMEInvento
 
     /**
      * Get access to the ICellInventory. Can be null for custom cells.
-     * 
+     *
      * @return get access to the Cell Inventory.
      */
     @Nullable

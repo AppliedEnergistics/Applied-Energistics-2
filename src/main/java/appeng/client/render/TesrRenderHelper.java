@@ -48,7 +48,7 @@ public class TesrRenderHelper {
         switch (face) {
             case UP:
                 mStack.rotate(Vector3f.XP.rotationDegrees(270));
-                mStack.rotate(Vector3f.ZP.rotationDegrees(- spin * 90.0F));
+                mStack.rotate(Vector3f.ZP.rotationDegrees(-spin * 90.0F));
                 break;
 
             case DOWN:
@@ -102,7 +102,7 @@ public class TesrRenderHelper {
 
     /**
      * Render an item in 2D and the given text below it.
-     * 
+     *
      * @param matrixStack
      * @param buffers
      * @param spacing           Specifies how far apart the item and the item stack

@@ -18,8 +18,6 @@
 
 package appeng.core.sync.packets;
 
-import java.io.IOException;
-
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -188,7 +186,7 @@ public class PacketJEIRecipe extends AppEngPacket {
     }
 
     /**
-     * 
+     *
      * @param slot
      * @param is   itemstack
      * @return is if it can be used, else EMPTY

@@ -18,7 +18,8 @@
 
 package appeng.worldgen;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -47,7 +48,6 @@ import appeng.worldgen.meteorite.Fallout;
 import appeng.worldgen.meteorite.FalloutCopy;
 import appeng.worldgen.meteorite.FalloutSand;
 import appeng.worldgen.meteorite.FalloutSnow;
-import appeng.worldgen.meteorite.IMeteoriteWorld;
 import appeng.worldgen.meteorite.MeteoriteBlockPutter;
 
 public final class MeteoritePlacer {

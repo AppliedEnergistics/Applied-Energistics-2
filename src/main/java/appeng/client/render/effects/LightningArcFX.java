@@ -20,8 +20,10 @@ package appeng.client.render.effects;
 
 import java.util.Random;
 
-import net.minecraft.client.particle.*;
-import net.minecraft.particles.BasicParticleType;
+import net.minecraft.client.particle.IAnimatedSprite;
+import net.minecraft.client.particle.IParticleFactory;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -80,6 +82,7 @@ public class LightningArcFX extends LightningFX {
             this.spriteSet = spriteSet;
         }
 
+        @Override
         public Particle makeParticle(LightningArcParticleData data, World worldIn, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
             SpriteTexturedParticle lightningFX = new LightningArcFX(worldIn, x, y, z, data.target.x, data.target.y,

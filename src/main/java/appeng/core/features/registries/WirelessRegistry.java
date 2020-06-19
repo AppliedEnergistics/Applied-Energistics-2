@@ -32,7 +32,6 @@ import appeng.api.features.IWirelessTermHandler;
 import appeng.api.features.IWirelessTermRegistry;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
-import appeng.container.implementations.ContainerMEPortableCell;
 import appeng.container.implementations.ContainerWirelessTerm;
 import appeng.core.localization.PlayerMessages;
 import appeng.util.Platform;

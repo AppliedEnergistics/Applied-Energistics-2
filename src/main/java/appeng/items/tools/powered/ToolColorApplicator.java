@@ -18,7 +18,12 @@
 
 package appeng.items.tools.powered;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.text.WordUtils;
 

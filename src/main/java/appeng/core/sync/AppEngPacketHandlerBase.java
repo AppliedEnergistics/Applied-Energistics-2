@@ -18,12 +18,10 @@
 
 package appeng.core.sync;
 
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import net.jodah.typetools.TypeResolver;
 import net.minecraft.network.PacketBuffer;
 
 import appeng.core.sync.packets.PacketAssemblerAnimation;

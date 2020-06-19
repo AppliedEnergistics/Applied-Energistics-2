@@ -22,12 +22,9 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
-import appeng.api.config.Settings;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.CommonButtons;
-import appeng.client.gui.widgets.GuiSettingToggleButton;
 import appeng.container.implementations.ContainerWireless;
-import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
 

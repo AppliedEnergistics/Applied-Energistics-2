@@ -34,8 +34,6 @@ import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.ContainerInscriber;
-import appeng.container.implementations.ContainerInterface;
-import appeng.fluids.container.ContainerFluidLevelEmitter;
 import appeng.tile.misc.TileInscriber;
 
 public class BlockInscriber extends AEBaseTileBlock<TileInscriber> {

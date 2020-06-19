@@ -18,22 +18,10 @@
 
 package appeng.client.gui.widgets;
 
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
-
-import appeng.api.config.*;
+import appeng.api.config.ActionItems;
 import appeng.core.localization.ButtonToolTips;
 
 public class GuiActionButton extends GuiIconButton implements ITooltip {

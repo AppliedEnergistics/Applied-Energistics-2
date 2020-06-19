@@ -54,7 +54,6 @@ import appeng.me.cluster.implementations.QuantumCalculator;
 import appeng.me.cluster.implementations.QuantumCluster;
 import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 
 public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock, ITickableTileEntity {

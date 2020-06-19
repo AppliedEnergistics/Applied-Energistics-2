@@ -23,8 +23,6 @@ import java.util.HashSet;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.Dimension;
-import net.minecraft.world.dimension.DimensionType;
-import net.minecraftforge.common.extensions.IForgeDimension;
 
 import appeng.api.features.IWorldGen;
 

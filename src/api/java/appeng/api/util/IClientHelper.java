@@ -11,7 +11,7 @@ import appeng.api.storage.data.IAEStack;
 public interface IClientHelper {
     /**
      * Add cell information to the provided list. Used for tooltip content.
-     * 
+     *
      * @param handler Cell handler.
      * @param lines   List of lines to add to.
      */

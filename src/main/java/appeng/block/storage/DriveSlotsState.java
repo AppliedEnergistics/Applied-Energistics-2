@@ -21,7 +21,6 @@ package appeng.block.storage;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 
 import appeng.api.implementations.tiles.IChestOrDrive;
 

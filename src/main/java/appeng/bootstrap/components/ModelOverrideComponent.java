@@ -41,6 +41,7 @@ public class ModelOverrideComponent implements IModelBakeComponent {
         this.customizer.put(resourcePath, customizer);
     }
 
+    @Override
     public void onModelBakeEvent(final ModelBakeEvent event) {
         Map<ResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
         Set<ResourceLocation> keys = Sets.newHashSet(modelRegistry.keySet());

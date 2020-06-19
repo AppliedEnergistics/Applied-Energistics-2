@@ -22,8 +22,6 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.gui.FontRenderer;
 
 import appeng.api.storage.data.IAEFluidStack;

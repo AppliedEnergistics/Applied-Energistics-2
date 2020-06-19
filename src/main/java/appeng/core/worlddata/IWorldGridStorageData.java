@@ -19,7 +19,6 @@
 package appeng.core.worlddata;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import appeng.me.GridStorage;
 

@@ -38,7 +38,6 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 
 import appeng.container.slot.SlotCraftingMatrix;
 import appeng.container.slot.SlotFakeCraftingMatrix;
-import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketJEIRecipe;
 import appeng.util.Platform;

@@ -18,32 +18,20 @@
 
 package appeng.items.parts;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-import java.util.Map.Entry;
+import java.util.Set;
 import java.util.function.Function;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.google.common.base.Preconditions;
-
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 
 import appeng.api.AEApi;
 import appeng.api.implementations.items.IItemGroup;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
-import appeng.api.util.AEColor;
-import appeng.core.features.ActivityState;
-import appeng.core.features.ItemStackSrc;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
 

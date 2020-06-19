@@ -19,7 +19,6 @@
 package appeng.client.me;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
 import appeng.container.slot.AppEngSlot;

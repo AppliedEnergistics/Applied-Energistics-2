@@ -94,6 +94,7 @@ public class BlockQuartzFixture extends AEBaseBlock implements IOrientableBlock 
     }
 
     // For reference, see WallTorchBlock
+    @Override
     @Nullable
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         BlockState blockstate = super.getStateForPlacement(context);

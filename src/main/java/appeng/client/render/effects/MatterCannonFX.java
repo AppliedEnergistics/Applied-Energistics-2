@@ -18,15 +18,10 @@
 
 package appeng.client.render.effects;
 
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-
 import net.minecraft.client.particle.BreakingParticle;
 import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.particles.BasicParticleType;
@@ -92,6 +87,7 @@ public class MatterCannonFX extends BreakingParticle {
             this.spriteSet = spriteSet;
         }
 
+        @Override
         public Particle makeParticle(BasicParticleType data, World world, double x, double y, double z, double xSpeed,
                 double ySpeed, double zSpeed) {
             return new MatterCannonFX(world, x, y, z, spriteSet);

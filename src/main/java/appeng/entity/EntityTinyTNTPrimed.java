@@ -46,7 +46,6 @@ import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.sync.packets.PacketMockExplosion;
-import appeng.helpers.Reflected;
 import appeng.util.Platform;
 
 public final class EntityTinyTNTPrimed extends TNTEntity implements IEntityAdditionalSpawnData {

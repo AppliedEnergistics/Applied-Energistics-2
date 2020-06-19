@@ -21,14 +21,11 @@ package appeng.client.gui.widgets;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
 public class GuiTabButton extends Button implements ITooltip {
     public static final ResourceLocation TEXTURE_STATES = new ResourceLocation("appliedenergistics2",

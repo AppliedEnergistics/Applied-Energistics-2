@@ -25,25 +25,17 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.data.ModelDataMap;
-import net.minecraftforge.common.property.Properties;
 
-import appeng.block.AEBaseTileBlock;
-import appeng.block.misc.BlockSkyCompass;
 import appeng.client.render.FacingToRotation;
 import appeng.client.render.model.SkyCompassBakedModel;
-import appeng.client.render.model.SkyCompassModel;
 import appeng.tile.misc.TileSkyCompass;
 
 @OnlyIn(Dist.CLIENT)

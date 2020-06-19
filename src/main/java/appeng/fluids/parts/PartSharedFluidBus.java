@@ -41,7 +41,6 @@ import appeng.api.util.AECableType;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.fluids.container.ContainerFluidIO;
-import appeng.fluids.container.ContainerFluidInterface;
 import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.IAEFluidTank;
 import appeng.me.GridAccessException;

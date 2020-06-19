@@ -31,7 +31,6 @@ import net.minecraft.world.World;
 
 import appeng.core.AELog;
 import appeng.items.AEBaseItem;
-import appeng.util.Platform;
 
 public class ToolEraser extends AEBaseItem {
 

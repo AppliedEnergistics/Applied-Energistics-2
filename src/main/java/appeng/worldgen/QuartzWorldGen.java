@@ -68,28 +68,28 @@ public final class QuartzWorldGen extends ReplaceBlockFeature {
             ReplaceBlockConfig config) {
         /*
          * if( this.oreNormal == null && this.oreCharged == null ) { return false; }
-         * 
+         *
          * World w = worldIn.getWorld();
-         * 
+         *
          * int seaLevel = w.getSeaLevel();
-         * 
+         *
          * ChunkPos chunkPos = new ChunkPos( pos );
-         * 
+         *
          * if( seaLevel < 20 ) { final int x = ( chunkPos.x << 4 ) + 8; final int z = (
          * chunkPos.z << 4 ) + 8; seaLevel = w.getHeight( Heightmap.Type.WORLD_SURFACE,
          * x, z ); }
-         * 
+         *
          * final int oreDepthMultiplier =
          * AEConfig.instance().getQuartzOresClusterAmount() * seaLevel / 64; final int
          * scale = (int) Math.round( r.nextGaussian() * Math.sqrt( oreDepthMultiplier )
          * + oreDepthMultiplier );
-         * 
+         *
          * for( int cnt = 0; cnt < ( r.nextBoolean() ? scale * 2 : scale ) / 2; ++cnt )
          * { boolean isCharged = false;
-         * 
+         *
          * if( this.oreCharged != null ) { isCharged = r.nextFloat() >
          * AEConfig.instance().getSpawnChargedChance(); }
-         * 
+         *
          * final WorldGenMinable whichOre = isCharged ? this.oreCharged :
          * this.oreNormal; if( whichOre != null && shouldGenerate( isCharged, w ) ) {
          * final int cx = chunkPos.x * 16 + r.nextInt( 16 ); final int cy = r.nextInt(

@@ -18,7 +18,10 @@
 
 package appeng.client;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Random;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -33,12 +36,13 @@ import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.block.AEBaseBlock;
-import appeng.client.render.effects.*;
+import appeng.client.render.effects.EnergyFx;
+import appeng.client.render.effects.LightningArcFX;
+import appeng.client.render.effects.LightningFX;
+import appeng.client.render.effects.VibrantFX;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;

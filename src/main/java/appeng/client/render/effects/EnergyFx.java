@@ -18,11 +18,10 @@
 
 package appeng.client.render.effects;
 
-import net.minecraft.client.particle.*;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.Item;
+import net.minecraft.client.particle.BreakingParticle;
+import net.minecraft.client.particle.IAnimatedSprite;
+import net.minecraft.client.particle.IParticleFactory;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.particles.BasicParticleType;
@@ -172,6 +171,7 @@ public class EnergyFx extends BreakingParticle {
             this.spriteSet = spriteSet;
         }
 
+        @Override
         public Particle makeParticle(BasicParticleType typeIn, World worldIn, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
             EnergyFx result = new EnergyFx(worldIn, x, y, z, spriteSet);

@@ -21,7 +21,6 @@ package appeng.util.inv;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.util.helpers.ItemHandlerUtil;

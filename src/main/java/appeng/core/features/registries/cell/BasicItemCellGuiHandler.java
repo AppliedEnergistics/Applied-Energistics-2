@@ -13,12 +13,9 @@ import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.util.AEPartLocation;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.ContainerMEMonitorable;
-import appeng.container.implementations.ContainerWireless;
-import appeng.util.Platform;
 
 public class BasicItemCellGuiHandler implements ICellGuiHandler {
     @Override
