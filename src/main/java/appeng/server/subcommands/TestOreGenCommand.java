@@ -18,8 +18,13 @@
 
 package appeng.server.subcommands;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.function.ToDoubleFunction;
+import java.util.stream.Collectors;
 
+import com.google.common.math.StatsAccumulator;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.block.BlockState;
@@ -55,12 +60,14 @@ public class TestOreGenCommand implements ISubCommand {
 
         int radius = 1000;
 
-        ServerWorld world = srv.getWorld(DimensionType.OVERWORLD);
+        ServerWorld world;
         BlockPos center;
         try {
             ServerPlayerEntity player = sender.asPlayer();
+            world = player.getServerWorld();
             center = new BlockPos(player.getPosX(), 0, player.getPosZ());
         } catch (CommandSyntaxException e) {
+            world  = srv.getWorld(DimensionType.OVERWORLD);
             center = world.getSpawnPoint();
         }
 
@@ -75,14 +82,17 @@ public class TestOreGenCommand implements ISubCommand {
             }
         }
 
-        sendLine(sender, "Checked %d chunks", stats.chunksChecked);
-        sendLine(sender, "Total Ore: %d (%f per chunk)", stats.quartzOreCount,
-                stats.quartzOreCount / (float) stats.chunksChecked);
-        if (stats.quartzOreCount > 0) {
-            sendLine(sender, "Charged ore: %d (%.1f%%)", stats.chargedOreCount,
-                    stats.chargedOreCount / (float) stats.quartzOreCount * 100);
-            sendLine(sender, "Height range: %d-%d", stats.minHeight, stats.maxHeight);
-        }
+        AggregatedStats oreCount = AggregatedStats.create(stats.chunks, cs -> (double) cs.quartzOreCount);
+        List<ChunkStats> chunksWithOre = stats.chunks.stream().filter(c -> c.quartzOreCount > 0).collect(Collectors.toList());
+        AggregatedStats minHeight = AggregatedStats.create(chunksWithOre, cs -> (double) cs.minHeight);
+        AggregatedStats maxHeight = AggregatedStats.create(chunksWithOre, cs -> (double) cs.maxHeight);
+        AggregatedStats chargedCount = AggregatedStats.create(chunksWithOre, cs -> (double) cs.chargedOreCount);
+
+        sendLine(sender, "Checked %d chunks", stats.chunks.size());
+        sendLine(sender, "  Count: %s", oreCount);
+        sendLine(sender, "  Min-Height: %s", minHeight);
+        sendLine(sender, "  Max-Height: %s", maxHeight);
+        sendLine(sender, "  Sub-Type Count: %s", chargedCount);
     }
 
     private void checkChunk(CommandSource sender, ServerWorld world, ChunkPos cp, Stats stats) {
@@ -92,7 +102,7 @@ public class TestOreGenCommand implements ISubCommand {
             return;
         }
 
-        stats.chunksChecked++;
+        ChunkStats chunkStats = new ChunkStats();
 
         BlockPos.Mutable blockPos = new BlockPos.Mutable();
         sendLine(sender, "Checking chunk %s", cp);
@@ -104,16 +114,17 @@ public class TestOreGenCommand implements ISubCommand {
                     blockPos.setY(y);
                     BlockState state = chunk.getBlockState(blockPos);
                     if (state == quartzOre || state == chargedQuartzOre) {
-                        stats.minHeight = Math.min(stats.minHeight, y);
-                        stats.maxHeight = Math.max(stats.maxHeight, y);
-                        stats.quartzOreCount++;
+                        chunkStats.minHeight = Math.min(chunkStats.minHeight, y);
+                        chunkStats.maxHeight = Math.max(chunkStats.maxHeight, y);
+                        chunkStats.quartzOreCount++;
                         if (state == chargedQuartzOre) {
-                            stats.chargedOreCount++;
+                            chunkStats.chargedOreCount++;
                         }
                     }
                 }
             }
         }
+        stats.chunks.add(chunkStats);
     }
 
     private static void sendLine(CommandSource sender, String text, Object... args) {
@@ -121,11 +132,55 @@ public class TestOreGenCommand implements ISubCommand {
     }
 
     private static class Stats {
-        public int chunksChecked = 0;
+        public final List<ChunkStats> chunks = new ArrayList<>();
+    }
+
+    private static class ChunkStats {
         public int quartzOreCount = 0;
         public int chargedOreCount = 0;
         public int minHeight = Integer.MAX_VALUE;
         public int maxHeight = Integer.MIN_VALUE;
+    }
+
+    private static class AggregatedStats {
+        public final double min;
+        public final double max;
+        public final double mean;
+        public final double stdDev;
+
+        public AggregatedStats(double min, double max, double mean, double stdDev) {
+            this.min = min;
+            this.max = max;
+            this.mean = mean;
+            this.stdDev = stdDev;
+        }
+
+        public static <T> AggregatedStats create(List<T> values, ToDoubleFunction<T> getter) {
+            if (values.isEmpty()) {
+                return new AggregatedStats(Double.NaN, Double.NaN, Double.NaN, Double.NaN);
+            }
+
+            StatsAccumulator accumulator = new StatsAccumulator();
+            for (T value : values) {
+                accumulator.add(getter.applyAsDouble(value));
+            }
+
+            return new AggregatedStats(
+                    accumulator.min(),
+                    accumulator.max(),
+                    accumulator.mean(),
+                    accumulator.populationStandardDeviation()
+            );
+        }
+
+        @Override
+        public String toString() {
+            if (Double.isNaN(min)) {
+                return "Invalid";
+            }
+            return String.format(Locale.ROOT, "min=%.2f, max=%.2f, mean=%.2f, stdDev=%.2f",
+                    min, max, mean, stdDev);
+        }
     }
 
 }

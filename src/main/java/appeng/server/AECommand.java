@@ -35,7 +35,7 @@ public final class AECommand {
 
         LiteralArgumentBuilder<CommandSource> builder = literal("ae2");
         for (Commands command : Commands.values()) {
-            if (command.test && !AEConfig.instance().isFeatureEnabled(AEFeature.TEST_COMMANDS)) {
+            if (command.test && !AEConfig.instance().isFeatureEnabled(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS)) {
                 continue;
             }
             add(builder, command);
