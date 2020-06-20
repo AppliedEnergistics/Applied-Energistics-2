@@ -65,11 +65,6 @@ public class ChunkLogger implements ISubCommand {
     }
 
     @Override
-    public String getHelp(final MinecraftServer srv) {
-        return "commands.ae2.ChunkLogger";
-    }
-
-    @Override
     public void call(final MinecraftServer srv, final String[] data, final CommandSource sender) {
         this.enabled = !this.enabled;
 

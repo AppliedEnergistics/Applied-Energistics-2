@@ -69,14 +69,36 @@ public class GrinderRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
     @Nullable
     @Override
     public GrinderRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
-        // FIXME NOT YET IMPLEMENTED
-        throw new IllegalStateException();
+
+        String group = buffer.readString();
+        Ingredient ingredient = Ingredient.read(buffer);
+        int ingredientCount = buffer.readVarInt();
+        ItemStack result = buffer.readItemStack();
+        int turns = buffer.readVarInt();
+        int optionalResultsCount = buffer.readVarInt();
+        List<GrinderOptionalResult> optionalResults = new ArrayList<>(optionalResultsCount);
+        for (int i = 0; i < optionalResultsCount; i++) {
+            float chance = buffer.readFloat();
+            ItemStack optionalResult = buffer.readItemStack();
+            optionalResults.add(new GrinderOptionalResult(chance, optionalResult));
+        }
+
+        return new GrinderRecipe(recipeId, group, ingredient, ingredientCount, result, turns, optionalResults);
     }
 
     @Override
     public void write(PacketBuffer buffer, GrinderRecipe recipe) {
-        // FIXME NOT YET IMPLEMENTED
-        throw new IllegalStateException();
+        buffer.writeString(recipe.getGroup());
+        recipe.getIngredient().write(buffer);
+        buffer.writeVarInt(recipe.getIngredientCount());
+        buffer.writeItemStack(recipe.getRecipeOutput());
+        buffer.writeVarInt(recipe.getTurns());
+        List<GrinderOptionalResult> optionalResults = recipe.getOptionalResults();
+        buffer.writeVarInt(optionalResults.size());
+        for (GrinderOptionalResult optionalResult : optionalResults) {
+            buffer.writeFloat(optionalResult.getChance());
+            buffer.writeItemStack(optionalResult.getResult());
+        }
     }
 
 }

@@ -183,7 +183,8 @@ public class ClientHelper extends ServerHelper {
             final double d1 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
             final double d2 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
 
-            Minecraft.getInstance().particles.addParticle(VibrantFX.TYPE, x + d0, y + d1, z + d2, 0.0D, 0.0D, 0.0D);
+            Minecraft.getInstance().particles.addParticle(ParticleTypes.VIBRANT, x + d0, y + d1, z + d2, 0.0D, 0.0D,
+                    0.0D);
         }
     }
 
@@ -197,7 +198,8 @@ public class ClientHelper extends ServerHelper {
     }
 
     private void spawnLightning(final World world, final double posX, final double posY, final double posZ) {
-        Minecraft.getInstance().particles.addParticle(LightningFX.TYPE, posX, posY + 0.3f, posZ, 0.0f, 0.0f, 0.0f);
+        Minecraft.getInstance().particles.addParticle(ParticleTypes.LIGHTNING, posX, posY + 0.3f, posZ, 0.0f, 0.0f,
+                0.0f);
     }
 
     private void spawnLightningArc(final World world, final double posX, final double posY, final double posZ,

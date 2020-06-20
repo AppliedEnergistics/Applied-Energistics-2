@@ -24,20 +24,14 @@ import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.SpriteTexturedParticle;
-import net.minecraft.particles.ParticleType;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.core.AppEng;
 
+@OnlyIn(Dist.CLIENT)
 public class LightningArcFX extends LightningFX {
-    public static final ParticleType<LightningArcParticleData> TYPE = new ParticleType<>(false,
-            LightningArcParticleData.DESERIALIZER);
-
-    static {
-        TYPE.setRegistryName(AppEng.MOD_ID, "lightning_arc_fx");
-    }
 
     private static final Random RANDOM_GENERATOR = new Random();
 

@@ -11,6 +11,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -111,7 +112,8 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
         // FIXME: Should move this up, because at this point, it's hard to know where
         // the terminal host came from (part or tile)
         if (locator.hasBlockPos()) {
-            return world.getBlockState(locator.getBlockPos()).getBlock().getNameTextComponent();
+            return new TranslationTextComponent(
+                    world.getBlockState(locator.getBlockPos()).getBlock().getTranslationKey());
         }
 
         return new StringTextComponent("Unknown");

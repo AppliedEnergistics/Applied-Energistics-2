@@ -33,12 +33,6 @@ import appeng.core.AppEng;
 @OnlyIn(Dist.CLIENT)
 public class VibrantFX extends SpriteTexturedParticle {
 
-    public static final BasicParticleType TYPE = new BasicParticleType(false);
-
-    static {
-        TYPE.setRegistryName(AppEng.MOD_ID, "vibrant_fx");
-    }
-
     public VibrantFX(final World par1World, final double x, final double y, final double z, final double par8,
             final double par10, final double par12, IAnimatedSprite sprite) {
         super(par1World, x, y, z, par8, par10, par12);

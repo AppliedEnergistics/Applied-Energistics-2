@@ -25,6 +25,7 @@ import appeng.core.AppEng;
 import appeng.core.features.ActivityState;
 import appeng.core.features.BlockStackSrc;
 import appeng.tile.AEBaseTile;
+import appeng.util.Platform;
 
 /**
  * Used to define our tile entities and all of their properties that are
@@ -47,7 +48,7 @@ public class TileEntityBuilder<T extends AEBaseTile> {
     private final Function<TileEntityType<T>, T> supplier;
 
     @OnlyIn(Dist.CLIENT)
-    private final TileEntityRendering<T> tileEntityRendering = new TileEntityRendering<T>();
+    private TileEntityRendering<T> tileEntityRendering;
 
     private final List<Block> blocks = new ArrayList<>();
 
@@ -59,6 +60,10 @@ public class TileEntityBuilder<T extends AEBaseTile> {
         this.registryName = registryName;
         this.tileClass = tileClass;
         this.supplier = supplier;
+
+        if (Platform.hasClientClasses()) {
+            this.tileEntityRendering = new TileEntityRendering<>();
+        }
     }
 
     public TileEntityBuilder<T> features(AEFeature... features) {

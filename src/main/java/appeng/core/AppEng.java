@@ -101,8 +101,6 @@ public final class AppEng {
     public static final String MOD_ID = "appliedenergistics2";
     public static final String MOD_NAME = "Applied Energistics 2";
 
-    public static final String ASSETS = "appliedenergistics2:";
-
     // FIXME replicate this in mods.toml!
     // FIXME private static final String FORGE_CURRENT_VERSION =
     // ForgeVersion.getVersion();
@@ -127,6 +125,7 @@ public final class AppEng {
         INSTANCE = this;
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, AEConfig.CLIENT_SPEC);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, AEConfig.COMMON_SPEC);
 
         proxy = DistExecutor.runForDist(() -> ClientHelper::new, () -> ServerHelper::new);
 
@@ -150,25 +149,21 @@ public final class AppEng {
         modEventBus.addGenericListener(Feature.class, registration::registerWorldGen);
         modEventBus.addGenericListener(Biome.class, registration::registerBiomes);
         modEventBus.addGenericListener(ModDimension.class, registration::registerModDimension);
-        modEventBus.addListener(registration::registerParticleFactories);
-        modEventBus.addListener(registration::registerTextures);
-        modEventBus.addListener(registration::registerCommands);
 
         modEventBus.addListener(Integrations::enqueueIMC);
 
         modEventBus.addListener(this::commonSetup);
 
         // Register client-only events
+        DistExecutor.runWhenOn(Dist.CLIENT, () -> registration::registerClientEvents);
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> modEventBus.addListener(this::clientSetup));
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> modEventBus.addListener(registration::modelRegistryEvent));
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> modEventBus.addListener(registration::registerItemColors));
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> modEventBus.addListener(registration::handleModelBake));
 
         MinecraftForge.EVENT_BUS.addListener(TickHandler.INSTANCE::unloadWorld);
         MinecraftForge.EVENT_BUS.addListener(TickHandler.INSTANCE::onTick);
         MinecraftForge.EVENT_BUS.addListener(this::onServerAboutToStart);
         MinecraftForge.EVENT_BUS.addListener(this::serverStopped);
         MinecraftForge.EVENT_BUS.addListener(this::serverStopping);
+        MinecraftForge.EVENT_BUS.addListener(registration::registerCommands);
 
         MinecraftForge.EVENT_BUS.register(new PartPlacement());
     }
@@ -230,9 +225,10 @@ public final class AppEng {
 
     }
 
+    @OnlyIn(Dist.CLIENT)
     private static <T extends IModelGeometry<T>> void addBuiltInModel(String id, Supplier<T> modelFactory) {
         ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, id),
-                new SimpleModelLoader<T>(modelFactory));
+                new SimpleModelLoader<>(modelFactory));
     }
 
     @Nonnull

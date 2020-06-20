@@ -35,7 +35,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.effects.LightningFX;
+import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.tile.misc.TileQuartzGrowthAccelerator;
@@ -134,7 +134,7 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock<TileQuartzGrow
             ry += dz * forward.getYOffset();
             rz += dz * forward.getZOffset();
 
-            Minecraft.getInstance().particles.addParticle(LightningFX.TYPE, rx, ry, rz, 0.0D, 0.0D, 0.0D);
+            Minecraft.getInstance().particles.addParticle(ParticleTypes.LIGHTNING, rx, ry, rz, 0.0D, 0.0D, 0.0D);
         }
     }
 

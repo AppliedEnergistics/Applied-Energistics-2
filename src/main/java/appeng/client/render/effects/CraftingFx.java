@@ -39,12 +39,6 @@ import appeng.core.AppEng;
 @OnlyIn(Dist.CLIENT)
 public class CraftingFx extends SpriteTexturedParticle {
 
-    public static final BasicParticleType TYPE = new BasicParticleType(false);
-
-    static {
-        TYPE.setRegistryName(AppEng.MOD_ID, "crafting_fx");
-    }
-
     // Offset relative to center of block, is the starting point of the particle
     // movement
     private final float offsetX;

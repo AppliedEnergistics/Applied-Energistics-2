@@ -28,6 +28,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.LogicalSidedProvider;
 import net.minecraftforge.fml.network.NetworkDirection;
@@ -40,19 +41,19 @@ import appeng.core.sync.AppEngPacket;
 public class NetworkHandler {
     private static NetworkHandler instance;
 
-    private final EventNetworkChannel ec;
     private final ResourceLocation myChannelName;
 
     private final IPacketHandler clientHandler;
-    private final IPacketHandler serveHandler;
+    private final IPacketHandler serverHandler;
 
     public NetworkHandler(final ResourceLocation channelName) {
-        ec = NetworkRegistry.ChannelBuilder.named(myChannelName = channelName).networkProtocolVersion(() -> "1")
-                .clientAcceptedVersions(s -> true).serverAcceptedVersions(s -> true).eventNetworkChannel();
+        EventNetworkChannel ec = NetworkRegistry.ChannelBuilder.named(myChannelName = channelName)
+                .networkProtocolVersion(() -> "1").clientAcceptedVersions(s -> true).serverAcceptedVersions(s -> true)
+                .eventNetworkChannel();
         ec.registerObject(this);
 
-        this.clientHandler = this.createClientSide();
-        this.serveHandler = this.createServerSide();
+        this.clientHandler = DistExecutor.unsafeRunForDist(() -> AppEngClientPacketHandler::new, () -> () -> null);
+        this.serverHandler = this.createServerSide();
     }
 
     public static void init(final ResourceLocation channelName) {
@@ -61,14 +62,6 @@ public class NetworkHandler {
 
     public static NetworkHandler instance() {
         return instance;
-    }
-
-    private IPacketHandler createClientSide() {
-        try {
-            return new AppEngClientPacketHandler();
-        } catch (final Throwable t) {
-            return null;
-        }
     }
 
     private IPacketHandler createServerSide() {
@@ -81,13 +74,13 @@ public class NetworkHandler {
 
     @SubscribeEvent
     public void serverPacket(final NetworkEvent.ClientCustomPayloadEvent ev) {
-        if (this.serveHandler != null) {
+        if (this.serverHandler != null) {
             try {
                 NetworkEvent.Context ctx = ev.getSource().get();
                 ServerPlayNetHandler netHandler = (ServerPlayNetHandler) ctx.getNetworkManager().getNetHandler();
                 ctx.setPacketHandled(true);
                 ctx.enqueueWork(
-                        () -> this.serveHandler.onPacketData(null, netHandler, ev.getPayload(), netHandler.player));
+                        () -> this.serverHandler.onPacketData(null, netHandler, ev.getPayload(), netHandler.player));
 
             } catch (final ThreadQuickExitException ignored) {
 

@@ -38,6 +38,11 @@ public class GrinderRecipe implements IRecipe<IInventory> {
     }
 
     @Override
+    public String getGroup() {
+        return group;
+    }
+
+    @Override
     public boolean matches(IInventory inv, World worldIn) {
         return this.ingredient.test(inv.getStackInSlot(0));
     }

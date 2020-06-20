@@ -210,7 +210,6 @@ public enum PartType {
 
     private final Set<AEFeature> features;
     private final Set<IntegrationType> integrations;
-    @OnlyIn(Dist.CLIENT)
     private final Set<ResourceLocation> models;
 
     PartType(final Set<AEFeature> features, final Set<IntegrationType> integrations, final Class<? extends IPart> c) {

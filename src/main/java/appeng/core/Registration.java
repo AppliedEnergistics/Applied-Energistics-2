@@ -20,8 +20,10 @@ package appeng.core;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
@@ -32,10 +34,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.IFeatureConfig;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.gen.feature.*;
+import net.minecraft.world.gen.placement.CountRangeConfig;
+import net.minecraft.world.gen.placement.IPlacementConfig;
+import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
@@ -48,8 +50,10 @@ import net.minecraftforge.common.ModDimension;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.network.IContainerFactory;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -60,6 +64,7 @@ import appeng.api.config.Upgrades;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IItems;
 import appeng.api.definitions.IParts;
+import appeng.api.features.AEFeature;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.features.IWorldGen;
@@ -113,13 +118,7 @@ import appeng.client.gui.implementations.GuiUpgradeable;
 import appeng.client.gui.implementations.GuiVibrationChamber;
 import appeng.client.gui.implementations.GuiWireless;
 import appeng.client.gui.implementations.GuiWirelessTerm;
-import appeng.client.render.effects.ChargedOreFX;
-import appeng.client.render.effects.CraftingFx;
-import appeng.client.render.effects.EnergyFx;
-import appeng.client.render.effects.LightningArcFX;
-import appeng.client.render.effects.LightningFX;
-import appeng.client.render.effects.MatterCannonFX;
-import appeng.client.render.effects.VibrantFX;
+import appeng.client.render.effects.*;
 import appeng.client.render.model.BiometricCardModel;
 import appeng.client.render.model.DriveModel;
 import appeng.client.render.model.MemoryCardModel;
@@ -201,6 +200,8 @@ import appeng.spatial.StorageCellBiome;
 import appeng.spatial.StorageCellModDimension;
 import appeng.tile.AEBaseTile;
 import appeng.tile.crafting.MolecularAssemblerRenderer;
+import appeng.worldgen.ChargedQuartzOreConfig;
+import appeng.worldgen.ChargedQuartzOreFeature;
 import appeng.worldgen.MeteoriteWorldGen;
 
 final class Registration {
@@ -436,9 +437,6 @@ final class Registration {
     public void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
         IForgeRegistry<IRecipeSerializer<?>> r = event.getRegistry();
 
-        // TODO: Do not use the internal API
-        final ApiDefinitions definitions = Api.INSTANCE.definitions();
-
         GrinderRecipe.TYPE = new AERecipeType<>(GrinderRecipeSerializer.INSTANCE.getRegistryName());
         InscriberRecipe.TYPE = new AERecipeType<>(InscriberRecipeSerializer.INSTANCE.getRegistryName());
 
@@ -459,35 +457,26 @@ final class Registration {
 
     public void registerParticleTypes(RegistryEvent.Register<ParticleType<?>> event) {
         final IForgeRegistry<ParticleType<?>> registry = event.getRegistry();
-        registry.register(ChargedOreFX.TYPE);
-        registry.register(CraftingFx.TYPE);
-        registry.register(EnergyFx.TYPE);
-        registry.register(LightningArcFX.TYPE);
-        registry.register(LightningFX.TYPE);
-        registry.register(MatterCannonFX.TYPE);
-        registry.register(VibrantFX.TYPE);
+        registry.register(ParticleTypes.CHARGED_ORE);
+        registry.register(ParticleTypes.CRAFTING);
+        registry.register(ParticleTypes.ENERGY);
+        registry.register(ParticleTypes.LIGHTNING_ARC);
+        registry.register(ParticleTypes.LIGHTNING);
+        registry.register(ParticleTypes.MATTER_CANNON);
+        registry.register(ParticleTypes.VIBRANT);
     }
 
+    @OnlyIn(Dist.CLIENT)
     public void registerParticleFactories(ParticleFactoryRegisterEvent event) {
-        Minecraft.getInstance().particles.registerFactory(ChargedOreFX.TYPE, ChargedOreFX.Factory::new);
-        Minecraft.getInstance().particles.registerFactory(CraftingFx.TYPE, CraftingFx.Factory::new);
-        Minecraft.getInstance().particles.registerFactory(EnergyFx.TYPE, EnergyFx.Factory::new);
-        Minecraft.getInstance().particles.registerFactory(LightningArcFX.TYPE, LightningArcFX.Factory::new);
-        Minecraft.getInstance().particles.registerFactory(LightningFX.TYPE, LightningFX.Factory::new);
-        Minecraft.getInstance().particles.registerFactory(MatterCannonFX.TYPE, MatterCannonFX.Factory::new);
-        Minecraft.getInstance().particles.registerFactory(VibrantFX.TYPE, VibrantFX.Factory::new);
+        ParticleManager particles = Minecraft.getInstance().particles;
+        particles.registerFactory(ParticleTypes.CHARGED_ORE, ChargedOreFX.Factory::new);
+        particles.registerFactory(ParticleTypes.CRAFTING, CraftingFx.Factory::new);
+        particles.registerFactory(ParticleTypes.ENERGY, EnergyFx.Factory::new);
+        particles.registerFactory(ParticleTypes.LIGHTNING_ARC, LightningArcFX.Factory::new);
+        particles.registerFactory(ParticleTypes.LIGHTNING, LightningFX.Factory::new);
+        particles.registerFactory(ParticleTypes.MATTER_CANNON, MatterCannonFX.Factory::new);
+        particles.registerFactory(ParticleTypes.VIBRANT, VibrantFX.Factory::new);
     }
-
-//
-//	@SubscribeEvent
-//	public void attachSpatialDimensionManager( AttachCapabilitiesEvent<World> event )
-//	{
-//		if( AEConfig.instance()
-//				.isFeatureEnabled( AEFeature.SPATIAL_IO ) && event.getObject() == DimensionManager.getWorld( AEConfig.instance().getStorageDimensionID() ) )
-//		{
-//			event.addCapability( new ResourceLocation( "appliedenergistics2:spatial_dimension_manager" ), new SpatialDimensionManager( event.getObject() ) );
-//		}
-//	}
 
     // FIXME LATER
     public static void postInit() {
@@ -497,8 +486,6 @@ final class Registration {
         final IParts parts = definitions.parts();
         final IBlocks blocks = definitions.blocks();
         final IItems items = definitions.items();
-
-        // FIXME this.registerSpatialDimension();
 
         // default settings..
         ((P2PTunnelRegistry) registries.p2pTunnel()).configure();
@@ -664,6 +651,31 @@ final class Registration {
             b.addFeature(GenerationStage.Decoration.TOP_LAYER_MODIFICATION,
                     new ConfiguredFeature<NoFeatureConfig, Feature<NoFeatureConfig>>(MeteoriteWorldGen.INSTANCE,
                             IFeatureConfig.NO_FEATURE_CONFIG));
+
+            b.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES,
+                    new ConfiguredFeature<NoFeatureConfig, Feature<NoFeatureConfig>>(MeteoriteWorldGen.INSTANCE,
+                            IFeatureConfig.NO_FEATURE_CONFIG));
+
+            if (AEConfig.instance().isFeatureEnabled(AEFeature.CERTUS_QUARTZ_WORLD_GEN)) {
+                BlockState quartzOre = AEApi.instance().definitions().blocks().quartzOre().block().getDefaultState();
+                b.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Feature.ORE
+                        .withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE,
+                                quartzOre, AEConfig.instance().getQuartzOresPerCluster()))
+                        .withPlacement(Placement.COUNT_RANGE.configure(
+                                new CountRangeConfig(AEConfig.instance().getQuartzOresClusterAmount(), 12, 12, 72))));
+
+                if (AEConfig.instance().isFeatureEnabled(AEFeature.CHARGED_CERTUS_ORE)) {
+
+                    BlockState chargedQuartzOre = AEApi.instance().definitions().blocks().quartzOre().block()
+                            .getDefaultState();
+                    b.addFeature(GenerationStage.Decoration.UNDERGROUND_DECORATION,
+                            ChargedQuartzOreFeature.INSTANCE
+                                    .withConfiguration(new ChargedQuartzOreConfig(quartzOre, chargedQuartzOre,
+                                            AEConfig.instance().getSpawnChargedChance()))
+                                    .withPlacement(Placement.NOPE.configure(IPlacementConfig.NO_PLACEMENT_CONFIG)));
+
+                }
+            }
         });
 
     }
@@ -672,6 +684,7 @@ final class Registration {
         IForgeRegistry<Feature<?>> r = evt.getRegistry();
 
         r.register(MeteoriteWorldGen.INSTANCE);
+        r.register(ChargedQuartzOreFeature.INSTANCE);
     }
 
     public void registerBiomes(RegistryEvent.Register<Biome> evt) {
@@ -682,6 +695,7 @@ final class Registration {
         evt.getRegistry().register(StorageCellModDimension.INSTANCE);
     }
 
+    @OnlyIn(Dist.CLIENT)
     public void registerTextures(TextureStitchEvent.Pre event) {
         SkyChestTESR.registerTextures(event);
         InscriberTESR.registerTexture(event);
@@ -707,4 +721,14 @@ final class Registration {
                 .forEachRemaining(c -> c.onModelBakeEvent(event));
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public void registerClientEvents() {
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+
+        modEventBus.addListener(this::registerParticleFactories);
+        modEventBus.addListener(this::registerTextures);
+        modEventBus.addListener(this::modelRegistryEvent);
+        modEventBus.addListener(this::registerItemColors);
+        modEventBus.addListener(this::handleModelBake);
+    }
 }

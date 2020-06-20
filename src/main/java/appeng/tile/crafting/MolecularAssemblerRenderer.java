@@ -45,7 +45,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
-import appeng.client.render.effects.CraftingFx;
+import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AppEng;
 
 /**
@@ -118,7 +118,7 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<TileMolecular
 
             if (AppEng.proxy.shouldAddParticles(particleRandom)) {
                 for (int x = 0; x < (int) Math.ceil(status.getSpeed() / 5.0); x++) {
-                    minecraft.particles.addParticle(CraftingFx.TYPE, centerX, centerY, centerZ, 0, 0, 0);
+                    minecraft.particles.addParticle(ParticleTypes.CRAFTING, centerX, centerY, centerZ, 0, 0, 0);
                 }
             }
         }

@@ -26,7 +26,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.client.render.effects.VibrantFX;
+import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 
@@ -48,7 +48,8 @@ public class BlockQuartzLamp extends BlockQuartzGlass {
             final double d1 = (r.nextFloat() - 0.5F) * 0.96D;
             final double d2 = (r.nextFloat() - 0.5F) * 0.96D;
 
-            w.addParticle(VibrantFX.TYPE, 0.5 + pos.getX() + d0, 0.5 + pos.getY() + d1, 0.5 + pos.getZ() + d2, 0, 0, 0);
+            w.addParticle(ParticleTypes.VIBRANT, 0.5 + pos.getX() + d0, 0.5 + pos.getY() + d1, 0.5 + pos.getZ() + d2, 0,
+                    0, 0);
         }
     }
 }

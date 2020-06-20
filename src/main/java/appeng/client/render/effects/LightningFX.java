@@ -41,11 +41,6 @@ import appeng.core.AppEng;
 
 @OnlyIn(Dist.CLIENT)
 public class LightningFX extends SpriteTexturedParticle {
-    public static final BasicParticleType TYPE = new BasicParticleType(false);
-
-    static {
-        TYPE.setRegistryName(AppEng.MOD_ID, "lightning_fx");
-    }
 
     private static final Random RANDOM_GENERATOR = new Random();
     private static final int STEPS = 5;

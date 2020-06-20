@@ -63,7 +63,7 @@ public class EnergyParticleData implements IParticleData {
 
     @Override
     public ParticleType<?> getType() {
-        return EnergyFx.TYPE;
+        return ParticleTypes.ENERGY;
     }
 
     @Override

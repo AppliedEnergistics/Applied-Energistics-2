@@ -67,14 +67,8 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
 
     public static final ClientConfig CLIENT;
     public static final ForgeConfigSpec CLIENT_SPEC;
-
-    // Default Grindstone ores
-    private static final String[] ORES_VANILLA = { "Obsidian", "Ender", "EnderPearl", "Coal", "Iron", "Gold",
-            "Charcoal", "NetherQuartz" };
-    private static final String[] ORES_AE = { "CertusQuartz", "Wheat", "Fluix" };
-    private static final String[] ORES_COMMON = { "Copper", "Tin", "Silver", "Lead", "Bronze" };
-    private static final String[] ORES_MISC = { "Brass", "Platinum", "Nickel", "Invar", "Aluminium", "Electrum",
-            "Osmium", "Zinc" };
+    public static final CommonConfig COMMON;
+    public static final ForgeConfigSpec COMMON_SPEC;
 
     // Default Energy Conversion Rates
     private static final double DEFAULT_IC2_EXCHANGE = 2.0;
@@ -84,11 +78,15 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
         final Pair<ClientConfig, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(ClientConfig::new);
         CLIENT_SPEC = specPair.getRight();
         CLIENT = specPair.getLeft();
+
+        final Pair<CommonConfig, ForgeConfigSpec> commonPair = new ForgeConfigSpec.Builder()
+                .configure(CommonConfig::new);
+        COMMON_SPEC = commonPair.getRight();
+        COMMON = commonPair.getLeft();
     }
 
     public static final String VERSION = "@version@";
     public static final String CHANNEL = "@aechannel@";
-    public static final String PACKET_CHANNEL = "AE";
 
     // Config instance
     private static final AEConfig instance = new AEConfig();
@@ -119,8 +117,6 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
     private double spatialPowerMultiplier;
 
     // Grindstone
-    private List<String> grinderOres;
-    private Set<String> grinderBlackList;
     private float oreDoublePercentage;
 
     // Batteries
@@ -160,94 +156,13 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
     public static void onModConfigEvent(final ModConfig.ModConfigEvent configEvent) {
         if (configEvent.getConfig().getSpec() == CLIENT_SPEC) {
             instance.syncConfig(CLIENT);
+        } else if (configEvent.getConfig().getSpec() == COMMON_SPEC) {
+            instance.syncConfig(COMMON);
         }
     }
 
     private void syncConfig(ClientConfig config) {
 
-        PowerUnits.EU.conversionRatio = config.powerRatioIc2.get();
-        PowerUnits.RF.conversionRatio = config.powerRatioForgeEnergy.get();
-        PowerMultiplier.CONFIG.multiplier = config.powerUsageMultiplier.get();
-
-        CondenserOutput.MATTER_BALLS.requiredPower = config.condenserMatterBallsPower.get();
-        CondenserOutput.SINGULARITY.requiredPower = config.condenserSingularityPower.get();
-
-        this.grinderOres = new ArrayList<>(config.grinderOres.get());
-        this.grinderBlackList = new HashSet<>(config.grinderBlackList.get());
-        this.oreDoublePercentage = config.oreDoublePercentage.get().floatValue();
-
-        // FIXME: why is this here exactly???
-        this.settings.registerSetting(Settings.SEARCH_TOOLTIPS, YesNo.YES);
-        this.settings.registerSetting(Settings.TERMINAL_STYLE, TerminalStyle.TALL);
-        this.settings.registerSetting(Settings.SEARCH_MODE, SearchBoxMode.AUTOSEARCH);
-
-        this.spawnChargedChance = (float) (1.0 - config.spawnChargedChance.get());
-        this.minMeteoriteDistance = config.minMeteoriteDistance.get();
-        this.minMeteoriteDistanceSq = this.minMeteoriteDistance * this.minMeteoriteDistance;
-        this.meteoriteClusterChance = config.meteoriteClusterChance.get();
-        this.meteoriteMaximumSpawnHeight = config.meteoriteMaximumSpawnHeight.get();
-        this.meteoriteDimensionWhitelist = new HashSet<>(config.meteoriteDimensionWhitelist.get());
-
-        this.quartzOresPerCluster = config.quartzOresPerCluster.get();
-        this.quartzOresClusterAmount = config.quartzOresPerCluster.get();
-
-        this.wirelessBaseCost = config.wirelessBaseCost.get();
-        this.wirelessCostMultiplier = config.wirelessCostMultiplier.get();
-        this.wirelessBaseRange = config.wirelessBaseRange.get();
-        this.wirelessBoosterRangeMultiplier = config.wirelessBoosterRangeMultiplier.get();
-        this.wirelessBoosterExp = config.wirelessBoosterExp.get();
-        this.wirelessTerminalDrainMultiplier = config.wirelessTerminalDrainMultiplier.get();
-
-        this.formationPlaneEntityLimit = config.formationPlaneEntityLimit.get();
-
-        this.wirelessTerminalBattery = config.wirelessTerminalBattery.get();
-        this.chargedStaffBattery = config.chargedStaffBattery.get();
-        this.entropyManipulatorBattery = config.entropyManipulatorBattery.get();
-        this.portableCellBattery = config.portableCellBattery.get();
-        this.colorApplicatorBattery = config.colorApplicatorBattery.get();
-        this.matterCannonBattery = config.matterCannonBattery.get();
-
-        this.clientSync(config);
-
-        this.featureFlags.clear();
-        for (final AEFeature feature : AEFeature.values()) {
-            if (feature.isVisible()) {
-                if (config.enabledFeatures.get(feature).get()) {
-                    this.featureFlags.add(feature);
-                }
-            } else {
-                this.featureFlags.add(feature);
-            }
-        }
-
-// FIXME			final ModContainer imb = net.minecraftforge.fml.common.Loader.instance().getIndexedModList().get( "ImmibisCore" );
-// FIXME			if( imb != null )
-// FIXME			{
-// FIXME				final List<String> version = Arrays.asList( "59.0.0", "59.0.1", "59.0.2" );
-// FIXME				if( version.contains( imb.getVersion() ) )
-// FIXME				{
-// FIXME					this.featureFlags.remove( AEFeature.ALPHA_PASS );
-// FIXME				}
-// FIXME			}
-
-        for (final TickRates tr : TickRates.values()) {
-            tr.setMin(config.tickRateMin.get(tr).get());
-            tr.setMax(config.tickRateMin.get(tr).get());
-        }
-
-        this.spatialPowerMultiplier = config.spatialPowerMultiplier.get();
-        this.spatialPowerExponent = config.spatialPowerExponent.get();
-
-        this.craftingCalculationTimePerTick = config.craftingCalculationTimePerTick.get();
-
-        this.updatable = true;
-    }
-
-    public static AEConfig instance() {
-        return instance;
-    }
-
-    private void clientSync(ClientConfig config) {
         this.disableColoredCableRecipesInJEI = config.disableColoredCableRecipesInJEI.get();
         this.enableEffects = config.enableEffects.get();
         this.useLargeFonts = config.useLargeFonts.get();
@@ -281,25 +196,90 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
 // FIXME
         // FIXME this.settings.putSetting( e, value );
         // FIXME }
+
     }
 
-    private String getListComment(final Enum value) {
-        String comment = null;
+    private void syncConfig(CommonConfig config) {
 
-        if (value != null) {
-            final EnumSet set = EnumSet.allOf(value.getClass());
+        // FIXME: why is this here exactly???
+        this.settings.registerSetting(Settings.SEARCH_TOOLTIPS, YesNo.YES);
+        this.settings.registerSetting(Settings.TERMINAL_STYLE, TerminalStyle.TALL);
+        this.settings.registerSetting(Settings.SEARCH_MODE, SearchBoxMode.AUTOSEARCH);
 
-            for (final Object Oeg : set) {
-                final Enum eg = (Enum) Oeg;
-                if (comment == null) {
-                    comment = "Possible Values: " + eg.name();
-                } else {
-                    comment += ", " + eg.name();
+        PowerUnits.EU.conversionRatio = config.powerRatioIc2.get();
+        PowerUnits.RF.conversionRatio = config.powerRatioForgeEnergy.get();
+        PowerMultiplier.CONFIG.multiplier = config.powerUsageMultiplier.get();
+
+        CondenserOutput.MATTER_BALLS.requiredPower = config.condenserMatterBallsPower.get();
+        CondenserOutput.SINGULARITY.requiredPower = config.condenserSingularityPower.get();
+
+        this.oreDoublePercentage = config.oreDoublePercentage.get().floatValue();
+
+        this.spawnChargedChance = config.spawnChargedChance.get().floatValue();
+        this.minMeteoriteDistance = config.minMeteoriteDistance.get();
+        this.minMeteoriteDistanceSq = this.minMeteoriteDistance * this.minMeteoriteDistance;
+        this.meteoriteClusterChance = config.meteoriteClusterChance.get();
+        this.meteoriteMaximumSpawnHeight = config.meteoriteMaximumSpawnHeight.get();
+        this.meteoriteDimensionWhitelist = new HashSet<>(config.meteoriteDimensionWhitelist.get());
+
+        this.quartzOresPerCluster = config.quartzOresPerCluster.get();
+        this.quartzOresClusterAmount = config.quartzOresPerCluster.get();
+
+        this.wirelessBaseCost = config.wirelessBaseCost.get();
+        this.wirelessCostMultiplier = config.wirelessCostMultiplier.get();
+        this.wirelessBaseRange = config.wirelessBaseRange.get();
+        this.wirelessBoosterRangeMultiplier = config.wirelessBoosterRangeMultiplier.get();
+        this.wirelessBoosterExp = config.wirelessBoosterExp.get();
+        this.wirelessHighWirelessCount = config.wirelessHighWirelessCount.get();
+        this.wirelessTerminalDrainMultiplier = config.wirelessTerminalDrainMultiplier.get();
+
+        this.formationPlaneEntityLimit = config.formationPlaneEntityLimit.get();
+
+        this.wirelessTerminalBattery = config.wirelessTerminalBattery.get();
+        this.chargedStaffBattery = config.chargedStaffBattery.get();
+        this.entropyManipulatorBattery = config.entropyManipulatorBattery.get();
+        this.portableCellBattery = config.portableCellBattery.get();
+        this.colorApplicatorBattery = config.colorApplicatorBattery.get();
+        this.matterCannonBattery = config.matterCannonBattery.get();
+
+        this.featureFlags.clear();
+        for (final AEFeature feature : AEFeature.values()) {
+            if (feature.isVisible()) {
+                if (config.enabledFeatures.get(feature).get()) {
+                    this.featureFlags.add(feature);
                 }
+            } else {
+                this.featureFlags.add(feature);
             }
         }
 
-        return comment;
+// FIXME			final ModContainer imb = net.minecraftforge.fml.common.Loader.instance().getIndexedModList().get( "ImmibisCore" );
+// FIXME			if( imb != null )
+// FIXME			{
+// FIXME				final List<String> version = Arrays.asList( "59.0.0", "59.0.1", "59.0.2" );
+// FIXME				if( version.contains( imb.getVersion() ) )
+// FIXME				{
+// FIXME					this.featureFlags.remove( AEFeature.ALPHA_PASS );
+// FIXME				}
+// FIXME			}
+
+        for (final TickRates tr : TickRates.values()) {
+            tr.setMin(config.tickRateMin.get(tr).get());
+            tr.setMax(config.tickRateMin.get(tr).get());
+        }
+
+        this.spatialPowerMultiplier = config.spatialPowerMultiplier.get();
+        this.spatialPowerExponent = config.spatialPowerExponent.get();
+
+        this.craftingCalculationTimePerTick = config.craftingCalculationTimePerTick.get();
+
+        this.removeCrashingItemsOnLoad = config.removeCrashingItemsOnLoad.get();
+
+        this.updatable = true;
+    }
+
+    public static AEConfig instance() {
+        return instance;
     }
 
     public boolean isFeatureEnabled(final AEFeature f) {
@@ -341,9 +321,14 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
 // FIXME	}
 
     public void save() {
-        CLIENT.selectedPowerUnit.set(this.selectedPowerUnit);
+        if (CLIENT_SPEC.isLoaded()) {
+            CLIENT.selectedPowerUnit.set(this.selectedPowerUnit);
+            CLIENT_SPEC.save();
+        }
 
-        CLIENT_SPEC.save();
+        if (COMMON_SPEC.isLoaded()) {
+            COMMON_SPEC.save();
+        }
     }
 
     @Override
@@ -478,14 +463,6 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
         return this.spatialPowerMultiplier;
     }
 
-    public List<String> getGrinderOres() {
-        return this.grinderOres;
-    }
-
-    public Set<String> getGrinderBlackList() {
-        return this.grinderBlackList;
-    }
-
     public float getOreDoublePercentage() {
         return this.oreDoublePercentage;
     }
@@ -578,17 +555,11 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
 
     private static class ClientConfig {
 
-        // Feature toggles
-        public final Map<AEFeature, BooleanValue> enabledFeatures = new EnumMap<>(AEFeature.class);
-
         // Misc
-        public final BooleanValue removeCrashingItemsOnLoad;
-        public final ConfigValue<Integer> formationPlaneEntityLimit;
         public final BooleanValue enableEffects;
         public final BooleanValue useLargeFonts;
         public final BooleanValue useColoredCraftingStatus;
         public final BooleanValue disableColoredCableRecipesInJEI;
-        public final ConfigValue<Integer> craftingCalculationTimePerTick;
         public final EnumValue<PowerUnits> selectedPowerUnit;
 
         // GUI Buttons
@@ -597,13 +568,52 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
         public final List<ConfigValue<Integer>> priorityByStacks;
         public final List<ConfigValue<Integer>> levelByStacks;
 
+        public ClientConfig(ForgeConfigSpec.Builder builder) {
+            builder.push("client");
+            this.disableColoredCableRecipesInJEI = builder.comment("TODO").define("disableColoredCableRecipesInJEI",
+                    true);
+            this.enableEffects = builder.comment("TODO").define("enableEffects", true);
+            this.useLargeFonts = builder.comment("TODO").define("useTerminalUseLargeFont", false);
+            this.useColoredCraftingStatus = builder.comment("TODO").define("useColoredCraftingStatus", true);
+            this.selectedPowerUnit = builder.comment("Power unit shown in AE UIs").defineEnum("PowerUnit",
+                    PowerUnits.AE, PowerUnits.values());
+
+            this.craftByStacks = new ArrayList<>(4);
+            this.priorityByStacks = new ArrayList<>(4);
+            this.levelByStacks = new ArrayList<>(4);
+            // load buttons..
+            for (int btnNum = 0; btnNum < 4; btnNum++) {
+                int defaultValue = BTN_BY_STACK_DEFAULTS[btnNum];
+                final int buttonCap = (int) (Math.pow(10, btnNum + 1) - 1);
+
+                this.craftByStacks.add(builder.comment("Controls buttons on Crafting Screen")
+                        .defineInRange("craftByStacks" + btnNum, defaultValue, 1, buttonCap));
+                this.priorityByStacks.add(builder.comment("Controls buttons on Priority Screen")
+                        .defineInRange("priorityByStacks" + btnNum, defaultValue, 1, buttonCap));
+                this.levelByStacks.add(builder.comment("Controls buttons on Level Emitter Screen")
+                        .defineInRange("levelByStacks" + btnNum, defaultValue, 1, buttonCap));
+            }
+
+            builder.pop();
+        }
+
+    }
+
+    private static class CommonConfig {
+
+        // Feature toggles
+        public final Map<AEFeature, BooleanValue> enabledFeatures = new EnumMap<>(AEFeature.class);
+
+        // Misc
+        public final BooleanValue removeCrashingItemsOnLoad;
+        public final ConfigValue<Integer> formationPlaneEntityLimit;
+        public final ConfigValue<Integer> craftingCalculationTimePerTick;
+
         // Spatial IO/Dimension
         public final ConfigValue<Double> spatialPowerExponent;
         public final ConfigValue<Double> spatialPowerMultiplier;
 
         // Grindstone
-        public final ConfigValue<List<? extends String>> grinderOres;
-        public final ConfigValue<List<? extends String>> grinderBlackList;
         public final DoubleValue oreDoublePercentage;
 
         // Batteries
@@ -632,6 +642,7 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
         public final ConfigValue<Double> wirelessBaseRange;
         public final ConfigValue<Double> wirelessBoosterRangeMultiplier;
         public final ConfigValue<Double> wirelessBoosterExp;
+        public final ConfigValue<Double> wirelessHighWirelessCount;
 
         // Power Ratios
         public final ConfigValue<Double> powerRatioIc2;
@@ -645,7 +656,7 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
         public final Map<TickRates, ConfigValue<Integer>> tickRateMin = new HashMap<>();
         public final Map<TickRates, ConfigValue<Integer>> tickRateMax = new HashMap<>();
 
-        public ClientConfig(ForgeConfigSpec.Builder builder) {
+        public CommonConfig(ForgeConfigSpec.Builder builder) {
 
             // Feature switches
             builder.comment("Warning: Disabling a feature may disable other features depending on it.")
@@ -679,33 +690,6 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
             formationPlaneEntityLimit = builder.comment("TODO").define("formationPlaneEntityLimit", 128);
             builder.pop();
 
-            builder.push("client");
-            this.disableColoredCableRecipesInJEI = builder.comment("TODO").define("disableColoredCableRecipesInJEI",
-                    true);
-            this.enableEffects = builder.comment("TODO").define("enableEffects", true);
-            this.useLargeFonts = builder.comment("TODO").define("useTerminalUseLargeFont", false);
-            this.useColoredCraftingStatus = builder.comment("TODO").define("useColoredCraftingStatus", true);
-            this.selectedPowerUnit = builder.comment("Power unit shown in AE UIs").defineEnum("PowerUnit",
-                    PowerUnits.AE, PowerUnits.values());
-
-            this.craftByStacks = new ArrayList<>(4);
-            this.priorityByStacks = new ArrayList<>(4);
-            this.levelByStacks = new ArrayList<>(4);
-            // load buttons..
-            for (int btnNum = 0; btnNum < 4; btnNum++) {
-                int defaultValue = BTN_BY_STACK_DEFAULTS[btnNum];
-                final int buttonCap = (int) (Math.pow(10, btnNum + 1) - 1);
-
-                this.craftByStacks.add(builder.comment("Controls buttons on Crafting Screen")
-                        .defineInRange("craftByStacks" + btnNum, defaultValue, 1, buttonCap));
-                this.priorityByStacks.add(builder.comment("Controls buttons on Priority Screen")
-                        .defineInRange("priorityByStacks" + btnNum, defaultValue, 1, buttonCap));
-                this.levelByStacks.add(builder.comment("Controls buttons on Level Emitter Screen")
-                        .defineInRange("levelByStacks" + btnNum, defaultValue, 1, buttonCap));
-            }
-
-            builder.pop();
-
             builder.push("craftingCPU");
 
             this.craftingCalculationTimePerTick = builder.define("craftingCalculationTimePerTick", 5);
@@ -717,20 +701,7 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
             this.spatialPowerExponent = builder.define("spatialPowerExponent", 1.35);
             builder.pop();
 
-            builder.comment(
-                    "Creates recipe of the following pattern automatically: '1 oreTYPE => 2 dustTYPE' and '(1 ingotTYPE or 1 crystalTYPE or 1 gemTYPE) => 1 dustTYPE'")
-                    .push("GrindStone");
-
-            List<String> defaultGrinderOres = Stream.of(ORES_VANILLA, ORES_AE, ORES_COMMON, ORES_MISC)
-                    .flatMap(Arrays::stream).collect(Collectors.toList());
-            this.grinderOres = builder
-                    .comment("The list of types to handle. Specify without a prefix like ore or dust.")
-                    .defineList("grinderOres", defaultGrinderOres, obj -> true); // FIXME: tag validation, is that even
-                                                                                 // possible???
-            this.grinderBlackList = builder
-                    .comment("Blacklists the exact oredict name from being handled by any recipe.")
-                    .defineList("blacklist", Collections.emptyList(), obj -> true); // FIXME: tag validation, is that
-                                                                                    // even possible???
+            builder.push("GrindStone");
             this.oreDoublePercentage = builder.comment("Chance to actually get an output with stacksize > 1.")
                     .defineInRange("oreDoublePercentage", 90.0, 0.0, 100.0);
             builder.pop();
@@ -766,6 +737,7 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
             this.wirelessBaseRange = builder.define("wirelessBaseRange", 16.0);
             this.wirelessBoosterRangeMultiplier = builder.define("wirelessBoosterRangeMultiplier", 1.0);
             this.wirelessBoosterExp = builder.define("wirelessBoosterExp", 1.5);
+            this.wirelessHighWirelessCount = builder.define("wirelessHighWirelessCount", 64.0);
             this.wirelessTerminalDrainMultiplier = builder.define("wirelessTerminalDrainMultiplier", 1.0);
             builder.pop();
 

@@ -26,7 +26,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.client.render.effects.MatterCannonFX;
+import appeng.client.render.effects.ParticleTypes;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 
@@ -83,7 +83,7 @@ public class PacketMatterCannon extends AppEngPacket {
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         try {
             for (int a = 1; a < this.len; a++) {
-                Minecraft.getInstance().particles.addParticle(MatterCannonFX.TYPE, this.x + this.dx * a,
+                Minecraft.getInstance().particles.addParticle(ParticleTypes.MATTER_CANNON, this.x + this.dx * a,
                         this.y + this.dy * a, this.z + this.dz * a, 0, 0, 0);
             }
         } catch (final Exception ignored) {

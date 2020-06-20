@@ -27,7 +27,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.client.render.effects.ChargedOreFX;
+import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 
@@ -107,8 +107,8 @@ public class BlockChargedQuartzOre extends BlockQuartzOre {
         }
 
         if (AppEng.proxy.shouldAddParticles(r)) {
-            Minecraft.getInstance().particles.addParticle(ChargedOreFX.TYPE, pos.getX() + xOff, pos.getY() + yOff,
-                    pos.getZ() + zOff, 0.0f, 0.0f, 0.0f);
+            Minecraft.getInstance().particles.addParticle(ParticleTypes.CHARGED_ORE, pos.getX() + xOff,
+                    pos.getY() + yOff, pos.getZ() + zOff, 0.0f, 0.0f, 0.0f);
         }
     }
 }

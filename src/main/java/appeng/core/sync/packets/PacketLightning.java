@@ -26,7 +26,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.client.render.effects.LightningFX;
+import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
@@ -65,7 +65,8 @@ public class PacketLightning extends AppEngPacket {
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         try {
             if (Platform.isClient() && AEConfig.instance().isEnableEffects()) {
-                Minecraft.getInstance().world.addParticle(LightningFX.TYPE, this.x, this.y, this.z, 0.0f, 0.0f, 0.0f);
+                Minecraft.getInstance().world.addParticle(ParticleTypes.LIGHTNING, this.x, this.y, this.z, 0.0f, 0.0f,
+                        0.0f);
             }
         } catch (final Exception ignored) {
         }

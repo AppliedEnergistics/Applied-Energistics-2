@@ -50,7 +50,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseBlock;
-import appeng.client.render.effects.LightningFX;
+import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.helpers.MetaRotation;
@@ -164,7 +164,7 @@ public class BlockQuartzFixture extends AEBaseBlock implements IOrientableBlock 
         final double zOff = -0.3 * up.getZOffset();
         for (int bolts = 0; bolts < 3; bolts++) {
             if (AppEng.proxy.shouldAddParticles(r)) {
-                w.addParticle(LightningFX.TYPE, xOff + 0.5 + pos.getX(), yOff + 0.5 + pos.getY(),
+                w.addParticle(ParticleTypes.LIGHTNING, xOff + 0.5 + pos.getX(), yOff + 0.5 + pos.getY(),
                         zOff + 0.5 + pos.getZ(), 0, 0, 0);
             }
         }

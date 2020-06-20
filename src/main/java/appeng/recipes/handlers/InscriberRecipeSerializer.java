@@ -67,14 +67,24 @@ public class InscriberRecipeSerializer extends ForgeRegistryEntry<IRecipeSeriali
     @Nullable
     @Override
     public InscriberRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
-        // FIXME NOT YET IMPLEMENTED
-        throw new IllegalStateException();
+        String group = buffer.readString();
+        Ingredient middle = Ingredient.read(buffer);
+        ItemStack result = buffer.readItemStack();
+        Ingredient top = Ingredient.read(buffer);
+        Ingredient bottom = Ingredient.read(buffer);
+        InscriberProcessType mode = buffer.readEnumValue(InscriberProcessType.class);
+
+        return new InscriberRecipe(recipeId, group, middle, result, top, bottom, mode);
     }
 
     @Override
     public void write(PacketBuffer buffer, InscriberRecipe recipe) {
-        // FIXME NOT YET IMPLEMENTED
-        throw new IllegalStateException();
+        buffer.writeString(recipe.getGroup());
+        recipe.getMiddleInput().write(buffer);
+        buffer.writeItemStack(recipe.getRecipeOutput());
+        recipe.getTopOptional().write(buffer);
+        recipe.getBottomOptional().write(buffer);
+        buffer.writeEnumValue(recipe.getProcessType());
     }
 
 }

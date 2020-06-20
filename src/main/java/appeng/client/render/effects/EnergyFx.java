@@ -22,25 +22,15 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.particles.BasicParticleType;
-import net.minecraft.particles.ParticleType;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.api.util.AEPartLocation;
 import appeng.core.AppEng;
 
 @OnlyIn(Dist.CLIENT)
 public class EnergyFx extends SpriteTexturedParticle {
-
-    public static final ParticleType<EnergyParticleData> TYPE = new ParticleType<>(false,
-            EnergyParticleData.DESERIALIZER);
-
-    static {
-        TYPE.setRegistryName(AppEng.MOD_ID, "energy_fx");
-    }
 
     private final int startBlkX;
     private final int startBlkY;

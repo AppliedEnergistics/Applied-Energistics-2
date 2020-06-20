@@ -32,11 +32,6 @@ import appeng.core.AppEng;
 
 @OnlyIn(Dist.CLIENT)
 public class ChargedOreFX extends RedstoneParticle {
-    public static final BasicParticleType TYPE = new BasicParticleType(false);
-
-    static {
-        TYPE.setRegistryName(AppEng.MOD_ID, "charged_ore_fx");
-    }
 
     private static final RedstoneParticleData PARTICLE_DATA = new RedstoneParticleData(0.21f, 0.61f, 1.0f, 1.0f);
 

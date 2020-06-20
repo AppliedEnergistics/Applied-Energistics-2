@@ -235,6 +235,7 @@ public class BlockCableBus extends AEBaseTileBlock<TileCableBus> /* FIXME implem
         return true;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public boolean addDestroyEffects(BlockState state, World world, BlockPos pos, ParticleManager effectRenderer) {
         ICableBusContainer cb = this.cb(world, pos);

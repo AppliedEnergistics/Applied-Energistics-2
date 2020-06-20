@@ -29,12 +29,6 @@ import appeng.core.AppEng;
 
 public class MatterCannonFX extends SpriteTexturedParticle {
 
-    public static final BasicParticleType TYPE = new BasicParticleType(false);
-
-    static {
-        TYPE.setRegistryName(AppEng.MOD_ID, "matter_cannon_fx");
-    }
-
     public MatterCannonFX(final World par1World, final double x, final double y, final double z,
             IAnimatedSprite sprite) {
         super(par1World, x, y, z);

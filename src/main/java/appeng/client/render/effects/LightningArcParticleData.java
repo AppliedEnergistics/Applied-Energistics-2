@@ -47,7 +47,7 @@ public class LightningArcParticleData implements IParticleData {
 
     @Override
     public ParticleType<?> getType() {
-        return LightningArcFX.TYPE;
+        return ParticleTypes.LIGHTNING_ARC;
     }
 
     @Override

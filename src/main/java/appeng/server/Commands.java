@@ -20,16 +20,20 @@ package appeng.server;
 
 import appeng.server.subcommands.ChunkLogger;
 import appeng.server.subcommands.Supporters;
+import appeng.server.subcommands.TestOreGenCommand;
 
 public enum Commands {
-    Chunklogger(4, new ChunkLogger()), Supporters(0, new Supporters());
+    Chunklogger(4, new ChunkLogger(), false), Supporters(0, new Supporters(), false),
+    TestOreGen(4, new TestOreGenCommand(), true);
 
     public final int level;
     public final ISubCommand command;
+    public boolean test;
 
-    Commands(final int level, final ISubCommand w) {
+    Commands(final int level, final ISubCommand w, boolean test) {
         this.level = level;
         this.command = w;
+        this.test = test;
     }
 
     @Override

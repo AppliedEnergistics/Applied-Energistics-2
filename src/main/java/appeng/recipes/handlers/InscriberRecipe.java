@@ -19,11 +19,11 @@ public class InscriberRecipe implements IRecipe<IInventory> {
     private final ResourceLocation id;
     private final String group;
 
-    private Ingredient middleInput;
-    private Ingredient topOptional;
-    private Ingredient bottomOptional;
-    private ItemStack output;
-    private InscriberProcessType processType;
+    private final Ingredient middleInput;
+    private final Ingredient topOptional;
+    private final Ingredient bottomOptional;
+    private final ItemStack output;
+    private final InscriberProcessType processType;
 
     public InscriberRecipe(ResourceLocation id, String group, Ingredient middleInput, ItemStack output,
             Ingredient topOptional, Ingredient bottomOptional, InscriberProcessType processType) {
@@ -63,7 +63,7 @@ public class InscriberRecipe implements IRecipe<IInventory> {
 
     @Override
     public IRecipeSerializer<?> getSerializer() {
-        return GrinderRecipeSerializer.INSTANCE;
+        return InscriberRecipeSerializer.INSTANCE;
     }
 
     @Override
@@ -100,4 +100,8 @@ public class InscriberRecipe implements IRecipe<IInventory> {
         return processType;
     }
 
+    @Override
+    public String getGroup() {
+        return group;
+    }
 }
