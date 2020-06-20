@@ -127,11 +127,6 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
     private int colorApplicatorBattery;
     private int chargedStaffBattery;
 
-    // Certus quartz
-    private float spawnChargedChance;
-    private int quartzOresPerCluster;
-    private int quartzOresClusterAmount;
-
     // Meteors
     private int minMeteoriteDistance;
     private int minMeteoriteDistanceSq;
@@ -215,15 +210,11 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
 
         this.oreDoublePercentage = config.oreDoublePercentage.get().floatValue();
 
-        this.spawnChargedChance = config.spawnChargedChance.get().floatValue();
         this.minMeteoriteDistance = config.minMeteoriteDistance.get();
         this.minMeteoriteDistanceSq = this.minMeteoriteDistance * this.minMeteoriteDistance;
         this.meteoriteClusterChance = config.meteoriteClusterChance.get();
         this.meteoriteMaximumSpawnHeight = config.meteoriteMaximumSpawnHeight.get();
         this.meteoriteDimensionWhitelist = new HashSet<>(config.meteoriteDimensionWhitelist.get());
-
-        this.quartzOresPerCluster = config.quartzOresPerCluster.get();
-        this.quartzOresClusterAmount = config.quartzOresPerCluster.get();
 
         this.wirelessBaseCost = config.wirelessBaseCost.get();
         this.wirelessCostMultiplier = config.wirelessCostMultiplier.get();
@@ -492,15 +483,15 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
     }
 
     public float getSpawnChargedChance() {
-        return this.spawnChargedChance;
+        return COMMON.spawnChargedChance.get().floatValue();
     }
 
     public int getQuartzOresPerCluster() {
-        return this.quartzOresPerCluster;
+        return COMMON.quartzOresPerCluster.get();
     }
 
     public int getQuartzOresClusterAmount() {
-        return this.quartzOresClusterAmount;
+        return COMMON.quartzOresClusterAmount.get();
     }
 
     public int getMinMeteoriteDistance() {
@@ -727,7 +718,7 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
                     defaultDimensionWhitelist, obj -> true);
 
             this.quartzOresPerCluster = builder.define("quartzOresPerCluster", 4);
-            this.quartzOresClusterAmount = builder.define("quartzOresClusterAmount", 15);
+            this.quartzOresClusterAmount = builder.define("quartzOresClusterAmount", 20);
 
             builder.pop();
 

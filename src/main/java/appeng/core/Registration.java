@@ -666,7 +666,7 @@ final class Registration {
 
                 if (AEConfig.instance().isFeatureEnabled(AEFeature.CHARGED_CERTUS_ORE)) {
 
-                    BlockState chargedQuartzOre = AEApi.instance().definitions().blocks().quartzOre().block()
+                    BlockState chargedQuartzOre = AEApi.instance().definitions().blocks().quartzOreCharged().block()
                             .getDefaultState();
                     b.addFeature(GenerationStage.Decoration.UNDERGROUND_DECORATION,
                             ChargedQuartzOreFeature.INSTANCE
