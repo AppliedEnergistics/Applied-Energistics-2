@@ -316,8 +316,7 @@ public class CachedPlane {
                 final Chunk c = this.myChunks[x][z];
 
                 for (int y = 1; y < 255; y += 32) {
-                    WorldData.instance().compassData().service().updateArea(this.getWorld(), c.getPos().x << 4, y,
-                            c.getPos().z << 4);
+                    WorldData.instance().compassData().service().updateArea(this.getWorld(), c.getPos(), y);
                 }
 
                 // FIXME this was sending chunks to players...

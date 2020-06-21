@@ -25,6 +25,7 @@ import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
 
 import com.google.common.math.StatsAccumulator;
+import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.block.BlockState;
@@ -56,7 +57,7 @@ public class TestOreGenCommand implements ISubCommand {
     }
 
     @Override
-    public void call(final MinecraftServer srv, final String[] data, final CommandSource sender) {
+    public void call(final MinecraftServer srv, final CommandContext<CommandSource> data, final CommandSource sender) {
 
         int radius = 1000;
 
@@ -67,7 +68,7 @@ public class TestOreGenCommand implements ISubCommand {
             world = player.getServerWorld();
             center = new BlockPos(player.getPosX(), 0, player.getPosZ());
         } catch (CommandSyntaxException e) {
-            world  = srv.getWorld(DimensionType.OVERWORLD);
+            world = srv.getWorld(DimensionType.OVERWORLD);
             center = world.getSpawnPoint();
         }
 
@@ -83,7 +84,8 @@ public class TestOreGenCommand implements ISubCommand {
         }
 
         AggregatedStats oreCount = AggregatedStats.create(stats.chunks, cs -> (double) cs.quartzOreCount);
-        List<ChunkStats> chunksWithOre = stats.chunks.stream().filter(c -> c.quartzOreCount > 0).collect(Collectors.toList());
+        List<ChunkStats> chunksWithOre = stats.chunks.stream().filter(c -> c.quartzOreCount > 0)
+                .collect(Collectors.toList());
         AggregatedStats minHeight = AggregatedStats.create(chunksWithOre, cs -> (double) cs.minHeight);
         AggregatedStats maxHeight = AggregatedStats.create(chunksWithOre, cs -> (double) cs.maxHeight);
         AggregatedStats chargedCount = AggregatedStats.create(chunksWithOre, cs -> (double) cs.chargedOreCount);
@@ -165,12 +167,8 @@ public class TestOreGenCommand implements ISubCommand {
                 accumulator.add(getter.applyAsDouble(value));
             }
 
-            return new AggregatedStats(
-                    accumulator.min(),
-                    accumulator.max(),
-                    accumulator.mean(),
-                    accumulator.populationStandardDeviation()
-            );
+            return new AggregatedStats(accumulator.min(), accumulator.max(), accumulator.mean(),
+                    accumulator.populationStandardDeviation());
         }
 
         @Override
@@ -178,8 +176,7 @@ public class TestOreGenCommand implements ISubCommand {
             if (Double.isNaN(min)) {
                 return "Invalid";
             }
-            return String.format(Locale.ROOT, "min=%.2f, max=%.2f, mean=%.2f, stdDev=%.2f",
-                    min, max, mean, stdDev);
+            return String.format(Locale.ROOT, "min=%.2f, max=%.2f, mean=%.2f, stdDev=%.2f", min, max, mean, stdDev);
         }
     }
 

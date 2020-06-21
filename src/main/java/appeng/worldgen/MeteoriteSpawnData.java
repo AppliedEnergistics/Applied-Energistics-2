@@ -15,6 +15,9 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
+
 /**
  * This is per-world data to track where Meteorites have been spawned.
  */
@@ -28,17 +31,17 @@ public final class MeteoriteSpawnData {
         this.data = data;
     }
 
-    public void setGenerated(int chunkX, int chunkZ) {
+    public void setGenerated(ChunkPos chunkPos) {
         synchronized (data) {
             // edit.
-            data.generated.putBoolean(chunkX + "," + chunkZ, true);
+            data.generated.add(chunkPos.asLong());
             data.markDirty();
         }
     }
 
-    public boolean hasGenerated(int chunkX, int chunkZ) {
+    public boolean hasGenerated(ChunkPos pos) {
         synchronized (data) {
-            return data.generated.getBoolean(chunkX + "," + chunkZ);
+            return data.generated.contains(pos.asLong());
         }
     }
 
@@ -148,24 +151,24 @@ public final class MeteoriteSpawnData {
 
     private static class SavedData extends WorldSavedData {
 
-        private CompoundNBT generated;
+        private LongOpenHashSet generated;
         private CompoundNBT spawns;
 
         public SavedData() {
             super(NAME);
-            this.generated = new CompoundNBT();
+            this.generated = new LongOpenHashSet();
             this.spawns = new CompoundNBT();
         }
 
         @Override
         public synchronized void read(CompoundNBT nbt) {
-            this.generated = nbt.getCompound("generated");
+            this.generated = new LongOpenHashSet(nbt.getLongArray("generated"));
             this.spawns = nbt.getCompound("spawns");
         }
 
         @Override
         public synchronized CompoundNBT write(CompoundNBT compound) {
-            compound.put("generated", generated);
+            compound.putLongArray("generated", generated.toLongArray());
             compound.put("spawns", spawns);
             return compound;
         }

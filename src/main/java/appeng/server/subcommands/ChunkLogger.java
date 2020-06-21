@@ -18,6 +18,8 @@
 
 package appeng.server.subcommands;
 
+import com.mojang.brigadier.context.CommandContext;
+
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -65,7 +67,7 @@ public class ChunkLogger implements ISubCommand {
     }
 
     @Override
-    public void call(final MinecraftServer srv, final String[] data, final CommandSource sender) {
+    public void call(final MinecraftServer srv, final CommandContext<CommandSource> data, final CommandSource sender) {
         this.enabled = !this.enabled;
 
         if (this.enabled) {

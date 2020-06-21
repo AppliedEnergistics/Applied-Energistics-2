@@ -21,6 +21,7 @@ package appeng.core.features.registries;
 import java.util.HashSet;
 
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.Dimension;
 
@@ -72,7 +73,7 @@ public final class WorldGenRegistry implements IWorldGen {
     }
 
     @Override
-    public boolean isWorldGenEnabled(final WorldGenType type, final World w) {
+    public boolean isWorldGenEnabled(final WorldGenType type, final IWorld w) {
         if (type == null) {
             throw new IllegalArgumentException("Bad Type Passed");
         }
@@ -81,8 +82,8 @@ public final class WorldGenRegistry implements IWorldGen {
             throw new IllegalArgumentException("Bad Provider Passed");
         }
 
-        ResourceLocation id = w.dimension.getDimension().getType().getRegistryName();
-        final boolean isBadProvider = this.types[type.ordinal()].badProviders.contains(w.dimension.getClass());
+        ResourceLocation id = w.getDimension().getType().getRegistryName();
+        final boolean isBadProvider = this.types[type.ordinal()].badProviders.contains(w.getDimension().getClass());
         final boolean isBadDimension = this.types[type.ordinal()].badDimensions.contains(id);
         final boolean isGoodDimension = this.types[type.ordinal()].enabledDimensions.contains(id);
 

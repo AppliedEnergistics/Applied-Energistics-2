@@ -30,9 +30,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 
 import appeng.api.AEApi;
@@ -44,11 +44,7 @@ import appeng.core.AEConfig;
 import appeng.core.worlddata.WorldData;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
-import appeng.worldgen.meteorite.Fallout;
-import appeng.worldgen.meteorite.FalloutCopy;
-import appeng.worldgen.meteorite.FalloutSand;
-import appeng.worldgen.meteorite.FalloutSnow;
-import appeng.worldgen.meteorite.MeteoriteBlockPutter;
+import appeng.worldgen.meteorite.*;
 
 public final class MeteoritePlacer {
     private static final double PRESSES_SPAWN_CHANCE = 0.7;
@@ -67,18 +63,20 @@ public final class MeteoritePlacer {
     private final double realCrater;
     private final double squaredMeteoriteSize;
     private final double crater;
-    private final int skyMode;
+    private final boolean placeCrater;
     private final boolean lava;
+    private final MutableBoundingBox boundingBox;
 
-    public MeteoritePlacer(IWorld world, PlacedMeteoriteSettings settings) {
+    public MeteoritePlacer(IWorld world, PlacedMeteoriteSettings settings, MutableBoundingBox boundingBox) {
+        this.boundingBox = boundingBox;
         this.world = world;
         this.pos = settings.getPos();
         this.x = settings.getPos().getX();
         this.y = settings.getPos().getY();
         this.z = settings.getPos().getZ();
         this.meteoriteSize = settings.getMeteoriteRadius();
-        this.realCrater = settings.getCraterRadius();
-        this.skyMode = settings.getSkyMode();
+        this.realCrater = this.meteoriteSize * 2 + 5;
+        this.placeCrater = settings.isPlaceCrater();
         this.lava = settings.isLava();
         this.squaredMeteoriteSize = this.meteoriteSize * this.meteoriteSize;
         this.crater = this.realCrater * this.realCrater;
@@ -89,54 +87,68 @@ public final class MeteoritePlacer {
         this.skyStone = blocks.skyStoneBlock().block().getDefaultState();
         this.skyStoneItem = blocks.skyStoneBlock().item();
 
-        this.type = getFalloutFromBaseBlock(world, settings.getPos(), settings.getBlk());
+        this.type = getFallout(world, settings.getPos(), settings.getFallout());
     }
 
     public void place() {
         // creator
-        if (skyMode > 10) {
+        if (placeCrater) {
             this.placeCrater();
         }
 
         this.placeMeteorite();
 
         // collapse blocks...
-        if (skyMode > 3) {
+        if (placeCrater) {
             this.decay();
         }
     }
 
     private int minX(int x) {
+        if (x < boundingBox.minX) {
+            return boundingBox.minX;
+        } else if (x > boundingBox.maxX) {
+            return boundingBox.maxX;
+        }
         return x;
     }
 
     private int minZ(int x) {
+        if (x < boundingBox.minZ) {
+            return boundingBox.minZ;
+        } else if (x > boundingBox.maxZ) {
+            return boundingBox.maxZ;
+        }
         return x;
     }
 
     private int maxX(int x) {
+        if (x < boundingBox.minX) {
+            return boundingBox.minX;
+        } else if (x > boundingBox.maxX) {
+            return boundingBox.maxX;
+        }
         return x;
     }
 
     private int maxZ(int x) {
+        if (x < boundingBox.minZ) {
+            return boundingBox.minZ;
+        } else if (x > boundingBox.maxZ) {
+            return boundingBox.maxZ;
+        }
         return x;
     }
 
     private void placeCrater() {
         final int maxY = 255;
-        final int minX = minX(x - 200);
-        final int maxX = maxX(x + 200);
-        final int minZ = minZ(z - 200);
-        final int maxZ = maxZ(z + 200);
 
         BlockPos.Mutable blockPos = new BlockPos.Mutable();
-        for (int j = y - 5; j < maxY; j++) {
+        for (int j = y - 5; j <= maxY; j++) {
             blockPos.setY(j);
-            boolean changed = false;
-
-            for (int i = minX; i < maxX; i++) {
+            for (int i = boundingBox.minX; i <= boundingBox.maxX; i++) {
                 blockPos.setX(i);
-                for (int k = minZ; k < maxZ; k++) {
+                for (int k = boundingBox.minZ; k <= boundingBox.maxZ; k++) {
                     blockPos.setZ(k);
                     final double dx = i - x;
                     final double dz = k - z;
@@ -145,12 +157,16 @@ public final class MeteoritePlacer {
                     final double distanceFrom = dx * dx + dz * dz;
 
                     if (j > h + distanceFrom * 0.02) {
-                        if (lava && j < y && world.getBlockState(blockPos).getMaterial().isSolid()) {
+                        BlockState currentBlock = world.getBlockState(blockPos);
+
+                        if (lava && j < y && currentBlock.getMaterial().isSolid()) {
                             if (j > h + distanceFrom * 0.02) {
                                 this.putter.put(world, blockPos, Blocks.LAVA.getDefaultState());
                             }
                         } else {
-                            changed = this.putter.put(world, blockPos, Platform.AIR_BLOCK.getDefaultState()) || changed;
+                            if (!currentBlock.isAir(world, blockPos)) {
+                                this.putter.put(world, blockPos, Blocks.AIR.getDefaultState());
+                            }
                         }
                     }
                 }
@@ -260,11 +276,11 @@ public final class MeteoritePlacer {
         final int meteorZHeight = maxZ(z + 8);
 
         BlockPos.Mutable pos = new BlockPos.Mutable();
-        for (int i = meteorXLength; i < meteorXHeight; i++) {
+        for (int i = meteorXLength; i <= meteorXHeight; i++) {
             pos.setX(i);
             for (int j = y - 8; j < y + 8; j++) {
                 pos.setY(j);
-                for (int k = meteorZLength; k < meteorZHeight; k++) {
+                for (int k = meteorZLength; k <= meteorZHeight; k++) {
                     pos.setZ(k);
                     final double dx = i - x;
                     final double dy = j - y;
@@ -289,11 +305,11 @@ public final class MeteoritePlacer {
         BlockPos.Mutable blockPos = new BlockPos.Mutable();
         BlockPos.Mutable blockPosUp = new BlockPos.Mutable();
         BlockPos.Mutable blockPosDown = new BlockPos.Mutable();
-        for (int i = meteorXLength; i < meteorXHeight; i++) {
+        for (int i = meteorXLength; i <= meteorXHeight; i++) {
             blockPos.setX(i);
             blockPosUp.setX(i);
             blockPosDown.setX(i);
-            for (int k = meteorZLength; k < meteorZHeight; k++) {
+            for (int k = meteorZLength; k <= meteorZHeight; k++) {
                 blockPos.setZ(k);
                 blockPosUp.setZ(k);
                 blockPosDown.setZ(k);
@@ -352,15 +368,17 @@ public final class MeteoritePlacer {
         }
     }
 
-    private Fallout getFalloutFromBaseBlock(IWorld w, BlockPos pos, ResourceLocation blk) {
-        if (blk.equals(Blocks.SAND.getRegistryName())) {
-            return new FalloutSand(w, pos, this.putter, this.skyStone);
-        } else if (blk.equals(Blocks.TERRACOTTA.getRegistryName())) {
-            return new FalloutCopy(w, pos, this.putter, this.skyStone);
-        } else if (blk.equals(Blocks.ICE.getRegistryName()) || blk.equals(Blocks.SNOW.getRegistryName())) {
-            return new FalloutSnow(w, pos, this.putter, this.skyStone);
-        } else {
-            return new Fallout(this.putter, this.skyStone);
+    private Fallout getFallout(IWorld w, BlockPos pos, FalloutMode mode) {
+        switch (mode) {
+            case SAND:
+                return new FalloutSand(w, pos, this.putter, this.skyStone);
+            case TERRACOTTA:
+                return new FalloutCopy(w, pos, this.putter, this.skyStone);
+            case ICE_SNOW:
+                return new FalloutSnow(w, pos, this.putter, this.skyStone);
+            case DEFAULT:
+            default:
+                return new Fallout(this.putter, this.skyStone);
         }
     }
 

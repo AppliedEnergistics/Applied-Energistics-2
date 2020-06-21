@@ -21,6 +21,9 @@ package appeng.hooks;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.server.ServerWorld;
+
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketCompassRequest;
 

@@ -1,99 +1,85 @@
 package appeng.worldgen;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.material.Material;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.Tag;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
+import net.minecraft.world.gen.Heightmap;
 
-import appeng.api.AEApi;
-import appeng.api.definitions.IBlocks;
+import appeng.core.AppEng;
+import appeng.worldgen.meteorite.FalloutMode;
 
 /**
  * Makes decisions about spawning meteorites in the world.
  */
 public class MeteoriteSpawner {
 
-    private final Set<Block> validSpawn = new HashSet<>();
-    private final Set<Block> invalidSpawn = new HashSet<>();
+    private static final ResourceLocation TAG_VALID_SPAWN = new ResourceLocation(AppEng.MOD_ID,
+            "meteorite/valid_spawn");
+
+    private static final ResourceLocation TAG_INVALID_SPAWN = new ResourceLocation(AppEng.MOD_ID,
+            "meteorite/invalid_spawn");
+
+    private final Tag<Block> validSpawnTag;
+
+    private final Tag<Block> invalidSpawnTag;
+
+    private final Tag<Block> sandTag;
 
     public MeteoriteSpawner() {
-        final IBlocks blocks = AEApi.instance().definitions().blocks();
-
-        this.validSpawn.add(Blocks.STONE);
-        this.validSpawn.add(Blocks.COBBLESTONE);
-        this.validSpawn.add(Blocks.GRASS);
-        this.validSpawn.add(Blocks.SAND);
-        this.validSpawn.add(Blocks.DIRT);
-        this.validSpawn.add(Blocks.GRAVEL);
-        this.validSpawn.add(Blocks.NETHERRACK);
-        this.validSpawn.add(Blocks.IRON_ORE);
-        this.validSpawn.add(Blocks.GOLD_ORE);
-        this.validSpawn.add(Blocks.DIAMOND_ORE);
-        this.validSpawn.add(Blocks.REDSTONE_ORE);
-        this.validSpawn.add(Blocks.ICE);
-        this.validSpawn.add(Blocks.SNOW);
-
-        this.invalidSpawn.add(blocks.skyStoneBlock().block());
-        this.invalidSpawn.add(Blocks.IRON_DOOR);
-        this.invalidSpawn.add(Blocks.IRON_BARS);
-        this.invalidSpawn.add(Blocks.OAK_DOOR);
-        this.invalidSpawn.add(Blocks.ACACIA_DOOR);
-        this.invalidSpawn.add(Blocks.BIRCH_DOOR);
-        this.invalidSpawn.add(Blocks.DARK_OAK_DOOR);
-        this.invalidSpawn.add(Blocks.JUNGLE_DOOR);
-        this.invalidSpawn.add(Blocks.SPRUCE_DOOR);
-        this.invalidSpawn.add(Blocks.BRICKS);
-        this.invalidSpawn.add(Blocks.CLAY);
-        this.invalidSpawn.add(Blocks.WATER);
+        this.validSpawnTag = BlockTags.getCollection().getOrCreate(TAG_VALID_SPAWN);
+        this.invalidSpawnTag = BlockTags.getCollection().getOrCreate(TAG_INVALID_SPAWN);
+        this.sandTag = BlockTags.getCollection().getOrCreate(new ResourceLocation("minecraft:sand"));
     }
 
-    public PlacedMeteoriteSettings trySpawnMeteoriteAtSuitableHeight(IWorldReader world, int x, int y, int z) {
+    public PlacedMeteoriteSettings trySpawnMeteoriteAtSuitableHeight(IWorldReader world, BlockPos startPos,
+            float coreRadius, boolean lava) {
 
-        for (int tries = 0; tries < 20; tries++) {
-            PlacedMeteoriteSettings spawned = trySpawnMeteorite(world, new BlockPos(x, y, z));
+        int stepSize = Math.min(5, (int) Math.ceil(coreRadius) + 1);
+        int minY = 10 + stepSize;
+        BlockPos.Mutable mutablePos = new BlockPos.Mutable(startPos);
+
+        int startY = world.getHeight(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, startPos).getY();
+        mutablePos.setY(startY + stepSize);
+
+        while (mutablePos.getY() > minY) {
+            PlacedMeteoriteSettings spawned = trySpawnMeteorite(world, mutablePos, coreRadius, lava);
             if (spawned != null) {
                 return spawned;
             }
 
-            y -= 15;
-            if (y < 40) {
-                return null;
-            }
+            mutablePos.setY(mutablePos.getY() - stepSize);
         }
 
         return null;
     }
 
     @Nullable
-    public PlacedMeteoriteSettings trySpawnMeteorite(IWorldReader world, BlockPos pos) {
-        Block blk = world.getBlockState(pos).getBlock();
-        if (!this.validSpawn.contains(blk)) {
-            return null; // must spawn on a valid block..
-        }
-
-        double meteoriteSize = (Math.random() * 6.0) + 2;
-        double realCrater = meteoriteSize * 2 + 5;
-        boolean lava = Math.random() > 0.9;
-
+    public PlacedMeteoriteSettings trySpawnMeteorite(IWorldReader world, BlockPos pos, float coreRadius, boolean lava) {
         if (!areSurroundingsSuitable(world, pos)) {
             return null;
         }
 
         // we can spawn here!
         int skyMode = countBlockWithSkyLight(world, pos);
+        boolean placeCrater = skyMode > 10;
 
         boolean solid = !isAirBelowSpawnPoint(world, pos);
 
         if (!solid) {
-            skyMode = 0;
+            placeCrater = false;
         }
 
-        return new PlacedMeteoriteSettings(pos, blk.getRegistryName(), lava, skyMode, meteoriteSize, realCrater);
+        FalloutMode fallout = getFalloutFromBaseBlock(world.getBlockState(pos));
+
+        return new PlacedMeteoriteSettings(pos, coreRadius, lava, placeCrater, fallout);
     }
 
     private static boolean isAirBelowSpawnPoint(IWorldReader w, BlockPos pos) {
@@ -136,8 +122,8 @@ public class MeteoriteSpawner {
                 testPos.setY(j);
                 for (int k = pos.getZ() - 6; k < pos.getZ() + 6; k++) {
                     testPos.setZ(k);
-                    Block testBlk = w.getBlockState(testPos).getBlock();
-                    if (this.validSpawn.contains(testBlk)) {
+                    Block block = w.getBlockState(testPos).getBlock();
+                    if (block.isIn(validSpawnTag)) {
                         realValidBlocks++;
                     }
                 }
@@ -152,10 +138,10 @@ public class MeteoriteSpawner {
                 for (int k = pos.getZ() - 15; k < pos.getZ() + 15; k++) {
                     testPos.setZ(k);
                     Block testBlk = w.getBlockState(testPos).getBlock();
-                    if (this.invalidSpawn.contains(testBlk)) {
+                    if (testBlk.isIn(invalidSpawnTag)) {
                         return false;
                     }
-                    if (this.validSpawn.contains(testBlk)) {
+                    if (testBlk.isIn(validSpawnTag)) {
                         validBlocks++;
                     }
                 }
@@ -164,6 +150,19 @@ public class MeteoriteSpawner {
 
         final int minBlocks = 200;
         return validBlocks > minBlocks && realValidBlocks > 80;
+    }
+
+    private FalloutMode getFalloutFromBaseBlock(BlockState blockState) {
+        if (blockState.getBlock().isIn(sandTag)) {
+            return FalloutMode.SAND;
+        } else if (blockState.getBlock() == Blocks.TERRACOTTA) {
+            return FalloutMode.TERRACOTTA;
+        } else if (blockState.getMaterial() == Material.SNOW || blockState.getMaterial() == Material.SNOW_BLOCK
+                || blockState.getMaterial() == Material.ICE || blockState.getMaterial() == Material.PACKED_ICE) {
+            return FalloutMode.ICE_SNOW;
+        } else {
+            return FalloutMode.DEFAULT;
+        }
     }
 
 }

@@ -1,75 +1,66 @@
 package appeng.worldgen;
 
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+
+import appeng.worldgen.meteorite.FalloutMode;
 
 public final class PlacedMeteoriteSettings {
 
     private final BlockPos pos;
-    private final ResourceLocation blk;
     private final boolean lava;
-    private final int skyMode;
-    private final double meteoriteRadius;
-    private final double craterRadius;
+    private final boolean placeCrater;
+    private final float meteoriteRadius;
+    private final FalloutMode fallout;
 
-    public PlacedMeteoriteSettings(BlockPos pos, ResourceLocation blk, boolean lava, int skyMode,
-            double meteoriteRadius, double craterRadius) {
+    public PlacedMeteoriteSettings(BlockPos pos, float meteoriteRadius, boolean lava, boolean placeCrater,
+            FalloutMode fallout) {
         this.pos = pos;
-        this.blk = blk;
         this.lava = lava;
-        this.skyMode = skyMode;
+        this.placeCrater = placeCrater;
         this.meteoriteRadius = meteoriteRadius;
-        this.craterRadius = craterRadius;
+        this.fallout = fallout;
     }
 
     public BlockPos getPos() {
         return pos;
     }
 
-    public ResourceLocation getBlk() {
-        return blk;
-    }
-
     public boolean isLava() {
         return lava;
     }
 
-    public int getSkyMode() {
-        return skyMode;
+    public boolean isPlaceCrater() {
+        return placeCrater;
     }
 
-    public double getMeteoriteRadius() {
+    public float getMeteoriteRadius() {
         return meteoriteRadius;
     }
 
-    public double getCraterRadius() {
-        return craterRadius;
+    public FalloutMode getFallout() {
+        return fallout;
     }
 
     public CompoundNBT write(CompoundNBT tag) {
-        tag.putInt("x", pos.getX());
-        tag.putInt("y", pos.getY());
-        tag.putInt("z", pos.getZ());
-        tag.putString("blk", blk.toString());
+        tag.putLong("c", pos.toLong());
 
-        tag.putDouble("meteoriteRadius", meteoriteRadius);
-        tag.putDouble("craterRadius", craterRadius);
+        tag.putFloat("mr", meteoriteRadius);
 
-        tag.putBoolean("lava", lava);
-        tag.putInt("skyMode", skyMode);
+        tag.putBoolean("l", lava);
+        tag.putBoolean("cr", placeCrater);
+        tag.putByte("f", (byte) fallout.ordinal());
         return tag;
     }
 
     public static PlacedMeteoriteSettings read(CompoundNBT tag) {
-        BlockPos pos = new BlockPos(tag.getInt("x"), tag.getInt("y"), tag.getInt("z"));
-        ResourceLocation blk = new ResourceLocation(tag.getString("blk"));
-        double meteoriteRadius = tag.getDouble("meteoriteRadius");
-        double craterRadius = tag.getDouble("craterRadius");
-        boolean lava = tag.getBoolean("lava");
-        int skyMode = tag.getInt("skyMode");
+        BlockPos pos = BlockPos.fromLong(tag.getLong("c"));
+        float meteoriteRadius = tag.getFloat("mr");
+        boolean lava = tag.getBoolean("l");
+        boolean placeCrater = tag.getBoolean("cr");
+        FalloutMode fallout = FalloutMode.values()[tag.getByte("f")];
 
-        return new PlacedMeteoriteSettings(pos, blk, lava, skyMode, meteoriteRadius, craterRadius);
+        return new PlacedMeteoriteSettings(pos, meteoriteRadius, lava, placeCrater, fallout);
     }
 
 }

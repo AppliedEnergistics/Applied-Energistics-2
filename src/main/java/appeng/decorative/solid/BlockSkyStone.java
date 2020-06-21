@@ -23,6 +23,7 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -66,8 +67,8 @@ public class BlockSkyStone extends AEBaseBlock {
     public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn,
             BlockPos currentPos, BlockPos facingPos) {
         if (worldIn instanceof ServerWorld) {
-            WorldData.instance().compassData().service().updateArea(worldIn, currentPos.getX(), currentPos.getY(),
-                    currentPos.getZ());
+            WorldData.instance().compassData().service().updateArea(worldIn, new ChunkPos(currentPos),
+                    currentPos.getY());
         }
 
         return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
@@ -82,7 +83,7 @@ public class BlockSkyStone extends AEBaseBlock {
         super.onReplaced(state, w, pos, newState, isMoving);
 
         if (w instanceof ServerWorld) {
-            WorldData.instance().compassData().service().updateArea(w, pos.getX(), pos.getY(), pos.getZ());
+            WorldData.instance().compassData().service().updateArea(w, new ChunkPos(pos), pos.getY());
         }
     }
 

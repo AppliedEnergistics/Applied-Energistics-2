@@ -202,7 +202,7 @@ import appeng.tile.AEBaseTile;
 import appeng.tile.crafting.MolecularAssemblerRenderer;
 import appeng.worldgen.ChargedQuartzOreConfig;
 import appeng.worldgen.ChargedQuartzOreFeature;
-import appeng.worldgen.MeteoriteWorldGen;
+import appeng.worldgen.MeteoriteStructure;
 
 final class Registration {
 
@@ -648,13 +648,14 @@ final class Registration {
         }
 
         ForgeRegistries.BIOMES.forEach(b -> {
-            b.addFeature(GenerationStage.Decoration.TOP_LAYER_MODIFICATION,
-                    new ConfiguredFeature<NoFeatureConfig, Feature<NoFeatureConfig>>(MeteoriteWorldGen.INSTANCE,
-                            IFeatureConfig.NO_FEATURE_CONFIG));
+//            b.addFeature(GenerationStage.Decoration.TOP_LAYER_MODIFICATION,
+//                   new ConfiguredFeature<NoFeatureConfig, Feature<NoFeatureConfig>>(MeteoriteWorldGen.INSTANCE,
+//                           IFeatureConfig.NO_FEATURE_CONFIG));
 
-            b.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES,
-                    new ConfiguredFeature<NoFeatureConfig, Feature<NoFeatureConfig>>(MeteoriteWorldGen.INSTANCE,
-                            IFeatureConfig.NO_FEATURE_CONFIG));
+            b.addStructure(MeteoriteStructure.INSTANCE.withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG));
+            b.addFeature(GenerationStage.Decoration.TOP_LAYER_MODIFICATION,
+                    MeteoriteStructure.INSTANCE.withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG)
+                            .withPlacement(Placement.NOPE.configure(IPlacementConfig.NO_PLACEMENT_CONFIG)));
 
             if (AEConfig.instance().isFeatureEnabled(AEFeature.CERTUS_QUARTZ_WORLD_GEN)) {
                 BlockState quartzOre = AEApi.instance().definitions().blocks().quartzOre().block().getDefaultState();
@@ -683,7 +684,8 @@ final class Registration {
     public void registerWorldGen(RegistryEvent.Register<Feature<?>> evt) {
         IForgeRegistry<Feature<?>> r = evt.getRegistry();
 
-        r.register(MeteoriteWorldGen.INSTANCE);
+//        r.register(MeteoriteWorldGen.INSTANCE);
+        r.register(MeteoriteStructure.INSTANCE);
         r.register(ChargedQuartzOreFeature.INSTANCE);
     }
 

@@ -25,11 +25,13 @@ import net.minecraft.network.play.server.SChunkDataPacket;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.server.ServerWorld;
 
 import appeng.items.AEBaseItem;
+import appeng.util.Platform;
 import appeng.worldgen.MeteoritePlacer;
 import appeng.worldgen.MeteoriteSpawner;
 import appeng.worldgen.PlacedMeteoriteSettings;
@@ -54,15 +56,28 @@ public class ToolMeteoritePlacer extends AEBaseItem {
             return ActionResultType.PASS;
         }
 
-        final MeteoriteSpawner ms = new MeteoriteSpawner();
-        PlacedMeteoriteSettings spawned = ms.trySpawnMeteorite(world, pos);
+        // See MeteoriteStructure for original code
+        float coreRadius = (Platform.getRandomFloat() * 6.0f) + 2;
+        boolean lava = Platform.getRandomFloat() > 0.9f;
+
+        MeteoriteSpawner spawner = new MeteoriteSpawner();
+        PlacedMeteoriteSettings spawned = spawner.trySpawnMeteoriteAtSuitableHeight(world, pos, coreRadius, lava);
 
         if (spawned == null) {
             player.sendMessage(new StringTextComponent("Un-suitable Location."));
             return ActionResultType.FAIL;
         }
 
-        final MeteoritePlacer placer = new MeteoritePlacer(world, spawned);
+        player.sendMessage(new StringTextComponent("Spawned at y=" + spawned.getPos().getY()));
+
+        // Since we don't know yet if the meteorite will be underground or not,
+        // we have to assume maximum size
+        int range = (int) Math.ceil((coreRadius * 2 + 5) * 1.25f);
+
+        MutableBoundingBox boundingBox = new MutableBoundingBox(pos.getX() - range, pos.getY(), pos.getZ() - range,
+                pos.getX() + range, pos.getY(), pos.getZ() + range);
+
+        final MeteoritePlacer placer = new MeteoritePlacer(world, spawned, boundingBox);
         placer.place();
 
         // The placer will not send chunks to the player since it's used as part

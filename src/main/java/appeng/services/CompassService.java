@@ -31,6 +31,7 @@ import javax.annotation.Nonnull;
 import net.minecraft.block.Block;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.dimension.DimensionType;
@@ -90,27 +91,24 @@ public final class CompassService {
         }
     }
 
-    public void updateArea(final IWorld w, final int chunkX, final int chunkZ) {
-        final int x = chunkX << 4;
-        final int z = chunkZ << 4;
+    public void updateArea(final IWorld w, ChunkPos chunkPos) {
+        this.updateArea(w, chunkPos, CHUNK_SIZE);
+        this.updateArea(w, chunkPos, CHUNK_SIZE + 32);
+        this.updateArea(w, chunkPos, CHUNK_SIZE + 64);
+        this.updateArea(w, chunkPos, CHUNK_SIZE + 96);
 
-        this.updateArea(w, x, CHUNK_SIZE, z);
-        this.updateArea(w, x, CHUNK_SIZE + 32, z);
-        this.updateArea(w, x, CHUNK_SIZE + 64, z);
-        this.updateArea(w, x, CHUNK_SIZE + 96, z);
-
-        this.updateArea(w, x, CHUNK_SIZE + 128, z);
-        this.updateArea(w, x, CHUNK_SIZE + 160, z);
-        this.updateArea(w, x, CHUNK_SIZE + 192, z);
-        this.updateArea(w, x, CHUNK_SIZE + 224, z);
+        this.updateArea(w, chunkPos, CHUNK_SIZE + 128);
+        this.updateArea(w, chunkPos, CHUNK_SIZE + 160);
+        this.updateArea(w, chunkPos, CHUNK_SIZE + 192);
+        this.updateArea(w, chunkPos, CHUNK_SIZE + 224);
     }
 
-    public Future<?> updateArea(final IWorld w, final int x, final int y, final int z) {
+    public Future<?> updateArea(final IWorld w, ChunkPos chunkPos, int y) {
         this.jobSize++;
 
-        final int cx = x >> 4;
+        final int cx = chunkPos.x;
         final int cdy = y >> 5;
-        final int cz = z >> 4;
+        final int cz = chunkPos.z;
 
         final int low_y = cdy << 5;
         final int hi_y = low_y + 32;

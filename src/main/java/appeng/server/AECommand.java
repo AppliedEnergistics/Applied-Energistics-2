@@ -46,11 +46,14 @@ public final class AECommand {
 
     private void add(LiteralArgumentBuilder<net.minecraft.command.CommandSource> builder, Commands subCommand) {
 
-        builder.then(literal(subCommand.name().toLowerCase()).requires(src -> src.hasPermissionLevel(subCommand.level))
-                .executes(ctx -> {
-                    subCommand.command.call(ServerLifecycleHooks.getCurrentServer(), new String[0], ctx.getSource());
-                    return 1;
-                }));
+        LiteralArgumentBuilder<CommandSource> subCommandBuilder = literal(subCommand.name().toLowerCase())
+                .requires(src -> src.hasPermissionLevel(subCommand.level));
+        subCommand.command.addArguments(subCommandBuilder);
+        subCommandBuilder.executes(ctx -> {
+            subCommand.command.call(ServerLifecycleHooks.getCurrentServer(), ctx, ctx.getSource());
+            return 1;
+        });
+        builder.then(subCommandBuilder);
 
     }
 
