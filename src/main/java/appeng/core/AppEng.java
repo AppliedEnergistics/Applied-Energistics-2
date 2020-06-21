@@ -23,6 +23,7 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
 
+import appeng.client.render.FacadeItemModel;
 import com.google.common.base.Stopwatch;
 
 import net.minecraft.block.Block;
@@ -213,6 +214,7 @@ public final class AppEng {
         addBuiltInModel("paint_splotches", PaintSplotchesModel::new);
         addBuiltInModel("quantum_bridge_formed", QnbFormedModel::new);
         addBuiltInModel("p2p_tunnel_frequency", P2PTunnelFrequencyModel::new);
+        addBuiltInModel("facade", FacadeItemModel::new);
         ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "encoded_pattern"),
                 EncodedPatternModelLoader.INSTANCE);
         ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "part_plane"),

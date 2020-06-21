@@ -39,6 +39,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 
 import appeng.client.render.cablebus.FacadeBuilder;
 import appeng.items.parts.ItemFacade;
+import net.minecraftforge.client.model.data.IModelData;
 
 /**
  * This baked model class is used as a dispatcher to redirect the renderer to
@@ -52,27 +53,6 @@ public class FacadeDispatcherBakedModel extends DelegateBakedModel {
     public FacadeDispatcherBakedModel(IBakedModel baseModel, FacadeBuilder facadeBuilder) {
         super(baseModel);
         this.facadeBuilder = facadeBuilder;
-    }
-
-    // This is never used. See the item override list below.
-    @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public boolean isGui3d() {
-        return this.getBaseModel().isGui3d();
-    }
-
-    @Override
-    public boolean func_230044_c_() {
-        return false;
-    }
-
-    @Override
-    public boolean isBuiltInRenderer() {
-        return false;
     }
 
     @Override

@@ -31,7 +31,6 @@ import appeng.api.features.AEFeature;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
 import appeng.bootstrap.FeatureFactory;
-import appeng.core.CreativeTabFacade;
 import appeng.core.features.ActivityState;
 import appeng.core.features.ColoredItemDefinition;
 import appeng.core.features.ItemStackSrc;
@@ -51,7 +50,6 @@ import appeng.items.misc.ItemCrystalSeed;
 import appeng.items.misc.ItemEncodedPattern;
 import appeng.items.misc.ItemPaintBall;
 import appeng.items.misc.ItemPaintBallRendering;
-import appeng.items.parts.FacadeRendering;
 import appeng.items.parts.ItemFacade;
 import appeng.items.storage.BasicItemStorageCell;
 import appeng.items.storage.ItemCreativeStorageCell;
@@ -277,8 +275,7 @@ public final class ApiItems implements IItems {
                 .item("128_cubed_spatial_storage_cell", props -> new ItemSpatialStorageCell(props, 128))
                 .props(storageCellProps).build();
 
-        this.facade = registry.item("facade", ItemFacade::new).features(AEFeature.FACADES)
-                .itemGroup(CreativeTabFacade.instance).rendering(new FacadeRendering()).build();
+        this.facade = registry.item("facade", ItemFacade::new).features(AEFeature.FACADES).build();
 
         this.certusCrystalSeed = registry
                 .item("certus_crystal_seed",

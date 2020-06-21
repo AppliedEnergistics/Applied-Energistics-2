@@ -90,7 +90,7 @@ public final class FacadeRecipe extends SpecialRecipe {
     public static IRecipeSerializer<FacadeRecipe> getSerializer(ItemFacade facade) {
         if (SERIALIZER == null) {
             SERIALIZER = new SpecialRecipeSerializer<>(id -> new FacadeRecipe(id, facade));
-            SERIALIZER.setRegistryName(new ResourceLocation(AppEng.MOD_ID, "facade_recipe"));
+            SERIALIZER.setRegistryName(new ResourceLocation(AppEng.MOD_ID, "facade"));
         }
         return SERIALIZER;
     }

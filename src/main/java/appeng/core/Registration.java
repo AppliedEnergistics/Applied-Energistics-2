@@ -18,6 +18,8 @@
 
 package appeng.core;
 
+import appeng.items.parts.ItemFacade;
+import appeng.recipes.game.FacadeRecipe;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -425,8 +427,12 @@ final class Registration {
         GrinderRecipe.TYPE = new AERecipeType<>(GrinderRecipeSerializer.INSTANCE.getRegistryName());
         InscriberRecipe.TYPE = new AERecipeType<>(InscriberRecipeSerializer.INSTANCE.getRegistryName());
 
-        r.registerAll(DisassembleRecipe.SERIALIZER, GrinderRecipeSerializer.INSTANCE, InscriberRecipeSerializer.INSTANCE
-//				FacadeRecipe.getSerializer( (ItemFacade) definitions.items().facade().item() ) FIXME reimplement facades
+        ItemFacade facadeItem = (ItemFacade) Api.INSTANCE.definitions().items().facade().item();
+        r.registerAll(
+                DisassembleRecipe.SERIALIZER,
+                GrinderRecipeSerializer.INSTANCE,
+                InscriberRecipeSerializer.INSTANCE,
+				FacadeRecipe.getSerializer(facadeItem)
         );
 
         CraftingHelper.register(FeaturesEnabled.Serializer.INSTANCE);

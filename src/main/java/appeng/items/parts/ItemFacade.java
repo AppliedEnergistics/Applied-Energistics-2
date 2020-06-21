@@ -27,12 +27,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.Items;
+import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -58,7 +55,6 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
     public ItemFacade(Properties properties) {
         super(properties);
-        // FIXME this.setHasSubtypes( true );
     }
 
     @Override
@@ -98,7 +94,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
                     }
 
                     Item blockItem = b.asItem();
-                    if (blockItem != null && blockItem.getGroup() != null) {
+                    if (blockItem != Items.AIR && blockItem.getGroup() != null) {
                         final NonNullList<ItemStack> tmpList = NonNullList.create();
                         b.fillItemGroup(blockItem.getGroup(), tmpList);
                         for (final ItemStack l : tmpList) {
@@ -116,31 +112,21 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
     }
 
     public ItemStack createFacadeForItem(final ItemStack itemStack, final boolean returnItem) {
-        if (itemStack.isEmpty()) {
+        if (itemStack.isEmpty() || itemStack.hasTag() || !(itemStack.getItem() instanceof BlockItem)) {
             return ItemStack.EMPTY;
         }
 
-        final Block block = Block.getBlockFromItem(itemStack.getItem());
-        if (block == Blocks.AIR || itemStack.hasTag()) {
+        BlockItem blockItem = (BlockItem) itemStack.getItem();
+        Block block = blockItem.getBlock();
+        if (block == Blocks.AIR) {
             return ItemStack.EMPTY;
         }
 
-        final int metadata = 0; // FIXME itemStack.getItem().getMetadata( itemStack.getDamage() );
+        // We only support the default state for facades. Sorry.
+        BlockState blockState = block.getDefaultState();
 
-        // Try to get the block state based on the item stack's meta. If this fails,
-        // don't consider it for a facade
-        // This for example fails for Pistons because they hardcoded an invalid meta
-        // value in vanilla
-        BlockState blockState;
-        try {
-            blockState = null; // FIXME block.getStateFromMeta( metadata );
-        } catch (Exception e) {
-            AELog.debug(e, "Cannot create a facade for " + block.getRegistryName());
-            return ItemStack.EMPTY;
-        }
-
-        final boolean areTileEntitiesEnabled = FacadeConfig.instance().allowTileEntityFacades();
-        final boolean isWhiteListed = FacadeConfig.instance().isWhiteListed(block, metadata);
+        final boolean areTileEntitiesEnabled = false; // FacadeConfig.instance().allowTileEntityFacades();
+        final boolean isWhiteListed = true; // FIXME FacadeConfig.instance().isWhiteListed(block);
         final boolean isModel = blockState.getRenderType() == BlockRenderType.MODEL;
 
         final BlockState defaultState = block.getDefaultState();
