@@ -18,12 +18,25 @@
 
 package appeng.block.networking;
 
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Random;
-
-import javax.annotation.Nullable;
-
+import appeng.api.parts.IFacadeContainer;
+import appeng.api.parts.IFacadePart;
+import appeng.api.parts.PartItemStack;
+import appeng.api.parts.SelectedPart;
+import appeng.api.util.AEColor;
+import appeng.api.util.AEPartLocation;
+import appeng.block.AEBaseTileBlock;
+import appeng.client.render.cablebus.CableBusBakedModel;
+import appeng.client.render.cablebus.CableBusBreakingParticle;
+import appeng.client.render.cablebus.CableBusRenderState;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketClick;
+import appeng.helpers.AEGlassMaterial;
+import appeng.integration.abstraction.IAEFacade;
+import appeng.parts.ICableBusContainer;
+import appeng.parts.NullCableBusContainer;
+import appeng.tile.AEBaseTile;
+import appeng.tile.networking.TileCableBus;
+import appeng.util.Platform;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -44,12 +57,8 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.*;
 import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -60,24 +69,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.api.parts.IFacadeContainer;
-import appeng.api.parts.PartItemStack;
-import appeng.api.parts.SelectedPart;
-import appeng.api.util.AEColor;
-import appeng.block.AEBaseTileBlock;
-import appeng.client.render.cablebus.CableBusBakedModel;
-import appeng.client.render.cablebus.CableBusBreakingParticle;
-import appeng.client.render.cablebus.CableBusRenderState;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketClick;
-import appeng.helpers.AEGlassMaterial;
-import appeng.parts.ICableBusContainer;
-import appeng.parts.NullCableBusContainer;
-import appeng.tile.AEBaseTile;
-import appeng.tile.networking.TileCableBus;
-import appeng.util.Platform;
+import javax.annotation.Nullable;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Random;
 
-public class BlockCableBus extends AEBaseTileBlock<TileCableBus> /* FIXME implements IAEFacade */ {
+public class BlockCableBus extends AEBaseTileBlock<TileCableBus> implements IAEFacade {
 
     private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
 
@@ -355,23 +352,23 @@ public class BlockCableBus extends AEBaseTileBlock<TileCableBus> /* FIXME implem
         // do nothing
     }
 
-// FIXME FACADES	@Override
-// FIXME FACADES	public BlockState getFacadeState( IBlockReader world, BlockPos pos, Direction side )
-// FIXME FACADES	{
-// FIXME FACADES		if( side != null )
-// FIXME FACADES		{
-// FIXME FACADES			IFacadeContainer container = this.fc( world, pos );
-// FIXME FACADES			if( container != null )
-// FIXME FACADES			{
-// FIXME FACADES				IFacadePart facade = container.getFacade( AEPartLocation.fromFacing( side ) );
-// FIXME FACADES				if( facade != null )
-// FIXME FACADES				{
-// FIXME FACADES					return facade.getBlockState();
-// FIXME FACADES				}
-// FIXME FACADES			}
-// FIXME FACADES		}
-// FIXME FACADES		return world.getBlockState( pos );
-// FIXME FACADES	}
+	@Override
+	public BlockState getFacadeState( IBlockReader world, BlockPos pos, Direction side )
+	{
+		if( side != null )
+		{
+			IFacadeContainer container = this.fc( world, pos );
+			if( container != null )
+			{
+				IFacadePart facade = container.getFacade( AEPartLocation.fromFacing( side ) );
+				if( facade != null )
+				{
+					return facade.getBlockState();
+				}
+			}
+		}
+		return world.getBlockState( pos );
+	}
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
