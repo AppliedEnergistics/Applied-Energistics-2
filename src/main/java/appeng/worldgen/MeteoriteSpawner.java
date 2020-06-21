@@ -46,8 +46,10 @@ public class MeteoriteSpawner {
         int minY = 10 + stepSize;
         BlockPos.Mutable mutablePos = new BlockPos.Mutable(startPos);
 
-        // Place the center on the first solid ground block
-        int startY = world.getHeight(Heightmap.Type.WORLD_SURFACE_WG, startPos).getY();
+        // Place the center on the first solid ground block, but move it down a little
+        // to embed the meteorite more
+        // in the ground
+        int startY = world.getHeight(Heightmap.Type.WORLD_SURFACE_WG, startPos).getY() - stepSize / 2;
         mutablePos.setY(startY);
 
         while (mutablePos.getY() > minY) {

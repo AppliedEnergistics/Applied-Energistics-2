@@ -637,8 +637,6 @@ final class Registration {
             // StorageWorldProvider.class );
 
             registries.worldgen().disableWorldGenForDimension(type, DimensionType.THE_NETHER.getRegistryName());
-
-            registries.worldgen().disableWorldGenForDimension(type, DimensionType.THE_NETHER.getRegistryName());
         }
 
         // whitelist from config
@@ -648,37 +646,51 @@ final class Registration {
         }
 
         ForgeRegistries.BIOMES.forEach(b -> {
-//            b.addFeature(GenerationStage.Decoration.TOP_LAYER_MODIFICATION,
-//                   new ConfiguredFeature<NoFeatureConfig, Feature<NoFeatureConfig>>(MeteoriteWorldGen.INSTANCE,
-//                           IFeatureConfig.NO_FEATURE_CONFIG));
+            addMeteoriteWorldGen(b);
+            addQuartzWorldGen(b);
+        });
 
-            b.addStructure(MeteoriteStructure.INSTANCE.withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG));
-            b.addFeature(GenerationStage.Decoration.TOP_LAYER_MODIFICATION,
-                    MeteoriteStructure.INSTANCE.withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG)
-                            .withPlacement(Placement.NOPE.configure(IPlacementConfig.NO_PLACEMENT_CONFIG)));
+    }
 
-            if (AEConfig.instance().isFeatureEnabled(AEFeature.CERTUS_QUARTZ_WORLD_GEN)) {
-                BlockState quartzOre = AEApi.instance().definitions().blocks().quartzOre().block().getDefaultState();
-                b.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Feature.ORE
+    private static void addMeteoriteWorldGen(Biome b) {
+        if (!AEConfig.instance().isFeatureEnabled(AEFeature.METEORITE_WORLD_GEN)) {
+            return;
+        }
+
+        if (b.getCategory() == Biome.Category.THEEND || b.getCategory() == Biome.Category.NETHER) {
+            return;
+        }
+
+        b.addStructure(MeteoriteStructure.INSTANCE.withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG));
+        b.addFeature(GenerationStage.Decoration.TOP_LAYER_MODIFICATION,
+                MeteoriteStructure.INSTANCE.withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG)
+                        .withPlacement(Placement.NOPE.configure(IPlacementConfig.NO_PLACEMENT_CONFIG)));
+    }
+
+    private static void addQuartzWorldGen(Biome b) {
+        if (!AEConfig.instance().isFeatureEnabled(AEFeature.CERTUS_QUARTZ_WORLD_GEN)) {
+            return;
+        }
+
+        BlockState quartzOre = AEApi.instance().definitions().blocks().quartzOre().block().getDefaultState();
+        b.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES,
+                Feature.ORE
                         .withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE,
                                 quartzOre, AEConfig.instance().getQuartzOresPerCluster()))
                         .withPlacement(Placement.COUNT_RANGE.configure(
                                 new CountRangeConfig(AEConfig.instance().getQuartzOresClusterAmount(), 12, 12, 72))));
 
-                if (AEConfig.instance().isFeatureEnabled(AEFeature.CHARGED_CERTUS_ORE)) {
+        if (AEConfig.instance().isFeatureEnabled(AEFeature.CHARGED_CERTUS_ORE)) {
 
-                    BlockState chargedQuartzOre = AEApi.instance().definitions().blocks().quartzOreCharged().block()
-                            .getDefaultState();
-                    b.addFeature(GenerationStage.Decoration.UNDERGROUND_DECORATION,
-                            ChargedQuartzOreFeature.INSTANCE
-                                    .withConfiguration(new ChargedQuartzOreConfig(quartzOre, chargedQuartzOre,
-                                            AEConfig.instance().getSpawnChargedChance()))
-                                    .withPlacement(Placement.NOPE.configure(IPlacementConfig.NO_PLACEMENT_CONFIG)));
+            BlockState chargedQuartzOre = AEApi.instance().definitions().blocks().quartzOreCharged().block()
+                    .getDefaultState();
+            b.addFeature(GenerationStage.Decoration.UNDERGROUND_DECORATION,
+                    ChargedQuartzOreFeature.INSTANCE
+                            .withConfiguration(new ChargedQuartzOreConfig(quartzOre, chargedQuartzOre,
+                                    AEConfig.instance().getSpawnChargedChance()))
+                            .withPlacement(Placement.NOPE.configure(IPlacementConfig.NO_PLACEMENT_CONFIG)));
 
-                }
-            }
-        });
-
+        }
     }
 
     public void registerWorldGen(RegistryEvent.Register<Feature<?>> evt) {
