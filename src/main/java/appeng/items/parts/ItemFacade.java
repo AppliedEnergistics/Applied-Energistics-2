@@ -18,16 +18,6 @@
 
 package appeng.items.parts;
 
-import appeng.api.AEApi;
-import appeng.api.exceptions.MissingDefinitionException;
-import appeng.api.features.AEFeature;
-import appeng.api.parts.IAlphaPassItem;
-import appeng.api.util.AEPartLocation;
-import appeng.core.AEConfig;
-import appeng.core.AppEng;
-import appeng.facade.FacadePart;
-import appeng.facade.IFacadeItem;
-import appeng.items.AEBaseItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -46,6 +36,17 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.EmptyBlockReader;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import appeng.api.AEApi;
+import appeng.api.exceptions.MissingDefinitionException;
+import appeng.api.features.AEFeature;
+import appeng.api.parts.IAlphaPassItem;
+import appeng.api.util.AEPartLocation;
+import appeng.core.AEConfig;
+import appeng.core.AppEng;
+import appeng.facade.FacadePart;
+import appeng.facade.IFacadeItem;
+import appeng.items.AEBaseItem;
 
 public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassItem {
 

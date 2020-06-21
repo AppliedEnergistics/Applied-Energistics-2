@@ -18,9 +18,9 @@
 
 package appeng.parts;
 
-import appeng.api.parts.SelectedPart;
-import appeng.api.util.AEColor;
-import appeng.client.render.cablebus.CableBusRenderState;
+import java.util.EnumSet;
+import java.util.Random;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -31,8 +31,9 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-import java.util.EnumSet;
-import java.util.Random;
+import appeng.api.parts.SelectedPart;
+import appeng.api.util.AEColor;
+import appeng.client.render.cablebus.CableBusRenderState;
 
 public class NullCableBusContainer implements ICableBusContainer {
 

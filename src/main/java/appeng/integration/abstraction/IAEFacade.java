@@ -18,26 +18,24 @@
 
 package appeng.integration.abstraction;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
+
 import team.chisel.ctm.api.IFacade;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 
 /**
  * Neat abstraction class for All the IFacade interfaces.
  *
  * @author covers1624
  */
-public interface IAEFacade extends IFacade
-{
+public interface IAEFacade extends IFacade {
 
-    BlockState getFacadeState( IBlockReader world, BlockPos pos, @Nullable Direction side );
+    BlockState getFacadeState(IBlockReader world, BlockPos pos, @Nullable Direction side);
 
     @Nonnull
     @Override
@@ -47,7 +45,8 @@ public interface IAEFacade extends IFacade
 
     @Nonnull
     @Override
-    default BlockState getFacade(@Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nullable Direction side, @Nonnull BlockPos connection) {
+    default BlockState getFacade(@Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nullable Direction side,
+            @Nonnull BlockPos connection) {
         return getFacadeState(world, pos, side);
     }
 

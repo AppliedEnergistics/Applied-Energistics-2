@@ -18,25 +18,12 @@
 
 package appeng.block.networking;
 
-import appeng.api.parts.IFacadeContainer;
-import appeng.api.parts.IFacadePart;
-import appeng.api.parts.PartItemStack;
-import appeng.api.parts.SelectedPart;
-import appeng.api.util.AEColor;
-import appeng.api.util.AEPartLocation;
-import appeng.block.AEBaseTileBlock;
-import appeng.client.render.cablebus.CableBusBakedModel;
-import appeng.client.render.cablebus.CableBusBreakingParticle;
-import appeng.client.render.cablebus.CableBusRenderState;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketClick;
-import appeng.helpers.AEGlassMaterial;
-import appeng.integration.abstraction.IAEFacade;
-import appeng.parts.ICableBusContainer;
-import appeng.parts.NullCableBusContainer;
-import appeng.tile.AEBaseTile;
-import appeng.tile.networking.TileCableBus;
-import appeng.util.Platform;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Random;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -69,10 +56,25 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import javax.annotation.Nullable;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Random;
+import appeng.api.parts.IFacadeContainer;
+import appeng.api.parts.IFacadePart;
+import appeng.api.parts.PartItemStack;
+import appeng.api.parts.SelectedPart;
+import appeng.api.util.AEColor;
+import appeng.api.util.AEPartLocation;
+import appeng.block.AEBaseTileBlock;
+import appeng.client.render.cablebus.CableBusBakedModel;
+import appeng.client.render.cablebus.CableBusBreakingParticle;
+import appeng.client.render.cablebus.CableBusRenderState;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketClick;
+import appeng.helpers.AEGlassMaterial;
+import appeng.integration.abstraction.IAEFacade;
+import appeng.parts.ICableBusContainer;
+import appeng.parts.NullCableBusContainer;
+import appeng.tile.AEBaseTile;
+import appeng.tile.networking.TileCableBus;
+import appeng.util.Platform;
 
 public class BlockCableBus extends AEBaseTileBlock<TileCableBus> implements IAEFacade {
 
@@ -352,23 +354,19 @@ public class BlockCableBus extends AEBaseTileBlock<TileCableBus> implements IAEF
         // do nothing
     }
 
-	@Override
-	public BlockState getFacadeState( IBlockReader world, BlockPos pos, Direction side )
-	{
-		if( side != null )
-		{
-			IFacadeContainer container = this.fc( world, pos );
-			if( container != null )
-			{
-				IFacadePart facade = container.getFacade( AEPartLocation.fromFacing( side ) );
-				if( facade != null )
-				{
-					return facade.getBlockState();
-				}
-			}
-		}
-		return world.getBlockState( pos );
-	}
+    @Override
+    public BlockState getFacadeState(IBlockReader world, BlockPos pos, Direction side) {
+        if (side != null) {
+            IFacadeContainer container = this.fc(world, pos);
+            if (container != null) {
+                IFacadePart facade = container.getFacade(AEPartLocation.fromFacing(side));
+                if (facade != null) {
+                    return facade.getBlockState();
+                }
+            }
+        }
+        return world.getBlockState(pos);
+    }
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
