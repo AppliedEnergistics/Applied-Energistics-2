@@ -23,7 +23,9 @@
 
 package appeng.api.features;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 public interface IMatterCannonAmmoRegistry {
 
@@ -34,7 +36,16 @@ public interface IMatterCannonAmmoRegistry {
      * @param ammo   new ammo
      * @param weight atomic weight
      */
-    void registerAmmo(ItemStack ammo, double weight);
+    void registerAmmoItem(Item ammo, double weight);
+
+    /**
+     * register a new ammo, generally speaking this is based off of atomic weight to
+     * make it easier to guess at
+     *
+     * @param ammoTag  item tag id
+     * @param weight atomic weight
+     */
+    void registerAmmoTag(ResourceLocation ammoTag, double weight);
 
     /**
      * get the penetration value for a particular ammo, 0 indicates a non-ammo.

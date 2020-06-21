@@ -233,11 +233,7 @@ final class Registration {
         registries.cell().addCellGuiHandler(new BasicItemCellGuiHandler());
         registries.cell().addCellGuiHandler(new BasicFluidCellGuiHandler());
 
-        api.definitions().materials().matterBall().maybeStack(1).ifPresent(ammoStack -> {
-            final double weight = 32;
-
-            registries.matterCannon().registerAmmo(ammoStack, weight);
-        });
+        registries.matterCannon().registerAmmoItem(api.definitions().materials().matterBall().item(), 32);
 
         PartItemPredicate.register();
     }
