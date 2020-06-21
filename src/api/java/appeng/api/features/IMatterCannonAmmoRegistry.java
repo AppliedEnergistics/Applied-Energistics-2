@@ -42,8 +42,8 @@ public interface IMatterCannonAmmoRegistry {
      * register a new ammo, generally speaking this is based off of atomic weight to
      * make it easier to guess at
      *
-     * @param ammoTag  item tag id
-     * @param weight atomic weight
+     * @param ammoTag item tag id
+     * @param weight  atomic weight
      */
     void registerAmmoTag(ResourceLocation ammoTag, double weight);
 

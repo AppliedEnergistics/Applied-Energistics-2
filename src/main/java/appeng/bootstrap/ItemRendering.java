@@ -18,32 +18,17 @@
 
 package appeng.bootstrap;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.bootstrap.components.ItemColorComponent;
-import appeng.bootstrap.components.ItemVariantsComponent;
 
 class ItemRendering implements IItemRendering {
 
     @OnlyIn(Dist.CLIENT)
     private IItemColor itemColor;
-
-    @OnlyIn(Dist.CLIENT)
-    private Set<ResourceLocation> variants = new HashSet<>();
-
-    @Override
-    public IItemRendering variants(Collection<ResourceLocation> resources) {
-        this.variants.addAll(resources);
-        return this;
-    }
 
     @Override
     @OnlyIn(Dist.CLIENT)
@@ -53,12 +38,6 @@ class ItemRendering implements IItemRendering {
     }
 
     void apply(FeatureFactory factory, Item item) {
-        Set<ResourceLocation> resources = new HashSet<>(this.variants);
-
-        if (!resources.isEmpty()) {
-            factory.addBootstrapComponent(new ItemVariantsComponent(item, resources));
-        }
-
         if (this.itemColor != null) {
             factory.addBootstrapComponent(new ItemColorComponent(item, this.itemColor));
         }

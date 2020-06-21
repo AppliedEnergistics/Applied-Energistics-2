@@ -77,13 +77,11 @@ import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
-import appeng.bootstrap.IModelRegistry;
 import appeng.bootstrap.components.IBlockRegistrationComponent;
 import appeng.bootstrap.components.IEntityRegistrationComponent;
 import appeng.bootstrap.components.IItemColorRegistrationComponent;
 import appeng.bootstrap.components.IItemRegistrationComponent;
 import appeng.bootstrap.components.IModelBakeComponent;
-import appeng.bootstrap.components.IModelRegistrationComponent;
 import appeng.bootstrap.components.ITileEntityRegistrationComponent;
 import appeng.client.gui.implementations.GuiCellWorkbench;
 import appeng.client.gui.implementations.GuiChest;
@@ -241,15 +239,6 @@ final class Registration {
     @OnlyIn(Dist.CLIENT)
     public void modelRegistryEvent(ModelRegistryEvent event) {
         registerSpecialModels();
-
-        // TODO: Do not use the internal API
-        final ApiDefinitions definitions = Api.INSTANCE.definitions();
-        final IModelRegistry registry = (item, names) -> {
-// FIXME REMOVE OR IMPL
-        };
-        final Dist dist = FMLEnvironment.dist;
-        definitions.getRegistry().getBootstrapComponents(IModelRegistrationComponent.class)
-                .forEachRemaining(b -> b.modelRegistration(dist, registry));
     }
 
     /**

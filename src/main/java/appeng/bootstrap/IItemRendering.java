@@ -18,11 +18,7 @@
 
 package appeng.bootstrap;
 
-import java.util.Arrays;
-import java.util.Collection;
-
 import net.minecraft.client.renderer.color.IItemColor;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -30,22 +26,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * Allows the rendering of an item to be customized.
  */
 public interface IItemRendering {
-
-    /**
-     * Convenient override for {@link #variants(Collection)}.
-     */
-    @OnlyIn(Dist.CLIENT)
-    default IItemRendering variants(ResourceLocation... resources) {
-        return this.variants(Arrays.asList(resources));
-    }
-
-    /**
-     * Registers the item variants of this item. This are all models that need to be
-     * loaded for this item. This has no direct effect on rendering, but is used to
-     * load models that are used for example by the ItemMeshDefinition.
-     */
-    @OnlyIn(Dist.CLIENT)
-    IItemRendering variants(Collection<ResourceLocation> resources);
 
     /**
      * Registers a custom item color definition that inspects an item stack and tint
