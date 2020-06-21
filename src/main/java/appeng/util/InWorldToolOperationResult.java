@@ -24,26 +24,37 @@ import java.util.List;
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 
 public class InWorldToolOperationResult {
 
     private final BlockState blockState;
+    private final Fluid fluid;
     private final List<ItemStack> drops;
 
     public InWorldToolOperationResult() {
         this.blockState = null;
         this.drops = null;
+        this.fluid = null;
     }
 
     public InWorldToolOperationResult(final BlockState block, final List<ItemStack> drops) {
         this.blockState = block;
+        this.fluid = null;
         this.drops = drops;
     }
 
     public InWorldToolOperationResult(final BlockState block) {
         this.blockState = block;
         this.drops = null;
+        this.fluid = null;
+    }
+
+    public InWorldToolOperationResult(final BlockState block, Fluid fluid) {
+        this.blockState = block;
+        this.drops = null;
+        this.fluid = fluid;
     }
 
     public static InWorldToolOperationResult getBlockOperationResult(final ItemStack[] items) {
@@ -64,6 +75,10 @@ public class InWorldToolOperationResult {
         }
 
         return new InWorldToolOperationResult(b, temp);
+    }
+
+    public Fluid getFluid() {
+        return fluid;
     }
 
     public BlockState getBlockState() {
