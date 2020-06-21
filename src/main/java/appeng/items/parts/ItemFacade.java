@@ -212,15 +212,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
             return Blocks.GLASS.getDefaultState();
         }
 
-        int metadata = 0; // FIXME baseItemStack.getItem().getMetadata( baseItemStack );
-
-        try {
-            return null; // FIXME block.getStateFromMeta( metadata );
-        } catch (Exception e) {
-            AELog.warn("Block %s has broken getStateFromMeta method for meta %d", block.getRegistryName().toString(),
-                    baseItemStack.getDamage());
-            return Blocks.GLASS.getDefaultState();
-        }
+        return block.getDefaultState();
     }
 
     public List<ItemStack> getFacades() {
