@@ -164,9 +164,7 @@ public final class MeteoritePlacer {
                                 this.putter.put(world, blockPos, Blocks.LAVA.getDefaultState());
                             }
                         } else {
-                            if (!currentBlock.isAir(world, blockPos)) {
-                                this.putter.put(world, blockPos, Blocks.AIR.getDefaultState());
-                            }
+                            this.putter.put(world, blockPos, Blocks.AIR.getDefaultState());
                         }
                     }
                 }
@@ -324,11 +322,8 @@ public final class MeteoritePlacer {
                     }
 
                     // TODO reconsider
-                    if (state.canBeReplacedByLogs(world, new BlockPos(blockPos))) {
-                        blk = Platform.AIR_BLOCK;
-                        final Block blk_b = world.getBlockState(blockPosUp).getBlock();
-
-                        if (blk_b != blk) {
+                    if (state.getMaterial().isReplaceable()) {
+                        if (!world.isAirBlock(blockPosUp)) {
                             final BlockState stateUp = world.getBlockState(blockPosUp);
                             world.setBlockState(blockPos, stateUp, 3);
                         } else if (randomShit < 100 * this.crater) {
@@ -338,12 +333,12 @@ public final class MeteoritePlacer {
                             final double dist = dx * dx + dy * dy + dz * dz;
 
                             final BlockState xf = world.getBlockState(blockPosDown);
-                            if (!xf.canBeReplacedByLogs(world, blockPosDown)) {
+                            if (!xf.getMaterial().isReplaceable()) {
                                 final double extraRange = Math.random() * 0.6;
                                 final double height = this.crater * (extraRange + 0.2)
                                         - Math.abs(dist - this.crater * 1.7);
 
-                                if (xf.getBlock() != blk && height > 0 && Math.random() > 0.6) {
+                                if (!xf.isAir(world, blockPosDown) && height > 0 && Math.random() > 0.6) {
                                     randomShit++;
                                     this.type.getRandomFall(world, blockPos);
                                 }

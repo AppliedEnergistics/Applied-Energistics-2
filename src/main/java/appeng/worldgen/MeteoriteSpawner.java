@@ -46,8 +46,9 @@ public class MeteoriteSpawner {
         int minY = 10 + stepSize;
         BlockPos.Mutable mutablePos = new BlockPos.Mutable(startPos);
 
-        int startY = world.getHeight(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, startPos).getY();
-        mutablePos.setY(startY + stepSize);
+        // Place the center on the first solid ground block
+        int startY = world.getHeight(Heightmap.Type.WORLD_SURFACE_WG, startPos).getY();
+        mutablePos.setY(startY);
 
         while (mutablePos.getY() > minY) {
             PlacedMeteoriteSettings spawned = trySpawnMeteorite(world, mutablePos, coreRadius, lava);
