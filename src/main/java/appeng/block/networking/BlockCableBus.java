@@ -137,14 +137,6 @@ public class BlockCableBus extends AEBaseTileBlock<TileCableBus> /* FIXME implem
         return this.cb(world, pos).isLadder(entity);
     }
 
-// FIXME: This is now derived from the collision shape, and cannot be decided programatically anymore.
-// FIXME: see Block.hasSolidSide. We need to remove isSolidOnSide
-// FIXME	@Override
-// FIXME	public boolean isSideSolid( final BlockState state, final IBlockReader w, final BlockPos pos, final Direction side )
-// FIXME	{
-// FIXME		return this.cb( w, pos ).isSolidOnSide( side );
-// FIXME	}
-
     @Override
     public boolean isReplaceable(BlockState state, BlockItemUseContext useContext) {
         // FIXME: Potentially check the fluid one too

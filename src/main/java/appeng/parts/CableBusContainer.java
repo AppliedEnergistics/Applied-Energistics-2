@@ -700,23 +700,6 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     }
 
     @Override
-    public boolean isSolidOnSide(final Direction side) {
-        if (side == null) {
-            return false;
-        }
-
-        // facades are solid..
-        final IFacadePart fp = this.getFacadeContainer().getFacade(AEPartLocation.fromFacing(side));
-        if (fp != null) {
-            return true;
-        }
-
-        // buses can be too.
-        final IPart part = this.getPart(side);
-        return part != null && part.isSolid();
-    }
-
-    @Override
     public boolean isLadder(final LivingEntity entity) {
         for (final AEPartLocation side : AEPartLocation.values()) {
             final IPart p = this.getPart(side);

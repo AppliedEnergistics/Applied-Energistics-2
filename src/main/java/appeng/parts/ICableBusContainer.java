@@ -18,9 +18,9 @@
 
 package appeng.parts;
 
-import java.util.EnumSet;
-import java.util.Random;
-
+import appeng.api.parts.SelectedPart;
+import appeng.api.util.AEColor;
+import appeng.client.render.cablebus.CableBusRenderState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -33,9 +33,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.api.parts.SelectedPart;
-import appeng.api.util.AEColor;
-import appeng.client.render.cablebus.CableBusRenderState;
+import java.util.EnumSet;
+import java.util.Random;
 
 public interface ICableBusContainer {
 
@@ -52,8 +51,6 @@ public interface ICableBusContainer {
     boolean clicked(PlayerEntity player, Hand hand, Vec3d hitVec);
 
     void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor);
-
-    boolean isSolidOnSide(Direction side);
 
     boolean isEmpty();
 
