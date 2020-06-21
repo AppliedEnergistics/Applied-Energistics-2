@@ -100,8 +100,8 @@ public class ItemRepo {
 
         this.view.ensureCapacity(this.list.size());
 
-        final Enum viewMode = this.sortSrc.getSortDisplay();
-        final Enum searchMode = AEConfig.instance().getConfigManager().getSetting(Settings.SEARCH_MODE);
+        ViewItems viewMode = this.sortSrc.getSortDisplay();
+        SearchBoxMode searchMode = AEConfig.instance().getTerminalSearchMode();
         final boolean needsZeroCopy = viewMode == ViewItems.CRAFTABLE;
 
         if (searchMode == SearchBoxMode.JEI_AUTOSEARCH || searchMode == SearchBoxMode.JEI_MANUAL_SEARCH
@@ -111,8 +111,7 @@ public class ItemRepo {
         }
 
         this.innerSearch = this.searchString;
-        final boolean terminalSearchToolTips = AEConfig.instance().getConfigManager()
-                .getSetting(Settings.SEARCH_TOOLTIPS) != YesNo.NO;
+        final boolean terminalSearchToolTips = AEConfig.instance().getSearchTooltips() != YesNo.NO;
 
         boolean searchMod = false;
         if (this.innerSearch.startsWith("@")) {

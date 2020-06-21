@@ -46,8 +46,7 @@ public class StackSizeRenderer {
     public void renderStackSize(FontRenderer fontRenderer, IAEItemStack aeStack, int xPos, int yPos) {
         if (aeStack != null) {
             if (aeStack.getStackSize() == 0 && aeStack.isCraftable()) {
-                final String craftLabelText = AEConfig.instance().useTerminalUseLargeFont()
-                        ? GuiText.LargeFontCraft.getLocal()
+                final String craftLabelText = AEConfig.instance().isUseLargeFonts() ? GuiText.LargeFontCraft.getLocal()
                         : GuiText.SmallFontCraft.getLocal();
 
                 renderSizeLabel(fontRenderer, xPos, yPos, craftLabelText);
@@ -64,9 +63,9 @@ public class StackSizeRenderer {
 
     public static void renderSizeLabel(FontRenderer fontRenderer, float xPos, float yPos, String text) {
 
-        final float scaleFactor = AEConfig.instance().useTerminalUseLargeFont() ? 0.85f : 0.5f;
+        final float scaleFactor = AEConfig.instance().isUseLargeFonts() ? 0.85f : 0.5f;
         final float inverseScaleFactor = 1.0f / scaleFactor;
-        final int offset = AEConfig.instance().useTerminalUseLargeFont() ? 0 : -1;
+        final int offset = AEConfig.instance().isUseLargeFonts() ? 0 : -1;
 
         TransformationMatrix tm = new TransformationMatrix(new Vector3f(0, 0, 300), // Taken from
                                                                                     // ItemRenderer.renderItemOverlayIntoGUI
@@ -83,7 +82,7 @@ public class StackSizeRenderer {
     }
 
     private String getToBeRenderedStackSize(final long originalSize) {
-        if (AEConfig.instance().useTerminalUseLargeFont()) {
+        if (AEConfig.instance().isUseLargeFonts()) {
             return SLIM_CONVERTER.toSlimReadableForm(originalSize);
         } else {
             return WIDE_CONVERTER.toWideReadableForm(originalSize);

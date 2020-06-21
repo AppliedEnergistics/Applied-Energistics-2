@@ -56,13 +56,13 @@ public class FluidStackSizeRenderer {
         // Handle any value below 100 (large font) or 1000 (small font) Buckets with a
         // custom formatter,
         // otherwise pass it to the normal number converter
-        if (originalSize < 1000 * 100 && AEConfig.instance().useTerminalUseLargeFont()) {
+        if (originalSize < 1000 * 100 && AEConfig.instance().isUseLargeFonts()) {
             return this.getSlimRenderedStacksize(originalSize);
-        } else if (originalSize < 1000 * 1000 && !AEConfig.instance().useTerminalUseLargeFont()) {
+        } else if (originalSize < 1000 * 1000 && !AEConfig.instance().isUseLargeFonts()) {
             return this.getWideRenderedStacksize(originalSize);
         }
 
-        if (AEConfig.instance().useTerminalUseLargeFont()) {
+        if (AEConfig.instance().isUseLargeFonts()) {
             return SLIM_CONVERTER.toSlimReadableForm(originalSize / 1000);
         } else {
             return WIDE_CONVERTER.toWideReadableForm(originalSize / 1000);

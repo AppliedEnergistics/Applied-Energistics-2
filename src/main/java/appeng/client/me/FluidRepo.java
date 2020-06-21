@@ -91,8 +91,7 @@ public class FluidRepo {
 
         final Enum viewMode = this.sortSrc.getSortDisplay();
         final boolean needsZeroCopy = viewMode == ViewItems.CRAFTABLE;
-        final boolean terminalSearchToolTips = AEConfig.instance().getConfigManager()
-                .getSetting(Settings.SEARCH_TOOLTIPS) != YesNo.NO;
+        final boolean terminalSearchToolTips = AEConfig.instance().getSearchTooltips() != YesNo.NO;
 
         boolean notDone = false;
         for (IAEFluidStack fs : this.list) {

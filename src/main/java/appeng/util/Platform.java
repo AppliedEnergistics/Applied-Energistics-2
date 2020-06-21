@@ -168,7 +168,7 @@ public class Platform {
     public static String formatPowerLong(final long n, final boolean isRate) {
         double p = ((double) n) / 100;
 
-        final PowerUnits displayUnits = AEConfig.instance().selectedPowerUnit();
+        final PowerUnits displayUnits = AEConfig.instance().getSelectedPowerUnit();
         p = PowerUnits.AE.convertTo(displayUnits, p);
 
         final String[] preFixes = { "k", "M", "G", "T", "P", "T", "P", "E", "Z", "Y" };

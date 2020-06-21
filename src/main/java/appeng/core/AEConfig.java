@@ -18,20 +18,9 @@
 
 package appeng.core;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.DoubleSupplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.google.common.base.Strings;
 
@@ -47,23 +36,13 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 
-import appeng.api.config.CondenserOutput;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.config.PowerUnits;
-import appeng.api.config.SearchBoxMode;
-import appeng.api.config.Settings;
-import appeng.api.config.TerminalStyle;
-import appeng.api.config.YesNo;
+import appeng.api.config.*;
 import appeng.api.features.AEFeature;
-import appeng.api.util.IConfigManager;
-import appeng.api.util.IConfigurableObject;
 import appeng.core.settings.TickRates;
-import appeng.util.ConfigManager;
 import appeng.util.EnumCycler;
-import appeng.util.IConfigManagerHost;
 
 @Mod.EventBusSubscriber(modid = AppEng.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
+public final class AEConfig {
 
     public static final ClientConfig CLIENT;
     public static final ForgeConfigSpec CLIENT_SPEC;
@@ -91,10 +70,7 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
     // Config instance
     private static final AEConfig instance = new AEConfig();
 
-    private final IConfigManager settings = new ConfigManager(this);
-
     private final EnumSet<AEFeature> featureFlags = EnumSet.noneOf(AEFeature.class);
-    private boolean updatable = false;
 
     // Misc
     private boolean removeCrashingItemsOnLoad;
@@ -107,9 +83,9 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
     private PowerUnits selectedPowerUnit;
 
     // GUI Buttons
-    private int[] craftByStacks = new int[4];
-    private int[] priorityByStacks = new int[4];
-    private int[] levelByStacks = new int[4];
+    private final int[] craftByStacks = new int[4];
+    private final int[] priorityByStacks = new int[4];
+    private final int[] levelByStacks = new int[4];
     private final int[] levelByMillibuckets = { 10, 100, 1000, 10000 };
 
     // Spatial IO/Dimension
@@ -128,9 +104,6 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
     private int chargedStaffBattery;
 
     // Meteors
-    private int minMeteoriteDistance;
-    private int minMeteoriteDistanceSq;
-    private double meteoriteClusterChance;
     private int meteoriteMaximumSpawnHeight;
     private Set<String> meteoriteDimensionWhitelist;
 
@@ -150,93 +123,61 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
     @SubscribeEvent
     public static void onModConfigEvent(final ModConfig.ModConfigEvent configEvent) {
         if (configEvent.getConfig().getSpec() == CLIENT_SPEC) {
-            instance.syncConfig(CLIENT);
+            instance.syncClientConfig();
         } else if (configEvent.getConfig().getSpec() == COMMON_SPEC) {
-            instance.syncConfig(COMMON);
+            instance.syncCommonConfig();
         }
     }
 
-    private void syncConfig(ClientConfig config) {
-
-        this.disableColoredCableRecipesInJEI = config.disableColoredCableRecipesInJEI.get();
-        this.enableEffects = config.enableEffects.get();
-        this.useLargeFonts = config.useLargeFonts.get();
-        this.useColoredCraftingStatus = config.useColoredCraftingStatus.get();
-        this.selectedPowerUnit = config.selectedPowerUnit.get();
+    private void syncClientConfig() {
+        this.disableColoredCableRecipesInJEI = CLIENT.disableColoredCableRecipesInJEI.get();
+        this.enableEffects = CLIENT.enableEffects.get();
+        this.useLargeFonts = CLIENT.useLargeFonts.get();
+        this.useColoredCraftingStatus = CLIENT.useColoredCraftingStatus.get();
+        this.selectedPowerUnit = CLIENT.selectedPowerUnit.get();
 
         // load buttons..
         for (int btnNum = 0; btnNum < 4; btnNum++) {
-            this.craftByStacks[btnNum] = config.craftByStacks.get(btnNum).get();
-            this.priorityByStacks[btnNum] = config.priorityByStacks.get(btnNum).get();
-            this.levelByStacks[btnNum] = config.levelByStacks.get(btnNum).get();
+            this.craftByStacks[btnNum] = CLIENT.craftByStacks.get(btnNum).get();
+            this.priorityByStacks[btnNum] = CLIENT.priorityByStacks.get(btnNum).get();
+            this.levelByStacks[btnNum] = CLIENT.levelByStacks.get(btnNum).get();
         }
-
-        // FIXME for( final Settings e : this.settings.getSettings() )
-        // FIXME {
-        // FIXME final String Category = "Client"; // e.getClass().getSimpleName();
-        // FIXME Enum<?> value = this.settings.getSetting( e );
-// FIXME
-        // FIXME final Property p = this.get( Category, e.name(), value.name(),
-        // this.getListComment( value ) );
-// FIXME
-        // FIXME try
-        // FIXME {
-        // FIXME value = Enum.valueOf( value.getClass(), p.getString() );
-        // FIXME }
-        // FIXME catch( final IllegalArgumentException er )
-        // FIXME {
-        // FIXME AELog.info( "Invalid value '" + p.getString() + "' for " + e.name() + "
-        // using '" + value.name() + "' instead" );
-        // FIXME }
-// FIXME
-        // FIXME this.settings.putSetting( e, value );
-        // FIXME }
-
     }
 
-    private void syncConfig(CommonConfig config) {
+    private void syncCommonConfig() {
+        PowerUnits.EU.conversionRatio = COMMON.powerRatioIc2.get();
+        PowerUnits.RF.conversionRatio = COMMON.powerRatioForgeEnergy.get();
+        PowerMultiplier.CONFIG.multiplier = COMMON.powerUsageMultiplier.get();
 
-        // FIXME: why is this here exactly???
-        this.settings.registerSetting(Settings.SEARCH_TOOLTIPS, YesNo.YES);
-        this.settings.registerSetting(Settings.TERMINAL_STYLE, TerminalStyle.TALL);
-        this.settings.registerSetting(Settings.SEARCH_MODE, SearchBoxMode.AUTOSEARCH);
+        CondenserOutput.MATTER_BALLS.requiredPower = COMMON.condenserMatterBallsPower.get();
+        CondenserOutput.SINGULARITY.requiredPower = COMMON.condenserSingularityPower.get();
 
-        PowerUnits.EU.conversionRatio = config.powerRatioIc2.get();
-        PowerUnits.RF.conversionRatio = config.powerRatioForgeEnergy.get();
-        PowerMultiplier.CONFIG.multiplier = config.powerUsageMultiplier.get();
+        this.oreDoublePercentage = COMMON.oreDoublePercentage.get().floatValue();
 
-        CondenserOutput.MATTER_BALLS.requiredPower = config.condenserMatterBallsPower.get();
-        CondenserOutput.SINGULARITY.requiredPower = config.condenserSingularityPower.get();
+        this.meteoriteMaximumSpawnHeight = COMMON.meteoriteMaximumSpawnHeight.get();
+        this.meteoriteDimensionWhitelist = new HashSet<>(COMMON.meteoriteDimensionWhitelist.get());
 
-        this.oreDoublePercentage = config.oreDoublePercentage.get().floatValue();
+        this.wirelessBaseCost = COMMON.wirelessBaseCost.get();
+        this.wirelessCostMultiplier = COMMON.wirelessCostMultiplier.get();
+        this.wirelessBaseRange = COMMON.wirelessBaseRange.get();
+        this.wirelessBoosterRangeMultiplier = COMMON.wirelessBoosterRangeMultiplier.get();
+        this.wirelessBoosterExp = COMMON.wirelessBoosterExp.get();
+        this.wirelessHighWirelessCount = COMMON.wirelessHighWirelessCount.get();
+        this.wirelessTerminalDrainMultiplier = COMMON.wirelessTerminalDrainMultiplier.get();
 
-        this.minMeteoriteDistance = config.minMeteoriteDistance.get();
-        this.minMeteoriteDistanceSq = this.minMeteoriteDistance * this.minMeteoriteDistance;
-        this.meteoriteClusterChance = config.meteoriteClusterChance.get();
-        this.meteoriteMaximumSpawnHeight = config.meteoriteMaximumSpawnHeight.get();
-        this.meteoriteDimensionWhitelist = new HashSet<>(config.meteoriteDimensionWhitelist.get());
+        this.formationPlaneEntityLimit = COMMON.formationPlaneEntityLimit.get();
 
-        this.wirelessBaseCost = config.wirelessBaseCost.get();
-        this.wirelessCostMultiplier = config.wirelessCostMultiplier.get();
-        this.wirelessBaseRange = config.wirelessBaseRange.get();
-        this.wirelessBoosterRangeMultiplier = config.wirelessBoosterRangeMultiplier.get();
-        this.wirelessBoosterExp = config.wirelessBoosterExp.get();
-        this.wirelessHighWirelessCount = config.wirelessHighWirelessCount.get();
-        this.wirelessTerminalDrainMultiplier = config.wirelessTerminalDrainMultiplier.get();
-
-        this.formationPlaneEntityLimit = config.formationPlaneEntityLimit.get();
-
-        this.wirelessTerminalBattery = config.wirelessTerminalBattery.get();
-        this.chargedStaffBattery = config.chargedStaffBattery.get();
-        this.entropyManipulatorBattery = config.entropyManipulatorBattery.get();
-        this.portableCellBattery = config.portableCellBattery.get();
-        this.colorApplicatorBattery = config.colorApplicatorBattery.get();
-        this.matterCannonBattery = config.matterCannonBattery.get();
+        this.wirelessTerminalBattery = COMMON.wirelessTerminalBattery.get();
+        this.chargedStaffBattery = COMMON.chargedStaffBattery.get();
+        this.entropyManipulatorBattery = COMMON.entropyManipulatorBattery.get();
+        this.portableCellBattery = COMMON.portableCellBattery.get();
+        this.colorApplicatorBattery = COMMON.colorApplicatorBattery.get();
+        this.matterCannonBattery = COMMON.matterCannonBattery.get();
 
         this.featureFlags.clear();
         for (final AEFeature feature : AEFeature.values()) {
             if (feature.isVisible()) {
-                if (config.enabledFeatures.get(feature).get()) {
+                if (COMMON.enabledFeatures.get(feature).get()) {
                     this.featureFlags.add(feature);
                 }
             } else {
@@ -244,29 +185,17 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
             }
         }
 
-// FIXME			final ModContainer imb = net.minecraftforge.fml.common.Loader.instance().getIndexedModList().get( "ImmibisCore" );
-// FIXME			if( imb != null )
-// FIXME			{
-// FIXME				final List<String> version = Arrays.asList( "59.0.0", "59.0.1", "59.0.2" );
-// FIXME				if( version.contains( imb.getVersion() ) )
-// FIXME				{
-// FIXME					this.featureFlags.remove( AEFeature.ALPHA_PASS );
-// FIXME				}
-// FIXME			}
-
         for (final TickRates tr : TickRates.values()) {
-            tr.setMin(config.tickRateMin.get(tr).get());
-            tr.setMax(config.tickRateMin.get(tr).get());
+            tr.setMin(COMMON.tickRateMin.get(tr).get());
+            tr.setMax(COMMON.tickRateMin.get(tr).get());
         }
 
-        this.spatialPowerMultiplier = config.spatialPowerMultiplier.get();
-        this.spatialPowerExponent = config.spatialPowerExponent.get();
+        this.spatialPowerMultiplier = COMMON.spatialPowerMultiplier.get();
+        this.spatialPowerExponent = COMMON.spatialPowerExponent.get();
 
-        this.craftingCalculationTimePerTick = config.craftingCalculationTimePerTick.get();
+        this.craftingCalculationTimePerTick = COMMON.craftingCalculationTimePerTick.get();
 
-        this.removeCrashingItemsOnLoad = config.removeCrashingItemsOnLoad.get();
-
-        this.updatable = true;
+        this.removeCrashingItemsOnLoad = COMMON.removeCrashingItemsOnLoad.get();
     }
 
     public static AEConfig instance() {
@@ -295,21 +224,25 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
                 + this.wirelessCostMultiplier * Math.pow(boosters, 1 + boosters / this.wirelessHighWirelessCount);
     }
 
-// FIXME	@Override
-// FIXME	public Property get( final String category, final String key, final String defaultValue, final String comment, final Property.Type type )
-// FIXME	{
-// FIXME		final Property prop = super.get( category, key, defaultValue, comment, type );
-// FIXME
-// FIXME		if( prop != null )
-// FIXME		{
-// FIXME			if( !category.equals( "Client" ) )
-// FIXME			{
-// FIXME				prop.setRequiresMcRestart( true );
-// FIXME			}
-// FIXME		}
-// FIXME
-// FIXME		return prop;
-// FIXME	}
+    public YesNo getSearchTooltips() {
+        return CLIENT.searchTooltips.get();
+    }
+
+    public TerminalStyle getTerminalStyle() {
+        return CLIENT.terminalStyle.get();
+    }
+
+    public void setTerminalStyle(TerminalStyle setting) {
+        CLIENT.terminalStyle.set(setting);
+    }
+
+    public SearchBoxMode getTerminalSearchMode() {
+        return CLIENT.terminalSearchMode.get();
+    }
+
+    public void setTerminalSearchMode(SearchBoxMode setting) {
+        CLIENT.terminalSearchMode.set(setting);
+    }
 
     public void save() {
         if (CLIENT_SPEC.isLoaded()) {
@@ -320,34 +253,6 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
         if (COMMON_SPEC.isLoaded()) {
             COMMON_SPEC.save();
         }
-    }
-
-    @Override
-    public void updateSetting(final IConfigManager manager, final Settings setting, final Enum<?> newValue) {
-        // FIXME for( final Settings e : this.settings.getSettings() )
-        // FIXME {
-        // FIXME if( e == setting )
-        // FIXME {
-        // FIXME final String Category = "Client";
-        // FIXME final Property p = this.get( Category, e.name(),
-        // this.settings.getSetting( e ).name(), this.getListComment( newValue ) );
-        // FIXME p.set( newValue.name() );
-        // FIXME }
-        // FIXME }
-// FIXME
-        // FIXME if( this.updatable )
-        // FIXME {
-        // FIXME this.save();
-        // FIXME }
-    }
-
-    @Override
-    public IConfigManager getConfigManager() {
-        return this.settings;
-    }
-
-    public boolean useTerminalUseLargeFont() {
-        return this.useLargeFonts;
     }
 
     public int craftItemsByStackAmounts(final int i) {
@@ -366,31 +271,7 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
         return this.levelByMillibuckets[i];
     }
 
-// FIXME	public Enum getSetting( final String category, final Class<? extends Enum> class1, final Enum myDefault )
-// FIXME	{
-// FIXME		final String name = class1.getSimpleName();
-// FIXME		final Property p = this.get( category, name, myDefault.name() );
-// FIXME
-// FIXME		try
-// FIXME		{
-// FIXME			return (Enum) class1.getField( p.toString() ).get( class1 );
-// FIXME		}
-// FIXME		catch( final Throwable t )
-// FIXME		{
-// FIXME			// :{
-// FIXME		}
-// FIXME
-// FIXME		return myDefault;
-// FIXME	}
-
-// FIXME	public void setSetting( final String category, final Enum s )
-// FIXME	{
-// FIXME		final String name = s.getClass().getSimpleName();
-// FIXME		this.get( category, name, s.name() ).set( s.name() );
-// FIXME		this.save();
-// FIXME	}
-
-    public PowerUnits selectedPowerUnit() {
+    public PowerUnits getSelectedPowerUnit() {
         return this.selectedPowerUnit;
     }
 
@@ -428,22 +309,6 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
 
     public int getCraftingCalculationTimePerTick() {
         return this.craftingCalculationTimePerTick;
-    }
-
-    public PowerUnits getSelectedPowerUnit() {
-        return this.selectedPowerUnit;
-    }
-
-    public int[] getCraftByStacks() {
-        return this.craftByStacks;
-    }
-
-    public int[] getPriorityByStacks() {
-        return this.priorityByStacks;
-    }
-
-    public int[] getLevelByStacks() {
-        return this.levelByStacks;
     }
 
     public double getSpatialPowerExponent() {
@@ -494,52 +359,12 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
         return COMMON.quartzOresClusterAmount.get();
     }
 
-    public int getMinMeteoriteDistance() {
-        return this.minMeteoriteDistance;
-    }
-
-    public int getMinMeteoriteDistanceSq() {
-        return this.minMeteoriteDistanceSq;
-    }
-
-    public double getMeteoriteClusterChance() {
-        return this.meteoriteClusterChance;
-    }
-
     public int getMeteoriteMaximumSpawnHeight() {
         return this.meteoriteMaximumSpawnHeight;
     }
 
     public Set<String> getMeteoriteDimensionWhitelist() {
         return this.meteoriteDimensionWhitelist;
-    }
-
-    public double getWirelessBaseCost() {
-        return this.wirelessBaseCost;
-    }
-
-    public double getWirelessCostMultiplier() {
-        return this.wirelessCostMultiplier;
-    }
-
-    public double getWirelessTerminalDrainMultiplier() {
-        return this.wirelessTerminalDrainMultiplier;
-    }
-
-    public double getWirelessBaseRange() {
-        return this.wirelessBaseRange;
-    }
-
-    public double getWirelessBoosterRangeMultiplier() {
-        return this.wirelessBoosterRangeMultiplier;
-    }
-
-    public double getWirelessBoosterExp() {
-        return this.wirelessBoosterExp;
-    }
-
-    public double getWirelessHighWirelessCount() {
-        return this.wirelessHighWirelessCount;
     }
 
     // Setters keep visibility as low as possible.
@@ -558,6 +383,11 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
         public final List<ConfigValue<Integer>> craftByStacks;
         public final List<ConfigValue<Integer>> priorityByStacks;
         public final List<ConfigValue<Integer>> levelByStacks;
+
+        // Terminal Settings
+        public final EnumValue<YesNo> searchTooltips;
+        public final EnumValue<TerminalStyle> terminalStyle;
+        public final EnumValue<SearchBoxMode> terminalSearchMode;
 
         public ClientConfig(ForgeConfigSpec.Builder builder) {
             builder.push("client");
@@ -585,6 +415,14 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
                         .defineInRange("levelByStacks" + btnNum, defaultValue, 1, buttonCap));
             }
 
+            builder.pop();
+
+            builder.push("terminals");
+            this.searchTooltips = builder.comment("Should tooltips be searched. Performance impact")
+                    .defineEnum("searchTooltips", YesNo.YES, YesNo.values());
+            this.terminalStyle = builder.defineEnum("terminalStyle", TerminalStyle.TALL, TerminalStyle.values());
+            this.terminalSearchMode = builder.defineEnum("terminalSearchMode", SearchBoxMode.AUTOSEARCH,
+                    SearchBoxMode.values());
             builder.pop();
         }
 
@@ -621,8 +459,6 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
         public final ConfigValue<Integer> quartzOresClusterAmount;
 
         // Meteors
-        public final ConfigValue<Integer> minMeteoriteDistance;
-        public final ConfigValue<Double> meteoriteClusterChance;
         public final ConfigValue<Integer> meteoriteMaximumSpawnHeight;
         public final ConfigValue<List<? extends String>> meteoriteDimensionWhitelist;
 
@@ -709,8 +545,6 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost {
             builder.push("worldGen");
 
             this.spawnChargedChance = builder.defineInRange("spawnChargedChance", 0.08, 0.0, 1.0);
-            this.minMeteoriteDistance = builder.define("minMeteoriteDistance", 707);
-            this.meteoriteClusterChance = builder.define("meteoriteClusterChance", 0.1);
             this.meteoriteMaximumSpawnHeight = builder.define("meteoriteMaximumSpawnHeight", 180);
             List<String> defaultDimensionWhitelist = new ArrayList<>();
             defaultDimensionWhitelist.add(DimensionType.getKey(DimensionType.OVERWORLD).toString());

@@ -45,7 +45,7 @@ public abstract class AEBaseMEGui<T extends AEBaseContainer> extends AEBaseGui<T
         final Slot s = this.getSlot(x, y);
 
         if (s instanceof SlotME && !stack.isEmpty()) {
-            final int bigNumber = AEConfig.instance().useTerminalUseLargeFont() ? 999 : 9999;
+            final int bigNumber = AEConfig.instance().isUseLargeFonts() ? 999 : 9999;
 
             IAEItemStack myStack = null;
             final List<String> currentToolTip = this.getTooltipFromItem(stack);

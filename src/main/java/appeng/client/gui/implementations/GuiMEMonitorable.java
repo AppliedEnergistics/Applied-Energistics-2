@@ -28,12 +28,7 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
-import appeng.api.config.SearchBoxMode;
-import appeng.api.config.Settings;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.TerminalStyle;
-import appeng.api.config.ViewItems;
+import appeng.api.config.*;
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.implementations.tiles.IMEChest;
 import appeng.api.implementations.tiles.IViewCellStorage;
@@ -42,11 +37,7 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.ActionKey;
 import appeng.client.gui.AEBaseMEGui;
-import appeng.client.gui.widgets.GuiScrollbar;
-import appeng.client.gui.widgets.GuiSettingToggleButton;
-import appeng.client.gui.widgets.GuiTabButton;
-import appeng.client.gui.widgets.ISortSource;
-import appeng.client.gui.widgets.MEGuiTextField;
+import appeng.client.gui.widgets.*;
 import appeng.client.me.InternalSlotME;
 import appeng.client.me.ItemRepo;
 import appeng.container.implementations.ContainerCraftingStatus;
@@ -158,8 +149,7 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
         getMinecraft().keyboardListener.enableRepeatEvents(true);
 
         this.maxRows = this.getMaxRows();
-        TerminalStyle terminalStyle = (TerminalStyle) AEConfig.instance().getConfigManager()
-                .getSetting(Settings.TERMINAL_STYLE);
+        TerminalStyle terminalStyle = AEConfig.instance().getTerminalStyle();
 
         if (terminalStyle != TerminalStyle.FULL) {
             this.perRow = 9;
@@ -214,16 +204,15 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
                 Settings.SORT_DIRECTION, getSortDir(), this::toggleServerSetting));
         offset += 20;
 
-        SearchBoxMode searchMode = (SearchBoxMode) AEConfig.instance().getConfigManager()
-                .getSetting(Settings.SEARCH_MODE);
+        SearchBoxMode searchMode = AEConfig.instance().getTerminalSearchMode();
         this.addButton(new GuiSettingToggleButton<>(this.guiLeft - 18, offset, Settings.SEARCH_MODE, searchMode,
-                Platform::isSearchModeAvailable, this::toggleClientSetting));
+                Platform::isSearchModeAvailable, this::toggleTerminalSearchMode));
 
         offset += 20;
 
         if (!(this instanceof GuiMEPortableCell) || this instanceof GuiWirelessTerm) {
             this.addButton(new GuiSettingToggleButton<>(this.guiLeft - 18, offset, Settings.TERMINAL_STYLE,
-                    terminalStyle, this::toggleClientSetting));
+                    terminalStyle, this::toggleTerminalStyle));
         }
 
         this.searchField = new MEGuiTextField(this.font, this.guiLeft + Math.max(80, this.offsetX), this.guiTop + 4, 90,
@@ -364,8 +353,7 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
     }
 
     int getMaxRows() {
-        return AEConfig.instance().getConfigManager().getSetting(Settings.TERMINAL_STYLE) == TerminalStyle.SMALL ? 6
-                : Integer.MAX_VALUE;
+        return AEConfig.instance().getTerminalStyle() == TerminalStyle.SMALL ? 6 : Integer.MAX_VALUE;
     }
 
     protected void repositionSlot(final AppEngSlot s) {
@@ -494,9 +482,16 @@ public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseME
         this.standardSize = standardSize;
     }
 
-    private <S extends Enum<S>> void toggleClientSetting(GuiSettingToggleButton<S> btn, boolean backwards) {
-        S next = btn.getNextValue(backwards);
-        AEConfig.instance().getConfigManager().putSetting(btn.getSetting(), next);
+    private void toggleTerminalSearchMode(GuiSettingToggleButton<SearchBoxMode> btn, boolean backwards) {
+        SearchBoxMode next = btn.getNextValue(backwards);
+        AEConfig.instance().setTerminalSearchMode(next);
+        btn.set(next);
+        this.reinitalize();
+    }
+
+    private void toggleTerminalStyle(GuiSettingToggleButton<TerminalStyle> btn, boolean backwards) {
+        TerminalStyle next = btn.getNextValue(backwards);
+        AEConfig.instance().setTerminalStyle(next);
         btn.set(next);
         this.reinitalize();
     }
