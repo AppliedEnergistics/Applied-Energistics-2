@@ -18,14 +18,11 @@
 
 package appeng.items.tools.powered;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import org.apache.commons.lang3.text.WordUtils;
+import javax.annotation.Nullable;
+
+import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -33,17 +30,21 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.SnowballItem;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.IProperty;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
@@ -81,42 +82,49 @@ import appeng.util.item.AEItemStack;
 public class ToolColorApplicator extends AEBasePoweredItem
         implements IStorageCell<IAEItemStack>, IItemGroup, IBlockTool, IMouseWheelItem {
 
-    private static final Map<Integer, AEColor> ORE_TO_COLOR = new HashMap<>();
+    private static final Map<ResourceLocation, AEColor> TAG_TO_COLOR = ImmutableMap.<ResourceLocation, AEColor>builder()
+            .put(new ResourceLocation("forge:dyes/black"), AEColor.BLACK)
+            .put(new ResourceLocation("forge:dyes/blue"), AEColor.BLUE)
+            .put(new ResourceLocation("forge:dyes/brown"), AEColor.BROWN)
+            .put(new ResourceLocation("forge:dyes/cyan"), AEColor.CYAN)
+            .put(new ResourceLocation("forge:dyes/gray"), AEColor.GRAY)
+            .put(new ResourceLocation("forge:dyes/green"), AEColor.GREEN)
+            .put(new ResourceLocation("forge:dyes/light_blue"), AEColor.LIGHT_BLUE)
+            .put(new ResourceLocation("forge:dyes/light_gray"), AEColor.LIGHT_GRAY)
+            .put(new ResourceLocation("forge:dyes/lime"), AEColor.LIME)
+            .put(new ResourceLocation("forge:dyes/magenta"), AEColor.MAGENTA)
+            .put(new ResourceLocation("forge:dyes/orange"), AEColor.ORANGE)
+            .put(new ResourceLocation("forge:dyes/pink"), AEColor.PINK)
+            .put(new ResourceLocation("forge:dyes/purple"), AEColor.PURPLE)
+            .put(new ResourceLocation("forge:dyes/red"), AEColor.RED)
+            .put(new ResourceLocation("forge:dyes/white"), AEColor.WHITE)
+            .put(new ResourceLocation("forge:dyes/yellow"), AEColor.YELLOW).build();
 
     private static final String TAG_COLOR = "color";
-
-    static {
-        for (final AEColor color : AEColor.VALID_COLORS) {
-            final String dyeName = color.dye.getTranslationKey();
-            final String oreDictName = "dye" + WordUtils.capitalize(dyeName);
-            // FIXME final int oreDictId = OreDictionary.getOreID( oreDictName );
-
-            // FIXME ORE_TO_COLOR.put( oreDictId, color );
-        }
-    }
 
     public ToolColorApplicator(Item.Properties props) {
         super(AEConfig.instance().getColorApplicatorBattery(), props);
         addPropertyOverride(new ResourceLocation(AppEng.MOD_ID, "colored"), (itemStack, world, entity) -> {
             // If the stack has no color, don't use the colored model since the impact of
-            // calling getColor
-            // for every quad is extremely high, if the stack tries to re-search its
-            // inventory for a new
-            // paintball everytime
+            // calling getColor for every quad is extremely high, if the stack tries to
+            // re-search its
+            // inventory for a new paintball everytime
             AEColor col = getActiveColor(itemStack);
             return (col != null) ? 1 : 0;
         });
     }
 
     @Override
-    public ActionResultType onItemUse(PlayerEntity p, World w, BlockPos pos, Hand hand, Direction side, float hitX,
-            float hitY, float hitZ) {
-        return this.onItemUse(p.getHeldItem(hand), p, w, pos, hand, side, hitX, hitY, hitZ);
-    }
+    public ActionResultType onItemUse(ItemUseContext context) {
+        World w = context.getWorld();
+        BlockPos pos = context.getPos();
+        ItemStack is = context.getItem();
+        Direction side = context.getFace();
+        PlayerEntity p = context.getPlayer(); // This can be null
+        if (p == null && w instanceof ServerWorld) {
+            p = Platform.getPlayer((ServerWorld) w);
+        }
 
-    @Override
-    public ActionResultType onItemUse(ItemStack is, PlayerEntity p, World w, BlockPos pos, Hand hand, Direction side,
-            float hitX, float hitY, float hitZ) {
         final Block blk = w.getBlockState(pos).getBlock();
 
         ItemStack paintBall = this.getColor(is);
@@ -134,7 +142,7 @@ public class ToolColorApplicator extends AEBasePoweredItem
                 paintBall = ItemStack.EMPTY;
             }
 
-            if (!Platform.hasPermissions(new DimensionalCoord(w, pos), p)) {
+            if (p != null && !Platform.hasPermissions(new DimensionalCoord(w, pos), p)) {
                 return ActionResultType.FAIL;
             }
 
@@ -142,7 +150,7 @@ public class ToolColorApplicator extends AEBasePoweredItem
             if (!paintBall.isEmpty() && paintBall.getItem() instanceof SnowballItem) {
                 final TileEntity te = w.getTileEntity(pos);
                 // clean cables.
-                if (te instanceof IColorableTile) {
+                if (te instanceof IColorableTile && p != null) {
                     if (this.getAECurrentPower(is) > powerPerUse
                             && ((IColorableTile) te).getColor() != AEColor.TRANSPARENT) {
                         if (((IColorableTile) te).recolourBlock(side, AEColor.TRANSPARENT, p)) {
@@ -168,7 +176,7 @@ public class ToolColorApplicator extends AEBasePoweredItem
                 final AEColor color = this.getColorFromItem(paintBall);
 
                 if (color != null && this.getAECurrentPower(is) > powerPerUse) {
-                    if (color != AEColor.TRANSPARENT && this.recolourBlock(blk, side, w, pos, side, color, p)) {
+                    if (color != AEColor.TRANSPARENT && this.recolourBlock(blk, side, w, pos, color, p)) {
                         inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE,
                                 new BaseActionSource());
                         this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
@@ -178,7 +186,7 @@ public class ToolColorApplicator extends AEBasePoweredItem
             }
         }
 
-        if (p.isCrouching()) {
+        if (p != null && p.isCrouching()) {
             this.cycleColors(is, paintBall, 1);
         }
 
@@ -215,15 +223,12 @@ public class ToolColorApplicator extends AEBasePoweredItem
             final ItemPaintBall ipb = (ItemPaintBall) paintBall.getItem();
             return ipb.getColor();
         } else {
-            // FIXME final int[] id = OreDictionary.getOreIDs( paintBall );
-// FIXME
-            // FIXME for( final int oreID : id )
-            // FIXME {
-            // FIXME if( ORE_TO_COLOR.containsKey( oreID ) )
-            // FIXME {
-            // FIXME return ORE_TO_COLOR.get( oreID );
-            // FIXME }
-            // FIXME }
+            for (Map.Entry<ResourceLocation, AEColor> entry : TAG_TO_COLOR.entrySet()) {
+                Tag<Item> tag = ItemTags.getCollection().get(entry.getKey());
+                if (tag != null && paintBall.getItem().isIn(tag)) {
+                    return entry.getValue();
+                }
+            }
         }
 
         return null;
@@ -262,16 +267,21 @@ public class ToolColorApplicator extends AEBasePoweredItem
                     list.add(i);
                 }
 
-                Collections.sort(list, (a, b) -> Integer.compare(a.getItemDamage(), b.getItemDamage()));
-
-                if (list.size() <= 0) {
+                if (list.isEmpty()) {
                     return ItemStack.EMPTY;
                 }
+
+                // Sort by color
+                list.sort(Comparator.comparingInt(a -> {
+                    AEColor color = getColorFromItem(a.getDefinition());
+                    return color != null ? color.ordinal() : Integer.MAX_VALUE;
+                }));
 
                 IAEItemStack where = list.getFirst();
                 int cycles = 1 + list.size();
 
-                while (cycles > 0 && !where.equals(anchor)) {
+                AEColor anchorColor = getColorFromItem(anchor);
+                while (cycles > 0 && getColorFromItem(where.getDefinition()) != anchorColor) {
                     list.addLast(list.removeFirst());
                     cycles--;
                     where = list.getFirst();
@@ -308,65 +318,32 @@ public class ToolColorApplicator extends AEBasePoweredItem
     }
 
     private boolean recolourBlock(final Block blk, final Direction side, final World w, final BlockPos pos,
-            final Direction orientation, final AEColor newColor, final PlayerEntity p) {
+            final AEColor newColor, @Nullable final PlayerEntity p) {
         final BlockState state = w.getBlockState(pos);
 
-// FIXME		if( blk instanceof BlockColored )
-// FIXME		{
-// FIXME			final DyeColor color = state.get( BlockColored.COLOR );
-// FIXME
-// FIXME			if( newColor.dye == color )
-// FIXME			{
-// FIXME				return false;
-// FIXME			}
-// FIXME
-// FIXME			return w.setBlockState( pos, state.with( BlockColored.COLOR, newColor.dye ) );
-// FIXME		}
+        Block recolored = BlockRecolorer.recolor(blk, newColor);
+        if (recolored != blk) {
+            BlockState newState = recolored.getDefaultState();
+            for (IProperty<?> prop : newState.getProperties()) {
+                newState = copyProp(state, newState, prop);
+            }
 
-//		if( blk == Blocks.GLASS )
-//		{
-//			return w.setBlockState( pos, Blocks.STAINED_GLASS.getDefaultState().with( BlockStainedGlass.COLOR, newColor.dye ) );
-//		}
-//
-//		if( blk == Blocks.STAINED_GLASS )
-//		{
-//			final DyeColor color = state.get( BlockStainedGlass.COLOR );
-//
-//			if( newColor.dye == color )
-//			{
-//				return false;
-//			}
-//
-//			return w.setBlockState( pos, state.with( BlockStainedGlass.COLOR, newColor.dye ) );
-//		}
+            return w.setBlockState(pos, newState);
+        }
 
-//		if( blk == Blocks.GLASS_PANE )
-//		{
-//			return w.setBlockState( pos, Blocks.STAINED_GLASS_PANE.getDefaultState().with( BlockStainedGlassPane.COLOR, newColor.dye ) );
-//		}
-//
-//		if( blk == Blocks.STAINED_GLASS_PANE )
-//		{
-//			final DyeColor color = state.get( BlockStainedGlassPane.COLOR );
-//
-//			if( newColor.dye == color )
-//			{
-//				return false;
-//			}
-//
-//			return w.setBlockState( pos, state.with( BlockStainedGlassPane.COLOR, newColor.dye ) );
-//		}
-//
-//		if( blk == Blocks.HARDENED_CLAY )
-//		{
-//			return w.setBlockState( pos, Blocks.STAINED_HARDENED_CLAY.getDefaultState().with( BlockColored.COLOR, newColor.dye ) );
-//		}
-
-        if (blk instanceof BlockCableBus) {
+        if (blk instanceof BlockCableBus && p != null) {
             return ((BlockCableBus) blk).recolorBlock(w, pos, side, newColor.dye, p);
         }
 
         return blk.recolorBlock(state, w, pos, side, newColor.dye);
+    }
+
+    private static <T extends Comparable<T>> BlockState copyProp(BlockState oldState, BlockState newState,
+            IProperty<T> prop) {
+        if (newState.has(prop)) {
+            return newState.with(prop, oldState.get(prop));
+        }
+        return newState;
     }
 
     public void cycleColors(final ItemStack is, final ItemStack paintBall, final int i) {
@@ -407,22 +384,7 @@ public class ToolColorApplicator extends AEBasePoweredItem
     @Override
     public boolean isBlackListed(final ItemStack cellItem, final IAEItemStack requestedAddition) {
         if (requestedAddition != null) {
-            // FIXME final int[] id = OreDictionary.getOreIDs(
-            // requestedAddition.getDefinition() );
-
-            // FIXME for( final int x : id )
-            // FIXME {
-            // FIXME if( ORE_TO_COLOR.containsKey( x ) )
-            // FIXME {
-            // FIXME return false;
-            // FIXME }
-            // FIXME }
-
-            if (requestedAddition.getItem() instanceof SnowballItem) {
-                return false;
-            }
-
-            return !(requestedAddition.getItem() instanceof ItemPaintBall && requestedAddition.getItemDamage() < 20);
+            return getColorFromItem(requestedAddition.getDefinition()) == null;
         }
         return true;
     }

@@ -32,6 +32,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.Items;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
@@ -44,6 +45,8 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.util.FakePlayer;
 
 import appeng.api.config.Actionable;
 import appeng.api.util.DimensionalCoord;
@@ -187,9 +190,11 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
         return false;
     }
 
+    // Overridden to allow use of the item on WATER and LAVA which are otherwise not
+    // considered for onItemUse
     @Override
     public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
-        final RayTraceResult target = this.rayTrace(w, p, RayTraceContext.FluidMode.ANY);
+        final RayTraceResult target = rayTrace(w, p, RayTraceContext.FluidMode.ANY);
 
         if (target.getType() != RayTraceResult.Type.BLOCK) {
             return new ActionResult<>(ActionResultType.FAIL, p.getHeldItem(hand));
@@ -198,7 +203,8 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
             final BlockState state = w.getBlockState(pos);
             if (state.getMaterial() == Material.LAVA || state.getMaterial() == Material.WATER) {
                 if (Platform.hasPermissions(new DimensionalCoord(w, pos), p)) {
-                    this.onItemUse(p, w, pos, hand, Direction.UP, 0.0F, 0.0F, 0.0F);
+                    ItemUseContext context = new ItemUseContext(p, hand, (BlockRayTraceResult) target);
+                    this.onItemUse(context);
                 }
             }
         }
@@ -207,14 +213,19 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
     }
 
     @Override
-    public ActionResultType onItemUse(PlayerEntity p, World w, BlockPos pos, Hand hand, Direction side, float hitX,
-            float hitY, float hitZ) {
-        return this.onItemUse(p.getHeldItem(hand), p, w, pos, hand, side, hitX, hitY, hitZ);
-    }
+    public ActionResultType onItemUse(ItemUseContext context) {
+        World w = context.getWorld();
+        ItemStack item = context.getItem();
+        BlockPos pos = context.getPos();
+        Direction side = context.getFace();
+        PlayerEntity p = context.getPlayer();
+        if (p == null) {
+            if (w.isRemote) {
+                return ActionResultType.FAIL;
+            }
+            p = Platform.getPlayer((ServerWorld) w);
+        }
 
-    @Override
-    public ActionResultType onItemUse(ItemStack item, PlayerEntity p, World w, BlockPos pos, Hand hand, Direction side,
-            float hitX, float hitY, float hitZ) {
         if (this.getAECurrentPower(item) > 1600) {
             if (!p.canPlayerEdit(pos, side, item)) {
                 return ActionResultType.FAIL;

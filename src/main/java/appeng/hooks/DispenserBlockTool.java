@@ -21,14 +21,13 @@ package appeng.hooks;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.dispenser.IBlockSource;
+import net.minecraft.item.DirectionalPlaceContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-
-import appeng.util.Platform;
 
 public final class DispenserBlockTool extends DefaultDispenseItemBehavior {
 
@@ -36,13 +35,14 @@ public final class DispenserBlockTool extends DefaultDispenseItemBehavior {
     protected ItemStack dispenseStack(final IBlockSource dispenser, final ItemStack dispensedItem) {
         final Item i = dispensedItem.getItem();
         if (i instanceof IBlockTool) {
-            final Direction Direction = dispenser.getBlockState().get(DispenserBlock.FACING);
+            final Direction direction = dispenser.getBlockState().get(DispenserBlock.FACING);
             final IBlockTool tm = (IBlockTool) i;
 
             final World w = dispenser.getWorld();
             if (w instanceof ServerWorld) {
-                tm.onItemUse(dispensedItem, Platform.getPlayer((ServerWorld) w), w,
-                        dispenser.getBlockPos().offset(Direction), Hand.MAIN_HAND, Direction, 0.5f, 0.5f, 0.5f);
+                ItemUseContext context = new DirectionalPlaceContext(w, dispenser.getBlockPos().offset(direction),
+                        direction, dispensedItem, direction.getOpposite());
+                tm.onItemUse(context);
             }
         }
         return dispensedItem;
