@@ -18,15 +18,26 @@
 
 package appeng.parts;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-
-import javax.annotation.Nullable;
-
+import appeng.api.AEApi;
+import appeng.api.config.YesNo;
+import appeng.api.exceptions.FailedConnectionException;
+import appeng.api.implementations.parts.IPartCable;
+import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNode;
+import appeng.api.parts.*;
+import appeng.api.util.AECableType;
+import appeng.api.util.AEColor;
+import appeng.api.util.AEPartLocation;
+import appeng.api.util.DimensionalCoord;
+import appeng.client.render.cablebus.CableBusRenderState;
+import appeng.client.render.cablebus.CableCoreType;
+import appeng.client.render.cablebus.FacadeRenderState;
+import appeng.core.AELog;
+import appeng.facade.FacadeContainer;
+import appeng.helpers.AEMultiTile;
+import appeng.me.GridConnection;
+import appeng.parts.networking.PartCable;
+import appeng.util.Platform;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -43,35 +54,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 
-import appeng.api.AEApi;
-import appeng.api.config.YesNo;
-import appeng.api.exceptions.FailedConnectionException;
-import appeng.api.implementations.parts.IPartCable;
-import appeng.api.networking.IGridHost;
-import appeng.api.networking.IGridNode;
-import appeng.api.parts.IFacadeContainer;
-import appeng.api.parts.IFacadePart;
-import appeng.api.parts.IPart;
-import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.parts.IPartHost;
-import appeng.api.parts.IPartItem;
-import appeng.api.parts.LayerFlags;
-import appeng.api.parts.PartItemStack;
-import appeng.api.parts.SelectedPart;
-import appeng.api.util.AECableType;
-import appeng.api.util.AEColor;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
-import appeng.client.render.cablebus.CableBusRenderState;
-import appeng.client.render.cablebus.CableCoreType;
-import appeng.client.render.cablebus.FacadeRenderState;
-import appeng.core.AELog;
-import appeng.facade.FacadeContainer;
-import appeng.helpers.AEMultiTile;
-import appeng.me.GridConnection;
-import appeng.parts.networking.PartCable;
-import appeng.util.Platform;
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.util.*;
 
 public class CableBusContainer extends CableBusStorage implements AEMultiTile, ICableBusContainer {
 
@@ -876,9 +863,12 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         for (int x = 0; x < 7; x++) {
             AEPartLocation side = AEPartLocation.fromOrdinal(x);
 
-            final CompoundNBT def = data.getCompound("def:" + side.ordinal());
-            final CompoundNBT extra = data.getCompound("extra:" + side.ordinal());
-            if (def != null && extra != null) {
+            String defKey = "def:" + side.ordinal();
+            String extraKey = "extra:" + side.ordinal();
+            if (data.contains(defKey, Constants.NBT.TAG_COMPOUND)
+                    && data.contains(extraKey, Constants.NBT.TAG_COMPOUND)) {
+                final CompoundNBT def = data.getCompound(defKey);
+                final CompoundNBT extra = data.getCompound(extraKey);
                 IPart p = this.getPart(side);
                 final ItemStack iss = ItemStack.read(def);
                 if (iss.isEmpty()) {

@@ -18,12 +18,13 @@
 
 package appeng.block.misc;
 
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.Random;
-
-import javax.annotation.Nullable;
-
+import appeng.api.util.IOrientable;
+import appeng.api.util.IOrientableBlock;
+import appeng.block.AEBaseBlock;
+import appeng.client.render.effects.ParticleTypes;
+import appeng.core.AEConfig;
+import appeng.core.AppEng;
+import appeng.helpers.MetaRotation;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -47,13 +48,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.api.util.IOrientable;
-import appeng.api.util.IOrientableBlock;
-import appeng.block.AEBaseBlock;
-import appeng.client.render.effects.ParticleTypes;
-import appeng.core.AEConfig;
-import appeng.core.AppEng;
-import appeng.helpers.MetaRotation;
+import javax.annotation.Nullable;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Random;
 
 public class BlockQuartzFixture extends AEBaseBlock implements IOrientableBlock {
 
@@ -84,8 +82,6 @@ public class BlockQuartzFixture extends AEBaseBlock implements IOrientableBlock 
                 .sound(SoundType.GLASS));
 
         this.setDefaultState(getDefaultState().with(FACING, Direction.UP).with(ODD, false));
-        this.setFullSize(false);
-        this.setOpaque(false);
     }
 
     @Override

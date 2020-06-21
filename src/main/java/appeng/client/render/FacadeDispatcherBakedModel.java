@@ -18,28 +18,17 @@
 
 package appeng.client.render;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
-
-import javax.annotation.Nullable;
-
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.model.BakedQuad;
+import appeng.client.render.cablebus.FacadeBuilder;
+import appeng.items.parts.ItemFacade;
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-
-import appeng.client.render.cablebus.FacadeBuilder;
-import appeng.items.parts.ItemFacade;
-import net.minecraftforge.client.model.data.IModelData;
+import java.util.Objects;
 
 /**
  * This baked model class is used as a dispatcher to redirect the renderer to

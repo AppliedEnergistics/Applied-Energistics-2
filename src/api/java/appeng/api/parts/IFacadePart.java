@@ -23,12 +23,11 @@
 
 package appeng.api.parts;
 
+import appeng.api.util.AEPartLocation;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-
-import appeng.api.util.AEPartLocation;
 
 /**
  * Used Internally.
@@ -58,8 +57,6 @@ public interface IFacadePart {
     Item getItem();
 
     boolean notAEFacade();
-
-    boolean isTransparent();
 
     /**
      * The item that this facade masquerades as.

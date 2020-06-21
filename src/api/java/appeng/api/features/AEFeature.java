@@ -119,6 +119,8 @@ public enum AEFeature {
     TINY_TNT_BLOCK_DAMAGE("TinyTNTBlockDamage", Constants.CATEGORY_BLOCK_FEATURES),
 
     FACADES("Facades", Constants.CATEGORY_FACADES),
+    TILE_ENTITY_FACADES("TileEntityFacades", Constants.CATEGORY_FACADES, false,
+            "Unsupported: Allows whitelisting TileEntity as facades. Could work, have render issues, or corrupt your world. USE AT YOUR OWN RISK."),
 
     UNSUPPORTED_DEVELOPER_TOOLS("UnsupportedDeveloperTools", Constants.CATEGORY_MISC, false),
     CREATIVE("Creative", Constants.CATEGORY_MISC), GRINDER_LOGGING("GrinderLogging", Constants.CATEGORY_MISC, false),

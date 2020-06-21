@@ -18,8 +18,8 @@
 
 package appeng.block.misc;
 
-import javax.annotation.Nullable;
-
+import appeng.block.AEBaseBlock;
+import appeng.entity.EntityTinyTNTPrimed;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -43,8 +43,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
-import appeng.block.AEBaseBlock;
-import appeng.entity.EntityTinyTNTPrimed;
+import javax.annotation.Nullable;
 
 public class BlockTinyTNT extends AEBaseBlock {
 
@@ -53,6 +52,7 @@ public class BlockTinyTNT extends AEBaseBlock {
 
     public BlockTinyTNT(Block.Properties props) {
         super(props);
+        setFullSize(setOpaque(false));
     }
 
     @Override

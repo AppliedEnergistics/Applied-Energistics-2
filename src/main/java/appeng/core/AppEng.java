@@ -18,14 +18,34 @@
 
 package appeng.core;
 
-import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
-
-import javax.annotation.Nonnull;
-
+import appeng.block.paint.PaintSplotchesModel;
+import appeng.block.qnb.QnbFormedModel;
+import appeng.bootstrap.components.IClientSetupComponent;
+import appeng.bootstrap.components.IInitComponent;
+import appeng.bootstrap.components.IPostInitComponent;
+import appeng.capabilities.Capabilities;
+import appeng.client.ClientHelper;
+import appeng.client.render.DummyFluidItemModel;
 import appeng.client.render.FacadeItemModel;
+import appeng.client.render.SimpleModelLoader;
+import appeng.client.render.cablebus.CableBusModelLoader;
+import appeng.client.render.cablebus.P2PTunnelFrequencyModel;
+import appeng.client.render.crafting.CraftingCubeModelLoader;
+import appeng.client.render.crafting.EncodedPatternModelLoader;
+import appeng.client.render.model.*;
+import appeng.client.render.spatial.SpatialPylonModel;
+import appeng.core.crash.ModCrashEnhancement;
+import appeng.core.features.registries.PartModels;
+import appeng.core.stats.AdvancementTriggers;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.worlddata.WorldData;
+import appeng.entity.*;
+import appeng.hooks.TickHandler;
+import appeng.integration.Integrations;
+import appeng.parts.PartPlacement;
+import appeng.parts.automation.PlaneModelLoader;
+import appeng.server.ServerHelper;
 import com.google.common.base.Stopwatch;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -58,42 +78,9 @@ import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-import appeng.block.paint.PaintSplotchesModel;
-import appeng.block.qnb.QnbFormedModel;
-import appeng.bootstrap.components.IClientSetupComponent;
-import appeng.bootstrap.components.IInitComponent;
-import appeng.bootstrap.components.IPostInitComponent;
-import appeng.capabilities.Capabilities;
-import appeng.client.ClientHelper;
-import appeng.client.render.DummyFluidItemModel;
-import appeng.client.render.SimpleModelLoader;
-import appeng.client.render.cablebus.CableBusModelLoader;
-import appeng.client.render.cablebus.P2PTunnelFrequencyModel;
-import appeng.client.render.crafting.CraftingCubeModelLoader;
-import appeng.client.render.crafting.EncodedPatternModelLoader;
-import appeng.client.render.model.BiometricCardModel;
-import appeng.client.render.model.ColorApplicatorModel;
-import appeng.client.render.model.DriveModel;
-import appeng.client.render.model.GlassModel;
-import appeng.client.render.model.MemoryCardModel;
-import appeng.client.render.model.SkyCompassModel;
-import appeng.client.render.model.UVLModelLoader;
-import appeng.client.render.spatial.SpatialPylonModel;
-import appeng.core.crash.ModCrashEnhancement;
-import appeng.core.features.registries.PartModels;
-import appeng.core.stats.AdvancementTriggers;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.worlddata.WorldData;
-import appeng.entity.EntityChargedQuartz;
-import appeng.entity.EntityGrowingCrystal;
-import appeng.entity.EntitySingularity;
-import appeng.entity.EntityTinyTNTPrimed;
-import appeng.entity.RenderTinyTNTPrimed;
-import appeng.hooks.TickHandler;
-import appeng.integration.Integrations;
-import appeng.parts.PartPlacement;
-import appeng.parts.automation.PlaneModelLoader;
-import appeng.server.ServerHelper;
+import javax.annotation.Nonnull;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 @Mod(AppEng.MOD_ID)
 public final class AppEng {
@@ -132,11 +119,8 @@ public final class AppEng {
 
         CrashReportExtender.registerCrashCallable(new ModCrashEnhancement());
 
-        // FIXMEthis.registration = new Registration();
-        // FIXMEMinecraftForge.EVENT_BUS.register( this.registration );
-
         CreativeTab.init();
-        CreativeTabFacade.init();
+        new FacadeItemGroup(); // This call has a side-effect (adding it to the creative screen)
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         registration = new Registration();
@@ -240,21 +224,6 @@ public final class AppEng {
         }
         return INSTANCE;
     }
-
-//	public Biome getStorageBiome()
-//	{
-//		return this.registration.storageBiome;
-//	}
-//
-//	public DimensionType getStorageDimensionType()
-//	{
-//		return this.registration.storageDimensionType;
-//	}
-//
-//	public int getStorageDimensionID()
-//	{
-//		return this.registration.storageDimensionID;
-//	}
 
     public AdvancementTriggers getAdvancementTriggers() {
         return this.registration.advancementTriggers;
