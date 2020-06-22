@@ -16,50 +16,56 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.worldgen.meteorite;
+package appeng.worldgen.meteorite.fallout;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 
-public class FalloutCopy extends Fallout {
-    private static final double SPECIFIED_BLOCK_THRESHOLD = 0.9;
-    private static final double AIR_BLOCK_THRESHOLD = 0.8;
-    private static final double BLOCK_THRESHOLD_STEP = 0.1;
+import appeng.util.Platform;
+import appeng.worldgen.meteorite.MeteoriteBlockPutter;
 
-    private final BlockState block;
+public class Fallout {
     private final MeteoriteBlockPutter putter;
+    private final BlockState skyStone;
 
-    public FalloutCopy(final IWorld w, BlockPos pos, final MeteoriteBlockPutter putter, final BlockState skyStone) {
-        super(putter, skyStone);
+    public Fallout(final MeteoriteBlockPutter putter, final BlockState skyStone) {
         this.putter = putter;
-        this.block = w.getBlockState(pos);
+        this.skyStone = skyStone;
     }
 
-    @Override
+    public int adjustCrater() {
+        return 0;
+    }
+
     public void getRandomFall(final IWorld w, BlockPos pos) {
         final double a = Math.random();
-        if (a > SPECIFIED_BLOCK_THRESHOLD) {
-            this.putter.put(w, pos, this.block);
+        if (a > 0.9) {
+            this.putter.put(w, pos, Blocks.STONE.getDefaultState());
+        } else if (a > 0.8) {
+            this.putter.put(w, pos, Blocks.COBBLESTONE.getDefaultState());
+        } else if (a > 0.7) {
+            this.putter.put(w, pos, Blocks.DIRT.getDefaultState());
         } else {
-            this.getOther(w, pos, a);
+            this.putter.put(w, pos, Blocks.GRAVEL.getDefaultState());
         }
     }
 
-    public void getOther(final IWorld w, BlockPos pos, final double a) {
-
-    }
-
-    @Override
     public void getRandomInset(final IWorld w, BlockPos pos) {
         final double a = Math.random();
-        if (a > SPECIFIED_BLOCK_THRESHOLD) {
-            this.putter.put(w, pos, this.block);
-        } else if (a > AIR_BLOCK_THRESHOLD) {
-            this.putter.put(w, pos, Blocks.AIR.getDefaultState());
+        if (a > 0.9) {
+            this.putter.put(w, pos, Blocks.COBBLESTONE.getDefaultState());
+        } else if (a > 0.8) {
+            this.putter.put(w, pos, Blocks.STONE.getDefaultState());
+        } else if (a > 0.7) {
+            this.putter.put(w, pos, Blocks.GRASS_BLOCK.getDefaultState());
+        } else if (a > 0.6) {
+            this.putter.put(w, pos, this.skyStone);
+        } else if (a > 0.5) {
+            this.putter.put(w, pos, Blocks.GRAVEL.getDefaultState());
         } else {
-            this.getOther(w, pos, a - BLOCK_THRESHOLD_STEP);
+            this.putter.put(w, pos, Blocks.AIR.getDefaultState());
         }
     }
 }

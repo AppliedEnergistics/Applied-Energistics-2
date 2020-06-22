@@ -11,6 +11,7 @@
     "#forge:ores",
     "#minecraft:ice",
     "minecraft:snow",
-    "minecraft:snow_block"
+    "minecraft:snow_block",
+    "minecraft:water"
   ]
 }

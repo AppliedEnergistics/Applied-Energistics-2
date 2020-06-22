@@ -1,4 +1,21 @@
-package appeng.worldgen;
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2020, AlgorithmX2, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+package appeng.worldgen.meteorite;
 
 import javax.annotation.Nullable;
 
@@ -11,10 +28,12 @@ import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
+import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.gen.Heightmap;
+import net.minecraft.world.gen.Heightmap.Type;
 
 import appeng.core.AppEng;
-import appeng.worldgen.meteorite.FalloutMode;
+import appeng.worldgen.meteorite.fallout.FalloutMode;
 
 /**
  * Makes decisions about spawning meteorites in the world.
@@ -40,20 +59,27 @@ public class MeteoriteSpawner {
     }
 
     public PlacedMeteoriteSettings trySpawnMeteoriteAtSuitableHeight(IWorldReader world, BlockPos startPos,
-            float coreRadius, boolean lava) {
-
+            float coreRadius, CraterType craterType, boolean pureCrater, boolean worldGen) {
         int stepSize = Math.min(5, (int) Math.ceil(coreRadius) + 1);
         int minY = 10 + stepSize;
         BlockPos.Mutable mutablePos = new BlockPos.Mutable(startPos);
 
-        // Place the center on the first solid ground block, but move it down a little
-        // to embed the meteorite more
-        // in the ground
-        int startY = world.getHeight(Heightmap.Type.WORLD_SURFACE_WG, startPos).getY() - stepSize / 2;
+        // Place the center on the first solid ground block,
+        // but move it down a little to embed the meteorite more in the ground
+        final boolean isOcean = world.getBiome(startPos).getCategory() == Category.OCEAN;
+        final Type heightmapType;
+
+        if (isOcean) {
+            heightmapType = worldGen ? Heightmap.Type.OCEAN_FLOOR_WG : Heightmap.Type.OCEAN_FLOOR;
+        } else {
+            heightmapType = worldGen ? Heightmap.Type.WORLD_SURFACE_WG : Heightmap.Type.WORLD_SURFACE;
+        }
+
+        int startY = world.getHeight(heightmapType, startPos).getY() - stepSize / 2;
         mutablePos.setY(startY);
 
         while (mutablePos.getY() > minY) {
-            PlacedMeteoriteSettings spawned = trySpawnMeteorite(world, mutablePos, coreRadius, lava);
+            PlacedMeteoriteSettings spawned = trySpawnMeteorite(world, mutablePos, coreRadius, craterType, pureCrater);
             if (spawned != null) {
                 return spawned;
             }
@@ -65,7 +91,8 @@ public class MeteoriteSpawner {
     }
 
     @Nullable
-    public PlacedMeteoriteSettings trySpawnMeteorite(IWorldReader world, BlockPos pos, float coreRadius, boolean lava) {
+    public PlacedMeteoriteSettings trySpawnMeteorite(IWorldReader world, BlockPos pos, float coreRadius,
+            CraterType craterType, boolean pureCrater) {
         if (!areSurroundingsSuitable(world, pos)) {
             return null;
         }
@@ -76,13 +103,14 @@ public class MeteoriteSpawner {
 
         boolean solid = !isAirBelowSpawnPoint(world, pos);
 
-        if (!solid) {
-            placeCrater = false;
+        if (!solid || placeCrater) {
+            // craterType = CraterType.NONE;
+            // TODO: WHAT
         }
 
         FalloutMode fallout = getFalloutFromBaseBlock(world.getBlockState(pos));
 
-        return new PlacedMeteoriteSettings(pos, coreRadius, lava, placeCrater, fallout);
+        return new PlacedMeteoriteSettings(pos, coreRadius, craterType, fallout, pureCrater);
     }
 
     private static boolean isAirBelowSpawnPoint(IWorldReader w, BlockPos pos) {

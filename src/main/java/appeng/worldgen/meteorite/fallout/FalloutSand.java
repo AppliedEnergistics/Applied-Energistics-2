@@ -16,36 +16,33 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.worldgen.meteorite;
+package appeng.worldgen.meteorite.fallout;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 
-public interface IMeteoriteWorld {
-    int minX(int in);
+import appeng.worldgen.meteorite.MeteoriteBlockPutter;
 
-    int minZ(int in);
+public class FalloutSand extends FalloutCopy {
+    private static final double GLASS_THRESHOLD = 0.66;
+    private final MeteoriteBlockPutter putter;
 
-    int maxX(int in);
+    public FalloutSand(final IWorld w, BlockPos pos, final MeteoriteBlockPutter putter, final BlockState skyStone) {
+        super(w, pos, putter, skyStone);
+        this.putter = putter;
+    }
 
-    int maxZ(int in);
+    @Override
+    public int adjustCrater() {
+        return 2;
+    }
 
-    boolean contains(BlockPos pos);
-
-    Block getBlock(BlockPos pos);
-
-    boolean canBlockSeeTheSky(BlockPos pos);
-
-    TileEntity getTileEntity(BlockPos pos);
-
-    IWorld getWorld();
-
-    void setBlock(BlockPos pos, final BlockState state, final int flags);
-
-    void setBlock(BlockPos pos, BlockState blk);
-
-    BlockState getBlockState(BlockPos pos);
+    @Override
+    public void getOther(final IWorld w, BlockPos pos, final double a) {
+        if (a > GLASS_THRESHOLD) {
+            this.putter.put(w, pos, Blocks.GLASS.getDefaultState());
+        }
+    }
 }

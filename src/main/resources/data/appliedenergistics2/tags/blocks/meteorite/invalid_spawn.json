@@ -4,13 +4,7 @@
     "#minecraft:doors",
     "minecraft:iron_bars",
     "minecraft:bricks",
-    "minecraft:clay",
-    "minecraft:water",
-    "#minecraft:oak_logs",
-    "#minecraft:acacia_logs",
-    "#minecraft:birch_logs",
-    "#minecraft:dark_oak_logs",
-    "#minecraft:spruce_logs",
-    "#minecraft:planks"
+    "#minecraft:planks",
+    "end_portal_frame"
   ]
 }

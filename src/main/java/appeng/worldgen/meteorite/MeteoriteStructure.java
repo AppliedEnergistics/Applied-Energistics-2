@@ -1,4 +1,4 @@
-package appeng.worldgen;
+package appeng.worldgen.meteorite;
 
 import java.util.Random;
 import java.util.function.Function;
