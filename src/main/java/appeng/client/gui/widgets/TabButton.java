@@ -36,7 +36,7 @@ public class TabButton extends Button implements ITooltip {
     private ItemStack myItem;
 
     public TabButton(final int x, final int y, final int ico, final String message, final ItemRenderer ir,
-                     IPressable onPress) {
+            IPressable onPress) {
         super(x, y, 22, 22, message, onPress);
 
         this.myIcon = ico;
@@ -53,7 +53,7 @@ public class TabButton extends Button implements ITooltip {
      * @param ir      renderer
      */
     public TabButton(final int x, final int y, final ItemStack ico, final String message, final ItemRenderer ir,
-                     IPressable onPress) {
+            IPressable onPress) {
         super(x, y, 22, 22, message, onPress);
         this.myItem = ico;
         this.itemRenderer = ir;

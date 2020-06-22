@@ -42,7 +42,8 @@ import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 
-public class CellWorkbenchTileEntity extends AEBaseTileEntity implements IUpgradeableHost, IAEAppEngInventory, IConfigManagerHost {
+public class CellWorkbenchTileEntity extends AEBaseTileEntity
+        implements IUpgradeableHost, IAEAppEngInventory, IConfigManagerHost {
 
     private final AppEngInternalInventory cell = new AppEngInternalInventory(this, 1);
     private final AppEngInternalAEInventory config = new AppEngInternalAEInventory(this, 63);

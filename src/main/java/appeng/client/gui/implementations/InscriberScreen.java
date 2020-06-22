@@ -46,8 +46,7 @@ public class InscriberScreen extends AEBaseScreen<InscriberContainer> {
     public void init() {
         super.init();
 
-        this.pb = new ProgressBar(this.container, "guis/inscriber.png", 135, 39, 135, 177, 6, 18,
-                Direction.VERTICAL);
+        this.pb = new ProgressBar(this.container, "guis/inscriber.png", 135, 39, 135, 177, 6, 18, Direction.VERTICAL);
         this.addButton(this.pb);
     }
 

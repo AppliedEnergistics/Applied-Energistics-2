@@ -69,7 +69,7 @@ public class SkyChestTESR extends TileEntityRenderer<SkyChestTileEntity> {
 
     @Override
     public void render(SkyChestTileEntity tileEntityIn, float partialTicks, MatrixStack matrixStackIn,
-                       IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+            IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
         matrixStackIn.push();
         float f = tileEntityIn.getForward().getHorizontalAngle();
         matrixStackIn.translate(0.5D, 0.5D, 0.5D);

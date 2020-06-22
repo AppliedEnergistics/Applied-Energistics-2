@@ -37,12 +37,12 @@ public class ProgressBar extends Widget implements ITooltip {
     private String fullMsg;
 
     public ProgressBar(final IProgressProvider source, final String texture, final int posX, final int posY,
-                       final int u, final int y, final int width, final int height, final Direction dir) {
+            final int u, final int y, final int width, final int height, final Direction dir) {
         this(source, texture, posX, posY, u, y, width, height, dir, null);
     }
 
     public ProgressBar(final IProgressProvider source, final String texture, final int posX, final int posY,
-                       final int u, final int y, final int width, final int height, final Direction dir, final String title) {
+            final int u, final int y, final int width, final int height, final Direction dir, final String title) {
         super(posX, posY, width, height, "");
         this.source = source;
         this.texture = new ResourceLocation("appliedenergistics2", "textures/" + texture);

@@ -49,8 +49,7 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
         this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(),
                 this.itemRenderer, btn -> openPriorityGui()));
 
-        this.blockMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 8, Settings.BLOCK,
-                YesNo.NO);
+        this.blockMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 8, Settings.BLOCK, YesNo.NO);
         this.addButton(this.blockMode);
 
         this.interfaceMode = new ToggleButton(this.guiLeft - 18, this.guiTop + 26, 84, 85,

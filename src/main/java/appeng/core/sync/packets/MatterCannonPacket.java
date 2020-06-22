@@ -52,7 +52,7 @@ public class MatterCannonPacket extends BasePacket {
 
     // api
     public MatterCannonPacket(final double x, final double y, final double z, final float dx, final float dy,
-                              final float dz, final byte len) {
+            final float dz, final byte len) {
         final float dl = dx * dx + dy * dy + dz * dz;
         final float dlz = (float) Math.sqrt(dl);
 

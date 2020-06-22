@@ -43,10 +43,10 @@ import appeng.api.util.IConfigManager;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
+import appeng.container.slot.FakeTypeOnlySlot;
 import appeng.container.slot.IOptionalSlotHost;
 import appeng.container.slot.OptionalFakeSlot;
 import appeng.container.slot.OptionalTypeOnlyFakeSlot;
-import appeng.container.slot.FakeTypeOnlySlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.items.contents.NetworkToolViewer;
 import appeng.items.tools.NetworkToolItem;
@@ -85,7 +85,7 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
     }
 
     public UpgradeableContainer(ContainerType<?> containerType, int id, final PlayerInventory ip,
-                                final IUpgradeableHost te) {
+            final IUpgradeableHost te) {
         super(containerType, id, ip, (TileEntity) (te instanceof TileEntity ? te : null),
                 (IPart) (te instanceof IPart ? te : null));
         this.upgradeable = te;

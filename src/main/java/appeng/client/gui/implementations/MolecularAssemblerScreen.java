@@ -34,7 +34,7 @@ public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssembl
     private ProgressBar pb;
 
     public MolecularAssemblerScreen(MolecularAssemblerContainer container, PlayerInventory playerInventory,
-                                    ITextComponent title) {
+            ITextComponent title) {
         super(container, playerInventory, title);
         this.ySize = 197;
     }

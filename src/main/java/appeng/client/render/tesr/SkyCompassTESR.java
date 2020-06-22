@@ -49,7 +49,7 @@ public class SkyCompassTESR extends TileEntityRenderer<SkyCompassTileEntity> {
 
     @Override
     public void render(SkyCompassTileEntity te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
-                       int combinedLightIn, int combinedOverlayIn) {
+            int combinedLightIn, int combinedOverlayIn) {
 
         if (blockRenderer == null) {
             blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();

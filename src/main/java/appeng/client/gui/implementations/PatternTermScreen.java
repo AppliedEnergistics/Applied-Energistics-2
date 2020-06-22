@@ -77,8 +77,8 @@ public class PatternTermScreen extends MEMonitorableScreen<PatternTermContainer>
         this.substitutionsDisabledBtn.setHalfSize(true);
         this.addButton(this.substitutionsDisabledBtn);
 
-        ActionButton clearBtn = new ActionButton(this.guiLeft + 74, this.guiTop + this.ySize - 163,
-                ActionItems.CLOSE, act -> clear());
+        ActionButton clearBtn = new ActionButton(this.guiLeft + 74, this.guiTop + this.ySize - 163, ActionItems.CLOSE,
+                act -> clear());
         clearBtn.setHalfSize(true);
         this.addButton(clearBtn);
 

@@ -65,9 +65,9 @@ import appeng.container.slot.PlayerHotBarSlot;
 import appeng.container.slot.PlayerInvSlot;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.core.sync.packets.TargetItemStackPacket;
-import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.InventoryAction;
 import appeng.me.helpers.PlayerSource;
@@ -97,12 +97,12 @@ public abstract class AEBaseContainer extends Container {
     private List<Slot> playerInventorySlots = null;
 
     public AEBaseContainer(ContainerType<?> containerType, int id, final PlayerInventory ip, final TileEntity myTile,
-                           final IPart myPart) {
+            final IPart myPart) {
         this(containerType, id, ip, myTile, myPart, null);
     }
 
     public AEBaseContainer(ContainerType<?> containerType, int id, final PlayerInventory ip, final TileEntity myTile,
-                           final IPart myPart, final IGuiItemObject gio) {
+            final IPart myPart, final IGuiItemObject gio) {
         super(containerType, id);
         this.invPlayer = ip;
         this.tileEntity = myTile;

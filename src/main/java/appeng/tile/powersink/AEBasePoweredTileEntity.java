@@ -41,7 +41,8 @@ import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
 import appeng.capabilities.Capabilities;
 import appeng.tile.AEBaseInvTileEntity;
 
-public abstract class AEBasePoweredTileEntity extends AEBaseInvTileEntity implements IAEPowerStorage, IExternalPowerSink {
+public abstract class AEBasePoweredTileEntity extends AEBaseInvTileEntity
+        implements IAEPowerStorage, IExternalPowerSink {
 
     // values that determine general function, are set by inheriting classes if
     // needed. These should generally remain static.

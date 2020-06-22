@@ -33,8 +33,8 @@ import appeng.tile.AEBaseTileEntity;
 public class PowerStateInfoProvider implements ITileProbInfoProvider {
 
     @Override
-    public void addProbeInfo(AEBaseTileEntity tile, ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world,
-                             BlockState blockState, IProbeHitData data) {
+    public void addProbeInfo(AEBaseTileEntity tile, ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player,
+            World world, BlockState blockState, IProbeHitData data) {
         if (tile instanceof IPowerChannelState) {
             final IPowerChannelState state = (IPowerChannelState) tile;
 

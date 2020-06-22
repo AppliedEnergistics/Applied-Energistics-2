@@ -17,7 +17,7 @@ import appeng.fluids.util.IAEFluidTank;
 
 public class FluidFormationPlaneScreen extends UpgradeableScreen<FluidFormationPlaneContainer> {
     public FluidFormationPlaneScreen(FluidFormationPlaneContainer container, PlayerInventory playerInventory,
-                                     ITextComponent title) {
+            ITextComponent title) {
         super(container, playerInventory, title);
         this.ySize = 251;
     }

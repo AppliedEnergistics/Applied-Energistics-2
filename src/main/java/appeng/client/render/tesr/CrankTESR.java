@@ -48,8 +48,8 @@ public class CrankTESR extends TileEntityRenderer<CrankTileEntity> {
     }
 
     @Override
-    public void render(CrankTileEntity te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers, int combinedLightIn,
-                       int combinedOverlayIn) {
+    public void render(CrankTileEntity te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
+            int combinedLightIn, int combinedOverlayIn) {
 
         // Apply GL transformations relative to the center of the block: 1) TE rotation
         // and 2) crank rotation

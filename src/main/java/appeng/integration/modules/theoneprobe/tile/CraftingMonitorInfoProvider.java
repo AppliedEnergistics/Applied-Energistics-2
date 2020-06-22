@@ -36,8 +36,8 @@ import appeng.tile.crafting.CraftingMonitorTileEntity;
 public class CraftingMonitorInfoProvider implements ITileProbInfoProvider {
 
     @Override
-    public void addProbeInfo(AEBaseTileEntity tile, ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world,
-                             BlockState blockState, IProbeHitData data) {
+    public void addProbeInfo(AEBaseTileEntity tile, ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player,
+            World world, BlockState blockState, IProbeHitData data) {
         if (tile instanceof CraftingMonitorTileEntity) {
             final CraftingMonitorTileEntity monitor = (CraftingMonitorTileEntity) tile;
             final IAEItemStack displayStack = monitor.getJobProgress();

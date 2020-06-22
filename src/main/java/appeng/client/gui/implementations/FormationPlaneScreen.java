@@ -37,7 +37,8 @@ public class FormationPlaneScreen extends UpgradeableScreen<FormationPlaneContai
 
     private SettingToggleButton<YesNo> placeMode;
 
-    public FormationPlaneScreen(FormationPlaneContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public FormationPlaneScreen(FormationPlaneContainer container, PlayerInventory playerInventory,
+            ITextComponent title) {
         super(container, playerInventory, title);
         this.ySize = 251;
     }

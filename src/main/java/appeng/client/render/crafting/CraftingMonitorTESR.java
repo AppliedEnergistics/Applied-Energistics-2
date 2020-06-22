@@ -43,7 +43,7 @@ public class CraftingMonitorTESR extends TileEntityRenderer<CraftingMonitorTileE
 
     @Override
     public void render(CraftingMonitorTileEntity te, float partialTicks, MatrixStack matrixStack,
-                       IRenderTypeBuffer buffers, int combinedLight, int combinedOverlay) {
+            IRenderTypeBuffer buffers, int combinedLight, int combinedOverlay) {
 
         Direction facing = te.getForward();
 

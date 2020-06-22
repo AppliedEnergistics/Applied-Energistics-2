@@ -43,7 +43,7 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
 
     @Override
     public void render(TinyTNTPrimedEntity tnt, float entityYaw, float partialTicks, MatrixStack mStack,
-                       IRenderTypeBuffer buffers, int packedLight) {
+            IRenderTypeBuffer buffers, int packedLight) {
         final BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
         mStack.push();
         mStack.translate(0, 0.25F, 0);

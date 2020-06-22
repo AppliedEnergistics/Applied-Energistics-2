@@ -27,7 +27,7 @@ public class NumberBox extends TextFieldWidget {
     private final Class type;
 
     public NumberBox(final FontRenderer fontRenderer, final int x, final int y, final int width, final int height,
-                     final Class type) {
+            final Class type) {
         super(fontRenderer, x, y, width, height, "0");
         this.type = type;
     }

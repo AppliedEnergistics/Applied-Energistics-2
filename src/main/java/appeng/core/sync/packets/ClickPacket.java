@@ -86,12 +86,12 @@ public class ClickPacket extends BasePacket {
     }
 
     private ClickPacket(final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ,
-                        final Hand hand) {
+            final Hand hand) {
         this(pos, side, hitX, hitY, hitZ, hand, false);
     }
 
     public ClickPacket(final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ,
-                       final Hand hand, boolean leftClick) {
+            final Hand hand, boolean leftClick) {
 
         final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 

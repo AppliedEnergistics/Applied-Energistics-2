@@ -71,7 +71,7 @@ public class RestrictedInputSlot extends AppEngSlot {
     private int stackLimit = -1;
 
     public RestrictedInputSlot(final PlacableItemType valid, final IItemHandler i, final int slotIndex, final int x,
-                               final int y, final PlayerInventory p) {
+            final int y, final PlayerInventory p) {
         super(i, slotIndex, x, y);
         this.which = valid;
         this.setIIcon(valid.IIcon);

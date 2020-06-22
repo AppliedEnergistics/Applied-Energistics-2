@@ -18,8 +18,6 @@
 
 package appeng.core.sync.packets;
 
-import appeng.client.gui.implementations.CraftingCPUScreen;
-import appeng.core.sync.BasePacket;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
@@ -34,6 +32,7 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
+import appeng.client.gui.implementations.CraftingCPUScreen;
 import appeng.container.AEBaseContainer;
 import appeng.container.implementations.CellWorkbenchContainer;
 import appeng.container.implementations.CraftConfirmContainer;
@@ -46,6 +45,7 @@ import appeng.container.implementations.PriorityContainer;
 import appeng.container.implementations.QuartzKnifeContainer;
 import appeng.container.implementations.SecurityStationContainer;
 import appeng.container.implementations.StorageBusContainer;
+import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.fluids.container.FluidLevelEmitterContainer;
 import appeng.fluids.container.FluidStorageBusContainer;

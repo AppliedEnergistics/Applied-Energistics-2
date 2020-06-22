@@ -80,8 +80,8 @@ import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 import appeng.util.item.AEItemStack;
 
-public class SecurityStationTileEntity extends AENetworkTileEntity implements ITerminalHost, IAEAppEngInventory, ILocatable,
-        IConfigManagerHost, ISecurityProvider, IColorableTile {
+public class SecurityStationTileEntity extends AENetworkTileEntity implements ITerminalHost, IAEAppEngInventory,
+        ILocatable, IConfigManagerHost, ISecurityProvider, IColorableTile {
 
     private static int difference = 0;
     private final AppEngInternalInventory configSlot = new AppEngInternalInventory(this, 1);

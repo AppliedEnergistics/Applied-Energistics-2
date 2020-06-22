@@ -36,7 +36,7 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContain
     private ProgressBar pb;
 
     public VibrationChamberScreen(VibrationChamberContainer container, PlayerInventory playerInventory,
-                                  ITextComponent title) {
+            ITextComponent title) {
         super(container, playerInventory, title);
         this.ySize = 166;
     }

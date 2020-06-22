@@ -68,7 +68,7 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
 
     @Override
     public void render(MolecularAssemblerTileEntity molecularAssembler, float partialTicks, MatrixStack ms,
-                       IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+            IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
 
         AssemblerAnimationStatus status = molecularAssembler.getAnimationStatus();
         if (status != null) {
@@ -105,8 +105,8 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
                 lightsModel, 1, 1, 1, combinedLightIn, combinedOverlayIn, EmptyModelData.INSTANCE);
     }
 
-    private void renderStatus(MolecularAssemblerTileEntity molecularAssembler, MatrixStack ms, IRenderTypeBuffer bufferIn,
-                              int combinedLightIn, AssemblerAnimationStatus status) {
+    private void renderStatus(MolecularAssemblerTileEntity molecularAssembler, MatrixStack ms,
+            IRenderTypeBuffer bufferIn, int combinedLightIn, AssemblerAnimationStatus status) {
         double centerX = molecularAssembler.getPos().getX() + 0.5f;
         double centerY = molecularAssembler.getPos().getY() + 0.5f;
         double centerZ = molecularAssembler.getPos().getZ() + 0.5f;

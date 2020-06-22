@@ -48,7 +48,7 @@ public class CompassResponsePacket extends BasePacket {
 
     // api
     public CompassResponsePacket(final CompassRequestPacket req, final boolean hasResult, final boolean spin,
-                                 final double radians) {
+            final double radians) {
 
         final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 

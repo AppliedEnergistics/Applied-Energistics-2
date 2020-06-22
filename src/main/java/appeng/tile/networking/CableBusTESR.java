@@ -35,7 +35,7 @@ public class CableBusTESR extends TileEntityRenderer<CableBusTileEntity> {
 
     @Override
     public void render(CableBusTileEntity te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
-                       int combinedLightIn, int combinedOverlayIn) {
+            int combinedLightIn, int combinedOverlayIn) {
         if (!te.getCableBus().isRequiresDynamicRender()) {
             return;
         }

@@ -34,8 +34,8 @@ import appeng.container.implementations.PriorityContainer;
 import appeng.container.implementations.StorageBusContainer;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.core.sync.packets.ConfigValuePacket;
+import appeng.core.sync.packets.SwitchGuisPacket;
 
 public class StorageBusScreen extends UpgradeableScreen<StorageBusContainer> {
 

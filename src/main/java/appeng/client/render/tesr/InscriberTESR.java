@@ -44,7 +44,7 @@ public final class InscriberTESR extends TileEntityRenderer<InscriberTileEntity>
 
     @Override
     public void render(InscriberTileEntity tile, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
-                       int combinedLight, int combinedOverlay) {
+            int combinedLight, int combinedOverlay) {
 
         // render inscriber
 

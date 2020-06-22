@@ -22,10 +22,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import appeng.core.sync.packets.*;
 import net.minecraft.network.PacketBuffer;
 
-public class PacketHandlerBase {
+import appeng.core.sync.packets.*;
+
+public class BasePacketHandler {
     private static final Map<Class<? extends BasePacket>, PacketTypes> REVERSE_LOOKUP = new HashMap<>();
 
     public enum PacketTypes {

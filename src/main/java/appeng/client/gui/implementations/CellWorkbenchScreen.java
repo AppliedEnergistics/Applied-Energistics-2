@@ -42,7 +42,8 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
 
     private ToggleButton copyMode;
 
-    public CellWorkbenchScreen(CellWorkbenchContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public CellWorkbenchScreen(CellWorkbenchContainer container, PlayerInventory playerInventory,
+            ITextComponent title) {
         super(container, playerInventory, title);
         this.ySize = 251;
     }
@@ -51,12 +52,11 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
     protected void addButtons() {
         this.fuzzyMode = this.addButton(new SettingToggleButton<>(this.guiLeft - 18, this.guiTop + 68,
                 Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL, this::toggleFuzzyMode));
-        this.addButton(new ActionButton(this.guiLeft - 18, this.guiTop + 28, ActionItems.WRENCH,
-                act1 -> action("Partition")));
         this.addButton(
-                new ActionButton(this.guiLeft - 18, this.guiTop + 8, ActionItems.CLOSE, act -> action("Clear")));
-        this.copyMode = this.addButton(new ToggleButton(this.guiLeft - 18, this.guiTop + 48, 11 * 16 + 5,
-                12 * 16 + 5, GuiText.CopyMode.getLocal(), GuiText.CopyModeDesc.getLocal(), act -> action("CopyMode")));
+                new ActionButton(this.guiLeft - 18, this.guiTop + 28, ActionItems.WRENCH, act1 -> action("Partition")));
+        this.addButton(new ActionButton(this.guiLeft - 18, this.guiTop + 8, ActionItems.CLOSE, act -> action("Clear")));
+        this.copyMode = this.addButton(new ToggleButton(this.guiLeft - 18, this.guiTop + 48, 11 * 16 + 5, 12 * 16 + 5,
+                GuiText.CopyMode.getLocal(), GuiText.CopyModeDesc.getLocal(), act -> action("CopyMode")));
     }
 
     @Override

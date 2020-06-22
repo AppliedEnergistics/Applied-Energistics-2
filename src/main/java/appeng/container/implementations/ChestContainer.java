@@ -33,8 +33,8 @@ public class ChestContainer extends AEBaseContainer {
 
     public static ContainerType<ChestContainer> TYPE;
 
-    private static final ContainerHelper<ChestContainer, ChestTileEntity> helper = new ContainerHelper<>(ChestContainer::new,
-            ChestTileEntity.class, SecurityPermissions.BUILD);
+    private static final ContainerHelper<ChestContainer, ChestTileEntity> helper = new ContainerHelper<>(
+            ChestContainer::new, ChestTileEntity.class, SecurityPermissions.BUILD);
 
     public ChestContainer(int id, final PlayerInventory ip, final ChestTileEntity chest) {
         super(TYPE, id, ip, chest, null);

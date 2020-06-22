@@ -68,8 +68,8 @@ import appeng.container.guisync.GuiSync;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.MEInventoryUpdatePacket;
 import appeng.core.sync.packets.ConfigValuePacket;
+import appeng.core.sync.packets.MEInventoryUpdatePacket;
 import appeng.me.helpers.ChannelPowerSrc;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
@@ -110,7 +110,7 @@ public class MEMonitorableContainer extends AEBaseContainer
     }
 
     public MEMonitorableContainer(ContainerType<?> containerType, int id, PlayerInventory ip,
-                                  final ITerminalHost monitorable, final boolean bindInventory) {
+            final ITerminalHost monitorable, final boolean bindInventory) {
         super(containerType, id, ip, monitorable instanceof TileEntity ? (TileEntity) monitorable : null,
                 monitorable instanceof IPart ? (IPart) monitorable : null,
                 monitorable instanceof IGuiItemObject ? (IGuiItemObject) monitorable : null);

@@ -588,7 +588,8 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         @Override
         public boolean isValid(final Object verificationToken) {
             ChestTileEntity.this.updateHandler();
-            if (ChestTileEntity.this.cellHandler != null && this.chan == ChestTileEntity.this.cellHandler.getChannel()) {
+            if (ChestTileEntity.this.cellHandler != null
+                    && this.chan == ChestTileEntity.this.cellHandler.getChannel()) {
                 return verificationToken == ChestTileEntity.this.cellHandler;
             }
             return false;
@@ -704,8 +705,8 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     private class FluidHandler implements IFluidHandler, IFluidTank {
 
         private boolean canAcceptLiquids() {
-            return ChestTileEntity.this.cellHandler != null && ChestTileEntity.this.cellHandler.getChannel() == AEApi.instance()
-                    .storage().getStorageChannel(IFluidStorageChannel.class);
+            return ChestTileEntity.this.cellHandler != null && ChestTileEntity.this.cellHandler.getChannel() == AEApi
+                    .instance().storage().getStorageChannel(IFluidStorageChannel.class);
         }
 
         @Nonnull
@@ -754,8 +755,9 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         public int fill(FluidStack resource, FluidAction action) {
             ChestTileEntity.this.updateHandler();
             if (canAcceptLiquids()) {
-                final IAEFluidStack results = Platform.poweredInsert(ChestTileEntity.this, ChestTileEntity.this.cellHandler,
-                        AEFluidStack.fromFluidStack(resource), ChestTileEntity.this.mySrc,
+                final IAEFluidStack results = Platform.poweredInsert(ChestTileEntity.this,
+                        ChestTileEntity.this.cellHandler, AEFluidStack.fromFluidStack(resource),
+                        ChestTileEntity.this.mySrc,
                         action == FluidAction.EXECUTE ? Actionable.MODULATE : Actionable.SIMULATE);
 
                 if (results == null) {
@@ -789,8 +791,8 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
             if (ChestTileEntity.this.isPowered()) {
                 ChestTileEntity.this.updateHandler();
-                return ChestTileEntity.this.cellHandler != null && ChestTileEntity.this.cellHandler.getChannel() == AEApi.instance()
-                        .storage().getStorageChannel(IItemStorageChannel.class);
+                return ChestTileEntity.this.cellHandler != null && ChestTileEntity.this.cellHandler
+                        .getChannel() == AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
             }
             return false;
         }

@@ -34,8 +34,8 @@ import appeng.api.config.ViewItems;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.widgets.CommonButtons;
-import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.ISortSource;
+import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.me.ItemRepo;
 import appeng.client.me.SlotME;
 import appeng.container.implementations.NetworkStatusContainer;
@@ -48,7 +48,8 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
     private final int rows = 4;
     private int tooltip = -1;
 
-    public NetworkStatusScreen(NetworkStatusContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public NetworkStatusScreen(NetworkStatusContainer container, PlayerInventory playerInventory,
+            ITextComponent title) {
         super(container, playerInventory, title);
         final Scrollbar scrollbar = new Scrollbar();
 

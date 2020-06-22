@@ -36,7 +36,7 @@ public abstract class AEBaseItemEntity extends ItemEntity {
     }
 
     protected AEBaseItemEntity(EntityType<? extends AEBaseItemEntity> entityType, final World world, final double x,
-                               final double y, final double z, final ItemStack stack) {
+            final double y, final double z, final ItemStack stack) {
         this(entityType, world);
         this.setPosition(x, y, z);
         this.rotationYaw = this.rand.nextFloat() * 360.0F;

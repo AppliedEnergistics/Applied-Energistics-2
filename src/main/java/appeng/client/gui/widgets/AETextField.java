@@ -51,7 +51,7 @@ public class AETextField extends TextFieldWidget {
      * @param height       absolute height
      */
     public AETextField(final FontRenderer fontRenderer, final int xPos, final int yPos, final int width,
-                       final int height) {
+            final int height) {
         super(fontRenderer, xPos + PADDING, yPos + PADDING, width - 2 * PADDING - (int) fontRenderer.getCharWidth('_'),
                 height - 2 * PADDING, "");
 

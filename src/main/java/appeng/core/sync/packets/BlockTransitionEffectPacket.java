@@ -61,7 +61,7 @@ public class BlockTransitionEffectPacket extends BasePacket {
     }
 
     public BlockTransitionEffectPacket(BlockPos pos, BlockState blockState, AEPartLocation direction,
-                                       SoundMode soundMode) {
+            SoundMode soundMode) {
         this.pos = pos;
         this.blockState = blockState;
         this.direction = direction;

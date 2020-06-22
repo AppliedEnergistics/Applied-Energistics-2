@@ -59,17 +59,17 @@ import appeng.parts.misc.InvertedToggleBusPart;
 import appeng.parts.misc.StorageBusPart;
 import appeng.parts.misc.ToggleBusPart;
 import appeng.parts.networking.CoveredCablePart;
-import appeng.parts.networking.GlassCablePart;
-import appeng.parts.networking.SmartCablePart;
 import appeng.parts.networking.CoveredDenseCablePart;
-import appeng.parts.networking.SmartDenseCablePart;
+import appeng.parts.networking.GlassCablePart;
 import appeng.parts.networking.QuartzFiberPart;
+import appeng.parts.networking.SmartCablePart;
+import appeng.parts.networking.SmartDenseCablePart;
 import appeng.parts.p2p.FEP2PTunnelPart;
 import appeng.parts.p2p.FluidP2PTunnelPart;
 import appeng.parts.p2p.ItemP2PTunnelPart;
 import appeng.parts.p2p.LightP2PTunnelPart;
-import appeng.parts.p2p.RedstoneP2PTunnelPart;
 import appeng.parts.p2p.MEP2PTunnelPart;
+import appeng.parts.p2p.RedstoneP2PTunnelPart;
 import appeng.parts.reporting.ConversionMonitorPart;
 import appeng.parts.reporting.CraftingTerminalPart;
 import appeng.parts.reporting.DarkPanelPart;
@@ -186,11 +186,13 @@ public final class ApiParts implements IParts {
         this.p2PTunnelRedstone = createPart(registry, "redstone_p2p_tunnel", PartType.P2P_TUNNEL_REDSTONE,
                 RedstoneP2PTunnelPart::new);
         this.p2PTunnelItems = createPart(registry, "item_p2p_tunnel", PartType.P2P_TUNNEL_ITEM, ItemP2PTunnelPart::new);
-        this.p2PTunnelFluids = createPart(registry, "fluid_p2p_tunnel", PartType.P2P_TUNNEL_FLUID, FluidP2PTunnelPart::new);
+        this.p2PTunnelFluids = createPart(registry, "fluid_p2p_tunnel", PartType.P2P_TUNNEL_FLUID,
+                FluidP2PTunnelPart::new);
         this.p2PTunnelEU = null; // FIXME createPart( "ic2_p2p_tunnel", PartType.P2P_TUNNEL_IC2,
                                  // PartP2PIC2Power::new);
         this.p2PTunnelFE = createPart(registry, "fe_p2p_tunnel", PartType.P2P_TUNNEL_FE, FEP2PTunnelPart::new);
-        this.p2PTunnelLight = createPart(registry, "light_p2p_tunnel", PartType.P2P_TUNNEL_LIGHT, LightP2PTunnelPart::new);
+        this.p2PTunnelLight = createPart(registry, "light_p2p_tunnel", PartType.P2P_TUNNEL_LIGHT,
+                LightP2PTunnelPart::new);
         this.interfaceTerminal = createPart(registry, "interface_terminal", PartType.INTERFACE_TERMINAL,
                 InterfaceTerminalPart::new);
         this.fluidTerminal = createPart(registry, "fluid_terminal", PartType.FLUID_TERMINAL, FluidTerminalPart::new);

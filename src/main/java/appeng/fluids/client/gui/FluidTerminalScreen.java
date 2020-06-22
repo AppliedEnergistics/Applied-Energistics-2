@@ -41,10 +41,10 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.util.IConfigManager;
 import appeng.client.ActionKey;
 import appeng.client.gui.AEBaseMEScreen;
+import appeng.client.gui.widgets.AETextField;
+import appeng.client.gui.widgets.ISortSource;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.SettingToggleButton;
-import appeng.client.gui.widgets.ISortSource;
-import appeng.client.gui.widgets.AETextField;
 import appeng.client.me.FluidRepo;
 import appeng.client.me.InternalFluidSlotME;
 import appeng.client.me.SlotFluidME;
@@ -52,8 +52,8 @@ import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.core.sync.packets.ConfigValuePacket;
+import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.fluids.container.FluidTerminalContainer;
 import appeng.fluids.container.slots.IMEFluidSlot;
 import appeng.helpers.InventoryAction;
@@ -65,7 +65,8 @@ import appeng.util.Platform;
  * @version rv6 - 12/05/2018
  * @since rv6 12/05/2018
  */
-public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer> implements ISortSource, IConfigManagerHost {
+public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
+        implements ISortSource, IConfigManagerHost {
     private final List<SlotFluidME> meFluidSlots = new LinkedList<>();
     private final FluidRepo repo;
     private final IConfigManager configSrc;
@@ -79,7 +80,8 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer> 
     private SettingToggleButton<SortOrder> sortByBox;
     private SettingToggleButton<SortDir> sortDirBox;
 
-    public FluidTerminalScreen(FluidTerminalContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public FluidTerminalScreen(FluidTerminalContainer container, PlayerInventory playerInventory,
+            ITextComponent title) {
         super(container, playerInventory, title);
         this.xSize = 185;
         this.ySize = 222;
@@ -108,8 +110,8 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer> 
                 getSortBy(), Platform::isSortOrderAvailable, this::toggleServerSetting));
         offset += 20;
 
-        this.sortDirBox = this.addButton(new SettingToggleButton<>(this.guiLeft - 18, offset,
-                Settings.SORT_DIRECTION, getSortDir(), this::toggleServerSetting));
+        this.sortDirBox = this.addButton(new SettingToggleButton<>(this.guiLeft - 18, offset, Settings.SORT_DIRECTION,
+                getSortDir(), this::toggleServerSetting));
 
         for (int y = 0; y < ROWS; y++) {
             for (int x = 0; x < COLS; x++) {

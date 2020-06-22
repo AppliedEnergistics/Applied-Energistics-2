@@ -44,8 +44,8 @@ import appeng.api.AEApi;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.client.ActionKey;
 import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.AETextField;
+import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.me.ClientDCInternalInv;
 import appeng.client.me.SlotDisconnected;
 import appeng.container.implementations.InterfaceTerminalContainer;
@@ -68,7 +68,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     private AETextField searchField;
 
     public InterfaceTerminalScreen(InterfaceTerminalContainer container, PlayerInventory playerInventory,
-                                   ITextComponent title) {
+            ITextComponent title) {
         super(container, playerInventory, title);
         final Scrollbar scrollbar = new Scrollbar();
         this.setScrollBar(scrollbar);

@@ -55,8 +55,8 @@ public class CraftingTermScreen extends MEMonitorableScreen<CraftingTermContaine
     @Override
     public void init() {
         super.init();
-        ActionButton clearBtn = this.addButton(new ActionButton(this.guiLeft + 92, this.guiTop + this.ySize - 156,
-                ActionItems.STASH, btn -> clear()));
+        ActionButton clearBtn = this.addButton(
+                new ActionButton(this.guiLeft + 92, this.guiTop + this.ySize - 156, ActionItems.STASH, btn -> clear()));
         clearBtn.setHalfSize(true);
     }
 

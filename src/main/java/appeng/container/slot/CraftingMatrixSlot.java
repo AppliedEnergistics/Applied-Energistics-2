@@ -30,7 +30,7 @@ public class CraftingMatrixSlot extends AppEngSlot {
     private final IInventory wrappedInventory;
 
     public CraftingMatrixSlot(final AEBaseContainer c, final IItemHandler par1iInventory, final int par2,
-                              final int par3, final int par4) {
+            final int par3, final int par4) {
         super(par1iInventory, par2, par3, par4);
         this.c = c;
         this.wrappedInventory = new WrapperInvItemHandler(par1iInventory);

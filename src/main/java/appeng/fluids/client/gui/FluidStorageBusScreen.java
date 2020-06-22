@@ -34,8 +34,8 @@ import appeng.client.gui.widgets.TabButton;
 import appeng.container.implementations.PriorityContainer;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.core.sync.packets.ConfigValuePacket;
+import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.fluids.client.gui.widgets.FluidSlotWidget;
 import appeng.fluids.client.gui.widgets.OptionalFluidSlotWidget;
 import appeng.fluids.container.FluidStorageBusContainer;
@@ -51,7 +51,7 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusCont
     private SettingToggleButton<StorageFilter> storageFilter;
 
     public FluidStorageBusScreen(FluidStorageBusContainer container, PlayerInventory playerInventory,
-                                 ITextComponent title) {
+            ITextComponent title) {
         super(container, playerInventory, title);
         this.ySize = 251;
     }
@@ -88,8 +88,8 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusCont
         this.fuzzyMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 88, Settings.FUZZY_MODE,
                 FuzzyMode.IGNORE_ALL);
 
-        addButton(this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16,
-                GuiText.Priority.getLocal(), this.itemRenderer, btn -> openPriorityGui())));
+        addButton(this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(),
+                this.itemRenderer, btn -> openPriorityGui())));
 
         this.addButton(this.storageFilter);
         this.addButton(this.fuzzyMode);

@@ -16,7 +16,7 @@ public class OptionalFluidSlotWidget extends FluidSlotWidget {
     private final int srcY;
 
     public OptionalFluidSlotWidget(IAEFluidTank fluids, final IOptionalSlotHost containerBus, int slot, int id,
-                                   int groupNum, int x, int y, int xoffs, int yoffs) {
+            int groupNum, int x, int y, int xoffs, int yoffs) {
         super(fluids, slot, id, x + xoffs * 18, y + yoffs * 18);
         this.containerBus = containerBus;
         this.groupNum = groupNum;

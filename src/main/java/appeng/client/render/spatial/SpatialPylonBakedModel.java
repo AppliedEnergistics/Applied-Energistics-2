@@ -115,7 +115,8 @@ class SpatialPylonBakedModel implements IDynamicBakedModel {
                     this.textures.get(getTextureTypeFromSideOutside(flags, ori, Direction.WEST)));
             builder.addCube(0, 0, 0, 16, 16, 16);
 
-            if ((flags & SpatialPylonTileEntity.DISPLAY_POWERED_ENABLED) == SpatialPylonTileEntity.DISPLAY_POWERED_ENABLED) {
+            if ((flags
+                    & SpatialPylonTileEntity.DISPLAY_POWERED_ENABLED) == SpatialPylonTileEntity.DISPLAY_POWERED_ENABLED) {
                 builder.setRenderFullBright(true);
             }
 

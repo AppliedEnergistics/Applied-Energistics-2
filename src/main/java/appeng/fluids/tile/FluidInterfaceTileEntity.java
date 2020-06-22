@@ -51,7 +51,8 @@ import appeng.fluids.helper.IFluidInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.tile.grid.AENetworkTileEntity;
 
-public class FluidInterfaceTileEntity extends AENetworkTileEntity implements IGridTickable, IFluidInterfaceHost, IPriorityHost {
+public class FluidInterfaceTileEntity extends AENetworkTileEntity
+        implements IGridTickable, IFluidInterfaceHost, IPriorityHost {
     private final DualityFluidInterface duality = new DualityFluidInterface(this.getProxy(), this);
 
     public FluidInterfaceTileEntity(TileEntityType<?> tileEntityTypeIn) {

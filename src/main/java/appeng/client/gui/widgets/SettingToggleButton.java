@@ -65,12 +65,12 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
     }
 
     public SettingToggleButton(final int x, final int y, final Settings setting, final T val,
-                               IHandler<SettingToggleButton<T>> onPress) {
+            IHandler<SettingToggleButton<T>> onPress) {
         this(x, y, setting, val, t -> true, onPress);
     }
 
-    public SettingToggleButton(final int x, final int y, final Settings setting, final T val,
-                               Predicate<T> isValidValue, IHandler<SettingToggleButton<T>> onPress) {
+    public SettingToggleButton(final int x, final int y, final Settings setting, final T val, Predicate<T> isValidValue,
+            IHandler<SettingToggleButton<T>> onPress) {
         super(x, y, SettingToggleButton::onPress);
         this.onPress = onPress;
 

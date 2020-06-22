@@ -35,7 +35,8 @@ import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.util.IAEFluidTank;
 
 public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceContainer> {
-    public FluidInterfaceScreen(FluidInterfaceContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public FluidInterfaceScreen(FluidInterfaceContainer container, PlayerInventory playerInventory,
+            ITextComponent title) {
         super(container, playerInventory, title);
         this.ySize = 231;
     }
@@ -54,8 +55,8 @@ public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceContai
             this.guiSlots.add(new FluidSlotWidget(configFluids, i, i, 35 + 18 * i, 35));
         }
 
-        this.addButton(new TabButton(this.getGuiLeft() + 154, this.getGuiTop(), 2 + 4 * 16,
-                GuiText.Priority.getLocal(), this.itemRenderer, btn -> openPriorityGui()));
+        this.addButton(new TabButton(this.getGuiLeft() + 154, this.getGuiTop(), 2 + 4 * 16, GuiText.Priority.getLocal(),
+                this.itemRenderer, btn -> openPriorityGui()));
     }
 
     @Override

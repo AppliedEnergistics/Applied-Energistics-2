@@ -58,7 +58,7 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
     }
 
     public TinyTNTPrimedEntity(final World w, final double x, final double y, final double z,
-                               final LivingEntity igniter) {
+            final LivingEntity igniter) {
         super(w, x, y, z, igniter);
     }
 

@@ -41,7 +41,7 @@ public class ToggleButton extends Button implements ITooltip {
     private boolean isActive;
 
     public ToggleButton(final int x, final int y, final int on, final int off, final String displayName,
-                        final String displayHint, IPressable onPress) {
+            final String displayHint, IPressable onPress) {
         super(x, y, 16, 16, "", onPress);
         this.iconIdxOn = on;
         this.iconIdxOff = off;

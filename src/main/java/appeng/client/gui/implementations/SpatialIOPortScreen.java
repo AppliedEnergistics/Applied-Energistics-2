@@ -30,7 +30,8 @@ import appeng.util.Platform;
 
 public class SpatialIOPortScreen extends AEBaseScreen<SpatialIOPortContainer> {
 
-    public SpatialIOPortScreen(SpatialIOPortContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public SpatialIOPortScreen(SpatialIOPortContainer container, PlayerInventory playerInventory,
+            ITextComponent title) {
         super(container, playerInventory, title);
         this.ySize = 199;
     }

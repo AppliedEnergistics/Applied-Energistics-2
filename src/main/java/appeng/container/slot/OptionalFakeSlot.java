@@ -32,7 +32,7 @@ public class OptionalFakeSlot extends FakeSlot implements IOptionalSlot {
     private boolean renderDisabled = true;
 
     public OptionalFakeSlot(final IItemHandler inv, final IOptionalSlotHost containerBus, final int idx, final int x,
-                            final int y, final int offX, final int offY, final int groupNum) {
+            final int y, final int offX, final int offY, final int groupNum) {
         super(inv, idx, x + offX * 18, y + offY * 18);
         this.srcX = x;
         this.srcY = y;

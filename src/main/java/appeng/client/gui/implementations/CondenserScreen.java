@@ -48,8 +48,8 @@ public class CondenserScreen extends AEBaseScreen<CondenserContainer> {
         this.mode = new ServerSettingToggleButton<>(128 + this.guiLeft, 52 + this.guiTop, Settings.CONDENSER_OUTPUT,
                 this.container.getOutput());
 
-        this.addButton(new ProgressBar(this.container, "guis/condenser.png", 120 + this.guiLeft, 25 + this.guiTop,
-                178, 25, 6, 18, Direction.VERTICAL, GuiText.StoredEnergy.getLocal()));
+        this.addButton(new ProgressBar(this.container, "guis/condenser.png", 120 + this.guiLeft, 25 + this.guiTop, 178,
+                25, 6, 18, Direction.VERTICAL, GuiText.StoredEnergy.getLocal()));
         this.addButton(this.mode);
     }
 

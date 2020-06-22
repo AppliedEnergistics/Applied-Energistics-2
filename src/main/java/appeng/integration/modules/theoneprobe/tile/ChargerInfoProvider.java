@@ -35,8 +35,8 @@ import appeng.tile.misc.ChargerTileEntity;
 public class ChargerInfoProvider implements ITileProbInfoProvider {
 
     @Override
-    public void addProbeInfo(AEBaseTileEntity tile, ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world,
-                             BlockState blockState, IProbeHitData data) {
+    public void addProbeInfo(AEBaseTileEntity tile, ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player,
+            World world, BlockState blockState, IProbeHitData data) {
         if (tile instanceof ChargerTileEntity) {
             final ChargerTileEntity charger = (ChargerTileEntity) tile;
             final IItemHandler chargerInventory = charger.getInternalInventory();

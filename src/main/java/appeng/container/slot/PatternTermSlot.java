@@ -37,9 +37,9 @@ public class PatternTermSlot extends CraftingTermSlot {
     private final IOptionalSlotHost host;
 
     public PatternTermSlot(final PlayerEntity player, final IActionSource mySrc, final IEnergySource energySrc,
-                           final IStorageMonitorable storage, final IItemHandler cMatrix, final IItemHandler secondMatrix,
-                           final IItemHandler output, final int x, final int y, final IOptionalSlotHost h, final int groupNumber,
-                           final IContainerCraftingPacket c) {
+            final IStorageMonitorable storage, final IItemHandler cMatrix, final IItemHandler secondMatrix,
+            final IItemHandler output, final int x, final int y, final IOptionalSlotHost h, final int groupNumber,
+            final IContainerCraftingPacket c) {
         super(player, mySrc, energySrc, storage, cMatrix, secondMatrix, output, x, y, c);
 
         this.host = h;

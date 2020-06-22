@@ -52,8 +52,8 @@ import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 
-import appeng.decorative.solid.QuartzGlassBlock;
 import appeng.decorative.solid.GlassState;
+import appeng.decorative.solid.QuartzGlassBlock;
 
 class GlassBakedModel implements IDynamicBakedModel {
 

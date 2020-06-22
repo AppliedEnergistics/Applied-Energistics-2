@@ -22,7 +22,7 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
     private NumberBox level;
 
     public FluidLevelEmitterScreen(FluidLevelEmitterContainer container, PlayerInventory playerInventory,
-                                   ITextComponent title) {
+            ITextComponent title) {
         super(container, playerInventory, title);
     }
 

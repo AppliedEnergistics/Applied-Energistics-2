@@ -40,7 +40,7 @@ public abstract class BasePacket {
     }
 
     public final int getPacketID() {
-        return PacketHandlerBase.PacketTypes.getID(this.getClass()).ordinal();
+        return BasePacketHandler.PacketTypes.getID(this.getClass()).ordinal();
     }
 
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {

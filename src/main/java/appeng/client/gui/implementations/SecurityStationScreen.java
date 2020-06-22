@@ -38,7 +38,7 @@ public class SecurityStationScreen extends MEMonitorableScreen<SecurityStationCo
     private ToggleButton security;
 
     public SecurityStationScreen(SecurityStationContainer container, PlayerInventory playerInventory,
-                                 ITextComponent title) {
+            ITextComponent title) {
         super(container, playerInventory, title);
         this.setCustomSortOrder(false);
         this.setReservedSpace(33);

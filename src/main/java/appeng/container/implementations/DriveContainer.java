@@ -32,8 +32,8 @@ public class DriveContainer extends AEBaseContainer {
 
     public static ContainerType<DriveContainer> TYPE;
 
-    private static final ContainerHelper<DriveContainer, DriveTileEntity> helper = new ContainerHelper<>(DriveContainer::new,
-            DriveTileEntity.class);
+    private static final ContainerHelper<DriveContainer, DriveTileEntity> helper = new ContainerHelper<>(
+            DriveContainer::new, DriveTileEntity.class);
 
     public static DriveContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
         return helper.fromNetwork(windowId, inv, buf);

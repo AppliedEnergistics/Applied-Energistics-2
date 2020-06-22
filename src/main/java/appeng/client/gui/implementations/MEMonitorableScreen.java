@@ -49,8 +49,8 @@ import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.core.sync.packets.ConfigValuePacket;
+import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.integration.abstraction.JEIFacade;
 import appeng.parts.reporting.AbstractTerminalPart;
@@ -211,8 +211,8 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         offset += 20;
 
         if (!(this instanceof MEPortableCellScreen) || this instanceof WirelessTermScreen) {
-            this.addButton(new SettingToggleButton<>(this.guiLeft - 18, offset, Settings.TERMINAL_STYLE,
-                    terminalStyle, this::toggleTerminalStyle));
+            this.addButton(new SettingToggleButton<>(this.guiLeft - 18, offset, Settings.TERMINAL_STYLE, terminalStyle,
+                    this::toggleTerminalStyle));
         }
 
         this.searchField = new AETextField(this.font, this.guiLeft + Math.max(80, this.offsetX), this.guiTop + 4, 90,

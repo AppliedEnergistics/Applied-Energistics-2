@@ -73,7 +73,8 @@ import appeng.util.item.AEItemStack;
  * @version rv2
  * @since rv0
  */
-public class InscriberTileEntity extends AENetworkPowerTileEntity implements IGridTickable, IUpgradeableHost, IConfigManagerHost {
+public class InscriberTileEntity extends AENetworkPowerTileEntity
+        implements IGridTickable, IUpgradeableHost, IConfigManagerHost {
     private final int maxProcessingTime = 100;
 
     private final IConfigManager settings;
@@ -414,7 +415,8 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity implements IGr
                 return false;
             }
 
-            return inv == InscriberTileEntity.this.topItemHandler || inv == InscriberTileEntity.this.bottomItemHandler || slot == 1;
+            return inv == InscriberTileEntity.this.topItemHandler || inv == InscriberTileEntity.this.bottomItemHandler
+                    || slot == 1;
         }
 
         @Override

@@ -27,7 +27,7 @@ public class OptionalRestrictedInputSlot extends RestrictedInputSlot {
     private final IOptionalSlotHost host;
 
     public OptionalRestrictedInputSlot(final PlacableItemType valid, final IItemHandler i, final IOptionalSlotHost host,
-                                       final int slotIndex, final int x, final int y, final int grpNum, final PlayerInventory invPlayer) {
+            final int slotIndex, final int x, final int y, final int grpNum, final PlayerInventory invPlayer) {
         super(valid, i, slotIndex, x, y, invPlayer);
         this.groupNum = grpNum;
         this.host = host;

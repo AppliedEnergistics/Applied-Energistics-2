@@ -36,8 +36,8 @@ import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.core.AELog;
 import appeng.me.cache.helpers.TunnelCollection;
-import appeng.parts.p2p.P2PTunnelPart;
 import appeng.parts.p2p.MEP2PTunnelPart;
+import appeng.parts.p2p.P2PTunnelPart;
 
 public class P2PCache implements IGridCache {
     private static final TunnelCollection<P2PTunnelPart> NULL_COLLECTION = new TunnelCollection<P2PTunnelPart>(null,

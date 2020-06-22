@@ -25,7 +25,8 @@ import appeng.container.implementations.MEPortableCellContainer;
 
 public class MEPortableCellScreen extends MEMonitorableScreen<MEPortableCellContainer> {
 
-    public MEPortableCellScreen(MEPortableCellContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public MEPortableCellScreen(MEPortableCellContainer container, PlayerInventory playerInventory,
+            ITextComponent title) {
         super(container, playerInventory, title);
     }
 

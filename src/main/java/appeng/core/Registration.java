@@ -325,7 +325,7 @@ final class Registration {
     }
 
     private <T extends AEBaseContainer> ContainerType<T> registerContainer(IForgeRegistry<ContainerType<?>> registry,
-                                                                           String id, IContainerFactory<T> factory, ContainerOpener.Opener<T> opener) {
+            String id, IContainerFactory<T> factory, ContainerOpener.Opener<T> opener) {
         ContainerType<T> type = IForgeContainerType.create(factory);
         type.setRegistryName(AppEng.MOD_ID, id);
         registry.register(type);

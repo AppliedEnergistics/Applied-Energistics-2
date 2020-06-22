@@ -69,7 +69,7 @@ public class DriveLedTileEntityRenderer extends TileEntityRenderer<DriveTileEnti
 
     @Override
     public void render(DriveTileEntity drive, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
-                       int combinedLightIn, int combinedOverlayIn) {
+            int combinedLightIn, int combinedOverlayIn) {
 
         if (drive.getCellCount() != 10) {
             throw new IllegalStateException("Expected drive to have 10 slots");

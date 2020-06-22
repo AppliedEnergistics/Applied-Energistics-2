@@ -41,5 +41,5 @@ public interface ITileProbInfoProvider {
      *      World, IBlockState, IProbeHitData)
      */
     void addProbeInfo(AEBaseTileEntity tile, ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world,
-                      BlockState blockState, IProbeHitData data);
+            BlockState blockState, IProbeHitData data);
 }

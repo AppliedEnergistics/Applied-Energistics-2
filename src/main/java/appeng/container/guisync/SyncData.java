@@ -30,8 +30,8 @@ import net.minecraft.util.text.ITextComponent;
 import appeng.container.AEBaseContainer;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ProgressBarPacket;
 import appeng.core.sync.packets.ConfigValuePacket;
+import appeng.core.sync.packets.ProgressBarPacket;
 
 /**
  * This class is responsible for synchronizing Container-fields from server to
