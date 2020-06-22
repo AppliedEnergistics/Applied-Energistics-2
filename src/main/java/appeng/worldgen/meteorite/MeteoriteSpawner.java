@@ -22,7 +22,6 @@ import javax.annotation.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.material.Material;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
@@ -47,15 +46,16 @@ public class MeteoriteSpawner {
             "meteorite/invalid_spawn");
 
     private final Tag<Block> validSpawnTag;
-
     private final Tag<Block> invalidSpawnTag;
 
     private final Tag<Block> sandTag;
+    private final Tag<Block> terracottaTag;
 
     public MeteoriteSpawner() {
         this.validSpawnTag = BlockTags.getCollection().getOrCreate(TAG_VALID_SPAWN);
         this.invalidSpawnTag = BlockTags.getCollection().getOrCreate(TAG_INVALID_SPAWN);
         this.sandTag = BlockTags.getCollection().getOrCreate(new ResourceLocation("minecraft:sand"));
+        this.terracottaTag = BlockTags.getCollection().getOrCreate(new ResourceLocation("forge:terracotta"));
     }
 
     public PlacedMeteoriteSettings trySpawnMeteoriteAtSuitableHeight(IWorldReader world, BlockPos startPos,
@@ -184,12 +184,14 @@ public class MeteoriteSpawner {
     }
 
     private FalloutMode getFalloutFromBaseBlock(BlockState blockState) {
-        if (blockState.getBlock().isIn(sandTag)) {
+        final Block block = blockState.getBlock();
+
+        if (block.isIn(sandTag)) {
             return FalloutMode.SAND;
-        } else if (blockState.getBlock() == Blocks.TERRACOTTA) {
+        } else if (block.isIn(terracottaTag)) {
             return FalloutMode.TERRACOTTA;
-        } else if (blockState.getMaterial() == Material.SNOW || blockState.getMaterial() == Material.SNOW_BLOCK
-                || blockState.getMaterial() == Material.ICE || blockState.getMaterial() == Material.PACKED_ICE) {
+        } else if (block == Blocks.SNOW || block == Blocks.SNOW || block == Blocks.SNOW_BLOCK || block == Blocks.ICE
+                || block == Blocks.PACKED_ICE) {
             return FalloutMode.ICE_SNOW;
         } else {
             return FalloutMode.DEFAULT;
