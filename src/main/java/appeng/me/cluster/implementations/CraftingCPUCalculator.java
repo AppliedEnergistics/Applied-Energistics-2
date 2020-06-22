@@ -33,15 +33,15 @@ import appeng.api.util.WorldCoord;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
-import appeng.tile.crafting.TileCraftingTile;
+import appeng.tile.crafting.CraftingTileEntity;
 
 public class CraftingCPUCalculator extends MBCalculator {
 
-    private final TileCraftingTile tqb;
+    private final CraftingTileEntity tqb;
 
     public CraftingCPUCalculator(final IAEMultiBlock t) {
         super(t);
-        this.tqb = (TileCraftingTile) t;
+        this.tqb = (CraftingTileEntity) t;
     }
 
     @Override
@@ -79,8 +79,8 @@ public class CraftingCPUCalculator extends MBCalculator {
                         return false;
                     }
 
-                    if (!storage && te instanceof TileCraftingTile) {
-                        storage = ((TileCraftingTile) te).getStorageBytes() > 0;
+                    if (!storage && te instanceof CraftingTileEntity) {
+                        storage = ((CraftingTileEntity) te).getStorageBytes() > 0;
                     }
                 }
             }
@@ -101,7 +101,7 @@ public class CraftingCPUCalculator extends MBCalculator {
         for (int x = min.x; x <= max.x; x++) {
             for (int y = min.y; y <= max.y; y++) {
                 for (int z = min.z; z <= max.z; z++) {
-                    final TileCraftingTile te = (TileCraftingTile) w.getTileEntity(new BlockPos(x, y, z));
+                    final CraftingTileEntity te = (CraftingTileEntity) w.getTileEntity(new BlockPos(x, y, z));
                     te.updateStatus(c);
                     c.addTile(te);
                 }
@@ -126,6 +126,6 @@ public class CraftingCPUCalculator extends MBCalculator {
 
     @Override
     public boolean isValidTile(final TileEntity te) {
-        return te instanceof TileCraftingTile;
+        return te instanceof CraftingTileEntity;
     }
 }

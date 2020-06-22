@@ -25,9 +25,9 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.tile.AEBaseTile;
+import appeng.tile.AEBaseTileEntity;
 
-public class TileEntityRendering<T extends AEBaseTile> {
+public class TileEntityRendering<T extends AEBaseTileEntity> {
 
     @OnlyIn(Dist.CLIENT)
     Function<TileEntityRendererDispatcher, TileEntityRenderer<T>> tileEntityRenderer;

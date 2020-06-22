@@ -18,7 +18,6 @@
 
 package appeng.fluids.items;
 
-import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;

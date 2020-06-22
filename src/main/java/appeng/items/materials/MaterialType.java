@@ -29,13 +29,13 @@ import net.minecraft.util.ResourceLocation;
 import appeng.api.features.AEFeature;
 import appeng.core.AppEng;
 import appeng.core.features.MaterialStackSrc;
-import appeng.entity.EntityChargedQuartz;
-import appeng.entity.EntitySingularity;
+import appeng.entity.ChargedQuartzEntity;
+import appeng.entity.SingularityEntity;
 
 public enum MaterialType {
     CERTUS_QUARTZ_CRYSTAL("certus_quartz_crystal", EnumSet.of(AEFeature.CERTUS), "crystalCertusQuartz"),
     CERTUS_QUARTZ_CRYSTAL_CHARGED("charged_certus_quartz_crystal", EnumSet.of(AEFeature.CERTUS),
-            EntityChargedQuartz.class),
+            ChargedQuartzEntity.class),
 
     CERTUS_QUARTZ_DUST("certus_quartz_dust", EnumSet.of(AEFeature.DUSTS, AEFeature.CERTUS), "dustCertusQuartz"),
     NETHER_QUARTZ_DUST("nether_quartz_dust", EnumSet.of(AEFeature.DUSTS), "dustNetherQuartz,dustQuartz"),
@@ -106,10 +106,10 @@ public enum MaterialType {
     SKY_DUST("sky_dust", EnumSet.of(AEFeature.DUSTS)),
 
     ENDER_DUST("ender_dust", EnumSet.of(AEFeature.QUANTUM_NETWORK_BRIDGE), "dustEnder,dustEnderPearl",
-            EntitySingularity.class),
-    SINGULARITY("singularity", EnumSet.of(AEFeature.QUANTUM_NETWORK_BRIDGE), EntitySingularity.class),
+            SingularityEntity.class),
+    SINGULARITY("singularity", EnumSet.of(AEFeature.QUANTUM_NETWORK_BRIDGE), SingularityEntity.class),
     QUANTUM_ENTANGLED_SINGULARITY("quantum_entangled_singularity", EnumSet.of(AEFeature.QUANTUM_NETWORK_BRIDGE),
-            EntitySingularity.class),
+            SingularityEntity.class),
 
     BLANK_PATTERN("blank_pattern", EnumSet.of(AEFeature.PATTERNS)),
     CARD_CRAFTING("crafting_card", EnumSet.of(AEFeature.ADVANCED_CARDS, AEFeature.CRAFTING_CPU)),

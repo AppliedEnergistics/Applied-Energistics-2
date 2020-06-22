@@ -24,7 +24,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.api.util.AEColor;
-import appeng.block.crafting.BlockCraftingMonitor;
+import appeng.block.crafting.CraftingMonitorBlock;
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.client.render.model.AEModelData;
 import appeng.tile.crafting.CraftingMonitorModelData;
@@ -76,7 +76,7 @@ public class MonitorBakedModel extends CraftingCubeBakedModel {
 
         // Now add the three layered light textures
         AEColor color = getColor(modelData);
-        boolean powered = state.get(BlockCraftingMonitor.POWERED);
+        boolean powered = state.get(CraftingMonitorBlock.POWERED);
 
         builder.setRenderFullBright(powered);
 

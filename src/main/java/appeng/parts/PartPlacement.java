@@ -61,8 +61,8 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketClick;
-import appeng.core.sync.packets.PacketPartPlacement;
+import appeng.core.sync.packets.ClickPacket;
+import appeng.core.sync.packets.PartPlacementPacket;
 import appeng.facade.IFacadeItem;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
@@ -128,7 +128,7 @@ public class PartPlacement {
                 } else {
                     player.swingArm(hand);
                     NetworkHandler.instance()
-                            .sendToServer(new PacketPartPlacement(pos, side, getEyeOffset(player), hand));
+                            .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
                 }
                 return ActionResultType.SUCCESS;
             }
@@ -171,7 +171,7 @@ public class PartPlacement {
                     } else {
                         player.swingArm(hand);
                         NetworkHandler.instance()
-                                .sendToServer(new PacketPartPlacement(pos, side, getEyeOffset(player), hand));
+                                .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
                         return ActionResultType.SUCCESS;
                     }
                 }
@@ -189,7 +189,7 @@ public class PartPlacement {
                         if (sPart.part.onShiftActivate(player, hand, hitVec)) {
                             if (world.isRemote) {
                                 NetworkHandler.instance()
-                                        .sendToServer(new PacketPartPlacement(pos, side, getEyeOffset(player), hand));
+                                        .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
                             }
                             return ActionResultType.SUCCESS;
                         }
@@ -254,7 +254,7 @@ public class PartPlacement {
                 } else {
                     player.swingArm(hand);
                     NetworkHandler.instance()
-                            .sendToServer(new PacketPartPlacement(pos, side, getEyeOffset(player), hand));
+                            .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
                     return ActionResultType.SUCCESS;
                 }
             } else if (host != null && !host.canAddPart(held, AEPartLocation.fromFacing(side))) {
@@ -386,7 +386,7 @@ public class PartPlacement {
                 supportedItem |= items.colorApplicator().isSameAs(held);
 
                 if (event.getPlayer().isCrouching() && !held.isEmpty() && supportedItem) {
-                    NetworkHandler.instance().sendToServer(new PacketClick(event.getHand()));
+                    NetworkHandler.instance().sendToServer(new ClickPacket(event.getHand()));
                 }
             }
         } else if (event instanceof PlayerInteractEvent.RightClickBlock && !event.getPlayer().world.isRemote) {

@@ -38,7 +38,7 @@ import appeng.integration.modules.theoneprobe.tile.CraftingMonitorInfoProvider;
 import appeng.integration.modules.theoneprobe.tile.ITileProbInfoProvider;
 import appeng.integration.modules.theoneprobe.tile.PowerStateInfoProvider;
 import appeng.integration.modules.theoneprobe.tile.PowerStorageInfoProvider;
-import appeng.tile.AEBaseTile;
+import appeng.tile.AEBaseTileEntity;
 
 public final class TileInfoProvider implements IProbeInfoProvider {
     private final List<ITileProbInfoProvider> providers;
@@ -62,8 +62,8 @@ public final class TileInfoProvider implements IProbeInfoProvider {
             BlockState blockState, IProbeHitData data) {
         final TileEntity tile = world.getTileEntity(data.getPos());
 
-        if (tile instanceof AEBaseTile) {
-            final AEBaseTile aeBaseTile = (AEBaseTile) tile;
+        if (tile instanceof AEBaseTileEntity) {
+            final AEBaseTileEntity aeBaseTile = (AEBaseTileEntity) tile;
 
             for (final ITileProbInfoProvider provider : this.providers) {
                 provider.addProbeInfo(aeBaseTile, mode, probeInfo, player, world, blockState, data);

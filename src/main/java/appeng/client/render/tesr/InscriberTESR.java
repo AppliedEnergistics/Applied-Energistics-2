@@ -25,13 +25,13 @@ import appeng.api.features.InscriberProcessType;
 import appeng.client.render.FacingToRotation;
 import appeng.core.AppEng;
 import appeng.recipes.handlers.InscriberRecipe;
-import appeng.tile.misc.TileInscriber;
+import appeng.tile.misc.InscriberTileEntity;
 
 /**
  * Renders the dynamic parts of an inscriber (the presses, the animation and the
  * item being smashed)
  */
-public final class InscriberTESR extends TileEntityRenderer<TileInscriber> {
+public final class InscriberTESR extends TileEntityRenderer<InscriberTileEntity> {
 
     private static final float ITEM_RENDER_SCALE = 1.0f / 1.2f;
 
@@ -43,8 +43,8 @@ public final class InscriberTESR extends TileEntityRenderer<TileInscriber> {
     }
 
     @Override
-    public void render(TileInscriber tile, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
-            int combinedLight, int combinedOverlay) {
+    public void render(InscriberTileEntity tile, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
+                       int combinedLight, int combinedOverlay) {
 
         // render inscriber
 

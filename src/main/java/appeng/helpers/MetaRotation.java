@@ -27,7 +27,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.api.util.IOrientable;
-import appeng.decorative.solid.BlockQuartzPillar;
+import appeng.decorative.solid.QuartzPillarBlock;
 
 public class MetaRotation implements IOrientable {
 
@@ -63,8 +63,8 @@ public class MetaRotation implements IOrientable {
         }
 
         // TODO 1.10.2-R - Temp
-        if (state.has(BlockQuartzPillar.AXIS)) {
-            Axis a = state.get(BlockQuartzPillar.AXIS);
+        if (state.has(QuartzPillarBlock.AXIS)) {
+            Axis a = state.get(QuartzPillarBlock.AXIS);
             switch (a) {
                 case X:
                     return Direction.EAST;
@@ -87,7 +87,7 @@ public class MetaRotation implements IOrientable {
             } else {
                 // TODO 1.10.2-R - Temp
                 ((World) this.w).setBlockState(this.pos,
-                        this.w.getBlockState(this.pos).with(BlockQuartzPillar.AXIS, up.getAxis()));
+                        this.w.getBlockState(this.pos).with(QuartzPillarBlock.AXIS, up.getAxis()));
             }
         } else {
             throw new IllegalStateException(this.w.getClass().getName() + " received, expected World");

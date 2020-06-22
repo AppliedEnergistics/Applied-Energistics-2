@@ -31,10 +31,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.client.render.FacingToRotation;
 import appeng.client.render.renderable.Renderable;
-import appeng.tile.AEBaseTile;
+import appeng.tile.AEBaseTileEntity;
 
 @OnlyIn(Dist.CLIENT)
-public class ModularTESR<T extends AEBaseTile> extends TileEntityRenderer<T> {
+public class ModularTESR<T extends AEBaseTileEntity> extends TileEntityRenderer<T> {
 
     private final List<Renderable<? super T>> renderables;
 

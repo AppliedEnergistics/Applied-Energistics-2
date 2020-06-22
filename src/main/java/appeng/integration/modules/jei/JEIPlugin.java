@@ -41,13 +41,13 @@ import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IMaterials;
 import appeng.api.features.AEFeature;
-import appeng.container.implementations.ContainerCraftingTerm;
-import appeng.container.implementations.ContainerPatternTerm;
+import appeng.container.implementations.CraftingTermContainer;
+import appeng.container.implementations.PatternTermContainer;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.integration.abstraction.JEIFacade;
-import appeng.items.parts.ItemFacade;
+import appeng.items.parts.FacadeItem;
 import appeng.recipes.handlers.GrinderRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
 
@@ -76,9 +76,9 @@ public class JEIPlugin implements IModPlugin {
     @Override
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
         // Allow recipe transfer from JEI to crafting and pattern terminal
-        registration.addRecipeTransferHandler(new RecipeTransferHandler<>(ContainerCraftingTerm.class),
+        registration.addRecipeTransferHandler(new RecipeTransferHandler<>(CraftingTermContainer.class),
                 VanillaRecipeCategoryUid.CRAFTING);
-        registration.addRecipeTransferHandler(new RecipeTransferHandler<>(ContainerPatternTerm.class),
+        registration.addRecipeTransferHandler(new RecipeTransferHandler<>(PatternTermContainer.class),
                 VanillaRecipeCategoryUid.CRAFTING);
     }
 
@@ -160,7 +160,7 @@ public class JEIPlugin implements IModPlugin {
         IDefinitions definitions = AEApi.instance().definitions();
 
         if (AEConfig.instance().isFeatureEnabled(AEFeature.ENABLE_FACADE_CRAFTING)) {
-            ItemFacade itemFacade = (ItemFacade) definitions.items().facade().item();
+            FacadeItem itemFacade = (FacadeItem) definitions.items().facade().item();
             ItemStack cableAnchor = definitions.parts().cableAnchor().stack(1);
             registration.addRecipeManagerPlugin(new FacadeRegistryPlugin(itemFacade, cableAnchor));
         }

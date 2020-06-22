@@ -30,7 +30,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.AEColor;
 import appeng.parts.CableBusContainer;
-import appeng.tile.networking.TileCableBus;
+import appeng.tile.networking.CableBusTileEntity;
 
 /**
  * Exposes the cable bus color as tint indices 0 (dark variant), 1 (medium
@@ -46,8 +46,8 @@ public class CableBusColor implements IBlockColor {
 
         if (worldIn != null && pos != null) {
             TileEntity tileEntity = worldIn.getTileEntity(pos);
-            if (tileEntity instanceof TileCableBus) {
-                CableBusContainer container = ((TileCableBus) tileEntity).getCableBus();
+            if (tileEntity instanceof CableBusTileEntity) {
+                CableBusContainer container = ((CableBusTileEntity) tileEntity).getCableBus();
                 busColor = container.getColor();
             }
         }

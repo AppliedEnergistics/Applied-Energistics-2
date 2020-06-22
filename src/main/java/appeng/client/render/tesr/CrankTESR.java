@@ -30,27 +30,26 @@ import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.client.render.FacingToRotation;
-import appeng.tile.grindstone.TileCrank;
+import appeng.tile.grindstone.CrankTileEntity;
 
 /**
  * This FastTESR only handles the animated model of the turning crank. When the
  * crank is at rest, it is rendered using a normal model.
  */
 @OnlyIn(Dist.CLIENT)
-public class CrankTESR extends TileEntityRenderer<TileCrank> {
+public class CrankTESR extends TileEntityRenderer<CrankTileEntity> {
 
     public CrankTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
     @Override
-    public void render(TileCrank te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers, int combinedLightIn,
-            int combinedOverlayIn) {
+    public void render(CrankTileEntity te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers, int combinedLightIn,
+                       int combinedOverlayIn) {
 
         // Apply GL transformations relative to the center of the block: 1) TE rotation
         // and 2) crank rotation

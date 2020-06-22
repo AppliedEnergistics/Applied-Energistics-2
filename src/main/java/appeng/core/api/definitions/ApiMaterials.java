@@ -28,9 +28,9 @@ import appeng.api.features.AEFeature;
 import appeng.bootstrap.FeatureFactory;
 import appeng.core.AEConfig;
 import appeng.core.features.MaterialStackSrc;
-import appeng.entity.EntityChargedQuartz;
-import appeng.entity.EntitySingularity;
-import appeng.items.materials.ItemMaterial;
+import appeng.entity.ChargedQuartzEntity;
+import appeng.entity.SingularityEntity;
+import appeng.items.materials.MaterialItem;
 import appeng.items.materials.MaterialType;
 
 /**
@@ -118,14 +118,14 @@ public final class ApiMaterials implements IMaterials {
     public ApiMaterials(FeatureFactory registry) {
         this.registry = registry;
 
-        EntitySingularity.TYPE = registry
-                .<EntitySingularity>entity("singularity", EntitySingularity::new, EntityClassification.MISC)
+        SingularityEntity.TYPE = registry
+                .<SingularityEntity>entity("singularity", SingularityEntity::new, EntityClassification.MISC)
                 .customize(builder -> builder.size(0.2f, 0.2f).setTrackingRange(16).setUpdateInterval(4)
                         .setShouldReceiveVelocityUpdates(true))
                 .build();
 
-        EntityChargedQuartz.TYPE = registry
-                .<EntityChargedQuartz>entity("charged_quartz", EntityChargedQuartz::new, EntityClassification.MISC)
+        ChargedQuartzEntity.TYPE = registry
+                .<ChargedQuartzEntity>entity("charged_quartz", ChargedQuartzEntity::new, EntityClassification.MISC)
                 .customize(builder -> builder.size(0.2f, 0.2f).setTrackingRange(16).setUpdateInterval(4)
                         .setShouldReceiveVelocityUpdates(true))
                 .build();
@@ -192,7 +192,7 @@ public final class ApiMaterials implements IMaterials {
     private IItemDefinition createMaterial(final MaterialType mat) {
         Preconditions.checkState(!mat.isRegistered(), "Cannot create the same material twice.");
 
-        IItemDefinition def = registry.item(mat.getId(), props -> new ItemMaterial(props, mat))
+        IItemDefinition def = registry.item(mat.getId(), props -> new MaterialItem(props, mat))
                 .features(mat.getFeature().toArray(new AEFeature[0])).build();
 
         boolean enabled = true;

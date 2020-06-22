@@ -49,8 +49,8 @@ import appeng.core.worlddata.WorldData;
 import appeng.hooks.TickHandler;
 import appeng.me.GridAccessException;
 import appeng.me.cache.P2PCache;
-import appeng.parts.networking.PartCable;
-import appeng.tile.AEBaseTile;
+import appeng.parts.networking.CablePart;
+import appeng.tile.AEBaseTileEntity;
 import appeng.util.Platform;
 
 public class AENetworkProxy implements IGridBlock {
@@ -95,8 +95,8 @@ public class AENetworkProxy implements IGridBlock {
     }
 
     public void validate() {
-        if (this.gp instanceof AEBaseTile) {
-            TickHandler.INSTANCE.addInit((AEBaseTile) this.gp);
+        if (this.gp instanceof AEBaseTileEntity) {
+            TickHandler.INSTANCE.addInit((AEBaseTileEntity) this.gp);
         }
     }
 
@@ -280,8 +280,8 @@ public class AENetworkProxy implements IGridBlock {
 
     @Override
     public void onGridNotification(final GridNotification notification) {
-        if (this.gp instanceof PartCable) {
-            ((PartCable) this.gp).markForUpdate();
+        if (this.gp instanceof CablePart) {
+            ((CablePart) this.gp).markForUpdate();
         }
     }
 

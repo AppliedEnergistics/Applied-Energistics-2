@@ -21,11 +21,8 @@ package appeng.hooks;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
-
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketCompassRequest;
+import appeng.core.sync.packets.CompassRequestPacket;
 
 public class CompassManager {
 
@@ -67,7 +64,7 @@ public class CompassManager {
     }
 
     private void requestUpdate(final CompassRequest r) {
-        NetworkHandler.instance().sendToServer(new PacketCompassRequest(r.attunement, r.cx, r.cz, r.cdy));
+        NetworkHandler.instance().sendToServer(new CompassRequestPacket(r.attunement, r.cx, r.cz, r.cdy));
     }
 
     private static class CompassRequest {

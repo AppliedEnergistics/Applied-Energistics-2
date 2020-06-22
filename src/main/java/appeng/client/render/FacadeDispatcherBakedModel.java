@@ -30,7 +30,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 
 import appeng.client.render.cablebus.FacadeBuilder;
-import appeng.items.parts.ItemFacade;
+import appeng.items.parts.FacadeItem;
 
 /**
  * This baked model class is used as a dispatcher to redirect the renderer to
@@ -52,11 +52,11 @@ public class FacadeDispatcherBakedModel extends DelegateBakedModel {
             @Override
             public IBakedModel getModelWithOverrides(IBakedModel originalModel, ItemStack stack, World world,
                     LivingEntity entity) {
-                if (!(stack.getItem() instanceof ItemFacade)) {
+                if (!(stack.getItem() instanceof FacadeItem)) {
                     return originalModel;
                 }
 
-                ItemFacade itemFacade = (ItemFacade) stack.getItem();
+                FacadeItem itemFacade = (FacadeItem) stack.getItem();
 
                 ItemStack textureItem = itemFacade.getTextureItem(stack);
 

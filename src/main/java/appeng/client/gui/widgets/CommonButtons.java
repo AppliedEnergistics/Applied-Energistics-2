@@ -9,12 +9,12 @@ public final class CommonButtons {
     private CommonButtons() {
     }
 
-    public static GuiSettingToggleButton<PowerUnits> togglePowerUnit(int x, int y) {
-        return new GuiSettingToggleButton<>(x, y, Settings.POWER_UNITS, AEConfig.instance().getSelectedPowerUnit(),
+    public static SettingToggleButton<PowerUnits> togglePowerUnit(int x, int y) {
+        return new SettingToggleButton<>(x, y, Settings.POWER_UNITS, AEConfig.instance().getSelectedPowerUnit(),
                 CommonButtons::togglePowerUnit);
     }
 
-    private static void togglePowerUnit(GuiSettingToggleButton<PowerUnits> button, boolean backwards) {
+    private static void togglePowerUnit(SettingToggleButton<PowerUnits> button, boolean backwards) {
         AEConfig.instance().nextPowerUnit(backwards);
         button.set(AEConfig.instance().getSelectedPowerUnit());
     }

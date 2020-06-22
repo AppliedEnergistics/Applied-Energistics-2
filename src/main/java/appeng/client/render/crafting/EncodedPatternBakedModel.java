@@ -17,7 +17,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.model.PerspectiveMapWrapper;
 
 import appeng.client.render.DelegateBakedModel;
-import appeng.items.misc.ItemEncodedPattern;
+import appeng.items.misc.EncodedPatternItem;
 
 /**
  * This model is used to substitute the crafting result's item model for our
@@ -116,7 +116,7 @@ public class EncodedPatternBakedModel extends DelegateBakedModel {
                 @Nullable LivingEntity entity) {
             boolean shiftHeld = Screen.hasShiftDown();
             if (shiftHeld) {
-                ItemEncodedPattern iep = (ItemEncodedPattern) stack.getItem();
+                EncodedPatternItem iep = (EncodedPatternItem) stack.getItem();
                 ItemStack output = iep.getOutput(stack);
                 if (!output.isEmpty()) {
                     IBakedModel realModel = Minecraft.getInstance().getItemRenderer().getItemModelMesher()

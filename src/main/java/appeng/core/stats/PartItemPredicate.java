@@ -26,7 +26,7 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 
 import appeng.core.AppEng;
-import appeng.items.parts.ItemPart;
+import appeng.items.parts.PartItem;
 import appeng.items.parts.PartType;
 
 public class PartItemPredicate extends ItemPredicate {
@@ -38,8 +38,8 @@ public class PartItemPredicate extends ItemPredicate {
 
     @Override
     public boolean test(ItemStack item) {
-        if (item.getItem() instanceof ItemPart) {
-            ItemPart<?> itemPart = (ItemPart<?>) item.getItem();
+        if (item.getItem() instanceof PartItem) {
+            PartItem<?> itemPart = (PartItem<?>) item.getItem();
             return itemPart.getType() == partType;
         }
         return false;

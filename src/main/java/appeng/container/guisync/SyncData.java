@@ -30,8 +30,8 @@ import net.minecraft.util.text.ITextComponent;
 import appeng.container.AEBaseContainer;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketProgressBar;
-import appeng.core.sync.packets.PacketValueConfig;
+import appeng.core.sync.packets.ProgressBarPacket;
+import appeng.core.sync.packets.ConfigValuePacket;
 
 /**
  * This class is responsible for synchronizing Container-fields from server to
@@ -86,7 +86,7 @@ public class SyncData {
                 if (val != null) {
                     json = ITextComponent.Serializer.toJson((ITextComponent) val);
                 }
-                NetworkHandler.instance().sendTo(new PacketValueConfig("SyncDat." + this.channel, json),
+                NetworkHandler.instance().sendTo(new ConfigValuePacket("SyncDat." + this.channel, json),
                         (ServerPlayerEntity) o);
             }
         }
@@ -98,14 +98,14 @@ public class SyncData {
 
         if (fieldType.equals(String.class)) {
             if (o instanceof ServerPlayerEntity) {
-                NetworkHandler.instance().sendTo(new PacketValueConfig("SyncDat." + this.channel, (String) val),
+                NetworkHandler.instance().sendTo(new ConfigValuePacket("SyncDat." + this.channel, (String) val),
                         (ServerPlayerEntity) o);
             }
         } else if (this.fieldType.isEnum()) {
             o.sendWindowProperty(this.source, this.channel, ((Enum<?>) val).ordinal());
         } else if (val instanceof Long) {
             if (o instanceof ServerPlayerEntity) {
-                NetworkHandler.instance().sendTo(new PacketProgressBar(this.channel, (Long) val),
+                NetworkHandler.instance().sendTo(new ProgressBarPacket(this.channel, (Long) val),
                         (ServerPlayerEntity) o);
             }
         } else if (fieldType.equals(Boolean.class) || fieldType.equals(boolean.class)) {

@@ -26,21 +26,21 @@ import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
-import appeng.items.storage.ItemCreativeStorageCell;
+import appeng.items.storage.CreativeStorageCellItem;
 import appeng.me.storage.CreativeCellInventory;
 
 public final class CreativeCellHandler implements ICellHandler {
 
     @Override
     public boolean isCell(final ItemStack is) {
-        return !is.isEmpty() && is.getItem() instanceof ItemCreativeStorageCell;
+        return !is.isEmpty() && is.getItem() instanceof CreativeStorageCellItem;
     }
 
     @Override
     public ICellInventoryHandler getCellInventory(final ItemStack is, final ISaveProvider container,
             final IStorageChannel channel) {
         if (channel == AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class) && !is.isEmpty()
-                && is.getItem() instanceof ItemCreativeStorageCell) {
+                && is.getItem() instanceof CreativeStorageCellItem) {
             return CreativeCellInventory.getCell(is);
         }
         return null;

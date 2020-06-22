@@ -22,7 +22,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
 import appeng.container.slot.AppEngSlot;
-import appeng.items.misc.ItemEncodedPattern;
+import appeng.items.misc.EncodedPatternItem;
 import appeng.util.Platform;
 
 public class SlotDisconnected extends AppEngSlot {
@@ -53,8 +53,8 @@ public class SlotDisconnected extends AppEngSlot {
     public ItemStack getDisplayStack() {
         if (Platform.isClient()) {
             final ItemStack is = super.getStack();
-            if (!is.isEmpty() && is.getItem() instanceof ItemEncodedPattern) {
-                final ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
+            if (!is.isEmpty() && is.getItem() instanceof EncodedPatternItem) {
+                final EncodedPatternItem iep = (EncodedPatternItem) is.getItem();
                 final ItemStack out = iep.getOutput(is);
                 if (!out.isEmpty()) {
                     return out;

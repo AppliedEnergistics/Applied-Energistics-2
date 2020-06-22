@@ -42,7 +42,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.features.AEFeature;
 import appeng.bootstrap.components.ModelOverrideComponent;
-import appeng.tile.AEBaseTile;
+import appeng.tile.AEBaseTileEntity;
 import appeng.util.Platform;
 
 public class FeatureFactory {
@@ -85,8 +85,8 @@ public class FeatureFactory {
         return new EntityBuilder<T>(this, id, factory, classification).features(this.defaultFeatures);
     }
 
-    public <T extends AEBaseTile> TileEntityBuilder<T> tileEntity(String id, Class<T> teClass,
-            Function<TileEntityType<T>, T> factory) {
+    public <T extends AEBaseTileEntity> TileEntityBuilder<T> tileEntity(String id, Class<T> teClass,
+                                                                        Function<TileEntityType<T>, T> factory) {
         return new TileEntityBuilder<>(this, id, teClass, factory).features(this.defaultFeatures);
     }
 

@@ -32,10 +32,10 @@ import net.minecraft.world.World;
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
-import appeng.container.implementations.ContainerCraftingCPU;
-import appeng.tile.crafting.TileCraftingTile;
+import appeng.container.implementations.CraftingCPUContainer;
+import appeng.tile.crafting.CraftingTileEntity;
 
-public abstract class AbstractCraftingUnitBlock<T extends TileCraftingTile> extends AEBaseTileBlock<T> {
+public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> extends AEBaseTileBlock<T> {
     public static final BooleanProperty FORMED = BooleanProperty.create("formed");
     public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
@@ -57,7 +57,7 @@ public abstract class AbstractCraftingUnitBlock<T extends TileCraftingTile> exte
     @Override
     public void neighborChanged(final BlockState state, final World worldIn, final BlockPos pos, final Block blockIn,
             final BlockPos fromPos, boolean isMoving) {
-        final TileCraftingTile cp = this.getTileEntity(worldIn, pos);
+        final CraftingTileEntity cp = this.getTileEntity(worldIn, pos);
         if (cp != null) {
             cp.updateMultiBlock();
         }
@@ -69,7 +69,7 @@ public abstract class AbstractCraftingUnitBlock<T extends TileCraftingTile> exte
             return; // Just a block state change
         }
 
-        final TileCraftingTile cp = this.getTileEntity(w, pos);
+        final CraftingTileEntity cp = this.getTileEntity(w, pos);
         if (cp != null) {
             cp.breakCluster();
         }
@@ -80,11 +80,11 @@ public abstract class AbstractCraftingUnitBlock<T extends TileCraftingTile> exte
     @Override
     public ActionResultType onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand,
             BlockRayTraceResult hit) {
-        final TileCraftingTile tg = this.getTileEntity(w, pos);
+        final CraftingTileEntity tg = this.getTileEntity(w, pos);
 
         if (tg != null && !p.isCrouching() && tg.isFormed() && tg.isActive()) {
             if (!w.isRemote()) {
-                ContainerOpener.openContainer(ContainerCraftingCPU.TYPE, p,
+                ContainerOpener.openContainer(CraftingCPUContainer.TYPE, p,
                         ContainerLocator.forTileEntitySide(tg, hit.getFace()));
             }
 

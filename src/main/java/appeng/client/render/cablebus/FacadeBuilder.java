@@ -51,7 +51,7 @@ import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.api.AEApi;
 import appeng.api.util.AEAxisAlignedBB;
-import appeng.parts.misc.PartCableAnchor;
+import appeng.parts.misc.CableAnchorPart;
 import appeng.thirdparty.codechicken.lib.model.CachedFormat;
 import appeng.thirdparty.codechicken.lib.model.Quad;
 import appeng.thirdparty.codechicken.lib.model.pipeline.BakedPipeline;
@@ -123,7 +123,7 @@ public class FacadeBuilder {
             FacadeRenderState facadeRenderState = entry.getValue();
             boolean renderStilt = !sidesWithParts.contains(side);
             if (layer == RenderType.getCutout() && renderStilt) {
-                for (ResourceLocation part : PartCableAnchor.FACADE_MODELS.getModels()) {
+                for (ResourceLocation part : CableAnchorPart.FACADE_MODELS.getModels()) {
                     IBakedModel partModel = modelLookup.apply(part);
                     QuadRotator rotator = new QuadRotator();
                     quads.addAll(rotator.rotateQuads(gatherQuads(partModel, null, rand, EmptyModelData.INSTANCE), side,

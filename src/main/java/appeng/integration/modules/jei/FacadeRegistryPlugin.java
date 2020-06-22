@@ -33,7 +33,7 @@ import mezz.jei.api.recipe.advanced.IRecipeManagerPlugin;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 
 import appeng.core.AppEng;
-import appeng.items.parts.ItemFacade;
+import appeng.items.parts.FacadeItem;
 
 /**
  * This plugin will dynamically add facade recipes for any item that can be
@@ -41,11 +41,11 @@ import appeng.items.parts.ItemFacade;
  */
 class FacadeRegistryPlugin implements IRecipeManagerPlugin {
 
-    private final ItemFacade itemFacade;
+    private final FacadeItem itemFacade;
 
     private final ItemStack cableAnchor;
 
-    FacadeRegistryPlugin(ItemFacade itemFacade, ItemStack cableAnchor) {
+    FacadeRegistryPlugin(FacadeItem itemFacade, ItemStack cableAnchor) {
         this.itemFacade = itemFacade;
         this.cableAnchor = cableAnchor;
     }
@@ -55,7 +55,7 @@ class FacadeRegistryPlugin implements IRecipeManagerPlugin {
         if (focus.getMode() == IFocus.Mode.OUTPUT && focus.getValue() instanceof ItemStack) {
             // Looking up how a certain facade is crafted
             ItemStack itemStack = (ItemStack) focus.getValue();
-            if (itemStack.getItem() instanceof ItemFacade) {
+            if (itemStack.getItem() instanceof FacadeItem) {
                 return Collections.singletonList(VanillaRecipeCategoryUid.CRAFTING);
             }
         } else if (focus.getMode() == IFocus.Mode.INPUT && focus.getValue() instanceof ItemStack) {
@@ -80,8 +80,8 @@ class FacadeRegistryPlugin implements IRecipeManagerPlugin {
         if (focus.getMode() == IFocus.Mode.OUTPUT && focus.getValue() instanceof ItemStack) {
             // Looking up how a certain facade is crafted
             ItemStack itemStack = (ItemStack) focus.getValue();
-            if (itemStack.getItem() instanceof ItemFacade) {
-                ItemFacade facadeItem = (ItemFacade) itemStack.getItem();
+            if (itemStack.getItem() instanceof FacadeItem) {
+                FacadeItem facadeItem = (FacadeItem) itemStack.getItem();
                 ItemStack textureItem = facadeItem.getTextureItem(itemStack);
                 return Collections.singletonList((T) make(textureItem, this.cableAnchor, itemStack));
             }

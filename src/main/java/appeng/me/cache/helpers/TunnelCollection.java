@@ -21,10 +21,10 @@ package appeng.me.cache.helpers;
 import java.util.Collection;
 import java.util.Iterator;
 
-import appeng.parts.p2p.PartP2PTunnel;
+import appeng.parts.p2p.P2PTunnelPart;
 import appeng.util.iterators.NullIterator;
 
-public class TunnelCollection<T extends PartP2PTunnel> implements Iterable<T> {
+public class TunnelCollection<T extends P2PTunnelPart> implements Iterable<T> {
 
     private final Class clz;
     private Collection<T> tunnelSources;
@@ -50,11 +50,11 @@ public class TunnelCollection<T extends PartP2PTunnel> implements Iterable<T> {
         return new TunnelIterator<>(this.tunnelSources, this.clz);
     }
 
-    public boolean matches(final Class<? extends PartP2PTunnel> c) {
+    public boolean matches(final Class<? extends P2PTunnelPart> c) {
         return this.clz == c;
     }
 
-    public Class<? extends PartP2PTunnel> getClz() {
+    public Class<? extends P2PTunnelPart> getClz() {
         return this.clz;
     }
 

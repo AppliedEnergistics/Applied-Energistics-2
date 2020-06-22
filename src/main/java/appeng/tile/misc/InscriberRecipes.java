@@ -19,7 +19,7 @@ import appeng.api.AEApi;
 import appeng.api.definitions.IComparableDefinition;
 import appeng.api.features.InscriberProcessType;
 import appeng.core.AppEng;
-import appeng.items.materials.ItemMaterial;
+import appeng.items.materials.MaterialItem;
 import appeng.recipes.handlers.InscriberRecipe;
 
 /**
@@ -78,12 +78,12 @@ public final class InscriberRecipes {
 
         if (!plateA.isEmpty()) {
             final CompoundNBT tag = plateA.getOrCreateTag();
-            name += tag.getString(ItemMaterial.TAG_INSCRIBE_NAME);
+            name += tag.getString(MaterialItem.TAG_INSCRIBE_NAME);
         }
 
         if (!plateB.isEmpty()) {
             final CompoundNBT tag = plateB.getOrCreateTag();
-            name += " " + tag.getString(ItemMaterial.TAG_INSCRIBE_NAME);
+            name += " " + tag.getString(MaterialItem.TAG_INSCRIBE_NAME);
         }
 
         final Ingredient startingItem = Ingredient.fromStacks(input.copy());

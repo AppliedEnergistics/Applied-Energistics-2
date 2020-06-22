@@ -164,12 +164,12 @@ public final class AppEng {
 
         ((ClientHelper) proxy).clientInit();
 
-        RenderingRegistry.registerEntityRenderingHandler(EntityTinyTNTPrimed.TYPE, RenderTinyTNTPrimed::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntitySingularity.TYPE,
+        RenderingRegistry.registerEntityRenderingHandler(TinyTNTPrimedEntity.TYPE, TinyTNTPrimedRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(SingularityEntity.TYPE,
                 m -> new ItemRenderer(m, Minecraft.getInstance().getItemRenderer()));
-        RenderingRegistry.registerEntityRenderingHandler(EntityGrowingCrystal.TYPE,
+        RenderingRegistry.registerEntityRenderingHandler(GrowingCrystalEntity.TYPE,
                 m -> new ItemRenderer(m, Minecraft.getInstance().getItemRenderer()));
-        RenderingRegistry.registerEntityRenderingHandler(EntityChargedQuartz.TYPE,
+        RenderingRegistry.registerEntityRenderingHandler(ChargedQuartzEntity.TYPE,
                 m -> new ItemRenderer(m, Minecraft.getInstance().getItemRenderer()));
 
         // TODO: Do not use the internal API

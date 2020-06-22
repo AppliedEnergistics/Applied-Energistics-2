@@ -39,9 +39,9 @@ import appeng.block.AEBaseBlock;
 import appeng.client.ActionKey;
 import appeng.client.EffectType;
 import appeng.core.CommonHelper;
-import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.items.tools.ToolNetworkTool;
+import appeng.items.tools.NetworkToolItem;
 import appeng.util.Platform;
 
 public class ServerHelper extends CommonHelper {
@@ -73,7 +73,7 @@ public class ServerHelper extends CommonHelper {
 
     @Override
     public void sendToAllNearExcept(final PlayerEntity p, final double x, final double y, final double z,
-            final double dist, final World w, final AppEngPacket packet) {
+            final double dist, final World w, final BasePacket packet) {
         if (Platform.isClient()) {
             return;
         }
@@ -135,7 +135,7 @@ public class ServerHelper extends CommonHelper {
             for (int x = 0; x < PlayerInventory.getHotbarSize(); x++) {
                 final ItemStack is = player.inventory.getStackInSlot(x);
 
-                if (!is.isEmpty() && is.getItem() instanceof ToolNetworkTool) {
+                if (!is.isEmpty() && is.getItem() instanceof NetworkToolItem) {
                     final CompoundNBT c = is.getTag();
                     if (c != null && c.getBoolean("hideFacades")) {
                         return CableRenderMode.CABLE_VIEW;

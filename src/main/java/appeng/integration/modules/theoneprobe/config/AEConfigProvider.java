@@ -28,7 +28,7 @@ import mcjty.theoneprobe.api.IProbeConfigProvider;
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeHitEntityData;
 
-import appeng.tile.AEBaseTile;
+import appeng.tile.AEBaseTileEntity;
 
 public class AEConfigProvider implements IProbeConfigProvider {
 
@@ -41,7 +41,7 @@ public class AEConfigProvider implements IProbeConfigProvider {
     @Override
     public void getProbeConfig(IProbeConfig config, PlayerEntity player, World world, BlockState blockState,
             IProbeHitData data) {
-        if (world.getTileEntity(data.getPos()) instanceof AEBaseTile) {
+        if (world.getTileEntity(data.getPos()) instanceof AEBaseTileEntity) {
             config.setRFMode(0);
         }
     }

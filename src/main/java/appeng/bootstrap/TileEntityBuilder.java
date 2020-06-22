@@ -24,7 +24,7 @@ import appeng.bootstrap.definitions.TileEntityDefinition;
 import appeng.core.AppEng;
 import appeng.core.features.ActivityState;
 import appeng.core.features.BlockStackSrc;
-import appeng.tile.AEBaseTile;
+import appeng.tile.AEBaseTileEntity;
 import appeng.util.Platform;
 
 /**
@@ -33,7 +33,7 @@ import appeng.util.Platform;
  *
  * @param <T>
  */
-public class TileEntityBuilder<T extends AEBaseTile> {
+public class TileEntityBuilder<T extends AEBaseTileEntity> {
 
     private final FeatureFactory factory;
 
@@ -95,7 +95,7 @@ public class TileEntityBuilder<T extends AEBaseTile> {
             type.setRegistryName(AppEng.MOD_ID, registryName);
             registry.register(type);
 
-            AEBaseTile.registerTileItem(tileClass, new BlockStackSrc(blocks.get(0), ActivityState.Enabled));
+            AEBaseTileEntity.registerTileItem(tileClass, new BlockStackSrc(blocks.get(0), ActivityState.Enabled));
 
             for (Block block : blocks) {
                 if (block instanceof AEBaseTileBlock) {

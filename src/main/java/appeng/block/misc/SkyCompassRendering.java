@@ -24,13 +24,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import appeng.bootstrap.TileEntityRendering;
 import appeng.bootstrap.TileEntityRenderingCustomizer;
 import appeng.client.render.tesr.SkyCompassTESR;
-import appeng.tile.misc.TileSkyCompass;
+import appeng.tile.misc.SkyCompassTileEntity;
 
-public class SkyCompassRendering extends TileEntityRenderingCustomizer<TileSkyCompass> {
+public class SkyCompassRendering extends TileEntityRenderingCustomizer<SkyCompassTileEntity> {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void customize(TileEntityRendering<TileSkyCompass> rendering) {
+    public void customize(TileEntityRendering<SkyCompassTileEntity> rendering) {
         rendering.tileEntityRenderer(SkyCompassTESR::new);
     }
 

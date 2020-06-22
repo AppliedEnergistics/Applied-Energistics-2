@@ -36,11 +36,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
-import appeng.block.misc.BlockLightDetector;
-import appeng.block.misc.BlockSkyCompass;
-import appeng.block.networking.BlockWireless;
+import appeng.block.misc.LightDetectorBlock;
+import appeng.block.misc.SkyCompassBlock;
+import appeng.block.networking.WirelessBlock;
 import appeng.me.helpers.IGridProxyable;
-import appeng.tile.AEBaseTile;
+import appeng.tile.AEBaseTileEntity;
 
 public class AEBaseBlockItem extends BlockItem {
 
@@ -84,14 +84,14 @@ public class AEBaseBlockItem extends BlockItem {
         PlayerEntity player = context.getPlayer();
 
         if (this.blockType instanceof AEBaseTileBlock) {
-            if (this.blockType instanceof BlockLightDetector) {
+            if (this.blockType instanceof LightDetectorBlock) {
                 up = side;
                 if (up == Direction.UP || up == Direction.DOWN) {
                     forward = Direction.SOUTH;
                 } else {
                     forward = Direction.UP;
                 }
-            } else if (this.blockType instanceof BlockWireless || this.blockType instanceof BlockSkyCompass) {
+            } else if (this.blockType instanceof WirelessBlock || this.blockType instanceof SkyCompassBlock) {
                 forward = side;
                 if (forward == Direction.UP || forward == Direction.DOWN) {
                     up = Direction.SOUTH;
@@ -133,8 +133,8 @@ public class AEBaseBlockItem extends BlockItem {
             return result;
         }
 
-        if (this.blockType instanceof AEBaseTileBlock && !(this.blockType instanceof BlockLightDetector)) {
-            final AEBaseTile tile = ((AEBaseTileBlock<?>) this.blockType).getTileEntity(context.getWorld(),
+        if (this.blockType instanceof AEBaseTileBlock && !(this.blockType instanceof LightDetectorBlock)) {
+            final AEBaseTileEntity tile = ((AEBaseTileBlock<?>) this.blockType).getTileEntity(context.getWorld(),
                     context.getPos());
             ori = tile;
 

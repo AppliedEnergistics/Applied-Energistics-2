@@ -36,7 +36,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.event.EventNetworkChannel;
 
-import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.BasePacket;
 
 public class NetworkHandler {
     private static NetworkHandler instance;
@@ -52,7 +52,7 @@ public class NetworkHandler {
                 .eventNetworkChannel();
         ec.registerObject(this);
 
-        this.clientHandler = DistExecutor.unsafeRunForDist(() -> AppEngClientPacketHandler::new, () -> () -> null);
+        this.clientHandler = DistExecutor.unsafeRunForDist(() -> ClientPacketHandler::new, () -> () -> null);
         this.serverHandler = this.createServerSide();
     }
 
@@ -66,7 +66,7 @@ public class NetworkHandler {
 
     private IPacketHandler createServerSide() {
         try {
-            return new AppEngServerPacketHandler();
+            return new ServerPacketHandler();
         } catch (final Throwable t) {
             return null;
         }
@@ -109,26 +109,26 @@ public class NetworkHandler {
         return this.myChannelName;
     }
 
-    public void sendToAll(final AppEngPacket message) {
+    public void sendToAll(final BasePacket message) {
         getServer().getPlayerList().sendPacketToAllPlayers(message.toPacket(NetworkDirection.PLAY_TO_CLIENT));
     }
 
-    public void sendTo(final AppEngPacket message, final ServerPlayerEntity player) {
+    public void sendTo(final BasePacket message, final ServerPlayerEntity player) {
         player.connection.sendPacket(message.toPacket(NetworkDirection.PLAY_TO_CLIENT));
     }
 
-    public void sendToAllAround(final AppEngPacket message, final TargetPoint point) {
+    public void sendToAllAround(final BasePacket message, final TargetPoint point) {
         IPacket<?> pkt = message.toPacket(NetworkDirection.PLAY_TO_CLIENT);
         getServer().getPlayerList().sendToAllNearExcept(point.excluded, point.x, point.y, point.z, point.r2, point.dim,
                 pkt);
     }
 
-    public void sendToDimension(final AppEngPacket message, final DimensionType dim) {
+    public void sendToDimension(final BasePacket message, final DimensionType dim) {
         getServer().getPlayerList().sendPacketToAllPlayersInDimension(message.toPacket(NetworkDirection.PLAY_TO_CLIENT),
                 dim);
     }
 
-    public void sendToServer(final AppEngPacket message) {
+    public void sendToServer(final BasePacket message) {
         Minecraft.getInstance().getConnection().sendPacket(message.toPacket(NetworkDirection.PLAY_TO_SERVER));
     }
 

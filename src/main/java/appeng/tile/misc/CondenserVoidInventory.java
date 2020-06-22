@@ -29,10 +29,10 @@ import appeng.api.storage.data.IItemList;
 
 class CondenserVoidInventory<T extends IAEStack<T>> implements IMEMonitor<T> {
 
-    private final TileCondenser target;
+    private final CondenserTileEntity target;
     private final IStorageChannel<T> channel;
 
-    CondenserVoidInventory(final TileCondenser te, final IStorageChannel<T> channel) {
+    CondenserVoidInventory(final CondenserTileEntity te, final IStorageChannel<T> channel) {
         this.target = te;
         this.channel = channel;
     }

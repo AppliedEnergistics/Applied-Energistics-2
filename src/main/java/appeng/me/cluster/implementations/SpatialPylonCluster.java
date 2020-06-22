@@ -25,13 +25,13 @@ import java.util.List;
 import appeng.api.networking.IGridHost;
 import appeng.api.util.DimensionalCoord;
 import appeng.me.cluster.IAECluster;
-import appeng.tile.spatial.TileSpatialPylon;
+import appeng.tile.spatial.SpatialPylonTileEntity;
 
 public class SpatialPylonCluster implements IAECluster {
 
     private final DimensionalCoord min;
     private final DimensionalCoord max;
-    private final List<TileSpatialPylon> line = new ArrayList<>();
+    private final List<SpatialPylonTileEntity> line = new ArrayList<>();
     private boolean isDestroyed = false;
 
     private Axis currentAxis = Axis.UNFORMED;
@@ -54,7 +54,7 @@ public class SpatialPylonCluster implements IAECluster {
 
     @Override
     public void updateStatus(final boolean updateGrid) {
-        for (final TileSpatialPylon r : this.getLine()) {
+        for (final SpatialPylonTileEntity r : this.getLine()) {
             r.recalculateDisplay();
         }
     }
@@ -67,7 +67,7 @@ public class SpatialPylonCluster implements IAECluster {
         }
         this.isDestroyed = true;
 
-        for (final TileSpatialPylon r : this.getLine()) {
+        for (final SpatialPylonTileEntity r : this.getLine()) {
             r.updateStatus(null);
         }
     }
@@ -105,7 +105,7 @@ public class SpatialPylonCluster implements IAECluster {
         return this.min;
     }
 
-    List<TileSpatialPylon> getLine() {
+    List<SpatialPylonTileEntity> getLine() {
         return this.line;
     }
 

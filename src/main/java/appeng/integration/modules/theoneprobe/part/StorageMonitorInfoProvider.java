@@ -27,7 +27,7 @@ import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.ProbeMode;
 
-import appeng.api.implementations.parts.IPartStorageMonitor;
+import appeng.api.implementations.parts.IStorageMonitorPart;
 import appeng.api.parts.IPart;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
@@ -39,8 +39,8 @@ public class StorageMonitorInfoProvider implements IPartProbInfoProvider {
     @Override
     public void addProbeInfo(IPart part, ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world,
             BlockState blockState, IProbeHitData data) {
-        if (part instanceof IPartStorageMonitor) {
-            final IPartStorageMonitor monitor = (IPartStorageMonitor) part;
+        if (part instanceof IStorageMonitorPart) {
+            final IStorageMonitorPart monitor = (IStorageMonitorPart) part;
 
             final IAEStack<?> displayed = monitor.getDisplayed();
             final boolean isLocked = monitor.isLocked();

@@ -20,7 +20,7 @@ package appeng.parts;
 
 import javax.annotation.Nullable;
 
-import appeng.api.implementations.parts.IPartCable;
+import appeng.api.implementations.parts.ICablePart;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPart;
 import appeng.api.util.AEPartLocation;
@@ -30,15 +30,15 @@ import appeng.api.util.AEPartLocation;
  */
 public class CableBusStorage {
 
-    private IPartCable center;
+    private ICablePart center;
     private IPart[] sides;
     private IFacadePart[] facades;
 
-    protected IPartCable getCenter() {
+    protected ICablePart getCenter() {
         return this.center;
     }
 
-    protected void setCenter(final IPartCable center) {
+    protected void setCenter(final ICablePart center) {
         this.center = center;
     }
 

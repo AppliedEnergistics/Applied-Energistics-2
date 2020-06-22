@@ -35,14 +35,14 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
 
-import appeng.block.storage.BlockSkyChest;
-import appeng.block.storage.BlockSkyChest.SkyChestType;
+import appeng.block.storage.SkyChestBlock;
+import appeng.block.storage.SkyChestBlock.SkyChestType;
 import appeng.core.AppEng;
-import appeng.tile.storage.TileSkyChest;
+import appeng.tile.storage.SkyChestTileEntity;
 
 // This is mostly a copy&paste job of the vanilla chest TESR
 @OnlyIn(Dist.CLIENT)
-public class SkyChestTESR extends TileEntityRenderer<TileSkyChest> {
+public class SkyChestTESR extends TileEntityRenderer<SkyChestTileEntity> {
 
     public static final Material TEXTURE_STONE = new Material(Atlases.CHEST_ATLAS,
             new ResourceLocation(AppEng.MOD_ID, "models/skychest"));
@@ -68,8 +68,8 @@ public class SkyChestTESR extends TileEntityRenderer<TileSkyChest> {
     }
 
     @Override
-    public void render(TileSkyChest tileEntityIn, float partialTicks, MatrixStack matrixStackIn,
-            IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(SkyChestTileEntity tileEntityIn, float partialTicks, MatrixStack matrixStackIn,
+                       IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
         matrixStackIn.push();
         float f = tileEntityIn.getForward().getHorizontalAngle();
         matrixStackIn.translate(0.5D, 0.5D, 0.5D);
@@ -97,13 +97,13 @@ public class SkyChestTESR extends TileEntityRenderer<TileSkyChest> {
         chestBottom.render(matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
     }
 
-    protected Material getMaterial(TileSkyChest tileEntity) {
+    protected Material getMaterial(SkyChestTileEntity tileEntity) {
         SkyChestType type = SkyChestType.BLOCK;
         if (tileEntity.getWorld() != null) {
             Block blockType = tileEntity.getBlockState().getBlock();
 
-            if (blockType instanceof BlockSkyChest) {
-                type = ((BlockSkyChest) blockType).type;
+            if (blockType instanceof SkyChestBlock) {
+                type = ((SkyChestBlock) blockType).type;
             }
         }
 

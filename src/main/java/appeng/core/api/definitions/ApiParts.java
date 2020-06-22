@@ -35,50 +35,50 @@ import appeng.core.features.ActivityState;
 import appeng.core.features.ColoredItemDefinition;
 import appeng.core.features.ItemStackSrc;
 import appeng.core.features.registries.PartModels;
-import appeng.fluids.parts.PartFluidAnnihilationPlane;
-import appeng.fluids.parts.PartFluidExportBus;
-import appeng.fluids.parts.PartFluidFormationPlane;
-import appeng.fluids.parts.PartFluidImportBus;
-import appeng.fluids.parts.PartFluidInterface;
-import appeng.fluids.parts.PartFluidLevelEmitter;
-import appeng.fluids.parts.PartFluidStorageBus;
-import appeng.fluids.parts.PartFluidTerminal;
+import appeng.fluids.parts.FluidAnnihilationPlanePart;
+import appeng.fluids.parts.FluidExportBusPart;
+import appeng.fluids.parts.FluidFormationPlanePart;
+import appeng.fluids.parts.FluidImportBusPart;
+import appeng.fluids.parts.FluidInterfacePart;
+import appeng.fluids.parts.FluidLevelEmitterPart;
+import appeng.fluids.parts.FluidStorageBusPart;
+import appeng.fluids.parts.FluidTerminalPart;
 import appeng.items.parts.ColoredPartItem;
-import appeng.items.parts.ItemPart;
-import appeng.items.parts.ItemPartRendering;
+import appeng.items.parts.PartItem;
+import appeng.items.parts.PartItemRendering;
 import appeng.items.parts.PartType;
-import appeng.parts.automation.PartAnnihilationPlane;
-import appeng.parts.automation.PartExportBus;
-import appeng.parts.automation.PartFormationPlane;
-import appeng.parts.automation.PartIdentityAnnihilationPlane;
-import appeng.parts.automation.PartImportBus;
-import appeng.parts.automation.PartLevelEmitter;
-import appeng.parts.misc.PartCableAnchor;
-import appeng.parts.misc.PartInterface;
-import appeng.parts.misc.PartInvertedToggleBus;
-import appeng.parts.misc.PartStorageBus;
-import appeng.parts.misc.PartToggleBus;
-import appeng.parts.networking.PartCableCovered;
-import appeng.parts.networking.PartCableGlass;
-import appeng.parts.networking.PartCableSmart;
-import appeng.parts.networking.PartDenseCableCovered;
-import appeng.parts.networking.PartDenseCableSmart;
-import appeng.parts.networking.PartQuartzFiber;
-import appeng.parts.p2p.PartP2PFEPower;
-import appeng.parts.p2p.PartP2PFluids;
-import appeng.parts.p2p.PartP2PItems;
-import appeng.parts.p2p.PartP2PLight;
-import appeng.parts.p2p.PartP2PRedstone;
-import appeng.parts.p2p.PartP2PTunnelME;
-import appeng.parts.reporting.PartConversionMonitor;
-import appeng.parts.reporting.PartCraftingTerminal;
-import appeng.parts.reporting.PartDarkPanel;
-import appeng.parts.reporting.PartInterfaceTerminal;
-import appeng.parts.reporting.PartPanel;
-import appeng.parts.reporting.PartPatternTerminal;
-import appeng.parts.reporting.PartSemiDarkPanel;
-import appeng.parts.reporting.PartStorageMonitor;
-import appeng.parts.reporting.PartTerminal;
+import appeng.parts.automation.AnnihilationPlanePart;
+import appeng.parts.automation.ExportBusPart;
+import appeng.parts.automation.FormationPlanePart;
+import appeng.parts.automation.IdentityAnnihilationPlanePart;
+import appeng.parts.automation.ImportBusPart;
+import appeng.parts.automation.LevelEmitterPart;
+import appeng.parts.misc.CableAnchorPart;
+import appeng.parts.misc.InterfacePart;
+import appeng.parts.misc.InvertedToggleBusPart;
+import appeng.parts.misc.StorageBusPart;
+import appeng.parts.misc.ToggleBusPart;
+import appeng.parts.networking.CoveredCablePart;
+import appeng.parts.networking.GlassCablePart;
+import appeng.parts.networking.SmartCablePart;
+import appeng.parts.networking.CoveredDenseCablePart;
+import appeng.parts.networking.SmartDenseCablePart;
+import appeng.parts.networking.QuartzFiberPart;
+import appeng.parts.p2p.FEP2PTunnelPart;
+import appeng.parts.p2p.FluidP2PTunnelPart;
+import appeng.parts.p2p.ItemP2PTunnelPart;
+import appeng.parts.p2p.LightP2PTunnelPart;
+import appeng.parts.p2p.RedstoneP2PTunnelPart;
+import appeng.parts.p2p.MEP2PTunnelPart;
+import appeng.parts.reporting.ConversionMonitorPart;
+import appeng.parts.reporting.CraftingTerminalPart;
+import appeng.parts.reporting.DarkPanelPart;
+import appeng.parts.reporting.InterfaceTerminalPart;
+import appeng.parts.reporting.PanelPart;
+import appeng.parts.reporting.PatternTerminalPart;
+import appeng.parts.reporting.SemiDarkPanelPart;
+import appeng.parts.reporting.StorageMonitorPart;
+import appeng.parts.reporting.TerminalPart;
 
 /**
  * Internal implementation for the API parts
@@ -130,70 +130,70 @@ public final class ApiParts implements IParts {
         registerPartModels(partModels);
 
         this.cableSmart = constructColoredDefinition(registry, "smart_cable", PartType.CABLE_SMART,
-                PartCableSmart::new);
+                SmartCablePart::new);
         this.cableCovered = constructColoredDefinition(registry, "covered_cable", PartType.CABLE_COVERED,
-                PartCableCovered::new);
+                CoveredCablePart::new);
         this.cableGlass = constructColoredDefinition(registry, "glass_cable", PartType.CABLE_GLASS,
-                PartCableGlass::new);
+                GlassCablePart::new);
         this.cableDenseCovered = constructColoredDefinition(registry, "covered_dense_cable",
-                PartType.CABLE_DENSE_COVERED, PartDenseCableCovered::new);
+                PartType.CABLE_DENSE_COVERED, CoveredDenseCablePart::new);
         this.cableDenseSmart = constructColoredDefinition(registry, "smart_dense_cable", PartType.CABLE_DENSE_SMART,
-                PartDenseCableSmart::new);
-        this.quartzFiber = createPart(registry, "quartz_fiber", PartType.QUARTZ_FIBER, PartQuartzFiber::new);
-        this.toggleBus = createPart(registry, "toggle_bus", PartType.TOGGLE_BUS, PartToggleBus::new);
+                SmartDenseCablePart::new);
+        this.quartzFiber = createPart(registry, "quartz_fiber", PartType.QUARTZ_FIBER, QuartzFiberPart::new);
+        this.toggleBus = createPart(registry, "toggle_bus", PartType.TOGGLE_BUS, ToggleBusPart::new);
         this.invertedToggleBus = createPart(registry, "inverted_toggle_bus", PartType.INVERTED_TOGGLE_BUS,
-                PartInvertedToggleBus::new);
-        this.cableAnchor = createPart(registry, "cable_anchor", PartType.CABLE_ANCHOR, PartCableAnchor::new);
-        this.monitor = createPart(registry, "monitor", PartType.MONITOR, PartPanel::new);
+                InvertedToggleBusPart::new);
+        this.cableAnchor = createPart(registry, "cable_anchor", PartType.CABLE_ANCHOR, CableAnchorPart::new);
+        this.monitor = createPart(registry, "monitor", PartType.MONITOR, PanelPart::new);
         this.semiDarkMonitor = createPart(registry, "semi_dark_monitor", PartType.SEMI_DARK_MONITOR,
-                PartSemiDarkPanel::new);
-        this.darkMonitor = createPart(registry, "dark_monitor", PartType.DARK_MONITOR, PartDarkPanel::new);
-        this.storageBus = createPart(registry, "storage_bus", PartType.STORAGE_BUS, PartStorageBus::new);
+                SemiDarkPanelPart::new);
+        this.darkMonitor = createPart(registry, "dark_monitor", PartType.DARK_MONITOR, DarkPanelPart::new);
+        this.storageBus = createPart(registry, "storage_bus", PartType.STORAGE_BUS, StorageBusPart::new);
         this.fluidStorageBus = createPart(registry, "fluid_storage_bus", PartType.FLUID_STORAGE_BUS,
-                PartFluidStorageBus::new);
-        this.importBus = createPart(registry, "import_bus", PartType.IMPORT_BUS, PartImportBus::new);
+                FluidStorageBusPart::new);
+        this.importBus = createPart(registry, "import_bus", PartType.IMPORT_BUS, ImportBusPart::new);
         this.fluidImportBus = createPart(registry, "fluid_import_bus", PartType.FLUID_IMPORT_BUS,
-                PartFluidImportBus::new);
-        this.exportBus = createPart(registry, "export_bus", PartType.EXPORT_BUS, PartExportBus::new);
+                FluidImportBusPart::new);
+        this.exportBus = createPart(registry, "export_bus", PartType.EXPORT_BUS, ExportBusPart::new);
         this.fluidExportBus = createPart(registry, "fluid_export_bus", PartType.FLUID_EXPORT_BUS,
-                PartFluidExportBus::new);
-        this.levelEmitter = createPart(registry, "level_emitter", PartType.LEVEL_EMITTER, PartLevelEmitter::new);
+                FluidExportBusPart::new);
+        this.levelEmitter = createPart(registry, "level_emitter", PartType.LEVEL_EMITTER, LevelEmitterPart::new);
         this.fluidLevelEmitter = createPart(registry, "fluid_level_emitter", PartType.FLUID_LEVEL_EMITTER,
-                PartFluidLevelEmitter::new);
+                FluidLevelEmitterPart::new);
         this.annihilationPlane = createPart(registry, "annihilation_plane", PartType.ANNIHILATION_PLANE,
-                PartAnnihilationPlane::new);
+                AnnihilationPlanePart::new);
         this.identityAnnihilationPlane = createPart(registry, "identity_annihilation_plane",
-                PartType.IDENTITY_ANNIHILATION_PLANE, PartIdentityAnnihilationPlane::new);
+                PartType.IDENTITY_ANNIHILATION_PLANE, IdentityAnnihilationPlanePart::new);
         this.fluidAnnihilationPlane = createPart(registry, "fluid_annihilation_plane",
-                PartType.FLUID_ANNIHILATION_PLANE, PartFluidAnnihilationPlane::new);
+                PartType.FLUID_ANNIHILATION_PLANE, FluidAnnihilationPlanePart::new);
         this.formationPlane = createPart(registry, "formation_plane", PartType.FORMATION_PLANE,
-                PartFormationPlane::new);
+                FormationPlanePart::new);
         this.fluidFormationPlane = createPart(registry, "fluid_formation_plane", PartType.FLUID_FORMATION_PLANE,
-                PartFluidFormationPlane::new);
+                FluidFormationPlanePart::new);
         this.patternTerminal = createPart(registry, "pattern_terminal", PartType.PATTERN_TERMINAL,
-                PartPatternTerminal::new);
+                PatternTerminalPart::new);
         this.craftingTerminal = createPart(registry, "crafting_terminal", PartType.CRAFTING_TERMINAL,
-                PartCraftingTerminal::new);
-        this.terminal = createPart(registry, "terminal", PartType.TERMINAL, PartTerminal::new);
+                CraftingTerminalPart::new);
+        this.terminal = createPart(registry, "terminal", PartType.TERMINAL, TerminalPart::new);
         this.storageMonitor = createPart(registry, "storage_monitor", PartType.STORAGE_MONITOR,
-                PartStorageMonitor::new);
+                StorageMonitorPart::new);
         this.conversionMonitor = createPart(registry, "conversion_monitor", PartType.CONVERSION_MONITOR,
-                PartConversionMonitor::new);
-        this.iface = createPart(registry, "cable_interface", PartType.INTERFACE, PartInterface::new);
+                ConversionMonitorPart::new);
+        this.iface = createPart(registry, "cable_interface", PartType.INTERFACE, InterfacePart::new);
         this.fluidIface = createPart(registry, "cable_fluid_interface", PartType.FLUID_INTERFACE,
-                PartFluidInterface::new);
-        this.p2PTunnelME = createPart(registry, "me_p2p_tunnel", PartType.P2P_TUNNEL_ME, PartP2PTunnelME::new);
+                FluidInterfacePart::new);
+        this.p2PTunnelME = createPart(registry, "me_p2p_tunnel", PartType.P2P_TUNNEL_ME, MEP2PTunnelPart::new);
         this.p2PTunnelRedstone = createPart(registry, "redstone_p2p_tunnel", PartType.P2P_TUNNEL_REDSTONE,
-                PartP2PRedstone::new);
-        this.p2PTunnelItems = createPart(registry, "item_p2p_tunnel", PartType.P2P_TUNNEL_ITEM, PartP2PItems::new);
-        this.p2PTunnelFluids = createPart(registry, "fluid_p2p_tunnel", PartType.P2P_TUNNEL_FLUID, PartP2PFluids::new);
+                RedstoneP2PTunnelPart::new);
+        this.p2PTunnelItems = createPart(registry, "item_p2p_tunnel", PartType.P2P_TUNNEL_ITEM, ItemP2PTunnelPart::new);
+        this.p2PTunnelFluids = createPart(registry, "fluid_p2p_tunnel", PartType.P2P_TUNNEL_FLUID, FluidP2PTunnelPart::new);
         this.p2PTunnelEU = null; // FIXME createPart( "ic2_p2p_tunnel", PartType.P2P_TUNNEL_IC2,
                                  // PartP2PIC2Power::new);
-        this.p2PTunnelFE = createPart(registry, "fe_p2p_tunnel", PartType.P2P_TUNNEL_FE, PartP2PFEPower::new);
-        this.p2PTunnelLight = createPart(registry, "light_p2p_tunnel", PartType.P2P_TUNNEL_LIGHT, PartP2PLight::new);
+        this.p2PTunnelFE = createPart(registry, "fe_p2p_tunnel", PartType.P2P_TUNNEL_FE, FEP2PTunnelPart::new);
+        this.p2PTunnelLight = createPart(registry, "light_p2p_tunnel", PartType.P2P_TUNNEL_LIGHT, LightP2PTunnelPart::new);
         this.interfaceTerminal = createPart(registry, "interface_terminal", PartType.INTERFACE_TERMINAL,
-                PartInterfaceTerminal::new);
-        this.fluidTerminal = createPart(registry, "fluid_terminal", PartType.FLUID_TERMINAL, PartFluidTerminal::new);
+                InterfaceTerminalPart::new);
+        this.fluidTerminal = createPart(registry, "fluid_terminal", PartType.FLUID_TERMINAL, FluidTerminalPart::new);
     }
 
     private void registerPartModels(PartModels partModels) {
@@ -212,8 +212,8 @@ public final class ApiParts implements IParts {
 
     private <T extends IPart> IItemDefinition createPart(FeatureFactory registry, String id, PartType type,
             Function<ItemStack, T> factory) {
-        return registry.item(id, props -> new ItemPart<>(props, type, factory)).itemGroup(CreativeTab.INSTANCE)
-                .rendering(new ItemPartRendering()).build();
+        return registry.item(id, props -> new PartItem<>(props, type, factory)).itemGroup(CreativeTab.INSTANCE)
+                .rendering(new PartItemRendering()).build();
     }
 
     private <T extends IPart> AEColoredItemDefinition constructColoredDefinition(FeatureFactory registry,
@@ -224,7 +224,7 @@ public final class ApiParts implements IParts {
             String id = color.registryPrefix + '_' + idSuffix;
 
             IItemDefinition itemDef = registry.item(id, props -> new ColoredPartItem<>(props, type, factory, color))
-                    .itemGroup(CreativeTab.INSTANCE).rendering(new ItemPartRendering(color)).build();
+                    .itemGroup(CreativeTab.INSTANCE).rendering(new PartItemRendering(color)).build();
 
             definition.add(color, new ItemStackSrc(itemDef.item(), ActivityState.Enabled));
         }

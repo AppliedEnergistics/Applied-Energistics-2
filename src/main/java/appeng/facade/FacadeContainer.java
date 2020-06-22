@@ -30,7 +30,7 @@ import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.AEPartLocation;
-import appeng.items.parts.ItemFacade;
+import appeng.items.parts.FacadeItem;
 import appeng.parts.CableBusStorage;
 
 public class FacadeContainer implements IFacadeContainer {
@@ -112,7 +112,7 @@ public class FacadeContainer implements IFacadeContainer {
                 Optional<net.minecraft.item.Item> maybeFacadeItem = AEApi.instance().definitions().items().facade()
                         .maybeItem();
                 if (maybeFacadeItem.isPresent()) {
-                    final ItemFacade ifa = (ItemFacade) maybeFacadeItem.get();
+                    final FacadeItem ifa = (FacadeItem) maybeFacadeItem.get();
                     final ItemStack facade = ifa.createFromID(id);
                     if (facade != null) {
                         changed = changed || this.storage.getFacade(x) == null;

@@ -31,7 +31,7 @@ import mcjty.theoneprobe.api.ProbeMode;
 import appeng.api.parts.IPart;
 import appeng.integration.modules.theoneprobe.TheOneProbeText;
 import appeng.me.GridAccessException;
-import appeng.parts.p2p.PartP2PTunnel;
+import appeng.parts.p2p.P2PTunnelPart;
 import appeng.util.Platform;
 
 public class P2PStateInfoProvider implements IPartProbInfoProvider {
@@ -43,8 +43,8 @@ public class P2PStateInfoProvider implements IPartProbInfoProvider {
     @Override
     public void addProbeInfo(IPart part, ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world,
             BlockState blockState, IProbeHitData data) {
-        if (part instanceof PartP2PTunnel) {
-            final PartP2PTunnel tunnel = (PartP2PTunnel) part;
+        if (part instanceof P2PTunnelPart) {
+            final P2PTunnelPart tunnel = (P2PTunnelPart) part;
 
             if (!tunnel.isPowered()) {
                 return;
@@ -61,7 +61,7 @@ public class P2PStateInfoProvider implements IPartProbInfoProvider {
                     state = STATE_INPUT;
                 }
             } else {
-                final PartP2PTunnel input = tunnel.getInput();
+                final P2PTunnelPart input = tunnel.getInput();
                 if (input != null) {
                     state = STATE_OUTPUT;
                 }
@@ -86,7 +86,7 @@ public class P2PStateInfoProvider implements IPartProbInfoProvider {
         }
     }
 
-    private static int getOutputCount(PartP2PTunnel tunnel) {
+    private static int getOutputCount(P2PTunnelPart tunnel) {
         try {
             return Iterators.size(tunnel.getOutputs().iterator());
         } catch (GridAccessException e) {

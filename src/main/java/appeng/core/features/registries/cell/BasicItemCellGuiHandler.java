@@ -15,7 +15,7 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
-import appeng.container.implementations.ContainerMEMonitorable;
+import appeng.container.implementations.MEMonitorableContainer;
 
 public class BasicItemCellGuiHandler implements ICellGuiHandler {
     @Override
@@ -26,7 +26,7 @@ public class BasicItemCellGuiHandler implements ICellGuiHandler {
     @Override
     public void openChestGui(final PlayerEntity player, final IChestOrDrive chest, final ICellHandler cellHandler,
             final IMEInventoryHandler inv, final ItemStack is, final IStorageChannel chan) {
-        ContainerOpener.openContainer(ContainerMEMonitorable.TYPE, player,
+        ContainerOpener.openContainer(MEMonitorableContainer.TYPE, player,
                 ContainerLocator.forTileEntitySide((TileEntity) chest, chest.getUp()));
     }
 }

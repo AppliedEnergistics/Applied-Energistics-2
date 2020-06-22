@@ -34,44 +34,44 @@ import appeng.bootstrap.FeatureFactory;
 import appeng.core.features.ActivityState;
 import appeng.core.features.ColoredItemDefinition;
 import appeng.core.features.ItemStackSrc;
-import appeng.debug.ToolDebugCard;
-import appeng.debug.ToolDebugPartPlacer;
-import appeng.debug.ToolEraser;
-import appeng.debug.ToolMeteoritePlacer;
-import appeng.debug.ToolReplicatorCard;
-import appeng.entity.EntityGrowingCrystal;
+import appeng.debug.DebugCardItem;
+import appeng.debug.DebugPartPlacerItem;
+import appeng.debug.EraserItem;
+import appeng.debug.MeteoritePlacerItem;
+import appeng.debug.ReplicatorCardItem;
+import appeng.entity.GrowingCrystalEntity;
 import appeng.fluids.items.BasicFluidStorageCell;
 import appeng.fluids.items.FluidDummyItem;
 import appeng.fluids.items.FluidDummyItemRendering;
-import appeng.hooks.DispenserBlockTool;
-import appeng.hooks.DispenserMatterCannon;
+import appeng.hooks.BlockToolDispenseItemBehavior;
+import appeng.hooks.MatterCannonDispenseItemBehavior;
 import appeng.items.materials.MaterialType;
-import appeng.items.misc.ItemCrystalSeed;
-import appeng.items.misc.ItemEncodedPattern;
-import appeng.items.misc.ItemPaintBall;
-import appeng.items.misc.ItemPaintBallRendering;
-import appeng.items.parts.ItemFacade;
-import appeng.items.storage.BasicItemStorageCell;
-import appeng.items.storage.ItemCreativeStorageCell;
-import appeng.items.storage.ItemSpatialStorageCell;
-import appeng.items.storage.ItemViewCell;
-import appeng.items.tools.ToolBiometricCard;
-import appeng.items.tools.ToolMemoryCard;
-import appeng.items.tools.ToolNetworkTool;
-import appeng.items.tools.powered.ToolChargedStaff;
-import appeng.items.tools.powered.ToolColorApplicator;
-import appeng.items.tools.powered.ToolColorApplicatorRendering;
-import appeng.items.tools.powered.ToolEntropyManipulator;
-import appeng.items.tools.powered.ToolMatterCannon;
-import appeng.items.tools.powered.ToolPortableCell;
-import appeng.items.tools.powered.ToolWirelessTerminal;
-import appeng.items.tools.quartz.ToolQuartzAxe;
-import appeng.items.tools.quartz.ToolQuartzCuttingKnife;
-import appeng.items.tools.quartz.ToolQuartzHoe;
-import appeng.items.tools.quartz.ToolQuartzPickaxe;
-import appeng.items.tools.quartz.ToolQuartzSpade;
-import appeng.items.tools.quartz.ToolQuartzSword;
-import appeng.items.tools.quartz.ToolQuartzWrench;
+import appeng.items.misc.CrystalSeedItem;
+import appeng.items.misc.EncodedPatternItem;
+import appeng.items.misc.PaintBallItem;
+import appeng.items.misc.PaintBallItemRendering;
+import appeng.items.parts.FacadeItem;
+import appeng.items.storage.BasicStorageCellItem;
+import appeng.items.storage.CreativeStorageCellItem;
+import appeng.items.storage.SpatialStorageCellItem;
+import appeng.items.storage.ViewCellItem;
+import appeng.items.tools.BiometricCardItem;
+import appeng.items.tools.MemoryCardItem;
+import appeng.items.tools.NetworkToolItem;
+import appeng.items.tools.powered.ChargedStaffItem;
+import appeng.items.tools.powered.ColorApplicatorItem;
+import appeng.items.tools.powered.ColorApplicatorItemRendering;
+import appeng.items.tools.powered.EntropyManipulatorItem;
+import appeng.items.tools.powered.MatterCannonItem;
+import appeng.items.tools.powered.PortableCellItem;
+import appeng.items.tools.powered.WirelessTerminalItem;
+import appeng.items.tools.quartz.QuartzAxeItem;
+import appeng.items.tools.quartz.QuartzCuttingKnifeItem;
+import appeng.items.tools.quartz.QuartzHoeItem;
+import appeng.items.tools.quartz.QuartzPickaxeItem;
+import appeng.items.tools.quartz.QuartzSpadeItem;
+import appeng.items.tools.quartz.QuartzSwordItem;
+import appeng.items.tools.quartz.QuartzWrenchItem;
 
 /**
  * Internal implementation for the API items
@@ -142,83 +142,83 @@ public final class ApiItems implements IItems {
     public ApiItems(FeatureFactory registry, ApiMaterials materials) {
         FeatureFactory certusTools = registry.features(AEFeature.CERTUS_QUARTZ_TOOLS);
         this.certusQuartzAxe = certusTools
-                .item("certus_quartz_axe", props -> new ToolQuartzAxe(props, AEFeature.CERTUS_QUARTZ_TOOLS))
+                .item("certus_quartz_axe", props -> new QuartzAxeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
                 .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_AXE).build();
         this.certusQuartzHoe = certusTools
-                .item("certus_quartz_hoe", props -> new ToolQuartzHoe(props, AEFeature.CERTUS_QUARTZ_TOOLS))
+                .item("certus_quartz_hoe", props -> new QuartzHoeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
                 .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_HOE).build();
         this.certusQuartzShovel = certusTools
-                .item("certus_quartz_shovel", props -> new ToolQuartzSpade(props, AEFeature.CERTUS_QUARTZ_TOOLS))
+                .item("certus_quartz_shovel", props -> new QuartzSpadeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
                 .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_SPADE).build();
         this.certusQuartzPick = certusTools
-                .item("certus_quartz_pickaxe", props -> new ToolQuartzPickaxe(props, AEFeature.CERTUS_QUARTZ_TOOLS))
+                .item("certus_quartz_pickaxe", props -> new QuartzPickaxeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
                 .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_PICKAXE).build();
         this.certusQuartzSword = certusTools
-                .item("certus_quartz_sword", props -> new ToolQuartzSword(props, AEFeature.CERTUS_QUARTZ_TOOLS))
+                .item("certus_quartz_sword", props -> new QuartzSwordItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
                 .itemGroup(ItemGroup.COMBAT).addFeatures(AEFeature.QUARTZ_SWORD).build();
-        this.certusQuartzWrench = certusTools.item("certus_quartz_wrench", ToolQuartzWrench::new)
+        this.certusQuartzWrench = certusTools.item("certus_quartz_wrench", QuartzWrenchItem::new)
                 .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1)).addFeatures(AEFeature.QUARTZ_WRENCH)
                 .build();
         this.certusQuartzKnife = certusTools
                 .item("certus_quartz_cutting_knife",
-                        props -> new ToolQuartzCuttingKnife(props, AEFeature.CERTUS_QUARTZ_TOOLS))
+                        props -> new QuartzCuttingKnifeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
                 .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1).maxDamage(50).setNoRepair())
                 .addFeatures(AEFeature.QUARTZ_KNIFE).build();
 
         FeatureFactory netherTools = registry.features(AEFeature.NETHER_QUARTZ_TOOLS);
         this.netherQuartzAxe = netherTools
-                .item("nether_quartz_axe", props -> new ToolQuartzAxe(props, AEFeature.NETHER_QUARTZ_TOOLS))
+                .item("nether_quartz_axe", props -> new QuartzAxeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
                 .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_AXE).build();
         this.netherQuartzHoe = netherTools
-                .item("nether_quartz_hoe", props -> new ToolQuartzHoe(props, AEFeature.NETHER_QUARTZ_TOOLS))
+                .item("nether_quartz_hoe", props -> new QuartzHoeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
                 .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_HOE).build();
         this.netherQuartzShovel = netherTools
-                .item("nether_quartz_shovel", props -> new ToolQuartzSpade(props, AEFeature.NETHER_QUARTZ_TOOLS))
+                .item("nether_quartz_shovel", props -> new QuartzSpadeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
                 .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_SPADE).build();
         this.netherQuartzPick = netherTools
-                .item("nether_quartz_pickaxe", props -> new ToolQuartzPickaxe(props, AEFeature.NETHER_QUARTZ_TOOLS))
+                .item("nether_quartz_pickaxe", props -> new QuartzPickaxeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
                 .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_PICKAXE).build();
         this.netherQuartzSword = netherTools
-                .item("nether_quartz_sword", props -> new ToolQuartzSword(props, AEFeature.NETHER_QUARTZ_TOOLS))
+                .item("nether_quartz_sword", props -> new QuartzSwordItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
                 .itemGroup(ItemGroup.COMBAT).addFeatures(AEFeature.QUARTZ_SWORD).build();
-        this.netherQuartzWrench = netherTools.item("nether_quartz_wrench", ToolQuartzWrench::new)
+        this.netherQuartzWrench = netherTools.item("nether_quartz_wrench", QuartzWrenchItem::new)
                 .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1)).addFeatures(AEFeature.QUARTZ_WRENCH)
                 .build();
         this.netherQuartzKnife = netherTools
                 .item("nether_quartz_cutting_knife",
-                        props -> new ToolQuartzCuttingKnife(props, AEFeature.NETHER_QUARTZ_TOOLS))
+                        props -> new QuartzCuttingKnifeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
                 .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1).maxDamage(50).setNoRepair())
                 .addFeatures(AEFeature.QUARTZ_KNIFE).build();
 
         Consumer<Item.Properties> chargedDefaults = props -> props.maxStackSize(1).maxDamage(32).setNoRepair();
 
         FeatureFactory powerTools = registry.features(AEFeature.POWERED_TOOLS);
-        this.entropyManipulator = powerTools.item("entropy_manipulator", ToolEntropyManipulator::new)
+        this.entropyManipulator = powerTools.item("entropy_manipulator", EntropyManipulatorItem::new)
                 .props(chargedDefaults).addFeatures(AEFeature.ENTROPY_MANIPULATOR)
-                .dispenserBehavior(DispenserBlockTool::new).build();
-        this.wirelessTerminal = powerTools.item("wireless_terminal", ToolWirelessTerminal::new).props(chargedDefaults)
+                .dispenserBehavior(BlockToolDispenseItemBehavior::new).build();
+        this.wirelessTerminal = powerTools.item("wireless_terminal", WirelessTerminalItem::new).props(chargedDefaults)
                 .addFeatures(AEFeature.WIRELESS_ACCESS_TERMINAL).build();
-        this.chargedStaff = powerTools.item("charged_staff", ToolChargedStaff::new).props(chargedDefaults)
+        this.chargedStaff = powerTools.item("charged_staff", ChargedStaffItem::new).props(chargedDefaults)
                 .addFeatures(AEFeature.CHARGED_STAFF).build();
-        this.massCannon = powerTools.item("matter_cannon", ToolMatterCannon::new).props(chargedDefaults)
-                .addFeatures(AEFeature.MATTER_CANNON).dispenserBehavior(DispenserMatterCannon::new).build();
-        this.portableCell = powerTools.item("portable_cell", ToolPortableCell::new).props(chargedDefaults)
+        this.massCannon = powerTools.item("matter_cannon", MatterCannonItem::new).props(chargedDefaults)
+                .addFeatures(AEFeature.MATTER_CANNON).dispenserBehavior(MatterCannonDispenseItemBehavior::new).build();
+        this.portableCell = powerTools.item("portable_cell", PortableCellItem::new).props(chargedDefaults)
                 .addFeatures(AEFeature.PORTABLE_CELL, AEFeature.STORAGE_CELLS).build();
-        this.colorApplicator = powerTools.item("color_applicator", ToolColorApplicator::new).props(chargedDefaults)
-                .addFeatures(AEFeature.COLOR_APPLICATOR).dispenserBehavior(DispenserBlockTool::new)
-                .rendering(new ToolColorApplicatorRendering()).build();
+        this.colorApplicator = powerTools.item("color_applicator", ColorApplicatorItem::new).props(chargedDefaults)
+                .addFeatures(AEFeature.COLOR_APPLICATOR).dispenserBehavior(BlockToolDispenseItemBehavior::new)
+                .rendering(new ColorApplicatorItemRendering()).build();
 
-        this.biometricCard = registry.item("biometric_card", ToolBiometricCard::new)
+        this.biometricCard = registry.item("biometric_card", BiometricCardItem::new)
                 .props(props -> props.maxStackSize(1)).features(AEFeature.SECURITY).build();
-        this.memoryCard = registry.item("memory_card", ToolMemoryCard::new).props(props -> props.maxStackSize(1))
+        this.memoryCard = registry.item("memory_card", MemoryCardItem::new).props(props -> props.maxStackSize(1))
                 .features(AEFeature.MEMORY_CARD).build();
-        this.networkTool = registry.item("network_tool", ToolNetworkTool::new)
+        this.networkTool = registry.item("network_tool", NetworkToolItem::new)
                 .props(props -> props.maxStackSize(1).addToolType(ToolType.get("wrench"), 0))
                 .features(AEFeature.NETWORK_TOOL).build();
 
-        this.cellCreative = registry.item("creative_storage_cell", ItemCreativeStorageCell::new)
+        this.cellCreative = registry.item("creative_storage_cell", CreativeStorageCellItem::new)
                 .props(props -> props.maxStackSize(1)).features(AEFeature.STORAGE_CELLS, AEFeature.CREATIVE).build();
-        this.viewCell = registry.item("view_cell", ItemViewCell::new).props(props -> props.maxStackSize(1))
+        this.viewCell = registry.item("view_cell", ViewCellItem::new).props(props -> props.maxStackSize(1))
                 .features(AEFeature.VIEW_CELL).build();
 
         Consumer<Item.Properties> storageCellProps = p -> p.maxStackSize(1);
@@ -226,19 +226,19 @@ public final class ApiItems implements IItems {
         FeatureFactory storageCells = registry.features(AEFeature.STORAGE_CELLS);
         this.cell1k = storageCells
                 .item("1k_storage_cell",
-                        props -> new BasicItemStorageCell(props, MaterialType.ITEM_1K_CELL_COMPONENT, 1))
+                        props -> new BasicStorageCellItem(props, MaterialType.ITEM_1K_CELL_COMPONENT, 1))
                 .props(storageCellProps).build();
         this.cell4k = storageCells
                 .item("4k_storage_cell",
-                        props -> new BasicItemStorageCell(props, MaterialType.ITEM_4K_CELL_COMPONENT, 4))
+                        props -> new BasicStorageCellItem(props, MaterialType.ITEM_4K_CELL_COMPONENT, 4))
                 .props(storageCellProps).build();
         this.cell16k = storageCells
                 .item("16k_storage_cell",
-                        props -> new BasicItemStorageCell(props, MaterialType.ITEM_16K_CELL_COMPONENT, 16))
+                        props -> new BasicStorageCellItem(props, MaterialType.ITEM_16K_CELL_COMPONENT, 16))
                 .props(storageCellProps).build();
         this.cell64k = storageCells
                 .item("64k_storage_cell",
-                        props -> new BasicItemStorageCell(props, MaterialType.ITEM_64K_CELL_COMPONENT, 64))
+                        props -> new BasicStorageCellItem(props, MaterialType.ITEM_64K_CELL_COMPONENT, 64))
                 .props(storageCellProps).build();
 
         this.fluidCell1k = storageCells
@@ -260,47 +260,47 @@ public final class ApiItems implements IItems {
 
         FeatureFactory spatialCells = registry.features(AEFeature.SPATIAL_IO);
         this.spatialCell2 = spatialCells
-                .item("2_cubed_spatial_storage_cell", props -> new ItemSpatialStorageCell(props, 2))
+                .item("2_cubed_spatial_storage_cell", props -> new SpatialStorageCellItem(props, 2))
                 .props(storageCellProps).build();
         this.spatialCell16 = spatialCells
-                .item("16_cubed_spatial_storage_cell", props -> new ItemSpatialStorageCell(props, 16))
+                .item("16_cubed_spatial_storage_cell", props -> new SpatialStorageCellItem(props, 16))
                 .props(storageCellProps).build();
         this.spatialCell128 = spatialCells
-                .item("128_cubed_spatial_storage_cell", props -> new ItemSpatialStorageCell(props, 128))
+                .item("128_cubed_spatial_storage_cell", props -> new SpatialStorageCellItem(props, 128))
                 .props(storageCellProps).build();
 
-        this.facade = registry.item("facade", ItemFacade::new).features(AEFeature.FACADES).build();
+        this.facade = registry.item("facade", FacadeItem::new).features(AEFeature.FACADES).build();
 
         this.certusCrystalSeed = registry
                 .item("certus_crystal_seed",
-                        props -> new ItemCrystalSeed(props, materials.purifiedCertusQuartzCrystal().item()))
+                        props -> new CrystalSeedItem(props, materials.purifiedCertusQuartzCrystal().item()))
                 .features(AEFeature.CRYSTAL_SEEDS).build();
         this.fluixCrystalSeed = registry
                 .item("fluix_crystal_seed",
-                        props -> new ItemCrystalSeed(props, materials.purifiedFluixCrystal().item()))
+                        props -> new CrystalSeedItem(props, materials.purifiedFluixCrystal().item()))
                 .features(AEFeature.CRYSTAL_SEEDS).build();
         this.netherQuartzSeed = registry
                 .item("nether_quartz_seed",
-                        props -> new ItemCrystalSeed(props, materials.purifiedNetherQuartzCrystal().item()))
+                        props -> new CrystalSeedItem(props, materials.purifiedNetherQuartzCrystal().item()))
                 .features(AEFeature.CRYSTAL_SEEDS).build();
 
-        EntityGrowingCrystal.TYPE = registry
-                .<EntityGrowingCrystal>entity("growing_crystal", EntityGrowingCrystal::new, EntityClassification.MISC)
+        GrowingCrystalEntity.TYPE = registry
+                .<GrowingCrystalEntity>entity("growing_crystal", GrowingCrystalEntity::new, EntityClassification.MISC)
                 .customize(builder -> builder.size(0.25F, 0.25F)).build();
 
         // rv1
-        this.encodedPattern = registry.item("encoded_pattern", ItemEncodedPattern::new)
+        this.encodedPattern = registry.item("encoded_pattern", EncodedPatternItem::new)
                 .props(props -> props.maxStackSize(1)).features(AEFeature.PATTERNS).build();
 
         this.coloredPaintBall = createPaintBalls(registry, "_paint_ball", false);
         this.coloredLumenPaintBall = createPaintBalls(registry, "_lumen_paint_ball", true);
 
         FeatureFactory debugTools = registry.features(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE);
-        this.toolEraser = debugTools.item("debug_eraser", ToolEraser::new).build();
-        this.toolMeteoritePlacer = debugTools.item("debug_meteorite_placer", ToolMeteoritePlacer::new).build();
-        this.toolDebugCard = debugTools.item("debug_card", ToolDebugCard::new).build();
-        this.toolReplicatorCard = debugTools.item("debug_replicator_card", ToolReplicatorCard::new).build();
-        debugTools.item("debug_part_placer", ToolDebugPartPlacer::new).build();
+        this.toolEraser = debugTools.item("debug_eraser", EraserItem::new).build();
+        this.toolMeteoritePlacer = debugTools.item("debug_meteorite_placer", MeteoritePlacerItem::new).build();
+        this.toolDebugCard = debugTools.item("debug_card", DebugCardItem::new).build();
+        this.toolReplicatorCard = debugTools.item("debug_replicator_card", ReplicatorCardItem::new).build();
+        debugTools.item("debug_part_placer", DebugPartPlacerItem::new).build();
 
         this.dummyFluidItem = registry.item("dummy_fluid_item", FluidDummyItem::new)
                 .rendering(new FluidDummyItemRendering()).build();
@@ -314,8 +314,8 @@ public final class ApiItems implements IItems {
             }
 
             String id = color.registryPrefix + idSuffix;
-            IItemDefinition paintBall = registry.item(id, props -> new ItemPaintBall(props, color, lumen))
-                    .features(AEFeature.PAINT_BALLS).rendering(new ItemPaintBallRendering(color, lumen)).build();
+            IItemDefinition paintBall = registry.item(id, props -> new PaintBallItem(props, color, lumen))
+                    .features(AEFeature.PAINT_BALLS).rendering(new PaintBallItemRendering(color, lumen)).build();
             colors.add(color, new ItemStackSrc(paintBall.item(), ActivityState.Enabled));
         }
         return colors;

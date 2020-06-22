@@ -26,7 +26,7 @@ import net.minecraftforge.client.model.data.IModelData;
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.core.AppEng;
 import appeng.helpers.Splotch;
-import appeng.tile.misc.TilePaint;
+import appeng.tile.misc.PaintSplotchesTileEntity;
 
 /**
  * Renders paint blocks, which render multiple "splotches" that have been
@@ -58,7 +58,7 @@ class PaintSplotchesBakedModel implements IDynamicBakedModel {
             return Collections.emptyList();
         }
 
-        PaintSplotches splotchesState = extraData.getData(TilePaint.SPLOTCHES);
+        PaintSplotches splotchesState = extraData.getData(PaintSplotchesTileEntity.SPLOTCHES);
 
         if (splotchesState == null) {
             // This is the inventory model which should usually not be used other than in

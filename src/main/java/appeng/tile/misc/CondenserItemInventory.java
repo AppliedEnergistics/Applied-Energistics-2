@@ -42,13 +42,13 @@ import appeng.util.item.ItemList;
 
 class CondenserItemInventory implements IMEMonitor<IAEItemStack>, ITickingMonitor {
     private final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<>();
-    private final TileCondenser target;
+    private final CondenserTileEntity target;
     private boolean hasChanged = true;
     private final ItemList cachedList = new ItemList();
     private IActionSource actionSource = new BaseActionSource();
     private ItemList changeSet = new ItemList();
 
-    CondenserItemInventory(final TileCondenser te) {
+    CondenserItemInventory(final CondenserTileEntity te) {
         this.target = te;
     }
 

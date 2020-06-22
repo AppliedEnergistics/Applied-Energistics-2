@@ -49,10 +49,10 @@ import appeng.api.util.AEColor;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
-import appeng.core.sync.packets.PacketPaintedEntity;
+import appeng.core.sync.packets.PaintedEntityPacket;
 import appeng.crafting.CraftingJob;
 import appeng.me.Grid;
-import appeng.tile.AEBaseTile;
+import appeng.tile.AEBaseTileEntity;
 import appeng.util.IWorldCallable;
 import appeng.util.Platform;
 
@@ -90,7 +90,7 @@ public class TickHandler {
         }
     }
 
-    public void addInit(final AEBaseTile tile) {
+    public void addInit(final AEBaseTileEntity tile) {
         if (Platform.isServer()) // for no there is no reason to care about this on the client...
         {
             this.getRepo().tiles.add(tile);
@@ -181,7 +181,7 @@ public class TickHandler {
             // ready tiles.
             final HandlerRep repo = this.getRepo();
             while (!repo.tiles.isEmpty()) {
-                final AEBaseTile bt = repo.tiles.poll();
+                final AEBaseTileEntity bt = repo.tiles.poll();
                 if (!bt.isRemoved()) {
                     bt.onReady();
                 }
@@ -249,7 +249,7 @@ public class TickHandler {
 
     private static class HandlerRep {
 
-        private Queue<AEBaseTile> tiles = new ArrayDeque<>();
+        private Queue<AEBaseTileEntity> tiles = new ArrayDeque<>();
         private Set<Grid> networks = new HashSet<>();
         private Set<Grid> toAdd = new HashSet<>();
         private Set<Grid> toRemove = new HashSet<>();
@@ -292,8 +292,8 @@ public class TickHandler {
             this.ticksLeft = ticks;
         }
 
-        public PacketPaintedEntity getPacket() {
-            return new PacketPaintedEntity(this.myEntity, this.myColor, this.ticksLeft);
+        public PaintedEntityPacket getPacket() {
+            return new PaintedEntityPacket(this.myEntity, this.myColor, this.ticksLeft);
         }
     }
 }

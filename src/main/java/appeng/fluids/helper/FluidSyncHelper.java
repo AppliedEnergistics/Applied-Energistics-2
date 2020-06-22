@@ -10,7 +10,7 @@ import net.minecraft.inventory.container.IContainerListener;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketFluidSlot;
+import appeng.core.sync.packets.FluidSlotPacket;
 import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.IAEFluidTank;
 
@@ -48,7 +48,7 @@ public class FluidSyncHelper {
 
         for (final IContainerListener l : listeners) {
             if (l instanceof ServerPlayerEntity) {
-                NetworkHandler.instance().sendTo(new PacketFluidSlot(data), (ServerPlayerEntity) l);
+                NetworkHandler.instance().sendTo(new FluidSlotPacket(data), (ServerPlayerEntity) l);
             }
         }
     }

@@ -36,10 +36,10 @@ import mezz.jei.api.gui.ingredient.IGuiIngredient;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 
-import appeng.container.slot.SlotCraftingMatrix;
-import appeng.container.slot.SlotFakeCraftingMatrix;
+import appeng.container.slot.CraftingMatrixSlot;
+import appeng.container.slot.FakeCraftingMatrixSlot;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketJEIRecipe;
+import appeng.core.sync.packets.JEIRecipePacket;
 import appeng.util.Platform;
 
 class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandler<T> {
@@ -76,7 +76,7 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
             }
 
             for (final Slot slot : container.inventorySlots) {
-                if (slot instanceof SlotCraftingMatrix || slot instanceof SlotFakeCraftingMatrix) {
+                if (slot instanceof CraftingMatrixSlot || slot instanceof FakeCraftingMatrixSlot) {
                     if (slot.getSlotIndex() == slotIndex) {
                         final ListNBT tags = new ListNBT();
                         final List<ItemStack> list = new ArrayList<>();
@@ -111,7 +111,7 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
             slotIndex++;
         }
 
-        NetworkHandler.instance().sendToServer(new PacketJEIRecipe(recipe));
+        NetworkHandler.instance().sendToServer(new JEIRecipePacket(recipe));
 
         return null;
     }

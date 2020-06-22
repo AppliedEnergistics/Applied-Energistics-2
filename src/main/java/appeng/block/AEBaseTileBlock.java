@@ -52,15 +52,15 @@ import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.util.AEColor;
 import appeng.api.util.IOrientable;
-import appeng.block.networking.BlockCableBus;
-import appeng.tile.AEBaseInvTile;
-import appeng.tile.AEBaseTile;
-import appeng.tile.networking.TileCableBus;
-import appeng.tile.storage.TileSkyChest;
+import appeng.block.networking.CableBusBlock;
+import appeng.tile.AEBaseInvTileEntity;
+import appeng.tile.AEBaseTileEntity;
+import appeng.tile.networking.CableBusTileEntity;
+import appeng.tile.storage.SkyChestTileEntity;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
-public abstract class AEBaseTileBlock<T extends AEBaseTile> extends AEBaseBlock {
+public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBaseBlock {
 
     @Nonnull
     private Class<T> tileEntityClass;
@@ -75,7 +75,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTile> extends AEBaseBlock 
     public void setTileEntity(final Class<T> tileEntityClass, Supplier<T> factory) {
         this.tileEntityClass = tileEntityClass;
         this.tileEntityFactory = factory;
-        this.setInventory(AEBaseInvTile.class.isAssignableFrom(tileEntityClass));
+        this.setInventory(AEBaseInvTileEntity.class.isAssignableFrom(tileEntityClass));
     }
 
     @Override
@@ -127,7 +127,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTile> extends AEBaseBlock 
             return; // Just a block state change
         }
 
-        final AEBaseTile te = this.getTileEntity(w, pos);
+        final AEBaseTileEntity te = this.getTileEntity(w, pos);
         if (te != null) {
             final ArrayList<ItemStack> drops = new ArrayList<>();
             if (te.dropItems()) {
@@ -167,8 +167,8 @@ public abstract class AEBaseTileBlock<T extends AEBaseTile> extends AEBaseBlock 
     @Override
     public int getComparatorInputOverride(BlockState state, final World w, final BlockPos pos) {
         final TileEntity te = this.getTileEntity(w, pos);
-        if (te instanceof AEBaseInvTile) {
-            AEBaseInvTile invTile = (AEBaseInvTile) te;
+        if (te instanceof AEBaseInvTileEntity) {
+            AEBaseInvTileEntity invTile = (AEBaseInvTileEntity) te;
             if (invTile.getInternalInventory().getSlots() > 0) {
                 return ItemHandlerHelper.calcRedstoneFromInventory(invTile.getInternalInventory());
             }
@@ -192,7 +192,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTile> extends AEBaseBlock 
         // than a translation component, since our custom naming cannot handle
         // untranslated
         // I18N strings and we would translate it using the server's locale :-(
-        AEBaseTile te = this.getTileEntity(w, pos);
+        AEBaseTileEntity te = this.getTileEntity(w, pos);
         if (te != null && is.hasDisplayName()) {
             ITextComponent displayName = is.getDisplayName();
             if (displayName instanceof StringTextComponent) {
@@ -212,13 +212,13 @@ public abstract class AEBaseTileBlock<T extends AEBaseTile> extends AEBaseBlock 
                 final BlockState blockState = world.getBlockState(pos);
                 final Block block = blockState.getBlock();
 
-                final AEBaseTile tile = this.getTileEntity(world, pos);
+                final AEBaseTileEntity tile = this.getTileEntity(world, pos);
 
                 if (tile == null) {
                     return ActionResultType.FAIL;
                 }
 
-                if (tile instanceof TileCableBus || tile instanceof TileSkyChest) {
+                if (tile instanceof CableBusTileEntity || tile instanceof SkyChestTileEntity) {
                     return ActionResultType.FAIL;
                 }
 
@@ -243,9 +243,9 @@ public abstract class AEBaseTileBlock<T extends AEBaseTile> extends AEBaseBlock 
                 return ActionResultType.FAIL;
             }
 
-            if (heldItem.getItem() instanceof IMemoryCard && !(this instanceof BlockCableBus)) {
+            if (heldItem.getItem() instanceof IMemoryCard && !(this instanceof CableBusBlock)) {
                 final IMemoryCard memoryCard = (IMemoryCard) heldItem.getItem();
-                final AEBaseTile tileEntity = this.getTileEntity(world, pos);
+                final AEBaseTileEntity tileEntity = this.getTileEntity(world, pos);
 
                 if (tileEntity == null) {
                     return ActionResultType.FAIL;

@@ -28,7 +28,7 @@ import net.minecraftforge.client.model.data.IModelData;
 import appeng.api.AEApi;
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.core.AppEng;
-import appeng.tile.qnb.TileQuantumBridge;
+import appeng.tile.qnb.QuantumBridgeTileEntity;
 
 class QnbFormedBakedModel implements IDynamicBakedModel {
 
@@ -79,7 +79,7 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand,
             IModelData modelData) {
-        QnbFormedState formedState = modelData.getData(TileQuantumBridge.FORMED_STATE);
+        QnbFormedState formedState = modelData.getData(QuantumBridgeTileEntity.FORMED_STATE);
 
         if (formedState == null) {
             return this.baseModel.getQuads(state, side, rand);

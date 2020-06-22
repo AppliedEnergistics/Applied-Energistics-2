@@ -98,7 +98,7 @@ import appeng.core.stats.PartItemPredicate;
 import appeng.fluids.client.gui.*;
 import appeng.fluids.container.*;
 import appeng.fluids.registries.BasicFluidCellGuiHandler;
-import appeng.items.parts.ItemFacade;
+import appeng.items.parts.FacadeItem;
 import appeng.me.cache.*;
 import appeng.recipes.conditions.FeaturesEnabled;
 import appeng.recipes.game.DisassembleRecipe;
@@ -110,7 +110,7 @@ import appeng.recipes.handlers.InscriberRecipeSerializer;
 import appeng.server.AECommand;
 import appeng.spatial.StorageCellBiome;
 import appeng.spatial.StorageCellModDimension;
-import appeng.tile.AEBaseTile;
+import appeng.tile.AEBaseTileEntity;
 import appeng.tile.crafting.MolecularAssemblerRenderer;
 import appeng.worldgen.ChargedQuartzOreConfig;
 import appeng.worldgen.ChargedQuartzOreFeature;
@@ -201,131 +201,131 @@ final class Registration {
     public void registerContainerTypes(RegistryEvent.Register<ContainerType<?>> event) {
         final IForgeRegistry<ContainerType<?>> registry = event.getRegistry();
 
-        ContainerCellWorkbench.TYPE = registerContainer(registry, "cellworkbench", ContainerCellWorkbench::fromNetwork,
-                ContainerCellWorkbench::open);
-        ContainerChest.TYPE = registerContainer(registry, "chest", ContainerChest::fromNetwork, ContainerChest::open);
-        ContainerCondenser.TYPE = registerContainer(registry, "condenser", ContainerCondenser::fromNetwork,
-                ContainerCondenser::open);
-        ContainerCraftAmount.TYPE = registerContainer(registry, "craftamount", ContainerCraftAmount::fromNetwork,
-                ContainerCraftAmount::open);
-        ContainerCraftConfirm.TYPE = registerContainer(registry, "craftconfirm", ContainerCraftConfirm::fromNetwork,
-                ContainerCraftConfirm::open);
-        ContainerCraftingCPU.TYPE = registerContainer(registry, "craftingcpu", ContainerCraftingCPU::fromNetwork,
-                ContainerCraftingCPU::open);
-        ContainerCraftingStatus.TYPE = registerContainer(registry, "craftingstatus",
-                ContainerCraftingStatus::fromNetwork, ContainerCraftingStatus::open);
-        ContainerCraftingTerm.TYPE = registerContainer(registry, "craftingterm", ContainerCraftingTerm::fromNetwork,
-                ContainerCraftingTerm::open);
-        ContainerDrive.TYPE = registerContainer(registry, "drive", ContainerDrive::fromNetwork, ContainerDrive::open);
-        ContainerFormationPlane.TYPE = registerContainer(registry, "formationplane",
-                ContainerFormationPlane::fromNetwork, ContainerFormationPlane::open);
-        ContainerGrinder.TYPE = registerContainer(registry, "grinder", ContainerGrinder::fromNetwork,
-                ContainerGrinder::open);
-        ContainerInscriber.TYPE = registerContainer(registry, "inscriber", ContainerInscriber::fromNetwork,
-                ContainerInscriber::open);
-        ContainerInterface.TYPE = registerContainer(registry, "interface", ContainerInterface::fromNetwork,
-                ContainerInterface::open);
-        ContainerInterfaceTerminal.TYPE = registerContainer(registry, "interfaceterminal",
-                ContainerInterfaceTerminal::fromNetwork, ContainerInterfaceTerminal::open);
-        ContainerIOPort.TYPE = registerContainer(registry, "ioport", ContainerIOPort::fromNetwork,
-                ContainerIOPort::open);
-        ContainerLevelEmitter.TYPE = registerContainer(registry, "levelemitter", ContainerLevelEmitter::fromNetwork,
-                ContainerLevelEmitter::open);
-        ContainerMolecularAssembler.TYPE = registerContainer(registry, "molecular_assembler",
-                ContainerMolecularAssembler::fromNetwork, ContainerMolecularAssembler::open);
-        ContainerMEMonitorable.TYPE = registerContainer(registry, "memonitorable", ContainerMEMonitorable::fromNetwork,
-                ContainerMEMonitorable::open);
-        ContainerMEPortableCell.TYPE = registerContainer(registry, "meportablecell",
-                ContainerMEPortableCell::fromNetwork, ContainerMEPortableCell::open);
-        ContainerNetworkStatus.TYPE = registerContainer(registry, "networkstatus", ContainerNetworkStatus::fromNetwork,
-                ContainerNetworkStatus::open);
-        ContainerNetworkTool.TYPE = registerContainer(registry, "networktool", ContainerNetworkTool::fromNetwork,
-                ContainerNetworkTool::open);
-        ContainerPatternTerm.TYPE = registerContainer(registry, "patternterm", ContainerPatternTerm::fromNetwork,
-                ContainerPatternTerm::open);
-        ContainerPriority.TYPE = registerContainer(registry, "priority", ContainerPriority::fromNetwork,
-                ContainerPriority::open);
-        ContainerQNB.TYPE = registerContainer(registry, "qnb", ContainerQNB::fromNetwork, ContainerQNB::open);
-        ContainerQuartzKnife.TYPE = registerContainer(registry, "quartzknife", ContainerQuartzKnife::fromNetwork,
-                ContainerQuartzKnife::open);
-        ContainerSecurityStation.TYPE = registerContainer(registry, "securitystation",
-                ContainerSecurityStation::fromNetwork, ContainerSecurityStation::open);
-        ContainerSkyChest.TYPE = registerContainer(registry, "skychest", ContainerSkyChest::fromNetwork,
-                ContainerSkyChest::open);
-        ContainerSpatialIOPort.TYPE = registerContainer(registry, "spatialioport", ContainerSpatialIOPort::fromNetwork,
-                ContainerSpatialIOPort::open);
-        ContainerStorageBus.TYPE = registerContainer(registry, "storagebus", ContainerStorageBus::fromNetwork,
-                ContainerStorageBus::open);
-        ContainerUpgradeable.TYPE = registerContainer(registry, "upgradeable", ContainerUpgradeable::fromNetwork,
-                ContainerUpgradeable::open);
-        ContainerVibrationChamber.TYPE = registerContainer(registry, "vibrationchamber",
-                ContainerVibrationChamber::fromNetwork, ContainerVibrationChamber::open);
-        ContainerWireless.TYPE = registerContainer(registry, "wireless", ContainerWireless::fromNetwork,
-                ContainerWireless::open);
-        ContainerWirelessTerm.TYPE = registerContainer(registry, "wirelessterm", ContainerWirelessTerm::fromNetwork,
-                ContainerWirelessTerm::open);
+        CellWorkbenchContainer.TYPE = registerContainer(registry, "cellworkbench", CellWorkbenchContainer::fromNetwork,
+                CellWorkbenchContainer::open);
+        ChestContainer.TYPE = registerContainer(registry, "chest", ChestContainer::fromNetwork, ChestContainer::open);
+        CondenserContainer.TYPE = registerContainer(registry, "condenser", CondenserContainer::fromNetwork,
+                CondenserContainer::open);
+        CraftAmountContainer.TYPE = registerContainer(registry, "craftamount", CraftAmountContainer::fromNetwork,
+                CraftAmountContainer::open);
+        CraftConfirmContainer.TYPE = registerContainer(registry, "craftconfirm", CraftConfirmContainer::fromNetwork,
+                CraftConfirmContainer::open);
+        CraftingCPUContainer.TYPE = registerContainer(registry, "craftingcpu", CraftingCPUContainer::fromNetwork,
+                CraftingCPUContainer::open);
+        CraftingStatusContainer.TYPE = registerContainer(registry, "craftingstatus",
+                CraftingStatusContainer::fromNetwork, CraftingStatusContainer::open);
+        CraftingTermContainer.TYPE = registerContainer(registry, "craftingterm", CraftingTermContainer::fromNetwork,
+                CraftingTermContainer::open);
+        DriveContainer.TYPE = registerContainer(registry, "drive", DriveContainer::fromNetwork, DriveContainer::open);
+        FormationPlaneContainer.TYPE = registerContainer(registry, "formationplane",
+                FormationPlaneContainer::fromNetwork, FormationPlaneContainer::open);
+        GrinderContainer.TYPE = registerContainer(registry, "grinder", GrinderContainer::fromNetwork,
+                GrinderContainer::open);
+        InscriberContainer.TYPE = registerContainer(registry, "inscriber", InscriberContainer::fromNetwork,
+                InscriberContainer::open);
+        InterfaceContainer.TYPE = registerContainer(registry, "interface", InterfaceContainer::fromNetwork,
+                InterfaceContainer::open);
+        InterfaceTerminalContainer.TYPE = registerContainer(registry, "interfaceterminal",
+                InterfaceTerminalContainer::fromNetwork, InterfaceTerminalContainer::open);
+        IOPortContainer.TYPE = registerContainer(registry, "ioport", IOPortContainer::fromNetwork,
+                IOPortContainer::open);
+        LevelEmitterContainer.TYPE = registerContainer(registry, "levelemitter", LevelEmitterContainer::fromNetwork,
+                LevelEmitterContainer::open);
+        MolecularAssemblerContainer.TYPE = registerContainer(registry, "molecular_assembler",
+                MolecularAssemblerContainer::fromNetwork, MolecularAssemblerContainer::open);
+        MEMonitorableContainer.TYPE = registerContainer(registry, "memonitorable", MEMonitorableContainer::fromNetwork,
+                MEMonitorableContainer::open);
+        MEPortableCellContainer.TYPE = registerContainer(registry, "meportablecell",
+                MEPortableCellContainer::fromNetwork, MEPortableCellContainer::open);
+        NetworkStatusContainer.TYPE = registerContainer(registry, "networkstatus", NetworkStatusContainer::fromNetwork,
+                NetworkStatusContainer::open);
+        NetworkToolContainer.TYPE = registerContainer(registry, "networktool", NetworkToolContainer::fromNetwork,
+                NetworkToolContainer::open);
+        PatternTermContainer.TYPE = registerContainer(registry, "patternterm", PatternTermContainer::fromNetwork,
+                PatternTermContainer::open);
+        PriorityContainer.TYPE = registerContainer(registry, "priority", PriorityContainer::fromNetwork,
+                PriorityContainer::open);
+        QNBContainer.TYPE = registerContainer(registry, "qnb", QNBContainer::fromNetwork, QNBContainer::open);
+        QuartzKnifeContainer.TYPE = registerContainer(registry, "quartzknife", QuartzKnifeContainer::fromNetwork,
+                QuartzKnifeContainer::open);
+        SecurityStationContainer.TYPE = registerContainer(registry, "securitystation",
+                SecurityStationContainer::fromNetwork, SecurityStationContainer::open);
+        SkyChestContainer.TYPE = registerContainer(registry, "skychest", SkyChestContainer::fromNetwork,
+                SkyChestContainer::open);
+        SpatialIOPortContainer.TYPE = registerContainer(registry, "spatialioport", SpatialIOPortContainer::fromNetwork,
+                SpatialIOPortContainer::open);
+        StorageBusContainer.TYPE = registerContainer(registry, "storagebus", StorageBusContainer::fromNetwork,
+                StorageBusContainer::open);
+        UpgradeableContainer.TYPE = registerContainer(registry, "upgradeable", UpgradeableContainer::fromNetwork,
+                UpgradeableContainer::open);
+        VibrationChamberContainer.TYPE = registerContainer(registry, "vibrationchamber",
+                VibrationChamberContainer::fromNetwork, VibrationChamberContainer::open);
+        WirelessContainer.TYPE = registerContainer(registry, "wireless", WirelessContainer::fromNetwork,
+                WirelessContainer::open);
+        WirelessTermContainer.TYPE = registerContainer(registry, "wirelessterm", WirelessTermContainer::fromNetwork,
+                WirelessTermContainer::open);
 
-        ContainerFluidFormationPlane.TYPE = registerContainer(registry, "fluid_formation_plane",
-                ContainerFluidFormationPlane::fromNetwork, ContainerFluidFormationPlane::open);
-        ContainerFluidIO.TYPE = registerContainer(registry, "fluid_io", ContainerFluidIO::fromNetwork,
-                ContainerFluidIO::open);
-        ContainerFluidInterface.TYPE = registerContainer(registry, "fluid_interface",
-                ContainerFluidInterface::fromNetwork, ContainerFluidInterface::open);
-        ContainerFluidLevelEmitter.TYPE = registerContainer(registry, "fluid_level_emitter",
-                ContainerFluidLevelEmitter::fromNetwork, ContainerFluidLevelEmitter::open);
-        ContainerFluidStorageBus.TYPE = registerContainer(registry, "fluid_storage_bus",
-                ContainerFluidStorageBus::fromNetwork, ContainerFluidStorageBus::open);
-        ContainerFluidTerminal.TYPE = registerContainer(registry, "fluid_terminal", ContainerFluidTerminal::fromNetwork,
-                ContainerFluidTerminal::open);
+        FluidFormationPlaneContainer.TYPE = registerContainer(registry, "fluid_formation_plane",
+                FluidFormationPlaneContainer::fromNetwork, FluidFormationPlaneContainer::open);
+        FluidIOContainer.TYPE = registerContainer(registry, "fluid_io", FluidIOContainer::fromNetwork,
+                FluidIOContainer::open);
+        FluidInterfaceContainer.TYPE = registerContainer(registry, "fluid_interface",
+                FluidInterfaceContainer::fromNetwork, FluidInterfaceContainer::open);
+        FluidLevelEmitterContainer.TYPE = registerContainer(registry, "fluid_level_emitter",
+                FluidLevelEmitterContainer::fromNetwork, FluidLevelEmitterContainer::open);
+        FluidStorageBusContainer.TYPE = registerContainer(registry, "fluid_storage_bus",
+                FluidStorageBusContainer::fromNetwork, FluidStorageBusContainer::open);
+        FluidTerminalContainer.TYPE = registerContainer(registry, "fluid_terminal", FluidTerminalContainer::fromNetwork,
+                FluidTerminalContainer::open);
 
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-            ScreenManager.registerFactory(ContainerGrinder.TYPE, GuiGrinder::new);
-            ScreenManager.registerFactory(ContainerQNB.TYPE, GuiQNB::new);
-            ScreenManager.registerFactory(ContainerSkyChest.TYPE, GuiSkyChest::new);
-            ScreenManager.registerFactory(ContainerChest.TYPE, GuiChest::new);
-            ScreenManager.registerFactory(ContainerWireless.TYPE, GuiWireless::new);
-            ScreenManager.<ContainerMEMonitorable, GuiMEMonitorable<ContainerMEMonitorable>>registerFactory(
-                    ContainerMEMonitorable.TYPE, GuiMEMonitorable::new);
-            ScreenManager.registerFactory(ContainerMEPortableCell.TYPE, GuiMEPortableCell::new);
-            ScreenManager.registerFactory(ContainerWirelessTerm.TYPE, GuiWirelessTerm::new);
-            ScreenManager.registerFactory(ContainerNetworkStatus.TYPE, GuiNetworkStatus::new);
-            ScreenManager.<ContainerCraftingCPU, GuiCraftingCPU<ContainerCraftingCPU>>registerFactory(
-                    ContainerCraftingCPU.TYPE, GuiCraftingCPU::new);
-            ScreenManager.registerFactory(ContainerNetworkTool.TYPE, GuiNetworkTool::new);
-            ScreenManager.registerFactory(ContainerQuartzKnife.TYPE, GuiQuartzKnife::new);
-            ScreenManager.registerFactory(ContainerDrive.TYPE, GuiDrive::new);
-            ScreenManager.registerFactory(ContainerVibrationChamber.TYPE, GuiVibrationChamber::new);
-            ScreenManager.registerFactory(ContainerCondenser.TYPE, GuiCondenser::new);
-            ScreenManager.registerFactory(ContainerInterface.TYPE, GuiInterface::new);
-            ScreenManager.registerFactory(ContainerFluidInterface.TYPE, GuiFluidInterface::new);
-            ScreenManager.<ContainerUpgradeable, GuiUpgradeable<ContainerUpgradeable>>registerFactory(
-                    ContainerUpgradeable.TYPE, GuiUpgradeable::new);
-            ScreenManager.registerFactory(ContainerFluidIO.TYPE, GuiFluidIO::new);
-            ScreenManager.registerFactory(ContainerIOPort.TYPE, GuiIOPort::new);
-            ScreenManager.registerFactory(ContainerStorageBus.TYPE, GuiStorageBus::new);
-            ScreenManager.registerFactory(ContainerFluidStorageBus.TYPE, GuiFluidStorageBus::new);
-            ScreenManager.registerFactory(ContainerFormationPlane.TYPE, GuiFormationPlane::new);
-            ScreenManager.registerFactory(ContainerFluidFormationPlane.TYPE, GuiFluidFormationPlane::new);
-            ScreenManager.registerFactory(ContainerPriority.TYPE, GuiPriority::new);
-            ScreenManager.registerFactory(ContainerSecurityStation.TYPE, GuiSecurityStation::new);
-            ScreenManager.registerFactory(ContainerCraftingTerm.TYPE, GuiCraftingTerm::new);
-            ScreenManager.registerFactory(ContainerPatternTerm.TYPE, GuiPatternTerm::new);
-            ScreenManager.registerFactory(ContainerFluidTerminal.TYPE, GuiFluidTerminal::new);
-            ScreenManager.registerFactory(ContainerLevelEmitter.TYPE, GuiLevelEmitter::new);
-            ScreenManager.registerFactory(ContainerFluidLevelEmitter.TYPE, GuiFluidLevelEmitter::new);
-            ScreenManager.registerFactory(ContainerSpatialIOPort.TYPE, GuiSpatialIOPort::new);
-            ScreenManager.registerFactory(ContainerInscriber.TYPE, GuiInscriber::new);
-            ScreenManager.registerFactory(ContainerCellWorkbench.TYPE, GuiCellWorkbench::new);
-            ScreenManager.registerFactory(ContainerMolecularAssembler.TYPE, GuiMolecularAssembler::new);
-            ScreenManager.registerFactory(ContainerCraftAmount.TYPE, GuiCraftAmount::new);
-            ScreenManager.registerFactory(ContainerCraftConfirm.TYPE, GuiCraftConfirm::new);
-            ScreenManager.registerFactory(ContainerInterfaceTerminal.TYPE, GuiInterfaceTerminal::new);
-            ScreenManager.registerFactory(ContainerCraftingStatus.TYPE, GuiCraftingStatus::new);
+            ScreenManager.registerFactory(GrinderContainer.TYPE, GrinderScreen::new);
+            ScreenManager.registerFactory(QNBContainer.TYPE, QNBScreen::new);
+            ScreenManager.registerFactory(SkyChestContainer.TYPE, SkyChestScreen::new);
+            ScreenManager.registerFactory(ChestContainer.TYPE, ChestScreen::new);
+            ScreenManager.registerFactory(WirelessContainer.TYPE, WirelessScreen::new);
+            ScreenManager.<MEMonitorableContainer, MEMonitorableScreen<MEMonitorableContainer>>registerFactory(
+                    MEMonitorableContainer.TYPE, MEMonitorableScreen::new);
+            ScreenManager.registerFactory(MEPortableCellContainer.TYPE, MEPortableCellScreen::new);
+            ScreenManager.registerFactory(WirelessTermContainer.TYPE, WirelessTermScreen::new);
+            ScreenManager.registerFactory(NetworkStatusContainer.TYPE, NetworkStatusScreen::new);
+            ScreenManager.<CraftingCPUContainer, CraftingCPUScreen<CraftingCPUContainer>>registerFactory(
+                    CraftingCPUContainer.TYPE, CraftingCPUScreen::new);
+            ScreenManager.registerFactory(NetworkToolContainer.TYPE, NetworkToolScreen::new);
+            ScreenManager.registerFactory(QuartzKnifeContainer.TYPE, QuartzKnifeScreen::new);
+            ScreenManager.registerFactory(DriveContainer.TYPE, DriveScreen::new);
+            ScreenManager.registerFactory(VibrationChamberContainer.TYPE, VibrationChamberScreen::new);
+            ScreenManager.registerFactory(CondenserContainer.TYPE, CondenserScreen::new);
+            ScreenManager.registerFactory(InterfaceContainer.TYPE, InterfaceScreen::new);
+            ScreenManager.registerFactory(FluidInterfaceContainer.TYPE, FluidInterfaceScreen::new);
+            ScreenManager.<UpgradeableContainer, UpgradeableScreen<UpgradeableContainer>>registerFactory(
+                    UpgradeableContainer.TYPE, UpgradeableScreen::new);
+            ScreenManager.registerFactory(FluidIOContainer.TYPE, FluidIOScreen::new);
+            ScreenManager.registerFactory(IOPortContainer.TYPE, IOPortScreen::new);
+            ScreenManager.registerFactory(StorageBusContainer.TYPE, StorageBusScreen::new);
+            ScreenManager.registerFactory(FluidStorageBusContainer.TYPE, FluidStorageBusScreen::new);
+            ScreenManager.registerFactory(FormationPlaneContainer.TYPE, FormationPlaneScreen::new);
+            ScreenManager.registerFactory(FluidFormationPlaneContainer.TYPE, FluidFormationPlaneScreen::new);
+            ScreenManager.registerFactory(PriorityContainer.TYPE, PriorityScreen::new);
+            ScreenManager.registerFactory(SecurityStationContainer.TYPE, SecurityStationScreen::new);
+            ScreenManager.registerFactory(CraftingTermContainer.TYPE, CraftingTermScreen::new);
+            ScreenManager.registerFactory(PatternTermContainer.TYPE, PatternTermScreen::new);
+            ScreenManager.registerFactory(FluidTerminalContainer.TYPE, FluidTerminalScreen::new);
+            ScreenManager.registerFactory(LevelEmitterContainer.TYPE, LevelEmitterScreen::new);
+            ScreenManager.registerFactory(FluidLevelEmitterContainer.TYPE, FluidLevelEmitterScreen::new);
+            ScreenManager.registerFactory(SpatialIOPortContainer.TYPE, SpatialIOPortScreen::new);
+            ScreenManager.registerFactory(InscriberContainer.TYPE, InscriberScreen::new);
+            ScreenManager.registerFactory(CellWorkbenchContainer.TYPE, CellWorkbenchScreen::new);
+            ScreenManager.registerFactory(MolecularAssemblerContainer.TYPE, MolecularAssemblerScreen::new);
+            ScreenManager.registerFactory(CraftAmountContainer.TYPE, CraftAmountScreen::new);
+            ScreenManager.registerFactory(CraftConfirmContainer.TYPE, CraftConfirmScreen::new);
+            ScreenManager.registerFactory(InterfaceTerminalContainer.TYPE, InterfaceTerminalScreen::new);
+            ScreenManager.registerFactory(CraftingStatusContainer.TYPE, CraftingStatusScreen::new);
         });
     }
 
     private <T extends AEBaseContainer> ContainerType<T> registerContainer(IForgeRegistry<ContainerType<?>> registry,
-            String id, IContainerFactory<T> factory, ContainerOpener.Opener<T> opener) {
+                                                                           String id, IContainerFactory<T> factory, ContainerOpener.Opener<T> opener) {
         ContainerType<T> type = IForgeContainerType.create(factory);
         type.setRegistryName(AppEng.MOD_ID, id);
         registry.register(type);
@@ -339,7 +339,7 @@ final class Registration {
         GrinderRecipe.TYPE = new AERecipeType<>(GrinderRecipeSerializer.INSTANCE.getRegistryName());
         InscriberRecipe.TYPE = new AERecipeType<>(InscriberRecipeSerializer.INSTANCE.getRegistryName());
 
-        ItemFacade facadeItem = (ItemFacade) Api.INSTANCE.definitions().items().facade().item();
+        FacadeItem facadeItem = (FacadeItem) Api.INSTANCE.definitions().items().facade().item();
         r.registerAll(DisassembleRecipe.SERIALIZER, GrinderRecipeSerializer.INSTANCE,
                 InscriberRecipeSerializer.INSTANCE, FacadeRecipe.getSerializer(facadeItem),
                 DisassembleRecipe.SERIALIZER);
@@ -527,7 +527,7 @@ final class Registration {
         /*
          * Whitelist AE2
          */
-        mr.whiteListTileEntity(AEBaseTile.class);
+        mr.whiteListTileEntity(AEBaseTileEntity.class);
 
         /*
          * world gen

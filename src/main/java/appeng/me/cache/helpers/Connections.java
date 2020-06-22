@@ -23,17 +23,17 @@ import java.util.HashMap;
 import net.minecraft.world.World;
 
 import appeng.api.networking.IGridNode;
-import appeng.parts.p2p.PartP2PTunnelME;
+import appeng.parts.p2p.MEP2PTunnelPart;
 import appeng.util.IWorldCallable;
 
 public class Connections implements IWorldCallable<Void> {
 
     private final HashMap<IGridNode, TunnelConnection> connections = new HashMap<>();
-    private final PartP2PTunnelME me;
+    private final MEP2PTunnelPart me;
     private boolean create = false;
     private boolean destroy = false;
 
-    public Connections(final PartP2PTunnelME o) {
+    public Connections(final MEP2PTunnelPart o) {
         this.me = o;
     }
 

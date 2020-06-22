@@ -36,16 +36,16 @@ import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.core.AELog;
 import appeng.me.cache.helpers.TunnelCollection;
-import appeng.parts.p2p.PartP2PTunnel;
-import appeng.parts.p2p.PartP2PTunnelME;
+import appeng.parts.p2p.P2PTunnelPart;
+import appeng.parts.p2p.MEP2PTunnelPart;
 
 public class P2PCache implements IGridCache {
-    private static final TunnelCollection<PartP2PTunnel> NULL_COLLECTION = new TunnelCollection<PartP2PTunnel>(null,
+    private static final TunnelCollection<P2PTunnelPart> NULL_COLLECTION = new TunnelCollection<P2PTunnelPart>(null,
             null);
 
     private final IGrid myGrid;
-    private final HashMap<Short, PartP2PTunnel> inputs = new HashMap<>();
-    private final Multimap<Short, PartP2PTunnel> outputs = LinkedHashMultimap.create();
+    private final HashMap<Short, P2PTunnelPart> inputs = new HashMap<>();
+    private final Multimap<Short, P2PTunnelPart> outputs = LinkedHashMultimap.create();
     private final Random frequencyGenerator;
 
     public P2PCache(final IGrid g) {
@@ -56,8 +56,8 @@ public class P2PCache implements IGridCache {
     @MENetworkEventSubscribe
     public void bootComplete(final MENetworkBootingStatusChange bootStatus) {
         final ITickManager tm = this.myGrid.getCache(ITickManager.class);
-        for (final PartP2PTunnel me : this.inputs.values()) {
-            if (me instanceof PartP2PTunnelME) {
+        for (final P2PTunnelPart me : this.inputs.values()) {
+            if (me instanceof MEP2PTunnelPart) {
                 tm.wakeDevice(me.getGridNode());
             }
         }
@@ -66,8 +66,8 @@ public class P2PCache implements IGridCache {
     @MENetworkEventSubscribe
     public void bootComplete(final MENetworkPowerStatusChange power) {
         final ITickManager tm = this.myGrid.getCache(ITickManager.class);
-        for (final PartP2PTunnel me : this.inputs.values()) {
-            if (me instanceof PartP2PTunnelME) {
+        for (final P2PTunnelPart me : this.inputs.values()) {
+            if (me instanceof MEP2PTunnelPart) {
                 tm.wakeDevice(me.getGridNode());
             }
         }
@@ -80,14 +80,14 @@ public class P2PCache implements IGridCache {
 
     @Override
     public void removeNode(final IGridNode node, final IGridHost machine) {
-        if (machine instanceof PartP2PTunnel) {
-            if (machine instanceof PartP2PTunnelME) {
+        if (machine instanceof P2PTunnelPart) {
+            if (machine instanceof MEP2PTunnelPart) {
                 if (!node.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
                     return;
                 }
             }
 
-            final PartP2PTunnel t = (PartP2PTunnel) machine;
+            final P2PTunnelPart t = (P2PTunnelPart) machine;
             // AELog.info( "rmv-" + (t.output ? "output: " : "input: ") + t.freq );
 
             if (t.isOutput()) {
@@ -102,14 +102,14 @@ public class P2PCache implements IGridCache {
 
     @Override
     public void addNode(final IGridNode node, final IGridHost machine) {
-        if (machine instanceof PartP2PTunnel) {
-            if (machine instanceof PartP2PTunnelME) {
+        if (machine instanceof P2PTunnelPart) {
+            if (machine instanceof MEP2PTunnelPart) {
                 if (!node.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
                     return;
                 }
             }
 
-            final PartP2PTunnel t = (PartP2PTunnel) machine;
+            final P2PTunnelPart t = (P2PTunnelPart) machine;
             // AELog.info( "add-" + (t.output ? "output: " : "input: ") + t.freq );
 
             if (t.isOutput()) {
@@ -138,14 +138,14 @@ public class P2PCache implements IGridCache {
     }
 
     private void updateTunnel(final short freq, final boolean updateOutputs, final boolean configChange) {
-        for (final PartP2PTunnel p : this.outputs.get(freq)) {
+        for (final P2PTunnelPart p : this.outputs.get(freq)) {
             if (configChange) {
                 p.onTunnelConfigChange();
             }
             p.onTunnelNetworkChange();
         }
 
-        final PartP2PTunnel in = this.inputs.get(freq);
+        final P2PTunnelPart in = this.inputs.get(freq);
         if (in != null) {
             if (configChange) {
                 in.onTunnelConfigChange();
@@ -154,7 +154,7 @@ public class P2PCache implements IGridCache {
         }
     }
 
-    public void updateFreq(final PartP2PTunnel t, final short newFrequency) {
+    public void updateFreq(final P2PTunnelPart t, final short newFrequency) {
         if (this.outputs.containsValue(t)) {
             this.outputs.remove(t.getFrequency(), t);
         }
@@ -192,14 +192,14 @@ public class P2PCache implements IGridCache {
         return newFrequency;
     }
 
-    public TunnelCollection<PartP2PTunnel> getOutputs(final short freq, final Class<? extends PartP2PTunnel> c) {
-        final PartP2PTunnel in = this.inputs.get(freq);
+    public TunnelCollection<P2PTunnelPart> getOutputs(final short freq, final Class<? extends P2PTunnelPart> c) {
+        final P2PTunnelPart in = this.inputs.get(freq);
 
         if (in == null) {
             return NULL_COLLECTION;
         }
 
-        final TunnelCollection<PartP2PTunnel> out = this.inputs.get(freq).getCollection(this.outputs.get(freq), c);
+        final TunnelCollection<P2PTunnelPart> out = this.inputs.get(freq).getCollection(this.outputs.get(freq), c);
 
         if (out == null) {
             return NULL_COLLECTION;
@@ -208,7 +208,7 @@ public class P2PCache implements IGridCache {
         return out;
     }
 
-    public PartP2PTunnel getInput(final short freq) {
+    public P2PTunnelPart getInput(final short freq) {
         return this.inputs.get(freq);
     }
 }

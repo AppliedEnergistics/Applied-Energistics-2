@@ -56,18 +56,18 @@ import appeng.client.me.SlotME;
 import appeng.container.guisync.GuiSync;
 import appeng.container.guisync.SyncData;
 import appeng.container.slot.AppEngSlot;
-import appeng.container.slot.SlotCraftingMatrix;
-import appeng.container.slot.SlotCraftingTerm;
-import appeng.container.slot.SlotDisabled;
-import appeng.container.slot.SlotFake;
-import appeng.container.slot.SlotInaccessible;
-import appeng.container.slot.SlotPlayerHotBar;
-import appeng.container.slot.SlotPlayerInv;
+import appeng.container.slot.CraftingMatrixSlot;
+import appeng.container.slot.CraftingTermSlot;
+import appeng.container.slot.DisabledSlot;
+import appeng.container.slot.FakeSlot;
+import appeng.container.slot.InaccessibleSlot;
+import appeng.container.slot.PlayerHotBarSlot;
+import appeng.container.slot.PlayerInvSlot;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketInventoryAction;
-import appeng.core.sync.packets.PacketTargetItemStack;
-import appeng.core.sync.packets.PacketValueConfig;
+import appeng.core.sync.packets.InventoryActionPacket;
+import appeng.core.sync.packets.TargetItemStackPacket;
+import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.InventoryAction;
 import appeng.me.helpers.PlayerSource;
@@ -97,12 +97,12 @@ public abstract class AEBaseContainer extends Container {
     private List<Slot> playerInventorySlots = null;
 
     public AEBaseContainer(ContainerType<?> containerType, int id, final PlayerInventory ip, final TileEntity myTile,
-            final IPart myPart) {
+                           final IPart myPart) {
         this(containerType, id, ip, myTile, myPart, null);
     }
 
     public AEBaseContainer(ContainerType<?> containerType, int id, final PlayerInventory ip, final TileEntity myTile,
-            final IPart myPart, final IGuiItemObject gio) {
+                           final IPart myPart, final IGuiItemObject gio) {
         super(containerType, id);
         this.invPlayer = ip;
         this.tileEntity = myTile;
@@ -171,7 +171,7 @@ public abstract class AEBaseContainer extends Container {
                 return;
             }
 
-            NetworkHandler.instance().sendToServer(new PacketTargetItemStack((AEItemStack) stack));
+            NetworkHandler.instance().sendToServer(new TargetItemStackPacket((AEItemStack) stack));
         }
 
         this.clientRequestedTargetItem = stack == null ? null : stack.copy();
@@ -268,9 +268,9 @@ public abstract class AEBaseContainer extends Container {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
                 if (this.locked.contains(j + i * 9 + 9)) {
-                    this.addSlot(new SlotDisabled(ih, j + i * 9 + 9, 8 + j * 18 + offsetX, offsetY + i * 18));
+                    this.addSlot(new DisabledSlot(ih, j + i * 9 + 9, 8 + j * 18 + offsetX, offsetY + i * 18));
                 } else {
-                    this.addSlot(new SlotPlayerInv(ih, j + i * 9 + 9, 8 + j * 18 + offsetX, offsetY + i * 18));
+                    this.addSlot(new PlayerInvSlot(ih, j + i * 9 + 9, 8 + j * 18 + offsetX, offsetY + i * 18));
                 }
             }
         }
@@ -278,9 +278,9 @@ public abstract class AEBaseContainer extends Container {
         // bind player hotbar
         for (int i = 0; i < 9; i++) {
             if (this.locked.contains(i)) {
-                this.addSlot(new SlotDisabled(ih, i, 8 + i * 18 + offsetX, 58 + offsetY));
+                this.addSlot(new DisabledSlot(ih, i, 8 + i * 18 + offsetX, 58 + offsetY));
             } else {
-                this.addSlot(new SlotPlayerHotBar(ih, i, 8 + i * 18 + offsetX, 58 + offsetY));
+                this.addSlot(new PlayerHotBarSlot(ih, i, 8 + i * 18 + offsetX, 58 + offsetY));
             }
         }
     }
@@ -325,7 +325,7 @@ public abstract class AEBaseContainer extends Container {
 
         final AppEngSlot clickSlot = (AppEngSlot) this.inventorySlots.get(idx); // require AE SLots!
 
-        if (clickSlot instanceof SlotDisabled || clickSlot instanceof SlotInaccessible) {
+        if (clickSlot instanceof DisabledSlot || clickSlot instanceof InaccessibleSlot) {
             return ItemStack.EMPTY;
         }
         if (clickSlot != null && clickSlot.getHasStack()) {
@@ -348,7 +348,7 @@ public abstract class AEBaseContainer extends Container {
                     for (final Object inventorySlot : this.inventorySlots) {
                         final AppEngSlot cs = (AppEngSlot) inventorySlot;
 
-                        if (!(cs.isPlayerSide()) && !(cs instanceof SlotFake) && !(cs instanceof SlotCraftingMatrix)) {
+                        if (!(cs.isPlayerSide()) && !(cs instanceof FakeSlot) && !(cs instanceof CraftingMatrixSlot)) {
                             if (cs.isItemValid(tis)) {
                                 selectedSlots.add(cs);
                             }
@@ -362,7 +362,7 @@ public abstract class AEBaseContainer extends Container {
                 for (final Object inventorySlot : this.inventorySlots) {
                     final AppEngSlot cs = (AppEngSlot) inventorySlot;
 
-                    if ((cs.isPlayerSide()) && !(cs instanceof SlotFake) && !(cs instanceof SlotCraftingMatrix)) {
+                    if ((cs.isPlayerSide()) && !(cs instanceof FakeSlot) && !(cs instanceof CraftingMatrixSlot)) {
                         if (cs.isItemValid(tis)) {
                             selectedSlots.add(cs);
                         }
@@ -380,7 +380,7 @@ public abstract class AEBaseContainer extends Container {
                         final AppEngSlot cs = (AppEngSlot) inventorySlot;
                         final ItemStack destination = cs.getStack();
 
-                        if (!(cs.isPlayerSide()) && cs instanceof SlotFake) {
+                        if (!(cs.isPlayerSide()) && cs instanceof FakeSlot) {
                             if (Platform.itemComparisons().isSameItem(destination, tis)) {
                                 break;
                             } else if (destination.isEmpty()) {
@@ -396,7 +396,7 @@ public abstract class AEBaseContainer extends Container {
             if (!tis.isEmpty()) {
                 // find partials..
                 for (final Slot d : selectedSlots) {
-                    if (d instanceof SlotDisabled || d instanceof SlotME) {
+                    if (d instanceof DisabledSlot || d instanceof SlotME) {
                         continue;
                     }
 
@@ -440,7 +440,7 @@ public abstract class AEBaseContainer extends Container {
                 // FIXME figure out whats the difference between this and the one above ?!
                 // any match..
                 for (final Slot d : selectedSlots) {
-                    if (d instanceof SlotDisabled || d instanceof SlotME) {
+                    if (d instanceof DisabledSlot || d instanceof SlotME) {
                         continue;
                     }
 
@@ -540,18 +540,18 @@ public abstract class AEBaseContainer extends Container {
         if (slot >= 0 && slot < this.inventorySlots.size()) {
             final Slot s = this.getSlot(slot);
 
-            if (s instanceof SlotCraftingTerm) {
+            if (s instanceof CraftingTermSlot) {
                 switch (action) {
                     case CRAFT_SHIFT:
                     case CRAFT_ITEM:
                     case CRAFT_STACK:
-                        ((SlotCraftingTerm) s).doClick(action, player);
+                        ((CraftingTermSlot) s).doClick(action, player);
                         this.updateHeld(player);
                     default:
                 }
             }
 
-            if (s instanceof SlotFake) {
+            if (s instanceof FakeSlot) {
                 final ItemStack hand = player.inventory.getItemStack();
 
                 switch (action) {
@@ -606,7 +606,7 @@ public abstract class AEBaseContainer extends Container {
                 final List<Slot> from = new ArrayList<>();
 
                 for (final Object j : this.inventorySlots) {
-                    if (j instanceof Slot && j.getClass() == s.getClass() && !(j instanceof SlotCraftingTerm)) {
+                    if (j instanceof Slot && j.getClass() == s.getClass() && !(j instanceof CraftingTermSlot)) {
                         from.add((Slot) j);
                     }
                 }
@@ -841,7 +841,7 @@ public abstract class AEBaseContainer extends Container {
 
     protected void updateHeld(final ServerPlayerEntity p) {
         if (Platform.isServer()) {
-            NetworkHandler.instance().sendTo(new PacketInventoryAction(InventoryAction.UPDATE_HAND, 0,
+            NetworkHandler.instance().sendTo(new InventoryActionPacket(InventoryAction.UPDATE_HAND, 0,
                     AEItemStack.fromItemStack(p.inventory.getItemStack())), p);
         }
     }
@@ -897,7 +897,7 @@ public abstract class AEBaseContainer extends Container {
                     }
 
                     if (this.getCustomName() != null) {
-                        NetworkHandler.instance().sendTo(new PacketValueConfig("CustomName", this.getCustomName()),
+                        NetworkHandler.instance().sendTo(new ConfigValuePacket("CustomName", this.getCustomName()),
                                 (ServerPlayerEntity) this.getPlayerInventory().player);
                     }
                 }

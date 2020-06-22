@@ -40,7 +40,7 @@ import appeng.client.gui.widgets.IScrollSource;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.core.AEConfig;
 import appeng.integration.abstraction.JEIFacade;
-import appeng.items.storage.ItemViewCell;
+import appeng.items.storage.ViewCellItem;
 import appeng.util.ItemSorters;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
@@ -90,7 +90,7 @@ public class ItemRepo {
     }
 
     public void setViewCell(final ItemStack[] list) {
-        this.myPartitionList = ItemViewCell.createFilter(list);
+        this.myPartitionList = ViewCellItem.createFilter(list);
         this.updateView();
     }
 

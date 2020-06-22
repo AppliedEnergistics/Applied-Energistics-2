@@ -43,7 +43,7 @@ import appeng.client.render.effects.*;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketValueConfig;
+import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.helpers.IMouseWheelItem;
 import appeng.server.ServerHelper;
 import appeng.util.Platform;
@@ -222,7 +222,7 @@ public class ClientHelper extends ServerHelper {
 
             if (mainHand || offHand) {
                 NetworkHandler.instance()
-                        .sendToServer(new PacketValueConfig("Item", me.getScrollDelta() > 0 ? "WheelUp" : "WheelDown"));
+                        .sendToServer(new ConfigValuePacket("Item", me.getScrollDelta() > 0 ? "WheelUp" : "WheelDown"));
                 me.setCanceled(true);
             }
         }

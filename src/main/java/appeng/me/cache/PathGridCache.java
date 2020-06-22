@@ -56,12 +56,12 @@ import appeng.me.pathfinding.ControllerChannelUpdater;
 import appeng.me.pathfinding.ControllerValidator;
 import appeng.me.pathfinding.IPathItem;
 import appeng.me.pathfinding.PathSegment;
-import appeng.tile.networking.TileController;
+import appeng.tile.networking.ControllerTileEntity;
 
 public class PathGridCache implements IPathingGrid {
 
     private final List<PathSegment> active = new ArrayList<>();
-    private final Set<TileController> controllers = new HashSet<>();
+    private final Set<ControllerTileEntity> controllers = new HashSet<>();
     private final Set<IGridNode> requireChannels = new HashSet<>();
     private final Set<IGridNode> blockDense = new HashSet<>();
     private final IGrid myGrid;
@@ -130,11 +130,11 @@ public class PathGridCache implements IPathingGrid {
 
                 // myGrid.getPivot().beginVisit( new AdHocChannelUpdater( 0 )
                 // );
-                for (final IGridNode node : this.myGrid.getMachines(TileController.class)) {
+                for (final IGridNode node : this.myGrid.getMachines(ControllerTileEntity.class)) {
                     closedList.add((IPathItem) node);
                     for (final IGridConnection gcc : node.getConnections()) {
                         final GridConnection gc = (GridConnection) gcc;
-                        if (!(gc.getOtherSide(node).getMachine() instanceof TileController)) {
+                        if (!(gc.getOtherSide(node).getMachine() instanceof ControllerTileEntity)) {
                             final List<IPathItem> open = new ArrayList<>();
                             closedList.add(gc);
                             open.add(gc);
@@ -160,9 +160,9 @@ public class PathGridCache implements IPathingGrid {
 
             if (this.active.isEmpty() && this.ticksUntilReady <= 0) {
                 if (this.controllerState == ControllerState.CONTROLLER_ONLINE) {
-                    final Iterator<TileController> controllerIterator = this.controllers.iterator();
+                    final Iterator<ControllerTileEntity> controllerIterator = this.controllers.iterator();
                     if (controllerIterator.hasNext()) {
-                        final TileController controller = controllerIterator.next();
+                        final ControllerTileEntity controller = controllerIterator.next();
                         controller.getGridNode(AEPartLocation.INTERNAL).beginVisit(new ControllerChannelUpdater());
                     }
                 }
@@ -179,7 +179,7 @@ public class PathGridCache implements IPathingGrid {
 
     @Override
     public void removeNode(final IGridNode gridNode, final IGridHost machine) {
-        if (machine instanceof TileController) {
+        if (machine instanceof ControllerTileEntity) {
             this.controllers.remove(machine);
             this.recalculateControllerNextTick = true;
         }
@@ -199,8 +199,8 @@ public class PathGridCache implements IPathingGrid {
 
     @Override
     public void addNode(final IGridNode gridNode, final IGridHost machine) {
-        if (machine instanceof TileController) {
-            this.controllers.add((TileController) machine);
+        if (machine instanceof ControllerTileEntity) {
+            this.controllers.add((ControllerTileEntity) machine);
             this.recalculateControllerNextTick = true;
         }
 

@@ -27,15 +27,15 @@ import net.minecraft.util.Direction;
 
 import appeng.api.parts.IPart;
 
-public class CableBusTESR extends TileEntityRenderer<TileCableBus> {
+public class CableBusTESR extends TileEntityRenderer<CableBusTileEntity> {
 
     public CableBusTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
     @Override
-    public void render(TileCableBus te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
-            int combinedLightIn, int combinedOverlayIn) {
+    public void render(CableBusTileEntity te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
+                       int combinedLightIn, int combinedOverlayIn) {
         if (!te.getCableBus().isRequiresDynamicRender()) {
             return;
         }

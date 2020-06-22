@@ -53,7 +53,7 @@ import appeng.core.AppEng;
  * as the light strip when it's powered.
  */
 @OnlyIn(Dist.CLIENT)
-public class MolecularAssemblerRenderer extends TileEntityRenderer<TileMolecularAssembler> {
+public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAssemblerTileEntity> {
 
     public static final ResourceLocation LIGHTS_MODEL = new ResourceLocation(AppEng.MOD_ID,
             "block/molecular_assembler_lights");
@@ -67,8 +67,8 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<TileMolecular
     }
 
     @Override
-    public void render(TileMolecularAssembler molecularAssembler, float partialTicks, MatrixStack ms,
-            IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(MolecularAssemblerTileEntity molecularAssembler, float partialTicks, MatrixStack ms,
+                       IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
 
         AssemblerAnimationStatus status = molecularAssembler.getAnimationStatus();
         if (status != null) {
@@ -105,8 +105,8 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<TileMolecular
                 lightsModel, 1, 1, 1, combinedLightIn, combinedOverlayIn, EmptyModelData.INSTANCE);
     }
 
-    private void renderStatus(TileMolecularAssembler molecularAssembler, MatrixStack ms, IRenderTypeBuffer bufferIn,
-            int combinedLightIn, AssemblerAnimationStatus status) {
+    private void renderStatus(MolecularAssemblerTileEntity molecularAssembler, MatrixStack ms, IRenderTypeBuffer bufferIn,
+                              int combinedLightIn, AssemblerAnimationStatus status) {
         double centerX = molecularAssembler.getPos().getX() + 0.5f;
         double centerY = molecularAssembler.getPos().getY() + 0.5f;
         double centerZ = molecularAssembler.getPos().getZ() + 0.5f;

@@ -29,18 +29,18 @@ import net.minecraft.item.Items;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import appeng.items.parts.ItemFacade;
+import appeng.items.parts.FacadeItem;
 
 public final class FacadeItemGroup extends ItemGroup {
 
-    private final ItemFacade itemFacade;
+    private final FacadeItem itemFacade;
 
     private List<ItemStack> subTypes = null;
 
     public FacadeItemGroup() {
         super("appliedenergistics2.facades");
 
-        itemFacade = (ItemFacade) Api.INSTANCE.definitions().items().facade().item();
+        itemFacade = (FacadeItem) Api.INSTANCE.definitions().items().facade().item();
     }
 
     @Override

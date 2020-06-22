@@ -67,11 +67,11 @@ import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
-import appeng.items.parts.ItemPart;
+import appeng.items.parts.PartItem;
 import appeng.items.parts.PartType;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.IGridProxyable;
-import appeng.parts.networking.PartCable;
+import appeng.parts.networking.CablePart;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
@@ -88,7 +88,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
         Preconditions.checkNotNull(is);
 
         this.is = is;
-        this.proxy = new AENetworkProxy(this, "part", is, this instanceof PartCable);
+        this.proxy = new AENetworkProxy(this, "part", is, this instanceof CablePart);
         this.proxy.setValidSides(EnumSet.noneOf(Direction.class));
     }
 
@@ -98,11 +98,11 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
     public PartType getType() {
         Item item = this.is.getItem();
-        if (!(item instanceof ItemPart)) {
+        if (!(item instanceof PartItem)) {
             return PartType.INVALID_TYPE;
         }
 
-        return ((ItemPart<?>) item).getType();
+        return ((PartItem<?>) item).getType();
     }
 
     @Override

@@ -44,7 +44,7 @@ import net.minecraftforge.common.util.Constants;
 import appeng.api.AEApi;
 import appeng.api.config.YesNo;
 import appeng.api.exceptions.FailedConnectionException;
-import appeng.api.implementations.parts.IPartCable;
+import appeng.api.implementations.parts.ICablePart;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.*;
@@ -59,7 +59,7 @@ import appeng.core.AELog;
 import appeng.facade.FacadeContainer;
 import appeng.helpers.AEMultiTile;
 import appeng.me.GridConnection;
-import appeng.parts.networking.PartCable;
+import appeng.parts.networking.CablePart;
 import appeng.util.Platform;
 
 public class CableBusContainer extends CableBusStorage implements AEMultiTile, ICableBusContainer {
@@ -123,11 +123,11 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
             final IPart bp = bi.createPart(is);
             if (bp != null) {
-                if (bp instanceof IPartCable) {
+                if (bp instanceof ICablePart) {
                     boolean canPlace = true;
                     for (final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS) {
                         if (this.getPart(d) != null
-                                && !this.getPart(d).canBePlacedOn(((IPartCable) bp).supportsBuses())) {
+                                && !this.getPart(d).canBePlacedOn(((ICablePart) bp).supportsBuses())) {
                             canPlace = false;
                         }
                     }
@@ -137,9 +137,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                     }
 
                     return this.getPart(AEPartLocation.INTERNAL) == null;
-                } else if (!(bp instanceof IPartCable) && side != AEPartLocation.INTERNAL) {
+                } else if (!(bp instanceof ICablePart) && side != AEPartLocation.INTERNAL) {
                     final IPart cable = this.getPart(AEPartLocation.INTERNAL);
-                    if (cable != null && !bp.canBePlacedOn(((IPartCable) cable).supportsBuses())) {
+                    if (cable != null && !bp.canBePlacedOn(((ICablePart) cable).supportsBuses())) {
                         return false;
                     }
 
@@ -161,11 +161,11 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                 is.setCount(1);
 
                 final IPart bp = bi.createPart(is);
-                if (bp instanceof IPartCable) {
+                if (bp instanceof ICablePart) {
                     boolean canPlace = true;
                     for (final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS) {
                         if (this.getPart(d) != null
-                                && !this.getPart(d).canBePlacedOn(((IPartCable) bp).supportsBuses())) {
+                                && !this.getPart(d).canBePlacedOn(((ICablePart) bp).supportsBuses())) {
                             canPlace = false;
                         }
                     }
@@ -178,7 +178,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                         return null;
                     }
 
-                    this.setCenter((IPartCable) bp);
+                    this.setCenter((ICablePart) bp);
                     bp.setPartHostInfo(AEPartLocation.INTERNAL, this, this.tcb.getTile());
 
                     if (player != null) {
@@ -215,9 +215,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                     this.markForSave();
                     this.partChanged();
                     return AEPartLocation.INTERNAL;
-                } else if (bp != null && !(bp instanceof IPartCable) && side != AEPartLocation.INTERNAL) {
+                } else if (bp != null && !(bp instanceof ICablePart) && side != AEPartLocation.INTERNAL) {
                     final IPart cable = this.getPart(AEPartLocation.INTERNAL);
-                    if (cable != null && !bp.canBePlacedOn(((IPartCable) cable).supportsBuses())) {
+                    if (cable != null && !bp.canBePlacedOn(((ICablePart) cable).supportsBuses())) {
                         return null;
                     }
 
@@ -315,7 +315,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     @Override
     public AEColor getColor() {
         if (this.getCenter() != null) {
-            final IPartCable c = this.getCenter();
+            final ICablePart c = this.getCenter();
             return c.getCableColor();
         }
         return AEColor.TRANSPARENT;
@@ -576,7 +576,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         }
 
         if (this.getCenter() != null) {
-            final IPartCable c = this.getCenter();
+            final ICablePart c = this.getCenter();
             return c.getCableConnectionType();
         }
         return AECableType.NONE;
@@ -584,7 +584,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
     @Override
     public float getCableConnectionLength(AECableType cable) {
-        return this.getPart(AEPartLocation.INTERNAL) instanceof IPartCable
+        return this.getPart(AEPartLocation.INTERNAL) instanceof ICablePart
                 ? this.getPart(AEPartLocation.INTERNAL).getCableConnectionLength(cable)
                 : -1;
     }
@@ -609,7 +609,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
             final IPart part = this.getPart(s);
             if (part != null) {
-                if (ignoreConnections && part instanceof IPartCable) {
+                if (ignoreConnections && part instanceof ICablePart) {
                     bch.addBox(6.0, 6.0, 6.0, 10.0, 10.0, 10.0);
                 } else {
                     part.getBoxes(bch);
@@ -917,7 +917,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     public boolean recolourBlock(final Direction side, final AEColor colour, final PlayerEntity who) {
         final IPart cable = this.getPart(AEPartLocation.INTERNAL);
         if (cable != null) {
-            final IPartCable pc = (IPartCable) cable;
+            final ICablePart pc = (ICablePart) cable;
             return pc.changeColor(colour, who);
         }
         return false;
@@ -933,7 +933,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
     @Override
     public CableBusRenderState getRenderState() {
-        final PartCable cable = (PartCable) this.getCenter();
+        final CablePart cable = (CablePart) this.getCenter();
 
         final CableBusRenderState renderState = new CableBusRenderState();
 

@@ -18,13 +18,13 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import appeng.block.storage.DriveSlotState;
 import appeng.client.render.FacingToRotation;
-import appeng.tile.storage.TileDrive;
+import appeng.tile.storage.DriveTileEntity;
 
 /**
  * Renders the drive cell status indicators.
  */
 @OnlyIn(Dist.CLIENT)
-public class DriveLedTileEntityRenderer extends TileEntityRenderer<TileDrive> {
+public class DriveLedTileEntityRenderer extends TileEntityRenderer<DriveTileEntity> {
 
     private static final EnumMap<DriveSlotState, Vector3f> STATE_COLORS;
 
@@ -68,8 +68,8 @@ public class DriveLedTileEntityRenderer extends TileEntityRenderer<TileDrive> {
     }
 
     @Override
-    public void render(TileDrive drive, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
-            int combinedLightIn, int combinedOverlayIn) {
+    public void render(DriveTileEntity drive, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
+                       int combinedLightIn, int combinedOverlayIn) {
 
         if (drive.getCellCount() != 10) {
             throw new IllegalStateException("Expected drive to have 10 slots");
@@ -119,7 +119,7 @@ public class DriveLedTileEntityRenderer extends TileEntityRenderer<TileDrive> {
 
     }
 
-    private Vector3f getColorForSlot(TileDrive drive, int slot, float partialTicks) {
+    private Vector3f getColorForSlot(DriveTileEntity drive, int slot, float partialTicks) {
         DriveSlotState state = DriveSlotState.fromCellStatus(drive.getCellStatus(slot));
         if (state == DriveSlotState.EMPTY) {
             return null;

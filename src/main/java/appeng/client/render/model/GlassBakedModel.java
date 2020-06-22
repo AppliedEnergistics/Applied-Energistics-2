@@ -52,7 +52,7 @@ import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 
-import appeng.decorative.solid.BlockQuartzGlass;
+import appeng.decorative.solid.QuartzGlassBlock;
 import appeng.decorative.solid.GlassState;
 
 class GlassBakedModel implements IDynamicBakedModel {
@@ -322,7 +322,7 @@ class GlassBakedModel implements IDynamicBakedModel {
     }
 
     private static boolean isGlassBlock(IBlockReader world, BlockPos pos, Direction facing) {
-        return world.getBlockState(pos.offset(facing)).getBlock() instanceof BlockQuartzGlass;
+        return world.getBlockState(pos.offset(facing)).getBlock() instanceof QuartzGlassBlock;
     }
 
 }

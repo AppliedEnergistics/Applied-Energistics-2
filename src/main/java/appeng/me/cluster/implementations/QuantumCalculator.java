@@ -30,15 +30,15 @@ import appeng.api.util.WorldCoord;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
-import appeng.tile.qnb.TileQuantumBridge;
+import appeng.tile.qnb.QuantumBridgeTileEntity;
 
 public class QuantumCalculator extends MBCalculator {
 
-    private final TileQuantumBridge tqb;
+    private final QuantumBridgeTileEntity tqb;
 
     public QuantumCalculator(final IAEMultiBlock t) {
         super(t);
-        this.tqb = (TileQuantumBridge) t;
+        this.tqb = (QuantumBridgeTileEntity) t;
     }
 
     @Override
@@ -107,7 +107,7 @@ public class QuantumCalculator extends MBCalculator {
         for (int x = min.x; x <= max.x; x++) {
             for (int y = min.y; y <= max.y; y++) {
                 for (int z = min.z; z <= max.z; z++) {
-                    final TileQuantumBridge te = (TileQuantumBridge) w.getTileEntity(new BlockPos(x, y, z));
+                    final QuantumBridgeTileEntity te = (QuantumBridgeTileEntity) w.getTileEntity(new BlockPos(x, y, z));
 
                     num++;
                     final byte flags;
@@ -132,7 +132,7 @@ public class QuantumCalculator extends MBCalculator {
 
     @Override
     public boolean isValidTile(final TileEntity te) {
-        return te instanceof TileQuantumBridge;
+        return te instanceof QuantumBridgeTileEntity;
     }
 
     private boolean isBlockAtLocation(final IBlockReader w, final BlockPos pos, final IBlockDefinition def) {
