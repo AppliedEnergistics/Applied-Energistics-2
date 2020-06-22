@@ -174,8 +174,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot {
             }
         }
 
-        return world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, ic, world).map(r -> r.getRemainingItems(ic))
-                .orElse(NonNullList.create());
+        return super.getRemainingItems(ic, world);
     }
 
     private int capCraftingAttempts(final int maxTimesToCraft) {

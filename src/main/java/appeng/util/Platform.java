@@ -296,22 +296,6 @@ public class Platform {
         return true;
     }
 
-//
-//	/*
-//	 * Checks to see if a block is air?
-//	 */
-//	public static boolean isBlockAir( final World w, final BlockPos pos )
-//	{
-//		try
-//		{
-//			return w.getBlockState( pos ).getBlock().isAir( w.getBlockState( pos ), w, pos );
-//		}
-//		catch( final Throwable e )
-//		{
-//			return false;
-//		}
-//	}
-
     public static ItemStack[] getBlockDrops(final World w, final BlockPos pos) {
         // FIXME: Check assumption here and if this could only EVER be called with a
         // server world
@@ -328,52 +312,6 @@ public class Platform {
 
         return out.toArray(new ItemStack[0]);
     }
-
-//	public static AEPartLocation cycleOrientations( final AEPartLocation dir, final boolean upAndDown )
-//	{
-//		if( upAndDown )
-//		{
-//			switch( dir )
-//			{
-//				case NORTH:
-//					return AEPartLocation.SOUTH;
-//				case SOUTH:
-//					return AEPartLocation.EAST;
-//				case EAST:
-//					return AEPartLocation.WEST;
-//				case WEST:
-//					return AEPartLocation.NORTH;
-//				case UP:
-//					return AEPartLocation.UP;
-//				case DOWN:
-//					return AEPartLocation.DOWN;
-//				case INTERNAL:
-//					return AEPartLocation.INTERNAL;
-//			}
-//		}
-//		else
-//		{
-//			switch( dir )
-//			{
-//				case UP:
-//					return AEPartLocation.DOWN;
-//				case DOWN:
-//					return AEPartLocation.NORTH;
-//				case NORTH:
-//					return AEPartLocation.SOUTH;
-//				case SOUTH:
-//					return AEPartLocation.EAST;
-//				case EAST:
-//					return AEPartLocation.WEST;
-//				case WEST:
-//					return AEPartLocation.UP;
-//				case INTERNAL:
-//					return AEPartLocation.INTERNAL;
-//			}
-//		}
-//
-//		return AEPartLocation.INTERNAL;
-//	}
 
     /*
      * Generates Item entities in the world similar to how items are generally
@@ -550,38 +488,6 @@ public class Platform {
         FAKE_PLAYERS.put(w, p);
         return p;
     }
-//
-//	public static int MC2MEColor( final int color )
-//	{
-//		switch( color )
-//		{
-//			case 4: // "blue"
-//				return 0;
-//			case 0: // "black"
-//				return 1;
-//			case 15: // "white"
-//				return 2;
-//			case 3: // "brown"
-//				return 3;
-//			case 1: // "red"
-//				return 4;
-//			case 11: // "yellow"
-//				return 5;
-//			case 2: // "green"
-//				return 6;
-//
-//			case 5: // "purple"
-//			case 6: // "cyan"
-//			case 7: // "silver"
-//			case 8: // "gray"
-//			case 9: // "pink"
-//			case 10: // "lime"
-//			case 12: // "lightBlue"
-//			case 13: // "magenta"
-//			case 14: // "orange"
-//		}
-//		return -1;
-//	}
 
     /**
      * Returns a random element from the given collection.
@@ -789,12 +695,6 @@ public class Platform {
         }
         return forward;
     }
-
-//	@OnlyIn( Dist.CLIENT )
-//	public static String gui_localize( final String string )
-//	{
-//		return I18n.format( string );
-//	}
 
     public static LookDirection getPlayerRay(final PlayerEntity playerIn) {
         double reachDistance = playerIn.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
@@ -1274,50 +1174,11 @@ public class Platform {
         return false;
     }
 
-//	public static List<ItemStack> findPreferred( final ItemStack[] is )
-//	{
-//		final IParts parts = AEApi.instance().definitions().parts();
-//
-//		for( final ItemStack stack : is )
-//		{
-//			if( parts.cableGlass().sameAs( AEColor.TRANSPARENT, stack ) )
-//			{
-//				return Collections.singletonList( stack );
-//			}
-//
-//			if( parts.cableCovered().sameAs( AEColor.TRANSPARENT, stack ) )
-//			{
-//				return Collections.singletonList( stack );
-//			}
-//
-//			if( parts.cableSmart().sameAs( AEColor.TRANSPARENT, stack ) )
-//			{
-//				return Collections.singletonList( stack );
-//			}
-//
-//			if( parts.cableDenseSmart().sameAs( AEColor.TRANSPARENT, stack ) )
-//			{
-//				return Collections.singletonList( stack );
-//			}
-//		}
-//
-//		return Lists.newArrayList( is );
-//	}
-
     public static float getEyeOffset(final PlayerEntity player) {
         assert player.world.isRemote : "Valid only on client";
         // FIXME: The entire premise of this seems broken
         return (float) (player.getPosY() + player.getEyeHeight() - /* FIXME player.getDefaultEyeHeight() */ 1.62F);
     }
-//
-//	// public static void addStat( final int playerID, final Achievement achievement )
-//	// {
-//	// final PlayerEntity p = AEApi.instance().registries().players().findPlayer( playerID );
-//	// if( p != null )
-//	// {
-//	// p.addStat( achievement, 1 );
-//	// }
-//	// }
 
     public static boolean isRecipePrioritized(final ItemStack what) {
         final IMaterials materials = AEApi.instance().definitions().materials();
