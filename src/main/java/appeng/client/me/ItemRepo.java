@@ -30,7 +30,6 @@ import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.AEApi;
 import appeng.api.config.SearchBoxMode;
-import appeng.api.config.Settings;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.config.YesNo;
@@ -181,14 +180,11 @@ public class ItemRepo {
         final Enum SortDir = this.sortSrc.getSortDir();
 
         ItemSorters.setDirection((appeng.api.config.SortDir) SortDir);
-        ItemSorters.init();
 
         if (SortBy == SortOrder.MOD) {
             Collections.sort(this.view, ItemSorters.CONFIG_BASED_SORT_BY_MOD);
         } else if (SortBy == SortOrder.AMOUNT) {
             Collections.sort(this.view, ItemSorters.CONFIG_BASED_SORT_BY_SIZE);
-        } else if (SortBy == SortOrder.INVTWEAKS) {
-            Collections.sort(this.view, ItemSorters.CONFIG_BASED_SORT_BY_INV_TWEAKS);
         } else {
             Collections.sort(this.view, ItemSorters.CONFIG_BASED_SORT_BY_NAME);
         }

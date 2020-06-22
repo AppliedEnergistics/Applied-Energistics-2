@@ -51,7 +51,7 @@ public enum ButtonToolTips {
 
     Blocking, NonBlocking,
 
-    LevelType, LevelType_Energy, LevelType_Item, InventoryTweaks, TerminalStyle, TerminalStyle_Full, TerminalStyle_Tall,
+    LevelType, LevelType_Energy, LevelType_Item, TerminalStyle, TerminalStyle_Full, TerminalStyle_Tall,
     TerminalStyle_Small,
 
     Stash, StashDesc, Encode, EncodeDescription, Substitutions, SubstitutionsOn, SubstitutionsOff,

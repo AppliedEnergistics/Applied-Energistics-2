@@ -50,11 +50,12 @@ public class TileItemGen extends AEBaseTile {
             for (final Item mi : ForgeRegistries.ITEMS) {
                 if (mi != null && mi != Items.AIR) {
                     if (mi.isDamageable()) {
-                        // FIXME: Rethink if this branch is necessary
-                        for (int dmg = 0; dmg < mi.getMaxDamage(); dmg++) {
-                            ItemStack item = new ItemStack(mi, 1);
-                            item.setDamage(dmg);
-                            POSSIBLE_ITEMS.add(item);
+                        ItemStack sampleStack = new ItemStack(mi);
+                        int maxDamage = sampleStack.getMaxDamage();
+                        for (int dmg = 0; dmg < maxDamage; dmg++) {
+                            ItemStack is = sampleStack.copy();
+                            is.setDamage(dmg);
+                            POSSIBLE_ITEMS.add(is);
                         }
                     } else {
                         if (mi.getGroup() == null) {

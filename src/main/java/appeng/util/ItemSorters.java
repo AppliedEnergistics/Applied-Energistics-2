@@ -52,35 +52,6 @@ public class ItemSorters {
         return applyDirection(cmp);
     };
 
-    // FIXME private static IInvTweaks api;
-
-    public static final Comparator<IAEItemStack> CONFIG_BASED_SORT_BY_INV_TWEAKS = (o1, o2) -> {
-        // FIXME if( api == null )
-        // FIXME {
-        return CONFIG_BASED_SORT_BY_NAME.compare(o1, o2);
-        // FIXME }
-
-        // FIXME final int cmp = api.compareItems( o1.createItemStack(),
-        // o2.createItemStack() );
-        // FIXME return applyDirection( cmp );
-    };
-
-    public static void init() {
-        // FIXME if( api != null )
-        // FIXME {
-        // FIXME return;
-        // FIXME }
-
-        // FIXME if( Integrations.invTweaks().isEnabled() )
-        // FIXME {
-        // FIXME api = Integrations.invTweaks();
-        // FIXME }
-        // FIXME else
-        // FIXME {
-        // FIXME api = null;
-        // FIXME }
-    }
-
     private static SortDir getDirection() {
         return Direction;
     }

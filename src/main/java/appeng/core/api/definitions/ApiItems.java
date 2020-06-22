@@ -158,15 +158,12 @@ public final class ApiItems implements IItems {
                 .itemGroup(ItemGroup.COMBAT).addFeatures(AEFeature.QUARTZ_SWORD).build();
         this.certusQuartzWrench = certusTools.item("certus_quartz_wrench", ToolQuartzWrench::new)
                 .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1)).addFeatures(AEFeature.QUARTZ_WRENCH)
-// FIXME				.bootstrap( item -> (IOreDictComponent) side -> OreDictionary.registerOre( "itemQuartzWrench", new ItemStack( item ) ) )
                 .build();
         this.certusQuartzKnife = certusTools
                 .item("certus_quartz_cutting_knife",
                         props -> new ToolQuartzCuttingKnife(props, AEFeature.CERTUS_QUARTZ_TOOLS))
                 .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1).maxDamage(50).setNoRepair())
-                .addFeatures(AEFeature.QUARTZ_KNIFE)
-// FIXME				.bootstrap( item -> (IOreDictComponent) side -> OreDictionary.registerOre( "itemQuartzKnife", new ItemStack( item ) ) )
-                .build();
+                .addFeatures(AEFeature.QUARTZ_KNIFE).build();
 
         FeatureFactory netherTools = registry.features(AEFeature.NETHER_QUARTZ_TOOLS);
         this.netherQuartzAxe = netherTools
@@ -186,15 +183,12 @@ public final class ApiItems implements IItems {
                 .itemGroup(ItemGroup.COMBAT).addFeatures(AEFeature.QUARTZ_SWORD).build();
         this.netherQuartzWrench = netherTools.item("nether_quartz_wrench", ToolQuartzWrench::new)
                 .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1)).addFeatures(AEFeature.QUARTZ_WRENCH)
-// FIXME				.bootstrap( item -> (IOreDictComponent) side -> OreDictionary.registerOre( "itemQuartzWrench", new ItemStack( item ) ) )
                 .build();
         this.netherQuartzKnife = netherTools
                 .item("nether_quartz_cutting_knife",
                         props -> new ToolQuartzCuttingKnife(props, AEFeature.NETHER_QUARTZ_TOOLS))
                 .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1).maxDamage(50).setNoRepair())
-                .addFeatures(AEFeature.QUARTZ_KNIFE)
-// FIXME				.bootstrap( item -> (IOreDictComponent) side -> OreDictionary.registerOre( "itemQuartzKnife", new ItemStack( item ) ) )
-                .build();
+                .addFeatures(AEFeature.QUARTZ_KNIFE).build();
 
         Consumer<Item.Properties> chargedDefaults = props -> props.maxStackSize(1).maxDamage(32).setNoRepair();
 

@@ -29,62 +29,10 @@ public class BlockQuartzOre extends AEBaseBlock {
         super(props);
     }
 
-    // FIXME: Loot Tables
-//	@Override
-//	public int quantityDropped( BlockState state, int fortune, Random rand )
-//	{
-//		if( fortune > 0 && Item.getItemFromBlock( this ) != this.getItemDropped( null, rand, fortune ) )
-//		{
-//			int j = rand.nextInt( fortune + 2 ) - 1;
-//
-//			if( j < 0 )
-//			{
-//				j = 0;
-//			}
-//
-//			return this.quantityDropped( rand ) * ( j + 1 );
-//		}
-//		else
-//		{
-//			return this.quantityDropped( rand );
-//		}
-//	}
-
-//	@Override
-//	public int quantityDropped( final Random rand )
-//	{
-//		return 1 + rand.nextInt( 2 );
-//	}
-//
-
     @Override
     public int getExpDrop(BlockState state, net.minecraft.world.IWorldReader reader, BlockPos pos, int fortune,
             int silktouch) {
         return silktouch == 0 ? MathHelper.nextInt(RANDOM, 2, 5) : 0;
     }
 
-    // FIXME: loot tables
-//	@Override
-//	public Item getItemDropped( final BlockState state, final Random rand, final int fortune )
-//	{
-//		return AEApi.instance()
-//				.definitions()
-//				.materials()
-//				.certusQuartzCrystal()
-//				.maybeItem()
-//				.orElseThrow( () -> new MissingDefinitionException( "Tried to access certus quartz crystal, even though they are disabled" ) );
-//	}
-
-    // FIXME: loot tables
-//	@Override
-//	public int damageDropped( final BlockState state )
-//	{
-//		return AEApi.instance()
-//				.definitions()
-//				.materials()
-//				.certusQuartzCrystal()
-//				.maybeStack( 1 )
-//				.orElseThrow( () -> new MissingDefinitionException( "Tried to access certus quartz crystal, even though they are disabled" ) )
-//				.getItemDamage();
-//	}
 }

@@ -18,9 +18,14 @@
 
 package appeng.spatial;
 
+import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.GenerationSettings;
+import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.surfacebuilders.SurfaceBuilder;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -38,14 +43,6 @@ public class StorageCellBiome extends Biome {
                 .precipitation(RainType.NONE).category(Category.NONE).depth(0).scale(1)
                 // Copied from the vanilla void biome
                 .temperature(0.5F).downfall(0.5F).waterColor(4159204).waterFogColor(329011).parent(null));
-// FIXME		this.decorator.treesPerChunk = 0;
-// FIXME		this.decorator.flowersPerChunk = 0;
-// FIXME		this.decorator.grassPerChunk = 0;
-// FIXME
-// FIXME		this.spawnableMonsterList.clear();
-// FIXME		this.spawnableCreatureList.clear();
-// FIXME		this.spawnableWaterCreatureList.clear();
-// FIXME		this.spawnableCaveCreatureList.clear();
     }
 
     @Override
@@ -69,4 +66,9 @@ public class StorageCellBiome extends Biome {
         return false;
     }
 
+    @Override
+    public void decorate(GenerationStage.Decoration stage, ChunkGenerator<? extends GenerationSettings> chunkGenerator,
+            IWorld worldIn, long seed, SharedSeedRandom random, BlockPos pos) {
+        // Nothing should ever generate here...
+    }
 }

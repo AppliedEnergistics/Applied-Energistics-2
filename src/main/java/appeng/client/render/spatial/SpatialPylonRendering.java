@@ -30,22 +30,10 @@ import appeng.core.AppEng;
 
 public class SpatialPylonRendering extends BlockRenderingCustomizer {
 
-    private static final ResourceLocation MODEL_ID = new ResourceLocation(AppEng.MOD_ID,
-            "models/blocks/spatial_pylon/builtin");
-
     @Override
     @OnlyIn(Dist.CLIENT)
     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
         rendering.renderType(RenderType.getCutout());
-        // FIXME rendering.builtInModel( MODEL_ID.getResourcePath(), new
-        // SpatialPylonModel() );
-        // FIXME rendering.stateMapper( this::mapState );
     }
-
-    // FIXME private Map<BlockState, ModelResourceLocation> mapState( Block block )
-    // FIXME {
-    // FIXME return ImmutableMap.of( block.getDefaultState(), new
-    // ModelResourceLocation( MODEL_ID, "normal" ) );
-    // FIXME }
 
 }

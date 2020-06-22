@@ -30,6 +30,7 @@ import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -59,7 +60,7 @@ public class CrankTESR extends TileEntityRenderer<TileCrank> {
         ms.rotate(new Quaternion(0, te.getVisibleRotation(), 0, true));
         ms.translate(-0.5, -0.5, -0.5);
 
-        BlockState blockState = te.getWorld().getBlockState(te.getPos()); // FIXME: i think world might be null here
+        BlockState blockState = te.getBlockState();
         BlockRendererDispatcher dispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
         IBakedModel model = dispatcher.getModelForState(blockState);
         IVertexBuilder buffer = buffers.getBuffer(Atlases.getTranslucentBlockType());

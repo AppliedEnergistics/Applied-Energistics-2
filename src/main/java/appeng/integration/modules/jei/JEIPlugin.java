@@ -32,11 +32,7 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.registration.IRecipeCatalystRegistration;
-import mezz.jei.api.registration.IRecipeCategoryRegistration;
-import mezz.jei.api.registration.IRecipeRegistration;
-import mezz.jei.api.registration.IRecipeTransferRegistration;
-import mezz.jei.api.registration.ISubtypeRegistration;
+import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
 
 import appeng.api.AEApi;
@@ -51,6 +47,7 @@ import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.integration.abstraction.JEIFacade;
+import appeng.items.parts.ItemFacade;
 import appeng.recipes.handlers.GrinderRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
 
@@ -89,13 +86,6 @@ public class JEIPlugin implements IModPlugin {
     public void registerRecipes(IRecipeRegistration registration) {
 
         IDefinitions definitions = AEApi.instance().definitions();
-
-//	FIXME	 Optional<Item> itemFacade = definitions.items().facade().maybeItem();
-//	FIXME	 Optional<ItemStack> cableAnchor = definitions.parts().cableAnchor().maybeStack( 1 );
-//	FIXME	 if( itemFacade.isPresent() && cableAnchor.isPresent() && AEConfig.instance().isFeatureEnabled( AEFeature.ENABLE_FACADE_CRAFTING ) )
-//	FIXME	 {
-//	FIXME	 	registration.addRecipeRegistryPlugin( new FacadeRegistryPlugin( (ItemFacade) itemFacade.get(), cableAnchor.get() ) );
-//	FIXME	 }
 
         RecipeManager recipeManager = Minecraft.getInstance().world.getRecipeManager();
         registration.addRecipes(recipeManager.getRecipes(GrinderRecipe.TYPE).values(), GrinderRecipeCategory.UID);
@@ -165,7 +155,20 @@ public class JEIPlugin implements IModPlugin {
     }
 
     @Override
+    public void registerAdvanced(IAdvancedRegistration registration) {
+
+        IDefinitions definitions = AEApi.instance().definitions();
+
+        if (AEConfig.instance().isFeatureEnabled(AEFeature.ENABLE_FACADE_CRAFTING)) {
+            ItemFacade itemFacade = (ItemFacade) definitions.items().facade().item();
+            ItemStack cableAnchor = definitions.parts().cableAnchor().stack(1);
+            registration.addRecipeManagerPlugin(new FacadeRegistryPlugin(itemFacade, cableAnchor));
+        }
+    }
+
+    @Override
     public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
         JEIFacade.setInstance(new JeiRuntimeAdapter(jeiRuntime));
     }
+
 }

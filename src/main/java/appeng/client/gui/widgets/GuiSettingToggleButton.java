@@ -165,8 +165,7 @@ public class GuiSettingToggleButton<T extends Enum<T>> extends GuiIconButton {
 
             registerApp(64, Settings.SORT_BY, SortOrder.NAME, ButtonToolTips.SortBy, ButtonToolTips.ItemName);
             registerApp(65, Settings.SORT_BY, SortOrder.AMOUNT, ButtonToolTips.SortBy, ButtonToolTips.NumberOfItems);
-            registerApp(68, Settings.SORT_BY, SortOrder.INVTWEAKS, ButtonToolTips.SortBy,
-                    ButtonToolTips.InventoryTweaks);
+            // 68: Formerly sort by inventory tweaks
             registerApp(69, Settings.SORT_BY, SortOrder.MOD, ButtonToolTips.SortBy, ButtonToolTips.Mod);
 
             registerApp(16, Settings.VIEW_MODE, ViewItems.STORED, ButtonToolTips.View, ButtonToolTips.StoredItems);

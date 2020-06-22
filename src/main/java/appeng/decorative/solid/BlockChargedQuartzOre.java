@@ -36,41 +36,6 @@ public class BlockChargedQuartzOre extends BlockQuartzOre {
         super(props);
     }
 
-    // FIXME: Loot tables
-//	@Override
-//	public Item getItemDropped( final BlockState state, final Random rand, final int fortune )
-//	{
-//		return AEApi.instance()
-//				.definitions()
-//				.materials()
-//				.certusQuartzCrystalCharged()
-//				.maybeItem()
-//				.orElseThrow( () -> new MissingDefinitionException( "Tried to access charged certus quartz crystal, even though they are disabled" ) );
-//	}
-//
-//	@Override
-//	public int damageDropped( final BlockState state )
-//	{
-//		return AEApi.instance()
-//				.definitions()
-//				.materials()
-//				.certusQuartzCrystalCharged()
-//				.maybeStack( 1 )
-//				.orElseThrow( () -> new MissingDefinitionException( "Tried to access charged certus quartz crystal, even though they are disabled" ) )
-//				.getItemDamage();
-//	}
-//
-//	@Override
-//	public ItemStack getPickBlock( BlockState state, RayTraceResult target, World world, BlockPos pos, PlayerEntity player )
-//	{
-//		return AEApi.instance()
-//				.definitions()
-//				.blocks()
-//				.quartzOreCharged()
-//				.maybeStack( 1 )
-//				.orElseThrow( () -> new MissingDefinitionException( "Tried to access charged certus quartz ore, even though they are disabled" ) );
-//	}
-
     @Override
     @OnlyIn(Dist.CLIENT)
     public void animateTick(final BlockState state, final World w, final BlockPos pos, final Random r) {

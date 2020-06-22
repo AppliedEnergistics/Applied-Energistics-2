@@ -18,34 +18,13 @@
 
 package appeng.core;
 
-import appeng.block.paint.PaintSplotchesModel;
-import appeng.block.qnb.QnbFormedModel;
-import appeng.bootstrap.components.IClientSetupComponent;
-import appeng.bootstrap.components.IInitComponent;
-import appeng.bootstrap.components.IPostInitComponent;
-import appeng.capabilities.Capabilities;
-import appeng.client.ClientHelper;
-import appeng.client.render.DummyFluidItemModel;
-import appeng.client.render.FacadeItemModel;
-import appeng.client.render.SimpleModelLoader;
-import appeng.client.render.cablebus.CableBusModelLoader;
-import appeng.client.render.cablebus.P2PTunnelFrequencyModel;
-import appeng.client.render.crafting.CraftingCubeModelLoader;
-import appeng.client.render.crafting.EncodedPatternModelLoader;
-import appeng.client.render.model.*;
-import appeng.client.render.spatial.SpatialPylonModel;
-import appeng.core.crash.ModCrashEnhancement;
-import appeng.core.features.registries.PartModels;
-import appeng.core.stats.AdvancementTriggers;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.worlddata.WorldData;
-import appeng.entity.*;
-import appeng.hooks.TickHandler;
-import appeng.integration.Integrations;
-import appeng.parts.PartPlacement;
-import appeng.parts.automation.PlaneModelLoader;
-import appeng.server.ServerHelper;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
+
+import javax.annotation.Nonnull;
+
 import com.google.common.base.Stopwatch;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -78,9 +57,33 @@ import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-import javax.annotation.Nonnull;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
+import appeng.block.paint.PaintSplotchesModel;
+import appeng.block.qnb.QnbFormedModel;
+import appeng.bootstrap.components.IClientSetupComponent;
+import appeng.bootstrap.components.IInitComponent;
+import appeng.bootstrap.components.IPostInitComponent;
+import appeng.capabilities.Capabilities;
+import appeng.client.ClientHelper;
+import appeng.client.render.DummyFluidItemModel;
+import appeng.client.render.FacadeItemModel;
+import appeng.client.render.SimpleModelLoader;
+import appeng.client.render.cablebus.CableBusModelLoader;
+import appeng.client.render.cablebus.P2PTunnelFrequencyModel;
+import appeng.client.render.crafting.CraftingCubeModelLoader;
+import appeng.client.render.crafting.EncodedPatternModelLoader;
+import appeng.client.render.model.*;
+import appeng.client.render.spatial.SpatialPylonModel;
+import appeng.core.crash.ModCrashEnhancement;
+import appeng.core.features.registries.PartModels;
+import appeng.core.stats.AdvancementTriggers;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.worlddata.WorldData;
+import appeng.entity.*;
+import appeng.hooks.TickHandler;
+import appeng.integration.Integrations;
+import appeng.parts.PartPlacement;
+import appeng.parts.automation.PlaneModelLoader;
+import appeng.server.ServerHelper;
 
 @Mod(AppEng.MOD_ID)
 public final class AppEng {

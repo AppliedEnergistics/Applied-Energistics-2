@@ -1330,9 +1330,6 @@ public class Platform {
     }
 
     public static boolean isSortOrderAvailable(SortOrder order) {
-        if (order == SortOrder.INVTWEAKS) {
-            return false; // FIXME Integrations.invTweaks().isEnabled()
-        }
         return true;
     }
 

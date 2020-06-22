@@ -164,7 +164,7 @@ public class AutoRotatingBakedModel implements IBakedModel {
         }
 
         AEModelData aeModelData = (AEModelData) extraData;
-        quadCache.invalidateAll(); // FIXME
+
         if (aeModelData.isCacheable()) {
             return quadCache.getUnchecked(new AutoRotatingCacheKey(state, aeModelData, side));
         } else {

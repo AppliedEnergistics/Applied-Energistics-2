@@ -18,13 +18,12 @@
 
 package appeng.block.misc;
 
-import appeng.api.util.IOrientable;
-import appeng.api.util.IOrientableBlock;
-import appeng.block.AEBaseBlock;
-import appeng.client.render.effects.ParticleTypes;
-import appeng.core.AEConfig;
-import appeng.core.AppEng;
-import appeng.helpers.MetaRotation;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Random;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -48,10 +47,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import javax.annotation.Nullable;
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.Random;
+import appeng.api.util.IOrientable;
+import appeng.api.util.IOrientableBlock;
+import appeng.block.AEBaseBlock;
+import appeng.client.render.effects.ParticleTypes;
+import appeng.core.AEConfig;
+import appeng.core.AppEng;
+import appeng.helpers.MetaRotation;
 
 public class BlockQuartzFixture extends AEBaseBlock implements IOrientableBlock {
 

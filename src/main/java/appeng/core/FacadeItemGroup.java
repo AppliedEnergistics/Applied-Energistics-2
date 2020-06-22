@@ -18,7 +18,9 @@
 
 package appeng.core;
 
-import appeng.items.parts.ItemFacade;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -27,8 +29,7 @@ import net.minecraft.item.Items;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.ArrayList;
-import java.util.List;
+import appeng.items.parts.ItemFacade;
 
 public final class FacadeItemGroup extends ItemGroup {
 

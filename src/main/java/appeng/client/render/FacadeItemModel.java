@@ -18,18 +18,20 @@
 
 package appeng.client.render;
 
-import appeng.client.render.cablebus.FacadeBuilder;
-import appeng.core.AppEng;
+import java.util.Collection;
+import java.util.Set;
+import java.util.function.Function;
+
 import com.mojang.datafixers.util.Pair;
+
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 
-import java.util.Collection;
-import java.util.Set;
-import java.util.function.Function;
+import appeng.client.render.cablebus.FacadeBuilder;
+import appeng.core.AppEng;
 
 /**
  * The model class for facades. Since facades wrap existing models, they don't

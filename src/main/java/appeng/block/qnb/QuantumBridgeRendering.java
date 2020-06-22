@@ -15,8 +15,6 @@ public class QuantumBridgeRendering extends BlockRenderingCustomizer {
     @OnlyIn(Dist.CLIENT)
     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
         rendering.renderType(RenderType.getCutout());
-        // FIXME rendering.builtInModel( "models/block/qnb/qnb_formed", new
-        // QnbFormedModel() );
         // Disable auto rotation
         rendering.modelCustomizer((location, model) -> model);
     }

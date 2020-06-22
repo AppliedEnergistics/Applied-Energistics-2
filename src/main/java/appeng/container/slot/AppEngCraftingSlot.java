@@ -21,6 +21,7 @@ package appeng.container.slot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.hooks.BasicEventHooks;
@@ -82,60 +83,6 @@ public class AppEngCraftingSlot extends AppEngSlot {
     protected void onCrafting(final ItemStack par1ItemStack) {
         par1ItemStack.onCrafting(this.thePlayer.world, this.thePlayer, this.amountCrafted);
         this.amountCrafted = 0;
-
-        // if( par1ItemStack.getItem() == Item.getItemFromBlock( Blocks.CRAFTING_TABLE )
-        // )
-        // {
-        // this.thePlayer.addStat( AchievementList.BUILD_WORK_BENCH, 1 );
-        // }
-        //
-        // if( par1ItemStack.getItem() instanceof ItemPickaxe )
-        // {
-        // this.thePlayer.addStat( AchievementList.BUILD_PICKAXE, 1 );
-        // }
-        //
-        // if( par1ItemStack.getItem() == Item.getItemFromBlock( Blocks.FURNACE ) )
-        // {
-        // this.thePlayer.addStat( AchievementList.BUILD_FURNACE, 1 );
-        // }
-        //
-        // if( par1ItemStack.getItem() instanceof ItemHoe )
-        // {
-        // this.thePlayer.addStat( AchievementList.BUILD_HOE, 1 );
-        // }
-        //
-        // if( par1ItemStack.getItem() == Items.BREAD )
-        // {
-        // this.thePlayer.addStat( AchievementList.MAKE_BREAD, 1 );
-        // }
-        //
-        // if( par1ItemStack.getItem() == Items.CAKE )
-        // {
-        // this.thePlayer.addStat( AchievementList.BAKE_CAKE, 1 );
-        // }
-        //
-        // if( par1ItemStack.getItem() instanceof ItemPickaxe && ( (ItemTool)
-        // par1ItemStack.getItem()
-        // ).getToolMaterial() != Item.ToolMaterial.WOOD )
-        // {
-        // this.thePlayer.addStat( AchievementList.BUILD_BETTER_PICKAXE, 1 );
-        // }
-        //
-        // if( par1ItemStack.getItem() instanceof ItemSword )
-        // {
-        // this.thePlayer.addStat( AchievementList.BUILD_SWORD, 1 );
-        // }
-        //
-        // if( par1ItemStack.getItem() == Item.getItemFromBlock( Blocks.ENCHANTING_TABLE
-        // ) )
-        // {
-        // this.thePlayer.addStat( AchievementList.ENCHANTMENTS, 1 );
-        // }
-        //
-        // if( par1ItemStack.getItem() == Item.getItemFromBlock( Blocks.BOOKSHELF ) )
-        // {
-        // this.thePlayer.addStat( AchievementList.BOOKCASE, 1 );
-        // }
     }
 
     @Override
@@ -191,7 +138,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
     // TODO: This is really hacky and NEEDS to be solved with a full container/gui
     // refactoring.
     protected NonNullList<ItemStack> getRemainingItems(CraftingInventory ic, World world) {
-        // FIXME return CraftingManager.getRemainingItems( ic, world );
-        return null;
+        return world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, ic, world)
+                .map(iCraftingRecipe -> iCraftingRecipe.getRemainingItems(ic)).orElse(null);
     }
 }

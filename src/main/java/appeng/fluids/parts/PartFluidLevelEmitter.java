@@ -6,6 +6,7 @@ import java.util.Random;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -274,9 +275,8 @@ public class PartFluidLevelEmitter extends PartUpgradeable
             final double d1 = d.yOffset * 0.45F + (r.nextFloat() - 0.5F) * 0.2D;
             final double d2 = d.zOffset * 0.45F + (r.nextFloat() - 0.5F) * 0.2D;
 
-            // FIXME world.spawnParticle( EnumParticleTypes.REDSTONE, 0.5 + pos.getX() + d0,
-            // 0.5 + pos.getY() + d1, 0.5 + pos.getZ() + d2, 0.0D, 0.0D, 0.0D,
-            // FIXME new int[0] );
+            world.addParticle(RedstoneParticleData.REDSTONE_DUST, 0.5 + pos.getX() + d0, 0.5 + pos.getY() + d1,
+                    0.5 + pos.getZ() + d2, 0.0D, 0.0D, 0.0D);
         }
     }
 

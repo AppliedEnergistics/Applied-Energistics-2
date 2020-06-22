@@ -107,26 +107,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile {
      * rendering.
      */
     protected void updateTileSetting() {
-// FIXME		if( this.getCableBus().isRequiresDynamicRender() )
-// FIXME		{
-// FIXME			try
-// FIXME			{
-// FIXME				final TileCableBus tcb = (TileCableBus) BlockCableBus.getTesrTile().newInstance();
-// FIXME				tcb.copyFrom( this );
-// FIXME				this.getWorld().setTileEntity( this.pos, tcb );
-// FIXME			}
-// FIXME			catch( final Throwable ignored )
-// FIXME			{
-// FIXME
-// FIXME			}
-// FIXME		}
-    }
-
-    protected void copyFrom(final TileCableBus oldTile) {
-        final CableBusContainer tmpCB = this.getCableBus();
-        this.setCableBus(oldTile.getCableBus());
-        this.oldLV = oldTile.oldLV;
-        oldTile.setCableBus(tmpCB);
+        // FIXME: potentially invalidate voxel shape cache?
     }
 
     @Override

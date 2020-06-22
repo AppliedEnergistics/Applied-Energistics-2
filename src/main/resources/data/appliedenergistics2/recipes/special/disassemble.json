@@ -1,0 +1,9 @@
+{
+  "conditions": [
+    {
+      "type": "appliedenergistics2:feature",
+      "features": ["ENABLE_DISASSEMBLY_CRAFTING"]
+    }
+  ],
+  "type": "appliedenergistics2:disassemble"
+}

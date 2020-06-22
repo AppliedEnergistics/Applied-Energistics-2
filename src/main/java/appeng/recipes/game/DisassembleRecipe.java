@@ -50,7 +50,7 @@ public final class DisassembleRecipe extends SpecialRecipe {
             DisassembleRecipe::new);
 
     static {
-        SERIALIZER.setRegistryName(new ResourceLocation(AppEng.MOD_ID, "disassemble_recipe"));
+        SERIALIZER.setRegistryName(new ResourceLocation(AppEng.MOD_ID, "disassemble"));
     }
 
     private static final ItemStack MISMATCHED_STACK = ItemStack.EMPTY;
