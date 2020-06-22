@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.worldgen;
+package appeng.worldgen.meteorite;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +44,11 @@ import appeng.core.AEConfig;
 import appeng.core.worlddata.WorldData;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
-import appeng.worldgen.meteorite.*;
+import appeng.worldgen.meteorite.fallout.Fallout;
+import appeng.worldgen.meteorite.fallout.FalloutCopy;
+import appeng.worldgen.meteorite.fallout.FalloutMode;
+import appeng.worldgen.meteorite.fallout.FalloutSand;
+import appeng.worldgen.meteorite.fallout.FalloutSnow;
 
 public final class MeteoritePlacer {
     private static final double PRESSES_SPAWN_CHANCE = 0.7;
@@ -64,7 +68,8 @@ public final class MeteoritePlacer {
     private final double squaredMeteoriteSize;
     private final double crater;
     private final boolean placeCrater;
-    private final boolean lava;
+    private final CraterType craterType;
+    private final boolean pureCrater;
     private final MutableBoundingBox boundingBox;
 
     public MeteoritePlacer(IWorld world, PlacedMeteoriteSettings settings, MutableBoundingBox boundingBox) {
@@ -76,8 +81,9 @@ public final class MeteoritePlacer {
         this.z = settings.getPos().getZ();
         this.meteoriteSize = settings.getMeteoriteRadius();
         this.realCrater = this.meteoriteSize * 2 + 5;
-        this.placeCrater = settings.isPlaceCrater();
-        this.lava = settings.isLava();
+        this.placeCrater = settings.shouldPlaceCrater();
+        this.craterType = settings.getCraterType();
+        this.pureCrater = settings.isPureCrater();
         this.squaredMeteoriteSize = this.meteoriteSize * this.meteoriteSize;
         this.crater = this.realCrater * this.realCrater;
 
@@ -142,12 +148,15 @@ public final class MeteoritePlacer {
 
     private void placeCrater() {
         final int maxY = 255;
-
         BlockPos.Mutable blockPos = new BlockPos.Mutable();
+        BlockState filler = craterType.getFiller().getDefaultState();
+
         for (int j = y - 5; j <= maxY; j++) {
             blockPos.setY(j);
+
             for (int i = boundingBox.minX; i <= boundingBox.maxX; i++) {
                 blockPos.setX(i);
+
                 for (int k = boundingBox.minZ; k <= boundingBox.maxZ; k++) {
                     blockPos.setZ(k);
                     final double dx = i - x;
@@ -159,13 +168,14 @@ public final class MeteoritePlacer {
                     if (j > h + distanceFrom * 0.02) {
                         BlockState currentBlock = world.getBlockState(blockPos);
 
-                        if (lava && j < y && currentBlock.getMaterial().isSolid()) {
+                        if (craterType != CraterType.NORMAL && j < y && currentBlock.getMaterial().isSolid()) {
                             if (j > h + distanceFrom * 0.02) {
-                                this.putter.put(world, blockPos, Blocks.LAVA.getDefaultState());
+                                this.putter.put(world, blockPos, filler);
                             }
                         } else {
                             this.putter.put(world, blockPos, Blocks.AIR.getDefaultState());
                         }
+
                     }
                 }
             }
@@ -317,7 +327,8 @@ public final class MeteoritePlacer {
                     blockPosDown.setY(j - 1);
                     BlockState state = world.getBlockState(blockPos);
                     Block blk = world.getBlockState(blockPos).getBlock();
-                    if (blk == Blocks.LAVA) {
+
+                    if (this.pureCrater && blk == craterType.getFiller()) {
                         continue;
                     }
 

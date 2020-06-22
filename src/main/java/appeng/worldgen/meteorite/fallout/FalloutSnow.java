@@ -16,12 +16,14 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.worldgen.meteorite;
+package appeng.worldgen.meteorite.fallout;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
+
+import appeng.worldgen.meteorite.MeteoriteBlockPutter;
 
 public class FalloutSnow extends FalloutCopy {
     private static final double SNOW_THRESHOLD = 0.7;

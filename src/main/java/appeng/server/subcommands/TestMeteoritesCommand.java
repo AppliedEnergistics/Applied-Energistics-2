@@ -41,10 +41,11 @@ import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
+import appeng.core.AELog;
 import appeng.server.ISubCommand;
-import appeng.worldgen.MeteoriteStructure;
-import appeng.worldgen.MeteoriteStructurePiece;
-import appeng.worldgen.PlacedMeteoriteSettings;
+import appeng.worldgen.meteorite.MeteoriteStructure;
+import appeng.worldgen.meteorite.MeteoriteStructurePiece;
+import appeng.worldgen.meteorite.PlacedMeteoriteSettings;
 
 /**
  * This is a testing command to validate quartz ore generation.
@@ -132,6 +133,9 @@ public class TestMeteoritesCommand implements ISubCommand {
                 stats.populationStandardDeviation());
 
         int closestCount = Math.min(5, found.size());
+        found.forEach(entry -> {
+            AELog.info(entry.toString());
+        });
         for (int i = 0; i < closestCount; i++) {
             PlacedMeteoriteSettings settings = found.get(i);
             BlockPos pos = settings.getPos();
@@ -154,8 +158,8 @@ public class TestMeteoritesCommand implements ISubCommand {
                         settings.getMeteoriteRadius(), state);
             } else {
                 sendLine(sender, " #%d: pos=%d,%d,%d, radius=%.2f, crater=%s, lava=%s, fallout=%s", i + 1, pos.getX(),
-                        pos.getY(), pos.getZ(), settings.getMeteoriteRadius(), settings.isPlaceCrater(),
-                        settings.isLava(), settings.getFallout().name().toLowerCase());
+                        pos.getY(), pos.getZ(), settings.getMeteoriteRadius(),
+                        settings.getCraterType().name().toLowerCase(), settings.getFallout().name().toLowerCase());
             }
         }
     }

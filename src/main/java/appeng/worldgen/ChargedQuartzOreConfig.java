@@ -26,6 +26,7 @@ public class ChargedQuartzOreConfig implements IFeatureConfig {
         this.chance = chance;
     }
 
+    @Override
     public <T> Dynamic<T> serialize(DynamicOps<T> ops) {
         return new Dynamic<>(ops,
                 ops.createMap(

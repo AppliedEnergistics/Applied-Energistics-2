@@ -34,6 +34,7 @@ public class ChargedQuartzOreFeature extends Feature<ChargedQuartzOreConfig> {
         super(p_i51444_1_);
     }
 
+    @Override
     public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand,
             BlockPos pos, ChargedQuartzOreConfig config) {
         ChunkPos chunkPos = new ChunkPos(pos);

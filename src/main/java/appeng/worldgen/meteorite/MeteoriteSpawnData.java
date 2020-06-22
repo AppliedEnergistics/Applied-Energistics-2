@@ -1,4 +1,4 @@
-package appeng.worldgen;
+package appeng.worldgen.meteorite;
 
 import java.util.ArrayList;
 import java.util.Collection;
