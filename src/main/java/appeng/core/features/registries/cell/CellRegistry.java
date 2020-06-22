@@ -26,12 +26,12 @@ import com.google.common.base.Verify;
 
 import net.minecraft.item.ItemStack;
 
-import appeng.api.storage.ICellGuiHandler;
-import appeng.api.storage.ICellHandler;
-import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.ICellRegistry;
-import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.cells.ICellGuiHandler;
+import appeng.api.storage.cells.ICellHandler;
+import appeng.api.storage.cells.ICellInventoryHandler;
+import appeng.api.storage.cells.ISaveProvider;
 import appeng.api.storage.data.IAEStack;
 
 public class CellRegistry implements ICellRegistry {

@@ -23,13 +23,14 @@ import net.minecraft.item.ItemStack;
 import appeng.api.config.Actionable;
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.ICellHandler;
-import appeng.api.storage.ICellInventoryHandler;
+import appeng.api.storage.cells.CellState;
+import appeng.api.storage.cells.ICellHandler;
+import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.data.IAEStack;
 
 public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T> {
 
-    private int oldStatus = 0;
+    private CellState oldStatus = CellState.EMPTY;
     private final ItemStack is;
     private final ICellHandler handler;
     private final IChestOrDrive cord;
@@ -42,7 +43,7 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T> {
         this.cord = cod;
     }
 
-    public int getStatus() {
+    public CellState getStatus() {
         return this.handler.getStatusForCell(this.is, (ICellInventoryHandler) this.getInternal());
     }
 
@@ -53,7 +54,7 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T> {
         final T a = super.injectItems(input, type, src);
 
         if (type == Actionable.MODULATE && (a == null || a.getStackSize() != size)) {
-            final int newStatus = this.getStatus();
+            final CellState newStatus = this.getStatus();
 
             if (newStatus != this.oldStatus) {
                 this.cord.blinkCell(this.getSlot());
@@ -69,7 +70,7 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T> {
         final T a = super.extractItems(request, type, src);
 
         if (type == Actionable.MODULATE && a != null) {
-            final int newStatus = this.getStatus();
+            final CellState newStatus = this.getStatus();
 
             if (newStatus != this.oldStatus) {
                 this.cord.blinkCell(this.getSlot());

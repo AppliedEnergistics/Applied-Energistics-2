@@ -69,10 +69,6 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.storage.IStorageGrid;
-import appeng.api.storage.ICellGuiHandler;
-import appeng.api.storage.ICellHandler;
-import appeng.api.storage.ICellInventory;
-import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
@@ -80,6 +76,11 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.ITerminalHost;
+import appeng.api.storage.cells.CellState;
+import appeng.api.storage.cells.ICellGuiHandler;
+import appeng.api.storage.cells.ICellHandler;
+import appeng.api.storage.cells.ICellInventory;
+import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
@@ -162,7 +163,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         final int oldState = this.state;
 
         for (int x = 0; x < this.getCellCount(); x++) {
-            this.state |= (this.getCellStatus(x) << (3 * x));
+            this.state |= (this.getCellStatus(x).ordinal() << (3 * x));
         }
 
         if (this.isPowered()) {
@@ -242,9 +243,9 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    public int getCellStatus(final int slot) {
+    public CellState getCellStatus(final int slot) {
         if (isRemote()) {
-            return (this.state >> (slot * 3)) & 3;
+            return CellState.values()[(this.state >> (slot * 3)) & 3];
         }
 
         this.updateHandler();
@@ -256,7 +257,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
             return ch.getStatusForCell(cell, this.cellHandler.getInternalHandler());
         }
 
-        return 0;
+        return CellState.ABSENT;
     }
 
     @Nullable
@@ -354,7 +355,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         }
 
         for (int x = 0; x < this.getCellCount(); x++) {
-            this.state |= (this.getCellStatus(x) << (3 * x));
+            this.state |= (this.getCellStatus(x).ordinal() << (3 * x));
         }
 
         if (this.isPowered()) {

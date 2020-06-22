@@ -21,12 +21,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.storage;
+package appeng.api.storage.cells;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
+import appeng.api.storage.IMEInventory;
 import appeng.api.storage.data.IAEStack;
 
 public interface ICellInventory<T extends IAEStack<T>> extends IMEInventory<T> {
@@ -112,17 +113,9 @@ public interface ICellInventory<T extends IAEStack<T>> extends IMEInventory<T> {
     int getUnusedItemCount();
 
     /**
-     * 0 - cell is missing.
-     *
-     * 1 - green, ( usually means available room for types or items. )
-     *
-     * 2 - orange, ( usually means available room for items, but not types. )
-     *
-     * 3 - red, ( usually means the cell is 100% full )
-     *
      * @return get the status of the cell based on its contents.
      */
-    int getStatusForCell();
+    CellState getStatusForCell();
 
     /**
      * Tells the cell to persist to NBT

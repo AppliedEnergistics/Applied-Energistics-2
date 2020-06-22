@@ -23,6 +23,7 @@ import com.google.common.base.Preconditions;
 import net.minecraft.item.Item;
 
 import appeng.api.implementations.tiles.IChestOrDrive;
+import appeng.api.storage.cells.CellState;
 
 /**
  * Contains the full information about what the state of the slots in a
@@ -69,7 +70,7 @@ public class DriveSlotsState {
             cells[i] = chestOrDrive.getCellItem(i);
 
             if (!chestOrDrive.isPowered()) {
-                if (chestOrDrive.getCellStatus(i) != 0) {
+                if (chestOrDrive.getCellStatus(i) != CellState.EMPTY) {
                     states[i] = DriveSlotState.OFFLINE;
                 } else {
                     states[i] = DriveSlotState.EMPTY;

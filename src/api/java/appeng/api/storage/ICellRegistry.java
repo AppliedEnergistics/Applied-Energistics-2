@@ -29,6 +29,10 @@ import javax.annotation.Nullable;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.IAppEngApi;
+import appeng.api.storage.cells.ICellGuiHandler;
+import appeng.api.storage.cells.ICellHandler;
+import appeng.api.storage.cells.ICellInventoryHandler;
+import appeng.api.storage.cells.ISaveProvider;
 import appeng.api.storage.data.IAEStack;
 
 /**
