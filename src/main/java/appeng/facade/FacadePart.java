@@ -20,18 +20,15 @@ package appeng.facade;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
-import appeng.api.parts.IBoxProvider;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.util.AEPartLocation;
 
-public class FacadePart implements IFacadePart, IBoxProvider {
+public class FacadePart implements IFacadePart {
 
     private final ItemStack facade;
     private final AEPartLocation side;
@@ -51,8 +48,8 @@ public class FacadePart implements IFacadePart, IBoxProvider {
     }
 
     @Override
-    public void getBoxes(final IPartCollisionHelper ch, final Entity e) {
-        if (e instanceof LivingEntity) {
+    public void getBoxes(final IPartCollisionHelper ch, boolean livingEntity) {
+        if (livingEntity) {
             // prevent weird snag behavior
             ch.addBox(0.0, 0.0, 14, 16.0, 16.0, 16.0);
         } else {
@@ -108,8 +105,4 @@ public class FacadePart implements IFacadePart, IBoxProvider {
         return Blocks.GLASS.getDefaultState();
     }
 
-    @Override
-    public void getBoxes(final IPartCollisionHelper bch) {
-        this.getBoxes(bch, null);
-    }
 }

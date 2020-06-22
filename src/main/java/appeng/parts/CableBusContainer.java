@@ -37,6 +37,8 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
@@ -71,6 +73,11 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     // TODO 1.10.2-R - does somebody seriously want to make parts TESR??? Hope not.
     private boolean requiresDynamicRender = false;
     private boolean inWorld = false;
+    // Cached collision shape for living entities
+    private VoxelShape cachedCollisionShapeLiving;
+    // Cached collision shape for anything but living entities
+    private VoxelShape cachedCollisionShape;
+    private VoxelShape cachedShape;
 
     public CableBusContainer(final IPartHost host) {
         this.tcb = host;
@@ -210,6 +217,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                         }
                     }
 
+                    this.invalidateShapes();
                     this.updateConnections();
                     this.markForUpdate();
                     this.markForSave();
@@ -249,6 +257,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                         }
                     }
 
+                    this.invalidateShapes();
                     this.updateDynamicRender();
                     this.updateConnections();
                     this.markForUpdate();
@@ -289,6 +298,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         }
 
         if (!suppressUpdate) {
+            this.invalidateShapes();
             this.updateDynamicRender();
             this.updateConnections();
             this.markForUpdate();
@@ -338,7 +348,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
             if (p != null) {
                 final List<AxisAlignedBB> boxes = new ArrayList<>();
 
-                final IPartCollisionHelper bch = new BusCollisionHelper(boxes, side, null, true);
+                final IPartCollisionHelper bch = new BusCollisionHelper(boxes, side, true);
                 p.getBoxes(bch);
                 for (AxisAlignedBB bb : boxes) {
                     bb = bb.grow(0.002, 0.002, 0.002);
@@ -356,8 +366,8 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                 if (p != null) {
                     final List<AxisAlignedBB> boxes = new ArrayList<>();
 
-                    final IPartCollisionHelper bch = new BusCollisionHelper(boxes, side, null, true);
-                    p.getBoxes(bch, null);
+                    final IPartCollisionHelper bch = new BusCollisionHelper(boxes, side, true);
+                    p.getBoxes(bch, true);
                     for (AxisAlignedBB bb : boxes) {
                         bb = bb.grow(0.01, 0.01, 0.01);
                         if (bb.contains(pos)) {
@@ -545,6 +555,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
             }
         }
 
+        this.invalidateShapes();
         this.partChanged();
     }
 
@@ -597,36 +608,6 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                 ((IGridHost) p).securityBreak();
             }
         }
-    }
-
-    public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(final boolean ignoreConnections,
-            final boolean includeFacades, final Entity e, final boolean visual) {
-        final List<AxisAlignedBB> boxes = new ArrayList<>();
-
-        final IFacadeContainer fc = this.getFacadeContainer();
-        for (final AEPartLocation s : AEPartLocation.values()) {
-            final IPartCollisionHelper bch = new BusCollisionHelper(boxes, s, e, visual);
-
-            final IPart part = this.getPart(s);
-            if (part != null) {
-                if (ignoreConnections && part instanceof ICablePart) {
-                    bch.addBox(6.0, 6.0, 6.0, 10.0, 10.0, 10.0);
-                } else {
-                    part.getBoxes(bch);
-                }
-            }
-
-            if (AEApi.instance().partHelper().getCableRenderMode().opaqueFacades || !visual) {
-                if (includeFacades && s != null && s != AEPartLocation.INTERNAL) {
-                    final IFacadePart fp = fc.getFacade(s);
-                    if (fp != null) {
-                        fp.getBoxes(bch, e);
-                    }
-                }
-            }
-        }
-
-        return boxes;
     }
 
     @Override
@@ -699,6 +680,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                 part.onNeighborChanged(w, pos, neighbor);
             }
         }
+
+        // Some parts will change their shape (connected texture style)
+        invalidateShapes();
     }
 
     @Override
@@ -798,9 +782,10 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
             }
         }
 
-        if (this.getFacadeContainer().readFromStream(data)) {
-            return true;
-        }
+        updateBlock |= this.getFacadeContainer().readFromStream(data);
+
+        // Updating tiles may change the collision shape
+        this.invalidateShapes();
 
         return updateBlock;
     }
@@ -841,6 +826,8 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     }
 
     public void readFromNBT(final CompoundNBT data) {
+        invalidateShapes();
+
         if (data.contains("hasRedstone")) {
             this.hasRedstone = YesNo.values()[data.getInt("hasRedstone")];
         }
@@ -1006,8 +993,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
             // This will add the part's bounding boxes to the render state, which is
             // required for facades
             final AEPartLocation loc = AEPartLocation.fromFacing(facing);
-            final IPartCollisionHelper bch = new BusCollisionHelper(renderState.getBoundingBoxes(), loc, null, true);
-
+            final IPartCollisionHelper bch = new BusCollisionHelper(renderState.getBoundingBoxes(), loc, true);
             part.getBoxes(bch);
 
             if (part instanceof IGridHost) {
@@ -1049,4 +1035,71 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
         return null;
     }
+
+    /**
+     * See {@link net.minecraft.block.Block#getShape}
+     */
+    public VoxelShape getShape() {
+        if (cachedShape == null) {
+            cachedShape = createShape(false, false);
+        }
+
+        return cachedShape;
+    }
+
+    /**
+     * See {@link net.minecraft.block.Block#getCollisionShape}
+     */
+    public VoxelShape getCollisionShape(Entity entity) {
+        // This is a hack for facades
+        boolean livingEntity = entity instanceof LivingEntity;
+
+        if (livingEntity) {
+            if (cachedCollisionShapeLiving == null) {
+                cachedCollisionShapeLiving = createShape(true, true);
+            }
+            return cachedCollisionShapeLiving;
+        } else {
+            if (cachedCollisionShape == null) {
+                cachedCollisionShape = createShape(true, false);
+            }
+            return cachedCollisionShape;
+        }
+    }
+
+    private VoxelShape createShape(boolean forCollision, boolean forLivingEntity) {
+        final List<AxisAlignedBB> boxes = new ArrayList<>();
+
+        final IFacadeContainer fc = this.getFacadeContainer();
+        for (final AEPartLocation s : AEPartLocation.values()) {
+            final IPartCollisionHelper bch = new BusCollisionHelper(boxes, s, !forCollision);
+
+            final IPart part = this.getPart(s);
+            if (part != null) {
+                part.getBoxes(bch);
+            }
+
+            if (AEApi.instance().partHelper().getCableRenderMode().opaqueFacades || forCollision) {
+                if (s != AEPartLocation.INTERNAL) {
+                    final IFacadePart fp = fc.getFacade(s);
+                    if (fp != null) {
+                        fp.getBoxes(bch, forLivingEntity);
+                    }
+                }
+            }
+        }
+
+        VoxelShape shape = VoxelShapes.empty();
+        for (final AxisAlignedBB bx : boxes) {
+            shape = VoxelShapes.or(shape, VoxelShapes.create(bx));
+        }
+        return shape;
+    }
+
+    private void invalidateShapes() {
+        cachedShape = null;
+        cachedCollisionShape = null;
+        cachedCollisionShapeLiving = null;
+    }
+
 }

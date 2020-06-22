@@ -20,7 +20,6 @@ package appeng.parts;
 
 import java.util.List;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 
@@ -35,23 +34,19 @@ public class BusCollisionHelper implements IPartCollisionHelper {
     private final Direction y;
     private final Direction z;
 
-    private final Entity entity;
     private final boolean isVisual;
 
     public BusCollisionHelper(final List<AxisAlignedBB> boxes, final Direction x, final Direction y, final Direction z,
-            final Entity e, final boolean visual) {
+            final boolean visual) {
         this.boxes = boxes;
         this.x = x;
         this.y = y;
         this.z = z;
-        this.entity = e;
         this.isVisual = visual;
     }
 
-    public BusCollisionHelper(final List<AxisAlignedBB> boxes, final AEPartLocation s, final Entity e,
-            final boolean visual) {
+    public BusCollisionHelper(final List<AxisAlignedBB> boxes, final AEPartLocation s, final boolean visual) {
         this.boxes = boxes;
-        this.entity = e;
         this.isVisual = visual;
 
         switch (s) {
@@ -92,13 +87,6 @@ public class BusCollisionHelper implements IPartCollisionHelper {
                 this.z = Direction.SOUTH;
                 break;
         }
-    }
-
-    /**
-     * pretty much useless...
-     */
-    public Entity getEntity() {
-        return this.entity;
     }
 
     @Override

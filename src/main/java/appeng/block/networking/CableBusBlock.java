@@ -370,36 +370,22 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
-
-        // FIXME: this has to be cached, optimized, fixed in all kinds of ways
         CableBusTileEntity te = getTileEntity(w, pos);
-        VoxelShape result = VoxelShapes.empty();
-        if (te != null) {
-            for (final AxisAlignedBB bx : te.getCableBus().getSelectedBoundingBoxesFromPool(false, true,
-                    context.getEntity(), true)) {
-                result = VoxelShapes.or(result,
-                        VoxelShapes.create(new AxisAlignedBB(bx.minX, bx.minY, bx.minZ, bx.maxX, bx.maxY, bx.maxZ)));
-            }
+        if (te == null) {
+            return VoxelShapes.empty();
+        } else {
+            return te.getCableBus().getShape();
         }
-        return result;
-
     }
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
-
-        // FIXME: this has to be cached, optimized, fixed in all kinds of ways
         CableBusTileEntity te = getTileEntity(w, pos);
-        VoxelShape result = VoxelShapes.empty();
-        if (te != null) {
-            for (final AxisAlignedBB bx : te.getCableBus().getSelectedBoundingBoxesFromPool(false, true,
-                    context.getEntity(), false)) {
-                result = VoxelShapes.or(result,
-                        VoxelShapes.create(new AxisAlignedBB(bx.minX, bx.minY, bx.minZ, bx.maxX, bx.maxY, bx.maxZ)));
-            }
+        if (te == null) {
+            return VoxelShapes.empty();
+        } else {
+            return te.getCableBus().getCollisionShape(context.getEntity());
         }
-        return result;
-
     }
 
 }

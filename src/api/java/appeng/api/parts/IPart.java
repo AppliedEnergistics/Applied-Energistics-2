@@ -56,7 +56,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 
-public interface IPart extends IBoxProvider, ICustomCableConnection {
+public interface IPart extends ICustomCableConnection {
 
     /**
      * get an ItemStack that represents the bus, should contain the settings for
@@ -363,5 +363,12 @@ public interface IPart extends IBoxProvider, ICustomCableConnection {
     default IModelData getModelData() {
         return EmptyModelData.INSTANCE;
     }
+
+    /**
+     * add your collision information to the the list.
+     *
+     * @param bch collision boxes
+     */
+    void getBoxes(final IPartCollisionHelper bch);
 
 }

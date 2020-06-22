@@ -45,10 +45,10 @@ public interface IFacadePart {
     /**
      * used to collide, and pick the part
      *
-     * @param ch collision helper
-     * @param e  colliding entity
+     * @param ch           collision helper
+     * @param livingEntity collision with a living entity?
      */
-    void getBoxes(IPartCollisionHelper ch, Entity e);
+    void getBoxes(IPartCollisionHelper ch, boolean livingEntity);
 
     /**
      * @return side the facade is in
