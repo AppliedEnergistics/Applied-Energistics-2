@@ -23,7 +23,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 
-import appeng.util.Platform;
 import appeng.worldgen.meteorite.MeteoriteBlockPutter;
 
 public class Fallout {
