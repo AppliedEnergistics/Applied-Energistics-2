@@ -168,9 +168,6 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 
         final ItemStack is = player.getHeldItem(hand);
 
-        // UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor( is.getItem() );
-        // AELog.info( "ID:" + id.toString() + " : " + is.getItemDamage() );
-
         final TunnelType tt = AEApi.instance().registries().p2pTunnel().getTunnelTypeByItem(is);
         if (!is.isEmpty() && is.getItem() instanceof IMemoryCard) {
             final IMemoryCard mc = (IMemoryCard) is.getItem();

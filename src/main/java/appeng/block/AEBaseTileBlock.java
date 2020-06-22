@@ -40,6 +40,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -185,11 +187,16 @@ public abstract class AEBaseTileBlock<T extends AEBaseTile> extends AEBaseBlock 
     @Override
     public void onBlockPlacedBy(final World w, final BlockPos pos, final BlockState state, final LivingEntity placer,
             final ItemStack is) {
-        if (is.hasDisplayName()) {
-            final TileEntity te = this.getTileEntity(w, pos);
-            if (te instanceof AEBaseTile) {
-                // FIXME: Check if this will make it translated
-                ((AEBaseTile) w.getTileEntity(pos)).setName(is.getDisplayName().getString());
+        // Inherit the item stack's display name, but only if it's a user defined string
+        // rather
+        // than a translation component, since our custom naming cannot handle
+        // untranslated
+        // I18N strings and we would translate it using the server's locale :-(
+        AEBaseTile te = this.getTileEntity(w, pos);
+        if (te != null && is.hasDisplayName()) {
+            ITextComponent displayName = is.getDisplayName();
+            if (displayName instanceof StringTextComponent) {
+                te.setName(((StringTextComponent) displayName).getText());
             }
         }
     }

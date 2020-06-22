@@ -92,22 +92,9 @@ public final class AppEng {
     public static final String MOD_ID = "appliedenergistics2";
     public static final String MOD_NAME = "Applied Energistics 2";
 
-    // FIXME replicate this in mods.toml!
-    // FIXME private static final String FORGE_CURRENT_VERSION =
-    // ForgeVersion.getVersion();
-    // FIXME private static final String FORGE_MAX_VERSION = (
-    // ForgeVersion.majorVersion + 1 ) + ".0.0.0";
-    // FIXME public static final String MOD_DEPENDENCIES = "required-after:forge@["
-    // + FORGE_CURRENT_VERSION + "," + FORGE_MAX_VERSION + ");after:ctm@[" +
-    // CTM.VERSION + ",);";
-
     private static AppEng INSTANCE;
 
     private final Registration registration;
-
-    /**
-     * determined in pre-init but used in init
-     */
 
     public AppEng() {
         if (INSTANCE != null) {
