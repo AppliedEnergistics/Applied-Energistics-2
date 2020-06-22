@@ -64,7 +64,7 @@ public class Fallout {
         } else if (a > 0.5) {
             this.putter.put(w, pos, Blocks.GRAVEL.getDefaultState());
         } else {
-            this.putter.put(w, pos, Platform.AIR_BLOCK.getDefaultState());
+            this.putter.put(w, pos, Blocks.AIR.getDefaultState());
         }
     }
 }

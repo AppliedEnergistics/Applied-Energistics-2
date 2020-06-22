@@ -34,12 +34,6 @@ public class CableBusRendering extends BlockRenderingCustomizer {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
-        /*
-         * FIXME this was previously
-         *
-         * @Override public boolean canRenderInLayer( BlockState state, BlockRenderLayer
-         * layer ) { return true; }
-         */
         rendering.renderType(rt -> true);
 
         rendering.blockColor(new CableBusColor());

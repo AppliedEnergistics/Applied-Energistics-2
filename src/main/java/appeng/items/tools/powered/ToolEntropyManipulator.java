@@ -308,7 +308,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
                             random.nextFloat() * 0.4F + 0.8F);
 
                     if (or.getBlockState() == null) {
-                        w.setBlockState(pos, Platform.AIR_BLOCK.getDefaultState(), 3);
+                        w.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
                     } else {
                         w.setBlockState(pos, or.getBlockState(), 3);
                     }

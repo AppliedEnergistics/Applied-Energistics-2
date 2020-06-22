@@ -24,6 +24,7 @@
 package appeng.api.networking.security;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import appeng.api.networking.IGridNode;
 
@@ -36,6 +37,6 @@ public interface IActionHost {
      *
      * @return the the gridnode that actions from this IGridHost are preformed by.
      */
-    @Nonnull // FIXME fishy annotation, every caller seems to check for null
+    @Nullable
     IGridNode getActionableNode();
 }

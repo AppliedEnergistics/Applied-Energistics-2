@@ -36,17 +36,17 @@ public class GuiScrollbar implements IScrollSource {
     private int minScroll = 0;
     private int currentScroll = 0;
 
-    public void draw(final AEBaseGui g) {
+    public void draw(final AEBaseGui<?> g) {
         g.bindTexture("minecraft", "gui/container/creative_inventory/tabs.png");
         RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
 
         if (this.getRange() == 0) {
             GuiUtils.drawTexturedModalRect(this.displayX, this.displayY, 232 + this.width, 0, this.width, 15,
-                    0 /* FIXME: this used the GUI's zIndex before */ );
+                    g.getBlitOffset());
         } else {
             final int offset = (this.currentScroll - this.minScroll) * (this.height - 15) / this.getRange();
             GuiUtils.drawTexturedModalRect(this.displayX, offset + this.displayY, 232, 0, this.width, 15,
-                    0 /* FIXME: this used the GUI's zIndex before */ );
+                    g.getBlitOffset());
         }
     }
 

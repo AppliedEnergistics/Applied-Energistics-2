@@ -18,11 +18,18 @@
 
 package appeng.container.slot;
 
+import java.util.List;
+import java.util.Set;
+
+import com.google.common.collect.ImmutableList;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.items.IItemHandler;
@@ -51,6 +58,13 @@ import appeng.util.Platform;
  * @since rv0
  */
 public class SlotRestrictedInput extends AppEngSlot {
+
+    private static final List<ResourceLocation> METAL_INGOT_TAGS = ImmutableList.of(
+            new ResourceLocation("forge:ingots/copper"), new ResourceLocation("forge:ingots/tin"),
+            new ResourceLocation("forge:ingots/iron"), new ResourceLocation("forge:ingots/gold"),
+            new ResourceLocation("forge:ingots/lead"), new ResourceLocation("forge:ingots/bronze"),
+            new ResourceLocation("forge:ingots/brass"), new ResourceLocation("forge:ingots/nickel"),
+            new ResourceLocation("forge:ingots/aluminium"));
 
     private final PlacableItemType which;
     private final PlayerInventory p;
@@ -234,15 +248,11 @@ public class SlotRestrictedInput extends AppEngSlot {
             return true;
         }
 
-        for (final String name : new String[] { "Copper", "Tin", "Obsidian", "Iron", "Lead", "Bronze", "Brass",
-                "Nickel", "Aluminium" }) {
-            // FIXME for( final ItemStack ingot : OreDictionary.getOres( "ingot" + name ) )
-            // FIXME {
-            // FIXME if( Platform.itemComparisons().isSameItem( i, ingot ) )
-            // FIXME {
-            // FIXME return true;
-            // FIXME }
-            // FIXME }
+        Set<ResourceLocation> itemTags = i.getItem().getTags();
+        for (ResourceLocation tagName : METAL_INGOT_TAGS) {
+            if (itemTags.contains(tagName)) {
+                return true;
+            }
         }
 
         return false;

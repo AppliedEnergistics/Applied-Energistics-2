@@ -51,7 +51,7 @@ public class GuiSkyChest extends AEBaseGui<ContainerSkyChest> {
 
     @Override
     protected boolean enableSpaceClicking() {
-        // FIXME return !Integrations.invTweaks().isEnabled();
+        // NOTE: previously checked for inventory tweaks mod (which no longer exists)
         return true;
     }
 }

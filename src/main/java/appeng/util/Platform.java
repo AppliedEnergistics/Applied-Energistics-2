@@ -123,9 +123,6 @@ import appeng.util.prioritylist.IPartitionList;
  */
 public class Platform {
 
-    // FIXME get rid of this shit, there's CAVE_AIR now !!!
-    public static final Block AIR_BLOCK = Blocks.AIR;
-
     public static final int DEF_OFFSET = 16;
 
     private static final boolean CLIENT_INSTALL = FMLEnvironment.dist.isClient();
@@ -135,7 +132,6 @@ public class Platform {
      */
     private static final Random RANDOM_GENERATOR = new Random();
     private static final WeakHashMap<World, PlayerEntity> FAKE_PLAYERS = new WeakHashMap<>();
-    // private static Method getEntry;
 
     private static final ItemComparisonHelper ITEM_COMPARISON_HELPER = new ItemComparisonHelper();
 
@@ -184,31 +180,6 @@ public class Platform {
 
         final DecimalFormat df = new DecimalFormat("#.##");
         return df.format(p) + ' ' + level + unitName + (isRate ? "/t" : "");
-    }
-
-    public static AEPartLocation crossProduct(final AEPartLocation forward, final AEPartLocation up) {
-        final int west_x = forward.yOffset * up.zOffset - forward.zOffset * up.yOffset;
-        final int west_y = forward.zOffset * up.xOffset - forward.xOffset * up.zOffset;
-        final int west_z = forward.xOffset * up.yOffset - forward.yOffset * up.xOffset;
-
-        switch (west_x + west_y * 2 + west_z * 3) {
-            case 1:
-                return AEPartLocation.EAST;
-            case -1:
-                return AEPartLocation.WEST;
-
-            case 2:
-                return AEPartLocation.UP;
-            case -2:
-                return AEPartLocation.DOWN;
-
-            case 3:
-                return AEPartLocation.SOUTH;
-            case -3:
-                return AEPartLocation.NORTH;
-        }
-
-        return AEPartLocation.INTERNAL;
     }
 
     public static Direction crossProduct(final Direction forward, final Direction up) {
@@ -386,7 +357,7 @@ public class Platform {
         }
 
         final ResourceLocation n = ForgeRegistries.FLUIDS.getKey(fs.getFluidStack().getFluid());
-        return n == null ? "** Null" : n.getNamespace(); // FIXME: Check if namespace == mod
+        return n == null ? "** Null" : n.getNamespace();
     }
 
     public static String getModName(String modId) {
@@ -1126,7 +1097,11 @@ public class Platform {
         return ItemStack.EMPTY;
     }
 
-//	// TODO wtf is this?
+    /**
+     * Gets the container item for the given item or EMPTY. A container item is what
+     * remains when the item is used for crafting, i.E. the empty bucket for a
+     * bucket of water.
+     */
     public static ItemStack getContainerItem(final ItemStack stackInSlot) {
         if (stackInSlot == null) {
             return ItemStack.EMPTY;

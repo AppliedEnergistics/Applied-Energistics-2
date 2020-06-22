@@ -67,7 +67,6 @@ import appeng.block.networking.BlockCreativeEnergyCell;
 import appeng.block.networking.BlockDenseEnergyCell;
 import appeng.block.networking.BlockEnergyAcceptor;
 import appeng.block.networking.BlockEnergyCell;
-import appeng.block.networking.BlockEnergyCellRendering;
 import appeng.block.networking.BlockWireless;
 import appeng.block.networking.CableBusRendering;
 import appeng.block.networking.ControllerRendering;
@@ -453,12 +452,11 @@ public final class ApiBlocks implements IBlocks {
         this.energyCell = registry.block("energy_cell", BlockEnergyCell::new).features(AEFeature.ENERGY_CELLS)
                 .item(AEBaseBlockItemChargeable::new)
                 .tileEntity(registry.tileEntity("energy_cell", TileEnergyCell.class, TileEnergyCell::new).build())
-                .rendering(new BlockEnergyCellRendering(new ResourceLocation(AppEng.MOD_ID, "energy_cell"))).build();
+                .build();
         this.energyCellDense = registry.block("dense_energy_cell", BlockDenseEnergyCell::new)
                 .features(AEFeature.ENERGY_CELLS, AEFeature.DENSE_ENERGY_CELLS).item(AEBaseBlockItemChargeable::new)
                 .tileEntity(registry
                         .tileEntity("dense_energy_cell", TileDenseEnergyCell.class, TileDenseEnergyCell::new).build())
-                .rendering(new BlockEnergyCellRendering(new ResourceLocation(AppEng.MOD_ID, "dense_energy_cell")))
                 .build();
         this.energyCellCreative = registry.block("creative_energy_cell", BlockCreativeEnergyCell::new)
                 .features(AEFeature.CREATIVE)

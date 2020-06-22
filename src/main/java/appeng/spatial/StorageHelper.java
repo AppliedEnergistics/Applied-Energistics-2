@@ -24,6 +24,7 @@ import java.util.function.Function;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -171,11 +172,11 @@ public class StorageHelper {
         }
 
         for (final WorldCoord wc : cDst.getUpdates()) {
-            cSrc.getWorld().notifyNeighborsOfStateChange(wc.getPos(), Platform.AIR_BLOCK);
+            cSrc.getWorld().notifyNeighborsOfStateChange(wc.getPos(), Blocks.AIR);
         }
 
         for (final WorldCoord wc : cSrc.getUpdates()) {
-            cSrc.getWorld().notifyNeighborsOfStateChange(wc.getPos(), Platform.AIR_BLOCK);
+            cSrc.getWorld().notifyNeighborsOfStateChange(wc.getPos(), Blocks.AIR);
         }
 
         this.transverseEdges(srcX - 1, srcY - 1, srcZ - 1, srcX + scaleX + 1, srcY + scaleY + 1, srcZ + scaleZ + 1,

@@ -19,6 +19,7 @@
 package appeng.items.tools;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -131,7 +132,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench {
             final TileEntity te = w.getTileEntity(pos);
             if (!(te instanceof IGridHost)) {
                 if (bs.rotate(w, pos, Rotation.CLOCKWISE_90) != bs) {
-                    bs.neighborChanged(w, pos, Platform.AIR_BLOCK, pos, false);
+                    bs.neighborChanged(w, pos, Blocks.AIR, pos, false);
                     p.swingArm(hand);
                     return !w.isRemote;
                 }

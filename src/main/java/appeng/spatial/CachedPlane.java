@@ -24,10 +24,12 @@ import java.util.Map.Entry;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.network.play.server.SChunkDataPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.EmptyBlockReader;
 import net.minecraft.world.ITickList;
 import net.minecraft.world.NextTickListEntry;
 import net.minecraft.world.World;
@@ -135,8 +137,7 @@ public class CachedPlane {
                             this.myColumns[tePOS.getX() - minX][tePOS.getZ() - minZ].fillData(tePOS.getY(), details);
 
                             // don't skip air, just let the code replace it...
-                            if (details.state != null && details.state.getBlock() == Platform.AIR_BLOCK
-                                    && details.state.getMaterial().isReplaceable()) {
+                            if (details.state.isAir(EmptyBlockReader.INSTANCE, tePOS)) {
                                 w.removeBlock(tePOS, false);
                             } else {
                                 this.myColumns[tePOS.getX() - minX][tePOS.getZ() - minZ].setSkip(tePOS.getY());
@@ -370,7 +371,7 @@ public class CachedPlane {
 
         private void setBlockState(final int y, BlockStorageData data) {
             if (data.state == CachedPlane.this.matrixBlockState) {
-                data.state = Platform.AIR_BLOCK.getDefaultState();
+                data.state = Blocks.AIR.getDefaultState();
             }
             final ChunkSection[] storage = this.c.getSections();
             final ChunkSection extendedBlockStorage = storage[y >> 4];

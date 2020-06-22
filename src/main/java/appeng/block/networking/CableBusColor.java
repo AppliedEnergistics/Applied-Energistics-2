@@ -42,7 +42,6 @@ public class CableBusColor implements IBlockColor {
     @Override
     public int getColor(BlockState state, @Nullable ILightReader worldIn, @Nullable BlockPos pos, int color) {
 
-        // FIXME: Once COLOR becomes part of the block state, change this
         AEColor busColor = AEColor.TRANSPARENT;
 
         if (worldIn != null && pos != null) {

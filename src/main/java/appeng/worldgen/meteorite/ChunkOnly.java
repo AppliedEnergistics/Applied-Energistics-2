@@ -20,6 +20,7 @@ package appeng.worldgen.meteorite;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.chunk.IChunk;
@@ -69,7 +70,7 @@ public class ChunkOnly extends StandardWorld {
         if (this.range(pos)) {
             return this.target.getBlockState(new BlockPos(pos)).getBlock();
         }
-        return Platform.AIR_BLOCK;
+        return Blocks.AIR;
     }
 
     @Override

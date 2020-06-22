@@ -65,7 +65,7 @@ public class StandardWorld implements IMeteoriteWorld {
         if (this.range(pos)) {
             return this.getWorld().getBlockState(new BlockPos(pos)).getBlock();
         }
-        return Platform.AIR_BLOCK;
+        return Blocks.AIR;
     }
 
     @Override
