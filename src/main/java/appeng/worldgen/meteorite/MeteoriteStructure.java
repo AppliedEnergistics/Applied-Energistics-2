@@ -5,8 +5,6 @@ import java.util.function.Function;
 
 import com.mojang.datafixers.Dynamic;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeManager;
 import net.minecraft.world.gen.ChunkGenerator;
@@ -15,10 +13,7 @@ import net.minecraft.world.gen.NetherChunkGenerator;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.structure.ScatteredStructure;
 import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.feature.structure.StructureStart;
-import net.minecraft.world.gen.feature.template.TemplateManager;
 
-import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 
@@ -68,32 +63,12 @@ public class MeteoriteStructure extends ScatteredStructure<NoFeatureConfig> {
 
     @Override
     public Structure.IStartFactory getStartFactory() {
-        return MeteoriteStructure.Start::new;
+        return MeteoriteStructureStart::new;
     }
 
     @Override
     protected int getSeedModifier() {
         return 124895654;
-    }
-
-    public static class Start extends StructureStart {
-        public Start(Structure<?> p_i225815_1_, int p_i225815_2_, int p_i225815_3_, MutableBoundingBox p_i225815_4_,
-                int p_i225815_5_, long p_i225815_6_) {
-            super(p_i225815_1_, p_i225815_2_, p_i225815_3_, p_i225815_4_, p_i225815_5_, p_i225815_6_);
-        }
-
-        public void init(ChunkGenerator<?> generator, TemplateManager templateManagerIn, int chunkX, int chunkZ,
-                Biome biome) {
-            float meteoriteSize = (this.rand.nextFloat() * 6.0f) + 2;
-
-            int centerX = chunkX * 16 + rand.nextInt(16);
-            int centerZ = chunkZ * 16 + rand.nextInt(16);
-
-            BlockPos actualPos = new BlockPos(centerX, AEConfig.instance().getMeteoriteMaximumSpawnHeight(), centerZ);
-
-            components.add(new MeteoriteStructurePiece(actualPos, meteoriteSize));
-            this.recalculateStructureSize();
-        }
     }
 
 }

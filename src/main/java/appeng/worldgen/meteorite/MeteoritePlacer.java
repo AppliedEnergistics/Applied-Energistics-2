@@ -70,6 +70,7 @@ public final class MeteoritePlacer {
     private final boolean placeCrater;
     private final CraterType craterType;
     private final boolean pureCrater;
+    private final boolean craterLake;
     private final MutableBoundingBox boundingBox;
 
     public MeteoritePlacer(IWorld world, PlacedMeteoriteSettings settings, MutableBoundingBox boundingBox) {
@@ -84,6 +85,7 @@ public final class MeteoritePlacer {
         this.placeCrater = settings.shouldPlaceCrater();
         this.craterType = settings.getCraterType();
         this.pureCrater = settings.isPureCrater();
+        this.craterLake = settings.isCraterLake();
         this.squaredMeteoriteSize = this.meteoriteSize * this.meteoriteSize;
         this.crater = this.realCrater * this.realCrater;
 
@@ -107,6 +109,9 @@ public final class MeteoritePlacer {
         // collapse blocks...
         if (placeCrater) {
             this.decay();
+        }
+        if (craterLake) {
+            this.placeCraterLake();
         }
     }
 
@@ -368,6 +373,40 @@ public final class MeteoritePlacer {
                                 }
                             }
                         }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * If it finds a single water block at y62, it will replace any air blocks below
+     * the sea level with water.
+     */
+    private void placeCraterLake() {
+        final int maxY = world.getSeaLevel() - 1;
+        BlockPos.Mutable blockPos = new BlockPos.Mutable();
+
+        for (int j = y - 5; j <= maxY; j++) {
+            blockPos.setY(j);
+
+            for (int i = boundingBox.minX; i <= boundingBox.maxX; i++) {
+                blockPos.setX(i);
+
+                for (int k = boundingBox.minZ; k <= boundingBox.maxZ; k++) {
+                    blockPos.setZ(k);
+                    final double dx = i - x;
+                    final double dz = k - z;
+                    final double h = y - this.meteoriteSize + 1 + this.type.adjustCrater();
+
+                    final double distanceFrom = dx * dx + dz * dz;
+
+                    if (j > h + distanceFrom * 0.02) {
+                        BlockState currentBlock = world.getBlockState(blockPos);
+                        if (currentBlock.getBlock() == Blocks.AIR) {
+                            this.putter.put(world, blockPos, Blocks.WATER.getDefaultState());
+                        }
+
                     }
                 }
             }
