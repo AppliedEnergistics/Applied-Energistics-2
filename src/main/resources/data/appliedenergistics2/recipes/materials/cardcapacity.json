@@ -1,10 +1,4 @@
 {
-  "conditions": [
-    {
-      "type": "appliedenergistics2:feature",
-      "features": ["BASIC_CARDS"]
-    }
-  ],
   "result": {
     "item": "appliedenergistics2:capacity_card"
   },

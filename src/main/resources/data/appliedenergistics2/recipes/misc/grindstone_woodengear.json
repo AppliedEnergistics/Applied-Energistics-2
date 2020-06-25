@@ -1,10 +1,4 @@
 {
-  "conditions": [
-    {
-      "type": "appliedenergistics2:feature",
-      "features": ["GRIND_STONE"]
-    }
-  ],
   "result": {
     "item": "appliedenergistics2:wooden_gear"
   },

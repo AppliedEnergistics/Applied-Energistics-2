@@ -4,8 +4,6 @@ import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 
-import com.google.common.collect.Sets;
-
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
@@ -19,7 +17,6 @@ import net.minecraftforge.common.crafting.ConditionalRecipe;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.core.AppEng;
 import appeng.forge.data.providers.IAE2DataProvider;
-import appeng.recipes.conditions.FeaturesEnabled;
 
 public class SlabStairRecipes extends RecipeProvider implements IAE2DataProvider {
 
@@ -48,38 +45,26 @@ public class SlabStairRecipes extends RecipeProvider implements IAE2DataProvider
         Block inputBlock = block.block();
         Block outputBlock = slabs.block();
 
-        FeaturesEnabled condition = new FeaturesEnabled(Sets.union(block.features(), slabs.features()));
-        ConditionalRecipe.builder().addCondition(condition)
-                .addRecipe(ShapedRecipeBuilder.shapedRecipe(slabs.block(), 6).patternLine("###").key('#', inputBlock)
-                        .addCriterion(criterionName(block), hasItem(inputBlock))::build)
-                .build(consumer, AppEng.MOD_ID, "slabs/" + block.identifier());
+        ShapedRecipeBuilder.shapedRecipe(slabs.block(), 6).patternLine("###").key('#', inputBlock)
+                .addCriterion(criterionName(block), hasItem(inputBlock))
+                .build(consumer, new ResourceLocation(AppEng.MOD_ID, "shaped/slabs/" + block.identifier()));
 
-        ConditionalRecipe.builder().addCondition(condition)
-                .addRecipe(c -> SingleItemRecipeBuilder
-                        .stonecuttingRecipe(Ingredient.fromItems(inputBlock), outputBlock, 2)
-                        .addCriterion(criterionName(block), hasItem(inputBlock))
-                        .build(c, new ResourceLocation(AppEng.MOD_ID, slabs.identifier())))
-                .build(consumer, AppEng.MOD_ID, "slabs/block_cutter/" + block.identifier());
-
+        SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(inputBlock), outputBlock, 2)
+                .addCriterion(criterionName(block), hasItem(inputBlock))
+                .build(consumer, new ResourceLocation(AppEng.MOD_ID, "block_cutter/slabs/" + slabs.identifier()));
     }
 
     private void stairRecipe(Consumer<IFinishedRecipe> consumer, IBlockDefinition block, IBlockDefinition stairs) {
         Block inputBlock = block.block();
         Block outputBlock = stairs.block();
 
-        FeaturesEnabled condition = new FeaturesEnabled(Sets.union(block.features(), stairs.features()));
-        ConditionalRecipe.builder().addCondition(condition)
-                .addRecipe(ShapedRecipeBuilder.shapedRecipe(outputBlock, 4).patternLine("#  ").patternLine("## ")
-                        .patternLine("###").key('#', inputBlock)
-                        .addCriterion(criterionName(block), hasItem(inputBlock))::build)
-                .build(consumer, AppEng.MOD_ID, "stairs/" + block.identifier());
+        ShapedRecipeBuilder.shapedRecipe(outputBlock, 4).patternLine("#  ").patternLine("## ").patternLine("###")
+                .key('#', inputBlock).addCriterion(criterionName(block), hasItem(inputBlock))
+                .build(consumer, new ResourceLocation(AppEng.MOD_ID, "shaped/stairs/" + block.identifier()));
 
-        ConditionalRecipe.builder().addCondition(condition)
-                .addRecipe(
-                        c -> SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(inputBlock), outputBlock)
-                                .addCriterion(criterionName(block), hasItem(inputBlock))
-                                .build(c, new ResourceLocation(AppEng.MOD_ID, stairs.identifier())))
-                .build(consumer, AppEng.MOD_ID, "stairs/block_cutter/" + block.identifier());
+        SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(inputBlock), outputBlock)
+                .addCriterion(criterionName(block), hasItem(inputBlock))
+                .build(consumer, new ResourceLocation(AppEng.MOD_ID, "block_cutter/stairs/" + stairs.identifier()));
 
     }
 

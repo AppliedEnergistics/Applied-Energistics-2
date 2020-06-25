@@ -1,10 +1,4 @@
 {
-  "conditions": [
-    {
-      "type": "appliedenergistics2:feature",
-      "features": ["ADVANCED_CARDS"]
-    }
-  ],
   "result": {
     "item": "appliedenergistics2:advanced_card",
     "count": 2
