@@ -73,7 +73,7 @@ public class MeteoriteStructureStart extends StructureStart {
 
         boolean craterLake = this.locateWaterAroundTheCrater(generator, actualPos, meteoriteRadius);
         CraterType craterType = this.determineCraterType(spawnBiome);
-        boolean pureCrater = this.rand.nextFloat() > .5f;
+        boolean pureCrater = this.rand.nextFloat() > .9f;
         FalloutMode fallout = getFalloutFromBaseBlock(spawnBiome.getSurfaceBuilderConfig().getTop());
 
         components.add(

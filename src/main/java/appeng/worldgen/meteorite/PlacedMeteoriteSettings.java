@@ -95,7 +95,8 @@ public final class PlacedMeteoriteSettings {
     @Override
     public String toString() {
         return "PlacedMeteoriteSettings [pos=" + pos + ", meteoriteRadius=" + meteoriteRadius + ", craterType="
-                + craterType + ", fallout=" + fallout + ", pureCrater=" + pureCrater + "]";
+                + craterType + ", fallout=" + fallout + ", pureCrater=" + pureCrater + ", craterLake=" + craterLake
+                + "]";
     }
 
 }
