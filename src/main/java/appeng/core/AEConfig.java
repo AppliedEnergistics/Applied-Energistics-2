@@ -177,7 +177,7 @@ public final class AEConfig {
         this.featureFlags.clear();
         for (final AEFeature feature : AEFeature.values()) {
             if (feature.isVisible()) {
-                if (COMMON.enabledFeatures.get(feature).get()) {
+                if (COMMON.enabledFeatures.containsKey(feature)) {
                     this.featureFlags.add(feature);
                 }
             } else {
@@ -499,8 +499,10 @@ public final class AEConfig {
 
                 builder.push(category);
                 for (AEFeature feature : featuresInGroup) {
-                    enabledFeatures.put(feature, builder.comment(Strings.nullToEmpty(feature.comment()))
-                            .define(feature.key(), feature.isEnabled()));
+                    if (feature.isConfig()) {
+                        enabledFeatures.put(feature, builder.comment(Strings.nullToEmpty(feature.comment()))
+                                .define(feature.key(), feature.isEnabled()));
+                    }
                 }
                 builder.pop();
             }
