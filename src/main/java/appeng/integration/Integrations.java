@@ -20,11 +20,11 @@ package appeng.integration;
 
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 
-import appeng.integration.modules.theoneprobe.TheOneProbeModule;
+import appeng.integration.modules.theoneprobe.TOP;
 
 public class Integrations {
 
     public static void enqueueIMC(final InterModEnqueueEvent event) {
-        TheOneProbeModule.enqueueIMC(event);
+        TOP.enqueueIMC(event);
     }
 }

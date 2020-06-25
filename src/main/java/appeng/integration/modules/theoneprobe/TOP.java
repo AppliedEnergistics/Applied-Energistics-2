@@ -18,21 +18,14 @@
 
 package appeng.integration.modules.theoneprobe;
 
-import java.util.function.Function;
+import net.minecraftforge.fml.InterModComms;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 
-import mcjty.theoneprobe.api.ITheOneProbe;
-
-import appeng.integration.IIntegrationModule;
-import appeng.integration.modules.theoneprobe.config.AEConfigProvider;
-
-public class TheOneProbeModule implements IIntegrationModule, Function<ITheOneProbe, Void> {
-
-    @Override
-    public Void apply(ITheOneProbe input) {
-        input.registerProbeConfigProvider(new AEConfigProvider());
-        input.registerProvider(new TileInfoProvider());
-        input.registerProvider(new PartInfoProvider());
-
-        return null;
+public class TOP {
+    public static void enqueueIMC(final InterModEnqueueEvent event) {
+        if (ModList.get().isLoaded("theoneprobe")) {
+            InterModComms.sendTo("theoneprobe", "getTheOneProbe", TheOneProbeModule::new);
+        }
     }
 }
