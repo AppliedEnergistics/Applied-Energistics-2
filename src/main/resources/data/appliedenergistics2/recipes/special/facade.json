@@ -1,9 +1,3 @@
 {
-  "conditions": [
-    {
-      "type": "appliedenergistics2:feature",
-      "features": ["ENABLE_FACADE_CRAFTING"]
-    }
-  ],
   "type": "appliedenergistics2:facade"
 }

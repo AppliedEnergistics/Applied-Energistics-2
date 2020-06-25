@@ -100,7 +100,6 @@ import appeng.fluids.container.*;
 import appeng.fluids.registries.BasicFluidCellGuiHandler;
 import appeng.items.parts.FacadeItem;
 import appeng.me.cache.*;
-import appeng.recipes.conditions.FeaturesEnabled;
 import appeng.recipes.game.DisassembleRecipe;
 import appeng.recipes.game.FacadeRecipe;
 import appeng.recipes.handlers.GrinderRecipe;
@@ -343,8 +342,6 @@ final class Registration {
         r.registerAll(DisassembleRecipe.SERIALIZER, GrinderRecipeSerializer.INSTANCE,
                 InscriberRecipeSerializer.INSTANCE, FacadeRecipe.getSerializer(facadeItem),
                 DisassembleRecipe.SERIALIZER);
-
-        CraftingHelper.register(FeaturesEnabled.Serializer.INSTANCE);
     }
 
     public void registerEntities(RegistryEvent.Register<EntityType<?>> event) {

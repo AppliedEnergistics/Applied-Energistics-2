@@ -1,10 +1,4 @@
 {
-  "conditions": [
-    {
-      "type": "appliedenergistics2:feature",
-      "features": ["CORES"]
-    }
-  ],
   "result": {
     "item": "appliedenergistics2:formation_core",
     "count": 2
