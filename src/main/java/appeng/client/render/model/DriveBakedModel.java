@@ -71,7 +71,7 @@ public class DriveBakedModel extends DelegateBakedModel {
                     // Position this drive model copy at the correct slot. The transform is based on
                     // the
                     // cell-model being in slot 0,0 at the top left of the drive.
-                    float xOffset = -col * 7 / 16.0f;
+                    float xOffset = -col * 8 / 16.0f;
                     float yOffset = -row * 3 / 16.0f;
                     transform.setTranslation(xOffset, yOffset, 0);
 
