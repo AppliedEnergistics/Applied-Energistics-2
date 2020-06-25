@@ -39,8 +39,8 @@ import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 import appeng.worldgen.meteorite.CraterType;
 import appeng.worldgen.meteorite.MeteoritePlacer;
-import appeng.worldgen.meteorite.MeteoriteSpawner;
 import appeng.worldgen.meteorite.PlacedMeteoriteSettings;
+import appeng.worldgen.meteorite.debug.MeteoriteSpawner;
 
 public class MeteoritePlacerItem extends AEBaseItem {
 
