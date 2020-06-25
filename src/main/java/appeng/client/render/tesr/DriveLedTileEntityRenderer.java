@@ -43,8 +43,8 @@ public class DriveLedTileEntityRenderer extends TileEntityRenderer<DriveTileEnti
     private static final float R = 13 / 16.f; // right (x-axis)
     private static final float T = 14 / 16.f; // top (x-axis)
     private static final float B = 12.999f / 16.f; // bottom (x-axis)
-    private static final float FR = 0.4f / 16.f; // front (z-axis)
-    private static final float BA = 1 / 16.f; // back (z-axis)
+    private static final float FR = 0.999f / 16.f; // front (z-axis)
+    private static final float BA = 1.499f / 16.f; // back (z-axis)
 
     // Vertex data for the LED cuboid (has no back)
     // Directions are when looking from the front onto the LED
@@ -99,7 +99,7 @@ public class DriveLedTileEntityRenderer extends TileEntityRenderer<DriveTileEnti
                 // Position this drive model copy at the correct slot. The transform is based on
                 // the
                 // cell-model being in slot 0,0 at the top left of the drive.
-                float xOffset = -col * 7 / 16.0f;
+                float xOffset = -col * 8 / 16.0f;
                 float yOffset = -row * 3 / 16.0f;
                 ms.translate(xOffset, yOffset, 0);
 

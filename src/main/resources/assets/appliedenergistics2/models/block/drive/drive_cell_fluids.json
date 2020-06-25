@@ -1,25 +1,17 @@
 {
   "textures": {
-    "front": "appliedenergistics2:block/drive/drive_cell_states"
+    "front": "appliedenergistics2:block/drive/fluid_cell"
   },
   "elements": [
     {
       "name": "Cell Backdrop",
-      "from": [8.5, 13.0, 0.5],
-      "to": [14.5, 15.0, 2],
+      "from": [9, 13, 1],
+      "to": [15, 15, 3],
+      "rotation": { "angle": 0, "axis": "y", "origin": [9, 8, 8] },
       "faces": {
-        "north": {
-          "texture": "#front",
-          "uv": [0, 12, 5, 14]
-        },
-        "up": {
-          "texture": "#front",
-          "uv": [0, 12, 5, 14]
-        },
-        "down": {
-          "texture": "#front",
-          "uv": [0, 12, 5, 14]
-        }
+        "north": { "uv": [0, 2, 6, 4], "texture": "#front" },
+        "up": { "uv": [0, 0, 6, 2], "texture": "#front" },
+        "down": { "uv": [0, 4, 6, 6], "texture": "#front" }
       }
     }
   ]
