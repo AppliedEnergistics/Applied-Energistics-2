@@ -151,6 +151,9 @@ publishing {
             artifactId = project.archivesBaseName
             version = project.version
             from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            artifact apiJar
         }
     }
     repositories {
