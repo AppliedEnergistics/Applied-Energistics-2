@@ -48,8 +48,9 @@ public class MeteoriteStructurePiece extends StructurePiece {
         // meteors spawned at about y64 are 9x9 chunks large at most.
         int range = 4 * 16;
 
-        this.boundingBox = new MutableBoundingBox(center.getX() - range, center.getY(), center.getZ() - range,
-                center.getX() + range, center.getY(), center.getZ() + range);
+        ChunkPos chunkPos = new ChunkPos(center);
+        this.boundingBox = new MutableBoundingBox(chunkPos.getXStart() - range, center.getY(),
+                chunkPos.getZStart() - range, chunkPos.getXEnd() + range, center.getY(), chunkPos.getZEnd() + range);
     }
 
     public MeteoriteStructurePiece(TemplateManager templateManager, CompoundNBT tag) {

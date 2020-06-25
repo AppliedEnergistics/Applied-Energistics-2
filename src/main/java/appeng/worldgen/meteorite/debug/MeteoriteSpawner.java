@@ -20,42 +20,19 @@ package appeng.worldgen.meteorite.debug;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
-import net.minecraft.world.biome.Biome.Category;
-import net.minecraft.world.chunk.ChunkStatus;
-import net.minecraft.world.gen.Heightmap;
-import net.minecraft.world.gen.Heightmap.Type;
 
-import appeng.core.AppEng;
 import appeng.worldgen.meteorite.CraterType;
 import appeng.worldgen.meteorite.PlacedMeteoriteSettings;
-import appeng.worldgen.meteorite.fallout.FalloutMode;
 
 /**
  * Makes decisions about spawning meteorites in the world.
  */
 public class MeteoriteSpawner {
 
-    private static final ResourceLocation TAG_VALID_SPAWN = new ResourceLocation(AppEng.MOD_ID,
-            "meteorite/valid_spawn");
-
-    private static final ResourceLocation TAG_INVALID_SPAWN = new ResourceLocation(AppEng.MOD_ID,
-            "meteorite/invalid_spawn");
-
-    private final Tag<Block> validSpawnTag;
-    private final Tag<Block> invalidSpawnTag;
-
-
     public MeteoriteSpawner() {
-        this.validSpawnTag = BlockTags.getCollection().getOrCreate(TAG_VALID_SPAWN);
-        this.invalidSpawnTag = BlockTags.getCollection().getOrCreate(TAG_INVALID_SPAWN);
     }
 
     public PlacedMeteoriteSettings trySpawnMeteoriteAtSuitableHeight(IWorldReader world, BlockPos startPos,
@@ -95,7 +72,7 @@ public class MeteoriteSpawner {
             // return null;
         }
 
-        //FalloutMode fallout = getFalloutFromBaseBlock(world.getBlockState(pos));
+        // FalloutMode fallout = getFalloutFromBaseBlock(world.getBlockState(pos));
 
         boolean craterLake = false;
 
@@ -143,9 +120,7 @@ public class MeteoriteSpawner {
                 for (int k = pos.getZ() - 6; k < pos.getZ() + 6; k++) {
                     testPos.setZ(k);
                     Block block = w.getBlockState(testPos).getBlock();
-                    if (block.isIn(validSpawnTag)) {
-                        realValidBlocks++;
-                    }
+                    realValidBlocks++;
                 }
             }
         }
@@ -158,12 +133,7 @@ public class MeteoriteSpawner {
                 for (int k = pos.getZ() - 15; k < pos.getZ() + 15; k++) {
                     testPos.setZ(k);
                     Block testBlk = w.getBlockState(testPos).getBlock();
-                    if (testBlk.isIn(invalidSpawnTag)) {
-                        return false;
-                    }
-                    if (testBlk.isIn(validSpawnTag)) {
-                        validBlocks++;
-                    }
+                    validBlocks++;
                 }
             }
         }

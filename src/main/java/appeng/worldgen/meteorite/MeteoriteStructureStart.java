@@ -59,8 +59,8 @@ public class MeteoriteStructureStart extends StructureStart {
         }
 
         int centerY = (int) stats.mean();
-        // If there is one really different y level, spawn it down a bit further
-        if (stats.mean() - stats.min() > meteoriteRadius / 2) {
+        // Spawn it down a bit further with a high variance.
+        if (stats.populationVariance() > 5) {
             centerY -= (stats.mean() - stats.min()) * .75;
         }
 
