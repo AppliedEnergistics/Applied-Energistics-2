@@ -69,7 +69,7 @@ if (ext.branch) {
 
 ext.release = System.getenv('RELEASE') ?: ""
 if (ext.release) {
-  version = ext.release.substring(1)
+  version = ext.release
 }
 
 
@@ -139,6 +139,28 @@ minecraft {
                 }
             }
         }
+    }
+}
+
+def signProps = [:]
+if (System.getenv("KEY_STORE_FILE")) {
+    signProps['keyStore'] = System.getenv("KEY_STORE_FILE")
+    signProps['storePass'] = System.getenv("KEY_STORE_PASS")
+    signProps['alias'] = System.getenv("KEY_STORE_ALIAS")
+    signProps['keyPass'] = System.getenv("KEY_STORE_KEY_PASS")
+}
+
+task signJar(type: net.minecraftforge.gradle.common.task.SignJar, dependsOn: 'reobfJar') {
+    onlyIf { !signProps.isEmpty() }
+
+    if (!signProps.isEmpty()) {
+        keyStore = signProps.keyStore
+        alias = signProps.alias
+        storePass = signProps.storePass
+        keyPass = signProps.keyPass
+
+        inputFile = jar.archivePath
+        outputFile = jar.archivePath
     }
 }
 
