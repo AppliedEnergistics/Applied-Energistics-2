@@ -21,6 +21,9 @@ processResources {
 }
 
 jar {
+    finalizedBy 'reobfJar'
+    finalizedBy 'signJar'
+
     from sourceSets.main.output.classesDirs
     from sourceSets.api.output.classesDirs
     from sourceSets.main.output.resourcesDir
