@@ -17,8 +17,6 @@
  */
 
 plugins {
-
-    id 'java'
     id 'fabric-loom' apply false
     id 'maven-publish'
     id "org.jetbrains.kotlin.jvm" apply false
