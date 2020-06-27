@@ -18,7 +18,7 @@
 
 package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Box;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 
 import appeng.thirdparty.codechicken.lib.model.Quad.Vertex;
@@ -36,18 +36,18 @@ public class QuadClamper extends QuadTransformer {
 
     public static IPipelineElementFactory<QuadClamper> FACTORY = QuadClamper::new;
 
-    private AxisAlignedBB clampBounds;
+    private Box clampBounds;
 
     QuadClamper() {
         super();
     }
 
-    public QuadClamper(IVertexConsumer parent, AxisAlignedBB bounds) {
+    public QuadClamper(IVertexConsumer parent, Box bounds) {
         super(parent);
         this.clampBounds = bounds;
     }
 
-    public void setClampBounds(AxisAlignedBB bounds) {
+    public void setClampBounds(Box bounds) {
         this.clampBounds = bounds;
     }
 

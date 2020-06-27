@@ -19,7 +19,7 @@
 package appeng.tile.misc;
 
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.block.entity.BlockEntityType;
 
 import appeng.tile.AEBaseTileEntity;
 import appeng.util.Platform;
@@ -29,7 +29,7 @@ public class LightDetectorTileEntity extends AEBaseTileEntity implements ITickab
     private int lastCheck = 30;
     private int lastLight = 0;
 
-    public LightDetectorTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public LightDetectorTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 

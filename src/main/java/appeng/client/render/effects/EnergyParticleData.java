@@ -23,7 +23,7 @@ import java.util.Locale;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
 
@@ -54,7 +54,7 @@ public class EnergyParticleData implements IParticleData {
         }
 
         @Override
-        public EnergyParticleData read(ParticleType<EnergyParticleData> particleTypeIn, PacketBuffer buffer) {
+        public EnergyParticleData read(ParticleType<EnergyParticleData> particleTypeIn, PacketByteBuf buffer) {
             boolean forItem = buffer.readBoolean();
             AEPartLocation direction = AEPartLocation.values()[buffer.readByte()];
             return new EnergyParticleData(forItem, direction);
@@ -67,7 +67,7 @@ public class EnergyParticleData implements IParticleData {
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void write(PacketByteBuf buffer) {
         buffer.writeBoolean(forItem);
         buffer.writeByte((byte) direction.ordinal());
     }

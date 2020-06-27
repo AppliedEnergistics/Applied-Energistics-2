@@ -27,7 +27,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.block.ShapeContext;
@@ -153,7 +153,7 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
                     break;
             }
 
-            return VoxelShapes.create(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ));
+            return VoxelShapes.create(new Box(minX, minY, minZ, maxX, maxY, maxZ));
         }
         return VoxelShapes.empty();
     }
@@ -213,7 +213,7 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
                     break;
             }
 
-            return VoxelShapes.create(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ));
+            return VoxelShapes.create(new Box(minX, minY, minZ, maxX, maxY, maxZ));
         } else {
             return VoxelShapes.empty();
         }

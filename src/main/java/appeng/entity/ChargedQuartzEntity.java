@@ -27,7 +27,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -95,7 +95,7 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
         final IMaterials materials = AEApi.instance().definitions().materials();
 
         if (materials.certusQuartzCrystalCharged().isSameAs(item)) {
-            final AxisAlignedBB region = new AxisAlignedBB(this.getPosX() - 1, this.getPosY() - 1, this.getPosZ() - 1,
+            final Box region = new Box(this.getPosX() - 1, this.getPosY() - 1, this.getPosZ() - 1,
                     this.getPosX() + 1, this.getPosY() + 1, this.getPosZ() + 1);
             final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity(region);
 

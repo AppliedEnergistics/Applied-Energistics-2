@@ -21,12 +21,12 @@ package appeng.block.networking;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.renderer.color.IBlockColor;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ILightReader;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import appeng.api.util.AEColor;
 import appeng.parts.CableBusContainer;
@@ -36,7 +36,7 @@ import appeng.tile.networking.CableBusTileEntity;
  * Exposes the cable bus color as tint indices 0 (dark variant), 1 (medium
  * variant) and 2 (bright variant).
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class CableBusColor implements IBlockColor {
 
     @Override
@@ -45,7 +45,7 @@ public class CableBusColor implements IBlockColor {
         AEColor busColor = AEColor.TRANSPARENT;
 
         if (worldIn != null && pos != null) {
-            TileEntity tileEntity = worldIn.getTileEntity(pos);
+            BlockEntity tileEntity = worldIn.getTileEntity(pos);
             if (tileEntity instanceof CableBusTileEntity) {
                 CableBusContainer container = ((CableBusTileEntity) tileEntity).getCableBus();
                 busColor = container.getColor();

@@ -27,7 +27,7 @@ import java.util.Set;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
@@ -118,7 +118,7 @@ public interface IPartHost extends ICustomCableConnection {
      * @return the tile entity for the host, this can either be an FMP tile, or a AE
      *         tile
      */
-    TileEntity getTile();
+    BlockEntity getTile();
 
     /**
      * @return the color of the host type ( this is determined by the middle cable.

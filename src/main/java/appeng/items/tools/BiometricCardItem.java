@@ -29,13 +29,13 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.text.Text;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.features.IPlayerRegistry;
@@ -75,7 +75,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
     }
 
     @Override
-    public ITextComponent getDisplayName(final ItemStack is) {
+    public Text getDisplayName(final ItemStack is) {
         final GameProfile username = this.getProfile(is);
         return username != null ? super.getDisplayName(is).appendText(" - " + username.getName())
                 : super.getDisplayName(is);
@@ -153,20 +153,20 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+    @Environment(EnvType.CLIENT)
+    public void addInformation(final ItemStack stack, final World world, final List<Text> lines,
             final ITooltipFlag advancedTooltips) {
         final EnumSet<SecurityPermissions> perms = this.getPermissions(stack);
         if (perms.isEmpty()) {
-            lines.add(new TranslationTextComponent(GuiText.NoPermissions.getLocal()));
+            lines.add(new TranslatableText(GuiText.NoPermissions.getLocal()));
         } else {
-            ITextComponent msg = null;
+            Text msg = null;
 
             for (final SecurityPermissions sp : perms) {
                 if (msg == null) {
-                    msg = new TranslationTextComponent(sp.getTranslatedName());
+                    msg = new TranslatableText(sp.getTranslatedName());
                 } else {
-                    msg = msg.appendText(", ").appendSibling(new TranslationTextComponent(sp.getTranslatedName()));
+                    msg = msg.appendText(", ").appendSibling(new TranslatableText(sp.getTranslatedName()));
                 }
             }
             lines.add(msg);

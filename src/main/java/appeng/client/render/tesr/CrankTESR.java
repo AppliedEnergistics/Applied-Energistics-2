@@ -18,20 +18,20 @@
 
 package appeng.client.render.tesr;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.util.math.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Quaternion;
-import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.render.model.IBakedModel;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.client.render.FacingToRotation;
 import appeng.tile.grindstone.CrankTileEntity;
@@ -40,7 +40,7 @@ import appeng.tile.grindstone.CrankTileEntity;
  * This FastTESR only handles the animated model of the turning crank. When the
  * crank is at rest, it is rendered using a normal model.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class CrankTESR extends TileEntityRenderer<CrankTileEntity> {
 
     public CrankTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
@@ -48,7 +48,7 @@ public class CrankTESR extends TileEntityRenderer<CrankTileEntity> {
     }
 
     @Override
-    public void render(CrankTileEntity te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
+    public void render(CrankTileEntity te, float partialTicks, MatrixStack ms, VertexConsumerProvider buffers,
             int combinedLightIn, int combinedOverlayIn) {
 
         // Apply GL transformations relative to the center of the block: 1) TE rotation

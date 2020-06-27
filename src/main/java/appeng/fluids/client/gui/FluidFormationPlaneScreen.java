@@ -2,7 +2,7 @@
 package appeng.fluids.client.gui;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.widgets.TabButton;
@@ -17,7 +17,7 @@ import appeng.fluids.util.IAEFluidTank;
 
 public class FluidFormationPlaneScreen extends UpgradeableScreen<FluidFormationPlaneContainer> {
     public FluidFormationPlaneScreen(FluidFormationPlaneContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
+            Text title) {
         super(container, playerInventory, title);
         this.ySize = 251;
     }

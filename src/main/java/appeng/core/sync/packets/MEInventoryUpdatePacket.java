@@ -35,9 +35,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.IPacket;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.network.PacketByteBuf;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraftforge.fml.network.NetworkDirection;
 
 import appeng.api.storage.data.IAEItemStack;
@@ -63,14 +63,14 @@ public class MEInventoryUpdatePacket extends BasePacket {
     private final byte ref;
 
     @Nullable
-    private final PacketBuffer data;
+    private final PacketByteBuf data;
     @Nullable
     private final GZIPOutputStream compressFrame;
 
     private int writtenBytes = 0;
     private boolean empty = true;
 
-    public MEInventoryUpdatePacket(final PacketBuffer stream) {
+    public MEInventoryUpdatePacket(final PacketByteBuf stream) {
         this.data = null;
         this.compressFrame = null;
         this.list = new ArrayList<>();
@@ -88,7 +88,7 @@ public class MEInventoryUpdatePacket extends BasePacket {
                 return stream.readByte() & STREAM_MASK;
             }
         })) {
-            final PacketBuffer uncompressed = new PacketBuffer(Unpooled.buffer(stream.readableBytes()));
+            final PacketByteBuf uncompressed = new PacketByteBuf(Unpooled.buffer(stream.readableBytes()));
             final byte[] tmp = new byte[TEMP_BUFFER_SIZE];
 
             while (gzReader.available() != 0) {
@@ -117,7 +117,7 @@ public class MEInventoryUpdatePacket extends BasePacket {
     // api
     public MEInventoryUpdatePacket(final byte ref) throws IOException {
         this.ref = ref;
-        this.data = new PacketBuffer(Unpooled.buffer(OPERATION_BYTE_LIMIT));
+        this.data = new PacketByteBuf(Unpooled.buffer(OPERATION_BYTE_LIMIT));
         this.data.writeInt(this.getPacketID());
         this.data.writeByte(this.ref);
 
@@ -132,7 +132,7 @@ public class MEInventoryUpdatePacket extends BasePacket {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         final Screen gs = Minecraft.getInstance().currentScreen;
 
@@ -169,7 +169,7 @@ public class MEInventoryUpdatePacket extends BasePacket {
     }
 
     public void appendItem(final IAEItemStack is) throws IOException, BufferOverflowException {
-        final PacketBuffer tmp = new PacketBuffer(Unpooled.buffer(OPERATION_BYTE_LIMIT));
+        final PacketByteBuf tmp = new PacketByteBuf(Unpooled.buffer(OPERATION_BYTE_LIMIT));
         is.writeToPacket(tmp);
 
         this.compressFrame.flush();

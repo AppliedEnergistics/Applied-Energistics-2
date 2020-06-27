@@ -18,9 +18,9 @@
 
 package appeng.me.storage;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.IncludeExclude;
@@ -49,8 +49,8 @@ public class BasicCellInventoryHandler<T extends IAEStack<T>> extends MEInventor
         if (ci != null) {
             final IItemList<T> priorityList = channel.createList();
 
-            final IItemHandler upgrades = ci.getUpgradesInventory();
-            final IItemHandler config = ci.getConfigInventory();
+            final ItemTransferable upgrades = ci.getUpgradesInventory();
+            final ItemTransferable config = ci.getConfigInventory();
             final FuzzyMode fzMode = ci.getFuzzyMode();
 
             boolean hasInverter = false;

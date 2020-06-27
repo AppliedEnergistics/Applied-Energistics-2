@@ -18,8 +18,8 @@
 
 package appeng.bootstrap;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.Environment;
+import net.fabricmc.api.EnvType;
 
 /**
  * A callback that allows the rendering of a item to be customized. Sadly this
@@ -28,6 +28,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  */
 public abstract class ItemRenderingCustomizer {
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public abstract void customize(IItemRendering rendering);
 }

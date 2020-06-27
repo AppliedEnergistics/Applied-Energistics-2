@@ -13,7 +13,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fluids.FluidStack;
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
@@ -68,7 +68,7 @@ public class FluidSlotWidget extends CustomSlotWidget {
         if (clickStack.isEmpty() || mouseButton == 1) {
             this.setFluidStack(null);
         } else if (mouseButton == 0) {
-            final LazyOptional<FluidStack> fluidOpt = FluidUtil.getFluidContained(clickStack);
+            final LazyOptional<FluidVolume> fluidOpt = FluidUtil.getFluidContained(clickStack);
             fluidOpt.ifPresent(fluid -> {
                 this.setFluidStack(AEFluidStack.fromFluidStack(fluid));
             });

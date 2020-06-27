@@ -32,16 +32,16 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.items.IItemHandler;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
@@ -71,9 +71,9 @@ public final class MaterialItem extends AEBaseItem implements IStorageComponent,
         this.materialType = materialType;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
-    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+    public void addInformation(final ItemStack stack, final World world, final List<Text> lines,
             final ITooltipFlag advancedTooltips) {
         super.addInformation(stack, world, lines, advancedTooltips);
 
@@ -86,9 +86,9 @@ public final class MaterialItem extends AEBaseItem implements IStorageComponent,
 
         final Upgrades u = this.getType(stack);
         if (u != null) {
-            final List<ITextComponent> textList = new ArrayList<>();
+            final List<Text> textList = new ArrayList<>();
             for (final Entry<ItemStack, Integer> j : u.getSupported().entrySet()) {
-                ITextComponent name = null;
+                Text name = null;
 
                 final int limit = j.getValue();
 
@@ -96,7 +96,7 @@ public final class MaterialItem extends AEBaseItem implements IStorageComponent,
                     final IItemGroup ig = (IItemGroup) j.getKey().getItem();
                     final String str = ig.getUnlocalizedGroupName(u.getSupported().keySet(), j.getKey());
                     if (str != null) {
-                        name = new TranslationTextComponent(str).appendText(limit > 1 ? " (" + limit + ')' : "");
+                        name = new TranslatableText(str).appendText(limit > 1 ? " (" + limit + ')' : "");
                     }
                 }
 
@@ -142,8 +142,8 @@ public final class MaterialItem extends AEBaseItem implements IStorageComponent,
         PlayerEntity player = context.getPlayer();
         Hand hand = context.getHand();
         if (player.isCrouching()) {
-            final TileEntity te = context.getWorld().getTileEntity(context.getPos());
-            IItemHandler upgrades = null;
+            final BlockEntity te = context.getWorld().getTileEntity(context.getPos());
+            ItemTransferable upgrades = null;
 
             if (te instanceof IPartHost) {
                 final SelectedPart sp = ((IPartHost) te).selectPart(context.getHitVec());
@@ -229,7 +229,7 @@ public final class MaterialItem extends AEBaseItem implements IStorageComponent,
         return false;
     }
 
-    private static class SlightlyBetterSort implements Comparator<ITextComponent> {
+    private static class SlightlyBetterSort implements Comparator<Text> {
         private final Pattern pattern;
 
         public SlightlyBetterSort(final Pattern pattern) {
@@ -237,7 +237,7 @@ public final class MaterialItem extends AEBaseItem implements IStorageComponent,
         }
 
         @Override
-        public int compare(final ITextComponent o1, final ITextComponent o2) {
+        public int compare(final Text o1, final Text o2) {
             try {
                 final Matcher a = this.pattern.matcher(o1.getString());
                 final Matcher b = this.pattern.matcher(o2.getString());

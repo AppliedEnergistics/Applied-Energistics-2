@@ -23,8 +23,8 @@
 
 package appeng.api.storage.cells;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.IMEInventory;
@@ -50,12 +50,12 @@ public interface ICellInventory<T extends IAEStack<T>> extends IMEInventory<T> {
     /**
      * @return access configured list
      */
-    IItemHandler getConfigInventory();
+    ItemTransferable getConfigInventory();
 
     /**
      * @return access installed upgrades.
      */
-    IItemHandler getUpgradesInventory();
+    ItemTransferable getUpgradesInventory();
 
     /**
      * @return How many bytes are used for each type?

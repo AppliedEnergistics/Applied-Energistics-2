@@ -22,14 +22,14 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.Direction;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridNode;
@@ -55,7 +55,7 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
     public static final int MAX_BURN_SPEED = 200;
     public static final double DILATION_SCALING = 25.0; // x4 ~ 40 AE/t at max
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 1);
-    private final IItemHandler invExt = new WrapperFilteredItemHandler(this.inv, new FuelSlotFilter());
+    private final ItemTransferable invExt = new WrapperFilteredItemHandler(this.inv, new FuelSlotFilter());
 
     private int burnSpeed = 100;
     private double burnTime = 0;
@@ -64,7 +64,7 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
     // client side..
     public boolean isOn;
 
-    public VibrationChamberTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public VibrationChamberTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getProxy().setIdlePowerUsage(0);
         this.getProxy().setFlags();
@@ -76,7 +76,7 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
     }
 
     @Override
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final PacketByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
         final boolean wasOn = this.isOn;
 
@@ -86,7 +86,7 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
     }
 
     @Override
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final PacketByteBuf data) throws IOException {
         super.writeToStream(data);
         data.writeBoolean(this.getBurnTime() > 0);
     }
@@ -109,18 +109,18 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
     }
 
     @Override
-    protected IItemHandler getItemHandlerForSide(@Nonnull Direction facing) {
+    protected ItemTransferable getItemHandlerForSide(@Nonnull Direction facing) {
         return this.invExt;
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
+    public ItemTransferable getInternalInventory() {
         return this.inv;
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final ItemStack added) {
+    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+                                  final ItemStack removed, final ItemStack added) {
         if (this.getBurnTime() <= 0) {
             if (this.canEatFuel()) {
                 try {
@@ -269,12 +269,12 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
 
     private class FuelSlotFilter implements IAEItemFilter {
         @Override
-        public boolean allowExtract(IItemHandler inv, int slot, int amount) {
+        public boolean allowExtract(ItemTransferable inv, int slot, int amount) {
             return ForgeHooks.getBurnTime(inv.getStackInSlot(slot)) == 0;
         }
 
         @Override
-        public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
+        public boolean allowInsert(ItemTransferable inv, int slot, ItemStack stack) {
             return ForgeHooks.getBurnTime(stack) != 0;
         }
     }

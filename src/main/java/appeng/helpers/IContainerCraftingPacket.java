@@ -18,8 +18,8 @@
 
 package appeng.helpers;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionSource;
@@ -36,7 +36,7 @@ public interface IContainerCraftingPacket {
      *
      * @return the inventory of the part/tile by name.
      */
-    IItemHandler getInventoryByName(String string);
+    ItemTransferable getInventoryByName(String string);
 
     /**
      * @return who are we?

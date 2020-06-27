@@ -20,10 +20,10 @@ package appeng.core.sync.network;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.INetHandler;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 
 public interface IPacketHandler {
 
-    void onPacketData(INetworkInfo manager, INetHandler handler, PacketBuffer packet, PlayerEntity player);
+    void onPacketData(INetworkInfo manager, INetHandler handler, PacketByteBuf packet, PlayerEntity player);
 
 }

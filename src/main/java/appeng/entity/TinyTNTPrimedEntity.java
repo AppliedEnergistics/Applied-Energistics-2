@@ -29,12 +29,12 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.item.TNTEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.Explosion.Mode;
@@ -122,7 +122,7 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
 
         final Explosion ex = new Explosion(this.world, this, this.getPosX(), this.getPosY(), this.getPosZ(), 0.2f,
                 false, Mode.BREAK);
-        final AxisAlignedBB area = new AxisAlignedBB(this.getPosX() - 1.5, this.getPosY() - 1.5f, this.getPosZ() - 1.5,
+        final Box area = new Box(this.getPosX() - 1.5, this.getPosY() - 1.5f, this.getPosZ() - 1.5,
                 this.getPosX() + 1.5, this.getPosY() + 1.5, this.getPosZ() + 1.5);
         final List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, area);
 
@@ -171,12 +171,12 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
     }
 
     @Override
-    public void writeSpawnData(PacketBuffer buffer) {
+    public void writeSpawnData(PacketByteBuf buffer) {
         buffer.writeByte(this.getFuse());
     }
 
     @Override
-    public void readSpawnData(PacketBuffer additionalData) {
+    public void readSpawnData(PacketByteBuf additionalData) {
         this.setFuse(additionalData.readByte());
     }
 }

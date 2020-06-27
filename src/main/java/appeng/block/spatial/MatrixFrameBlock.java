@@ -18,6 +18,7 @@
 
 package appeng.block.spatial;
 
+import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
@@ -35,8 +36,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
 
 import appeng.block.AEBaseBlock;
 
@@ -59,7 +59,7 @@ public class MatrixFrameBlock extends AEBaseBlock {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> itemStacks) {
         // do nothing
     }

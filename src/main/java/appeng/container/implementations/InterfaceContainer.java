@@ -21,7 +21,7 @@ package appeng.container.implementations;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
@@ -42,7 +42,7 @@ public class InterfaceContainer extends UpgradeableContainer {
     private static final ContainerHelper<InterfaceContainer, IInterfaceHost> helper = new ContainerHelper<>(
             InterfaceContainer::new, IInterfaceHost.class, SecurityPermissions.BUILD);
 
-    public static InterfaceContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static InterfaceContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 

@@ -28,8 +28,8 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.Matrix4f;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.render.model.IBakedModel;
 import net.minecraft.item.Item;
 import net.minecraft.util.math.Direction;
 import net.minecraftforge.client.model.data.IModelData;

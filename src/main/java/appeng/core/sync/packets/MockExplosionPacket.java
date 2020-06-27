@@ -20,12 +20,12 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
+import net.fabricmc.api.Environment;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
 
 import appeng.core.AppEng;
 import appeng.core.sync.BasePacket;
@@ -37,7 +37,7 @@ public class MockExplosionPacket extends BasePacket {
     private final double y;
     private final double z;
 
-    public MockExplosionPacket(final PacketBuffer stream) {
+    public MockExplosionPacket(final PacketByteBuf stream) {
         this.x = stream.readDouble();
         this.y = stream.readDouble();
         this.z = stream.readDouble();
@@ -49,7 +49,7 @@ public class MockExplosionPacket extends BasePacket {
         this.y = y;
         this.z = z;
 
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeDouble(x);
@@ -60,7 +60,7 @@ public class MockExplosionPacket extends BasePacket {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         final World world = AppEng.proxy.getWorld();
         world.addParticle(ParticleTypes.EXPLOSION, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);

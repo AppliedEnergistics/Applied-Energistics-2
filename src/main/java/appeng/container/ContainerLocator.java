@@ -22,11 +22,11 @@ import com.google.common.base.Preconditions;
 
 import io.netty.handler.codec.DecoderException;
 
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -74,7 +74,7 @@ public final class ContainerLocator {
         this.side = side;
     }
 
-    public static ContainerLocator forTileEntity(TileEntity te) {
+    public static ContainerLocator forTileEntity(BlockEntity te) {
         if (te.getWorld() == null) {
             throw new IllegalArgumentException("Cannot open a tile entity that is not in a world");
         }
@@ -82,7 +82,7 @@ public final class ContainerLocator {
         return new ContainerLocator(Type.BLOCK, -1, dimensionId, te.getPos(), null);
     }
 
-    public static ContainerLocator forTileEntitySide(TileEntity te, Direction side) {
+    public static ContainerLocator forTileEntitySide(BlockEntity te, Direction side) {
         if (te.getWorld() == null) {
             throw new IllegalArgumentException("Cannot open a tile entity that is not in a world");
         }
@@ -164,7 +164,7 @@ public final class ContainerLocator {
         return side;
     }
 
-    public void write(PacketBuffer buf) {
+    public void write(PacketByteBuf buf) {
         switch (type) {
             case PLAYER_INVENTORY:
                 buf.writeByte(0);
@@ -193,7 +193,7 @@ public final class ContainerLocator {
         }
     }
 
-    public static ContainerLocator read(PacketBuffer buf) {
+    public static ContainerLocator read(PacketByteBuf buf) {
         byte type = buf.readByte();
         switch (type) {
             case 0:

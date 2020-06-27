@@ -20,21 +20,21 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
+import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
 import net.minecraftforge.registries.GameData;
 
 import appeng.api.util.AEPartLocation;
@@ -67,7 +67,7 @@ public class BlockTransitionEffectPacket extends BasePacket {
         this.direction = direction;
         this.soundMode = soundMode;
 
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeBlockPos(pos);
@@ -81,7 +81,7 @@ public class BlockTransitionEffectPacket extends BasePacket {
         this.configureWrite(data);
     }
 
-    public BlockTransitionEffectPacket(final PacketBuffer stream) {
+    public BlockTransitionEffectPacket(final PacketByteBuf stream) {
 
         this.pos = stream.readBlockPos();
         int blockStateId = stream.readInt();
@@ -96,7 +96,7 @@ public class BlockTransitionEffectPacket extends BasePacket {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         spawnParticles();
 

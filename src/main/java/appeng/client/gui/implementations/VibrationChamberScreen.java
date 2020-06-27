@@ -21,7 +21,7 @@ package appeng.client.gui.implementations;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.client.gui.AEBaseScreen;
@@ -36,7 +36,7 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContain
     private ProgressBar pb;
 
     public VibrationChamberScreen(VibrationChamberContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
+            Text title) {
         super(container, playerInventory, title);
         this.ySize = 166;
     }

@@ -23,8 +23,8 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraft.network.PacketByteBuf;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
@@ -74,7 +74,7 @@ public class SecurityStationContainer extends MEMonitorableContainer implements 
         this.bindPlayerInventory(ip, 0, 0);
     }
 
-    public static SecurityStationContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static SecurityStationContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -139,8 +139,8 @@ public class SecurityStationContainer extends MEMonitorableContainer implements 
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removedStack, final ItemStack newStack) {
+    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+                                  final ItemStack removedStack, final ItemStack newStack) {
         if (!this.wirelessOut.getHasStack()) {
             if (this.wirelessIn.getHasStack()) {
                 final ItemStack term = this.wirelessIn.getStack().copy();

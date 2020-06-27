@@ -22,7 +22,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.util.shape.VoxelShape;
@@ -41,7 +41,7 @@ public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeTile
 
     static {
         final float shave = 2.0f / 16.0f;
-        SHAPE = VoxelShapes.create(new AxisAlignedBB(shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave));
+        SHAPE = VoxelShapes.create(new Box(shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave));
     }
 
     public QuantumBaseBlock(Settings props) {

@@ -20,7 +20,8 @@ package appeng.core.api.definitions;
 
 import static appeng.block.AEBaseBlock.defaultProps;
 
-import net.minecraft.block.Block;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.sound.BlockSoundGroup;
@@ -28,8 +29,6 @@ import net.minecraft.block.StairsBlock;
 import net.minecraft.block.Material;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.entity.EntityClassification;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ToolType;
 
 import appeng.api.definitions.IBlockDefinition;
@@ -248,7 +247,7 @@ public final class ApiBlocks implements IBlocks {
         this.quartzOreCharged = registry.block("charged_quartz_ore", () -> new ChargedQuartzOreBlock(QUARTZ_PROPERTIES))
                 .features(AEFeature.CERTUS_ORE, AEFeature.CHARGED_CERTUS_ORE).rendering(new BlockRenderingCustomizer() {
                     @Override
-                    @OnlyIn(Dist.CLIENT)
+                    @Environment(EnvType.CLIENT)
                     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
                         rendering.renderType(RenderType.getCutout());
                     }
@@ -265,7 +264,7 @@ public final class ApiBlocks implements IBlocks {
                 .block("quartz_glass", () -> new QuartzGlassBlock(defaultProps(Material.GLASS).notSolid()))
                 .rendering(new BlockRenderingCustomizer() {
                     @Override
-                    @OnlyIn(Dist.CLIENT)
+                    @Environment(EnvType.CLIENT)
                     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
                         rendering.renderType(RenderType.getCutout());
                     }
@@ -276,7 +275,7 @@ public final class ApiBlocks implements IBlocks {
                 .addFeatures(AEFeature.DECORATIVE_LIGHTS, AEFeature.QUARTZ_GLASS)
                 .rendering(new BlockRenderingCustomizer() {
                     @Override
-                    @OnlyIn(Dist.CLIENT)
+                    @Environment(EnvType.CLIENT)
                     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
                         rendering.renderType(RenderType.getCutout());
                     }
@@ -285,7 +284,7 @@ public final class ApiBlocks implements IBlocks {
         this.quartzFixture = registry.block("quartz_fixture", QuartzFixtureBlock::new)
                 .features(AEFeature.DECORATIVE_LIGHTS).rendering(new BlockRenderingCustomizer() {
                     @Override
-                    @OnlyIn(Dist.CLIENT)
+                    @Environment(EnvType.CLIENT)
                     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
                         rendering.renderType(RenderType.getCutout());
                     }
@@ -317,7 +316,7 @@ public final class ApiBlocks implements IBlocks {
                 .tileEntity("sky_chest", SkyChestTileEntity.class, SkyChestTileEntity::new)
                 .rendering(new TileEntityRenderingCustomizer<SkyChestTileEntity>() {
                     @Override
-                    @OnlyIn(Dist.CLIENT)
+                    @Environment(EnvType.CLIENT)
                     public void customize(TileEntityRendering<SkyChestTileEntity> rendering) {
                         rendering.tileEntityRenderer(SkyChestTESR::new);
                     }
@@ -348,7 +347,7 @@ public final class ApiBlocks implements IBlocks {
                 .tileEntity(registry.tileEntity("crank", CrankTileEntity.class, CrankTileEntity::new)
                         .rendering(new TileEntityRenderingCustomizer<CrankTileEntity>() {
                             @Override
-                            @OnlyIn(Dist.CLIENT)
+                            @Environment(EnvType.CLIENT)
                             public void customize(TileEntityRendering<CrankTileEntity> rendering) {
                                 rendering.tileEntityRenderer(CrankTESR::new);
                             }
@@ -368,7 +367,7 @@ public final class ApiBlocks implements IBlocks {
                 .tileEntity(registry.tileEntity("charger", ChargerTileEntity.class, ChargerTileEntity::new)
                         .rendering(new TileEntityRenderingCustomizer<ChargerTileEntity>() {
                             @Override
-                            @OnlyIn(Dist.CLIENT)
+                            @Environment(EnvType.CLIENT)
                             public void customize(TileEntityRendering<ChargerTileEntity> rendering) {
                                 rendering.tileEntityRenderer(ChargerBlock.createTesr());
                             }
@@ -419,7 +418,7 @@ public final class ApiBlocks implements IBlocks {
                 .tileEntity(registry.tileEntity("drive", DriveTileEntity.class, DriveTileEntity::new)
                         .rendering(new TileEntityRenderingCustomizer<DriveTileEntity>() {
                             @Override
-                            @OnlyIn(Dist.CLIENT)
+                            @Environment(EnvType.CLIENT)
                             public void customize(TileEntityRendering<DriveTileEntity> rendering) {
                                 rendering.tileEntityRenderer(DriveLedTileEntityRenderer::new);
                             }
@@ -518,7 +517,7 @@ public final class ApiBlocks implements IBlocks {
                 .tileEntity(registry
                         .tileEntity("crafting_monitor", CraftingMonitorTileEntity.class, CraftingMonitorTileEntity::new)
                         .rendering(new TileEntityRenderingCustomizer<CraftingMonitorTileEntity>() {
-                            @OnlyIn(Dist.CLIENT)
+                            @Environment(EnvType.CLIENT)
                             @Override
                             public void customize(TileEntityRendering<CraftingMonitorTileEntity> rendering) {
                                 rendering.tileEntityRenderer(CraftingMonitorTESR::new);
@@ -526,7 +525,7 @@ public final class ApiBlocks implements IBlocks {
                         }).build())
                 .rendering(new BlockRenderingCustomizer() {
                     @Override
-                    @OnlyIn(Dist.CLIENT)
+                    @Environment(EnvType.CLIENT)
                     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
                         rendering.renderType(RenderType.getCutout());
                         rendering.modelCustomizer((path, model) -> {
@@ -542,7 +541,7 @@ public final class ApiBlocks implements IBlocks {
         this.molecularAssembler = registry
                 .block("molecular_assembler", () -> new MolecularAssemblerBlock(defaultProps(Material.IRON).notSolid()))
                 .features(AEFeature.MOLECULAR_ASSEMBLER).rendering(new BlockRenderingCustomizer() {
-                    @OnlyIn(Dist.CLIENT)
+                    @Environment(EnvType.CLIENT)
                     @Override
                     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
                         rendering.renderType(RenderType.getCutout());
@@ -553,7 +552,7 @@ public final class ApiBlocks implements IBlocks {
                                 MolecularAssemblerTileEntity::new)
                         .rendering(new TileEntityRenderingCustomizer<MolecularAssemblerTileEntity>() {
                             @Override
-                            @OnlyIn(Dist.CLIENT)
+                            @Environment(EnvType.CLIENT)
                             public void customize(TileEntityRendering<MolecularAssemblerTileEntity> rendering) {
                                 rendering.tileEntityRenderer(MolecularAssemblerRenderer::new);
                             }
@@ -567,7 +566,7 @@ public final class ApiBlocks implements IBlocks {
                         .build())
                 .rendering(new BlockRenderingCustomizer() {
                     @Override
-                    @OnlyIn(Dist.CLIENT)
+                    @Environment(EnvType.CLIENT)
                     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
                         rendering.renderType(RenderType.getCutout());
                     }
@@ -615,7 +614,7 @@ public final class ApiBlocks implements IBlocks {
                 .tileEntity(registry.tileEntity("cable_bus", CableBusTileEntity.class, CableBusTileEntity::new)
                         .rendering(new TileEntityRenderingCustomizer<CableBusTileEntity>() {
                             @Override
-                            @OnlyIn(Dist.CLIENT)
+                            @Environment(EnvType.CLIENT)
                             public void customize(TileEntityRendering<CableBusTileEntity> rendering) {
                                 rendering.tileEntityRenderer(CableBusTESR::new);
                             }

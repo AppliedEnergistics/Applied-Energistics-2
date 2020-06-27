@@ -25,7 +25,7 @@ import java.util.Locale;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraft.util.text.TextFormatting;
 
 import appeng.api.storage.data.IAEItemStack;
@@ -36,7 +36,7 @@ import appeng.core.localization.ButtonToolTips;
 
 public abstract class AEBaseMEScreen<T extends AEBaseContainer> extends AEBaseScreen<T> {
 
-    public AEBaseMEScreen(T container, PlayerInventory playerInventory, ITextComponent title) {
+    public AEBaseMEScreen(T container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
     }
 

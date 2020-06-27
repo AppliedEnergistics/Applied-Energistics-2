@@ -21,7 +21,7 @@ package appeng.container.implementations;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.container.AEBaseContainer;
@@ -38,7 +38,7 @@ public class WirelessContainer extends AEBaseContainer {
     private static final ContainerHelper<WirelessContainer, WirelessTileEntity> helper = new ContainerHelper<>(
             WirelessContainer::new, WirelessTileEntity.class, SecurityPermissions.BUILD);
 
-    public static WirelessContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static WirelessContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 

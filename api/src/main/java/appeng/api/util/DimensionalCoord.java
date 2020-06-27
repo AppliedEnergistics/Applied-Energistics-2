@@ -23,18 +23,18 @@
 
 package appeng.api.util;
 
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.dimension.Dimension;
+import net.minecraft.world.WorldAccess;
+import net.minecraft.world.dimension.DimensionType;
 
 /**
  * Represents a location in the Minecraft Universe
  */
 public class DimensionalCoord extends WorldCoord {
 
-    private final IWorld world;
-    private final Dimension dimension;
+    private final WorldAccess world;
+    private final DimensionType dimension;
 
     public DimensionalCoord(final DimensionalCoord coordinate) {
         super(coordinate.x, coordinate.y, coordinate.z);
@@ -42,19 +42,19 @@ public class DimensionalCoord extends WorldCoord {
         this.dimension = coordinate.dimension;
     }
 
-    public DimensionalCoord(final TileEntity tileEntity) {
+    public DimensionalCoord(final BlockEntity tileEntity) {
         super(tileEntity);
         this.world = tileEntity.getWorld();
         this.dimension = this.world.getDimension();
     }
 
-    public DimensionalCoord(final IWorld world, final int x, final int y, final int z) {
+    public DimensionalCoord(final WorldAccess world, final int x, final int y, final int z) {
         super(x, y, z);
         this.world = world;
         this.dimension = world.getDimension();
     }
 
-    public DimensionalCoord(final IWorld world, final BlockPos pos) {
+    public DimensionalCoord(final WorldAccess world, final BlockPos pos) {
         super(pos);
         this.world = world;
         this.dimension = world.getDimension();
@@ -80,11 +80,11 @@ public class DimensionalCoord extends WorldCoord {
         return "dimension=" + this.dimension + ", " + super.toString();
     }
 
-    public boolean isInWorld(final IWorld world) {
+    public boolean isInWorld(final WorldAccess world) {
         return this.world == world;
     }
 
-    public IWorld getWorld() {
+    public WorldAccess getWorld() {
         return this.world;
     }
 

@@ -23,20 +23,20 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import net.fabricmc.api.Environment;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.server.world.ServerWorld;
+import net.fabricmc.api.EnvType;
 import net.minecraftforge.fml.hooks.BasicEventHooks;
-import net.minecraftforge.items.IItemHandler;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -89,8 +89,8 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     private final CraftingInventory craftingInv;
     private final AppEngInternalInventory gridInv = new AppEngInternalInventory(this, 9 + 1, 1);
     private final AppEngInternalInventory patternInv = new AppEngInternalInventory(this, 1, 1);
-    private final IItemHandler gridInvExt = new WrapperFilteredItemHandler(this.gridInv, new CraftingGridFilter());
-    private final IItemHandler internalInv = new WrapperChainedItemHandler(this.gridInv, this.patternInv);
+    private final ItemTransferable gridInvExt = new WrapperFilteredItemHandler(this.gridInv, new CraftingGridFilter());
+    private final ItemTransferable internalInv = new WrapperChainedItemHandler(this.gridInv, this.patternInv);
     private final IConfigManager settings;
     private final UpgradeInventory upgrades;
     private boolean isPowered = false;
@@ -102,10 +102,10 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     private boolean forcePlan = false;
     private boolean reboot = true;
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private AssemblerAnimationStatus animationStatus;
 
-    public MolecularAssemblerTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public MolecularAssemblerTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         final ITileDefinition assembler = AEApi.instance().definitions().blocks().molecularAssembler();
 
@@ -187,7 +187,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final PacketByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
         final boolean oldPower = this.isPowered;
         this.isPowered = data.readBoolean();
@@ -195,7 +195,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final PacketByteBuf data) throws IOException {
         super.writeToStream(data);
         data.writeBoolean(this.isPowered);
     }
@@ -289,7 +289,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public IItemHandler getInventoryByName(final String name) {
+    public ItemTransferable getInventoryByName(final String name) {
         if (name.equals("upgrades")) {
             return this.upgrades;
         }
@@ -307,18 +307,18 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
+    public ItemTransferable getInternalInventory() {
         return this.internalInv;
     }
 
     @Override
-    protected IItemHandler getItemHandlerForSide(Direction side) {
+    protected ItemTransferable getItemHandlerForSide(Direction side) {
         return this.gridInvExt;
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final ItemStack added) {
+    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+                                  final ItemStack removed, final ItemStack added) {
         if (inv == this.gridInv || inv == this.patternInv) {
             this.recalculatePlan();
         }
@@ -488,7 +488,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
             return output;
         }
 
-        final TileEntity te = this.getWorld().getTileEntity(this.pos.offset(d));
+        final BlockEntity te = this.getWorld().getTileEntity(this.pos.offset(d));
 
         if (te == null) {
             return output;
@@ -542,12 +542,12 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
         return this.isPowered;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void setAnimationStatus(@Nullable AssemblerAnimationStatus status) {
         this.animationStatus = status;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Nullable
     public AssemblerAnimationStatus getAnimationStatus() {
         return this.animationStatus;
@@ -560,12 +560,12 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
         }
 
         @Override
-        public boolean allowExtract(IItemHandler inv, int slot, int amount) {
+        public boolean allowExtract(ItemTransferable inv, int slot, int amount) {
             return slot == 9;
         }
 
         @Override
-        public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
+        public boolean allowInsert(ItemTransferable inv, int slot, ItemStack stack) {
             if (slot >= 9) {
                 return false;
             }

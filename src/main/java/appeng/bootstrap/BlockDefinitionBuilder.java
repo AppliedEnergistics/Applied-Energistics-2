@@ -27,12 +27,12 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
 
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.features.AEFeature;
@@ -69,10 +69,10 @@ class BlockDefinitionBuilder implements IBlockBuilder {
 
     private BiFunction<Block, Item.Properties, BlockItem> itemFactory;
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private BlockRendering blockRendering;
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private ItemRendering itemRendering;
 
     BlockDefinitionBuilder(FeatureFactory factory, String id, Supplier<? extends Block> blockSupplier) {
@@ -132,7 +132,7 @@ class BlockDefinitionBuilder implements IBlockBuilder {
         return this;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private void customizeForClient(BlockRenderingCustomizer callback) {
         callback.customize(this.blockRendering, this.itemRendering);
     }

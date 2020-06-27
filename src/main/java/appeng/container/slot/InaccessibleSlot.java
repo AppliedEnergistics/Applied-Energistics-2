@@ -20,13 +20,13 @@ package appeng.container.slot;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 public class InaccessibleSlot extends AppEngSlot {
 
     private ItemStack dspStack = ItemStack.EMPTY;
 
-    public InaccessibleSlot(final IItemHandler i, final int slotIdx, final int x, final int y) {
+    public InaccessibleSlot(final ItemTransferable i, final int slotIdx, final int x, final int y) {
         super(i, slotIdx, x, y);
     }
 

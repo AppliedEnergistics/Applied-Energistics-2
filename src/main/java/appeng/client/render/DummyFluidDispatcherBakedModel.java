@@ -25,25 +25,25 @@ import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.TransformationMatrix;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.render.model.IBakedModel;
+import net.minecraft.client.render.model.ItemOverrideList;
+import net.minecraft.client.render.model.Material;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ItemLayerModel;
 import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fluids.FluidStack;
 
 import appeng.fluids.items.FluidDummyItem;
 
@@ -94,13 +94,13 @@ public class DummyFluidDispatcherBakedModel extends DelegateBakedModel {
 
                 FluidDummyItem itemFacade = (FluidDummyItem) stack.getItem();
 
-                FluidStack fluidStack = itemFacade.getFluidStack(stack);
+                FluidVolume fluidStack = itemFacade.getFluidStack(stack);
                 if (fluidStack.isEmpty()) {
-                    fluidStack = new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME);
+                    fluidStack = new FluidVolume(Fluids.WATER, FluidAttributes.BUCKET_VOLUME);
                 }
 
                 FluidAttributes attributes = fluidStack.getFluid().getAttributes();
-                ResourceLocation stillTexture = attributes.getStillTexture(fluidStack);
+                Identifier stillTexture = attributes.getStillTexture(fluidStack);
                 Material stillMaterial = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, stillTexture);
                 TextureAtlasSprite sprite = DummyFluidDispatcherBakedModel.this.bakedTextureGetter.apply(stillMaterial);
                 if (sprite == null) {

@@ -18,8 +18,8 @@
 
 package appeng.items.storage;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
@@ -59,8 +59,8 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
                         .getStorageChannel(IItemStorageChannel.class).createList();
 
                 final ICellWorkbenchItem vc = (ICellWorkbenchItem) currentViewCell.getItem();
-                final IItemHandler upgrades = vc.getUpgradesInventory(currentViewCell);
-                final IItemHandler config = vc.getConfigInventory(currentViewCell);
+                final ItemTransferable upgrades = vc.getUpgradesInventory(currentViewCell);
+                final ItemTransferable config = vc.getConfigInventory(currentViewCell);
                 final FuzzyMode fzMode = vc.getFuzzyMode(currentViewCell);
 
                 boolean hasInverter = false;
@@ -112,12 +112,12 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
     }
 
     @Override
-    public IItemHandler getUpgradesInventory(final ItemStack is) {
+    public ItemTransferable getUpgradesInventory(final ItemStack is) {
         return new CellUpgrades(is, 2);
     }
 
     @Override
-    public IItemHandler getConfigInventory(final ItemStack is) {
+    public ItemTransferable getConfigInventory(final ItemStack is) {
         return new CellConfig(is);
     }
 

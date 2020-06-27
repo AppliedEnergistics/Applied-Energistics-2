@@ -20,11 +20,11 @@ package appeng.decorative.solid;
 
 import java.util.Random;
 
+import net.fabricmc.api.EnvType;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.Environment;
 
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
@@ -37,7 +37,7 @@ public class QuartzLampBlock extends QuartzGlassBlock {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void animateTick(final BlockState state, final World w, final BlockPos pos, final Random r) {
         if (!AEConfig.instance().isEnableEffects()) {
             return;

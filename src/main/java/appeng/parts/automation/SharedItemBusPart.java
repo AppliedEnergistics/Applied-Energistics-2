@@ -18,13 +18,13 @@
 
 package appeng.parts.automation;
 
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Upgrades;
@@ -61,7 +61,7 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
     }
 
     @Override
-    public IItemHandler getInventoryByName(final String name) {
+    public ItemTransferable getInventoryByName(final String name) {
         if (name.equals("config")) {
             return this.getConfig();
         }
@@ -81,13 +81,13 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
     }
 
     protected InventoryAdaptor getHandler() {
-        final TileEntity self = this.getHost().getTile();
-        final TileEntity target = this.getTileEntity(self, self.getPos().offset(this.getSide().getFacing()));
+        final BlockEntity self = this.getHost().getTile();
+        final BlockEntity target = this.getTileEntity(self, self.getPos().offset(this.getSide().getFacing()));
 
         return InventoryAdaptor.getAdaptor(target, this.getSide().getFacing().getOpposite());
     }
 
-    private TileEntity getTileEntity(final TileEntity self, final BlockPos pos) {
+    private BlockEntity getTileEntity(final BlockEntity self, final BlockPos pos) {
         final World w = self.getWorld();
 
         if (w.getChunkProvider().isChunkLoaded(new ChunkPos(pos))) {
@@ -125,7 +125,7 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
      * @return true, if the the bus should do its work.
      */
     protected boolean canDoBusWork() {
-        final TileEntity self = this.getHost().getTile();
+        final BlockEntity self = this.getHost().getTile();
         final BlockPos selfPos = self.getPos().offset(this.getSide().getFacing());
         final World world = self.getWorld();
 

@@ -23,13 +23,13 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -54,10 +54,10 @@ public final class SpatialDimensionManager implements ISpatialDimension {
 
     @Override
     public DimensionType createNewCellDimension(BlockPos size) {
-        ResourceLocation dimKey = findFreeDimensionId();
+        Identifier dimKey = findFreeDimensionId();
         AELog.info("Allocating storage cell dimension '%s'", dimKey);
 
-        PacketBuffer extraData = new SpatialDimensionExtraData(size).write();
+        PacketByteBuf extraData = new SpatialDimensionExtraData(size).write();
 
         return DimensionManager.registerDimension(dimKey, StorageCellModDimension.INSTANCE, extraData, true);
     }
@@ -66,10 +66,10 @@ public final class SpatialDimensionManager implements ISpatialDimension {
      * Tries finding the next free storage cell dimension ID based on the currently
      * registered storage cell dimensions.
      */
-    private ResourceLocation findFreeDimensionId() {
+    private Identifier findFreeDimensionId() {
         int maxId = 0;
         for (DimensionType dimensionType : DimensionType.getAll()) {
-            ResourceLocation regName = dimensionType.getRegistryName();
+            Identifier regName = dimensionType.getRegistryName();
             if (regName == null || !AppEng.MOD_ID.equals(regName.getNamespace())) {
                 continue;
             }
@@ -89,7 +89,7 @@ public final class SpatialDimensionManager implements ISpatialDimension {
 
         ++maxId;
 
-        return new ResourceLocation(AppEng.MOD_ID, DIM_ID_PREFIX + maxId);
+        return new Identifier(AppEng.MOD_ID, DIM_ID_PREFIX + maxId);
     }
 
     @Override
@@ -126,9 +126,9 @@ public final class SpatialDimensionManager implements ISpatialDimension {
     }
 
     @Override
-    public void addCellDimensionTooltip(DimensionType cellDim, List<ITextComponent> lines) {
+    public void addCellDimensionTooltip(DimensionType cellDim, List<Text> lines) {
         // Check if the cell dimension type is even registered
-        ResourceLocation registryName = cellDim.getRegistryName();
+        Identifier registryName = cellDim.getRegistryName();
         if (registryName == null || !AppEng.MOD_ID.equals(registryName.getNamespace())) {
             return;
         }

@@ -20,15 +20,15 @@ package appeng.parts;
 
 import java.util.List;
 
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
 
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.util.AEPartLocation;
 
 public class BusCollisionHelper implements IPartCollisionHelper {
 
-    private final List<AxisAlignedBB> boxes;
+    private final List<Box> boxes;
 
     private final Direction x;
     private final Direction y;
@@ -36,8 +36,8 @@ public class BusCollisionHelper implements IPartCollisionHelper {
 
     private final boolean isVisual;
 
-    public BusCollisionHelper(final List<AxisAlignedBB> boxes, final Direction x, final Direction y, final Direction z,
-            final boolean visual) {
+    public BusCollisionHelper(final List<Box> boxes, final Direction x, final Direction y, final Direction z,
+                              final boolean visual) {
         this.boxes = boxes;
         this.x = x;
         this.y = y;
@@ -45,7 +45,7 @@ public class BusCollisionHelper implements IPartCollisionHelper {
         this.isVisual = visual;
     }
 
-    public BusCollisionHelper(final List<AxisAlignedBB> boxes, final AEPartLocation s, final boolean visual) {
+    public BusCollisionHelper(final List<Box> boxes, final AEPartLocation s, final boolean visual) {
         this.boxes = boxes;
         this.isVisual = visual;
 
@@ -128,7 +128,7 @@ public class BusCollisionHelper implements IPartCollisionHelper {
         maxY = Math.max(aY, bY);
         maxZ = Math.max(aZ, bZ);
 
-        this.boxes.add(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ));
+        this.boxes.add(new Box(minX, minY, minZ, maxX, maxY, maxZ));
     }
 
     @Override

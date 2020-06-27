@@ -30,7 +30,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -243,7 +243,7 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry {
     @Nonnull
     private ItemStack getModItem(final String modID, final String name) {
 
-        final Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(modID + ":" + name));
+        final Item item = ForgeRegistries.ITEMS.getValue(new Identifier(modID + ":" + name));
 
         if (item == null) {
             return ItemStack.EMPTY;

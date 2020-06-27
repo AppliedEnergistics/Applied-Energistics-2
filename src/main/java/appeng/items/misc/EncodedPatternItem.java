@@ -30,12 +30,12 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import appeng.api.AEApi;
 import appeng.api.implementations.ICraftingPatternItem;
@@ -92,8 +92,8 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+    @Environment(EnvType.CLIENT)
+    public void addInformation(final ItemStack stack, final World world, final List<Text> lines,
             final ITooltipFlag advancedTooltips) {
         final ICraftingPatternDetails details = this.getPatternForItem(stack, world);
 
@@ -106,11 +106,11 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
 
             InvalidPatternHelper invalid = new InvalidPatternHelper(stack);
 
-            final ITextComponent label = (invalid.isCraftable() ? GuiText.Crafts.textComponent()
+            final Text label = (invalid.isCraftable() ? GuiText.Crafts.textComponent()
                     : GuiText.Creates.textComponent()).appendText(": ");
-            final ITextComponent and = new StringTextComponent(" ").appendSibling(GuiText.And.textComponent())
+            final Text and = new StringTextComponent(" ").appendSibling(GuiText.And.textComponent())
                     .appendText(" ");
-            final ITextComponent with = GuiText.With.textComponent().appendText(": ");
+            final Text with = GuiText.With.textComponent().appendText(": ");
 
             boolean first = true;
             for (final InvalidPatternHelper.PatternIngredient output : invalid.getOutputs()) {
@@ -125,8 +125,8 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
             }
 
             if (invalid.isCraftable()) {
-                final ITextComponent substitutionLabel = GuiText.Substitute.textComponent().appendText(" ");
-                final ITextComponent canSubstitute = invalid.canSubstitute() ? GuiText.Yes.textComponent()
+                final Text substitutionLabel = GuiText.Substitute.textComponent().appendText(" ");
+                final Text canSubstitute = invalid.canSubstitute() ? GuiText.Yes.textComponent()
                         : GuiText.No.textComponent();
 
                 lines.add(substitutionLabel.appendSibling(canSubstitute));
@@ -145,11 +145,11 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
         final IAEItemStack[] in = details.getCondensedInputs();
         final IAEItemStack[] out = details.getCondensedOutputs();
 
-        final ITextComponent label = (isCrafting ? GuiText.Crafts.textComponent() : GuiText.Creates.textComponent())
+        final Text label = (isCrafting ? GuiText.Crafts.textComponent() : GuiText.Creates.textComponent())
                 .appendText(": ");
-        final ITextComponent and = new StringTextComponent(" ").appendSibling(GuiText.And.textComponent())
+        final Text and = new StringTextComponent(" ").appendSibling(GuiText.And.textComponent())
                 .appendText(" ");
-        final ITextComponent with = GuiText.With.textComponent().appendText(": ");
+        final Text with = GuiText.With.textComponent().appendText(": ");
 
         boolean first = true;
         for (final IAEItemStack anOut : out) {
@@ -174,8 +174,8 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
         }
 
         if (isCrafting) {
-            final ITextComponent substitutionLabel = GuiText.Substitute.textComponent().appendText(" ");
-            final ITextComponent canSubstitute = substitute ? GuiText.Yes.textComponent() : GuiText.No.textComponent();
+            final Text substitutionLabel = GuiText.Substitute.textComponent().appendText(" ");
+            final Text canSubstitute = substitute ? GuiText.Yes.textComponent() : GuiText.No.textComponent();
 
             lines.add(substitutionLabel.appendSibling(canSubstitute));
         }

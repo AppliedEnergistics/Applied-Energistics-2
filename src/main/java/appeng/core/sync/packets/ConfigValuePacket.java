@@ -25,7 +25,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Hand;
 
 import appeng.api.config.FuzzyMode;
@@ -56,7 +56,7 @@ public class ConfigValuePacket extends BasePacket {
     private final String Name;
     private final String Value;
 
-    public ConfigValuePacket(final PacketBuffer stream) {
+    public ConfigValuePacket(final PacketByteBuf stream) {
         this.Name = stream.readString();
         this.Value = stream.readString();
     }
@@ -66,7 +66,7 @@ public class ConfigValuePacket extends BasePacket {
         this.Name = name;
         this.Value = value;
 
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
 

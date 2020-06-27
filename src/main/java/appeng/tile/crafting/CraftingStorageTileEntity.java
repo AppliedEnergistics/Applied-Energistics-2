@@ -20,8 +20,8 @@ package appeng.tile.crafting;
 
 import java.util.Optional;
 
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityType;
 
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlocks;
@@ -30,7 +30,7 @@ import appeng.block.crafting.AbstractCraftingUnitBlock;
 public class CraftingStorageTileEntity extends CraftingTileEntity {
     private static final int KILO_SCALAR = 1024;
 
-    public CraftingStorageTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public CraftingStorageTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 

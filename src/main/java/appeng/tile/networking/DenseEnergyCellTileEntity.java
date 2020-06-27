@@ -18,11 +18,11 @@
 
 package appeng.tile.networking;
 
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.block.entity.BlockEntityType;
 
 public class DenseEnergyCellTileEntity extends EnergyCellTileEntity {
 
-    public DenseEnergyCellTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public DenseEnergyCellTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.setInternalMaxPower(200000 * 8);
     }

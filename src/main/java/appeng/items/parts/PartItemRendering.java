@@ -18,8 +18,8 @@
 
 package appeng.items.parts;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import appeng.api.util.AEColor;
 import appeng.bootstrap.IItemRendering;
@@ -39,7 +39,7 @@ public class PartItemRendering extends ItemRenderingCustomizer {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void customize(IItemRendering rendering) {
         rendering.color(new StaticItemColor(color));
     }

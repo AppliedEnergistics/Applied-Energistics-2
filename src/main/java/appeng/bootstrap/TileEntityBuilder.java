@@ -9,10 +9,10 @@ import java.util.function.Supplier;
 
 import com.google.common.base.Preconditions;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
@@ -42,12 +42,12 @@ public class TileEntityBuilder<T extends AEBaseTileEntity> {
     // The tile entity class
     private final Class<T> tileClass;
 
-    private TileEntityType<T> type;
+    private BlockEntityType<T> type;
 
     // The factory for creating tile entity objects
-    private final Function<TileEntityType<T>, T> supplier;
+    private final Function<BlockEntityType<T>, T> supplier;
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private TileEntityRendering<T> tileEntityRendering;
 
     private final List<Block> blocks = new ArrayList<>();
@@ -55,7 +55,7 @@ public class TileEntityBuilder<T extends AEBaseTileEntity> {
     private final EnumSet<AEFeature> features = EnumSet.noneOf(AEFeature.class);
 
     public TileEntityBuilder(FeatureFactory factory, String registryName, Class<T> tileClass,
-            Function<TileEntityType<T>, T> supplier) {
+            Function<BlockEntityType<T>, T> supplier) {
         this.factory = factory;
         this.registryName = registryName;
         this.tileClass = tileClass;
@@ -78,7 +78,7 @@ public class TileEntityBuilder<T extends AEBaseTileEntity> {
     }
 
     public TileEntityBuilder<T> rendering(TileEntityRenderingCustomizer<T> customizer) {
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> customizer.customize(tileEntityRendering));
+        DistExecutor.runWhenOn(EnvType.CLIENT, () -> () -> customizer.customize(tileEntityRendering));
         return this;
     }
 
@@ -91,7 +91,7 @@ public class TileEntityBuilder<T extends AEBaseTileEntity> {
             }
 
             Supplier<T> factory = () -> supplier.apply(type);
-            type = TileEntityType.Builder.create(factory, blocks.toArray(new Block[0])).build(null);
+            type = BlockEntityType.Builder.create(factory, blocks.toArray(new Block[0])).build(null);
             type.setRegistryName(AppEng.MOD_ID, registryName);
             registry.register(type);
 
@@ -105,13 +105,13 @@ public class TileEntityBuilder<T extends AEBaseTileEntity> {
             }
 
         });
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> this::buildClient);
+        DistExecutor.runWhenOn(EnvType.CLIENT, () -> this::buildClient);
 
         return new TileEntityDefinition(this::addBlock);
 
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private void buildClient() {
         this.factory.addBootstrapComponent((IClientSetupComponent) () -> {
             if (tileEntityRendering.tileEntityRenderer != null) {

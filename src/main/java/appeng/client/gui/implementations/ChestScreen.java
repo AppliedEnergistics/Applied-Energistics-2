@@ -19,7 +19,7 @@
 package appeng.client.gui.implementations;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.client.gui.AEBaseScreen;
@@ -32,7 +32,7 @@ import appeng.core.sync.packets.SwitchGuisPacket;
 
 public class ChestScreen extends AEBaseScreen<ChestContainer> {
 
-    public ChestScreen(ChestContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public ChestScreen(ChestContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
         this.ySize = 166;
     }

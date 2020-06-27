@@ -20,6 +20,7 @@ package appeng.block;
 
 import java.util.List;
 
+import net.fabricmc.api.EnvType;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
@@ -29,10 +30,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.Environment;
 
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
@@ -52,14 +52,14 @@ public class AEBaseBlockItem extends BlockItem {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public final void addInformation(final ItemStack itemStack, final World world, final List<ITextComponent> toolTip,
+    @Environment(EnvType.CLIENT)
+    public final void addInformation(final ItemStack itemStack, final World world, final List<Text> toolTip,
             final ITooltipFlag advancedTooltips) {
         this.addCheckedInformation(itemStack, world, toolTip, advancedTooltips);
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public void addCheckedInformation(final ItemStack itemStack, final World world, final List<ITextComponent> toolTip,
+    @Environment(EnvType.CLIENT)
+    public void addCheckedInformation(final ItemStack itemStack, final World world, final List<Text> toolTip,
             final ITooltipFlag advancedTooltips) {
         this.blockType.addInformation(itemStack, world, toolTip, advancedTooltips);
     }

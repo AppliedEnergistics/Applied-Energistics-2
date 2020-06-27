@@ -21,16 +21,16 @@ package appeng.util.inv;
 import java.util.Iterator;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 import appeng.api.config.FuzzyMode;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 
 public class AdaptorItemHandler extends InventoryAdaptor {
-    protected final IItemHandler itemHandler;
+    protected final ItemTransferable itemHandler;
 
-    public AdaptorItemHandler(IItemHandler itemHandler) {
+    public AdaptorItemHandler(ItemTransferable itemHandler) {
         this.itemHandler = itemHandler;
     }
 

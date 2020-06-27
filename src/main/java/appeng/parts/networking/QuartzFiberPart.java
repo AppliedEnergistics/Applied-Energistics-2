@@ -25,9 +25,9 @@ import java.util.EnumSet;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridFlags;
@@ -49,7 +49,7 @@ import appeng.parts.PartModel;
 public class QuartzFiberPart extends AEBasePart implements IEnergyGridProvider {
 
     @PartModels
-    private static final IPartModel MODELS = new PartModel(new ResourceLocation(AppEng.MOD_ID, "part/quartz_fiber"));
+    private static final IPartModel MODELS = new PartModel(new Identifier(AppEng.MOD_ID, "part/quartz_fiber"));
 
     private final AENetworkProxy outerProxy = new AENetworkProxy(this, "outer",
             this.getProxy().getMachineRepresentation(), true);
@@ -97,7 +97,7 @@ public class QuartzFiberPart extends AEBasePart implements IEnergyGridProvider {
     }
 
     @Override
-    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final TileEntity tile) {
+    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity tile) {
         super.setPartHostInfo(side, host, tile);
         this.outerProxy.setValidSides(EnumSet.of(side.getFacing()));
     }

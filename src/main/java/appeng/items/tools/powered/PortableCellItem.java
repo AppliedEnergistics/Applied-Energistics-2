@@ -29,11 +29,11 @@ import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.items.IItemHandler;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
@@ -67,8 +67,8 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+    @Environment(EnvType.CLIENT)
+    public void addInformation(final ItemStack stack, final World world, final List<Text> lines,
             final ITooltipFlag advancedTooltips) {
         super.addInformation(stack, world, lines, advancedTooltips);
 
@@ -129,12 +129,12 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
     }
 
     @Override
-    public IItemHandler getUpgradesInventory(final ItemStack is) {
+    public ItemTransferable getUpgradesInventory(final ItemStack is) {
         return new CellUpgrades(is, 2);
     }
 
     @Override
-    public IItemHandler getConfigInventory(final ItemStack is) {
+    public ItemTransferable getConfigInventory(final ItemStack is) {
         return new CellConfig(is);
     }
 

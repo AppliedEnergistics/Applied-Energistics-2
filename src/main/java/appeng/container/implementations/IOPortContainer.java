@@ -18,11 +18,11 @@
 
 package appeng.container.implementations;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.config.FullnessMode;
 import appeng.api.config.OperationMode;
@@ -43,7 +43,7 @@ public class IOPortContainer extends UpgradeableContainer {
     private static final ContainerHelper<IOPortContainer, IOPortTileEntity> helper = new ContainerHelper<>(
             IOPortContainer::new, IOPortTileEntity.class, SecurityPermissions.BUILD);
 
-    public static IOPortContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static IOPortContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -70,7 +70,7 @@ public class IOPortContainer extends UpgradeableContainer {
         int offX = 19;
         int offY = 17;
 
-        final IItemHandler cells = this.getUpgradeable().getInventoryByName("cells");
+        final ItemTransferable cells = this.getUpgradeable().getInventoryByName("cells");
 
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 2; x++) {
@@ -88,7 +88,7 @@ public class IOPortContainer extends UpgradeableContainer {
             }
         }
 
-        final IItemHandler upgrades = this.getUpgradeable().getInventoryByName("upgrades");
+        final ItemTransferable upgrades = this.getUpgradeable().getInventoryByName("upgrades");
         this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 0, 187, 8,
                 this.getPlayerInventory())).setNotDraggable());
         this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18,

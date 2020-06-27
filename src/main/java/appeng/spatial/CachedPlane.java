@@ -25,9 +25,9 @@ import java.util.Map.Entry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.network.play.server.SChunkDataPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EmptyBlockReader;
 import net.minecraft.world.ITickList;
@@ -45,7 +45,6 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
 import appeng.core.worlddata.WorldData;
-import appeng.util.Platform;
 
 public class CachedPlane {
     private final int x_size;
@@ -58,7 +57,7 @@ public class CachedPlane {
     private final int y_size;
     private final Chunk[][] myChunks;
     private final Column[][] myColumns;
-    private final List<TileEntity> tiles = new ArrayList<>();
+    private final List<BlockEntity> tiles = new ArrayList<>();
     private final List<NextTickListEntry<Block>> ticks = new ArrayList<>();
     private final World world;
     private final IMovableRegistry reg = AEApi.instance().registries().movable();
@@ -121,10 +120,10 @@ public class CachedPlane {
                 final Chunk c = w.getChunk(minCX + cx, minCZ + cz);
                 this.myChunks[cx][cz] = c;
 
-                final List<Entry<BlockPos, TileEntity>> rawTiles = new ArrayList<>(c.getTileEntityMap().entrySet());
-                for (final Entry<BlockPos, TileEntity> tx : rawTiles) {
+                final List<Entry<BlockPos, BlockEntity>> rawTiles = new ArrayList<>(c.getTileEntityMap().entrySet());
+                for (final Entry<BlockPos, BlockEntity> tx : rawTiles) {
                     final BlockPos cp = tx.getKey();
-                    final TileEntity te = tx.getValue();
+                    final BlockEntity te = tx.getValue();
 
                     final BlockPos tePOS = te.getPos();
                     if (tePOS.getX() >= minX && tePOS.getX() <= maxX && tePOS.getY() >= minY && tePOS.getY() <= maxY
@@ -167,7 +166,7 @@ public class CachedPlane {
             }
         }
 
-        for (final TileEntity te : this.tiles) {
+        for (final BlockEntity te : this.tiles) {
             try {
                 this.getWorld().loadedTileEntityList.remove(te);
                 if (te instanceof ITickableTileEntity) {
@@ -179,7 +178,7 @@ public class CachedPlane {
         }
     }
 
-    private IMovableHandler getHandler(final TileEntity te) {
+    private IMovableHandler getHandler(final BlockEntity te) {
         final IMovableRegistry mr = AEApi.instance().registries().movable();
         return mr.getHandler(te);
     }
@@ -221,13 +220,13 @@ public class CachedPlane {
             long duration = endTime - startTime;
             AELog.info("Block Copy Time: " + duration);
 
-            for (final TileEntity te : this.tiles) {
+            for (final BlockEntity te : this.tiles) {
                 final BlockPos tePOS = te.getPos();
                 dst.addTile(tePOS.getX() - this.x_offset, tePOS.getY() - this.y_offset, tePOS.getZ() - this.z_offset,
                         te, this, mr);
             }
 
-            for (final TileEntity te : dst.tiles) {
+            for (final BlockEntity te : dst.tiles) {
                 final BlockPos tePOS = te.getPos();
                 this.addTile(tePOS.getX() - dst.x_offset, tePOS.getY() - dst.y_offset, tePOS.getZ() - dst.z_offset, te,
                         dst, mr);
@@ -268,7 +267,7 @@ public class CachedPlane {
                 entry.priority);
     }
 
-    private void addTile(final int x, final int y, final int z, final TileEntity te,
+    private void addTile(final int x, final int y, final int z, final BlockEntity te,
             final CachedPlane alternateDestination, final IMovableRegistry mr) {
         try {
             final Column c = this.myColumns[x][z];

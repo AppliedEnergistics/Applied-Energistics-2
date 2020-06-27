@@ -32,15 +32,15 @@ import javax.annotation.Nullable;
 import com.google.common.base.Strings;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.render.model.ItemOverrideList;
+import net.minecraft.client.render.model.Material;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -65,13 +65,13 @@ class GlassBakedModel implements IDynamicBakedModel {
 
     // Alternating textures based on position
     static final Material TEXTURE_A = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
-            new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_a"));
+            new Identifier("appliedenergistics2:block/glass/quartz_glass_a"));
     static final Material TEXTURE_B = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
-            new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_b"));
+            new Identifier("appliedenergistics2:block/glass/quartz_glass_b"));
     static final Material TEXTURE_C = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
-            new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_c"));
+            new Identifier("appliedenergistics2:block/glass/quartz_glass_c"));
     static final Material TEXTURE_D = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
-            new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_d"));
+            new Identifier("appliedenergistics2:block/glass/quartz_glass_d"));
 
     // Frame texture
     static final Material[] TEXTURES_FRAME = generateTexturesFrame();
@@ -79,7 +79,7 @@ class GlassBakedModel implements IDynamicBakedModel {
     // Generates the required textures for the frame
     private static Material[] generateTexturesFrame() {
         return IntStream.range(1, 16).mapToObj(Integer::toBinaryString).map(s -> Strings.padStart(s, 4, '0'))
-                .map(s -> new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_frame" + s))
+                .map(s -> new Identifier("appliedenergistics2:block/glass/quartz_glass_frame" + s))
                 .map(rl -> new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, rl)).toArray(Material[]::new);
     }
 

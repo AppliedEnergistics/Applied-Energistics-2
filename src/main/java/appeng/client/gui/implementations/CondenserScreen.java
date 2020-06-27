@@ -19,7 +19,7 @@
 package appeng.client.gui.implementations;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.api.config.CondenserOutput;
@@ -36,7 +36,7 @@ public class CondenserScreen extends AEBaseScreen<CondenserContainer> {
 
     private SettingToggleButton<CondenserOutput> mode;
 
-    public CondenserScreen(CondenserContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public CondenserScreen(CondenserContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
         this.ySize = 197;
     }

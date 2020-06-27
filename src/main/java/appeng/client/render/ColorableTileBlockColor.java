@@ -21,8 +21,8 @@ package appeng.client.render;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.renderer.color.IBlockColor;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ILightReader;
 
@@ -41,7 +41,7 @@ public class ColorableTileBlockColor implements IBlockColor {
         AEColor color = AEColor.TRANSPARENT; // Default to a neutral color
 
         if (worldIn != null && pos != null) {
-            TileEntity te = worldIn.getTileEntity(pos);
+            BlockEntity te = worldIn.getTileEntity(pos);
             if (te instanceof IColorableTile) {
                 color = ((IColorableTile) te).getColor();
             }

@@ -23,14 +23,14 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
+import net.fabricmc.api.Environment;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.Direction;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
 import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.api.AEApi;
@@ -41,21 +41,21 @@ import appeng.util.item.AEItemStack;
 
 public class CraftingMonitorTileEntity extends CraftingTileEntity implements IColorableTile {
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private Integer dspList;
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private boolean updateList;
 
     private IAEItemStack dspPlay;
     private AEColor paintedColor = AEColor.TRANSPARENT;
 
-    public CraftingMonitorTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public CraftingMonitorTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
     @Override
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final PacketByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
         final AEColor oldPaintedColor = this.paintedColor;
         this.paintedColor = AEColor.values()[data.readByte()];
@@ -73,7 +73,7 @@ public class CraftingMonitorTileEntity extends CraftingTileEntity implements ICo
     }
 
     @Override
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final PacketByteBuf data) throws IOException {
         super.writeToStream(data);
         data.writeByte(this.paintedColor.ordinal());
 

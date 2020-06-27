@@ -24,7 +24,7 @@ package appeng.client.gui.implementations;
 
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 
 import appeng.container.implementations.CraftingStatusContainer;
 import appeng.core.localization.GuiText;
@@ -38,7 +38,7 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
     private Button selectCPU;
 
     public CraftingStatusScreen(CraftingStatusContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
+            Text title) {
         super(container, playerInventory, title);
         this.subGui = new AESubScreen(this, container.getTarget());
     }

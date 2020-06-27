@@ -18,11 +18,11 @@
 
 package appeng.container.slot;
 
-import net.minecraftforge.items.IItemHandler;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 public class FakeBlacklistSlot extends FakeTypeOnlySlot {
 
-    public FakeBlacklistSlot(final IItemHandler inv, final int idx, final int x, final int y) {
+    public FakeBlacklistSlot(final ItemTransferable inv, final int idx, final int x, final int y) {
         super(inv, idx, x, y);
     }
 

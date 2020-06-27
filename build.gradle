@@ -51,6 +51,10 @@ allprojects {
 
     repositories {
         maven { url = "http://maven.fabricmc.net/" }
+        maven {
+            name = "BuildCraft"
+            url = "https://mod-buildcraft.com/maven"
+        }
     }
 
     minecraft {
@@ -65,6 +69,8 @@ allprojects {
         modImplementation "net.fabricmc.fabric-api:fabric-api:0.14.0+build.371-1.16"
 
         modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
+
+        modCompile "alexiil.mc.lib:libblockattributes-all:0.7.0"
 
         compile 'com.google.code.findbugs:jsr305:3.0.2'
     }

@@ -30,21 +30,21 @@ import javax.annotation.Nullable;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.items.IItemHandler;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.util.ICommonTile;
@@ -62,10 +62,10 @@ import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
-public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommonTile, ICustomNameObject {
+public class AEBaseTileEntity extends BlockEntity implements IOrientable, ICommonTile, ICustomNameObject {
 
     private static final ThreadLocal<WeakReference<AEBaseTileEntity>> DROP_NO_ITEMS = new ThreadLocal<>();
-    private static final Map<Class<? extends TileEntity>, IStackSrc> ITEM_STACKS = new HashMap<>();
+    private static final Map<Class<? extends BlockEntity>, IStackSrc> ITEM_STACKS = new HashMap<>();
     private int renderFragment = 0;
     @Nullable
     private String customName;
@@ -73,11 +73,11 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     private Direction up = Direction.UP;
     private boolean markDirtyQueued = false;
 
-    public AEBaseTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public AEBaseTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
-    public static void registerTileItem(final Class<? extends TileEntity> c, final IStackSrc wat) {
+    public static void registerTileItem(final Class<? extends BlockEntity> c, final IStackSrc wat) {
         ITEM_STACKS.put(c, wat);
     }
 
@@ -91,7 +91,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     }
 
     @Nonnull
-    public TileEntity getTile() {
+    public BlockEntity getTile() {
         return this;
     }
 
@@ -162,7 +162,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     private CompoundTag writeUpdateData() {
         final CompoundTag data = new CompoundTag();
 
-        final PacketBuffer stream = new PacketBuffer(Unpooled.buffer());
+        final PacketByteBuf stream = new PacketByteBuf(Unpooled.buffer());
 
         try {
             this.writeToStream(stream);
@@ -178,7 +178,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
         return data;
     }
 
-    private boolean readUpdateData(PacketBuffer stream) {
+    private boolean readUpdateData(PacketByteBuf stream) {
         boolean output = false;
 
         try {
@@ -221,14 +221,14 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
      */
     @Override
     public void handleUpdateTag(CompoundTag tag) {
-        final PacketBuffer stream = new PacketBuffer(Unpooled.copiedBuffer(tag.getByteArray("X")));
+        final PacketByteBuf stream = new PacketByteBuf(Unpooled.copiedBuffer(tag.getByteArray("X")));
 
         if (this.readUpdateData(stream)) {
             this.markForUpdate();
         }
     }
 
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final PacketByteBuf data) throws IOException {
         if (this.canBeRotated()) {
             final Direction old_Forward = this.forward;
             final Direction old_Up = this.up;
@@ -242,7 +242,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
         return false;
     }
 
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final PacketByteBuf data) throws IOException {
         if (this.canBeRotated()) {
             final byte orientation = (byte) ((this.up.ordinal() << 3) | this.forward.ordinal());
             data.writeByte(orientation);
@@ -334,7 +334,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
         }
 
         if (this instanceof ISegmentedInventory) {
-            final IItemHandler inv = ((ISegmentedInventory) this).getInventoryByName("config");
+            final ItemTransferable inv = ((ISegmentedInventory) this).getInventoryByName("config");
             if (inv instanceof AppEngInternalAEInventory) {
                 final AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
                 final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory(null, target.getSlots());
@@ -392,7 +392,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
         }
 
         if (this instanceof ISegmentedInventory) {
-            final IItemHandler inv = ((ISegmentedInventory) this).getInventoryByName("config");
+            final ItemTransferable inv = ((ISegmentedInventory) this).getInventoryByName("config");
             if (inv instanceof AppEngInternalAEInventory) {
                 ((AppEngInternalAEInventory) inv).writeToNBT(output, "config");
             }
@@ -402,7 +402,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     }
 
     @Override
-    public ITextComponent getCustomInventoryName() {
+    public Text getCustomInventoryName() {
         return new StringTextComponent(
                 this.hasCustomInventoryName() ? this.customName : this.getClass().getSimpleName());
     }

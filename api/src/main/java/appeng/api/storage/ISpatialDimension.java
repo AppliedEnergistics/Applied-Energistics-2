@@ -23,9 +23,9 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.world.ServerWorld;
 
 public interface ISpatialDimension {
     ServerWorld getWorld(DimensionType cellDim);
@@ -45,6 +45,6 @@ public interface ISpatialDimension {
      * Adds a user-facing tooltip that describes this dimension so that a player can
      * keep storage cells apart.
      */
-    void addCellDimensionTooltip(DimensionType cellDim, List<ITextComponent> lines);
+    void addCellDimensionTooltip(DimensionType cellDim, List<Text> lines);
 
 }

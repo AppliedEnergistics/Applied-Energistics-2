@@ -18,6 +18,7 @@
 
 package appeng.core.sync.packets;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -26,8 +27,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -56,7 +56,7 @@ public class JEIRecipePacket extends BasePacket {
 
     private ItemStack[][] recipe;
 
-    public JEIRecipePacket(final PacketBuffer stream) {
+    public JEIRecipePacket(final PacketByteBuf stream) {
         final CompoundTag comp = stream.readCompoundTag();
         if (comp != null) {
             this.recipe = new ItemStack[9][];
@@ -74,7 +74,7 @@ public class JEIRecipePacket extends BasePacket {
 
     // api
     public JEIRecipePacket(final CompoundTag recipe) {
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
 
@@ -108,8 +108,8 @@ public class JEIRecipePacket extends BasePacket {
         final IEnergyGrid energy = grid.getCache(IEnergyGrid.class);
         final ISecurityGrid security = grid.getCache(ISecurityGrid.class);
         final ICraftingGrid crafting = grid.getCache(ICraftingGrid.class);
-        final IItemHandler craftMatrix = cct.getInventoryByName("crafting");
-        final IItemHandler playerInventory = cct.getInventoryByName("player");
+        final ItemTransferable craftMatrix = cct.getInventoryByName("crafting");
+        final ItemTransferable playerInventory = cct.getInventoryByName("player");
 
         if (inv != null && this.recipe != null && security != null) {
             final IMEMonitor<IAEItemStack> storage = inv

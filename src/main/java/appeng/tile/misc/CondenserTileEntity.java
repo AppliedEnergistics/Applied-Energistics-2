@@ -21,19 +21,19 @@ package appeng.tile.misc;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.CondenserOutput;
@@ -69,18 +69,18 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
 
     private final AppEngInternalInventory outputSlot = new AppEngInternalInventory(this, 1);
     private final AppEngInternalInventory storageSlot = new AppEngInternalInventory(this, 1);
-    private final IItemHandler inputSlot = new CondenseItemHandler();
+    private final ItemTransferable inputSlot = new CondenseItemHandler();
     private final IFluidHandler fluidHandler = new FluidHandler();
     private final MEHandler meHandler = new MEHandler();
 
-    private final IItemHandler externalInv = new WrapperChainedItemHandler(this.inputSlot,
+    private final ItemTransferable externalInv = new WrapperChainedItemHandler(this.inputSlot,
             new WrapperFilteredItemHandler(this.outputSlot, AEItemFilters.EXTRACT_ONLY));
-    private final IItemHandler combinedInv = new WrapperChainedItemHandler(this.inputSlot, this.outputSlot,
+    private final ItemTransferable combinedInv = new WrapperChainedItemHandler(this.inputSlot, this.outputSlot,
             this.storageSlot);
 
     private double storedPower = 0;
 
-    public CondenserTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public CondenserTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.cm.registerSetting(Settings.CONDENSER_OUTPUT, CondenserOutput.TRASH);
     }
@@ -142,7 +142,7 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
         this.outputSlot.insertItem(0, output, false);
     }
 
-    IItemHandler getOutputSlot() {
+    ItemTransferable getOutputSlot() {
         return this.outputSlot;
     }
 
@@ -167,13 +167,13 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
+    public ItemTransferable getInternalInventory() {
         return this.combinedInv;
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final ItemStack added) {
+    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+                                  final ItemStack removed, final ItemStack added) {
         if (inv == this.outputSlot) {
             this.meHandler.outputChanged(added, removed);
         }
@@ -210,7 +210,7 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
         return super.getCapability(capability, facing);
     }
 
-    private class CondenseItemHandler implements IItemHandler {
+    private class CondenseItemHandler implements ItemTransferable {
 
         @Override
         public int getSlots() {
@@ -259,8 +259,8 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
 
         @Nonnull
         @Override
-        public FluidStack getFluid() {
-            return FluidStack.EMPTY;
+        public FluidVolume getFluid() {
+            return FluidVolume.EMPTY;
         }
 
         @Override
@@ -274,12 +274,12 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
         }
 
         @Override
-        public boolean isFluidValid(FluidStack stack) {
+        public boolean isFluidValid(FluidVolume stack) {
             return !stack.isEmpty();
         }
 
         @Override
-        public int fill(FluidStack resource, FluidAction action) {
+        public int fill(FluidVolume resource, FluidAction action) {
             if (action == FluidAction.EXECUTE) {
                 final IStorageChannel<IAEFluidStack> chan = AEApi.instance().storage()
                         .getStorageChannel(IFluidStorageChannel.class);
@@ -292,14 +292,14 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
 
         @Nonnull
         @Override
-        public FluidStack drain(int maxDrain, FluidAction action) {
-            return FluidStack.EMPTY;
+        public FluidVolume drain(int maxDrain, FluidAction action) {
+            return FluidVolume.EMPTY;
         }
 
         @Nonnull
         @Override
-        public FluidStack drain(FluidStack resource, FluidAction action) {
-            return FluidStack.EMPTY;
+        public FluidVolume drain(FluidVolume resource, FluidAction action) {
+            return FluidVolume.EMPTY;
         }
 
         @Override
@@ -309,8 +309,8 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
 
         @Nonnull
         @Override
-        public FluidStack getFluidInTank(int tank) {
-            return FluidStack.EMPTY;
+        public FluidVolume getFluidInTank(int tank) {
+            return FluidVolume.EMPTY;
         }
 
         @Override
@@ -319,7 +319,7 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
         }
 
         @Override
-        public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
+        public boolean isFluidValid(int tank, @Nonnull FluidVolume stack) {
             return tank == 0 && isFluidValid(stack);
         }
     }

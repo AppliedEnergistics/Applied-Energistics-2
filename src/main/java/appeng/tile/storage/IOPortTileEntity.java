@@ -22,14 +22,14 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -83,11 +83,11 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
 
     private final AppEngInternalInventory inputCells = new AppEngInternalInventory(this, NUMBER_OF_CELL_SLOTS);
     private final AppEngInternalInventory outputCells = new AppEngInternalInventory(this, NUMBER_OF_CELL_SLOTS);
-    private final IItemHandler combinedInventory = new WrapperChainedItemHandler(this.inputCells, this.outputCells);
+    private final ItemTransferable combinedInventory = new WrapperChainedItemHandler(this.inputCells, this.outputCells);
 
-    private final IItemHandler inputCellsExt = new WrapperFilteredItemHandler(this.inputCells,
+    private final ItemTransferable inputCellsExt = new WrapperFilteredItemHandler(this.inputCells,
             AEItemFilters.INSERT_ONLY);
-    private final IItemHandler outputCellsExt = new WrapperFilteredItemHandler(this.outputCells,
+    private final ItemTransferable outputCellsExt = new WrapperFilteredItemHandler(this.outputCells,
             AEItemFilters.EXTRACT_ONLY);
 
     private final UpgradeInventory upgrades;
@@ -96,7 +96,7 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
     private ItemStack currentCell;
     private Map<IStorageChannel<?>, IMEInventory<?>> cachedInventories;
 
-    public IOPortTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public IOPortTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
         this.manager = new ConfigManager(this);
@@ -185,7 +185,7 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public IItemHandler getInventoryByName(final String name) {
+    public ItemTransferable getInventoryByName(final String name) {
         if (name.equals("upgrades")) {
             return this.upgrades;
         }
@@ -211,20 +211,20 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
+    public ItemTransferable getInternalInventory() {
         return this.combinedInventory;
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final ItemStack added) {
+    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+                                  final ItemStack removed, final ItemStack added) {
         if (this.inputCells == inv) {
             this.updateTask();
         }
     }
 
     @Override
-    protected IItemHandler getItemHandlerForSide(final Direction facing) {
+    protected ItemTransferable getItemHandlerForSide(final Direction facing) {
         if (facing == this.getUp() || facing == this.getUp().getOpposite()) {
             return this.inputCellsExt;
         } else {

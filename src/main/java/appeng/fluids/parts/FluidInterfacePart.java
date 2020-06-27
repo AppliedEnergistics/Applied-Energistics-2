@@ -24,14 +24,14 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
@@ -65,19 +65,19 @@ import appeng.util.Platform;
 
 public class FluidInterfacePart extends BasicStatePart
         implements IGridTickable, IStorageMonitorable, IFluidInterfaceHost, IPriorityHost {
-    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/fluid_interface_base");
+    public static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID, "part/fluid_interface_base");
 
     @PartModels
     public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/fluid_interface_off"));
+            new Identifier(AppEng.MOD_ID, "part/fluid_interface_off"));
 
     @PartModels
     public static final PartModel MODELS_ON = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/fluid_interface_on"));
+            new Identifier(AppEng.MOD_ID, "part/fluid_interface_on"));
 
     @PartModels
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/fluid_interface_has_channel"));
+            new Identifier(AppEng.MOD_ID, "part/fluid_interface_has_channel"));
 
     private final DualityFluidInterface duality = new DualityFluidInterface(this.getProxy(), this);
 
@@ -159,7 +159,7 @@ public class FluidInterfacePart extends BasicStatePart
     }
 
     @Override
-    public TileEntity getTileEntity() {
+    public BlockEntity getTileEntity() {
         return super.getHost().getTile();
     }
 
@@ -200,7 +200,7 @@ public class FluidInterfacePart extends BasicStatePart
     }
 
     @Override
-    public IItemHandler getInventoryByName(String name) {
+    public ItemTransferable getInventoryByName(String name) {
         return this.duality.getInventoryByName(name);
     }
 

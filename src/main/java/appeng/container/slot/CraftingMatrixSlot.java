@@ -18,9 +18,9 @@
 
 package appeng.container.slot;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.container.AEBaseContainer;
 import appeng.util.inv.WrapperInvItemHandler;
@@ -29,8 +29,8 @@ public class CraftingMatrixSlot extends AppEngSlot {
     private final AEBaseContainer c;
     private final IInventory wrappedInventory;
 
-    public CraftingMatrixSlot(final AEBaseContainer c, final IItemHandler par1iInventory, final int par2,
-            final int par3, final int par4) {
+    public CraftingMatrixSlot(final AEBaseContainer c, final ItemTransferable par1iInventory, final int par2,
+                              final int par3, final int par4) {
         super(par1iInventory, par2, par3, par4);
         this.c = c;
         this.wrappedInventory = new WrapperInvItemHandler(par1iInventory);

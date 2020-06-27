@@ -4,7 +4,7 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 
 import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.client.model.IModelLoader;
 
 public class PlaneModelLoader implements IModelLoader<PlaneModel> {
@@ -21,8 +21,8 @@ public class PlaneModelLoader implements IModelLoader<PlaneModel> {
         String sidesTexture = modelContents.get("sides").getAsString();
         String backTexture = modelContents.get("back").getAsString();
 
-        return new PlaneModel(new ResourceLocation(frontTexture), new ResourceLocation(sidesTexture),
-                new ResourceLocation(backTexture));
+        return new PlaneModel(new Identifier(frontTexture), new Identifier(sidesTexture),
+                new Identifier(backTexture));
     }
 
 }

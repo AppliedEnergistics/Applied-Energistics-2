@@ -29,8 +29,8 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.block.entity.BlockEntity;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -83,7 +83,7 @@ public class MEMonitorableContainer extends AEBaseContainer
     private static final ContainerHelper<MEMonitorableContainer, ITerminalHost> helper = new ContainerHelper<>(
             MEMonitorableContainer::new, ITerminalHost.class);
 
-    public static MEMonitorableContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static MEMonitorableContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -111,7 +111,7 @@ public class MEMonitorableContainer extends AEBaseContainer
 
     public MEMonitorableContainer(ContainerType<?> containerType, int id, PlayerInventory ip,
             final ITerminalHost monitorable, final boolean bindInventory) {
-        super(containerType, id, ip, monitorable instanceof TileEntity ? (TileEntity) monitorable : null,
+        super(containerType, id, ip, monitorable instanceof BlockEntity ? (BlockEntity) monitorable : null,
                 monitorable instanceof IPart ? (IPart) monitorable : null,
                 monitorable instanceof IGuiItemObject ? (IGuiItemObject) monitorable : null);
 

@@ -20,12 +20,12 @@ package appeng.tile.spatial;
 
 import javax.annotation.Nonnull;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -54,10 +54,10 @@ import appeng.util.inv.filter.IAEItemFilter;
 public class SpatialIOPortTileEntity extends AENetworkInvTileEntity implements IWorldCallable<Void> {
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 2);
-    private final IItemHandler invExt = new WrapperFilteredItemHandler(this.inv, new SpatialIOFilter());
+    private final ItemTransferable invExt = new WrapperFilteredItemHandler(this.inv, new SpatialIOFilter());
     private YesNo lastRedstoneState = YesNo.UNDECIDED;
 
-    public SpatialIOPortTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public SpatialIOPortTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
     }
@@ -159,29 +159,30 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity implements I
     }
 
     @Override
-    protected @Nonnull IItemHandler getItemHandlerForSide(@Nonnull Direction side) {
+    protected @Nonnull
+    ItemTransferable getItemHandlerForSide(@Nonnull Direction side) {
         return this.invExt;
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
+    public ItemTransferable getInternalInventory() {
         return this.inv;
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final ItemStack added) {
+    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+                                  final ItemStack removed, final ItemStack added) {
 
     }
 
     private class SpatialIOFilter implements IAEItemFilter {
         @Override
-        public boolean allowExtract(IItemHandler inv, int slot, int amount) {
+        public boolean allowExtract(ItemTransferable inv, int slot, int amount) {
             return slot == 1;
         }
 
         @Override
-        public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
+        public boolean allowInsert(ItemTransferable inv, int slot, ItemStack stack) {
             return (slot == 0 && SpatialIOPortTileEntity.this.isSpatialCell(stack));
         }
 

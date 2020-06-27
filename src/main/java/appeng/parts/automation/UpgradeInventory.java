@@ -18,11 +18,11 @@
 
 package appeng.parts.automation;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.items.IUpgradeModule;
@@ -136,8 +136,8 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removedStack, final ItemStack newStack) {
+    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+                                  final ItemStack removedStack, final ItemStack newStack) {
         this.cached = false;
         if (this.parent != null && Platform.isServer()) {
             this.parent.onChangeInventory(inv, slot, mc, removedStack, newStack);
@@ -147,12 +147,12 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
     private class UpgradeInvFilter implements IAEItemFilter {
 
         @Override
-        public boolean allowExtract(IItemHandler inv, int slot, int amount) {
+        public boolean allowExtract(ItemTransferable inv, int slot, int amount) {
             return true;
         }
 
         @Override
-        public boolean allowInsert(IItemHandler inv, int slot, ItemStack itemstack) {
+        public boolean allowInsert(ItemTransferable inv, int slot, ItemStack itemstack) {
             if (itemstack.isEmpty()) {
                 return false;
             }

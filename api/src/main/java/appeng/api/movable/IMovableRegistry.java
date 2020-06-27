@@ -24,7 +24,7 @@
 package appeng.api.movable;
 
 import net.minecraft.block.Block;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
 
 /**
  * Used to determine if a tile is marked as movable, a block will be considered
@@ -36,7 +36,7 @@ import net.minecraft.tileentity.TileEntity;
  * 2. The Tile implements IMovableTile
  *
  * 3. A IMovableHandler is register that returns canHandle = true for the
- * {@link TileEntity} subclass
+ * {@link BlockEntity} subclass
  *
  *
  * The movement process is as follows,
@@ -72,21 +72,21 @@ public interface IMovableRegistry {
      * If you tile is handled with IMovableHandler or IMovableTile you do not need
      * to white list it.
      */
-    void whiteListTileEntity(Class<? extends TileEntity> c);
+    void whiteListTileEntity(Class<? extends BlockEntity> c);
 
     /**
      * @param te to be moved tile entity
      *
      * @return true if the tile has accepted your request to move it
      */
-    boolean askToMove(TileEntity te);
+    boolean askToMove(BlockEntity te);
 
     /**
      * tells the tile you are done moving it.
      *
      * @param te moved tile entity
      */
-    void doneMoving(TileEntity te);
+    void doneMoving(BlockEntity te);
 
     /**
      * add a new handler movable handler.
@@ -105,7 +105,7 @@ public interface IMovableRegistry {
      *
      * @return moving handler of tile entity
      */
-    IMovableHandler getHandler(TileEntity te);
+    IMovableHandler getHandler(BlockEntity te);
 
     /**
      * @return a copy of the default handler

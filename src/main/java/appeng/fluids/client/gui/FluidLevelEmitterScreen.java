@@ -4,7 +4,7 @@ package appeng.fluids.client.gui;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
@@ -22,7 +22,7 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
     private NumberBox level;
 
     public FluidLevelEmitterScreen(FluidLevelEmitterContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
+            Text title) {
         super(container, playerInventory, title);
     }
 

@@ -37,7 +37,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.api.AEApi;
@@ -68,7 +68,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     private AETextField searchField;
 
     public InterfaceTerminalScreen(InterfaceTerminalContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
+            Text title) {
         super(container, playerInventory, title);
         final Scrollbar scrollbar = new Scrollbar();
         this.setScrollBar(scrollbar);
@@ -217,7 +217,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
                 try {
                     final long id = Long.parseLong(key.substring(1), Character.MAX_RADIX);
                     final CompoundTag invData = in.getCompound(key);
-                    ITextComponent un = ITextComponent.Serializer.fromJson(invData.getString("un"));
+                    Text un = Text.Serializer.fromJson(invData.getString("un"));
                     final ClientDCInternalInv current = this.getById(id, invData.getLong("sortBy"), un);
 
                     for (int x = 0; x < current.getInventory().getSlots(); x++) {
@@ -367,7 +367,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         return this.names.size() + this.byId.size();
     }
 
-    private ClientDCInternalInv getById(final long id, final long sortBy, final ITextComponent name) {
+    private ClientDCInternalInv getById(final long id, final long sortBy, final Text name) {
         ClientDCInternalInv o = this.byId.get(id);
 
         if (o == null) {

@@ -20,7 +20,7 @@ package appeng.spatial;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.biome.provider.SingleBiomeProvider;
@@ -80,7 +80,7 @@ public class StorageChunkGenerator extends ChunkGenerator<GenerationSettings> {
     }
 
     @Override
-    public void makeBase(IWorld worldIn, IChunk chunkIn) {
+    public void makeBase(WorldAccess worldIn, IChunk chunkIn) {
     }
 
     @Override

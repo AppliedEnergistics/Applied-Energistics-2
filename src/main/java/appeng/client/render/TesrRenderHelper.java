@@ -18,13 +18,13 @@
 
 package appeng.client.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.util.math.MatrixStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.render.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
@@ -81,8 +81,8 @@ public class TesrRenderHelper {
     /**
      * Render an item in 2D.
      */
-    public static void renderItem2d(MatrixStack matrixStack, IRenderTypeBuffer buffers, ItemStack itemStack,
-            float scale, int combinedLightIn, int combinedOverlayIn) {
+    public static void renderItem2d(MatrixStack matrixStack, VertexConsumerProvider buffers, ItemStack itemStack,
+                                    float scale, int combinedLightIn, int combinedOverlayIn) {
         if (!itemStack.isEmpty()) {
             matrixStack.push();
             // Push it out of the block face a bit to avoid z-fighting
@@ -110,7 +110,7 @@ public class TesrRenderHelper {
      * @param combinedLightIn
      * @param combinedOverlayIn
      */
-    public static void renderItem2dWithAmount(MatrixStack matrixStack, IRenderTypeBuffer buffers,
+    public static void renderItem2dWithAmount(MatrixStack matrixStack, VertexConsumerProvider buffers,
             IAEItemStack itemStack, float itemScale, float spacing, int combinedLightIn, int combinedOverlayIn) {
         final ItemStack renderStack = itemStack.asItemStackRepresentation();
 

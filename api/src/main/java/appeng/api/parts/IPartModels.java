@@ -21,7 +21,7 @@ package appeng.api.parts;
 import java.util.Arrays;
 import java.util.Collection;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
 import appeng.api.AEInjectable;
 
@@ -41,12 +41,12 @@ public interface IPartModels {
      * This method must be called during the pre-init phase (as part of your
      * plugin's constructor).
      */
-    void registerModels(Collection<ResourceLocation> partModels);
+    void registerModels(Collection<Identifier> partModels);
 
     /**
      * Convenience overload of {@link #registerModels(Collection)}
      */
-    default void registerModels(ResourceLocation... partModels) {
+    default void registerModels(Identifier... partModels) {
         registerModels(Arrays.asList(partModels));
     }
 }

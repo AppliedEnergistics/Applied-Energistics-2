@@ -27,14 +27,14 @@ import java.util.function.Function;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.client.renderer.model.IUnbakedModel;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.Material;
-import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.render.model.IBakedModel;
+import net.minecraft.client.render.model.IModelTransform;
+import net.minecraft.client.render.model.IUnbakedModel;
+import net.minecraft.client.render.model.ItemOverrideList;
+import net.minecraft.client.render.model.Material;
+import net.minecraft.client.render.model.ModelBakery;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 
@@ -44,18 +44,18 @@ import net.minecraftforge.client.model.geometry.IModelGeometry;
  */
 public class SkyCompassModel implements IModelGeometry<SkyCompassModel> {
 
-    private static final ResourceLocation MODEL_BASE = new ResourceLocation(
+    private static final Identifier MODEL_BASE = new Identifier(
             "appliedenergistics2:block/sky_compass_base");
 
-    private static final ResourceLocation MODEL_POINTER = new ResourceLocation(
+    private static final Identifier MODEL_POINTER = new Identifier(
             "appliedenergistics2:block/sky_compass_pointer");
 
-    public static final List<ResourceLocation> DEPENDENCIES = ImmutableList.of(MODEL_BASE, MODEL_POINTER);
+    public static final List<Identifier> DEPENDENCIES = ImmutableList.of(MODEL_BASE, MODEL_POINTER);
 
     @Override
     public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
             Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
-            ItemOverrideList overrides, ResourceLocation modelLocation) {
+            ItemOverrideList overrides, Identifier modelLocation) {
         IBakedModel baseModel = bakery.getBakedModel(MODEL_BASE, modelTransform, spriteGetter);
         IBakedModel pointerModel = bakery.getBakedModel(MODEL_POINTER, modelTransform, spriteGetter);
         return new SkyCompassBakedModel(baseModel, pointerModel);
@@ -63,7 +63,7 @@ public class SkyCompassModel implements IModelGeometry<SkyCompassModel> {
 
     @Override
     public Collection<Material> getTextures(IModelConfiguration owner,
-            Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+                                            Function<Identifier, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
         return Collections.emptyList();
     }
 

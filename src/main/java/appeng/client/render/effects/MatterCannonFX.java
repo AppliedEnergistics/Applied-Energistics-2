@@ -18,14 +18,13 @@
 
 package appeng.client.render.effects;
 
+import net.fabricmc.api.EnvType;
 import net.minecraft.client.particle.*;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.Environment;
 
 import appeng.api.util.AEPartLocation;
-import appeng.core.AppEng;
 
 public class MatterCannonFX extends SpriteTexturedParticle {
 
@@ -73,7 +72,7 @@ public class MatterCannonFX extends SpriteTexturedParticle {
         this.particleAlpha *= 0.59f;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public static class Factory implements IParticleFactory<BasicParticleType> {
         private final IAnimatedSprite spriteSet;
 

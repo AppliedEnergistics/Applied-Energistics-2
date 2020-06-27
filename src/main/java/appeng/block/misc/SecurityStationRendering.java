@@ -18,9 +18,9 @@
 
 package appeng.block.misc;
 
+import net.fabricmc.api.EnvType;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.Environment;
 
 import appeng.api.util.AEColor;
 import appeng.bootstrap.BlockRenderingCustomizer;
@@ -32,7 +32,7 @@ import appeng.client.render.StaticItemColor;
 public class SecurityStationRendering extends BlockRenderingCustomizer {
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
         rendering.renderType(RenderType.getCutout());
         rendering.blockColor(ColorableTileBlockColor.INSTANCE);

@@ -24,18 +24,18 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.Direction;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import appeng.api.AEApi;
@@ -70,7 +70,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity implements I
     private QuantumCluster cluster;
     private boolean updateStatus = false;
 
-    public QuantumBridgeTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public QuantumBridgeTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));
         this.getProxy().setFlags(GridFlags.DENSE_CAPACITY);
@@ -89,7 +89,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity implements I
     }
 
     @Override
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final PacketByteBuf data) throws IOException {
         super.writeToStream(data);
         int out = this.constructed;
 
@@ -105,7 +105,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity implements I
     }
 
     @Override
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final PacketByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
         final int oldValue = this.constructed;
         this.constructed = data.readByte();
@@ -113,20 +113,20 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity implements I
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
+    public ItemTransferable getInternalInventory() {
         return this.internalInventory;
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final ItemStack added) {
+    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+                                  final ItemStack removed, final ItemStack added) {
         if (this.cluster != null) {
             this.cluster.updateStatus(true);
         }
     }
 
     @Override
-    protected IItemHandler getItemHandlerForSide(Direction side) {
+    protected ItemTransferable getItemHandlerForSide(Direction side) {
         if (this.isCenter()) {
             return this.internalInventory;
         }
@@ -229,7 +229,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity implements I
         final EnumSet<Direction> set = EnumSet.noneOf(Direction.class);
 
         for (final Direction d : Direction.values()) {
-            final TileEntity te = this.world.getTileEntity(this.pos.offset(d));
+            final BlockEntity te = this.world.getTileEntity(this.pos.offset(d));
             if (te instanceof QuantumBridgeTileEntity) {
                 set.add(d);
             }

@@ -19,7 +19,7 @@
 package appeng.integration.modules.jei;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -42,7 +42,7 @@ class InscriberRecipeCategory implements IRecipeCategory<InscriberRecipe> {
     private static final int SLOT_INPUT_BOTTOM = 2;
     private static final int SLOT_OUTPUT = 3;
 
-    static final ResourceLocation UID = new ResourceLocation(AppEng.MOD_ID, "appliedenergistics2.inscriber");
+    static final Identifier UID = new Identifier(AppEng.MOD_ID, "appliedenergistics2.inscriber");
 
     private final IDrawable background;
 
@@ -53,7 +53,7 @@ class InscriberRecipeCategory implements IRecipeCategory<InscriberRecipe> {
     private final IDrawable icon;
 
     public InscriberRecipeCategory(IGuiHelper guiHelper) {
-        ResourceLocation location = new ResourceLocation(AppEng.MOD_ID, "textures/guis/inscriber.png");
+        Identifier location = new Identifier(AppEng.MOD_ID, "textures/guis/inscriber.png");
         this.background = guiHelper.createDrawable(location, 44, 15, 97, 64);
         this.localizedName = I18n.format("block.appliedenergistics2.inscriber");
 
@@ -66,7 +66,7 @@ class InscriberRecipeCategory implements IRecipeCategory<InscriberRecipe> {
     }
 
     @Override
-    public ResourceLocation getUid() {
+    public Identifier getUid() {
         return UID;
     }
 

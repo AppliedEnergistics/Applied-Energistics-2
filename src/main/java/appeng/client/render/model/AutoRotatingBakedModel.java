@@ -33,10 +33,10 @@ import com.google.common.collect.ImmutableList;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.Vector4f;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.render.model.IBakedModel;
+import net.minecraft.client.render.model.ItemCameraTransforms;
+import net.minecraft.client.render.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
@@ -106,7 +106,7 @@ public class AutoRotatingBakedModel implements IBakedModel {
             // the normal back to a byte-based format, which then re-applies Forge's own bug
             // when piping it
             // to the AO lighter, thus fixing our problem.
-            BakedQuad packedQuad = new BakedQuad(unpackedQuad.getVertexData(), quad.getTintIndex(),
+            BakedQuad packedQuad = new BakedQuad(unpackedQuad.getVertexData(), quad.getColorIndex(),
                     unpackedQuad.getFace(), quad.func_187508_a(), quad.shouldApplyDiffuseLighting());
             rotated.add(packedQuad);
         }

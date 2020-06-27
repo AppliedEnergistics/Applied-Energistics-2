@@ -18,11 +18,11 @@
 
 package appeng.container.implementations;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.SecurityPermissions;
@@ -44,7 +44,7 @@ public class FormationPlaneContainer extends UpgradeableContainer {
     private static final ContainerHelper<FormationPlaneContainer, FormationPlanePart> helper = new ContainerHelper<>(
             FormationPlaneContainer::new, FormationPlanePart.class, SecurityPermissions.BUILD);
 
-    public static FormationPlaneContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static FormationPlaneContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -69,7 +69,7 @@ public class FormationPlaneContainer extends UpgradeableContainer {
         final int xo = 8;
         final int yo = 23 + 6;
 
-        final IItemHandler config = this.getUpgradeable().getInventoryByName("config");
+        final ItemTransferable config = this.getUpgradeable().getInventoryByName("config");
         for (int y = 0; y < 7; y++) {
             for (int x = 0; x < 9; x++) {
                 if (y < 2) {
@@ -80,7 +80,7 @@ public class FormationPlaneContainer extends UpgradeableContainer {
             }
         }
 
-        final IItemHandler upgrades = this.getUpgradeable().getInventoryByName("upgrades");
+        final ItemTransferable upgrades = this.getUpgradeable().getInventoryByName("upgrades");
         this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 0, 187, 8,
                 this.getPlayerInventory())).setNotDraggable());
         this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18,

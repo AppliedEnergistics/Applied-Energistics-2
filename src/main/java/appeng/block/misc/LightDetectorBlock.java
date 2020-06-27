@@ -26,14 +26,14 @@ import net.minecraft.block.Material;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
@@ -87,7 +87,7 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
     }
 
     @Override
-    public boolean isValidOrientation(final IWorld w, final BlockPos pos, final Direction forward, final Direction up) {
+    public boolean isValidOrientation(final WorldAccess w, final BlockPos pos, final Direction forward, final Direction up) {
         return this.canPlaceAt(w, pos, up.getOpposite());
     }
 
@@ -108,7 +108,7 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
         final double yOff = -0.3 * up.getYOffset();
         final double zOff = -0.3 * up.getZOffset();
         return VoxelShapes
-                .create(new AxisAlignedBB(xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7));
+                .create(new Box(xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7));
     }
 
     @Override

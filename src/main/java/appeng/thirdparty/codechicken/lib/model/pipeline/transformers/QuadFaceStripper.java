@@ -21,7 +21,7 @@ package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 import static net.minecraft.util.math.Direction.AxisDirection.POSITIVE;
 
 import net.minecraft.util.math.Direction.AxisDirection;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Box;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 
 import appeng.thirdparty.codechicken.lib.model.Quad.Vertex;
@@ -38,14 +38,14 @@ public class QuadFaceStripper extends QuadTransformer {
 
     public static final IPipelineElementFactory<QuadFaceStripper> FACTORY = QuadFaceStripper::new;
 
-    private AxisAlignedBB bounds;
+    private Box bounds;
     private int mask;
 
     QuadFaceStripper() {
         super();
     }
 
-    public QuadFaceStripper(IVertexConsumer parent, AxisAlignedBB bounds, int mask) {
+    public QuadFaceStripper(IVertexConsumer parent, Box bounds, int mask) {
         super(parent);
         this.bounds = bounds;
         this.mask = mask;
@@ -57,7 +57,7 @@ public class QuadFaceStripper extends QuadTransformer {
      *
      * @param bounds The bounds.
      */
-    public void setBounds(AxisAlignedBB bounds) {
+    public void setBounds(Box bounds) {
         this.bounds = bounds;
     }
 

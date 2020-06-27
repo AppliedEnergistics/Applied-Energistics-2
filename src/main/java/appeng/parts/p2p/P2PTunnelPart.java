@@ -26,7 +26,7 @@ import java.util.Optional;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.model.data.IModelData;
@@ -133,7 +133,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     }
 
     @Override
-    public boolean readFromStream(PacketBuffer data) throws IOException {
+    public boolean readFromStream(PacketByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
         final short oldf = this.freq;
         this.freq = data.readShort();
@@ -141,7 +141,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     }
 
     @Override
-    public void writeToStream(PacketBuffer data) throws IOException {
+    public void writeToStream(PacketByteBuf data) throws IOException {
         super.writeToStream(data);
         data.writeShort(this.getFrequency());
     }

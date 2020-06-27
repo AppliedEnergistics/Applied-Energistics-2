@@ -27,10 +27,10 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockView;
@@ -53,11 +53,11 @@ public class CableAnchorPart implements IPart {
 
     @PartModels
     public static final PartModel DEFAULT_MODELS = new PartModel(false,
-            new ResourceLocation(AppEng.MOD_ID, "part/cable_anchor"));
+            new Identifier(AppEng.MOD_ID, "part/cable_anchor"));
 
     @PartModels
     public static final PartModel FACADE_MODELS = new PartModel(false,
-            new ResourceLocation(AppEng.MOD_ID, "part/cable_anchor_short"));
+            new Identifier(AppEng.MOD_ID, "part/cable_anchor_short"));
 
     private ItemStack is = ItemStack.EMPTY;
     private IPartHost host = null;
@@ -132,12 +132,12 @@ public class CableAnchorPart implements IPart {
     }
 
     @Override
-    public void writeToStream(final PacketBuffer data) throws IOException {
+    public void writeToStream(final PacketByteBuf data) throws IOException {
 
     }
 
     @Override
-    public boolean readFromStream(final PacketBuffer data) throws IOException {
+    public boolean readFromStream(final PacketByteBuf data) throws IOException {
         return false;
     }
 
@@ -167,7 +167,7 @@ public class CableAnchorPart implements IPart {
     }
 
     @Override
-    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final TileEntity tile) {
+    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity tile) {
         this.host = host;
         this.mySide = side;
     }

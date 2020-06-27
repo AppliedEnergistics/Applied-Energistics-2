@@ -29,14 +29,14 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
 
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.client.renderer.model.IUnbakedModel;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.Material;
-import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.render.model.IBakedModel;
+import net.minecraft.client.render.model.IModelTransform;
+import net.minecraft.client.render.model.IUnbakedModel;
+import net.minecraft.client.render.model.ItemOverrideList;
+import net.minecraft.client.render.model.Material;
+import net.minecraft.client.render.model.ModelBakery;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 
@@ -44,21 +44,21 @@ import appeng.block.storage.DriveSlotCellType;
 
 public class DriveModel implements IModelGeometry<DriveModel> {
 
-    private static final ResourceLocation MODEL_BASE = new ResourceLocation(
+    private static final Identifier MODEL_BASE = new Identifier(
             "appliedenergistics2:block/drive/drive_base");
 
-    private static final Map<DriveSlotCellType, ResourceLocation> MODELS_CELLS = ImmutableMap.of(
-            DriveSlotCellType.EMPTY, new ResourceLocation("appliedenergistics2:block/drive/drive_cell_empty"),
-            DriveSlotCellType.ITEM, new ResourceLocation("appliedenergistics2:block/drive/drive_cell_items"),
-            DriveSlotCellType.FLUID, new ResourceLocation("appliedenergistics2:block/drive/drive_cell_fluids"));
+    private static final Map<DriveSlotCellType, Identifier> MODELS_CELLS = ImmutableMap.of(
+            DriveSlotCellType.EMPTY, new Identifier("appliedenergistics2:block/drive/drive_cell_empty"),
+            DriveSlotCellType.ITEM, new Identifier("appliedenergistics2:block/drive/drive_cell_items"),
+            DriveSlotCellType.FLUID, new Identifier("appliedenergistics2:block/drive/drive_cell_fluids"));
 
-    public static final Set<ResourceLocation> DEPENDENCIES = ImmutableSet.<ResourceLocation>builder()
+    public static final Set<Identifier> DEPENDENCIES = ImmutableSet.<Identifier>builder()
             .addAll(MODELS_CELLS.values()).add(MODEL_BASE).build();
 
     @Override
     public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
             Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
-            ItemOverrideList overrides, ResourceLocation modelLocation) {
+            ItemOverrideList overrides, Identifier modelLocation) {
         EnumMap<DriveSlotCellType, IBakedModel> cellModels = new EnumMap<>(DriveSlotCellType.class);
 
         // Load the base model and the model for each cell state.
@@ -73,7 +73,7 @@ public class DriveModel implements IModelGeometry<DriveModel> {
 
     @Override
     public Collection<Material> getTextures(IModelConfiguration owner,
-            Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+                                            Function<Identifier, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
         return Collections.emptyList();
     }
 

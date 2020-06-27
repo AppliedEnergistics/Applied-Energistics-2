@@ -34,18 +34,18 @@ import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
@@ -68,7 +68,7 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock 
             final double yOff = -0.3 * facing.getYOffset();
             final double zOff = -0.3 * facing.getZOffset();
             VoxelShape shape = VoxelShapes
-                    .create(new AxisAlignedBB(xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7));
+                    .create(new Box(xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7));
             SHAPES.put(facing, shape);
         }
     }
@@ -117,7 +117,7 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock 
     // Break the fixture if the block it is attached to is changed so that it could
     // no longer be placed
     @Override
-    public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld worldIn,
+    public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, WorldAccess worldIn,
             BlockPos pos, BlockPos facingPos) {
         Direction fixtureFacing = state.get(FACING);
         if (facing.getOpposite() == fixtureFacing && !canPlaceAt(worldIn, pos, facing)) {
@@ -127,7 +127,7 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock 
     }
 
     @Override
-    public boolean isValidOrientation(final IWorld w, final BlockPos pos, final Direction forward, final Direction up) {
+    public boolean isValidOrientation(final WorldAccess w, final BlockPos pos, final Direction forward, final Direction up) {
         // FIXME: I think this entire method -> not required, but not sure... are quartz
         // fixtures rotateable???
         return this.canPlaceAt(w, pos, up.getOpposite());
@@ -146,7 +146,7 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock 
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void animateTick(final BlockState state, final World w, final BlockPos pos, final Random r) {
         if (!AEConfig.instance().isEnableEffects()) {
             return;

@@ -20,10 +20,10 @@ package appeng.entity;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -166,7 +166,7 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
     }
 
     private boolean isAccelerated(final int x, final int y, final int z) {
-        final TileEntity te = this.world.getTileEntity(new BlockPos(x, y, z));
+        final BlockEntity te = this.world.getTileEntity(new BlockPos(x, y, z));
 
         return te instanceof ICrystalGrowthAccelerator && ((ICrystalGrowthAccelerator) te).isPowered();
     }

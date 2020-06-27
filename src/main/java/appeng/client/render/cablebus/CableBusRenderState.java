@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Objects;
 
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ILightReader;
 import net.minecraftforge.client.model.data.IModelData;
@@ -87,7 +87,7 @@ public class CableBusRenderState {
     // cut out holes for the parts. This
     // list is only populated if there are
     // facades on this cable bus
-    private List<AxisAlignedBB> boundingBoxes = new ArrayList<>();
+    private List<Box> boundingBoxes = new ArrayList<>();
 
     // Additional model data passed to the part models
     private EnumMap<Direction, IModelData> partModelData = new EnumMap<>(Direction.class);
@@ -168,7 +168,7 @@ public class CableBusRenderState {
         this.pos = pos;
     }
 
-    public List<AxisAlignedBB> getBoundingBoxes() {
+    public List<Box> getBoundingBoxes() {
         return this.boundingBoxes;
     }
 

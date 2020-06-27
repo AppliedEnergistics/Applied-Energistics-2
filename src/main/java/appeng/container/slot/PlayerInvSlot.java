@@ -18,13 +18,13 @@
 
 package appeng.container.slot;
 
-import net.minecraftforge.items.IItemHandler;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 // there is nothing special about this slot, its simply used to represent the players inventory, vs a container slot.
 
 public class PlayerInvSlot extends AppEngSlot {
 
-    public PlayerInvSlot(final IItemHandler par1iInventory, final int idx, final int x, final int y) {
+    public PlayerInvSlot(final ItemTransferable par1iInventory, final int idx, final int x, final int y) {
         super(par1iInventory, idx, x, y);
 
         this.setPlayerSide(true);

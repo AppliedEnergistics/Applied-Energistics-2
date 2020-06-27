@@ -23,14 +23,14 @@ import java.io.IOException;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.tileentity.IChestLid;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.items.IItemHandler;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 import appeng.block.storage.SkyChestBlock;
 import appeng.tile.AEBaseInvTileEntity;
@@ -48,18 +48,18 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickable
     private float lidAngle;
     private float prevLidAngle;
 
-    public SkyChestTileEntity(TileEntityType<? extends SkyChestTileEntity> type) {
+    public SkyChestTileEntity(BlockEntityType<? extends SkyChestTileEntity> type) {
         super(type);
     }
 
     @Override
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final PacketByteBuf data) throws IOException {
         super.writeToStream(data);
         data.writeBoolean(this.getPlayerOpen() > 0);
     }
 
     @Override
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final PacketByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
         final int wasOpen = this.getPlayerOpen();
         this.setPlayerOpen(data.readBoolean() ? 1 : 0);
@@ -77,7 +77,7 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickable
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
+    public ItemTransferable getInternalInventory() {
         return this.inv;
     }
 
@@ -139,8 +139,8 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickable
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final ItemStack added) {
+    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+                                  final ItemStack removed, final ItemStack added) {
 
     }
 

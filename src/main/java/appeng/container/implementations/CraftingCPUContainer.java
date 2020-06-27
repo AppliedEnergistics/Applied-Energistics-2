@@ -25,8 +25,8 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.text.Text;
 
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
@@ -64,7 +64,7 @@ public class CraftingCPUContainer extends AEBaseContainer
             .createList();
     private IGrid network;
     private CraftingCPUCluster monitor = null;
-    private ITextComponent cpuName = null;
+    private Text cpuName = null;
 
     @GuiSync(0)
     public long eta = -1;
@@ -90,7 +90,7 @@ public class CraftingCPUContainer extends AEBaseContainer
         }
     }
 
-    public static CraftingCPUContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static CraftingCPUContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -220,7 +220,7 @@ public class CraftingCPUContainer extends AEBaseContainer
     }
 
     @Override
-    public ITextComponent getCustomInventoryName() {
+    public Text getCustomInventoryName() {
         return this.cpuName;
     }
 

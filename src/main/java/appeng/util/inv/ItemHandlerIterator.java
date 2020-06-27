@@ -21,17 +21,17 @@ package appeng.util.inv;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import net.minecraftforge.items.IItemHandler;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 class ItemHandlerIterator implements Iterator<ItemSlot> {
 
-    private final IItemHandler itemHandler;
+    private final ItemTransferable itemHandler;
 
     private final ItemSlot itemSlot = new ItemSlot();
 
     private int slot = 0;
 
-    ItemHandlerIterator(IItemHandler itemHandler) {
+    ItemHandlerIterator(ItemTransferable itemHandler) {
         this.itemHandler = itemHandler;
     }
 

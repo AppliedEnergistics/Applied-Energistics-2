@@ -20,18 +20,18 @@ package appeng.util.inv;
 
 import javax.annotation.Nonnull;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import appeng.util.helpers.ItemHandlerUtil;
 
 public class WrapperRangeItemHandler implements IItemHandlerModifiable {
-    private final IItemHandler compose;
+    private final ItemTransferable compose;
     private final int minSlot;
     private final int maxSlot;
 
-    public WrapperRangeItemHandler(IItemHandler compose, int minSlot, int maxSlotExclusive) {
+    public WrapperRangeItemHandler(ItemTransferable compose, int minSlot, int maxSlotExclusive) {
         this.compose = compose;
         this.minSlot = minSlot;
         this.maxSlot = maxSlotExclusive;

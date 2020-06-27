@@ -26,8 +26,8 @@ import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import appeng.api.AEApi;
@@ -90,7 +90,7 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
 
     @Override
     public IAEFluidStack extractItems(final IAEFluidStack request, final Actionable type, final IActionSource src) {
-        final FluidStack removed = this.handler.drain(request.getFluidStack(), type.getFluidAction());
+        final FluidVolume removed = this.handler.drain(request.getFluidStack(), type.getFluidAction());
 
         if (removed.isEmpty() || removed.getAmount() == 0) {
             return null;
@@ -123,18 +123,18 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
             final CachedFluidStack old = this.memory.get(tank);
             high = Math.max(high, tank);
 
-            FluidStack newIS = this.handler.getFluidInTank(tank);
+            FluidVolume newIS = this.handler.getFluidInTank(tank);
             if (!newIS.isEmpty() && this.getMode() == StorageFilter.EXTRACTABLE_ONLY) {
                 // We have to actually check if we could extract _anything_
                 if (this.handler.drain(1, IFluidHandler.FluidAction.SIMULATE).isEmpty()) {
                     // Just to safeguard against tanks that prevent non-bucket-size extractions
                     if (this.handler.drain(FluidAttributes.BUCKET_VOLUME, IFluidHandler.FluidAction.SIMULATE)
                             .isEmpty()) {
-                        newIS = FluidStack.EMPTY;
+                        newIS = FluidVolume.EMPTY;
                     }
                 }
             }
-            final FluidStack oldIS = old == null ? FluidStack.EMPTY : old.fluidStack;
+            final FluidVolume oldIS = old == null ? FluidVolume.EMPTY : old.fluidStack;
 
             if (isDifferent(newIS, oldIS)) {
                 final CachedFluidStack cis = new CachedFluidStack(newIS);
@@ -199,7 +199,7 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
         return changed ? TickRateModulation.URGENT : TickRateModulation.SLOWER;
     }
 
-    private static boolean isDifferent(FluidStack a, FluidStack b) {
+    private static boolean isDifferent(FluidVolume a, FluidVolume b) {
         if (a == b) {
             return false;
         }
@@ -288,12 +288,12 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
 
     private static class CachedFluidStack {
 
-        private final FluidStack fluidStack;
+        private final FluidVolume fluidStack;
         private final IAEFluidStack aeStack;
 
-        CachedFluidStack(final FluidStack is) {
+        CachedFluidStack(final FluidVolume is) {
             if (is.isEmpty()) {
-                this.fluidStack = FluidStack.EMPTY;
+                this.fluidStack = FluidVolume.EMPTY;
                 this.aeStack = null;
             } else {
                 this.fluidStack = is.copy();

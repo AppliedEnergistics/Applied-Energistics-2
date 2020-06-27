@@ -20,8 +20,8 @@ package appeng.client.render;
 
 import java.util.Objects;
 
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.render.model.IBakedModel;
+import net.minecraft.client.render.model.ItemOverrideList;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;

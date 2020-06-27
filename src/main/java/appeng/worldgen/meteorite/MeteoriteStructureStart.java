@@ -9,7 +9,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.Tag;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.biome.Biome;
@@ -26,9 +26,9 @@ import appeng.worldgen.meteorite.fallout.FalloutMode;
 
 public class MeteoriteStructureStart extends StructureStart {
 
-    private final Tag<Block> sandTag = BlockTags.getCollection().getOrCreate(new ResourceLocation("minecraft:sand"));
+    private final Tag<Block> sandTag = BlockTags.getCollection().getOrCreate(new Identifier("minecraft:sand"));
     private final Tag<Block> terracottaTag = BlockTags.getCollection()
-            .getOrCreate(new ResourceLocation("forge:terracotta"));
+            .getOrCreate(new Identifier("forge:terracotta"));
 
     public MeteoriteStructureStart(Structure<?> p_i225815_1_, int p_i225815_2_, int p_i225815_3_,
             MutableBoundingBox p_i225815_4_, int p_i225815_5_, long p_i225815_6_) {

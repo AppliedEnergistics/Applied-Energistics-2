@@ -23,7 +23,7 @@
 
 package appeng.api.util;
 
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 
 /**
@@ -38,7 +38,7 @@ public class WorldCoord {
     public int y;
     public int z;
 
-    public WorldCoord(final TileEntity s) {
+    public WorldCoord(final BlockEntity s) {
         this(s.getPos());
     }
 

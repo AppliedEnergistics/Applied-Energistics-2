@@ -20,16 +20,16 @@ package appeng.util.iterators;
 
 import java.util.Iterator;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 public final class InvIterator implements Iterator<ItemStack> {
-    private final IItemHandler inventory;
+    private final ItemTransferable inventory;
     private final int size;
 
     private int counter = 0;
 
-    public InvIterator(final IItemHandler inventory) {
+    public InvIterator(final ItemTransferable inventory) {
         this.inventory = inventory;
         this.size = this.inventory.getSlots();
     }

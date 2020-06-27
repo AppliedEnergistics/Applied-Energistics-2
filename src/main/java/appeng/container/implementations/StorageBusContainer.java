@@ -20,12 +20,12 @@ package appeng.container.implementations;
 
 import java.util.Iterator;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
@@ -55,7 +55,7 @@ public class StorageBusContainer extends UpgradeableContainer {
     private static final ContainerHelper<StorageBusContainer, StorageBusPart> helper = new ContainerHelper<>(
             StorageBusContainer::new, StorageBusPart.class, SecurityPermissions.BUILD);
 
-    public static StorageBusContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static StorageBusContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -86,7 +86,7 @@ public class StorageBusContainer extends UpgradeableContainer {
         final int xo = 8;
         final int yo = 23 + 6;
 
-        final IItemHandler config = this.getUpgradeable().getInventoryByName("config");
+        final ItemTransferable config = this.getUpgradeable().getInventoryByName("config");
         for (int y = 0; y < 7; y++) {
             for (int x = 0; x < 9; x++) {
                 if (y < 2) {
@@ -97,7 +97,7 @@ public class StorageBusContainer extends UpgradeableContainer {
             }
         }
 
-        final IItemHandler upgrades = this.getUpgradeable().getInventoryByName("upgrades");
+        final ItemTransferable upgrades = this.getUpgradeable().getInventoryByName("upgrades");
         this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 0, 187, 8,
                 this.getPlayerInventory())).setNotDraggable());
         this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18,
@@ -148,7 +148,7 @@ public class StorageBusContainer extends UpgradeableContainer {
     }
 
     public void partition() {
-        final IItemHandler inv = this.getUpgradeable().getInventoryByName("config");
+        final ItemTransferable inv = this.getUpgradeable().getInventoryByName("config");
 
         final IMEInventory<IAEItemStack> cellInv = this.storageBus.getInternalHandler();
 

@@ -22,7 +22,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 import mcjty.theoneprobe.api.ElementAlignment;
 import mcjty.theoneprobe.api.IProbeHitData;
@@ -39,7 +39,7 @@ public class ChargerInfoProvider implements ITileProbInfoProvider {
             World world, BlockState blockState, IProbeHitData data) {
         if (tile instanceof ChargerTileEntity) {
             final ChargerTileEntity charger = (ChargerTileEntity) tile;
-            final IItemHandler chargerInventory = charger.getInternalInventory();
+            final ItemTransferable chargerInventory = charger.getInternalInventory();
             final ItemStack chargingItem = chargerInventory.getStackInSlot(0);
 
             if (!chargingItem.isEmpty()) {

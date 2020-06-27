@@ -7,22 +7,22 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -110,7 +110,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
             return input;
         }
 
-        final TileEntity te = this.getHost().getTile();
+        final BlockEntity te = this.getHost().getTile();
         final World w = te.getWorld();
         final AEPartLocation side = this.getSide();
         final BlockPos pos = te.getPos().offset(side.getFacing());
@@ -118,7 +118,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
 
         if (this.canReplace(w, state, pos)) {
             if (type == Actionable.MODULATE) {
-                final FluidStack fs = input.getFluidStack();
+                final FluidVolume fs = input.getFluidStack();
                 fs.setAmount(FluidAttributes.BUCKET_VOLUME);
 
                 final FluidTank tank = new FluidTank(FluidAttributes.BUCKET_VOLUME);

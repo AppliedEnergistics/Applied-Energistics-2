@@ -2,18 +2,18 @@ package appeng.client.render.tesr;
 
 import java.util.EnumMap;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.util.math.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import appeng.block.storage.DriveSlotState;
@@ -23,7 +23,7 @@ import appeng.tile.storage.DriveTileEntity;
 /**
  * Renders the drive cell status indicators.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class DriveLedTileEntityRenderer extends TileEntityRenderer<DriveTileEntity> {
 
     private static final EnumMap<DriveSlotState, Vector3f> STATE_COLORS;
@@ -68,7 +68,7 @@ public class DriveLedTileEntityRenderer extends TileEntityRenderer<DriveTileEnti
     }
 
     @Override
-    public void render(DriveTileEntity drive, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
+    public void render(DriveTileEntity drive, float partialTicks, MatrixStack ms, VertexConsumerProvider buffers,
             int combinedLightIn, int combinedOverlayIn) {
 
         if (drive.getCellCount() != 10) {

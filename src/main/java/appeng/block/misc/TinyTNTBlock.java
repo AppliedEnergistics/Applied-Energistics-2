@@ -32,7 +32,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.block.ShapeContext;
@@ -41,7 +41,7 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.world.ServerWorld;
 
 import appeng.block.AEBaseBlock;
 import appeng.entity.TinyTNTPrimedEntity;
@@ -49,7 +49,7 @@ import appeng.entity.TinyTNTPrimedEntity;
 public class TinyTNTBlock extends AEBaseBlock {
 
     private static final VoxelShape SHAPE = VoxelShapes
-            .create(new AxisAlignedBB(0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f));
+            .create(new Box(0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f));
 
     public TinyTNTBlock(Settings props) {
         super(props);

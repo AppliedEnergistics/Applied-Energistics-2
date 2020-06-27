@@ -24,16 +24,16 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlockDefinition;
@@ -57,7 +57,7 @@ public final class MeteoritePlacer {
     private final BlockState skyStone;
     private final Item skyStoneItem;
     private final MeteoriteBlockPutter putter = new MeteoriteBlockPutter();
-    private final IWorld world;
+    private final WorldAccess world;
     private final Fallout type;
     private final BlockPos pos;
     private final int x;
@@ -73,7 +73,7 @@ public final class MeteoritePlacer {
     private final boolean craterLake;
     private final MutableBoundingBox boundingBox;
 
-    public MeteoritePlacer(IWorld world, PlacedMeteoriteSettings settings, MutableBoundingBox boundingBox) {
+    public MeteoritePlacer(WorldAccess world, PlacedMeteoriteSettings settings, MutableBoundingBox boundingBox) {
         this.boundingBox = boundingBox;
         this.world = world;
         this.pos = settings.getPos();
@@ -187,7 +187,7 @@ public final class MeteoritePlacer {
         }
 
         for (final Object o : world.getEntitiesWithinAABB(ItemEntity.class,
-                new AxisAlignedBB(minX(x - 30), y - 5, minZ(z - 30), maxX(x + 30), y + 30, maxZ(z + 30)))) {
+                new Box(minX(x - 30), y - 5, minZ(z - 30), maxX(x + 30), y + 30, maxZ(z + 30)))) {
             final Entity e = (Entity) o;
             e.remove();
         }
@@ -204,7 +204,7 @@ public final class MeteoritePlacer {
         if (AEConfig.instance().isFeatureEnabled(AEFeature.SPAWN_PRESSES_IN_METEORITES)) {
             this.putter.put(world, pos, this.skyChestDefinition.block().getDefaultState());
 
-            final TileEntity te = world.getTileEntity(pos); // FIXME: this is also probably a band-aid for another issue
+            final BlockEntity te = world.getTileEntity(pos); // FIXME: this is also probably a band-aid for another issue
             final InventoryAdaptor ap = InventoryAdaptor.getAdaptor(te, Direction.UP);
             if (ap != null && !ap.containsItems()) // FIXME: band-aid for meteorites being generated multiple times
             {
@@ -413,7 +413,7 @@ public final class MeteoritePlacer {
         }
     }
 
-    private Fallout getFallout(IWorld w, BlockPos pos, FalloutMode mode) {
+    private Fallout getFallout(WorldAccess w, BlockPos pos, FalloutMode mode) {
         switch (mode) {
             case SAND:
                 return new FalloutSand(w, pos, this.putter, this.skyStone);

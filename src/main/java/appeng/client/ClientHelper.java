@@ -27,9 +27,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.InputEvent;
@@ -74,7 +74,7 @@ public class ClientHelper extends ServerHelper {
     }
 
     @Override
-    public void bindTileEntitySpecialRenderer(final Class<? extends TileEntity> tile, final AEBaseBlock blk) {
+    public void bindTileEntitySpecialRenderer(final Class<? extends BlockEntity> tile, final AEBaseBlock blk) {
 
     }
 
@@ -125,7 +125,7 @@ public class ClientHelper extends ServerHelper {
     }
 
     @Override
-    public RayTraceResult getRTR() {
+    public HitResult getRTR() {
         return Minecraft.getInstance().objectMouseOver;
     }
 

@@ -18,12 +18,12 @@
 
 package appeng.container.slot;
 
-import net.minecraftforge.items.IItemHandler;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 public class PatternOutputsSlot extends OptionalFakeSlot {
 
-    public PatternOutputsSlot(final IItemHandler inv, final IOptionalSlotHost containerBus, final int idx, final int x,
-            final int y, final int offX, final int offY, final int groupNum) {
+    public PatternOutputsSlot(final ItemTransferable inv, final IOptionalSlotHost containerBus, final int idx, final int x,
+                              final int y, final int offX, final int offY, final int groupNum) {
         super(inv, containerBus, idx, x, y, offX, offY, groupNum);
     }
 

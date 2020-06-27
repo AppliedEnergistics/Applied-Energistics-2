@@ -25,7 +25,7 @@ import java.util.Map.Entry;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraftforge.fml.hooks.BasicEventHooks;
 
 import appeng.api.AEApi;

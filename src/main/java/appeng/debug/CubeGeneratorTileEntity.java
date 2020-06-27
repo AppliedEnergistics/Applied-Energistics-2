@@ -24,7 +24,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
@@ -40,7 +40,7 @@ public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ITickab
     private int countdown = 20 * 10;
     private PlayerEntity who = null;
 
-    public CubeGeneratorTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public CubeGeneratorTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 

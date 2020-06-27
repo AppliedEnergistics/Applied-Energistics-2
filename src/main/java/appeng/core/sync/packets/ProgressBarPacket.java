@@ -22,7 +22,7 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.BasePacket;
@@ -33,7 +33,7 @@ public class ProgressBarPacket extends BasePacket {
     private final short id;
     private final long value;
 
-    public ProgressBarPacket(final PacketBuffer stream) {
+    public ProgressBarPacket(final PacketByteBuf stream) {
         this.id = stream.readShort();
         this.value = stream.readLong();
     }
@@ -43,7 +43,7 @@ public class ProgressBarPacket extends BasePacket {
         this.id = (short) shortID;
         this.value = value;
 
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeShort(shortID);

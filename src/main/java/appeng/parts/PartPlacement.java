@@ -32,7 +32,7 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.DirectionalPlaceContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
@@ -40,7 +40,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -91,7 +91,7 @@ public class PartPlacement {
                 return ActionResult.FAIL;
             }
 
-            final TileEntity tile = world.getTileEntity(pos);
+            final BlockEntity tile = world.getTileEntity(pos);
             IPartHost host = null;
 
             if (tile instanceof IPartHost) {
@@ -100,7 +100,7 @@ public class PartPlacement {
 
             if (host != null) {
                 if (!world.isRemote) {
-                    if (mop.getType() == RayTraceResult.Type.BLOCK) {
+                    if (mop.getType() == HitResult.Type.BLOCK) {
                         final List<ItemStack> is = new ArrayList<>();
                         final SelectedPart sp = selectPart(player, host,
                                 mop.getHitVec().add(-mop.getPos().getX(), -mop.getPos().getY(), -mop.getPos().getZ()));
@@ -136,7 +136,7 @@ public class PartPlacement {
             return ActionResult.FAIL;
         }
 
-        TileEntity tile = world.getTileEntity(pos);
+        BlockEntity tile = world.getTileEntity(pos);
         IPartHost host = null;
 
         if (tile instanceof IPartHost) {
@@ -181,7 +181,7 @@ public class PartPlacement {
 
         if (held.isEmpty()) {
             if (host != null && player.isCrouching() && world.isAirBlock(pos)) {
-                if (mop.getType() == RayTraceResult.Type.BLOCK) {
+                if (mop.getType() == HitResult.Type.BLOCK) {
                     Vec3d hitVec = mop.getHitVec().add(-mop.getPos().getX(), -mop.getPos().getY(),
                             -mop.getPos().getZ());
                     final SelectedPart sPart = selectPart(player, host, hitVec);
@@ -284,7 +284,7 @@ public class PartPlacement {
         }
 
         if (!world.isRemote) {
-            if (mop.getType() != RayTraceResult.Type.MISS) {
+            if (mop.getType() != HitResult.Type.MISS) {
                 final SelectedPart sp = selectPart(player, host,
                         mop.getHitVec().add(-mop.getPos().getX(), -mop.getPos().getY(), -mop.getPos().getZ()));
 
@@ -363,7 +363,7 @@ public class PartPlacement {
         if (event instanceof PlayerInteractEvent.RightClickEmpty && event.getPlayer().world.isRemote) {
             // re-check to see if this event was already channeled, cause these two events
             // are really stupid...
-            final RayTraceResult mop = Platform.rayTrace(event.getPlayer(), true, false);
+            final HitResult mop = Platform.rayTrace(event.getPlayer(), true, false);
             final Minecraft mc = Minecraft.getInstance();
 
             final float f = 1.0F;
@@ -374,7 +374,7 @@ public class PartPlacement {
                 BlockRayTraceResult brtr = (BlockRayTraceResult) mop;
 
                 final World w = event.getEntity().world;
-                final TileEntity te = w.getTileEntity(brtr.getPos());
+                final BlockEntity te = w.getTileEntity(brtr.getPos());
                 if (te instanceof IPartHost && this.wasCanceled) {
                     event.setCanceled(true);
                 }

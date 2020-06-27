@@ -29,15 +29,15 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.api.AEApi;
@@ -103,7 +103,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
      */
     private int state = 0;
 
-    public DriveTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public DriveTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.mySrc = new MachineSource(this);
         this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
@@ -112,7 +112,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
     }
 
     @Override
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final PacketByteBuf data) throws IOException {
         super.writeToStream(data);
         int newState = 0;
 
@@ -127,13 +127,13 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
         writeCellItemIds(data);
     }
 
-    private void writeCellItemIds(PacketBuffer data) {
-        List<ResourceLocation> cellItemIds = new ArrayList<>(getCellCount());
+    private void writeCellItemIds(PacketByteBuf data) {
+        List<Identifier> cellItemIds = new ArrayList<>(getCellCount());
         byte[] bm = new byte[getCellCount()];
         for (int x = 0; x < this.getCellCount(); x++) {
             Item item = getCellItem(x);
             if (item != null && item.getRegistryName() != null) {
-                ResourceLocation itemId = item.getRegistryName();
+                Identifier itemId = item.getRegistryName();
                 int idx = cellItemIds.indexOf(itemId);
                 if (idx == -1) {
                     cellItemIds.add(itemId);
@@ -146,7 +146,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
 
         // Write out the list of unique cell item ids
         data.writeByte(cellItemIds.size());
-        for (ResourceLocation itemId : cellItemIds) {
+        for (Identifier itemId : cellItemIds) {
             data.writeResourceLocation(itemId);
         }
         // Then the lookup table for each slot
@@ -156,7 +156,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
     }
 
     @Override
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final PacketByteBuf data) throws IOException {
         boolean c = super.readFromStream(data);
         final int oldState = this.state;
         this.state = data.readInt();
@@ -166,7 +166,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
         return (this.state & BIT_STATE_MASK) != (oldState & BIT_STATE_MASK) || c;
     }
 
-    private boolean readCellItemIDs(final PacketBuffer data) {
+    private boolean readCellItemIDs(final PacketByteBuf data) {
         int uniqueStrCount = data.readByte();
         String[] uniqueStrs = new String[uniqueStrCount];
         for (int i = 0; i < uniqueStrCount; i++) {
@@ -182,7 +182,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
             if (idx > 0) {
                 --idx;
                 String itemId = uniqueStrs[idx];
-                item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemId));
+                item = ForgeRegistries.ITEMS.getValue(new Identifier(itemId));
             }
             if (cellItems[i] != item) {
                 changed = true;
@@ -303,13 +303,13 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
+    public ItemTransferable getInternalInventory() {
         return this.inv;
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final ItemStack added) {
+    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+                                  final ItemStack removed, final ItemStack added) {
         if (this.isCached) {
             this.isCached = false; // recalculate the storage cell.
             this.updateState();
@@ -421,12 +421,12 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
     private class CellValidInventoryFilter implements IAEItemFilter {
 
         @Override
-        public boolean allowExtract(IItemHandler inv, int slot, int amount) {
+        public boolean allowExtract(ItemTransferable inv, int slot, int amount) {
             return true;
         }
 
         @Override
-        public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
+        public boolean allowInsert(ItemTransferable inv, int slot, ItemStack stack) {
             return !stack.isEmpty() && AEApi.instance().registries().cell().isCellHandled(stack);
         }
 

@@ -35,14 +35,14 @@ import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.BlockColors;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.render.model.IBakedModel;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Direction.Axis;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ILightReader;
 import net.minecraftforge.client.ForgeHooksClient;
@@ -72,21 +72,21 @@ public class FacadeBuilder {
     public static final double THICK_THICKNESS = 2D / 16D;
     public static final double THIN_THICKNESS = 1D / 16D;
 
-    public static final AxisAlignedBB[] THICK_FACADE_BOXES = new AxisAlignedBB[] {
-            new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, THICK_THICKNESS, 1.0),
-            new AxisAlignedBB(0.0, 1.0 - THICK_THICKNESS, 0.0, 1.0, 1.0, 1.0),
-            new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 1.0, THICK_THICKNESS),
-            new AxisAlignedBB(0.0, 0.0, 1.0 - THICK_THICKNESS, 1.0, 1.0, 1.0),
-            new AxisAlignedBB(0.0, 0.0, 0.0, THICK_THICKNESS, 1.0, 1.0),
-            new AxisAlignedBB(1.0 - THICK_THICKNESS, 0.0, 0.0, 1.0, 1.0, 1.0) };
+    public static final Box[] THICK_FACADE_BOXES = new Box[] {
+            new Box(0.0, 0.0, 0.0, 1.0, THICK_THICKNESS, 1.0),
+            new Box(0.0, 1.0 - THICK_THICKNESS, 0.0, 1.0, 1.0, 1.0),
+            new Box(0.0, 0.0, 0.0, 1.0, 1.0, THICK_THICKNESS),
+            new Box(0.0, 0.0, 1.0 - THICK_THICKNESS, 1.0, 1.0, 1.0),
+            new Box(0.0, 0.0, 0.0, THICK_THICKNESS, 1.0, 1.0),
+            new Box(1.0 - THICK_THICKNESS, 0.0, 0.0, 1.0, 1.0, 1.0) };
 
-    public static final AxisAlignedBB[] THIN_FACADE_BOXES = new AxisAlignedBB[] {
-            new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, THIN_THICKNESS, 1.0),
-            new AxisAlignedBB(0.0, 1.0 - THIN_THICKNESS, 0.0, 1.0, 1.0, 1.0),
-            new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 1.0, THIN_THICKNESS),
-            new AxisAlignedBB(0.0, 0.0, 1.0 - THIN_THICKNESS, 1.0, 1.0, 1.0),
-            new AxisAlignedBB(0.0, 0.0, 0.0, THIN_THICKNESS, 1.0, 1.0),
-            new AxisAlignedBB(1.0 - THIN_THICKNESS, 0.0, 0.0, 1.0, 1.0, 1.0) };
+    public static final Box[] THIN_FACADE_BOXES = new Box[] {
+            new Box(0.0, 0.0, 0.0, 1.0, THIN_THICKNESS, 1.0),
+            new Box(0.0, 1.0 - THIN_THICKNESS, 0.0, 1.0, 1.0, 1.0),
+            new Box(0.0, 0.0, 0.0, 1.0, 1.0, THIN_THICKNESS),
+            new Box(0.0, 0.0, 1.0 - THIN_THICKNESS, 1.0, 1.0, 1.0),
+            new Box(0.0, 0.0, 0.0, THIN_THICKNESS, 1.0, 1.0),
+            new Box(1.0 - THIN_THICKNESS, 0.0, 0.0, 1.0, 1.0, 1.0) };
 
     private final ThreadLocal<BakedPipeline> pipelines = ThreadLocal.withInitial(() -> BakedPipeline.builder()
             // Clamper is responsible for clamping the vertex to the bounds specified.
@@ -105,12 +105,12 @@ public class FacadeBuilder {
     private final ThreadLocal<Quad> collectors = ThreadLocal.withInitial(Quad::new);
 
     public void buildFacadeQuads(RenderType layer, CableBusRenderState renderState, Random rand, List<BakedQuad> quads,
-            Function<ResourceLocation, IBakedModel> modelLookup) {
+            Function<Identifier, IBakedModel> modelLookup) {
         BakedPipeline pipeline = this.pipelines.get();
         Quad collectorQuad = this.collectors.get();
         boolean transparent = AEApi.instance().partHelper().getCableRenderMode().transparentFacades;
         Map<Direction, FacadeRenderState> facadeStates = renderState.getFacades();
-        List<AxisAlignedBB> partBoxes = renderState.getBoundingBoxes();
+        List<Box> partBoxes = renderState.getBoundingBoxes();
         Set<Direction> sidesWithParts = renderState.getAttachments().keySet();
         ILightReader parentWorld = renderState.getWorld();
         BlockPos pos = renderState.getPos();
@@ -123,7 +123,7 @@ public class FacadeBuilder {
             FacadeRenderState facadeRenderState = entry.getValue();
             boolean renderStilt = !sidesWithParts.contains(side);
             if (layer == RenderType.getCutout() && renderStilt) {
-                for (ResourceLocation part : CableAnchorPart.FACADE_MODELS.getModels()) {
+                for (Identifier part : CableAnchorPart.FACADE_MODELS.getModels()) {
                     IBakedModel partModel = modelLookup.apply(part);
                     QuadRotator rotator = new QuadRotator();
                     quads.addAll(rotator.rotateQuads(gatherQuads(partModel, null, rand, EmptyModelData.INSTANCE), side,
@@ -143,8 +143,8 @@ public class FacadeBuilder {
                 }
             }
 
-            AxisAlignedBB fullBounds = thinFacades ? THIN_FACADE_BOXES[sideIndex] : THICK_FACADE_BOXES[sideIndex];
-            AxisAlignedBB facadeBox = fullBounds;
+            Box fullBounds = thinFacades ? THIN_FACADE_BOXES[sideIndex] : THICK_FACADE_BOXES[sideIndex];
+            Box facadeBox = fullBounds;
             // If we are a transparent facade, we need to modify out BB.
             if (facadeRenderState.isTransparent()) {
                 double offset = thinFacades ? THIN_THICKNESS : THICK_THICKNESS;
@@ -188,7 +188,7 @@ public class FacadeBuilder {
             }
 
             AEAxisAlignedBB cutOutBox = getCutOutBox(facadeBox, partBoxes);
-            List<AxisAlignedBB> holeStrips = getBoxes(facadeBox, cutOutBox, side.getAxis());
+            List<Box> holeStrips = getBoxes(facadeBox, cutOutBox, side.getAxis());
             ILightReader facadeAccess = new FacadeBlockAccess(parentWorld, pos, side, blockState);
 
             BlockRendererDispatcher dispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
@@ -253,9 +253,9 @@ public class FacadeBuilder {
                 CachedFormat format = CachedFormat.lookup(DefaultVertexFormats.BLOCK);
                 // If this quad has a tint index, setup the tinter.
                 if (quad.hasTintIndex()) {
-                    tinter.setTint(blockColors.getColor(blockState, facadeAccess, pos, quad.getTintIndex()));
+                    tinter.setTint(blockColors.getColor(blockState, facadeAccess, pos, quad.getColorIndex()));
                 }
-                for (AxisAlignedBB box : holeStrips) {
+                for (Box box : holeStrips) {
                     // setup the clamper for this box
                     clamper.setClampBounds(box);
                     // Reset the pipeline, clears all enabled/disabled states.
@@ -307,7 +307,7 @@ public class FacadeBuilder {
             collectorQuad.reset(format);
             // If we have a tint index, setup the tinter and enable it.
             if (quad.hasTintIndex()) {
-                tinter.setTint(Minecraft.getInstance().getItemColors().getColor(textureItem, quad.getTintIndex()));
+                tinter.setTint(Minecraft.getInstance().getItemColors().getColor(textureItem, quad.getColorIndex()));
                 pipeline.enableElement("tinter");
             }
             // Disable elements we don't need for items.
@@ -343,9 +343,9 @@ public class FacadeBuilder {
      * box. This AABB will need to be "cut out" when the facade is rendered.
      */
     @Nullable
-    private static AEAxisAlignedBB getCutOutBox(AxisAlignedBB facadeBox, List<AxisAlignedBB> partBoxes) {
+    private static AEAxisAlignedBB getCutOutBox(Box facadeBox, List<Box> partBoxes) {
         AEAxisAlignedBB b = null;
-        for (AxisAlignedBB bb : partBoxes) {
+        for (Box bb : partBoxes) {
             if (bb.intersects(facadeBox)) {
                 if (b == null) {
                     b = AEAxisAlignedBB.fromBounds(bb);
@@ -372,34 +372,34 @@ public class FacadeBuilder {
      *
      * @return The box segments.
      */
-    private static List<AxisAlignedBB> getBoxes(AxisAlignedBB fb, AEAxisAlignedBB hole, Axis axis) {
+    private static List<Box> getBoxes(Box fb, AEAxisAlignedBB hole, Axis axis) {
         if (hole == null) {
             return Collections.singletonList(fb);
         }
-        List<AxisAlignedBB> boxes = new ArrayList<>();
+        List<Box> boxes = new ArrayList<>();
         switch (axis) {
             case Y:
-                boxes.add(new AxisAlignedBB(fb.minX, fb.minY, fb.minZ, hole.minX, fb.maxY, fb.maxZ));
-                boxes.add(new AxisAlignedBB(hole.maxX, fb.minY, fb.minZ, fb.maxX, fb.maxY, fb.maxZ));
+                boxes.add(new Box(fb.minX, fb.minY, fb.minZ, hole.minX, fb.maxY, fb.maxZ));
+                boxes.add(new Box(hole.maxX, fb.minY, fb.minZ, fb.maxX, fb.maxY, fb.maxZ));
 
-                boxes.add(new AxisAlignedBB(hole.minX, fb.minY, fb.minZ, hole.maxX, fb.maxY, hole.minZ));
-                boxes.add(new AxisAlignedBB(hole.minX, fb.minY, hole.maxZ, hole.maxX, fb.maxY, fb.maxZ));
+                boxes.add(new Box(hole.minX, fb.minY, fb.minZ, hole.maxX, fb.maxY, hole.minZ));
+                boxes.add(new Box(hole.minX, fb.minY, hole.maxZ, hole.maxX, fb.maxY, fb.maxZ));
 
                 break;
             case Z:
-                boxes.add(new AxisAlignedBB(fb.minX, fb.minY, fb.minZ, fb.maxX, hole.minY, fb.maxZ));
-                boxes.add(new AxisAlignedBB(fb.minX, hole.maxY, fb.minZ, fb.maxX, fb.maxY, fb.maxZ));
+                boxes.add(new Box(fb.minX, fb.minY, fb.minZ, fb.maxX, hole.minY, fb.maxZ));
+                boxes.add(new Box(fb.minX, hole.maxY, fb.minZ, fb.maxX, fb.maxY, fb.maxZ));
 
-                boxes.add(new AxisAlignedBB(fb.minX, hole.minY, fb.minZ, hole.minX, hole.maxY, fb.maxZ));
-                boxes.add(new AxisAlignedBB(hole.maxX, hole.minY, fb.minZ, fb.maxX, hole.maxY, fb.maxZ));
+                boxes.add(new Box(fb.minX, hole.minY, fb.minZ, hole.minX, hole.maxY, fb.maxZ));
+                boxes.add(new Box(hole.maxX, hole.minY, fb.minZ, fb.maxX, hole.maxY, fb.maxZ));
 
                 break;
             case X:
-                boxes.add(new AxisAlignedBB(fb.minX, fb.minY, fb.minZ, fb.maxX, hole.minY, fb.maxZ));
-                boxes.add(new AxisAlignedBB(fb.minX, hole.maxY, fb.minZ, fb.maxX, fb.maxY, fb.maxZ));
+                boxes.add(new Box(fb.minX, fb.minY, fb.minZ, fb.maxX, hole.minY, fb.maxZ));
+                boxes.add(new Box(fb.minX, hole.maxY, fb.minZ, fb.maxX, fb.maxY, fb.maxZ));
 
-                boxes.add(new AxisAlignedBB(fb.minX, hole.minY, fb.minZ, fb.maxX, hole.maxY, hole.minZ));
-                boxes.add(new AxisAlignedBB(fb.minX, hole.minY, hole.maxZ, fb.maxX, hole.maxY, fb.maxZ));
+                boxes.add(new Box(fb.minX, hole.minY, fb.minZ, fb.maxX, hole.maxY, hole.minZ));
+                boxes.add(new Box(fb.minX, hole.minY, hole.maxZ, fb.maxX, hole.maxY, fb.maxZ));
                 break;
             default:
                 // should never happen.
@@ -413,11 +413,11 @@ public class FacadeBuilder {
      * Determines if any of the part's bounding boxes intersects with the outside 2
      * voxel wide layer. If so, we should use thinner facades (1 voxel deep).
      */
-    private static boolean isUseThinFacades(List<AxisAlignedBB> partBoxes) {
+    private static boolean isUseThinFacades(List<Box> partBoxes) {
         final double min = 2.0 / 16.0;
         final double max = 14.0 / 16.0;
 
-        for (AxisAlignedBB bb : partBoxes) {
+        for (Box bb : partBoxes) {
             int o = 0;
             o += bb.maxX > max ? 1 : 0;
             o += bb.maxY > max ? 1 : 0;

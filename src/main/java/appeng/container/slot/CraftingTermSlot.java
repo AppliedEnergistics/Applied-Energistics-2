@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
@@ -31,7 +32,6 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -57,8 +57,8 @@ import appeng.util.item.AEItemStack;
 
 public class CraftingTermSlot extends AppEngCraftingSlot {
 
-    private final IItemHandler craftInv;
-    private final IItemHandler pattern;
+    private final ItemTransferable craftInv;
+    private final ItemTransferable pattern;
 
     private final IActionSource mySrc;
     private final IEnergySource energySrc;
@@ -66,8 +66,8 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     private final IContainerCraftingPacket container;
 
     public CraftingTermSlot(final PlayerEntity player, final IActionSource mySrc, final IEnergySource energySrc,
-            final IStorageMonitorable storage, final IItemHandler cMatrix, final IItemHandler secondMatrix,
-            final IItemHandler output, final int x, final int y, final IContainerCraftingPacket ccp) {
+                            final IStorageMonitorable storage, final ItemTransferable cMatrix, final ItemTransferable secondMatrix,
+                            final ItemTransferable output, final int x, final int y, final IContainerCraftingPacket ccp) {
         super(player, cMatrix, output, 0, x, y);
         this.energySrc = energySrc;
         this.storage = storage;
@@ -77,7 +77,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         this.container = ccp;
     }
 
-    public IItemHandler getCraftingMatrix() {
+    public ItemTransferable getCraftingMatrix() {
         return this.craftInv;
     }
 
@@ -286,7 +286,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         }
     }
 
-    IItemHandler getPattern() {
+    ItemTransferable getPattern() {
         return this.pattern;
     }
 }

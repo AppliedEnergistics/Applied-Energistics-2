@@ -25,15 +25,15 @@ import java.util.function.Function;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.client.renderer.model.IUnbakedModel;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.Material;
-import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.render.model.IBakedModel;
+import net.minecraft.client.render.model.IModelTransform;
+import net.minecraft.client.render.model.IUnbakedModel;
+import net.minecraft.client.render.model.ItemOverrideList;
+import net.minecraft.client.render.model.Material;
+import net.minecraft.client.render.model.ModelBakery;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 
@@ -68,7 +68,7 @@ class CraftingCubeModel implements IModelGeometry<CraftingCubeModel> {
 
     @Override
     public Collection<Material> getTextures(IModelConfiguration owner,
-            Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+                                            Function<Identifier, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
         return ImmutableList.of(RING_CORNER, RING_SIDE_HOR, RING_SIDE_VER, UNIT_BASE, LIGHT_BASE, ACCELERATOR_LIGHT,
                 STORAGE_1K_LIGHT, STORAGE_4K_LIGHT, STORAGE_16K_LIGHT, STORAGE_64K_LIGHT, MONITOR_BASE,
                 MONITOR_LIGHT_DARK, MONITOR_LIGHT_MEDIUM, MONITOR_LIGHT_BRIGHT);
@@ -77,7 +77,7 @@ class CraftingCubeModel implements IModelGeometry<CraftingCubeModel> {
     @Override
     public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
             Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
-            ItemOverrideList overrides, ResourceLocation modelLocation) {
+            ItemOverrideList overrides, Identifier modelLocation) {
         // Retrieve our textures and pass them on to the baked model
         TextureAtlasSprite ringCorner = spriteGetter.apply(RING_CORNER);
         TextureAtlasSprite ringSideHor = spriteGetter.apply(RING_SIDE_HOR);
@@ -122,6 +122,6 @@ class CraftingCubeModel implements IModelGeometry<CraftingCubeModel> {
 
     private static Material texture(String name) {
         return new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
-                new ResourceLocation(AppEng.MOD_ID, "block/crafting/" + name));
+                new Identifier(AppEng.MOD_ID, "block/crafting/" + name));
     }
 }

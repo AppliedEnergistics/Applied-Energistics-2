@@ -23,7 +23,7 @@
 
 package appeng.api.implementations.tiles;
 
-import net.minecraftforge.items.IItemHandler;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 public interface ISegmentedInventory {
 
@@ -36,5 +36,5 @@ public interface ISegmentedInventory {
      *
      * @return inventory with inventory name
      */
-    IItemHandler getInventoryByName(String name);
+    ItemTransferable getInventoryByName(String name);
 }

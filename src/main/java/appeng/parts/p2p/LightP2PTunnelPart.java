@@ -23,8 +23,8 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
@@ -69,14 +69,14 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     }
 
     @Override
-    public void writeToStream(final PacketBuffer data) throws IOException {
+    public void writeToStream(final PacketByteBuf data) throws IOException {
         super.writeToStream(data);
         data.writeInt(this.isOutput() ? this.lastValue : 0);
         data.writeInt(this.opacity);
     }
 
     @Override
-    public boolean readFromStream(final PacketBuffer data) throws IOException {
+    public boolean readFromStream(final PacketByteBuf data) throws IOException {
         super.readFromStream(data);
         final int oldValue = this.lastValue;
         final int oldOpacity = this.opacity;
@@ -93,7 +93,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
             return false;
         }
 
-        final TileEntity te = this.getTile();
+        final BlockEntity te = this.getTile();
         final World w = te.getWorld();
 
         final int newLevel = w.getLight(te.getPos().offset(this.getSide().getFacing()));
@@ -138,7 +138,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
 
     private int blockLight(final int emit) {
         if (this.opacity < 0) {
-            final TileEntity te = this.getTile();
+            final BlockEntity te = this.getTile();
             this.opacity = 255 - te.getWorld().getLight(te.getPos().offset(this.getSide().getFacing()));
         }
 

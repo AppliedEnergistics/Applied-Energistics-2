@@ -18,27 +18,27 @@
 
 package appeng.client.render.tesr;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import net.fabricmc.api.EnvType;
+import net.minecraft.client.util.math.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.model.IBakedModel;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.math.Direction;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.Environment;
 import net.minecraftforge.client.model.data.ModelDataMap;
 
 import appeng.client.render.FacingToRotation;
 import appeng.client.render.model.SkyCompassBakedModel;
 import appeng.tile.misc.SkyCompassTileEntity;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class SkyCompassTESR extends TileEntityRenderer<SkyCompassTileEntity> {
 
     private static BlockRendererDispatcher blockRenderer;
@@ -48,7 +48,7 @@ public class SkyCompassTESR extends TileEntityRenderer<SkyCompassTileEntity> {
     }
 
     @Override
-    public void render(SkyCompassTileEntity te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
+    public void render(SkyCompassTileEntity te, float partialTicks, MatrixStack ms, VertexConsumerProvider buffers,
             int combinedLightIn, int combinedOverlayIn) {
 
         if (blockRenderer == null) {

@@ -22,17 +22,17 @@ import java.util.function.Function;
 
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import appeng.tile.AEBaseTileEntity;
 
 public class TileEntityRendering<T extends AEBaseTileEntity> {
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     Function<TileEntityRendererDispatcher, TileEntityRenderer<T>> tileEntityRenderer;
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public TileEntityRendering<T> tileEntityRenderer(
             Function<TileEntityRendererDispatcher, TileEntityRenderer<T>> tileEntityRenderer) {
         this.tileEntityRenderer = tileEntityRenderer;

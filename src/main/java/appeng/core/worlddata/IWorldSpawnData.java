@@ -21,7 +21,7 @@ package appeng.core.worlddata;
 import java.util.Collection;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.dimension.Dimension;
+import net.minecraft.world.dimension.DimensionType;
 
 /**
  * @author thatsIch

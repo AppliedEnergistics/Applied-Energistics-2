@@ -21,12 +21,12 @@ package appeng.bootstrap;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.color.IBlockColor;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.client.render.model.IBakedModel;
+import net.minecraft.util.Identifier;
 
 /**
  * Allows for client-side rendering to be customized in the context of
@@ -34,16 +34,16 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  */
 public interface IBlockRendering {
 
-    @OnlyIn(Dist.CLIENT)
-    IBlockRendering modelCustomizer(BiFunction<ResourceLocation, IBakedModel, IBakedModel> customizer);
+    @Environment(EnvType.CLIENT)
+    IBlockRendering modelCustomizer(BiFunction<Identifier, IBakedModel, IBakedModel> customizer);
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     IBlockRendering blockColor(IBlockColor blockColor);
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     IBlockRendering renderType(RenderType type);
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     IBlockRendering renderType(Predicate<RenderType> type);
 
 }

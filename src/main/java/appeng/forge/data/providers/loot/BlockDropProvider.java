@@ -17,7 +17,7 @@ import net.minecraft.data.DirectoryCache;
 import net.minecraft.data.IDataProvider;
 import net.minecraft.data.loot.BlockLootTables;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.storage.loot.ConstantRange;
 import net.minecraft.world.storage.loot.ItemLootEntry;
 import net.minecraft.world.storage.loot.LootEntry;
@@ -62,7 +62,7 @@ public class BlockDropProvider extends BlockLootTables implements IAE2DataProvid
 
     @Override
     public void act(@Nonnull DirectoryCache cache) throws IOException {
-        for (Map.Entry<ResourceLocation, Block> entry : ForgeRegistries.BLOCKS.getEntries()) {
+        for (Map.Entry<Identifier, Block> entry : ForgeRegistries.BLOCKS.getEntries()) {
             LootTable.Builder builder;
             if (entry.getKey().getNamespace().equals(AppEng.MOD_ID)) {
                 builder = overrides.getOrDefault(entry.getValue(), this::defaultBuilder).apply(entry.getValue());
@@ -80,7 +80,7 @@ public class BlockDropProvider extends BlockLootTables implements IAE2DataProvid
         return LootTable.builder().addLootPool(pool);
     }
 
-    private Path getPath(Path root, ResourceLocation id) {
+    private Path getPath(Path root, Identifier id) {
         return root.resolve("data/" + id.getNamespace() + "/loot_tables/blocks/" + id.getPath() + ".json");
     }
 

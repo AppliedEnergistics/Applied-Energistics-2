@@ -30,7 +30,7 @@ import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.api.AEApi;
@@ -64,7 +64,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     private Button selectCPU;
     private int tooltip = -1;
 
-    public CraftConfirmScreen(CraftConfirmContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public CraftConfirmScreen(CraftConfirmContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
         this.subGui = new AESubScreen(this, container.getTarget());
         this.xSize = 238;

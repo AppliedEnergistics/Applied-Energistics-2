@@ -18,8 +18,8 @@
 
 package appeng.parts.networking;
 
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridHost;
@@ -114,7 +114,7 @@ public abstract class DenseCablePart extends CablePart {
     }
 
     private boolean isDense(final AEPartLocation of) {
-        final TileEntity te = this.getTile().getWorld().getTileEntity(this.getTile().getPos().offset(of.getFacing()));
+        final BlockEntity te = this.getTile().getWorld().getTileEntity(this.getTile().getPos().offset(of.getFacing()));
 
         if (te instanceof IGridHost) {
             final AECableType t = ((IGridHost) te).getCableConnectionType(of.getOpposite());

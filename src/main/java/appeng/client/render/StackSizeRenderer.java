@@ -21,7 +21,7 @@ package appeng.client.render;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.Vector3f;
@@ -75,7 +75,7 @@ public class StackSizeRenderer {
         final int X = (int) ((xPos + offset + 16.0f - fontRenderer.getStringWidth(text) * scaleFactor)
                 * inverseScaleFactor);
         final int Y = (int) ((yPos + offset + 16.0f - 7.0f * scaleFactor) * inverseScaleFactor);
-        IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+        VertexConsumerProvider.Impl buffer = VertexConsumerProvider.getImpl(Tessellator.getInstance().getBuffer());
         fontRenderer.renderString(text, X, Y, 16777215, true, tm.getMatrix(), buffer, false, 0, 15728880);
         buffer.finish();
         RenderSystem.enableBlend();

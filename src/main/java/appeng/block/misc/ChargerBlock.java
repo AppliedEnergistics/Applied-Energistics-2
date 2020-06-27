@@ -23,6 +23,9 @@ import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.util.math.Box;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -38,7 +41,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.block.ShapeContext;
@@ -46,8 +48,6 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.AEApi;
 import appeng.api.util.AEAxisAlignedBB;
@@ -91,7 +91,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void animateTick(final BlockState state, final World w, final BlockPos pos, final Random r) {
         if (!AEConfig.instance().isEnableEffects()) {
             return;
@@ -168,21 +168,21 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
 
             return VoxelShapes.create(bb.getBoundingBox());
         }
-        return VoxelShapes.create(new AxisAlignedBB(0.0, 0, 0.0, 1.0, 1.0, 1.0));
+        return VoxelShapes.create(new Box(0.0, 0, 0.0, 1.0, 1.0, 1.0));
     }
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockView worldIn, BlockPos pos,
             ShapeContext context) {
-        return VoxelShapes.create(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 1.0, 1.0));
+        return VoxelShapes.create(new Box(0.0, 0.0, 0.0, 1.0, 1.0, 1.0));
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public static Function<TileEntityRendererDispatcher, TileEntityRenderer<ChargerTileEntity>> createTesr() {
         return dispatcher -> new ModularTESR<>(dispatcher, new ItemRenderable<>(ChargerBlock::getRenderedItem));
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private static Pair<ItemStack, TransformationMatrix> getRenderedItem(ChargerTileEntity tile) {
         TransformationMatrix transform = new TransformationMatrix(new Vector3f(0.5f, 0.375f, 0.5f), null, null, null);
         return new ImmutablePair<>(tile.getInternalInventory().getStackInSlot(0), transform);

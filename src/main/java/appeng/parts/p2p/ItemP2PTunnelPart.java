@@ -23,15 +23,15 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import appeng.api.networking.IGridNode;
@@ -50,7 +50,7 @@ import appeng.me.cache.helpers.TunnelCollection;
 import appeng.util.Platform;
 import appeng.util.inv.WrapperChainedItemHandler;
 
-public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implements IItemHandler, IGridTickable {
+public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implements ItemTransferable, IGridTickable {
     private static final float POWER_DRAIN = 2.0f;
     private static final P2PModels MODELS = new P2PModels("part/p2p/p2p_tunnel_items");
     private boolean partVisited = false;
@@ -62,7 +62,7 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implemen
 
     private int oldSize = 0;
     private boolean requested;
-    private IItemHandler cachedInv;
+    private ItemTransferable cachedInv;
 
     public ItemP2PTunnelPart(final ItemStack is) {
         super(is);
@@ -77,14 +77,14 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implemen
         }
     }
 
-    private IItemHandler getDestination() {
+    private ItemTransferable getDestination() {
         this.requested = true;
 
         if (this.cachedInv != null) {
             return this.cachedInv;
         }
 
-        final List<IItemHandler> outs = new ArrayList<IItemHandler>();
+        final List<ItemTransferable> outs = new ArrayList<ItemTransferable>();
         final TunnelCollection<ItemP2PTunnelPart> itemTunnels;
 
         try {
@@ -94,7 +94,7 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implemen
         }
 
         for (final ItemP2PTunnelPart t : itemTunnels) {
-            final IItemHandler inv = t.getOutputInv();
+            final ItemTransferable inv = t.getOutputInv();
             if (inv != null && inv != this) {
                 if (Platform.getRandomInt() % 2 == 0) {
                     outs.add(inv);
@@ -104,16 +104,16 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implemen
             }
         }
 
-        return this.cachedInv = new WrapperChainedItemHandler(outs.toArray(new IItemHandler[outs.size()]));
+        return this.cachedInv = new WrapperChainedItemHandler(outs.toArray(new ItemTransferable[outs.size()]));
     }
 
-    private IItemHandler getOutputInv() {
-        IItemHandler ret = null;
+    private ItemTransferable getOutputInv() {
+        ItemTransferable ret = null;
         if (!this.partVisited) {
             this.partVisited = true;
             if (this.getProxy().isActive()) {
                 final Direction facing = this.getSide().getFacing();
-                final TileEntity te = this.getTile().getWorld().getTileEntity(this.getTile().getPos().offset(facing));
+                final BlockEntity te = this.getTile().getWorld().getTileEntity(this.getTile().getPos().offset(facing));
 
                 if (te != null) {
                     ret = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, facing.getOpposite())

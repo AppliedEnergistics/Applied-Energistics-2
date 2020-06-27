@@ -20,10 +20,10 @@ package appeng.items.tools;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.Direction;
@@ -31,7 +31,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
@@ -67,16 +67,16 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
         if (pos == null) {
             return new NetworkToolViewer(is, null);
         }
-        final TileEntity te = world.getTileEntity(pos);
+        final BlockEntity te = world.getTileEntity(pos);
         return new NetworkToolViewer(is, (IGridHost) (te instanceof IGridHost ? te : null));
     }
 
     @Override
     public TypedActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
         if (Platform.isClient()) {
-            final RayTraceResult mop = AppEng.proxy.getRTR();
+            final HitResult mop = AppEng.proxy.getRTR();
 
-            if (mop == null || mop.getType() == RayTraceResult.Type.MISS) {
+            if (mop == null || mop.getType() == HitResult.Type.MISS) {
                 NetworkHandler.instance().sendToServer(new ClickPacket(hand));
             }
         }
@@ -88,7 +88,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
     public ActionResult onItemUseFirst(ItemStack stack, ItemUseContext context) {
         final BlockRayTraceResult mop = new BlockRayTraceResult(context.getHitVec(), context.getFace(),
                 context.getPos(), context.isInside());
-        final TileEntity te = context.getWorld().getTileEntity(context.getPos());
+        final BlockEntity te = context.getWorld().getTileEntity(context.getPos());
 
         if (te instanceof IPartHost) {
             final SelectedPart part = ((IPartHost) te).selectPart(mop.getHitVec());
@@ -129,7 +129,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
 
         final BlockState bs = w.getBlockState(pos);
         if (!p.isCrouching()) {
-            final TileEntity te = w.getTileEntity(pos);
+            final BlockEntity te = w.getTileEntity(pos);
             if (!(te instanceof IGridHost)) {
                 if (bs.rotate(w, pos, Rotation.CLOCKWISE_90) != bs) {
                     bs.neighborChanged(w, pos, Blocks.AIR, pos, false);
@@ -144,7 +144,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
                 return true;
             }
 
-            final TileEntity te = w.getTileEntity(pos);
+            final BlockEntity te = w.getTileEntity(pos);
 
             if (te instanceof IGridHost) {
                 ContainerOpener.openContainer(NetworkStatusContainer.TYPE, p,

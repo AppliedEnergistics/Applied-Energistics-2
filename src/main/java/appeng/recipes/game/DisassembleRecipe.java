@@ -30,7 +30,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipe;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
@@ -50,7 +50,7 @@ public final class DisassembleRecipe extends SpecialRecipe {
             DisassembleRecipe::new);
 
     static {
-        SERIALIZER.setRegistryName(new ResourceLocation(AppEng.MOD_ID, "disassemble"));
+        SERIALIZER.setRegistryName(new Identifier(AppEng.MOD_ID, "disassemble"));
     }
 
     private static final ItemStack MISMATCHED_STACK = ItemStack.EMPTY;
@@ -58,7 +58,7 @@ public final class DisassembleRecipe extends SpecialRecipe {
     private final Map<IItemDefinition, IItemDefinition> cellMappings;
     private final Map<IItemDefinition, IItemDefinition> nonCellMappings;
 
-    public DisassembleRecipe(ResourceLocation id) {
+    public DisassembleRecipe(Identifier id) {
         super(id);
 
         final IDefinitions definitions = AEApi.instance().definitions();

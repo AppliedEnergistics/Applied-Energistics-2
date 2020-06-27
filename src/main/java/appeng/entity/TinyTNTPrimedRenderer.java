@@ -18,22 +18,22 @@
 
 package appeng.entity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.util.math.MatrixStack;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.TNTMinecartRenderer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.util.Identifier;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
 
     public TinyTNTPrimedRenderer(final EntityRendererManager manager) {
@@ -43,7 +43,7 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
 
     @Override
     public void render(TinyTNTPrimedEntity tnt, float entityYaw, float partialTicks, MatrixStack mStack,
-            IRenderTypeBuffer buffers, int packedLight) {
+                       VertexConsumerProvider buffers, int packedLight) {
         final BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
         mStack.push();
         mStack.translate(0, 0.25F, 0);
@@ -78,7 +78,7 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
     }
 
     @Override
-    public ResourceLocation getEntityTexture(final TinyTNTPrimedEntity entity) {
+    public Identifier getEntityTexture(final TinyTNTPrimedEntity entity) {
         return AtlasTexture.LOCATION_BLOCKS_TEXTURE;
     }
 }

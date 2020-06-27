@@ -21,7 +21,7 @@ package appeng.client.gui.implementations;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 
 import appeng.api.config.ActionItems;
 import appeng.client.gui.widgets.ActionButton;
@@ -48,7 +48,7 @@ public class PatternTermScreen extends MEMonitorableScreen<PatternTermContainer>
     private ActionButton substitutionsEnabledBtn;
     private ActionButton substitutionsDisabledBtn;
 
-    public PatternTermScreen(PatternTermContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public PatternTermScreen(PatternTermContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
         this.setReservedSpace(81);
     }

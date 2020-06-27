@@ -32,8 +32,8 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.text.Text;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
@@ -74,7 +74,7 @@ public class CraftConfirmContainer extends AEBaseContainer {
     private static final ContainerHelper<CraftConfirmContainer, ITerminalHost> helper = new ContainerHelper<>(
             CraftConfirmContainer::new, ITerminalHost.class, SecurityPermissions.CRAFT);
 
-    public static CraftConfirmContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static CraftConfirmContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -100,7 +100,7 @@ public class CraftConfirmContainer extends AEBaseContainer {
     @GuiSync(6)
     public boolean noCPU = true;
     @GuiSync(7)
-    public ITextComponent myName;
+    public Text myName;
 
     public CraftConfirmContainer(int id, PlayerInventory ip, ITerminalHost te) {
         super(TYPE, id, ip, te);
@@ -390,11 +390,11 @@ public class CraftConfirmContainer extends AEBaseContainer {
         this.selectedCpu = selectedCpu;
     }
 
-    public ITextComponent getName() {
+    public Text getName() {
         return this.myName;
     }
 
-    private void setName(@Nullable final ITextComponent myName) {
+    private void setName(@Nullable final Text myName) {
         this.myName = myName;
     }
 

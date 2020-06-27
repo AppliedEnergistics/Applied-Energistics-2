@@ -24,7 +24,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -57,7 +57,7 @@ public class ClickPacket extends BasePacket {
     private Hand hand;
     private final boolean leftClick;
 
-    public ClickPacket(final PacketBuffer stream) {
+    public ClickPacket(final PacketByteBuf stream) {
         this.x = stream.readInt();
         this.y = stream.readInt();
         this.z = stream.readInt();
@@ -93,7 +93,7 @@ public class ClickPacket extends BasePacket {
     public ClickPacket(final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ,
             final Hand hand, boolean leftClick) {
 
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeInt(this.x = pos.getX());

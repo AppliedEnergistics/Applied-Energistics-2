@@ -23,7 +23,7 @@ import java.util.Optional;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.AEApi;
 import appeng.api.parts.IFacadeContainer;
@@ -98,7 +98,7 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public boolean readFromStream(final PacketBuffer out) throws IOException {
+    public boolean readFromStream(final PacketByteBuf out) throws IOException {
         final int facadeSides = out.readByte();
 
         boolean changed = false;
@@ -148,7 +148,7 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public void writeToStream(final PacketBuffer out) throws IOException {
+    public void writeToStream(final PacketByteBuf out) throws IOException {
         int facadeSides = 0;
         for (int x = 0; x < this.facades; x++) {
             if (this.getFacade(AEPartLocation.fromOrdinal(x)) != null) {

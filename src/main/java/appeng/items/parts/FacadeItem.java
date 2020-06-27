@@ -29,11 +29,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraft.world.EmptyBlockReader;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -53,7 +53,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
     /**
      * Block tag used to explicitly whitelist blocks for use in facades.
      */
-    private static final ResourceLocation TAG_WHITELISTED = new ResourceLocation(AppEng.MOD_ID, "whitelisted/facades");
+    private static final Identifier TAG_WHITELISTED = new Identifier(AppEng.MOD_ID, "whitelisted/facades");
 
     private static final String NBT_ITEM_ID = "item";
 
@@ -68,7 +68,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
     }
 
     @Override
-    public ITextComponent getDisplayName(ItemStack is) {
+    public Text getDisplayName(ItemStack is) {
         try {
             final ItemStack in = this.getTextureItem(is);
             if (!in.isEmpty()) {
@@ -142,7 +142,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
             return ItemStack.EMPTY;
         }
 
-        ResourceLocation itemId = new ResourceLocation(nbt.getString(NBT_ITEM_ID));
+        Identifier itemId = new Identifier(nbt.getString(NBT_ITEM_ID));
         Item baseItem = ForgeRegistries.ITEMS.getValue(itemId);
 
         if (baseItem == null) {

@@ -21,9 +21,9 @@ package appeng.capabilities;
 import java.util.List;
 
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.world.ServerWorld;
 
 import appeng.api.storage.ISpatialDimension;
 
@@ -48,7 +48,7 @@ class NullSpatialDimension implements ISpatialDimension {
     }
 
     @Override
-    public void addCellDimensionTooltip(DimensionType cellDim, List<ITextComponent> tooltip) {
+    public void addCellDimensionTooltip(DimensionType cellDim, List<Text> tooltip) {
     }
 
     @Override

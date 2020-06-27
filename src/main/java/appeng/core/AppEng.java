@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 
 import com.google.common.base.Stopwatch;
 
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -33,12 +34,11 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.particles.ParticleType;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 import net.minecraftforge.common.MinecraftForge;
@@ -118,7 +118,7 @@ public final class AppEng {
         modEventBus.addGenericListener(Item.class, registration::registerItems);
         modEventBus.addGenericListener(EntityType.class, registration::registerEntities);
         modEventBus.addGenericListener(ParticleType.class, registration::registerParticleTypes);
-        modEventBus.addGenericListener(TileEntityType.class, registration::registerTileEntities);
+        modEventBus.addGenericListener(BlockEntityType.class, registration::registerTileEntities);
         modEventBus.addGenericListener(ContainerType.class, registration::registerContainerTypes);
         modEventBus.addGenericListener(IRecipeSerializer.class, registration::registerRecipeSerializers);
         modEventBus.addGenericListener(Feature.class, registration::registerWorldGen);
@@ -130,8 +130,8 @@ public final class AppEng {
         modEventBus.addListener(this::commonSetup);
 
         // Register client-only events
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> registration::registerClientEvents);
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> modEventBus.addListener(this::clientSetup));
+        DistExecutor.runWhenOn(EnvType.CLIENT, () -> registration::registerClientEvents);
+        DistExecutor.runWhenOn(EnvType.CLIENT, () -> () -> modEventBus.addListener(this::clientSetup));
 
         MinecraftForge.EVENT_BUS.addListener(TickHandler.INSTANCE::unloadWorld);
         MinecraftForge.EVENT_BUS.addListener(TickHandler.INSTANCE::onTick);
@@ -159,7 +159,7 @@ public final class AppEng {
 
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private void clientSetup(FMLClientSetupEvent event) {
 
         ((ClientHelper) proxy).clientInit();
@@ -189,21 +189,21 @@ public final class AppEng {
         addBuiltInModel("quantum_bridge_formed", QnbFormedModel::new);
         addBuiltInModel("p2p_tunnel_frequency", P2PTunnelFrequencyModel::new);
         addBuiltInModel("facade", FacadeItemModel::new);
-        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "encoded_pattern"),
+        ModelLoaderRegistry.registerLoader(new Identifier(AppEng.MOD_ID, "encoded_pattern"),
                 EncodedPatternModelLoader.INSTANCE);
-        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "part_plane"),
+        ModelLoaderRegistry.registerLoader(new Identifier(AppEng.MOD_ID, "part_plane"),
                 PlaneModelLoader.INSTANCE);
-        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "crafting_cube"),
+        ModelLoaderRegistry.registerLoader(new Identifier(AppEng.MOD_ID, "crafting_cube"),
                 CraftingCubeModelLoader.INSTANCE);
-        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "uvlightmap"), UVLModelLoader.INSTANCE);
-        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "cable_bus"),
+        ModelLoaderRegistry.registerLoader(new Identifier(AppEng.MOD_ID, "uvlightmap"), UVLModelLoader.INSTANCE);
+        ModelLoaderRegistry.registerLoader(new Identifier(AppEng.MOD_ID, "cable_bus"),
                 new CableBusModelLoader((PartModels) Api.INSTANCE.registries().partModels()));
 
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private static <T extends IModelGeometry<T>> void addBuiltInModel(String id, Supplier<T> modelFactory) {
-        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, id),
+        ModelLoaderRegistry.registerLoader(new Identifier(AppEng.MOD_ID, id),
                 new SimpleModelLoader<>(modelFactory));
     }
 
@@ -278,7 +278,7 @@ public final class AppEng {
         AppEng.proxy.postInit();
         AEConfig.instance().save();
 
-        NetworkHandler.init(new ResourceLocation(MOD_ID, "main"));
+        NetworkHandler.init(new Identifier(MOD_ID, "main"));
 
         AELog.info("Post Initialization ( ended after " + start.elapsed(TimeUnit.MILLISECONDS) + "ms )");
     }

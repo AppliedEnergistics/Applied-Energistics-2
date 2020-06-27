@@ -20,6 +20,7 @@ package appeng.client.render.effects;
 
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
+import net.fabricmc.api.EnvType;
 import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.IParticleRenderType;
@@ -31,12 +32,9 @@ import net.minecraft.particles.BasicParticleType;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.Environment;
 
-import appeng.core.AppEng;
-
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class CraftingFx extends SpriteTexturedParticle {
 
     // Offset relative to center of block, is the starting point of the particle
@@ -127,7 +125,7 @@ public class CraftingFx extends SpriteTexturedParticle {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public static class Factory implements IParticleFactory<BasicParticleType> {
         private final IAnimatedSprite spriteSet;
 

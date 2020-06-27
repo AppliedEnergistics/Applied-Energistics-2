@@ -18,16 +18,16 @@
 
 package appeng.container.implementations;
 
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
@@ -60,7 +60,7 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
     private static final ContainerHelper<UpgradeableContainer, IUpgradeableHost> helper = new ContainerHelper<>(
             UpgradeableContainer::new, IUpgradeableHost.class, SecurityPermissions.BUILD);
 
-    public static UpgradeableContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static UpgradeableContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -86,7 +86,7 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
 
     public UpgradeableContainer(ContainerType<?> containerType, int id, final PlayerInventory ip,
             final IUpgradeableHost te) {
-        super(containerType, id, ip, (TileEntity) (te instanceof TileEntity ? te : null),
+        super(containerType, id, ip, (BlockEntity) (te instanceof BlockEntity ? te : null),
                 (IPart) (te instanceof IPart ? te : null));
         this.upgradeable = te;
 
@@ -95,8 +95,8 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
         int yCoord = 0;
         int zCoord = 0;
 
-        if (te instanceof TileEntity) {
-            final TileEntity myTile = (TileEntity) te;
+        if (te instanceof BlockEntity) {
+            final BlockEntity myTile = (BlockEntity) te;
             w = myTile.getWorld();
             xCoord = myTile.getPos().getX();
             yCoord = myTile.getPos().getY();
@@ -104,7 +104,7 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
         }
 
         if (te instanceof IPart) {
-            final TileEntity mk = te.getTile();
+            final BlockEntity mk = te.getTile();
             w = mk.getWorld();
             xCoord = mk.getPos().getX();
             yCoord = mk.getPos().getY();
@@ -149,7 +149,7 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
     protected void setupConfig() {
         this.setupUpgrades();
 
-        final IItemHandler inv = this.getUpgradeable().getInventoryByName("config");
+        final ItemTransferable inv = this.getUpgradeable().getInventoryByName("config");
         final int y = 40;
         final int x = 80;
         this.addSlot(new FakeTypeOnlySlot(inv, 0, x, y));
@@ -168,7 +168,7 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
     }
 
     protected void setupUpgrades() {
-        final IItemHandler upgrades = this.getUpgradeable().getInventoryByName("upgrades");
+        final ItemTransferable upgrades = this.getUpgradeable().getInventoryByName("upgrades");
         if (this.availableUpgrades() > 0) {
             this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 0, 187, 8,
                     this.getPlayerInventory())).setNotDraggable());

@@ -25,7 +25,7 @@ import net.minecraft.network.IPacket;
 import net.minecraft.network.ThreadQuickExitException;
 import net.minecraft.network.play.ServerPlayNetHandler;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
@@ -41,12 +41,12 @@ import appeng.core.sync.BasePacket;
 public class NetworkHandler {
     private static NetworkHandler instance;
 
-    private final ResourceLocation myChannelName;
+    private final Identifier myChannelName;
 
     private final IPacketHandler clientHandler;
     private final IPacketHandler serverHandler;
 
-    public NetworkHandler(final ResourceLocation channelName) {
+    public NetworkHandler(final Identifier channelName) {
         EventNetworkChannel ec = NetworkRegistry.ChannelBuilder.named(myChannelName = channelName)
                 .networkProtocolVersion(() -> "1").clientAcceptedVersions(s -> true).serverAcceptedVersions(s -> true)
                 .eventNetworkChannel();
@@ -56,7 +56,7 @@ public class NetworkHandler {
         this.serverHandler = this.createServerSide();
     }
 
-    public static void init(final ResourceLocation channelName) {
+    public static void init(final Identifier channelName) {
         instance = new NetworkHandler(channelName);
     }
 
@@ -105,7 +105,7 @@ public class NetworkHandler {
         }
     }
 
-    public ResourceLocation getChannel() {
+    public Identifier getChannel() {
         return this.myChannelName;
     }
 

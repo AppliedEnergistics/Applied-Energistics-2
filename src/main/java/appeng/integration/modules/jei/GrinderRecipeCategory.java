@@ -24,7 +24,7 @@ import java.util.List;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -41,7 +41,7 @@ import appeng.recipes.handlers.GrinderRecipe;
 
 class GrinderRecipeCategory implements IRecipeCategory<GrinderRecipe> {
 
-    public static final ResourceLocation UID = new ResourceLocation(AppEng.MOD_ID, "grinder");
+    public static final Identifier UID = new Identifier(AppEng.MOD_ID, "grinder");
 
     private final String localizedName;
 
@@ -52,14 +52,14 @@ class GrinderRecipeCategory implements IRecipeCategory<GrinderRecipe> {
     public GrinderRecipeCategory(IGuiHelper guiHelper) {
         this.localizedName = I18n.format("block.appliedenergistics2.grindstone");
 
-        ResourceLocation location = new ResourceLocation(AppEng.MOD_ID, "textures/guis/grinder.png");
+        Identifier location = new Identifier(AppEng.MOD_ID, "textures/guis/grinder.png");
         this.background = guiHelper.createDrawable(location, 11, 16, 154, 70);
 
         this.icon = guiHelper.createDrawableIngredient(Api.INSTANCE.definitions().blocks().grindstone().stack(1));
     }
 
     @Override
-    public ResourceLocation getUid() {
+    public Identifier getUid() {
         return GrinderRecipeCategory.UID;
     }
 

@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.CondenserOutput;
@@ -234,7 +234,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
     }
 
     private static void registerApp(final int iconIndex, final Settings setting, final Enum<?> val,
-            final ButtonToolTips title, final ITextComponent hint) {
+            final ButtonToolTips title, final Text hint) {
         final ButtonAppearance a = new ButtonAppearance();
         a.displayName = title.getTranslationKey();
         a.displayValue = hint;
@@ -279,8 +279,8 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
 
     @Override
     public String getMessage() {
-        ITextComponent displayName = null;
-        ITextComponent displayValue = null;
+        Text displayName = null;
+        Text displayValue = null;
 
         if (this.buttonSetting != null && this.currentValue != null) {
             final ButtonAppearance buttonAppearance = appearances
@@ -355,7 +355,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
 
     private static class ButtonAppearance {
         public int index;
-        public ITextComponent displayName;
-        public ITextComponent displayValue;
+        public Text displayName;
+        public Text displayValue;
     }
 }

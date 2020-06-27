@@ -32,14 +32,14 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.render.model.IBakedModel;
+import net.minecraft.client.render.model.ItemCameraTransforms;
+import net.minecraft.client.render.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
@@ -56,12 +56,12 @@ public class CableBusBakedModel implements IBakedModel {
 
     private final FacadeBuilder facadeBuilder;
 
-    private final Map<ResourceLocation, IBakedModel> partModels;
+    private final Map<Identifier, IBakedModel> partModels;
 
     private final TextureAtlasSprite particleTexture;
 
     CableBusBakedModel(CableBuilder cableBuilder, FacadeBuilder facadeBuilder,
-            Map<ResourceLocation, IBakedModel> partModels, TextureAtlasSprite particleTexture) {
+                       Map<Identifier, IBakedModel> partModels, TextureAtlasSprite particleTexture) {
         this.cableBuilder = cableBuilder;
         this.facadeBuilder = facadeBuilder;
         this.partModels = partModels;
@@ -111,7 +111,7 @@ public class CableBusBakedModel implements IBakedModel {
                     partModelData = EmptyModelData.INSTANCE;
                 }
 
-                for (ResourceLocation model : partModel.getModels()) {
+                for (Identifier model : partModel.getModels()) {
                     IBakedModel bakedModel = this.partModels.get(model);
 
                     if (bakedModel == null) {
@@ -281,7 +281,7 @@ public class CableBusBakedModel implements IBakedModel {
         for (Direction side : renderState.getAttachments().keySet()) {
             IPartModel partModel = renderState.getAttachments().get(side);
 
-            for (ResourceLocation model : partModel.getModels()) {
+            for (Identifier model : partModel.getModels()) {
                 IBakedModel bakedModel = this.partModels.get(model);
 
                 if (bakedModel == null) {

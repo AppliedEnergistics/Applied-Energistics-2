@@ -18,7 +18,7 @@
 
 package appeng.api.util;
 
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Box;
 
 /**
  * Mutable stand in for Axis Aligned BB, this was used to prevent GC Thrashing..
@@ -35,8 +35,8 @@ public class AEAxisAlignedBB {
     public double maxY;
     public double maxZ;
 
-    public AxisAlignedBB getBoundingBox() {
-        return new AxisAlignedBB(this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
+    public Box getBoundingBox() {
+        return new Box(this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
     }
 
     public AEAxisAlignedBB(final double a, final double b, final double c, final double d, final double e,
@@ -54,7 +54,7 @@ public class AEAxisAlignedBB {
         return new AEAxisAlignedBB(a, b, c, d, e, f);
     }
 
-    public static AEAxisAlignedBB fromBounds(final AxisAlignedBB bb) {
+    public static AEAxisAlignedBB fromBounds(final Box bb) {
         return new AEAxisAlignedBB(bb.minX, bb.minY, bb.minZ, bb.maxX, bb.maxY, bb.maxZ);
     }
 }

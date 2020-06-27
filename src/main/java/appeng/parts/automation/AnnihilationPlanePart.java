@@ -26,6 +26,7 @@ import javax.annotation.Nonnull;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.Item;
@@ -34,14 +35,13 @@ import net.minecraft.item.Items;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.util.FakePlayerFactory;
@@ -82,7 +82,7 @@ import appeng.util.item.AEItemStack;
 
 public class AnnihilationPlanePart extends BasicStatePart implements IGridTickable, IWorldCallable<TickRateModulation> {
 
-    public static final ResourceLocation TAG_BLACKLIST = new ResourceLocation(AppEng.MOD_ID,
+    public static final Identifier TAG_BLACKLIST = new Identifier(AppEng.MOD_ID,
             "blacklisted/annihilation_plane");
 
     private static final PlaneModels MODELS = new PlaneModels("part/annihilation_plane", "part/annihilation_plane_on");
@@ -115,7 +115,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
         final IPartHost host = this.getHost();
         if (host != null) {
-            final TileEntity te = host.getTile();
+            final BlockEntity te = host.getTile();
 
             final BlockPos pos = te.getPos();
 
@@ -187,7 +187,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
         final IPartHost host = this.getHost();
         if (host != null) {
-            final TileEntity te = host.getTile();
+            final BlockEntity te = host.getTile();
 
             final BlockPos pos = te.getPos();
 
@@ -362,7 +362,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         return changed;
     }
 
-    protected boolean isAnnihilationPlane(final TileEntity blockTileEntity, final AEPartLocation side) {
+    protected boolean isAnnihilationPlane(final BlockEntity blockTileEntity, final AEPartLocation side) {
         if (blockTileEntity instanceof IPartHost) {
             final IPart p = ((IPartHost) blockTileEntity).getPart(side);
             return p != null && p.getClass() == this.getClass();
@@ -387,7 +387,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     private TickRateModulation breakBlock(final boolean modulate) {
         if (this.isAccepting && this.getProxy().isActive()) {
             try {
-                final TileEntity te = this.getTile();
+                final BlockEntity te = this.getTile();
                 final ServerWorld w = (ServerWorld) te.getWorld();
 
                 final BlockPos pos = te.getPos().offset(this.getSide().getFacing());
@@ -502,7 +502,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
             }
         }
 
-        TileEntity te = w.getTileEntity(pos);
+        BlockEntity te = w.getTileEntity(pos);
         return Block.getDrops(state, w, pos, te, fakePlayer, harvestTool);
     }
 
@@ -564,7 +564,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         // This handles items that do not spawn via loot-tables but rather normal block
         // breaking
         // i.e. our cable-buses do this (bad practice, really)
-        final AxisAlignedBB box = new AxisAlignedBB(pos).grow(0.2);
+        final Box box = new Box(pos).grow(0.2);
         for (final Object ei : w.getEntitiesWithinAABB(ItemEntity.class, box)) {
             if (ei instanceof ItemEntity) {
                 final ItemEntity entityItem = (ItemEntity) ei;

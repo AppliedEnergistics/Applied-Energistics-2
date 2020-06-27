@@ -25,7 +25,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.storage.data.IAEFluidStack;
@@ -45,7 +45,7 @@ public class FluidInterfaceContainer extends FluidConfigurableContainer {
     private static final ContainerHelper<FluidInterfaceContainer, IFluidInterfaceHost> helper = new ContainerHelper<>(
             FluidInterfaceContainer::new, IFluidInterfaceHost.class, SecurityPermissions.BUILD);
 
-    public static FluidInterfaceContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static FluidInterfaceContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 

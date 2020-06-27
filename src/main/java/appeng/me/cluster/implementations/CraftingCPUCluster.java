@@ -32,9 +32,9 @@ import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraftforge.fml.hooks.BasicEventHooks;
 
 import appeng.api.AEApi;
@@ -92,7 +92,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
     private final List<CraftingMonitorTileEntity> status = new ArrayList<>();
     private final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<>();
     private ICraftingLink myLastLink;
-    private ITextComponent myName = null;
+    private Text myName = null;
     private boolean isDestroyed = false;
     /**
      * crafting job info
@@ -834,7 +834,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
     }
 
     @Override
-    public ITextComponent getName() {
+    public Text getName() {
         return this.myName;
     }
 

@@ -24,7 +24,7 @@ import java.util.Set;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
 import appeng.api.features.AEFeature;
 import appeng.core.AppEng;
@@ -120,7 +120,7 @@ public enum MaterialType {
     FLUID_64K_CELL_COMPONENT("64k_fluid_cell_component", EnumSet.of(AEFeature.STORAGE_CELLS));
 
     private final Set<AEFeature> features;
-    private final ResourceLocation registryName;
+    private final Identifier registryName;
     private Item itemInstance;
     // stack!
     private MaterialStackSrc stackSrc;
@@ -130,7 +130,7 @@ public enum MaterialType {
 
     MaterialType(String id, final Set<AEFeature> features) {
         this.features = features;
-        this.registryName = new ResourceLocation(AppEng.MOD_ID, id);
+        this.registryName = new Identifier(AppEng.MOD_ID, id);
     }
 
     MaterialType(String id, final Set<AEFeature> features, final Class<? extends Entity> c) {
@@ -198,7 +198,7 @@ public enum MaterialType {
         return registryName.getPath();
     }
 
-    public ResourceLocation getRegistryName() {
+    public Identifier getRegistryName() {
         return this.registryName;
     }
 

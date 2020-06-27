@@ -20,18 +20,18 @@ package appeng.items.storage;
 
 import java.util.List;
 
+import net.fabricmc.api.EnvType;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.Environment;
 
 import appeng.api.implementations.TransitionResult;
 import appeng.api.implementations.items.ISpatialStorageCell;
@@ -53,9 +53,9 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
         this.maxRegion = spatialScale;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
-    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+    public void addInformation(final ItemStack stack, final World world, final List<Text> lines,
             final ITooltipFlag advancedTooltips) {
         final DimensionType dimType = this.getStoredDimension(stack);
         if (dimType == null) {
@@ -87,7 +87,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
         final CompoundTag c = is.getTag();
         if (c != null && c.contains(TAG_DIMENSION_ID)) {
             try {
-                ResourceLocation dimTypeId = new ResourceLocation(c.getString(TAG_DIMENSION_ID));
+                Identifier dimTypeId = new Identifier(c.getString(TAG_DIMENSION_ID));
                 return DimensionType.byName(dimTypeId);
             } catch (Exception e) {
                 AELog.warn("Failed to retrieve storage cell dimension.", e);

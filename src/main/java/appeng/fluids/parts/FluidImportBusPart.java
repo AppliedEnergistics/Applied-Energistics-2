@@ -20,11 +20,11 @@ package appeng.fluids.parts;
 
 import javax.annotation.Nonnull;
 
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -56,16 +56,16 @@ import appeng.parts.PartModel;
  * @since rv6 30/04/2018
  */
 public class FluidImportBusPart extends SharedFluidBusPart {
-    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/fluid_import_bus_base");
+    public static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID, "part/fluid_import_bus_base");
     @PartModels
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/fluid_import_bus_off"));
+            new Identifier(AppEng.MOD_ID, "part/fluid_import_bus_off"));
     @PartModels
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/fluid_import_bus_on"));
+            new Identifier(AppEng.MOD_ID, "part/fluid_import_bus_on"));
     @PartModels
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/fluid_import_bus_has_channel"));
+            new Identifier(AppEng.MOD_ID, "part/fluid_import_bus_has_channel"));
 
     private final IActionSource source;
 
@@ -95,7 +95,7 @@ public class FluidImportBusPart extends SharedFluidBusPart {
             return TickRateModulation.IDLE;
         }
 
-        final TileEntity te = this.getConnectedTE();
+        final BlockEntity te = this.getConnectedTE();
         LazyOptional<IFluidHandler> fhOpt = LazyOptional.empty();
         if (te != null) {
             te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, this.getSide().getFacing().getOpposite());
@@ -106,7 +106,7 @@ public class FluidImportBusPart extends SharedFluidBusPart {
                 final IMEMonitor<IAEFluidStack> inv = this.getProxy().getStorage().getInventory(this.getChannel());
 
                 if (fh != null) {
-                    final FluidStack fluidStack = fh.drain(this.calculateAmountToSend(), FluidAction.SIMULATE);
+                    final FluidVolume fluidStack = fh.drain(this.calculateAmountToSend(), FluidAction.SIMULATE);
 
                     if (this.filterEnabled() && !this.isInFilter(fluidStack)) {
                         return TickRateModulation.SLOWER;
@@ -142,7 +142,7 @@ public class FluidImportBusPart extends SharedFluidBusPart {
         return this.getProxy().isActive();
     }
 
-    private boolean isInFilter(FluidStack fluid) {
+    private boolean isInFilter(FluidVolume fluid) {
         for (int i = 0; i < this.getConfig().getSlots(); i++) {
             final IAEFluidStack stack = this.getConfig().getFluidInSlot(i);
             if (stack != null && stack.equals(fluid)) {

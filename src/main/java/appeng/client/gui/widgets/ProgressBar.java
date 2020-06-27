@@ -20,7 +20,7 @@ package appeng.client.gui.widgets;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.container.interfaces.IProgressProvider;
@@ -29,7 +29,7 @@ import appeng.core.localization.GuiText;
 public class ProgressBar extends Widget implements ITooltip {
 
     private final IProgressProvider source;
-    private final ResourceLocation texture;
+    private final Identifier texture;
     private final int fill_u;
     private final int fill_v;
     private final Direction layout;
@@ -45,7 +45,7 @@ public class ProgressBar extends Widget implements ITooltip {
             final int u, final int y, final int width, final int height, final Direction dir, final String title) {
         super(posX, posY, width, height, "");
         this.source = source;
-        this.texture = new ResourceLocation("appliedenergistics2", "textures/" + texture);
+        this.texture = new Identifier("appliedenergistics2", "textures/" + texture);
         this.fill_u = u;
         this.fill_v = y;
         this.layout = dir;

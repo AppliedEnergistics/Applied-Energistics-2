@@ -24,7 +24,7 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 
@@ -103,7 +103,7 @@ public class InvalidPatternHelper {
             return !this.stack.isEmpty();
         }
 
-        public ITextComponent getName() {
+        public Text getName() {
             return this.isValid() ? Platform.getItemDisplayName(this.stack)
                     : new StringTextComponent(this.id + '@' + this.getDamage());
         }
@@ -124,8 +124,8 @@ public class InvalidPatternHelper {
             return this.stack;
         }
 
-        public ITextComponent getFormattedToolTip() {
-            ITextComponent result = new StringTextComponent(this.getCount() + " ").appendSibling(this.getName());
+        public Text getFormattedToolTip() {
+            Text result = new StringTextComponent(this.getCount() + " ").appendSibling(this.getName());
 
             if (!this.isValid()) {
                 result.applyTextStyle(TextFormatting.RED);

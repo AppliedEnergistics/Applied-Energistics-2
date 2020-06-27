@@ -21,15 +21,15 @@ package appeng.util.inv;
 import java.util.function.Supplier;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import appeng.util.helpers.ItemHandlerUtil;
 
 public class WrapperSupplierItemHandler implements IItemHandlerModifiable {
-    private final Supplier<IItemHandler> sourceHandler;
+    private final Supplier<ItemTransferable> sourceHandler;
 
-    public WrapperSupplierItemHandler(Supplier<IItemHandler> source) {
+    public WrapperSupplierItemHandler(Supplier<ItemTransferable> source) {
         this.sourceHandler = source;
     }
 

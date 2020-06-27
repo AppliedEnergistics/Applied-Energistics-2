@@ -27,14 +27,14 @@ import java.util.function.Function;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.util.Pair;
 
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.client.renderer.model.IUnbakedModel;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.Material;
-import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.render.model.IBakedModel;
+import net.minecraft.client.render.model.IModelTransform;
+import net.minecraft.client.render.model.IUnbakedModel;
+import net.minecraft.client.render.model.ItemOverrideList;
+import net.minecraft.client.render.model.Material;
+import net.minecraft.client.render.model.ModelBakery;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 
@@ -56,8 +56,8 @@ public class CableBusModel implements IModelGeometry<CableBusModel> {
     @Override
     public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
             Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
-            ItemOverrideList overrides, ResourceLocation modelLocation) {
-        Map<ResourceLocation, IBakedModel> partModels = this.loadPartModels(bakery, spriteGetter, modelTransform);
+            ItemOverrideList overrides, Identifier modelLocation) {
+        Map<Identifier, IBakedModel> partModels = this.loadPartModels(bakery, spriteGetter, modelTransform);
 
         CableBuilder cableBuilder = new CableBuilder(spriteGetter);
         FacadeBuilder facadeBuilder = new FacadeBuilder();
@@ -72,15 +72,15 @@ public class CableBusModel implements IModelGeometry<CableBusModel> {
 
     @Override
     public Collection<Material> getTextures(IModelConfiguration owner,
-            Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+                                            Function<Identifier, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
         return Collections.unmodifiableList(CableBuilder.getTextures());
     }
 
-    private Map<ResourceLocation, IBakedModel> loadPartModels(ModelBakery bakery,
-            Function<Material, TextureAtlasSprite> spriteGetterIn, IModelTransform transformIn) {
-        ImmutableMap.Builder<ResourceLocation, IBakedModel> result = ImmutableMap.builder();
+    private Map<Identifier, IBakedModel> loadPartModels(ModelBakery bakery,
+                                                        Function<Material, TextureAtlasSprite> spriteGetterIn, IModelTransform transformIn) {
+        ImmutableMap.Builder<Identifier, IBakedModel> result = ImmutableMap.builder();
 
-        for (ResourceLocation location : this.partModels.getModels()) {
+        for (Identifier location : this.partModels.getModels()) {
             IBakedModel bakedModel = bakery.getBakedModel(location, transformIn, spriteGetterIn);
             if (bakedModel == null) {
                 AELog.warn("Failed to bake part model {}", location);

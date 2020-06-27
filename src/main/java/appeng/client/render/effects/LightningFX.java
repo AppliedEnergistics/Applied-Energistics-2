@@ -22,6 +22,8 @@ import java.util.Random;
 
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
@@ -34,12 +36,8 @@ import net.minecraft.particles.BasicParticleType;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.core.AppEng;
-
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class LightningFX extends SpriteTexturedParticle {
 
     private static final Random RANDOM_GENERATOR = new Random();
@@ -246,7 +244,7 @@ public class LightningFX extends SpriteTexturedParticle {
         return this.precomputedSteps;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public static class Factory implements IParticleFactory<BasicParticleType> {
         private final IAnimatedSprite spriteSet;
 

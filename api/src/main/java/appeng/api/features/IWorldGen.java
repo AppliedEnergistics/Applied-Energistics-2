@@ -23,19 +23,16 @@
 
 package appeng.api.features;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.dimension.Dimension;
+import net.minecraft.util.Identifier;
+import net.minecraft.world.ServerWorldAccess;
 
 public interface IWorldGen {
 
-    void disableWorldGenForProviderID(WorldGenType type, Class<? extends Dimension> provider);
+    void enableWorldGenForDimension(WorldGenType type, Identifier dimID);
 
-    void enableWorldGenForDimension(WorldGenType type, ResourceLocation dimID);
+    void disableWorldGenForDimension(WorldGenType type, Identifier dimID);
 
-    void disableWorldGenForDimension(WorldGenType type, ResourceLocation dimID);
-
-    boolean isWorldGenEnabled(WorldGenType type, IWorld w);
+    boolean isWorldGenEnabled(WorldGenType type, ServerWorldAccess w);
 
     enum WorldGenType {
         CERTUS_QUARTZ, CHARGED_CERTUS_QUARTZ, METEORITES

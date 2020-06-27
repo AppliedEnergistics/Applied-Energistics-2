@@ -23,7 +23,7 @@ import org.lwjgl.glfw.GLFW;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.client.ActionKey;
@@ -38,7 +38,7 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
 
     private TextFieldWidget name;
 
-    public QuartzKnifeScreen(QuartzKnifeContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public QuartzKnifeScreen(QuartzKnifeContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
         this.ySize = 184;
     }

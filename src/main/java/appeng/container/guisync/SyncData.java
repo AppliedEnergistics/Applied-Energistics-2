@@ -25,7 +25,7 @@ import java.util.Objects;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 
 import appeng.container.AEBaseContainer;
 import appeng.core.AELog;
@@ -80,18 +80,18 @@ public class SyncData {
     }
 
     private void send(final IContainerListener o, Object val) {
-        if (fieldType.isAssignableFrom(ITextComponent.class)) {
+        if (fieldType.isAssignableFrom(Text.class)) {
             if (o instanceof ServerPlayerEntity) {
                 String json = "";
                 if (val != null) {
-                    json = ITextComponent.Serializer.toJson((ITextComponent) val);
+                    json = Text.Serializer.toJson((Text) val);
                 }
                 NetworkHandler.instance().sendTo(new ConfigValuePacket("SyncDat." + this.channel, json),
                         (ServerPlayerEntity) o);
             }
         }
 
-        // Types other than ITextComponent must be non-null
+        // Types other than Text must be non-null
         if (val == null) {
             return;
         }
@@ -123,11 +123,11 @@ public class SyncData {
         try {
             final Object oldValue = this.getter.invoke(source);
             if (val instanceof String) {
-                if (this.fieldType.isAssignableFrom(ITextComponent.class)) {
+                if (this.fieldType.isAssignableFrom(Text.class)) {
                     String json = (String) val;
-                    ITextComponent text = null;
+                    Text text = null;
                     if (!json.isEmpty()) {
-                        text = ITextComponent.Serializer.fromJson((String) val);
+                        text = Text.Serializer.fromJson((String) val);
                     }
                     this.updateTextComponent(text);
                 } else {
@@ -149,7 +149,7 @@ public class SyncData {
         }
     }
 
-    private void updateTextComponent(final ITextComponent val) {
+    private void updateTextComponent(final Text val) {
         try {
             this.setter.invoke(source, val);
         } catch (Throwable e) {

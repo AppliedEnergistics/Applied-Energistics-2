@@ -20,19 +20,19 @@ package appeng.parts.reporting;
 
 import java.io.IOException;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.util.math.MatrixStack;
 
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import appeng.api.AEApi;
 import appeng.api.implementations.parts.IStorageMonitorPart;
@@ -106,7 +106,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public void writeToStream(final PacketBuffer data) throws IOException {
+    public void writeToStream(final PacketByteBuf data) throws IOException {
         super.writeToStream(data);
 
         data.writeBoolean(this.isLocked);
@@ -117,7 +117,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public boolean readFromStream(final PacketBuffer data) throws IOException {
+    public boolean readFromStream(final PacketByteBuf data) throws IOException {
         boolean needRedraw = super.readFromStream(data);
 
         final boolean isLocked = data.readBoolean();
@@ -218,8 +218,8 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void renderDynamic(float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffers,
+    @Environment(EnvType.CLIENT)
+    public void renderDynamic(float partialTicks, MatrixStack matrixStack, VertexConsumerProvider buffers,
             int combinedLightIn, int combinedOverlayIn) {
 
         if ((this.getClientFlags() & (PanelPart.POWERED_FLAG | PanelPart.CHANNEL_FLAG)) != (PanelPart.POWERED_FLAG
@@ -290,7 +290,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public boolean showNetworkInfo(final RayTraceResult where) {
+    public boolean showNetworkInfo(final HitResult where) {
         return false;
     }
 

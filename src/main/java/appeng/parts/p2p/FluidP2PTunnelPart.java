@@ -26,14 +26,14 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
@@ -102,8 +102,8 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> implem
 
     @Override
     @Nonnull
-    public FluidStack getFluidInTank(int tank) {
-        return FluidStack.EMPTY;
+    public FluidVolume getFluidInTank(int tank) {
+        return FluidVolume.EMPTY;
     }
 
     @Override
@@ -112,12 +112,12 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> implem
     }
 
     @Override
-    public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
+    public boolean isFluidValid(int tank, @Nonnull FluidVolume stack) {
         return false;
     }
 
     @Override
-    public int fill(FluidStack resource, FluidAction action) {
+    public int fill(FluidVolume resource, FluidAction action) {
 
         final Deque<FluidP2PTunnelPart> stack = this.getDepth();
 
@@ -174,7 +174,7 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> implem
         while (i.hasNext() && available > 0) {
             final FluidP2PTunnelPart l = i.next();
 
-            final FluidStack insert = resource.copy();
+            final FluidVolume insert = resource.copy();
             insert.setAmount((int) Math.ceil(insert.getAmount() * ((double) l.tmpUsed / (double) requestTotal)));
             if (insert.getAmount() > available) {
                 insert.setAmount(available);
@@ -200,14 +200,14 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> implem
 
     @Override
     @Nonnull
-    public FluidStack drain(FluidStack resource, FluidAction action) {
-        return FluidStack.EMPTY;
+    public FluidVolume drain(FluidVolume resource, FluidAction action) {
+        return FluidVolume.EMPTY;
     }
 
     @Override
     @Nonnull
-    public FluidStack drain(int maxDrain, FluidAction action) {
-        return FluidStack.EMPTY;
+    public FluidVolume drain(int maxDrain, FluidAction action) {
+        return FluidVolume.EMPTY;
     }
 
     private Deque<FluidP2PTunnelPart> getDepth() {
@@ -247,7 +247,7 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> implem
             return this.cachedTank;
         }
 
-        final TileEntity te = this.getTile().getWorld()
+        final BlockEntity te = this.getTile().getWorld()
                 .getTileEntity(this.getTile().getPos().offset(this.getSide().getFacing()));
 
         if (te != null && te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,

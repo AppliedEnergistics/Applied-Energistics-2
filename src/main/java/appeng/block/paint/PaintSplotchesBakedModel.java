@@ -13,13 +13,13 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.render.model.ItemOverrideList;
+import net.minecraft.client.render.model.Material;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
 
@@ -36,11 +36,11 @@ import appeng.tile.misc.PaintSplotchesTileEntity;
 class PaintSplotchesBakedModel implements IDynamicBakedModel {
 
     private static final Material TEXTURE_PAINT1 = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
-            new ResourceLocation(AppEng.MOD_ID, "block/paint1"));
+            new Identifier(AppEng.MOD_ID, "block/paint1"));
     private static final Material TEXTURE_PAINT2 = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
-            new ResourceLocation(AppEng.MOD_ID, "block/paint2"));
+            new Identifier(AppEng.MOD_ID, "block/paint2"));
     private static final Material TEXTURE_PAINT3 = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
-            new ResourceLocation(AppEng.MOD_ID, "block/paint3"));
+            new Identifier(AppEng.MOD_ID, "block/paint3"));
 
     private final TextureAtlasSprite[] textures;
 

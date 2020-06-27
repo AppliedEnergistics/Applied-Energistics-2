@@ -18,20 +18,20 @@
 
 package appeng.bootstrap;
 
+import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.item.Item;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
 
 import appeng.bootstrap.components.ItemColorComponent;
 
 class ItemRendering implements IItemRendering {
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private IItemColor itemColor;
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public IItemRendering color(IItemColor itemColor) {
         this.itemColor = itemColor;
         return this;

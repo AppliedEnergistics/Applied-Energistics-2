@@ -22,9 +22,9 @@ import javax.annotation.Nullable;
 
 import com.google.common.math.IntMath;
 
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -41,7 +41,7 @@ public class EnergyGeneratorTileEntity extends AEBaseTileEntity implements ITick
      */
     private static final int BASE_ENERGY = 8;
 
-    public EnergyGeneratorTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public EnergyGeneratorTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -54,7 +54,7 @@ public class EnergyGeneratorTileEntity extends AEBaseTileEntity implements ITick
 
         int tier = 1;
         for (Direction facing : Direction.values()) {
-            final TileEntity te = world.getTileEntity(this.getPos().offset(facing));
+            final BlockEntity te = world.getTileEntity(this.getPos().offset(facing));
 
             if (te instanceof EnergyGeneratorTileEntity) {
                 tier++;
@@ -64,7 +64,7 @@ public class EnergyGeneratorTileEntity extends AEBaseTileEntity implements ITick
         final int energyToInsert = IntMath.pow(BASE_ENERGY, tier);
 
         for (Direction facing : Direction.values()) {
-            final TileEntity te = this.getWorld().getTileEntity(this.getPos().offset(facing));
+            final BlockEntity te = this.getWorld().getTileEntity(this.getPos().offset(facing));
             final LazyOptional<IEnergyStorage> cap = te.getCapability(CapabilityEnergy.ENERGY, facing.getOpposite());
 
             cap.ifPresent(consumer -> {

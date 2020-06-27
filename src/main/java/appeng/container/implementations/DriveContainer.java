@@ -21,7 +21,7 @@ package appeng.container.implementations;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
@@ -35,7 +35,7 @@ public class DriveContainer extends AEBaseContainer {
     private static final ContainerHelper<DriveContainer, DriveTileEntity> helper = new ContainerHelper<>(
             DriveContainer::new, DriveTileEntity.class);
 
-    public static DriveContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static DriveContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 

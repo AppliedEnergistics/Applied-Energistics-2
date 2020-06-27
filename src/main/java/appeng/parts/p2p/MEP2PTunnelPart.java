@@ -26,7 +26,7 @@ import java.util.List;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.Hand;
 
 import appeng.api.AEApi;
@@ -109,7 +109,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     }
 
     @Override
-    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final TileEntity tile) {
+    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity tile) {
         super.setPartHostInfo(side, host, tile);
         this.outerProxy.setValidSides(EnumSet.of(side.getFacing()));
     }
@@ -196,8 +196,8 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
                         connections.getConnections().put(me.getGridNode(), new TunnelConnection(me, AEApi.instance()
                                 .grid().createGridConnection(this.outerProxy.getNode(), me.outerProxy.getNode())));
                     } catch (final FailedConnectionException e) {
-                        final TileEntity start = this.getTile();
-                        final TileEntity end = me.getTile();
+                        final BlockEntity start = this.getTile();
+                        final BlockEntity end = me.getTile();
 
                         AELog.debug(e);
 

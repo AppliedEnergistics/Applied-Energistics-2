@@ -24,7 +24,7 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
@@ -38,7 +38,7 @@ public final class ConfigButtonPacket extends BasePacket {
     private final Settings option;
     private final boolean rotationDirection;
 
-    public ConfigButtonPacket(final PacketBuffer stream) {
+    public ConfigButtonPacket(final PacketByteBuf stream) {
         this.option = Settings.values()[stream.readInt()];
         this.rotationDirection = stream.readBoolean();
     }
@@ -48,7 +48,7 @@ public final class ConfigButtonPacket extends BasePacket {
         this.option = option;
         this.rotationDirection = rotationDirection;
 
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeInt(option.ordinal());

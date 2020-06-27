@@ -18,8 +18,8 @@
 
 package appeng.block.misc;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import appeng.bootstrap.TileEntityRendering;
 import appeng.bootstrap.TileEntityRenderingCustomizer;
@@ -29,7 +29,7 @@ import appeng.tile.misc.SkyCompassTileEntity;
 public class SkyCompassRendering extends TileEntityRenderingCustomizer<SkyCompassTileEntity> {
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void customize(TileEntityRendering<SkyCompassTileEntity> rendering) {
         rendering.tileEntityRenderer(SkyCompassTESR::new);
     }

@@ -23,12 +23,12 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.Direction;
-import net.minecraftforge.items.IItemHandler;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -62,7 +62,7 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 1, 1, new ChargerInvFilter());
 
-    public ChargerTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public ChargerTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));
         this.getProxy().setFlags();
@@ -76,7 +76,7 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
     }
 
     @Override
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final PacketByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
         try {
             final IAEItemStack item = AEItemStack.fromPacket(data);
@@ -89,7 +89,7 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
     }
 
     @Override
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final PacketByteBuf data) throws IOException {
         super.writeToStream(data);
         final AEItemStack is = AEItemStack.fromItemStack(this.inv.getStackInSlot(0));
         if (is != null) {
@@ -132,13 +132,13 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
+    public ItemTransferable getInternalInventory() {
         return this.inv;
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final ItemStack added) {
+    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+                                  final ItemStack removed, final ItemStack added) {
         try {
             this.getProxy().getTick().wakeDevice(this.getProxy().getNode());
         } catch (final GridAccessException e) {
@@ -253,14 +253,14 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
 
     private class ChargerInvFilter implements IAEItemFilter {
         @Override
-        public boolean allowInsert(IItemHandler inv, final int i, final ItemStack itemstack) {
+        public boolean allowInsert(ItemTransferable inv, final int i, final ItemStack itemstack) {
             final IItemDefinition cert = AEApi.instance().definitions().materials().certusQuartzCrystal();
 
             return Platform.isChargeable(itemstack) || cert.isSameAs(itemstack);
         }
 
         @Override
-        public boolean allowExtract(IItemHandler inv, final int slotIndex, int amount) {
+        public boolean allowExtract(ItemTransferable inv, final int slotIndex, int amount) {
             ItemStack extractedItem = inv.getStackInSlot(slotIndex);
 
             if (Platform.isChargeable(extractedItem)) {

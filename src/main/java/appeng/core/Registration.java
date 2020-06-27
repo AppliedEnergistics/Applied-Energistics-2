@@ -18,9 +18,12 @@
 
 package appeng.core;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.particle.ParticleManager;
@@ -29,8 +32,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.particles.ParticleType;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.GenerationStage;
@@ -40,8 +42,6 @@ import net.minecraft.world.gen.feature.OreFeatureConfig;
 import net.minecraft.world.gen.placement.CountRangeConfig;
 import net.minecraft.world.gen.placement.IPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.ModDimension;
@@ -149,7 +149,7 @@ final class Registration {
         PartItemPredicate.register();
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void modelRegistryEvent(ModelRegistryEvent event) {
         registerSpecialModels();
     }
@@ -158,7 +158,7 @@ final class Registration {
      * Registers any JSON model files with Minecraft that are not referenced via
      * blockstates or item IDs
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private void registerSpecialModels() {
         SkyCompassModel.DEPENDENCIES.forEach(ModelLoader::addSpecialModel);
         ModelLoader.addSpecialModel(BiometricCardModel.MODEL_BASE);
@@ -175,7 +175,7 @@ final class Registration {
         final IForgeRegistry<Block> registry = event.getRegistry();
         // TODO: Do not use the internal API
         final ApiDefinitions definitions = Api.INSTANCE.definitions();
-        final Dist dist = FMLEnvironment.dist;
+        final EnvType dist = FMLEnvironment.dist;
         definitions.getRegistry().getBootstrapComponents(IBlockRegistrationComponent.class)
                 .forEachRemaining(b -> b.blockRegistration(dist, registry));
     }
@@ -184,13 +184,13 @@ final class Registration {
         final IForgeRegistry<Item> registry = event.getRegistry();
         // TODO: Do not use the internal API
         final ApiDefinitions definitions = Api.INSTANCE.definitions();
-        final Dist dist = FMLEnvironment.dist;
+        final EnvType dist = FMLEnvironment.dist;
         definitions.getRegistry().getBootstrapComponents(IItemRegistrationComponent.class)
                 .forEachRemaining(b -> b.itemRegistration(dist, registry));
     }
 
-    public void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
-        final IForgeRegistry<TileEntityType<?>> registry = event.getRegistry();
+    public void registerTileEntities(RegistryEvent.Register<BlockEntityType<?>> event) {
+        final IForgeRegistry<BlockEntityType<?>> registry = event.getRegistry();
         // TODO: Do not use the internal API
         final ApiDefinitions definitions = Api.INSTANCE.definitions();
         definitions.getRegistry().getBootstrapComponents(ITileEntityRegistrationComponent.class)
@@ -277,7 +277,7 @@ final class Registration {
         FluidTerminalContainer.TYPE = registerContainer(registry, "fluid_terminal", FluidTerminalContainer::fromNetwork,
                 FluidTerminalContainer::open);
 
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+        DistExecutor.runWhenOn(EnvType.CLIENT, () -> () -> {
             ScreenManager.registerFactory(GrinderContainer.TYPE, GrinderScreen::new);
             ScreenManager.registerFactory(QNBContainer.TYPE, QNBScreen::new);
             ScreenManager.registerFactory(SkyChestContainer.TYPE, SkyChestScreen::new);
@@ -363,7 +363,7 @@ final class Registration {
         registry.register(ParticleTypes.VIBRANT);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void registerParticleFactories(ParticleFactoryRegisterEvent event) {
         ParticleManager particles = Minecraft.getInstance().particles;
         particles.registerFactory(ParticleTypes.CHARGED_ORE, ChargedOreFX.Factory::new);
@@ -539,7 +539,7 @@ final class Registration {
         // whitelist from config
         for (final String dimension : AEConfig.instance().getMeteoriteDimensionWhitelist()) {
             registries.worldgen().enableWorldGenForDimension(IWorldGen.WorldGenType.METEORITES,
-                    new ResourceLocation(dimension));
+                    new Identifier(dimension));
         }
 
         ForgeRegistries.BIOMES.forEach(b -> {
@@ -606,7 +606,7 @@ final class Registration {
         evt.getRegistry().register(StorageCellModDimension.INSTANCE);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void registerTextures(TextureStitchEvent.Pre event) {
         SkyChestTESR.registerTextures(event);
         InscriberTESR.registerTexture(event);
@@ -616,7 +616,7 @@ final class Registration {
         new AECommand().register(evt.getCommandDispatcher());
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void registerItemColors(ColorHandlerEvent.Item event) {
         // TODO: Do not use the internal API
         final ApiDefinitions definitions = Api.INSTANCE.definitions();
@@ -624,7 +624,7 @@ final class Registration {
                 .forEachRemaining(c -> c.register(event.getItemColors(), event.getBlockColors()));
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void handleModelBake(ModelBakeEvent event) {
         // TODO: Do not use the internal API
         final ApiDefinitions definitions = Api.INSTANCE.definitions();
@@ -632,7 +632,7 @@ final class Registration {
                 .forEachRemaining(c -> c.onModelBakeEvent(event));
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void registerClientEvents() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 

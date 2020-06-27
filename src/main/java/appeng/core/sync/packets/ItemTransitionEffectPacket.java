@@ -20,12 +20,12 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.AEPartLocation;
 import appeng.client.render.effects.EnergyParticleData;
@@ -51,7 +51,7 @@ public class ItemTransitionEffectPacket extends BasePacket {
         this.z = z;
         this.d = direction;
 
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeFloat((float) x);
@@ -62,7 +62,7 @@ public class ItemTransitionEffectPacket extends BasePacket {
         this.configureWrite(data);
     }
 
-    public ItemTransitionEffectPacket(final PacketBuffer stream) {
+    public ItemTransitionEffectPacket(final PacketByteBuf stream) {
         this.x = stream.readFloat();
         this.y = stream.readFloat();
         this.z = stream.readFloat();
@@ -70,7 +70,7 @@ public class ItemTransitionEffectPacket extends BasePacket {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         final World world = AppEng.proxy.getWorld();
 

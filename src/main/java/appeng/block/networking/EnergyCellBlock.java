@@ -18,6 +18,8 @@
 
 package appeng.block.networking;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemGroup;
@@ -26,8 +28,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.helpers.AEGlassMaterial;
@@ -42,7 +42,7 @@ public class EnergyCellBlock extends AEBaseTileBlock<EnergyCellTileEntity> {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> itemStacks) {
         super.fillItemGroup(group, itemStacks);
 

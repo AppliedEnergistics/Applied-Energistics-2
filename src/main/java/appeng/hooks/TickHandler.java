@@ -34,7 +34,7 @@ import com.google.common.base.Stopwatch;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -61,7 +61,7 @@ public class TickHandler {
     public static final TickHandler INSTANCE = new TickHandler();
     private final Queue<IWorldCallable<?>> serverQueue = new ArrayDeque<>();
     private final Multimap<World, CraftingJob> craftingJobs = LinkedListMultimap.create();
-    private final WeakHashMap<IWorld, Queue<IWorldCallable<?>>> callQueue = new WeakHashMap<>();
+    private final WeakHashMap<WorldAccess, Queue<IWorldCallable<?>>> callQueue = new WeakHashMap<>();
     private final HandlerRep server = new HandlerRep();
     private final HandlerRep client = new HandlerRep();
     private final HashMap<Integer, PlayerColor> cliPlayerColors = new HashMap<>();
@@ -75,7 +75,7 @@ public class TickHandler {
         return this.cliPlayerColors;
     }
 
-    public void addCallable(final IWorld w, final IWorldCallable<?> c) {
+    public void addCallable(final WorldAccess w, final IWorldCallable<?> c) {
         if (w == null) {
             this.serverQueue.add(c);
         } else {

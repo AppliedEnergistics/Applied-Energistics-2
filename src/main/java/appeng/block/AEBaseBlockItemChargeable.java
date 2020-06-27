@@ -21,16 +21,16 @@ package appeng.block;
 import java.text.MessageFormat;
 import java.util.List;
 
+import net.fabricmc.api.EnvType;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.Identifier;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.Environment;
 
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
@@ -45,7 +45,7 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
     public AEBaseBlockItemChargeable(Block id, Properties props) {
         super(id, props);
 
-        addPropertyOverride(new ResourceLocation("appliedenergistics2:fill_level"), (is, world, entity) -> {
+        addPropertyOverride(new Identifier("appliedenergistics2:fill_level"), (is, world, entity) -> {
             double curPower = getAECurrentPower(is);
             double maxPower = getAEMaxPower(is);
 
@@ -54,8 +54,8 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void addCheckedInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+    @Environment(EnvType.CLIENT)
+    public void addCheckedInformation(final ItemStack stack, final World world, final List<Text> lines,
             final ITooltipFlag advancedTooltips) {
         double internalCurrentPower = 0;
         final double internalMaxPower = this.getMaxEnergyCapacity();
@@ -70,7 +70,7 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
 
             lines.add(GuiText.StoredEnergy.textComponent()
                     .appendText(':' + MessageFormat.format(" {0,number,#} ", internalCurrentPower))
-                    .appendSibling(new TranslationTextComponent(PowerUnits.AE.unlocalizedName))
+                    .appendSibling(new TranslatableText(PowerUnits.AE.unlocalizedName))
                     .appendText(" - " + MessageFormat.format("{0,number,#.##%}", percent)));
         }
     }

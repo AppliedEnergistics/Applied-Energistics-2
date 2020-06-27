@@ -20,11 +20,11 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.network.PacketByteBuf;
+import net.fabricmc.api.EnvType;
 
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
@@ -38,7 +38,7 @@ public class LightningPacket extends BasePacket {
     private final double y;
     private final double z;
 
-    public LightningPacket(final PacketBuffer stream) {
+    public LightningPacket(final PacketByteBuf stream) {
         this.x = stream.readFloat();
         this.y = stream.readFloat();
         this.z = stream.readFloat();
@@ -50,7 +50,7 @@ public class LightningPacket extends BasePacket {
         this.y = y;
         this.z = z;
 
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeFloat((float) x);
@@ -61,7 +61,7 @@ public class LightningPacket extends BasePacket {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         try {
             if (Platform.isClient() && AEConfig.instance().isEnableEffects()) {

@@ -20,7 +20,7 @@ package appeng.fluids.items;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 import appeng.api.AEApi;
 import appeng.api.storage.IStorageChannel;
@@ -88,7 +88,7 @@ public final class BasicFluidStorageCell extends AbstractStorageCell<IAEFluidSta
     }
 
     @Override
-    public IItemHandler getConfigInventory(final ItemStack is) {
+    public ItemTransferable getConfigInventory(final ItemStack is) {
         return new FluidCellConfig(is);
     }
 

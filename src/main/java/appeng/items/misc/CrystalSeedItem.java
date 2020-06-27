@@ -24,6 +24,8 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.client.util.ITooltipFlag;
@@ -32,14 +34,12 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.IItemProvider;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.implementations.items.IGrowableCrystal;
 import appeng.core.localization.ButtonToolTips;
@@ -71,7 +71,7 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
         super(properties);
         this.grownItem = Preconditions.checkNotNull(grownItem);
         // Expose the growth of the seed to the model system
-        addPropertyOverride(new ResourceLocation("appliedenergistics2:growth"),
+        addPropertyOverride(new Identifier("appliedenergistics2:growth"),
                 (is, w, p) -> getGrowthTicks(is) / (float) GROWTH_TICKS_REQUIRED);
     }
 
@@ -103,8 +103,8 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+    @Environment(EnvType.CLIENT)
+    public void addInformation(final ItemStack stack, final World world, final List<Text> lines,
             final ITooltipFlag advancedTooltips) {
         lines.add(ButtonToolTips.DoesntDespawn.getTranslationKey());
         lines.add(getGrowthTooltipItem(stack));
@@ -112,7 +112,7 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
         super.addInformation(stack, world, lines, advancedTooltips);
     }
 
-    public ITextComponent getGrowthTooltipItem(ItemStack stack) {
+    public Text getGrowthTooltipItem(ItemStack stack) {
         final int progress = getGrowthTicks(stack);
         return new StringTextComponent(Math.round(100 * progress / (float) GROWTH_TICKS_REQUIRED) + "%");
     }

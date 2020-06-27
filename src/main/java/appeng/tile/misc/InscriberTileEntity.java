@@ -25,14 +25,14 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import appeng.api.AEApi;
@@ -89,16 +89,16 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
     private final AppEngInternalInventory bottomItemHandler = new AppEngInternalInventory(this, 1, 1);
     private final AppEngInternalInventory sideItemHandler = new AppEngInternalInventory(this, 2, 1);
 
-    private final IItemHandler topItemHandlerExtern;
-    private final IItemHandler bottomItemHandlerExtern;
-    private final IItemHandler sideItemHandlerExtern;
+    private final ItemTransferable topItemHandlerExtern;
+    private final ItemTransferable bottomItemHandlerExtern;
+    private final ItemTransferable sideItemHandlerExtern;
 
     private InscriberRecipe cachedTask = null;
 
     private final IItemHandlerModifiable inv = new WrapperChainedItemHandler(this.topItemHandler,
             this.bottomItemHandler, this.sideItemHandler);
 
-    public InscriberTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public InscriberTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
 
         this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));
@@ -142,7 +142,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final PacketByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
         final int slot = data.readByte();
 
@@ -167,7 +167,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final PacketByteBuf data) throws IOException {
         super.writeToStream(data);
         int slot = this.isSmash() ? 64 : 0;
 
@@ -206,13 +206,13 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
+    public ItemTransferable getInternalInventory() {
         return this.inv;
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final ItemStack added) {
+    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+                                  final ItemStack removed, final ItemStack added) {
         try {
             if (slot == 0) {
                 this.setProcessingTime(0);
@@ -341,7 +341,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    public IItemHandler getInventoryByName(final String name) {
+    public ItemTransferable getInventoryByName(final String name) {
         if (name.equals("inv")) {
             return this.getInternalInventory();
         }
@@ -354,7 +354,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    protected IItemHandler getItemHandlerForSide(@Nonnull Direction facing) {
+    protected ItemTransferable getItemHandlerForSide(@Nonnull Direction facing) {
         if (facing == this.getUp()) {
             return this.topItemHandlerExtern;
         } else if (facing == this.getUp().getOpposite()) {
@@ -410,7 +410,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
      */
     private class ItemHandlerFilter implements IAEItemFilter {
         @Override
-        public boolean allowExtract(IItemHandler inv, int slot, int amount) {
+        public boolean allowExtract(ItemTransferable inv, int slot, int amount) {
             if (InscriberTileEntity.this.isSmash()) {
                 return false;
             }
@@ -420,7 +420,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
         }
 
         @Override
-        public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
+        public boolean allowInsert(ItemTransferable inv, int slot, ItemStack stack) {
             // output slot
             if (slot == 1) {
                 return false;

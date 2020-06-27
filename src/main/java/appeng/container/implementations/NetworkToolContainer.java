@@ -23,7 +23,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.container.AEBaseContainer;
@@ -38,7 +38,7 @@ public class NetworkToolContainer extends AEBaseContainer {
     private static final ContainerHelper<NetworkToolContainer, INetworkTool> helper = new ContainerHelper<>(
             NetworkToolContainer::new, INetworkTool.class);
 
-    public static NetworkToolContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static NetworkToolContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 

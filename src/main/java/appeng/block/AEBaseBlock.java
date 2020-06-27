@@ -37,7 +37,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 
@@ -105,7 +105,7 @@ public abstract class AEBaseBlock extends Block {
     /**
      * Rotates around the given Axis (usually the current up axis).
      */
-    public boolean rotateAroundFaceAxis(IWorld w, BlockPos pos, Direction face) {
+    public boolean rotateAroundFaceAxis(WorldAccess w, BlockPos pos, Direction face) {
         final IOrientable rotatable = this.getOrientable(w, pos);
 
         if (rotatable != null && rotatable.canBeRotated()) {
@@ -216,7 +216,7 @@ public abstract class AEBaseBlock extends Block {
         return null;
     }
 
-    protected boolean isValidOrientation(final IWorld w, final BlockPos pos, final Direction forward,
+    protected boolean isValidOrientation(final WorldAccess w, final BlockPos pos, final Direction forward,
             final Direction up) {
         return true;
     }

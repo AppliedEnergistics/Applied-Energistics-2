@@ -21,8 +21,8 @@ package appeng.client.render.cablebus;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.fluid.IFluidState;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ILightReader;
@@ -51,7 +51,7 @@ public class FacadeBlockAccess implements ILightReader {
 
     @Nullable
     @Override
-    public TileEntity getTileEntity(BlockPos pos) {
+    public BlockEntity getTileEntity(BlockPos pos) {
         return this.world.getTileEntity(pos);
     }
 

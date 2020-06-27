@@ -20,13 +20,13 @@ package appeng.items.storage;
 
 import java.util.List;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
@@ -49,12 +49,12 @@ public class CreativeStorageCellItem extends AEBaseItem implements ICellWorkbenc
     }
 
     @Override
-    public IItemHandler getUpgradesInventory(final ItemStack is) {
+    public ItemTransferable getUpgradesInventory(final ItemStack is) {
         return null;
     }
 
     @Override
-    public IItemHandler getConfigInventory(final ItemStack is) {
+    public ItemTransferable getConfigInventory(final ItemStack is) {
         return new CellConfig(is);
     }
 
@@ -68,9 +68,9 @@ public class CreativeStorageCellItem extends AEBaseItem implements ICellWorkbenc
 
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
-    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+    public void addInformation(final ItemStack stack, final World world, final List<Text> lines,
             final ITooltipFlag advancedTooltips) {
         final IMEInventoryHandler<?> inventory = AEApi.instance().registries().cell().getCellInventory(stack, null,
                 AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));

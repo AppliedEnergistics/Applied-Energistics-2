@@ -21,7 +21,7 @@ package appeng.core.api.definitions;
 import java.util.function.Function;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IParts;
@@ -201,9 +201,9 @@ public final class ApiParts implements IParts {
     private void registerPartModels(PartModels partModels) {
 
         // Register the built-in models for annihilation planes
-        ResourceLocation fluidFormationPlaneTexture = new ResourceLocation(AppEng.MOD_ID,
+        Identifier fluidFormationPlaneTexture = new Identifier(AppEng.MOD_ID,
                 "item/part/fluid_formation_plane");
-        ResourceLocation fluidFormationPlaneOnTexture = new ResourceLocation(AppEng.MOD_ID,
+        Identifier fluidFormationPlaneOnTexture = new Identifier(AppEng.MOD_ID,
                 "parts/fluid_formation_plane_on");
 
         // Register all part models

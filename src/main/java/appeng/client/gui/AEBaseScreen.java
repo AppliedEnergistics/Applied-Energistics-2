@@ -51,8 +51,8 @@ import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.Identifier;
+import net.minecraft.text.Text;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fml.client.gui.GuiUtils;
@@ -100,7 +100,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     private Slot bl_clicked;
     protected final List<CustomSlotWidget> guiSlots = new ArrayList<>();
 
-    public AEBaseScreen(T container, PlayerInventory playerInventory, ITextComponent title) {
+    public AEBaseScreen(T container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
     }
 
@@ -587,7 +587,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     public void bindTexture(final String base, final String file) {
-        final ResourceLocation loc = new ResourceLocation(base, "textures/" + file);
+        final Identifier loc = new Identifier(base, "textures/" + file);
         getMinecraft().getTextureManager().bindTexture(loc);
     }
 
@@ -646,7 +646,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 final Fluid fluid = fs.getFluid();
                 FluidAttributes fluidAttributes = fluid.getAttributes();
                 bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-                ResourceLocation fluidStillTexture = fluidAttributes.getStillTexture(fs.getFluidStack());
+                Identifier fluidStillTexture = fluidAttributes.getStillTexture(fs.getFluidStack());
                 final TextureAtlasSprite sprite = getMinecraft()
                         .getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(fluidStillTexture);
 
@@ -762,11 +762,11 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     public void bindTexture(final String file) {
-        final ResourceLocation loc = new ResourceLocation(AppEng.MOD_ID, "textures/" + file);
+        final Identifier loc = new Identifier(AppEng.MOD_ID, "textures/" + file);
         getMinecraft().getTextureManager().bindTexture(loc);
     }
 
-    public void bindTexture(final ResourceLocation loc) {
+    public void bindTexture(final Identifier loc) {
         getMinecraft().getTextureManager().bindTexture(loc);
     }
 

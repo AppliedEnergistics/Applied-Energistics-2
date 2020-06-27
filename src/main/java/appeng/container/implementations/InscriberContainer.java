@@ -23,8 +23,8 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraft.network.PacketByteBuf;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 import appeng.api.AEApi;
 import appeng.api.definitions.IItemDefinition;
@@ -50,7 +50,7 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
     private static final ContainerHelper<InscriberContainer, InscriberTileEntity> helper = new ContainerHelper<>(
             InscriberContainer::new, InscriberTileEntity.class);
 
-    public static InscriberContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static InscriberContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -74,7 +74,7 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
         super(TYPE, id, ip, te);
         this.ti = te;
 
-        IItemHandler inv = te.getInternalInventory();
+        ItemTransferable inv = te.getInternalInventory();
 
         RestrictedInputSlot top = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.INSCRIBER_PLATE, inv, 0,
                 45, 16, this.getPlayerInventory());

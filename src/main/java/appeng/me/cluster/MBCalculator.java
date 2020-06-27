@@ -18,7 +18,7 @@
 
 package appeng.me.cluster;
 
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -158,7 +158,7 @@ public abstract class MBCalculator {
      *
      * @return true if tile entity is valid for structure
      */
-    public abstract boolean isValidTile(TileEntity te);
+    public abstract boolean isValidTile(BlockEntity te);
 
     private boolean verifyUnownedRegionInner(final World w, int minX, int minY, int minZ, int maxX, int maxY, int maxZ,
             final AEPartLocation side) {
@@ -194,7 +194,7 @@ public abstract class MBCalculator {
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
                 for (int z = minZ; z <= maxZ; z++) {
-                    final TileEntity te = w.getTileEntity(new BlockPos(x, y, z));
+                    final BlockEntity te = w.getTileEntity(new BlockPos(x, y, z));
                     if (this.isValidTile(te)) {
                         return true;
                     }

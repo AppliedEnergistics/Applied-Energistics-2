@@ -20,11 +20,11 @@ package appeng.util;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.Direction;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 import appeng.api.config.FuzzyMode;
 import appeng.util.inv.AdaptorItemHandler;
@@ -39,9 +39,9 @@ import appeng.util.inv.ItemSlot;
  * import/export buses.
  */
 public abstract class InventoryAdaptor implements Iterable<ItemSlot> {
-    public static InventoryAdaptor getAdaptor(final TileEntity te, final Direction d) {
+    public static InventoryAdaptor getAdaptor(final BlockEntity te, final Direction d) {
         if (te != null) {
-            LazyOptional<IItemHandler> cap = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, d);
+            LazyOptional<ItemTransferable> cap = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, d);
 
             // Attempt getting an IItemHandler for the given side via caps
             if (cap.isPresent()) {

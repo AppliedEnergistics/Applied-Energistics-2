@@ -22,13 +22,13 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
@@ -42,7 +42,7 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassTileEntity> {
     }
 
     @Override
-    public boolean isValidOrientation(final IWorld w, final BlockPos pos, final Direction forward, final Direction up) {
+    public boolean isValidOrientation(final WorldAccess w, final BlockPos pos, final Direction forward, final Direction up) {
         final SkyCompassTileEntity sc = this.getTileEntity(w, pos);
         if (sc != null) {
             return false;
@@ -139,7 +139,7 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassTileEntity> {
                     break;
             }
 
-            return VoxelShapes.create(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ));
+            return VoxelShapes.create(new Box(minX, minY, minZ, maxX, maxY, maxZ));
         }
         return VoxelShapes.empty();
     }

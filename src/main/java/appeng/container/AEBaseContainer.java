@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -33,8 +35,6 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
 import appeng.api.AEApi;
@@ -81,7 +81,7 @@ public abstract class AEBaseContainer extends Container {
     private final PlayerInventory invPlayer;
     private final IActionSource mySrc;
     private final HashSet<Integer> locked = new HashSet<>();
-    private final TileEntity tileEntity;
+    private final BlockEntity tileEntity;
     private final IPart part;
     private final IGuiItemObject obj;
     private final HashMap<Integer, SyncData> syncData = new HashMap<>();
@@ -96,12 +96,12 @@ public abstract class AEBaseContainer extends Container {
     // Slots that were created to represent the player inventory
     private List<Slot> playerInventorySlots = null;
 
-    public AEBaseContainer(ContainerType<?> containerType, int id, final PlayerInventory ip, final TileEntity myTile,
+    public AEBaseContainer(ContainerType<?> containerType, int id, final PlayerInventory ip, final BlockEntity myTile,
             final IPart myPart) {
         this(containerType, id, ip, myTile, myPart, null);
     }
 
-    public AEBaseContainer(ContainerType<?> containerType, int id, final PlayerInventory ip, final TileEntity myTile,
+    public AEBaseContainer(ContainerType<?> containerType, int id, final PlayerInventory ip, final BlockEntity myTile,
             final IPart myPart, final IGuiItemObject gio) {
         super(containerType, id);
         this.invPlayer = ip;
@@ -115,7 +115,7 @@ public abstract class AEBaseContainer extends Container {
     public AEBaseContainer(ContainerType<?> containerType, int id, final PlayerInventory ip, final Object anchor) {
         super(containerType, id);
         this.invPlayer = ip;
-        this.tileEntity = anchor instanceof TileEntity ? (TileEntity) anchor : null;
+        this.tileEntity = anchor instanceof BlockEntity ? (BlockEntity) anchor : null;
         this.part = anchor instanceof IPart ? (IPart) anchor : null;
         this.obj = anchor instanceof IGuiItemObject ? (IGuiItemObject) anchor : null;
 
@@ -242,7 +242,7 @@ public abstract class AEBaseContainer extends Container {
         return this.getPlayerInventory();
     }
 
-    public TileEntity getTileEntity() {
+    public BlockEntity getTileEntity() {
         return this.tileEntity;
     }
 
@@ -262,7 +262,7 @@ public abstract class AEBaseContainer extends Container {
     }
 
     protected void bindPlayerInventory(final PlayerInventory PlayerInventory, final int offsetX, final int offsetY) {
-        IItemHandler ih = new PlayerInvWrapper(PlayerInventory);
+        ItemTransferable ih = new PlayerInvWrapper(PlayerInventory);
 
         // bind player inventory
         for (int i = 0; i < 3; i++) {

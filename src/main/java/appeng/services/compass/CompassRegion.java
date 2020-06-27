@@ -21,7 +21,7 @@ package appeng.services.compass;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.storage.WorldSavedData;
 
 final class CompassRegion {

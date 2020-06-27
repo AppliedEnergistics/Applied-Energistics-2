@@ -21,17 +21,16 @@ package appeng.fluids.util;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import com.google.common.base.Preconditions;
 
-import net.minecraft.fluid.EmptyFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.api.AEApi;
@@ -77,7 +76,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
         this.tagCompound = tag;
     }
 
-    public static AEFluidStack fromFluidStack(final FluidStack input) {
+    public static AEFluidStack fromFluidStack(final FluidVolume input) {
         if (input.isEmpty()) {
             return null;
         }
@@ -96,7 +95,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
     }
 
     public static IAEFluidStack fromNBT(final CompoundTag data) {
-        ResourceLocation fluidId = new ResourceLocation(data.getString(NBT_FLUID_ID));
+        Identifier fluidId = new Identifier(data.getString(NBT_FLUID_ID));
         Fluid fluid = ForgeRegistries.FLUIDS.getValue(fluidId);
         if (fluid == null || fluid == Fluids.EMPTY) {
             return null;
@@ -196,8 +195,8 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
         if (other instanceof AEFluidStack) {
             final AEFluidStack is = (AEFluidStack) other;
             return is.fluid == this.fluid && Platform.itemComparisons().isNbtTagEqual(this.tagCompound, is.tagCompound);
-        } else if (other instanceof FluidStack) {
-            final FluidStack is = (FluidStack) other;
+        } else if (other instanceof FluidVolume) {
+            final FluidVolume is = (FluidVolume) other;
             return is.getFluid() == this.fluid
                     && Platform.itemComparisons().isNbtTagEqual(this.tagCompound, is.getTag());
         }
@@ -215,9 +214,9 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
     }
 
     @Override
-    public FluidStack getFluidStack() {
+    public FluidVolume getFluidStack() {
         final int amount = (int) Math.min(Integer.MAX_VALUE, this.getStackSize());
-        final FluidStack is = new FluidStack(this.fluid, amount, this.tagCompound);
+        final FluidVolume is = new FluidVolume(this.fluid, amount, this.tagCompound);
 
         return is;
     }
@@ -238,9 +237,9 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
         return ItemStack.EMPTY;
     }
 
-    public static IAEFluidStack fromPacket(final PacketBuffer buffer) {
+    public static IAEFluidStack fromPacket(final PacketByteBuf buffer) {
         final boolean isCraftable = buffer.readBoolean();
-        final FluidStack fluidStack = buffer.readFluidStack();
+        final FluidVolume fluidStack = buffer.readFluidStack();
 
         final long stackSize = buffer.readVarLong();
         final long countRequestable = buffer.readVarLong();
@@ -257,7 +256,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
     }
 
     @Override
-    public void writeToPacket(final PacketBuffer buffer) {
+    public void writeToPacket(final PacketByteBuf buffer) {
         buffer.writeBoolean(this.isCraftable());
         buffer.writeFluidStack(this.getFluidStack());
         buffer.writeVarLong(this.getStackSize());

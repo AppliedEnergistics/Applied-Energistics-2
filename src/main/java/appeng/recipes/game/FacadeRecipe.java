@@ -26,7 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipe;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
@@ -41,7 +41,7 @@ public final class FacadeRecipe extends SpecialRecipe {
     private final IComparableDefinition anchor;
     private final FacadeItem facade;
 
-    public FacadeRecipe(ResourceLocation id, FacadeItem facade) {
+    public FacadeRecipe(Identifier id, FacadeItem facade) {
         super(id);
         this.facade = facade;
         final IDefinitions definitions = AEApi.instance().definitions();
@@ -90,7 +90,7 @@ public final class FacadeRecipe extends SpecialRecipe {
     public static IRecipeSerializer<FacadeRecipe> getSerializer(FacadeItem facade) {
         if (SERIALIZER == null) {
             SERIALIZER = new SpecialRecipeSerializer<>(id -> new FacadeRecipe(id, facade));
-            SERIALIZER.setRegistryName(new ResourceLocation(AppEng.MOD_ID, "facade"));
+            SERIALIZER.setRegistryName(new Identifier(AppEng.MOD_ID, "facade"));
         }
         return SERIALIZER;
     }

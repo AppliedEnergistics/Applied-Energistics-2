@@ -21,6 +21,7 @@ package appeng.container.slot;
 import java.util.List;
 import java.util.Set;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -28,10 +29,9 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.definitions.IDefinitions;
@@ -58,20 +58,20 @@ import appeng.util.Platform;
  */
 public class RestrictedInputSlot extends AppEngSlot {
 
-    private static final List<ResourceLocation> METAL_INGOT_TAGS = ImmutableList.of(
-            new ResourceLocation("forge:ingots/copper"), new ResourceLocation("forge:ingots/tin"),
-            new ResourceLocation("forge:ingots/iron"), new ResourceLocation("forge:ingots/gold"),
-            new ResourceLocation("forge:ingots/lead"), new ResourceLocation("forge:ingots/bronze"),
-            new ResourceLocation("forge:ingots/brass"), new ResourceLocation("forge:ingots/nickel"),
-            new ResourceLocation("forge:ingots/aluminium"));
+    private static final List<Identifier> METAL_INGOT_TAGS = ImmutableList.of(
+            new Identifier("forge:ingots/copper"), new Identifier("forge:ingots/tin"),
+            new Identifier("forge:ingots/iron"), new Identifier("forge:ingots/gold"),
+            new Identifier("forge:ingots/lead"), new Identifier("forge:ingots/bronze"),
+            new Identifier("forge:ingots/brass"), new Identifier("forge:ingots/nickel"),
+            new Identifier("forge:ingots/aluminium"));
 
     private final PlacableItemType which;
     private final PlayerInventory p;
     private boolean allowEdit = true;
     private int stackLimit = -1;
 
-    public RestrictedInputSlot(final PlacableItemType valid, final IItemHandler i, final int slotIndex, final int x,
-            final int y, final PlayerInventory p) {
+    public RestrictedInputSlot(final PlacableItemType valid, final ItemTransferable i, final int slotIndex, final int x,
+                               final int y, final PlayerInventory p) {
         super(i, slotIndex, x, y);
         this.which = valid;
         this.setIIcon(valid.IIcon);
@@ -247,8 +247,8 @@ public class RestrictedInputSlot extends AppEngSlot {
             return true;
         }
 
-        Set<ResourceLocation> itemTags = i.getItem().getTags();
-        for (ResourceLocation tagName : METAL_INGOT_TAGS) {
+        Set<Identifier> itemTags = i.getItem().getTags();
+        for (Identifier tagName : METAL_INGOT_TAGS) {
             if (itemTags.contains(tagName)) {
                 return true;
             }

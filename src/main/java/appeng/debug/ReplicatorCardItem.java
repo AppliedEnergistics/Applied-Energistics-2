@@ -25,7 +25,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
@@ -90,7 +90,7 @@ public class ReplicatorCardItem extends AEBaseItem {
                 final int dimid = ish.getInt("dimid");
                 final World src_w = world.getServer().getWorld(DimensionType.getById(dimid));
 
-                final TileEntity te = src_w.getTileEntity(new BlockPos(src_x, src_y, src_z));
+                final BlockEntity te = src_w.getTileEntity(new BlockPos(src_x, src_y, src_z));
                 if (te instanceof IGridHost) {
                     final IGridHost gh = (IGridHost) te;
                     final Direction sideOff = Direction.values()[src_side];
@@ -131,8 +131,8 @@ public class ReplicatorCardItem extends AEBaseItem {
 
                                             world.setBlockState(d, state);
                                             if (blk != null && blk.hasTileEntity(state)) {
-                                                final TileEntity ote = src_w.getTileEntity(p);
-                                                final TileEntity nte = blk.createTileEntity(state, world);
+                                                final BlockEntity ote = src_w.getTileEntity(p);
+                                                final BlockEntity nte = blk.createTileEntity(state, world);
                                                 final CompoundTag data = new CompoundTag();
                                                 ote.write(data);
                                                 nte.read(data.copy());

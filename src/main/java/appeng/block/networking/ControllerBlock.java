@@ -26,7 +26,7 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
@@ -86,7 +86,7 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerTileEntity> {
      * texture feel for the controller based on how it is placed.
      */
     @Override
-    public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld world,
+    public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, WorldAccess world,
             BlockPos pos, BlockPos facingPos) {
 
         // FIXME: this might work, or might _NOT_ work, but needs to be investigated

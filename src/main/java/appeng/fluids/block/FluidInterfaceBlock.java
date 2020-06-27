@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 import net.minecraft.block.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -49,7 +49,7 @@ public class FluidInterfaceBlock extends AEBaseTileBlock<FluidInterfaceTileEntit
             return ActionResult.PASS;
         }
 
-        final TileEntity tg = this.getTileEntity(w, pos);
+        final BlockEntity tg = this.getTileEntity(w, pos);
         if (tg != null) {
             if (Platform.isServer()) {
                 ContainerOpener.openContainer(FluidInterfaceContainer.TYPE, p,

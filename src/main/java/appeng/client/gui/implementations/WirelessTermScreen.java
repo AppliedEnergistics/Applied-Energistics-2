@@ -19,7 +19,7 @@
 package appeng.client.gui.implementations;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 
 import appeng.container.implementations.MEPortableCellContainer;
 
@@ -27,7 +27,7 @@ import appeng.container.implementations.MEPortableCellContainer;
 public class WirelessTermScreen extends MEMonitorableScreen<MEPortableCellContainer> {
 
     public WirelessTermScreen(MEPortableCellContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
+            Text title) {
         super(container, playerInventory, title);
     }
 

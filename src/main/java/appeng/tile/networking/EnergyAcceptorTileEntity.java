@@ -18,9 +18,9 @@
 
 package appeng.tile.networking;
 
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraftforge.items.IItemHandler;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import appeng.api.config.Actionable;
@@ -33,7 +33,7 @@ import appeng.util.inv.InvOperation;
 
 public class EnergyAcceptorTileEntity extends AENetworkPowerTileEntity {
 
-    public EnergyAcceptorTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public EnergyAcceptorTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getProxy().setIdlePowerUsage(0.0);
         this.setInternalMaxPower(0);
@@ -68,13 +68,13 @@ public class EnergyAcceptorTileEntity extends AENetworkPowerTileEntity {
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
+    public ItemTransferable getInternalInventory() {
         return EmptyHandler.INSTANCE;
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final ItemStack added) {
+    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+                                  final ItemStack removed, final ItemStack added) {
 
     }
 }

@@ -20,16 +20,16 @@ package appeng.client.render.renderable;
 
 import java.util.function.Function;
 
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.render.VertexConsumerProvider;
 import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.TransformationMatrix;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.render.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 
-public class ItemRenderable<T extends TileEntity> implements Renderable<T> {
+public class ItemRenderable<T extends BlockEntity> implements Renderable<T> {
 
     private final Function<T, Pair<ItemStack, TransformationMatrix>> f;
 
@@ -38,8 +38,8 @@ public class ItemRenderable<T extends TileEntity> implements Renderable<T> {
     }
 
     @Override
-    public void renderTileEntityAt(T te, float partialTicks, com.mojang.blaze3d.matrix.MatrixStack matrixStack,
-            IRenderTypeBuffer buffers, int combinedLight, int combinedOverlay) {
+    public void renderTileEntityAt(T te, float partialTicks, net.minecraft.client.util.math.MatrixStack matrixStack,
+                                   VertexConsumerProvider buffers, int combinedLight, int combinedOverlay) {
         Pair<ItemStack, TransformationMatrix> pair = this.f.apply(te);
         if (pair != null && pair.getLeft() != null) {
             if (pair.getRight() != null) {

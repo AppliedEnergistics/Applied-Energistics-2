@@ -29,16 +29,16 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.render.model.IBakedModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.util.Identifier;
+import net.fabricmc.api.EnvType;
 
 import appeng.api.features.AEFeature;
 import appeng.bootstrap.components.ModelOverrideComponent;
@@ -51,7 +51,7 @@ public class FeatureFactory {
 
     private final Map<Class<? extends IBootstrapComponent>, List<IBootstrapComponent>> bootstrapComponents;
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private ModelOverrideComponent modelOverrideComponent;
 
     public FeatureFactory() {
@@ -86,7 +86,7 @@ public class FeatureFactory {
     }
 
     public <T extends AEBaseTileEntity> TileEntityBuilder<T> tileEntity(String id, Class<T> teClass,
-            Function<TileEntityType<T>, T> factory) {
+            Function<BlockEntityType<T>, T> factory) {
         return new TileEntityBuilder<>(this, id, teClass, factory).features(this.defaultFeatures);
     }
 
@@ -104,8 +104,8 @@ public class FeatureFactory {
         this.bootstrapComponents.computeIfAbsent(eventType, c -> new ArrayList<IBootstrapComponent>()).add(component);
     }
 
-    @OnlyIn(Dist.CLIENT)
-    void addModelOverride(String resourcePath, BiFunction<ResourceLocation, IBakedModel, IBakedModel> customizer) {
+    @Environment(EnvType.CLIENT)
+    void addModelOverride(String resourcePath, BiFunction<Identifier, IBakedModel, IBakedModel> customizer) {
         this.modelOverrideComponent.addOverride(resourcePath, customizer);
     }
 

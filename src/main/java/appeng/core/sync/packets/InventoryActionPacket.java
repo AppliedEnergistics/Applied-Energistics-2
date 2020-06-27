@@ -23,7 +23,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.AEBaseContainer;
@@ -44,7 +44,7 @@ public class InventoryActionPacket extends BasePacket {
     private final long id;
     private final IAEItemStack slotItem;
 
-    public InventoryActionPacket(final PacketBuffer stream) {
+    public InventoryActionPacket(final PacketByteBuf stream) {
         this.action = InventoryAction.values()[stream.readInt()];
         this.slot = stream.readInt();
         this.id = stream.readLong();
@@ -68,7 +68,7 @@ public class InventoryActionPacket extends BasePacket {
         this.id = 0;
         this.slotItem = slotItem;
 
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeInt(action.ordinal());
@@ -92,7 +92,7 @@ public class InventoryActionPacket extends BasePacket {
         this.id = id;
         this.slotItem = null;
 
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeInt(action.ordinal());

@@ -21,6 +21,8 @@ package appeng.items.storage;
 import java.util.List;
 import java.util.Set;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
+import net.fabricmc.api.EnvType;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -29,11 +31,9 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.items.IItemHandler;
+import net.fabricmc.api.Environment;
 
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
@@ -71,9 +71,9 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
         this.component = whichCell;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
-    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+    public void addInformation(final ItemStack stack, final World world, final List<Text> lines,
             final ITooltipFlag advancedTooltips) {
         AEApi.instance().client().addCellInformation(
                 AEApi.instance().registries().cell().getCellInventory(stack, null, this.getChannel()), lines);
@@ -115,12 +115,12 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     }
 
     @Override
-    public IItemHandler getUpgradesInventory(final ItemStack is) {
+    public ItemTransferable getUpgradesInventory(final ItemStack is) {
         return new CellUpgrades(is, 2);
     }
 
     @Override
-    public IItemHandler getConfigInventory(final ItemStack is) {
+    public ItemTransferable getConfigInventory(final ItemStack is) {
         return new CellConfig(is);
     }
 
@@ -167,7 +167,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
                     }
 
                     // drop upgrades
-                    final IItemHandler upgradesInventory = this.getUpgradesInventory(stack);
+                    final ItemTransferable upgradesInventory = this.getUpgradesInventory(stack);
                     for (int upgradeIndex = 0; upgradeIndex < upgradesInventory.getSlots(); upgradeIndex++) {
                         final ItemStack upgradeStack = upgradesInventory.getStackInSlot(upgradeIndex);
                         final ItemStack leftStack = ia.addItems(upgradeStack);

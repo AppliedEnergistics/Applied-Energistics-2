@@ -25,7 +25,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.IPacket;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -45,7 +45,7 @@ public abstract class AEBaseItemEntity extends ItemEntity {
         this.lifespan = stack.getEntityLifespan(world);
     }
 
-    protected List<Entity> getCheckedEntitiesWithinAABBExcludingEntity(final AxisAlignedBB region) {
+    protected List<Entity> getCheckedEntitiesWithinAABBExcludingEntity(final Box region) {
         return this.world.getEntitiesWithinAABBExcludingEntity(this, region);
     }
 

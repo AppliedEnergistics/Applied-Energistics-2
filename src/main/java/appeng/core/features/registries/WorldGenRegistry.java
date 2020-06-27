@@ -20,10 +20,9 @@ package appeng.core.features.registries;
 
 import java.util.HashSet;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.dimension.Dimension;
+import net.minecraft.util.Identifier;
+import net.minecraft.world.WorldAccess;
+import net.minecraft.world.dimension.DimensionType;
 
 import appeng.api.features.IWorldGen;
 
@@ -55,7 +54,7 @@ public final class WorldGenRegistry implements IWorldGen {
     }
 
     @Override
-    public void enableWorldGenForDimension(final WorldGenType type, final ResourceLocation dimensionID) {
+    public void enableWorldGenForDimension(final WorldGenType type, final Identifier dimensionID) {
         if (type == null) {
             throw new IllegalArgumentException("Bad Type Passed");
         }
@@ -64,7 +63,7 @@ public final class WorldGenRegistry implements IWorldGen {
     }
 
     @Override
-    public void disableWorldGenForDimension(final WorldGenType type, final ResourceLocation dimensionID) {
+    public void disableWorldGenForDimension(final WorldGenType type, final Identifier dimensionID) {
         if (type == null) {
             throw new IllegalArgumentException("Bad Type Passed");
         }
@@ -73,7 +72,7 @@ public final class WorldGenRegistry implements IWorldGen {
     }
 
     @Override
-    public boolean isWorldGenEnabled(final WorldGenType type, final IWorld w) {
+    public boolean isWorldGenEnabled(final WorldGenType type, final WorldAccess w) {
         if (type == null) {
             throw new IllegalArgumentException("Bad Type Passed");
         }
@@ -82,7 +81,7 @@ public final class WorldGenRegistry implements IWorldGen {
             throw new IllegalArgumentException("Bad Provider Passed");
         }
 
-        ResourceLocation id = w.getDimension().getType().getRegistryName();
+        Identifier id = w.getDimension().getType().getRegistryName();
         final boolean isBadProvider = this.types[type.ordinal()].badProviders.contains(w.getDimension().getClass());
         final boolean isBadDimension = this.types[type.ordinal()].badDimensions.contains(id);
         final boolean isGoodDimension = this.types[type.ordinal()].enabledDimensions.contains(id);
@@ -101,7 +100,7 @@ public final class WorldGenRegistry implements IWorldGen {
     private static class TypeSet {
 
         final HashSet<Class<? extends Dimension>> badProviders = new HashSet<>();
-        final HashSet<ResourceLocation> badDimensions = new HashSet<>();
-        final HashSet<ResourceLocation> enabledDimensions = new HashSet<>();
+        final HashSet<Identifier> badDimensions = new HashSet<>();
+        final HashSet<Identifier> enabledDimensions = new HashSet<>();
     }
 }

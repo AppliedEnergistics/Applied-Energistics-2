@@ -19,8 +19,8 @@
 package appeng.core.localization;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 
 public enum GuiText {
     inventory("container"), // mc's default Inventory localization.
@@ -102,12 +102,12 @@ public enum GuiText {
         return this.root + '.' + this.toString();
     }
 
-    public ITextComponent textComponent() {
-        return new TranslationTextComponent(getTranslationKey());
+    public Text textComponent() {
+        return new TranslatableText(getTranslationKey());
     }
 
-    public ITextComponent textComponent(Object... args) {
-        return new TranslationTextComponent(getTranslationKey(), args);
+    public Text textComponent(Object... args) {
+        return new TranslatableText(getTranslationKey(), args);
     }
 
 }

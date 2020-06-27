@@ -21,13 +21,13 @@ package appeng.bootstrap;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.color.IBlockColor;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.client.render.model.IBakedModel;
+import net.minecraft.util.Identifier;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.bootstrap.components.BlockColorComponent;
@@ -36,26 +36,26 @@ import appeng.client.render.model.AutoRotatingBakedModel;
 
 class BlockRendering implements IBlockRendering {
 
-    @OnlyIn(Dist.CLIENT)
-    private BiFunction<ResourceLocation, IBakedModel, IBakedModel> modelCustomizer;
+    @Environment(EnvType.CLIENT)
+    private BiFunction<Identifier, IBakedModel, IBakedModel> modelCustomizer;
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private IBlockColor blockColor;
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private RenderType renderType;
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private Predicate<RenderType> renderTypes;
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public IBlockRendering modelCustomizer(BiFunction<ResourceLocation, IBakedModel, IBakedModel> customizer) {
+    @Environment(EnvType.CLIENT)
+    public IBlockRendering modelCustomizer(BiFunction<Identifier, IBakedModel, IBakedModel> customizer) {
         this.modelCustomizer = customizer;
         return this;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public IBlockRendering blockColor(IBlockColor blockColor) {
         this.blockColor = blockColor;

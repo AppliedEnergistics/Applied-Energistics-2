@@ -23,24 +23,24 @@
 
 package appeng.api.events;
 
-import net.minecraftforge.eventbus.api.Event;
-
 import appeng.api.features.ILocatable;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
  * Input Event:
- *
+ * <p>
  * Used to Notify the Location Registry of objects, and their availability.
  */
-public class LocatableEventAnnounce extends Event {
+public interface LocatableEventAnnounce {
 
-    public final ILocatable target;
-    public final LocatableEvent change;
+    Event<LocatableEventAnnounce> EVENT = EventFactory.createArrayBacked(LocatableEventAnnounce.class, listeners -> (ILocatable o, LocatableEvent evt) -> {
+        for (LocatableEventAnnounce listener : listeners) {
+            listener.onLocatableAnnounce(o, evt);
+        }
+    });
 
-    public LocatableEventAnnounce(final ILocatable o, final LocatableEvent ev) {
-        this.target = o;
-        this.change = ev;
-    }
+    void onLocatableAnnounce(final ILocatable o, final LocatableEvent ev);
 
     public enum LocatableEvent {
         /**

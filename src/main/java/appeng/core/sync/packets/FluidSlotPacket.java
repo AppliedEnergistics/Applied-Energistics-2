@@ -26,7 +26,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.sync.BasePacket;
@@ -37,7 +37,7 @@ import appeng.fluids.util.AEFluidStack;
 public class FluidSlotPacket extends BasePacket {
     private final Map<Integer, IAEFluidStack> list;
 
-    public FluidSlotPacket(final PacketBuffer stream) {
+    public FluidSlotPacket(final PacketByteBuf stream) {
         this.list = new HashMap<>();
         CompoundTag tag = stream.readCompoundTag();
 
@@ -58,7 +58,7 @@ public class FluidSlotPacket extends BasePacket {
             sendTag.put(fs.getKey().toString(), tag);
         }
 
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
         data.writeInt(this.getPacketID());
         data.writeCompoundTag(sendTag);
         this.configureWrite(data);

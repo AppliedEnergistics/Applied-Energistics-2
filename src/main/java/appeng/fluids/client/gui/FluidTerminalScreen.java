@@ -30,7 +30,7 @@ import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Slot;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.api.config.Settings;
@@ -81,7 +81,7 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
     private SettingToggleButton<SortDir> sortDirBox;
 
     public FluidTerminalScreen(FluidTerminalContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
+            Text title) {
         super(container, playerInventory, title);
         this.xSize = 185;
         this.ySize = 222;

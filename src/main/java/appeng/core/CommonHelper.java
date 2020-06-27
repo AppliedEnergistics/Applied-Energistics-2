@@ -25,8 +25,8 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
 
 import appeng.api.parts.CableRenderMode;
@@ -39,7 +39,7 @@ public abstract class CommonHelper {
 
     public abstract World getWorld();
 
-    public abstract void bindTileEntitySpecialRenderer(Class<? extends TileEntity> tile, AEBaseBlock blk);
+    public abstract void bindTileEntitySpecialRenderer(Class<? extends BlockEntity> tile, AEBaseBlock blk);
 
     public abstract List<? extends PlayerEntity> getPlayers();
 
@@ -51,7 +51,7 @@ public abstract class CommonHelper {
 
     public abstract boolean shouldAddParticles(Random r);
 
-    public abstract RayTraceResult getRTR();
+    public abstract HitResult getRTR();
 
     public abstract void postInit();
 

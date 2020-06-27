@@ -18,10 +18,10 @@
 
 package appeng.fluids.parts;
 
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -105,12 +105,12 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
         bch.addBox(4, 4, 14, 12, 12, 16);
     }
 
-    protected TileEntity getConnectedTE() {
-        TileEntity self = this.getHost().getTile();
+    protected BlockEntity getConnectedTE() {
+        BlockEntity self = this.getHost().getTile();
         return this.getTileEntity(self, self.getPos().offset(this.getSide().getFacing()));
     }
 
-    private TileEntity getTileEntity(final TileEntity self, final BlockPos pos) {
+    private BlockEntity getTileEntity(final BlockEntity self, final BlockPos pos) {
         final World w = self.getWorld();
 
         if (w.getChunkProvider().isChunkLoaded(new ChunkPos(pos))) {

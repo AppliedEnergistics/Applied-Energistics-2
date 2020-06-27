@@ -20,7 +20,7 @@ package appeng.client.me;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 
 import appeng.tile.inventory.AppEngInternalInventory;
 
@@ -33,7 +33,7 @@ public class ClientDCInternalInv implements Comparable<ClientDCInternalInv> {
     private final long id;
     private final long sortBy;
 
-    public ClientDCInternalInv(final int size, final long id, final long sortBy, final ITextComponent name) {
+    public ClientDCInternalInv(final int size, final long id, final long sortBy, final Text name) {
         this.inventory = new AppEngInternalInventory(null, size);
         this.searchName = name.getString().toLowerCase();
         this.formattedName = name.getFormattedText();

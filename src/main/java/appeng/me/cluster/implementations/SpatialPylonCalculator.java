@@ -18,7 +18,7 @@
 
 package appeng.me.cluster.implementations;
 
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -90,7 +90,7 @@ public class SpatialPylonCalculator extends MBCalculator {
     }
 
     @Override
-    public boolean isValidTile(final TileEntity te) {
+    public boolean isValidTile(final BlockEntity te) {
         return te instanceof SpatialPylonTileEntity;
     }
 }

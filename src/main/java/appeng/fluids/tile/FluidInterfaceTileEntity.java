@@ -22,15 +22,15 @@ import java.util.EnumSet;
 
 import javax.annotation.Nullable;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
@@ -55,7 +55,7 @@ public class FluidInterfaceTileEntity extends AENetworkTileEntity
         implements IGridTickable, IFluidInterfaceHost, IPriorityHost {
     private final DualityFluidInterface duality = new DualityFluidInterface(this.getProxy(), this);
 
-    public FluidInterfaceTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public FluidInterfaceTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -85,7 +85,7 @@ public class FluidInterfaceTileEntity extends AENetworkTileEntity
     }
 
     @Override
-    public TileEntity getTileEntity() {
+    public BlockEntity getTileEntity() {
         return this;
     }
 
@@ -152,7 +152,7 @@ public class FluidInterfaceTileEntity extends AENetworkTileEntity
     }
 
     @Override
-    public IItemHandler getInventoryByName(String name) {
+    public ItemTransferable getInventoryByName(String name) {
         return this.duality.getInventoryByName(name);
     }
 

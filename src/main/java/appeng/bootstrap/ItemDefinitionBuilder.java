@@ -30,8 +30,8 @@ import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.IDispenseItemBehavior;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import appeng.api.features.AEFeature;
 import appeng.bootstrap.components.IInitComponent;
@@ -58,7 +58,7 @@ class ItemDefinitionBuilder implements IItemBuilder {
 
     private Supplier<IDispenseItemBehavior> dispenserBehaviorSupplier;
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private ItemRendering itemRendering;
 
     private ItemGroup itemGroup = CreativeTab.INSTANCE;
@@ -118,7 +118,7 @@ class ItemDefinitionBuilder implements IItemBuilder {
         return this;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private void customizeForClient(ItemRenderingCustomizer callback) {
         callback.customize(this.itemRendering);
     }

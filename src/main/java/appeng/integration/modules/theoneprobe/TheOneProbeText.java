@@ -20,7 +20,7 @@ package appeng.integration.modules.theoneprobe;
 
 import java.util.Locale;
 
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.text.TranslatableText;
 
 public enum TheOneProbeText {
     CRAFTING, DEVICE_ONLINE, DEVICE_OFFLINE, DEVICE_MISSING_CHANNEL, P2P_UNLINKED, P2P_INPUT_ONE_OUTPUT,
@@ -36,8 +36,8 @@ public enum TheOneProbeText {
         return getTranslationComponent(args).getFormattedText();
     }
 
-    public TranslationTextComponent getTranslationComponent(Object... args) {
-        return new TranslationTextComponent(this.getUnlocalized(), args);
+    public TranslatableText getTranslationComponent(Object... args) {
+        return new TranslatableText(this.getUnlocalized(), args);
     }
 
     public String getUnlocalized() {

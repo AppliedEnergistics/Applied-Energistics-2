@@ -20,12 +20,12 @@ package appeng.tile.misc;
 
 import java.util.List;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.CopyMode;
 import appeng.api.config.Settings;
@@ -49,17 +49,17 @@ public class CellWorkbenchTileEntity extends AEBaseTileEntity
     private final AppEngInternalAEInventory config = new AppEngInternalAEInventory(this, 63);
     private final ConfigManager manager = new ConfigManager(this);
 
-    private IItemHandler cacheUpgrades = null;
-    private IItemHandler cacheConfig = null;
+    private ItemTransferable cacheUpgrades = null;
+    private ItemTransferable cacheConfig = null;
     private boolean locked = false;
 
-    public CellWorkbenchTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public CellWorkbenchTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.manager.registerSetting(Settings.COPY_MODE, CopyMode.CLEAR_ON_REMOVE);
         this.cell.setEnableClientEvents(true);
     }
 
-    public IItemHandler getCellUpgradeInventory() {
+    public ItemTransferable getCellUpgradeInventory() {
         if (this.cacheUpgrades == null) {
             final ICellWorkbenchItem cell = this.getCell();
             if (cell == null) {
@@ -71,7 +71,7 @@ public class CellWorkbenchTileEntity extends AEBaseTileEntity
                 return null;
             }
 
-            final IItemHandler inv = cell.getUpgradesInventory(is);
+            final ItemTransferable inv = cell.getUpgradesInventory(is);
             if (inv == null) {
                 return null;
             }
@@ -111,7 +111,7 @@ public class CellWorkbenchTileEntity extends AEBaseTileEntity
     }
 
     @Override
-    public IItemHandler getInventoryByName(final String name) {
+    public ItemTransferable getInventoryByName(final String name) {
         if (name.equals("config")) {
             return this.config;
         }
@@ -129,15 +129,15 @@ public class CellWorkbenchTileEntity extends AEBaseTileEntity
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removedStack, final ItemStack newStack) {
+    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+                                  final ItemStack removedStack, final ItemStack newStack) {
         if (inv == this.cell && !this.locked) {
             this.locked = true;
 
             this.cacheUpgrades = null;
             this.cacheConfig = null;
 
-            final IItemHandler configInventory = this.getCellConfigInventory();
+            final ItemTransferable configInventory = this.getCellConfigInventory();
             if (configInventory != null) {
                 boolean cellHasConfig = false;
                 for (int x = 0; x < configInventory.getSlots(); x++) {
@@ -165,7 +165,7 @@ public class CellWorkbenchTileEntity extends AEBaseTileEntity
             this.locked = false;
         } else if (inv == this.config && !this.locked) {
             this.locked = true;
-            final IItemHandler c = this.getCellConfigInventory();
+            final ItemTransferable c = this.getCellConfigInventory();
             if (c != null) {
                 ItemHandlerUtil.copy(this.config, c, false);
                 // copy items back. The ConfigInventory may changed the items on insert
@@ -175,7 +175,7 @@ public class CellWorkbenchTileEntity extends AEBaseTileEntity
         }
     }
 
-    private IItemHandler getCellConfigInventory() {
+    private ItemTransferable getCellConfigInventory() {
         if (this.cacheConfig == null) {
             final ICellWorkbenchItem cell = this.getCell();
             if (cell == null) {
@@ -187,7 +187,7 @@ public class CellWorkbenchTileEntity extends AEBaseTileEntity
                 return null;
             }
 
-            final IItemHandler inv = cell.getConfigInventory(is);
+            final ItemTransferable inv = cell.getConfigInventory(is);
             if (inv == null) {
                 return null;
             }

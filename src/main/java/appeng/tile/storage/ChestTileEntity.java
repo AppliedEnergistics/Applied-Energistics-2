@@ -25,23 +25,23 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
@@ -112,7 +112,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         implements IMEChest, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableTile, ITickableTileEntity {
     private final AppEngInternalInventory inputInventory = new AppEngInternalInventory(this, 1);
     private final AppEngInternalInventory cellInventory = new AppEngInternalInventory(this, 1);
-    private final IItemHandler internalInventory = new WrapperChainedItemHandler(this.inputInventory,
+    private final ItemTransferable internalInventory = new WrapperChainedItemHandler(this.inputInventory,
             this.cellInventory);
 
     private final IActionSource mySrc = new MachineSource(this);
@@ -127,7 +127,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     private Accessor accessor;
     private IFluidHandler fluidHandler;
 
-    public ChestTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public ChestTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.setInternalMaxPower(PowerMultiplier.CONFIG.multiply(40));
         this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
@@ -345,7 +345,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final PacketByteBuf data) throws IOException {
         super.writeToStream(data);
 
         if (this.world.getGameTime() - this.lastStateChange > 8) {
@@ -369,7 +369,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final PacketByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
 
         final int oldState = this.state;
@@ -424,13 +424,13 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
+    public ItemTransferable getInternalInventory() {
         return this.internalInventory;
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final ItemStack added) {
+    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+                                  final ItemStack removed, final ItemStack added) {
         if (inv == this.cellInventory) {
             this.cellHandler = null;
             this.isCached = false; // recalculate the storage cell.
@@ -455,7 +455,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    protected IItemHandler getItemHandlerForSide(@Nonnull Direction side) {
+    protected ItemTransferable getItemHandlerForSide(@Nonnull Direction side) {
         if (side == this.getForward()) {
             return this.cellInventory;
         } else {
@@ -712,8 +712,8 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
 
         @Nonnull
         @Override
-        public FluidStack getFluid() {
-            return FluidStack.EMPTY;
+        public FluidVolume getFluid() {
+            return FluidVolume.EMPTY;
         }
 
         @Override
@@ -727,7 +727,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         }
 
         @Override
-        public boolean isFluidValid(FluidStack stack) {
+        public boolean isFluidValid(FluidVolume stack) {
             return canAcceptLiquids();
         }
 
@@ -738,8 +738,8 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
 
         @Nonnull
         @Override
-        public FluidStack getFluidInTank(int tank) {
-            return FluidStack.EMPTY;
+        public FluidVolume getFluidInTank(int tank) {
+            return FluidVolume.EMPTY;
         }
 
         @Override
@@ -748,12 +748,12 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         }
 
         @Override
-        public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
+        public boolean isFluidValid(int tank, @Nonnull FluidVolume stack) {
             return tank == 0;
         }
 
         @Override
-        public int fill(FluidStack resource, FluidAction action) {
+        public int fill(FluidVolume resource, FluidAction action) {
             ChestTileEntity.this.updateHandler();
             if (canAcceptLiquids()) {
                 final IAEFluidStack results = Platform.poweredInsert(ChestTileEntity.this,
@@ -771,25 +771,25 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
 
         @Nonnull
         @Override
-        public FluidStack drain(FluidStack resource, FluidAction action) {
-            return FluidStack.EMPTY;
+        public FluidVolume drain(FluidVolume resource, FluidAction action) {
+            return FluidVolume.EMPTY;
         }
 
         @Nonnull
         @Override
-        public FluidStack drain(int maxDrain, FluidAction action) {
-            return FluidStack.EMPTY;
+        public FluidVolume drain(int maxDrain, FluidAction action) {
+            return FluidVolume.EMPTY;
         }
     }
 
     private class InputInventoryFilter implements IAEItemFilter {
         @Override
-        public boolean allowExtract(IItemHandler inv, int slot, int amount) {
+        public boolean allowExtract(ItemTransferable inv, int slot, int amount) {
             return false;
         }
 
         @Override
-        public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
+        public boolean allowInsert(ItemTransferable inv, int slot, ItemStack stack) {
             if (ChestTileEntity.this.isPowered()) {
                 ChestTileEntity.this.updateHandler();
                 return ChestTileEntity.this.cellHandler != null && ChestTileEntity.this.cellHandler
@@ -802,12 +802,12 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     private static class CellInventoryFilter implements IAEItemFilter {
 
         @Override
-        public boolean allowExtract(IItemHandler inv, int slot, int amount) {
+        public boolean allowExtract(ItemTransferable inv, int slot, int amount) {
             return true;
         }
 
         @Override
-        public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
+        public boolean allowInsert(ItemTransferable inv, int slot, ItemStack stack) {
             return AEApi.instance().registries().cell().getHandler(stack) != null;
         }
 

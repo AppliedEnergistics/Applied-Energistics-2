@@ -23,7 +23,7 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
 import appeng.api.features.AEFeature;
 import appeng.api.parts.IPart;
@@ -208,7 +208,7 @@ public enum PartType {
 
     private final Set<AEFeature> features;
     private final Set<IntegrationType> integrations;
-    private final Set<ResourceLocation> models;
+    private final Set<Identifier> models;
 
     PartType(final Set<AEFeature> features, final Set<IntegrationType> integrations, final Class<? extends IPart> c) {
         this.features = Collections.unmodifiableSet(features);
@@ -233,7 +233,7 @@ public enum PartType {
         return this.integrations;
     }
 
-    public Set<ResourceLocation> getModels() {
+    public Set<Identifier> getModels() {
         return this.models;
     }
 

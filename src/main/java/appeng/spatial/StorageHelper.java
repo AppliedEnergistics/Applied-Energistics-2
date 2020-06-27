@@ -27,18 +27,17 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkStatus;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraftforge.common.util.ITeleporter;
 
 import appeng.api.AEApi;
 import appeng.api.util.WorldCoord;
 import appeng.core.AppEng;
-import appeng.util.Platform;
 
 public class StorageHelper {
 
@@ -144,10 +143,10 @@ public class StorageHelper {
                         dstY + scaleY + 1, dstZ + scaleZ + 1,
                         new WrapInMatrixFrame(matrixFrameBlock.getDefaultState(), dstWorld)));
 
-        final AxisAlignedBB srcBox = new AxisAlignedBB(srcX, srcY, srcZ, srcX + scaleX + 1, srcY + scaleY + 1,
+        final Box srcBox = new Box(srcX, srcY, srcZ, srcX + scaleX + 1, srcY + scaleY + 1,
                 srcZ + scaleZ + 1);
 
-        final AxisAlignedBB dstBox = new AxisAlignedBB(dstX, dstY, dstZ, dstX + scaleX + 1, dstY + scaleY + 1,
+        final Box dstBox = new Box(dstX, dstY, dstZ, dstX + scaleX + 1, dstY + scaleY + 1,
                 dstZ + scaleZ + 1);
 
         final CachedPlane cDst = new CachedPlane(dstWorld, dstX, dstY, dstZ, dstX + scaleX, dstY + scaleY,
@@ -228,8 +227,8 @@ public class StorageHelper {
         private final double y;
         private final double z;
 
-        TelDestination(final World dimension, final AxisAlignedBB srcBox, final double x, final double y,
-                final double z, final int tileX, final int tileY, final int tileZ) {
+        TelDestination(final World dimension, final Box srcBox, final double x, final double y,
+                       final double z, final int tileX, final int tileY, final int tileZ) {
             this.dim = dimension;
             this.x = Math.min(srcBox.maxX - 0.5, Math.max(srcBox.minX + 0.5, x + tileX));
             this.y = Math.min(srcBox.maxY - 0.5, Math.max(srcBox.minY + 0.5, y + tileY));

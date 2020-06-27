@@ -23,8 +23,8 @@
 
 package appeng.api.config;
 
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 
 public enum PowerUnits {
     AE("gui.appliedenergistics2.units.appliedenergstics"), // Native Units - AE Energy
@@ -61,8 +61,8 @@ public enum PowerUnits {
         return (value * this.conversionRatio) / target.conversionRatio;
     }
 
-    public ITextComponent textComponent() {
-        return new TranslationTextComponent(unlocalizedName);
+    public Text textComponent() {
+        return new TranslatableText(unlocalizedName);
     }
 
 }

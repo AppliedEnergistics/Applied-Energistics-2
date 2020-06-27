@@ -20,16 +20,14 @@ package appeng.client.render.effects;
 
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.core.AppEng;
-
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class EnergyFx extends SpriteTexturedParticle {
 
     private final int startBlkX;
@@ -98,7 +96,7 @@ public class EnergyFx extends SpriteTexturedParticle {
         this.motionZ = motionZ;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public static class Factory implements IParticleFactory<EnergyParticleData> {
         private final IAnimatedSprite spriteSet;
 

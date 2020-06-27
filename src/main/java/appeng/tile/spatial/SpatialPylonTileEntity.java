@@ -23,8 +23,8 @@ import java.util.EnumSet;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.Direction;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
@@ -66,7 +66,7 @@ public class SpatialPylonTileEntity extends AENetworkTileEntity implements IAEMu
     private SpatialPylonCluster cluster;
     private boolean didHaveLight = false;
 
-    public SpatialPylonTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public SpatialPylonTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL, GridFlags.MULTIBLOCK);
         this.getProxy().setIdlePowerUsage(0.5);
@@ -194,7 +194,7 @@ public class SpatialPylonTileEntity extends AENetworkTileEntity implements IAEMu
     }
 
     @Override
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final PacketByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
         final int old = this.displayBits;
         this.displayBits = data.readByte();
@@ -202,7 +202,7 @@ public class SpatialPylonTileEntity extends AENetworkTileEntity implements IAEMu
     }
 
     @Override
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final PacketByteBuf data) throws IOException {
         super.writeToStream(data);
         data.writeByte(this.displayBits);
     }

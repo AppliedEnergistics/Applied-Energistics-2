@@ -20,15 +20,15 @@ package appeng.fluids.helper;
 
 import java.util.Optional;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fluids.FluidStack;
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -176,7 +176,7 @@ public class DualityFluidInterface
             }
         }
 
-        final TileEntity te = this.iHost.getTileEntity();
+        final BlockEntity te = this.iHost.getTileEntity();
         if (te != null && te.getWorld() != null) {
             Platform.notifyBlocksOfNeighbors(te.getWorld(), te.getPos());
         }
@@ -334,7 +334,7 @@ public class DualityFluidInterface
                 toStore.setStackSize(-toStore.getStackSize());
 
                 // make sure strange things didn't happen...
-                final FluidStack canExtract = this.tanks.drain(slot, toStore.getFluidStack(), false);
+                final FluidVolume canExtract = this.tanks.drain(slot, toStore.getFluidStack(), false);
                 if (canExtract.isEmpty() || canExtract.getAmount() != toStore.getStackSize()) {
                     changed = true;
                 } else {
@@ -344,7 +344,7 @@ public class DualityFluidInterface
                     if (toStore.getStackSize() > 0) {
                         // extract items!
                         changed = true;
-                        final FluidStack removed = this.tanks.drain(slot, toStore.getFluidStack(), true);
+                        final FluidVolume removed = this.tanks.drain(slot, toStore.getFluidStack(), true);
                         if (removed.isEmpty() || toStore.getStackSize() != removed.getAmount()) {
                             throw new IllegalStateException("bad attempt at managing tanks. ( drain )");
                         }
@@ -491,7 +491,7 @@ public class DualityFluidInterface
     }
 
     @Override
-    public IItemHandler getInventoryByName(String name) {
+    public ItemTransferable getInventoryByName(String name) {
         return null;
     }
 
@@ -501,8 +501,8 @@ public class DualityFluidInterface
     }
 
     @Override
-    public TileEntity getTile() {
-        return (TileEntity) (this.iHost instanceof TileEntity ? this.iHost : null);
+    public BlockEntity getTile() {
+        return (BlockEntity) (this.iHost instanceof BlockEntity ? this.iHost : null);
     }
 
     @Override

@@ -25,9 +25,9 @@ import java.util.function.BiFunction;
 
 import com.google.common.collect.Sets;
 
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ModelBakery;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.render.model.IBakedModel;
+import net.minecraft.client.render.model.ModelBakery;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.client.event.ModelBakeEvent;
 
 import appeng.core.AppEng;
@@ -35,19 +35,19 @@ import appeng.core.AppEng;
 public class ModelOverrideComponent implements IModelBakeComponent {
 
     // Maps from resource path to customizer
-    private final Map<String, BiFunction<ResourceLocation, IBakedModel, IBakedModel>> customizer = new HashMap<>();
+    private final Map<String, BiFunction<Identifier, IBakedModel, IBakedModel>> customizer = new HashMap<>();
 
-    public void addOverride(String resourcePath, BiFunction<ResourceLocation, IBakedModel, IBakedModel> customizer) {
+    public void addOverride(String resourcePath, BiFunction<Identifier, IBakedModel, IBakedModel> customizer) {
         this.customizer.put(resourcePath, customizer);
     }
 
     @Override
     public void onModelBakeEvent(final ModelBakeEvent event) {
-        Map<ResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
-        Set<ResourceLocation> keys = Sets.newHashSet(modelRegistry.keySet());
+        Map<Identifier, IBakedModel> modelRegistry = event.getModelRegistry();
+        Set<Identifier> keys = Sets.newHashSet(modelRegistry.keySet());
         IBakedModel missingModel = modelRegistry.get(ModelBakery.MODEL_MISSING);
 
-        for (ResourceLocation location : keys) {
+        for (Identifier location : keys) {
             if (!location.getNamespace().equals(AppEng.MOD_ID)) {
                 continue;
             }
@@ -59,7 +59,7 @@ public class ModelOverrideComponent implements IModelBakeComponent {
                 continue;
             }
 
-            BiFunction<ResourceLocation, IBakedModel, IBakedModel> customizer = this.customizer.get(location.getPath());
+            BiFunction<Identifier, IBakedModel, IBakedModel> customizer = this.customizer.get(location.getPath());
             if (customizer != null) {
                 IBakedModel newModel = customizer.apply(location, orgModel);
 

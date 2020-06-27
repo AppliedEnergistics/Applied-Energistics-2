@@ -25,8 +25,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -52,11 +52,11 @@ import appeng.util.item.AEItemStack;
 class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAEItemStack>, ITickingMonitor {
     private final Map<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<>();
     private IActionSource mySource;
-    private final IItemHandler itemHandler;
+    private final ItemTransferable itemHandler;
     private final IGridProxyable proxyable;
     private final InventoryCache cache;
 
-    ItemHandlerAdapter(IItemHandler itemHandler, IGridProxyable proxy) {
+    ItemHandlerAdapter(ItemTransferable itemHandler, IGridProxyable proxy) {
         this.itemHandler = itemHandler;
         this.proxyable = proxy;
         this.cache = new InventoryCache(this.itemHandler);
@@ -220,9 +220,9 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 
     private static class InventoryCache {
         private IAEItemStack[] cachedAeStacks = new IAEItemStack[0];
-        private final IItemHandler itemHandler;
+        private final ItemTransferable itemHandler;
 
-        public InventoryCache(IItemHandler itemHandler) {
+        public InventoryCache(ItemTransferable itemHandler) {
             this.itemHandler = itemHandler;
         }
 

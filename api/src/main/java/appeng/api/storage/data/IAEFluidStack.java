@@ -23,8 +23,8 @@
 
 package appeng.api.storage.data;
 
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import net.minecraft.fluid.Fluid;
-import net.minecraftforge.fluids.FluidStack;
 
 /**
  * An alternate version of FluidStack for AE to keep tabs on things easier, and
@@ -45,7 +45,7 @@ public interface IAEFluidStack extends IAEStack<IAEFluidStack> {
      *
      * @return new FluidStack
      */
-    FluidStack getFluidStack();
+    FluidVolume getFluidStack();
 
     /**
      * Combines two IAEItemStacks via addition.

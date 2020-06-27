@@ -23,7 +23,7 @@ import java.util.concurrent.Future;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -43,7 +43,7 @@ public class CraftRequestPacket extends BasePacket {
     private final long amount;
     private final boolean heldShift;
 
-    public CraftRequestPacket(final PacketBuffer stream) {
+    public CraftRequestPacket(final PacketByteBuf stream) {
         this.heldShift = stream.readBoolean();
         this.amount = stream.readLong();
     }
@@ -52,7 +52,7 @@ public class CraftRequestPacket extends BasePacket {
         this.amount = craftAmt;
         this.heldShift = shift;
 
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeBoolean(shift);

@@ -33,22 +33,22 @@ import net.minecraft.advancements.PlayerAdvancements;
 import net.minecraft.advancements.criterion.CriterionInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
 import appeng.core.AppEng;
 
 public class AppEngAdvancementTrigger
         implements ICriterionTrigger<AppEngAdvancementTrigger.Instance>, IAdvancementTrigger {
-    private final ResourceLocation ID;
+    private final Identifier ID;
     private final Map<PlayerAdvancements, AppEngAdvancementTrigger.Listeners> listeners = new HashMap<>();
 
     public AppEngAdvancementTrigger(String parString) {
         super();
-        this.ID = new ResourceLocation(AppEng.MOD_ID, parString);
+        this.ID = new Identifier(AppEng.MOD_ID, parString);
     }
 
     @Override
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return this.ID;
     }
 
@@ -99,7 +99,7 @@ public class AppEngAdvancementTrigger
     }
 
     public static class Instance extends CriterionInstance {
-        public Instance(ResourceLocation parID) {
+        public Instance(Identifier parID) {
             super(parID);
         }
 

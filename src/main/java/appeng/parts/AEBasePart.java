@@ -27,6 +27,8 @@ import java.util.Random;
 
 import com.google.common.base.Preconditions;
 
+import net.fabricmc.api.EnvType;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -34,18 +36,16 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.items.IItemHandler;
+import net.fabricmc.api.Environment;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
@@ -80,7 +80,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
     private final AENetworkProxy proxy;
     private final ItemStack is;
-    private TileEntity tile = null;
+    private BlockEntity tile = null;
     private IPartHost host = null;
     private AEPartLocation side = null;
 
@@ -144,7 +144,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
     }
 
     @Override
-    public TileEntity getTile() {
+    public BlockEntity getTile() {
         return this.tile;
     }
 
@@ -173,7 +173,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
     }
 
     @Override
-    public ITextComponent getCustomInventoryName() {
+    public Text getCustomInventoryName() {
         return this.getItemStack().getDisplayName();
     }
 
@@ -232,12 +232,12 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
     }
 
     @Override
-    public void writeToStream(final PacketBuffer data) throws IOException {
+    public void writeToStream(final PacketByteBuf data) throws IOException {
 
     }
 
     @Override
-    public boolean readFromStream(final PacketBuffer data) throws IOException {
+    public boolean readFromStream(final PacketByteBuf data) throws IOException {
         return false;
     }
 
@@ -262,7 +262,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
     }
 
     @Override
-    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final TileEntity tile) {
+    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity tile) {
         this.setSide(side);
         this.tile = tile;
         this.host = host;
@@ -274,7 +274,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void animateTick(final World world, final BlockPos pos, final Random r) {
 
     }
@@ -305,7 +305,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
     }
 
     @Override
-    public IItemHandler getInventoryByName(final String name) {
+    public ItemTransferable getInventoryByName(final String name) {
         return null;
     }
 
@@ -329,7 +329,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
             pHost.setPriority(compound.getInt("priority"));
         }
 
-        final IItemHandler inv = this.getInventoryByName("config");
+        final ItemTransferable inv = this.getInventoryByName("config");
         if (inv instanceof AppEngInternalAEInventory) {
             final AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
             final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory(null, target.getSlots());
@@ -360,7 +360,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
             output.putInt("priority", pHost.getPriority());
         }
 
-        final IItemHandler inv = this.getInventoryByName("config");
+        final ItemTransferable inv = this.getInventoryByName("config");
         if (inv instanceof AppEngInternalAEInventory) {
             ((AppEngInternalAEInventory) inv).writeToNBT(output, "config");
         }

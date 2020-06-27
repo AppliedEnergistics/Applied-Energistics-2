@@ -19,8 +19,8 @@
 package appeng.client.gui.implementations;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.Identifier;
+import net.minecraft.text.Text;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.client.gui.AEBaseScreen;
@@ -30,9 +30,9 @@ import appeng.core.localization.GuiText;
 
 public class SkyChestScreen extends AEBaseScreen<SkyChestContainer> {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(AppEng.MOD_ID, "textures/guis/skychest.png");
+    private static final Identifier TEXTURE = new Identifier(AppEng.MOD_ID, "textures/guis/skychest.png");
 
-    public SkyChestScreen(SkyChestContainer container, PlayerInventory playerInv, ITextComponent title) {
+    public SkyChestScreen(SkyChestContainer container, PlayerInventory playerInv, Text title) {
         super(container, playerInv, title);
         this.ySize = 195;
     }

@@ -4,9 +4,9 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.network.PacketByteBuf;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
@@ -24,7 +24,7 @@ public class FluidLevelEmitterContainer extends FluidConfigurableContainer {
     private static final ContainerHelper<FluidLevelEmitterContainer, FluidLevelEmitterPart> helper = new ContainerHelper<>(
             FluidLevelEmitterContainer::new, FluidLevelEmitterPart.class, SecurityPermissions.BUILD);
 
-    public static FluidLevelEmitterContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static FluidLevelEmitterContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -34,7 +34,7 @@ public class FluidLevelEmitterContainer extends FluidConfigurableContainer {
 
     private final FluidLevelEmitterPart lvlEmitter;
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private TextFieldWidget textField;
     @GuiSync(3)
     public long EmitterValue = -1;
@@ -44,7 +44,7 @@ public class FluidLevelEmitterContainer extends FluidConfigurableContainer {
         this.lvlEmitter = te;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void setTextField(final TextFieldWidget level) {
         this.textField = level;
         this.textField.setText(String.valueOf(this.EmitterValue));

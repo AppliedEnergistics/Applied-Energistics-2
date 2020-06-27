@@ -18,14 +18,14 @@
 
 package appeng.container.implementations;
 
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.network.PacketByteBuf;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.parts.IPart;
@@ -42,7 +42,7 @@ public class PriorityContainer extends AEBaseContainer {
     private static final ContainerHelper<PriorityContainer, IPriorityHost> helper = new ContainerHelper<>(
             PriorityContainer::new, IPriorityHost.class, SecurityPermissions.BUILD);
 
-    public static PriorityContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static PriorityContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -52,18 +52,18 @@ public class PriorityContainer extends AEBaseContainer {
 
     private final IPriorityHost priHost;
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private TextFieldWidget textField;
     @GuiSync(2)
     public long PriorityValue = -1;
 
     public PriorityContainer(int id, final PlayerInventory ip, final IPriorityHost te) {
-        super(TYPE, id, ip, (TileEntity) (te instanceof TileEntity ? te : null),
+        super(TYPE, id, ip, (BlockEntity) (te instanceof BlockEntity ? te : null),
                 (IPart) (te instanceof IPart ? te : null));
         this.priHost = te;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void setTextField(final TextFieldWidget level) {
         this.textField = level;
         this.textField.setText(String.valueOf(this.PriorityValue));

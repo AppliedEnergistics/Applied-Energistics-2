@@ -29,27 +29,24 @@ import java.util.Random;
 
 import javax.annotation.Nonnull;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import alexiil.mc.lib.attributes.AttributeList;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.util.math.MatrixStack;
 
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.data.EmptyModelData;
-import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.util.AECableType;
@@ -80,8 +77,8 @@ public interface IPart extends ICustomCableConnection {
      * part has to return true for {@link #requireDynamicRender()} in order for this
      * method to be called.
      */
-    @OnlyIn(Dist.CLIENT)
-    default void renderDynamic(float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffers,
+    @Environment(EnvType.CLIENT)
+    default void renderDynamic(float partialTicks, MatrixStack matrixStack, VertexConsumerProvider buffers,
             int combinedLightIn, int combinedOverlayIn) {
     }
 
@@ -155,7 +152,7 @@ public interface IPart extends ICustomCableConnection {
      *
      * @throws IOException
      */
-    void writeToStream(PacketBuffer data) throws IOException;
+    void writeToStream(PacketByteBuf data) throws IOException;
 
     /**
      * read data from bus packet.
@@ -166,7 +163,7 @@ public interface IPart extends ICustomCableConnection {
      *
      * @throws IOException
      */
-    boolean readFromStream(PacketBuffer data) throws IOException;
+    boolean readFromStream(PacketByteBuf data) throws IOException;
 
     /**
      * get the Grid Node for the Bus, be sure your IGridBlock is NOT
@@ -209,7 +206,7 @@ public interface IPart extends ICustomCableConnection {
      * @param host part side
      * @param tile tile entity of part
      */
-    void setPartHostInfo(AEPartLocation side, IPartHost host, TileEntity tile);
+    void setPartHostInfo(AEPartLocation side, IPartHost host, BlockEntity tile);
 
     /**
      * Called when you right click the part, very similar to Block.onActivateBlock
@@ -345,24 +342,11 @@ public interface IPart extends ICustomCableConnection {
      * capabilities on the cable bus will be forwarded to parts on the appropriate
      * side.
      *
-     * @see TileEntity#getCapability(Capability, net.minecraft.util.math.Direction)
+     * @see alexiil.mc.lib.attributes.AttributeProvider
      *
      * @return The capability or null.
      */
-    default <T> LazyOptional<T> getCapability(Capability<T> capabilityClass) {
-        return LazyOptional.empty();
-    }
-
-    /**
-     * Additional model data to be passed to the models for rendering this part.
-     *
-     * @return The model data to pass to the model. Only useful if custom models are
-     *         used.
-     */
-    @Nonnull
-    default IModelData getModelData() {
-        return EmptyModelData.INSTANCE;
-    }
+    default void addAllAttributes(AttributeList<?> to) {}
 
     /**
      * add your collision information to the the list.

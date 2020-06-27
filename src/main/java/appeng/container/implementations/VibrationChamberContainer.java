@@ -21,7 +21,7 @@ package appeng.container.implementations;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
@@ -38,7 +38,7 @@ public class VibrationChamberContainer extends AEBaseContainer implements IProgr
     private static final ContainerHelper<VibrationChamberContainer, VibrationChamberTileEntity> helper = new ContainerHelper<>(
             VibrationChamberContainer::new, VibrationChamberTileEntity.class);
 
-    public static VibrationChamberContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static VibrationChamberContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 

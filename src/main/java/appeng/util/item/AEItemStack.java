@@ -24,13 +24,13 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.fabricmc.api.Environment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.text.Text;
+import net.fabricmc.api.EnvType;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import appeng.api.AEApi;
@@ -48,10 +48,10 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
     private final AESharedItemStack sharedStack;
 
-    @OnlyIn(Dist.CLIENT)
-    private ITextComponent displayName;
-    @OnlyIn(Dist.CLIENT)
-    private List<ITextComponent> tooltip;
+    @Environment(EnvType.CLIENT)
+    private Text displayName;
+    @Environment(EnvType.CLIENT)
+    private List<Text> tooltip;
 
     private AEItemStack(final AEItemStack is) {
         this.setStackSize(is.getStackSize());
@@ -104,7 +104,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
         i.putBoolean(NBT_CRAFTABLE, this.isCraftable());
     }
 
-    public static AEItemStack fromPacket(final PacketBuffer buffer) {
+    public static AEItemStack fromPacket(final PacketByteBuf buffer) {
         final boolean isCraftable = buffer.readBoolean();
         final long stackSize = buffer.readVarLong();
         final long countRequestable = buffer.readVarLong();
@@ -121,7 +121,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
     }
 
     @Override
-    public void writeToPacket(final PacketBuffer buffer) {
+    public void writeToPacket(final PacketByteBuf buffer) {
         buffer.writeBoolean(this.isCraftable());
         buffer.writeVarLong(this.getStackSize());
         buffer.writeVarLong(this.getCountRequestable());
@@ -226,23 +226,23 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
         return this.getStackSize() + "x" + this.getDefinition().getItem().getRegistryName();
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public List<ITextComponent> getToolTip() {
+    @Environment(EnvType.CLIENT)
+    public List<Text> getToolTip() {
         if (this.tooltip == null) {
             this.tooltip = Platform.getTooltip(this.asItemStackRepresentation());
         }
         return this.tooltip;
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public ITextComponent getDisplayName() {
+    @Environment(EnvType.CLIENT)
+    public Text getDisplayName() {
         if (this.displayName == null) {
             this.displayName = Platform.getItemDisplayName(this.asItemStackRepresentation());
         }
         return this.displayName;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public String getModID() {
         return this.getDefinition().getItem().getRegistryName().getNamespace();
     }

@@ -25,9 +25,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.block.ShapeContext;
@@ -88,11 +88,11 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> {
     @Override
     public VoxelShape getShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
         // TODO Cache this! It can't be that hard!
-        AxisAlignedBB aabb = computeAABB(worldIn, pos);
+        Box aabb = computeAABB(worldIn, pos);
         return VoxelShapes.create(aabb);
     }
 
-    private AxisAlignedBB computeAABB(final BlockView w, final BlockPos pos) {
+    private Box computeAABB(final BlockView w, final BlockPos pos) {
         final SkyChestTileEntity sk = this.getTileEntity(w, pos);
         Direction o = Direction.UP;
 
@@ -119,6 +119,6 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> {
         final double maxZ = Math.min(1.0,
                 1.0 - offsetZ - (o.getZOffset() < 0 ? AABB_OFFSET_TOP : (o.getZOffset() * AABB_OFFSET_BOTTOM)));
 
-        return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
+        return new Box(minX, minY, minZ, maxX, maxY, maxZ);
     }
 }

@@ -24,9 +24,9 @@ import java.util.function.Function;
 
 import com.mojang.datafixers.util.Pair;
 
-import net.minecraft.client.renderer.model.*;
+import net.minecraft.client.render.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 
@@ -40,12 +40,12 @@ import appeng.core.AppEng;
 public class FacadeItemModel implements IModelGeometry<FacadeItemModel> {
 
     // We use this to get the default item transforms and make our lives easier
-    private static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "item/facade_base");
+    private static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID, "item/facade_base");
 
     @Override
     public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
             Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
-            ItemOverrideList overrides, ResourceLocation modelLocation) {
+            ItemOverrideList overrides, Identifier modelLocation) {
         IBakedModel bakedBaseModel = bakery.getBakedModel(MODEL_BASE, modelTransform, spriteGetter);
         FacadeBuilder facadeBuilder = new FacadeBuilder();
 
@@ -54,7 +54,7 @@ public class FacadeItemModel implements IModelGeometry<FacadeItemModel> {
 
     @Override
     public Collection<Material> getTextures(IModelConfiguration owner,
-            Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+                                            Function<Identifier, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
         return modelGetter.apply(MODEL_BASE).getTextures(modelGetter, missingTextureErrors);
     }
 

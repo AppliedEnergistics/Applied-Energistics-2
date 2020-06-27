@@ -22,7 +22,7 @@ import com.mojang.brigadier.context.CommandContext;
 
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.text.TranslatableText;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -72,10 +72,10 @@ public class ChunkLogger implements ISubCommand {
 
         if (this.enabled) {
             MinecraftForge.EVENT_BUS.register(this);
-            sender.sendFeedback(new TranslationTextComponent("commands.ae2.ChunkLoggerOn"), true);
+            sender.sendFeedback(new TranslatableText("commands.ae2.ChunkLoggerOn"), true);
         } else {
             MinecraftForge.EVENT_BUS.unregister(this);
-            sender.sendFeedback(new TranslationTextComponent("commands.ae2.ChunkLoggerOff"), true);
+            sender.sendFeedback(new TranslatableText("commands.ae2.ChunkLoggerOff"), true);
         }
     }
 }

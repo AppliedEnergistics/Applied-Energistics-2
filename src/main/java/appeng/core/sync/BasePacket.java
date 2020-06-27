@@ -18,11 +18,11 @@
 
 package appeng.core.sync;
 
+import net.minecraft.network.PacketByteBuf;
 import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.IPacket;
-import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkDirection;
 
 import appeng.api.features.AEFeature;
@@ -32,7 +32,7 @@ import appeng.core.sync.network.INetworkInfo;
 import appeng.core.sync.network.NetworkHandler;
 
 public abstract class BasePacket {
-    private PacketBuffer p;
+    private PacketByteBuf p;
 
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
         throw new UnsupportedOperationException(
@@ -48,7 +48,7 @@ public abstract class BasePacket {
                 "This packet ( " + this.getPacketID() + " does not implement a client side handler.");
     }
 
-    protected void configureWrite(final PacketBuffer data) {
+    protected void configureWrite(final PacketByteBuf data) {
         data.capacity(data.readableBytes());
         this.p = data;
     }

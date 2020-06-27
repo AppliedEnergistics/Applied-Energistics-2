@@ -18,16 +18,16 @@
 
 package appeng.util.helpers;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 public class ItemHandlerUtil {
     private ItemHandlerUtil() {
     }
 
-    public static void setStackInSlot(final IItemHandler inv, final int slot, final ItemStack stack) {
+    public static void setStackInSlot(final ItemTransferable inv, final int slot, final ItemStack stack) {
         if (inv instanceof IItemHandlerModifiable) {
             ((IItemHandlerModifiable) inv).setStackInSlot(slot, stack);
         } else {
@@ -36,13 +36,13 @@ public class ItemHandlerUtil {
         }
     }
 
-    public static void clear(final IItemHandler inv) {
+    public static void clear(final ItemTransferable inv) {
         for (int x = 0; x < inv.getSlots(); x++) {
             setStackInSlot(inv, x, ItemStack.EMPTY);
         }
     }
 
-    public static boolean isEmpty(final IItemHandler inv) {
+    public static boolean isEmpty(final ItemTransferable inv) {
         for (int x = 0; x < inv.getSlots(); x++) {
             if (!inv.getStackInSlot(x).isEmpty()) {
                 return false;
@@ -51,13 +51,13 @@ public class ItemHandlerUtil {
         return true;
     }
 
-    public static void copy(final IItemHandler from, final IItemHandler to, boolean deepCopy) {
+    public static void copy(final ItemTransferable from, final ItemTransferable to, boolean deepCopy) {
         for (int i = 0; i < Math.min(from.getSlots(), to.getSlots()); ++i) {
             setStackInSlot(to, i, deepCopy ? from.getStackInSlot(i).copy() : from.getStackInSlot(i));
         }
     }
 
-    public static void copy(final CraftingInventory from, final IItemHandler to, boolean deepCopy) {
+    public static void copy(final CraftingInventory from, final ItemTransferable to, boolean deepCopy) {
         for (int i = 0; i < Math.min(from.getSizeInventory(), to.getSlots()); ++i) {
             setStackInSlot(to, i, deepCopy ? from.getStackInSlot(i).copy() : from.getStackInSlot(i));
         }

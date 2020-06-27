@@ -21,7 +21,7 @@ package appeng.client.gui.implementations;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.client.gui.AEBaseScreen;
@@ -39,7 +39,7 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
 
     private Button next;
 
-    public CraftAmountScreen(CraftAmountContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public CraftAmountScreen(CraftAmountContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
         this.subGui = new AESubScreen(this, container.getTarget());
     }

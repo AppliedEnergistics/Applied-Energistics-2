@@ -20,7 +20,7 @@ package appeng.block.qnb;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.util.shape.VoxelShape;
@@ -52,6 +52,6 @@ public class QuantumRingBlock extends QuantumBaseBlock {
 
     private static VoxelShape createShape(double onePixel) {
         return VoxelShapes.create(
-                new AxisAlignedBB(onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel));
+                new Box(onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel));
     }
 }

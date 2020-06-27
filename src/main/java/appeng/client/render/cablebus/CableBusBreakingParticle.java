@@ -4,12 +4,12 @@ import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 // Derived from Vanilla's BreakingParticle, but allows
 // a texture to be specified directly rather than via an itemstack
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class CableBusBreakingParticle extends SpriteTexturedParticle {
 
     private final float field_217571_C;

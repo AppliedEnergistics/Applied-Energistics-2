@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -37,9 +38,8 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
 import appeng.api.AEApi;
@@ -82,7 +82,7 @@ public class PatternTermContainer extends MEMonitorableContainer
     private static final ContainerHelper<PatternTermContainer, ITerminalHost> helper = new ContainerHelper<>(
             PatternTermContainer::new, ITerminalHost.class, SecurityPermissions.CRAFT);
 
-    public static PatternTermContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static PatternTermContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -92,7 +92,7 @@ public class PatternTermContainer extends MEMonitorableContainer
 
     private final PatternTerminalPart patternTerminal;
     private final AppEngInternalInventory cOut = new AppEngInternalInventory(null, 1);
-    private final IItemHandler crafting;
+    private final ItemTransferable crafting;
     private final FakeCraftingMatrixSlot[] craftingSlots = new FakeCraftingMatrixSlot[9];
     private final OptionalFakeSlot[] outputSlots = new OptionalFakeSlot[3];
     private final PatternTermSlot craftSlot;
@@ -109,8 +109,8 @@ public class PatternTermContainer extends MEMonitorableContainer
         super(TYPE, id, ip, monitorable, false);
         this.patternTerminal = (PatternTerminalPart) monitorable;
 
-        final IItemHandler patternInv = this.getPatternTerminal().getInventoryByName("pattern");
-        final IItemHandler output = this.getPatternTerminal().getInventoryByName("output");
+        final ItemTransferable patternInv = this.getPatternTerminal().getInventoryByName("pattern");
+        final ItemTransferable output = this.getPatternTerminal().getInventoryByName("output");
 
         this.crafting = this.getPatternTerminal().getInventoryByName("crafting");
 
@@ -194,8 +194,8 @@ public class PatternTermContainer extends MEMonitorableContainer
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removedStack, final ItemStack newStack) {
+    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+                                  final ItemStack removedStack, final ItemStack newStack) {
 
     }
 
@@ -487,7 +487,7 @@ public class PatternTermContainer extends MEMonitorableContainer
     }
 
     @Override
-    public IItemHandler getInventoryByName(final String name) {
+    public ItemTransferable getInventoryByName(final String name) {
         if (name.equals("player")) {
             return new PlayerInvWrapper(this.getPlayerInventory());
         }

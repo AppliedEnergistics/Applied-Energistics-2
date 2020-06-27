@@ -32,9 +32,10 @@ import javax.annotation.Nullable;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -45,26 +46,21 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.*;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.text.Text;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.server.world.ServerWorld;
+import net.fabricmc.api.EnvType;
 import net.minecraftforge.common.util.FakePlayerFactory;
-import net.minecraftforge.fluids.FluidStack;
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.thread.SidedThreadGroups;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -255,7 +251,7 @@ public class Platform {
 
                     final ISecurityGrid sg = g.getCache(ISecurityGrid.class);
                     if (!sg.hasPermission(player, requiredPermission)) {
-                        player.sendMessage(new TranslationTextComponent("appliedenergistics2.permission_denied")
+                        player.sendMessage(new TranslatableText("appliedenergistics2.permission_denied")
                                 .applyTextStyle(TextFormatting.RED));
                         // FIXME trace logging?
                         return false;
@@ -277,7 +273,7 @@ public class Platform {
         ServerWorld serverWorld = (ServerWorld) w;
 
         final BlockState state = w.getBlockState(pos);
-        final TileEntity tileEntity = w.getTileEntity(pos);
+        final BlockEntity tileEntity = w.getTileEntity(pos);
 
         List<ItemStack> out = Block.getDrops(state, serverWorld, pos, tileEntity);
 
@@ -316,8 +312,8 @@ public class Platform {
         return Math.abs(RANDOM_GENERATOR.nextInt());
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public static List<ITextComponent> getTooltip(final Object o) {
+    @Environment(EnvType.CLIENT)
+    public static List<Text> getTooltip(final Object o) {
         if (o == null) {
             return Collections.emptyList();
         }
@@ -356,7 +352,7 @@ public class Platform {
             return "** Null";
         }
 
-        final ResourceLocation n = ForgeRegistries.FLUIDS.getKey(fs.getFluidStack().getFluid());
+        final Identifier n = ForgeRegistries.FLUIDS.getKey(fs.getFluidStack().getFluid());
         return n == null ? "** Null" : n.getNamespace();
     }
 
@@ -365,14 +361,14 @@ public class Platform {
                 + ModList.get().getModContainerById(modId).map(mc -> mc.getModInfo().getDisplayName()).orElse(null);
     }
 
-    public static ITextComponent getItemDisplayName(final Object o) {
+    public static Text getItemDisplayName(final Object o) {
         if (o == null) {
             return new StringTextComponent("** Null");
         }
 
         ItemStack itemStack = ItemStack.EMPTY;
         if (o instanceof AEItemStack) {
-            final ITextComponent n = ((AEItemStack) o).getDisplayName();
+            final Text n = ((AEItemStack) o).getDisplayName();
             return n == null ? new StringTextComponent("** Null") : n;
         } else if (o instanceof ItemStack) {
             itemStack = (ItemStack) o;
@@ -384,28 +380,28 @@ public class Platform {
             return itemStack.getDisplayName();
         } catch (final Exception errA) {
             try {
-                return new TranslationTextComponent(itemStack.getTranslationKey());
+                return new TranslatableText(itemStack.getTranslationKey());
             } catch (final Exception errB) {
                 return new StringTextComponent("** Exception");
             }
         }
     }
 
-    public static ITextComponent getFluidDisplayName(Object o) {
+    public static Text getFluidDisplayName(Object o) {
         if (o == null) {
             return new StringTextComponent("** Null");
         }
-        FluidStack fluidStack = null;
+        FluidVolume fluidStack = null;
         if (o instanceof AEFluidStack) {
             fluidStack = ((AEFluidStack) o).getFluidStack();
-        } else if (o instanceof FluidStack) {
-            fluidStack = (FluidStack) o;
+        } else if (o instanceof FluidVolume) {
+            fluidStack = (FluidVolume) o;
         } else {
             return new StringTextComponent("**Invalid Object");
         }
-        ITextComponent n = fluidStack.getDisplayName();
+        Text n = fluidStack.getDisplayName();
         if (n == null) {
-            n = new TranslationTextComponent(fluidStack.getTranslationKey());
+            n = new TranslatableText(fluidStack.getTranslationKey());
         }
         return n;
     }
@@ -694,7 +690,7 @@ public class Platform {
         return new LookDirection(from, to);
     }
 
-    public static RayTraceResult rayTrace(final PlayerEntity p, final boolean hitBlocks, final boolean hitEntities) {
+    public static HitResult rayTrace(final PlayerEntity p, final boolean hitBlocks, final boolean hitEntities) {
         final World w = p.getEntityWorld();
 
         final float f = 1.0F;
@@ -714,7 +710,7 @@ public class Platform {
 
         final Vec3d vec31 = vec3.add(f7 * d3, f6 * d3, f8 * d3);
 
-        final AxisAlignedBB bb = new AxisAlignedBB(Math.min(vec3.x, vec31.x), Math.min(vec3.y, vec31.y),
+        final Box bb = new Box(Math.min(vec3.x, vec31.x), Math.min(vec3.y, vec31.y),
                 Math.min(vec3.z, vec31.z), Math.max(vec3.x, vec31.x), Math.max(vec3.y, vec31.y),
                 Math.max(vec3.z, vec31.z)).grow(16, 16, 16);
 
@@ -732,7 +728,7 @@ public class Platform {
 
                     f1 = 0.3F;
                     // FIXME: Three different bounding boxes available, should double-check
-                    final AxisAlignedBB boundingBox = entity1.getBoundingBox().grow(f1, f1, f1);
+                    final Box boundingBox = entity1.getBoundingBox().grow(f1, f1, f1);
                     final Vec3d rtResult = boundingBox.rayTrace(vec3, vec31).orElse(null);
 
                     if (rtResult != null) {
@@ -747,7 +743,7 @@ public class Platform {
             }
         }
 
-        RayTraceResult pos = null;
+        HitResult pos = null;
         Vec3d vec = null;
 
         if (hitBlocks) {
@@ -984,7 +980,7 @@ public class Platform {
         return gs.hasPermission(playerID, SecurityPermissions.BUILD);
     }
 
-    public static void configurePlayer(final PlayerEntity player, final AEPartLocation side, final TileEntity tile) {
+    public static void configurePlayer(final PlayerEntity player, final AEPartLocation side, final BlockEntity tile) {
         float pitch = 0.0f;
         float yaw = 0.0f;
         // player.yOffset = 1.8f;

@@ -20,13 +20,13 @@ package appeng.parts.reporting;
 
 import java.util.List;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
@@ -133,13 +133,13 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     }
 
     @Override
-    public IItemHandler getViewCellStorage() {
+    public ItemTransferable getViewCellStorage() {
         return this.viewCell;
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removedStack, final ItemStack newStack) {
+    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+                                  final ItemStack removedStack, final ItemStack newStack) {
         this.getHost().markForSave();
     }
 }

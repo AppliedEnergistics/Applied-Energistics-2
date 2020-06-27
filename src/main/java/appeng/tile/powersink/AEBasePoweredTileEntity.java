@@ -26,7 +26,7 @@ import javax.annotation.Nonnull;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -59,7 +59,7 @@ public abstract class AEBasePoweredTileEntity extends AEBaseInvTileEntity
 
     // IC2 private IC2PowerSink ic2Sink;
 
-    public AEBasePoweredTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public AEBasePoweredTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.forgeEnergyAdapter = new ForgeEnergyAdapter(this);
         this.forgeEnergyAdapterOptional = LazyOptional.of(() -> forgeEnergyAdapter);

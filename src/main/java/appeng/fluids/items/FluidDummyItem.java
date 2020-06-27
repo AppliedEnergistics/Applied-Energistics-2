@@ -18,13 +18,13 @@
 
 package appeng.fluids.items;
 
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fluids.FluidStack;
 
 import appeng.items.AEBaseItem;
 
@@ -43,22 +43,22 @@ public class FluidDummyItem extends AEBaseItem {
 
     @Override
     public String getTranslationKey(ItemStack stack) {
-        FluidStack fluidStack = this.getFluidStack(stack);
+        FluidVolume fluidStack = this.getFluidStack(stack);
         if (fluidStack.isEmpty()) {
-            fluidStack = new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME);
+            fluidStack = new FluidVolume(Fluids.WATER, FluidAttributes.BUCKET_VOLUME);
         }
         return fluidStack.getTranslationKey();
     }
 
-    public FluidStack getFluidStack(ItemStack is) {
+    public FluidVolume getFluidStack(ItemStack is) {
         if (is.hasTag()) {
             CompoundTag tag = is.getTag();
-            return FluidStack.loadFluidStackFromNBT(tag);
+            return FluidVolume.loadFluidStackFromNBT(tag);
         }
-        return FluidStack.EMPTY;
+        return FluidVolume.EMPTY;
     }
 
-    public void setFluidStack(ItemStack is, FluidStack fs) {
+    public void setFluidStack(ItemStack is, FluidVolume fs) {
         if (fs.isEmpty()) {
             is.setTag(null);
         } else {

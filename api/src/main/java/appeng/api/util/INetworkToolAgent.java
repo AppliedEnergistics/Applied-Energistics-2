@@ -23,7 +23,7 @@
 
 package appeng.api.util;
 
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.hit.HitResult;
 
 /**
  * Implement on Tile or part to customize if the info gui opens, or an action is
@@ -31,5 +31,5 @@ import net.minecraft.util.math.RayTraceResult;
  */
 public interface INetworkToolAgent {
 
-    boolean showNetworkInfo(RayTraceResult where);
+    boolean showNetworkInfo(HitResult where);
 }

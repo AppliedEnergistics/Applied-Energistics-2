@@ -10,15 +10,15 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 public class GrinderRecipe implements IRecipe<IInventory> {
 
     public static IRecipeType<GrinderRecipe> TYPE;
 
-    private final ResourceLocation id;
+    private final Identifier id;
     private final String group;
     private final Ingredient ingredient;
     private final int ingredientCount;
@@ -26,8 +26,8 @@ public class GrinderRecipe implements IRecipe<IInventory> {
     private final List<GrinderOptionalResult> optionalResults;
     private final int turns;
 
-    public GrinderRecipe(ResourceLocation id, String group, Ingredient ingredient, int ingredientCount,
-            ItemStack result, int turns, List<GrinderOptionalResult> optionalResults) {
+    public GrinderRecipe(Identifier id, String group, Ingredient ingredient, int ingredientCount,
+                         ItemStack result, int turns, List<GrinderOptionalResult> optionalResults) {
         this.id = id;
         this.group = group;
         this.ingredient = ingredient;
@@ -64,7 +64,7 @@ public class GrinderRecipe implements IRecipe<IInventory> {
     }
 
     @Override
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return id;
     }
 

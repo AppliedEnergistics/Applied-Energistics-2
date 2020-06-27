@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
 
 import appeng.core.AELog;
@@ -13,7 +13,7 @@ import appeng.core.AELog;
  * Helps with encoding and decoding the extra data we attach to the spatial
  * {@link net.minecraft.world.dimension.DimensionType} as "extra data". Keep in
  * mind this data will also be sent to the client unless
- * {@link net.minecraftforge.common.ModDimension#write(PacketBuffer, boolean)}
+ * {@link net.minecraftforge.common.ModDimension#write(PacketByteBuf, boolean)}
  * is overridden.
  */
 public final class SpatialDimensionExtraData {
@@ -32,8 +32,8 @@ public final class SpatialDimensionExtraData {
         this.size = size;
     }
 
-    public PacketBuffer write() {
-        PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
+    public PacketByteBuf write() {
+        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeByte(CURRENT_FORMAT);
         buf.writeBlockPos(size);
         buf.capacity(buf.writerIndex()); // This cuts the backing buffer to the required size
@@ -45,7 +45,7 @@ public final class SpatialDimensionExtraData {
     }
 
     @Nullable
-    public static SpatialDimensionExtraData read(@Nullable PacketBuffer buf) {
+    public static SpatialDimensionExtraData read(@Nullable PacketByteBuf buf) {
         if (buf == null) {
             return null;
         }

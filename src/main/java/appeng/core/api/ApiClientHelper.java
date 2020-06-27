@@ -20,7 +20,7 @@ package appeng.core.api;
 
 import java.util.List;
 
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraft.util.text.StringTextComponent;
 
 import appeng.api.config.IncludeExclude;
@@ -33,7 +33,7 @@ import appeng.core.localization.GuiText;
 public class ApiClientHelper implements IClientHelper {
     @Override
     public <T extends IAEStack<T>> void addCellInformation(ICellInventoryHandler<T> handler,
-            List<ITextComponent> lines) {
+            List<Text> lines) {
         if (handler == null) {
             return;
         }

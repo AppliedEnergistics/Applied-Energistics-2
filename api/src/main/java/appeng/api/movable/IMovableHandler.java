@@ -23,7 +23,7 @@
 
 package appeng.api.movable;
 
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -38,7 +38,7 @@ public interface IMovableHandler {
      *
      * @return true if it can handle moving
      */
-    boolean canHandle(Class<? extends TileEntity> myClass, TileEntity tile);
+    boolean canHandle(Class<? extends BlockEntity> myClass, BlockEntity tile);
 
     /**
      * request that the handler move the the tile from its current location to the
@@ -64,5 +64,5 @@ public interface IMovableHandler {
      * @param world       world of tile
      * @param newPosition the new location
      */
-    void moveTile(TileEntity tile, World world, BlockPos newPosition);
+    void moveTile(BlockEntity tile, World world, BlockPos newPosition);
 }

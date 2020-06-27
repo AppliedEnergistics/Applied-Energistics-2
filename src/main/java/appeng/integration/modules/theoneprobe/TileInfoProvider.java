@@ -24,7 +24,7 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.world.World;
 
 import mcjty.theoneprobe.api.IProbeHitData;
@@ -60,7 +60,7 @@ public final class TileInfoProvider implements IProbeInfoProvider {
     @Override
     public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world,
             BlockState blockState, IProbeHitData data) {
-        final TileEntity tile = world.getTileEntity(data.getPos());
+        final BlockEntity tile = world.getTileEntity(data.getPos());
 
         if (tile instanceof AEBaseTileEntity) {
             final AEBaseTileEntity aeBaseTile = (AEBaseTileEntity) tile;

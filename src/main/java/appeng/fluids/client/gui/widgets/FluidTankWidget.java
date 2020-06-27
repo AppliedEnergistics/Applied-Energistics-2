@@ -20,13 +20,13 @@ package appeng.fluids.client.gui.widgets;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import net.fabricmc.api.EnvType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.fluid.Fluid;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.Environment;
 import net.minecraftforge.fluids.FluidAttributes;
 
 import appeng.api.storage.data.IAEFluidStack;
@@ -34,7 +34,7 @@ import appeng.api.util.AEColor;
 import appeng.client.gui.widgets.ITooltip;
 import appeng.fluids.util.IAEFluidTank;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class FluidTankWidget extends Widget implements ITooltip {
     private final IAEFluidTank tank;
     private final int slot;

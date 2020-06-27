@@ -22,7 +22,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -37,7 +37,7 @@ public class MEPortableCellContainer extends MEMonitorableContainer {
     private static final ContainerHelper<MEPortableCellContainer, IPortableCell> helper = new ContainerHelper<>(
             MEPortableCellContainer::new, IPortableCell.class);
 
-    public static MEPortableCellContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static MEPortableCellContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 

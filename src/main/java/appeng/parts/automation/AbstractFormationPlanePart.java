@@ -3,7 +3,7 @@ package appeng.parts.automation;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
@@ -71,7 +71,7 @@ public abstract class AbstractFormationPlanePart<T extends IAEStack<T>> extends 
 
         final IPartHost host = this.getHost();
         if (host != null) {
-            final TileEntity te = host.getTile();
+            final BlockEntity te = host.getTile();
 
             final BlockPos pos = te.getPos();
 
@@ -137,7 +137,7 @@ public abstract class AbstractFormationPlanePart<T extends IAEStack<T>> extends 
 
         final IPartHost host = this.getHost();
         if (host != null) {
-            final TileEntity te = host.getTile();
+            final BlockEntity te = host.getTile();
 
             final BlockPos pos = te.getPos();
 
@@ -166,7 +166,7 @@ public abstract class AbstractFormationPlanePart<T extends IAEStack<T>> extends 
     @Override
     public void onNeighborChanged(BlockView w, BlockPos pos, BlockPos neighbor) {
         if (pos.offset(this.getSide().getFacing()).equals(neighbor)) {
-            final TileEntity te = this.getHost().getTile();
+            final BlockEntity te = this.getHost().getTile();
             final AEPartLocation side = this.getSide();
 
             final BlockPos tePos = te.getPos().offset(side.getFacing());
@@ -180,7 +180,7 @@ public abstract class AbstractFormationPlanePart<T extends IAEStack<T>> extends 
         return 1;
     }
 
-    protected boolean isTransitionPlane(final TileEntity blockTileEntity, final AEPartLocation side) {
+    protected boolean isTransitionPlane(final BlockEntity blockTileEntity, final AEPartLocation side) {
         if (blockTileEntity instanceof IPartHost) {
             final IPart p = ((IPartHost) blockTileEntity).getPart(side);
             return p != null && this.getClass() == p.getClass();

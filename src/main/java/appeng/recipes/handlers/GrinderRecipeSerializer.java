@@ -14,9 +14,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import appeng.core.AEConfig;
@@ -35,7 +35,7 @@ public class GrinderRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
     }
 
     @Override
-    public GrinderRecipe read(ResourceLocation recipeId, JsonObject json) {
+    public GrinderRecipe read(Identifier recipeId, JsonObject json) {
         String group = JSONUtils.getString(json, "group", "");
         JsonObject inputObj = JSONUtils.getJsonObject(json, "input");
         Ingredient ingredient = Ingredient.deserialize(inputObj);
@@ -68,7 +68,7 @@ public class GrinderRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
 
     @Nullable
     @Override
-    public GrinderRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
+    public GrinderRecipe read(Identifier recipeId, PacketByteBuf buffer) {
 
         String group = buffer.readString();
         Ingredient ingredient = Ingredient.read(buffer);
@@ -87,7 +87,7 @@ public class GrinderRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
     }
 
     @Override
-    public void write(PacketBuffer buffer, GrinderRecipe recipe) {
+    public void write(PacketByteBuf buffer, GrinderRecipe recipe) {
         buffer.writeString(recipe.getGroup());
         recipe.getIngredient().write(buffer);
         buffer.writeVarInt(recipe.getIngredientCount());

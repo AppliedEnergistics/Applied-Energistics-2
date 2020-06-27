@@ -18,11 +18,11 @@
 
 package appeng.container.slot;
 
-import net.minecraftforge.items.IItemHandler;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 public class NormalSlot extends AppEngSlot {
 
-    public NormalSlot(final IItemHandler inv, final int slot, final int xPos, final int yPos) {
+    public NormalSlot(final ItemTransferable inv, final int slot, final int xPos, final int yPos) {
         super(inv, slot, xPos, yPos);
     }
 }

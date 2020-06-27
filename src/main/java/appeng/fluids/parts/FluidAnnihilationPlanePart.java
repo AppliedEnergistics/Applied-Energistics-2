@@ -5,23 +5,23 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IBucketPickupHandler;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.Tag;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -60,7 +60,7 @@ import appeng.util.Platform;
 
 public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridTickable {
 
-    public static final ResourceLocation TAG_BLACKLIST = new ResourceLocation(AppEng.MOD_ID,
+    public static final Identifier TAG_BLACKLIST = new Identifier(AppEng.MOD_ID,
             "blacklisted/fluid_annihilation_plane");
 
     private static final PlaneModels MODELS = new PlaneModels("part/fluid_annihilation_plane",
@@ -86,7 +86,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
 
         final IPartHost host = this.getHost();
         if (host != null) {
-            final TileEntity te = host.getTile();
+            final BlockEntity te = host.getTile();
 
             final BlockPos pos = te.getPos();
 
@@ -152,7 +152,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
 
         final IPartHost host = this.getHost();
         if (host != null) {
-            final TileEntity te = host.getTile();
+            final BlockEntity te = host.getTile();
 
             final BlockPos pos = te.getPos();
 
@@ -190,7 +190,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
         return 1;
     }
 
-    private boolean isAnnihilationPlane(final TileEntity blockTileEntity, final AEPartLocation side) {
+    private boolean isAnnihilationPlane(final BlockEntity blockTileEntity, final AEPartLocation side) {
         if (blockTileEntity instanceof IPartHost) {
             final IPart p = ((IPartHost) blockTileEntity).getPart(side);
             return p != null && p.getClass() == this.getClass();
@@ -225,7 +225,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
             return TickRateModulation.SLEEP;
         }
 
-        final TileEntity te = this.getTile();
+        final BlockEntity te = this.getTile();
         final World w = te.getWorld();
         final BlockPos pos = te.getPos().offset(this.getSide().getFacing());
 
@@ -241,14 +241,14 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
             if (fluid != Fluids.EMPTY && fluidState.isSource()) {
                 // Attempt to store the fluid in the network
                 final IAEFluidStack blockFluid = AEFluidStack
-                        .fromFluidStack(new FluidStack(fluidState.getFluid(), FluidAttributes.BUCKET_VOLUME));
+                        .fromFluidStack(new FluidVolume(fluidState.getFluid(), FluidAttributes.BUCKET_VOLUME));
                 if (this.storeFluid(blockFluid, false)) {
                     // If that would succeed, actually slurp up the liquid as if we were using a
                     // bucket
                     // This _MIGHT_ change the liquid, and if it does, and we dont have enough
                     // space, tough luck. you loose the source block.
                     fluid = ((IBucketPickupHandler) blockstate.getBlock()).pickupFluid(w, pos, blockstate);
-                    this.storeFluid(AEFluidStack.fromFluidStack(new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME)),
+                    this.storeFluid(AEFluidStack.fromFluidStack(new FluidVolume(fluid, FluidAttributes.BUCKET_VOLUME)),
                             true);
 
                     AppEng.proxy.sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64, w,

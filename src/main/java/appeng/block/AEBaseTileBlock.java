@@ -29,21 +29,21 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.DyeColor;
+import net.minecraft.util.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -102,7 +102,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
             return null;
         }
 
-        final TileEntity te = w.getTileEntity(pos);
+        final BlockEntity te = w.getTileEntity(pos);
         // FIXME: This gets called as part of building the block state cache
         if (this.tileEntityClass != null && this.tileEntityClass.isInstance(te)) {
             return this.tileEntityClass.cast(te);
@@ -112,7 +112,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     }
 
     @Override
-    public final TileEntity createTileEntity(BlockState state, BlockView world) {
+    public final BlockEntity createTileEntity(BlockState state, BlockView world) {
         return this.tileEntityFactory.get();
     }
 
@@ -145,9 +145,9 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     }
 
     @Override
-    public boolean recolorBlock(BlockState state, final IWorld world, final BlockPos pos, final Direction side,
+    public boolean recolorBlock(BlockState state, final WorldAccess world, final BlockPos pos, final Direction side,
             final DyeColor color) {
-        final TileEntity te = this.getTileEntity(world, pos);
+        final BlockEntity te = this.getTileEntity(world, pos);
 
         if (te instanceof IColorableTile) {
             final IColorableTile ct = (IColorableTile) te;
@@ -166,7 +166,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
 
     @Override
     public int getComparatorOutput(BlockState state, final World w, final BlockPos pos) {
-        final TileEntity te = this.getTileEntity(w, pos);
+        final BlockEntity te = this.getTileEntity(w, pos);
         if (te instanceof AEBaseInvTileEntity) {
             AEBaseInvTileEntity invTile = (AEBaseInvTileEntity) te;
             if (invTile.getInternalInventory().getSlots() > 0) {
@@ -180,7 +180,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     public boolean eventReceived(final BlockState state, final World worldIn, final BlockPos pos, final int eventID,
             final int eventParam) {
         super.eventReceived(state, worldIn, pos, eventID, eventParam);
-        final TileEntity tileentity = worldIn.getTileEntity(pos);
+        final BlockEntity tileentity = worldIn.getTileEntity(pos);
         return tileentity != null ? tileentity.receiveClientEvent(eventID, eventParam) : false;
     }
 
@@ -194,7 +194,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
         // I18N strings and we would translate it using the server's locale :-(
         AEBaseTileEntity te = this.getTileEntity(w, pos);
         if (te != null && is.hasDisplayName()) {
-            ITextComponent displayName = is.getDisplayName();
+            Text displayName = is.getDisplayName();
             if (displayName instanceof StringTextComponent) {
                 te.setName(((StringTextComponent) displayName).getText());
             }
@@ -291,7 +291,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
      * returned unchanged, this is also the case if the given block state does not
      * belong to this block.
      */
-    public final BlockState getTileEntityBlockState(BlockState current, TileEntity te) {
+    public final BlockState getTileEntityBlockState(BlockState current, BlockEntity te) {
         if (current.getBlock() != this || !tileEntityClass.isInstance(te)) {
             return current;
         }

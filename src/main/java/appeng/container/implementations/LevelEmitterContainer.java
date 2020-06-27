@@ -18,14 +18,14 @@
 
 package appeng.container.implementations;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.LevelType;
@@ -47,7 +47,7 @@ public class LevelEmitterContainer extends UpgradeableContainer {
     private static final ContainerHelper<LevelEmitterContainer, LevelEmitterPart> helper = new ContainerHelper<>(
             LevelEmitterContainer::new, LevelEmitterPart.class, SecurityPermissions.BUILD);
 
-    public static LevelEmitterContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static LevelEmitterContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -57,7 +57,7 @@ public class LevelEmitterContainer extends UpgradeableContainer {
 
     private final LevelEmitterPart lvlEmitter;
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private TextFieldWidget textField;
     @GuiSync(2)
     public LevelType lvType;
@@ -71,7 +71,7 @@ public class LevelEmitterContainer extends UpgradeableContainer {
         this.lvlEmitter = te;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void setTextField(final TextFieldWidget level) {
         this.textField = level;
         this.textField.setText(String.valueOf(this.EmitterValue));
@@ -84,7 +84,7 @@ public class LevelEmitterContainer extends UpgradeableContainer {
 
     @Override
     protected void setupConfig() {
-        final IItemHandler upgrades = this.getUpgradeable().getInventoryByName("upgrades");
+        final ItemTransferable upgrades = this.getUpgradeable().getInventoryByName("upgrades");
         if (this.availableUpgrades() > 0) {
             this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 0, 187, 8,
                     this.getPlayerInventory())).setNotDraggable());
@@ -102,7 +102,7 @@ public class LevelEmitterContainer extends UpgradeableContainer {
                     8 + 18 * 3, this.getPlayerInventory())).setNotDraggable());
         }
 
-        final IItemHandler inv = this.getUpgradeable().getInventoryByName("config");
+        final ItemTransferable inv = this.getUpgradeable().getInventoryByName("config");
         final int y = 40;
         final int x = 80 + 44;
         this.addSlot(new FakeTypeOnlySlot(inv, 0, x, y));

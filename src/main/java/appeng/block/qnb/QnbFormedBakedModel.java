@@ -14,14 +14,14 @@ import com.google.common.collect.ImmutableList;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.render.model.IBakedModel;
+import net.minecraft.client.render.model.ItemOverrideList;
+import net.minecraft.client.render.model.Material;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
 
@@ -33,17 +33,17 @@ import appeng.tile.qnb.QuantumBridgeTileEntity;
 class QnbFormedBakedModel implements IDynamicBakedModel {
 
     private static final Material TEXTURE_LINK = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
-            new ResourceLocation(AppEng.MOD_ID, "block/quantum_link"));
+            new Identifier(AppEng.MOD_ID, "block/quantum_link"));
     private static final Material TEXTURE_RING = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
-            new ResourceLocation(AppEng.MOD_ID, "block/quantum_ring"));
+            new Identifier(AppEng.MOD_ID, "block/quantum_ring"));
     private static final Material TEXTURE_RING_LIGHT = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
-            new ResourceLocation(AppEng.MOD_ID, "block/quantum_ring_light"));
+            new Identifier(AppEng.MOD_ID, "block/quantum_ring_light"));
     private static final Material TEXTURE_RING_LIGHT_CORNER = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
-            new ResourceLocation(AppEng.MOD_ID, "block/quantum_ring_light_corner"));
+            new Identifier(AppEng.MOD_ID, "block/quantum_ring_light_corner"));
     private static final Material TEXTURE_CABLE_GLASS = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
-            new ResourceLocation(AppEng.MOD_ID, "parts/cable/glass/transparent"));
+            new Identifier(AppEng.MOD_ID, "parts/cable/glass/transparent"));
     private static final Material TEXTURE_COVERED_CABLE = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
-            new ResourceLocation(AppEng.MOD_ID, "parts/cable/covered/transparent"));
+            new Identifier(AppEng.MOD_ID, "parts/cable/covered/transparent"));
 
     private static final float DEFAULT_RENDER_MIN = 2.0f;
     private static final float DEFAULT_RENDER_MAX = 14.0f;

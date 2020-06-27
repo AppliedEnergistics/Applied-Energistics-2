@@ -21,8 +21,8 @@ package appeng.container.implementations;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraft.network.PacketByteBuf;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
@@ -38,7 +38,7 @@ public class GrinderContainer extends AEBaseContainer {
     private static final ContainerHelper<GrinderContainer, GrinderTileEntity> helper = new ContainerHelper<>(
             GrinderContainer::new, GrinderTileEntity.class);
 
-    public static GrinderContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static GrinderContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -49,7 +49,7 @@ public class GrinderContainer extends AEBaseContainer {
     public GrinderContainer(int id, final PlayerInventory ip, final GrinderTileEntity grinder) {
         super(TYPE, id, ip, grinder, null);
 
-        IItemHandler inv = grinder.getInternalInventory();
+        ItemTransferable inv = grinder.getInternalInventory();
 
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ORE, inv, 0, 12, 17,
                 this.getPlayerInventory()));

@@ -18,9 +18,9 @@
 
 package appeng.me.storage;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.items.IStorageCell;
@@ -212,12 +212,12 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
     }
 
     @Override
-    public IItemHandler getConfigInventory() {
+    public ItemTransferable getConfigInventory() {
         return this.cellType.getConfigInventory(this.i);
     }
 
     @Override
-    public IItemHandler getUpgradesInventory() {
+    public ItemTransferable getUpgradesInventory() {
         return this.cellType.getUpgradesInventory(this.i);
     }
 

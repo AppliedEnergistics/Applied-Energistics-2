@@ -19,7 +19,7 @@
 package appeng.client.gui.implementations;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.client.gui.AEBaseScreen;
@@ -32,7 +32,7 @@ public class InscriberScreen extends AEBaseScreen<InscriberContainer> {
 
     private ProgressBar pb;
 
-    public InscriberScreen(InscriberContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public InscriberScreen(InscriberContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
         this.ySize = 176;
         this.xSize = this.hasToolbox() ? 246 : 211;

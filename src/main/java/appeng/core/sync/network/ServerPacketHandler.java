@@ -20,7 +20,7 @@ package appeng.core.sync.network;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.INetHandler;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 
 import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
@@ -29,7 +29,7 @@ import appeng.core.sync.BasePacketHandler;
 public final class ServerPacketHandler extends BasePacketHandler implements IPacketHandler {
 
     @Override
-    public void onPacketData(final INetworkInfo manager, final INetHandler handler, final PacketBuffer packet,
+    public void onPacketData(final INetworkInfo manager, final INetHandler handler, final PacketByteBuf packet,
             final PlayerEntity player) {
         try {
             final int packetType = packet.readInt();

@@ -20,21 +20,21 @@ package appeng.container.slot;
 
 import javax.annotation.Nonnull;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.container.AEBaseContainer;
 import appeng.util.helpers.ItemHandlerUtil;
 
 public class AppEngSlot extends Slot {
     private static IInventory emptyInventory = new Inventory(0);
-    private final IItemHandler itemHandler;
+    private final ItemTransferable itemHandler;
     private final int index;
 
     private final int defX;
@@ -46,7 +46,7 @@ public class AppEngSlot extends Slot {
     private CalculatedValidity isValid;
     private boolean isDisplay = false;
 
-    public AppEngSlot(final IItemHandler inv, final int idx, final int x, final int y) {
+    public AppEngSlot(final ItemTransferable inv, final int idx, final int x, final int y) {
         super(emptyInventory, idx, x, y);
         this.itemHandler = inv;
         this.index = idx;
@@ -115,7 +115,7 @@ public class AppEngSlot extends Slot {
         }
     }
 
-    public IItemHandler getItemHandler() {
+    public ItemTransferable getItemHandler() {
         return this.itemHandler;
     }
 
@@ -156,7 +156,7 @@ public class AppEngSlot extends Slot {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public boolean isEnabled() {
         return this.isSlotEnabled();
     }

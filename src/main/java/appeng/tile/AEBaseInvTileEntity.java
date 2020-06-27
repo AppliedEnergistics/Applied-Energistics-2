@@ -22,16 +22,16 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import appeng.util.helpers.ItemHandlerUtil;
@@ -40,14 +40,14 @@ import appeng.util.inv.InvOperation;
 
 public abstract class AEBaseInvTileEntity extends AEBaseTileEntity implements IAEAppEngInventory {
 
-    public AEBaseInvTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public AEBaseInvTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
     @Override
     public void read(final CompoundTag data) {
         super.read(data);
-        final IItemHandler inv = this.getInternalInventory();
+        final ItemTransferable inv = this.getInternalInventory();
         if (inv != EmptyHandler.INSTANCE) {
             final CompoundTag opt = data.getCompound("inv");
             for (int x = 0; x < inv.getSlots(); x++) {
@@ -57,12 +57,13 @@ public abstract class AEBaseInvTileEntity extends AEBaseTileEntity implements IA
         }
     }
 
-    public abstract @Nonnull IItemHandler getInternalInventory();
+    public abstract @Nonnull
+    ItemTransferable getInternalInventory();
 
     @Override
     public CompoundTag write(final CompoundTag data) {
         super.write(data);
-        final IItemHandler inv = this.getInternalInventory();
+        final ItemTransferable inv = this.getInternalInventory();
         if (inv != EmptyHandler.INSTANCE) {
             final CompoundTag opt = new CompoundTag();
             for (int x = 0; x < inv.getSlots(); x++) {
@@ -80,7 +81,7 @@ public abstract class AEBaseInvTileEntity extends AEBaseTileEntity implements IA
 
     @Override
     public void getDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
-        final IItemHandler inv = this.getInternalInventory();
+        final ItemTransferable inv = this.getInternalInventory();
 
         for (int l = 0; l < inv.getSlots(); l++) {
             final ItemStack is = inv.getStackInSlot(l);
@@ -91,10 +92,11 @@ public abstract class AEBaseInvTileEntity extends AEBaseTileEntity implements IA
     }
 
     @Override
-    public abstract void onChangeInventory(IItemHandler inv, int slot, InvOperation mc, ItemStack removed,
-            ItemStack added);
+    public abstract void onChangeInventory(ItemTransferable inv, int slot, InvOperation mc, ItemStack removed,
+                                           ItemStack added);
 
-    protected @Nonnull IItemHandler getItemHandlerForSide(@Nonnull Direction side) {
+    protected @Nonnull
+    ItemTransferable getItemHandlerForSide(@Nonnull Direction side) {
         return this.getInternalInventory();
     }
 

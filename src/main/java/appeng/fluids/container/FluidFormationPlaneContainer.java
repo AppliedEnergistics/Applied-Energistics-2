@@ -1,11 +1,11 @@
 
 package appeng.fluids.container;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Upgrades;
@@ -23,7 +23,7 @@ public class FluidFormationPlaneContainer extends FluidConfigurableContainer {
     private static final ContainerHelper<FluidFormationPlaneContainer, FluidFormationPlanePart> helper = new ContainerHelper<>(
             FluidFormationPlaneContainer::new, FluidFormationPlanePart.class, SecurityPermissions.BUILD);
 
-    public static FluidFormationPlaneContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static FluidFormationPlaneContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -50,7 +50,7 @@ public class FluidFormationPlaneContainer extends FluidConfigurableContainer {
 
     @Override
     protected void setupConfig() {
-        final IItemHandler upgrades = this.getUpgradeable().getInventoryByName("upgrades");
+        final ItemTransferable upgrades = this.getUpgradeable().getInventoryByName("upgrades");
         this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 0, 187, 8,
                 this.getPlayerInventory())).setNotDraggable());
         this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18,

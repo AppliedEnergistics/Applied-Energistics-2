@@ -22,7 +22,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Box;
 
 import appeng.api.config.Actionable;
 import appeng.core.AEConfig;
@@ -43,7 +43,7 @@ public class ChargedStaffItem extends AEBasePoweredItem {
             this.extractAEPower(item, 300, Actionable.MODULATE);
             if (Platform.isServer()) {
                 for (int x = 0; x < 2; x++) {
-                    final AxisAlignedBB entityBoundingBox = target.getBoundingBox();
+                    final Box entityBoundingBox = target.getBoundingBox();
                     final float dx = (float) (Platform.getRandomFloat() * target.getWidth() + entityBoundingBox.minX);
                     final float dy = (float) (Platform.getRandomFloat() * target.getHeight() + entityBoundingBox.minY);
                     final float dz = (float) (Platform.getRandomFloat() * target.getWidth() + entityBoundingBox.minZ);

@@ -24,17 +24,17 @@ import java.util.*;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
@@ -318,7 +318,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     }
 
     @Override
-    public TileEntity getTile() {
+    public BlockEntity getTile() {
         return this.tcb.getTile();
     }
 
@@ -346,11 +346,11 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         for (final AEPartLocation side : AEPartLocation.values()) {
             final IPart p = this.getPart(side);
             if (p != null) {
-                final List<AxisAlignedBB> boxes = new ArrayList<>();
+                final List<Box> boxes = new ArrayList<>();
 
                 final IPartCollisionHelper bch = new BusCollisionHelper(boxes, side, true);
                 p.getBoxes(bch);
-                for (AxisAlignedBB bb : boxes) {
+                for (Box bb : boxes) {
                     bb = bb.grow(0.002, 0.002, 0.002);
                     if (bb.contains(pos)) {
                         return new SelectedPart(p, side);
@@ -364,11 +364,11 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
             for (final AEPartLocation side : AEPartLocation.SIDE_LOCATIONS) {
                 final IFacadePart p = fc.getFacade(side);
                 if (p != null) {
-                    final List<AxisAlignedBB> boxes = new ArrayList<>();
+                    final List<Box> boxes = new ArrayList<>();
 
                     final IPartCollisionHelper bch = new BusCollisionHelper(boxes, side, true);
                     p.getBoxes(bch, true);
-                    for (AxisAlignedBB bb : boxes) {
+                    for (Box bb : boxes) {
                         bb = bb.grow(0.01, 0.01, 0.01);
                         if (bb.contains(pos)) {
                             return new SelectedPart(p, side);
@@ -401,7 +401,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
             }
 
             if (!facades.isEmpty()) {
-                final TileEntity te = this.tcb.getTile();
+                final BlockEntity te = this.tcb.getTile();
                 Platform.spawnDrops(te.getWorld(), te.getPos(), facades);
             }
         }
@@ -458,7 +458,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     }
 
     private void updateRedstone() {
-        final TileEntity te = this.getTile();
+        final BlockEntity te = this.getTile();
         this.hasRedstone = te.getWorld().getRedstonePowerFromNeighbors(te.getPos()) != 0 ? YesNo.YES : YesNo.NO;
     }
 
@@ -501,7 +501,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         this.inWorld = true;
         IS_LOADING.set(true);
 
-        final TileEntity te = this.getTile();
+        final BlockEntity te = this.getTile();
 
         // start with the center, then install the side parts into the grid.
         for (int x = 6; x >= 0; x--) {
@@ -723,7 +723,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         return light;
     }
 
-    public void writeToStream(final PacketBuffer data) throws IOException {
+    public void writeToStream(final PacketByteBuf data) throws IOException {
         int sides = 0;
         for (int x = 0; x < 7; x++) {
             final IPart p = this.getPart(AEPartLocation.fromOrdinal(x));
@@ -748,7 +748,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         this.getFacadeContainer().writeToStream(data);
     }
 
-    public boolean readFromStream(final PacketBuffer data) throws IOException {
+    public boolean readFromStream(final PacketByteBuf data) throws IOException {
         final byte sides = data.readByte();
 
         boolean updateBlock = false;
@@ -946,7 +946,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                 // outgoing connection
                 // point would look too big for other cable types
                 final BlockPos adjacentPos = this.getTile().getPos().offset(facing);
-                final TileEntity adjacentTe = this.getTile().getWorld().getTileEntity(adjacentPos);
+                final BlockEntity adjacentTe = this.getTile().getWorld().getTileEntity(adjacentPos);
 
                 if (adjacentTe instanceof IGridHost) {
                     final IGridHost gridHost = (IGridHost) adjacentTe;
@@ -1068,7 +1068,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     }
 
     private VoxelShape createShape(boolean forCollision, boolean forLivingEntity) {
-        final List<AxisAlignedBB> boxes = new ArrayList<>();
+        final List<Box> boxes = new ArrayList<>();
 
         final IFacadeContainer fc = this.getFacadeContainer();
         for (final AEPartLocation s : AEPartLocation.values()) {
@@ -1090,7 +1090,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         }
 
         VoxelShape shape = VoxelShapes.empty();
-        for (final AxisAlignedBB bx : boxes) {
+        for (final Box bx : boxes) {
             shape = VoxelShapes.or(shape, VoxelShapes.create(bx));
         }
         return shape;

@@ -23,8 +23,8 @@ import java.io.IOException;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -125,7 +125,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    public void writeToStream(final PacketBuffer data) throws IOException {
+    public void writeToStream(final PacketByteBuf data) throws IOException {
         super.writeToStream(data);
         this.clientFlags = this.getSpin() & 3;
 
@@ -150,7 +150,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    public boolean readFromStream(final PacketBuffer data) throws IOException {
+    public boolean readFromStream(final PacketByteBuf data) throws IOException {
         super.readFromStream(data);
         final int oldFlags = this.getClientFlags();
         final int oldOpacity = this.opacity;
@@ -172,7 +172,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
 
     @Override
     public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
-        final TileEntity te = this.getTile();
+        final BlockEntity te = this.getTile();
 
         if (Platform.isWrench(player, player.inventory.getCurrentItem(), te.getPos())) {
             if (Platform.isServer()) {
@@ -219,7 +219,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
 
     private final int blockLight(final int emit) {
         if (this.opacity < 0) {
-            final TileEntity te = this.getTile();
+            final BlockEntity te = this.getTile();
             World world = te.getWorld();
             BlockPos pos = te.getPos().offset(this.getSide().getFacing());
             this.opacity = 255 - world.getBlockState(pos).getOpacity(world, pos);

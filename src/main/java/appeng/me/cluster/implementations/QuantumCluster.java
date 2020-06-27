@@ -20,7 +20,7 @@ package appeng.me.cluster.implementations;
 
 import java.util.Iterator;
 
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
@@ -165,7 +165,7 @@ public class QuantumCluster implements ILocatable, IAECluster {
                     final DimensionType id = theWorld.dimension.getType();
                     final World cur = theWorld.getServer().getWorld(id);
 
-                    final TileEntity te = theWorld.getTileEntity(qc.center.getPos());
+                    final BlockEntity te = theWorld.getTileEntity(qc.center.getPos());
                     return te != qc.center || theWorld != cur;
                 }
             }

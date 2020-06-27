@@ -6,12 +6,12 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -58,7 +58,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
      * Opens a container that is based around a single tile entity. The tile
      * entity's position is encoded in the packet buffer.
      */
-    public C fromNetwork(int windowId, PlayerInventory inv, PacketBuffer packetBuf) {
+    public C fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf packetBuf) {
         I host = getHostFromLocator(inv.player, ContainerLocator.read(packetBuf));
         if (host != null) {
             return factory.create(windowId, inv, host);
@@ -83,7 +83,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
             return false;
         }
 
-        ITextComponent title = findContainerTitle(player.world, locator, accessInterface);
+        Text title = findContainerTitle(player.world, locator, accessInterface);
 
         INamedContainerProvider container = new SimpleNamedContainerProvider((wnd, p, pl) -> {
             C c = factory.create(wnd, p, accessInterface);
@@ -97,7 +97,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
         return true;
     }
 
-    private ITextComponent findContainerTitle(World world, ContainerLocator locator, I accessInterface) {
+    private Text findContainerTitle(World world, ContainerLocator locator, I accessInterface) {
 
         if (accessInterface instanceof ICustomNameObject) {
             ICustomNameObject customNameObject = (ICustomNameObject) accessInterface;
@@ -112,7 +112,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
         // FIXME: Should move this up, because at this point, it's hard to know where
         // the terminal host came from (part or tile)
         if (locator.hasBlockPos()) {
-            return new TranslationTextComponent(
+            return new TranslatableText(
                     world.getBlockState(locator.getBlockPos()).getBlock().getTranslationKey());
         }
 
@@ -129,7 +129,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
             return null; // No block was clicked
         }
 
-        TileEntity tileEntity = player.world.getTileEntity(locator.getBlockPos());
+        BlockEntity tileEntity = player.world.getTileEntity(locator.getBlockPos());
 
         // The tile entity itself can host a terminal (i.e. Chest!)
         if (interfaceClass.isInstance(tileEntity)) {

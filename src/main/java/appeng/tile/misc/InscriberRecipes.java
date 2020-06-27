@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
@@ -29,7 +29,7 @@ import appeng.recipes.handlers.InscriberRecipe;
  */
 public final class InscriberRecipes {
 
-    public static final ResourceLocation NAMEPLATE_RECIPE_ID = new ResourceLocation(AppEng.MOD_ID, "nameplate");
+    public static final Identifier NAMEPLATE_RECIPE_ID = new Identifier(AppEng.MOD_ID, "nameplate");
 
     private InscriberRecipes() {
     }

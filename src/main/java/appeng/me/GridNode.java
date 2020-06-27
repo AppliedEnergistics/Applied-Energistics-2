@@ -27,10 +27,10 @@ import java.util.EnumSet;
 import java.util.List;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.World;
 
 import appeng.api.exceptions.FailedConnectionException;
@@ -246,7 +246,7 @@ public class GridNode implements IGridNode, IPathItem {
     }
 
     @Override
-    public IWorld getWorld() {
+    public WorldAccess getWorld() {
         return this.gridProxy.getLocation().getWorld();
     }
 
@@ -423,10 +423,10 @@ public class GridNode implements IGridNode, IPathItem {
         }
     }
 
-    private IGridHost findGridHost(final IWorld world, final int x, final int y, final int z) {
+    private IGridHost findGridHost(final WorldAccess world, final int x, final int y, final int z) {
         final BlockPos pos = new BlockPos(x, y, z);
         if (world.isBlockLoaded(pos)) {
-            final TileEntity te = world.getTileEntity(pos);
+            final BlockEntity te = world.getTileEntity(pos);
             if (te instanceof IGridHost) {
                 return (IGridHost) te;
             }

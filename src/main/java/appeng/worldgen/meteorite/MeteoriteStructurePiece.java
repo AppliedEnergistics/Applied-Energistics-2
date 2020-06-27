@@ -23,7 +23,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
@@ -85,7 +85,7 @@ public class MeteoriteStructurePiece extends StructurePiece {
     }
 
     @Override
-    public boolean create(IWorld world, ChunkGenerator<?> chunkGeneratorIn, Random rand, MutableBoundingBox bounds,
+    public boolean create(WorldAccess world, ChunkGenerator<?> chunkGeneratorIn, Random rand, MutableBoundingBox bounds,
             ChunkPos chunkPos) {
         MeteoritePlacer placer = new MeteoritePlacer(world, settings, bounds);
         placer.place();

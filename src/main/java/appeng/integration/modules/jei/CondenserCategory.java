@@ -28,7 +28,7 @@ import com.google.common.base.Splitter;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.fml.client.gui.HoverChecker;
 
 import mezz.jei.api.constants.VanillaTypes;
@@ -51,7 +51,7 @@ import appeng.tile.misc.CondenserTileEntity;
 
 class CondenserCategory implements IRecipeCategory<CondenserOutput> {
 
-    public static final ResourceLocation UID = new ResourceLocation(AppEng.MOD_ID, "condenser");
+    public static final Identifier UID = new Identifier(AppEng.MOD_ID, "condenser");
 
     private final String localizedName;
 
@@ -73,10 +73,10 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
         this.localizedName = I18n.format("gui.appliedenergistics2.Condenser");
         this.icon = guiHelper.createDrawableIngredient(Api.INSTANCE.definitions().blocks().condenser().stack(1));
 
-        ResourceLocation location = new ResourceLocation(AppEng.MOD_ID, "textures/guis/condenser.png");
+        Identifier location = new Identifier(AppEng.MOD_ID, "textures/guis/condenser.png");
         this.background = guiHelper.createDrawable(location, 50, 25, 94, 48);
 
-        ResourceLocation statesLocation = new ResourceLocation(AppEng.MOD_ID, "textures/guis/states.png");
+        Identifier statesLocation = new Identifier(AppEng.MOD_ID, "textures/guis/states.png");
         this.iconTrash = guiHelper.drawableBuilder(statesLocation, 241, 81, 14, 14).addPadding(28, 0, 2, 0).build();
         this.iconButton = guiHelper.drawableBuilder(statesLocation, 240, 240, 16, 16).addPadding(28, 0, 78, 0).build();
 
@@ -106,7 +106,7 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
     }
 
     @Override
-    public ResourceLocation getUid() {
+    public Identifier getUid() {
         return CondenserCategory.UID;
     }
 

@@ -24,16 +24,16 @@ import java.util.Queue;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.tile.AEBaseTileEntity;
@@ -42,9 +42,9 @@ public class ItemGenTileEntity extends AEBaseTileEntity {
 
     private static final Queue<ItemStack> POSSIBLE_ITEMS = new ArrayDeque<>();
 
-    private final IItemHandler handler = new QueuedItemHandler();
+    private final ItemTransferable handler = new QueuedItemHandler();
 
-    public ItemGenTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public ItemGenTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         if (POSSIBLE_ITEMS.isEmpty()) {
             for (final Item mi : ForgeRegistries.ITEMS) {
@@ -81,7 +81,7 @@ public class ItemGenTileEntity extends AEBaseTileEntity {
         return super.getCapability(capability, facing);
     }
 
-    class QueuedItemHandler implements IItemHandler {
+    class QueuedItemHandler implements ItemTransferable {
 
         @Override
         @Nonnull

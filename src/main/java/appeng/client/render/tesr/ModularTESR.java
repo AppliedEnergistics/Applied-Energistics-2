@@ -21,19 +21,19 @@ package appeng.client.render.tesr;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.util.math.MatrixStack;
 
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import appeng.client.render.FacingToRotation;
 import appeng.client.render.renderable.Renderable;
 import appeng.tile.AEBaseTileEntity;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class ModularTESR<T extends AEBaseTileEntity> extends TileEntityRenderer<T> {
 
     private final List<Renderable<? super T>> renderables;
@@ -45,8 +45,8 @@ public class ModularTESR<T extends AEBaseTileEntity> extends TileEntityRenderer<
     }
 
     @Override
-    public void render(T te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers, int combinedLight,
-            int combinedOverlay) {
+    public void render(T te, float partialTicks, MatrixStack ms, VertexConsumerProvider buffers, int combinedLight,
+                       int combinedOverlay) {
         ms.push();
         ms.translate(0.5, 0.5, 0.5);
         FacingToRotation.get(te.getForward(), te.getUp()).push(ms);

@@ -18,16 +18,16 @@
 
 package appeng.container.slot;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraftforge.items.IItemHandler;
 
 public class OptionalRestrictedInputSlot extends RestrictedInputSlot {
 
     private final int groupNum;
     private final IOptionalSlotHost host;
 
-    public OptionalRestrictedInputSlot(final PlacableItemType valid, final IItemHandler i, final IOptionalSlotHost host,
-            final int slotIndex, final int x, final int y, final int grpNum, final PlayerInventory invPlayer) {
+    public OptionalRestrictedInputSlot(final PlacableItemType valid, final ItemTransferable i, final IOptionalSlotHost host,
+                                       final int slotIndex, final int x, final int y, final int grpNum, final PlayerInventory invPlayer) {
         super(valid, i, slotIndex, x, y, invPlayer);
         this.groupNum = grpNum;
         this.host = host;

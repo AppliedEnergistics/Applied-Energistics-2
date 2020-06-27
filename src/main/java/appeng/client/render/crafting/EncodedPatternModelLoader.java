@@ -4,8 +4,8 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 
 import net.minecraft.resources.IResourceManager;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModelLoader;
 
 /**
@@ -23,7 +23,7 @@ public class EncodedPatternModelLoader implements IModelLoader<EncodedPatternMod
     @Override
     public EncodedPatternModel read(JsonDeserializationContext deserializationContext, JsonObject modelContents) {
         modelContents.remove("loader"); // Avoid recursion
-        ResourceLocation baseModel = new ResourceLocation(JSONUtils.getString(modelContents, "baseModel"));
+        Identifier baseModel = new Identifier(JSONUtils.getString(modelContents, "baseModel"));
         return new EncodedPatternModel(baseModel);
     }
 

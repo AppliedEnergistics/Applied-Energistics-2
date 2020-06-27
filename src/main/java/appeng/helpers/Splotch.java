@@ -18,7 +18,7 @@
 
 package appeng.helpers;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
@@ -60,7 +60,7 @@ public class Splotch {
         this.side = side;
     }
 
-    public Splotch(final PacketBuffer data) {
+    public Splotch(final PacketByteBuf data) {
 
         this.pos = data.readByte();
         final int val = data.readByte();
@@ -70,7 +70,7 @@ public class Splotch {
         this.lumen = ((val >> 7) & 0x01) > 0;
     }
 
-    public void writeToStream(final PacketBuffer stream) {
+    public void writeToStream(final PacketByteBuf stream) {
         stream.writeByte(this.pos);
         final int val = this.getSide().ordinal() | (this.getColor().ordinal() << 3) | (this.isLumen() ? 0x80 : 0x00);
         stream.writeByte(val);

@@ -20,7 +20,7 @@ package appeng.client.gui.implementations;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 
 import appeng.api.config.ActionItems;
 import appeng.client.gui.widgets.ActionButton;
@@ -33,7 +33,7 @@ import appeng.helpers.InventoryAction;
 
 public class CraftingTermScreen extends MEMonitorableScreen<CraftingTermContainer> {
 
-    public CraftingTermScreen(CraftingTermContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public CraftingTermScreen(CraftingTermContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
         this.setReservedSpace(73);
     }

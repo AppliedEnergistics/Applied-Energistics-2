@@ -31,7 +31,7 @@ import org.apache.commons.lang3.time.DurationFormatUtils;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.api.AEApi;
@@ -90,7 +90,7 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
     private Button cancel;
     private int tooltip = -1;
 
-    public CraftingCPUScreen(T container, PlayerInventory playerInventory, ITextComponent title) {
+    public CraftingCPUScreen(T container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
         this.ySize = GUI_HEIGHT;
         this.xSize = GUI_WIDTH;

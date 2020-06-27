@@ -5,7 +5,7 @@ import java.util.Locale;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.util.math.Vec3d;
@@ -37,7 +37,7 @@ public class LightningArcParticleData implements IParticleData {
 
         @Override
         public LightningArcParticleData read(ParticleType<LightningArcParticleData> particleTypeIn,
-                PacketBuffer buffer) {
+                PacketByteBuf buffer) {
             float x = buffer.readFloat();
             float y = buffer.readFloat();
             float z = buffer.readFloat();
@@ -51,7 +51,7 @@ public class LightningArcParticleData implements IParticleData {
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void write(PacketByteBuf buffer) {
         buffer.writeFloat((float) target.x);
         buffer.writeFloat((float) target.y);
         buffer.writeFloat((float) target.z);

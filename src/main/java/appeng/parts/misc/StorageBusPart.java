@@ -22,20 +22,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockView;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
@@ -98,19 +98,19 @@ import appeng.util.prioritylist.PrecisePriorityList;
 public class StorageBusPart extends UpgradeablePart
         implements IGridTickable, ICellContainer, IMEMonitorHandlerReceiver<IAEItemStack>, IPriorityHost {
 
-    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/storage_bus_base");
+    public static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID, "part/storage_bus_base");
 
     @PartModels
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/storage_bus_off"));
+            new Identifier(AppEng.MOD_ID, "part/storage_bus_off"));
 
     @PartModels
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/storage_bus_on"));
+            new Identifier(AppEng.MOD_ID, "part/storage_bus_on"));
 
     @PartModels
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/storage_bus_has_channel"));
+            new Identifier(AppEng.MOD_ID, "part/storage_bus_has_channel"));
 
     private final IActionSource mySrc;
     private final AppEngInternalAEInventory Config = new AppEngInternalAEInventory(this, 63);
@@ -167,8 +167,8 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removedStack, final ItemStack newStack) {
+    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+                                  final ItemStack removedStack, final ItemStack newStack) {
         super.onChangeInventory(inv, slot, mc, removedStack, newStack);
 
         if (inv == this.Config) {
@@ -197,7 +197,7 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public IItemHandler getInventoryByName(final String name) {
+    public ItemTransferable getInventoryByName(final String name) {
         if (name.equals("config")) {
             return this.Config;
         }
@@ -257,7 +257,7 @@ public class StorageBusPart extends UpgradeablePart
     @Override
     public void onNeighborChanged(BlockView w, BlockPos pos, BlockPos neighbor) {
         if (pos.offset(this.getSide().getFacing()).equals(neighbor)) {
-            final TileEntity te = w.getTileEntity(neighbor);
+            final BlockEntity te = w.getTileEntity(neighbor);
 
             // In case the TE was destroyed, we have to do a full reset immediately.
             if (te == null) {
@@ -329,7 +329,7 @@ public class StorageBusPart extends UpgradeablePart
         }
     }
 
-    private IMEInventory<IAEItemStack> getInventoryWrapper(TileEntity target) {
+    private IMEInventory<IAEItemStack> getInventoryWrapper(BlockEntity target) {
 
         Direction targetSide = this.getSide().getFacing().getOpposite();
 
@@ -355,7 +355,7 @@ public class StorageBusPart extends UpgradeablePart
         }
 
         // Check via cap for IItemHandler
-        final LazyOptional<IItemHandler> handlerExtOpt = target
+        final LazyOptional<ItemTransferable> handlerExtOpt = target
                 .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide);
         if (handlerExtOpt.isPresent()) {
             return new ItemHandlerAdapter(handlerExtOpt.orElse(null), this);
@@ -366,7 +366,7 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     // TODO, LazyOptionals are cacheable this might need changing?
-    private int createHandlerHash(TileEntity target) {
+    private int createHandlerHash(BlockEntity target) {
         if (target == null) {
             return 0;
         }
@@ -380,11 +380,11 @@ public class StorageBusPart extends UpgradeablePart
             return Objects.hash(target, accessorOpt.orElse(null));
         }
 
-        final LazyOptional<IItemHandler> itemHandlerOpt = target
+        final LazyOptional<ItemTransferable> itemHandlerOpt = target
                 .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide);
 
         if (itemHandlerOpt.isPresent()) {
-            IItemHandler itemHandler = itemHandlerOpt.orElse(null);
+            ItemTransferable itemHandler = itemHandlerOpt.orElse(null);
             return Objects.hash(target, itemHandler, itemHandler.getSlots());
         }
 
@@ -399,8 +399,8 @@ public class StorageBusPart extends UpgradeablePart
         final boolean wasSleeping = this.monitor == null;
 
         this.cached = true;
-        final TileEntity self = this.getHost().getTile();
-        final TileEntity target = self.getWorld().getTileEntity(self.getPos().offset(this.getSide().getFacing()));
+        final BlockEntity self = this.getHost().getTile();
+        final BlockEntity target = self.getWorld().getTileEntity(self.getPos().offset(this.getSide().getFacing()));
         final int newHandlerHash = this.createHandlerHash(target);
 
         if (newHandlerHash != 0 && newHandlerHash == this.handlerHash) {
@@ -482,7 +482,7 @@ public class StorageBusPart extends UpgradeablePart
         return this.handler;
     }
 
-    private void checkInterfaceVsStorageBus(final TileEntity target, final AEPartLocation side) {
+    private void checkInterfaceVsStorageBus(final BlockEntity target, final AEPartLocation side) {
         IInterfaceHost achievement = null;
 
         if (target instanceof IInterfaceHost) {

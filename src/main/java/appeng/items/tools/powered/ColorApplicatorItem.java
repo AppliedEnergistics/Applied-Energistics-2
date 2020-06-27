@@ -22,10 +22,13 @@ import java.util.*;
 
 import javax.annotation.Nullable;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import com.google.common.collect.ImmutableMap;
 
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -36,18 +39,15 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.state.IProperty;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.text.Text;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraft.server.world.ServerWorld;
+import net.fabricmc.api.EnvType;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -82,29 +82,29 @@ import appeng.util.item.AEItemStack;
 public class ColorApplicatorItem extends AEBasePoweredItem
         implements IStorageCell<IAEItemStack>, IItemGroup, IBlockTool, IMouseWheelItem {
 
-    private static final Map<ResourceLocation, AEColor> TAG_TO_COLOR = ImmutableMap.<ResourceLocation, AEColor>builder()
-            .put(new ResourceLocation("forge:dyes/black"), AEColor.BLACK)
-            .put(new ResourceLocation("forge:dyes/blue"), AEColor.BLUE)
-            .put(new ResourceLocation("forge:dyes/brown"), AEColor.BROWN)
-            .put(new ResourceLocation("forge:dyes/cyan"), AEColor.CYAN)
-            .put(new ResourceLocation("forge:dyes/gray"), AEColor.GRAY)
-            .put(new ResourceLocation("forge:dyes/green"), AEColor.GREEN)
-            .put(new ResourceLocation("forge:dyes/light_blue"), AEColor.LIGHT_BLUE)
-            .put(new ResourceLocation("forge:dyes/light_gray"), AEColor.LIGHT_GRAY)
-            .put(new ResourceLocation("forge:dyes/lime"), AEColor.LIME)
-            .put(new ResourceLocation("forge:dyes/magenta"), AEColor.MAGENTA)
-            .put(new ResourceLocation("forge:dyes/orange"), AEColor.ORANGE)
-            .put(new ResourceLocation("forge:dyes/pink"), AEColor.PINK)
-            .put(new ResourceLocation("forge:dyes/purple"), AEColor.PURPLE)
-            .put(new ResourceLocation("forge:dyes/red"), AEColor.RED)
-            .put(new ResourceLocation("forge:dyes/white"), AEColor.WHITE)
-            .put(new ResourceLocation("forge:dyes/yellow"), AEColor.YELLOW).build();
+    private static final Map<Identifier, AEColor> TAG_TO_COLOR = ImmutableMap.<Identifier, AEColor>builder()
+            .put(new Identifier("forge:dyes/black"), AEColor.BLACK)
+            .put(new Identifier("forge:dyes/blue"), AEColor.BLUE)
+            .put(new Identifier("forge:dyes/brown"), AEColor.BROWN)
+            .put(new Identifier("forge:dyes/cyan"), AEColor.CYAN)
+            .put(new Identifier("forge:dyes/gray"), AEColor.GRAY)
+            .put(new Identifier("forge:dyes/green"), AEColor.GREEN)
+            .put(new Identifier("forge:dyes/light_blue"), AEColor.LIGHT_BLUE)
+            .put(new Identifier("forge:dyes/light_gray"), AEColor.LIGHT_GRAY)
+            .put(new Identifier("forge:dyes/lime"), AEColor.LIME)
+            .put(new Identifier("forge:dyes/magenta"), AEColor.MAGENTA)
+            .put(new Identifier("forge:dyes/orange"), AEColor.ORANGE)
+            .put(new Identifier("forge:dyes/pink"), AEColor.PINK)
+            .put(new Identifier("forge:dyes/purple"), AEColor.PURPLE)
+            .put(new Identifier("forge:dyes/red"), AEColor.RED)
+            .put(new Identifier("forge:dyes/white"), AEColor.WHITE)
+            .put(new Identifier("forge:dyes/yellow"), AEColor.YELLOW).build();
 
     private static final String TAG_COLOR = "color";
 
     public ColorApplicatorItem(Item.Properties props) {
         super(AEConfig.instance().getColorApplicatorBattery(), props);
-        addPropertyOverride(new ResourceLocation(AppEng.MOD_ID, "colored"), (itemStack, world, entity) -> {
+        addPropertyOverride(new Identifier(AppEng.MOD_ID, "colored"), (itemStack, world, entity) -> {
             // If the stack has no color, don't use the colored model since the impact of
             // calling getColor for every quad is extremely high, if the stack tries to
             // re-search its
@@ -148,7 +148,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
             final double powerPerUse = 100;
             if (!paintBall.isEmpty() && paintBall.getItem() instanceof SnowballItem) {
-                final TileEntity te = w.getTileEntity(pos);
+                final BlockEntity te = w.getTileEntity(pos);
                 // clean cables.
                 if (te instanceof IColorableTile && p != null) {
                     if (this.getAECurrentPower(is) > powerPerUse
@@ -164,7 +164,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
                 // clean paint balls..
                 final Block testBlk = w.getBlockState(pos.offset(side)).getBlock();
-                final TileEntity painted = w.getTileEntity(pos.offset(side));
+                final BlockEntity painted = w.getTileEntity(pos.offset(side));
                 if (this.getAECurrentPower(is) > powerPerUse && testBlk instanceof PaintSplotchesBlock
                         && painted instanceof PaintSplotchesTileEntity) {
                     inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE, new BaseActionSource());
@@ -194,13 +194,13 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public ITextComponent getDisplayName(final ItemStack is) {
-        ITextComponent extra = GuiText.Empty.textComponent();
+    public Text getDisplayName(final ItemStack is) {
+        Text extra = GuiText.Empty.textComponent();
 
         final AEColor selected = this.getActiveColor(is);
 
         if (selected != null && Platform.isClient()) {
-            extra = new TranslationTextComponent(selected.translationKey);
+            extra = new TranslatableText(selected.translationKey);
         }
 
         return super.getDisplayName(is).appendText(" - ").appendSibling(extra);
@@ -223,7 +223,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             final PaintBallItem ipb = (PaintBallItem) paintBall.getItem();
             return ipb.getColor();
         } else {
-            for (Map.Entry<ResourceLocation, AEColor> entry : TAG_TO_COLOR.entrySet()) {
+            for (Map.Entry<Identifier, AEColor> entry : TAG_TO_COLOR.entrySet()) {
                 Tag<Item> tag = ItemTags.getCollection().get(entry.getKey());
                 if (tag != null && paintBall.getItem().isIn(tag)) {
                     return entry.getValue();
@@ -355,8 +355,8 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+    @Environment(EnvType.CLIENT)
+    public void addInformation(final ItemStack stack, final World world, final List<Text> lines,
             final ITooltipFlag advancedTooltips) {
         super.addInformation(stack, world, lines, advancedTooltips);
 
@@ -420,12 +420,12 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public IItemHandler getUpgradesInventory(final ItemStack is) {
+    public ItemTransferable getUpgradesInventory(final ItemStack is) {
         return new CellUpgrades(is, 2);
     }
 
     @Override
-    public IItemHandler getConfigInventory(final ItemStack is) {
+    public ItemTransferable getConfigInventory(final ItemStack is) {
         return new CellConfig(is);
     }
 

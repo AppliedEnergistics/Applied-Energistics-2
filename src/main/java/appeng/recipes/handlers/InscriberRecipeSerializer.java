@@ -8,9 +8,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import appeng.api.features.InscriberProcessType;
@@ -42,7 +42,7 @@ public class InscriberRecipeSerializer extends ForgeRegistryEntry<IRecipeSeriali
     }
 
     @Override
-    public InscriberRecipe read(ResourceLocation recipeId, JsonObject json) {
+    public InscriberRecipe read(Identifier recipeId, JsonObject json) {
 
         InscriberProcessType mode = getMode(json);
 
@@ -66,7 +66,7 @@ public class InscriberRecipeSerializer extends ForgeRegistryEntry<IRecipeSeriali
 
     @Nullable
     @Override
-    public InscriberRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
+    public InscriberRecipe read(Identifier recipeId, PacketByteBuf buffer) {
         String group = buffer.readString();
         Ingredient middle = Ingredient.read(buffer);
         ItemStack result = buffer.readItemStack();
@@ -78,7 +78,7 @@ public class InscriberRecipeSerializer extends ForgeRegistryEntry<IRecipeSeriali
     }
 
     @Override
-    public void write(PacketBuffer buffer, InscriberRecipe recipe) {
+    public void write(PacketByteBuf buffer, InscriberRecipe recipe) {
         buffer.writeString(recipe.getGroup());
         recipe.getMiddleInput().write(buffer);
         buffer.writeItemStack(recipe.getRecipeOutput());

@@ -11,7 +11,7 @@ import net.minecraft.data.RecipeProvider;
 import net.minecraft.data.ShapedRecipeBuilder;
 import net.minecraft.data.SingleItemRecipeBuilder;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
 
 import appeng.api.definitions.IBlockDefinition;
@@ -47,11 +47,11 @@ public class SlabStairRecipes extends RecipeProvider implements IAE2DataProvider
 
         ShapedRecipeBuilder.shapedRecipe(slabs.block(), 6).patternLine("###").key('#', inputBlock)
                 .addCriterion(criterionName(block), hasItem(inputBlock))
-                .build(consumer, new ResourceLocation(AppEng.MOD_ID, "shaped/slabs/" + block.identifier()));
+                .build(consumer, new Identifier(AppEng.MOD_ID, "shaped/slabs/" + block.identifier()));
 
         SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(inputBlock), outputBlock, 2)
                 .addCriterion(criterionName(block), hasItem(inputBlock))
-                .build(consumer, new ResourceLocation(AppEng.MOD_ID, "block_cutter/slabs/" + slabs.identifier()));
+                .build(consumer, new Identifier(AppEng.MOD_ID, "block_cutter/slabs/" + slabs.identifier()));
     }
 
     private void stairRecipe(Consumer<IFinishedRecipe> consumer, IBlockDefinition block, IBlockDefinition stairs) {
@@ -60,11 +60,11 @@ public class SlabStairRecipes extends RecipeProvider implements IAE2DataProvider
 
         ShapedRecipeBuilder.shapedRecipe(outputBlock, 4).patternLine("#  ").patternLine("## ").patternLine("###")
                 .key('#', inputBlock).addCriterion(criterionName(block), hasItem(inputBlock))
-                .build(consumer, new ResourceLocation(AppEng.MOD_ID, "shaped/stairs/" + block.identifier()));
+                .build(consumer, new Identifier(AppEng.MOD_ID, "shaped/stairs/" + block.identifier()));
 
         SingleItemRecipeBuilder.stonecuttingRecipe(Ingredient.fromItems(inputBlock), outputBlock)
                 .addCriterion(criterionName(block), hasItem(inputBlock))
-                .build(consumer, new ResourceLocation(AppEng.MOD_ID, "block_cutter/stairs/" + stairs.identifier()));
+                .build(consumer, new Identifier(AppEng.MOD_ID, "block_cutter/stairs/" + stairs.identifier()));
 
     }
 

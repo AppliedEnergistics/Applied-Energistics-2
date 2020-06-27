@@ -18,13 +18,13 @@
 
 package appeng.container.slot;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 public class FakeSlot extends AppEngSlot {
 
-    public FakeSlot(final IItemHandler inv, final int idx, final int x, final int y) {
+    public FakeSlot(final ItemTransferable inv, final int idx, final int x, final int y) {
         super(inv, idx, x, y);
     }
 

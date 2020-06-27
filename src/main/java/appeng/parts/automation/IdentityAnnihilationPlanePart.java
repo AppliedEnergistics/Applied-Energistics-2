@@ -25,12 +25,12 @@ import javax.annotation.Nonnull;
 import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.api.parts.IPart;
@@ -56,7 +56,7 @@ public class IdentityAnnihilationPlanePart extends AnnihilationPlanePart {
     }
 
     @Override
-    protected boolean isAnnihilationPlane(final TileEntity blockTileEntity, final AEPartLocation side) {
+    protected boolean isAnnihilationPlane(final BlockEntity blockTileEntity, final AEPartLocation side) {
         if (blockTileEntity instanceof IPartHost) {
             final IPart p = ((IPartHost) blockTileEntity).getPart(side);
             return p != null && p.getClass() == this.getClass();

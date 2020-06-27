@@ -19,7 +19,7 @@
 package appeng.client.gui.implementations;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
@@ -38,7 +38,7 @@ public class SecurityStationScreen extends MEMonitorableScreen<SecurityStationCo
     private ToggleButton security;
 
     public SecurityStationScreen(SecurityStationContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
+            Text title) {
         super(container, playerInventory, title);
         this.setCustomSortOrder(false);
         this.setReservedSpace(33);

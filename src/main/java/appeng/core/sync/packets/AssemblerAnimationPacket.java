@@ -20,12 +20,12 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
+import net.fabricmc.api.Environment;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.sync.BasePacket;
@@ -40,7 +40,7 @@ public class AssemblerAnimationPacket extends BasePacket {
     public final byte rate;
     public final IAEItemStack is;
 
-    public AssemblerAnimationPacket(final PacketBuffer stream) {
+    public AssemblerAnimationPacket(final PacketByteBuf stream) {
         this.pos = stream.readBlockPos();
         this.rate = stream.readByte();
         this.is = AEItemStack.fromPacket(stream);
@@ -49,7 +49,7 @@ public class AssemblerAnimationPacket extends BasePacket {
     // api
     public AssemblerAnimationPacket(final BlockPos pos, final byte rate, final IAEItemStack is) {
 
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeBlockPos(this.pos = pos);
@@ -61,9 +61,9 @@ public class AssemblerAnimationPacket extends BasePacket {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
-        TileEntity te = player.getEntityWorld().getTileEntity(pos);
+        BlockEntity te = player.getEntityWorld().getTileEntity(pos);
         if (te instanceof MolecularAssemblerTileEntity) {
             MolecularAssemblerTileEntity ma = (MolecularAssemblerTileEntity) te;
             ma.setAnimationStatus(new AssemblerAnimationStatus(rate, is.asItemStackRepresentation()));

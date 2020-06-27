@@ -18,8 +18,8 @@
 
 package appeng.core.localization;
 
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 
 public enum ButtonToolTips {
     PowerUnits, IOMode, CondenserOutput, RedstoneMode, MatchingFuzzy,
@@ -85,8 +85,8 @@ public enum ButtonToolTips {
         return getTranslationKey().getFormattedText();
     }
 
-    public ITextComponent getTranslationKey() {
-        return new TranslationTextComponent(this.root + '.' + this.toString());
+    public Text getTranslationKey() {
+        return new TranslatableText(this.root + '.' + this.toString());
     }
 
 }

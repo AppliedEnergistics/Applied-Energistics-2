@@ -10,8 +10,8 @@ import net.minecraft.nbt.INBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.WorldAccess;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -135,7 +135,7 @@ public final class MeteoriteSpawnData {
         return ll;
     }
 
-    public synchronized static MeteoriteSpawnData get(IWorld world) {
+    public synchronized static MeteoriteSpawnData get(WorldAccess world) {
         ServerWorld serverWorld;
         if (world instanceof ServerWorld) {
             serverWorld = (ServerWorld) world;

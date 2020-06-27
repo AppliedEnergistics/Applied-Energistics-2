@@ -23,7 +23,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
 import appeng.core.AppEng;
 import appeng.items.parts.PartItem;
@@ -54,6 +54,6 @@ public class PartItemPredicate extends ItemPredicate {
     }
 
     public static void register() {
-        ItemPredicate.register(new ResourceLocation(AppEng.MOD_ID, "part"), PartItemPredicate::deserialize);
+        ItemPredicate.register(new Identifier(AppEng.MOD_ID, "part"), PartItemPredicate::deserialize);
     }
 }

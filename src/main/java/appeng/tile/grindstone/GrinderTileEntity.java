@@ -21,11 +21,11 @@ package appeng.tile.grindstone;
 import java.util.ArrayList;
 import java.util.List;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.Direction;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
 
 import appeng.api.implementations.tiles.ICrankable;
@@ -45,10 +45,10 @@ public class GrinderTileEntity extends AEBaseInvTileEntity implements ICrankable
     private static final int SLOT_PROCESSING = 6;
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 7);
-    private final IItemHandler invExt = new WrapperFilteredItemHandler(this.inv, new GrinderFilter());
+    private final ItemTransferable invExt = new WrapperFilteredItemHandler(this.inv, new GrinderFilter());
     private int points;
 
-    public GrinderTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public GrinderTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -60,18 +60,18 @@ public class GrinderTileEntity extends AEBaseInvTileEntity implements ICrankable
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
+    public ItemTransferable getInternalInventory() {
         return this.inv;
     }
 
     @Override
-    protected IItemHandler getItemHandlerForSide(Direction side) {
+    protected ItemTransferable getItemHandlerForSide(Direction side) {
         return this.invExt;
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final ItemStack added) {
+    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+                                  final ItemStack removed, final ItemStack added) {
 
     }
 
@@ -162,12 +162,12 @@ public class GrinderTileEntity extends AEBaseInvTileEntity implements ICrankable
 
     private class GrinderFilter implements IAEItemFilter {
         @Override
-        public boolean allowExtract(IItemHandler inv, int slotIndex, int amount) {
+        public boolean allowExtract(ItemTransferable inv, int slotIndex, int amount) {
             return slotIndex >= 3 && slotIndex <= 5;
         }
 
         @Override
-        public boolean allowInsert(IItemHandler inv, int slotIndex, ItemStack stack) {
+        public boolean allowInsert(ItemTransferable inv, int slotIndex, ItemStack stack) {
             if (!GrinderRecipes.isValidIngredient(world, stack)) {
                 return false;
             }

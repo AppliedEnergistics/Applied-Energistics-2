@@ -19,7 +19,7 @@
 package appeng.client.gui.implementations;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 
 import appeng.api.AEApi;
 import appeng.api.config.FullnessMode;
@@ -37,7 +37,7 @@ public class IOPortScreen extends UpgradeableScreen<IOPortContainer> {
     private SettingToggleButton<FullnessMode> fullMode;
     private SettingToggleButton<OperationMode> operationMode;
 
-    public IOPortScreen(IOPortContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public IOPortScreen(IOPortContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
         this.ySize = 166;
     }

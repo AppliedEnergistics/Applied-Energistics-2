@@ -19,7 +19,7 @@
 package appeng.fluids.client.gui;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.client.gui.implementations.UpgradeableScreen;
@@ -36,7 +36,7 @@ import appeng.fluids.util.IAEFluidTank;
 
 public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceContainer> {
     public FluidInterfaceScreen(FluidInterfaceContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
+            Text title) {
         super(container, playerInventory, title);
         this.ySize = 231;
     }

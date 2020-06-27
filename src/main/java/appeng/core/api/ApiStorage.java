@@ -21,14 +21,14 @@ package appeng.core.api;
 import java.util.Collection;
 import java.util.Collections;
 
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.MutableClassToInstanceMap;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fluids.FluidStack;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraftforge.fluids.FluidUtil;
 
 import appeng.api.config.Actionable;
@@ -146,7 +146,7 @@ public class ApiStorage implements IStorageHelper {
         }
 
         @Override
-        public IAEItemStack readFromPacket(PacketBuffer input) {
+        public IAEItemStack readFromPacket(PacketByteBuf input) {
             Preconditions.checkNotNull(input);
 
             return AEItemStack.fromPacket(input);
@@ -174,8 +174,8 @@ public class ApiStorage implements IStorageHelper {
         public IAEFluidStack createStack(Object input) {
             Preconditions.checkNotNull(input);
 
-            if (input instanceof FluidStack) {
-                return AEFluidStack.fromFluidStack((FluidStack) input);
+            if (input instanceof FluidVolume) {
+                return AEFluidStack.fromFluidStack((FluidVolume) input);
             }
             if (input instanceof ItemStack) {
                 final ItemStack is = (ItemStack) input;
@@ -190,7 +190,7 @@ public class ApiStorage implements IStorageHelper {
         }
 
         @Override
-        public IAEFluidStack readFromPacket(PacketBuffer input) {
+        public IAEFluidStack readFromPacket(PacketByteBuf input) {
             Preconditions.checkNotNull(input);
 
             return AEFluidStack.fromPacket(input);

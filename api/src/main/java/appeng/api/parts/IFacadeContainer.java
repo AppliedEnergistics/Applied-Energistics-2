@@ -26,7 +26,7 @@ package appeng.api.parts;
 import java.io.IOException;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.util.AEPartLocation;
 
@@ -75,7 +75,7 @@ public interface IFacadeContainer {
      *
      * @throws IOException
      */
-    boolean readFromStream(PacketBuffer data) throws IOException;
+    boolean readFromStream(PacketByteBuf data) throws IOException;
 
     /**
      * read from NBT
@@ -91,7 +91,7 @@ public interface IFacadeContainer {
      *
      * @throws IOException
      */
-    void writeToStream(PacketBuffer data) throws IOException;
+    void writeToStream(PacketByteBuf data) throws IOException;
 
     /**
      * @return true if there are no facades.

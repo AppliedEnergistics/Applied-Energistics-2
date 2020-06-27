@@ -21,10 +21,10 @@ package appeng.tile.grindstone;
 import java.io.IOException;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.Direction;
 
 import appeng.api.implementations.tiles.ICrankable;
@@ -41,7 +41,7 @@ public class CrankTileEntity extends AEBaseTileEntity implements ITickableTileEn
     private int hits = 0;
     private int rotation = 0;
 
-    public CrankTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public CrankTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -68,7 +68,7 @@ public class CrankTileEntity extends AEBaseTileEntity implements ITickableTileEn
         }
 
         final Direction grinder = this.getUp().getOpposite();
-        final TileEntity te = this.world.getTileEntity(this.pos.offset(grinder));
+        final BlockEntity te = this.world.getTileEntity(this.pos.offset(grinder));
         if (te instanceof ICrankable) {
             return (ICrankable) te;
         }
@@ -76,14 +76,14 @@ public class CrankTileEntity extends AEBaseTileEntity implements ITickableTileEn
     }
 
     @Override
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final PacketByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
         this.rotation = data.readInt();
         return c;
     }
 
     @Override
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final PacketByteBuf data) throws IOException {
         super.writeToStream(data);
         data.writeInt(this.rotation);
     }

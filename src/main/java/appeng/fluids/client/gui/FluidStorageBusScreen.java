@@ -19,7 +19,7 @@
 package appeng.fluids.client.gui;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.ActionItems;
@@ -51,7 +51,7 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusCont
     private SettingToggleButton<StorageFilter> storageFilter;
 
     public FluidStorageBusScreen(FluidStorageBusContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
+            Text title) {
         super(container, playerInventory, title);
         this.ySize = 251;
     }

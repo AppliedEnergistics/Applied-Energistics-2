@@ -24,8 +24,8 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipe;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.recipe.IFocus;
@@ -51,7 +51,7 @@ class FacadeRegistryPlugin implements IRecipeManagerPlugin {
     }
 
     @Override
-    public <V> List<ResourceLocation> getRecipeCategoryUids(IFocus<V> focus) {
+    public <V> List<Identifier> getRecipeCategoryUids(IFocus<V> focus) {
         if (focus.getMode() == IFocus.Mode.OUTPUT && focus.getValue() instanceof ItemStack) {
             // Looking up how a certain facade is crafted
             ItemStack itemStack = (ItemStack) focus.getValue();
@@ -101,7 +101,7 @@ class FacadeRegistryPlugin implements IRecipeManagerPlugin {
 
     private ShapedRecipe make(ItemStack textureItem, ItemStack cableAnchor, ItemStack result) {
         // This id should only be used within JEI and not really matter
-        ResourceLocation id = new ResourceLocation(AppEng.MOD_ID,
+        Identifier id = new Identifier(AppEng.MOD_ID,
                 "facade/" + textureItem.getItem().getRegistryName().toString().replace(':', '/'));
 
         NonNullList<Ingredient> ingredients = NonNullList.withSize(9, Ingredient.EMPTY);

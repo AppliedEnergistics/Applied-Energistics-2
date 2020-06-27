@@ -20,9 +20,9 @@ package appeng.client.gui.implementations;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraftforge.fml.client.gui.GuiUtils;
-import net.minecraftforge.items.IItemHandler;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 import appeng.api.config.ActionItems;
 import appeng.api.config.CopyMode;
@@ -43,7 +43,7 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
     private ToggleButton copyMode;
 
     public CellWorkbenchScreen(CellWorkbenchContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
+            Text title) {
         super(container, playerInventory, title);
         this.ySize = 251;
     }
@@ -118,7 +118,7 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
         this.copyMode.setState(this.container.getCopyMode() == CopyMode.CLEAR_ON_REMOVE);
 
         boolean hasFuzzy = false;
-        final IItemHandler inv = this.container.getCellUpgradeInventory();
+        final ItemTransferable inv = this.container.getCellUpgradeInventory();
         for (int x = 0; x < inv.getSlots(); x++) {
             final ItemStack is = inv.getStackInSlot(x);
             if (!is.isEmpty() && is.getItem() instanceof IUpgradeModule) {

@@ -18,20 +18,18 @@
 
 package appeng.client.render.spatial;
 
+import net.fabricmc.api.EnvType;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.Environment;
 
 import appeng.bootstrap.BlockRenderingCustomizer;
 import appeng.bootstrap.IBlockRendering;
 import appeng.bootstrap.IItemRendering;
-import appeng.core.AppEng;
 
 public class SpatialPylonRendering extends BlockRenderingCustomizer {
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
         rendering.renderType(RenderType.getCutout());
     }

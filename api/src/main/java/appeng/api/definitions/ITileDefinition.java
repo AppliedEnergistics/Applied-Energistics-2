@@ -20,11 +20,11 @@ package appeng.api.definitions;
 
 import java.util.Optional;
 
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
 
 public interface ITileDefinition extends IBlockDefinition {
     /**
-     * @return the {@link TileEntity} Class if applicable.
+     * @return the {@link BlockEntity} Class if applicable.
      */
-    Optional<? extends Class<? extends TileEntity>> maybeEntity();
+    Optional<? extends Class<? extends BlockEntity>> maybeEntity();
 }

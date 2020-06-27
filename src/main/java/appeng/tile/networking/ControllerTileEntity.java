@@ -21,11 +21,11 @@ package appeng.tile.networking;
 import java.util.EnumSet;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraftforge.items.IItemHandler;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import appeng.api.config.Actionable;
@@ -48,7 +48,7 @@ import appeng.util.inv.InvOperation;
 public class ControllerTileEntity extends AENetworkPowerTileEntity {
     private boolean isValid = false;
 
-    public ControllerTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public ControllerTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.setInternalMaxPower(8000);
         this.setInternalPublicPowerStorage(true);
@@ -168,13 +168,13 @@ public class ControllerTileEntity extends AENetworkPowerTileEntity {
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
+    public ItemTransferable getInternalInventory() {
         return EmptyHandler.INSTANCE;
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final ItemStack added) {
+    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+                                  final ItemStack removed, final ItemStack added) {
     }
 
     /**

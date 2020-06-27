@@ -1,8 +1,8 @@
 package appeng.items.tools.powered;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.AEColor;
 import appeng.bootstrap.IItemRendering;
@@ -11,7 +11,7 @@ import appeng.bootstrap.ItemRenderingCustomizer;
 public class ColorApplicatorItemRendering extends ItemRenderingCustomizer {
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void customize(IItemRendering rendering) {
         rendering.color(this::getColor);
     }

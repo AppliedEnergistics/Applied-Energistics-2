@@ -19,7 +19,7 @@
 package appeng.client.gui.implementations;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.client.gui.AEBaseScreen;
@@ -31,7 +31,7 @@ import appeng.util.Platform;
 public class SpatialIOPortScreen extends AEBaseScreen<SpatialIOPortContainer> {
 
     public SpatialIOPortScreen(SpatialIOPortContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
+            Text title) {
         super(container, playerInventory, title);
         this.ySize = 199;
     }

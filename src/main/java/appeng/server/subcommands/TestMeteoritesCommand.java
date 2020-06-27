@@ -35,7 +35,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
@@ -46,7 +46,7 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.structure.StructureStart;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import appeng.server.ISubCommand;
@@ -157,7 +157,7 @@ public class TestMeteoritesCommand implements ISubCommand {
                 }
             }
 
-            ITextComponent restOfLine;
+            Text restOfLine;
             if (settings.getFallout() == null) {
                 restOfLine = new StringTextComponent(
                         String.format(Locale.ROOT, ", radius=%.2f [%s]", settings.getMeteoriteRadius(), state));
@@ -167,11 +167,11 @@ public class TestMeteoritesCommand implements ISubCommand {
                         settings.getFallout().name().toLowerCase()));
             }
 
-            ITextComponent msg = new StringTextComponent(" #" + (i + 1) + " ");
+            Text msg = new StringTextComponent(" #" + (i + 1) + " ");
             msg.appendSibling(getClickablePosition(world, settings, pos)).appendSibling(restOfLine);
 
             // Add a tooltip
-            ITextComponent tooltip = new StringTextComponent(settings.toString() + "\nBiome: ")
+            Text tooltip = new StringTextComponent(settings.toString() + "\nBiome: ")
                     .appendSibling(world.getBiome(pos).getDisplayName());
             msg.applyTextStyle(style -> style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
 
@@ -180,7 +180,7 @@ public class TestMeteoritesCommand implements ISubCommand {
     }
 
     // Add a clickable link to teleport the user to the Meteorite
-    private static ITextComponent getClickablePosition(ServerWorld world, PlacedMeteoriteSettings settings,
+    private static Text getClickablePosition(ServerWorld world, PlacedMeteoriteSettings settings,
             BlockPos pos) {
         BlockPos tpPos = pos.up((int) Math.ceil(settings.getMeteoriteRadius()));
         int surfaceY = world.getHeight(Heightmap.Type.WORLD_SURFACE, tpPos).getY();

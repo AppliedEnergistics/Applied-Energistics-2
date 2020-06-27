@@ -25,7 +25,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.api.config.SortDir;
@@ -49,7 +49,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
     private int tooltip = -1;
 
     public NetworkStatusScreen(NetworkStatusContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
+            Text title) {
         super(container, playerInventory, title);
         final Scrollbar scrollbar = new Scrollbar();
 

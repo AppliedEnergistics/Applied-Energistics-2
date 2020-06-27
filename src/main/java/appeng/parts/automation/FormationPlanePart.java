@@ -25,6 +25,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -38,19 +39,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.WallOrFloorItem;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.common.IPlantable;
-import net.minecraftforge.items.IItemHandler;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
@@ -140,8 +140,8 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removedStack, final ItemStack newStack) {
+    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+                                  final ItemStack removedStack, final ItemStack newStack) {
         super.onChangeInventory(inv, slot, mc, removedStack, newStack);
 
         if (inv == this.Config) {
@@ -163,7 +163,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     }
 
     @Override
-    public IItemHandler getInventoryByName(final String name) {
+    public ItemTransferable getInventoryByName(final String name) {
         if (name.equals("config")) {
             return this.Config;
         }
@@ -215,7 +215,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         long maxStorage = Math.min(input.getStackSize(), is.getMaxStackSize());
         boolean worked = false;
 
-        final TileEntity te = this.getHost().getTile();
+        final BlockEntity te = this.getHost().getTile();
         final World w = te.getWorld();
         final AEPartLocation side = this.getSide();
 
@@ -358,7 +358,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     }
 
     private int countEntitesAround(World world, BlockPos pos) {
-        final AxisAlignedBB t = new AxisAlignedBB(pos).grow(8);
+        final Box t = new Box(pos).grow(8);
         final List<Entity> list = world.getEntitiesWithinAABB(Entity.class, t);
 
         return list.size();

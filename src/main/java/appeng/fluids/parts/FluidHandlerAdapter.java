@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraftforge.fluids.FluidStack;
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import appeng.api.AEApi;
@@ -67,7 +67,7 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 
     @Override
     public IAEFluidStack injectItems(IAEFluidStack input, Actionable type, IActionSource src) {
-        FluidStack fluidStack = input.getFluidStack();
+        FluidVolume fluidStack = input.getFluidStack();
 
         // Insert
         int wasFillled = this.fluidHandler.fill(fluidStack, type.getFluidAction());
@@ -92,10 +92,10 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 
     @Override
     public IAEFluidStack extractItems(IAEFluidStack request, Actionable mode, IActionSource src) {
-        FluidStack requestedFluidStack = request.getFluidStack();
+        FluidVolume requestedFluidStack = request.getFluidStack();
 
         // Drain the fluid from the tank
-        FluidStack gathered = this.fluidHandler.drain(requestedFluidStack, mode.getFluidAction());
+        FluidVolume gathered = this.fluidHandler.drain(requestedFluidStack, mode.getFluidAction());
         if (gathered.isEmpty()) {
             // If nothing was pulled from the tank, return null
             return null;
@@ -181,7 +181,7 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
             for (int slot = 0; slot < slots; slot++) {
                 // Save the old stuff
                 final IAEFluidStack oldAEFS = this.cachedAeStacks[slot];
-                final FluidStack newFS = fluidHandler.getFluidInTank(slot);
+                final FluidVolume newFS = fluidHandler.getFluidInTank(slot);
 
                 this.handlePossibleSlotChanges(slot, oldAEFS, newFS, changes);
             }
@@ -208,7 +208,7 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
             return out;
         }
 
-        private void handlePossibleSlotChanges(int slot, IAEFluidStack oldAeFS, FluidStack newFS,
+        private void handlePossibleSlotChanges(int slot, IAEFluidStack oldAeFS, FluidVolume newFS,
                 List<IAEFluidStack> changes) {
             if (oldAeFS != null && oldAeFS.getFluidStack().isFluidEqual(newFS)) {
                 this.handleStackSizeChanged(slot, oldAeFS, newFS, changes);
@@ -217,7 +217,7 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
             }
         }
 
-        private void handleStackSizeChanged(int slot, IAEFluidStack oldAeFS, FluidStack newFS,
+        private void handleStackSizeChanged(int slot, IAEFluidStack oldAeFS, FluidVolume newFS,
                 List<IAEFluidStack> changes) {
             // Still the same fluid, but amount might have changed
             final long diff = newFS.getAmount() - oldAeFS.getStackSize();
@@ -234,7 +234,7 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
             }
         }
 
-        private void handleFluidChanged(int slot, IAEFluidStack oldAeFS, FluidStack newFS,
+        private void handleFluidChanged(int slot, IAEFluidStack oldAeFS, FluidVolume newFS,
                 List<IAEFluidStack> changes) {
             // Completely different fluid
             this.cachedAeStacks[slot] = AEFluidStack.fromFluidStack(newFS);

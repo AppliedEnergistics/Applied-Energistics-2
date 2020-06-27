@@ -19,7 +19,7 @@
 package appeng.client.gui.implementations;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
@@ -39,7 +39,7 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
     private SettingToggleButton<YesNo> blockMode;
     private ToggleButton interfaceMode;
 
-    public InterfaceScreen(InterfaceContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public InterfaceScreen(InterfaceContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
         this.ySize = 211;
     }

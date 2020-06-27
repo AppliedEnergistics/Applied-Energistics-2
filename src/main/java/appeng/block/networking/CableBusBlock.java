@@ -24,37 +24,37 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.render.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.DyeColor;
+import net.minecraft.util.DyeColor;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.*;
-import net.minecraft.util.math.RayTraceResult.Type;
+import net.minecraft.util.hit.HitResult.Type;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
@@ -166,7 +166,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Override
-    public ItemStack getPickBlock(BlockState state, RayTraceResult target, BlockView world, BlockPos pos,
+    public ItemStack getPickBlock(BlockState state, HitResult target, BlockView world, BlockPos pos,
             PlayerEntity player) {
         final Vec3d v3 = target.getHitVec().subtract(pos.getX(), pos.getY(), pos.getZ());
         final SelectedPart sp = this.cb(world, pos).selectPart(v3);
@@ -181,8 +181,8 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public boolean addHitEffects(final BlockState state, final World world, final RayTraceResult target,
+    @Environment(EnvType.CLIENT)
+    public boolean addHitEffects(final BlockState state, final World world, final HitResult target,
             final ParticleManager effectRenderer) {
 
         // Half the particle rate. Since we're spawning concentrated on a specific spot,
@@ -226,7 +226,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
         return true;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public boolean addDestroyEffects(BlockState state, World world, BlockPos pos, ParticleManager effectRenderer) {
         ICableBusContainer cb = this.cb(world, pos);
@@ -281,7 +281,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     private ICableBusContainer cb(final BlockView w, final BlockPos pos) {
-        final TileEntity te = w.getTileEntity(pos);
+        final BlockEntity te = w.getTileEntity(pos);
         ICableBusContainer out = null;
 
         if (te instanceof CableBusTileEntity) {
@@ -293,7 +293,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
 
     @Nullable
     private IFacadeContainer fc(final BlockView w, final BlockPos pos) {
-        final TileEntity te = w.getTileEntity(pos);
+        final BlockEntity te = w.getTileEntity(pos);
         IFacadeContainer out = null;
 
         if (te instanceof CableBusTileEntity) {
@@ -306,7 +306,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     @Override
     public void onBlockClicked(BlockState state, World worldIn, BlockPos pos, PlayerEntity player) {
         if (worldIn.isRemote()) {
-            final RayTraceResult rtr = Minecraft.getInstance().objectMouseOver;
+            final HitResult rtr = Minecraft.getInstance().objectMouseOver;
             if (rtr instanceof BlockRayTraceResult) {
                 BlockRayTraceResult brtr = (BlockRayTraceResult) rtr;
                 if (brtr.getPos().equals(pos)) {
@@ -335,7 +335,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Override
-    public boolean recolorBlock(BlockState state, IWorld world, BlockPos pos, Direction side, DyeColor color) {
+    public boolean recolorBlock(BlockState state, WorldAccess world, BlockPos pos, Direction side, DyeColor color) {
         return recolorBlock(world, pos, side, color, null);
     }
 
@@ -349,7 +349,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> itemStacks) {
         // do nothing
     }

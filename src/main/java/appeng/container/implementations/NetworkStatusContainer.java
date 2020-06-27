@@ -25,7 +25,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.AEApi;
 import appeng.api.implementations.guiobjects.INetworkTool;
@@ -53,7 +53,7 @@ public class NetworkStatusContainer extends AEBaseContainer {
     private static final ContainerHelper<NetworkStatusContainer, INetworkTool> helper = new ContainerHelper<>(
             NetworkStatusContainer::new, INetworkTool.class);
 
-    public static NetworkStatusContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static NetworkStatusContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 

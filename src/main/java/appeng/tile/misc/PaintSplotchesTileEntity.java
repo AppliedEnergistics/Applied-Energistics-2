@@ -32,8 +32,8 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -57,7 +57,7 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
     private int isLit = 0;
     private List<Splotch> dots = null;
 
-    public PaintSplotchesTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public PaintSplotchesTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -69,7 +69,7 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
     @Override
     public CompoundTag write(final CompoundTag data) {
         super.write(data);
-        final PacketBuffer myDat = new PacketBuffer(Unpooled.buffer());
+        final PacketByteBuf myDat = new PacketByteBuf(Unpooled.buffer());
         this.writeBuffer(myDat);
         if (myDat.hasArray()) {
             data.putByteArray("dots", myDat.array());
@@ -77,7 +77,7 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
         return data;
     }
 
-    private void writeBuffer(final PacketBuffer out) {
+    private void writeBuffer(final PacketByteBuf out) {
         if (this.dots == null) {
             out.writeByte(0);
             return;
@@ -94,11 +94,11 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
     public void read(final CompoundTag data) {
         super.read(data);
         if (data.contains("dots")) {
-            this.readBuffer(new PacketBuffer(Unpooled.copiedBuffer(data.getByteArray("dots"))));
+            this.readBuffer(new PacketByteBuf(Unpooled.copiedBuffer(data.getByteArray("dots"))));
         }
     }
 
-    private void readBuffer(final PacketBuffer in) {
+    private void readBuffer(final PacketByteBuf in) {
         final byte howMany = in.readByte();
 
         if (howMany == 0) {
@@ -133,13 +133,13 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
     }
 
     @Override
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final PacketByteBuf data) throws IOException {
         super.writeToStream(data);
         this.writeBuffer(data);
     }
 
     @Override
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final PacketByteBuf data) throws IOException {
         super.readFromStream(data);
         this.readBuffer(data);
         return true;

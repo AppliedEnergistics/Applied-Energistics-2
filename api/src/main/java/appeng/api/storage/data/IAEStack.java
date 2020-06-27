@@ -27,7 +27,7 @@ import java.io.IOException;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.IStorageChannel;
@@ -162,7 +162,7 @@ public interface IAEStack<T extends IAEStack<T>> {
      *
      * @throws IOException
      */
-    void writeToPacket(PacketBuffer data);
+    void writeToPacket(PacketByteBuf data);
 
     /**
      * Clone the Item / Fluid Stack

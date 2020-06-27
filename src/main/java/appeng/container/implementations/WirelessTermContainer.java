@@ -21,7 +21,7 @@ package appeng.container.implementations;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 
 import appeng.container.ContainerLocator;
 import appeng.core.AEConfig;
@@ -36,7 +36,7 @@ public class WirelessTermContainer extends MEPortableCellContainer {
     private static final ContainerHelper<WirelessTermContainer, WirelessTerminalGuiObject> helper = new ContainerHelper<>(
             WirelessTermContainer::new, WirelessTerminalGuiObject.class);
 
-    public static WirelessTermContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static WirelessTermContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 

@@ -20,6 +20,7 @@ package appeng.container.implementations;
 
 import java.util.Iterator;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -27,8 +28,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import appeng.api.AEApi;
@@ -72,7 +72,7 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
         this.workBench = te;
     }
 
-    public static CellWorkbenchContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static CellWorkbenchContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -102,11 +102,11 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
 
     @Override
     protected void setupConfig() {
-        final IItemHandler cell = this.getUpgradeable().getInventoryByName("cell");
+        final ItemTransferable cell = this.getUpgradeable().getInventoryByName("cell");
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.WORKBENCH_CELL, cell, 0, 152, 8,
                 this.getPlayerInv()));
 
-        final IItemHandler inv = this.getUpgradeable().getInventoryByName("config");
+        final ItemTransferable inv = this.getUpgradeable().getInventoryByName("config");
         final WrapperSupplierItemHandler upgradeInventory = new WrapperSupplierItemHandler(
                 this::getCellUpgradeInventory);
         // null, 3 * 8 );
@@ -182,8 +182,8 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
         return idx < this.availableUpgrades();
     }
 
-    public IItemHandler getCellUpgradeInventory() {
-        final IItemHandler upgradeInventory = this.workBench.getCellUpgradeInventory();
+    public ItemTransferable getCellUpgradeInventory() {
+        final ItemTransferable upgradeInventory = this.workBench.getCellUpgradeInventory();
 
         return upgradeInventory == null ? EmptyHandler.INSTANCE : upgradeInventory;
     }
@@ -212,7 +212,7 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
 
     public void partition() {
 
-        final IItemHandler inv = this.getUpgradeable().getInventoryByName("config");
+        final ItemTransferable inv = this.getUpgradeable().getInventoryByName("config");
 
         final ItemStack is = this.getUpgradeable().getInventoryByName("cell").getStackInSlot(0);
         final IStorageChannel channel = is.getItem() instanceof IStorageCell

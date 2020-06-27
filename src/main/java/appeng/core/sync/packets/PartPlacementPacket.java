@@ -22,7 +22,7 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -41,7 +41,7 @@ public class PartPlacementPacket extends BasePacket {
     private float eyeHeight;
     private Hand hand;
 
-    public PartPlacementPacket(final PacketBuffer stream) {
+    public PartPlacementPacket(final PacketByteBuf stream) {
         this.x = stream.readInt();
         this.y = stream.readInt();
         this.z = stream.readInt();
@@ -52,7 +52,7 @@ public class PartPlacementPacket extends BasePacket {
 
     // api
     public PartPlacementPacket(final BlockPos pos, final Direction face, final float eyeHeight, final Hand hand) {
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeInt(pos.getX());

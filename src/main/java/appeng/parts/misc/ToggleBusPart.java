@@ -23,9 +23,9 @@ import java.util.EnumSet;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 
@@ -49,15 +49,15 @@ import appeng.parts.PartModel;
 public class ToggleBusPart extends BasicStatePart {
 
     @PartModels
-    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/toggle_bus_base");
+    public static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID, "part/toggle_bus_base");
     @PartModels
-    public static final ResourceLocation MODEL_STATUS_OFF = new ResourceLocation(AppEng.MOD_ID,
+    public static final Identifier MODEL_STATUS_OFF = new Identifier(AppEng.MOD_ID,
             "part/toggle_bus_status_off");
     @PartModels
-    public static final ResourceLocation MODEL_STATUS_ON = new ResourceLocation(AppEng.MOD_ID,
+    public static final Identifier MODEL_STATUS_ON = new Identifier(AppEng.MOD_ID,
             "part/toggle_bus_status_on");
     @PartModels
-    public static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = new ResourceLocation(AppEng.MOD_ID,
+    public static final Identifier MODEL_STATUS_HAS_CHANNEL = new Identifier(AppEng.MOD_ID,
             "part/toggle_bus_status_has_channel");
 
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_STATUS_OFF);
@@ -140,7 +140,7 @@ public class ToggleBusPart extends BasicStatePart {
     }
 
     @Override
-    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final TileEntity tile) {
+    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final BlockEntity tile) {
         super.setPartHostInfo(side, host, tile);
         this.outerProxy.setValidSides(EnumSet.of(side.getFacing()));
     }

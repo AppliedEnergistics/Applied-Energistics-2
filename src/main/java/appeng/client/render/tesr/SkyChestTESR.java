@@ -18,21 +18,21 @@
 
 package appeng.client.render.tesr;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.util.math.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.Atlases;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.model.Material;
-import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.render.model.Material;
+import net.minecraft.client.render.model.ModelRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.client.event.TextureStitchEvent;
 
 import appeng.block.storage.SkyChestBlock;
@@ -41,13 +41,13 @@ import appeng.core.AppEng;
 import appeng.tile.storage.SkyChestTileEntity;
 
 // This is mostly a copy&paste job of the vanilla chest TESR
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class SkyChestTESR extends TileEntityRenderer<SkyChestTileEntity> {
 
     public static final Material TEXTURE_STONE = new Material(Atlases.CHEST_ATLAS,
-            new ResourceLocation(AppEng.MOD_ID, "models/skychest"));
+            new Identifier(AppEng.MOD_ID, "models/skychest"));
     public static final Material TEXTURE_BLOCK = new Material(Atlases.CHEST_ATLAS,
-            new ResourceLocation(AppEng.MOD_ID, "models/skyblockchest"));
+            new Identifier(AppEng.MOD_ID, "models/skyblockchest"));
 
     private final ModelRenderer singleLid;
     private final ModelRenderer singleBottom;
@@ -69,7 +69,7 @@ public class SkyChestTESR extends TileEntityRenderer<SkyChestTileEntity> {
 
     @Override
     public void render(SkyChestTileEntity tileEntityIn, float partialTicks, MatrixStack matrixStackIn,
-            IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+                       VertexConsumerProvider bufferIn, int combinedLightIn, int combinedOverlayIn) {
         matrixStackIn.push();
         float f = tileEntityIn.getForward().getHorizontalAngle();
         matrixStackIn.translate(0.5D, 0.5D, 0.5D);

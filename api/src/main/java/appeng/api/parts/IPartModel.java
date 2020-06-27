@@ -28,10 +28,10 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
 /**
- * A container to store a collection of {@link ResourceLocation} as models for a
+ * A container to store a collection of {@link Identifier} as models for a
  * part as well as other properties.
  */
 public interface IPartModel {
@@ -49,12 +49,12 @@ public interface IPartModel {
     }
 
     /**
-     * A collection of {@link ResourceLocation} used as models for a part.
+     * A collection of {@link Identifier} used as models for a part.
      *
      * @return a collection of models, never null.
      */
     @Nonnull
-    default List<ResourceLocation> getModels() {
+    default List<Identifier> getModels() {
         return Collections.emptyList();
     }
 

@@ -29,9 +29,9 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.text.Text;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
@@ -67,7 +67,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
     private static final ContainerHelper<InterfaceTerminalContainer, InterfaceTerminalPart> helper = new ContainerHelper<>(
             InterfaceTerminalContainer::new, InterfaceTerminalPart.class, SecurityPermissions.BUILD);
 
-    public static InterfaceTerminalContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static InterfaceTerminalContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -196,7 +196,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
 
             final InventoryAdaptor playerHand = new AdaptorItemHandler(new WrapperCursorItemHandler(player.inventory));
 
-            final IItemHandler theSlot = new WrapperFilteredItemHandler(
+            final ItemTransferable theSlot = new WrapperFilteredItemHandler(
                     new WrapperRangeItemHandler(inv.server, slot, slot + 1), new PatternSlotFilter());
             final InventoryAdaptor interfaceSlot = new AdaptorItemHandler(theSlot);
 
@@ -333,7 +333,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
 
         if (tag.isEmpty()) {
             tag.putLong("sortBy", inv.sortBy);
-            tag.putString("un", ITextComponent.Serializer.toJson(inv.name));
+            tag.putString("un", Text.Serializer.toJson(inv.name));
         }
 
         for (int x = 0; x < length; x++) {
@@ -358,11 +358,11 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
 
         private final long sortBy;
         private final long which = autoBase++;
-        private final ITextComponent name;
-        private final IItemHandler client;
-        private final IItemHandler server;
+        private final Text name;
+        private final ItemTransferable client;
+        private final ItemTransferable server;
 
-        public InvTracker(final DualityInterface dual, final IItemHandler patterns, final ITextComponent name) {
+        public InvTracker(final DualityInterface dual, final ItemTransferable patterns, final Text name) {
             this.server = patterns;
             this.client = new AppEngInternalInventory(null, this.server.getSlots());
             this.name = name;
@@ -372,12 +372,12 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
 
     private static class PatternSlotFilter implements IAEItemFilter {
         @Override
-        public boolean allowExtract(IItemHandler inv, int slot, int amount) {
+        public boolean allowExtract(ItemTransferable inv, int slot, int amount) {
             return true;
         }
 
         @Override
-        public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
+        public boolean allowInsert(ItemTransferable inv, int slot, ItemStack stack) {
             return !stack.isEmpty() && stack.getItem() instanceof EncodedPatternItem;
         }
     }

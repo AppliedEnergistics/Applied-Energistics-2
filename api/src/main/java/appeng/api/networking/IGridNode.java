@@ -28,7 +28,7 @@ import java.util.EnumSet;
 import javax.annotation.Nonnull;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 
 import appeng.api.IAppEngApi;
 import appeng.api.util.AEPartLocation;
@@ -89,7 +89,7 @@ public interface IGridNode {
      * @return the world the node is located in
      */
     @Nonnull
-    IWorld getWorld();
+    WorldAccess getWorld();
 
     /**
      * @return a set of the connected sides, INTERNAL represents an invisible

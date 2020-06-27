@@ -18,8 +18,8 @@
 
 package appeng.bootstrap;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import appeng.tile.AEBaseTileEntity;
 
@@ -30,7 +30,7 @@ import appeng.tile.AEBaseTileEntity;
  */
 public abstract class TileEntityRenderingCustomizer<T extends AEBaseTileEntity> {
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public abstract void customize(TileEntityRendering<T> rendering);
 
 }

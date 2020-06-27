@@ -18,8 +18,8 @@
 
 package appeng.tile.networking;
 
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tileentity.TileEntityType;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -41,7 +41,7 @@ public class EnergyCellTileEntity extends AENetworkTileEntity implements IAEPowe
 
     private byte currentMeta = -1;
 
-    public EnergyCellTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public EnergyCellTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getProxy().setIdlePowerUsage(0);
     }

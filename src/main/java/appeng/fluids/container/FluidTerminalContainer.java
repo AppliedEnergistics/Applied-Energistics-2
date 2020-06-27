@@ -23,15 +23,15 @@ import java.nio.BufferOverflowException;
 
 import javax.annotation.Nonnull;
 
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
@@ -90,7 +90,7 @@ public class FluidTerminalContainer extends AEBaseContainer
     private static final ContainerHelper<FluidTerminalContainer, ITerminalHost> helper = new ContainerHelper<>(
             FluidTerminalContainer::new, ITerminalHost.class, SecurityPermissions.BUILD);
 
-    public static FluidTerminalContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static FluidTerminalContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -365,7 +365,7 @@ public class FluidTerminalContainer extends AEBaseContainer
             this.updateHeld(player);
         } else if (action == InventoryAction.EMPTY_ITEM) {
             // See how much we can drain from the item
-            final FluidStack extract = fh.drain(Integer.MAX_VALUE, FluidAction.SIMULATE);
+            final FluidVolume extract = fh.drain(Integer.MAX_VALUE, FluidAction.SIMULATE);
             if (extract.isEmpty() || extract.getAmount() < 1) {
                 return;
             }
@@ -376,7 +376,7 @@ public class FluidTerminalContainer extends AEBaseContainer
 
             if (notStorable != null && notStorable.getStackSize() > 0) {
                 final int toStore = (int) (extract.getAmount() - notStorable.getStackSize());
-                final FluidStack storable = fh.drain(toStore, FluidAction.SIMULATE);
+                final FluidVolume storable = fh.drain(toStore, FluidAction.SIMULATE);
 
                 if (storable.isEmpty() || storable.getAmount() == 0) {
                     return;
@@ -386,7 +386,7 @@ public class FluidTerminalContainer extends AEBaseContainer
             }
 
             // Actually drain
-            final FluidStack drained = fh.drain(extract, FluidAction.EXECUTE);
+            final FluidVolume drained = fh.drain(extract, FluidAction.EXECUTE);
             extract.setAmount(drained.getAmount());
 
             final IAEFluidStack notInserted = Platform.poweredInsert(this.getPowerSource(), this.monitor,

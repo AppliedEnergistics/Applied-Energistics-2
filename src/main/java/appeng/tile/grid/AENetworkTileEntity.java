@@ -18,8 +18,8 @@
 
 package appeng.tile.grid;
 
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tileentity.TileEntityType;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
@@ -34,7 +34,7 @@ public class AENetworkTileEntity extends AEBaseTileEntity implements IActionHost
 
     private final AENetworkProxy gridProxy = this.createProxy();
 
-    public AENetworkTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public AENetworkTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 

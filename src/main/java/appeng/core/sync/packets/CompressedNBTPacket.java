@@ -33,9 +33,9 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.network.PacketByteBuf;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import appeng.client.gui.implementations.InterfaceTerminalScreen;
 import appeng.core.sync.BasePacket;
@@ -47,10 +47,10 @@ public class CompressedNBTPacket extends BasePacket {
     // input.
     private final CompoundTag in;
     // output...
-    private final PacketBuffer data;
+    private final PacketByteBuf data;
     private final GZIPOutputStream compressFrame;
 
-    public CompressedNBTPacket(final PacketBuffer stream) {
+    public CompressedNBTPacket(final PacketByteBuf stream) {
         this.data = null;
         this.compressFrame = null;
 
@@ -74,7 +74,7 @@ public class CompressedNBTPacket extends BasePacket {
     // api
     public CompressedNBTPacket(final CompoundTag din) throws IOException {
 
-        this.data = new PacketBuffer(Unpooled.buffer(2048));
+        this.data = new PacketByteBuf(Unpooled.buffer(2048));
         this.data.writeInt(this.getPacketID());
 
         this.in = din;
@@ -94,7 +94,7 @@ public class CompressedNBTPacket extends BasePacket {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         final Screen gs = Minecraft.getInstance().currentScreen;
 

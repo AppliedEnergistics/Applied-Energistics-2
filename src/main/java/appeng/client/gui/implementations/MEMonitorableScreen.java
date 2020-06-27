@@ -26,7 +26,7 @@ import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 
 import appeng.api.config.*;
 import appeng.api.implementations.guiobjects.IPortableCell;
@@ -87,7 +87,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
     private int currentMouseX = 0;
     private int currentMouseY = 0;
 
-    public MEMonitorableScreen(T container, PlayerInventory playerInventory, ITextComponent title) {
+    public MEMonitorableScreen(T container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
 
         final Scrollbar scrollbar = new Scrollbar();

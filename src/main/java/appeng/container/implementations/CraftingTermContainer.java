@@ -18,6 +18,7 @@
 
 package appeng.container.implementations;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingInventory;
@@ -26,9 +27,8 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
 import appeng.api.config.SecurityPermissions;
@@ -52,7 +52,7 @@ public class CraftingTermContainer extends MEMonitorableContainer
     private static final ContainerHelper<CraftingTermContainer, ITerminalHost> helper = new ContainerHelper<>(
             CraftingTermContainer::new, ITerminalHost.class, SecurityPermissions.CRAFT);
 
-    public static CraftingTermContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static CraftingTermContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -70,7 +70,7 @@ public class CraftingTermContainer extends MEMonitorableContainer
         super(TYPE, id, ip, monitorable, false);
         this.ct = (CraftingTerminalPart) monitorable;
 
-        final IItemHandler crafting = this.ct.getInventoryByName("crafting");
+        final ItemTransferable crafting = this.ct.getInventoryByName("crafting");
 
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 3; x++) {
@@ -120,13 +120,13 @@ public class CraftingTermContainer extends MEMonitorableContainer
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removedStack, final ItemStack newStack) {
+    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+                                  final ItemStack removedStack, final ItemStack newStack) {
 
     }
 
     @Override
-    public IItemHandler getInventoryByName(final String name) {
+    public ItemTransferable getInventoryByName(final String name) {
         if (name.equals("player")) {
             return new PlayerInvWrapper(this.getPlayerInventory());
         }

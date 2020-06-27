@@ -18,11 +18,11 @@
 
 package appeng.container.slot;
 
-import net.minecraftforge.items.IItemHandler;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 public class FakeCraftingMatrixSlot extends FakeSlot {
 
-    public FakeCraftingMatrixSlot(final IItemHandler inv, final int idx, final int x, final int y) {
+    public FakeCraftingMatrixSlot(final ItemTransferable inv, final int idx, final int x, final int y) {
         super(inv, idx, x, y);
     }
 }

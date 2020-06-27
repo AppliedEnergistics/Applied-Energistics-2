@@ -21,7 +21,7 @@ package appeng.core.sync.packets;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
@@ -37,7 +37,7 @@ public class CompassResponsePacket extends BasePacket {
 
     private CompassResult cr;
 
-    public CompassResponsePacket(final PacketBuffer stream) {
+    public CompassResponsePacket(final PacketByteBuf stream) {
         this.attunement = stream.readLong();
         this.cx = stream.readInt();
         this.cz = stream.readInt();
@@ -50,7 +50,7 @@ public class CompassResponsePacket extends BasePacket {
     public CompassResponsePacket(final CompassRequestPacket req, final boolean hasResult, final boolean spin,
             final double radians) {
 
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeLong(this.attunement = req.attunement);

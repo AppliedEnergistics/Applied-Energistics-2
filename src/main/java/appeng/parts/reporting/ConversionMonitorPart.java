@@ -21,13 +21,13 @@ package appeng.parts.reporting;
 import java.util.Collections;
 import java.util.List;
 
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.items.IItemHandler;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
 import appeng.api.AEApi;
@@ -49,14 +49,14 @@ import appeng.util.item.AEItemStack;
 public class ConversionMonitorPart extends AbstractMonitorPart {
 
     @PartModels
-    public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID, "part/conversion_monitor_off");
+    public static final Identifier MODEL_OFF = new Identifier(AppEng.MOD_ID, "part/conversion_monitor_off");
     @PartModels
-    public static final ResourceLocation MODEL_ON = new ResourceLocation(AppEng.MOD_ID, "part/conversion_monitor_on");
+    public static final Identifier MODEL_ON = new Identifier(AppEng.MOD_ID, "part/conversion_monitor_on");
     @PartModels
-    public static final ResourceLocation MODEL_LOCKED_OFF = new ResourceLocation(AppEng.MOD_ID,
+    public static final Identifier MODEL_LOCKED_OFF = new Identifier(AppEng.MOD_ID,
             "part/conversion_monitor_locked_off");
     @PartModels
-    public static final ResourceLocation MODEL_LOCKED_ON = new ResourceLocation(AppEng.MOD_ID,
+    public static final Identifier MODEL_LOCKED_ON = new Identifier(AppEng.MOD_ID,
             "part/conversion_monitor_locked_on");
 
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
@@ -157,7 +157,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
             if (allItems) {
                 if (this.getDisplayed() != null) {
                     final IAEItemStack input = this.getDisplayed().copy();
-                    IItemHandler inv = new PlayerMainInvWrapper(player.inventory);
+                    ItemTransferable inv = new PlayerMainInvWrapper(player.inventory);
 
                     for (int x = 0; x < inv.getSlots(); x++) {
                         final ItemStack targetStack = inv.getStackInSlot(x);
@@ -205,7 +205,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
                     final InventoryAdaptor adaptor = InventoryAdaptor.getAdaptor(player);
                     newItems = adaptor.addItems(newItems);
                     if (!newItems.isEmpty()) {
-                        final TileEntity te = this.getTile();
+                        final BlockEntity te = this.getTile();
                         final List<ItemStack> list = Collections.singletonList(newItems);
                         Platform.spawnDrops(player.world, te.getPos().offset(this.getSide().getFacing()), list);
                     }

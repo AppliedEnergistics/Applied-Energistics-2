@@ -19,7 +19,7 @@
 package appeng.client.gui.implementations;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
@@ -38,7 +38,7 @@ public class FormationPlaneScreen extends UpgradeableScreen<FormationPlaneContai
     private SettingToggleButton<YesNo> placeMode;
 
     public FormationPlaneScreen(FormationPlaneContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
+            Text title) {
         super(container, playerInventory, title);
         this.ySize = 251;
     }

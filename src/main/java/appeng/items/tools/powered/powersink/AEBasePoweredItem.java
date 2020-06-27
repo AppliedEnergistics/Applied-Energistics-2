@@ -22,16 +22,16 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.function.DoubleSupplier;
 
+import net.fabricmc.api.Environment;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.text.Text;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import appeng.api.config.AccessRestriction;
@@ -53,9 +53,9 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
         this.powerCapacity = powerCapacity;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
-    public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
+    public void addInformation(final ItemStack stack, final World world, final List<Text> lines,
             final ITooltipFlag advancedTooltips) {
         final CompoundTag tag = stack.getTag();
         double internalCurrentPower = 0;
@@ -69,7 +69,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 
         lines.add(GuiText.StoredEnergy.textComponent()
                 .appendText(':' + MessageFormat.format(" {0,number,#} ", internalCurrentPower))
-                .appendSibling(new TranslationTextComponent(PowerUnits.AE.unlocalizedName))
+                .appendSibling(new TranslatableText(PowerUnits.AE.unlocalizedName))
                 .appendText(" - " + MessageFormat.format(" {0,number,#.##%} ", percent)));
     }
 

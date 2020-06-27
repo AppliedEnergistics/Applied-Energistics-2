@@ -30,15 +30,15 @@ import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -75,7 +75,7 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     // Indicates that this interface has no specific direction set
     private boolean omniDirectional = true;
 
-    public InterfaceTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public InterfaceTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -166,7 +166,7 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final PacketByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
         boolean oldOmniDirectional = this.omniDirectional;
         this.omniDirectional = data.readBoolean();
@@ -174,7 +174,7 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final PacketByteBuf data) throws IOException {
         super.writeToStream(data);
         data.writeBoolean(this.omniDirectional);
     }
@@ -195,7 +195,7 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public IItemHandler getInventoryByName(final String name) {
+    public ItemTransferable getInventoryByName(final String name) {
         return this.duality.getInventoryByName(name);
     }
 
@@ -210,13 +210,13 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
+    public ItemTransferable getInternalInventory() {
         return this.duality.getInternalInventory();
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final ItemStack added) {
+    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+                                  final ItemStack removed, final ItemStack added) {
         this.duality.onChangeInventory(inv, slot, mc, removed, added);
     }
 
@@ -234,7 +234,7 @@ public class InterfaceTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public TileEntity getTileEntity() {
+    public BlockEntity getTileEntity() {
         return this;
     }
 

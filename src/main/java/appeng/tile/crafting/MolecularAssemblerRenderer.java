@@ -20,18 +20,19 @@ package appeng.tile.crafting;
 
 import java.util.Random;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import net.fabricmc.api.EnvType;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.util.math.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.render.model.IBakedModel;
+import net.minecraft.client.render.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
@@ -39,9 +40,8 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.util.Identifier;
+import net.fabricmc.api.Environment;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
@@ -52,10 +52,10 @@ import appeng.core.AppEng;
  * Renders the item currently being crafted by the molecular assembler, as well
  * as the light strip when it's powered.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAssemblerTileEntity> {
 
-    public static final ResourceLocation LIGHTS_MODEL = new ResourceLocation(AppEng.MOD_ID,
+    public static final Identifier LIGHTS_MODEL = new Identifier(AppEng.MOD_ID,
             "block/molecular_assembler_lights");
 
     private static final RenderType MC_161917_RENDERTYPE_FIX = createRenderType();
@@ -68,7 +68,7 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
 
     @Override
     public void render(MolecularAssemblerTileEntity molecularAssembler, float partialTicks, MatrixStack ms,
-            IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+                       VertexConsumerProvider bufferIn, int combinedLightIn, int combinedOverlayIn) {
 
         AssemblerAnimationStatus status = molecularAssembler.getAnimationStatus();
         if (status != null) {
@@ -89,8 +89,8 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
         }
     }
 
-    private void renderPowerLight(MatrixStack ms, IRenderTypeBuffer bufferIn, int combinedLightIn,
-            int combinedOverlayIn) {
+    private void renderPowerLight(MatrixStack ms, VertexConsumerProvider bufferIn, int combinedLightIn,
+                                  int combinedOverlayIn) {
         // Render the translucent light overlay here instead of in the block, because
         // thanks to the following MC
         // bug, our particles would otherwise not be visible (because the glass pane
@@ -106,7 +106,7 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
     }
 
     private void renderStatus(MolecularAssemblerTileEntity molecularAssembler, MatrixStack ms,
-            IRenderTypeBuffer bufferIn, int combinedLightIn, AssemblerAnimationStatus status) {
+                              VertexConsumerProvider bufferIn, int combinedLightIn, AssemblerAnimationStatus status) {
         double centerX = molecularAssembler.getPos().getX() + 0.5f;
         double centerY = molecularAssembler.getPos().getY() + 0.5f;
         double centerZ = molecularAssembler.getPos().getZ() + 0.5f;

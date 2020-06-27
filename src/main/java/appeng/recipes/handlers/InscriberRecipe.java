@@ -7,7 +7,7 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
 import appeng.api.features.InscriberProcessType;
@@ -16,7 +16,7 @@ public class InscriberRecipe implements IRecipe<IInventory> {
 
     public static IRecipeType<InscriberRecipe> TYPE;
 
-    private final ResourceLocation id;
+    private final Identifier id;
     private final String group;
 
     private final Ingredient middleInput;
@@ -25,8 +25,8 @@ public class InscriberRecipe implements IRecipe<IInventory> {
     private final ItemStack output;
     private final InscriberProcessType processType;
 
-    public InscriberRecipe(ResourceLocation id, String group, Ingredient middleInput, ItemStack output,
-            Ingredient topOptional, Ingredient bottomOptional, InscriberProcessType processType) {
+    public InscriberRecipe(Identifier id, String group, Ingredient middleInput, ItemStack output,
+                           Ingredient topOptional, Ingredient bottomOptional, InscriberProcessType processType) {
         this.id = id;
         this.group = group;
         this.middleInput = middleInput;
@@ -57,7 +57,7 @@ public class InscriberRecipe implements IRecipe<IInventory> {
     }
 
     @Override
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return id;
     }
 

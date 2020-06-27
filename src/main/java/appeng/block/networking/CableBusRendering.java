@@ -18,8 +18,8 @@
 
 package appeng.block.networking;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import appeng.bootstrap.BlockRenderingCustomizer;
 import appeng.bootstrap.IBlockRendering;
@@ -32,7 +32,7 @@ import appeng.bootstrap.IItemRendering;
 public class CableBusRendering extends BlockRenderingCustomizer {
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
         rendering.renderType(rt -> true);
 

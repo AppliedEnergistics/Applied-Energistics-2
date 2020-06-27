@@ -2,11 +2,11 @@ package appeng.debug;
 
 import java.util.Arrays;
 
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -53,7 +53,7 @@ public class DebugPartPlacerItem extends AEBaseItem {
             return ActionResult.FAIL;
         }
 
-        TileEntity te = world.getTileEntity(pos);
+        BlockEntity te = world.getTileEntity(pos);
         if (!(te instanceof IPartHost)) {
             player.sendMessage(new StringTextComponent("Right-click something that will accept parts"));
             return ActionResult.FAIL;
@@ -85,7 +85,7 @@ public class DebugPartPlacerItem extends AEBaseItem {
                 continue;
             }
 
-            TileEntity t = world.getTileEntity(nextPos);
+            BlockEntity t = world.getTileEntity(nextPos);
             if (!(t instanceof IPartHost)) {
                 continue;
             }

@@ -1,25 +1,25 @@
 
 package appeng.client.render.tesr;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.util.math.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.render.model.ItemCameraTransforms;
+import net.minecraft.client.render.model.Material;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.features.InscriberProcessType;
 import appeng.client.render.FacingToRotation;
@@ -36,14 +36,14 @@ public final class InscriberTESR extends TileEntityRenderer<InscriberTileEntity>
     private static final float ITEM_RENDER_SCALE = 1.0f / 1.2f;
 
     private static final Material TEXTURE_INSIDE = new Material(PlayerContainer.LOCATION_BLOCKS_TEXTURE,
-            new ResourceLocation(AppEng.MOD_ID, "block/inscriber_inside"));
+            new Identifier(AppEng.MOD_ID, "block/inscriber_inside"));
 
     public InscriberTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
     @Override
-    public void render(InscriberTileEntity tile, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers,
+    public void render(InscriberTileEntity tile, float partialTicks, MatrixStack ms, VertexConsumerProvider buffers,
             int combinedLight, int combinedOverlay) {
 
         // render inscriber
@@ -126,7 +126,7 @@ public final class InscriberTESR extends TileEntityRenderer<InscriberTileEntity>
 
         // render items.
 
-        IItemHandler tileInv = tile.getInternalInventory();
+        ItemTransferable tileInv = tile.getInternalInventory();
 
         int items = 0;
         if (!tileInv.getStackInSlot(0).isEmpty()) {
@@ -182,9 +182,9 @@ public final class InscriberTESR extends TileEntityRenderer<InscriberTileEntity>
         vb.endVertex();
     }
 
-    private static final ResourceLocation TAG_STORAGE_BLOCKS = new ResourceLocation("forge:storage_blocks");
+    private static final Identifier TAG_STORAGE_BLOCKS = new Identifier("forge:storage_blocks");
 
-    private void renderItem(MatrixStack ms, final ItemStack stack, final float o, IRenderTypeBuffer buffers,
+    private void renderItem(MatrixStack ms, final ItemStack stack, final float o, VertexConsumerProvider buffers,
             int combinedLight, int combinedOverlay) {
         if (!stack.isEmpty()) {
             ms.push();

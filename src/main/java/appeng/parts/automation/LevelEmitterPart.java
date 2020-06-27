@@ -21,18 +21,18 @@ package appeng.parts.automation;
 import java.util.Collection;
 import java.util.Random;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.particles.RedstoneParticleData;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
@@ -86,19 +86,19 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
         ICraftingWatcherHost, IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingProvider {
 
     @PartModels
-    public static final ResourceLocation MODEL_BASE_OFF = new ResourceLocation(AppEng.MOD_ID,
+    public static final Identifier MODEL_BASE_OFF = new Identifier(AppEng.MOD_ID,
             "part/level_emitter_base_off");
     @PartModels
-    public static final ResourceLocation MODEL_BASE_ON = new ResourceLocation(AppEng.MOD_ID,
+    public static final Identifier MODEL_BASE_ON = new Identifier(AppEng.MOD_ID,
             "part/level_emitter_base_on");
     @PartModels
-    public static final ResourceLocation MODEL_STATUS_OFF = new ResourceLocation(AppEng.MOD_ID,
+    public static final Identifier MODEL_STATUS_OFF = new Identifier(AppEng.MOD_ID,
             "part/level_emitter_status_off");
     @PartModels
-    public static final ResourceLocation MODEL_STATUS_ON = new ResourceLocation(AppEng.MOD_ID,
+    public static final Identifier MODEL_STATUS_ON = new Identifier(AppEng.MOD_ID,
             "part/level_emitter_status_on");
     @PartModels
-    public static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = new ResourceLocation(AppEng.MOD_ID,
+    public static final Identifier MODEL_STATUS_HAS_CHANNEL = new Identifier(AppEng.MOD_ID,
             "part/level_emitter_status_has_channel");
 
     public static final PartModel MODEL_OFF_OFF = new PartModel(MODEL_BASE_OFF, MODEL_STATUS_OFF);
@@ -156,7 +156,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
         final boolean isOn = this.isLevelEmitterOn();
         if (this.prevState != isOn) {
             this.getHost().markForUpdate();
-            final TileEntity te = this.getHost().getTile();
+            final BlockEntity te = this.getHost().getTile();
             this.prevState = isOn;
             Platform.notifyBlocksOfNeighbors(te.getWorld(), te.getPos());
             Platform.notifyBlocksOfNeighbors(te.getWorld(), te.getPos().offset(this.getSide().getFacing()));
@@ -417,8 +417,8 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removedStack, final ItemStack newStack) {
+    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+                                  final ItemStack removedStack, final ItemStack newStack) {
         if (inv == this.config) {
             this.configureWatchers();
         }
@@ -455,7 +455,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
     }
 
     @Override
-    public IItemHandler getInventoryByName(final String name) {
+    public ItemTransferable getInventoryByName(final String name) {
         if (name.equals("config")) {
             return this.config;
         }

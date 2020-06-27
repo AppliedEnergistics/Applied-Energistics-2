@@ -27,7 +27,7 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
@@ -74,7 +74,7 @@ public final class SingularityEntity extends AEBaseItemEntity {
         final IMaterials materials = AEApi.instance().definitions().materials();
 
         if (materials.singularity().isSameAs(item)) {
-            final AxisAlignedBB region = new AxisAlignedBB(this.getPosX() - 4, this.getPosY() - 4, this.getPosZ() - 4,
+            final Box region = new Box(this.getPosX() - 4, this.getPosY() - 4, this.getPosZ() - 4,
                     this.getPosX() + 4, this.getPosY() + 4, this.getPosZ() + 4);
             final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity(region);
 

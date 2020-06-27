@@ -19,7 +19,7 @@
 package appeng.client.gui.implementations;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
@@ -34,7 +34,7 @@ public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssembl
     private ProgressBar pb;
 
     public MolecularAssemblerScreen(MolecularAssemblerContainer container, PlayerInventory playerInventory,
-            ITextComponent title) {
+            Text title) {
         super(container, playerInventory, title);
         this.ySize = 197;
     }

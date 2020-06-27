@@ -20,17 +20,15 @@ package appeng.client.render.effects;
 
 import java.util.Random;
 
+import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
 
-import appeng.core.AppEng;
-
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class LightningArcFX extends LightningFX {
 
     private static final Random RANDOM_GENERATOR = new Random();
@@ -68,7 +66,7 @@ public class LightningArcFX extends LightningFX {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public static class Factory implements IParticleFactory<LightningArcParticleData> {
         private final IAnimatedSprite spriteSet;
 

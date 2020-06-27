@@ -21,6 +21,7 @@ package appeng.parts.misc;
 import java.util.EnumSet;
 import java.util.List;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -28,14 +29,13 @@ import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -78,19 +78,19 @@ import appeng.util.inv.InvOperation;
 public class InterfacePart extends BasicStatePart implements IGridTickable, IStorageMonitorable, IInventoryDestination,
         IInterfaceHost, IAEAppEngInventory, IPriorityHost {
 
-    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/interface_base");
+    public static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID, "part/interface_base");
 
     @PartModels
     public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/interface_off"));
+            new Identifier(AppEng.MOD_ID, "part/interface_off"));
 
     @PartModels
     public static final PartModel MODELS_ON = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/interface_on"));
+            new Identifier(AppEng.MOD_ID, "part/interface_on"));
 
     @PartModels
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/interface_has_channel"));
+            new Identifier(AppEng.MOD_ID, "part/interface_has_channel"));
 
     private final DualityInterface duality = new DualityInterface(this.getProxy(), this);
 
@@ -159,7 +159,7 @@ public class InterfacePart extends BasicStatePart implements IGridTickable, ISto
     }
 
     @Override
-    public IItemHandler getInventoryByName(final String name) {
+    public ItemTransferable getInventoryByName(final String name) {
         return this.duality.getInventoryByName(name);
     }
 
@@ -192,8 +192,8 @@ public class InterfacePart extends BasicStatePart implements IGridTickable, ISto
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removedStack, final ItemStack newStack) {
+    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+                                  final ItemStack removedStack, final ItemStack newStack) {
         this.duality.onChangeInventory(inv, slot, mc, removedStack, newStack);
     }
 
@@ -208,7 +208,7 @@ public class InterfacePart extends BasicStatePart implements IGridTickable, ISto
     }
 
     @Override
-    public TileEntity getTileEntity() {
+    public BlockEntity getTileEntity() {
         return super.getHost().getTile();
     }
 

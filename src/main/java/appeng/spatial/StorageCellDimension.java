@@ -20,16 +20,15 @@ package appeng.spatial;
 
 import javax.annotation.Nullable;
 
+import net.fabricmc.api.Environment;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
 import net.minecraftforge.client.IRenderHandler;
 
 import appeng.client.render.SpatialSkyRender;
@@ -62,7 +61,7 @@ public class StorageCellDimension extends Dimension {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public float[] calcSunriseSunsetColors(final float celestialAngle, final float partialTicks) {
         return null;
     }
@@ -78,7 +77,7 @@ public class StorageCellDimension extends Dimension {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public boolean isSkyColored() {
         return true;
     }

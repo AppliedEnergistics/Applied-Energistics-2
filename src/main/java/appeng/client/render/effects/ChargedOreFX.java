@@ -18,6 +18,7 @@
 
 package appeng.client.render.effects;
 
+import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
@@ -25,12 +26,9 @@ import net.minecraft.client.particle.RedstoneParticle;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
 
-import appeng.core.AppEng;
-
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class ChargedOreFX extends RedstoneParticle {
 
     private static final RedstoneParticleData PARTICLE_DATA = new RedstoneParticleData(0.21f, 0.61f, 1.0f, 1.0f);
@@ -51,7 +49,7 @@ public class ChargedOreFX extends RedstoneParticle {
         return j1 << 20 | j1 << 4;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public static class Factory implements IParticleFactory<BasicParticleType> {
         private final IAnimatedSprite spriteSet;
 

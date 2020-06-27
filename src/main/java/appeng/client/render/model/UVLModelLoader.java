@@ -31,32 +31,32 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.util.math.MatrixStack;
 
+import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.TransformationMatrix;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.BlockFaceUV;
-import net.minecraft.client.renderer.model.BlockModel;
-import net.minecraft.client.renderer.model.BlockPart;
-import net.minecraft.client.renderer.model.BlockPartFace;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.client.renderer.model.IUnbakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.model.ItemOverride;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.ItemTransformVec3f;
-import net.minecraft.client.renderer.model.Material;
-import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.render.model.BlockFaceUV;
+import net.minecraft.client.render.model.BlockModel;
+import net.minecraft.client.render.model.BlockPart;
+import net.minecraft.client.render.model.BlockPartFace;
+import net.minecraft.client.render.model.IBakedModel;
+import net.minecraft.client.render.model.IModelTransform;
+import net.minecraft.client.render.model.IUnbakedModel;
+import net.minecraft.client.render.model.ItemCameraTransforms;
+import net.minecraft.client.render.model.ItemOverride;
+import net.minecraft.client.render.model.ItemOverrideList;
+import net.minecraft.client.render.model.ItemTransformVec3f;
+import net.minecraft.client.render.model.Material;
+import net.minecraft.client.render.model.ModelBakery;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
@@ -144,7 +144,7 @@ public class UVLModelLoader implements IModelLoader<UVLModelLoader.UVLModelWrapp
         @Override
         public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
                 Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
-                ItemOverrideList overrides, ResourceLocation modelLocation) {
+                ItemOverrideList overrides, Identifier modelLocation) {
             TextureAtlasSprite particle = spriteGetter.apply(owner.resolveTexture("particle"));
 
             IModelBuilder<?> builder = IModelBuilder.of(owner, overrides, particle);
@@ -192,7 +192,7 @@ public class UVLModelLoader implements IModelLoader<UVLModelLoader.UVLModelWrapp
             trans.setTransform(identity.getLast());
             trans.setParent(builder);
             quad.pipe(trans);
-            builder.setQuadTint(quad.getTintIndex());
+            builder.setQuadTint(quad.getColorIndex());
             builder.setQuadOrientation(quad.getFace());
             builder.setApplyDiffuseLighting(false);
             return builder.build();
@@ -200,7 +200,7 @@ public class UVLModelLoader implements IModelLoader<UVLModelLoader.UVLModelWrapp
 
         @Override
         public Collection<Material> getTextures(IModelConfiguration owner,
-                Function<ResourceLocation, IUnbakedModel> modelGetter,
+                Function<Identifier, IUnbakedModel> modelGetter,
                 Set<com.mojang.datafixers.util.Pair<String, String>> missingTextureErrors) {
             return parent.getTextures(modelGetter, missingTextureErrors);
         }

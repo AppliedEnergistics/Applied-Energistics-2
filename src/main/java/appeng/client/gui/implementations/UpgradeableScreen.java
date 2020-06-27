@@ -19,7 +19,7 @@
 package appeng.client.gui.implementations;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.api.config.FuzzyMode;
@@ -47,7 +47,7 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
     protected SettingToggleButton<YesNo> craftMode;
     protected SettingToggleButton<SchedulingMode> schedulingMode;
 
-    public UpgradeableScreen(T container, PlayerInventory playerInventory, ITextComponent title) {
+    public UpgradeableScreen(T container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
         this.cvb = container;
 

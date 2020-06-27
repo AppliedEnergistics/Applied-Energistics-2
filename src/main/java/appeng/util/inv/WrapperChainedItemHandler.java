@@ -22,23 +22,23 @@ import java.util.ArrayList;
 
 import javax.annotation.Nonnull;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import appeng.util.helpers.ItemHandlerUtil;
 
 public class WrapperChainedItemHandler implements IItemHandlerModifiable {
-    private IItemHandler[] itemHandler; // the handlers
+    private ItemTransferable[] itemHandler; // the handlers
     private int[] baseIndex; // index-offsets of the different handlers
     private int slotCount; // number of total slots
 
-    public WrapperChainedItemHandler(IItemHandler... itemHandler) {
+    public WrapperChainedItemHandler(ItemTransferable... itemHandler) {
         this.setItemHandlers(itemHandler);
     }
 
-    private void setItemHandlers(IItemHandler[] handlers) {
+    private void setItemHandlers(ItemTransferable[] handlers) {
         this.itemHandler = handlers;
         this.baseIndex = new int[this.itemHandler.length];
         int index = 0;
@@ -63,7 +63,7 @@ public class WrapperChainedItemHandler implements IItemHandlerModifiable {
         return -1;
     }
 
-    private IItemHandler getHandlerFromIndex(int index) {
+    private ItemTransferable getHandlerFromIndex(int index) {
         if (index < 0 || index >= this.itemHandler.length) {
             return EmptyHandler.INSTANCE;
         }
@@ -79,12 +79,12 @@ public class WrapperChainedItemHandler implements IItemHandlerModifiable {
 
     public void cycleOrder() {
         if (this.itemHandler.length > 1) {
-            ArrayList<IItemHandler> newOrder = new ArrayList<>();
+            ArrayList<ItemTransferable> newOrder = new ArrayList<>();
             newOrder.add(this.itemHandler[this.itemHandler.length - 1]);
             for (int i = 0; i < this.itemHandler.length - 1; ++i) {
                 newOrder.add(this.itemHandler[i]);
             }
-            this.setItemHandlers(newOrder.toArray(new IItemHandler[this.itemHandler.length]));
+            this.setItemHandlers(newOrder.toArray(new ItemTransferable[this.itemHandler.length]));
         }
     }
 
@@ -97,7 +97,7 @@ public class WrapperChainedItemHandler implements IItemHandlerModifiable {
     @Nonnull
     public ItemStack getStackInSlot(final int slot) {
         int index = this.getIndexForSlot(slot);
-        IItemHandler handler = this.getHandlerFromIndex(index);
+        ItemTransferable handler = this.getHandlerFromIndex(index);
         int targetSlot = this.getSlotFromIndex(slot, index);
         return handler.getStackInSlot(targetSlot);
     }
@@ -106,7 +106,7 @@ public class WrapperChainedItemHandler implements IItemHandlerModifiable {
     @Nonnull
     public ItemStack insertItem(final int slot, @Nonnull ItemStack stack, boolean simulate) {
         int index = this.getIndexForSlot(slot);
-        IItemHandler handler = this.getHandlerFromIndex(index);
+        ItemTransferable handler = this.getHandlerFromIndex(index);
         int targetSlot = this.getSlotFromIndex(slot, index);
         return handler.insertItem(targetSlot, stack, simulate);
     }
@@ -115,7 +115,7 @@ public class WrapperChainedItemHandler implements IItemHandlerModifiable {
     @Nonnull
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         int index = this.getIndexForSlot(slot);
-        IItemHandler handler = this.getHandlerFromIndex(index);
+        ItemTransferable handler = this.getHandlerFromIndex(index);
         int targetSlot = this.getSlotFromIndex(slot, index);
         return handler.extractItem(targetSlot, amount, simulate);
     }
@@ -123,7 +123,7 @@ public class WrapperChainedItemHandler implements IItemHandlerModifiable {
     @Override
     public int getSlotLimit(int slot) {
         int index = this.getIndexForSlot(slot);
-        IItemHandler handler = this.getHandlerFromIndex(index);
+        ItemTransferable handler = this.getHandlerFromIndex(index);
         int localSlot = this.getSlotFromIndex(slot, index);
         return handler.getSlotLimit(localSlot);
     }
@@ -131,7 +131,7 @@ public class WrapperChainedItemHandler implements IItemHandlerModifiable {
     @Override
     public void setStackInSlot(int slot, ItemStack stack) {
         int index = this.getIndexForSlot(slot);
-        IItemHandler handler = this.getHandlerFromIndex(index);
+        ItemTransferable handler = this.getHandlerFromIndex(index);
         int targetSlot = this.getSlotFromIndex(slot, index);
         ItemHandlerUtil.setStackInSlot(handler, targetSlot, stack);
     }
@@ -139,7 +139,7 @@ public class WrapperChainedItemHandler implements IItemHandlerModifiable {
     @Override
     public boolean isItemValid(int slot, ItemStack stack) {
         int index = this.getIndexForSlot(slot);
-        IItemHandler handler = this.getHandlerFromIndex(index);
+        ItemTransferable handler = this.getHandlerFromIndex(index);
         int targetSlot = this.getSlotFromIndex(slot, index);
         return handler.isItemValid(targetSlot, stack);
     }

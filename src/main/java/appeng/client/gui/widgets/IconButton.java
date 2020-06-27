@@ -23,11 +23,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 public abstract class IconButton extends Button implements ITooltip {
-    public static final ResourceLocation TEXTURE_STATES = new ResourceLocation("appliedenergistics2",
+    public static final Identifier TEXTURE_STATES = new Identifier("appliedenergistics2",
             "textures/guis/states.png");
 
     private boolean halfSize = false;

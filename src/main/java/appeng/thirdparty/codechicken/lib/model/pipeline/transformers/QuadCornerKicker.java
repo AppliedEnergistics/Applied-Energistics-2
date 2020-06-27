@@ -23,7 +23,7 @@ import static net.minecraft.util.math.Direction.AxisDirection.POSITIVE;
 
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Direction.AxisDirection;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3i;
 
 import appeng.thirdparty.codechicken.lib.model.Quad.Vertex;
@@ -61,7 +61,7 @@ public class QuadCornerKicker extends QuadTransformer {
 
     private int mySide;
     private int facadeMask;
-    private AxisAlignedBB box;
+    private Box box;
     private double thickness;
 
     QuadCornerKicker() {
@@ -93,7 +93,7 @@ public class QuadCornerKicker extends QuadTransformer {
      *
      * @param box The BoundingBox.
      */
-    public void setBox(AxisAlignedBB box) {
+    public void setBox(Box box) {
         this.box = box;
     }
 
@@ -175,15 +175,15 @@ public class QuadCornerKicker extends QuadTransformer {
             return values()[sideMask[sideA] | sideMask[sideB] | sideMask[sideC]];
         }
 
-        public float pX(AxisAlignedBB box) {
+        public float pX(Box box) {
             return (float) (this.xAxis == NEGATIVE ? box.minX : box.maxX);
         }
 
-        public float pY(AxisAlignedBB box) {
+        public float pY(Box box) {
             return (float) (this.yAxis == NEGATIVE ? box.minY : box.maxY);
         }
 
-        public float pZ(AxisAlignedBB box) {
+        public float pZ(Box box) {
             return (float) (this.zAxis == NEGATIVE ? box.minZ : box.maxZ);
         }
     }

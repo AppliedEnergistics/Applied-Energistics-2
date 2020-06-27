@@ -20,7 +20,7 @@ package appeng.debug;
 
 import java.util.EnumSet;
 
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.Direction;
 
 import appeng.api.networking.IGridNode;
@@ -33,7 +33,7 @@ public class PhantomNodeTileEntity extends AENetworkTileEntity {
     private AENetworkProxy proxy = null;
     private boolean crashMode = false;
 
-    public PhantomNodeTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public PhantomNodeTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 

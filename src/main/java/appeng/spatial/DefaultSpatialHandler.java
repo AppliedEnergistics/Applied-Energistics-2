@@ -19,7 +19,7 @@
 package appeng.spatial;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -36,12 +36,12 @@ public class DefaultSpatialHandler implements IMovableHandler {
      * @return true
      */
     @Override
-    public boolean canHandle(final Class<? extends TileEntity> myClass, final TileEntity tile) {
+    public boolean canHandle(final Class<? extends BlockEntity> myClass, final BlockEntity tile) {
         return true;
     }
 
     @Override
-    public void moveTile(final TileEntity te, final World w, final BlockPos newPosition) {
+    public void moveTile(final BlockEntity te, final World w, final BlockPos newPosition) {
         te.setWorldAndPos(w, newPosition);
 
         final Chunk c = w.getChunkAt(newPosition);

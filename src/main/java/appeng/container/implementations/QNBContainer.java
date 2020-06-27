@@ -21,7 +21,7 @@ package appeng.container.implementations;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.container.AEBaseContainer;
@@ -36,7 +36,7 @@ public class QNBContainer extends AEBaseContainer {
     private static final ContainerHelper<QNBContainer, QuantumBridgeTileEntity> helper = new ContainerHelper<>(
             QNBContainer::new, QuantumBridgeTileEntity.class, SecurityPermissions.BUILD);
 
-    public static QNBContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static QNBContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 

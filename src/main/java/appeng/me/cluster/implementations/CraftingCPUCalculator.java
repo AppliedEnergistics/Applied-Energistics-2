@@ -20,7 +20,7 @@ package appeng.me.cluster.implementations;
 
 import java.util.Iterator;
 
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -125,7 +125,7 @@ public class CraftingCPUCalculator extends MBCalculator {
     }
 
     @Override
-    public boolean isValidTile(final TileEntity te) {
+    public boolean isValidTile(final BlockEntity te) {
         return te instanceof CraftingTileEntity;
     }
 }

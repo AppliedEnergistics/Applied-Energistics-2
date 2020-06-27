@@ -20,15 +20,15 @@ package appeng.container.implementations;
 
 import javax.annotation.Nonnull;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.container.AEBaseContainer;
@@ -47,7 +47,7 @@ public class QuartzKnifeContainer extends AEBaseContainer {
     private static final ContainerHelper<QuartzKnifeContainer, QuartzKnifeObj> helper = new ContainerHelper<>(
             QuartzKnifeContainer::new, QuartzKnifeObj.class);
 
-    public static QuartzKnifeContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static QuartzKnifeContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -57,7 +57,7 @@ public class QuartzKnifeContainer extends AEBaseContainer {
 
     private final QuartzKnifeObj toolInv;
 
-    private final IItemHandler inSlot = new AppEngInternalInventory(null, 1, 1);
+    private final ItemTransferable inSlot = new AppEngInternalInventory(null, 1, 1);
     private String myName = "";
 
     public QuartzKnifeContainer(int id, final PlayerInventory ip, final QuartzKnifeObj te) {
@@ -105,13 +105,13 @@ public class QuartzKnifeContainer extends AEBaseContainer {
     }
 
     private class QuartzKniveSlot extends OutputSlot {
-        QuartzKniveSlot(IItemHandler a, int b, int c, int d, int i) {
+        QuartzKniveSlot(ItemTransferable a, int b, int c, int d, int i) {
             super(a, b, c, d, i);
         }
 
         @Override
         public ItemStack getStack() {
-            final IItemHandler baseInv = this.getItemHandler();
+            final ItemTransferable baseInv = this.getItemHandler();
             final ItemStack input = baseInv.getStackInSlot(0);
             if (input == ItemStack.EMPTY) {
                 return ItemStack.EMPTY;

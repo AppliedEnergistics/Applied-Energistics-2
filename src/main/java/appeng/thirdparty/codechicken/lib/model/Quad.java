@@ -19,12 +19,12 @@
 package appeng.thirdparty.codechicken.lib.model;
 
 import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.IVertexProducer;
@@ -165,7 +165,7 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
      *
      * @param bb The box.
      */
-    public void clamp(AxisAlignedBB bb) {
+    public void clamp(Box bb) {
         for (Vertex vertex : this.vertices) {
             float[] vec = vertex.vec;
             vec[0] = (float) MathHelper.clamp(vec[0], bb.minX, bb.maxX);

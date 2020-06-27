@@ -24,9 +24,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -64,7 +64,7 @@ public class SkyStoneBlock extends AEBaseBlock {
     }
 
     @Override
-    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn,
+    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, WorldAccess worldIn,
             BlockPos currentPos, BlockPos facingPos) {
         if (worldIn instanceof ServerWorld) {
             WorldData.instance().compassData().service().updateArea(worldIn, new ChunkPos(currentPos),

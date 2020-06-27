@@ -20,12 +20,12 @@ package appeng.container.implementations;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 
 import appeng.api.networking.crafting.ICraftingCPU;
 
 public class CraftingCPURecord implements Comparable<CraftingCPURecord> {
-    private final ITextComponent myName;
+    private final Text myName;
     private final ICraftingCPU cpu;
     private final long size;
     private final int processors;
@@ -50,7 +50,7 @@ public class CraftingCPURecord implements Comparable<CraftingCPURecord> {
         return this.cpu;
     }
 
-    ITextComponent getName() {
+    Text getName() {
         return this.myName;
     }
 

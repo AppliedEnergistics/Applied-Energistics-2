@@ -26,7 +26,7 @@ import java.util.List;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.client.renderer.Vector4f;
-import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;

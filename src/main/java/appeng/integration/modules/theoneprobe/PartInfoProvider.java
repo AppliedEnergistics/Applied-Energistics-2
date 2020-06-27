@@ -24,8 +24,8 @@ import java.util.Optional;
 import com.google.common.collect.Lists;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import mcjty.theoneprobe.api.IProbeHitData;
@@ -64,7 +64,7 @@ public final class PartInfoProvider implements IProbeInfoProvider {
     @Override
     public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world,
             BlockState blockState, IProbeHitData data) {
-        final TileEntity te = world.getTileEntity(data.getPos());
+        final BlockEntity te = world.getTileEntity(data.getPos());
         final Optional<IPart> maybePart = this.accessor.getMaybePart(te, data);
 
         if (maybePart.isPresent()) {

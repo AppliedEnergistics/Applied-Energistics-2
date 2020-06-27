@@ -18,6 +18,7 @@
 
 package appeng.container.slot;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
@@ -25,7 +26,6 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.hooks.BasicEventHooks;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.WrapperInvItemHandler;
@@ -35,7 +35,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
     /**
      * The craft matrix inventory linked to this result slot.
      */
-    private final IItemHandler craftMatrix;
+    private final ItemTransferable craftMatrix;
 
     /**
      * The player that is using the GUI where this slot resides.
@@ -48,8 +48,8 @@ public class AppEngCraftingSlot extends AppEngSlot {
      */
     private int amountCrafted;
 
-    public AppEngCraftingSlot(final PlayerEntity par1PlayerEntity, final IItemHandler par2IInventory,
-            final IItemHandler par3IInventory, final int par4, final int par5, final int par6) {
+    public AppEngCraftingSlot(final PlayerEntity par1PlayerEntity, final ItemTransferable par2IInventory,
+                              final ItemTransferable par3IInventory, final int par4, final int par5, final int par6) {
         super(par3IInventory, par4, par5, par6);
         this.thePlayer = par1PlayerEntity;
         this.craftMatrix = par2IInventory;

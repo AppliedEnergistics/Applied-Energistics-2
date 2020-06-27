@@ -32,10 +32,10 @@ import net.minecraft.block.Block;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -91,7 +91,7 @@ public final class CompassService {
         }
     }
 
-    public void updateArea(final IWorld w, ChunkPos chunkPos) {
+    public void updateArea(final WorldAccess w, ChunkPos chunkPos) {
         this.updateArea(w, chunkPos, CHUNK_SIZE);
         this.updateArea(w, chunkPos, CHUNK_SIZE + 32);
         this.updateArea(w, chunkPos, CHUNK_SIZE + 64);
@@ -103,7 +103,7 @@ public final class CompassService {
         this.updateArea(w, chunkPos, CHUNK_SIZE + 224);
     }
 
-    public Future<?> updateArea(final IWorld w, ChunkPos chunkPos, int y) {
+    public Future<?> updateArea(final WorldAccess w, ChunkPos chunkPos, int y) {
         this.jobSize++;
 
         final int cx = chunkPos.x;

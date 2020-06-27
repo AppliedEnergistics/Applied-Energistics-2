@@ -21,8 +21,8 @@ package appeng.container.implementations;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraft.network.PacketByteBuf;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
@@ -54,7 +54,7 @@ public class CondenserContainer extends AEBaseContainer implements IProgressProv
         super(TYPE, id, ip, condenser, null);
         this.condenser = condenser;
 
-        IItemHandler inv = condenser.getInternalInventory();
+        ItemTransferable inv = condenser.getInternalInventory();
 
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.TRASH, inv, 0, 51, 52, ip));
         this.addSlot(new OutputSlot(inv, 1, 105, 52, -1));
@@ -65,7 +65,7 @@ public class CondenserContainer extends AEBaseContainer implements IProgressProv
         this.bindPlayerInventory(ip, 0, 197 - /* height of player inventory */82);
     }
 
-    public static CondenserContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static CondenserContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 

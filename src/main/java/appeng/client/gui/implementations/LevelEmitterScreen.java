@@ -21,7 +21,7 @@ package appeng.client.gui.implementations;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.LevelType;
@@ -54,7 +54,7 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
     private SettingToggleButton<LevelType> levelMode;
     private SettingToggleButton<YesNo> craftingMode;
 
-    public LevelEmitterScreen(LevelEmitterContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public LevelEmitterScreen(LevelEmitterContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
     }
 

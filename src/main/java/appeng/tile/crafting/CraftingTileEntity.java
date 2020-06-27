@@ -27,10 +27,10 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
@@ -68,7 +68,7 @@ public class CraftingTileEntity extends AENetworkTileEntity implements IAEMultiB
     private boolean isCoreBlock = false;
     private CraftingCPUCluster cluster;
 
-    public CraftingTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public CraftingTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.getProxy().setFlags(GridFlags.MULTIBLOCK, GridFlags.REQUIRE_CHANNEL);
         this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));
@@ -258,7 +258,7 @@ public class CraftingTileEntity extends AENetworkTileEntity implements IAEMultiB
                 if (h == this) {
                     places.add(new WorldCoord(this));
                 } else {
-                    final TileEntity te = (TileEntity) h;
+                    final BlockEntity te = (BlockEntity) h;
 
                     for (final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS) {
                         final WorldCoord wc = new WorldCoord(te);

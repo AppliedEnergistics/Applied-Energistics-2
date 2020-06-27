@@ -20,11 +20,11 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.network.PacketByteBuf;
 
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.sync.BasePacket;
@@ -40,7 +40,7 @@ public class MatterCannonPacket extends BasePacket {
     private final double dz;
     private final byte len;
 
-    public MatterCannonPacket(final PacketBuffer stream) {
+    public MatterCannonPacket(final PacketByteBuf stream) {
         this.x = stream.readFloat();
         this.y = stream.readFloat();
         this.z = stream.readFloat();
@@ -64,7 +64,7 @@ public class MatterCannonPacket extends BasePacket {
         this.dz = dz / dlz;
         this.len = len;
 
-        final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
+        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
         data.writeFloat((float) x);
@@ -79,7 +79,7 @@ public class MatterCannonPacket extends BasePacket {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         try {
             for (int a = 1; a < this.len; a++) {

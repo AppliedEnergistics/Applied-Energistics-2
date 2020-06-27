@@ -20,6 +20,7 @@ package appeng.block.misc;
 
 import java.util.Random;
 
+import net.fabricmc.api.EnvType;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.sound.BlockSoundGroup;
@@ -30,8 +31,7 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.Environment;
 
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseTileBlock;
@@ -62,7 +62,7 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
         builder.add(POWERED);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void animateTick(final BlockState state, final World w, final BlockPos pos, final Random r) {
         if (!AEConfig.instance().isEnableEffects()) {

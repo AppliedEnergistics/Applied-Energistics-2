@@ -30,8 +30,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fluids.FluidStack;
+import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
@@ -92,7 +91,7 @@ public interface IStorageChannel<T extends IAEStack<T>> {
      * @throws IOException
      */
     @Nullable
-    T readFromPacket(@Nonnull PacketBuffer input);
+    T readFromPacket(@Nonnull PacketByteBuf input);
 
     /**
      * create from nbt data

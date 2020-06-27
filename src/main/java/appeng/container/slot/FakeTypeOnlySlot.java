@@ -18,12 +18,12 @@
 
 package appeng.container.slot;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
 
 public class FakeTypeOnlySlot extends FakeSlot {
 
-    public FakeTypeOnlySlot(final IItemHandler inv, final int idx, final int x, final int y) {
+    public FakeTypeOnlySlot(final ItemTransferable inv, final int idx, final int x, final int y) {
         super(inv, idx, x, y);
     }
 

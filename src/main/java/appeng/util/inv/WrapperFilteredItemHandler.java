@@ -21,17 +21,17 @@ package appeng.util.inv;
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.filter.IAEItemFilter;
 
 public class WrapperFilteredItemHandler implements IItemHandlerModifiable {
-    private final IItemHandler handler;
+    private final ItemTransferable handler;
     private final IAEItemFilter filter;
 
-    public WrapperFilteredItemHandler(@Nonnull IItemHandler handler, @Nonnull IAEItemFilter filter) {
+    public WrapperFilteredItemHandler(@Nonnull ItemTransferable handler, @Nonnull IAEItemFilter filter) {
         this.handler = handler;
         this.filter = filter;
     }

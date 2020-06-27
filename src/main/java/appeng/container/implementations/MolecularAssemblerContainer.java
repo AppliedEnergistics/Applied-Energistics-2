@@ -18,14 +18,14 @@
 
 package appeng.container.implementations;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
@@ -49,7 +49,7 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
     private static final ContainerHelper<MolecularAssemblerContainer, MolecularAssemblerTileEntity> helper = new ContainerHelper<>(
             MolecularAssemblerContainer::new, MolecularAssemblerTileEntity.class);
 
-    public static MolecularAssemblerContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static MolecularAssemblerContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -70,7 +70,7 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
     }
 
     public boolean isValidItemForSlot(final int slotIndex, final ItemStack i) {
-        final IItemHandler mac = this.getUpgradeable().getInventoryByName(MolecularAssemblerTileEntity.INVENTORY_MAIN);
+        final ItemTransferable mac = this.getUpgradeable().getInventoryByName(MolecularAssemblerTileEntity.INVENTORY_MAIN);
 
         final ItemStack is = mac.getStackInSlot(10);
         if (is.isEmpty()) {
@@ -99,7 +99,7 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
         int offX = 29;
         int offY = 30;
 
-        final IItemHandler mac = this.getUpgradeable().getInventoryByName(MolecularAssemblerTileEntity.INVENTORY_MAIN);
+        final ItemTransferable mac = this.getUpgradeable().getInventoryByName(MolecularAssemblerTileEntity.INVENTORY_MAIN);
 
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 3; x++) {
@@ -120,7 +120,7 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
         offX = 122;
         offY = 17;
 
-        final IItemHandler upgrades = this.getUpgradeable().getInventoryByName("upgrades");
+        final ItemTransferable upgrades = this.getUpgradeable().getInventoryByName("upgrades");
         this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 0, 187, 8,
                 this.getPlayerInventory())).setNotDraggable());
         this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18,

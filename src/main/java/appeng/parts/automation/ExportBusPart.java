@@ -25,7 +25,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 
 import appeng.api.AEApi;
@@ -70,19 +70,19 @@ import appeng.util.item.AEItemStack;
 
 public class ExportBusPart extends SharedItemBusPart implements ICraftingRequester {
 
-    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/export_bus_base");
+    public static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID, "part/export_bus_base");
 
     @PartModels
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/export_bus_off"));
+            new Identifier(AppEng.MOD_ID, "part/export_bus_off"));
 
     @PartModels
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/export_bus_on"));
+            new Identifier(AppEng.MOD_ID, "part/export_bus_on"));
 
     @PartModels
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            new ResourceLocation(AppEng.MOD_ID, "part/export_bus_has_channel"));
+            new Identifier(AppEng.MOD_ID, "part/export_bus_has_channel"));
 
     private final MultiCraftingTracker craftingTracker = new MultiCraftingTracker(this, 9);
     private final IActionSource mySrc;

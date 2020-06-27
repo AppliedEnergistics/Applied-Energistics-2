@@ -21,7 +21,7 @@ package appeng.container.implementations;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketByteBuf;
 
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
@@ -52,7 +52,7 @@ public class SkyChestContainer extends AEBaseContainer {
         this.bindPlayerInventory(ip, 0, 195 - /* height of player inventory */82);
     }
 
-    public static SkyChestContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static SkyChestContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 

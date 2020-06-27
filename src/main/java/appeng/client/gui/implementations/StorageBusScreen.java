@@ -19,7 +19,7 @@
 package appeng.client.gui.implementations;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.text.Text;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.ActionItems;
@@ -42,7 +42,7 @@ public class StorageBusScreen extends UpgradeableScreen<StorageBusContainer> {
     private SettingToggleButton<AccessRestriction> rwMode;
     private SettingToggleButton<StorageFilter> storageFilter;
 
-    public StorageBusScreen(StorageBusContainer container, PlayerInventory playerInventory, ITextComponent title) {
+    public StorageBusScreen(StorageBusContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
         this.ySize = 251;
     }

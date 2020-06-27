@@ -25,10 +25,10 @@ import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
 public class TabButton extends Button implements ITooltip {
-    public static final ResourceLocation TEXTURE_STATES = new ResourceLocation("appliedenergistics2",
+    public static final Identifier TEXTURE_STATES = new Identifier("appliedenergistics2",
             "textures/guis/states.png");
     private final ItemRenderer itemRenderer;
     private int hideEdge = 0;

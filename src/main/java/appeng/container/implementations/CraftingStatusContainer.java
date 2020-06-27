@@ -27,8 +27,8 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.text.Text;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.crafting.ICraftingCPU;
@@ -45,7 +45,7 @@ public class CraftingStatusContainer extends CraftingCPUContainer {
     private static final ContainerHelper<CraftingStatusContainer, ITerminalHost> helper = new ContainerHelper<>(
             CraftingStatusContainer::new, ITerminalHost.class, SecurityPermissions.CRAFT);
 
-    public static CraftingStatusContainer fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+    public static CraftingStatusContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
     }
 
@@ -59,7 +59,7 @@ public class CraftingStatusContainer extends CraftingCPUContainer {
     @GuiSync(6)
     public boolean noCPU = true;
     @GuiSync(7)
-    public ITextComponent myName;
+    public Text myName;
 
     public CraftingStatusContainer(int id, final PlayerInventory ip, final ITerminalHost te) {
         super(TYPE, id, ip, te);

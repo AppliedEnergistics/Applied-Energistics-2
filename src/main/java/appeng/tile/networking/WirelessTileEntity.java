@@ -21,11 +21,11 @@ package appeng.tile.networking;
 import java.io.IOException;
 import java.util.EnumSet;
 
+import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.Direction;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.implementations.IPowerChannelState;
@@ -54,7 +54,7 @@ public class WirelessTileEntity extends AENetworkInvTileEntity implements IWirel
 
     private int clientFlags = 0;
 
-    public WirelessTileEntity(TileEntityType<?> tileEntityTypeIn) {
+    public WirelessTileEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         this.inv.setFilter(new AEItemDefinitionFilter(AEApi.instance().definitions().materials().wirelessBooster()));
         this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
@@ -78,7 +78,7 @@ public class WirelessTileEntity extends AENetworkInvTileEntity implements IWirel
     }
 
     @Override
-    protected boolean readFromStream(final PacketBuffer data) throws IOException {
+    protected boolean readFromStream(final PacketByteBuf data) throws IOException {
         final boolean c = super.readFromStream(data);
         final int old = this.getClientFlags();
         this.setClientFlags(data.readByte());
@@ -87,7 +87,7 @@ public class WirelessTileEntity extends AENetworkInvTileEntity implements IWirel
     }
 
     @Override
-    protected void writeToStream(final PacketBuffer data) throws IOException {
+    protected void writeToStream(final PacketByteBuf data) throws IOException {
         super.writeToStream(data);
         this.setClientFlags(0);
 
@@ -117,13 +117,13 @@ public class WirelessTileEntity extends AENetworkInvTileEntity implements IWirel
     }
 
     @Override
-    public IItemHandler getInternalInventory() {
+    public ItemTransferable getInternalInventory() {
         return this.inv;
     }
 
     @Override
-    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc,
-            final ItemStack removed, final ItemStack added) {
+    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+                                  final ItemStack removed, final ItemStack added) {
         // :P
     }
 
