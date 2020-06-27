@@ -48,7 +48,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraftforge.client.model.data.IModelData;
+
 import net.minecraftforge.common.IPlantable;
 import alexiil.mc.lib.attributes.item.ItemTransferable;
 

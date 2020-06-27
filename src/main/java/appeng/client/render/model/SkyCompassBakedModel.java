@@ -27,12 +27,12 @@ import javax.annotation.Nullable;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.ItemCameraTransforms;
-import net.minecraft.client.render.model.ItemOverrideList;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.render.model.json.ModelOverrideList;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -40,7 +40,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
-import net.minecraftforge.client.model.data.IModelData;
+
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 
@@ -112,42 +112,42 @@ public class SkyCompassBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public boolean isAmbientOcclusion() {
-        return this.base.isAmbientOcclusion();
+    public boolean useAmbientOcclusion() {
+        return this.base.useAmbientOcclusion();
     }
 
     @Override
-    public boolean isGui3d() {
+    public boolean hasDepth() {
         return true;
     }
 
     @Override
-    public boolean func_230044_c_() {
+    public boolean isSideLit() {
         return false;
     }
 
     @Override
-    public boolean isBuiltInRenderer() {
+    public boolean isBuiltin() {
         return false;
     }
 
     @Override
-    public TextureAtlasSprite getParticleTexture() {
-        return this.base.getParticleTexture();
+    public Sprite getSprite() {
+        return this.base.getSprite();
     }
 
     @Override
-    public ItemCameraTransforms getItemCameraTransforms() {
-        return this.base.getItemCameraTransforms();
+    public ModelTransformation getTransformation() {
+        return this.base.getTransformation();
     }
 
     @Override
-    public ItemOverrideList getOverrides() {
+    public ModelOverrideList getOverrides() {
         /*
          * This handles setting the rotation of the compass when being held in hand. If
          * it's not held in hand, it'll animate using the spinning animation.
          */
-        return new ItemOverrideList() {
+        return new ModelOverrideList() {
             @Override
             public BakedModel getModelWithOverrides(BakedModel originalModel, ItemStack stack, @Nullable World world,
                                                     @Nullable LivingEntity entity) {

@@ -29,11 +29,11 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.ItemOverrideList;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.render.model.json.ModelOverrideList;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
-import net.minecraftforge.client.model.data.IModelData;
+
 
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.tile.crafting.CraftingCubeModelData;
@@ -47,13 +47,13 @@ import appeng.util.Platform;
  */
 abstract class CraftingCubeBakedModel implements IDynamicBakedModel {
 
-    private final TextureAtlasSprite ringCorner;
+    private final Sprite ringCorner;
 
-    private final TextureAtlasSprite ringHor;
+    private final Sprite ringHor;
 
-    private final TextureAtlasSprite ringVer;
+    private final Sprite ringVer;
 
-    CraftingCubeBakedModel(TextureAtlasSprite ringCorner, TextureAtlasSprite ringHor, TextureAtlasSprite ringVer) {
+    CraftingCubeBakedModel(Sprite ringCorner, Sprite ringHor, Sprite ringVer) {
         this.ringCorner = ringCorner;
         this.ringHor = ringHor;
         this.ringVer = ringVer;
@@ -256,33 +256,33 @@ abstract class CraftingCubeBakedModel implements IDynamicBakedModel {
             float x1, float y1, float z1, float x2, float y2, float z2);
 
     @Override
-    public boolean isAmbientOcclusion() {
+    public boolean useAmbientOcclusion() {
         return false;
     }
 
     @Override
-    public boolean isGui3d() {
+    public boolean hasDepth() {
         return false;
     }
 
     @Override
-    public boolean isBuiltInRenderer() {
+    public boolean isBuiltin() {
         return false;
     }
 
     @Override
-    public TextureAtlasSprite getParticleTexture() {
+    public Sprite getSprite() {
         return this.ringCorner;
     }
 
     @Override
-    public boolean func_230044_c_() {
+    public boolean isSideLit() {
         return false;
     }
 
     @Override
-    public ItemOverrideList getOverrides() {
-        return ItemOverrideList.EMPTY;
+    public ModelOverrideList getOverrides() {
+        return ModelOverrideList.EMPTY;
     }
 
 }

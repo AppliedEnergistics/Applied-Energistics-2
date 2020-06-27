@@ -28,7 +28,6 @@ import com.google.common.collect.Sets;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.util.Identifier;
-import net.minecraftforge.client.event.ModelBakeEvent;
 
 import appeng.core.AppEng;
 
@@ -42,17 +41,16 @@ public class ModelOverrideComponent implements IModelBakeComponent {
     }
 
     @Override
-    public void onModelBakeEvent(final ModelBakeEvent event) {
-        Map<Identifier, BakedModel> modelRegistry = event.getModelRegistry();
-        Set<Identifier> keys = Sets.newHashSet(modelRegistry.keySet());
-        BakedModel missingModel = modelRegistry.get(ModelLoader.MISSING);
+    public void onModelsReloaded(final Map<Identifier, BakedModel> loadedModels) {
+        Set<Identifier> keys = Sets.newHashSet(loadedModels.keySet());
+        BakedModel missingModel = loadedModels.get(ModelLoader.MISSING);
 
         for (Identifier location : keys) {
             if (!location.getNamespace().equals(AppEng.MOD_ID)) {
                 continue;
             }
 
-            BakedModel orgModel = modelRegistry.get(location);
+            BakedModel orgModel = loadedModels.get(location);
 
             // Don't customize the missing model. This causes Forge to swallow exceptions
             if (orgModel == missingModel) {
@@ -64,7 +62,7 @@ public class ModelOverrideComponent implements IModelBakeComponent {
                 BakedModel newModel = customizer.apply(location, orgModel);
 
                 if (newModel != orgModel) {
-                    modelRegistry.put(location, newModel);
+                    loadedModels.put(location, newModel);
                 }
             }
         }

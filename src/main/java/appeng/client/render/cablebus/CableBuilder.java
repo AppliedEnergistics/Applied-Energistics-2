@@ -28,7 +28,7 @@ import java.util.function.Function;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.Material;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Identifier;
 
@@ -42,18 +42,18 @@ import appeng.core.AppEng;
 class CableBuilder {
 
     // Textures for the cable core types, one per type/color pair
-    private final EnumMap<CableCoreType, EnumMap<AEColor, TextureAtlasSprite>> coreTextures;
+    private final EnumMap<CableCoreType, EnumMap<AEColor, Sprite>> coreTextures;
 
     // Textures for rendering the actual connection cubes, one per type/color pair
-    private final EnumMap<AECableType, EnumMap<AEColor, TextureAtlasSprite>> connectionTextures;
+    private final EnumMap<AECableType, EnumMap<AEColor, Sprite>> connectionTextures;
 
     private final SmartCableTextures smartCableTextures;
 
-    CableBuilder(Function<Material, TextureAtlasSprite> bakedTextureGetter) {
+    CableBuilder(Function<Material, Sprite> bakedTextureGetter) {
         this.coreTextures = new EnumMap<>(CableCoreType.class);
 
         for (CableCoreType type : CableCoreType.values()) {
-            EnumMap<AEColor, TextureAtlasSprite> colorTextures = new EnumMap<>(AEColor.class);
+            EnumMap<AEColor, Sprite> colorTextures = new EnumMap<>(AEColor.class);
 
             for (AEColor color : AEColor.values()) {
                 colorTextures.put(color, bakedTextureGetter.apply(type.getTexture(color)));
@@ -65,7 +65,7 @@ class CableBuilder {
         this.connectionTextures = new EnumMap<>(AECableType.class);
 
         for (AECableType type : AECableType.VALIDCABLES) {
-            EnumMap<AEColor, TextureAtlasSprite> colorTextures = new EnumMap<>(AEColor.class);
+            EnumMap<AEColor, Sprite> colorTextures = new EnumMap<>(AEColor.class);
 
             for (AEColor color : AEColor.values()) {
                 colorTextures.put(color, bakedTextureGetter.apply(getConnectionTexture(type, color)));
@@ -128,7 +128,7 @@ class CableBuilder {
     public void addCableCore(CableCoreType coreType, AEColor color, List<BakedQuad> quadsOut) {
         CubeBuilder cubeBuilder = new CubeBuilder(quadsOut);
 
-        TextureAtlasSprite texture = this.coreTextures.get(coreType).get(color);
+        Sprite texture = this.coreTextures.get(coreType).get(color);
         cubeBuilder.setTexture(texture);
 
         switch (coreType) {
@@ -153,13 +153,13 @@ class CableBuilder {
 
         // For to-machine connections, use a thicker end-cap for the connection
         if (connectionType != AECableType.GLASS && !cableBusAdjacent) {
-            TextureAtlasSprite texture = this.connectionTextures.get(AECableType.COVERED).get(cableColor);
+            Sprite texture = this.connectionTextures.get(AECableType.COVERED).get(cableColor);
             cubeBuilder.setTexture(texture);
 
             this.addBigCoveredCableSizedCube(facing, cubeBuilder);
         }
 
-        TextureAtlasSprite texture = this.connectionTextures.get(AECableType.GLASS).get(cableColor);
+        Sprite texture = this.connectionTextures.get(AECableType.GLASS).get(cableColor);
         cubeBuilder.setTexture(texture);
 
         switch (facing) {
@@ -192,7 +192,7 @@ class CableBuilder {
         // and its ends will always be covered by something
         cubeBuilder.setDrawFaces(EnumSet.complementOf(EnumSet.of(facing, facing.getOpposite())));
 
-        TextureAtlasSprite texture = this.connectionTextures.get(AECableType.GLASS).get(cableColor);
+        Sprite texture = this.connectionTextures.get(AECableType.GLASS).get(cableColor);
         cubeBuilder.setTexture(texture);
 
         switch (facing) {
@@ -221,7 +221,7 @@ class CableBuilder {
 
         CubeBuilder cubeBuilder = new CubeBuilder(quadsOut);
 
-        TextureAtlasSprite texture = this.connectionTextures.get(AECableType.GLASS).get(cableColor);
+        Sprite texture = this.connectionTextures.get(AECableType.GLASS).get(cableColor);
         cubeBuilder.setTexture(texture);
 
         switch (facing) {
@@ -254,7 +254,7 @@ class CableBuilder {
         // We render all faces except the one on the connection side
         cubeBuilder.setDrawFaces(EnumSet.complementOf(EnumSet.of(facing)));
 
-        TextureAtlasSprite texture = this.connectionTextures.get(AECableType.COVERED).get(cableColor);
+        Sprite texture = this.connectionTextures.get(AECableType.COVERED).get(cableColor);
         cubeBuilder.setTexture(texture);
 
         // Draw a covered connection, if anything but glass is requested
@@ -268,7 +268,7 @@ class CableBuilder {
     public void addStraightCoveredConnection(Direction facing, AEColor cableColor, List<BakedQuad> quadsOut) {
         CubeBuilder cubeBuilder = new CubeBuilder(quadsOut);
 
-        TextureAtlasSprite texture = this.connectionTextures.get(AECableType.COVERED).get(cableColor);
+        Sprite texture = this.connectionTextures.get(AECableType.COVERED).get(cableColor);
         cubeBuilder.setTexture(texture);
 
         setStraightCableUVs(cubeBuilder, facing, 5, 11);
@@ -312,7 +312,7 @@ class CableBuilder {
 
         CubeBuilder cubeBuilder = new CubeBuilder(quadsOut);
 
-        TextureAtlasSprite texture = this.connectionTextures.get(AECableType.COVERED).get(cableColor);
+        Sprite texture = this.connectionTextures.get(AECableType.COVERED).get(cableColor);
         cubeBuilder.setTexture(texture);
 
         addCoveredCableSizedCube(facing, distanceFromEdge, cubeBuilder);
@@ -330,11 +330,11 @@ class CableBuilder {
         // We render all faces except the one on the connection side
         cubeBuilder.setDrawFaces(EnumSet.complementOf(EnumSet.of(facing)));
 
-        TextureAtlasSprite texture = this.connectionTextures.get(AECableType.SMART).get(cableColor);
+        Sprite texture = this.connectionTextures.get(AECableType.SMART).get(cableColor);
         cubeBuilder.setTexture(texture);
 
-        TextureAtlasSprite oddChannel = this.smartCableTextures.getOddTextureForChannels(channels);
-        TextureAtlasSprite evenChannel = this.smartCableTextures.getEvenTextureForChannels(channels);
+        Sprite oddChannel = this.smartCableTextures.getOddTextureForChannels(channels);
+        Sprite evenChannel = this.smartCableTextures.getEvenTextureForChannels(channels);
 
         // For to-machine connections, use a thicker end-cap for the connection
         if (connectionType != AECableType.GLASS && !cableBusAdjacent) {
@@ -374,15 +374,15 @@ class CableBuilder {
             List<BakedQuad> quadsOut) {
         CubeBuilder cubeBuilder = new CubeBuilder(quadsOut);
 
-        TextureAtlasSprite texture = this.connectionTextures.get(AECableType.SMART).get(cableColor);
+        Sprite texture = this.connectionTextures.get(AECableType.SMART).get(cableColor);
         cubeBuilder.setTexture(texture);
 
         setStraightCableUVs(cubeBuilder, facing, 5, 11);
 
         addStraightCoveredCableSizedCube(facing, cubeBuilder);
 
-        TextureAtlasSprite oddChannel = this.smartCableTextures.getOddTextureForChannels(channels);
-        TextureAtlasSprite evenChannel = this.smartCableTextures.getEvenTextureForChannels(channels);
+        Sprite oddChannel = this.smartCableTextures.getOddTextureForChannels(channels);
+        Sprite evenChannel = this.smartCableTextures.getEvenTextureForChannels(channels);
 
         // Render the channel indicators brightly lit at night
         cubeBuilder.setRenderFullBright(true);
@@ -407,13 +407,13 @@ class CableBuilder {
 
         CubeBuilder cubeBuilder = new CubeBuilder(quadsOut);
 
-        TextureAtlasSprite texture = this.connectionTextures.get(AECableType.SMART).get(cableColor);
+        Sprite texture = this.connectionTextures.get(AECableType.SMART).get(cableColor);
         cubeBuilder.setTexture(texture);
 
         addCoveredCableSizedCube(facing, distanceFromEdge, cubeBuilder);
 
-        TextureAtlasSprite oddChannel = this.smartCableTextures.getOddTextureForChannels(channels);
-        TextureAtlasSprite evenChannel = this.smartCableTextures.getEvenTextureForChannels(channels);
+        Sprite oddChannel = this.smartCableTextures.getOddTextureForChannels(channels);
+        Sprite evenChannel = this.smartCableTextures.getEvenTextureForChannels(channels);
 
         // Render the channel indicators brightly lit at night
         cubeBuilder.setRenderFullBright(true);
@@ -442,7 +442,7 @@ class CableBuilder {
         // We render all faces except the one on the connection side
         cubeBuilder.setDrawFaces(EnumSet.complementOf(EnumSet.of(facing)));
 
-        TextureAtlasSprite texture = this.connectionTextures.get(AECableType.DENSE_COVERED).get(cableColor);
+        Sprite texture = this.connectionTextures.get(AECableType.DENSE_COVERED).get(cableColor);
         cubeBuilder.setTexture(texture);
 
         addDenseCableSizedCube(facing, cubeBuilder);
@@ -472,7 +472,7 @@ class CableBuilder {
         // We render all faces except the one on the connection side
         cubeBuilder.setDrawFaces(EnumSet.complementOf(EnumSet.of(facing)));
 
-        TextureAtlasSprite texture = this.connectionTextures.get(AECableType.DENSE_SMART).get(cableColor);
+        Sprite texture = this.connectionTextures.get(AECableType.DENSE_SMART).get(cableColor);
         cubeBuilder.setTexture(texture);
 
         addDenseCableSizedCube(facing, cubeBuilder);
@@ -480,8 +480,8 @@ class CableBuilder {
         // Dense cables show used channels in groups of 4, rounded up
         channels = (channels + 3) / 4;
 
-        TextureAtlasSprite oddChannel = this.smartCableTextures.getOddTextureForChannels(channels);
-        TextureAtlasSprite evenChannel = this.smartCableTextures.getEvenTextureForChannels(channels);
+        Sprite oddChannel = this.smartCableTextures.getOddTextureForChannels(channels);
+        Sprite evenChannel = this.smartCableTextures.getEvenTextureForChannels(channels);
 
         // Render the channel indicators brightly lit at night
         cubeBuilder.setRenderFullBright(true);
@@ -502,7 +502,7 @@ class CableBuilder {
     public void addStraightDenseCoveredConnection(Direction facing, AEColor cableColor, List<BakedQuad> quadsOut) {
         CubeBuilder cubeBuilder = new CubeBuilder(quadsOut);
 
-        TextureAtlasSprite texture = this.connectionTextures.get(AECableType.DENSE_COVERED).get(cableColor);
+        Sprite texture = this.connectionTextures.get(AECableType.DENSE_COVERED).get(cableColor);
         cubeBuilder.setTexture(texture);
 
         setStraightCableUVs(cubeBuilder, facing, 5, 11);
@@ -514,7 +514,7 @@ class CableBuilder {
             List<BakedQuad> quadsOut) {
         CubeBuilder cubeBuilder = new CubeBuilder(quadsOut);
 
-        TextureAtlasSprite texture = this.connectionTextures.get(AECableType.DENSE_SMART).get(cableColor);
+        Sprite texture = this.connectionTextures.get(AECableType.DENSE_SMART).get(cableColor);
         cubeBuilder.setTexture(texture);
 
         setStraightCableUVs(cubeBuilder, facing, 5, 11);
@@ -524,8 +524,8 @@ class CableBuilder {
         // Dense cables show used channels in groups of 4, rounded up
         channels = (channels + 3) / 4;
 
-        TextureAtlasSprite oddChannel = this.smartCableTextures.getOddTextureForChannels(channels);
-        TextureAtlasSprite evenChannel = this.smartCableTextures.getEvenTextureForChannels(channels);
+        Sprite oddChannel = this.smartCableTextures.getOddTextureForChannels(channels);
+        Sprite evenChannel = this.smartCableTextures.getEvenTextureForChannels(channels);
 
         // Render the channel indicators brightly lit at night
         cubeBuilder.setRenderFullBright(true);
@@ -721,7 +721,7 @@ class CableBuilder {
         return locations;
     }
 
-    public TextureAtlasSprite getCoreTexture(CableCoreType coreType, AEColor color) {
+    public Sprite getCoreTexture(CableCoreType coreType, AEColor color) {
         return this.coreTextures.get(coreType).get(color);
     }
 }

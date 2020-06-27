@@ -24,7 +24,7 @@ import net.fabricmc.api.EnvType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.Fluid;
 import net.fabricmc.api.Environment;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -64,7 +64,7 @@ public class FluidTankWidget extends Widget implements ITooltip {
 
                 MinecraftClient mc = MinecraftClient.getInstance();
                 mc.getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-                final TextureAtlasSprite sprite = mc.getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE)
+                final Sprite sprite = mc.getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE)
                         .apply(attributes.getStillTexture(fluidStack.getFluidStack()));
 
                 final int scaledHeight = (int) (this.height

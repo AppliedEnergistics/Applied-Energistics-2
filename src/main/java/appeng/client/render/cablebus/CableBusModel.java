@@ -30,10 +30,10 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.IModelTransform;
 import net.minecraft.client.render.model.IUnbakedModel;
-import net.minecraft.client.render.model.ItemOverrideList;
+import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.Material;
 import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.Identifier;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
@@ -55,8 +55,8 @@ public class CableBusModel implements IModelGeometry<CableBusModel> {
 
     @Override
     public BakedModel bake(IModelConfiguration owner, ModelLoader bakery,
-                           Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
-                           ItemOverrideList overrides, Identifier modelLocation) {
+                           Function<Material, Sprite> spriteGetter, IModelTransform modelTransform,
+                           ModelOverrideList overrides, Identifier modelLocation) {
         Map<Identifier, BakedModel> partModels = this.loadPartModels(bakery, spriteGetter, modelTransform);
 
         CableBuilder cableBuilder = new CableBuilder(spriteGetter);
@@ -65,7 +65,7 @@ public class CableBusModel implements IModelGeometry<CableBusModel> {
         // This should normally not be used, but we *have* to provide a particle texture
         // or otherwise damage models will
         // crash
-        TextureAtlasSprite particleTexture = cableBuilder.getCoreTexture(CableCoreType.GLASS, AEColor.TRANSPARENT);
+        Sprite particleTexture = cableBuilder.getCoreTexture(CableCoreType.GLASS, AEColor.TRANSPARENT);
 
         return new CableBusBakedModel(cableBuilder, facadeBuilder, partModels, particleTexture);
     }
@@ -77,7 +77,7 @@ public class CableBusModel implements IModelGeometry<CableBusModel> {
     }
 
     private Map<Identifier, BakedModel> loadPartModels(ModelLoader bakery,
-                                                       Function<Material, TextureAtlasSprite> spriteGetterIn, IModelTransform transformIn) {
+                                                       Function<Material, Sprite> spriteGetterIn, IModelTransform transformIn) {
         ImmutableMap.Builder<Identifier, BakedModel> result = ImmutableMap.builder();
 
         for (Identifier location : this.partModels.getModels()) {

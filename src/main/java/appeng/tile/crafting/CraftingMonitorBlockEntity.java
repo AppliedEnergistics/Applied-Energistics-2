@@ -32,7 +32,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.Direction;
 import net.fabricmc.api.EnvType;
-import net.minecraftforge.client.model.data.IModelData;
+
 
 import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IColorableTile;
@@ -169,7 +169,7 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
 
     @Nonnull
     @Override
-    public IModelData getModelData() {
+    public CraftingMonitorModelData getRenderAttachmentData() {
         return new CraftingMonitorModelData(getUp(), getForward(), getConnections(), getColor());
     }
 

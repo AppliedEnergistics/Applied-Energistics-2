@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.math.Direction;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
@@ -216,7 +216,7 @@ public class BakedPipeline implements ISmartVertexConsumer {
     }
 
     @Override
-    public void setTexture(TextureAtlasSprite texture) {
+    public void setTexture(Sprite texture) {
         this.check();
         this.unpacker.setTexture(texture);
     }

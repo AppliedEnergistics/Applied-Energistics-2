@@ -31,7 +31,7 @@ public class DefaultSpatialHandler implements IMovableHandler {
     /**
      * never called for the default.
      *
-     * @param tile tile entity
+     * @param tile block entity
      *
      * @return true
      */

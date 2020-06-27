@@ -31,6 +31,7 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.texture.Sprite;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
@@ -41,7 +42,6 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
@@ -647,7 +647,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 FluidAttributes fluidAttributes = fluid.getAttributes();
                 bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
                 Identifier fluidStillTexture = fluidAttributes.getStillTexture(fs.getFluidStack());
-                final TextureAtlasSprite sprite = getMinecraft()
+                final Sprite sprite = getMinecraft()
                         .getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(fluidStillTexture);
 
                 // Set color for dynamic fluids

@@ -115,7 +115,7 @@ public interface IPartHost extends ICustomCableConnection {
     DimensionalCoord getLocation();
 
     /**
-     * @return the tile entity for the host, this can either be an FMP tile, or a AE
+     * @return the block entity for the host, this can either be an FMP tile, or a AE
      *         tile
      */
     BlockEntity getTile();

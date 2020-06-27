@@ -33,7 +33,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -212,7 +212,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
         CableBusRenderState renderState = cb.getRenderState();
 
         // Spawn a particle for one of the particle textures
-        TextureAtlasSprite texture = Platform.pickRandom(cableBusModel.getParticleTextures(renderState));
+        Sprite texture = Platform.pickRandom(cableBusModel.getParticleTextures(renderState));
         if (texture != null) {
             double x = target.getHitVec().x;
             double y = target.getHitVec().y;
@@ -244,7 +244,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
 
         CableBusRenderState renderState = cb.getRenderState();
 
-        List<TextureAtlasSprite> textures = cableBusModel.getParticleTextures(renderState);
+        List<Sprite> textures = cableBusModel.getParticleTextures(renderState);
 
         if (!textures.isEmpty()) {
             // Shamelessly inspired by ParticleManager.addBlockDestroyEffects
@@ -253,7 +253,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
                     for (int l = 0; l < 4; ++l) {
                         // Randomly select one of the textures if the cable bus has more than just one
                         // possibility here
-                        final TextureAtlasSprite texture = Platform.pickRandom(textures);
+                        final Sprite texture = Platform.pickRandom(textures);
 
                         final double x = pos.getX() + (j + 0.5D) / 4.0D;
                         final double y = pos.getY() + (k + 0.5D) / 4.0D;

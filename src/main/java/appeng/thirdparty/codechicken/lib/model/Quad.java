@@ -20,7 +20,7 @@ package appeng.thirdparty.codechicken.lib.model;
 
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.math.Box;
@@ -45,7 +45,7 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
     public int tintIndex = -1;
     public Direction orientation;
     public boolean diffuseLighting = true;
-    public TextureAtlasSprite sprite;
+    public Sprite sprite;
 
     public Vertex[] vertices = new Vertex[4];
     public boolean full;
@@ -94,7 +94,7 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
     }
 
     @Override
-    public void setTexture(TextureAtlasSprite texture) {
+    public void setTexture(Sprite texture) {
         this.sprite = texture;
     }
 

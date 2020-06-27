@@ -38,7 +38,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.LightType;
-import net.minecraftforge.client.model.data.IModelData;
+
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
 
@@ -248,10 +248,9 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
         return this.dots;
     }
 
-    @Nonnull
     @Override
-    public IModelData getModelData() {
-        // FIXME update trigger
-        return new ModelDataMap.Builder().withInitial(SPLOTCHES, new PaintSplotches(getDots())).build();
+    public Object getRenderAttachmentData() {
+        return new PaintSplotches(getDots());
     }
+
 }

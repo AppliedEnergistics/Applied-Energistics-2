@@ -49,7 +49,7 @@ public interface IMemoryCard {
      * row, left to right. The second 4 the bottom row.
      *
      * @param is           item
-     * @param settingsName unlocalized string that represents the tile entity.
+     * @param settingsName unlocalized string that represents the block entity.
      * @param data         the NBT tag, refer to the normal comment for special
      *                     keys.
      */

@@ -29,13 +29,13 @@ import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.ItemOverrideList;
 import net.minecraft.client.render.model.Material;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
@@ -53,10 +53,10 @@ import appeng.fluids.items.FluidDummyItem;
  * Override List is used to accomplish this.
  */
 public class DummyFluidDispatcherBakedModel extends DelegateBakedModel {
-    private final Function<Material, TextureAtlasSprite> bakedTextureGetter;
+    private final Function<Material, Sprite> bakedTextureGetter;
 
     public DummyFluidDispatcherBakedModel(BakedModel baseModel,
-                                          Function<Material, TextureAtlasSprite> bakedTextureGetter) {
+                                          Function<Material, Sprite> bakedTextureGetter) {
         super(baseModel);
         this.bakedTextureGetter = bakedTextureGetter;
     }
@@ -68,23 +68,23 @@ public class DummyFluidDispatcherBakedModel extends DelegateBakedModel {
     }
 
     @Override
-    public boolean isGui3d() {
-        return this.getBaseModel().isGui3d();
+    public boolean hasDepth() {
+        return this.getBaseModel().hasDepth();
     }
 
     @Override
-    public boolean func_230044_c_() {
-        return getBaseModel().func_230044_c_();
+    public boolean isSideLit() {
+        return getBaseModel().isSideLit();
     }
 
     @Override
-    public boolean isBuiltInRenderer() {
+    public boolean isBuiltin() {
         return false;
     }
 
     @Override
-    public ItemOverrideList getOverrides() {
-        return new ItemOverrideList() {
+    public ModelOverrideList getOverrides() {
+        return new ModelOverrideList() {
             @Override
             public BakedModel getModelWithOverrides(BakedModel originalModel, ItemStack stack, World world,
                                                     LivingEntity entity) {
@@ -102,7 +102,7 @@ public class DummyFluidDispatcherBakedModel extends DelegateBakedModel {
                 FluidAttributes attributes = fluidStack.getFluid().getAttributes();
                 Identifier stillTexture = attributes.getStillTexture(fluidStack);
                 Material stillMaterial = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, stillTexture);
-                TextureAtlasSprite sprite = DummyFluidDispatcherBakedModel.this.bakedTextureGetter.apply(stillMaterial);
+                Sprite sprite = DummyFluidDispatcherBakedModel.this.bakedTextureGetter.apply(stillMaterial);
                 if (sprite == null) {
                     return new DummyFluidBakedModel(ImmutableList.of());
                 }

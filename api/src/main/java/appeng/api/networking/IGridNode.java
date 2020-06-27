@@ -55,7 +55,7 @@ public interface IGridNode {
      * inform the node that your IGridBlock has changed its internal state, and
      * force the node to update.
      *
-     * ALWAYS make sure that your tile entity is in the world, and has its node
+     * ALWAYS make sure that your block entity is in the world, and has its node
      * properly saved to be returned from the host before updating state,
      *
      * If your entity is not in the world, or if you IGridHost returns a different

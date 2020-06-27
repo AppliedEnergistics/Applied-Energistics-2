@@ -47,7 +47,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ILightReader;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.model.data.EmptyModelData;
-import net.minecraftforge.client.model.data.IModelData;
+
 
 import appeng.api.AEApi;
 import appeng.api.util.AEAxisAlignedBB;

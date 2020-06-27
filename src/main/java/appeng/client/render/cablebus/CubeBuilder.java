@@ -27,7 +27,7 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.util.math.Direction;
@@ -40,7 +40,7 @@ public class CubeBuilder {
 
     private final List<BakedQuad> output;
 
-    private final EnumMap<Direction, TextureAtlasSprite> textures = new EnumMap<>(Direction.class);
+    private final EnumMap<Direction, Sprite> textures = new EnumMap<>(Direction.class);
 
     private EnumSet<Direction> drawFaces = EnumSet.allOf(Direction.class);
 
@@ -88,7 +88,7 @@ public class CubeBuilder {
 
     private void putFace(Direction face, float x1, float y1, float z1, float x2, float y2, float z2) {
 
-        TextureAtlasSprite texture = this.textures.get(face);
+        Sprite texture = this.textures.get(face);
 
         BakedQuadBuilder builder = new BakedQuadBuilder(texture);
         builder.setQuadOrientation(face);
@@ -152,8 +152,8 @@ public class CubeBuilder {
         this.output.add(builder.build());
     }
 
-    private UvVector getDefaultUv(Direction face, TextureAtlasSprite texture, float x1, float y1, float z1, float x2,
-            float y2, float z2) {
+    private UvVector getDefaultUv(Direction face, Sprite texture, float x1, float y1, float z1, float x2,
+                                  float y2, float z2) {
 
         UvVector uv = new UvVector();
 
@@ -199,8 +199,8 @@ public class CubeBuilder {
         return uv;
     }
 
-    private UvVector getStandardUv(Direction face, TextureAtlasSprite texture, float x1, float y1, float z1, float x2,
-            float y2, float z2) {
+    private UvVector getStandardUv(Direction face, Sprite texture, float x1, float y1, float z1, float x2,
+                                   float y2, float z2) {
         UvVector uv = new UvVector();
         switch (face) {
             case DOWN:
@@ -394,14 +394,14 @@ public class CubeBuilder {
         }
     }
 
-    public void setTexture(TextureAtlasSprite texture) {
+    public void setTexture(Sprite texture) {
         for (Direction face : Direction.values()) {
             this.textures.put(face, texture);
         }
     }
 
-    public void setTextures(TextureAtlasSprite up, TextureAtlasSprite down, TextureAtlasSprite north,
-            TextureAtlasSprite south, TextureAtlasSprite east, TextureAtlasSprite west) {
+    public void setTextures(Sprite up, Sprite down, Sprite north,
+                            Sprite south, Sprite east, Sprite west) {
         this.textures.put(Direction.UP, up);
         this.textures.put(Direction.DOWN, down);
         this.textures.put(Direction.NORTH, north);
@@ -410,7 +410,7 @@ public class CubeBuilder {
         this.textures.put(Direction.WEST, west);
     }
 
-    public void setTexture(Direction facing, TextureAtlasSprite sprite) {
+    public void setTexture(Direction facing, Sprite sprite) {
         this.textures.put(facing, sprite);
     }
 

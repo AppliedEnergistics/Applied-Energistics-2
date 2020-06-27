@@ -152,11 +152,11 @@ public abstract class MBCalculator {
     public abstract void updateTiles(IAECluster c, World w, WorldCoord min, WorldCoord max);
 
     /**
-     * check if the tile entities are correct for the structure.
+     * check if the block entities are correct for the structure.
      *
-     * @param te to be checked tile entity
+     * @param te to be checked block entity
      *
-     * @return true if tile entity is valid for structure
+     * @return true if block entity is valid for structure
      */
     public abstract boolean isValidTile(BlockEntity te);
 

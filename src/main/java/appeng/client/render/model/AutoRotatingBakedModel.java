@@ -33,11 +33,11 @@ import com.google.common.collect.ImmutableList;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.ItemCameraTransforms;
-import net.minecraft.client.render.model.ItemOverrideList;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.render.model.json.ModelOverrideList;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.util.math.Direction;
@@ -45,7 +45,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.ILightReader;
 import net.minecraftforge.client.model.data.EmptyModelData;
-import net.minecraftforge.client.model.data.IModelData;
+
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.QuadGatheringTransformer;
@@ -114,38 +114,38 @@ public class AutoRotatingBakedModel implements BakedModel {
     }
 
     @Override
-    public boolean isAmbientOcclusion() {
-        return this.parent.isAmbientOcclusion();
+    public boolean useAmbientOcclusion() {
+        return this.parent.useAmbientOcclusion();
     }
 
     @Override
-    public boolean isGui3d() {
-        return this.parent.isGui3d();
+    public boolean hasDepth() {
+        return this.parent.hasDepth();
     }
 
     @Override
-    public boolean func_230044_c_() {
-        return parent.func_230044_c_();
+    public boolean isSideLit() {
+        return parent.isSideLit();
     }
 
     @Override
-    public boolean isBuiltInRenderer() {
-        return this.parent.isBuiltInRenderer();
+    public boolean isBuiltin() {
+        return this.parent.isBuiltin();
     }
 
     @Override
-    public TextureAtlasSprite getParticleTexture() {
-        return this.parent.getParticleTexture();
+    public Sprite getSprite() {
+        return this.parent.getSprite();
     }
 
     @Override
     @Deprecated
-    public ItemCameraTransforms getItemCameraTransforms() {
-        return parent.getItemCameraTransforms();
+    public ModelTransformation getTransformation() {
+        return parent.getTransformation();
     }
 
     @Override
-    public ItemOverrideList getOverrides() {
+    public ModelOverrideList getOverrides() {
         return parent.getOverrides();
     }
 
@@ -291,7 +291,7 @@ public class AutoRotatingBakedModel implements BakedModel {
         }
 
         @Override
-        public void setTexture(TextureAtlasSprite texture) {
+        public void setTexture(Sprite texture) {
             this.parent.setTexture(texture);
         }
     }

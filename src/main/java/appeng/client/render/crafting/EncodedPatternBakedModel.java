@@ -4,13 +4,13 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.json.ModelOverrideList;
+import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.TransformationMatrix;
-import net.minecraft.client.render.model.ItemCameraTransforms;
-import net.minecraft.client.render.model.ItemOverrideList;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -25,12 +25,12 @@ import appeng.items.misc.EncodedPatternItem;
  * holding shift - The itemstack is being rendered in the UI (not on the ground,
  * etc.)
  *
- * We do this by abusing a custom {@link ItemOverrideList} since it will be
+ * We do this by abusing a custom {@link ModelOverrideList} since it will be
  * called each frame with the itemstack that is about to be rendered. We return
  * a custom IBakedModel ({@link ShiftHoldingModelWrapper} if the player is
  * holding down shift from the override list. This custom baked model implements
  * {@link #doesHandlePerspectives()} and returns the crafting result model if
- * the model for {@link ItemCameraTransforms.TransformType#GUI} is requested.
+ * the model for {@link ModelTransformation.TransformType#GUI} is requested.
  */
 public class EncodedPatternBakedModel extends DelegateBakedModel {
 
@@ -42,7 +42,7 @@ public class EncodedPatternBakedModel extends DelegateBakedModel {
     }
 
     @Override
-    public ItemOverrideList getOverrides() {
+    public ModelOverrideList getOverrides() {
         return this.overrides;
     }
 
@@ -71,12 +71,12 @@ public class EncodedPatternBakedModel extends DelegateBakedModel {
         }
 
         @Override
-        public BakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
+        public BakedModel handlePerspective(ModelTransformation.TransformType cameraTransformType, MatrixStack mat) {
             // No need to re-check for shift being held since this model is only handed out
             // in that case
-            if (cameraTransformType == ItemCameraTransforms.TransformType.GUI) {
-                ImmutableMap<ItemCameraTransforms.TransformType, TransformationMatrix> transforms = PerspectiveMapWrapper
-                        .getTransforms(outputModel.getItemCameraTransforms());
+            if (cameraTransformType == ModelTransformation.TransformType.GUI) {
+                ImmutableMap<ModelTransformation.TransformType, TransformationMatrix> transforms = PerspectiveMapWrapper
+                        .getTransforms(outputModel.getTransformation());
                 return PerspectiveMapWrapper.handlePerspective(this.outputModel, transforms, cameraTransformType, mat);
             } else {
                 return getBaseModel().handlePerspective(cameraTransformType, mat);
@@ -86,8 +86,8 @@ public class EncodedPatternBakedModel extends DelegateBakedModel {
         // This determines diffuse lighting in the UI, and since we want to render
         // the outputModel in the UI, we need to use it's setting here
         @Override
-        public boolean func_230044_c_() {
-            return outputModel.func_230044_c_();
+        public boolean isSideLit() {
+            return outputModel.isSideLit();
         }
 
     }
@@ -98,7 +98,7 @@ public class EncodedPatternBakedModel extends DelegateBakedModel {
     }
 
     @Override
-    public BakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
+    public BakedModel handlePerspective(ModelTransformation.TransformType cameraTransformType, MatrixStack mat) {
         return getBaseModel().handlePerspective(cameraTransformType, mat);
     }
 
@@ -108,7 +108,7 @@ public class EncodedPatternBakedModel extends DelegateBakedModel {
      * actually check if shift is being held, and if so, determine the crafting
      * output model.
      */
-    private class CustomOverrideList extends ItemOverrideList {
+    private class CustomOverrideList extends ModelOverrideList {
 
         @Nullable
         @Override

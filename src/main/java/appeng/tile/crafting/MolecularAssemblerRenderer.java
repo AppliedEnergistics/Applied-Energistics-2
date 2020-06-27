@@ -34,7 +34,7 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.ItemCameraTransforms;
+import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -135,7 +135,7 @@ public class MolecularAssemblerRenderer extends BlockEntityRenderer<MolecularAss
             ms.translate(0, -0.2f, 0);
         }
 
-        itemRenderer.renderItem(is, ItemCameraTransforms.TransformType.GROUND, combinedLightIn,
+        itemRenderer.renderItem(is, ModelTransformation.TransformType.GROUND, combinedLightIn,
                 OverlayTexture.NO_OVERLAY, ms, bufferIn);
         ms.pop();
     }

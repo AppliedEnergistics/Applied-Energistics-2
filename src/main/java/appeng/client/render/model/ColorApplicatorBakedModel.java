@@ -8,14 +8,14 @@ import java.util.Random;
 import javax.annotation.Nullable;
 
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.IModelTransform;
-import net.minecraft.client.render.model.ItemCameraTransforms;
-import net.minecraft.client.render.model.ItemOverrideList;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.util.math.Direction;
 import net.minecraftforge.client.model.PerspectiveMapWrapper;
 import net.minecraftforge.client.model.data.EmptyModelData;
@@ -30,8 +30,8 @@ class ColorApplicatorBakedModel implements BakedModel {
 
     private final List<BakedQuad> generalQuads;
 
-    ColorApplicatorBakedModel(BakedModel baseModel, IModelTransform transforms, TextureAtlasSprite texDark,
-                              TextureAtlasSprite texMedium, TextureAtlasSprite texBright) {
+    ColorApplicatorBakedModel(BakedModel baseModel, IModelTransform transforms, Sprite texDark,
+                              Sprite texMedium, Sprite texBright) {
         this.baseModel = baseModel;
         this.transforms = transforms;
 
@@ -43,8 +43,8 @@ class ColorApplicatorBakedModel implements BakedModel {
         }
     }
 
-    private List<BakedQuad> fixQuadTint(Direction facing, TextureAtlasSprite texDark, TextureAtlasSprite texMedium,
-            TextureAtlasSprite texBright) {
+    private List<BakedQuad> fixQuadTint(Direction facing, Sprite texDark, Sprite texMedium,
+                                        Sprite texBright) {
         List<BakedQuad> quads = this.baseModel.getQuads(null, facing, new Random(0), EmptyModelData.INSTANCE);
         List<BakedQuad> result = new ArrayList<>(quads.size());
         for (BakedQuad quad : quads) {
@@ -78,42 +78,42 @@ class ColorApplicatorBakedModel implements BakedModel {
     }
 
     @Override
-    public boolean isAmbientOcclusion() {
-        return this.baseModel.isAmbientOcclusion();
+    public boolean useAmbientOcclusion() {
+        return this.baseModel.useAmbientOcclusion();
     }
 
     @Override
-    public boolean isGui3d() {
-        return this.baseModel.isGui3d();
+    public boolean hasDepth() {
+        return this.baseModel.hasDepth();
     }
 
     @Override
-    public boolean func_230044_c_() {
+    public boolean isSideLit() {
         return false;// TODO
     }
 
     @Override
-    public boolean isBuiltInRenderer() {
-        return this.baseModel.isBuiltInRenderer();
+    public boolean isBuiltin() {
+        return this.baseModel.isBuiltin();
     }
 
     @Override
-    public TextureAtlasSprite getParticleTexture() {
-        return this.baseModel.getParticleTexture();
+    public Sprite getSprite() {
+        return this.baseModel.getSprite();
     }
 
     @Override
-    public ItemCameraTransforms getItemCameraTransforms() {
-        return this.baseModel.getItemCameraTransforms();
+    public ModelTransformation getTransformation() {
+        return this.baseModel.getTransformation();
     }
 
     @Override
-    public ItemOverrideList getOverrides() {
+    public ModelOverrideList getOverrides() {
         return this.baseModel.getOverrides();
     }
 
     @Override
-    public BakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
+    public BakedModel handlePerspective(ModelTransformation.TransformType cameraTransformType, MatrixStack mat) {
         return PerspectiveMapWrapper.handlePerspective(this, transforms, cameraTransformType, mat);
     }
 }

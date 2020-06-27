@@ -2,7 +2,7 @@ package appeng.client.render.cablebus;
 
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.SpriteTexturedParticle;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.world.World;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -16,7 +16,7 @@ public class CableBusBreakingParticle extends SpriteTexturedParticle {
     private final float field_217572_F;
 
     public CableBusBreakingParticle(World world, double x, double y, double z, double speedX, double speedY,
-            double speedZ, TextureAtlasSprite sprite) {
+            double speedZ, Sprite sprite) {
         super(world, x, y, z, speedX, speedY, speedZ);
         this.setSprite(sprite);
         this.particleGravity = 1.0F;
@@ -25,7 +25,7 @@ public class CableBusBreakingParticle extends SpriteTexturedParticle {
         this.field_217572_F = this.rand.nextFloat() * 3.0F;
     }
 
-    public CableBusBreakingParticle(World world, double x, double y, double z, TextureAtlasSprite sprite) {
+    public CableBusBreakingParticle(World world, double x, double y, double z, Sprite sprite) {
         this(world, x, y, z, 0, 0, 0, sprite);
     }
 

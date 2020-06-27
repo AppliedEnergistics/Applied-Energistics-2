@@ -23,7 +23,7 @@ import java.util.function.Function;
 
 import net.minecraft.client.render.model.Material;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.Identifier;
 
 import appeng.core.AppEng;
@@ -49,18 +49,18 @@ public class SmartCableTextures {
     // Textures used to display channels on smart cables. There's two sets of 5
     // textures each, and
     // one of each set are composed together to get even/odd colored channels
-    private final TextureAtlasSprite[] textures;
+    private final Sprite[] textures;
 
-    public SmartCableTextures(Function<Material, TextureAtlasSprite> bakedTextureGetter) {
+    public SmartCableTextures(Function<Material, Sprite> bakedTextureGetter) {
         this.textures = Arrays.stream(SMART_CHANNELS_TEXTURES)//
                 .map(bakedTextureGetter)//
-                .toArray(TextureAtlasSprite[]::new);
+                .toArray(Sprite[]::new);
     }
 
     /**
      * The odd variant is used for displaying channels 1-4 as in use.
      */
-    public TextureAtlasSprite getOddTextureForChannels(int channels) {
+    public Sprite getOddTextureForChannels(int channels) {
         if (channels < 0) {
             return this.textures[0];
         } else if (channels <= 4) {
@@ -73,7 +73,7 @@ public class SmartCableTextures {
     /**
      * The odd variant is used for displaying channels 5-8 as in use.
      */
-    public TextureAtlasSprite getEvenTextureForChannels(int channels) {
+    public Sprite getEvenTextureForChannels(int channels) {
         if (channels < 5) {
             return this.textures[5];
         } else if (channels <= 8) {

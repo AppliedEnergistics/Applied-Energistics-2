@@ -10,11 +10,11 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.IModelTransform;
 import net.minecraft.client.render.model.IUnbakedModel;
-import net.minecraft.client.render.model.ItemOverrideList;
+import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.Material;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.Identifier;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
@@ -27,10 +27,10 @@ public class P2PTunnelFrequencyModel implements IModelGeometry<P2PTunnelFrequenc
 
     @Override
     public BakedModel bake(IModelConfiguration owner, ModelLoader bakery,
-                           Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
-                           ItemOverrideList overrides, Identifier modelLocation) {
+                           Function<Material, Sprite> spriteGetter, IModelTransform modelTransform,
+                           ModelOverrideList overrides, Identifier modelLocation) {
         try {
-            final TextureAtlasSprite texture = spriteGetter.apply(TEXTURE);
+            final Sprite texture = spriteGetter.apply(TEXTURE);
             return new P2PTunnelFrequencyBakedModel(texture);
         } catch (Exception e) {
             throw new RuntimeException(e);

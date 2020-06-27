@@ -18,19 +18,20 @@
 
 package appeng.bootstrap;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-
 import appeng.tile.AEBaseBlockEntity;
 
 /**
- * A callback that allows the rendering of a tile entity to be customized. Sadly
+ * A callback that allows the rendering of a block entity to be customized. Sadly
  * this class is required and no lambdas can be used due to them not being able
  * to be annotated with @OnlyIn(CLIENT).
  */
-public abstract class TileEntityRenderingCustomizer<T extends AEBaseBlockEntity> {
+public interface TileEntityRenderingCustomizer<T extends AEBaseBlockEntity> {
 
-    @Environment(EnvType.CLIENT)
-    public abstract void customize(TileEntityRendering<T> rendering);
+    /**
+     * Declared as a default method because we will carve out the implementations that
+     * override this method on the Server side.
+     */
+    default void customize(TileEntityRendering<T> rendering) {
+    }
 
 }

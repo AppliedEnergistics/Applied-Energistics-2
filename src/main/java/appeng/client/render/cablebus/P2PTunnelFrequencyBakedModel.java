@@ -11,24 +11,24 @@ import com.google.common.cache.CacheBuilder;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.ItemOverrideList;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.render.model.json.ModelOverrideList;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
-import net.minecraftforge.client.model.data.IModelData;
+
 
 import appeng.api.util.AEColor;
 import appeng.util.Platform;
 
 public class P2PTunnelFrequencyBakedModel implements IDynamicBakedModel {
 
-    private final TextureAtlasSprite texture;
+    private final Sprite texture;
 
     private final static Cache<Long, List<BakedQuad>> modelCache = CacheBuilder.newBuilder().maximumSize(100).build();
 
     private static final int[][] QUAD_OFFSETS = new int[][] { { 4, 10, 2 }, { 10, 10, 2 }, { 4, 4, 2 }, { 10, 4, 2 } };
 
-    public P2PTunnelFrequencyBakedModel(final TextureAtlasSprite texture) {
+    public P2PTunnelFrequencyBakedModel(final Sprite texture) {
         this.texture = texture;
     }
 
@@ -86,32 +86,32 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public boolean isAmbientOcclusion() {
+    public boolean useAmbientOcclusion() {
         return false;
     }
 
     @Override
-    public boolean isGui3d() {
+    public boolean hasDepth() {
         return false;
     }
 
     @Override
-    public boolean func_230044_c_() {
+    public boolean isSideLit() {
         return false;// TODO
     }
 
     @Override
-    public boolean isBuiltInRenderer() {
+    public boolean isBuiltin() {
         return true;
     }
 
     @Override
-    public TextureAtlasSprite getParticleTexture() {
+    public Sprite getSprite() {
         return this.texture;
     }
 
     @Override
-    public ItemOverrideList getOverrides() {
-        return ItemOverrideList.EMPTY;
+    public ModelOverrideList getOverrides() {
+        return ModelOverrideList.EMPTY;
     }
 }

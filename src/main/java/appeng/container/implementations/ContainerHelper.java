@@ -55,7 +55,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
     }
 
     /**
-     * Opens a container that is based around a single tile entity. The tile
+     * Opens a container that is based around a single block entity. The tile
      * entity's position is encoded in the packet buffer.
      */
     public C fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf packetBuf) {
@@ -131,7 +131,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
 
         BlockEntity tileEntity = player.world.getBlockEntity(locator.getBlockPos());
 
-        // The tile entity itself can host a terminal (i.e. Chest!)
+        // The block entity itself can host a terminal (i.e. Chest!)
         if (interfaceClass.isInstance(tileEntity)) {
             return interfaceClass.cast(tileEntity);
         }
@@ -141,7 +141,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
         }
 
         if (tileEntity instanceof IPartHost) {
-            // But it could also be a part attached to the tile entity
+            // But it could also be a part attached to the block entity
             IPartHost partHost = (IPartHost) tileEntity;
             IPart part = partHost.getPart(locator.getSide());
             if (part == null) {

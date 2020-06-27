@@ -21,7 +21,7 @@ package appeng.client.render;
 import java.util.Objects;
 
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.ItemOverrideList;
+import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -47,8 +47,8 @@ public class FacadeDispatcherBakedModel extends DelegateBakedModel {
     }
 
     @Override
-    public ItemOverrideList getOverrides() {
-        return new ItemOverrideList() {
+    public ModelOverrideList getOverrides() {
+        return new ModelOverrideList() {
             @Override
             public BakedModel getModelWithOverrides(BakedModel originalModel, ItemStack stack, World world,
                                                     LivingEntity entity) {

@@ -29,7 +29,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ILightReader;
-import net.minecraftforge.client.model.data.IModelData;
+
 import net.minecraftforge.client.model.data.ModelProperty;
 
 import appeng.api.parts.IPartModel;

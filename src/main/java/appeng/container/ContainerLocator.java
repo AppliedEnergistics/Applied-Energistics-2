@@ -41,7 +41,7 @@ import appeng.parts.AEBasePart;
  * can be one of three ways:
  *
  * <ul>
- * <li>A tile entity at a given block position.</li>
+ * <li>A block entity at a given block position.</li>
  * <li>A part (i.e. cable bus part) at the side of a given block position.</li>
  * <li>An item held by the player.</li>
  * </ul>
@@ -76,7 +76,7 @@ public final class ContainerLocator {
 
     public static ContainerLocator forTileEntity(BlockEntity te) {
         if (te.getWorld() == null) {
-            throw new IllegalArgumentException("Cannot open a tile entity that is not in a world");
+            throw new IllegalArgumentException("Cannot open a block entity that is not in a world");
         }
         int dimensionId = te.getWorld().getDimension().getType().getId();
         return new ContainerLocator(Type.BLOCK, -1, dimensionId, te.getPos(), null);
@@ -84,7 +84,7 @@ public final class ContainerLocator {
 
     public static ContainerLocator forTileEntitySide(BlockEntity te, Direction side) {
         if (te.getWorld() == null) {
-            throw new IllegalArgumentException("Cannot open a tile entity that is not in a world");
+            throw new IllegalArgumentException("Cannot open a block entity that is not in a world");
         }
         int dimensionId = te.getWorld().getDimension().getType().getId();
         return new ContainerLocator(Type.PART, -1, dimensionId, te.getPos(), AEPartLocation.fromFacing(side));

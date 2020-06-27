@@ -25,6 +25,7 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.api.util.IOrientable;
 import appeng.block.AEBaseTileBlock;
+import appeng.client.render.model.AEModelData;
 import appeng.core.AELog;
 import appeng.core.features.IStackSrc;
 import appeng.helpers.ICustomNameObject;
@@ -35,6 +36,7 @@ import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
+import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -56,7 +58,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AEBaseBlockEntity extends BlockEntity implements IOrientable, ICommonTile, ICustomNameObject, BlockEntityClientSerializable {
+public class AEBaseBlockEntity extends BlockEntity implements IOrientable, ICommonTile, ICustomNameObject, BlockEntityClientSerializable, RenderAttachmentBlockEntity {
 
     private static final ThreadLocal<WeakReference<AEBaseBlockEntity>> DROP_NO_ITEMS = new ThreadLocal<>();
     private static final Map<Class<? extends BlockEntity>, IStackSrc> ITEM_STACKS = new HashMap<>();
@@ -307,12 +309,12 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
     }
 
     /**
-     * returns the contents of the tile entity, into the world, defaults to dropping
+     * returns the contents of the block entity, into the world, defaults to dropping
      * everything in the inventory.
      *
      * @param w     world
      * @param pos   block position
-     * @param drops drops of tile entity
+     * @param drops drops of block entity
      */
     @Override
     public void getDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
@@ -378,7 +380,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
     }
 
     /**
-     * Checks if this tile entity is remote (we are running on the logical client
+     * Checks if this block entity is remote (we are running on the logical client
      * side).
      */
     public boolean isClient() {
@@ -408,6 +410,11 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
 
     public void setName(final String name) {
         this.customName = name;
+    }
+
+    @Override
+    public Object getRenderAttachmentData() {
+        return new AEModelData(up, forward);
     }
 
 }

@@ -34,7 +34,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
-import net.minecraftforge.client.model.data.IModelData;
+
 import net.minecraftforge.common.util.Constants;
 
 import appeng.api.AEApi;
@@ -331,9 +331,8 @@ public class CraftingBlockEntity extends AENetworkBlockEntity implements IAEMult
         this.previousState = previousState;
     }
 
-    @Nonnull
     @Override
-    public IModelData getModelData() {
+    public Object getRenderAttachmentData() {
         return new CraftingCubeModelData(getUp(), getForward(), getConnections());
     }
 

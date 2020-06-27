@@ -14,14 +14,14 @@ import com.google.common.collect.ImmutableList;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.ItemOverrideList;
+import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.Material;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
-import net.minecraftforge.client.model.data.IModelData;
+
 
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.core.AppEng;
@@ -42,10 +42,10 @@ class PaintSplotchesBakedModel implements IDynamicBakedModel {
     private static final Material TEXTURE_PAINT3 = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
             new Identifier(AppEng.MOD_ID, "block/paint3"));
 
-    private final TextureAtlasSprite[] textures;
+    private final Sprite[] textures;
 
-    PaintSplotchesBakedModel(Function<Material, TextureAtlasSprite> bakedTextureGetter) {
-        this.textures = new TextureAtlasSprite[] { bakedTextureGetter.apply(TEXTURE_PAINT1),
+    PaintSplotchesBakedModel(Function<Material, Sprite> bakedTextureGetter) {
+        this.textures = new Sprite[] { bakedTextureGetter.apply(TEXTURE_PAINT1),
                 bakedTextureGetter.apply(TEXTURE_PAINT2), bakedTextureGetter.apply(TEXTURE_PAINT3) };
     }
 
@@ -96,7 +96,7 @@ class PaintSplotchesBakedModel implements IDynamicBakedModel {
             pos_x = Math.max(buffer, Math.min(1.0f - buffer, pos_x));
             pos_y = Math.max(buffer, Math.min(1.0f - buffer, pos_y));
 
-            TextureAtlasSprite ico = this.textures[s.getSeed() % this.textures.length];
+            Sprite ico = this.textures[s.getSeed() % this.textures.length];
             builder.setTexture(ico);
             builder.setCustomUv(s.getSide().getOpposite(), 0, 0, 16, 16);
 
@@ -142,32 +142,32 @@ class PaintSplotchesBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public boolean isAmbientOcclusion() {
+    public boolean useAmbientOcclusion() {
         return false;
     }
 
     @Override
-    public boolean isGui3d() {
+    public boolean hasDepth() {
         return true;
     }
 
     @Override
-    public boolean isBuiltInRenderer() {
+    public boolean isBuiltin() {
         return false;
     }
 
     @Override
-    public TextureAtlasSprite getParticleTexture() {
+    public Sprite getSprite() {
         return this.textures[0];
     }
 
     @Override
-    public ItemOverrideList getOverrides() {
-        return ItemOverrideList.EMPTY;
+    public ModelOverrideList getOverrides() {
+        return ModelOverrideList.EMPTY;
     }
 
     @Override
-    public boolean func_230044_c_() {
+    public boolean isSideLit() {
         return false;
     }
 

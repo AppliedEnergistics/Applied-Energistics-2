@@ -39,7 +39,7 @@ public interface IUpgradeableHost extends IConfigurableObject, ISegmentedInvento
     /**
      * the tile...
      *
-     * @return tile entity
+     * @return block entity
      */
     BlockEntity getTile();
 }

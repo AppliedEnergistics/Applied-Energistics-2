@@ -20,7 +20,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.data.IModelData;
+
 import net.minecraftforge.fluids.FluidAttributes;
 
 import appeng.api.AEApi;

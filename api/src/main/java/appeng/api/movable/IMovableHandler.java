@@ -33,8 +33,8 @@ public interface IMovableHandler {
      * if you return true from this, your saying you can handle the class, not that
      * single entity, you cannot opt out of single entities.
      *
-     * @param myClass tile entity class
-     * @param tile    tile entity
+     * @param myClass block entity class
+     * @param tile    block entity
      *
      * @return true if it can handle moving
      */

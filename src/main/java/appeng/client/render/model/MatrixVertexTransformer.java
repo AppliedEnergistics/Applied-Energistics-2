@@ -22,7 +22,7 @@ import java.util.List;
 
 import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.Vector4f;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.util.math.Direction;
@@ -75,7 +75,7 @@ final class MatrixVertexTransformer extends QuadGatheringTransformer {
     }
 
     @Override
-    public void setTexture(TextureAtlasSprite texture) {
+    public void setTexture(Sprite texture) {
         this.parent.setTexture(texture);
     }
 

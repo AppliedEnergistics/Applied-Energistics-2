@@ -29,7 +29,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.client.model.data.IModelData;
+
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;

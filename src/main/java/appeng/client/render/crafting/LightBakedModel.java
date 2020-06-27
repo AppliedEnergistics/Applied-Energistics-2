@@ -19,9 +19,9 @@
 package appeng.client.render.crafting;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
-import net.minecraftforge.client.model.data.IModelData;
+
 
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.client.render.cablebus.CubeBuilder;
@@ -33,12 +33,12 @@ import appeng.client.render.cablebus.CubeBuilder;
  */
 class LightBakedModel extends CraftingCubeBakedModel {
 
-    private final TextureAtlasSprite baseTexture;
+    private final Sprite baseTexture;
 
-    private final TextureAtlasSprite lightTexture;
+    private final Sprite lightTexture;
 
-    LightBakedModel(TextureAtlasSprite ringCorner, TextureAtlasSprite ringHor, TextureAtlasSprite ringVer,
-            TextureAtlasSprite baseTexture, TextureAtlasSprite lightTexture) {
+    LightBakedModel(Sprite ringCorner, Sprite ringHor, Sprite ringVer,
+                    Sprite baseTexture, Sprite lightTexture) {
         super(ringCorner, ringHor, ringVer);
         this.baseTexture = baseTexture;
         this.lightTexture = lightTexture;

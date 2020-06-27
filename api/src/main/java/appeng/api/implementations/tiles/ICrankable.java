@@ -33,7 +33,7 @@ import net.minecraft.util.math.Direction;
  *
  * Tiles that access other tiles that implement this method can act as Cranks.
  *
- * This interface must be implemented by a tile entity.
+ * This interface must be implemented by a block entity.
  */
 public interface ICrankable {
 

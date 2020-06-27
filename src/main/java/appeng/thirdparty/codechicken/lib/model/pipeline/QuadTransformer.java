@@ -20,7 +20,7 @@ package appeng.thirdparty.codechicken.lib.model.pipeline;
 
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.math.Direction;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
@@ -104,7 +104,7 @@ public abstract class QuadTransformer implements IVertexConsumer, ISmartVertexCo
     }
 
     @Override
-    public void setTexture(TextureAtlasSprite texture) {
+    public void setTexture(Sprite texture) {
         this.quad.setTexture(texture);
     }
     // @formatter:on

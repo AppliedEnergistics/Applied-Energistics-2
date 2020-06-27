@@ -38,7 +38,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
-import net.minecraftforge.client.model.data.IModelData;
+
 import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.api.AEApi;
@@ -438,9 +438,8 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
         return AEApi.instance().definitions().blocks().drive().maybeStack(1).orElse(ItemStack.EMPTY);
     }
 
-    @Nonnull
     @Override
-    public IModelData getModelData() {
+    public DriveModelData getRenderAttachmentData() {
         return new DriveModelData(getUp(), getForward(), DriveSlotsState.fromChestOrDrive(this));
     }
 

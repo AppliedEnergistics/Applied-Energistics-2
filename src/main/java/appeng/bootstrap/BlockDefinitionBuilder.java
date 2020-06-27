@@ -152,7 +152,7 @@ class BlockDefinitionBuilder implements IBlockBuilder {
         this.bootstrapComponents.forEach(component -> this.factory.addBootstrapComponent(component.apply(block, item)));
 
         if (this.tileEntityDefinition != null) {
-            // Tell the tile entity definition about the block we've registered
+            // Tell the block entity definition about the block we've registered
             this.tileEntityDefinition.addBlock(block);
         }
 

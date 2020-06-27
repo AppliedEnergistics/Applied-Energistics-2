@@ -33,7 +33,7 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.Direction;
-import net.minecraftforge.client.model.data.IModelData;
+
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
 import alexiil.mc.lib.attributes.item.impl.EmptyFixedItemInv;
@@ -298,15 +298,9 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity implements
         return this.corner;
     }
 
-    @Nonnull
     @Override
-    public IModelData getModelData() {
-        // FIXME must trigger model data updates
-
-        return new ModelDataMap.Builder()
-                .withInitial(FORMED_STATE, new QnbFormedState(getAdjacentQuantumBridges(), isCorner(), isPowered()))
-                .build();
-
+    public QnbFormedState getRenderAttachmentData() {
+        return new QnbFormedState(getAdjacentQuantumBridges(), isCorner(), isPowered());
     }
 
 }

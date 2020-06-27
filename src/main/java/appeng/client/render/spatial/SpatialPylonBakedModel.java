@@ -29,11 +29,11 @@ import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.ItemOverrideList;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.render.model.json.ModelOverrideList;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
-import net.minecraftforge.client.model.data.IModelData;
+
 
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.tile.spatial.SpatialPylonBlockEntity;
@@ -43,9 +43,9 @@ import appeng.tile.spatial.SpatialPylonBlockEntity;
  */
 class SpatialPylonBakedModel implements IDynamicBakedModel {
 
-    private final Map<SpatialPylonTextureType, TextureAtlasSprite> textures;
+    private final Map<SpatialPylonTextureType, Sprite> textures;
 
-    SpatialPylonBakedModel(Map<SpatialPylonTextureType, TextureAtlasSprite> textures) {
+    SpatialPylonBakedModel(Map<SpatialPylonTextureType, Sprite> textures) {
         this.textures = ImmutableMap.copyOf(textures);
     }
 
@@ -178,32 +178,32 @@ class SpatialPylonBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public boolean func_230044_c_() {
+    public boolean isSideLit() {
         return false;
     }
 
     @Override
-    public boolean isAmbientOcclusion() {
+    public boolean useAmbientOcclusion() {
         return true;
     }
 
     @Override
-    public boolean isGui3d() {
+    public boolean hasDepth() {
         return false;
     }
 
     @Override
-    public boolean isBuiltInRenderer() {
+    public boolean isBuiltin() {
         return false;
     }
 
     @Override
-    public TextureAtlasSprite getParticleTexture() {
+    public Sprite getSprite() {
         return this.textures.get(SpatialPylonTextureType.DIM);
     }
 
     @Override
-    public ItemOverrideList getOverrides() {
-        return ItemOverrideList.EMPTY;
+    public ModelOverrideList getOverrides() {
+        return ModelOverrideList.EMPTY;
     }
 }

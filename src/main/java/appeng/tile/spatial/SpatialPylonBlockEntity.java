@@ -26,7 +26,7 @@ import javax.annotation.Nonnull;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.Direction;
-import net.minecraftforge.client.model.data.IModelData;
+
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
 
@@ -221,12 +221,9 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
         return this.displayBits;
     }
 
-    @Nonnull
     @Override
-    public IModelData getModelData() {
-        // FIXME: Must force model data update on changes, should potentially be moved
-        // to block state (?)
-        return new ModelDataMap.Builder().withInitial(STATE, getDisplayBits()).build();
+    public Object getRenderAttachmentData() {
+        return getDisplayBits();
     }
 
 }

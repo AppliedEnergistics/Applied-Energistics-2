@@ -24,13 +24,13 @@ import java.util.Random;
 import javax.annotation.Nullable;
 
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.ItemCameraTransforms;
-import net.minecraft.client.render.model.ItemOverrideList;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.render.model.json.ModelOverrideList;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
 
 public abstract class DelegateBakedModel implements BakedModel {
@@ -47,44 +47,44 @@ public abstract class DelegateBakedModel implements BakedModel {
     }
 
     @Override
-    public boolean func_230044_c_() {
-        return baseModel.func_230044_c_();
+    public boolean isSideLit() {
+        return baseModel.isSideLit();
     }
 
     @Override
-    public ItemOverrideList getOverrides() {
+    public ModelOverrideList getOverrides() {
         return baseModel.getOverrides();
     }
 
     @Override
-    public BakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
+    public BakedModel handlePerspective(ModelTransformation.TransformType cameraTransformType, MatrixStack mat) {
         baseModel.handlePerspective(cameraTransformType, mat);
         return this;
     }
 
     @Override
-    public TextureAtlasSprite getParticleTexture() {
-        return this.baseModel.getParticleTexture();
+    public Sprite getSprite() {
+        return this.baseModel.getSprite();
     }
 
     @Override
-    public ItemCameraTransforms getItemCameraTransforms() {
-        return this.baseModel.getItemCameraTransforms();
+    public ModelTransformation getTransformation() {
+        return this.baseModel.getTransformation();
     }
 
     @Override
-    public boolean isAmbientOcclusion() {
-        return this.baseModel.isAmbientOcclusion();
+    public boolean useAmbientOcclusion() {
+        return this.baseModel.useAmbientOcclusion();
     }
 
     @Override
-    public boolean isGui3d() {
-        return this.baseModel.isGui3d();
+    public boolean hasDepth() {
+        return this.baseModel.hasDepth();
     }
 
     @Override
-    public boolean isBuiltInRenderer() {
-        return this.baseModel.isBuiltInRenderer();
+    public boolean isBuiltin() {
+        return this.baseModel.isBuiltin();
     }
 
     public BakedModel getBaseModel() {

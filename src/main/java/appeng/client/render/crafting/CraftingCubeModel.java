@@ -28,11 +28,11 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.IModelTransform;
 import net.minecraft.client.render.model.IUnbakedModel;
-import net.minecraft.client.render.model.ItemOverrideList;
+import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.Material;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.Identifier;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
@@ -76,12 +76,12 @@ class CraftingCubeModel implements IModelGeometry<CraftingCubeModel> {
 
     @Override
     public BakedModel bake(IModelConfiguration owner, ModelLoader bakery,
-                           Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
-                           ItemOverrideList overrides, Identifier modelLocation) {
+                           Function<Material, Sprite> spriteGetter, IModelTransform modelTransform,
+                           ModelOverrideList overrides, Identifier modelLocation) {
         // Retrieve our textures and pass them on to the baked model
-        TextureAtlasSprite ringCorner = spriteGetter.apply(RING_CORNER);
-        TextureAtlasSprite ringSideHor = spriteGetter.apply(RING_SIDE_HOR);
-        TextureAtlasSprite ringSideVer = spriteGetter.apply(RING_SIDE_VER);
+        Sprite ringCorner = spriteGetter.apply(RING_CORNER);
+        Sprite ringSideHor = spriteGetter.apply(RING_SIDE_HOR);
+        Sprite ringSideVer = spriteGetter.apply(RING_SIDE_VER);
 
         switch (this.type) {
             case UNIT:
@@ -102,8 +102,8 @@ class CraftingCubeModel implements IModelGeometry<CraftingCubeModel> {
         }
     }
 
-    private static TextureAtlasSprite getLightTexture(Function<Material, TextureAtlasSprite> textureGetter,
-            AbstractCraftingUnitBlock.CraftingUnitType type) {
+    private static Sprite getLightTexture(Function<Material, Sprite> textureGetter,
+                                          AbstractCraftingUnitBlock.CraftingUnitType type) {
         switch (type) {
             case ACCELERATOR:
                 return textureGetter.apply(ACCELERATOR_LIGHT);

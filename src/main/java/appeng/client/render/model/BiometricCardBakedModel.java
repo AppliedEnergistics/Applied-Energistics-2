@@ -12,13 +12,13 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.json.ModelOverrideList;
+import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.ItemCameraTransforms;
-import net.minecraft.client.render.model.ItemOverrideList;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
@@ -34,7 +34,7 @@ class BiometricCardBakedModel implements BakedModel {
 
     private final BakedModel baseModel;
 
-    private final TextureAtlasSprite texture;
+    private final Sprite texture;
 
     private final int hash;
 
@@ -42,11 +42,11 @@ class BiometricCardBakedModel implements BakedModel {
 
     private final ImmutableList<BakedQuad> generalQuads;
 
-    BiometricCardBakedModel(BakedModel baseModel, TextureAtlasSprite texture) {
+    BiometricCardBakedModel(BakedModel baseModel, Sprite texture) {
         this(baseModel, texture, 0, createCache());
     }
 
-    private BiometricCardBakedModel(BakedModel baseModel, TextureAtlasSprite texture, int hash,
+    private BiometricCardBakedModel(BakedModel baseModel, Sprite texture, int hash,
                                     Cache<Integer, BiometricCardBakedModel> modelCache) {
         this.baseModel = baseModel;
         this.texture = texture;
@@ -110,38 +110,38 @@ class BiometricCardBakedModel implements BakedModel {
     }
 
     @Override
-    public boolean isAmbientOcclusion() {
-        return this.baseModel.isAmbientOcclusion();
+    public boolean useAmbientOcclusion() {
+        return this.baseModel.useAmbientOcclusion();
     }
 
     @Override
-    public boolean isGui3d() {
-        return this.baseModel.isGui3d();
+    public boolean hasDepth() {
+        return this.baseModel.hasDepth();
     }
 
     @Override
-    public boolean func_230044_c_() {
+    public boolean isSideLit() {
         return false;// TODO
     }
 
     @Override
-    public boolean isBuiltInRenderer() {
-        return this.baseModel.isBuiltInRenderer();
+    public boolean isBuiltin() {
+        return this.baseModel.isBuiltin();
     }
 
     @Override
-    public TextureAtlasSprite getParticleTexture() {
-        return this.baseModel.getParticleTexture();
+    public Sprite getSprite() {
+        return this.baseModel.getSprite();
     }
 
     @Override
-    public ItemCameraTransforms getItemCameraTransforms() {
-        return this.baseModel.getItemCameraTransforms();
+    public ModelTransformation getTransformation() {
+        return this.baseModel.getTransformation();
     }
 
     @Override
-    public ItemOverrideList getOverrides() {
-        return new ItemOverrideList() {
+    public ModelOverrideList getOverrides() {
+        return new ModelOverrideList() {
             @Override
             public BakedModel getModelWithOverrides(BakedModel originalModel, ItemStack stack, World world,
                                                     LivingEntity entity) {
@@ -182,7 +182,7 @@ class BiometricCardBakedModel implements BakedModel {
     }
 
     @Override
-    public BakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
+    public BakedModel handlePerspective(ModelTransformation.TransformType cameraTransformType, MatrixStack mat) {
         baseModel.handlePerspective(cameraTransformType, mat);
         return this;
     }

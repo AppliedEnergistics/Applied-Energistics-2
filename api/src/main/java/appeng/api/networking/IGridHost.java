@@ -34,7 +34,7 @@ import appeng.api.util.AEPartLocation;
 
 /**
  * Implement to create a networked {@link BlockEntity} or {@link IPart} must be
- * implemented for a part, or tile entity to become part of a grid.
+ * implemented for a part, or block entity to become part of a grid.
  */
 public interface IGridHost {
 

@@ -34,15 +34,15 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.ItemCameraTransforms;
-import net.minecraft.client.render.model.ItemOverrideList;
+import net.minecraft.client.render.model.json.ModelOverrideList;
+import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.renderer.texture.MissingTextureSprite;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.data.EmptyModelData;
-import net.minecraftforge.client.model.data.IModelData;
+
 
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
@@ -58,10 +58,10 @@ public class CableBusBakedModel implements BakedModel {
 
     private final Map<Identifier, BakedModel> partModels;
 
-    private final TextureAtlasSprite particleTexture;
+    private final Sprite particleTexture;
 
     CableBusBakedModel(CableBuilder cableBuilder, FacadeBuilder facadeBuilder,
-                       Map<Identifier, BakedModel> partModels, TextureAtlasSprite particleTexture) {
+                       Map<Identifier, BakedModel> partModels, Sprite particleTexture) {
         this.cableBuilder = cableBuilder;
         this.facadeBuilder = facadeBuilder;
         this.partModels = partModels;
@@ -267,11 +267,11 @@ public class CableBusBakedModel implements BakedModel {
      * Gets a list of texture sprites appropriate for particles (digging, etc.)
      * given the render state for a cable bus.
      */
-    public List<TextureAtlasSprite> getParticleTextures(CableBusRenderState renderState) {
+    public List<Sprite> getParticleTextures(CableBusRenderState renderState) {
         CableCoreType coreType = CableCoreType.fromCableType(renderState.getCableType());
         AEColor cableColor = renderState.getCableColor();
 
-        List<TextureAtlasSprite> result = new ArrayList<>();
+        List<Sprite> result = new ArrayList<>();
 
         if (coreType != null) {
             result.add(this.cableBuilder.getCoreTexture(coreType, cableColor));
@@ -288,7 +288,7 @@ public class CableBusBakedModel implements BakedModel {
                     throw new IllegalStateException("Trying to use an unregistered part model: " + model);
                 }
 
-                TextureAtlasSprite particleTexture = bakedModel.getParticleTexture();
+                Sprite particleTexture = bakedModel.getSprite();
 
                 // If a part sub-model has no particle texture (indicated by it being the
                 // missing texture),
@@ -302,43 +302,43 @@ public class CableBusBakedModel implements BakedModel {
         return result;
     }
 
-    private boolean isMissingTexture(TextureAtlasSprite particleTexture) {
+    private boolean isMissingTexture(Sprite particleTexture) {
         return particleTexture instanceof MissingTextureSprite;
     }
 
     @Override
-    public boolean isAmbientOcclusion() {
+    public boolean useAmbientOcclusion() {
         return true;
     }
 
     @Override
-    public boolean isGui3d() {
+    public boolean hasDepth() {
         return false;
     }
 
     @Override
-    public boolean func_230044_c_() {
+    public boolean isSideLit() {
         return false;// TODO
     }
 
     @Override
-    public boolean isBuiltInRenderer() {
+    public boolean isBuiltin() {
         return false;
     }
 
     @Override
-    public TextureAtlasSprite getParticleTexture() {
+    public Sprite getSprite() {
         return this.particleTexture;
     }
 
     @Override
-    public ItemCameraTransforms getItemCameraTransforms() {
-        return ItemCameraTransforms.DEFAULT;
+    public ModelTransformation getTransformation() {
+        return ModelTransformation.DEFAULT;
     }
 
     @Override
-    public ItemOverrideList getOverrides() {
-        return ItemOverrideList.EMPTY;
+    public ModelOverrideList getOverrides() {
+        return ModelOverrideList.EMPTY;
     }
 
     public static void clearCache() {

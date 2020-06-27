@@ -32,7 +32,7 @@ import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.item.Item;
 import net.minecraft.util.math.Direction;
-import net.minecraftforge.client.model.data.IModelData;
+
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 
 import appeng.api.definitions.IItems;
@@ -89,7 +89,7 @@ public class DriveBakedModel extends DelegateBakedModel {
     }
 
     @Override
-    public boolean isAmbientOcclusion() {
+    public boolean useAmbientOcclusion() {
         // We have faces inside the chassis that are facing east, but should not receive
         // ambient occlusion from the east-side, but sadly this cannot be fine-tuned on
         // a

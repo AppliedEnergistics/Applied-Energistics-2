@@ -37,7 +37,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.EmptyModelData;
-import net.minecraftforge.client.model.data.IModelData;
+
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -320,7 +320,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiTil
 
     @Nonnull
     @Override
-    public IModelData getModelData() {
+    public CableBusRenderState getRenderAttachmentData() {
         World world = getWorld();
         if (world == null) {
             return EmptyModelData.INSTANCE;

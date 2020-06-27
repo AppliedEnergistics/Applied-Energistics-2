@@ -34,6 +34,8 @@ import com.google.gson.JsonParseException;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.ModelLoader;
+import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
 
 import net.minecraft.util.Identifier;
@@ -48,12 +50,10 @@ import net.minecraft.client.render.model.BlockPart;
 import net.minecraft.client.render.model.BlockPartFace;
 import net.minecraft.client.render.model.IModelTransform;
 import net.minecraft.client.render.model.IUnbakedModel;
-import net.minecraft.client.render.model.ItemCameraTransforms;
 import net.minecraft.client.render.model.ItemOverride;
-import net.minecraft.client.render.model.ItemOverrideList;
+import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.ItemTransformVec3f;
 import net.minecraft.client.render.model.Material;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.JSONUtils;
@@ -87,7 +87,7 @@ public class UVLModelLoader implements IModelLoader<UVLModelLoader.UVLModelWrapp
             .registerTypeAdapter(BlockPartFace.class, new BlockPartFaceOverrideSerializer())
             .registerTypeAdapter(BlockFaceUV.class, new BlockFaceUV.Deserializer())
             .registerTypeAdapter(ItemTransformVec3f.class, new ItemTransformVec3f.Deserializer())
-            .registerTypeAdapter(ItemCameraTransforms.class, new ItemCameraTransforms.Deserializer())
+            .registerTypeAdapter(ModelTransformation.class, new ModelTransformation.Deserializer())
             .registerTypeAdapter(ItemOverride.class, new ItemOverride.Deserializer())
             .registerTypeAdapter(TransformationMatrix.class, new TransformationHelper.Deserializer()).create();
 
@@ -143,15 +143,15 @@ public class UVLModelLoader implements IModelLoader<UVLModelLoader.UVLModelWrapp
 
         @Override
         public BakedModel bake(IModelConfiguration owner, ModelLoader bakery,
-                               Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
-                               ItemOverrideList overrides, Identifier modelLocation) {
-            TextureAtlasSprite particle = spriteGetter.apply(owner.resolveTexture("particle"));
+                               Function<Material, Sprite> spriteGetter, IModelTransform modelTransform,
+                               ModelOverrideList overrides, Identifier modelLocation) {
+            Sprite particle = spriteGetter.apply(owner.resolveTexture("particle"));
 
             IModelBuilder<?> builder = IModelBuilder.of(owner, overrides, particle);
             for (BlockPart blockpart : parent.getElements()) {
                 for (Direction direction : blockpart.mapFaces.keySet()) {
                     BlockPartFace blockpartface = blockpart.mapFaces.get(direction);
-                    TextureAtlasSprite textureatlassprite1 = spriteGetter
+                    Sprite textureatlassprite1 = spriteGetter
                             .apply(owner.resolveTexture(blockpartface.texture));
                     BakedQuad quad = BlockModel.makeBakedQuad(blockpart, blockpartface, textureatlassprite1, direction,
                             modelTransform, modelLocation);
@@ -171,7 +171,7 @@ public class UVLModelLoader implements IModelLoader<UVLModelLoader.UVLModelWrapp
             return builder.build();
         }
 
-        private BakedQuad applyPreBakedLighting(BakedQuad quad, TextureAtlasSprite sprite, float sky, float block) {
+        private BakedQuad applyPreBakedLighting(BakedQuad quad, Sprite sprite, float sky, float block) {
             // FIXME: just piping through the quads and manipulating uv index 2 directly
             // seems way easier than this
             BakedQuadBuilder builder = new BakedQuadBuilder(sprite);

@@ -430,8 +430,8 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
      * Adds the items in the upgrade slots to the drop list.
      *
      * @param w     world
-     * @param pos   pos of tile entity
-     * @param drops drops of tile entity
+     * @param pos   pos of block entity
+     * @param drops drops of block entity
      */
     @Override
     public void getDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {

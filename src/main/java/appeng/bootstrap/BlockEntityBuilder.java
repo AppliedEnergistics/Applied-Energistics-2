@@ -11,10 +11,11 @@ import com.google.common.base.Preconditions;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 import appeng.api.features.AEFeature;
 import appeng.block.AEBaseTileBlock;
@@ -28,7 +29,7 @@ import appeng.tile.AEBaseBlockEntity;
 import appeng.util.Platform;
 
 /**
- * Used to define our tile entities and all of their properties that are
+ * Used to define our block entities and all of their properties that are
  * relevant to registering them.
  *
  * @param <T>
@@ -37,27 +38,26 @@ public class BlockEntityBuilder<T extends AEBaseBlockEntity> {
 
     private final FeatureFactory factory;
 
-    private final String registryName;
+    private final Identifier id;
 
-    // The tile entity class
+    // The block entity class
     private final Class<T> tileClass;
 
     private BlockEntityType<T> type;
 
-    // The factory for creating tile entity objects
+    // The factory for creating block entity objects
     private final Function<BlockEntityType<T>, T> supplier;
 
-    @Environment(EnvType.CLIENT)
     private TileEntityRendering<T> tileEntityRendering;
 
     private final List<Block> blocks = new ArrayList<>();
 
     private final EnumSet<AEFeature> features = EnumSet.noneOf(AEFeature.class);
 
-    public BlockEntityBuilder(FeatureFactory factory, String registryName, Class<T> tileClass,
+    public BlockEntityBuilder(FeatureFactory factory, String id, Class<T> tileClass,
                               Function<BlockEntityType<T>, T> supplier) {
         this.factory = factory;
-        this.registryName = registryName;
+        this.id = AppEng.makeId(id);
         this.tileClass = tileClass;
         this.supplier = supplier;
 
@@ -78,22 +78,22 @@ public class BlockEntityBuilder<T extends AEBaseBlockEntity> {
     }
 
     public BlockEntityBuilder<T> rendering(TileEntityRenderingCustomizer<T> customizer) {
-        DistExecutor.runWhenOn(EnvType.CLIENT, () -> () -> customizer.customize(tileEntityRendering));
+        customizer.customize(tileEntityRendering);
         return this;
     }
 
     @SuppressWarnings("unchecked")
     public TileEntityDefinition build() {
 
-        this.factory.addBootstrapComponent((ITileEntityRegistrationComponent) registry -> {
+        this.factory.addBootstrapComponent((ITileEntityRegistrationComponent) () -> {
             if (blocks.isEmpty()) {
-                throw new IllegalStateException("No blocks make use of this tile entity: " + tileClass);
+                throw new IllegalStateException("No blocks make use of this block entity: " + tileClass);
             }
 
             Supplier<T> factory = () -> supplier.apply(type);
             type = BlockEntityType.Builder.create(factory, blocks.toArray(new Block[0])).build(null);
-            type.setRegistryName(AppEng.MOD_ID, registryName);
-            registry.register(type);
+
+            Registry.register(Registry.BLOCK_ENTITY_TYPE, id, type);
 
             AEBaseBlockEntity.registerTileItem(tileClass, new BlockStackSrc(blocks.get(0), ActivityState.Enabled));
 
@@ -103,9 +103,11 @@ public class BlockEntityBuilder<T extends AEBaseBlockEntity> {
                     baseTileBlock.setTileEntity(tileClass, factory);
                 }
             }
-
         });
-        DistExecutor.runWhenOn(EnvType.CLIENT, () -> this::buildClient);
+
+        if (Platform.hasClientClasses()) {
+            buildClient();
+        }
 
         return new TileEntityDefinition(this::addBlock);
 
@@ -115,7 +117,7 @@ public class BlockEntityBuilder<T extends AEBaseBlockEntity> {
     private void buildClient() {
         this.factory.addBootstrapComponent((IClientSetupComponent) () -> {
             if (tileEntityRendering.tileEntityRenderer != null) {
-                ClientRegistry.bindTileEntityRenderer(type, tileEntityRendering.tileEntityRenderer);
+                BlockEntityRendererRegistry.INSTANCE.register(type, tileEntityRendering.tileEntityRenderer);
             }
         });
     }

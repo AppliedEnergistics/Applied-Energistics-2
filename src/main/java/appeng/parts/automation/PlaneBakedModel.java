@@ -31,11 +31,11 @@ import com.google.common.collect.ImmutableList;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.ItemOverrideList;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.render.model.json.ModelOverrideList;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
-import net.minecraftforge.client.model.data.IModelData;
+
 
 import appeng.client.render.cablebus.CubeBuilder;
 
@@ -46,11 +46,11 @@ public class PlaneBakedModel implements IDynamicBakedModel {
 
     private static final PlaneConnections DEFAULT_PERMUTATION = PlaneConnections.of(false, false, false, false);
 
-    private final TextureAtlasSprite frontTexture;
+    private final Sprite frontTexture;
 
     private final Map<PlaneConnections, List<BakedQuad>> quads;
 
-    PlaneBakedModel(TextureAtlasSprite frontTexture, TextureAtlasSprite sidesTexture, TextureAtlasSprite backTexture) {
+    PlaneBakedModel(Sprite frontTexture, Sprite sidesTexture, Sprite backTexture) {
         this.frontTexture = frontTexture;
 
         quads = new HashMap<>(PlaneConnections.PERMUTATIONS.size());
@@ -91,32 +91,32 @@ public class PlaneBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public boolean isAmbientOcclusion() {
+    public boolean useAmbientOcclusion() {
         return false;
     }
 
     @Override
-    public boolean isGui3d() {
+    public boolean hasDepth() {
         return false;
     }
 
     @Override
-    public boolean func_230044_c_() {
+    public boolean isSideLit() {
         return false;// TODO
     }
 
     @Override
-    public boolean isBuiltInRenderer() {
+    public boolean isBuiltin() {
         return false;
     }
 
     @Override
-    public TextureAtlasSprite getParticleTexture() {
+    public Sprite getSprite() {
         return this.frontTexture;
     }
 
     @Override
-    public ItemOverrideList getOverrides() {
-        return ItemOverrideList.EMPTY;
+    public ModelOverrideList getOverrides() {
+        return ModelOverrideList.EMPTY;
     }
 }

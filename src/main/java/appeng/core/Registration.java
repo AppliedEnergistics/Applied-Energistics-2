@@ -18,6 +18,8 @@
 
 package appeng.core;
 
+import appeng.bootstrap.ModelsReloadCallback;
+import appeng.client.render.model.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.advancement.criterion.Criteria;
@@ -26,6 +28,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.particle.ParticleManager;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.particles.ParticleType;
@@ -75,10 +78,6 @@ import appeng.api.networking.ticking.ITickManager;
 import appeng.bootstrap.components.*;
 import appeng.client.gui.implementations.*;
 import appeng.client.render.effects.*;
-import appeng.client.render.model.BiometricCardModel;
-import appeng.client.render.model.DriveModel;
-import appeng.client.render.model.MemoryCardModel;
-import appeng.client.render.model.SkyCompassModel;
 import appeng.client.render.tesr.InscriberTESR;
 import appeng.client.render.tesr.SkyChestTESR;
 import appeng.container.AEBaseContainer;
@@ -110,6 +109,8 @@ import appeng.tile.crafting.MolecularAssemblerRenderer;
 import appeng.worldgen.ChargedQuartzOreConfig;
 import appeng.worldgen.ChargedQuartzOreFeature;
 import appeng.worldgen.meteorite.MeteoriteStructure;
+
+import java.util.Map;
 
 final class Registration {
 
@@ -593,11 +594,11 @@ final class Registration {
     }
 
     @Environment(EnvType.CLIENT)
-    public void handleModelBake(ModelBakeEvent event) {
+    public void onModelsReloaded(Map<Identifier, BakedModel> loadedModels) {
         // TODO: Do not use the internal API
         final ApiDefinitions definitions = Api.INSTANCE.definitions();
         definitions.getRegistry().getBootstrapComponents(IModelBakeComponent.class)
-                .forEachRemaining(c -> c.onModelBakeEvent(event));
+                .forEachRemaining(c -> c.onModelsReloaded(loadedModels));
     }
 
     @Environment(EnvType.CLIENT)
@@ -608,6 +609,8 @@ final class Registration {
         modEventBus.addListener(this::registerTextures);
         modEventBus.addListener(this::modelRegistryEvent);
         modEventBus.addListener(this::registerItemColors);
-        modEventBus.addListener(this::handleModelBake);
+
+        ModelsReloadCallback.EVENT.register(this::onModelsReloaded);
+
     }
 }

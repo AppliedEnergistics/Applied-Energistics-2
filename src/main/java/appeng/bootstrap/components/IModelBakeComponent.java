@@ -1,11 +1,14 @@
 package appeng.bootstrap.components;
 
-import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.util.Identifier;
 
 import appeng.bootstrap.IBootstrapComponent;
 
+import java.util.Map;
+
 public interface IModelBakeComponent extends IBootstrapComponent {
 
-    void onModelBakeEvent(ModelBakeEvent event);
+    void onModelsReloaded(Map<Identifier, BakedModel> loadedModels);
 
 }

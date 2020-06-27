@@ -23,10 +23,10 @@ import java.util.function.Function;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.model.json.ModelTransformation;
 import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.client.renderer.TransformationMatrix;
-import net.minecraft.client.render.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 
 public class ItemRenderable<T extends BlockEntity> implements Renderable<T> {
@@ -48,7 +48,7 @@ public class ItemRenderable<T extends BlockEntity> implements Renderable<T> {
                 matrixStack.push();
             }
             MinecraftClient.getInstance().getItemRenderer().renderItem(pair.getLeft(),
-                    ItemCameraTransforms.TransformType.GROUND, combinedLight, combinedOverlay, matrixStack, buffers);
+                    ModelTransformation.TransformType.GROUND, combinedLight, combinedOverlay, matrixStack, buffers);
             matrixStack.pop();
         }
     }

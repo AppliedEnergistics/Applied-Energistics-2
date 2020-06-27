@@ -24,7 +24,7 @@ import net.minecraft.client.util.math.MatrixStack;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.render.model.ItemCameraTransforms;
+import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
@@ -92,7 +92,7 @@ public class TesrRenderHelper {
             // effect at least from head-on
             matrixStack.scale(scale, scale, 0.0002f);
 
-            MinecraftClient.getInstance().getItemRenderer().renderItem(itemStack, ItemCameraTransforms.TransformType.GUI,
+            MinecraftClient.getInstance().getItemRenderer().renderItem(itemStack, ModelTransformation.TransformType.GUI,
                     combinedLightIn, OverlayTexture.NO_OVERLAY, matrixStack, buffers);
 
             matrixStack.pop();

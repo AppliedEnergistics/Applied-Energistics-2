@@ -67,7 +67,7 @@ public interface IMovableRegistry {
     void blacklistBlock(Block blk);
 
     /**
-     * White list your tile entity with the registry.
+     * White list your block entity with the registry.
      *
      * If you tile is handled with IMovableHandler or IMovableTile you do not need
      * to white list it.
@@ -75,7 +75,7 @@ public interface IMovableRegistry {
     void whiteListTileEntity(Class<? extends BlockEntity> c);
 
     /**
-     * @param te to be moved tile entity
+     * @param te to be moved block entity
      *
      * @return true if the tile has accepted your request to move it
      */
@@ -84,7 +84,7 @@ public interface IMovableRegistry {
     /**
      * tells the tile you are done moving it.
      *
-     * @param te moved tile entity
+     * @param te moved block entity
      */
     void doneMoving(BlockEntity te);
 
@@ -101,9 +101,9 @@ public interface IMovableRegistry {
      *
      * only valid after askToMove(...) = true
      *
-     * @param te tile entity
+     * @param te block entity
      *
-     * @return moving handler of tile entity
+     * @return moving handler of block entity
      */
     IMovableHandler getHandler(BlockEntity te);
 

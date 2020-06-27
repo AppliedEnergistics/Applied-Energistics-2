@@ -33,10 +33,10 @@ import com.google.common.base.Strings;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.ItemOverrideList;
+import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.Material;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.util.Identifier;
@@ -47,7 +47,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.ILightReader;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
-import net.minecraftforge.client.model.data.IModelData;
+
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
@@ -83,18 +83,18 @@ class GlassBakedModel implements IDynamicBakedModel {
                 .map(rl -> new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, rl)).toArray(Material[]::new);
     }
 
-    private final TextureAtlasSprite[] glassTextures;
+    private final Sprite[] glassTextures;
 
-    private final TextureAtlasSprite[] frameTextures;
+    private final Sprite[] frameTextures;
 
-    public GlassBakedModel(Function<Material, TextureAtlasSprite> bakedTextureGetter) {
-        this.glassTextures = new TextureAtlasSprite[] { bakedTextureGetter.apply(TEXTURE_A),
+    public GlassBakedModel(Function<Material, Sprite> bakedTextureGetter) {
+        this.glassTextures = new Sprite[] { bakedTextureGetter.apply(TEXTURE_A),
                 bakedTextureGetter.apply(TEXTURE_B), bakedTextureGetter.apply(TEXTURE_C),
                 bakedTextureGetter.apply(TEXTURE_D) };
 
         // The first frame texture would be empty, so we simply leave it set to null
         // here
-        this.frameTextures = new TextureAtlasSprite[16];
+        this.frameTextures = new Sprite[16];
         for (int i = 0; i < TEXTURES_FRAME.length; i++) {
             this.frameTextures[1 + i] = bakedTextureGetter.apply(TEXTURES_FRAME[i]);
         }
@@ -128,7 +128,7 @@ class GlassBakedModel implements IDynamicBakedModel {
             v /= 2;
         }
 
-        final TextureAtlasSprite glassTexture = this.glassTextures[texIdx];
+        final Sprite glassTexture = this.glassTextures[texIdx];
 
         // Render the glass side
         final List<BakedQuad> quads = new ArrayList<>(5); // At most 5
@@ -147,7 +147,7 @@ class GlassBakedModel implements IDynamicBakedModel {
          * indicate this.
          */
         final int edgeBitmask = makeBitmask(glassState, side);
-        final TextureAtlasSprite sideSprite = this.frameTextures[edgeBitmask];
+        final Sprite sideSprite = this.frameTextures[edgeBitmask];
 
         if (sideSprite != null) {
             quads.add(this.createQuad(side, corners, sideSprite, 0, 0));
@@ -157,7 +157,7 @@ class GlassBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public boolean func_230044_c_() {
+    public boolean isSideLit() {
         // TODO: Forge: Auto-generated method stub
         return false;
     }
@@ -204,13 +204,13 @@ class GlassBakedModel implements IDynamicBakedModel {
         return bitmask;
     }
 
-    private BakedQuad createQuad(Direction side, List<Vec3d> corners, TextureAtlasSprite sprite, float uOffset,
-            float vOffset) {
+    private BakedQuad createQuad(Direction side, List<Vec3d> corners, Sprite sprite, float uOffset,
+                                 float vOffset) {
         return this.createQuad(side, corners.get(0), corners.get(1), corners.get(2), corners.get(3), sprite, uOffset,
                 vOffset);
     }
 
-    private BakedQuad createQuad(Direction side, Vec3d c1, Vec3d c2, Vec3d c3, Vec3d c4, TextureAtlasSprite sprite,
+    private BakedQuad createQuad(Direction side, Vec3d c1, Vec3d c2, Vec3d c3, Vec3d c4, Sprite sprite,
             float uOffset, float vOffset) {
         Vec3d normal = new Vec3d(side.getDirectionVec());
 
@@ -236,7 +236,7 @@ class GlassBakedModel implements IDynamicBakedModel {
      * the vertex elements had been declared in the vertex format.
      */
     private void putVertex(BakedQuadBuilder builder, Vec3d normal, double x, double y, double z,
-            TextureAtlasSprite sprite, float u, float v) {
+                           Sprite sprite, float u, float v) {
         VertexFormat vertexFormat = builder.getVertexFormat();
         for (int e = 0; e < vertexFormat.getElements().size(); e++) {
             VertexFormatElement el = vertexFormat.getElements().get(e);
@@ -266,27 +266,27 @@ class GlassBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public ItemOverrideList getOverrides() {
-        return ItemOverrideList.EMPTY;
+    public ModelOverrideList getOverrides() {
+        return ModelOverrideList.EMPTY;
     }
 
     @Override
-    public boolean isAmbientOcclusion() {
+    public boolean useAmbientOcclusion() {
         return false;
     }
 
     @Override
-    public boolean isGui3d() {
+    public boolean hasDepth() {
         return false;
     }
 
     @Override
-    public boolean isBuiltInRenderer() {
+    public boolean isBuiltin() {
         return false;
     }
 
     @Override
-    public TextureAtlasSprite getParticleTexture() {
+    public Sprite getSprite() {
         return this.frameTextures[this.frameTextures.length - 1];
     }
 

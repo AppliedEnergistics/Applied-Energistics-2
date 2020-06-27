@@ -25,7 +25,8 @@ import java.util.function.Function;
 import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.client.render.model.*;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.render.model.json.ModelOverrideList;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.Identifier;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
@@ -44,8 +45,8 @@ public class FacadeItemModel implements IModelGeometry<FacadeItemModel> {
 
     @Override
     public BakedModel bake(IModelConfiguration owner, ModelLoader bakery,
-                           Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
-                           ItemOverrideList overrides, Identifier modelLocation) {
+                           Function<Material, Sprite> spriteGetter, IModelTransform modelTransform,
+                           ModelOverrideList overrides, Identifier modelLocation) {
         BakedModel bakedBaseModel = bakery.getBakedModel(MODEL_BASE, modelTransform, spriteGetter);
         FacadeBuilder facadeBuilder = new FacadeBuilder();
 

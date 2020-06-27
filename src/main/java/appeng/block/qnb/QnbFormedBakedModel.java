@@ -16,14 +16,14 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.ItemOverrideList;
+import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.Material;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
-import net.minecraftforge.client.model.data.IModelData;
+
 
 import appeng.api.AEApi;
 import appeng.client.render.cablebus.CubeBuilder;
@@ -58,14 +58,14 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
 
     private final Block linkBlock;
 
-    private final TextureAtlasSprite linkTexture;
-    private final TextureAtlasSprite ringTexture;
-    private final TextureAtlasSprite glassCableTexture;
-    private final TextureAtlasSprite coveredCableTexture;
-    private final TextureAtlasSprite lightTexture;
-    private final TextureAtlasSprite lightCornerTexture;
+    private final Sprite linkTexture;
+    private final Sprite ringTexture;
+    private final Sprite glassCableTexture;
+    private final Sprite coveredCableTexture;
+    private final Sprite lightTexture;
+    private final Sprite lightCornerTexture;
 
-    public QnbFormedBakedModel(BakedModel baseModel, Function<Material, TextureAtlasSprite> bakedTextureGetter) {
+    public QnbFormedBakedModel(BakedModel baseModel, Function<Material, Sprite> bakedTextureGetter) {
         this.baseModel = baseModel;
         this.linkTexture = bakedTextureGetter.apply(TEXTURE_LINK);
         this.ringTexture = bakedTextureGetter.apply(TEXTURE_RING);
@@ -161,8 +161,8 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
         return builder.getOutput();
     }
 
-    private void renderCableAt(CubeBuilder builder, float thickness, TextureAtlasSprite texture, float pull,
-            Set<Direction> connections) {
+    private void renderCableAt(CubeBuilder builder, float thickness, Sprite texture, float pull,
+                               Set<Direction> connections) {
         builder.setTexture(texture);
 
         if (connections.contains(Direction.WEST)) {
@@ -191,32 +191,32 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public boolean isAmbientOcclusion() {
-        return this.baseModel.isAmbientOcclusion();
+    public boolean useAmbientOcclusion() {
+        return this.baseModel.useAmbientOcclusion();
     }
 
     @Override
-    public boolean isGui3d() {
+    public boolean hasDepth() {
         return true;
     }
 
     @Override
-    public boolean func_230044_c_() {
+    public boolean isSideLit() {
         return false;
     }
 
     @Override
-    public boolean isBuiltInRenderer() {
+    public boolean isBuiltin() {
         return false;
     }
 
     @Override
-    public TextureAtlasSprite getParticleTexture() {
-        return this.baseModel.getParticleTexture();
+    public Sprite getSprite() {
+        return this.baseModel.getSprite();
     }
 
     @Override
-    public ItemOverrideList getOverrides() {
+    public ModelOverrideList getOverrides() {
         return this.baseModel.getOverrides();
     }
 

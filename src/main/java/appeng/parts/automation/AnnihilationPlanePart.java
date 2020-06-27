@@ -44,7 +44,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraftforge.client.model.data.IModelData;
+
 import net.minecraftforge.common.util.FakePlayerFactory;
 
 import appeng.api.AEApi;
