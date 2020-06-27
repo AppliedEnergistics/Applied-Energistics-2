@@ -20,16 +20,13 @@ package appeng.core;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.block.Block;
+import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.util.Identifier;
@@ -94,7 +91,6 @@ import appeng.core.features.registries.cell.BasicItemCellGuiHandler;
 import appeng.core.features.registries.cell.CreativeCellHandler;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.core.stats.AeStats;
-import appeng.core.stats.PartItemPredicate;
 import appeng.fluids.client.gui.*;
 import appeng.fluids.container.*;
 import appeng.fluids.registries.BasicFluidCellGuiHandler;
@@ -109,7 +105,7 @@ import appeng.recipes.handlers.InscriberRecipeSerializer;
 import appeng.server.AECommand;
 import appeng.spatial.StorageCellBiome;
 import appeng.spatial.StorageCellModDimension;
-import appeng.tile.AEBaseTileEntity;
+import appeng.tile.AEBaseBlockEntity;
 import appeng.tile.crafting.MolecularAssemblerRenderer;
 import appeng.worldgen.ChargedQuartzOreConfig;
 import appeng.worldgen.ChargedQuartzOreFeature;
@@ -119,7 +115,7 @@ final class Registration {
 
     public Registration() {
         AeStats.register();
-        advancementTriggers = new AdvancementTriggers(CriteriaTriggers::register);
+        advancementTriggers = new AdvancementTriggers(Criteria::register);
     }
 
     AdvancementTriggers advancementTriggers;
@@ -145,8 +141,6 @@ final class Registration {
         registries.cell().addCellGuiHandler(new BasicFluidCellGuiHandler());
 
         registries.matterCannon().registerAmmoItem(api.definitions().materials().matterBall().item(), 32);
-
-        PartItemPredicate.register();
     }
 
     @Environment(EnvType.CLIENT)
@@ -169,24 +163,6 @@ final class Registration {
         PartModels partModels = (PartModels) Api.INSTANCE.registries().partModels();
         partModels.getModels().forEach(ModelLoader::addSpecialModel);
         partModels.setInitialized(true);
-    }
-
-    public void registerBlocks(RegistryEvent.Register<Block> event) {
-        final IForgeRegistry<Block> registry = event.getRegistry();
-        // TODO: Do not use the internal API
-        final ApiDefinitions definitions = Api.INSTANCE.definitions();
-        final EnvType dist = FMLEnvironment.dist;
-        definitions.getRegistry().getBootstrapComponents(IBlockRegistrationComponent.class)
-                .forEachRemaining(b -> b.blockRegistration(dist, registry));
-    }
-
-    public void registerItems(RegistryEvent.Register<Item> event) {
-        final IForgeRegistry<Item> registry = event.getRegistry();
-        // TODO: Do not use the internal API
-        final ApiDefinitions definitions = Api.INSTANCE.definitions();
-        final EnvType dist = FMLEnvironment.dist;
-        definitions.getRegistry().getBootstrapComponents(IItemRegistrationComponent.class)
-                .forEachRemaining(b -> b.itemRegistration(dist, registry));
     }
 
     public void registerTileEntities(RegistryEvent.Register<BlockEntityType<?>> event) {
@@ -344,14 +320,6 @@ final class Registration {
                 DisassembleRecipe.SERIALIZER);
     }
 
-    public void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
-        final IForgeRegistry<EntityType<?>> registry = event.getRegistry();
-        // TODO: Do not use the internal API
-        final ApiDefinitions definitions = Api.INSTANCE.definitions();
-        definitions.getRegistry().getBootstrapComponents(IEntityRegistrationComponent.class)
-                .forEachRemaining(b -> b.entityRegistration(registry));
-    }
-
     public void registerParticleTypes(RegistryEvent.Register<ParticleType<?>> event) {
         final IForgeRegistry<ParticleType<?>> registry = event.getRegistry();
         registry.register(ParticleTypes.CHARGED_ORE);
@@ -365,7 +333,7 @@ final class Registration {
 
     @Environment(EnvType.CLIENT)
     public void registerParticleFactories(ParticleFactoryRegisterEvent event) {
-        ParticleManager particles = Minecraft.getInstance().particles;
+        ParticleManager particles = MinecraftClient.getInstance().particles;
         particles.registerFactory(ParticleTypes.CHARGED_ORE, ChargedOreFX.Factory::new);
         particles.registerFactory(ParticleTypes.CRAFTING, CraftingFx.Factory::new);
         particles.registerFactory(ParticleTypes.ENERGY, EnergyFx.Factory::new);
@@ -524,7 +492,7 @@ final class Registration {
         /*
          * Whitelist AE2
          */
-        mr.whiteListTileEntity(AEBaseTileEntity.class);
+        mr.whiteListTileEntity(AEBaseBlockEntity.class);
 
         /*
          * world gen

@@ -26,16 +26,16 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.CraftingCPUContainer;
-import appeng.tile.crafting.CraftingTileEntity;
+import appeng.tile.crafting.CraftingBlockEntity;
 
-public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> extends AEBaseTileBlock<T> {
+public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> extends AEBaseTileBlock<T> {
     public static final BooleanProperty FORMED = BooleanProperty.create("formed");
     public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
@@ -57,33 +57,33 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> ex
     @Override
     public void neighborChanged(final BlockState state, final World worldIn, final BlockPos pos, final Block blockIn,
             final BlockPos fromPos, boolean isMoving) {
-        final CraftingTileEntity cp = this.getTileEntity(worldIn, pos);
+        final CraftingBlockEntity cp = this.getBlockEntity(worldIn, pos);
         if (cp != null) {
             cp.updateMultiBlock();
         }
     }
 
     @Override
-    public void onReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onStateReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
         if (newState.getBlock() == state.getBlock()) {
             return; // Just a block state change
         }
 
-        final CraftingTileEntity cp = this.getTileEntity(w, pos);
+        final CraftingBlockEntity cp = this.getBlockEntity(w, pos);
         if (cp != null) {
             cp.breakCluster();
         }
 
-        super.onReplaced(state, w, pos, newState, isMoving);
+        super.onStateReplaced(state, w, pos, newState, isMoving);
     }
 
     @Override
-    public ActionResult onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand,
-            BlockRayTraceResult hit) {
-        final CraftingTileEntity tg = this.getTileEntity(w, pos);
+    public ActionResult onUse(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand,
+                              BlockHitResult hit) {
+        final CraftingBlockEntity tg = this.getBlockEntity(w, pos);
 
-        if (tg != null && !p.isCrouching() && tg.isFormed() && tg.isActive()) {
-            if (!w.isRemote()) {
+        if (tg != null && !p.isInSneakingPose() && tg.isFormed() && tg.isActive()) {
+            if (!w.isClient()) {
                 ContainerOpener.openContainer(CraftingCPUContainer.TYPE, p,
                         ContainerLocator.forTileEntitySide(tg, hit.getFace()));
             }
@@ -91,7 +91,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> ex
             return ActionResult.SUCCESS;
         }
 
-        return super.onBlockActivated(state, w, pos, p, hand, hit);
+        return super.onUse(state, w, pos, p, hand, hit);
     }
 
     public enum CraftingUnitType {

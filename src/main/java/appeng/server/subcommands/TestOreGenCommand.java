@@ -30,11 +30,11 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.dimension.DimensionType;
@@ -130,7 +130,7 @@ public class TestOreGenCommand implements ISubCommand {
     }
 
     private static void sendLine(ServerCommandSource sender, String text, Object... args) {
-        sender.sendFeedback(new StringTextComponent(String.format(Locale.ROOT, text, args)), true);
+        sender.sendFeedback(new LiteralText(String.format(Locale.ROOT, text, args)), true);
     }
 
     private static class Stats {

@@ -26,18 +26,18 @@ import net.minecraft.network.PacketByteBuf;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.slot.NormalSlot;
-import appeng.tile.storage.SkyChestTileEntity;
+import appeng.tile.storage.SkyChestBlockEntity;
 
 public class SkyChestContainer extends AEBaseContainer {
 
     public static ContainerType<SkyChestContainer> TYPE;
 
-    private static final ContainerHelper<SkyChestContainer, SkyChestTileEntity> helper = new ContainerHelper<>(
-            SkyChestContainer::new, SkyChestTileEntity.class);
+    private static final ContainerHelper<SkyChestContainer, SkyChestBlockEntity> helper = new ContainerHelper<>(
+            SkyChestContainer::new, SkyChestBlockEntity.class);
 
-    private final SkyChestTileEntity chest;
+    private final SkyChestBlockEntity chest;
 
-    public SkyChestContainer(int id, final PlayerInventory ip, final SkyChestTileEntity chest) {
+    public SkyChestContainer(int id, final PlayerInventory ip, final SkyChestBlockEntity chest) {
         super(TYPE, id, ip, chest, null);
         this.chest = chest;
 

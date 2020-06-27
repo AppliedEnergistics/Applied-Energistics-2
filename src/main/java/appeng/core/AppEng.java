@@ -27,7 +27,7 @@ import com.google.common.base.Stopwatch;
 
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.container.ContainerType;
@@ -166,11 +166,11 @@ public final class AppEng {
 
         RenderingRegistry.registerEntityRenderingHandler(TinyTNTPrimedEntity.TYPE, TinyTNTPrimedRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(SingularityEntity.TYPE,
-                m -> new ItemRenderer(m, Minecraft.getInstance().getItemRenderer()));
+                m -> new ItemRenderer(m, MinecraftClient.getInstance().getItemRenderer()));
         RenderingRegistry.registerEntityRenderingHandler(GrowingCrystalEntity.TYPE,
-                m -> new ItemRenderer(m, Minecraft.getInstance().getItemRenderer()));
+                m -> new ItemRenderer(m, MinecraftClient.getInstance().getItemRenderer()));
         RenderingRegistry.registerEntityRenderingHandler(ChargedQuartzEntity.TYPE,
-                m -> new ItemRenderer(m, Minecraft.getInstance().getItemRenderer()));
+                m -> new ItemRenderer(m, MinecraftClient.getInstance().getItemRenderer()));
 
         // TODO: Do not use the internal API
         final ApiDefinitions definitions = Api.INSTANCE.definitions();
@@ -294,6 +294,10 @@ public final class AppEng {
     private void serverStopped(final FMLServerStoppedEvent event) {
         WorldData.instance().onServerStoppped();
         TickHandler.INSTANCE.shutdown();
+    }
+
+    public static Identifier makeId(String id) {
+        return new Identifier(MOD_ID, id);
     }
 
 }

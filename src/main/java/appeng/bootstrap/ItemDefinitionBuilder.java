@@ -27,7 +27,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import net.minecraft.block.DispenserBlock;
-import net.minecraft.dispenser.IDispenseItemBehavior;
+import net.minecraft.block.dispenser.DispenserBehavior;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.fabricmc.api.EnvType;
@@ -35,37 +35,38 @@ import net.fabricmc.api.Environment;
 
 import appeng.api.features.AEFeature;
 import appeng.bootstrap.components.IInitComponent;
-import appeng.bootstrap.components.IItemRegistrationComponent;
 import appeng.core.AEItemGroup;
 import appeng.core.AppEng;
 import appeng.core.CreativeTab;
 import appeng.core.features.ItemDefinition;
 import appeng.util.Platform;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 class ItemDefinitionBuilder implements IItemBuilder {
 
     private final FeatureFactory factory;
 
-    private final String registryName;
+    private final Identifier id;
 
-    private final Function<Item.Properties, Item> itemFactory;
+    private final Function<Item.Settings, Item> itemFactory;
 
     private final EnumSet<AEFeature> features = EnumSet.noneOf(AEFeature.class);
 
     private final List<Function<Item, IBootstrapComponent>> boostrapComponents = new ArrayList<>();
 
-    private final Item.Properties props = new Item.Properties();
+    private final Item.Settings props = new Item.Settings();
 
-    private Supplier<IDispenseItemBehavior> dispenserBehaviorSupplier;
+    private Supplier<DispenserBehavior> dispenserBehaviorSupplier;
 
     @Environment(EnvType.CLIENT)
     private ItemRendering itemRendering;
 
     private ItemGroup itemGroup = CreativeTab.INSTANCE;
 
-    ItemDefinitionBuilder(FeatureFactory factory, String registryName, Function<Item.Properties, Item> itemFactory) {
+    ItemDefinitionBuilder(FeatureFactory factory, String id, Function<Item.Settings, Item> itemFactory) {
         this.factory = factory;
-        this.registryName = registryName;
+        this.id = AppEng.makeId(id);
         this.itemFactory = itemFactory;
         if (Platform.hasClientClasses()) {
             this.itemRendering = new ItemRendering();
@@ -98,7 +99,7 @@ class ItemDefinitionBuilder implements IItemBuilder {
     }
 
     @Override
-    public IItemBuilder props(Consumer<Item.Properties> consumer) {
+    public IItemBuilder props(Consumer<Item.Settings> consumer) {
         consumer.accept(props);
         return this;
     }
@@ -113,7 +114,7 @@ class ItemDefinitionBuilder implements IItemBuilder {
     }
 
     @Override
-    public IItemBuilder dispenserBehavior(Supplier<IDispenseItemBehavior> behavior) {
+    public IItemBuilder dispenserBehavior(Supplier<DispenserBehavior> behavior) {
         this.dispenserBehaviorSupplier = behavior;
         return this;
     }
@@ -128,9 +129,8 @@ class ItemDefinitionBuilder implements IItemBuilder {
         props.group(itemGroup);
 
         Item item = this.itemFactory.apply(props);
-        item.setRegistryName(AppEng.MOD_ID, this.registryName);
 
-        ItemDefinition definition = new ItemDefinition(this.registryName, item, features);
+        ItemDefinition definition = new ItemDefinition(id.getPath(), item, features);
 
         // Register all extra handlers
         this.boostrapComponents.forEach(component -> this.factory.addBootstrapComponent(component.apply(item)));
@@ -138,12 +138,12 @@ class ItemDefinitionBuilder implements IItemBuilder {
         // Register custom dispenser behavior if requested
         if (this.dispenserBehaviorSupplier != null) {
             this.factory.addBootstrapComponent((IInitComponent) () -> {
-                IDispenseItemBehavior behavior = this.dispenserBehaviorSupplier.get();
-                DispenserBlock.registerDispenseBehavior(item, behavior);
+                DispenserBehavior behavior = this.dispenserBehaviorSupplier.get();
+                DispenserBlock.registerBehavior(item, behavior);
             });
         }
 
-        this.factory.addBootstrapComponent((IItemRegistrationComponent) (side, reg) -> reg.register(item));
+        Registry.register(Registry.ITEM, id, item);
 
         if (Platform.hasClientClasses()) {
             this.itemRendering.apply(this.factory, item);

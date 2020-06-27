@@ -26,7 +26,7 @@ import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.fabricmc.api.EnvType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
@@ -42,7 +42,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.hit.HitResult;
@@ -77,7 +77,7 @@ import appeng.items.contents.CellUpgrades;
 import appeng.items.misc.PaintBallItem;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.PlayerSource;
-import appeng.tile.misc.PaintSplotchesTileEntity;
+import appeng.tile.misc.PaintSplotchesBlockEntity;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
 
@@ -88,15 +88,15 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
      */
     private static final int ENERGY_PER_SHOT = 1600;
 
-    public MatterCannonItem(Item.Properties props) {
+    public MatterCannonItem(Item.Settings props) {
         super(AEConfig.instance().getMatterCannonBattery(), props);
     }
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void addInformation(final ItemStack stack, final World world, final List<Text> lines,
-            final ITooltipFlag advancedTooltips) {
-        super.addInformation(stack, world, lines, advancedTooltips);
+    public void appendTooltip(final ItemStack stack, final World world, final List<Text> lines,
+            final TooltipContext advancedTooltips) {
+        super.appendTooltip(stack, world, lines, advancedTooltips);
 
         final ICellInventoryHandler<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory(stack,
                 null, AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
@@ -106,16 +106,16 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
 
     @Override
     public TypedActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final @Nullable Hand hand) {
-        if (this.getAECurrentPower(p.getHeldItem(hand)) > ENERGY_PER_SHOT) {
+        if (this.getAECurrentPower(p.getStackInHand(hand)) > ENERGY_PER_SHOT) {
             int shots = 1;
 
-            final CellUpgrades cu = (CellUpgrades) this.getUpgradesInventory(p.getHeldItem(hand));
+            final CellUpgrades cu = (CellUpgrades) this.getUpgradesInventory(p.getStackInHand(hand));
             if (cu != null) {
                 shots += cu.getInstalledUpgrades(Upgrades.SPEED);
             }
 
             final ICellInventoryHandler<IAEItemStack> inv = AEApi.instance().registries().cell().getCellInventory(
-                    p.getHeldItem(hand), null, AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                    p.getStackInHand(hand), null, AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
             if (inv != null) {
                 final IItemList<IAEItemStack> itemList = inv.getAvailableItems(
                         AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList());
@@ -124,21 +124,21 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                     shots = Math.min(shots, (int) req.getStackSize());
                     for (int sh = 0; sh < shots; sh++) {
                         IAEItemStack aeAmmo = req.copy();
-                        this.extractAEPower(p.getHeldItem(hand), ENERGY_PER_SHOT, Actionable.MODULATE);
+                        this.extractAEPower(p.getStackInHand(hand), ENERGY_PER_SHOT, Actionable.MODULATE);
 
                         if (Platform.isClient()) {
-                            return new TypedActionResult<>(ActionResult.SUCCESS, p.getHeldItem(hand));
+                            return new TypedActionResult<>(ActionResult.SUCCESS, p.getStackInHand(hand));
                         }
 
                         aeAmmo.setStackSize(1);
                         final ItemStack ammo = aeAmmo.createItemStack();
                         if (ammo.isEmpty()) {
-                            return new TypedActionResult<>(ActionResult.SUCCESS, p.getHeldItem(hand));
+                            return new TypedActionResult<>(ActionResult.SUCCESS, p.getStackInHand(hand));
                         }
 
                         aeAmmo = inv.extractItems(aeAmmo, Actionable.MODULATE, new PlayerSource(p, null));
                         if (aeAmmo == null) {
-                            return new TypedActionResult<>(ActionResult.SUCCESS, p.getHeldItem(hand));
+                            return new TypedActionResult<>(ActionResult.SUCCESS, p.getStackInHand(hand));
                         }
 
                         final LookDirection dir = Platform.getPlayerRay(p, 32);
@@ -158,7 +158,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                             if (type.getItem() instanceof PaintBallItem) {
                                 this.shootPaintBalls(type, w, p, rayFrom, rayTo, direction, d0, d1, d2);
                             }
-                            return new TypedActionResult<>(ActionResult.SUCCESS, p.getHeldItem(hand));
+                            return new TypedActionResult<>(ActionResult.SUCCESS, p.getStackInHand(hand));
                         } else {
                             this.standardAmmo(penetration, w, p, rayFrom, rayTo, direction, d0, d1, d2);
                         }
@@ -167,11 +167,11 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                     if (Platform.isServer()) {
                         p.sendMessage(PlayerMessages.AmmoDepleted.get());
                     }
-                    return new TypedActionResult<>(ActionResult.SUCCESS, p.getHeldItem(hand));
+                    return new TypedActionResult<>(ActionResult.SUCCESS, p.getStackInHand(hand));
                 }
             }
         }
-        return new TypedActionResult<>(ActionResult.FAIL, p.getHeldItem(hand));
+        return new TypedActionResult<>(ActionResult.FAIL, p.getStackInHand(hand));
     }
 
     private void shootPaintBalls(final ItemStack type, final World w, final PlayerEntity p, final Vec3d Vec3d,
@@ -255,9 +255,9 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
 
                 entityHit.attackEntityFrom(DamageSource.causePlayerDamage(p), 0);
                 NetworkHandler.instance().sendToAll(marker.getPacket());
-            } else if (pos instanceof BlockRayTraceResult) {
-                BlockRayTraceResult blockResult = (BlockRayTraceResult) pos;
-                final Direction side = blockResult.getFace();
+            } else if (pos instanceof BlockHitResult) {
+                BlockHitResult blockResult = (BlockHitResult) pos;
+                final Direction side = blockResult.getSide();
                 final BlockPos hitPos = blockResult.getPos().offset(side);
 
                 if (!Platform.hasPermissions(new DimensionalCoord(w, hitPos), p)) {
@@ -271,10 +271,10 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                     });
                 }
 
-                final BlockEntity te = w.getTileEntity(hitPos);
-                if (te instanceof PaintSplotchesTileEntity) {
+                final BlockEntity te = w.getBlockEntity(hitPos);
+                if (te instanceof PaintSplotchesBlockEntity) {
                     final Vec3d hp = pos.getHitVec().subtract(hitPos.getX(), hitPos.getY(), hitPos.getZ());
-                    ((PaintSplotchesTileEntity) te).addBlot(type, side.getOpposite(), hp);
+                    ((PaintSplotchesBlockEntity) te).addBlot(type, side.getOpposite(), hp);
                 }
             }
         }
@@ -367,8 +367,8 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                     } else if (entityHit.attackEntityFrom(dmgSrc, dmg)) {
                         hasDestroyed = true;
                     }
-                } else if (pos instanceof BlockRayTraceResult) {
-                    BlockRayTraceResult blockResult = (BlockRayTraceResult) pos;
+                } else if (pos instanceof BlockHitResult) {
+                    BlockHitResult blockResult = (BlockHitResult) pos;
 
                     if (!AEConfig.instance().isFeatureEnabled(AEFeature.MASS_CANNON_BLOCK_DAMAGE)) {
                         penetration = 0;
@@ -383,7 +383,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                                 hasDestroyed = true;
                                 penetration -= hardness;
                                 penetration *= 0.60;
-                                w.destroyBlock(blockPos, true);
+                                w.breakBlock(blockPos, true);
                             }
                         }
                     }

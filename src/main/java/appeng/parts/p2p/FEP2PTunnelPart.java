@@ -64,7 +64,7 @@ public class FEP2PTunnelPart extends P2PTunnelPart<FEP2PTunnelPart> {
         LazyOptional<IEnergyStorage> energyStorageOpt = LazyOptional.empty();
         if (this.isActive()) {
             final BlockEntity self = this.getTile();
-            final BlockEntity te = self.getWorld().getTileEntity(self.getPos().offset(this.getSide().getFacing()));
+            final BlockEntity te = self.getWorld().getBlockEntity(self.getPos().offset(this.getSide().getFacing()));
 
             if (te != null) {
                 energyStorageOpt = te.getCapability(Capabilities.FORGE_ENERGY,

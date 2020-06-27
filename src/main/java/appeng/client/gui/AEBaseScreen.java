@@ -30,10 +30,10 @@ import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import net.minecraft.client.MinecraftClient;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.Widget;
@@ -356,7 +356,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
             return;
         }
 
-        if (InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_KEY_SPACE)) {
+        if (InputMappings.isKeyDown(MinecraftClient.getInstance().getMainWindow().getHandle(), GLFW.GLFW_KEY_SPACE)) {
             if (this.enableSpaceClicking()) {
                 IAEItemStack stack = null;
                 if (slot instanceof SlotME) {

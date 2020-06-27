@@ -20,7 +20,7 @@ package appeng.block;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.AbstractBlock;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.sound.BlockSoundGroup;
@@ -28,18 +28,17 @@ import net.minecraft.block.Material;
 import net.minecraft.block.MaterialColor;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ToolType;
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
@@ -48,8 +47,6 @@ import appeng.util.Platform;
 
 public abstract class AEBaseBlock extends Block {
 
-    private boolean isOpaque = true;
-    private boolean isFullSize = true;
     private boolean isInventory = false;
 
     protected AEBaseBlock(final Settings props) {
@@ -60,7 +57,7 @@ public abstract class AEBaseBlock extends Block {
      * Utility function to create block properties with some sensible defaults for
      * AE blocks.
      */
-    public static Settings defaultProps(Material material) {
+    public static FabricBlockSettings defaultProps(Material material) {
         return defaultProps(material, material.getColor());
     }
 
@@ -68,28 +65,24 @@ public abstract class AEBaseBlock extends Block {
      * Utility function to create block properties with some sensible defaults for
      * AE blocks.
      */
-    public static Settings defaultProps(Material material, MaterialColor color) {
-        return Settings.create(material, color)
+    public static FabricBlockSettings defaultProps(Material material, MaterialColor color) {
+        return FabricBlockSettings.of(material, color)
                 // These values previousls were encoded in AEBaseBlock
-                .hardnessAndResistance(2.2f, 11.f).harvestTool(ToolType.PICKAXE).harvestLevel(0)
-                .sound(getDefaultSoundByMaterial(material));
+                .strength(2.2f, 11.f)
+                .breakByTool(FabricToolTags.PICKAXES, 0)
+                .sounds(getDefaultSoundByMaterial(material));
     }
 
     private static BlockSoundGroup getDefaultSoundByMaterial(Material mat) {
         if (mat == AEGlassMaterial.INSTANCE || mat == Material.GLASS) {
             return BlockSoundGroup.GLASS;
-        } else if (mat == Material.ROCK) {
+        } else if (mat == Material.STONE) {
             return BlockSoundGroup.STONE;
         } else if (mat == Material.WOOD) {
             return BlockSoundGroup.WOOD;
         } else {
             return BlockSoundGroup.METAL;
         }
-    }
-
-    @Override
-    public boolean isNormalCube(BlockState state, BlockView worldIn, BlockPos pos) {
-        return this.isFullSize() && this.isOpaque();
     }
 
     @Override
@@ -132,7 +125,7 @@ public abstract class AEBaseBlock extends Block {
     }
 
     public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         return ActionResult.PASS;
     }
 
@@ -151,13 +144,13 @@ public abstract class AEBaseBlock extends Block {
             return dir;
         }
 
-        final int west_x = forward.getYOffset() * up.getZOffset() - forward.getZOffset() * up.getYOffset();
-        final int west_y = forward.getZOffset() * up.getXOffset() - forward.getXOffset() * up.getZOffset();
-        final int west_z = forward.getXOffset() * up.getYOffset() - forward.getYOffset() * up.getXOffset();
+        final int west_x = forward.getOffsetY() * up.getOffsetZ() - forward.getOffsetZ() * up.getOffsetY();
+        final int west_y = forward.getOffsetZ() * up.getOffsetX() - forward.getOffsetX() * up.getOffsetZ();
+        final int west_z = forward.getOffsetX() * up.getOffsetY() - forward.getOffsetY() * up.getOffsetX();
 
         Direction west = null;
         for (final Direction dx : Direction.values()) {
-            if (dx.getXOffset() == west_x && dx.getYOffset() == west_y && dx.getZOffset() == west_z) {
+            if (dx.getOffsetX() == west_x && dx.getOffsetY() == west_y && dx.getOffsetZ() == west_z) {
                 west = dx;
             }
         }
@@ -192,7 +185,8 @@ public abstract class AEBaseBlock extends Block {
 
     @Override
     public String toString() {
-        String regName = this.getRegistryName() != null ? this.getRegistryName().getPath() : "unregistered";
+        Identifier id = Registry.BLOCK.getId(this);
+        String regName = id == Registry.BLOCK.getDefaultId() ? "unregistered" : id.getPath();
         return this.getClass().getSimpleName() + "[" + regName + "]";
     }
 
@@ -219,24 +213,6 @@ public abstract class AEBaseBlock extends Block {
     protected boolean isValidOrientation(final WorldAccess w, final BlockPos pos, final Direction forward,
             final Direction up) {
         return true;
-    }
-
-    protected boolean isOpaque() {
-        return this.isOpaque;
-    }
-
-    protected boolean setOpaque(final boolean isOpaque) {
-        this.isOpaque = isOpaque;
-        return isOpaque;
-    }
-
-    protected boolean isFullSize() {
-        return this.isFullSize;
-    }
-
-    protected boolean setFullSize(final boolean isFullSize) {
-        this.isFullSize = isFullSize;
-        return isFullSize;
     }
 
     protected boolean isInventory() {

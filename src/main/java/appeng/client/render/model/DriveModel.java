@@ -29,12 +29,12 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
 
-import net.minecraft.client.render.model.IBakedModel;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.IModelTransform;
 import net.minecraft.client.render.model.IUnbakedModel;
 import net.minecraft.client.render.model.ItemOverrideList;
 import net.minecraft.client.render.model.Material;
-import net.minecraft.client.render.model.ModelBakery;
+import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Identifier;
 import net.minecraftforge.client.model.IModelConfiguration;
@@ -56,18 +56,18 @@ public class DriveModel implements IModelGeometry<DriveModel> {
             .addAll(MODELS_CELLS.values()).add(MODEL_BASE).build();
 
     @Override
-    public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
-            Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
-            ItemOverrideList overrides, Identifier modelLocation) {
-        EnumMap<DriveSlotCellType, IBakedModel> cellModels = new EnumMap<>(DriveSlotCellType.class);
+    public BakedModel bake(IModelConfiguration owner, ModelLoader bakery,
+                           Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
+                           ItemOverrideList overrides, Identifier modelLocation) {
+        EnumMap<DriveSlotCellType, BakedModel> cellModels = new EnumMap<>(DriveSlotCellType.class);
 
         // Load the base model and the model for each cell state.
         for (DriveSlotCellType cellType : MODELS_CELLS.keySet()) {
-            IBakedModel cellModel = bakery.getBakedModel(MODELS_CELLS.get(cellType), modelTransform, spriteGetter);
+            BakedModel cellModel = bakery.getBakedModel(MODELS_CELLS.get(cellType), modelTransform, spriteGetter);
             cellModels.put(cellType, cellModel);
         }
 
-        IBakedModel baseModel = bakery.getBakedModel(MODEL_BASE, modelTransform, spriteGetter);
+        BakedModel baseModel = bakery.getBakedModel(MODEL_BASE, modelTransform, spriteGetter);
         return new DriveBakedModel(baseModel, cellModels);
     }
 

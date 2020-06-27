@@ -2,19 +2,19 @@
 package appeng.client.render.tesr;
 
 import alexiil.mc.lib.attributes.item.ItemTransferable;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.Quaternion;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.model.ItemCameraTransforms;
 import net.minecraft.client.render.model.Material;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
@@ -25,26 +25,26 @@ import appeng.api.features.InscriberProcessType;
 import appeng.client.render.FacingToRotation;
 import appeng.core.AppEng;
 import appeng.recipes.handlers.InscriberRecipe;
-import appeng.tile.misc.InscriberTileEntity;
+import appeng.tile.misc.InscriberBlockEntity;
 
 /**
  * Renders the dynamic parts of an inscriber (the presses, the animation and the
  * item being smashed)
  */
-public final class InscriberTESR extends TileEntityRenderer<InscriberTileEntity> {
+public final class InscriberTESR extends BlockEntityRenderer<InscriberBlockEntity> {
 
     private static final float ITEM_RENDER_SCALE = 1.0f / 1.2f;
 
     private static final Material TEXTURE_INSIDE = new Material(PlayerContainer.LOCATION_BLOCKS_TEXTURE,
             new Identifier(AppEng.MOD_ID, "block/inscriber_inside"));
 
-    public InscriberTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
+    public InscriberTESR(BlockEntityRenderDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
     @Override
-    public void render(InscriberTileEntity tile, float partialTicks, MatrixStack ms, VertexConsumerProvider buffers,
-            int combinedLight, int combinedOverlay) {
+    public void render(InscriberBlockEntity tile, float partialTicks, MatrixStack ms, VertexConsumerProvider buffers,
+                       int combinedLight, int combinedOverlay) {
 
         // render inscriber
 
@@ -84,7 +84,7 @@ public final class InscriberTESR extends TileEntityRenderer<InscriberTileEntity>
 
         final TextureAtlasSprite tas = TEXTURE_INSIDE.getSprite();
 
-        IVertexBuilder buffer = buffers.getBuffer(RenderType.getSolid());
+        IVertexBuilder buffer = buffers.getBuffer(RenderLayer.getSolid());
 
         // Bottom of Top Stamp
         addVertex(buffer, ms, tas, TwoPx, middle + press, TwoPx, 2, 13, combinedOverlay, combinedLight, Direction.DOWN);
@@ -178,7 +178,7 @@ public final class InscriberTESR extends TileEntityRenderer<InscriberTileEntity>
         vb.tex(sprite.getInterpolatedU(texU), sprite.getInterpolatedV(texV));
         vb.overlay(overlayUV);
         vb.lightmap(lightmapUV);
-        vb.normal(ms.getLast().getNormal(), front.getXOffset(), front.getYOffset(), front.getZOffset());
+        vb.normal(ms.getLast().getNormal(), front.getOffsetX(), front.getOffsetY(), front.getZOffset());
         vb.endVertex();
     }
 
@@ -194,7 +194,7 @@ public final class InscriberTESR extends TileEntityRenderer<InscriberTileEntity>
             // set scale
             ms.scale(ITEM_RENDER_SCALE, ITEM_RENDER_SCALE, ITEM_RENDER_SCALE);
 
-            ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
+            ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
 
             // heuristic to scale items down much further than blocks
             if (!stack.getItem().getTags().contains(TAG_STORAGE_BLOCKS)) {

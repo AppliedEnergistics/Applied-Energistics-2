@@ -18,10 +18,10 @@
 
 package appeng.client.render;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.render.model.ItemCameraTransforms;
@@ -92,7 +92,7 @@ public class TesrRenderHelper {
             // effect at least from head-on
             matrixStack.scale(scale, scale, 0.0002f);
 
-            Minecraft.getInstance().getItemRenderer().renderItem(itemStack, ItemCameraTransforms.TransformType.GUI,
+            MinecraftClient.getInstance().getItemRenderer().renderItem(itemStack, ItemCameraTransforms.TransformType.GUI,
                     combinedLightIn, OverlayTexture.NO_OVERLAY, matrixStack, buffers);
 
             matrixStack.pop();
@@ -120,7 +120,7 @@ public class TesrRenderHelper {
         final String renderedStackSize = NUMBER_CONVERTER.toWideReadableForm(stackSize);
 
         // Render the item count
-        final FontRenderer fr = Minecraft.getInstance().fontRenderer;
+        final FontRenderer fr = MinecraftClient.getInstance().fontRenderer;
         final int width = fr.getStringWidth(renderedStackSize);
         matrixStack.push();
         matrixStack.translate(0.0f, spacing, 0.02f);

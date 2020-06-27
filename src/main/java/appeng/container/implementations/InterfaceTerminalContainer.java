@@ -25,7 +25,7 @@ import java.util.Map.Entry;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -50,7 +50,7 @@ import appeng.items.misc.EncodedPatternItem;
 import appeng.parts.misc.InterfacePart;
 import appeng.parts.reporting.InterfaceTerminalPart;
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.tile.misc.InterfaceTileEntity;
+import appeng.tile.misc.InterfaceBlockEntity;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
@@ -114,7 +114,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         if (host != null) {
             final IGridNode agn = host.getActionableNode();
             if (agn != null && agn.isActive()) {
-                for (final IGridNode gn : this.grid.getMachines(InterfaceTileEntity.class)) {
+                for (final IGridNode gn : this.grid.getMachines(InterfaceBlockEntity.class)) {
                     if (gn.isActive()) {
                         final IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
                         if (ih.getInterfaceDuality().getConfigManager()
@@ -288,7 +288,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         if (host != null) {
             final IGridNode agn = host.getActionableNode();
             if (agn != null && agn.isActive()) {
-                for (final IGridNode gn : this.grid.getMachines(InterfaceTileEntity.class)) {
+                for (final IGridNode gn : this.grid.getMachines(InterfaceBlockEntity.class)) {
                     final IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
                     final DualityInterface dual = ih.getInterfaceDuality();
                     if (gn.isActive() && dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.YES) {

@@ -18,45 +18,50 @@
 
 package appeng.block;
 
-import java.text.MessageFormat;
-import java.util.List;
-
-import net.fabricmc.api.EnvType;
-import net.minecraft.block.Block;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.Identifier;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.world.World;
-import net.fabricmc.api.Environment;
-
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerUnits;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.implementations.items.IAEItemPowerStorage;
+import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
+import net.minecraft.block.Block;
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Identifier;
+import net.minecraft.world.World;
+
+import java.text.MessageFormat;
+import java.util.List;
 
 public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEItemPowerStorage {
 
-    public AEBaseBlockItemChargeable(Block id, Properties props) {
+    public AEBaseBlockItemChargeable(Block id, Settings props) {
         super(id, props);
 
-        addPropertyOverride(new Identifier("appliedenergistics2:fill_level"), (is, world, entity) -> {
-            double curPower = getAECurrentPower(is);
-            double maxPower = getAEMaxPower(is);
+        FabricModelPredicateProviderRegistry.register(
+                this,
+                new Identifier(AppEng.MOD_ID, "fill_level"),
+                (is, world, entity) -> {
+                    double curPower = getAECurrentPower(is);
+                    double maxPower = getAEMaxPower(is);
 
-            return (int) Math.round(100 * curPower / maxPower);
-        });
+                    return (int) Math.round(100 * curPower / maxPower);
+                }
+        );
     }
 
     @Override
     @Environment(EnvType.CLIENT)
     public void addCheckedInformation(final ItemStack stack, final World world, final List<Text> lines,
-            final ITooltipFlag advancedTooltips) {
+            final TooltipContext advancedTooltips) {
         double internalCurrentPower = 0;
         final double internalMaxPower = this.getMaxEnergyCapacity();
 
@@ -69,9 +74,10 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
             final double percent = internalCurrentPower / internalMaxPower;
 
             lines.add(GuiText.StoredEnergy.textComponent()
-                    .appendText(':' + MessageFormat.format(" {0,number,#} ", internalCurrentPower))
-                    .appendSibling(new TranslatableText(PowerUnits.AE.unlocalizedName))
-                    .appendText(" - " + MessageFormat.format("{0,number,#.##%}", percent)));
+                    .copy()
+                    .append(':' + MessageFormat.format(" {0,number,#} ", internalCurrentPower))
+                    .append(new TranslatableText(PowerUnits.AE.unlocalizedName))
+                    .append(" - " + MessageFormat.format("{0,number,#.##%}", percent)));
         }
     }
 

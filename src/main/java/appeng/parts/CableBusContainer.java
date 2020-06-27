@@ -649,7 +649,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         if (p != null && p.part != null) {
             // forge sends activate even when sneaking in some cases (eg emtpy hand)
             // if sneaking try shift activate first.
-            if (player.isCrouching() && p.part.onShiftActivate(player, hand, pos)) {
+            if (player.isInSneakingPose() && p.part.onShiftActivate(player, hand, pos)) {
                 return true;
             }
             return p.part.onActivate(player, hand, pos);
@@ -661,7 +661,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     public boolean clicked(PlayerEntity player, Hand hand, Vec3d hitVec) {
         final SelectedPart p = this.selectPart(hitVec);
         if (p != null && p.part != null) {
-            if (player.isCrouching()) {
+            if (player.isInSneakingPose()) {
                 return p.part.onShiftClicked(player, hand, hitVec);
             } else {
                 return p.part.onClicked(player, hand, hitVec);
@@ -946,7 +946,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                 // outgoing connection
                 // point would look too big for other cable types
                 final BlockPos adjacentPos = this.getTile().getPos().offset(facing);
-                final BlockEntity adjacentTe = this.getTile().getWorld().getTileEntity(adjacentPos);
+                final BlockEntity adjacentTe = this.getTile().getWorld().getBlockEntity(adjacentPos);
 
                 if (adjacentTe instanceof IGridHost) {
                     final IGridHost gridHost = (IGridHost) adjacentTe;

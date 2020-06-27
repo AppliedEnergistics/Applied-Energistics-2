@@ -120,7 +120,7 @@ public class CachedPlane {
                 final Chunk c = w.getChunk(minCX + cx, minCZ + cz);
                 this.myChunks[cx][cz] = c;
 
-                final List<Entry<BlockPos, BlockEntity>> rawTiles = new ArrayList<>(c.getTileEntityMap().entrySet());
+                final List<Entry<BlockPos, BlockEntity>> rawTiles = new ArrayList<>(c.getBlockEntityMap().entrySet());
                 for (final Entry<BlockPos, BlockEntity> tx : rawTiles) {
                     final BlockPos cp = tx.getKey();
                     final BlockEntity te = tx.getValue();
@@ -146,7 +146,7 @@ public class CachedPlane {
                 }
 
                 for (final BlockPos cp : deadTiles) {
-                    c.getTileEntityMap().remove(cp);
+                    c.getBlockEntityMap().remove(cp);
                 }
 
                 final long gameTime = this.getWorld().getGameTime();
@@ -286,7 +286,7 @@ public class CachedPlane {
                     // attempt recovery...
                     c.c.addTileEntity(te);
 
-                    this.world.notifyBlockUpdate(pos, this.world.getBlockState(pos), this.world.getBlockState(pos), z);
+                    this.world.updateListeners(pos, this.world.getBlockState(pos), this.world.getBlockState(pos), z);
                 }
 
                 mr.doneMoving(te);

@@ -166,7 +166,7 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
     }
 
     private boolean isAccelerated(final int x, final int y, final int z) {
-        final BlockEntity te = this.world.getTileEntity(new BlockPos(x, y, z));
+        final BlockEntity te = this.world.getBlockEntity(new BlockPos(x, y, z));
 
         return te instanceof ICrystalGrowthAccelerator && ((ICrystalGrowthAccelerator) te).isPowered();
     }

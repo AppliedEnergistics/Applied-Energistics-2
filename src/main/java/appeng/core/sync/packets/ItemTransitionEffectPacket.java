@@ -22,7 +22,7 @@ import io.netty.buffer.Unpooled;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.world.World;
@@ -84,7 +84,7 @@ public class ItemTransitionEffectPacket extends BasePacket {
                 double speedX = 0.1f * this.d.xOffset;
                 double speedY = 0.1f * this.d.yOffset;
                 double speedZ = 0.1f * this.d.zOffset;
-                Minecraft.getInstance().particles.addParticle(data, x, y, z, speedX, speedY, speedZ);
+                MinecraftClient.getInstance().particles.addParticle(data, x, y, z, speedX, speedY, speedZ);
             }
         }
     }

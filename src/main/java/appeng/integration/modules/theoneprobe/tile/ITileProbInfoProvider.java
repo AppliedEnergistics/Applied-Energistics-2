@@ -27,11 +27,11 @@ import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.IProbeInfoProvider;
 import mcjty.theoneprobe.api.ProbeMode;
 
-import appeng.tile.AEBaseTileEntity;
+import appeng.tile.AEBaseBlockEntity;
 
 /**
  * Similar to {@link IProbeInfoProvider}, but already providing the
- * {@link AEBaseTileEntity} being looked at.
+ * {@link AEBaseBlockEntity} being looked at.
  *
  */
 public interface ITileProbInfoProvider {
@@ -40,6 +40,6 @@ public interface ITileProbInfoProvider {
      * @see IProbeInfoProvider#addProbeInfo(ProbeMode, IProbeInfo, EntityPlayer,
      *      World, IBlockState, IProbeHitData)
      */
-    void addProbeInfo(AEBaseTileEntity tile, ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world,
-            BlockState blockState, IProbeHitData data);
+    void addProbeInfo(AEBaseBlockEntity tile, ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world,
+                      BlockState blockState, IProbeHitData data);
 }

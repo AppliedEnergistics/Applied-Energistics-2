@@ -31,7 +31,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.IBakedModel;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.ItemOverrideList;
 import net.minecraft.client.render.model.Material;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -55,8 +55,8 @@ import appeng.fluids.items.FluidDummyItem;
 public class DummyFluidDispatcherBakedModel extends DelegateBakedModel {
     private final Function<Material, TextureAtlasSprite> bakedTextureGetter;
 
-    public DummyFluidDispatcherBakedModel(IBakedModel baseModel,
-            Function<Material, TextureAtlasSprite> bakedTextureGetter) {
+    public DummyFluidDispatcherBakedModel(BakedModel baseModel,
+                                          Function<Material, TextureAtlasSprite> bakedTextureGetter) {
         super(baseModel);
         this.bakedTextureGetter = bakedTextureGetter;
     }
@@ -86,8 +86,8 @@ public class DummyFluidDispatcherBakedModel extends DelegateBakedModel {
     public ItemOverrideList getOverrides() {
         return new ItemOverrideList() {
             @Override
-            public IBakedModel getModelWithOverrides(IBakedModel originalModel, ItemStack stack, World world,
-                    LivingEntity entity) {
+            public BakedModel getModelWithOverrides(BakedModel originalModel, ItemStack stack, World world,
+                                                    LivingEntity entity) {
                 if (!(stack.getItem() instanceof FluidDummyItem)) {
                     return originalModel;
                 }

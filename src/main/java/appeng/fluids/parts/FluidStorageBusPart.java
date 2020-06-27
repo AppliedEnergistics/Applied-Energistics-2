@@ -195,7 +195,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
     @Override
     protected void resetCache(final boolean fullReset) {
         if (this.getHost() == null || this.getHost().getTile() == null || this.getHost().getTile().getWorld() == null
-                || this.getHost().getTile().getWorld().isRemote) {
+                || this.getHost().getTile().getWorld().isClient) {
             return;
         }
 
@@ -266,7 +266,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
 
         this.cached = true;
         final BlockEntity self = this.getHost().getTile();
-        final BlockEntity target = self.getWorld().getTileEntity(self.getPos().offset(this.getSide().getFacing()));
+        final BlockEntity target = self.getWorld().getBlockEntity(self.getPos().offset(this.getSide().getFacing()));
         final int newHandlerHash = this.createHandlerHash(target);
 
         if (newHandlerHash != 0 && newHandlerHash == this.handlerHash) {
@@ -357,10 +357,10 @@ public class FluidStorageBusPart extends SharedStorageBusPart
         }
 
         if (achievement != null && achievement.getActionableNode() != null) {
-            // Platform.addStat( achievement.getActionableNode().getPlayerID(),
+            // Platform.increaseStat( achievement.getActionableNode().getPlayerID(),
             // Achievements.Recursive.getAchievement()
             // );
-            // Platform.addStat( getActionableNode().getPlayerID(),
+            // Platform.increaseStat( getActionableNode().getPlayerID(),
             // Achievements.Recursive.getAchievement() );
         }
     }

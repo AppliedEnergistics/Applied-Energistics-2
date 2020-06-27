@@ -32,7 +32,7 @@ import javax.annotation.Nullable;
 import io.netty.buffer.Unpooled;
 
 import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.IPacket;
@@ -135,7 +135,7 @@ public class MEFluidInventoryUpdatePacket extends BasePacket {
     @Override
     @Environment(EnvType.CLIENT)
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
-        final Screen gs = Minecraft.getInstance().currentScreen;
+        final Screen gs = MinecraftClient.getInstance().currentScreen;
 
         if (gs instanceof FluidTerminalScreen) {
             ((FluidTerminalScreen) gs).postUpdate(this.list);

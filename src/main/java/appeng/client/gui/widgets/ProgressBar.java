@@ -18,7 +18,7 @@
 
 package appeng.client.gui.widgets;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.util.Identifier;
 import net.minecraftforge.fml.client.gui.GuiUtils;
@@ -55,7 +55,7 @@ public class ProgressBar extends Widget implements ITooltip {
     @Override
     public void renderButton(final int par2, final int par3, final float partial) {
         if (this.visible) {
-            Minecraft.getInstance().getTextureManager().bindTexture(this.texture);
+            MinecraftClient.getInstance().getTextureManager().bindTexture(this.texture);
             final int max = this.source.getMaxProgress();
             final int current = this.source.getCurrentProgress();
 

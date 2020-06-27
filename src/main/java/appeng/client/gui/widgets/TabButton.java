@@ -20,7 +20,7 @@ package appeng.client.gui.widgets;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
@@ -61,7 +61,7 @@ public class TabButton extends Button implements ITooltip {
 
     @Override
     public void renderButton(final int x, final int y, float partial) {
-        final Minecraft minecraft = Minecraft.getInstance();
+        final MinecraftClient minecraft = MinecraftClient.getInstance();
 
         if (this.visible) {
             RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);

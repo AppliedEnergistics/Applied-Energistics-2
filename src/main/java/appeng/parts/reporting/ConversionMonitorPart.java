@@ -86,7 +86,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
             return false;
         }
 
-        final ItemStack eq = player.getHeldItem(hand);
+        final ItemStack eq = player.getStackInHand(hand);
         if (this.isLocked()) {
             if (eq.isEmpty()) {
                 this.insertItem(player, hand, true);
@@ -174,7 +174,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
                     }
                 }
             } else {
-                final IAEItemStack input = AEItemStack.fromItemStack(player.getHeldItem(hand));
+                final IAEItemStack input = AEItemStack.fromItemStack(player.getStackInHand(hand));
                 final IAEItemStack failedToInsert = Platform.poweredInsert(energy, cell, input,
                         new PlayerSource(player, this));
                 player.setHeldItem(hand, failedToInsert == null ? ItemStack.EMPTY : failedToInsert.createItemStack());

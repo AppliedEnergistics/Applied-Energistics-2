@@ -18,7 +18,7 @@
 
 package appeng.core.sync.network;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.PacketByteBuf;
@@ -35,7 +35,7 @@ public class ClientPacketHandler extends BasePacketHandler implements IPacketHan
         try {
             final int packetType = packet.readInt();
             final BasePacket pack = PacketTypes.getPacket(packetType).parsePacket(packet);
-            pack.clientPacketData(manager, Minecraft.getInstance().player);
+            pack.clientPacketData(manager, MinecraftClient.getInstance().player);
         } catch (final IllegalArgumentException e) {
             AELog.debug(e);
         }

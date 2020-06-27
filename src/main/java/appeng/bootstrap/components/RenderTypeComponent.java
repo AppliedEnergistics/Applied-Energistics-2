@@ -1,10 +1,9 @@
 package appeng.bootstrap.components;
 
-import java.util.function.Predicate;
-
+import com.google.common.base.Preconditions;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.client.render.RenderLayer;
 
 /**
  * Sets the rendering type for a block.
@@ -13,25 +12,16 @@ public class RenderTypeComponent implements IClientSetupComponent {
 
     private final Block block;
 
-    private final RenderType renderType;
+    private final RenderLayer renderType;
 
-    private final Predicate<RenderType> renderTypes;
-
-    public RenderTypeComponent(Block block, RenderType renderType, Predicate<RenderType> renderTypes) {
+    public RenderTypeComponent(Block block, RenderLayer renderType) {
         this.block = block;
-        this.renderType = renderType;
-        this.renderTypes = renderTypes;
+        this.renderType = Preconditions.checkNotNull(renderType);
     }
 
     @Override
     public void setup() {
-        if (renderType != null) {
-            RenderTypeLookup.setRenderLayer(block, renderType);
-        }
-
-        if (renderTypes != null) {
-            RenderTypeLookup.setRenderLayer(block, renderTypes);
-        }
+        BlockRenderLayerMap.INSTANCE.putBlock(block, renderType);
     }
 
 }

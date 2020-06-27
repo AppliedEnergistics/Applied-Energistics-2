@@ -176,7 +176,7 @@ public class DualityFluidInterface
             }
         }
 
-        final BlockEntity te = this.iHost.getTileEntity();
+        final BlockEntity te = this.iHost.getBlockEntity();
         if (te != null && te.getWorld() != null) {
             Platform.notifyBlocksOfNeighbors(te.getWorld(), te.getPos());
         }
@@ -201,7 +201,7 @@ public class DualityFluidInterface
     }
 
     public DimensionalCoord getLocation() {
-        return new DimensionalCoord(this.iHost.getTileEntity());
+        return new DimensionalCoord(this.iHost.getBlockEntity());
     }
 
     @SuppressWarnings("unchecked")

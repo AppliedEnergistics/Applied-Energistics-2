@@ -1,7 +1,7 @@
 package appeng.bootstrap.components;
 
-import net.minecraft.client.renderer.color.BlockColors;
-import net.minecraft.client.renderer.color.ItemColors;
+import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.client.color.item.ItemColors;
 
 import appeng.bootstrap.IBootstrapComponent;
 

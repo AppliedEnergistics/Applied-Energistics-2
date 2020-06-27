@@ -41,6 +41,6 @@ public final class TileDefinition extends BlockDefinition implements ITileDefini
 
     @Override
     public Optional<? extends Class<? extends BlockEntity>> maybeEntity() {
-        return Optional.of(this.block.getTileEntityClass());
+        return Optional.of(this.block.getBlockEntityClass());
     }
 }

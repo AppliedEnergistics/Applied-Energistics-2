@@ -93,19 +93,19 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
             final Direction e = bch.getWorldX();
             final Direction u = bch.getWorldY();
 
-            if (this.isAnnihilationPlane(te.getWorld().getTileEntity(pos.offset(e.getOpposite())), this.getSide())) {
+            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(e.getOpposite())), this.getSide())) {
                 minX = 0;
             }
 
-            if (this.isAnnihilationPlane(te.getWorld().getTileEntity(pos.offset(e)), this.getSide())) {
+            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(e)), this.getSide())) {
                 maxX = 16;
             }
 
-            if (this.isAnnihilationPlane(te.getWorld().getTileEntity(pos.offset(u.getOpposite())), this.getSide())) {
+            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(u.getOpposite())), this.getSide())) {
                 minY = 0;
             }
 
-            if (this.isAnnihilationPlane(te.getWorld().getTileEntity(pos.offset(e)), this.getSide())) {
+            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(e)), this.getSide())) {
                 maxY = 16;
             }
         }
@@ -156,21 +156,21 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
 
             final BlockPos pos = te.getPos();
 
-            if (this.isAnnihilationPlane(te.getWorld().getTileEntity(pos.offset(facingRight.getOpposite())),
+            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(facingRight.getOpposite())),
                     this.getSide())) {
                 left = true;
             }
 
-            if (this.isAnnihilationPlane(te.getWorld().getTileEntity(pos.offset(facingRight)), this.getSide())) {
+            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(facingRight)), this.getSide())) {
                 right = true;
             }
 
-            if (this.isAnnihilationPlane(te.getWorld().getTileEntity(pos.offset(facingUp.getOpposite())),
+            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(facingUp.getOpposite())),
                     this.getSide())) {
                 down = true;
             }
 
-            if (this.isAnnihilationPlane(te.getWorld().getTileEntity(pos.offset(facingUp)), this.getSide())) {
+            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(facingUp)), this.getSide())) {
                 up = true;
             }
         }

@@ -20,7 +20,7 @@ package appeng.core.api.definitions;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.SpawnGroup;
 
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IMaterials;
@@ -119,13 +119,13 @@ public final class ApiMaterials implements IMaterials {
         this.registry = registry;
 
         SingularityEntity.TYPE = registry
-                .<SingularityEntity>entity("singularity", SingularityEntity::new, EntityClassification.MISC)
+                .<SingularityEntity>entity("singularity", SingularityEntity::new, SpawnGroup.MISC)
                 .customize(builder -> builder.size(0.2f, 0.2f).setTrackingRange(16).setUpdateInterval(4)
                         .setShouldReceiveVelocityUpdates(true))
                 .build();
 
         ChargedQuartzEntity.TYPE = registry
-                .<ChargedQuartzEntity>entity("charged_quartz", ChargedQuartzEntity::new, EntityClassification.MISC)
+                .<ChargedQuartzEntity>entity("charged_quartz", ChargedQuartzEntity::new, SpawnGroup.MISC)
                 .customize(builder -> builder.size(0.2f, 0.2f).setTrackingRange(16).setUpdateInterval(4)
                         .setShouldReceiveVelocityUpdates(true))
                 .build();

@@ -25,7 +25,7 @@ import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.parts.reporting.CraftingTerminalPart;
 import appeng.parts.reporting.PatternTerminalPart;
 import appeng.parts.reporting.TerminalPart;
-import appeng.tile.storage.ChestTileEntity;
+import appeng.tile.storage.ChestBlockEntity;
 
 /**
  * Utility class for sub-screens of other containers that allow returning to the
@@ -47,7 +47,7 @@ final class AESubScreen {
         final IDefinitions definitions = AEApi.instance().definitions();
         final IParts parts = definitions.parts();
 
-        if (containerTarget instanceof ChestTileEntity) {
+        if (containerTarget instanceof ChestBlockEntity) {
             // A chest is also a priority host, but the priority _interface_ can only be
             // opened from the
             // chest ui that doesn't actually show the contents of the inserted cell.
@@ -95,7 +95,7 @@ final class AESubScreen {
     public final TabButton addBackButton(Consumer<TabButton> buttonAdder, int x, int y, @Nullable String label) {
         if (this.previousContainerType != null && !previousContainerIcon.isEmpty()) {
             if (label == null) {
-                label = previousContainerIcon.getDisplayName().getString();
+                label = previousContainerIcon.getName().getString();
             }
             ItemRenderer itemRenderer = gui.getMinecraft().getItemRenderer();
             TabButton button = new TabButton(gui.getGuiLeft() + x, gui.getGuiTop() + y, previousContainerIcon, label,

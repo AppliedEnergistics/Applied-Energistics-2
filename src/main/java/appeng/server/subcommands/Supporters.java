@@ -23,7 +23,7 @@ import com.mojang.brigadier.context.CommandContext;
 
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.text.LiteralText;
 
 import appeng.server.ISubCommand;
 
@@ -33,6 +33,6 @@ public class Supporters implements ISubCommand {
     public void call(final MinecraftServer srv, final CommandContext<ServerCommandSource> data, final ServerCommandSource sender) {
         final String[] who = { "Stig Halvorsen", "Josh Ricker", "Jenny \"Othlon\" Sutherland", "Hristo Bogdanov",
                 "BevoLJ" };
-        sender.sendFeedback(new StringTextComponent("Special thanks to " + Joiner.on(", ").join(who)), true);
+        sender.sendFeedback(new LiteralText("Special thanks to " + Joiner.on(", ").join(who)), true);
     }
 }

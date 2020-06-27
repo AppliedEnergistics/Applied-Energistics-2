@@ -31,18 +31,18 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
@@ -57,10 +57,10 @@ import appeng.client.render.renderable.ItemRenderable;
 import appeng.client.render.tesr.ModularTESR;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
-import appeng.tile.misc.ChargerTileEntity;
+import appeng.tile.misc.ChargerBlockEntity;
 import appeng.util.Platform;
 
-public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
+public class ChargerBlock extends AEBaseTileBlock<ChargerBlockEntity> {
 
     public ChargerBlock() {
         super(defaultProps(Material.IRON).notSolid());
@@ -75,13 +75,13 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
 
     @Override
     public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (player.isCrouching()) {
+            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+        if (player.isInSneakingPose()) {
             return ActionResult.PASS;
         }
 
         if (Platform.isServer()) {
-            final ChargerTileEntity tc = this.getTileEntity(w, pos);
+            final ChargerBlockEntity tc = this.getBlockEntity(w, pos);
             if (tc != null) {
                 tc.activate(player);
             }
@@ -101,7 +101,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
             return;
         }
 
-        final ChargerTileEntity tile = this.getTileEntity(w, pos);
+        final ChargerBlockEntity tile = this.getBlockEntity(w, pos);
         if (tile != null) {
             if (AEApi.instance().definitions().materials().certusQuartzCrystalCharged()
                     .isSameAs(tile.getInternalInventory().getStackInSlot(0))) {
@@ -111,7 +111,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
 
                 for (int bolts = 0; bolts < 3; bolts++) {
                     if (AppEng.proxy.shouldAddParticles(r)) {
-                        Minecraft.getInstance().particles.addParticle(ParticleTypes.LIGHTNING, xOff + 0.5 + pos.getX(),
+                        MinecraftClient.getInstance().particles.addParticle(ParticleTypes.LIGHTNING, xOff + 0.5 + pos.getX(),
                                 yOff + 0.5 + pos.getY(), zOff + 0.5 + pos.getZ(), 0.0, 0.0, 0.0);
                     }
                 }
@@ -122,7 +122,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
     @Override
     public VoxelShape getShape(BlockState state, BlockView w, BlockPos pos, ShapeContext context) {
 
-        final ChargerTileEntity tile = this.getTileEntity(w, pos);
+        final ChargerBlockEntity tile = this.getBlockEntity(w, pos);
         if (tile != null) {
             final double twoPixels = 2.0 / 16.0;
             final Direction up = tile.getUp();
@@ -130,15 +130,15 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
             final AEAxisAlignedBB bb = new AEAxisAlignedBB(twoPixels, twoPixels, twoPixels, 1.0 - twoPixels,
                     1.0 - twoPixels, 1.0 - twoPixels);
 
-            if (up.getXOffset() != 0) {
+            if (up.getOffsetX() != 0) {
                 bb.minX = 0;
                 bb.maxX = 1;
             }
-            if (up.getYOffset() != 0) {
+            if (up.getOffsetY() != 0) {
                 bb.minY = 0;
                 bb.maxY = 1;
             }
-            if (up.getZOffset() != 0) {
+            if (up.getOffsetZ() != 0) {
                 bb.minZ = 0;
                 bb.maxZ = 1;
             }
@@ -178,12 +178,12 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
     }
 
     @Environment(EnvType.CLIENT)
-    public static Function<TileEntityRendererDispatcher, TileEntityRenderer<ChargerTileEntity>> createTesr() {
+    public static Function<BlockEntityRenderDispatcher, BlockEntityRenderer<ChargerBlockEntity>> createTesr() {
         return dispatcher -> new ModularTESR<>(dispatcher, new ItemRenderable<>(ChargerBlock::getRenderedItem));
     }
 
     @Environment(EnvType.CLIENT)
-    private static Pair<ItemStack, TransformationMatrix> getRenderedItem(ChargerTileEntity tile) {
+    private static Pair<ItemStack, TransformationMatrix> getRenderedItem(ChargerBlockEntity tile) {
         TransformationMatrix transform = new TransformationMatrix(new Vector3f(0.5f, 0.375f, 0.5f), null, null, null);
         return new ImmutablePair<>(tile.getInternalInventory().getStackInSlot(0), transform);
     }

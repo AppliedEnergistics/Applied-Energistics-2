@@ -27,7 +27,7 @@ import com.google.common.collect.ImmutableList;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.IBakedModel;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.math.Direction;
@@ -37,7 +37,7 @@ import net.minecraft.util.math.Direction;
  * @version rv6 - 2018-01-22
  * @since rv6 2018-01-22
  */
-public class DummyFluidBakedModel implements IBakedModel {
+public class DummyFluidBakedModel implements BakedModel {
     private final ImmutableList<BakedQuad> quads;
 
     public DummyFluidBakedModel(ImmutableList<BakedQuad> quads) {

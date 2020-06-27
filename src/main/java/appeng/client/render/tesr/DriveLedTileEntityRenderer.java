@@ -2,15 +2,15 @@ package appeng.client.render.tesr;
 
 import java.util.EnumMap;
 
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
+import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.renderer.RenderState;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -18,13 +18,13 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import appeng.block.storage.DriveSlotState;
 import appeng.client.render.FacingToRotation;
-import appeng.tile.storage.DriveTileEntity;
+import appeng.tile.storage.DriveBlockEntity;
 
 /**
  * Renders the drive cell status indicators.
  */
 @Environment(EnvType.CLIENT)
-public class DriveLedTileEntityRenderer extends TileEntityRenderer<DriveTileEntity> {
+public class DriveLedTileEntityRenderer extends BlockEntityRenderer<DriveBlockEntity> {
 
     private static final EnumMap<DriveSlotState, Vector3f> STATE_COLORS;
 
@@ -60,16 +60,16 @@ public class DriveLedTileEntityRenderer extends TileEntityRenderer<DriveTileEnti
             // Bottom Face
             R, B, FR, L, B, FR, L, B, BA, R, B, BA, };
 
-    private static final RenderType STATE = RenderType.makeType("ae_drive_leds", DefaultVertexFormats.POSITION_COLOR, 7,
-            32565, false, true, RenderType.State.getBuilder().build(false));
+    private static final RenderLayer STATE = RenderLayer.makeType("ae_drive_leds", DefaultVertexFormats.POSITION_COLOR, 7,
+            32565, false, true, RenderLayer.State.getBuilder().build(false));
 
-    public DriveLedTileEntityRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
+    public DriveLedTileEntityRenderer(BlockEntityRenderDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
     @Override
-    public void render(DriveTileEntity drive, float partialTicks, MatrixStack ms, VertexConsumerProvider buffers,
-            int combinedLightIn, int combinedOverlayIn) {
+    public void render(DriveBlockEntity drive, float partialTicks, MatrixStack ms, VertexConsumerProvider buffers,
+                       int combinedLightIn, int combinedOverlayIn) {
 
         if (drive.getCellCount() != 10) {
             throw new IllegalStateException("Expected drive to have 10 slots");
@@ -82,8 +82,8 @@ public class DriveLedTileEntityRenderer extends TileEntityRenderer<DriveTileEnti
 
         RenderState.TransparencyState TRANSLUCENT_TRANSPARENCY = ObfuscationReflectionHelper
                 .getPrivateValue(RenderState.class, null, "field_228515_g_");
-        RenderType rt = RenderType.makeType("ae_drive_leds", DefaultVertexFormats.POSITION_COLOR, 7, 32565, false, true,
-                RenderType.State.getBuilder().transparency(TRANSLUCENT_TRANSPARENCY).build(false));
+        RenderLayer rt = RenderLayer.makeType("ae_drive_leds", DefaultVertexFormats.POSITION_COLOR, 7, 32565, false, true,
+                RenderLayer.State.getBuilder().transparency(TRANSLUCENT_TRANSPARENCY).build(false));
         IVertexBuilder buffer = buffers.getBuffer(STATE);
 
         for (int row = 0; row < 5; row++) {
@@ -119,7 +119,7 @@ public class DriveLedTileEntityRenderer extends TileEntityRenderer<DriveTileEnti
 
     }
 
-    private Vector3f getColorForSlot(DriveTileEntity drive, int slot, float partialTicks) {
+    private Vector3f getColorForSlot(DriveBlockEntity drive, int slot, float partialTicks) {
         DriveSlotState state = DriveSlotState.fromCellStatus(drive.getCellStatus(slot));
         if (state == DriveSlotState.EMPTY) {
             return null;

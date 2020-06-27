@@ -31,9 +31,9 @@ import java.util.Random;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.IBakedModel;
 import net.minecraft.client.render.model.ItemCameraTransforms;
 import net.minecraft.client.render.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.MissingTextureSprite;
@@ -48,7 +48,7 @@ import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 
-public class CableBusBakedModel implements IBakedModel {
+public class CableBusBakedModel implements BakedModel {
 
     private static final Map<CableBusRenderState, List<BakedQuad>> CABLE_MODEL_CACHE = new HashMap<>();
 
@@ -56,12 +56,12 @@ public class CableBusBakedModel implements IBakedModel {
 
     private final FacadeBuilder facadeBuilder;
 
-    private final Map<Identifier, IBakedModel> partModels;
+    private final Map<Identifier, BakedModel> partModels;
 
     private final TextureAtlasSprite particleTexture;
 
     CableBusBakedModel(CableBuilder cableBuilder, FacadeBuilder facadeBuilder,
-                       Map<Identifier, IBakedModel> partModels, TextureAtlasSprite particleTexture) {
+                       Map<Identifier, BakedModel> partModels, TextureAtlasSprite particleTexture) {
         this.cableBuilder = cableBuilder;
         this.facadeBuilder = facadeBuilder;
         this.partModels = partModels;
@@ -82,14 +82,14 @@ public class CableBusBakedModel implements IBakedModel {
             return Collections.emptyList();
         }
 
-        RenderType layer = MinecraftForgeClient.getRenderLayer();
+        RenderLayer layer = MinecraftForgeClient.getRenderLayer();
 
         List<BakedQuad> quads = new ArrayList<>();
 
         // The core parts of the cable will only be rendered in the CUTOUT layer.
         // Facades will add them selves to what ever the block would be rendered with,
         // except when transparent facades are enabled, they are forced to TRANSPARENT.
-        if (layer == RenderType.getCutout()) {
+        if (layer == RenderLayer.getCutout()) {
 
             // First, handle the cable at the center of the cable bus
             final List<BakedQuad> cableModel = CABLE_MODEL_CACHE.computeIfAbsent(renderState, k -> {
@@ -112,7 +112,7 @@ public class CableBusBakedModel implements IBakedModel {
                 }
 
                 for (Identifier model : partModel.getModels()) {
-                    IBakedModel bakedModel = this.partModels.get(model);
+                    BakedModel bakedModel = this.partModels.get(model);
 
                     if (bakedModel == null) {
                         throw new IllegalStateException("Trying to use an unregistered part model: " + model);
@@ -282,7 +282,7 @@ public class CableBusBakedModel implements IBakedModel {
             IPartModel partModel = renderState.getAttachments().get(side);
 
             for (Identifier model : partModel.getModels()) {
-                IBakedModel bakedModel = this.partModels.get(model);
+                BakedModel bakedModel = this.partModels.get(model);
 
                 if (bakedModel == null) {
                     throw new IllegalStateException("Trying to use an unregistered part model: " + model);

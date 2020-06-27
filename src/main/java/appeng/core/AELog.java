@@ -29,7 +29,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 
 import appeng.api.features.AEFeature;
-import appeng.tile.AEBaseTileEntity;
+import appeng.tile.AEBaseBlockEntity;
 import appeng.util.Platform;
 
 public final class AELog {
@@ -301,7 +301,7 @@ public final class AELog {
      * @param aeBaseTile
      */
     public static void blockUpdate(@Nonnull final BlockPos pos, @Nonnull BlockState currentState,
-            @Nonnull BlockState newState, @Nonnull final AEBaseTileEntity aeBaseTile) {
+            @Nonnull BlockState newState, @Nonnull final AEBaseBlockEntity aeBaseTile) {
         if (AEConfig.instance().isFeatureEnabled(AEFeature.UPDATE_LOGGING)) {
             info(BLOCK_UPDATE, aeBaseTile.getClass().getName(), pos, currentState, newState);
         }

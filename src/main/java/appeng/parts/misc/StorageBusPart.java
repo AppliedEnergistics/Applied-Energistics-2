@@ -207,7 +207,7 @@ public class StorageBusPart extends UpgradeablePart
 
     private void resetCache(final boolean fullReset) {
         if (this.getHost() == null || this.getHost().getTile() == null || this.getHost().getTile().getWorld() == null
-                || this.getHost().getTile().getWorld().isRemote) {
+                || this.getHost().getTile().getWorld().isClient) {
             return;
         }
 
@@ -257,7 +257,7 @@ public class StorageBusPart extends UpgradeablePart
     @Override
     public void onNeighborChanged(BlockView w, BlockPos pos, BlockPos neighbor) {
         if (pos.offset(this.getSide().getFacing()).equals(neighbor)) {
-            final BlockEntity te = w.getTileEntity(neighbor);
+            final BlockEntity te = w.getBlockEntity(neighbor);
 
             // In case the TE was destroyed, we have to do a full reset immediately.
             if (te == null) {
@@ -400,7 +400,7 @@ public class StorageBusPart extends UpgradeablePart
 
         this.cached = true;
         final BlockEntity self = this.getHost().getTile();
-        final BlockEntity target = self.getWorld().getTileEntity(self.getPos().offset(this.getSide().getFacing()));
+        final BlockEntity target = self.getWorld().getBlockEntity(self.getPos().offset(this.getSide().getFacing()));
         final int newHandlerHash = this.createHandlerHash(target);
 
         if (newHandlerHash != 0 && newHandlerHash == this.handlerHash) {
@@ -497,10 +497,10 @@ public class StorageBusPart extends UpgradeablePart
         }
 
         if (achievement != null && achievement.getActionableNode() != null) {
-            // Platform.addStat( achievement.getActionableNode().getPlayerID(),
+            // Platform.increaseStat( achievement.getActionableNode().getPlayerID(),
             // Achievements.Recursive.getAchievement()
             // );
-            // Platform.addStat( getActionableNode().getPlayerID(),
+            // Platform.increaseStat( getActionableNode().getPlayerID(),
             // Achievements.Recursive.getAchievement() );
         }
     }

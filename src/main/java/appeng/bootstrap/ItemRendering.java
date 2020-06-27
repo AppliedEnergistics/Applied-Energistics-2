@@ -19,7 +19,7 @@
 package appeng.bootstrap;
 
 import net.fabricmc.api.Environment;
-import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.client.color.item.ItemColorProvider;
 import net.minecraft.item.Item;
 import net.fabricmc.api.EnvType;
 
@@ -28,11 +28,11 @@ import appeng.bootstrap.components.ItemColorComponent;
 class ItemRendering implements IItemRendering {
 
     @Environment(EnvType.CLIENT)
-    private IItemColor itemColor;
+    private ItemColorProvider itemColor;
 
     @Override
     @Environment(EnvType.CLIENT)
-    public IItemRendering color(IItemColor itemColor) {
+    public IItemRendering color(ItemColorProvider itemColor) {
         this.itemColor = itemColor;
         return this;
     }

@@ -24,13 +24,13 @@ import net.fabricmc.api.Environment;
 import appeng.bootstrap.TileEntityRendering;
 import appeng.bootstrap.TileEntityRenderingCustomizer;
 import appeng.client.render.tesr.SkyCompassTESR;
-import appeng.tile.misc.SkyCompassTileEntity;
+import appeng.tile.misc.SkyCompassBlockEntity;
 
-public class SkyCompassRendering extends TileEntityRenderingCustomizer<SkyCompassTileEntity> {
+public class SkyCompassRendering extends TileEntityRenderingCustomizer<SkyCompassBlockEntity> {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void customize(TileEntityRendering<SkyCompassTileEntity> rendering) {
+    public void customize(TileEntityRendering<SkyCompassBlockEntity> rendering) {
         rendering.tileEntityRenderer(SkyCompassTESR::new);
     }
 

@@ -33,9 +33,9 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.tile.misc.SkyCompassTileEntity;
+import appeng.tile.misc.SkyCompassBlockEntity;
 
-public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassTileEntity> {
+public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassBlockEntity> {
 
     public SkyCompassBlock(Settings props) {
         super(props);
@@ -43,7 +43,7 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassTileEntity> {
 
     @Override
     public boolean isValidOrientation(final WorldAccess w, final BlockPos pos, final Direction forward, final Direction up) {
-        final SkyCompassTileEntity sc = this.getTileEntity(w, pos);
+        final SkyCompassBlockEntity sc = this.getBlockEntity(w, pos);
         if (sc != null) {
             return false;
         }
@@ -59,7 +59,7 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassTileEntity> {
     @Override
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final SkyCompassTileEntity sc = this.getTileEntity(world, pos);
+        final SkyCompassBlockEntity sc = this.getBlockEntity(world, pos);
         final Direction forward = sc.getForward();
         if (!this.canPlaceAt(world, pos, forward.getOpposite())) {
             this.dropTorch(world, pos);
@@ -68,8 +68,8 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassTileEntity> {
 
     private void dropTorch(final World w, final BlockPos pos) {
         final BlockState prev = w.getBlockState(pos);
-        w.destroyBlock(pos, true);
-        w.notifyBlockUpdate(pos, prev, w.getBlockState(pos), 3);
+        w.breakBlock(pos, true);
+        w.updateListeners(pos, prev, w.getBlockState(pos), 3);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassTileEntity> {
 
         // TODO: This definitely needs to be memoized
 
-        final SkyCompassTileEntity tile = this.getTileEntity(w, pos);
+        final SkyCompassBlockEntity tile = this.getBlockEntity(w, pos);
         if (tile != null) {
             final Direction forward = tile.getForward();
 

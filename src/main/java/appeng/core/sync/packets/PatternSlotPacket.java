@@ -22,7 +22,7 @@ import alexiil.mc.lib.attributes.item.ItemTransferable;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.AEApi;

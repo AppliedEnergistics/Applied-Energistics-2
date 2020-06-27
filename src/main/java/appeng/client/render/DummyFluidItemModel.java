@@ -25,12 +25,12 @@ import java.util.function.Function;
 
 import com.mojang.datafixers.util.Pair;
 
-import net.minecraft.client.render.model.IBakedModel;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.IModelTransform;
 import net.minecraft.client.render.model.IUnbakedModel;
 import net.minecraft.client.render.model.ItemOverrideList;
 import net.minecraft.client.render.model.Material;
-import net.minecraft.client.render.model.ModelBakery;
+import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Identifier;
 import net.minecraftforge.client.model.IModelConfiguration;
@@ -48,10 +48,10 @@ public class DummyFluidItemModel implements IModelGeometry<DummyFluidItemModel> 
             "item/dummy_fluid_item_base");
 
     @Override
-    public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
-            Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
-            ItemOverrideList overrides, Identifier modelLocation) {
-        IBakedModel bakedBaseModel = bakery.getBakedModel(MODEL_BASE, modelTransform, spriteGetter);
+    public BakedModel bake(IModelConfiguration owner, ModelLoader bakery,
+                           Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
+                           ItemOverrideList overrides, Identifier modelLocation) {
+        BakedModel bakedBaseModel = bakery.getBakedModel(MODEL_BASE, modelTransform, spriteGetter);
 
         return new DummyFluidDispatcherBakedModel(bakedBaseModel, spriteGetter);
     }

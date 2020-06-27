@@ -39,15 +39,15 @@ import appeng.container.slot.MolecularAssemblerPatternSlot;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.items.misc.EncodedPatternItem;
-import appeng.tile.crafting.MolecularAssemblerTileEntity;
+import appeng.tile.crafting.MolecularAssemblerBlockEntity;
 import appeng.util.Platform;
 
 public class MolecularAssemblerContainer extends UpgradeableContainer implements IProgressProvider {
 
     public static ContainerType<MolecularAssemblerContainer> TYPE;
 
-    private static final ContainerHelper<MolecularAssemblerContainer, MolecularAssemblerTileEntity> helper = new ContainerHelper<>(
-            MolecularAssemblerContainer::new, MolecularAssemblerTileEntity.class);
+    private static final ContainerHelper<MolecularAssemblerContainer, MolecularAssemblerBlockEntity> helper = new ContainerHelper<>(
+            MolecularAssemblerContainer::new, MolecularAssemblerBlockEntity.class);
 
     public static MolecularAssemblerContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
@@ -58,19 +58,19 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
     }
 
     private static final int MAX_CRAFT_PROGRESS = 100;
-    private final MolecularAssemblerTileEntity tma;
+    private final MolecularAssemblerBlockEntity tma;
     @GuiSync(4)
     public int craftProgress = 0;
 
     private Slot encodedPatternSlot;
 
-    public MolecularAssemblerContainer(int id, final PlayerInventory ip, final MolecularAssemblerTileEntity te) {
+    public MolecularAssemblerContainer(int id, final PlayerInventory ip, final MolecularAssemblerBlockEntity te) {
         super(TYPE, id, ip, te);
         this.tma = te;
     }
 
     public boolean isValidItemForSlot(final int slotIndex, final ItemStack i) {
-        final ItemTransferable mac = this.getUpgradeable().getInventoryByName(MolecularAssemblerTileEntity.INVENTORY_MAIN);
+        final ItemTransferable mac = this.getUpgradeable().getInventoryByName(MolecularAssemblerBlockEntity.INVENTORY_MAIN);
 
         final ItemStack is = mac.getStackInSlot(10);
         if (is.isEmpty()) {
@@ -78,7 +78,7 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
         }
 
         if (is.getItem() instanceof EncodedPatternItem) {
-            final World w = this.getTileEntity().getWorld();
+            final World w = this.getBlockEntity().getWorld();
             final EncodedPatternItem iep = (EncodedPatternItem) is.getItem();
             final ICraftingPatternDetails ph = iep.getPatternForItem(is, w);
             if (ph.isCraftable()) {
@@ -99,7 +99,7 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
         int offX = 29;
         int offY = 30;
 
-        final ItemTransferable mac = this.getUpgradeable().getInventoryByName(MolecularAssemblerTileEntity.INVENTORY_MAIN);
+        final ItemTransferable mac = this.getUpgradeable().getInventoryByName(MolecularAssemblerBlockEntity.INVENTORY_MAIN);
 
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 3; x++) {

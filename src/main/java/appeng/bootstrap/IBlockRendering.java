@@ -23,9 +23,9 @@ import java.util.function.Predicate;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.color.IBlockColor;
-import net.minecraft.client.render.model.IBakedModel;
+import net.minecraft.client.color.block.BlockColorProvider;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.util.Identifier;
 
 /**
@@ -35,15 +35,12 @@ import net.minecraft.util.Identifier;
 public interface IBlockRendering {
 
     @Environment(EnvType.CLIENT)
-    IBlockRendering modelCustomizer(BiFunction<Identifier, IBakedModel, IBakedModel> customizer);
+    IBlockRendering modelCustomizer(BiFunction<Identifier, BakedModel, BakedModel> customizer);
 
     @Environment(EnvType.CLIENT)
-    IBlockRendering blockColor(IBlockColor blockColor);
+    IBlockRendering blockColor(BlockColorProvider blockColor);
 
     @Environment(EnvType.CLIENT)
-    IBlockRendering renderType(RenderType type);
-
-    @Environment(EnvType.CLIENT)
-    IBlockRendering renderType(Predicate<RenderType> type);
+    IBlockRendering renderType(RenderLayer type);
 
 }

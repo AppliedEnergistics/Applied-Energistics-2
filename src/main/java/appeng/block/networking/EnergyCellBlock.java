@@ -31,9 +31,9 @@ import net.minecraft.util.NonNullList;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.helpers.AEGlassMaterial;
-import appeng.tile.networking.EnergyCellTileEntity;
+import appeng.tile.networking.EnergyCellBlockEntity;
 
-public class EnergyCellBlock extends AEBaseTileBlock<EnergyCellTileEntity> {
+public class EnergyCellBlock extends AEBaseTileBlock<EnergyCellBlockEntity> {
 
     public static final IntegerProperty ENERGY_STORAGE = IntegerProperty.create("fullness", 0, 7);
 

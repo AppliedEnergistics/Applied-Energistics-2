@@ -21,7 +21,7 @@ package appeng.core.sync.packets;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
@@ -70,7 +70,7 @@ public class PartPlacementPacket extends BasePacket {
         final ServerPlayerEntity sender = (ServerPlayerEntity) player;
         AppEng.proxy.updateRenderMode(sender);
         PartPlacement.setEyeHeight(this.eyeHeight);
-        PartPlacement.place(sender.getHeldItem(this.hand), new BlockPos(this.x, this.y, this.z),
+        PartPlacement.place(sender.getStackInHand(this.hand), new BlockPos(this.x, this.y, this.z),
                 Direction.values()[this.face], sender, this.hand, sender.world,
                 PartPlacement.PlaceType.INTERACT_FIRST_PASS, 0);
         AppEng.proxy.updateRenderMode(null);

@@ -76,6 +76,10 @@ allprojects {
     }
 }
 
+dependencies {
+    compile project(":api")
+}
+
 subprojects {
 
     apply plugin: 'kotlin-platform-jvm'

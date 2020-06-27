@@ -248,7 +248,7 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> implem
         }
 
         final BlockEntity te = this.getTile().getWorld()
-                .getTileEntity(this.getTile().getPos().offset(this.getSide().getFacing()));
+                .getBlockEntity(this.getTile().getPos().offset(this.getSide().getFacing()));
 
         if (te != null && te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
                 this.getSide().getFacing().getOpposite()).isPresent()) {

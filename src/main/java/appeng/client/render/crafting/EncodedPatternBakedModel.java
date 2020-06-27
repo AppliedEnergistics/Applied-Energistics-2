@@ -3,12 +3,12 @@ package appeng.client.render.crafting;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.TransformationMatrix;
-import net.minecraft.client.render.model.IBakedModel;
 import net.minecraft.client.render.model.ItemCameraTransforms;
 import net.minecraft.client.render.model.ItemOverrideList;
 import net.minecraft.entity.LivingEntity;
@@ -36,7 +36,7 @@ public class EncodedPatternBakedModel extends DelegateBakedModel {
 
     private final CustomOverrideList overrides;
 
-    EncodedPatternBakedModel(IBakedModel baseModel) {
+    EncodedPatternBakedModel(BakedModel baseModel) {
         super(baseModel);
         this.overrides = new CustomOverrideList();
     }
@@ -58,9 +58,9 @@ public class EncodedPatternBakedModel extends DelegateBakedModel {
      */
     private static class ShiftHoldingModelWrapper extends DelegateBakedModel {
 
-        private final IBakedModel outputModel;
+        private final BakedModel outputModel;
 
-        private ShiftHoldingModelWrapper(IBakedModel patternModel, IBakedModel outputModel) {
+        private ShiftHoldingModelWrapper(BakedModel patternModel, BakedModel outputModel) {
             super(patternModel);
             this.outputModel = outputModel;
         }
@@ -71,7 +71,7 @@ public class EncodedPatternBakedModel extends DelegateBakedModel {
         }
 
         @Override
-        public IBakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
+        public BakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
             // No need to re-check for shift being held since this model is only handed out
             // in that case
             if (cameraTransformType == ItemCameraTransforms.TransformType.GUI) {
@@ -98,7 +98,7 @@ public class EncodedPatternBakedModel extends DelegateBakedModel {
     }
 
     @Override
-    public IBakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
+    public BakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
         return getBaseModel().handlePerspective(cameraTransformType, mat);
     }
 
@@ -112,14 +112,14 @@ public class EncodedPatternBakedModel extends DelegateBakedModel {
 
         @Nullable
         @Override
-        public IBakedModel getModelWithOverrides(IBakedModel originalModel, ItemStack stack, @Nullable World world,
-                @Nullable LivingEntity entity) {
+        public BakedModel getModelWithOverrides(BakedModel originalModel, ItemStack stack, @Nullable World world,
+                                                @Nullable LivingEntity entity) {
             boolean shiftHeld = Screen.hasShiftDown();
             if (shiftHeld) {
                 EncodedPatternItem iep = (EncodedPatternItem) stack.getItem();
                 ItemStack output = iep.getOutput(stack);
                 if (!output.isEmpty()) {
-                    IBakedModel realModel = Minecraft.getInstance().getItemRenderer().getItemModelMesher()
+                    BakedModel realModel = MinecraftClient.getInstance().getItemRenderer().getItemModelMesher()
                             .getItemModel(output);
                     // Give the item model a chance to handle the overrides as well
                     realModel = realModel.getOverrides().getModelWithOverrides(realModel, output, world, entity);

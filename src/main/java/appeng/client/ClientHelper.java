@@ -23,7 +23,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
@@ -67,7 +67,7 @@ public class ClientHelper extends ServerHelper {
     @Override
     public World getWorld() {
         if (Platform.isClient()) {
-            return Minecraft.getInstance().world;
+            return MinecraftClient.getInstance().world;
         } else {
             return super.getWorld();
         }
@@ -81,7 +81,7 @@ public class ClientHelper extends ServerHelper {
     @Override
     public List<? extends PlayerEntity> getPlayers() {
         if (Platform.isClient()) {
-            return Collections.singletonList(Minecraft.getInstance().player);
+            return Collections.singletonList(MinecraftClient.getInstance().player);
         } else {
             return super.getPlayers();
         }
@@ -113,7 +113,7 @@ public class ClientHelper extends ServerHelper {
 
     @Override
     public boolean shouldAddParticles(final Random r) {
-        switch (Minecraft.getInstance().gameSettings.particles) {
+        switch (MinecraftClient.getInstance().gameSettings.particles) {
             default:
             case ALL:
                 return true;
@@ -126,7 +126,7 @@ public class ClientHelper extends ServerHelper {
 
     @Override
     public HitResult getRTR() {
-        return Minecraft.getInstance().objectMouseOver;
+        return MinecraftClient.getInstance().objectMouseOver;
     }
 
     @Override
@@ -139,7 +139,7 @@ public class ClientHelper extends ServerHelper {
             return super.getRenderMode();
         }
 
-        final Minecraft mc = Minecraft.getInstance();
+        final MinecraftClient mc = MinecraftClient.getInstance();
         final PlayerEntity player = mc.player;
 
         return this.renderModeForPlayer(player);
@@ -147,7 +147,7 @@ public class ClientHelper extends ServerHelper {
 
     @Override
     public void triggerUpdates() {
-        final Minecraft mc = Minecraft.getInstance();
+        final MinecraftClient mc = MinecraftClient.getInstance();
         if (mc.player == null || mc.world == null) {
             return;
         }
@@ -183,7 +183,7 @@ public class ClientHelper extends ServerHelper {
             final double d1 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
             final double d2 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
 
-            Minecraft.getInstance().particles.addParticle(ParticleTypes.VIBRANT, x + d0, y + d1, z + d2, 0.0D, 0.0D,
+            MinecraftClient.getInstance().particles.addParticle(ParticleTypes.VIBRANT, x + d0, y + d1, z + d2, 0.0D, 0.0D,
                     0.0D);
         }
     }
@@ -193,12 +193,12 @@ public class ClientHelper extends ServerHelper {
         final float y = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
         final float z = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
 
-        Minecraft.getInstance().particles.addParticle(EnergyParticleData.FOR_BLOCK, posX + x, posY + y, posZ + z,
+        MinecraftClient.getInstance().particles.addParticle(EnergyParticleData.FOR_BLOCK, posX + x, posY + y, posZ + z,
                 -x * 0.1, -y * 0.1, -z * 0.1);
     }
 
     private void spawnLightning(final World world, final double posX, final double posY, final double posZ) {
-        Minecraft.getInstance().particles.addParticle(ParticleTypes.LIGHTNING, posX, posY + 0.3f, posZ, 0.0f, 0.0f,
+        MinecraftClient.getInstance().particles.addParticle(ParticleTypes.LIGHTNING, posX, posY + 0.3f, posZ, 0.0f, 0.0f,
                 0.0f);
     }
 
@@ -206,7 +206,7 @@ public class ClientHelper extends ServerHelper {
             final Vec3d second) {
         final LightningFX fx = new LightningArcFX(world, posX, posY, posZ, second.x, second.y, second.z, 0.0f, 0.0f,
                 0.0f);
-        Minecraft.getInstance().particles.addEffect(fx);
+        MinecraftClient.getInstance().particles.addEffect(fx);
     }
 
     private void wheelEvent(final InputEvent.MouseScrollEvent me) {
@@ -214,11 +214,11 @@ public class ClientHelper extends ServerHelper {
             return;
         }
 
-        final Minecraft mc = Minecraft.getInstance();
+        final MinecraftClient mc = MinecraftClient.getInstance();
         final PlayerEntity player = mc.player;
-        if (player.isCrouching()) {
-            final boolean mainHand = player.getHeldItem(Hand.MAIN_HAND).getItem() instanceof IMouseWheelItem;
-            final boolean offHand = player.getHeldItem(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem;
+        if (player.isInSneakingPose()) {
+            final boolean mainHand = player.getStackInHand(Hand.MAIN_HAND).getItem() instanceof IMouseWheelItem;
+            final boolean offHand = player.getStackInHand(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem;
 
             if (mainHand || offHand) {
                 NetworkHandler.instance()

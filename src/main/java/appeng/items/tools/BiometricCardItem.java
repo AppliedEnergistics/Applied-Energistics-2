@@ -23,7 +23,7 @@ import java.util.List;
 
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -45,27 +45,27 @@ import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
 
 public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
-    public BiometricCardItem(Properties properties) {
+    public BiometricCardItem(Settings properties) {
         super(properties);
     }
 
     @Override
     public TypedActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
-        if (p.isCrouching()) {
-            this.encode(p.getHeldItem(hand), p);
+        if (p.isInSneakingPose()) {
+            this.encode(p.getStackInHand(hand), p);
             p.swingArm(hand);
-            return TypedActionResult.resultSuccess(p.getHeldItem(hand));
+            return TypedActionResult.resultSuccess(p.getStackInHand(hand));
         }
 
-        return TypedActionResult.resultPass(p.getHeldItem(hand));
+        return TypedActionResult.resultPass(p.getStackInHand(hand));
     }
 
     @Override
     public boolean itemInteractionForEntity(ItemStack is, final PlayerEntity player, final LivingEntity target,
             final Hand hand) {
-        if (target instanceof PlayerEntity && !player.isCrouching()) {
+        if (target instanceof PlayerEntity && !player.isInSneakingPose()) {
             if (player.isCreative()) {
-                is = player.getHeldItem(hand);
+                is = player.getStackInHand(hand);
             }
             this.encode(is, (PlayerEntity) target);
             player.swingArm(hand);
@@ -75,10 +75,10 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
     }
 
     @Override
-    public Text getDisplayName(final ItemStack is) {
+    public Text getName(final ItemStack is) {
         final GameProfile username = this.getProfile(is);
-        return username != null ? super.getDisplayName(is).appendText(" - " + username.getName())
-                : super.getDisplayName(is);
+        return username != null ? super.getName(is).append(" - " + username.getName())
+                : super.getName(is);
     }
 
     private void encode(final ItemStack is, final PlayerEntity p) {
@@ -154,8 +154,8 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void addInformation(final ItemStack stack, final World world, final List<Text> lines,
-            final ITooltipFlag advancedTooltips) {
+    public void appendTooltip(final ItemStack stack, final World world, final List<Text> lines,
+            final TooltipContext advancedTooltips) {
         final EnumSet<SecurityPermissions> perms = this.getPermissions(stack);
         if (perms.isEmpty()) {
             lines.add(new TranslatableText(GuiText.NoPermissions.getLocal()));
@@ -166,7 +166,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
                 if (msg == null) {
                     msg = new TranslatableText(sp.getTranslatedName());
                 } else {
-                    msg = msg.appendText(", ").appendSibling(new TranslatableText(sp.getTranslatedName()));
+                    msg = msg.append(", ").append(new TranslatableText(sp.getTranslatedName()));
                 }
             }
             lines.add(msg);

@@ -25,45 +25,42 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import com.google.common.collect.Lists;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.DyeColor;
+import net.minecraft.text.LiteralText;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.text.Text;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.WorldAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
-import appeng.api.implementations.tiles.IColorableTile;
-import appeng.api.util.AEColor;
 import appeng.api.util.IOrientable;
 import appeng.block.networking.CableBusBlock;
-import appeng.tile.AEBaseInvTileEntity;
-import appeng.tile.AEBaseTileEntity;
-import appeng.tile.networking.CableBusTileEntity;
-import appeng.tile.storage.SkyChestTileEntity;
+import appeng.tile.AEBaseInvBlockEntity;
+import appeng.tile.AEBaseBlockEntity;
+import appeng.tile.networking.CableBusBlockEntity;
+import appeng.tile.storage.SkyChestBlockEntity;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
-public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBaseBlock {
+public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBaseBlock implements BlockEntityProvider {
 
     @Nonnull
-    private Class<T> tileEntityClass;
+    private Class<T> blockEntityClass;
     @Nonnull
     private Supplier<T> tileEntityFactory;
 
@@ -73,61 +70,45 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
 
     // TODO : Was this change needed?
     public void setTileEntity(final Class<T> tileEntityClass, Supplier<T> factory) {
-        this.tileEntityClass = tileEntityClass;
+        this.blockEntityClass = tileEntityClass;
         this.tileEntityFactory = factory;
-        this.setInventory(AEBaseInvTileEntity.class.isAssignableFrom(tileEntityClass));
+        this.setInventory(AEBaseInvBlockEntity.class.isAssignableFrom(tileEntityClass));
     }
 
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return this.hasBlockTileEntity();
-    }
-
-    private boolean hasBlockTileEntity() {
-        return true;
-    }
-
-    public Class<T> getTileEntityClass() {
-        return this.tileEntityClass;
+    public Class<T> getBlockEntityClass() {
+        return this.blockEntityClass;
     }
 
     @Nullable
-    public T getTileEntity(final BlockView w, final int x, final int y, final int z) {
-        return this.getTileEntity(w, new BlockPos(x, y, z));
+    public T getBlockEntity(final BlockView w, final int x, final int y, final int z) {
+        return this.getBlockEntity(w, new BlockPos(x, y, z));
     }
 
     @Nullable
-    public T getTileEntity(final BlockView w, final BlockPos pos) {
-        if (!this.hasBlockTileEntity()) {
-            return null;
-        }
+    public T getBlockEntity(final BlockView w, final BlockPos pos) {
 
-        final BlockEntity te = w.getTileEntity(pos);
+        final BlockEntity te = w.getBlockEntity(pos);
         // FIXME: This gets called as part of building the block state cache
-        if (this.tileEntityClass != null && this.tileEntityClass.isInstance(te)) {
-            return this.tileEntityClass.cast(te);
+        if (this.blockEntityClass != null && this.blockEntityClass.isInstance(te)) {
+            return this.blockEntityClass.cast(te);
         }
 
         return null;
     }
 
+    @Nullable
     @Override
-    public final BlockEntity createTileEntity(BlockState state, BlockView world) {
+    public BlockEntity createBlockEntity(BlockView world) {
         return this.tileEntityFactory.get();
     }
 
     @Override
-    public void dropXpOnBlockBreak(World worldIn, BlockPos pos, int amount) {
-        super.dropXpOnBlockBreak(worldIn, pos, amount);
-    }
-
-    @Override
-    public void onReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onStateReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
         if (newState.getBlock() == state.getBlock()) {
             return; // Just a block state change
         }
 
-        final AEBaseTileEntity te = this.getTileEntity(w, pos);
+        final AEBaseBlockEntity te = this.getBlockEntity(w, pos);
         if (te != null) {
             final ArrayList<ItemStack> drops = new ArrayList<>();
             if (te.dropItems()) {
@@ -141,84 +122,90 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
         }
 
         // super will remove the TE, as it is not an instance of BlockContainer
-        super.onReplaced(state, w, pos, newState, isMoving);
-    }
-
-    @Override
-    public boolean recolorBlock(BlockState state, final WorldAccess world, final BlockPos pos, final Direction side,
-            final DyeColor color) {
-        final BlockEntity te = this.getTileEntity(world, pos);
-
-        if (te instanceof IColorableTile) {
-            final IColorableTile ct = (IColorableTile) te;
-            final AEColor c = ct.getColor();
-            final AEColor newColor = AEColor.values()[color.ordinal()];
-
-            if (c != newColor) {
-                ct.recolourBlock(side, newColor, null);
-                return true;
-            }
-            return false;
-        }
-
-        return super.recolorBlock(state, world, pos, side, color);
+        super.onStateReplaced(state, w, pos, newState, isMoving);
     }
 
     @Override
     public int getComparatorOutput(BlockState state, final World w, final BlockPos pos) {
-        final BlockEntity te = this.getTileEntity(w, pos);
-        if (te instanceof AEBaseInvTileEntity) {
-            AEBaseInvTileEntity invTile = (AEBaseInvTileEntity) te;
-            if (invTile.getInternalInventory().getSlots() > 0) {
-                return ItemHandlerHelper.calcRedstoneFromInventory(invTile.getInternalInventory());
+        final BlockEntity te = this.getBlockEntity(w, pos);
+        if (te instanceof AEBaseInvBlockEntity) {
+            AEBaseInvBlockEntity invTile = (AEBaseInvBlockEntity) te;
+            if (invTile.getInternalInventory().getSlotCount() > 0) {
+                return getRedstoneFromFixedItemInv(invTile.getInternalInventory());
             }
         }
         return 0;
     }
 
-    @Override
-    public boolean eventReceived(final BlockState state, final World worldIn, final BlockPos pos, final int eventID,
-            final int eventParam) {
-        super.eventReceived(state, worldIn, pos, eventID, eventParam);
-        final BlockEntity tileentity = worldIn.getTileEntity(pos);
-        return tileentity != null ? tileentity.receiveClientEvent(eventID, eventParam) : false;
+    /**
+     * Calculate redstone output level.
+     * 0 if completely empty, 1 if _any_ item is present, up to 15 if all slots are full.
+     */
+    private int getRedstoneFromFixedItemInv(FixedItemInv inv) {
+        boolean foundAnything = false; // ANY slots non-empty?
+        float fillRatio = 0;
+
+        for (int i = 0; i < inv.getSlotCount(); ++i)
+        {
+            ItemStack stack = inv.getInvStack(i);
+            if (stack.isEmpty()) {
+                continue;
+            }
+
+            int slotMaxCount = inv.getMaxAmount(i, stack);
+            fillRatio += stack.getCount() / (float)Math.min(slotMaxCount, stack.getMaxCount());
+            foundAnything = true;
+        }
+
+        // Average the ratio across all slots
+        fillRatio /= inv.getSlotCount();
+
+        // Always return at least non-zero if _any_ slots are non-empty
+        return (foundAnything ? 1 : 0) + MathHelper.floor(fillRatio * 14.0f);
     }
 
     @Override
-    public void onBlockPlacedBy(final World w, final BlockPos pos, final BlockState state, final LivingEntity placer,
+    public boolean onSyncedBlockEvent(BlockState state, World world, BlockPos pos, int type, int data) {
+        super.onSyncedBlockEvent(state, world, pos, type, data);
+        final BlockEntity tileentity = world.getBlockEntity(pos);
+        return tileentity != null && tileentity.onSyncedBlockEvent(type, data);
+    }
+
+    @Override
+    public void onPlaced(final World w, final BlockPos pos, final BlockState state, final LivingEntity placer,
             final ItemStack is) {
         // Inherit the item stack's display name, but only if it's a user defined string
         // rather
         // than a translation component, since our custom naming cannot handle
         // untranslated
         // I18N strings and we would translate it using the server's locale :-(
-        AEBaseTileEntity te = this.getTileEntity(w, pos);
-        if (te != null && is.hasDisplayName()) {
-            Text displayName = is.getDisplayName();
-            if (displayName instanceof StringTextComponent) {
-                te.setName(((StringTextComponent) displayName).getText());
+        AEBaseBlockEntity te = this.getBlockEntity(w, pos);
+        if (te != null && is.hasCustomName()) {
+            Text displayName = is.getName();
+            if (displayName instanceof LiteralText) {
+                te.setName(((LiteralText) displayName).getRawString());
             }
         }
     }
 
     @Override
-    public ActionResult onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player,
-            Hand hand, BlockRayTraceResult hit) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player,
+                              Hand hand, BlockHitResult hit) {
         ItemStack heldItem;
-        if (player != null && !player.getHeldItem(hand).isEmpty()) {
-            heldItem = player.getHeldItem(hand);
+        if (player != null && !player.getStackInHand(hand).isEmpty()) {
+            heldItem = player.getStackInHand(hand);
 
-            if (Platform.isWrench(player, heldItem, pos) && player.isCrouching()) {
+            if (Platform.isWrench(player, heldItem, pos) && player.isInSneakingPose()) {
                 final BlockState blockState = world.getBlockState(pos);
                 final Block block = blockState.getBlock();
 
-                final AEBaseTileEntity tile = this.getTileEntity(world, pos);
+                final AEBaseBlockEntity tile = this.getBlockEntity(world, pos);
 
                 if (tile == null) {
                     return ActionResult.FAIL;
                 }
 
-                if (tile instanceof CableBusTileEntity || tile instanceof SkyChestTileEntity) {
+                if (tile instanceof CableBusBlockEntity || tile instanceof SkyChestBlockEntity) {
                     return ActionResult.FAIL;
                 }
 
@@ -234,10 +221,12 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
                     }
                 }
 
-                if (block.removedByPlayer(blockState, world, pos, player, false, world.getFluidState(pos))) {
+                block.onBreak(world, pos, blockState, player);
+                boolean bl = world.removeBlock(pos, false);
+                if (bl) {
+                    block.onBroken(world, pos, blockState);
                     final List<ItemStack> itemsToDrop = Lists.newArrayList(itemDropCandidates);
                     Platform.spawnDrops(world, pos, itemsToDrop);
-                    world.removeBlock(pos, false);
                 }
 
                 return ActionResult.FAIL;
@@ -245,7 +234,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
 
             if (heldItem.getItem() instanceof IMemoryCard && !(this instanceof CableBusBlock)) {
                 final IMemoryCard memoryCard = (IMemoryCard) heldItem.getItem();
-                final AEBaseTileEntity tileEntity = this.getTileEntity(world, pos);
+                final AEBaseBlockEntity tileEntity = this.getBlockEntity(world, pos);
 
                 if (tileEntity == null) {
                     return ActionResult.FAIL;
@@ -253,7 +242,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
 
                 final String name = this.getTranslationKey();
 
-                if (player.isCrouching()) {
+                if (player.isInSneakingPose()) {
                     final CompoundTag data = tileEntity.downloadSettings(SettingsFrom.MEMORY_CARD);
                     if (data != null) {
                         memoryCard.setMemoryCardContents(heldItem, name, data);
@@ -275,12 +264,12 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
             }
         }
 
-        return this.onActivated(world, pos, player, hand, player.getHeldItem(hand), hit);
+        return this.onActivated(world, pos, player, hand, player.getStackInHand(hand), hit);
     }
 
     @Override
     public IOrientable getOrientable(final BlockView w, final BlockPos pos) {
-        return this.getTileEntity(w, pos);
+        return this.getBlockEntity(w, pos);
     }
 
     /**
@@ -291,12 +280,12 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
      * returned unchanged, this is also the case if the given block state does not
      * belong to this block.
      */
-    public final BlockState getTileEntityBlockState(BlockState current, BlockEntity te) {
-        if (current.getBlock() != this || !tileEntityClass.isInstance(te)) {
+    public final BlockState getBlockEntityBlockState(BlockState current, BlockEntity te) {
+        if (current.getBlock() != this || !blockEntityClass.isInstance(te)) {
             return current;
         }
 
-        return updateBlockStateFromTileEntity(current, tileEntityClass.cast(te));
+        return updateBlockStateFromTileEntity(current, blockEntityClass.cast(te));
     }
 
     /**

@@ -170,7 +170,7 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
 
                 final List<String> list = new ArrayList<>();
 
-                list.add(fluidStack.getFluidStack().getDisplayName().getFormattedText());
+                list.add(fluidStack.getFluidStack().getName().getFormattedText());
                 list.add(formattedAmount);
                 list.add(modName);
 

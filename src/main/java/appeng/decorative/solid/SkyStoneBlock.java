@@ -28,7 +28,7 @@ import net.minecraft.world.WorldAccess;
 import net.minecraft.world.World;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.ToolType;
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -54,7 +54,7 @@ public class SkyStoneBlock extends AEBaseBlock {
             int level = -1;
 
             if (!is.isEmpty()) {
-                level = is.getItem().getHarvestLevel(is, ToolType.PICKAXE, event.getPlayer(), event.getState());
+                level = is.getItem().getHarvestLevel(is, FabricToolTags.PICKAXES, event.getPlayer(), event.getState());
             }
 
             if (this.type != SkystoneType.STONE || level >= 3 || event.getOriginalSpeed() > BREAK_SPEAK_THRESHOLD) {

@@ -31,9 +31,9 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.tile.qnb.QuantumBridgeTileEntity;
+import appeng.tile.qnb.QuantumBridgeBlockEntity;
 
-public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeTileEntity> {
+public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeBlockEntity> {
 
     public static final BooleanProperty FORMED = BooleanProperty.create("formed");
 
@@ -62,31 +62,31 @@ public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeTile
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, QuantumBridgeTileEntity te) {
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, QuantumBridgeBlockEntity te) {
         return currentState.with(FORMED, te.isFormed());
     }
 
     @Override
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final QuantumBridgeTileEntity bridge = this.getTileEntity(world, pos);
+        final QuantumBridgeBlockEntity bridge = this.getBlockEntity(world, pos);
         if (bridge != null) {
             bridge.neighborUpdate();
         }
     }
 
     @Override
-    public void onReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onStateReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
         if (newState.getBlock() == state.getBlock()) {
             return; // Just a block state change
         }
 
-        final QuantumBridgeTileEntity bridge = this.getTileEntity(w, pos);
+        final QuantumBridgeBlockEntity bridge = this.getBlockEntity(w, pos);
         if (bridge != null) {
             bridge.breakCluster();
         }
 
-        super.onReplaced(state, w, pos, newState, isMoving);
+        super.onStateReplaced(state, w, pos, newState, isMoving);
     }
 
 }

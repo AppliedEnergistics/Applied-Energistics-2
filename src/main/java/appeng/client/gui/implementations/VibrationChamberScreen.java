@@ -29,7 +29,7 @@ import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
 import appeng.container.implementations.VibrationChamberContainer;
 import appeng.core.localization.GuiText;
-import appeng.tile.misc.VibrationChamberTileEntity;
+import appeng.tile.misc.VibrationChamberBlockEntity;
 
 public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContainer> {
 
@@ -54,8 +54,8 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContain
         this.font.drawString(this.getGuiDisplayName(GuiText.VibrationChamber.getLocal()), 8, 6, 4210752);
         this.font.drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
 
-        this.pb.setFullMsg(VibrationChamberTileEntity.POWER_PER_TICK * this.container.getCurrentProgress()
-                / VibrationChamberTileEntity.DILATION_SCALING + " AE/t");
+        this.pb.setFullMsg(VibrationChamberBlockEntity.POWER_PER_TICK * this.container.getCurrentProgress()
+                / VibrationChamberBlockEntity.DILATION_SCALING + " AE/t");
 
         if (this.container.getRemainingBurnTime() > 0) {
             final int i1 = this.container.getRemainingBurnTime() * 12 / 100;

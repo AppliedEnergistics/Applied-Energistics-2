@@ -29,7 +29,7 @@ import appeng.util.Platform;
 public class QuartzSpadeItem extends ShovelItem {
     private final AEFeature type;
 
-    public QuartzSpadeItem(Item.Properties props, final AEFeature type) {
+    public QuartzSpadeItem(Item.Settings props, final AEFeature type) {
         super(ItemTier.IRON, 1.5F, -3.0F, props);
         this.type = type;
     }

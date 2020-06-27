@@ -30,7 +30,7 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
@@ -38,9 +38,9 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.ChestContainer;
 import appeng.core.localization.PlayerMessages;
-import appeng.tile.storage.ChestTileEntity;
+import appeng.tile.storage.ChestBlockEntity;
 
-public class ChestBlock extends AEBaseTileBlock<ChestTileEntity> {
+public class ChestBlock extends AEBaseTileBlock<ChestBlockEntity> {
 
     private final static EnumProperty<DriveSlotState> SLOT_STATE = EnumProperty.create("slot_state",
             DriveSlotState.class);
@@ -57,7 +57,7 @@ public class ChestBlock extends AEBaseTileBlock<ChestTileEntity> {
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, ChestTileEntity te) {
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, ChestBlockEntity te) {
         DriveSlotState slotState = DriveSlotState.EMPTY;
 
         if (te.getCellCount() >= 1) {
@@ -73,14 +73,14 @@ public class ChestBlock extends AEBaseTileBlock<ChestTileEntity> {
 
     @Override
     public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        final ChestTileEntity tg = this.getTileEntity(w, pos);
-        if (tg != null && !p.isCrouching()) {
-            if (w.isRemote()) {
+            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+        final ChestBlockEntity tg = this.getBlockEntity(w, pos);
+        if (tg != null && !p.isInSneakingPose()) {
+            if (w.isClient()) {
                 return ActionResult.SUCCESS;
             }
 
-            if (hit.getFace() == tg.getUp()) {
+            if (hit.getSide() == tg.getUp()) {
                 if (!tg.openGui(p)) {
                     p.sendMessage(PlayerMessages.ChestCannotReadStorageCell.get());
                 }

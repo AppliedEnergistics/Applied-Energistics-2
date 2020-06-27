@@ -29,7 +29,7 @@ import appeng.util.Platform;
 public class QuartzPickaxeItem extends PickaxeItem {
     private final AEFeature type;
 
-    public QuartzPickaxeItem(Item.Properties props, final AEFeature type) {
+    public QuartzPickaxeItem(Item.Settings props, final AEFeature type) {
         super(ItemTier.IRON, 1, -2.8F, props);
         this.type = type;
     }

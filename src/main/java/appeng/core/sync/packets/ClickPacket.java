@@ -23,12 +23,12 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.ItemUsageContext;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
 
 import appeng.api.AEApi;
@@ -75,9 +75,9 @@ public class ClickPacket extends BasePacket {
     }
 
     // API for when a block was right clicked
-    public ClickPacket(ItemUseContext context) {
-        this(context.getPos(), context.getFace(), context.getPos().getX(), context.getPos().getY(),
-                context.getPos().getZ(), context.getHand());
+    public ClickPacket(ItemUsageContext context) {
+        this(context.getBlockPos(), context.getSide(), context.getBlockPos().getX(), context.getBlockPos().getY(),
+                context.getBlockPos().getZ(), context.getHand());
     }
 
     // API for when an item in hand was right-clicked, with no block context
@@ -122,7 +122,7 @@ public class ClickPacket extends BasePacket {
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
         final BlockPos pos = new BlockPos(this.x, this.y, this.z);
 
-        final ItemStack is = player.getHeldItem(hand);
+        final ItemStack is = player.getStackInHand(hand);
         final IItems items = AEApi.instance().definitions().items();
         final IComparableDefinition maybeMemoryCard = items.memoryCard();
         final IComparableDefinition maybeColorApplicator = items.colorApplicator();
@@ -140,8 +140,8 @@ public class ClickPacket extends BasePacket {
 
                     if (hasBlockContext()) {
                         // Reconstruct an item use context
-                        ItemUseContext useContext = new ItemUseContext(player, hand,
-                                new BlockRayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos, false));
+                        ItemUsageContext useContext = new ItemUsageContext(player, hand,
+                                new BlockHitResult(new Vec3d(hitX, hitY, hitZ), side, pos, false));
                         tnt.serverSideToolLogic(useContext);
                     } else {
                         ContainerOpener.openContainer(NetworkToolContainer.TYPE, player,

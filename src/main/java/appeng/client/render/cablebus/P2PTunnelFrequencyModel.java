@@ -7,12 +7,12 @@ import java.util.function.Function;
 
 import com.mojang.datafixers.util.Pair;
 
-import net.minecraft.client.render.model.IBakedModel;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.IModelTransform;
 import net.minecraft.client.render.model.IUnbakedModel;
 import net.minecraft.client.render.model.ItemOverrideList;
 import net.minecraft.client.render.model.Material;
-import net.minecraft.client.render.model.ModelBakery;
+import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Identifier;
@@ -26,9 +26,9 @@ public class P2PTunnelFrequencyModel implements IModelGeometry<P2PTunnelFrequenc
             new Identifier(AppEng.MOD_ID, "parts/p2p_tunnel_frequency"));
 
     @Override
-    public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
-            Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
-            ItemOverrideList overrides, Identifier modelLocation) {
+    public BakedModel bake(IModelConfiguration owner, ModelLoader bakery,
+                           Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
+                           ItemOverrideList overrides, Identifier modelLocation) {
         try {
             final TextureAtlasSprite texture = spriteGetter.apply(TEXTURE);
             return new P2PTunnelFrequencyBakedModel(texture);

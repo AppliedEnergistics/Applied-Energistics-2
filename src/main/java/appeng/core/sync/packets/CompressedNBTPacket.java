@@ -28,7 +28,7 @@ import java.util.zip.GZIPOutputStream;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
@@ -96,7 +96,7 @@ public class CompressedNBTPacket extends BasePacket {
     @Override
     @Environment(EnvType.CLIENT)
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
-        final Screen gs = Minecraft.getInstance().currentScreen;
+        final Screen gs = MinecraftClient.getInstance().currentScreen;
 
         if (gs instanceof InterfaceTerminalScreen) {
             ((InterfaceTerminalScreen) gs).postUpdate(this.in);

@@ -26,10 +26,10 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.IBakedModel;
 import net.minecraft.client.render.model.ItemCameraTransforms;
 import net.minecraft.client.render.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -56,13 +56,13 @@ public class SkyCompassBakedModel implements IDynamicBakedModel {
     // Rotation is expressed as radians
     public static final ModelProperty<Float> ROTATION = new ModelProperty<>();
 
-    private final IBakedModel base;
+    private final BakedModel base;
 
-    private final IBakedModel pointer;
+    private final BakedModel pointer;
 
     private float fallbackRotation = 0;
 
-    public SkyCompassBakedModel(IBakedModel base, IBakedModel pointer) {
+    public SkyCompassBakedModel(BakedModel base, BakedModel pointer) {
         this.base = base;
         this.pointer = pointer;
     }
@@ -149,8 +149,8 @@ public class SkyCompassBakedModel implements IDynamicBakedModel {
          */
         return new ItemOverrideList() {
             @Override
-            public IBakedModel getModelWithOverrides(IBakedModel originalModel, ItemStack stack, @Nullable World world,
-                    @Nullable LivingEntity entity) {
+            public BakedModel getModelWithOverrides(BakedModel originalModel, ItemStack stack, @Nullable World world,
+                                                    @Nullable LivingEntity entity) {
                 // FIXME: This check prevents compasses being held by OTHERS from getting the
                 // rotation, BUT do we actually still need this???
                 if (world != null && entity instanceof ClientPlayerEntity) {

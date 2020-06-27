@@ -31,12 +31,12 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.text.Text;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
@@ -159,20 +159,20 @@ public class TestMeteoritesCommand implements ISubCommand {
 
             Text restOfLine;
             if (settings.getFallout() == null) {
-                restOfLine = new StringTextComponent(
+                restOfLine = new LiteralText(
                         String.format(Locale.ROOT, ", radius=%.2f [%s]", settings.getMeteoriteRadius(), state));
             } else {
-                restOfLine = new StringTextComponent(String.format(Locale.ROOT, ", radius=%.2f, crater=%s, fallout=%s",
+                restOfLine = new LiteralText(String.format(Locale.ROOT, ", radius=%.2f, crater=%s, fallout=%s",
                         settings.getMeteoriteRadius(), settings.getCraterType().name().toLowerCase(),
                         settings.getFallout().name().toLowerCase()));
             }
 
-            Text msg = new StringTextComponent(" #" + (i + 1) + " ");
-            msg.appendSibling(getClickablePosition(world, settings, pos)).appendSibling(restOfLine);
+            Text msg = new LiteralText(" #" + (i + 1) + " ");
+            msg.append(getClickablePosition(world, settings, pos)).append(restOfLine);
 
             // Add a tooltip
-            Text tooltip = new StringTextComponent(settings.toString() + "\nBiome: ")
-                    .appendSibling(world.getBiome(pos).getDisplayName());
+            Text tooltip = new LiteralText(settings.toString() + "\nBiome: ")
+                    .append(world.getBiome(pos).getName());
             msg.applyTextStyle(style -> style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
 
             sender.sendFeedback(msg, true);
@@ -191,7 +191,7 @@ public class TestMeteoritesCommand implements ISubCommand {
         String displayText = String.format(Locale.ROOT, "pos=%d,%d,%d", tpPos.getX(), tpPos.getY(), tpPos.getZ());
         String tpCommand = String.format(Locale.ROOT, "/tp @s %d %d %d", tpPos.getX(), tpPos.getY(), tpPos.getZ());
 
-        return new StringTextComponent(displayText).applyTextStyle(TextFormatting.UNDERLINE)
+        return new LiteralText(displayText).applyTextStyle(TextFormatting.UNDERLINE)
                 .applyTextStyle(style -> style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, tpCommand)));
     }
 
@@ -206,7 +206,7 @@ public class TestMeteoritesCommand implements ISubCommand {
     }
 
     private static void sendLine(ServerCommandSource sender, String text, Object... args) {
-        sender.sendFeedback(new StringTextComponent(String.format(Locale.ROOT, text, args)), true);
+        sender.sendFeedback(new LiteralText(String.format(Locale.ROOT, text, args)), true);
     }
 
 }

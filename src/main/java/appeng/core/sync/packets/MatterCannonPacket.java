@@ -22,7 +22,7 @@ import io.netty.buffer.Unpooled;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 
@@ -83,7 +83,7 @@ public class MatterCannonPacket extends BasePacket {
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         try {
             for (int a = 1; a < this.len; a++) {
-                Minecraft.getInstance().particles.addParticle(ParticleTypes.MATTER_CANNON, this.x + this.dx * a,
+                MinecraftClient.getInstance().particles.addParticle(ParticleTypes.MATTER_CANNON, this.x + this.dx * a,
                         this.y + this.dy * a, this.z + this.dz * a, 0, 0, 0);
             }
         } catch (final Exception ignored) {

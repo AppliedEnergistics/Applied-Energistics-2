@@ -25,12 +25,12 @@ import java.util.function.Function;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 
-import net.minecraft.client.render.model.IBakedModel;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.IModelTransform;
 import net.minecraft.client.render.model.IUnbakedModel;
 import net.minecraft.client.render.model.ItemOverrideList;
 import net.minecraft.client.render.model.Material;
-import net.minecraft.client.render.model.ModelBakery;
+import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Identifier;
@@ -75,9 +75,9 @@ class CraftingCubeModel implements IModelGeometry<CraftingCubeModel> {
     }
 
     @Override
-    public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
-            Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
-            ItemOverrideList overrides, Identifier modelLocation) {
+    public BakedModel bake(IModelConfiguration owner, ModelLoader bakery,
+                           Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
+                           ItemOverrideList overrides, Identifier modelLocation) {
         // Retrieve our textures and pass them on to the baked model
         TextureAtlasSprite ringCorner = spriteGetter.apply(RING_CORNER);
         TextureAtlasSprite ringSideHor = spriteGetter.apply(RING_SIDE_HOR);

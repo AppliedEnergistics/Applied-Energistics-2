@@ -51,8 +51,8 @@ public class FacadeBlockAccess implements ILightReader {
 
     @Nullable
     @Override
-    public BlockEntity getTileEntity(BlockPos pos) {
-        return this.world.getTileEntity(pos);
+    public BlockEntity getBlockEntity(BlockPos pos) {
+        return this.world.getBlockEntity(pos);
     }
 
     @Override

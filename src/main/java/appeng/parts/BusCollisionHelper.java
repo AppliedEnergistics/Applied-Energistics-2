@@ -98,25 +98,25 @@ public class BusCollisionHelper implements IPartCollisionHelper {
         maxY /= 16.0;
         maxZ /= 16.0;
 
-        double aX = minX * this.x.getXOffset() + minY * this.y.getXOffset() + minZ * this.z.getXOffset();
-        double aY = minX * this.x.getYOffset() + minY * this.y.getYOffset() + minZ * this.z.getYOffset();
-        double aZ = minX * this.x.getZOffset() + minY * this.y.getZOffset() + minZ * this.z.getZOffset();
+        double aX = minX * this.x.getOffsetX() + minY * this.y.getOffsetX() + minZ * this.z.getOffsetX();
+        double aY = minX * this.x.getOffsetY() + minY * this.y.getOffsetY() + minZ * this.z.getOffsetY();
+        double aZ = minX * this.x.getOffsetZ() + minY * this.y.getOffsetZ() + minZ * this.z.getOffsetZ();
 
-        double bX = maxX * this.x.getXOffset() + maxY * this.y.getXOffset() + maxZ * this.z.getXOffset();
-        double bY = maxX * this.x.getYOffset() + maxY * this.y.getYOffset() + maxZ * this.z.getYOffset();
-        double bZ = maxX * this.x.getZOffset() + maxY * this.y.getZOffset() + maxZ * this.z.getZOffset();
+        double bX = maxX * this.x.getOffsetX() + maxY * this.y.getOffsetX() + maxZ * this.z.getOffsetX();
+        double bY = maxX * this.x.getOffsetY() + maxY * this.y.getOffsetY() + maxZ * this.z.getOffsetY();
+        double bZ = maxX * this.x.getOffsetZ() + maxY * this.y.getOffsetZ() + maxZ * this.z.getOffsetZ();
 
-        if (this.x.getXOffset() + this.y.getXOffset() + this.z.getXOffset() < 0) {
+        if (this.x.getOffsetX() + this.y.getOffsetX() + this.z.getOffsetX() < 0) {
             aX += 1;
             bX += 1;
         }
 
-        if (this.x.getYOffset() + this.y.getYOffset() + this.z.getYOffset() < 0) {
+        if (this.x.getOffsetY() + this.y.getOffsetY() + this.z.getOffsetY() < 0) {
             aY += 1;
             bY += 1;
         }
 
-        if (this.x.getZOffset() + this.y.getZOffset() + this.z.getZOffset() < 0) {
+        if (this.x.getOffsetZ() + this.y.getOffsetZ() + this.z.getOffsetZ() < 0) {
             aZ += 1;
             bZ += 1;
         }

@@ -23,13 +23,13 @@ import java.util.Iterator;
 import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraftforge.items.wrapper.EmptyHandler;
+import alexiil.mc.lib.attributes.item.impl.EmptyFixedItemInv;
 
 import appeng.api.AEApi;
 import appeng.api.config.CopyMode;
@@ -47,7 +47,7 @@ import appeng.container.guisync.GuiSync;
 import appeng.container.slot.FakeTypeOnlySlot;
 import appeng.container.slot.OptionalRestrictedInputSlot;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.tile.misc.CellWorkbenchTileEntity;
+import appeng.tile.misc.CellWorkbenchBlockEntity;
 import appeng.util.EnumCycler;
 import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
@@ -58,16 +58,16 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
 
     public static ContainerType<CellWorkbenchContainer> TYPE;
 
-    private static final ContainerHelper<CellWorkbenchContainer, CellWorkbenchTileEntity> helper = new ContainerHelper<>(
-            CellWorkbenchContainer::new, CellWorkbenchTileEntity.class);
+    private static final ContainerHelper<CellWorkbenchContainer, CellWorkbenchBlockEntity> helper = new ContainerHelper<>(
+            CellWorkbenchContainer::new, CellWorkbenchBlockEntity.class);
 
-    private final CellWorkbenchTileEntity workBench;
+    private final CellWorkbenchBlockEntity workBench;
     @GuiSync(2)
     public CopyMode copyMode = CopyMode.CLEAR_ON_REMOVE;
     private ItemStack prevStack = ItemStack.EMPTY;
     private int lastUpgrades = 0;
 
-    public CellWorkbenchContainer(int id, final PlayerInventory ip, final CellWorkbenchTileEntity te) {
+    public CellWorkbenchContainer(int id, final PlayerInventory ip, final CellWorkbenchBlockEntity te) {
         super(TYPE, id, ip, te);
         this.workBench = te;
     }
@@ -185,7 +185,7 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
     public ItemTransferable getCellUpgradeInventory() {
         final ItemTransferable upgradeInventory = this.workBench.getCellUpgradeInventory();
 
-        return upgradeInventory == null ? EmptyHandler.INSTANCE : upgradeInventory;
+        return upgradeInventory == null ? EmptyFixedItemInv.INSTANCE : upgradeInventory;
     }
 
     @Override

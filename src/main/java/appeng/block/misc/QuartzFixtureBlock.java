@@ -27,9 +27,9 @@ import javax.annotation.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.block.Material;
-import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
@@ -64,9 +64,9 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock 
         SHAPES = new EnumMap<>(Direction.class);
 
         for (Direction facing : Direction.values()) {
-            final double xOff = -0.3 * facing.getXOffset();
-            final double yOff = -0.3 * facing.getYOffset();
-            final double zOff = -0.3 * facing.getZOffset();
+            final double xOff = -0.3 * facing.getOffsetX();
+            final double yOff = -0.3 * facing.getOffsetY();
+            final double zOff = -0.3 * facing.getOffsetZ();
             VoxelShape shape = VoxelShapes
                     .create(new Box(xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7));
             SHAPES.put(facing, shape);
@@ -80,8 +80,8 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock 
     public static final BooleanProperty ODD = BooleanProperty.create("odd");
 
     public QuartzFixtureBlock() {
-        super(defaultProps(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0).lightValue(14)
-                .sound(BlockSoundGroup.GLASS));
+        super(defaultProps(Material.MISCELLANEOUS).doesNotBlockMovement().strength(0).lightValue(14)
+                .sounds(BlockSoundGroup.GLASS));
 
         this.setDefaultState(getDefaultState().with(FACING, Direction.UP).with(ODD, false));
     }
@@ -94,9 +94,9 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock 
     // For reference, see WallTorchBlock
     @Override
     @Nullable
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
+    public BlockState getStateForPlacement(ItemPlacementContext context) {
         BlockState blockstate = super.getStateForPlacement(context);
-        BlockPos pos = context.getPos();
+        BlockPos pos = context.getBlockPos();
 
         // Set the even/odd property
         boolean oddPlacement = ((pos.getX() + pos.getY() + pos.getZ()) % 2) != 0;
@@ -157,9 +157,9 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock 
         }
 
         final Direction up = this.getOrientable(w, pos).getUp();
-        final double xOff = -0.3 * up.getXOffset();
-        final double yOff = -0.3 * up.getYOffset();
-        final double zOff = -0.3 * up.getZOffset();
+        final double xOff = -0.3 * up.getOffsetX();
+        final double yOff = -0.3 * up.getOffsetY();
+        final double zOff = -0.3 * up.getOffsetZ();
         for (int bolts = 0; bolts < 3; bolts++) {
             if (AppEng.proxy.shouldAddParticles(r)) {
                 w.addParticle(ParticleTypes.LIGHTNING, xOff + 0.5 + pos.getX(), yOff + 0.5 + pos.getY(),
@@ -180,8 +180,8 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock 
 
     private void dropTorch(final World w, final BlockPos pos) {
         final BlockState prev = w.getBlockState(pos);
-        w.destroyBlock(pos, true);
-        w.notifyBlockUpdate(pos, prev, w.getBlockState(pos), 3);
+        w.breakBlock(pos, true);
+        w.updateListeners(pos, prev, w.getBlockState(pos), 3);
     }
 
     @Override

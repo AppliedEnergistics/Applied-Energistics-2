@@ -18,7 +18,7 @@
 
 package appeng.bootstrap;
 
-import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.client.color.item.ItemColorProvider;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -32,6 +32,6 @@ public interface IItemRendering {
      * and returns a color multiplier.
      */
     @Environment(EnvType.CLIENT)
-    IItemRendering color(IItemColor itemColor);
+    IItemRendering color(ItemColorProvider itemColor);
 
 }

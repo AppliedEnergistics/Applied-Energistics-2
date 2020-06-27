@@ -18,37 +18,7 @@
 
 package appeng.items.tools.powered;
 
-import java.util.*;
-
-import javax.annotation.Nullable;
-
 import alexiil.mc.lib.attributes.item.ItemTransferable;
-import com.google.common.collect.ImmutableMap;
-
-import net.fabricmc.api.Environment;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.SnowballItem;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.state.IProperty;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.text.Text;
-import net.minecraft.world.World;
-import net.minecraft.server.world.ServerWorld;
-import net.fabricmc.api.EnvType;
-
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -75,9 +45,37 @@ import appeng.items.contents.CellUpgrades;
 import appeng.items.misc.PaintBallItem;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.BaseActionSource;
-import appeng.tile.misc.PaintSplotchesTileEntity;
+import appeng.tile.misc.PaintSplotchesBlockEntity;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
+import com.google.common.collect.ImmutableMap;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUsageContext;
+import net.minecraft.item.SnowballItem;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.state.IProperty;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
+import java.util.*;
 
 public class ColorApplicatorItem extends AEBasePoweredItem
         implements IStorageCell<IAEItemStack>, IItemGroup, IBlockTool, IMouseWheelItem {
@@ -102,24 +100,28 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     private static final String TAG_COLOR = "color";
 
-    public ColorApplicatorItem(Item.Properties props) {
+    public ColorApplicatorItem(Item.Settings props) {
         super(AEConfig.instance().getColorApplicatorBattery(), props);
-        addPropertyOverride(new Identifier(AppEng.MOD_ID, "colored"), (itemStack, world, entity) -> {
-            // If the stack has no color, don't use the colored model since the impact of
-            // calling getColor for every quad is extremely high, if the stack tries to
-            // re-search its
-            // inventory for a new paintball everytime
-            AEColor col = getActiveColor(itemStack);
-            return (col != null) ? 1 : 0;
-        });
+        FabricModelPredicateProviderRegistry.register(
+                this,
+                new Identifier(AppEng.MOD_ID, "colored"),
+                (itemStack, world, entity) -> {
+                    // If the stack has no color, don't use the colored model since the impact of
+                    // calling getColor for every quad is extremely high, if the stack tries to
+                    // re-search its
+                    // inventory for a new paintball everytime
+                    AEColor col = getActiveColor(itemStack);
+                    return (col != null) ? 1 : 0;
+                }
+        );
     }
 
     @Override
-    public ActionResult onItemUse(ItemUseContext context) {
+    public ActionResult onItemUse(ItemUsageContext context) {
         World w = context.getWorld();
-        BlockPos pos = context.getPos();
-        ItemStack is = context.getItem();
-        Direction side = context.getFace();
+        BlockPos pos = context.getBlockPos();
+        ItemStack is = context.getStack();
+        Direction side = context.getSide();
         PlayerEntity p = context.getPlayer(); // This can be null
         if (p == null && w instanceof ServerWorld) {
             p = Platform.getPlayer((ServerWorld) w);
@@ -148,7 +150,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
             final double powerPerUse = 100;
             if (!paintBall.isEmpty() && paintBall.getItem() instanceof SnowballItem) {
-                final BlockEntity te = w.getTileEntity(pos);
+                final BlockEntity te = w.getBlockEntity(pos);
                 // clean cables.
                 if (te instanceof IColorableTile && p != null) {
                     if (this.getAECurrentPower(is) > powerPerUse
@@ -164,12 +166,12 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
                 // clean paint balls..
                 final Block testBlk = w.getBlockState(pos.offset(side)).getBlock();
-                final BlockEntity painted = w.getTileEntity(pos.offset(side));
+                final BlockEntity painted = w.getBlockEntity(pos.offset(side));
                 if (this.getAECurrentPower(is) > powerPerUse && testBlk instanceof PaintSplotchesBlock
-                        && painted instanceof PaintSplotchesTileEntity) {
+                        && painted instanceof PaintSplotchesBlockEntity) {
                     inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE, new BaseActionSource());
                     this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
-                    ((PaintSplotchesTileEntity) painted).cleanSide(side.getOpposite());
+                    ((PaintSplotchesBlockEntity) painted).cleanSide(side.getOpposite());
                     return ActionResult.SUCCESS;
                 }
             } else if (!paintBall.isEmpty()) {
@@ -186,7 +188,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             }
         }
 
-        if (p != null && p.isCrouching()) {
+        if (p != null && p.isInSneakingPose()) {
             this.cycleColors(is, paintBall, 1);
         }
 
@@ -194,7 +196,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public Text getDisplayName(final ItemStack is) {
+    public Text getName(final ItemStack is) {
         Text extra = GuiText.Empty.textComponent();
 
         final AEColor selected = this.getActiveColor(is);
@@ -203,7 +205,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             extra = new TranslatableText(selected.translationKey);
         }
 
-        return super.getDisplayName(is).appendText(" - ").appendSibling(extra);
+        return super.getName(is).append(" - ").append(extra);
     }
 
     public AEColor getActiveColor(final ItemStack tol) {
@@ -331,11 +333,22 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             return w.setBlockState(pos, newState);
         }
 
+        BlockEntity be = w.getBlockEntity(pos);
+        if (be instanceof IColorableTile) {
+            IColorableTile ct = (IColorableTile) be;
+            AEColor c = ct.getColor();
+            if (c != newColor) {
+                ct.recolourBlock(side, newColor, null);
+                return true;
+            }
+            return false;
+        }
+
         if (blk instanceof CableBusBlock && p != null) {
             return ((CableBusBlock) blk).recolorBlock(w, pos, side, newColor.dye, p);
         }
 
-        return blk.recolorBlock(state, w, pos, side, newColor.dye);
+        return false;
     }
 
     private static <T extends Comparable<T>> BlockState copyProp(BlockState oldState, BlockState newState,
@@ -356,9 +369,9 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void addInformation(final ItemStack stack, final World world, final List<Text> lines,
-            final ITooltipFlag advancedTooltips) {
-        super.addInformation(stack, world, lines, advancedTooltips);
+    public void appendTooltip(final ItemStack stack, final World world, final List<Text> lines,
+            final TooltipContext advancedTooltips) {
+        super.appendTooltip(stack, world, lines, advancedTooltips);
 
         final ICellInventoryHandler<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory(stack,
                 null, AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));

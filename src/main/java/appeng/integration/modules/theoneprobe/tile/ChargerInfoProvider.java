@@ -29,21 +29,21 @@ import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.ProbeMode;
 
-import appeng.tile.AEBaseTileEntity;
-import appeng.tile.misc.ChargerTileEntity;
+import appeng.tile.AEBaseBlockEntity;
+import appeng.tile.misc.ChargerBlockEntity;
 
 public class ChargerInfoProvider implements ITileProbInfoProvider {
 
     @Override
-    public void addProbeInfo(AEBaseTileEntity tile, ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player,
-            World world, BlockState blockState, IProbeHitData data) {
-        if (tile instanceof ChargerTileEntity) {
-            final ChargerTileEntity charger = (ChargerTileEntity) tile;
+    public void addProbeInfo(AEBaseBlockEntity tile, ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player,
+                             World world, BlockState blockState, IProbeHitData data) {
+        if (tile instanceof ChargerBlockEntity) {
+            final ChargerBlockEntity charger = (ChargerBlockEntity) tile;
             final ItemTransferable chargerInventory = charger.getInternalInventory();
             final ItemStack chargingItem = chargerInventory.getStackInSlot(0);
 
             if (!chargingItem.isEmpty()) {
-                final String currentInventory = chargingItem.getDisplayName().getString();
+                final String currentInventory = chargingItem.getName().getString();
                 final IProbeInfo centerAlignedHorizontalLayout = probeInfo
                         .horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
 

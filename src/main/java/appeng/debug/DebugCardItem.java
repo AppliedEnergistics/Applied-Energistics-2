@@ -24,12 +24,12 @@ import java.util.Set;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.ItemUsageContext;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 import appeng.api.networking.IGridConnection;
@@ -49,7 +49,7 @@ import appeng.me.Grid;
 import appeng.me.GridNode;
 import appeng.me.cache.TickManagerCache;
 import appeng.parts.p2p.P2PTunnelPart;
-import appeng.tile.networking.ControllerTileEntity;
+import appeng.tile.networking.ControllerBlockEntity;
 
 public class DebugCardItem extends AEBaseItem {
 
@@ -58,21 +58,21 @@ public class DebugCardItem extends AEBaseItem {
     }
 
     @Override
-    public ActionResult onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        if (context.getWorld().isRemote()) {
+    public ActionResult onItemUseFirst(ItemStack stack, ItemUsageContext context) {
+        if (context.getWorld().isClient()) {
             return ActionResult.PASS;
         }
 
         PlayerEntity player = context.getPlayer();
         World world = context.getWorld();
-        BlockPos pos = context.getPos();
-        Direction side = context.getFace();
+        BlockPos pos = context.getBlockPos();
+        Direction side = context.getSide();
 
         if (player == null) {
             return ActionResult.PASS;
         }
 
-        if (player.isCrouching()) {
+        if (player.isInSneakingPose()) {
             int grids = 0;
             int totalNodes = 0;
 
@@ -84,7 +84,7 @@ public class DebugCardItem extends AEBaseItem {
             this.outputMsg(player, "Grids: " + grids);
             this.outputMsg(player, "Total Nodes: " + totalNodes);
         } else {
-            final BlockEntity te = world.getTileEntity(pos);
+            final BlockEntity te = world.getBlockEntity(pos);
 
             if (te instanceof IGridHost) {
                 final GridNode node = (GridNode) ((IGridHost) te).getGridNode(AEPartLocation.fromFacing(side));
@@ -108,7 +108,7 @@ public class DebugCardItem extends AEBaseItem {
                             next = new HashSet<>();
 
                             for (final IGridNode n : current) {
-                                if (n.getMachine() instanceof ControllerTileEntity) {
+                                if (n.getMachine() instanceof ControllerBlockEntity) {
                                     break outer;
                                 }
 
@@ -186,7 +186,7 @@ public class DebugCardItem extends AEBaseItem {
     }
 
     private void outputMsg(final Entity player, final String string) {
-        player.sendMessage(new StringTextComponent(string));
+        player.sendMessage(new LiteralText(string));
     }
 
     private String timeMeasurement(final long nanos) {

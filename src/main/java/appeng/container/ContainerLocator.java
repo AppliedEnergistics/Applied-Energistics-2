@@ -25,7 +25,7 @@ import io.netty.handler.codec.DecoderException;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.ItemUsageContext;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
@@ -95,7 +95,7 @@ public final class ContainerLocator {
      * could still open a container for itself, but it might also open a special
      * container for the block being right-clicked.
      */
-    public static ContainerLocator forItemUseContext(ItemUseContext context) {
+    public static ContainerLocator forItemUseContext(ItemUsageContext context) {
         PlayerEntity player = context.getPlayer();
         if (player == null) {
             throw new IllegalArgumentException("Cannot open a container without a player");
@@ -103,7 +103,7 @@ public final class ContainerLocator {
         int dimensionId = player.world.getDimension().getType().getId();
         int slot = getPlayerInventorySlotFromHand(player, context.getHand());
         AEPartLocation side = AEPartLocation.fromFacing(context.getFace());
-        return new ContainerLocator(Type.PLAYER_INVENTORY_WITH_BLOCK_CONTEXT, slot, dimensionId, context.getPos(),
+        return new ContainerLocator(Type.PLAYER_INVENTORY_WITH_BLOCK_CONTEXT, slot, dimensionId, context.getBlockPos(),
                 side);
     }
 
@@ -113,7 +113,7 @@ public final class ContainerLocator {
     }
 
     private static int getPlayerInventorySlotFromHand(PlayerEntity player, Hand hand) {
-        ItemStack is = player.getHeldItem(hand);
+        ItemStack is = player.getStackInHand(hand);
         if (is.isEmpty()) {
             throw new IllegalArgumentException("Cannot open an item-inventory with empty hands");
         }

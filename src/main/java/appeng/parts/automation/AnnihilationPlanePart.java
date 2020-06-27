@@ -23,6 +23,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
@@ -32,6 +33,7 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.tag.Tag;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
@@ -43,7 +45,6 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.util.FakePlayerFactory;
 
 import appeng.api.AEApi;
@@ -122,19 +123,19 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
             final Direction e = bch.getWorldX();
             final Direction u = bch.getWorldY();
 
-            if (this.isAnnihilationPlane(te.getWorld().getTileEntity(pos.offset(e.getOpposite())), this.getSide())) {
+            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(e.getOpposite())), this.getSide())) {
                 minX = 0;
             }
 
-            if (this.isAnnihilationPlane(te.getWorld().getTileEntity(pos.offset(e)), this.getSide())) {
+            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(e)), this.getSide())) {
                 maxX = 16;
             }
 
-            if (this.isAnnihilationPlane(te.getWorld().getTileEntity(pos.offset(u.getOpposite())), this.getSide())) {
+            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(u.getOpposite())), this.getSide())) {
                 minY = 0;
             }
 
-            if (this.isAnnihilationPlane(te.getWorld().getTileEntity(pos.offset(e)), this.getSide())) {
+            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(e)), this.getSide())) {
                 maxY = 16;
             }
         }
@@ -191,21 +192,21 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
             final BlockPos pos = te.getPos();
 
-            if (this.isAnnihilationPlane(te.getWorld().getTileEntity(pos.offset(facingRight.getOpposite())),
+            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(facingRight.getOpposite())),
                     this.getSide())) {
                 left = true;
             }
 
-            if (this.isAnnihilationPlane(te.getWorld().getTileEntity(pos.offset(facingRight)), this.getSide())) {
+            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(facingRight)), this.getSide())) {
                 right = true;
             }
 
-            if (this.isAnnihilationPlane(te.getWorld().getTileEntity(pos.offset(facingUp.getOpposite())),
+            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(facingUp.getOpposite())),
                     this.getSide())) {
                 down = true;
             }
 
-            if (this.isAnnihilationPlane(te.getWorld().getTileEntity(pos.offset(facingUp)), this.getSide())) {
+            if (this.isAnnihilationPlane(te.getWorld().getBlockEntity(pos.offset(facingUp)), this.getSide())) {
                 up = true;
             }
         }
@@ -502,7 +503,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
             }
         }
 
-        BlockEntity te = w.getTileEntity(pos);
+        BlockEntity te = w.getBlockEntity(pos);
         return Block.getDrops(state, w, pos, te, fakePlayer, harvestTool);
     }
 
@@ -556,7 +557,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
     private boolean breakBlockAndStoreExtraItems(final ServerWorld w, final BlockPos pos) {
         // Kill the block, but signal no drops
-        if (!w.destroyBlock(pos, false)) {
+        if (!w.breakBlock(pos, false)) {
             // The block was no longer there
             return false;
         }
@@ -605,12 +606,12 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
      */
     protected ItemStack createHarvestTool(BlockState state) {
         // Try to use the right tool...
-        ToolType harvestToolType = state.getBlock().getHarvestTool(state);
-        if (harvestToolType == ToolType.AXE) {
+        Tag<Item> harvestToolType = state.getBlock().getHarvestTool(state);
+        if (harvestToolType == FabricToolTags.AXES) {
             return new ItemStack(Items.DIAMOND_AXE, 1);
-        } else if (harvestToolType == ToolType.SHOVEL) {
+        } else if (harvestToolType == FabricToolTags.SHOVELS) {
             return new ItemStack(Items.DIAMOND_SHOVEL, 1);
-        } else if (harvestToolType == ToolType.PICKAXE) {
+        } else if (harvestToolType == FabricToolTags.PICKAXES) {
             return new ItemStack(Items.DIAMOND_PICKAXE, 1);
         } else {
             return null;

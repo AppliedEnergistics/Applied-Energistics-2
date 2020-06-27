@@ -21,28 +21,28 @@ package appeng.client.render.tesr;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.Atlases;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.render.model.Material;
 import net.minecraft.client.render.model.ModelRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.util.Identifier;
 import net.minecraftforge.client.event.TextureStitchEvent;
 
 import appeng.block.storage.SkyChestBlock;
 import appeng.block.storage.SkyChestBlock.SkyChestType;
 import appeng.core.AppEng;
-import appeng.tile.storage.SkyChestTileEntity;
+import appeng.tile.storage.SkyChestBlockEntity;
 
 // This is mostly a copy&paste job of the vanilla chest TESR
 @Environment(EnvType.CLIENT)
-public class SkyChestTESR extends TileEntityRenderer<SkyChestTileEntity> {
+public class SkyChestTESR extends BlockEntityRenderer<SkyChestBlockEntity> {
 
     public static final Material TEXTURE_STONE = new Material(Atlases.CHEST_ATLAS,
             new Identifier(AppEng.MOD_ID, "models/skychest"));
@@ -53,7 +53,7 @@ public class SkyChestTESR extends TileEntityRenderer<SkyChestTileEntity> {
     private final ModelRenderer singleBottom;
     private final ModelRenderer singleLatch;
 
-    public SkyChestTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
+    public SkyChestTESR(BlockEntityRenderDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
 
         this.singleBottom = new ModelRenderer(64, 64, 0, 19);
@@ -68,7 +68,7 @@ public class SkyChestTESR extends TileEntityRenderer<SkyChestTileEntity> {
     }
 
     @Override
-    public void render(SkyChestTileEntity tileEntityIn, float partialTicks, MatrixStack matrixStackIn,
+    public void render(SkyChestBlockEntity tileEntityIn, float partialTicks, MatrixStack matrixStackIn,
                        VertexConsumerProvider bufferIn, int combinedLightIn, int combinedOverlayIn) {
         matrixStackIn.push();
         float f = tileEntityIn.getForward().getHorizontalAngle();
@@ -80,7 +80,7 @@ public class SkyChestTESR extends TileEntityRenderer<SkyChestTileEntity> {
         f1 = 1.0F - f1;
         f1 = 1.0F - f1 * f1 * f1;
         Material material = this.getMaterial(tileEntityIn);
-        IVertexBuilder ivertexbuilder = material.getBuffer(bufferIn, RenderType::getEntityCutout);
+        IVertexBuilder ivertexbuilder = material.getBuffer(bufferIn, RenderLayer::getEntityCutout);
         this.renderModels(matrixStackIn, ivertexbuilder, this.singleLid, this.singleLatch, this.singleBottom, f1,
                 combinedLightIn, combinedOverlayIn);
 
@@ -97,10 +97,10 @@ public class SkyChestTESR extends TileEntityRenderer<SkyChestTileEntity> {
         chestBottom.render(matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
     }
 
-    protected Material getMaterial(SkyChestTileEntity tileEntity) {
+    protected Material getMaterial(SkyChestBlockEntity tileEntity) {
         SkyChestType type = SkyChestType.BLOCK;
         if (tileEntity.getWorld() != null) {
-            Block blockType = tileEntity.getBlockState().getBlock();
+            Block blockType = tileEntity.getCachedState().getBlock();
 
             if (blockType instanceof SkyChestBlock) {
                 type = ((SkyChestBlock) blockType).type;

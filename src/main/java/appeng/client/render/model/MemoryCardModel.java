@@ -9,12 +9,12 @@ import javax.annotation.Nullable;
 
 import com.mojang.datafixers.util.Pair;
 
-import net.minecraft.client.render.model.IBakedModel;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.IModelTransform;
 import net.minecraft.client.render.model.IUnbakedModel;
 import net.minecraft.client.render.model.ItemOverrideList;
 import net.minecraft.client.render.model.Material;
-import net.minecraft.client.render.model.ModelBakery;
+import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Identifier;
@@ -41,12 +41,12 @@ public class MemoryCardModel implements IModelGeometry<MemoryCardModel> {
 
     @Nullable
     @Override
-    public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
-            Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
-            ItemOverrideList overrides, Identifier modelLocation) {
+    public BakedModel bake(IModelConfiguration owner, ModelLoader bakery,
+                           Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
+                           ItemOverrideList overrides, Identifier modelLocation) {
         TextureAtlasSprite texture = spriteGetter.apply(TEXTURE);
 
-        IBakedModel baseModel = bakery.getBakedModel(MODEL_BASE, modelTransform, spriteGetter);
+        BakedModel baseModel = bakery.getBakedModel(MODEL_BASE, modelTransform, spriteGetter);
 
         return new MemoryCardBakedModel(baseModel, texture);
     }

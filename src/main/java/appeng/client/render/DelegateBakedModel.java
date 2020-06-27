@@ -23,20 +23,20 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.IBakedModel;
 import net.minecraft.client.render.model.ItemCameraTransforms;
 import net.minecraft.client.render.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.math.Direction;
 
-public abstract class DelegateBakedModel implements IBakedModel {
-    private final IBakedModel baseModel;
+public abstract class DelegateBakedModel implements BakedModel {
+    private final BakedModel baseModel;
 
-    protected DelegateBakedModel(IBakedModel base) {
+    protected DelegateBakedModel(BakedModel base) {
         this.baseModel = base;
     }
 
@@ -57,7 +57,7 @@ public abstract class DelegateBakedModel implements IBakedModel {
     }
 
     @Override
-    public IBakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
+    public BakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
         baseModel.handlePerspective(cameraTransformType, mat);
         return this;
     }
@@ -87,7 +87,7 @@ public abstract class DelegateBakedModel implements IBakedModel {
         return this.baseModel.isBuiltInRenderer();
     }
 
-    public IBakedModel getBaseModel() {
+    public BakedModel getBaseModel() {
         return this.baseModel;
     }
 }

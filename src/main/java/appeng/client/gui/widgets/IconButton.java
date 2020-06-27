@@ -20,7 +20,7 @@ package appeng.client.gui.widgets;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.Identifier;
@@ -44,7 +44,7 @@ public abstract class IconButton extends Button implements ITooltip {
     @Override
     public void renderButton(final int mouseX, final int mouseY, float partial) {
 
-        Minecraft minecraft = Minecraft.getInstance();
+        MinecraftClient minecraft = MinecraftClient.getInstance();
 
         if (this.visible) {
             final int iconIndex = this.getIconIndex();

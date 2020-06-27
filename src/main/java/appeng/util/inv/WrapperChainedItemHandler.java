@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.wrapper.EmptyHandler;
+import alexiil.mc.lib.attributes.item.impl.EmptyFixedItemInv;
 
 import appeng.util.helpers.ItemHandlerUtil;
 
@@ -65,7 +65,7 @@ public class WrapperChainedItemHandler implements IItemHandlerModifiable {
 
     private ItemTransferable getHandlerFromIndex(int index) {
         if (index < 0 || index >= this.itemHandler.length) {
-            return EmptyHandler.INSTANCE;
+            return EmptyFixedItemInv.INSTANCE;
         }
         return this.itemHandler[index];
     }

@@ -50,7 +50,7 @@ public class DefaultSpatialHandler implements IMovableHandler {
         if (w.getChunkProvider().isChunkLoaded(c.getPos())) {
             final BlockState state = w.getBlockState(newPosition);
             w.addTileEntity(te);
-            w.notifyBlockUpdate(newPosition, state, state, 1);
+            w.updateListeners(newPosition, state, state, 1);
         }
     }
 }

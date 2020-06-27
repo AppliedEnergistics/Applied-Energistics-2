@@ -27,18 +27,18 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.IOPortContainer;
-import appeng.tile.storage.IOPortTileEntity;
+import appeng.tile.storage.IOPortBlockEntity;
 import appeng.util.Platform;
 
-public class IOPortBlock extends AEBaseTileBlock<IOPortTileEntity> {
+public class IOPortBlock extends AEBaseTileBlock<IOPortBlockEntity> {
 
     public IOPortBlock() {
         super(defaultProps(Material.IRON));
@@ -47,7 +47,7 @@ public class IOPortBlock extends AEBaseTileBlock<IOPortTileEntity> {
     @Override
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final IOPortTileEntity te = this.getTileEntity(world, pos);
+        final IOPortBlockEntity te = this.getBlockEntity(world, pos);
         if (te != null) {
             te.updateRedstoneState();
         }
@@ -55,12 +55,12 @@ public class IOPortBlock extends AEBaseTileBlock<IOPortTileEntity> {
 
     @Override
     public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (p.isCrouching()) {
+            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+        if (p.isInSneakingPose()) {
             return ActionResult.PASS;
         }
 
-        final IOPortTileEntity tg = this.getTileEntity(w, pos);
+        final IOPortBlockEntity tg = this.getBlockEntity(w, pos);
         if (tg != null) {
             if (Platform.isServer()) {
                 ContainerOpener.openContainer(IOPortContainer.TYPE, p,

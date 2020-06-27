@@ -20,7 +20,7 @@ package appeng.client.render;
 
 import java.util.Objects;
 
-import net.minecraft.client.render.model.IBakedModel;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.ItemOverrideList;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -41,7 +41,7 @@ public class FacadeDispatcherBakedModel extends DelegateBakedModel {
     private final FacadeBuilder facadeBuilder;
     private final Int2ObjectMap<FacadeBakedItemModel> cache = new Int2ObjectArrayMap<>();
 
-    public FacadeDispatcherBakedModel(IBakedModel baseModel, FacadeBuilder facadeBuilder) {
+    public FacadeDispatcherBakedModel(BakedModel baseModel, FacadeBuilder facadeBuilder) {
         super(baseModel);
         this.facadeBuilder = facadeBuilder;
     }
@@ -50,8 +50,8 @@ public class FacadeDispatcherBakedModel extends DelegateBakedModel {
     public ItemOverrideList getOverrides() {
         return new ItemOverrideList() {
             @Override
-            public IBakedModel getModelWithOverrides(IBakedModel originalModel, ItemStack stack, World world,
-                    LivingEntity entity) {
+            public BakedModel getModelWithOverrides(BakedModel originalModel, ItemStack stack, World world,
+                                                    LivingEntity entity) {
                 if (!(stack.getItem() instanceof FacadeItem)) {
                     return originalModel;
                 }

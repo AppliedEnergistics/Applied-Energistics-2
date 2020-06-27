@@ -26,7 +26,7 @@ import javax.annotation.Nonnull;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
@@ -358,7 +358,7 @@ public class FluidTerminalContainer extends AEBaseContainer
 
             if (used != canFill) {
                 AELog.error("Fluid item [%s] reported a different possible amount than it actually accepted.",
-                        held.getDisplayName());
+                        held.getName());
             }
 
             player.inventory.setItemStack(fh.getContainer());
@@ -394,7 +394,7 @@ public class FluidTerminalContainer extends AEBaseContainer
 
             if (notInserted != null && notInserted.getStackSize() > 0) {
                 AELog.error("Fluid item [%s] reported a different possible amount to drain than it actually provided.",
-                        held.getDisplayName());
+                        held.getName());
             }
 
             player.inventory.setItemStack(fh.getContainer());

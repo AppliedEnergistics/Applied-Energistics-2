@@ -166,7 +166,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
             return false;
         }
 
-        final ItemStack is = player.getHeldItem(hand);
+        final ItemStack is = player.getStackInHand(hand);
 
         final TunnelType tt = AEApi.instance().registries().p2pTunnel().getTunnelTypeByItem(is);
         if (!is.isEmpty() && is.getItem() instanceof IMemoryCard) {

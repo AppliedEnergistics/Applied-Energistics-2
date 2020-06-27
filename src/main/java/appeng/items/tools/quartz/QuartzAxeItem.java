@@ -29,7 +29,7 @@ import appeng.util.Platform;
 public class QuartzAxeItem extends AxeItem {
     private final AEFeature type;
 
-    public QuartzAxeItem(Item.Properties props, final AEFeature type) {
+    public QuartzAxeItem(Item.Settings props, final AEFeature type) {
         super(ItemTier.IRON, 6.0F, -3.1F, props);
         this.type = type;
     }

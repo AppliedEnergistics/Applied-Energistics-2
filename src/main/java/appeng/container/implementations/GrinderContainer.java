@@ -29,14 +29,14 @@ import appeng.container.ContainerLocator;
 import appeng.container.slot.InaccessibleSlot;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.tile.grindstone.GrinderTileEntity;
+import appeng.tile.grindstone.GrinderBlockEntity;
 
 public class GrinderContainer extends AEBaseContainer {
 
     public static ContainerType<GrinderContainer> TYPE;
 
-    private static final ContainerHelper<GrinderContainer, GrinderTileEntity> helper = new ContainerHelper<>(
-            GrinderContainer::new, GrinderTileEntity.class);
+    private static final ContainerHelper<GrinderContainer, GrinderBlockEntity> helper = new ContainerHelper<>(
+            GrinderContainer::new, GrinderBlockEntity.class);
 
     public static GrinderContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
@@ -46,7 +46,7 @@ public class GrinderContainer extends AEBaseContainer {
         return helper.open(player, locator);
     }
 
-    public GrinderContainer(int id, final PlayerInventory ip, final GrinderTileEntity grinder) {
+    public GrinderContainer(int id, final PlayerInventory ip, final GrinderBlockEntity grinder) {
         super(TYPE, id, ip, grinder, null);
 
         ItemTransferable inv = grinder.getInternalInventory();

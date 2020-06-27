@@ -19,23 +19,23 @@
 package appeng.bootstrap.components;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.color.IBlockColor;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.color.block.BlockColorProvider;
 
 public class BlockColorComponent implements IInitComponent {
 
     private final Block block;
 
-    private final IBlockColor blockColor;
+    private final BlockColorProvider blockColor;
 
-    public BlockColorComponent(Block block, IBlockColor blockColor) {
+    public BlockColorComponent(Block block, BlockColorProvider blockColor) {
         this.block = block;
         this.blockColor = blockColor;
     }
 
     @Override
     public void initialize() {
-        Minecraft.getInstance().getBlockColors().register(this.blockColor, this.block);
+        MinecraftClient.getInstance().getBlockColors().registerColorProvider(this.blockColor, this.block);
     }
 
 }

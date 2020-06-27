@@ -22,23 +22,25 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import appeng.core.AppEng;
 import com.google.common.base.Preconditions;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
-import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.text.Text;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 import appeng.api.implementations.items.IGrowableCrystal;
@@ -67,12 +69,15 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
      */
     private final IItemProvider grownItem;
 
-    public CrystalSeedItem(Properties properties, IItemProvider grownItem) {
+    public CrystalSeedItem(Settings properties, IItemProvider grownItem) {
         super(properties);
         this.grownItem = Preconditions.checkNotNull(grownItem);
         // Expose the growth of the seed to the model system
-        addPropertyOverride(new Identifier("appliedenergistics2:growth"),
-                (is, w, p) -> getGrowthTicks(is) / (float) GROWTH_TICKS_REQUIRED);
+        FabricModelPredicateProviderRegistry.register(
+                this,
+                new Identifier(AppEng.MOD_ID, "growth"),
+                (is, w, p) -> getGrowthTicks(is) / (float) GROWTH_TICKS_REQUIRED
+        );
     }
 
     @Nullable
@@ -104,17 +109,17 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void addInformation(final ItemStack stack, final World world, final List<Text> lines,
-            final ITooltipFlag advancedTooltips) {
+    public void appendTooltip(final ItemStack stack, final World world, final List<Text> lines,
+            final TooltipContext advancedTooltips) {
         lines.add(ButtonToolTips.DoesntDespawn.getTranslationKey());
         lines.add(getGrowthTooltipItem(stack));
 
-        super.addInformation(stack, world, lines, advancedTooltips);
+        super.appendTooltip(stack, world, lines, advancedTooltips);
     }
 
     public Text getGrowthTooltipItem(ItemStack stack) {
         final int progress = getGrowthTicks(stack);
-        return new StringTextComponent(Math.round(100 * progress / (float) GROWTH_TICKS_REQUIRED) + "%");
+        return new LiteralText(Math.round(100 * progress / (float) GROWTH_TICKS_REQUIRED) + "%");
     }
 
     @Override

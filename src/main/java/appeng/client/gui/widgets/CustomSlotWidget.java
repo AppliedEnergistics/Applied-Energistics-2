@@ -1,7 +1,7 @@
 
 package appeng.client.gui.widgets;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -28,7 +28,7 @@ public abstract class CustomSlotWidget extends AbstractGui implements ITooltip {
     public void slotClicked(final ItemStack clickStack, final int mouseButton) {
     }
 
-    public abstract void drawContent(final Minecraft mc, final int mouseX, final int mouseY, final float partialTicks);
+    public abstract void drawContent(final MinecraftClient mc, final int mouseX, final int mouseY, final float partialTicks);
 
     public void drawBackground(int guileft, int guitop, int currentZIndex) {
     }

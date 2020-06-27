@@ -48,7 +48,7 @@ public class MetaRotation implements IOrientable {
 
     @Override
     public Direction getForward() {
-        if (this.getUp().getYOffset() == 0) {
+        if (this.getUp().getOffsetY() == 0) {
             return Direction.UP;
         }
         return Direction.SOUTH;

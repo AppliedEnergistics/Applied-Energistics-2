@@ -25,7 +25,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.RenderHelper;
@@ -57,7 +57,7 @@ public class SpatialSkyRender implements SkyRenderHandler {
             new Quaternion(0.0F, 0.0F, 90.0F, true), new Quaternion(0.0F, 0.0F, -90.0F, true), };
 
     @Override
-    public void render(int ticks, float partialTicks, MatrixStack matrixStack, ClientWorld world, Minecraft mc) {
+    public void render(int ticks, float partialTicks, MatrixStack matrixStack, ClientWorld world, MinecraftClient mc) {
         final long now = System.currentTimeMillis();
         if (now - this.cycle > 2000) {
             this.cycle = now;

@@ -15,7 +15,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.IBakedModel;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.ItemOverrideList;
 import net.minecraft.client.render.model.Material;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -28,7 +28,7 @@ import net.minecraftforge.client.model.data.IModelData;
 import appeng.api.AEApi;
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.core.AppEng;
-import appeng.tile.qnb.QuantumBridgeTileEntity;
+import appeng.tile.qnb.QuantumBridgeBlockEntity;
 
 class QnbFormedBakedModel implements IDynamicBakedModel {
 
@@ -54,7 +54,7 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
     private static final float CENTER_POWERED_RENDER_MIN = -0.01f;
     private static final float CENTER_POWERED_RENDER_MAX = 16.01f;
 
-    private final IBakedModel baseModel;
+    private final BakedModel baseModel;
 
     private final Block linkBlock;
 
@@ -65,7 +65,7 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
     private final TextureAtlasSprite lightTexture;
     private final TextureAtlasSprite lightCornerTexture;
 
-    public QnbFormedBakedModel(IBakedModel baseModel, Function<Material, TextureAtlasSprite> bakedTextureGetter) {
+    public QnbFormedBakedModel(BakedModel baseModel, Function<Material, TextureAtlasSprite> bakedTextureGetter) {
         this.baseModel = baseModel;
         this.linkTexture = bakedTextureGetter.apply(TEXTURE_LINK);
         this.ringTexture = bakedTextureGetter.apply(TEXTURE_RING);
@@ -79,7 +79,7 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand,
             IModelData modelData) {
-        QnbFormedState formedState = modelData.getData(QuantumBridgeTileEntity.FORMED_STATE);
+        QnbFormedState formedState = modelData.getData(QuantumBridgeBlockEntity.FORMED_STATE);
 
         if (formedState == null) {
             return this.baseModel.getQuads(state, side, rand);
@@ -121,9 +121,9 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
                         // Offset the face by a slight amount so that it is drawn over the already drawn
                         // ring texture
                         // (avoids z-fighting)
-                        float xOffset = Math.abs(facing.getXOffset() * 0.01f);
-                        float yOffset = Math.abs(facing.getYOffset() * 0.01f);
-                        float zOffset = Math.abs(facing.getZOffset() * 0.01f);
+                        float xOffset = Math.abs(facing.getOffsetX() * 0.01f);
+                        float yOffset = Math.abs(facing.getOffsetY() * 0.01f);
+                        float zOffset = Math.abs(facing.getOffsetZ() * 0.01f);
 
                         builder.setDrawFaces(EnumSet.of(facing));
                         builder.addCube(DEFAULT_RENDER_MIN - xOffset, DEFAULT_RENDER_MIN - yOffset,
@@ -147,9 +147,9 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
                         // Offset the face by a slight amount so that it is drawn over the already drawn
                         // ring texture
                         // (avoids z-fighting)
-                        float xOffset = Math.abs(facing.getXOffset() * 0.01f);
-                        float yOffset = Math.abs(facing.getYOffset() * 0.01f);
-                        float zOffset = Math.abs(facing.getZOffset() * 0.01f);
+                        float xOffset = Math.abs(facing.getOffsetX() * 0.01f);
+                        float yOffset = Math.abs(facing.getOffsetY() * 0.01f);
+                        float zOffset = Math.abs(facing.getOffsetZ() * 0.01f);
 
                         builder.setDrawFaces(EnumSet.of(facing));
                         builder.addCube(-xOffset, -yOffset, -zOffset, 16 + xOffset, 16 + yOffset, 16 + zOffset);

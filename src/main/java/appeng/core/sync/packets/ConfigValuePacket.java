@@ -20,7 +20,7 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
@@ -80,22 +80,22 @@ public class ConfigValuePacket extends BasePacket {
     public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
         final Container c = player.openContainer;
 
-        if (this.Name.equals("Item") && ((!player.getHeldItem(Hand.MAIN_HAND).isEmpty()
-                && player.getHeldItem(Hand.MAIN_HAND).getItem() instanceof IMouseWheelItem)
-                || (!player.getHeldItem(Hand.OFF_HAND).isEmpty()
-                        && player.getHeldItem(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem))) {
+        if (this.Name.equals("Item") && ((!player.getStackInHand(Hand.MAIN_HAND).isEmpty()
+                && player.getStackInHand(Hand.MAIN_HAND).getItem() instanceof IMouseWheelItem)
+                || (!player.getStackInHand(Hand.OFF_HAND).isEmpty()
+                        && player.getStackInHand(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem))) {
             final Hand hand;
-            if (!player.getHeldItem(Hand.MAIN_HAND).isEmpty()
-                    && player.getHeldItem(Hand.MAIN_HAND).getItem() instanceof IMouseWheelItem) {
+            if (!player.getStackInHand(Hand.MAIN_HAND).isEmpty()
+                    && player.getStackInHand(Hand.MAIN_HAND).getItem() instanceof IMouseWheelItem) {
                 hand = Hand.MAIN_HAND;
-            } else if (!player.getHeldItem(Hand.OFF_HAND).isEmpty()
-                    && player.getHeldItem(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem) {
+            } else if (!player.getStackInHand(Hand.OFF_HAND).isEmpty()
+                    && player.getStackInHand(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem) {
                 hand = Hand.OFF_HAND;
             } else {
                 return;
             }
 
-            final ItemStack is = player.getHeldItem(hand);
+            final ItemStack is = player.getStackInHand(hand);
             final IMouseWheelItem si = (IMouseWheelItem) is.getItem();
             si.onWheel(is, this.Value.equals("WheelUp"));
         } else if (this.Name.equals("Terminal.Cpu") && c instanceof CraftingStatusContainer) {
@@ -197,7 +197,7 @@ public class ConfigValuePacket extends BasePacket {
         } else if (this.Name.startsWith("SyncDat.")) {
             ((AEBaseContainer) c).stringSync(Integer.parseInt(this.Name.substring(8)), this.Value);
         } else if (this.Name.equals("CraftingStatus") && this.Value.equals("Clear")) {
-            final Screen gs = Minecraft.getInstance().currentScreen;
+            final Screen gs = MinecraftClient.getInstance().currentScreen;
             if (gs instanceof CraftingCPUScreen) {
                 ((CraftingCPUScreen<?>) gs).clearItems();
             }

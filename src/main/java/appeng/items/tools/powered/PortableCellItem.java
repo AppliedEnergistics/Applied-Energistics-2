@@ -21,7 +21,7 @@ package appeng.items.tools.powered;
 import java.util.List;
 import java.util.Set;
 
-import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -56,21 +56,21 @@ import appeng.items.contents.PortableCellViewer;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 
 public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<IAEItemStack>, IGuiItem, IItemGroup {
-    public PortableCellItem(Item.Properties props) {
+    public PortableCellItem(Item.Settings props) {
         super(AEConfig.instance().getPortableCellBattery(), props);
     }
 
     @Override
     public TypedActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity player, final Hand hand) {
         ContainerOpener.openContainer(MEPortableCellContainer.TYPE, player, ContainerLocator.forHand(player, hand));
-        return new TypedActionResult<>(ActionResult.SUCCESS, player.getHeldItem(hand));
+        return new TypedActionResult<>(ActionResult.SUCCESS, player.getStackInHand(hand));
     }
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void addInformation(final ItemStack stack, final World world, final List<Text> lines,
-            final ITooltipFlag advancedTooltips) {
-        super.addInformation(stack, world, lines, advancedTooltips);
+    public void appendTooltip(final ItemStack stack, final World world, final List<Text> lines,
+            final TooltipContext advancedTooltips) {
+        super.appendTooltip(stack, world, lines, advancedTooltips);
 
         final ICellInventoryHandler<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory(stack,
                 null, AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));

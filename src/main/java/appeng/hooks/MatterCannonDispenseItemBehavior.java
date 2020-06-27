@@ -41,8 +41,8 @@ public final class MatterCannonDispenseItemBehavior extends DefaultDispenseItemB
             final Direction Direction = dispenser.getBlockState().get(DispenserBlock.FACING);
             AEPartLocation dir = AEPartLocation.INTERNAL;
             for (final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS) {
-                if (Direction.getXOffset() == d.xOffset && Direction.getYOffset() == d.yOffset
-                        && Direction.getZOffset() == d.zOffset) {
+                if (Direction.getOffsetX() == d.xOffset && Direction.getOffsetY() == d.yOffset
+                        && Direction.getOffsetZ() == d.zOffset) {
                     dir = d;
                 }
             }

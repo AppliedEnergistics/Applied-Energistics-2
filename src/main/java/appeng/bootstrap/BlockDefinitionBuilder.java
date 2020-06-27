@@ -18,29 +18,11 @@
 
 package appeng.bootstrap;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Supplier;
-
-import javax.annotation.Nullable;
-
-import net.fabricmc.api.Environment;
-import net.minecraft.block.Block;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.fabricmc.api.EnvType;
-
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.features.AEFeature;
 import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseBlockItem;
 import appeng.block.AEBaseTileBlock;
-import appeng.bootstrap.components.IBlockRegistrationComponent;
-import appeng.bootstrap.components.IItemRegistrationComponent;
 import appeng.bootstrap.definitions.TileEntityDefinition;
 import appeng.core.AEItemGroup;
 import appeng.core.AppEng;
@@ -48,12 +30,28 @@ import appeng.core.CreativeTab;
 import appeng.core.features.BlockDefinition;
 import appeng.core.features.TileDefinition;
 import appeng.util.Platform;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.block.Block;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 class BlockDefinitionBuilder implements IBlockBuilder {
 
     private final FeatureFactory factory;
 
-    private final String registryName;
+    private final Identifier id;
 
     private final Supplier<? extends Block> blockSupplier;
 
@@ -67,7 +65,7 @@ class BlockDefinitionBuilder implements IBlockBuilder {
 
     private boolean disableItem = false;
 
-    private BiFunction<Block, Item.Properties, BlockItem> itemFactory;
+    private BiFunction<Block, Item.Settings, BlockItem> itemFactory;
 
     @Environment(EnvType.CLIENT)
     private BlockRendering blockRendering;
@@ -77,11 +75,11 @@ class BlockDefinitionBuilder implements IBlockBuilder {
 
     BlockDefinitionBuilder(FeatureFactory factory, String id, Supplier<? extends Block> blockSupplier) {
         this.factory = factory;
-        this.registryName = id;
+        this.id = new Identifier(AppEng.MOD_ID, id);
         this.blockSupplier = blockSupplier;
 
         if (Platform.hasClientClasses()) {
-            this.blockRendering = new BlockRendering();
+            this.blockRendering = new BlockRendering(this.id);
             this.itemRendering = new ItemRendering();
         }
     }
@@ -121,7 +119,7 @@ class BlockDefinitionBuilder implements IBlockBuilder {
     }
 
     @Override
-    public IBlockBuilder item(BiFunction<Block, Item.Properties, BlockItem> factory) {
+    public IBlockBuilder item(BiFunction<Block, Item.Settings, BlockItem> factory) {
         this.itemFactory = factory;
         return this;
     }
@@ -142,18 +140,12 @@ class BlockDefinitionBuilder implements IBlockBuilder {
     public <T extends IBlockDefinition> T build() {
         // Create block and matching item, and set factory name of both
         Block block = this.blockSupplier.get();
-        block.setRegistryName(AppEng.MOD_ID, this.registryName);
-
-        BlockItem item = this.constructItemFromBlock(block);
-        if (item != null) {
-            item.setRegistryName(AppEng.MOD_ID, this.registryName);
-        }
 
         // Register the item and block with the game
-        this.factory.addBootstrapComponent((IBlockRegistrationComponent) (side, registry) -> registry.register(block));
+        Registry.register(Registry.BLOCK, id, block);
+        BlockItem item = this.constructItemFromBlock(block);
         if (item != null) {
-            this.factory
-                    .addBootstrapComponent((IItemRegistrationComponent) (side, registry) -> registry.register(item));
+            Registry.register(Registry.ITEM, id, item);
         }
 
         // Register all extra handlers
@@ -174,9 +166,9 @@ class BlockDefinitionBuilder implements IBlockBuilder {
 
         T definition;
         if (block instanceof AEBaseTileBlock) {
-            definition = (T) new TileDefinition(this.registryName, (AEBaseTileBlock<?>) block, item, features);
+            definition = (T) new TileDefinition(this.id.getPath(), (AEBaseTileBlock<?>) block, item, features);
         } else {
-            definition = (T) new BlockDefinition(this.registryName, block, item, features);
+            definition = (T) new BlockDefinition(this.id.getPath(), block, item, features);
         }
 
         if (itemGroup instanceof AEItemGroup) {
@@ -192,7 +184,7 @@ class BlockDefinitionBuilder implements IBlockBuilder {
             return null;
         }
 
-        Item.Properties itemProperties = new Item.Properties();
+        Item.Settings itemProperties = new Item.Settings();
 
         if (itemGroup != null) {
             itemProperties.group(itemGroup);

@@ -34,7 +34,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
@@ -68,7 +68,7 @@ public class TinyTNTBlock extends AEBaseBlock {
 
     @Override
     public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         if (heldItem != null && heldItem.getItem() == Items.FLINT_AND_STEEL) {
             this.startFuse(w, pos, player);
             w.removeBlock(pos, false);
@@ -82,7 +82,7 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     public void startFuse(final World w, final BlockPos pos, final LivingEntity igniter) {
-        if (!w.isRemote) {
+        if (!w.isClient) {
             final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(w, pos.getX() + 0.5F,
                     pos.getY() + 0.5F, pos.getZ() + 0.5F, igniter);
             w.addEntity(primedTinyTNTEntity);
@@ -112,7 +112,7 @@ public class TinyTNTBlock extends AEBaseBlock {
 
     @Override
     public void onEntityWalk(final World w, final BlockPos pos, final Entity entity) {
-        if (entity instanceof AbstractArrowEntity && !w.isRemote) {
+        if (entity instanceof AbstractArrowEntity && !w.isClient) {
             final AbstractArrowEntity entityarrow = (AbstractArrowEntity) entity;
 
             if (entityarrow.isBurning()) {
@@ -140,7 +140,7 @@ public class TinyTNTBlock extends AEBaseBlock {
     @Override
     public void onExplosionDestroy(final World w, final BlockPos pos, final Explosion exp) {
         super.onExplosionDestroy(w, pos, exp);
-        if (!w.isRemote) {
+        if (!w.isClient) {
             final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(w, pos.getX() + 0.5F,
                     pos.getY() + 0.5F, pos.getZ() + 0.5F, exp.getExplosivePlacedBy());
             primedTinyTNTEntity

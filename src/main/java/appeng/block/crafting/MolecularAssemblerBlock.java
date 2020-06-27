@@ -25,17 +25,17 @@ import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.MolecularAssemblerContainer;
-import appeng.tile.crafting.MolecularAssemblerTileEntity;
+import appeng.tile.crafting.MolecularAssemblerBlockEntity;
 
-public class MolecularAssemblerBlock extends AEBaseTileBlock<MolecularAssemblerTileEntity> {
+public class MolecularAssemblerBlock extends AEBaseTileBlock<MolecularAssemblerBlockEntity> {
 
     public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
@@ -51,23 +51,23 @@ public class MolecularAssemblerBlock extends AEBaseTileBlock<MolecularAssemblerT
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, MolecularAssemblerTileEntity te) {
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, MolecularAssemblerBlockEntity te) {
         return currentState.with(POWERED, te.isPowered());
     }
 
     @Override
-    public ActionResult onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand,
-            BlockRayTraceResult hit) {
-        final MolecularAssemblerTileEntity tg = this.getTileEntity(w, pos);
-        if (tg != null && !p.isCrouching()) {
-            if (!tg.isRemote()) {
+    public ActionResult onUse(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand,
+                              BlockHitResult hit) {
+        final MolecularAssemblerBlockEntity tg = this.getBlockEntity(w, pos);
+        if (tg != null && !p.isInSneakingPose()) {
+            if (!tg.isClient()) {
                 ContainerOpener.openContainer(MolecularAssemblerContainer.TYPE, p,
                         ContainerLocator.forTileEntitySide(tg, hit.getFace()));
             }
             return ActionResult.SUCCESS;
         }
 
-        return super.onBlockActivated(state, w, pos, p, hand, hit);
+        return super.onUse(state, w, pos, p, hand, hit);
     }
 
 }

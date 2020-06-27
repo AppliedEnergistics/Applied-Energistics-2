@@ -36,7 +36,7 @@ import net.minecraft.item.FireworkRocketItem;
 import net.minecraft.item.FireworkStarItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.WallOrFloorItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ActionResult;
@@ -44,7 +44,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.server.world.ServerWorld;
@@ -364,9 +364,9 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         return list.size();
     }
 
-    private class ForcedItemUseContext extends ItemUseContext {
+    private class ForcedItemUseContext extends ItemUsageContext {
         protected ForcedItemUseContext(World worldIn, @Nullable PlayerEntity player, Hand handIn, ItemStack heldItem,
-                BlockRayTraceResult rayTraceResultIn) {
+                BlockHitResult rayTraceResultIn) {
             super(worldIn, player, handIn, heldItem, rayTraceResultIn);
         }
     }

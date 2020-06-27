@@ -101,7 +101,7 @@ public class AppEngInternalInventory extends ItemStackHandler implements Iterabl
 
     @Override
     protected void onContentsChanged(int slot) {
-        if (this.getTileEntity() != null && this.eventsEnabled() && !this.dirtyFlag) {
+        if (this.getBlockEntity() != null && this.eventsEnabled() && !this.dirtyFlag) {
             this.dirtyFlag = true;
             ItemStack newStack = this.getStackInSlot(slot).copy();
             ItemStack oldStack = this.previousStack;
@@ -119,8 +119,8 @@ public class AppEngInternalInventory extends ItemStackHandler implements Iterabl
                 }
             }
 
-            this.getTileEntity().onChangeInventory(this, slot, op, oldStack, newStack);
-            this.getTileEntity().saveChanges();
+            this.getBlockEntity().onChangeInventory(this, slot, op, oldStack, newStack);
+            this.getBlockEntity().saveChanges();
             this.previousStack = ItemStack.EMPTY;
             this.dirtyFlag = false;
         }
@@ -174,7 +174,7 @@ public class AppEngInternalInventory extends ItemStackHandler implements Iterabl
         this.enableClientEvents = enableClientEvents;
     }
 
-    private IAEAppEngInventory getTileEntity() {
+    private IAEAppEngInventory getBlockEntity() {
         return this.te;
     }
 

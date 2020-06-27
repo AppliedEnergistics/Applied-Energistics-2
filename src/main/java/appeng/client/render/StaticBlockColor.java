@@ -21,7 +21,7 @@ package appeng.client.render;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.color.IBlockColor;
+import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ILightReader;
 
@@ -30,7 +30,7 @@ import appeng.api.util.AEColor;
 /**
  * Returns the shades of a single AE color for tint indices 0, 1, and 2.
  */
-public class StaticBlockColor implements IBlockColor {
+public class StaticBlockColor implements BlockColorProvider {
 
     private final AEColor color;
 

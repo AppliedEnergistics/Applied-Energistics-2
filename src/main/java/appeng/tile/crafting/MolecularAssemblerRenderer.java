@@ -21,22 +21,22 @@ package appeng.tile.crafting;
 import java.util.Random;
 
 import net.fabricmc.api.EnvType;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
+import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderState;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.render.model.IBakedModel;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
@@ -53,26 +53,26 @@ import appeng.core.AppEng;
  * as the light strip when it's powered.
  */
 @Environment(EnvType.CLIENT)
-public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAssemblerTileEntity> {
+public class MolecularAssemblerRenderer extends BlockEntityRenderer<MolecularAssemblerBlockEntity> {
 
     public static final Identifier LIGHTS_MODEL = new Identifier(AppEng.MOD_ID,
             "block/molecular_assembler_lights");
 
-    private static final RenderType MC_161917_RENDERTYPE_FIX = createRenderType();
+    private static final RenderLayer MC_161917_RENDERTYPE_FIX = createRenderType();
 
     private final Random particleRandom = new Random();
 
-    public MolecularAssemblerRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
+    public MolecularAssemblerRenderer(BlockEntityRenderDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
     @Override
-    public void render(MolecularAssemblerTileEntity molecularAssembler, float partialTicks, MatrixStack ms,
+    public void render(MolecularAssemblerBlockEntity molecularAssembler, float partialTicks, MatrixStack ms,
                        VertexConsumerProvider bufferIn, int combinedLightIn, int combinedOverlayIn) {
 
         AssemblerAnimationStatus status = molecularAssembler.getAnimationStatus();
         if (status != null) {
-            if (!Minecraft.getInstance().isGamePaused()) {
+            if (!MinecraftClient.getInstance().isGamePaused()) {
                 if (status.isExpired()) {
                     molecularAssembler.setAnimationStatus(null);
                 }
@@ -97,22 +97,22 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
         // would also render as translucent,
         // even the fully transparent part)
         // https://bugs.mojang.com/browse/MC-161917
-        Minecraft minecraft = Minecraft.getInstance();
-        IBakedModel lightsModel = minecraft.getModelManager().getModel(LIGHTS_MODEL);
+        MinecraftClient minecraft = MinecraftClient.getInstance();
+        BakedModel lightsModel = minecraft.getModelManager().getModel(LIGHTS_MODEL);
         IVertexBuilder buffer = bufferIn.getBuffer(MC_161917_RENDERTYPE_FIX);
 
         minecraft.getBlockRendererDispatcher().getBlockModelRenderer().renderModel(ms.getLast(), buffer, null,
                 lightsModel, 1, 1, 1, combinedLightIn, combinedOverlayIn, EmptyModelData.INSTANCE);
     }
 
-    private void renderStatus(MolecularAssemblerTileEntity molecularAssembler, MatrixStack ms,
+    private void renderStatus(MolecularAssemblerBlockEntity molecularAssembler, MatrixStack ms,
                               VertexConsumerProvider bufferIn, int combinedLightIn, AssemblerAnimationStatus status) {
         double centerX = molecularAssembler.getPos().getX() + 0.5f;
         double centerY = molecularAssembler.getPos().getY() + 0.5f;
         double centerZ = molecularAssembler.getPos().getZ() + 0.5f;
 
         // Spawn crafting FX that fly towards the block's center
-        Minecraft minecraft = Minecraft.getInstance();
+        MinecraftClient minecraft = MinecraftClient.getInstance();
         if (status.getTicksUntilParticles() <= 0) {
             status.setTicksUntilParticles(4);
 
@@ -142,21 +142,21 @@ public class MolecularAssemblerRenderer extends TileEntityRenderer<MolecularAsse
 
     /**
      * See above for when this can be removed. It creates a RenderType that is
-     * equivalent to {@link RenderType#getTranslucent()}, but enables alpha testing.
+     * equivalent to {@link RenderLayer#getTranslucent()}, but enables alpha testing.
      * This prevents the fully transparents parts of the rendered block model from
      * occluding our particles.
      */
-    private static RenderType createRenderType() {
+    private static RenderLayer createRenderType() {
         RenderState.TransparencyState TRANSLUCENT_TRANSPARENCY = ObfuscationReflectionHelper
                 .getPrivateValue(RenderState.class, null, "field_228515_g_");
         RenderState.TextureState mipmapBlockAtlasTexture = new RenderState.TextureState(
                 AtlasTexture.LOCATION_BLOCKS_TEXTURE, false, true);
         RenderState.LightmapState disableLightmap = new RenderState.LightmapState(false);
-        RenderType.State glState = RenderType.State.getBuilder().texture(mipmapBlockAtlasTexture)
+        RenderLayer.State glState = RenderLayer.State.getBuilder().texture(mipmapBlockAtlasTexture)
                 .transparency(TRANSLUCENT_TRANSPARENCY).alpha(new RenderState.AlphaState(0.05F))
                 .lightmap(disableLightmap).build(true);
 
-        return RenderType.makeType("ae2_translucent_alphatest", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP,
+        return RenderLayer.makeType("ae2_translucent_alphatest", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP,
                 GL11.GL_QUADS, 256, glState);
     }
 

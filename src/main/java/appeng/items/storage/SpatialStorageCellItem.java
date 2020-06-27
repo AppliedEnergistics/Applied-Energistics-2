@@ -21,13 +21,13 @@ package appeng.items.storage;
 import java.util.List;
 
 import net.fabricmc.api.EnvType;
-import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.text.Text;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
@@ -48,15 +48,15 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
 
     private final int maxRegion;
 
-    public SpatialStorageCellItem(Properties props, final int spatialScale) {
+    public SpatialStorageCellItem(Settings props, final int spatialScale) {
         super(props);
         this.maxRegion = spatialScale;
     }
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void addInformation(final ItemStack stack, final World world, final List<Text> lines,
-            final ITooltipFlag advancedTooltips) {
+    public void appendTooltip(final ItemStack stack, final World world, final List<Text> lines,
+            final TooltipContext advancedTooltips) {
         final DimensionType dimType = this.getStoredDimension(stack);
         if (dimType == null) {
             lines.add(GuiText.Unformatted.textComponent().applyTextStyle(TextFormatting.ITALIC));
@@ -67,7 +67,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
 
         if (advancedTooltips.isAdvanced()) {
             if (dimType != null && dimType.getRegistryName() != null) {
-                lines.add(new StringTextComponent("Dimension: " + dimType.getRegistryName()));
+                lines.add(new LiteralText("Dimension: " + dimType.getRegistryName()));
             }
         }
     }

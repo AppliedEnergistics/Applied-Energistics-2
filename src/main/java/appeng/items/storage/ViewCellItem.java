@@ -40,7 +40,7 @@ import appeng.util.prioritylist.PrecisePriorityList;
 
 public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
 
-    public ViewCellItem(Properties properties) {
+    public ViewCellItem(Settings properties) {
         super(properties);
     }
 

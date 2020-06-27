@@ -22,7 +22,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import net.minecraft.dispenser.IDispenseItemBehavior;
+import net.minecraft.block.dispenser.DispenserBehavior;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 
@@ -42,14 +42,14 @@ public interface IItemBuilder {
 
     IItemBuilder itemGroup(ItemGroup tab);
 
-    IItemBuilder props(Consumer<Item.Properties> customizer);
+    IItemBuilder props(Consumer<Item.Settings> customizer);
 
     IItemBuilder rendering(ItemRenderingCustomizer callback);
 
     /**
      * Registers a custom dispenser behavior for this item.
      */
-    IItemBuilder dispenserBehavior(Supplier<IDispenseItemBehavior> behavior);
+    IItemBuilder dispenserBehavior(Supplier<DispenserBehavior> behavior);
 
     ItemDefinition build();
 }

@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.Identifier;
@@ -59,7 +59,7 @@ public class ToggleButton extends Button implements ITooltip {
             final int iconIndex = this.getIconIndex();
 
             RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
-            Minecraft.getInstance().textureManager.bindTexture(TEXTURE_STATES);
+            MinecraftClient.getInstance().textureManager.bindTexture(TEXTURE_STATES);
 
             final int uv_y = iconIndex / 16;
             final int uv_x = iconIndex - uv_y * 16;

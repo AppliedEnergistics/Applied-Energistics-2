@@ -99,7 +99,7 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
         if (this.getFuse() <= 0) {
             this.remove();
 
-            if (!this.world.isRemote) {
+            if (!this.world.isClient) {
                 this.explode();
             }
         } else {

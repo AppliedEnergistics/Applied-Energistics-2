@@ -20,8 +20,8 @@ package appeng.core.api;
 
 import java.util.List;
 
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.util.text.StringTextComponent;
 
 import appeng.api.config.IncludeExclude;
 import appeng.api.storage.cells.ICellInventory;
@@ -41,13 +41,13 @@ public class ApiClientHelper implements IClientHelper {
         final ICellInventory<?> cellInventory = handler.getCellInv();
 
         if (cellInventory != null) {
-            lines.add(new StringTextComponent(cellInventory.getUsedBytes() + " ")
-                    .appendSibling(GuiText.Of.textComponent()).appendText(" " + cellInventory.getTotalBytes() + " ")
-                    .appendSibling(GuiText.BytesUsed.textComponent()));
+            lines.add(new LiteralText(cellInventory.getUsedBytes() + " ")
+                    .append(GuiText.Of.textComponent()).append(" " + cellInventory.getTotalBytes() + " ")
+                    .append(GuiText.BytesUsed.textComponent()));
 
-            lines.add(new StringTextComponent(cellInventory.getStoredItemTypes() + " ")
-                    .appendSibling(GuiText.Of.textComponent()).appendText(" " + cellInventory.getTotalItemTypes() + " ")
-                    .appendSibling(GuiText.Types.textComponent()));
+            lines.add(new LiteralText(cellInventory.getStoredItemTypes() + " ")
+                    .append(GuiText.Of.textComponent()).append(" " + cellInventory.getTotalItemTypes() + " ")
+                    .append(GuiText.Types.textComponent()));
         }
 
         if (handler.isPreformatted()) {
@@ -55,11 +55,11 @@ public class ApiClientHelper implements IClientHelper {
                     : GuiText.Excluded).getLocal();
 
             if (handler.isFuzzy()) {
-                lines.add(GuiText.Partitioned.textComponent().appendText(" - " + list + " ")
-                        .appendSibling(GuiText.Fuzzy.textComponent()));
+                lines.add(GuiText.Partitioned.textComponent().append(" - " + list + " ")
+                        .append(GuiText.Fuzzy.textComponent()));
             } else {
-                lines.add(GuiText.Partitioned.textComponent().appendText(" - " + list + " ")
-                        .appendSibling(GuiText.Precise.textComponent()));
+                lines.add(GuiText.Partitioned.textComponent().append(" - " + list + " ")
+                        .append(GuiText.Precise.textComponent()));
             }
         }
 

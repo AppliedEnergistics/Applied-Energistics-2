@@ -19,7 +19,7 @@
 package appeng.block.misc;
 
 import net.fabricmc.api.EnvType;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.render.RenderLayer;
 import net.fabricmc.api.Environment;
 
 import appeng.api.util.AEColor;
@@ -34,7 +34,7 @@ public class SecurityStationRendering extends BlockRenderingCustomizer {
     @Override
     @Environment(EnvType.CLIENT)
     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
-        rendering.renderType(RenderType.getCutout());
+        rendering.renderType(RenderLayer.getCutout());
         rendering.blockColor(ColorableTileBlockColor.INSTANCE);
         itemRendering.color(new StaticItemColor(AEColor.TRANSPARENT));
     }

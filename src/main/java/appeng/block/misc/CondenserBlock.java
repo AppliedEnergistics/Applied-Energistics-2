@@ -25,18 +25,18 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.CondenserContainer;
-import appeng.tile.misc.CondenserTileEntity;
+import appeng.tile.misc.CondenserBlockEntity;
 import appeng.util.Platform;
 
-public class CondenserBlock extends AEBaseTileBlock<CondenserTileEntity> {
+public class CondenserBlock extends AEBaseTileBlock<CondenserBlockEntity> {
 
     public CondenserBlock() {
         super(defaultProps(Material.IRON));
@@ -44,14 +44,14 @@ public class CondenserBlock extends AEBaseTileBlock<CondenserTileEntity> {
 
     @Override
     public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (player.isCrouching()) {
+            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+        if (player.isInSneakingPose()) {
             return ActionResult.PASS;
         }
 
         if (Platform.isServer()) {
-            final CondenserTileEntity tc = this.getTileEntity(w, pos);
-            if (tc != null && !player.isCrouching()) {
+            final CondenserBlockEntity tc = this.getBlockEntity(w, pos);
+            if (tc != null && !player.isInSneakingPose()) {
                 ContainerOpener.openContainer(CondenserContainer.TYPE, player,
                         ContainerLocator.forTileEntitySide(tc, hit.getFace()));
                 return ActionResult.SUCCESS;

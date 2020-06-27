@@ -24,12 +24,12 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
@@ -41,10 +41,10 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.WirelessContainer;
 import appeng.helpers.AEGlassMaterial;
-import appeng.tile.networking.WirelessTileEntity;
+import appeng.tile.networking.WirelessBlockEntity;
 import appeng.util.Platform;
 
-public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
+public class WirelessBlock extends AEBaseTileBlock<WirelessBlockEntity> {
 
     enum State implements IStringSerializable {
         OFF, ON, HAS_CHANNEL;
@@ -58,14 +58,15 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
     public static final EnumProperty<State> STATE = EnumProperty.create("state", State.class);
 
     public WirelessBlock() {
-        super(defaultProps(AEGlassMaterial.INSTANCE).notSolid());
-        this.setFullSize(false);
-        this.setOpaque(false);
+        super(defaultProps(AEGlassMaterial.INSTANCE)
+                .nonOpaque()
+                .solidBlock((state, world, pos) -> false)
+        );
         this.setDefaultState(this.getDefaultState().with(STATE, State.OFF));
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, WirelessTileEntity te) {
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, WirelessBlockEntity te) {
         State teState = State.OFF;
 
         if (te.isActive()) {
@@ -84,11 +85,11 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
     }
 
     @Override
-    public ActionResult onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity player, Hand hand,
-            BlockRayTraceResult hit) {
-        final WirelessTileEntity tg = this.getTileEntity(w, pos);
+    public ActionResult onUse(BlockState state, World w, BlockPos pos, PlayerEntity player, Hand hand,
+                              BlockHitResult hit) {
+        final WirelessBlockEntity tg = this.getBlockEntity(w, pos);
 
-        if (tg != null && !player.isCrouching()) {
+        if (tg != null && !player.isInSneakingPose()) {
             if (Platform.isServer()) {
                 ContainerOpener.openContainer(WirelessContainer.TYPE, player,
                         ContainerLocator.forTileEntitySide(tg, hit.getFace()));
@@ -96,12 +97,12 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
             return ActionResult.SUCCESS;
         }
 
-        return super.onBlockActivated(state, w, pos, player, hand, hit);
+        return super.onUse(state, w, pos, player, hand, hit);
     }
 
     @Override
     public VoxelShape getShape(BlockState state, BlockView w, BlockPos pos, ShapeContext context) {
-        final WirelessTileEntity tile = this.getTileEntity(w, pos);
+        final WirelessBlockEntity tile = this.getBlockEntity(w, pos);
         if (tile != null) {
             final Direction forward = tile.getForward();
 
@@ -161,7 +162,7 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockView w, BlockPos pos, ShapeContext context) {
 
-        final WirelessTileEntity tile = this.getTileEntity(w, pos);
+        final WirelessBlockEntity tile = this.getBlockEntity(w, pos);
         if (tile != null) {
             final Direction forward = tile.getForward();
 

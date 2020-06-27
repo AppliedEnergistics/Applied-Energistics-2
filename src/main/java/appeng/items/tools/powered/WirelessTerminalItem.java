@@ -22,7 +22,7 @@ import java.util.List;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -36,7 +36,6 @@ import net.minecraft.world.World;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
-import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
@@ -49,21 +48,21 @@ import appeng.util.ConfigManager;
 
 public class WirelessTerminalItem extends AEBasePoweredItem implements IWirelessTermHandler {
 
-    public WirelessTerminalItem(Item.Properties props) {
+    public WirelessTerminalItem(Item.Settings props) {
         super(AEConfig.instance().getWirelessTerminalBattery(), props);
     }
 
     @Override
     public TypedActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity player, final Hand hand) {
-        AEApi.instance().registries().wireless().openWirelessTerminalGui(player.getHeldItem(hand), w, player, hand);
-        return new TypedActionResult<>(ActionResult.SUCCESS, player.getHeldItem(hand));
+        AEApi.instance().registries().wireless().openWirelessTerminalGui(player.getStackInHand(hand), w, player, hand);
+        return new TypedActionResult<>(ActionResult.SUCCESS, player.getStackInHand(hand));
     }
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void addInformation(final ItemStack stack, final World world, final List<Text> lines,
-            final ITooltipFlag advancedTooltips) {
-        super.addInformation(stack, world, lines, advancedTooltips);
+    public void appendTooltip(final ItemStack stack, final World world, final List<Text> lines,
+            final TooltipContext advancedTooltips) {
+        super.appendTooltip(stack, world, lines, advancedTooltips);
 
         if (stack.hasTag()) {
             final CompoundTag tag = stack.getOrCreateTag();

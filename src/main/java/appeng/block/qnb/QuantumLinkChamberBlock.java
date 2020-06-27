@@ -29,7 +29,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
@@ -42,7 +42,7 @@ import appeng.container.ContainerOpener;
 import appeng.container.implementations.QNBContainer;
 import appeng.core.AppEng;
 import appeng.helpers.AEGlassMaterial;
-import appeng.tile.qnb.QuantumBridgeTileEntity;
+import appeng.tile.qnb.QuantumBridgeBlockEntity;
 import appeng.util.Platform;
 
 public class QuantumLinkChamberBlock extends QuantumBaseBlock {
@@ -61,7 +61,7 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
 
     @Override
     public void animateTick(final BlockState state, final World w, final BlockPos pos, final Random rand) {
-        final QuantumBridgeTileEntity bridge = this.getTileEntity(w, pos);
+        final QuantumBridgeBlockEntity bridge = this.getBlockEntity(w, pos);
         if (bridge != null) {
             if (bridge.hasQES()) {
                 if (AppEng.proxy.shouldAddParticles(rand)) {
@@ -74,12 +74,12 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
 
     @Override
     public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (p.isCrouching()) {
+            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+        if (p.isInSneakingPose()) {
             return ActionResult.PASS;
         }
 
-        final QuantumBridgeTileEntity tg = this.getTileEntity(w, pos);
+        final QuantumBridgeBlockEntity tg = this.getBlockEntity(w, pos);
         if (tg != null) {
             if (Platform.isServer()) {
                 ContainerOpener.openContainer(QNBContainer.TYPE, p, ContainerLocator.forTileEntity(tg));

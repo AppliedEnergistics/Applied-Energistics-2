@@ -30,13 +30,13 @@ import java.util.function.Function;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.client.renderer.color.BlockColors;
+import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.IBakedModel;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
@@ -104,8 +104,8 @@ public class FacadeBuilder {
     );
     private final ThreadLocal<Quad> collectors = ThreadLocal.withInitial(Quad::new);
 
-    public void buildFacadeQuads(RenderType layer, CableBusRenderState renderState, Random rand, List<BakedQuad> quads,
-            Function<Identifier, IBakedModel> modelLookup) {
+    public void buildFacadeQuads(RenderLayer layer, CableBusRenderState renderState, Random rand, List<BakedQuad> quads,
+                                 Function<Identifier, BakedModel> modelLookup) {
         BakedPipeline pipeline = this.pipelines.get();
         Quad collectorQuad = this.collectors.get();
         boolean transparent = AEApi.instance().partHelper().getCableRenderMode().transparentFacades;
@@ -114,7 +114,7 @@ public class FacadeBuilder {
         Set<Direction> sidesWithParts = renderState.getAttachments().keySet();
         ILightReader parentWorld = renderState.getWorld();
         BlockPos pos = renderState.getPos();
-        BlockColors blockColors = Minecraft.getInstance().getBlockColors();
+        BlockColors blockColors = MinecraftClient.getInstance().getBlockColors();
         boolean thinFacades = isUseThinFacades(partBoxes);
 
         for (Entry<Direction, FacadeRenderState> entry : facadeStates.entrySet()) {
@@ -122,16 +122,16 @@ public class FacadeBuilder {
             int sideIndex = side.ordinal();
             FacadeRenderState facadeRenderState = entry.getValue();
             boolean renderStilt = !sidesWithParts.contains(side);
-            if (layer == RenderType.getCutout() && renderStilt) {
+            if (layer == RenderLayer.getCutout() && renderStilt) {
                 for (Identifier part : CableAnchorPart.FACADE_MODELS.getModels()) {
-                    IBakedModel partModel = modelLookup.apply(part);
+                    BakedModel partModel = modelLookup.apply(part);
                     QuadRotator rotator = new QuadRotator();
                     quads.addAll(rotator.rotateQuads(gatherQuads(partModel, null, rand, EmptyModelData.INSTANCE), side,
                             Direction.UP));
                 }
             }
             // If we are forcing transparency and this isn't the Translucent layer.
-            if (transparent && layer != RenderType.getTranslucent()) {
+            if (transparent && layer != RenderLayer.getTranslucent()) {
                 continue;
             }
 
@@ -191,15 +191,15 @@ public class FacadeBuilder {
             List<Box> holeStrips = getBoxes(facadeBox, cutOutBox, side.getAxis());
             ILightReader facadeAccess = new FacadeBlockAccess(parentWorld, pos, side, blockState);
 
-            BlockRendererDispatcher dispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
-            IBakedModel model = dispatcher.getModelForState(blockState);
+            BlockRendererDispatcher dispatcher = MinecraftClient.getInstance().getBlockRendererDispatcher();
+            BakedModel model = dispatcher.getModelForState(blockState);
             IModelData modelData = model.getModelData(facadeAccess, pos, blockState, EmptyModelData.INSTANCE);
 
             List<BakedQuad> modelQuads = new ArrayList<>();
             // If we are forcing transparent facades, fake the render layer, and grab all
             // quads.
             if (transparent || layer == null) {
-                for (RenderType forcedLayer : RenderType.getBlockRenderTypes()) {
+                for (RenderLayer forcedLayer : RenderLayer.getBlockRenderTypes()) {
                     // Check if the block renders on the layer we want to force.
                     if (RenderTypeLookup.canRenderInLayer(blockState, forcedLayer)) {
                         // Force the layer and gather quads.
@@ -287,7 +287,7 @@ public class FacadeBuilder {
      */
     public List<BakedQuad> buildFacadeItemQuads(ItemStack textureItem, Direction side) {
         List<BakedQuad> facadeQuads = new ArrayList<>();
-        IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelWithOverrides(textureItem, null,
+        BakedModel model = MinecraftClient.getInstance().getItemRenderer().getItemModelWithOverrides(textureItem, null,
                 null);
         List<BakedQuad> modelQuads = gatherQuads(model, null, new Random(), EmptyModelData.INSTANCE);
 
@@ -307,7 +307,7 @@ public class FacadeBuilder {
             collectorQuad.reset(format);
             // If we have a tint index, setup the tinter and enable it.
             if (quad.hasTintIndex()) {
-                tinter.setTint(Minecraft.getInstance().getItemColors().getColor(textureItem, quad.getColorIndex()));
+                tinter.setTint(MinecraftClient.getInstance().getItemColors().getColor(textureItem, quad.getColorIndex()));
                 pipeline.enableElement("tinter");
             }
             // Disable elements we don't need for items.
@@ -328,7 +328,7 @@ public class FacadeBuilder {
     }
 
     // Helper to gather all quads from a model into a list.
-    private static List<BakedQuad> gatherQuads(IBakedModel model, BlockState state, Random rand, IModelData data) {
+    private static List<BakedQuad> gatherQuads(BakedModel model, BlockState state, Random rand, IModelData data) {
         List<BakedQuad> modelQuads = new ArrayList<>();
         for (Direction face : Direction.values()) {
             modelQuads.addAll(model.getQuads(state, face, rand, data));

@@ -26,9 +26,9 @@ import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.helpers.AEGlassMaterial;
-import appeng.tile.spatial.SpatialPylonTileEntity;
+import appeng.tile.spatial.SpatialPylonBlockEntity;
 
-public class SpatialPylonBlock extends AEBaseTileBlock<SpatialPylonTileEntity> {
+public class SpatialPylonBlock extends AEBaseTileBlock<SpatialPylonBlockEntity> {
 
     public SpatialPylonBlock() {
         super(defaultProps(AEGlassMaterial.INSTANCE));
@@ -37,7 +37,7 @@ public class SpatialPylonBlock extends AEBaseTileBlock<SpatialPylonTileEntity> {
     @Override
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final SpatialPylonTileEntity tsp = this.getTileEntity(world, pos);
+        final SpatialPylonBlockEntity tsp = this.getBlockEntity(world, pos);
         if (tsp != null) {
             tsp.neighborChanged();
         }
@@ -45,7 +45,7 @@ public class SpatialPylonBlock extends AEBaseTileBlock<SpatialPylonTileEntity> {
 
     @Override
     public int getLightValue(final BlockState state, final BlockView w, final BlockPos pos) {
-        final SpatialPylonTileEntity tsp = this.getTileEntity(w, pos);
+        final SpatialPylonBlockEntity tsp = this.getBlockEntity(w, pos);
         if (tsp != null) {
             return tsp.getLightValue();
         }

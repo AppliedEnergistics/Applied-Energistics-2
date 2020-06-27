@@ -11,8 +11,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
@@ -90,7 +90,7 @@ public final class InscriberRecipes {
         final ItemStack renamedItem = input.copy();
 
         if (!name.isEmpty()) {
-            renamedItem.setDisplayName(new StringTextComponent(name));
+            renamedItem.setDisplayName(new LiteralText(name));
         } else {
             renamedItem.setDisplayName(null);
         }

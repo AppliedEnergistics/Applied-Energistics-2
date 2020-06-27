@@ -365,7 +365,7 @@ public class CubeBuilder {
                     builder.put(i, x, y, z);
                     break;
                 case NORMAL:
-                    builder.put(i, face.getXOffset(), face.getYOffset(), face.getZOffset());
+                    builder.put(i, face.getOffsetX(), face.getOffsetY(), face.getZOffset());
                     break;
                 case COLOR:
                     // Color format is RGBA

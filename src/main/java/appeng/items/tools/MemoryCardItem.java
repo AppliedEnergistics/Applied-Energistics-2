@@ -22,10 +22,10 @@ import java.util.List;
 
 import net.fabricmc.api.EnvType;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.TypedActionResult;
@@ -52,14 +52,14 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
             AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT,
             AEColor.TRANSPARENT, };
 
-    public MemoryCardItem(Properties properties) {
+    public MemoryCardItem(Settings properties) {
         super(properties);
     }
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void addInformation(final ItemStack stack, final World world, final List<Text> lines,
-            final ITooltipFlag advancedTooltips) {
+    public void appendTooltip(final ItemStack stack, final World world, final List<Text> lines,
+            final TooltipContext advancedTooltips) {
         String firstLineKey = this.getFirstValidTranslationKey(this.getSettingsName(stack) + ".name",
                 this.getSettingsName(stack));
         lines.add(new TranslatableText(firstLineKey));
@@ -164,9 +164,9 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
     }
 
     @Override
-    public ActionResult onItemUse(ItemUseContext context) {
-        if (context.getPlayer().isCrouching()) {
-            if (!context.getPlayer().world.isRemote) {
+    public ActionResult onItemUse(ItemUsageContext context) {
+        if (context.getPlayer().isInSneakingPose()) {
+            if (!context.getPlayer().world.isClient) {
                 this.clearCard(context.getPlayer(), context.getWorld(), context.getHand());
             }
             return ActionResult.SUCCESS;
@@ -177,8 +177,8 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
 
     @Override
     public TypedActionResult<ItemStack> onItemRightClick(World w, PlayerEntity player, Hand hand) {
-        if (player.isCrouching()) {
-            if (!w.isRemote) {
+        if (player.isInSneakingPose()) {
+            if (!w.isClient) {
                 this.clearCard(player, w, hand);
             }
         }
@@ -192,8 +192,8 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
     }
 
     private void clearCard(final PlayerEntity player, final World w, final Hand hand) {
-        final IMemoryCard mem = (IMemoryCard) player.getHeldItem(hand).getItem();
+        final IMemoryCard mem = (IMemoryCard) player.getStackInHand(hand).getItem();
         mem.notifyUser(player, MemoryCardMessages.SETTINGS_CLEARED);
-        player.getHeldItem(hand).setTag(null);
+        player.getStackInHand(hand).setTag(null);
     }
 }

@@ -30,22 +30,22 @@ import mcjty.theoneprobe.api.ProbeMode;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.integration.modules.theoneprobe.TheOneProbeText;
-import appeng.tile.AEBaseTileEntity;
-import appeng.tile.crafting.CraftingMonitorTileEntity;
+import appeng.tile.AEBaseBlockEntity;
+import appeng.tile.crafting.CraftingMonitorBlockEntity;
 
 public class CraftingMonitorInfoProvider implements ITileProbInfoProvider {
 
     @Override
-    public void addProbeInfo(AEBaseTileEntity tile, ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player,
-            World world, BlockState blockState, IProbeHitData data) {
-        if (tile instanceof CraftingMonitorTileEntity) {
-            final CraftingMonitorTileEntity monitor = (CraftingMonitorTileEntity) tile;
+    public void addProbeInfo(AEBaseBlockEntity tile, ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player,
+                             World world, BlockState blockState, IProbeHitData data) {
+        if (tile instanceof CraftingMonitorBlockEntity) {
+            final CraftingMonitorBlockEntity monitor = (CraftingMonitorBlockEntity) tile;
             final IAEItemStack displayStack = monitor.getJobProgress();
 
             if (displayStack != null) {
                 // TODO: check if OK
                 final ItemStack itemStack = displayStack.asItemStackRepresentation();
-                final String itemName = itemStack.getDisplayName().getString();
+                final String itemName = itemStack.getName().getString();
                 final String formattedCrafting = TheOneProbeText.CRAFTING.getTranslationComponent(itemName)
                         .getFormattedText();
 

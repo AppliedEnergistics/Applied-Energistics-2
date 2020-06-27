@@ -22,11 +22,10 @@ import java.util.List;
 
 import net.fabricmc.api.EnvType;
 import net.minecraft.block.Block;
-import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.Direction;
@@ -40,33 +39,28 @@ import appeng.block.misc.LightDetectorBlock;
 import appeng.block.misc.SkyCompassBlock;
 import appeng.block.networking.WirelessBlock;
 import appeng.me.helpers.IGridProxyable;
-import appeng.tile.AEBaseTileEntity;
+import appeng.tile.AEBaseBlockEntity;
 
 public class AEBaseBlockItem extends BlockItem {
 
     private final AEBaseBlock blockType;
 
-    public AEBaseBlockItem(final Block id, Item.Properties props) {
+    public AEBaseBlockItem(final Block id, Settings props) {
         super(id, props);
         this.blockType = (AEBaseBlock) id;
     }
 
     @Override
     @Environment(EnvType.CLIENT)
-    public final void addInformation(final ItemStack itemStack, final World world, final List<Text> toolTip,
-            final ITooltipFlag advancedTooltips) {
+    public final void appendTooltip(final ItemStack itemStack, final World world, final List<Text> toolTip,
+            final TooltipContext advancedTooltips) {
         this.addCheckedInformation(itemStack, world, toolTip, advancedTooltips);
     }
 
     @Environment(EnvType.CLIENT)
     public void addCheckedInformation(final ItemStack itemStack, final World world, final List<Text> toolTip,
-            final ITooltipFlag advancedTooltips) {
-        this.blockType.addInformation(itemStack, world, toolTip, advancedTooltips);
-    }
-
-    @Override
-    public boolean isBookEnchantable(final ItemStack itemstack1, final ItemStack itemstack2) {
-        return false;
+            final TooltipContext advancedTooltips) {
+        this.blockType.buildTooltip(itemStack, world, toolTip, advancedTooltips);
     }
 
     @Override
@@ -75,12 +69,12 @@ public class AEBaseBlockItem extends BlockItem {
     }
 
     @Override
-    public ActionResult tryPlace(BlockItemUseContext context) {
+    public ActionResult place(ItemPlacementContext context) {
 
         Direction up = null;
         Direction forward = null;
 
-        Direction side = context.getFace();
+        Direction side = context.getSide();
         PlayerEntity player = context.getPlayer();
 
         if (this.blockType instanceof AEBaseTileBlock) {
@@ -100,13 +94,13 @@ public class AEBaseBlockItem extends BlockItem {
                 }
             } else {
                 up = Direction.UP;
-                forward = context.getPlacementHorizontalFacing().getOpposite();
+                forward = context.getPlayerFacing().getOpposite();
 
                 if (player != null) {
-                    if (player.rotationPitch > 65) {
+                    if (player.pitch > 65) {
                         up = forward.getOpposite();
                         forward = Direction.UP;
-                    } else if (player.rotationPitch < -65) {
+                    } else if (player.pitch < -65) {
                         up = forward.getOpposite();
                         forward = Direction.DOWN;
                     }
@@ -116,26 +110,26 @@ public class AEBaseBlockItem extends BlockItem {
 
         IOrientable ori = null;
         if (this.blockType instanceof IOrientableBlock) {
-            ori = ((IOrientableBlock) this.blockType).getOrientable(context.getWorld(), context.getPos());
+            ori = ((IOrientableBlock) this.blockType).getOrientable(context.getWorld(), context.getBlockPos());
             up = side;
             forward = Direction.SOUTH;
-            if (up.getYOffset() == 0) {
+            if (up.getOffsetY() == 0) {
                 forward = Direction.UP;
             }
         }
 
-        if (!this.blockType.isValidOrientation(context.getWorld(), context.getPos(), forward, up)) {
+        if (!this.blockType.isValidOrientation(context.getWorld(), context.getBlockPos(), forward, up)) {
             return ActionResult.FAIL;
         }
 
-        ActionResult result = super.tryPlace(context);
+        ActionResult result = super.place(context);
         if (result != ActionResult.SUCCESS) {
             return result;
         }
 
         if (this.blockType instanceof AEBaseTileBlock && !(this.blockType instanceof LightDetectorBlock)) {
-            final AEBaseTileEntity tile = ((AEBaseTileBlock<?>) this.blockType).getTileEntity(context.getWorld(),
-                    context.getPos());
+            final AEBaseBlockEntity tile = ((AEBaseTileBlock<?>) this.blockType).getBlockEntity(context.getWorld(),
+                    context.getBlockPos());
             ori = tile;
 
             if (tile == null) {

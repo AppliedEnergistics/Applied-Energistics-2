@@ -7,11 +7,11 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.IBakedModel;
 import net.minecraft.client.render.model.IModelTransform;
 import net.minecraft.client.render.model.ItemCameraTransforms;
 import net.minecraft.client.render.model.ItemOverrideList;
@@ -20,9 +20,9 @@ import net.minecraft.util.math.Direction;
 import net.minecraftforge.client.model.PerspectiveMapWrapper;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
-class ColorApplicatorBakedModel implements IBakedModel {
+class ColorApplicatorBakedModel implements BakedModel {
 
-    private final IBakedModel baseModel;
+    private final BakedModel baseModel;
 
     private final IModelTransform transforms;
 
@@ -30,8 +30,8 @@ class ColorApplicatorBakedModel implements IBakedModel {
 
     private final List<BakedQuad> generalQuads;
 
-    ColorApplicatorBakedModel(IBakedModel baseModel, IModelTransform transforms, TextureAtlasSprite texDark,
-            TextureAtlasSprite texMedium, TextureAtlasSprite texBright) {
+    ColorApplicatorBakedModel(BakedModel baseModel, IModelTransform transforms, TextureAtlasSprite texDark,
+                              TextureAtlasSprite texMedium, TextureAtlasSprite texBright) {
         this.baseModel = baseModel;
         this.transforms = transforms;
 
@@ -113,7 +113,7 @@ class ColorApplicatorBakedModel implements IBakedModel {
     }
 
     @Override
-    public IBakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
+    public BakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
         return PerspectiveMapWrapper.handlePerspective(this, transforms, cameraTransformType, mat);
     }
 }

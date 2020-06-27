@@ -19,18 +19,18 @@
 package appeng.debug;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.play.server.SChunkDataPacket;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.server.world.ServerWorld;
@@ -52,12 +52,12 @@ public class MeteoritePlacerItem extends AEBaseItem {
 
     @Override
     public TypedActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-        if (world.isRemote()) {
-            return TypedActionResult.resultPass(player.getHeldItem(hand));
+        if (world.isClient()) {
+            return TypedActionResult.resultPass(player.getStackInHand(hand));
         }
 
         if (player.isSneaking()) {
-            final ItemStack itemStack = player.getHeldItem(hand);
+            final ItemStack itemStack = player.getStackInHand(hand);
             final CompoundTag tag = itemStack.getOrCreateTag();
 
             if (tag.contains(MODE_TAG)) {
@@ -69,7 +69,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
 
             CraterType craterType = CraterType.values()[tag.getByte(MODE_TAG)];
 
-            player.sendMessage(new StringTextComponent(craterType.name()));
+            player.sendMessage(new LiteralText(craterType.name()));
 
             return TypedActionResult.resultSuccess(itemStack);
         }
@@ -78,14 +78,14 @@ public class MeteoritePlacerItem extends AEBaseItem {
     }
 
     @Override
-    public ActionResult onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        if (context.getWorld().isRemote()) {
+    public ActionResult onItemUseFirst(ItemStack stack, ItemUsageContext context) {
+        if (context.getWorld().isClient()) {
             return ActionResult.PASS;
         }
 
         ServerPlayerEntity player = (ServerPlayerEntity) context.getPlayer();
         ServerWorld world = (ServerWorld) context.getWorld();
-        BlockPos pos = context.getPos();
+        BlockPos pos = context.getBlockPos();
 
         if (player == null) {
             return ActionResult.PASS;
@@ -106,7 +106,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
                 pureCrater, false);
 
         if (spawned == null) {
-            player.sendMessage(new StringTextComponent("Un-suitable Location."));
+            player.sendMessage(new LiteralText("Un-suitable Location."));
             return ActionResult.FAIL;
         }
 
@@ -120,7 +120,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
         final MeteoritePlacer placer = new MeteoritePlacer(world, spawned, boundingBox);
         placer.place();
 
-        player.sendMessage(new StringTextComponent("Spawned at y=" + spawned.getPos().getY() + " range=" + range
+        player.sendMessage(new LiteralText("Spawned at y=" + spawned.getPos().getY() + " range=" + range
                 + " biomeCategory=" + world.getBiome(pos).getCategory()));
 
         // The placer will not send chunks to the player since it's used as part

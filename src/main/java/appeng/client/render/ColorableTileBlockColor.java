@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.renderer.color.IBlockColor;
+import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ILightReader;
 
@@ -32,7 +32,7 @@ import appeng.api.util.AEColor;
 /**
  * Automatically exposes the color of a colorable tile using tint indices 0-2
  */
-public class ColorableTileBlockColor implements IBlockColor {
+public class ColorableTileBlockColor implements BlockColorProvider {
 
     public static final ColorableTileBlockColor INSTANCE = new ColorableTileBlockColor();
 
@@ -41,7 +41,7 @@ public class ColorableTileBlockColor implements IBlockColor {
         AEColor color = AEColor.TRANSPARENT; // Default to a neutral color
 
         if (worldIn != null && pos != null) {
-            BlockEntity te = worldIn.getTileEntity(pos);
+            BlockEntity te = worldIn.getBlockEntity(pos);
             if (te instanceof IColorableTile) {
                 color = ((IColorableTile) te).getColor();
             }

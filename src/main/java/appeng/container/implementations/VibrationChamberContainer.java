@@ -28,15 +28,15 @@ import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.tile.misc.VibrationChamberTileEntity;
+import appeng.tile.misc.VibrationChamberBlockEntity;
 import appeng.util.Platform;
 
 public class VibrationChamberContainer extends AEBaseContainer implements IProgressProvider {
 
     public static ContainerType<VibrationChamberContainer> TYPE;
 
-    private static final ContainerHelper<VibrationChamberContainer, VibrationChamberTileEntity> helper = new ContainerHelper<>(
-            VibrationChamberContainer::new, VibrationChamberTileEntity.class);
+    private static final ContainerHelper<VibrationChamberContainer, VibrationChamberBlockEntity> helper = new ContainerHelper<>(
+            VibrationChamberContainer::new, VibrationChamberBlockEntity.class);
 
     public static VibrationChamberContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
@@ -46,14 +46,14 @@ public class VibrationChamberContainer extends AEBaseContainer implements IProgr
         return helper.open(player, locator);
     }
 
-    private final VibrationChamberTileEntity vibrationChamber;
+    private final VibrationChamberBlockEntity vibrationChamber;
     @GuiSync(0)
     public int burnSpeed = 0;
     @GuiSync(1)
     public int remainingBurnTime = 0;
 
     public VibrationChamberContainer(int id, final PlayerInventory ip,
-            final VibrationChamberTileEntity vibrationChamber) {
+            final VibrationChamberBlockEntity vibrationChamber) {
         super(TYPE, id, ip, vibrationChamber, null);
         this.vibrationChamber = vibrationChamber;
 
@@ -85,6 +85,6 @@ public class VibrationChamberContainer extends AEBaseContainer implements IProgr
 
     @Override
     public int getMaxProgress() {
-        return VibrationChamberTileEntity.MAX_BURN_SPEED;
+        return VibrationChamberBlockEntity.MAX_BURN_SPEED;
     }
 }

@@ -15,7 +15,7 @@ import net.minecraft.client.util.math.MatrixStack;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.IBakedModel;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.ItemCameraTransforms;
 import net.minecraft.client.render.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -30,12 +30,12 @@ import appeng.api.util.AEColor;
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.core.AELog;
 
-class MemoryCardBakedModel implements IBakedModel {
+class MemoryCardBakedModel implements BakedModel {
     private static final AEColor[] DEFAULT_COLOR_CODE = new AEColor[] { AEColor.TRANSPARENT, AEColor.TRANSPARENT,
             AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT,
             AEColor.TRANSPARENT, };
 
-    private final IBakedModel baseModel;
+    private final BakedModel baseModel;
 
     private final TextureAtlasSprite texture;
 
@@ -45,12 +45,12 @@ class MemoryCardBakedModel implements IBakedModel {
 
     private final ImmutableList<BakedQuad> generalQuads;
 
-    MemoryCardBakedModel(IBakedModel baseModel, TextureAtlasSprite texture) {
+    MemoryCardBakedModel(BakedModel baseModel, TextureAtlasSprite texture) {
         this(baseModel, texture, DEFAULT_COLOR_CODE, createCache());
     }
 
-    private MemoryCardBakedModel(IBakedModel baseModel, TextureAtlasSprite texture, AEColor[] hash,
-            Cache<CacheKey, MemoryCardBakedModel> modelCache) {
+    private MemoryCardBakedModel(BakedModel baseModel, TextureAtlasSprite texture, AEColor[] hash,
+                                 Cache<CacheKey, MemoryCardBakedModel> modelCache) {
         this.baseModel = baseModel;
         this.texture = texture;
         this.colorCode = hash;
@@ -128,8 +128,8 @@ class MemoryCardBakedModel implements IBakedModel {
     public ItemOverrideList getOverrides() {
         return new ItemOverrideList() {
             @Override
-            public IBakedModel getModelWithOverrides(IBakedModel originalModel, ItemStack stack, World world,
-                    LivingEntity entity) {
+            public BakedModel getModelWithOverrides(BakedModel originalModel, ItemStack stack, World world,
+                                                    LivingEntity entity) {
                 try {
                     if (stack.getItem() instanceof IMemoryCard) {
                         final IMemoryCard memoryCard = (IMemoryCard) stack.getItem();
@@ -150,7 +150,7 @@ class MemoryCardBakedModel implements IBakedModel {
     }
 
     @Override
-    public IBakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
+    public BakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
         baseModel.handlePerspective(cameraTransformType, mat);
         return this;
     }

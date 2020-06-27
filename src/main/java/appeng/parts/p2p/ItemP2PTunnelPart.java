@@ -24,6 +24,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.impl.EmptyFixedItemInv;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
@@ -32,7 +33,6 @@ import net.minecraft.world.BlockView;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkBootingStatusChange;
@@ -90,7 +90,7 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implemen
         try {
             itemTunnels = this.getOutputs();
         } catch (final GridAccessException e) {
-            return EmptyHandler.INSTANCE;
+            return EmptyFixedItemInv.INSTANCE;
         }
 
         for (final ItemP2PTunnelPart t : itemTunnels) {
@@ -113,7 +113,7 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implemen
             this.partVisited = true;
             if (this.getProxy().isActive()) {
                 final Direction facing = this.getSide().getFacing();
-                final BlockEntity te = this.getTile().getWorld().getTileEntity(this.getTile().getPos().offset(facing));
+                final BlockEntity te = this.getTile().getWorld().getBlockEntity(this.getTile().getPos().offset(facing));
 
                 if (te != null) {
                     ret = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, facing.getOpposite())

@@ -22,7 +22,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundTag;
@@ -57,28 +57,28 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
     private static final String NBT_ITEM_ID = "item";
 
-    public FacadeItem(Properties properties) {
+    public FacadeItem(Settings properties) {
         super(properties);
     }
 
     @Override
-    public ActionResult onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        return AEApi.instance().partHelper().placeBus(stack, context.getPos(), context.getFace(), context.getPlayer(),
+    public ActionResult onItemUseFirst(ItemStack stack, ItemUsageContext context) {
+        return AEApi.instance().partHelper().placeBus(stack, context.getBlockPos(), context.getSide(), context.getPlayer(),
                 context.getHand(), context.getWorld());
     }
 
     @Override
-    public Text getDisplayName(ItemStack is) {
+    public Text getName(ItemStack is) {
         try {
             final ItemStack in = this.getTextureItem(is);
             if (!in.isEmpty()) {
-                return super.getDisplayName(is).deepCopy().appendText(" - ").appendSibling(in.getDisplayName());
+                return super.getName(is).deepCopy().append(" - ").append(in.getName());
             }
         } catch (final Throwable ignored) {
 
         }
 
-        return super.getDisplayName(is);
+        return super.getName(is);
     }
 
     @Override
@@ -195,7 +195,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
             return false;
         }
 
-        return RenderTypeLookup.canRenderInLayer(blockState, RenderType.getTranslucent())
-                || RenderTypeLookup.canRenderInLayer(blockState, RenderType.getTranslucentNoCrumbling());
+        return RenderTypeLookup.canRenderInLayer(blockState, RenderLayer.getTranslucent())
+                || RenderTypeLookup.canRenderInLayer(blockState, RenderLayer.getTranslucentNoCrumbling());
     }
 }

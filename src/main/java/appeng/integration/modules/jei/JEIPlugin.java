@@ -22,7 +22,7 @@ import java.util.Optional;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.RecipeManager;
@@ -87,7 +87,7 @@ public class JEIPlugin implements IModPlugin {
 
         IDefinitions definitions = AEApi.instance().definitions();
 
-        RecipeManager recipeManager = Minecraft.getInstance().world.getRecipeManager();
+        RecipeManager recipeManager = MinecraftClient.getInstance().world.getRecipeManager();
         registration.addRecipes(recipeManager.getRecipes(GrinderRecipe.TYPE).values(), GrinderRecipeCategory.UID);
         registration.addRecipes(recipeManager.getRecipes(InscriberRecipe.TYPE).values(), InscriberRecipeCategory.UID);
         registration.addRecipes(ImmutableList.of(CondenserOutput.MATTER_BALLS, CondenserOutput.SINGULARITY),

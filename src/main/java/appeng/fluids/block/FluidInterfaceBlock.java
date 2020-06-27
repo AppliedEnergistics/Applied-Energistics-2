@@ -26,30 +26,30 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.fluids.container.FluidInterfaceContainer;
-import appeng.fluids.tile.FluidInterfaceTileEntity;
+import appeng.fluids.tile.FluidInterfaceBlockEntity;
 import appeng.util.Platform;
 
-public class FluidInterfaceBlock extends AEBaseTileBlock<FluidInterfaceTileEntity> {
+public class FluidInterfaceBlock extends AEBaseTileBlock<FluidInterfaceBlockEntity> {
     public FluidInterfaceBlock() {
         super(defaultProps(Material.IRON));
     }
 
     @Override
     public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (p.isCrouching()) {
+            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+        if (p.isInSneakingPose()) {
             return ActionResult.PASS;
         }
 
-        final BlockEntity tg = this.getTileEntity(w, pos);
+        final BlockEntity tg = this.getBlockEntity(w, pos);
         if (tg != null) {
             if (Platform.isServer()) {
                 ContainerOpener.openContainer(FluidInterfaceContainer.TYPE, p,

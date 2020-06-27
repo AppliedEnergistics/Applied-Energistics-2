@@ -31,20 +31,21 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.util.math.MatrixStack;
 
 import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.BlockFaceUV;
 import net.minecraft.client.render.model.BlockModel;
 import net.minecraft.client.render.model.BlockPart;
 import net.minecraft.client.render.model.BlockPartFace;
-import net.minecraft.client.render.model.IBakedModel;
 import net.minecraft.client.render.model.IModelTransform;
 import net.minecraft.client.render.model.IUnbakedModel;
 import net.minecraft.client.render.model.ItemCameraTransforms;
@@ -52,7 +53,6 @@ import net.minecraft.client.render.model.ItemOverride;
 import net.minecraft.client.render.model.ItemOverrideList;
 import net.minecraft.client.render.model.ItemTransformVec3f;
 import net.minecraft.client.render.model.Material;
-import net.minecraft.client.render.model.ModelBakery;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.math.Direction;
@@ -142,9 +142,9 @@ public class UVLModelLoader implements IModelLoader<UVLModelLoader.UVLModelWrapp
         }
 
         @Override
-        public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
-                Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
-                ItemOverrideList overrides, Identifier modelLocation) {
+        public BakedModel bake(IModelConfiguration owner, ModelLoader bakery,
+                               Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
+                               ItemOverrideList overrides, Identifier modelLocation) {
             TextureAtlasSprite particle = spriteGetter.apply(owner.resolveTexture("particle"));
 
             IModelBuilder<?> builder = IModelBuilder.of(owner, overrides, particle);
@@ -175,7 +175,7 @@ public class UVLModelLoader implements IModelLoader<UVLModelLoader.UVLModelWrapp
             // FIXME: just piping through the quads and manipulating uv index 2 directly
             // seems way easier than this
             BakedQuadBuilder builder = new BakedQuadBuilder(sprite);
-            VertexLighterFlat trans = new VertexLighterFlat(Minecraft.getInstance().getBlockColors()) {
+            VertexLighterFlat trans = new VertexLighterFlat(MinecraftClient.getInstance().getBlockColors()) {
 
                 @Override
                 protected void updateLightmap(float[] normal, float[] lightmap, float x, float y, float z) {

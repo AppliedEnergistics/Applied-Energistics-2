@@ -21,7 +21,7 @@ package appeng.fluids.client.gui.widgets;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.fabricmc.api.EnvType;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -62,7 +62,7 @@ public class FluidTankWidget extends Widget implements ITooltip {
                 float blue = (attributes.getColor() & 255) / 255.0F;
                 RenderSystem.color3f(red, green, blue);
 
-                Minecraft mc = Minecraft.getInstance();
+                MinecraftClient mc = MinecraftClient.getInstance();
                 mc.getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
                 final TextureAtlasSprite sprite = mc.getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE)
                         .apply(attributes.getStillTexture(fluidStack.getFluidStack()));
@@ -88,7 +88,7 @@ public class FluidTankWidget extends Widget implements ITooltip {
     public String getMessage() {
         final IAEFluidStack fluid = this.tank.getFluidInSlot(this.slot);
         if (fluid != null && fluid.getStackSize() > 0) {
-            String desc = fluid.getFluid().getAttributes().getDisplayName(fluid.getFluidStack()).getFormattedText();
+            String desc = fluid.getFluid().getAttributes().getName(fluid.getFluidStack()).getFormattedText();
             String amountToText = fluid.getStackSize() + "mB";
 
             return desc + "\n" + amountToText;

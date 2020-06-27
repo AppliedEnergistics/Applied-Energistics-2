@@ -23,7 +23,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.block.MaterialColor;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -37,10 +37,10 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.tile.misc.PaintSplotchesTileEntity;
+import appeng.tile.misc.PaintSplotchesBlockEntity;
 import appeng.util.Platform;
 
-public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesTileEntity> {
+public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesBlockEntity> {
     public PaintSplotchesBlock() {
         super(defaultProps(Material.WATER, MaterialColor.AIR));
         this.setFullSize(false);
@@ -61,7 +61,7 @@ public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesTileEntit
     @Override
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final PaintSplotchesTileEntity tp = this.getTileEntity(world, pos);
+        final PaintSplotchesBlockEntity tp = this.getBlockEntity(world, pos);
 
         if (tp != null) {
             tp.neighborChanged();
@@ -77,7 +77,7 @@ public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesTileEntit
 
     @Override
     public int getLightValue(final BlockState state, final BlockView w, final BlockPos pos) {
-        final PaintSplotchesTileEntity tp = this.getTileEntity(w, pos);
+        final PaintSplotchesBlockEntity tp = this.getBlockEntity(w, pos);
 
         if (tp != null) {
             return tp.getLightLevel();
@@ -92,7 +92,7 @@ public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesTileEntit
     }
 
     @Override
-    public boolean isReplaceable(BlockState state, BlockItemUseContext useContext) {
+    public boolean isReplaceable(BlockState state, ItemPlacementContext useContext) {
         return true;
     }
 

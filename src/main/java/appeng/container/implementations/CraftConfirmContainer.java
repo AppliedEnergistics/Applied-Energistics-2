@@ -29,12 +29,12 @@ import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.text.LiteralText;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
@@ -256,7 +256,7 @@ public class CraftConfirmContainer extends AEBaseContainer {
                     // :P
                 }
             } catch (final Throwable e) {
-                this.getPlayerInv().player.sendMessage(new StringTextComponent("Error: " + e.toString()));
+                this.getPlayerInv().player.sendMessage(new LiteralText("Error: " + e.toString()));
                 AELog.debug(e);
                 this.setValidContainer(false);
                 this.result = null;

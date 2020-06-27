@@ -24,7 +24,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.IParticleRenderType;
@@ -135,7 +135,7 @@ public class LightningFX extends SpriteTexturedParticle {
         double oy = 0;
         double oz = 0;
 
-        final PlayerEntity p = Minecraft.getInstance().player;
+        final PlayerEntity p = MinecraftClient.getInstance().player;
 
         // FIXME: Billboard rotation is not applied to the particle yet,
         // FIXME The old version apparently did this by hand using rX,rZ -> replicate

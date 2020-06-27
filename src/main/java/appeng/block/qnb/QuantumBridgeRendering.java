@@ -1,7 +1,7 @@
 
 package appeng.block.qnb;
 
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.render.RenderLayer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -14,7 +14,7 @@ public class QuantumBridgeRendering extends BlockRenderingCustomizer {
     @Override
     @Environment(EnvType.CLIENT)
     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
-        rendering.renderType(RenderType.getCutout());
+        rendering.renderType(RenderLayer.getCutout());
         // Disable auto rotation
         rendering.modelCustomizer((location, model) -> model);
     }

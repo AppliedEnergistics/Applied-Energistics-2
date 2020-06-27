@@ -34,15 +34,15 @@ import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.tile.spatial.SpatialIOPortTileEntity;
+import appeng.tile.spatial.SpatialIOPortBlockEntity;
 import appeng.util.Platform;
 
 public class SpatialIOPortContainer extends AEBaseContainer {
 
     public static ContainerType<SpatialIOPortContainer> TYPE;
 
-    private static final ContainerHelper<SpatialIOPortContainer, SpatialIOPortTileEntity> helper = new ContainerHelper<>(
-            SpatialIOPortContainer::new, SpatialIOPortTileEntity.class, SecurityPermissions.BUILD);
+    private static final ContainerHelper<SpatialIOPortContainer, SpatialIOPortBlockEntity> helper = new ContainerHelper<>(
+            SpatialIOPortContainer::new, SpatialIOPortBlockEntity.class, SecurityPermissions.BUILD);
 
     @GuiSync(0)
     public long currentPower;
@@ -62,7 +62,7 @@ public class SpatialIOPortContainer extends AEBaseContainer {
     @GuiSync(33)
     public int zSize;
 
-    public SpatialIOPortContainer(int id, final PlayerInventory ip, final SpatialIOPortTileEntity spatialIOPort) {
+    public SpatialIOPortContainer(int id, final PlayerInventory ip, final SpatialIOPortBlockEntity spatialIOPort) {
         super(TYPE, id, ip, spatialIOPort, null);
 
         if (Platform.isServer()) {

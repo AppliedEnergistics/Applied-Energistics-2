@@ -174,12 +174,12 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
     @Override
     public Text getCustomInventoryName() {
-        return this.getItemStack().getDisplayName();
+        return this.getItemStack().getName();
     }
 
     @Override
     public boolean hasCustomInventoryName() {
-        return this.getItemStack().hasDisplayName();
+        return this.getItemStack().hasCustomName();
     }
 
     public void addEntityCrashInfo(final CrashReportCategory crashreportcategory) {
@@ -391,7 +391,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
             final String name = is.getTranslationKey();
 
-            if (player.isCrouching()) {
+            if (player.isInSneakingPose()) {
                 final CompoundTag data = this.downloadSettings(SettingsFrom.MEMORY_CARD);
                 if (data != null) {
                     memoryCard.setMemoryCardContents(memCardIS, name, data);

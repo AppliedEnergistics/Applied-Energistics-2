@@ -30,15 +30,15 @@ import appeng.api.util.WorldCoord;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
-import appeng.tile.qnb.QuantumBridgeTileEntity;
+import appeng.tile.qnb.QuantumBridgeBlockEntity;
 
 public class QuantumCalculator extends MBCalculator {
 
-    private final QuantumBridgeTileEntity tqb;
+    private final QuantumBridgeBlockEntity tqb;
 
     public QuantumCalculator(final IAEMultiBlock t) {
         super(t);
-        this.tqb = (QuantumBridgeTileEntity) t;
+        this.tqb = (QuantumBridgeBlockEntity) t;
     }
 
     @Override
@@ -70,7 +70,7 @@ public class QuantumCalculator extends MBCalculator {
             for (int y = min.y; y <= max.y; y++) {
                 for (int z = min.z; z <= max.z; z++) {
                     final BlockPos p = new BlockPos(x, y, z);
-                    final IAEMultiBlock te = (IAEMultiBlock) w.getTileEntity(p);
+                    final IAEMultiBlock te = (IAEMultiBlock) w.getBlockEntity(p);
 
                     if (!te.isValid()) {
                         return false;
@@ -107,7 +107,7 @@ public class QuantumCalculator extends MBCalculator {
         for (int x = min.x; x <= max.x; x++) {
             for (int y = min.y; y <= max.y; y++) {
                 for (int z = min.z; z <= max.z; z++) {
-                    final QuantumBridgeTileEntity te = (QuantumBridgeTileEntity) w.getTileEntity(new BlockPos(x, y, z));
+                    final QuantumBridgeBlockEntity te = (QuantumBridgeBlockEntity) w.getBlockEntity(new BlockPos(x, y, z));
 
                     num++;
                     final byte flags;
@@ -132,7 +132,7 @@ public class QuantumCalculator extends MBCalculator {
 
     @Override
     public boolean isValidTile(final BlockEntity te) {
-        return te instanceof QuantumBridgeTileEntity;
+        return te instanceof QuantumBridgeBlockEntity;
     }
 
     private boolean isBlockAtLocation(final BlockView w, final BlockPos pos, final IBlockDefinition def) {

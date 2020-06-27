@@ -52,7 +52,7 @@ public class ChunkLogger implements ISubCommand {
 
     @SubscribeEvent
     public void onChunkLoadEvent(final ChunkEvent.Load event) {
-        if (!event.getWorld().isRemote()) {
+        if (!event.getWorld().isClient()) {
             AELog.info("Chunk Loaded:   " + event.getChunk().getPos().x + ", " + event.getChunk().getPos().z);
             this.displayStack();
         }
@@ -60,7 +60,7 @@ public class ChunkLogger implements ISubCommand {
 
     @SubscribeEvent
     public void onChunkUnloadEvent(final ChunkEvent.Unload unload) {
-        if (!unload.getWorld().isRemote()) {
+        if (!unload.getWorld().isClient()) {
             AELog.info("Chunk Unloaded: " + unload.getChunk().getPos().x + ", " + unload.getChunk().getPos().z);
             this.displayStack();
         }

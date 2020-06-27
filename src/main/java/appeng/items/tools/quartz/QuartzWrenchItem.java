@@ -22,7 +22,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 
@@ -34,27 +34,27 @@ import appeng.util.Platform;
 
 public class QuartzWrenchItem extends AEBaseItem implements IAEWrench {
 
-    public QuartzWrenchItem(Item.Properties props) {
+    public QuartzWrenchItem(Item.Settings props) {
         super(props);
     }
 
     @Override
-    public ActionResult onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        if (!context.getPlayer().isCrouching() && Platform
-                .hasPermissions(new DimensionalCoord(context.getWorld(), context.getPos()), context.getPlayer())) {
+    public ActionResult onItemUseFirst(ItemStack stack, ItemUsageContext context) {
+        if (!context.getPlayer().isInSneakingPose() && Platform
+                .hasPermissions(new DimensionalCoord(context.getWorld(), context.getBlockPos()), context.getPlayer())) {
 
-            Block block = context.getWorld().getBlockState(context.getPos()).getBlock();
+            Block block = context.getWorld().getBlockState(context.getBlockPos()).getBlock();
             if (block instanceof AEBaseBlock) {
                 if (Platform.isClient()) {
                     // TODO 1.10-R - if we return FAIL on client, action will not be sent to server.
                     // Fix that in all Block#onItemUseFirst overrides.
-                    return !context.getWorld().isRemote ? ActionResult.SUCCESS : ActionResult.PASS;
+                    return !context.getWorld().isClient ? ActionResult.SUCCESS : ActionResult.PASS;
                 }
 
                 AEBaseBlock aeBlock = (AEBaseBlock) block;
-                if (aeBlock.rotateAroundFaceAxis(context.getWorld(), context.getPos(), context.getFace())) {
+                if (aeBlock.rotateAroundFaceAxis(context.getWorld(), context.getBlockPos(), context.getFace())) {
                     context.getPlayer().swingArm(context.getHand());
-                    return !context.getWorld().isRemote ? ActionResult.SUCCESS : ActionResult.FAIL;
+                    return !context.getWorld().isClient ? ActionResult.SUCCESS : ActionResult.FAIL;
                 }
             }
         }

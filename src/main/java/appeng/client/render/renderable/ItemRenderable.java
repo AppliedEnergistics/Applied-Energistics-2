@@ -21,10 +21,10 @@ package appeng.client.render.renderable;
 import java.util.function.Function;
 
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import org.apache.commons.lang3.tuple.Pair;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.render.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
@@ -47,7 +47,7 @@ public class ItemRenderable<T extends BlockEntity> implements Renderable<T> {
             } else {
                 matrixStack.push();
             }
-            Minecraft.getInstance().getItemRenderer().renderItem(pair.getLeft(),
+            MinecraftClient.getInstance().getItemRenderer().renderItem(pair.getLeft(),
                     ItemCameraTransforms.TransformType.GROUND, combinedLight, combinedOverlay, matrixStack, buffers);
             matrixStack.pop();
         }

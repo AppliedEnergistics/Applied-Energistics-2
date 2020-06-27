@@ -41,9 +41,9 @@ import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseTileBlock;
 import appeng.helpers.MetaRotation;
-import appeng.tile.misc.LightDetectorTileEntity;
+import appeng.tile.misc.LightDetectorBlockEntity;
 
-public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity> implements IOrientableBlock {
+public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorBlockEntity> implements IOrientableBlock {
 
     // Used to alternate between two variants of the fixture on adjacent blocks
     public static final BooleanProperty ODD = BooleanProperty.create("odd");
@@ -63,7 +63,7 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
 
     @Override
     public int getWeakPower(final BlockState state, final BlockView w, final BlockPos pos, final Direction side) {
-        if (w instanceof World && this.getTileEntity(w, pos).isReady()) {
+        if (w instanceof World && this.getBlockEntity(w, pos).isReady()) {
             // FIXME: This is ... uhm... fishy
             return ((World) w).getLight(pos) - 6;
         }
@@ -75,7 +75,7 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
     public void onNeighborChange(BlockState state, IWorldReader world, BlockPos pos, BlockPos neighbor) {
         super.onNeighborChange(state, world, pos, neighbor);
 
-        final LightDetectorTileEntity tld = this.getTileEntity(world, pos);
+        final LightDetectorBlockEntity tld = this.getBlockEntity(world, pos);
         if (tld != null) {
             tld.updateLight();
         }
@@ -104,9 +104,9 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
         // called without a world
 
         final Direction up = this.getOrientable(w, pos).getUp();
-        final double xOff = -0.3 * up.getXOffset();
-        final double yOff = -0.3 * up.getYOffset();
-        final double zOff = -0.3 * up.getZOffset();
+        final double xOff = -0.3 * up.getOffsetX();
+        final double yOff = -0.3 * up.getOffsetY();
+        final double zOff = -0.3 * up.getOffsetZ();
         return VoxelShapes
                 .create(new Box(xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7));
     }
@@ -128,8 +128,8 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
 
     private void dropTorch(final World w, final BlockPos pos) {
         final BlockState prev = w.getBlockState(pos);
-        w.destroyBlock(pos, true);
-        w.notifyBlockUpdate(pos, prev, w.getBlockState(pos), 3);
+        w.breakBlock(pos, true);
+        w.updateListeners(pos, prev, w.getBlockState(pos), 3);
     }
 
     @Override

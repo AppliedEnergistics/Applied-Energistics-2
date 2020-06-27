@@ -28,7 +28,7 @@ import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
@@ -242,7 +242,7 @@ public abstract class AEBaseContainer extends Container {
         return this.getPlayerInventory();
     }
 
-    public BlockEntity getTileEntity() {
+    public BlockEntity getBlockEntity() {
         return this.tileEntity;
     }
 
@@ -303,7 +303,7 @@ public abstract class AEBaseContainer extends Container {
 
         if (Platform.isServer()) {
             if (this.tileEntity != null
-                    && this.tileEntity.getWorld().getTileEntity(this.tileEntity.getPos()) != this.tileEntity) {
+                    && this.tileEntity.getWorld().getBlockEntity(this.tileEntity.getPos()) != this.tileEntity) {
                 this.setValidContainer(false);
             }
 

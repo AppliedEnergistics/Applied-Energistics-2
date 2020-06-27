@@ -29,20 +29,21 @@ import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.client.render.model.IBakedModel;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.IFluidState;
-import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.util.DyeColor;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
@@ -52,7 +53,6 @@ import net.minecraft.block.ShapeContext;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.WorldAccess;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
@@ -72,11 +72,11 @@ import appeng.helpers.AEGlassMaterial;
 import appeng.integration.abstraction.IAEFacade;
 import appeng.parts.ICableBusContainer;
 import appeng.parts.NullCableBusContainer;
-import appeng.tile.AEBaseTileEntity;
-import appeng.tile.networking.CableBusTileEntity;
+import appeng.tile.AEBaseBlockEntity;
+import appeng.tile.networking.CableBusBlockEntity;
 import appeng.util.Platform;
 
-public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implements IAEFacade {
+public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implements IAEFacade {
 
     private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
 
@@ -137,7 +137,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Override
-    public boolean isReplaceable(BlockState state, BlockItemUseContext useContext) {
+    public boolean isReplaceable(BlockState state, ItemPlacementContext useContext) {
         // FIXME: Potentially check the fluid one too
         return super.isReplaceable(state, useContext) && this.cb(useContext.getWorld(), useContext.getPos()).isEmpty();
     }
@@ -146,7 +146,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player,
             boolean willHarvest, IFluidState fluid) {
         if (player.abilities.isCreativeMode) {
-            final AEBaseTileEntity tile = this.getTileEntity(world, pos);
+            final AEBaseBlockEntity tile = this.getBlockEntity(world, pos);
             if (tile != null) {
                 tile.disableDrops();
             }
@@ -199,7 +199,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
         ICableBusContainer cb = this.cb(world, blockPos);
 
         // Our built-in model has the actual baked sprites we need
-        IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher()
+        BakedModel model = MinecraftClient.getInstance().getBlockRendererDispatcher()
                 .getModelForState(this.getDefaultState());
 
         // We cannot add the effect if we don't have the model
@@ -232,7 +232,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
         ICableBusContainer cb = this.cb(world, pos);
 
         // Our built-in model has the actual baked sprites we need
-        IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher()
+        BakedModel model = MinecraftClient.getInstance().getBlockRendererDispatcher()
                 .getModelForState(this.getDefaultState());
 
         // We cannot add the effect if we dont have the model
@@ -281,11 +281,11 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     private ICableBusContainer cb(final BlockView w, final BlockPos pos) {
-        final BlockEntity te = w.getTileEntity(pos);
+        final BlockEntity te = w.getBlockEntity(pos);
         ICableBusContainer out = null;
 
-        if (te instanceof CableBusTileEntity) {
-            out = ((CableBusTileEntity) te).getCableBus();
+        if (te instanceof CableBusBlockEntity) {
+            out = ((CableBusBlockEntity) te).getCableBus();
         }
 
         return out == null ? NULL_CABLE_BUS : out;
@@ -293,11 +293,11 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
 
     @Nullable
     private IFacadeContainer fc(final BlockView w, final BlockPos pos) {
-        final BlockEntity te = w.getTileEntity(pos);
+        final BlockEntity te = w.getBlockEntity(pos);
         IFacadeContainer out = null;
 
-        if (te instanceof CableBusTileEntity) {
-            out = ((CableBusTileEntity) te).getCableBus().getFacadeContainer();
+        if (te instanceof CableBusBlockEntity) {
+            out = ((CableBusBlockEntity) te).getCableBus().getFacadeContainer();
         }
 
         return out;
@@ -305,15 +305,15 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
 
     @Override
     public void onBlockClicked(BlockState state, World worldIn, BlockPos pos, PlayerEntity player) {
-        if (worldIn.isRemote()) {
-            final HitResult rtr = Minecraft.getInstance().objectMouseOver;
-            if (rtr instanceof BlockRayTraceResult) {
-                BlockRayTraceResult brtr = (BlockRayTraceResult) rtr;
+        if (worldIn.isClient()) {
+            final HitResult rtr = MinecraftClient.getInstance().objectMouseOver;
+            if (rtr instanceof BlockHitResult) {
+                BlockHitResult brtr = (BlockHitResult) rtr;
                 if (brtr.getPos().equals(pos)) {
                     final Vec3d hitVec = rtr.getHitVec().subtract(new Vec3d(pos));
 
                     if (this.cb(worldIn, pos).clicked(player, Hand.MAIN_HAND, hitVec)) {
-                        NetworkHandler.instance().sendToServer(new ClickPacket(pos, brtr.getFace(), (float) hitVec.x,
+                        NetworkHandler.instance().sendToServer(new ClickPacket(pos, brtr.getSide(), (float) hitVec.x,
                                 (float) hitVec.y, (float) hitVec.z, Hand.MAIN_HAND, true));
                     }
                 }
@@ -327,16 +327,11 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
 
     @Override
     public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         // Transform from world into block space
         Vec3d hitVec = hit.getHitVec();
         Vec3d hitInBlock = new Vec3d(hitVec.x - pos.getX(), hitVec.y - pos.getY(), hitVec.z - pos.getZ());
         return this.cb(w, pos).activate(player, hand, hitInBlock) ? ActionResult.SUCCESS : ActionResult.PASS;
-    }
-
-    @Override
-    public boolean recolorBlock(BlockState state, WorldAccess world, BlockPos pos, Direction side, DyeColor color) {
-        return recolorBlock(world, pos, side, color, null);
     }
 
     public boolean recolorBlock(final BlockView world, final BlockPos pos, final Direction side,
@@ -370,7 +365,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
 
     @Override
     public VoxelShape getShape(BlockState state, BlockView w, BlockPos pos, ShapeContext context) {
-        CableBusTileEntity te = getTileEntity(w, pos);
+        CableBusBlockEntity te = getBlockEntity(w, pos);
         if (te == null) {
             return VoxelShapes.empty();
         } else {
@@ -380,7 +375,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockView w, BlockPos pos, ShapeContext context) {
-        CableBusTileEntity te = getTileEntity(w, pos);
+        CableBusBlockEntity te = getBlockEntity(w, pos);
         if (te == null) {
             return VoxelShapes.empty();
         } else {

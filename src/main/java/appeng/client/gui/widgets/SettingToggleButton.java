@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.text.Text;
 
@@ -229,7 +229,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
     }
 
     private void triggerPress() {
-        boolean backwards = Minecraft.getInstance().mouseHelper.isRightDown();
+        boolean backwards = MinecraftClient.getInstance().mouseHelper.isRightDown();
         onPress.handle(this, backwards);
     }
 

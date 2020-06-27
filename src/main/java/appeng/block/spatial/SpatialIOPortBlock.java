@@ -28,17 +28,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.SpatialIOPortContainer;
-import appeng.tile.spatial.SpatialIOPortTileEntity;
+import appeng.tile.spatial.SpatialIOPortBlockEntity;
 import appeng.util.Platform;
 
-public class SpatialIOPortBlock extends AEBaseTileBlock<SpatialIOPortTileEntity> {
+public class SpatialIOPortBlock extends AEBaseTileBlock<SpatialIOPortBlockEntity> {
 
     public SpatialIOPortBlock() {
         super(defaultProps(Material.IRON));
@@ -47,7 +47,7 @@ public class SpatialIOPortBlock extends AEBaseTileBlock<SpatialIOPortTileEntity>
     @Override
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
-        final SpatialIOPortTileEntity te = this.getTileEntity(world, pos);
+        final SpatialIOPortBlockEntity te = this.getBlockEntity(world, pos);
         if (te != null) {
             te.updateRedstoneState();
         }
@@ -55,12 +55,12 @@ public class SpatialIOPortBlock extends AEBaseTileBlock<SpatialIOPortTileEntity>
 
     @Override
     public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (p.isCrouching()) {
+            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+        if (p.isInSneakingPose()) {
             return ActionResult.PASS;
         }
 
-        final SpatialIOPortTileEntity tg = this.getTileEntity(w, pos);
+        final SpatialIOPortBlockEntity tg = this.getBlockEntity(w, pos);
         if (tg != null) {
             if (Platform.isServer()) {
                 ContainerOpener.openContainer(SpatialIOPortContainer.TYPE, p,

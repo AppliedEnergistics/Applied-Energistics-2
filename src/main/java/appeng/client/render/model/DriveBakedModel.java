@@ -27,9 +27,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.IBakedModel;
 import net.minecraft.item.Item;
 import net.minecraft.util.math.Direction;
 import net.minecraftforge.client.model.data.IModelData;
@@ -42,9 +42,9 @@ import appeng.client.render.DelegateBakedModel;
 import appeng.core.Api;
 
 public class DriveBakedModel extends DelegateBakedModel {
-    private final Map<DriveSlotCellType, IBakedModel> bakedCells;
+    private final Map<DriveSlotCellType, BakedModel> bakedCells;
 
-    public DriveBakedModel(IBakedModel bakedBase, Map<DriveSlotCellType, IBakedModel> bakedCells) {
+    public DriveBakedModel(BakedModel bakedBase, Map<DriveSlotCellType, BakedModel> bakedCells) {
         super(bakedBase);
         this.bakedCells = bakedCells;
     }
@@ -79,7 +79,7 @@ public class DriveBakedModel extends DelegateBakedModel {
 
                     // Add the drive chassis
                     Item cell = slotsState.getCell(slot);
-                    IBakedModel cellChassisModel = getCellChassisModel(cell);
+                    BakedModel cellChassisModel = getCellChassisModel(cell);
                     addModel(state, rand, extraData, result, cellChassisModel, transform);
                 }
             }
@@ -98,7 +98,7 @@ public class DriveBakedModel extends DelegateBakedModel {
     }
 
     // Determine which drive chassis to show based on the used cell
-    private IBakedModel getCellChassisModel(Item cell) {
+    private BakedModel getCellChassisModel(Item cell) {
         IItems items = Api.INSTANCE.definitions().items();
         if (cell == null) {
             return bakedCells.get(DriveSlotCellType.EMPTY);
@@ -112,7 +112,7 @@ public class DriveBakedModel extends DelegateBakedModel {
     }
 
     private static void addModel(@Nullable BlockState state, @Nonnull Random rand, @Nonnull IModelData extraData,
-            List<BakedQuad> result, IBakedModel bakedCell, Matrix4f transform) {
+                                 List<BakedQuad> result, BakedModel bakedCell, Matrix4f transform) {
         MatrixVertexTransformer transformer = new MatrixVertexTransformer(transform);
         for (BakedQuad bakedQuad : bakedCell.getQuads(state, null, rand, extraData)) {
             BakedQuadBuilder builder = new BakedQuadBuilder();

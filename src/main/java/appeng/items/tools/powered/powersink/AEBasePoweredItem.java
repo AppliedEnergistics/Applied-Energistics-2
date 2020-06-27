@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.function.DoubleSupplier;
 
 import net.fabricmc.api.Environment;
-import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -46,7 +46,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     private static final String MAX_POWER_NBT_KEY = "internalMaxPower";
     private final DoubleSupplier powerCapacity;
 
-    public AEBasePoweredItem(final DoubleSupplier powerCapacity, Properties props) {
+    public AEBasePoweredItem(final DoubleSupplier powerCapacity, Settings props) {
         super(props);
 // FIXME this.setFull3D();
 
@@ -55,8 +55,8 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void addInformation(final ItemStack stack, final World world, final List<Text> lines,
-            final ITooltipFlag advancedTooltips) {
+    public void appendTooltip(final ItemStack stack, final World world, final List<Text> lines,
+            final TooltipContext advancedTooltips) {
         final CompoundTag tag = stack.getTag();
         double internalCurrentPower = 0;
         final double internalMaxPower = this.getAEMaxPower(stack);
@@ -68,9 +68,9 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
         final double percent = internalCurrentPower / internalMaxPower;
 
         lines.add(GuiText.StoredEnergy.textComponent()
-                .appendText(':' + MessageFormat.format(" {0,number,#} ", internalCurrentPower))
-                .appendSibling(new TranslatableText(PowerUnits.AE.unlocalizedName))
-                .appendText(" - " + MessageFormat.format(" {0,number,#.##%} ", percent)));
+                .append(':' + MessageFormat.format(" {0,number,#} ", internalCurrentPower))
+                .append(new TranslatableText(PowerUnits.AE.unlocalizedName))
+                .append(" - " + MessageFormat.format(" {0,number,#.##%} ", percent)));
     }
 
     @Override

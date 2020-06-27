@@ -204,7 +204,7 @@ public final class MeteoritePlacer {
         if (AEConfig.instance().isFeatureEnabled(AEFeature.SPAWN_PRESSES_IN_METEORITES)) {
             this.putter.put(world, pos, this.skyChestDefinition.block().getDefaultState());
 
-            final BlockEntity te = world.getTileEntity(pos); // FIXME: this is also probably a band-aid for another issue
+            final BlockEntity te = world.getBlockEntity(pos); // FIXME: this is also probably a band-aid for another issue
             final InventoryAdaptor ap = InventoryAdaptor.getAdaptor(te, Direction.UP);
             if (ap != null && !ap.containsItems()) // FIXME: band-aid for meteorites being generated multiple times
             {

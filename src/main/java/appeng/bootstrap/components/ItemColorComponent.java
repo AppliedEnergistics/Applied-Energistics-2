@@ -18,17 +18,17 @@
 
 package appeng.bootstrap.components;
 
-import net.minecraft.client.renderer.color.BlockColors;
-import net.minecraft.client.renderer.color.IItemColor;
-import net.minecraft.client.renderer.color.ItemColors;
+import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.client.color.item.ItemColorProvider;
+import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.item.Item;
 
 public class ItemColorComponent implements IItemColorRegistrationComponent {
     private final Item item;
 
-    private final IItemColor itemColor;
+    private final ItemColorProvider itemColor;
 
-    public ItemColorComponent(Item item, IItemColor itemColor) {
+    public ItemColorComponent(Item item, ItemColorProvider itemColor) {
         this.item = item;
         this.itemColor = itemColor;
     }

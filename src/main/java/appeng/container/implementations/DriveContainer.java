@@ -26,14 +26,14 @@ import net.minecraft.network.PacketByteBuf;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.slot.RestrictedInputSlot;
-import appeng.tile.storage.DriveTileEntity;
+import appeng.tile.storage.DriveBlockEntity;
 
 public class DriveContainer extends AEBaseContainer {
 
     public static ContainerType<DriveContainer> TYPE;
 
-    private static final ContainerHelper<DriveContainer, DriveTileEntity> helper = new ContainerHelper<>(
-            DriveContainer::new, DriveTileEntity.class);
+    private static final ContainerHelper<DriveContainer, DriveBlockEntity> helper = new ContainerHelper<>(
+            DriveContainer::new, DriveBlockEntity.class);
 
     public static DriveContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
@@ -43,7 +43,7 @@ public class DriveContainer extends AEBaseContainer {
         return helper.open(player, locator);
     }
 
-    public DriveContainer(int id, final PlayerInventory ip, final DriveTileEntity drive) {
+    public DriveContainer(int id, final PlayerInventory ip, final DriveBlockEntity drive) {
         super(TYPE, id, ip, drive, null);
 
         for (int y = 0; y < 5; y++) {

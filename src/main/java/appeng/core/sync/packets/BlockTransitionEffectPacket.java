@@ -23,9 +23,9 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
@@ -116,7 +116,7 @@ public class BlockTransitionEffectPacket extends BasePacket {
                 double speedY = 0.1f * this.direction.yOffset;
                 double speedZ = 0.1f * this.direction.zOffset;
 
-                Minecraft.getInstance().particles.addParticle(data, x, y, z, speedX, speedY, speedZ);
+                MinecraftClient.getInstance().particles.addParticle(data, x, y, z, speedX, speedY, speedZ);
             }
         }
     }
@@ -150,7 +150,7 @@ public class BlockTransitionEffectPacket extends BasePacket {
 
         SimpleSound sound = new SimpleSound(soundEvent, SoundCategory.BLOCKS, (volume + 1.0F) / 2.0F, pitch * 0.8F,
                 pos);
-        Minecraft.getInstance().getSoundHandler().play(sound);
+        MinecraftClient.getInstance().getSoundHandler().play(sound);
     }
 
 }

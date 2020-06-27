@@ -50,7 +50,7 @@ public class MatrixFrameBlock extends AEBaseBlock {
             false, PushReaction.PUSH_ONLY);
 
     public MatrixFrameBlock() {
-        super(Properties.create(MATERIAL).hardnessAndResistance(-1.0F, 6000000.0F).notSolid().noDrops());
+        super(Settings.create(MATERIAL).strength(-1.0F, 6000000.0F).notSolid().noDrops());
     }
 
     @Override

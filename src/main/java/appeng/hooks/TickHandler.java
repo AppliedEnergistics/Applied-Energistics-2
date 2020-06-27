@@ -52,7 +52,7 @@ import appeng.core.AppEng;
 import appeng.core.sync.packets.PaintedEntityPacket;
 import appeng.crafting.CraftingJob;
 import appeng.me.Grid;
-import appeng.tile.AEBaseTileEntity;
+import appeng.tile.AEBaseBlockEntity;
 import appeng.util.IWorldCallable;
 import appeng.util.Platform;
 
@@ -90,7 +90,7 @@ public class TickHandler {
         }
     }
 
-    public void addInit(final AEBaseTileEntity tile) {
+    public void addInit(final AEBaseBlockEntity tile) {
         if (Platform.isServer()) // for no there is no reason to care about this on the client...
         {
             this.getRepo().tiles.add(tile);
@@ -181,7 +181,7 @@ public class TickHandler {
             // ready tiles.
             final HandlerRep repo = this.getRepo();
             while (!repo.tiles.isEmpty()) {
-                final AEBaseTileEntity bt = repo.tiles.poll();
+                final AEBaseBlockEntity bt = repo.tiles.poll();
                 if (!bt.isRemoved()) {
                     bt.onReady();
                 }
@@ -249,7 +249,7 @@ public class TickHandler {
 
     private static class HandlerRep {
 
-        private Queue<AEBaseTileEntity> tiles = new ArrayDeque<>();
+        private Queue<AEBaseBlockEntity> tiles = new ArrayDeque<>();
         private Set<Grid> networks = new HashSet<>();
         private Set<Grid> toAdd = new HashSet<>();
         private Set<Grid> toRemove = new HashSet<>();

@@ -29,7 +29,7 @@ import appeng.util.Platform;
 public class QuartzHoeItem extends HoeItem {
     private final AEFeature type;
 
-    public QuartzHoeItem(Item.Properties props, final AEFeature type) {
+    public QuartzHoeItem(Item.Settings props, final AEFeature type) {
         super(ItemTier.IRON, -1.0F, props);
         this.type = type;
     }

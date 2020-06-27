@@ -23,7 +23,7 @@ import java.util.List;
 import alexiil.mc.lib.attributes.item.ItemTransferable;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.world.World;
@@ -39,7 +39,7 @@ import appeng.items.contents.CellConfig;
 
 public class CreativeStorageCellItem extends AEBaseItem implements ICellWorkbenchItem {
 
-    public CreativeStorageCellItem(Properties props) {
+    public CreativeStorageCellItem(Settings props) {
         super(props);
     }
 
@@ -70,8 +70,8 @@ public class CreativeStorageCellItem extends AEBaseItem implements ICellWorkbenc
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void addInformation(final ItemStack stack, final World world, final List<Text> lines,
-            final ITooltipFlag advancedTooltips) {
+    public void appendTooltip(final ItemStack stack, final World world, final List<Text> lines,
+            final TooltipContext advancedTooltips) {
         final IMEInventoryHandler<?> inventory = AEApi.instance().registries().cell().getCellInventory(stack, null,
                 AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
 
@@ -80,7 +80,7 @@ public class CreativeStorageCellItem extends AEBaseItem implements ICellWorkbenc
 
             for (final ItemStack is : cc) {
                 if (!is.isEmpty()) {
-                    lines.add(is.getDisplayName());
+                    lines.add(is.getName());
                 }
             }
         }

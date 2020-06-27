@@ -36,8 +36,8 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.*;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
@@ -57,7 +57,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     private final Map<InWorldToolOperationIngredient, InWorldToolOperationResult> heatUp;
     private final Map<InWorldToolOperationIngredient, InWorldToolOperationResult> coolDown;
 
-    public EntropyManipulatorItem(Item.Properties props) {
+    public EntropyManipulatorItem(Item.Settings props) {
         super(AEConfig.instance().getEntropyManipulatorBattery(), props);
 
         this.heatUp = new HashMap<>();
@@ -138,7 +138,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             Platform.spawnDrops(w, pos, r.getDrops());
         }
 
-        if (!w.isRemote) {
+        if (!w.isClient) {
             // Same effect as emptying a water bucket in the nether (see BucketItem)
             w.playSound(null, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F,
                     2.6F + (w.rand.nextFloat() - w.rand.nextFloat()) * 0.8F);
@@ -206,31 +206,31 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         final HitResult target = rayTrace(w, p, RayTraceContext.FluidMode.ANY);
 
         if (target.getType() != HitResult.Type.BLOCK) {
-            return new TypedActionResult<>(ActionResult.FAIL, p.getHeldItem(hand));
+            return new TypedActionResult<>(ActionResult.FAIL, p.getStackInHand(hand));
         } else {
-            BlockPos pos = ((BlockRayTraceResult) target).getPos();
+            BlockPos pos = ((BlockHitResult) target).getPos();
             final BlockState state = w.getBlockState(pos);
             if (state.getMaterial() == Material.LAVA || state.getMaterial() == Material.WATER) {
                 if (Platform.hasPermissions(new DimensionalCoord(w, pos), p)) {
-                    ItemUseContext context = new ItemUseContext(p, hand, (BlockRayTraceResult) target);
+                    ItemUsageContext context = new ItemUsageContext(p, hand, (BlockHitResult) target);
                     this.onItemUse(context);
                 }
             }
         }
 
-        return new TypedActionResult<>(ActionResult.SUCCESS, p.getHeldItem(hand));
+        return new TypedActionResult<>(ActionResult.SUCCESS, p.getStackInHand(hand));
     }
 
     @Override
-    public ActionResult onItemUse(ItemUseContext context) {
+    public ActionResult onItemUse(ItemUsageContext context) {
         World w = context.getWorld();
-        ItemStack item = context.getItem();
-        BlockPos pos = context.getPos();
-        Direction side = context.getFace();
+        ItemStack item = context.getStack();
+        BlockPos pos = context.getBlockPos();
+        Direction side = context.getSide();
         PlayerEntity p = context.getPlayer();
         boolean tryBoth = false;
         if (p == null) {
-            if (w.isRemote) {
+            if (w.isClient) {
                 return ActionResult.FAIL;
             }
             p = Platform.getPlayer((ServerWorld) w);
@@ -247,17 +247,17 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             final Block block = w.getBlockState(pos).getBlock();
             final Fluid fluid = w.getFluidState(pos).getFluid();
 
-            if (tryBoth || p.isCrouching()) {
+            if (tryBoth || p.isInSneakingPose()) {
                 if (this.canCool(block, fluid)) {
                     this.extractAEPower(item, 1600, Actionable.MODULATE);
                     this.cool(block, fluid, w, pos);
                     return ActionResult.SUCCESS;
                 }
             }
-            if (tryBoth || !p.isCrouching()) {
+            if (tryBoth || !p.isInSneakingPose()) {
                 if (block instanceof TNTBlock) {
                     w.removeBlock(pos, false);
-                    block.catchFire(w.getBlockState(pos), w, pos, context.getFace(), p);
+                    block.catchFire(w.getBlockState(pos), w, pos, context.getSide(), p);
                     return ActionResult.SUCCESS;
                 }
 

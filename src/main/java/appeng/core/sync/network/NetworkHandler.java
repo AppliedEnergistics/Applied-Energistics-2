@@ -18,8 +18,8 @@
 
 package appeng.core.sync.network;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.ThreadQuickExitException;
@@ -129,7 +129,7 @@ public class NetworkHandler {
     }
 
     public void sendToServer(final BasePacket message) {
-        Minecraft.getInstance().getConnection().sendPacket(message.toPacket(NetworkDirection.PLAY_TO_SERVER));
+        MinecraftClient.getInstance().getConnection().sendPacket(message.toPacket(NetworkDirection.PLAY_TO_SERVER));
     }
 
     private MinecraftServer getServer() {

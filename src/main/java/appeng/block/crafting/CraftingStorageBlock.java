@@ -18,11 +18,11 @@
 
 package appeng.block.crafting;
 
-import appeng.tile.crafting.CraftingStorageTileEntity;
+import appeng.tile.crafting.CraftingStorageBlockEntity;
 
-public class CraftingStorageBlock extends AbstractCraftingUnitBlock<CraftingStorageTileEntity> {
+public class CraftingStorageBlock extends AbstractCraftingUnitBlock<CraftingStorageBlockEntity> {
 
-    public CraftingStorageBlock(Properties props, CraftingUnitType type) {
+    public CraftingStorageBlock(Settings props, CraftingUnitType type) {
         super(props, type);
     }
 

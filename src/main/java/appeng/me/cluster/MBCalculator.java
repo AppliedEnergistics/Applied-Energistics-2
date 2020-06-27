@@ -100,7 +100,7 @@ public abstract class MBCalculator {
     }
 
     private boolean isValidTileAt(final World w, final int x, final int y, final int z) {
-        return this.isValidTile(w.getTileEntity(new BlockPos(x, y, z)));
+        return this.isValidTile(w.getBlockEntity(new BlockPos(x, y, z)));
     }
 
     /**
@@ -194,7 +194,7 @@ public abstract class MBCalculator {
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
                 for (int z = minZ; z <= maxZ; z++) {
-                    final BlockEntity te = w.getTileEntity(new BlockPos(x, y, z));
+                    final BlockEntity te = w.getBlockEntity(new BlockPos(x, y, z));
                     if (this.isValidTile(te)) {
                         return true;
                     }

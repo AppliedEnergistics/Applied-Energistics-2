@@ -24,7 +24,7 @@ import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.item.DirectionalPlaceContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import net.minecraft.server.world.ServerWorld;
@@ -40,7 +40,7 @@ public final class BlockToolDispenseItemBehavior extends DefaultDispenseItemBeha
 
             final World w = dispenser.getWorld();
             if (w instanceof ServerWorld) {
-                ItemUseContext context = new DirectionalPlaceContext(w, dispenser.getBlockPos().offset(direction),
+                ItemUsageContext context = new DirectionalPlaceContext(w, dispenser.getBlockPos().offset(direction),
                         direction, dispensedItem, direction.getOpposite());
                 tm.onItemUse(context);
             }

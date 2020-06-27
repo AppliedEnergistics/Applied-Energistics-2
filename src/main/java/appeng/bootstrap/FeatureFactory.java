@@ -31,9 +31,9 @@ import java.util.function.Supplier;
 
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
-import net.minecraft.client.render.model.IBakedModel;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.block.entity.BlockEntityType;
@@ -42,7 +42,7 @@ import net.fabricmc.api.EnvType;
 
 import appeng.api.features.AEFeature;
 import appeng.bootstrap.components.ModelOverrideComponent;
-import appeng.tile.AEBaseTileEntity;
+import appeng.tile.AEBaseBlockEntity;
 import appeng.util.Platform;
 
 public class FeatureFactory {
@@ -76,18 +76,18 @@ public class FeatureFactory {
         return new BlockDefinitionBuilder(this, id, block).features(this.defaultFeatures);
     }
 
-    public IItemBuilder item(String id, Function<Item.Properties, Item> itemFactory) {
+    public IItemBuilder item(String id, Function<Item.Settings, Item> itemFactory) {
         return new ItemDefinitionBuilder(this, id, itemFactory).features(this.defaultFeatures);
     }
 
-    public <T extends Entity> EntityBuilder<T> entity(String id, EntityType.IFactory<T> factory,
-            EntityClassification classification) {
+    public <T extends Entity> EntityBuilder<T> entity(String id, EntityType.EntityFactory<T> factory,
+            SpawnGroup classification) {
         return new EntityBuilder<T>(this, id, factory, classification).features(this.defaultFeatures);
     }
 
-    public <T extends AEBaseTileEntity> TileEntityBuilder<T> tileEntity(String id, Class<T> teClass,
-            Function<BlockEntityType<T>, T> factory) {
-        return new TileEntityBuilder<>(this, id, teClass, factory).features(this.defaultFeatures);
+    public <T extends AEBaseBlockEntity> BlockEntityBuilder<T> tileEntity(String id, Class<T> teClass,
+                                                                          Function<BlockEntityType<T>, T> factory) {
+        return new BlockEntityBuilder<>(this, id, teClass, factory).features(this.defaultFeatures);
     }
 
     public FeatureFactory features(AEFeature... features) {
@@ -105,7 +105,7 @@ public class FeatureFactory {
     }
 
     @Environment(EnvType.CLIENT)
-    void addModelOverride(String resourcePath, BiFunction<Identifier, IBakedModel, IBakedModel> customizer) {
+    void addModelOverride(String resourcePath, BiFunction<Identifier, BakedModel, BakedModel> customizer) {
         this.modelOverrideComponent.addOverride(resourcePath, customizer);
     }
 

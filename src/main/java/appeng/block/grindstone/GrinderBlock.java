@@ -21,31 +21,31 @@ package appeng.block.grindstone;
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.GrinderContainer;
-import appeng.tile.grindstone.GrinderTileEntity;
+import appeng.tile.grindstone.GrinderBlockEntity;
 
-public class GrinderBlock extends AEBaseTileBlock<GrinderTileEntity> {
+public class GrinderBlock extends AEBaseTileBlock<GrinderBlockEntity> {
 
-    public GrinderBlock(Properties props) {
+    public GrinderBlock(Settings props) {
         super(props);
     }
 
     @Override
     public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        final GrinderTileEntity tg = this.getTileEntity(w, pos);
-        if (tg != null && !p.isCrouching()) {
+            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+        final GrinderBlockEntity tg = this.getBlockEntity(w, pos);
+        if (tg != null && !p.isInSneakingPose()) {
             if (p instanceof ServerPlayerEntity) {
                 ContainerOpener.openContainer(GrinderContainer.TYPE, p,
                         ContainerLocator.forTileEntitySide(tg, hit.getFace()));

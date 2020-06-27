@@ -34,7 +34,8 @@ public class CableBusRendering extends BlockRenderingCustomizer {
     @Override
     @Environment(EnvType.CLIENT)
     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
-        rendering.renderType(rt -> true);
+        // FIXME This is straight up impossible in Vanilla, and questionable if it's actually needed.
+        // FIXME rendering.renderType(rt -> true);
 
         rendering.blockColor(new CableBusColor());
         rendering.modelCustomizer((loc, model) -> model);

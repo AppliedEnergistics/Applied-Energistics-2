@@ -25,18 +25,18 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.text.Text;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.world.World;
 import net.fabricmc.api.EnvType;
@@ -66,21 +66,21 @@ public final class MaterialItem extends AEBaseItem implements IStorageComponent,
 
     private final MaterialType materialType;
 
-    public MaterialItem(Properties properties, MaterialType materialType) {
+    public MaterialItem(Settings properties, MaterialType materialType) {
         super(properties);
         this.materialType = materialType;
     }
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void addInformation(final ItemStack stack, final World world, final List<Text> lines,
-            final ITooltipFlag advancedTooltips) {
-        super.addInformation(stack, world, lines, advancedTooltips);
+    public void appendTooltip(final ItemStack stack, final World world, final List<Text> lines,
+            final TooltipContext advancedTooltips) {
+        super.appendTooltip(stack, world, lines, advancedTooltips);
 
         if (materialType == MaterialType.NAME_PRESS) {
             final CompoundTag c = stack.getOrCreateTag();
             if (c.contains(TAG_INSCRIBE_NAME)) {
-                lines.add(new StringTextComponent(c.getString(TAG_INSCRIBE_NAME)));
+                lines.add(new LiteralText(c.getString(TAG_INSCRIBE_NAME)));
             }
         }
 
@@ -96,12 +96,12 @@ public final class MaterialItem extends AEBaseItem implements IStorageComponent,
                     final IItemGroup ig = (IItemGroup) j.getKey().getItem();
                     final String str = ig.getUnlocalizedGroupName(u.getSupported().keySet(), j.getKey());
                     if (str != null) {
-                        name = new TranslatableText(str).appendText(limit > 1 ? " (" + limit + ')' : "");
+                        name = new TranslatableText(str).append(limit > 1 ? " (" + limit + ')' : "");
                     }
                 }
 
                 if (name == null) {
-                    name = j.getKey().getDisplayName().appendText((limit > 1 ? " (" + limit + ')' : ""));
+                    name = j.getKey().getName().append((limit > 1 ? " (" + limit + ')' : ""));
                 }
 
                 if (!textList.contains(name)) {
@@ -138,11 +138,11 @@ public final class MaterialItem extends AEBaseItem implements IStorageComponent,
     }
 
     @Override
-    public ActionResult onItemUseFirst(ItemStack stack, ItemUseContext context) {
+    public ActionResult onItemUseFirst(ItemStack stack, ItemUsageContext context) {
         PlayerEntity player = context.getPlayer();
         Hand hand = context.getHand();
-        if (player.isCrouching()) {
-            final BlockEntity te = context.getWorld().getTileEntity(context.getPos());
+        if (player.isInSneakingPose()) {
+            final BlockEntity te = context.getWorld().getBlockEntity(context.getBlockPos());
             ItemTransferable upgrades = null;
 
             if (te instanceof IPartHost) {
@@ -154,18 +154,18 @@ public final class MaterialItem extends AEBaseItem implements IStorageComponent,
                 upgrades = ((ISegmentedInventory) te).getInventoryByName("upgrades");
             }
 
-            if (upgrades != null && !player.getHeldItem(hand).isEmpty()
-                    && player.getHeldItem(hand).getItem() instanceof IUpgradeModule) {
-                final IUpgradeModule um = (IUpgradeModule) player.getHeldItem(hand).getItem();
-                final Upgrades u = um.getType(player.getHeldItem(hand));
+            if (upgrades != null && !player.getStackInHand(hand).isEmpty()
+                    && player.getStackInHand(hand).getItem() instanceof IUpgradeModule) {
+                final IUpgradeModule um = (IUpgradeModule) player.getStackInHand(hand).getItem();
+                final Upgrades u = um.getType(player.getStackInHand(hand));
 
                 if (u != null) {
-                    if (player.world.isRemote) {
+                    if (player.world.isClient) {
                         return ActionResult.PASS;
                     }
 
                     final InventoryAdaptor ad = new AdaptorItemHandler(upgrades);
-                    player.setHeldItem(hand, ad.addItems(player.getHeldItem(hand)));
+                    player.setHeldItem(hand, ad.addItems(player.getStackInHand(hand)));
                     return ActionResult.SUCCESS;
                 }
             }

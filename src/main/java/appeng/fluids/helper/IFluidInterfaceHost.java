@@ -32,7 +32,7 @@ public interface IFluidInterfaceHost extends IActionHost, IGridProxyable, IUpgra
 
     EnumSet<Direction> getTargets();
 
-    BlockEntity getTileEntity();
+    BlockEntity getBlockEntity();
 
     void saveChanges();
 }

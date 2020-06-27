@@ -22,7 +22,7 @@ import java.io.IOException;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.network.PacketByteBuf;
@@ -49,7 +49,7 @@ import appeng.core.sync.packets.MEInventoryUpdatePacket;
 import appeng.helpers.ICustomNameObject;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
-import appeng.tile.crafting.CraftingTileEntity;
+import appeng.tile.crafting.CraftingBlockEntity;
 import appeng.util.Platform;
 
 public class CraftingCPUContainer extends AEBaseContainer
@@ -57,8 +57,8 @@ public class CraftingCPUContainer extends AEBaseContainer
 
     public static ContainerType<CraftingCPUContainer> TYPE;
 
-    private static final ContainerHelper<CraftingCPUContainer, CraftingTileEntity> helper = new ContainerHelper<>(
-            CraftingCPUContainer::new, CraftingTileEntity.class, SecurityPermissions.CRAFT);
+    private static final ContainerHelper<CraftingCPUContainer, CraftingBlockEntity> helper = new ContainerHelper<>(
+            CraftingCPUContainer::new, CraftingBlockEntity.class, SecurityPermissions.CRAFT);
 
     private final IItemList<IAEItemStack> list = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)
             .createList();
@@ -69,7 +69,7 @@ public class CraftingCPUContainer extends AEBaseContainer
     @GuiSync(0)
     public long eta = -1;
 
-    private CraftingCPUContainer(int id, final PlayerInventory ip, final CraftingTileEntity te) {
+    private CraftingCPUContainer(int id, final PlayerInventory ip, final CraftingBlockEntity te) {
         this(TYPE, id, ip, te);
     }
 
@@ -81,7 +81,7 @@ public class CraftingCPUContainer extends AEBaseContainer
             this.setNetwork(host.getActionableNode().getGrid());
         }
 
-        if (te instanceof CraftingTileEntity) {
+        if (te instanceof CraftingBlockEntity) {
             this.setCPU((ICraftingCPU) ((IAEMultiBlock) te).getCluster());
         }
 

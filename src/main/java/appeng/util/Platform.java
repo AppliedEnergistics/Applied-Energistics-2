@@ -36,8 +36,8 @@ import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -53,7 +53,7 @@ import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.text.Text;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.world.World;
@@ -179,9 +179,9 @@ public class Platform {
     }
 
     public static Direction crossProduct(final Direction forward, final Direction up) {
-        final int west_x = forward.getYOffset() * up.getZOffset() - forward.getZOffset() * up.getYOffset();
-        final int west_y = forward.getZOffset() * up.getXOffset() - forward.getXOffset() * up.getZOffset();
-        final int west_z = forward.getXOffset() * up.getYOffset() - forward.getYOffset() * up.getXOffset();
+        final int west_x = forward.getOffsetY() * up.getOffsetZ() - forward.getOffsetZ() * up.getOffsetY();
+        final int west_y = forward.getOffsetZ() * up.getOffsetX() - forward.getOffsetX() * up.getOffsetZ();
+        final int west_z = forward.getOffsetX() * up.getOffsetY() - forward.getOffsetY() * up.getOffsetX();
 
         switch (west_x + west_y * 2 + west_z * 3) {
             case 1:
@@ -273,7 +273,7 @@ public class Platform {
         ServerWorld serverWorld = (ServerWorld) w;
 
         final BlockState state = w.getBlockState(pos);
-        final BlockEntity tileEntity = w.getTileEntity(pos);
+        final BlockEntity tileEntity = w.getBlockEntity(pos);
 
         List<ItemStack> out = Block.getDrops(state, serverWorld, pos, tileEntity);
 
@@ -329,10 +329,10 @@ public class Platform {
         }
 
         try {
-            ITooltipFlag.TooltipFlags tooltipFlag = Minecraft.getInstance().gameSettings.advancedItemTooltips
-                    ? ITooltipFlag.TooltipFlags.ADVANCED
-                    : ITooltipFlag.TooltipFlags.NORMAL;
-            return itemStack.getTooltip(Minecraft.getInstance().player, tooltipFlag);
+            TooltipContext.TooltipFlags tooltipFlag = MinecraftClient.getInstance().gameSettings.advancedItemTooltips
+                    ? TooltipContext.TooltipFlags.ADVANCED
+                    : TooltipContext.TooltipFlags.NORMAL;
+            return itemStack.getTooltip(MinecraftClient.getInstance().player, tooltipFlag);
         } catch (final Exception errB) {
             return Collections.emptyList();
         }
@@ -363,33 +363,33 @@ public class Platform {
 
     public static Text getItemDisplayName(final Object o) {
         if (o == null) {
-            return new StringTextComponent("** Null");
+            return new LiteralText("** Null");
         }
 
         ItemStack itemStack = ItemStack.EMPTY;
         if (o instanceof AEItemStack) {
             final Text n = ((AEItemStack) o).getDisplayName();
-            return n == null ? new StringTextComponent("** Null") : n;
+            return n == null ? new LiteralText("** Null") : n;
         } else if (o instanceof ItemStack) {
             itemStack = (ItemStack) o;
         } else {
-            return new StringTextComponent("**Invalid Object");
+            return new LiteralText("**Invalid Object");
         }
 
         try {
-            return itemStack.getDisplayName();
+            return itemStack.getName();
         } catch (final Exception errA) {
             try {
                 return new TranslatableText(itemStack.getTranslationKey());
             } catch (final Exception errB) {
-                return new StringTextComponent("** Exception");
+                return new LiteralText("** Exception");
             }
         }
     }
 
     public static Text getFluidDisplayName(Object o) {
         if (o == null) {
-            return new StringTextComponent("** Null");
+            return new LiteralText("** Null");
         }
         FluidVolume fluidStack = null;
         if (o instanceof AEFluidStack) {
@@ -397,9 +397,9 @@ public class Platform {
         } else if (o instanceof FluidVolume) {
             fluidStack = (FluidVolume) o;
         } else {
-            return new StringTextComponent("**Invalid Object");
+            return new LiteralText("**Invalid Object");
         }
-        Text n = fluidStack.getDisplayName();
+        Text n = fluidStack.getName();
         if (n == null) {
             n = new TranslatableText(fluidStack.getTranslationKey());
         }
@@ -673,7 +673,7 @@ public class Platform {
         final double y = playerIn.prevPosY + (playerIn.getPosY() - playerIn.prevPosY) + playerIn.getEyeHeight();
         final double z = playerIn.prevPosZ + (playerIn.getPosZ() - playerIn.prevPosZ);
 
-        final float playerPitch = playerIn.prevRotationPitch + (playerIn.rotationPitch - playerIn.prevRotationPitch);
+        final float playerPitch = playerIn.prevRotationPitch + (playerIn.pitch - playerIn.prevRotationPitch);
         final float playerYaw = playerIn.prevRotationYaw + (playerIn.rotationYaw - playerIn.prevRotationYaw);
 
         final float yawRayX = MathHelper.sin(-playerYaw * 0.017453292f - (float) Math.PI);
@@ -694,10 +694,10 @@ public class Platform {
         final World w = p.getEntityWorld();
 
         final float f = 1.0F;
-        float f1 = p.prevRotationPitch + (p.rotationPitch - p.prevRotationPitch) * f;
+        float f1 = p.prevRotationPitch + (p.pitch - p.prevRotationPitch) * f;
         final float f2 = p.prevRotationYaw + (p.rotationYaw - p.prevRotationYaw) * f;
         final double d0 = p.prevPosX + (p.getPosX() - p.prevPosX) * f;
-        final double d1 = p.prevPosY + (p.getPosY() - p.prevPosY) * f + 1.62D - p.getYOffset();
+        final double d1 = p.prevPosY + (p.getPosY() - p.prevPosY) * f + 1.62D - p.getOffsetY();
         final double d2 = p.prevPosZ + (p.getPosZ() - p.prevPosZ) * f;
         final Vec3d vec3 = new Vec3d(d0, d1, d2);
         final float f3 = MathHelper.cos(-f2 * 0.017453292F - (float) Math.PI);
@@ -988,7 +988,7 @@ public class Platform {
         switch (side) {
             case DOWN:
                 pitch = 90.0f;
-                // player.getYOffset() = -1.8f;
+                // player.getOffsetY() = -1.8f;
                 break;
             case EAST:
                 yaw = -90.0f;
@@ -1121,7 +1121,7 @@ public class Platform {
     }
 
     public static void notifyBlocksOfNeighbors(final World world, final BlockPos pos) {
-        if (!world.isRemote) {
+        if (!world.isClient) {
             TickHandler.INSTANCE.addCallable(world, new BlockUpdate(pos));
         }
     }
@@ -1146,7 +1146,7 @@ public class Platform {
     }
 
     public static float getEyeOffset(final PlayerEntity player) {
-        assert player.world.isRemote : "Valid only on client";
+        assert player.world.isClient : "Valid only on client";
         // FIXME: The entire premise of this seems broken
         return (float) (player.getPosY() + player.getEyeHeight() - /* FIXME player.getDefaultEyeHeight() */ 1.62F);
     }

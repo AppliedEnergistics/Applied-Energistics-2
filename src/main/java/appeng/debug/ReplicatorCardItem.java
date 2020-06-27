@@ -19,18 +19,19 @@
 package appeng.debug;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.text.LiteralText;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 
@@ -49,15 +50,15 @@ public class ReplicatorCardItem extends AEBaseItem {
     }
 
     @Override
-    public ActionResult onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        if (context.getWorld().isRemote()) {
+    public ActionResult onItemUseFirst(ItemStack stack, ItemUsageContext context) {
+        if (context.getWorld().isClient()) {
             return ActionResult.PASS;
         }
 
         PlayerEntity player = context.getPlayer();
         World world = context.getWorld();
-        BlockPos pos = context.getPos();
-        Direction side = context.getFace();
+        BlockPos pos = context.getBlockPos();
+        Direction side = context.getSide();
         Hand hand = context.getHand();
 
         if (player == null) {
@@ -68,20 +69,20 @@ public class ReplicatorCardItem extends AEBaseItem {
         int y = pos.getY();
         int z = pos.getZ();
 
-        if (player.isCrouching()) {
-            if (world.getTileEntity(pos) instanceof IGridHost) {
+        if (player.isInSneakingPose()) {
+            if (world.getBlockEntity(pos) instanceof IGridHost) {
                 final CompoundTag tag = new CompoundTag();
                 tag.putInt("x", x);
                 tag.putInt("y", y);
                 tag.putInt("z", z);
                 tag.putInt("side", side.ordinal());
                 tag.putInt("dimid", world.getDimension().getType().getId());
-                player.getHeldItem(hand).setTag(tag);
+                player.getStackInHand(hand).setTag(tag);
             } else {
                 this.outputMsg(player, "This is not a Grid Tile.");
             }
         } else {
-            final CompoundTag ish = player.getHeldItem(hand).getTag();
+            final CompoundTag ish = player.getStackInHand(hand).getTag();
             if (ish != null) {
                 final int src_x = ish.getInt("x");
                 final int src_y = ish.getInt("y");
@@ -90,7 +91,7 @@ public class ReplicatorCardItem extends AEBaseItem {
                 final int dimid = ish.getInt("dimid");
                 final World src_w = world.getServer().getWorld(DimensionType.getById(dimid));
 
-                final BlockEntity te = src_w.getTileEntity(new BlockPos(src_x, src_y, src_z));
+                final BlockEntity te = src_w.getBlockEntity(new BlockPos(src_x, src_y, src_z));
                 if (te instanceof IGridHost) {
                     final IGridHost gh = (IGridHost) te;
                     final Direction sideOff = Direction.values()[src_side];
@@ -104,9 +105,9 @@ public class ReplicatorCardItem extends AEBaseItem {
                                 final DimensionalCoord min = sc.getMin();
                                 final DimensionalCoord max = sc.getMax();
 
-                                x += currentSideOff.getXOffset();
-                                y += currentSideOff.getYOffset();
-                                z += currentSideOff.getZOffset();
+                                x += currentSideOff.getOffsetX();
+                                y += currentSideOff.getOffsetY();
+                                z += currentSideOff.getOffsetZ();
 
                                 final int min_x = min.x;
                                 final int min_y = min.y;
@@ -130,15 +131,16 @@ public class ReplicatorCardItem extends AEBaseItem {
                                             final BlockState prev = world.getBlockState(d);
 
                                             world.setBlockState(d, state);
-                                            if (blk != null && blk.hasTileEntity(state)) {
-                                                final BlockEntity ote = src_w.getTileEntity(p);
-                                                final BlockEntity nte = blk.createTileEntity(state, world);
+                                            if (blk instanceof BlockEntityProvider) {
+                                                BlockEntityProvider blkEntityProvider = (BlockEntityProvider)blk;
+                                                final BlockEntity ote = src_w.getBlockEntity(p);
+                                                final BlockEntity nte = blkEntityProvider.createBlockEntity(world);
                                                 final CompoundTag data = new CompoundTag();
                                                 ote.write(data);
                                                 nte.read(data.copy());
                                                 world.setTileEntity(d, nte);
                                             }
-                                            world.notifyBlockUpdate(d, prev, state, 3);
+                                            world.updateListeners(d, prev, state, 3);
                                         }
                                     }
                                 }
@@ -162,6 +164,6 @@ public class ReplicatorCardItem extends AEBaseItem {
     }
 
     private void outputMsg(final Entity player, final String string) {
-        player.sendMessage(new StringTextComponent(string));
+        player.sendMessage(new LiteralText(string));
     }
 }

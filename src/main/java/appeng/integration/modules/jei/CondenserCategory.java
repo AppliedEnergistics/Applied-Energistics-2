@@ -47,7 +47,7 @@ import appeng.api.definitions.IMaterials;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.core.Api;
 import appeng.core.AppEng;
-import appeng.tile.misc.CondenserTileEntity;
+import appeng.tile.misc.CondenserBlockEntity;
 
 class CondenserCategory implements IRecipeCategory<CondenserOutput> {
 
@@ -177,7 +177,7 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
     private void addViableComponent(CondenserOutput condenserOutput, List<ItemStack> viableComponents,
             ItemStack itemStack) {
         IStorageComponent comp = (IStorageComponent) itemStack.getItem();
-        int storage = comp.getBytes(itemStack) * CondenserTileEntity.BYTE_MULTIPLIER;
+        int storage = comp.getBytes(itemStack) * CondenserBlockEntity.BYTE_MULTIPLIER;
         if (storage >= condenserOutput.requiredPower) {
             viableComponents.add(itemStack);
         }

@@ -21,7 +21,7 @@ package appeng.items.tools.quartz;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -41,13 +41,13 @@ import appeng.util.Platform;
 public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
     private final AEFeature type;
 
-    public QuartzCuttingKnifeItem(Item.Properties props, final AEFeature type) {
+    public QuartzCuttingKnifeItem(Item.Settings props, final AEFeature type) {
         super(props);
         this.type = type;
     }
 
     @Override
-    public ActionResult onItemUse(ItemUseContext context) {
+    public ActionResult onItemUse(ItemUsageContext context) {
         PlayerEntity player = context.getPlayer();
         if (Platform.isServer() && player != null) {
             ContainerOpener.openContainer(QuartzKnifeContainer.TYPE, context.getPlayer(),
@@ -62,7 +62,7 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
             ContainerOpener.openContainer(QuartzKnifeContainer.TYPE, p, ContainerLocator.forHand(p, hand));
         }
         p.swingArm(hand);
-        return new TypedActionResult<>(ActionResult.SUCCESS, p.getHeldItem(hand));
+        return new TypedActionResult<>(ActionResult.SUCCESS, p.getStackInHand(hand));
     }
 
     @Override

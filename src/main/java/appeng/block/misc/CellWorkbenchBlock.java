@@ -26,16 +26,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.implementations.CellWorkbenchContainer;
-import appeng.tile.misc.CellWorkbenchTileEntity;
+import appeng.tile.misc.CellWorkbenchBlockEntity;
 import appeng.util.Platform;
 
-public class CellWorkbenchBlock extends AEBaseTileBlock<CellWorkbenchTileEntity> {
+public class CellWorkbenchBlock extends AEBaseTileBlock<CellWorkbenchBlockEntity> {
 
     public CellWorkbenchBlock() {
         super(defaultProps(Material.IRON));
@@ -43,12 +43,12 @@ public class CellWorkbenchBlock extends AEBaseTileBlock<CellWorkbenchTileEntity>
 
     @Override
     public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (p.isCrouching()) {
+            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+        if (p.isInSneakingPose()) {
             return ActionResult.PASS;
         }
 
-        final CellWorkbenchTileEntity tg = this.getTileEntity(w, pos);
+        final CellWorkbenchBlockEntity tg = this.getBlockEntity(w, pos);
         if (tg != null) {
             if (Platform.isServer()) {
                 CellWorkbenchContainer.open(p, ContainerLocator.forTileEntity(tg));

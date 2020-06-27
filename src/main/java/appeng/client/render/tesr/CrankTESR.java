@@ -20,36 +20,36 @@ package appeng.client.render.tesr;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.Quaternion;
-import net.minecraft.client.render.model.IBakedModel;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 
 import appeng.client.render.FacingToRotation;
-import appeng.tile.grindstone.CrankTileEntity;
+import appeng.tile.grindstone.CrankBlockEntity;
 
 /**
  * This FastTESR only handles the animated model of the turning crank. When the
  * crank is at rest, it is rendered using a normal model.
  */
 @Environment(EnvType.CLIENT)
-public class CrankTESR extends TileEntityRenderer<CrankTileEntity> {
+public class CrankTESR extends BlockEntityRenderer<CrankBlockEntity> {
 
-    public CrankTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
+    public CrankTESR(BlockEntityRenderDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
     @Override
-    public void render(CrankTileEntity te, float partialTicks, MatrixStack ms, VertexConsumerProvider buffers,
-            int combinedLightIn, int combinedOverlayIn) {
+    public void render(CrankBlockEntity te, float partialTicks, MatrixStack ms, VertexConsumerProvider buffers,
+                       int combinedLightIn, int combinedOverlayIn) {
 
         // Apply GL transformations relative to the center of the block: 1) TE rotation
         // and 2) crank rotation
@@ -59,9 +59,9 @@ public class CrankTESR extends TileEntityRenderer<CrankTileEntity> {
         ms.rotate(new Quaternion(0, te.getVisibleRotation(), 0, true));
         ms.translate(-0.5, -0.5, -0.5);
 
-        BlockState blockState = te.getBlockState();
-        BlockRendererDispatcher dispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
-        IBakedModel model = dispatcher.getModelForState(blockState);
+        BlockState blockState = te.getCachedState();
+        BlockRendererDispatcher dispatcher = MinecraftClient.getInstance().getBlockRendererDispatcher();
+        BakedModel model = dispatcher.getModelForState(blockState);
         IVertexBuilder buffer = buffers.getBuffer(Atlases.getTranslucentBlockType());
         dispatcher.getBlockModelRenderer().renderModelBrightnessColor(ms.getLast(), buffer, null, model, 1, 1, 1,
                 combinedLightIn, combinedOverlayIn);

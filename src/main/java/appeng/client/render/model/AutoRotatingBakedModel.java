@@ -32,9 +32,9 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.IBakedModel;
 import net.minecraft.client.render.model.ItemCameraTransforms;
 import net.minecraft.client.render.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -52,12 +52,12 @@ import net.minecraftforge.client.model.pipeline.QuadGatheringTransformer;
 
 import appeng.client.render.FacingToRotation;
 
-public class AutoRotatingBakedModel implements IBakedModel {
+public class AutoRotatingBakedModel implements BakedModel {
 
-    private final IBakedModel parent;
+    private final BakedModel parent;
     private final LoadingCache<AutoRotatingCacheKey, List<BakedQuad>> quadCache;
 
-    public AutoRotatingBakedModel(IBakedModel parent) {
+    public AutoRotatingBakedModel(BakedModel parent) {
         this.parent = parent;
         // 6 (DUNSWE) * 6 (DUNSWE) * 7 (DUNSWE + null) = 252
         this.quadCache = CacheBuilder.newBuilder().maximumSize(252)

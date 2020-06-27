@@ -29,7 +29,7 @@ import appeng.util.Platform;
 public class QuartzSwordItem extends SwordItem {
     private final AEFeature type;
 
-    public QuartzSwordItem(Item.Properties props, AEFeature type) {
+    public QuartzSwordItem(Item.Settings props, AEFeature type) {
         super(ItemTier.IRON, 3, -2.4F, props);
         this.type = type;
     }

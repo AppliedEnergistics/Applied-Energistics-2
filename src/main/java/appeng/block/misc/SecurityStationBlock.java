@@ -30,16 +30,16 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.SecurityStationContainer;
-import appeng.tile.misc.SecurityStationTileEntity;
+import appeng.tile.misc.SecurityStationBlockEntity;
 
-public class SecurityStationBlock extends AEBaseTileBlock<SecurityStationTileEntity> {
+public class SecurityStationBlock extends AEBaseTileBlock<SecurityStationBlockEntity> {
 
     private static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
@@ -56,20 +56,20 @@ public class SecurityStationBlock extends AEBaseTileBlock<SecurityStationTileEnt
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, SecurityStationTileEntity te) {
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, SecurityStationBlockEntity te) {
         return currentState.with(POWERED, te.isActive());
     }
 
     @Override
     public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (p.isCrouching()) {
+            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+        if (p.isInSneakingPose()) {
             return ActionResult.PASS;
         }
 
-        final SecurityStationTileEntity tg = this.getTileEntity(w, pos);
+        final SecurityStationBlockEntity tg = this.getBlockEntity(w, pos);
         if (tg != null) {
-            if (w.isRemote()) {
+            if (w.isClient()) {
                 return ActionResult.SUCCESS;
             }
 

@@ -27,15 +27,15 @@ import appeng.api.util.WorldCoord;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
-import appeng.tile.spatial.SpatialPylonTileEntity;
+import appeng.tile.spatial.SpatialPylonBlockEntity;
 
 public class SpatialPylonCalculator extends MBCalculator {
 
-    private final SpatialPylonTileEntity tqb;
+    private final SpatialPylonBlockEntity tqb;
 
     public SpatialPylonCalculator(final IAEMultiBlock t) {
         super(t);
-        this.tqb = (SpatialPylonTileEntity) t;
+        this.tqb = (SpatialPylonBlockEntity) t;
     }
 
     @Override
@@ -57,7 +57,7 @@ public class SpatialPylonCalculator extends MBCalculator {
         for (int x = min.x; x <= max.x; x++) {
             for (int y = min.y; y <= max.y; y++) {
                 for (int z = min.z; z <= max.z; z++) {
-                    final IAEMultiBlock te = (IAEMultiBlock) w.getTileEntity(new BlockPos(x, y, z));
+                    final IAEMultiBlock te = (IAEMultiBlock) w.getBlockEntity(new BlockPos(x, y, z));
 
                     if (!te.isValid()) {
                         return false;
@@ -81,7 +81,7 @@ public class SpatialPylonCalculator extends MBCalculator {
         for (int x = min.x; x <= max.x; x++) {
             for (int y = min.y; y <= max.y; y++) {
                 for (int z = min.z; z <= max.z; z++) {
-                    final SpatialPylonTileEntity te = (SpatialPylonTileEntity) w.getTileEntity(new BlockPos(x, y, z));
+                    final SpatialPylonBlockEntity te = (SpatialPylonBlockEntity) w.getBlockEntity(new BlockPos(x, y, z));
                     te.updateStatus(c);
                     c.getLine().add((te));
                 }
@@ -91,6 +91,6 @@ public class SpatialPylonCalculator extends MBCalculator {
 
     @Override
     public boolean isValidTile(final BlockEntity te) {
-        return te instanceof SpatialPylonTileEntity;
+        return te instanceof SpatialPylonBlockEntity;
     }
 }

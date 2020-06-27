@@ -18,7 +18,7 @@
 
 package appeng.block.storage;
 
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.render.RenderLayer;
 
 import appeng.bootstrap.BlockRenderingCustomizer;
 import appeng.bootstrap.IBlockRendering;
@@ -27,6 +27,6 @@ import appeng.bootstrap.IItemRendering;
 public class DriveRendering extends BlockRenderingCustomizer {
     @Override
     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
-        rendering.renderType(RenderType.getCutout());
+        rendering.renderType(RenderLayer.getCutout());
     }
 }

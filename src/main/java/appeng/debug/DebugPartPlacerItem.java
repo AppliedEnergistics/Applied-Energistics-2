@@ -6,12 +6,12 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.ItemUsageContext;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -35,37 +35,37 @@ public class DebugPartPlacerItem extends AEBaseItem {
     }
 
     @Override
-    public ActionResult onItemUseFirst(ItemStack stack, ItemUseContext context) {
+    public ActionResult onItemUseFirst(ItemStack stack, ItemUsageContext context) {
         World world = context.getWorld();
-        if (world.isRemote()) {
+        if (world.isClient()) {
             return ActionResult.PASS;
         }
 
         PlayerEntity player = context.getPlayer();
-        BlockPos pos = context.getPos();
+        BlockPos pos = context.getBlockPos();
 
         if (player == null) {
             return ActionResult.PASS;
         }
 
         if (!player.abilities.isCreativeMode) {
-            player.sendMessage(new StringTextComponent("Only usable in creative mode"));
+            player.sendMessage(new LiteralText("Only usable in creative mode"));
             return ActionResult.FAIL;
         }
 
-        BlockEntity te = world.getTileEntity(pos);
+        BlockEntity te = world.getBlockEntity(pos);
         if (!(te instanceof IPartHost)) {
-            player.sendMessage(new StringTextComponent("Right-click something that will accept parts"));
+            player.sendMessage(new LiteralText("Right-click something that will accept parts"));
             return ActionResult.FAIL;
         }
         IPartHost center = (IPartHost) te;
         IPart cable = center.getPart(AEPartLocation.INTERNAL);
         if (cable == null) {
-            player.sendMessage(new StringTextComponent("Clicked part host must have an INSIDE part"));
+            player.sendMessage(new LiteralText("Clicked part host must have an INSIDE part"));
             return ActionResult.FAIL;
         }
 
-        Direction face = context.getFace();
+        Direction face = context.getSide();
         Vec3i offset = face.getDirectionVec();
         Direction[] perpendicularFaces = Arrays.stream(Direction.values()).filter(d -> d.getAxis() != face.getAxis())
                 .toArray(Direction[]::new);
@@ -85,7 +85,7 @@ public class DebugPartPlacerItem extends AEBaseItem {
                 continue;
             }
 
-            BlockEntity t = world.getTileEntity(nextPos);
+            BlockEntity t = world.getBlockEntity(nextPos);
             if (!(t instanceof IPartHost)) {
                 continue;
             }

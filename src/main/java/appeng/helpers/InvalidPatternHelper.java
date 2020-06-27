@@ -24,8 +24,8 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 
 import appeng.util.Platform;
@@ -105,7 +105,7 @@ public class InvalidPatternHelper {
 
         public Text getName() {
             return this.isValid() ? Platform.getItemDisplayName(this.stack)
-                    : new StringTextComponent(this.id + '@' + this.getDamage());
+                    : new LiteralText(this.id + '@' + this.getDamage());
         }
 
         public int getDamage() {
@@ -125,7 +125,7 @@ public class InvalidPatternHelper {
         }
 
         public Text getFormattedToolTip() {
-            Text result = new StringTextComponent(this.getCount() + " ").appendSibling(this.getName());
+            Text result = new LiteralText(this.getCount() + " ").append(this.getName());
 
             if (!this.isValid()) {
                 result.applyTextStyle(TextFormatting.RED);

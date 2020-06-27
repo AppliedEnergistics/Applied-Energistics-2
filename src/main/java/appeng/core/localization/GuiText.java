@@ -18,7 +18,6 @@
 
 package appeng.core.localization;
 
-import net.minecraft.client.resources.I18n;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
@@ -86,6 +85,8 @@ public enum GuiText {
 
     private final String root;
 
+    private final Text text = new TranslatableText(getTranslationKey());
+
     GuiText() {
         this.root = "gui.appliedenergistics2";
     }
@@ -95,7 +96,7 @@ public enum GuiText {
     }
 
     public String getLocal() {
-        return I18n.format(this.getTranslationKey());
+        return text.getString();
     }
 
     public String getTranslationKey() {
@@ -103,7 +104,7 @@ public enum GuiText {
     }
 
     public Text textComponent() {
-        return new TranslatableText(getTranslationKey());
+        return text;
     }
 
     public Text textComponent(Object... args) {

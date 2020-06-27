@@ -34,7 +34,7 @@ import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.tile.misc.InscriberRecipes;
-import appeng.tile.misc.InscriberTileEntity;
+import appeng.tile.misc.InscriberBlockEntity;
 import appeng.util.Platform;
 
 /**
@@ -47,8 +47,8 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
 
     public static ContainerType<InscriberContainer> TYPE;
 
-    private static final ContainerHelper<InscriberContainer, InscriberTileEntity> helper = new ContainerHelper<>(
-            InscriberContainer::new, InscriberTileEntity.class);
+    private static final ContainerHelper<InscriberContainer, InscriberBlockEntity> helper = new ContainerHelper<>(
+            InscriberContainer::new, InscriberBlockEntity.class);
 
     public static InscriberContainer fromNetwork(int windowId, PlayerInventory inv, PacketByteBuf buf) {
         return helper.fromNetwork(windowId, inv, buf);
@@ -58,7 +58,7 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
         return helper.open(player, locator);
     }
 
-    private final InscriberTileEntity ti;
+    private final InscriberBlockEntity ti;
 
     private final Slot top;
     private final Slot middle;
@@ -70,7 +70,7 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
     @GuiSync(3)
     public int processingTime = -1;
 
-    public InscriberContainer(int id, final PlayerInventory ip, final InscriberTileEntity te) {
+    public InscriberContainer(int id, final PlayerInventory ip, final InscriberBlockEntity te) {
         super(TYPE, id, ip, te);
         this.ti = te;
 

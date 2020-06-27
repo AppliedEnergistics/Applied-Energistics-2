@@ -20,10 +20,10 @@ package appeng.core.api.definitions;
 
 import java.util.function.Consumer;
 
-import net.minecraft.entity.EntityClassification;
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
+import net.minecraft.entity.SpawnGroup;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraftforge.common.ToolType;
 
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IItems;
@@ -190,7 +190,7 @@ public final class ApiItems implements IItems {
                 .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1).maxDamage(50).setNoRepair())
                 .addFeatures(AEFeature.QUARTZ_KNIFE).build();
 
-        Consumer<Item.Properties> chargedDefaults = props -> props.maxStackSize(1).maxDamage(32).setNoRepair();
+        Consumer<Item.Settings> chargedDefaults = props -> props.maxStackSize(1).maxDamage(32).setNoRepair();
 
         FeatureFactory powerTools = registry.features(AEFeature.POWERED_TOOLS);
         this.entropyManipulator = powerTools.item("entropy_manipulator", EntropyManipulatorItem::new)
@@ -213,7 +213,7 @@ public final class ApiItems implements IItems {
         this.memoryCard = registry.item("memory_card", MemoryCardItem::new).props(props -> props.maxStackSize(1))
                 .features(AEFeature.MEMORY_CARD).build();
         this.networkTool = registry.item("network_tool", NetworkToolItem::new)
-                .props(props -> props.maxStackSize(1).addToolType(ToolType.get("wrench"), 0))
+                .props(props -> props.maxStackSize(1).addToolType(FabricToolTags.get("wrench"), 0))
                 .features(AEFeature.NETWORK_TOOL).build();
 
         this.cellCreative = registry.item("creative_storage_cell", CreativeStorageCellItem::new)
@@ -221,7 +221,7 @@ public final class ApiItems implements IItems {
         this.viewCell = registry.item("view_cell", ViewCellItem::new).props(props -> props.maxStackSize(1))
                 .features(AEFeature.VIEW_CELL).build();
 
-        Consumer<Item.Properties> storageCellProps = p -> p.maxStackSize(1);
+        Consumer<Item.Settings> storageCellProps = p -> p.maxStackSize(1);
 
         FeatureFactory storageCells = registry.features(AEFeature.STORAGE_CELLS);
         this.cell1k = storageCells
@@ -285,7 +285,7 @@ public final class ApiItems implements IItems {
                 .features(AEFeature.CRYSTAL_SEEDS).build();
 
         GrowingCrystalEntity.TYPE = registry
-                .<GrowingCrystalEntity>entity("growing_crystal", GrowingCrystalEntity::new, EntityClassification.MISC)
+                .<GrowingCrystalEntity>entity("growing_crystal", GrowingCrystalEntity::new, SpawnGroup.MISC)
                 .customize(builder -> builder.size(0.25F, 0.25F)).build();
 
         // rv1

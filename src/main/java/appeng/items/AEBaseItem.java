@@ -20,21 +20,24 @@ package appeng.items;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 public abstract class AEBaseItem extends Item {
 
-    public AEBaseItem(Item.Properties properties) {
-        super(properties.setNoRepair());
+    public AEBaseItem(Item.Settings properties) {
+        super(properties);
     }
 
     @Override
     public String toString() {
-        String regName = this.getRegistryName() != null ? this.getRegistryName().getPath() : "unregistered";
+        Identifier id = Registry.ITEM.getId(this);
+        String regName = id != Registry.ITEM.getDefaultId() ? id.getPath() : "unregistered";
         return this.getClass().getSimpleName() + "[" + regName + "]";
     }
 
     @Override
-    public boolean isBookEnchantable(final ItemStack itemstack1, final ItemStack itemstack2) {
+    public boolean canRepair(ItemStack stack, ItemStack ingredient) {
         return false;
     }
 

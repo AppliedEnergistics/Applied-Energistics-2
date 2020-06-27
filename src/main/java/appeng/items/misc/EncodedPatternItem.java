@@ -22,16 +22,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.ItemUsageContext;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.text.Text;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.fabricmc.api.EnvType;
@@ -52,24 +52,24 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
     // rather simple client side caching.
     private static final Map<ItemStack, ItemStack> SIMPLE_CACHE = new WeakHashMap<>();
 
-    public EncodedPatternItem(Properties properties) {
+    public EncodedPatternItem(Settings properties) {
         super(properties);
     }
 
     @Override
     public TypedActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity player, final Hand hand) {
-        this.clearPattern(player.getHeldItem(hand), player);
+        this.clearPattern(player.getStackInHand(hand), player);
 
-        return new TypedActionResult<>(ActionResult.SUCCESS, player.getHeldItem(hand));
+        return new TypedActionResult<>(ActionResult.SUCCESS, player.getStackInHand(hand));
     }
 
     @Override
-    public ActionResult onItemUseFirst(ItemStack stack, ItemUseContext context) {
+    public ActionResult onItemUseFirst(ItemStack stack, ItemUsageContext context) {
         return this.clearPattern(stack, context.getPlayer()) ? ActionResult.SUCCESS : ActionResult.PASS;
     }
 
     private boolean clearPattern(final ItemStack stack, final PlayerEntity player) {
-        if (player.isCrouching()) {
+        if (player.isInSneakingPose()) {
             if (Platform.isClient()) {
                 return false;
             }
@@ -93,8 +93,8 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void addInformation(final ItemStack stack, final World world, final List<Text> lines,
-            final ITooltipFlag advancedTooltips) {
+    public void appendTooltip(final ItemStack stack, final World world, final List<Text> lines,
+            final TooltipContext advancedTooltips) {
         final ICraftingPatternDetails details = this.getPatternForItem(stack, world);
 
         if (details == null) {
@@ -107,35 +107,35 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
             InvalidPatternHelper invalid = new InvalidPatternHelper(stack);
 
             final Text label = (invalid.isCraftable() ? GuiText.Crafts.textComponent()
-                    : GuiText.Creates.textComponent()).appendText(": ");
-            final Text and = new StringTextComponent(" ").appendSibling(GuiText.And.textComponent())
-                    .appendText(" ");
-            final Text with = GuiText.With.textComponent().appendText(": ");
+                    : GuiText.Creates.textComponent()).append(": ");
+            final Text and = new LiteralText(" ").append(GuiText.And.textComponent())
+                    .append(" ");
+            final Text with = GuiText.With.textComponent().append(": ");
 
             boolean first = true;
             for (final InvalidPatternHelper.PatternIngredient output : invalid.getOutputs()) {
-                lines.add((first ? label : and).deepCopy().appendSibling(output.getFormattedToolTip()));
+                lines.add((first ? label : and).deepCopy().append(output.getFormattedToolTip()));
                 first = false;
             }
 
             first = true;
             for (final InvalidPatternHelper.PatternIngredient input : invalid.getInputs()) {
-                lines.add((first ? with : and).deepCopy().appendSibling(input.getFormattedToolTip()));
+                lines.add((first ? with : and).deepCopy().append(input.getFormattedToolTip()));
                 first = false;
             }
 
             if (invalid.isCraftable()) {
-                final Text substitutionLabel = GuiText.Substitute.textComponent().appendText(" ");
+                final Text substitutionLabel = GuiText.Substitute.textComponent().append(" ");
                 final Text canSubstitute = invalid.canSubstitute() ? GuiText.Yes.textComponent()
                         : GuiText.No.textComponent();
 
-                lines.add(substitutionLabel.appendSibling(canSubstitute));
+                lines.add(substitutionLabel.append(canSubstitute));
             }
 
             return;
         }
 
-        if (stack.hasDisplayName()) {
+        if (stack.hasCustomName()) {
             stack.removeChildTag("display");
         }
 
@@ -146,10 +146,10 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
         final IAEItemStack[] out = details.getCondensedOutputs();
 
         final Text label = (isCrafting ? GuiText.Crafts.textComponent() : GuiText.Creates.textComponent())
-                .appendText(": ");
-        final Text and = new StringTextComponent(" ").appendSibling(GuiText.And.textComponent())
-                .appendText(" ");
-        final Text with = GuiText.With.textComponent().appendText(": ");
+                .append(": ");
+        final Text and = new LiteralText(" ").append(GuiText.And.textComponent())
+                .append(" ");
+        final Text with = GuiText.With.textComponent().append(": ");
 
         boolean first = true;
         for (final IAEItemStack anOut : out) {
@@ -157,8 +157,8 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
                 continue;
             }
 
-            lines.add((first ? label : and).deepCopy().appendText(anOut.getStackSize() + "x ")
-                    .appendSibling(Platform.getItemDisplayName(anOut)));
+            lines.add((first ? label : and).deepCopy().append(anOut.getStackSize() + "x ")
+                    .append(Platform.getItemDisplayName(anOut)));
             first = false;
         }
 
@@ -168,16 +168,16 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
                 continue;
             }
 
-            lines.add((first ? with : and).deepCopy().appendText(anIn.getStackSize() + "x ")
-                    .appendSibling(Platform.getItemDisplayName(anIn)));
+            lines.add((first ? with : and).deepCopy().append(anIn.getStackSize() + "x ")
+                    .append(Platform.getItemDisplayName(anIn)));
             first = false;
         }
 
         if (isCrafting) {
-            final Text substitutionLabel = GuiText.Substitute.textComponent().appendText(" ");
+            final Text substitutionLabel = GuiText.Substitute.textComponent().append(" ");
             final Text canSubstitute = substitute ? GuiText.Yes.textComponent() : GuiText.No.textComponent();
 
-            lines.add(substitutionLabel.appendSibling(canSubstitute));
+            lines.add(substitutionLabel.append(canSubstitute));
         }
     }
 

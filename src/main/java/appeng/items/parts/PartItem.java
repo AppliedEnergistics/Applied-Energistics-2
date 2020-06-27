@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.ActionResult;
 
 import appeng.api.AEApi;
@@ -40,21 +40,21 @@ public class PartItem<T extends IPart> extends AEBaseItem implements IPartItem<T
 
     private final Function<ItemStack, T> factory;
 
-    public PartItem(Properties properties, PartType type, Function<ItemStack, T> factory) {
+    public PartItem(Settings properties, PartType type, Function<ItemStack, T> factory) {
         super(properties);
         this.type = type;
         this.factory = factory;
     }
 
     @Override
-    public ActionResult onItemUse(ItemUseContext context) {
+    public ActionResult onItemUse(ItemUsageContext context) {
         PlayerEntity player = context.getPlayer();
-        ItemStack held = player.getHeldItem(context.getHand());
+        ItemStack held = player.getStackInHand(context.getHand());
         if (held.getItem() != this) {
             return ActionResult.PASS;
         }
 
-        return AEApi.instance().partHelper().placeBus(held, context.getPos(), context.getFace(), player,
+        return AEApi.instance().partHelper().placeBus(held, context.getBlockPos(), context.getSide(), player,
                 context.getHand(), context.getWorld());
     }
 

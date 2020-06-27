@@ -26,8 +26,8 @@ import java.util.Random;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.IBakedModel;
 import net.minecraft.client.render.model.ItemOverrideList;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
@@ -48,7 +48,7 @@ public class FacadeBakedItemModel extends DelegateBakedModel {
     private final FacadeBuilder facadeBuilder;
     private List<BakedQuad> quads = null;
 
-    protected FacadeBakedItemModel(IBakedModel base, ItemStack textureStack, FacadeBuilder facadeBuilder) {
+    protected FacadeBakedItemModel(BakedModel base, ItemStack textureStack, FacadeBuilder facadeBuilder) {
         super(base);
         this.textureStack = textureStack;
         this.facadeBuilder = facadeBuilder;

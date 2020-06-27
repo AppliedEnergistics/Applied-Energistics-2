@@ -1,7 +1,7 @@
 
 package appeng.block.networking;
 
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.render.RenderLayer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -15,7 +15,7 @@ public class WirelessRendering extends BlockRenderingCustomizer {
     @Override
     @Environment(EnvType.CLIENT)
     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
-        rendering.renderType(RenderType.getCutout());
+        rendering.renderType(RenderLayer.getCutout());
         rendering.blockColor(new StaticBlockColor(AEColor.TRANSPARENT));
     }
 }

@@ -4,7 +4,7 @@ import java.util.Collections;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.I18n;
@@ -35,7 +35,7 @@ public class FluidSlotWidget extends CustomSlotWidget {
     }
 
     @Override
-    public void drawContent(final Minecraft mc, final int mouseX, final int mouseY, final float partialTicks) {
+    public void drawContent(final MinecraftClient mc, final int mouseX, final int mouseY, final float partialTicks) {
         final IAEFluidStack fs = this.getFluidStack();
         if (fs != null) {
             RenderSystem.disableBlend();

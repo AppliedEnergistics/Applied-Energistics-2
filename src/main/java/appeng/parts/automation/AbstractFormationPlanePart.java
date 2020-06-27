@@ -78,19 +78,19 @@ public abstract class AbstractFormationPlanePart<T extends IAEStack<T>> extends 
             final Direction e = bch.getWorldX();
             final Direction u = bch.getWorldY();
 
-            if (this.isTransitionPlane(te.getWorld().getTileEntity(pos.offset(e.getOpposite())), this.getSide())) {
+            if (this.isTransitionPlane(te.getWorld().getBlockEntity(pos.offset(e.getOpposite())), this.getSide())) {
                 minX = 0;
             }
 
-            if (this.isTransitionPlane(te.getWorld().getTileEntity(pos.offset(e)), this.getSide())) {
+            if (this.isTransitionPlane(te.getWorld().getBlockEntity(pos.offset(e)), this.getSide())) {
                 maxX = 16;
             }
 
-            if (this.isTransitionPlane(te.getWorld().getTileEntity(pos.offset(u.getOpposite())), this.getSide())) {
+            if (this.isTransitionPlane(te.getWorld().getBlockEntity(pos.offset(u.getOpposite())), this.getSide())) {
                 minY = 0;
             }
 
-            if (this.isTransitionPlane(te.getWorld().getTileEntity(pos.offset(u)), this.getSide())) {
+            if (this.isTransitionPlane(te.getWorld().getBlockEntity(pos.offset(u)), this.getSide())) {
                 maxY = 16;
             }
         }
@@ -141,21 +141,21 @@ public abstract class AbstractFormationPlanePart<T extends IAEStack<T>> extends 
 
             final BlockPos pos = te.getPos();
 
-            if (this.isTransitionPlane(te.getWorld().getTileEntity(pos.offset(facingRight.getOpposite())),
+            if (this.isTransitionPlane(te.getWorld().getBlockEntity(pos.offset(facingRight.getOpposite())),
                     this.getSide())) {
                 left = true;
             }
 
-            if (this.isTransitionPlane(te.getWorld().getTileEntity(pos.offset(facingRight)), this.getSide())) {
+            if (this.isTransitionPlane(te.getWorld().getBlockEntity(pos.offset(facingRight)), this.getSide())) {
                 right = true;
             }
 
-            if (this.isTransitionPlane(te.getWorld().getTileEntity(pos.offset(facingUp.getOpposite())),
+            if (this.isTransitionPlane(te.getWorld().getBlockEntity(pos.offset(facingUp.getOpposite())),
                     this.getSide())) {
                 down = true;
             }
 
-            if (this.isTransitionPlane(te.getWorld().getTileEntity(pos.offset(facingUp)), this.getSide())) {
+            if (this.isTransitionPlane(te.getWorld().getBlockEntity(pos.offset(facingUp)), this.getSide())) {
                 up = true;
             }
         }

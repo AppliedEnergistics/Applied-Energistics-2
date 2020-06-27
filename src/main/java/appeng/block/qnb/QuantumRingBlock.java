@@ -27,7 +27,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 
-import appeng.tile.qnb.QuantumBridgeTileEntity;
+import appeng.tile.qnb.QuantumBridgeBlockEntity;
 
 public class QuantumRingBlock extends QuantumBaseBlock {
 
@@ -41,7 +41,7 @@ public class QuantumRingBlock extends QuantumBaseBlock {
 
     @Override
     public VoxelShape getShape(BlockState state, BlockView w, BlockPos pos, ShapeContext context) {
-        final QuantumBridgeTileEntity bridge = this.getTileEntity(w, pos);
+        final QuantumBridgeBlockEntity bridge = this.getBlockEntity(w, pos);
         if (bridge != null && bridge.isCorner()) {
             return SHAPE_CORNER;
         } else if (bridge != null && bridge.isFormed()) {

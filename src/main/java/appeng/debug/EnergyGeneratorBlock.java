@@ -22,7 +22,7 @@ import net.minecraft.block.Material;
 
 import appeng.block.AEBaseTileBlock;
 
-public class EnergyGeneratorBlock extends AEBaseTileBlock<EnergyGeneratorTileEntity> {
+public class EnergyGeneratorBlock extends AEBaseTileBlock<EnergyGeneratorBlockEntity> {
 
     public EnergyGeneratorBlock() {
         super(defaultProps(Material.IRON));

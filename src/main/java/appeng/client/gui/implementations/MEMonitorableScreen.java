@@ -54,7 +54,7 @@ import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.integration.abstraction.JEIFacade;
 import appeng.parts.reporting.AbstractTerminalPart;
-import appeng.tile.misc.SecurityStationTileEntity;
+import appeng.tile.misc.SecurityStationBlockEntity;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
@@ -110,7 +110,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
 
         this.viewCell = te instanceof IViewCellStorage;
 
-        if (te instanceof SecurityStationTileEntity) {
+        if (te instanceof SecurityStationBlockEntity) {
             this.myName = GuiText.Security;
         } else if (te instanceof WirelessTerminalGuiObject) {
             this.myName = GuiText.WirelessTerminal;

@@ -28,10 +28,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
 import appeng.api.util.IOrientable;
@@ -39,10 +39,10 @@ import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.InterfaceContainer;
-import appeng.tile.misc.InterfaceTileEntity;
+import appeng.tile.misc.InterfaceBlockEntity;
 import appeng.util.Platform;
 
-public class InterfaceBlock extends AEBaseTileBlock<InterfaceTileEntity> {
+public class InterfaceBlock extends AEBaseTileBlock<InterfaceBlockEntity> {
 
     private static final BooleanProperty OMNIDIRECTIONAL = BooleanProperty.create("omnidirectional");
 
@@ -57,18 +57,18 @@ public class InterfaceBlock extends AEBaseTileBlock<InterfaceTileEntity> {
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, InterfaceTileEntity te) {
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, InterfaceBlockEntity te) {
         return currentState.with(OMNIDIRECTIONAL, te.isOmniDirectional());
     }
 
     @Override
     public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (p.isCrouching()) {
+            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+        if (p.isInSneakingPose()) {
             return ActionResult.PASS;
         }
 
-        final InterfaceTileEntity tg = this.getTileEntity(w, pos);
+        final InterfaceBlockEntity tg = this.getBlockEntity(w, pos);
         if (tg != null) {
             if (Platform.isServer()) {
                 ContainerOpener.openContainer(InterfaceContainer.TYPE, p,
@@ -86,8 +86,8 @@ public class InterfaceBlock extends AEBaseTileBlock<InterfaceTileEntity> {
 
     @Override
     protected void customRotateBlock(final IOrientable rotatable, final Direction axis) {
-        if (rotatable instanceof InterfaceTileEntity) {
-            ((InterfaceTileEntity) rotatable).setSide(axis);
+        if (rotatable instanceof InterfaceBlockEntity) {
+            ((InterfaceBlockEntity) rotatable).setSide(axis);
         }
     }
 }

@@ -19,7 +19,7 @@
 package appeng.client.render.spatial;
 
 import net.fabricmc.api.EnvType;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.render.RenderLayer;
 import net.fabricmc.api.Environment;
 
 import appeng.bootstrap.BlockRenderingCustomizer;
@@ -31,7 +31,7 @@ public class SpatialPylonRendering extends BlockRenderingCustomizer {
     @Override
     @Environment(EnvType.CLIENT)
     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
-        rendering.renderType(RenderType.getCutout());
+        rendering.renderType(RenderLayer.getCutout());
     }
 
 }

@@ -26,17 +26,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.DriveContainer;
-import appeng.tile.storage.DriveTileEntity;
+import appeng.tile.storage.DriveBlockEntity;
 import appeng.util.Platform;
 
-public class DriveBlock extends AEBaseTileBlock<DriveTileEntity> {
+public class DriveBlock extends AEBaseTileBlock<DriveBlockEntity> {
 
     public DriveBlock() {
         super(defaultProps(Material.IRON));
@@ -44,12 +44,12 @@ public class DriveBlock extends AEBaseTileBlock<DriveTileEntity> {
 
     @Override
     public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (p.isCrouching()) {
+            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+        if (p.isInSneakingPose()) {
             return ActionResult.PASS;
         }
 
-        final DriveTileEntity tg = this.getTileEntity(w, pos);
+        final DriveBlockEntity tg = this.getBlockEntity(w, pos);
         if (tg != null) {
             if (Platform.isServer()) {
                 ContainerOpener.openContainer(DriveContainer.TYPE, p, ContainerLocator.forTileEntity(tg));
