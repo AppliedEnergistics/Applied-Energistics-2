@@ -1,5 +1,6 @@
 package appeng.mixins;
 
+import appeng.bootstrap.ModelsReloadCallback;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.util.Identifier;
@@ -15,8 +16,7 @@ public class ModelsReloadMixin {
 
     @Inject(method = "getBakedModelMap", at = @At("RETURN"))
     public void onGetBakedModelMap(CallbackInfoReturnable<Map<Identifier, BakedModel>> ci) {
-        Map<Identifier, BakedModel> models = ci.getReturnValue();
-
+        ModelsReloadCallback.EVENT.invoker().onModelsReloaded(ci.getReturnValue());
     }
 
 }
