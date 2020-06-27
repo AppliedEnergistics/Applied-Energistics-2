@@ -16,146 +16,116 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-buildscript {
-    repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
-        jcenter()
-        mavenCentral()
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
-    }
-}
-
 plugins {
-  id "maven-publish"
-  id "com.diffplug.gradle.spotless" version "4.3.0"
-  id "org.sonarqube" version "2.8"
-  id "jacoco"
+
+    id 'java'
+    id 'fabric-loom' apply false
+    id 'maven-publish'
+    id "org.jetbrains.kotlin.jvm" apply false
 }
 
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: "eclipse"
+allprojects {
+    // Maven group and artifact name
+    group = artifact_group
 
-repositories {
-    mavenLocal()
-    jcenter()
-    mavenCentral()
-}
-
-sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
-compileJava {
-    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
-}
-
-// ensure everything uses UTF-8 and not some random codepage chosen by gradle
-compileJava.options.encoding = 'UTF-8'
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
-
-// Create version number
-version = version_major + "." + version_minor + "." + version_patch
-
-ext.pr = System.getenv('PR_NUMBER') ?: ""
-if (ext.pr) {
-  version = version + "+pr." + ext.pr
-}
-
-ext.branch = System.getenv('BRANCH') ?: ""
-if (ext.branch) {
-  version = version + "+branch." + ext.branch
-}
-
-ext.release = System.getenv('RELEASE') ?: ""
-if (ext.release) {
-  version = ext.release.substring(1)
-}
-
-
-// Maven group and artifact name
-group = artifact_group
-archivesBaseName = artifact_basename
-
-sourceSets {
-    api
-    main {
-        compileClasspath += sourceSets.api.output
-        runtimeClasspath += sourceSets.api.output
-        resources {
-            srcDir 'src/generated/resources'
-        }
+    // Create version number
+    ext.pr = System.getenv('PR_NUMBER') ?: ""
+    if (ext.pr) {
+        version = version + "+pr." + ext.pr
     }
-    test {
-        compileClasspath += sourceSets.api.output
-        runtimeClasspath += sourceSets.api.output
-        java {
-            exclude '**/*'
-        }
+
+    ext.branch = System.getenv('BRANCH') ?: ""
+    if (ext.branch) {
+        version = version + "+branch." + ext.branch
+    }
+
+    ext.release = System.getenv('RELEASE') ?: ""
+    if (ext.release) {
+        version = ext.release.substring(1)
+    }
+
+    // Avoid build-directories for each subproject
+    setBuildDir(rootProject.getBuildDir())
+
+    repositories {
+        maven { url = "http://maven.fabricmc.net/" }
     }
 }
 
-configurations {
-    apiCompile.extendsFrom(compile)
-}
+subprojects {
 
-apply from: 'gradle/scripts/dependencies.gradle'
-apply from: 'gradle/scripts/spotless.gradle'
+    apply plugin: 'fabric-loom'
+    apply plugin: 'kotlin-platform-jvm'
 
-minecraft {
-    mappings channel: "snapshot", version: project.mcp_mappings
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    minecraft {
+    }
 
-    runs {
-        client {
-            property 'forge.logging.console.level', 'debug'
-            workingDirectory project.file('run')
-            mods {
-                appliedenergistics2 {
-                    source sourceSets.main
-                    source sourceSets.api
-                }
-            }
+    dependencies {
+        minecraft "com.mojang:minecraft:1.16.1"
+        mappings "net.fabricmc:yarn:1.16.1+build.9:v2"
+        modImplementation "net.fabricmc:fabric-loader:0.8.8+build.202"
+
+        //Fabric api
+        modImplementation "net.fabricmc.fabric-api:fabric-api:0.14.0+build.371-1.16"
+
+        modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
+    }
+
+    processResources {
+        inputs.property "version", project.version
+
+        from(sourceSets.main.resources.srcDirs) {
+            include "fabric.mod.json"
+            expand "version": project.version
         }
-        server {
-            property 'forge.logging.console.level', 'debug'
-            workingDirectory project.file('run')
-            mods {
-                appliedenergistics2 {
-                    source sourceSets.main
-                    source sourceSets.api
-                }
-            }
+
+        from(sourceSets.main.resources.srcDirs) {
+            exclude "fabric.mod.json"
         }
-        data {
-            property 'forge.logging.console.level', 'debug'
-            workingDirectory project.file('run')
-            args '--mod', 'appliedenergistics2', '--all', '--output', file('src/generated/resources/')
-            mods {
-                appliedenergistics2 {
-                    source sourceSets.main
-                    source sourceSets.api
+    }
+
+    // ensure that the encoding is set to UTF-8, no matter what the system default is
+    // this fixes some edge cases with special characters not displaying correctly
+    // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
+
+    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+    // if it is present.
+    // If you remove this task, sources will not be generated.
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = "sources"
+        from sourceSets.main.allSource
+    }
+
+    jar {
+        from "LICENSE"
+    }
+
+    compileKotlin.kotlinOptions.jvmTarget = "1.8"
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                // add all the jars that should be included when publishing to maven
+                artifact(remapJar) {
+                    builtBy remapJar
+                }
+                artifact(sourcesJar) {
+                    builtBy remapSourcesJar
                 }
             }
         }
     }
 }
 
-apply from: 'gradle/scripts/artifacts.gradle'
-
+// configure the maven publication
 publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId = project.group
-            artifactId = project.archivesBaseName
-            version = project.version
-            from components.java
-            artifact sourcesJar
-            artifact javadocJar
-            artifact apiJar
-        }
-    }
+    // select the repositories you want to publish to
     repositories {
         maven {
             credentials {

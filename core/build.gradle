@@ -1,0 +1,6 @@
+
+archivesBaseName = artifact_basename
+
+dependencies {
+    project(":api")
+}
