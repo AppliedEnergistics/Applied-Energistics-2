@@ -21,7 +21,7 @@ package appeng.tile.misc;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -94,7 +94,7 @@ public class CellWorkbenchTileEntity extends AEBaseTileEntity
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
+    public CompoundTag write(final CompoundTag data) {
         super.write(data);
         this.cell.writeToNBT(data, "cell");
         this.config.writeToNBT(data, "config");
@@ -103,7 +103,7 @@ public class CellWorkbenchTileEntity extends AEBaseTileEntity
     }
 
     @Override
-    public void read(final CompoundNBT data) {
+    public void read(final CompoundTag data) {
         super.read(data);
         this.cell.readFromNBT(data, "cell");
         this.config.readFromNBT(data, "config");

@@ -24,7 +24,7 @@ import java.util.Optional;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
@@ -33,8 +33,8 @@ import net.minecraft.item.DirectionalPlaceContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
@@ -73,10 +73,10 @@ public class PartPlacement {
     private final ThreadLocal<Object> placing = new ThreadLocal<>();
     private boolean wasCanceled = false;
 
-    public static ActionResultType place(final ItemStack held, final BlockPos pos, Direction side,
+    public static ActionResult place(final ItemStack held, final BlockPos pos, Direction side,
             final PlayerEntity player, final Hand hand, final World world, PlaceType pass, final int depth) {
         if (depth > 3) {
-            return ActionResultType.FAIL;
+            return ActionResult.FAIL;
         }
 
         // FIXME: This was changed alot.
@@ -88,7 +88,7 @@ public class PartPlacement {
 
         if (!held.isEmpty() && Platform.isWrench(player, held, pos) && player.isCrouching()) {
             if (!Platform.hasPermissions(new DimensionalCoord(world, pos), player)) {
-                return ActionResultType.FAIL;
+                return ActionResult.FAIL;
             }
 
             final TileEntity tile = world.getTileEntity(pos);
@@ -130,10 +130,10 @@ public class PartPlacement {
                     NetworkHandler.instance()
                             .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
                 }
-                return ActionResultType.SUCCESS;
+                return ActionResult.SUCCESS;
             }
 
-            return ActionResultType.FAIL;
+            return ActionResult.FAIL;
         }
 
         TileEntity tile = world.getTileEntity(pos);
@@ -149,7 +149,7 @@ public class PartPlacement {
                 if (host != null) {
                     if (!world.isRemote) {
                         if (host.getPart(AEPartLocation.INTERNAL) == null) {
-                            return ActionResultType.FAIL;
+                            return ActionResult.FAIL;
                         }
 
                         if (host.canAddPart(held, AEPartLocation.fromFacing(side))) {
@@ -165,17 +165,17 @@ public class PartPlacement {
                                         MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(player, held, hand));
                                     }
                                 }
-                                return ActionResultType.CONSUME;
+                                return ActionResult.CONSUME;
                             }
                         }
                     } else {
                         player.swingArm(hand);
                         NetworkHandler.instance()
                                 .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
-                        return ActionResultType.SUCCESS;
+                        return ActionResult.SUCCESS;
                     }
                 }
-                return ActionResultType.FAIL;
+                return ActionResult.FAIL;
             }
         }
 
@@ -191,7 +191,7 @@ public class PartPlacement {
                                 NetworkHandler.instance()
                                         .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
                             }
-                            return ActionResultType.SUCCESS;
+                            return ActionResult.SUCCESS;
                         }
                     }
                 }
@@ -199,7 +199,7 @@ public class PartPlacement {
         }
 
         if (held.isEmpty() || !(held.getItem() instanceof IPartItem)) {
-            return ActionResultType.PASS;
+            return ActionResult.PASS;
         }
 
         BlockPos te_pos = pos;
@@ -242,7 +242,7 @@ public class PartPlacement {
             // FIXME: This is super-fishy and all needs to be re-checked. what does this
             // even do???
             if (hostIsNotPresent && multiPartPresent && canMultiPartBePlaced
-                    && maybeMultiPartBlockItem.get().tryPlace(mpUseCtx) == ActionResultType.SUCCESS) {
+                    && maybeMultiPartBlockItem.get().tryPlace(mpUseCtx) == ActionResult.SUCCESS) {
                 if (!world.isRemote) {
                     tile = world.getTileEntity(te_pos);
 
@@ -255,15 +255,15 @@ public class PartPlacement {
                     player.swingArm(hand);
                     NetworkHandler.instance()
                             .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
-                    return ActionResultType.SUCCESS;
+                    return ActionResult.SUCCESS;
                 }
             } else if (host != null && !host.canAddPart(held, AEPartLocation.fromFacing(side))) {
-                return ActionResultType.FAIL;
+                return ActionResult.FAIL;
             }
         }
 
         if (host == null) {
-            return ActionResultType.PASS;
+            return ActionResult.PASS;
         }
 
         if (!host.canAddPart(held, AEPartLocation.fromFacing(side))) {
@@ -280,7 +280,7 @@ public class PartPlacement {
                             depth + 1);
                 }
             }
-            return ActionResultType.PASS;
+            return ActionResult.PASS;
         }
 
         if (!world.isRemote) {
@@ -290,21 +290,21 @@ public class PartPlacement {
 
                 if (sp.part != null) {
                     if (!player.isCrouching() && sp.part.onActivate(player, hand, mop.getHitVec())) {
-                        return ActionResultType.FAIL;
+                        return ActionResult.FAIL;
                     }
                 }
             }
 
             final DimensionalCoord dc = host.getLocation();
             if (!Platform.hasPermissions(dc, player)) {
-                return ActionResultType.FAIL;
+                return ActionResult.FAIL;
             }
 
             final AEPartLocation mySide = host.addPart(held, AEPartLocation.fromFacing(side), player, hand);
             if (mySide != null) {
                 multiPart.maybeBlock().ifPresent(multiPartBlock -> {
                     BlockState blockState = world.getBlockState(pos);
-                    final SoundType ss = multiPartBlock.getSoundType(blockState, world, pos, player);
+                    final BlockSoundGroup ss = multiPartBlock.getSoundType(blockState, world, pos, player);
 
                     world.playSound(null, pos, ss.getPlaceSound(), SoundCategory.BLOCKS, (ss.getVolume() + 1.0F) / 2.0F,
                             ss.getPitch() * 0.8F);
@@ -321,7 +321,7 @@ public class PartPlacement {
         } else {
             player.swingArm(hand);
         }
-        return ActionResultType.SUCCESS;
+        return ActionResult.SUCCESS;
     }
 
     private static float getEyeOffset(final PlayerEntity p) {
@@ -398,7 +398,7 @@ public class PartPlacement {
 
             final ItemStack held = event.getPlayer().getHeldItem(event.getHand());
             if (place(held, event.getPos(), event.getFace(), event.getPlayer(), event.getHand(),
-                    event.getPlayer().world, PlaceType.INTERACT_FIRST_PASS, 0) == ActionResultType.SUCCESS) {
+                    event.getPlayer().world, PlaceType.INTERACT_FIRST_PASS, 0) == ActionResult.SUCCESS) {
                 event.setCanceled(true);
                 this.wasCanceled = true;
             }

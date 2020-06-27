@@ -17,12 +17,16 @@
  */
 
 plugins {
-    id 'fabric-loom' apply false
+    id 'java'
+    id 'fabric-loom'
     id 'maven-publish'
     id "org.jetbrains.kotlin.jvm" apply false
 }
 
 allprojects {
+
+    apply plugin: 'fabric-loom'
+
     // Maven group and artifact name
     group = artifact_group
 
@@ -48,15 +52,6 @@ allprojects {
     repositories {
         maven { url = "http://maven.fabricmc.net/" }
     }
-}
-
-subprojects {
-
-    apply plugin: 'fabric-loom'
-    apply plugin: 'kotlin-platform-jvm'
-
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
 
     minecraft {
     }
@@ -70,7 +65,17 @@ subprojects {
         modImplementation "net.fabricmc.fabric-api:fabric-api:0.14.0+build.371-1.16"
 
         modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
+
+        compile 'com.google.code.findbugs:jsr305:3.0.2'
     }
+}
+
+subprojects {
+
+    apply plugin: 'kotlin-platform-jvm'
+
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 
     processResources {
         inputs.property "version", project.version

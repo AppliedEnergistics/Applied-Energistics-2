@@ -29,17 +29,17 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
@@ -671,7 +671,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     }
 
     @Override
-    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockView w, BlockPos pos, BlockPos neighbor) {
         this.hasRedstone = YesNo.UNDECIDED;
 
         for (final AEPartLocation s : AEPartLocation.values()) {
@@ -790,7 +790,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         return updateBlock;
     }
 
-    public void writeToNBT(final CompoundNBT data) {
+    public void writeToNBT(final CompoundTag data) {
         data.putInt("hasRedstone", this.hasRedstone.ordinal());
 
         final IFacadeContainer fc = this.getFacadeContainer();
@@ -799,10 +799,10 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
             final IPart part = this.getPart(s);
             if (part != null) {
-                final CompoundNBT def = new CompoundNBT();
+                final CompoundTag def = new CompoundTag();
                 part.getItemStack(PartItemStack.WORLD).write(def);
 
-                final CompoundNBT extra = new CompoundNBT();
+                final CompoundTag extra = new CompoundTag();
                 part.writeToNBT(extra);
 
                 data.put("def:" + this.getSide(part).ordinal(), def);
@@ -825,7 +825,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
         throw new IllegalStateException("Uhh Bad Part (" + part + ") on Side.");
     }
 
-    public void readFromNBT(final CompoundNBT data) {
+    public void readFromNBT(final CompoundTag data) {
         invalidateShapes();
 
         if (data.contains("hasRedstone")) {
@@ -839,8 +839,8 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
             String extraKey = "extra:" + side.ordinal();
             if (data.contains(defKey, Constants.NBT.TAG_COMPOUND)
                     && data.contains(extraKey, Constants.NBT.TAG_COMPOUND)) {
-                final CompoundNBT def = data.getCompound(defKey);
-                final CompoundNBT extra = data.getCompound(extraKey);
+                final CompoundTag def = data.getCompound(defKey);
+                final CompoundTag extra = data.getCompound(extraKey);
                 IPart p = this.getPart(side);
                 final ItemStack iss = ItemStack.read(def);
                 if (iss.isEmpty()) {

@@ -23,7 +23,7 @@
 
 package appeng.api.parts;
 
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 
 public interface IPartCollisionHelper {
 

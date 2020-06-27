@@ -22,7 +22,7 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.SoundType;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.entity.player.PlayerEntity;
@@ -140,7 +140,7 @@ public class BlockTransitionEffectPacket extends BasePacket {
             volume = 1;
             pitch = 1;
         } else if (soundMode == SoundMode.BLOCK) {
-            SoundType soundType = blockState.getSoundType();
+            BlockSoundGroup soundType = blockState.getSoundType();
             soundEvent = soundType.getBreakSound();
             volume = soundType.volume;
             pitch = soundType.pitch;

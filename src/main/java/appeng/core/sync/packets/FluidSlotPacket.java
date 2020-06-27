@@ -25,7 +25,7 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketBuffer;
 
 import appeng.api.storage.data.IAEFluidStack;
@@ -39,7 +39,7 @@ public class FluidSlotPacket extends BasePacket {
 
     public FluidSlotPacket(final PacketBuffer stream) {
         this.list = new HashMap<>();
-        CompoundNBT tag = stream.readCompoundTag();
+        CompoundTag tag = stream.readCompoundTag();
 
         for (final String key : tag.keySet()) {
             this.list.put(Integer.parseInt(key), AEFluidStack.fromNBT(tag.getCompound(key)));
@@ -49,9 +49,9 @@ public class FluidSlotPacket extends BasePacket {
     // api
     public FluidSlotPacket(final Map<Integer, IAEFluidStack> list) {
         this.list = list;
-        final CompoundNBT sendTag = new CompoundNBT();
+        final CompoundTag sendTag = new CompoundTag();
         for (Map.Entry<Integer, IAEFluidStack> fs : list.entrySet()) {
-            final CompoundNBT tag = new CompoundNBT();
+            final CompoundTag tag = new CompoundTag();
             if (fs.getValue() != null) {
                 fs.getValue().writeToNBT(tag);
             }

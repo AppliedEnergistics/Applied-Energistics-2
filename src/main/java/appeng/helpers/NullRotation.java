@@ -18,7 +18,7 @@
 
 package appeng.helpers;
 
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 
 import appeng.api.util.IOrientable;
 

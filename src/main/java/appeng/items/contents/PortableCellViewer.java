@@ -19,7 +19,7 @@
 package appeng.items.contents;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -86,7 +86,7 @@ public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implement
     @Override
     public IConfigManager getConfigManager() {
         final ConfigManager out = new ConfigManager((manager, settingName, newValue) -> {
-            final CompoundNBT data = this.target.getOrCreateTag();
+            final CompoundTag data = this.target.getOrCreateTag();
             manager.writeToNBT(data);
         });
 

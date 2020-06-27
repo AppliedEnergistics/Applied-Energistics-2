@@ -22,12 +22,12 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
+import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.block.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -47,7 +47,7 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
     private static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
     public QuartzGrowthAcceleratorBlock() {
-        super(defaultProps(Material.ROCK).sound(SoundType.METAL));
+        super(defaultProps(Material.ROCK).sound(BlockSoundGroup.METAL));
         this.setDefaultState(this.getDefaultState().with(POWERED, false));
     }
 

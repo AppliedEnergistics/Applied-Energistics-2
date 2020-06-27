@@ -20,18 +20,18 @@ package appeng.block.paint;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
+import net.minecraft.block.Material;
+import net.minecraft.block.MaterialColor;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.block.ShapeContext;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -54,7 +54,7 @@ public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesTileEntit
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
         return VoxelShapes.empty();
     }
 
@@ -76,7 +76,7 @@ public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesTileEntit
     }
 
     @Override
-    public int getLightValue(final BlockState state, final IBlockReader w, final BlockPos pos) {
+    public int getLightValue(final BlockState state, final BlockView w, final BlockPos pos) {
         final PaintSplotchesTileEntity tp = this.getTileEntity(w, pos);
 
         if (tp != null) {
@@ -87,7 +87,7 @@ public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesTileEntit
     }
 
     @Override
-    public boolean isAir(final BlockState state, final IBlockReader world, final BlockPos pos) {
+    public boolean isAir(final BlockState state, final BlockView world, final BlockPos pos) {
         return true;
     }
 

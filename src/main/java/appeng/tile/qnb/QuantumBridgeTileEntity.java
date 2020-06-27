@@ -26,12 +26,12 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
@@ -241,7 +241,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity implements I
     public long getQEFrequency() {
         final ItemStack is = this.internalInventory.getStackInSlot(0);
         if (!is.isEmpty()) {
-            final CompoundNBT c = is.getTag();
+            final CompoundTag c = is.getTag();
             if (c != null) {
                 return c.getLong("freq");
             }

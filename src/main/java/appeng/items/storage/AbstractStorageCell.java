@@ -26,8 +26,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -140,9 +140,9 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(final World world, final PlayerEntity player, final Hand hand) {
+    public TypedActionResult<ItemStack> onItemRightClick(final World world, final PlayerEntity player, final Hand hand) {
         this.disassembleDrive(player.getHeldItem(hand), world, player);
-        return new ActionResult<>(ActionResultType.SUCCESS, player.getHeldItem(hand));
+        return new TypedActionResult<>(ActionResult.SUCCESS, player.getHeldItem(hand));
     }
 
     private boolean disassembleDrive(final ItemStack stack, final World world, final PlayerEntity player) {
@@ -193,9 +193,9 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     protected abstract void dropEmptyStorageCellCase(final InventoryAdaptor ia, final PlayerEntity player);
 
     @Override
-    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        return this.disassembleDrive(stack, context.getWorld(), context.getPlayer()) ? ActionResultType.SUCCESS
-                : ActionResultType.PASS;
+    public ActionResult onItemUseFirst(ItemStack stack, ItemUseContext context) {
+        return this.disassembleDrive(stack, context.getWorld(), context.getPlayer()) ? ActionResult.SUCCESS
+                : ActionResult.PASS;
     }
 
     @Override

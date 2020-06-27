@@ -31,9 +31,9 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -78,7 +78,7 @@ public final class MaterialItem extends AEBaseItem implements IStorageComponent,
         super.addInformation(stack, world, lines, advancedTooltips);
 
         if (materialType == MaterialType.NAME_PRESS) {
-            final CompoundNBT c = stack.getOrCreateTag();
+            final CompoundTag c = stack.getOrCreateTag();
             if (c.contains(TAG_INSCRIBE_NAME)) {
                 lines.add(new StringTextComponent(c.getString(TAG_INSCRIBE_NAME)));
             }
@@ -138,7 +138,7 @@ public final class MaterialItem extends AEBaseItem implements IStorageComponent,
     }
 
     @Override
-    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
+    public ActionResult onItemUseFirst(ItemStack stack, ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
         Hand hand = context.getHand();
         if (player.isCrouching()) {
@@ -161,12 +161,12 @@ public final class MaterialItem extends AEBaseItem implements IStorageComponent,
 
                 if (u != null) {
                     if (player.world.isRemote) {
-                        return ActionResultType.PASS;
+                        return ActionResult.PASS;
                     }
 
                     final InventoryAdaptor ad = new AdaptorItemHandler(upgrades);
                     player.setHeldItem(hand, ad.addItems(player.getHeldItem(hand)));
-                    return ActionResultType.SUCCESS;
+                    return ActionResult.SUCCESS;
                 }
             }
         }

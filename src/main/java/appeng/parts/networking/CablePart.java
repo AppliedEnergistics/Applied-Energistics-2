@@ -23,9 +23,9 @@ import java.util.EnumSet;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
@@ -220,7 +220,7 @@ public class CablePart extends AEBasePart implements ICablePart {
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT data) {
+    public void writeToNBT(final CompoundTag data) {
         super.writeToNBT(data);
 
         if (Platform.isServer()) {

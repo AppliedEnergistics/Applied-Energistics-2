@@ -21,7 +21,7 @@ package appeng.me;
 import java.lang.ref.WeakReference;
 import java.util.WeakHashMap;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridStorage;
@@ -30,7 +30,7 @@ import appeng.core.worlddata.WorldData;
 public class GridStorage implements IGridStorage {
 
     private final long myID;
-    private final CompoundNBT data;
+    private final CompoundTag data;
     private final WeakHashMap<GridStorage, Boolean> divided = new WeakHashMap<>();
     private WeakReference<IGrid> internalGrid = null;
 
@@ -41,7 +41,7 @@ public class GridStorage implements IGridStorage {
      */
     public GridStorage(final long id) {
         this.myID = id;
-        this.data = new CompoundNBT();
+        this.data = new CompoundTag();
     }
 
     /**
@@ -50,7 +50,7 @@ public class GridStorage implements IGridStorage {
      * @param data The Grid data.
      * @param id   ID of grid storage
      */
-    public GridStorage(final long id, final CompoundNBT data) {
+    public GridStorage(final long id, final CompoundTag data) {
         this.myID = id;
         this.data = data;
     }
@@ -60,7 +60,7 @@ public class GridStorage implements IGridStorage {
      */
     public GridStorage() {
         this.myID = 0;
-        this.data = new CompoundNBT();
+        this.data = new CompoundTag();
     }
 
     public void saveState() {
@@ -79,7 +79,7 @@ public class GridStorage implements IGridStorage {
     }
 
     @Override
-    public CompoundNBT dataObject() {
+    public CompoundTag dataObject() {
         return this.data;
     }
 

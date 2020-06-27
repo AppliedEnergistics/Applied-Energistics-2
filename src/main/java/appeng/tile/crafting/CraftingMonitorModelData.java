@@ -5,7 +5,7 @@ import java.util.Objects;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 
 import appeng.api.util.AEColor;
 

@@ -25,7 +25,7 @@ import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 
 import appeng.client.render.FacingToRotation;
 import appeng.thirdparty.codechicken.lib.model.CachedFormat;

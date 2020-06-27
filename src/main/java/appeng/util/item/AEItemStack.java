@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -76,7 +76,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
         return new AEItemStack(AEItemStackRegistry.getRegisteredStack(stack), stack.getCount());
     }
 
-    public static IAEItemStack fromNBT(final CompoundNBT i) {
+    public static IAEItemStack fromNBT(final CompoundTag i) {
         if (i == null) {
             return null;
         }
@@ -94,8 +94,8 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT i) {
-        final CompoundNBT itemStack = new CompoundNBT();
+    public void writeToNBT(final CompoundTag i) {
+        final CompoundTag itemStack = new CompoundTag();
         this.getDefinition().write(itemStack);
 
         i.put(NBT_ITEMSTACK, itemStack);

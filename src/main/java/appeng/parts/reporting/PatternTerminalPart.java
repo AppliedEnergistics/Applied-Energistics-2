@@ -23,7 +23,7 @@ import java.util.List;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.items.IItemHandler;
 
@@ -75,7 +75,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT data) {
+    public void readFromNBT(final CompoundTag data) {
         super.readFromNBT(data);
         this.setCraftingRecipe(data.getBoolean("craftingMode"));
         this.setSubstitution(data.getBoolean("substitute"));
@@ -85,7 +85,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT data) {
+    public void writeToNBT(final CompoundTag data) {
         super.writeToNBT(data);
         data.putBoolean("craftingMode", this.craftingMode);
         data.putBoolean("substitute", this.substitute);

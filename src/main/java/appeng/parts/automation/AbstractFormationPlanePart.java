@@ -2,11 +2,11 @@
 package appeng.parts.automation;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.BlockView;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
@@ -164,7 +164,7 @@ public abstract class AbstractFormationPlanePart<T extends IAEStack<T>> extends 
     }
 
     @Override
-    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockView w, BlockPos pos, BlockPos neighbor) {
         if (pos.offset(this.getSide().getFacing()).equals(neighbor)) {
             final TileEntity te = this.getHost().getTile();
             final AEPartLocation side = this.getSide();
@@ -199,13 +199,13 @@ public abstract class AbstractFormationPlanePart<T extends IAEStack<T>> extends 
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT data) {
+    public void readFromNBT(final CompoundTag data) {
         super.readFromNBT(data);
         this.priority = data.getInt("priority");
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT data) {
+    public void writeToNBT(final CompoundTag data) {
         super.writeToNBT(data);
         data.putInt("priority", this.getPriority());
     }

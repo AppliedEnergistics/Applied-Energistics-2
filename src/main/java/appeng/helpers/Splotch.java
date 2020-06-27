@@ -19,7 +19,7 @@
 package appeng.helpers;
 
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
 import appeng.api.util.AEColor;

@@ -25,12 +25,12 @@ import javax.annotation.Nullable;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
+import net.minecraft.block.Material;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -88,7 +88,7 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
     }
 
     private static int getGrowthTicks(final ItemStack is) {
-        CompoundNBT tag = is.getTag();
+        CompoundTag tag = is.getTag();
         return tag != null ? tag.getInt(TAG_GROWTH_TICKS) : 0;
     }
 

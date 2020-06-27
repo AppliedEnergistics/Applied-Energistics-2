@@ -10,7 +10,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
@@ -77,12 +77,12 @@ public final class InscriberRecipes {
         String name = "";
 
         if (!plateA.isEmpty()) {
-            final CompoundNBT tag = plateA.getOrCreateTag();
+            final CompoundTag tag = plateA.getOrCreateTag();
             name += tag.getString(MaterialItem.TAG_INSCRIBE_NAME);
         }
 
         if (!plateB.isEmpty()) {
-            final CompoundNBT tag = plateB.getOrCreateTag();
+            final CompoundTag tag = plateB.getOrCreateTag();
             name += " " + tag.getString(MaterialItem.TAG_INSCRIBE_NAME);
         }
 

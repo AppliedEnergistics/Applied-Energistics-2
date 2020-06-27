@@ -20,8 +20,8 @@ package appeng.core.api;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -34,7 +34,7 @@ import appeng.parts.PartPlacement;
 public class ApiPart implements IPartHelper {
 
     @Override
-    public ActionResultType placeBus(final ItemStack is, final BlockPos pos, final Direction side,
+    public ActionResult placeBus(final ItemStack is, final BlockPos pos, final Direction side,
             final PlayerEntity player, final Hand hand, final World w) {
         return PartPlacement.place(is, pos, side, player, hand, w, PartPlacement.PlaceType.PLACE_ITEM, 0);
     }

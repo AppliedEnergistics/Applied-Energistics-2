@@ -25,7 +25,7 @@ import java.util.Iterator;
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.items.ItemStackHandler;
 
 import appeng.util.Platform;
@@ -146,18 +146,18 @@ public class AppEngInternalInventory extends ItemStackHandler implements Iterabl
         return true;
     }
 
-    public void writeToNBT(final CompoundNBT data, final String name) {
+    public void writeToNBT(final CompoundTag data, final String name) {
         data.put(name, this.serializeNBT());
     }
 
-    public void readFromNBT(final CompoundNBT data, final String name) {
-        final CompoundNBT c = data.getCompound(name);
+    public void readFromNBT(final CompoundTag data, final String name) {
+        final CompoundTag c = data.getCompound(name);
         if (c != null) {
             this.readFromNBT(c);
         }
     }
 
-    public void readFromNBT(final CompoundNBT data) {
+    public void readFromNBT(final CompoundTag data) {
         this.deserializeNBT(data);
     }
 

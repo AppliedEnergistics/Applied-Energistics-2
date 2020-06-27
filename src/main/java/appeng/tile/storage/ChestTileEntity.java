@@ -29,11 +29,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -384,7 +384,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    public void read(final CompoundNBT data) {
+    public void read(final CompoundTag data) {
         super.read(data);
         this.config.readFromNBT(data);
         this.priority = data.getInt("priority");
@@ -394,7 +394,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
+    public CompoundTag write(final CompoundTag data) {
         super.write(data);
         this.config.writeToNBT(data);
         data.putInt("priority", this.priority);

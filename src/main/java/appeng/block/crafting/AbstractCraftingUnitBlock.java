@@ -23,7 +23,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.util.ActionResultType;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -41,7 +41,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> ex
 
     public final CraftingUnitType type;
 
-    public AbstractCraftingUnitBlock(Block.Properties props, final CraftingUnitType type) {
+    public AbstractCraftingUnitBlock(Settings props, final CraftingUnitType type) {
         super(props);
         this.type = type;
         this.setDefaultState(getDefaultState().with(FORMED, false).with(POWERED, false));
@@ -78,7 +78,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> ex
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand,
+    public ActionResult onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand,
             BlockRayTraceResult hit) {
         final CraftingTileEntity tg = this.getTileEntity(w, pos);
 
@@ -88,7 +88,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> ex
                         ContainerLocator.forTileEntitySide(tg, hit.getFace()));
             }
 
-            return ActionResultType.SUCCESS;
+            return ActionResult.SUCCESS;
         }
 
         return super.onBlockActivated(state, w, pos, p, hand, hit);

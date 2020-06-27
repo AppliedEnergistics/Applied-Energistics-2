@@ -25,7 +25,7 @@ package appeng.api.parts;
 
 import java.io.IOException;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketBuffer;
 
 import appeng.api.util.AEPartLocation;
@@ -64,7 +64,7 @@ public interface IFacadeContainer {
      *
      * @param data to be written data
      */
-    void writeToNBT(CompoundNBT data);
+    void writeToNBT(CompoundTag data);
 
     /**
      * read from stream
@@ -82,7 +82,7 @@ public interface IFacadeContainer {
      *
      * @param data to be read data
      */
-    void readFromNBT(CompoundNBT data);
+    void readFromNBT(CompoundTag data);
 
     /**
      * write to stream

@@ -27,7 +27,7 @@ import net.minecraft.fluid.EmptyFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
@@ -51,7 +51,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
     private static final String NBT_FLUID_TAG = "ft";
 
     private final Fluid fluid;
-    private CompoundNBT tagCompound;
+    private CompoundTag tagCompound;
 
     private AEFluidStack(final AEFluidStack fluidStack) {
         this.fluid = fluidStack.fluid;
@@ -66,7 +66,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
         }
     }
 
-    private AEFluidStack(@Nonnull Fluid fluid, long amount, @Nullable CompoundNBT tag) {
+    private AEFluidStack(@Nonnull Fluid fluid, long amount, @Nullable CompoundTag tag) {
         if (fluid == Fluids.EMPTY) {
             System.out.println();
         }
@@ -88,21 +88,21 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
         }
 
         long amount = input.getAmount();
-        CompoundNBT tag = null;
+        CompoundTag tag = null;
         if (input.getTag() != null) {
             tag = input.getTag().copy();
         }
         return new AEFluidStack(fluid, amount, tag);
     }
 
-    public static IAEFluidStack fromNBT(final CompoundNBT data) {
+    public static IAEFluidStack fromNBT(final CompoundTag data) {
         ResourceLocation fluidId = new ResourceLocation(data.getString(NBT_FLUID_ID));
         Fluid fluid = ForgeRegistries.FLUIDS.getValue(fluidId);
         if (fluid == null || fluid == Fluids.EMPTY) {
             return null;
         }
 
-        CompoundNBT tag = null;
+        CompoundTag tag = null;
         if (data.contains(NBT_FLUID_TAG, Constants.NBT.TAG_COMPOUND)) {
             tag = data.getCompound(NBT_FLUID_TAG);
         }
@@ -126,7 +126,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT data) {
+    public void writeToNBT(final CompoundTag data) {
         data.putString(NBT_FLUID_ID, this.fluid.getRegistryName().toString());
         if (this.hasTagCompound()) {
             data.put(NBT_FLUID_TAG, this.tagCompound);

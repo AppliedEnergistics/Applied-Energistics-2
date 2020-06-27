@@ -22,11 +22,11 @@ import java.io.IOException;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 import appeng.api.networking.IGridNode;
@@ -113,7 +113,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     }
 
     @Override
-    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockView w, BlockPos pos, BlockPos neighbor) {
         if (this.isOutput() && pos.offset(this.getSide().getFacing()).equals(neighbor)) {
             this.opacity = -1;
             this.getHost().markForUpdate();
@@ -146,13 +146,13 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT tag) {
+    public void readFromNBT(final CompoundTag tag) {
         super.readFromNBT(tag);
         this.lastValue = tag.getInt("lastValue");
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT tag) {
+    public void writeToNBT(final CompoundTag tag) {
         super.writeToNBT(tag);
         tag.putInt("lastValue", this.lastValue);
     }

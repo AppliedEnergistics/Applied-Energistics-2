@@ -36,10 +36,10 @@ import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -200,7 +200,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         }
     }
 
-    public void writeToNBT(final CompoundNBT data) {
+    public void writeToNBT(final CompoundTag data) {
         this.config.writeToNBT(data, "config");
         this.patterns.writeToNBT(data, "patterns");
         this.storage.writeToNBT(data, "storage");
@@ -212,7 +212,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         final ListNBT waitingToSend = new ListNBT();
         if (this.waitingToSend != null) {
             for (final ItemStack is : this.waitingToSend) {
-                final CompoundNBT item = new CompoundNBT();
+                final CompoundTag item = new CompoundTag();
                 is.write(item);
                 waitingToSend.add(item);
             }
@@ -220,12 +220,12 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         data.put("waitingToSend", waitingToSend);
     }
 
-    public void readFromNBT(final CompoundNBT data) {
+    public void readFromNBT(final CompoundTag data) {
         this.waitingToSend = null;
         final ListNBT waitingList = data.getList("waitingToSend", 10);
         if (waitingList != null) {
             for (int x = 0; x < waitingList.size(); x++) {
-                final CompoundNBT c = waitingList.getCompound(x);
+                final CompoundTag c = waitingList.getCompound(x);
                 if (c != null) {
                     final ItemStack is = ItemStack.read(c);
                     this.addToSendList(is);

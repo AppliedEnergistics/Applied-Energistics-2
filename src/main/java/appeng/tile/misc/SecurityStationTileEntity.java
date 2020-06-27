@@ -26,11 +26,11 @@ import java.util.Map;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.INBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -149,7 +149,7 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
+    public CompoundTag write(final CompoundTag data) {
         super.write(data);
         this.cm.writeToNBT(data);
         data.putByte("paintedColor", (byte) this.paintedColor.ordinal());
@@ -157,11 +157,11 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
         data.putLong("securityKey", this.securityKey);
         this.getConfigSlot().writeToNBT(data, "config");
 
-        final CompoundNBT storedItems = new CompoundNBT();
+        final CompoundTag storedItems = new CompoundTag();
 
         int offset = 0;
         for (final IAEItemStack ais : this.inventory.getStoredItems()) {
-            final CompoundNBT it = new CompoundNBT();
+            final CompoundTag it = new CompoundTag();
             ais.createItemStack().write(it);
             storedItems.put(String.valueOf(offset), it);
             offset++;
@@ -172,7 +172,7 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
     }
 
     @Override
-    public void read(final CompoundNBT data) {
+    public void read(final CompoundTag data) {
         super.read(data);
         this.cm.readFromNBT(data);
         if (data.contains("paintedColor")) {
@@ -182,11 +182,11 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
         this.securityKey = data.getLong("securityKey");
         this.getConfigSlot().readFromNBT(data, "config");
 
-        final CompoundNBT storedItems = data.getCompound("storedItems");
+        final CompoundTag storedItems = data.getCompound("storedItems");
         for (final Object key : storedItems.keySet()) {
             final INBT obj = storedItems.get((String) key);
-            if (obj instanceof CompoundNBT) {
-                this.inventory.getStoredItems().add(AEItemStack.fromItemStack(ItemStack.read((CompoundNBT) obj)));
+            if (obj instanceof CompoundTag) {
+                this.inventory.getStoredItems().add(AEItemStack.fromItemStack(ItemStack.read((CompoundTag) obj)));
             }
         }
     }

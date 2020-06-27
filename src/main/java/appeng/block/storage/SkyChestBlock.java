@@ -24,16 +24,16 @@ import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.block.ShapeContext;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
@@ -66,33 +66,33 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestTileEntity> {
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
+    public boolean propagatesSkylightDown(BlockState state, BlockView reader, BlockPos pos) {
         return true;
     }
 
     @Override
-    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
+    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         if (Platform.isServer()) {
             SkyChestTileEntity tile = getTileEntity(w, pos);
             if (tile == null) {
-                return ActionResultType.PASS;
+                return ActionResult.PASS;
             }
 
             ContainerOpener.openContainer(SkyChestContainer.TYPE, player, ContainerLocator.forTileEntity(tile));
         }
 
-        return ActionResultType.SUCCESS;
+        return ActionResult.SUCCESS;
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
         // TODO Cache this! It can't be that hard!
         AxisAlignedBB aabb = computeAABB(worldIn, pos);
         return VoxelShapes.create(aabb);
     }
 
-    private AxisAlignedBB computeAABB(final IBlockReader w, final BlockPos pos) {
+    private AxisAlignedBB computeAABB(final BlockView w, final BlockPos pos) {
         final SkyChestTileEntity sk = this.getTileEntity(w, pos);
         Direction o = Direction.UP;
 

@@ -24,7 +24,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.TNTBlock;
-import net.minecraft.block.material.Material;
+import net.minecraft.block.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
@@ -202,11 +202,11 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     // Overridden to allow use of the item on WATER and LAVA which are otherwise not
     // considered for onItemUse
     @Override
-    public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
+    public TypedActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
         final RayTraceResult target = rayTrace(w, p, RayTraceContext.FluidMode.ANY);
 
         if (target.getType() != RayTraceResult.Type.BLOCK) {
-            return new ActionResult<>(ActionResultType.FAIL, p.getHeldItem(hand));
+            return new TypedActionResult<>(ActionResult.FAIL, p.getHeldItem(hand));
         } else {
             BlockPos pos = ((BlockRayTraceResult) target).getPos();
             final BlockState state = w.getBlockState(pos);
@@ -218,11 +218,11 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             }
         }
 
-        return new ActionResult<>(ActionResultType.SUCCESS, p.getHeldItem(hand));
+        return new TypedActionResult<>(ActionResult.SUCCESS, p.getHeldItem(hand));
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
+    public ActionResult onItemUse(ItemUseContext context) {
         World w = context.getWorld();
         ItemStack item = context.getItem();
         BlockPos pos = context.getPos();
@@ -231,7 +231,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         boolean tryBoth = false;
         if (p == null) {
             if (w.isRemote) {
-                return ActionResultType.FAIL;
+                return ActionResult.FAIL;
             }
             p = Platform.getPlayer((ServerWorld) w);
             // Fake players cannot crouch and we cannot communicate whether they want to
@@ -241,7 +241,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
 
         if (this.getAECurrentPower(item) > 1600) {
             if (!p.canPlayerEdit(pos, side, item)) {
-                return ActionResultType.FAIL;
+                return ActionResult.FAIL;
             }
 
             final Block block = w.getBlockState(pos).getBlock();
@@ -251,26 +251,26 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
                 if (this.canCool(block, fluid)) {
                     this.extractAEPower(item, 1600, Actionable.MODULATE);
                     this.cool(block, fluid, w, pos);
-                    return ActionResultType.SUCCESS;
+                    return ActionResult.SUCCESS;
                 }
             }
             if (tryBoth || !p.isCrouching()) {
                 if (block instanceof TNTBlock) {
                     w.removeBlock(pos, false);
                     block.catchFire(w.getBlockState(pos), w, pos, context.getFace(), p);
-                    return ActionResultType.SUCCESS;
+                    return ActionResult.SUCCESS;
                 }
 
                 if (block instanceof TinyTNTBlock) {
                     w.removeBlock(pos, false);
                     ((TinyTNTBlock) block).startFuse(w, pos, p);
-                    return ActionResultType.SUCCESS;
+                    return ActionResult.SUCCESS;
                 }
 
                 if (this.canHeat(block, fluid)) {
                     this.extractAEPower(item, 1600, Actionable.MODULATE);
                     this.heat(block, fluid, w, pos);
-                    return ActionResultType.SUCCESS;
+                    return ActionResult.SUCCESS;
                 }
 
                 final ItemStack[] stack = Platform.getBlockDrops(w, pos);
@@ -317,12 +317,12 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
                         Platform.spawnDrops(w, pos, or.getDrops());
                     }
 
-                    return ActionResultType.SUCCESS;
+                    return ActionResult.SUCCESS;
                 } else {
                     final BlockPos offsetPos = pos.offset(side);
 
                     if (!p.canPlayerEdit(offsetPos, side, item)) {
-                        return ActionResultType.FAIL;
+                        return ActionResult.FAIL;
                     }
 
                     if (w.isAirBlock(offsetPos)) {
@@ -333,11 +333,11 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
                         w.setBlockState(offsetPos, Blocks.FIRE.getDefaultState());
                     }
 
-                    return ActionResultType.SUCCESS;
+                    return ActionResult.SUCCESS;
                 }
             }
         }
 
-        return ActionResultType.PASS;
+        return ActionResult.PASS;
     }
 }

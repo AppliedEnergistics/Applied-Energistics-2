@@ -21,9 +21,9 @@ package appeng.tile.spatial;
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 
@@ -63,14 +63,14 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity implements I
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
+    public CompoundTag write(final CompoundTag data) {
         super.write(data);
         data.putInt("lastRedstoneState", this.lastRedstoneState.ordinal());
         return data;
     }
 
     @Override
-    public void read(final CompoundNBT data) {
+    public void read(final CompoundTag data) {
         super.read(data);
         if (data.contains("lastRedstoneState")) {
             this.lastRedstoneState = YesNo.values()[data.getInt("lastRedstoneState")];

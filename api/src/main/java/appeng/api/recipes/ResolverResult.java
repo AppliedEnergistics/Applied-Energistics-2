@@ -23,13 +23,13 @@
 
 package appeng.api.recipes;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 public class ResolverResult {
 
     public final String itemName;
     public final int damageValue;
-    public final CompoundNBT compound;
+    public final CompoundTag compound;
 
     public ResolverResult(final String name, final int damage) {
         this.itemName = name;
@@ -37,7 +37,7 @@ public class ResolverResult {
         this.compound = null;
     }
 
-    public ResolverResult(final String name, final int damage, final CompoundNBT data) {
+    public ResolverResult(final String name, final int damage, final CompoundTag data) {
         this.itemName = name;
         this.damageValue = damage;
         this.compound = data;

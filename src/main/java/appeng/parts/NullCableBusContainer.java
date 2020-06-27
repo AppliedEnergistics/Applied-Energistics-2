@@ -24,11 +24,11 @@ import java.util.Random;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 import appeng.api.parts.SelectedPart;
@@ -63,7 +63,7 @@ public class NullCableBusContainer implements ICableBusContainer {
     }
 
     @Override
-    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockView w, BlockPos pos, BlockPos neighbor) {
 
     }
 

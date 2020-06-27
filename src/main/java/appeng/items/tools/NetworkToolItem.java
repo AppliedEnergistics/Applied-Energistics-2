@@ -24,9 +24,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
@@ -72,7 +72,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
+    public TypedActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
         if (Platform.isClient()) {
             final RayTraceResult mop = AppEng.proxy.getRTR();
 
@@ -81,11 +81,11 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
             }
         }
 
-        return new ActionResult<>(ActionResultType.SUCCESS, p.getHeldItem(hand));
+        return new TypedActionResult<>(ActionResult.SUCCESS, p.getHeldItem(hand));
     }
 
     @Override
-    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
+    public ActionResult onItemUseFirst(ItemStack stack, ItemUseContext context) {
         final BlockRayTraceResult mop = new BlockRayTraceResult(context.getHitVec(), context.getFace(),
                 context.getPos(), context.isInside());
         final TileEntity te = context.getWorld().getTileEntity(context.getPos());
@@ -95,20 +95,20 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
 
             if (part.part != null || part.facade != null) {
                 if (part.part instanceof INetworkToolAgent && !((INetworkToolAgent) part.part).showNetworkInfo(mop)) {
-                    return ActionResultType.FAIL;
+                    return ActionResult.FAIL;
                 } else if (context.getPlayer().isCrouching()) {
-                    return ActionResultType.PASS;
+                    return ActionResult.PASS;
                 }
             }
         } else if (te instanceof INetworkToolAgent && !((INetworkToolAgent) te).showNetworkInfo(mop)) {
-            return ActionResultType.FAIL;
+            return ActionResult.FAIL;
         }
 
         if (Platform.isClient()) {
             NetworkHandler.instance().sendToServer(new ClickPacket(context));
         }
 
-        return ActionResultType.SUCCESS;
+        return ActionResult.SUCCESS;
     }
 
     @Override

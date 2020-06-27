@@ -20,7 +20,7 @@ package appeng.client.render.crafting;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.block.crafting.AbstractCraftingUnitBlock;

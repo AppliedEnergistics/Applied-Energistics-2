@@ -25,7 +25,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
@@ -93,7 +93,7 @@ public final class SingularityEntity extends AEBaseItemEntity {
                                 }
 
                                 materials.qESingularity().maybeStack(2).ifPresent(singularityStack -> {
-                                    final CompoundNBT cmp = singularityStack.getOrCreateTag();
+                                    final CompoundTag cmp = singularityStack.getOrCreateTag();
                                     cmp.putLong("freq", (new Date()).getTime() * 100 + (randTickSeed) % 100);
                                     randTickSeed++;
                                     item.grow(-1);

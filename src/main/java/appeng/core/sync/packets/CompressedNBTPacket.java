@@ -31,7 +31,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
@@ -45,7 +45,7 @@ import appeng.core.sync.network.INetworkInfo;
 public class CompressedNBTPacket extends BasePacket {
 
     // input.
-    private final CompoundNBT in;
+    private final CompoundTag in;
     // output...
     private final PacketBuffer data;
     private final GZIPOutputStream compressFrame;
@@ -72,7 +72,7 @@ public class CompressedNBTPacket extends BasePacket {
     }
 
     // api
-    public CompressedNBTPacket(final CompoundNBT din) throws IOException {
+    public CompressedNBTPacket(final CompoundTag din) throws IOException {
 
         this.data = new PacketBuffer(Unpooled.buffer(2048));
         this.data.writeInt(this.getPacketID());

@@ -28,7 +28,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListNBT;
 
 import mezz.jei.api.gui.IRecipeLayout;
@@ -66,7 +66,7 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
         Map<Integer, ? extends IGuiIngredient<ItemStack>> ingredients = recipeLayout.getItemStacks()
                 .getGuiIngredients();
 
-        final CompoundNBT recipe = new CompoundNBT();
+        final CompoundTag recipe = new CompoundTag();
 
         int slotIndex = 0;
         for (Map.Entry<Integer, ? extends IGuiIngredient<ItemStack>> ingredientEntry : ingredients.entrySet()) {
@@ -97,7 +97,7 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
                         }
 
                         for (final ItemStack is : list) {
-                            final CompoundNBT tag = new CompoundNBT();
+                            final CompoundTag tag = new CompoundTag();
                             is.write(tag);
                             tags.add(tag);
                         }

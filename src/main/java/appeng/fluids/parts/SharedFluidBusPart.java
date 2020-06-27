@@ -20,14 +20,14 @@ package appeng.fluids.parts;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
@@ -67,7 +67,7 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
     }
 
     @Override
-    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockView w, BlockPos pos, BlockPos neighbor) {
         this.updateState();
         if (this.lastRedstone != this.getHost().hasRedstone(this.getSide())) {
             this.lastRedstone = !this.lastRedstone;
@@ -138,13 +138,13 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
     }
 
     @Override
-    public void readFromNBT(CompoundNBT extra) {
+    public void readFromNBT(CompoundTag extra) {
         super.readFromNBT(extra);
         this.config.readFromNBT(extra, "config");
     }
 
     @Override
-    public void writeToNBT(CompoundNBT extra) {
+    public void writeToNBT(CompoundTag extra) {
         super.writeToNBT(extra);
         this.config.writeToNBT(extra, "config");
     }

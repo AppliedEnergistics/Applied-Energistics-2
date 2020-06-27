@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketBuffer;
 
 import appeng.api.AEApi;
@@ -87,10 +87,10 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT c) {
+    public void writeToNBT(final CompoundTag c) {
         for (int x = 0; x < this.facades; x++) {
             if (this.storage.getFacade(x) != null) {
-                final CompoundNBT data = new CompoundNBT();
+                final CompoundTag data = new CompoundTag();
                 this.storage.getFacade(x).getItemStack().write(data);
                 c.put("facade:" + x, data);
             }
@@ -129,11 +129,11 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT c) {
+    public void readFromNBT(final CompoundTag c) {
         for (int x = 0; x < this.facades; x++) {
             this.storage.setFacade(x, null);
 
-            final CompoundNBT t = c.getCompound("facade:" + x);
+            final CompoundTag t = c.getCompound("facade:" + x);
             if (t != null) {
                 final ItemStack is = ItemStack.read(t);
                 if (!is.isEmpty()) {

@@ -24,7 +24,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
@@ -120,7 +120,7 @@ public class QuartzKnifeContainer extends AEBaseContainer {
             if (RestrictedInputSlot.isMetalIngot(input)) {
                 if (QuartzKnifeContainer.this.myName.length() > 0) {
                     return AEApi.instance().definitions().materials().namePress().maybeStack(1).map(namePressStack -> {
-                        final CompoundNBT compound = namePressStack.getOrCreateTag();
+                        final CompoundTag compound = namePressStack.getOrCreateTag();
                         compound.putString(MaterialItem.TAG_INSCRIBE_NAME, QuartzKnifeContainer.this.myName);
 
                         return namePressStack;

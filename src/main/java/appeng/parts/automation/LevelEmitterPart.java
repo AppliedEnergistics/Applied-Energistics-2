@@ -24,7 +24,7 @@ import java.util.Random;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
@@ -437,7 +437,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT data) {
+    public void readFromNBT(final CompoundTag data) {
         super.readFromNBT(data);
         this.lastReportedValue = data.getLong("lastReportedValue");
         this.reportingValue = data.getLong("reportingValue");
@@ -446,7 +446,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT data) {
+    public void writeToNBT(final CompoundTag data) {
         super.writeToNBT(data);
         data.putLong("lastReportedValue", this.lastReportedValue);
         data.putLong("reportingValue", this.reportingValue);

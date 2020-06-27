@@ -24,10 +24,10 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.items.IItemHandler;
 
@@ -92,7 +92,7 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
+    public CompoundTag write(final CompoundTag data) {
         super.write(data);
         data.putDouble("burnTime", this.getBurnTime());
         data.putDouble("maxBurnTime", this.getMaxBurnTime());
@@ -101,7 +101,7 @@ public class VibrationChamberTileEntity extends AENetworkInvTileEntity implement
     }
 
     @Override
-    public void read(final CompoundNBT data) {
+    public void read(final CompoundTag data) {
         super.read(data);
         this.setBurnTime(data.getDouble("burnTime"));
         this.setMaxBurnTime(data.getDouble("maxBurnTime"));

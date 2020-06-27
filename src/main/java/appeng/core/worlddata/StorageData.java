@@ -23,7 +23,7 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.storage.WorldSavedData;
 
 import appeng.core.AELog;
@@ -97,12 +97,12 @@ final class StorageData extends WorldSavedData implements IWorldGridStorageData 
     }
 
     @Override
-    public void read(CompoundNBT tag) {
+    public void read(CompoundTag tag) {
 
         nextGridId = tag.getLong(TAG_NEXT_ID);
 
         // Load serialized grid storage
-        CompoundNBT storageTag = tag.getCompound(TAG_STORAGE);
+        CompoundTag storageTag = tag.getCompound(TAG_STORAGE);
         for (String storageIdStr : storageTag.keySet()) {
             long storageId;
             try {
@@ -115,7 +115,7 @@ final class StorageData extends WorldSavedData implements IWorldGridStorageData 
         }
 
         // Load ordered values map
-        CompoundNBT orderedValuesTag = tag.getCompound(TAG_ORDERED_VALUES);
+        CompoundTag orderedValuesTag = tag.getCompound(TAG_ORDERED_VALUES);
         this.orderedValues.clear();
         for (String key : orderedValuesTag.keySet()) {
             this.orderedValues.put(key, orderedValuesTag.getInt(key));
@@ -124,12 +124,12 @@ final class StorageData extends WorldSavedData implements IWorldGridStorageData 
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tag) {
+    public CompoundTag write(CompoundTag tag) {
 
         tag.putLong(TAG_NEXT_ID, nextGridId);
 
         // Save serialized grid storage
-        CompoundNBT storageTag = new CompoundNBT();
+        CompoundTag storageTag = new CompoundTag();
         for (Map.Entry<Long, GridStorage> entry : storage.entrySet()) {
 
             GridStorage gridStorage = entry.getValue();
@@ -148,7 +148,7 @@ final class StorageData extends WorldSavedData implements IWorldGridStorageData 
         tag.put(TAG_STORAGE, storageTag);
 
         // Save ordered values
-        CompoundNBT orderedValuesTag = new CompoundNBT();
+        CompoundTag orderedValuesTag = new CompoundTag();
         for (Map.Entry<String, Integer> entry : orderedValues.entrySet()) {
             orderedValuesTag.putInt(entry.getKey(), entry.getValue());
         }

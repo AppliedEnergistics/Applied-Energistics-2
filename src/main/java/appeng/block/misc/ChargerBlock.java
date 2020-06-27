@@ -27,7 +27,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
+import net.minecraft.block.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.Vector3f;
@@ -35,16 +35,16 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.block.ShapeContext;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -69,15 +69,15 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
     }
 
     @Override
-    public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos) {
+    public int getOpacity(BlockState state, BlockView worldIn, BlockPos pos) {
         return 2; // FIXME Double check this (esp. value range)
     }
 
     @Override
-    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
+    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         if (player.isCrouching()) {
-            return ActionResultType.PASS;
+            return ActionResult.PASS;
         }
 
         if (Platform.isServer()) {
@@ -87,7 +87,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
             }
         }
 
-        return ActionResultType.SUCCESS;
+        return ActionResult.SUCCESS;
     }
 
     @Override
@@ -120,7 +120,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(BlockState state, BlockView w, BlockPos pos, ShapeContext context) {
 
         final ChargerTileEntity tile = this.getTileEntity(w, pos);
         if (tile != null) {
@@ -172,8 +172,8 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos,
-            ISelectionContext context) {
+    public VoxelShape getCollisionShape(BlockState state, BlockView worldIn, BlockPos pos,
+            ShapeContext context) {
         return VoxelShapes.create(new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 1.0, 1.0));
     }
 

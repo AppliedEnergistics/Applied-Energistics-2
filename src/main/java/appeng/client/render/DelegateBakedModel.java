@@ -31,7 +31,7 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 
 public abstract class DelegateBakedModel implements IBakedModel {
     private final IBakedModel baseModel;

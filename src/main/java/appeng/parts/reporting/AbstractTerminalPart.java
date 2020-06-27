@@ -23,7 +23,7 @@ import java.util.List;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.items.IItemHandler;
@@ -90,14 +90,14 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT data) {
+    public void readFromNBT(final CompoundTag data) {
         super.readFromNBT(data);
         this.cm.readFromNBT(data);
         this.viewCell.readFromNBT(data, "viewCell");
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT data) {
+    public void writeToNBT(final CompoundTag data) {
         super.writeToNBT(data);
         this.cm.writeToNBT(data);
         this.viewCell.writeToNBT(data, "viewCell");

@@ -32,10 +32,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -105,7 +105,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final @Nullable Hand hand) {
+    public TypedActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final @Nullable Hand hand) {
         if (this.getAECurrentPower(p.getHeldItem(hand)) > ENERGY_PER_SHOT) {
             int shots = 1;
 
@@ -127,18 +127,18 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                         this.extractAEPower(p.getHeldItem(hand), ENERGY_PER_SHOT, Actionable.MODULATE);
 
                         if (Platform.isClient()) {
-                            return new ActionResult<>(ActionResultType.SUCCESS, p.getHeldItem(hand));
+                            return new TypedActionResult<>(ActionResult.SUCCESS, p.getHeldItem(hand));
                         }
 
                         aeAmmo.setStackSize(1);
                         final ItemStack ammo = aeAmmo.createItemStack();
                         if (ammo.isEmpty()) {
-                            return new ActionResult<>(ActionResultType.SUCCESS, p.getHeldItem(hand));
+                            return new TypedActionResult<>(ActionResult.SUCCESS, p.getHeldItem(hand));
                         }
 
                         aeAmmo = inv.extractItems(aeAmmo, Actionable.MODULATE, new PlayerSource(p, null));
                         if (aeAmmo == null) {
-                            return new ActionResult<>(ActionResultType.SUCCESS, p.getHeldItem(hand));
+                            return new TypedActionResult<>(ActionResult.SUCCESS, p.getHeldItem(hand));
                         }
 
                         final LookDirection dir = Platform.getPlayerRay(p, 32);
@@ -158,7 +158,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                             if (type.getItem() instanceof PaintBallItem) {
                                 this.shootPaintBalls(type, w, p, rayFrom, rayTo, direction, d0, d1, d2);
                             }
-                            return new ActionResult<>(ActionResultType.SUCCESS, p.getHeldItem(hand));
+                            return new TypedActionResult<>(ActionResult.SUCCESS, p.getHeldItem(hand));
                         } else {
                             this.standardAmmo(penetration, w, p, rayFrom, rayTo, direction, d0, d1, d2);
                         }
@@ -167,11 +167,11 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                     if (Platform.isServer()) {
                         p.sendMessage(PlayerMessages.AmmoDepleted.get());
                     }
-                    return new ActionResult<>(ActionResultType.SUCCESS, p.getHeldItem(hand));
+                    return new TypedActionResult<>(ActionResult.SUCCESS, p.getHeldItem(hand));
                 }
             }
         }
-        return new ActionResult<>(ActionResultType.FAIL, p.getHeldItem(hand));
+        return new TypedActionResult<>(ActionResult.FAIL, p.getHeldItem(hand));
     }
 
     private void shootPaintBalls(final ItemStack type, final World w, final PlayerEntity p, final Vec3d Vec3d,

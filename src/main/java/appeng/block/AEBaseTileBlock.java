@@ -33,16 +33,16 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -67,7 +67,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     @Nonnull
     private Supplier<T> tileEntityFactory;
 
-    public AEBaseTileBlock(final Block.Properties props) {
+    public AEBaseTileBlock(final Settings props) {
         super(props);
     }
 
@@ -92,12 +92,12 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     }
 
     @Nullable
-    public T getTileEntity(final IBlockReader w, final int x, final int y, final int z) {
+    public T getTileEntity(final BlockView w, final int x, final int y, final int z) {
         return this.getTileEntity(w, new BlockPos(x, y, z));
     }
 
     @Nullable
-    public T getTileEntity(final IBlockReader w, final BlockPos pos) {
+    public T getTileEntity(final BlockView w, final BlockPos pos) {
         if (!this.hasBlockTileEntity()) {
             return null;
         }
@@ -112,7 +112,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     }
 
     @Override
-    public final TileEntity createTileEntity(BlockState state, IBlockReader world) {
+    public final TileEntity createTileEntity(BlockState state, BlockView world) {
         return this.tileEntityFactory.get();
     }
 
@@ -165,7 +165,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     }
 
     @Override
-    public int getComparatorInputOverride(BlockState state, final World w, final BlockPos pos) {
+    public int getComparatorOutput(BlockState state, final World w, final BlockPos pos) {
         final TileEntity te = this.getTileEntity(w, pos);
         if (te instanceof AEBaseInvTileEntity) {
             AEBaseInvTileEntity invTile = (AEBaseInvTileEntity) te;
@@ -202,7 +202,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player,
+    public ActionResult onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player,
             Hand hand, BlockRayTraceResult hit) {
         ItemStack heldItem;
         if (player != null && !player.getHeldItem(hand).isEmpty()) {
@@ -215,11 +215,11 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
                 final AEBaseTileEntity tile = this.getTileEntity(world, pos);
 
                 if (tile == null) {
-                    return ActionResultType.FAIL;
+                    return ActionResult.FAIL;
                 }
 
                 if (tile instanceof CableBusTileEntity || tile instanceof SkyChestTileEntity) {
-                    return ActionResultType.FAIL;
+                    return ActionResult.FAIL;
                 }
 
                 final ItemStack[] itemDropCandidates = Platform.getBlockDrops(world, pos);
@@ -227,7 +227,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
 
                 for (final ItemStack ol : itemDropCandidates) {
                     if (Platform.itemComparisons().isEqualItemType(ol, op)) {
-                        final CompoundNBT tag = tile.downloadSettings(SettingsFrom.DISMANTLE_ITEM);
+                        final CompoundTag tag = tile.downloadSettings(SettingsFrom.DISMANTLE_ITEM);
                         if (tag != null) {
                             ol.setTag(tag);
                         }
@@ -240,7 +240,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
                     world.removeBlock(pos, false);
                 }
 
-                return ActionResultType.FAIL;
+                return ActionResult.FAIL;
             }
 
             if (heldItem.getItem() instanceof IMemoryCard && !(this instanceof CableBusBlock)) {
@@ -248,20 +248,20 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
                 final AEBaseTileEntity tileEntity = this.getTileEntity(world, pos);
 
                 if (tileEntity == null) {
-                    return ActionResultType.FAIL;
+                    return ActionResult.FAIL;
                 }
 
                 final String name = this.getTranslationKey();
 
                 if (player.isCrouching()) {
-                    final CompoundNBT data = tileEntity.downloadSettings(SettingsFrom.MEMORY_CARD);
+                    final CompoundTag data = tileEntity.downloadSettings(SettingsFrom.MEMORY_CARD);
                     if (data != null) {
                         memoryCard.setMemoryCardContents(heldItem, name, data);
                         memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_SAVED);
                     }
                 } else {
                     final String savedName = memoryCard.getSettingsName(heldItem);
-                    final CompoundNBT data = memoryCard.getData(heldItem);
+                    final CompoundTag data = memoryCard.getData(heldItem);
 
                     if (this.getTranslationKey().equals(savedName)) {
                         tileEntity.uploadSettings(SettingsFrom.MEMORY_CARD, data);
@@ -271,7 +271,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
                     }
                 }
 
-                return ActionResultType.SUCCESS;
+                return ActionResult.SUCCESS;
             }
         }
 
@@ -279,7 +279,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     }
 
     @Override
-    public IOrientable getOrientable(final IBlockReader w, final BlockPos pos) {
+    public IOrientable getOrientable(final BlockView w, final BlockPos pos) {
         return this.getTileEntity(w, pos);
     }
 

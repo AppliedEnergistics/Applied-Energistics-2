@@ -25,9 +25,9 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -82,22 +82,22 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT data) {
+    public void readFromNBT(final CompoundTag data) {
         super.readFromNBT(data);
 
         this.isLocked = data.getBoolean("isLocked");
 
-        final CompoundNBT myItem = data.getCompound("configuredItem");
+        final CompoundTag myItem = data.getCompound("configuredItem");
         this.configuredItem = AEItemStack.fromNBT(myItem);
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT data) {
+    public void writeToNBT(final CompoundTag data) {
         super.writeToNBT(data);
 
         data.putBoolean("isLocked", this.isLocked);
 
-        final CompoundNBT myItem = new CompoundNBT();
+        final CompoundTag myItem = new CompoundTag();
         if (this.configuredItem != null) {
             this.configuredItem.writeToNBT(myItem);
         }

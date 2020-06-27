@@ -23,7 +23,7 @@ import java.util.EnumSet;
 
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;

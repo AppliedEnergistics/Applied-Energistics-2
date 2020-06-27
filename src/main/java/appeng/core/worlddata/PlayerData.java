@@ -29,7 +29,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.storage.WorldSavedData;
 
 import appeng.core.AELog;
@@ -85,7 +85,7 @@ final class PlayerData extends WorldSavedData implements IWorldPlayerData {
     }
 
     @Override
-    public void read(CompoundNBT nbt) {
+    public void read(CompoundTag nbt) {
         int[] playerIds = nbt.getIntArray(TAG_PLAYER_IDS);
         long[] profileIds = nbt.getLongArray(TAG_PROFILE_IDS);
 
@@ -107,7 +107,7 @@ final class PlayerData extends WorldSavedData implements IWorldPlayerData {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
+    public CompoundTag write(CompoundTag compound) {
         int index = 0;
         int[] playerIds = new int[mapping.size()];
         long[] profileIds = new long[mapping.size() * 2];

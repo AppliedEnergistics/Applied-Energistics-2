@@ -27,7 +27,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.RayTraceResult;
@@ -136,7 +136,7 @@ public class ServerHelper extends CommonHelper {
                 final ItemStack is = player.inventory.getStackInSlot(x);
 
                 if (!is.isEmpty() && is.getItem() instanceof NetworkToolItem) {
-                    final CompoundNBT c = is.getTag();
+                    final CompoundTag c = is.getTag();
                     if (c != null && c.getBoolean("hideFacades")) {
                         return CableRenderMode.CABLE_VIEW;
                     }

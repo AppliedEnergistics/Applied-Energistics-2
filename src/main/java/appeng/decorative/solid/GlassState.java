@@ -20,7 +20,7 @@ package appeng.decorative.solid;
 
 import java.util.EnumSet;
 
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 
 /**
  * Immutable (and thus thread-safe) class that encapsulates the rendering state

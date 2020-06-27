@@ -25,7 +25,7 @@ package appeng.api.implementations.items;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 import appeng.api.util.AEColor;
 
@@ -53,7 +53,7 @@ public interface IMemoryCard {
      * @param data         the NBT tag, refer to the normal comment for special
      *                     keys.
      */
-    void setMemoryCardContents(ItemStack is, String settingsName, CompoundNBT data);
+    void setMemoryCardContents(ItemStack is, String settingsName, CompoundTag data);
 
     /**
      * returns the settings name provided by a previous call to
@@ -72,7 +72,7 @@ public interface IMemoryCard {
      * @return the NBT Data previously saved by setMemoryCardContents, or an empty
      *         NBTCompound
      */
-    CompoundNBT getData(ItemStack is);
+    CompoundTag getData(ItemStack is);
 
     /**
      * This represent as 4x2 grid of {@link AEColor} without transparent/fluix

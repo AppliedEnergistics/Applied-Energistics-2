@@ -24,7 +24,7 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 import appeng.api.config.FuzzyMode;
 
@@ -121,7 +121,7 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
             Preconditions.checkState(!stack.isEmpty(), "ItemStack#isEmpty() has to be false");
             Preconditions.checkState(stack.getCount() == 1, "ItemStack#getCount() has to be 1");
 
-            final CompoundNBT tag = stack.hasTag() ? stack.getTag() : null;
+            final CompoundTag tag = stack.hasTag() ? stack.getTag() : null;
 
             this.lower = this.makeLowerBound(stack, tag, fuzzy);
             this.upper = this.makeUpperBound(stack, tag, fuzzy);
@@ -135,7 +135,7 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
             return this.upper;
         }
 
-        private AESharedItemStack makeLowerBound(final ItemStack itemStack, final CompoundNBT tag,
+        private AESharedItemStack makeLowerBound(final ItemStack itemStack, final CompoundTag tag,
                 final FuzzyMode fuzzy) {
             final ItemStack newDef = itemStack.copy();
 
@@ -158,7 +158,7 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
             return new AESharedItemStack(newDef);
         }
 
-        private AESharedItemStack makeUpperBound(final ItemStack itemStack, final CompoundNBT tag,
+        private AESharedItemStack makeUpperBound(final ItemStack itemStack, final CompoundTag tag,
                 final FuzzyMode fuzzy) {
             final ItemStack newDef = itemStack.copy();
 

@@ -19,7 +19,7 @@ package appeng.worldgen.meteorite;
 
 import java.util.Random;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
@@ -53,7 +53,7 @@ public class MeteoriteStructurePiece extends StructurePiece {
                 chunkPos.getZStart() - range, chunkPos.getXEnd() + range, center.getY(), chunkPos.getZEnd() + range);
     }
 
-    public MeteoriteStructurePiece(TemplateManager templateManager, CompoundNBT tag) {
+    public MeteoriteStructurePiece(TemplateManager templateManager, CompoundTag tag) {
         super(TYPE, tag);
 
         BlockPos center = BlockPos.fromLong(tag.getLong(Constants.TAG_POS));
@@ -75,7 +75,7 @@ public class MeteoriteStructurePiece extends StructurePiece {
     }
 
     @Override
-    protected void readAdditional(CompoundNBT tag) {
+    protected void readAdditional(CompoundTag tag) {
         tag.putFloat(Constants.TAG_RADIUS, settings.getMeteoriteRadius());
         tag.putLong(Constants.TAG_POS, settings.getPos().toLong());
         tag.putByte(Constants.TAG_CRATER, (byte) settings.getCraterType().ordinal());

@@ -25,11 +25,11 @@ import javax.annotation.Nullable;
 
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -201,12 +201,12 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
+    public CompoundTag write(final CompoundTag data) {
         super.write(data);
         if (this.forcePlan && this.myPlan != null) {
             final ItemStack pattern = this.myPlan.getPattern();
             if (!pattern.isEmpty()) {
-                final CompoundNBT compound = new CompoundNBT();
+                final CompoundTag compound = new CompoundTag();
                 pattern.write(compound);
                 data.put("myPlan", compound);
                 data.putInt("pushDirection", this.pushDirection.ordinal());
@@ -219,7 +219,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public void read(final CompoundNBT data) {
+    public void read(final CompoundTag data) {
         super.read(data);
         if (data.contains("myPlan")) {
             final ItemStack myPat = ItemStack.read(data.getCompound("myPlan"));

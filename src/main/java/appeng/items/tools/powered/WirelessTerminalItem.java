@@ -24,9 +24,9 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -54,9 +54,9 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IWireless
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity player, final Hand hand) {
+    public TypedActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity player, final Hand hand) {
         AEApi.instance().registries().wireless().openWirelessTerminalGui(player.getHeldItem(hand), w, player, hand);
-        return new ActionResult<>(ActionResultType.SUCCESS, player.getHeldItem(hand));
+        return new TypedActionResult<>(ActionResult.SUCCESS, player.getHeldItem(hand));
     }
 
     @Override
@@ -66,7 +66,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IWireless
         super.addInformation(stack, world, lines, advancedTooltips);
 
         if (stack.hasTag()) {
-            final CompoundNBT tag = stack.getOrCreateTag();
+            final CompoundTag tag = stack.getOrCreateTag();
             if (tag != null) {
                 final String encKey = tag.getString("encryptionKey");
 
@@ -99,7 +99,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IWireless
     @Override
     public IConfigManager getConfigManager(final ItemStack target) {
         final ConfigManager out = new ConfigManager((manager, settingName, newValue) -> {
-            final CompoundNBT data = target.getOrCreateTag();
+            final CompoundTag data = target.getOrCreateTag();
             manager.writeToNBT(data);
         });
 
@@ -113,13 +113,13 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IWireless
 
     @Override
     public String getEncryptionKey(final ItemStack item) {
-        final CompoundNBT tag = item.getOrCreateTag();
+        final CompoundTag tag = item.getOrCreateTag();
         return tag.getString("encryptionKey");
     }
 
     @Override
     public void setEncryptionKey(final ItemStack item, final String encKey, final String name) {
-        final CompoundNBT tag = item.getOrCreateTag();
+        final CompoundTag tag = item.getOrCreateTag();
         tag.putString("encryptionKey", encKey);
         tag.putString("name", name);
     }

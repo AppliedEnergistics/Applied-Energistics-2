@@ -20,10 +20,10 @@ package appeng.block.misc;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.material.Material;
+import net.minecraft.block.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResultType;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -42,10 +42,10 @@ public class CellWorkbenchBlock extends AEBaseTileBlock<CellWorkbenchTileEntity>
     }
 
     @Override
-    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
+    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         if (p.isCrouching()) {
-            return ActionResultType.PASS;
+            return ActionResult.PASS;
         }
 
         final CellWorkbenchTileEntity tg = this.getTileEntity(w, pos);
@@ -53,8 +53,8 @@ public class CellWorkbenchBlock extends AEBaseTileBlock<CellWorkbenchTileEntity>
             if (Platform.isServer()) {
                 CellWorkbenchContainer.open(p, ContainerLocator.forTileEntity(tg));
             }
-            return ActionResultType.SUCCESS;
+            return ActionResult.SUCCESS;
         }
-        return ActionResultType.PASS;
+        return ActionResult.PASS;
     }
 }

@@ -23,9 +23,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.BlockView;
 
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
@@ -49,7 +49,7 @@ public class QuartzPillarBlock extends AEDecorativeBlock implements IOrientableB
     }
 
     @Override
-    public IOrientable getOrientable(final IBlockReader w, final BlockPos pos) {
+    public IOrientable getOrientable(final BlockView w, final BlockPos pos) {
         return new MetaRotation(w, pos, null);
     }
 

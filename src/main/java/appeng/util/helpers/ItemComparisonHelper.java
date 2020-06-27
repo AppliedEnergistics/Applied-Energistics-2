@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 import appeng.api.config.FuzzyMode;
 
@@ -109,7 +109,7 @@ public class ItemComparisonHelper {
      * performance wise, so try an use shared tag compounds as long as the system
      * remains in AE.
      */
-    public boolean isNbtTagEqual(final CompoundNBT left, final CompoundNBT right) {
+    public boolean isNbtTagEqual(final CompoundTag left, final CompoundTag right) {
         if (left == right) {
             return true;
         }

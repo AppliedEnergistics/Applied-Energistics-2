@@ -18,7 +18,7 @@
 
 package appeng.tile.grid;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tileentity.TileEntityType;
 
 import appeng.api.networking.IGridNode;
@@ -37,13 +37,13 @@ public abstract class AENetworkInvTileEntity extends AEBaseInvTileEntity impleme
     }
 
     @Override
-    public void read(final CompoundNBT data) {
+    public void read(final CompoundTag data) {
         super.read(data);
         this.getProxy().readFromNBT(data);
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
+    public CompoundTag write(final CompoundTag data) {
         super.write(data);
         this.getProxy().writeToNBT(data);
         return data;

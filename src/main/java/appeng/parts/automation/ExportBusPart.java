@@ -23,7 +23,7 @@ import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
@@ -102,14 +102,14 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT extra) {
+    public void readFromNBT(final CompoundTag extra) {
         super.readFromNBT(extra);
         this.craftingTracker.readFromNBT(extra);
         this.nextSlot = extra.getInt("nextSlot");
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT extra) {
+    public void writeToNBT(final CompoundTag extra) {
         super.writeToNBT(extra);
         this.craftingTracker.writeToNBT(extra);
         extra.putInt("nextSlot", this.nextSlot);

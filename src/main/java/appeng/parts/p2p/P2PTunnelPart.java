@@ -25,7 +25,7 @@ import java.util.Optional;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
@@ -119,14 +119,14 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT data) {
+    public void readFromNBT(final CompoundTag data) {
         super.readFromNBT(data);
         this.setOutput(data.getBoolean("output"));
         this.freq = data.getShort("freq");
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT data) {
+    public void writeToNBT(final CompoundTag data) {
         super.writeToNBT(data);
         data.putBoolean("output", this.isOutput());
         data.putShort("freq", this.getFrequency());
@@ -171,7 +171,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
         final TunnelType tt = AEApi.instance().registries().p2pTunnel().getTunnelTypeByItem(is);
         if (!is.isEmpty() && is.getItem() instanceof IMemoryCard) {
             final IMemoryCard mc = (IMemoryCard) is.getItem();
-            final CompoundNBT data = mc.getData(is);
+            final CompoundTag data = mc.getData(is);
 
             final ItemStack newType = ItemStack.read(data);
             final short freq = data.getShort("freq");
@@ -288,7 +288,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
             }
 
             final IMemoryCard mc = (IMemoryCard) is.getItem();
-            final CompoundNBT data = mc.getData(is);
+            final CompoundTag data = mc.getData(is);
             final short storedFrequency = data.getShort("freq");
 
             short newFreq = this.getFrequency();

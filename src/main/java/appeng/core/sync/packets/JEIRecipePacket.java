@@ -24,7 +24,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
@@ -57,7 +57,7 @@ public class JEIRecipePacket extends BasePacket {
     private ItemStack[][] recipe;
 
     public JEIRecipePacket(final PacketBuffer stream) {
-        final CompoundNBT comp = stream.readCompoundTag();
+        final CompoundTag comp = stream.readCompoundTag();
         if (comp != null) {
             this.recipe = new ItemStack[9][];
             for (int x = 0; x < this.recipe.length; x++) {
@@ -73,7 +73,7 @@ public class JEIRecipePacket extends BasePacket {
     }
 
     // api
-    public JEIRecipePacket(final CompoundNBT recipe) {
+    public JEIRecipePacket(final CompoundTag recipe) {
         final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());

@@ -27,8 +27,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -57,15 +57,15 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity player, final Hand hand) {
+    public TypedActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity player, final Hand hand) {
         this.clearPattern(player.getHeldItem(hand), player);
 
-        return new ActionResult<>(ActionResultType.SUCCESS, player.getHeldItem(hand));
+        return new TypedActionResult<>(ActionResult.SUCCESS, player.getHeldItem(hand));
     }
 
     @Override
-    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        return this.clearPattern(stack, context.getPlayer()) ? ActionResultType.SUCCESS : ActionResultType.PASS;
+    public ActionResult onItemUseFirst(ItemStack stack, ItemUseContext context) {
+        return this.clearPattern(stack, context.getPlayer()) ? ActionResult.SUCCESS : ActionResult.PASS;
     }
 
     private boolean clearPattern(final ItemStack stack, final PlayerEntity player) {

@@ -22,7 +22,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.NonNullList;
@@ -47,7 +47,7 @@ public class EnergyCellBlock extends AEBaseTileBlock<EnergyCellTileEntity> {
         super.fillItemGroup(group, itemStacks);
 
         final ItemStack charged = new ItemStack(this, 1);
-        final CompoundNBT tag = charged.getOrCreateTag();
+        final CompoundTag tag = charged.getOrCreateTag();
         tag.putDouble("internalCurrentPower", this.getMaxPower());
         tag.putDouble("internalMaxPower", this.getMaxPower());
 

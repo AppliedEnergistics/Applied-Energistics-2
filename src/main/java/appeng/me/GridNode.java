@@ -26,9 +26,9 @@ import java.util.Deque;
 import java.util.EnumSet;
 import java.util.List;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -281,9 +281,9 @@ public class GridNode implements IGridNode, IPathItem {
     }
 
     @Override
-    public void loadFromNBT(final String name, final CompoundNBT nodeData) {
+    public void loadFromNBT(final String name, final CompoundTag nodeData) {
         if (this.myGrid == null) {
-            final CompoundNBT node = nodeData.getCompound(name);
+            final CompoundTag node = nodeData.getCompound(name);
             this.playerID = node.getInt("p");
             this.setLastSecurityKey(node.getLong("k"));
 
@@ -296,9 +296,9 @@ public class GridNode implements IGridNode, IPathItem {
     }
 
     @Override
-    public void saveToNBT(final String name, final CompoundNBT nodeData) {
+    public void saveToNBT(final String name, final CompoundTag nodeData) {
         if (this.myStorage != null) {
-            final CompoundNBT node = new CompoundNBT();
+            final CompoundTag node = new CompoundTag();
 
             node.putInt("p", this.playerID);
             node.putLong("k", this.getLastSecurityKey());

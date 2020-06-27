@@ -20,8 +20,8 @@ package appeng.decorative.solid;
 
 import net.minecraft.block.AbstractGlassBlock;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.util.Direction;
+import net.minecraft.block.Material;
+import net.minecraft.util.math.Direction;
 
 import appeng.helpers.AEGlassMaterial;
 

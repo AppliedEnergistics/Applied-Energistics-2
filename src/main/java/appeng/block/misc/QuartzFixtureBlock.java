@@ -27,20 +27,20 @@ import javax.annotation.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
+import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.block.Material;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.block.ShapeContext;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -81,7 +81,7 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock 
 
     public QuartzFixtureBlock() {
         super(defaultProps(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0).lightValue(14)
-                .sound(SoundType.GLASS));
+                .sound(BlockSoundGroup.GLASS));
 
         this.setDefaultState(getDefaultState().with(FACING, Direction.UP).with(ODD, false));
     }
@@ -140,7 +140,7 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock 
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
         Direction facing = state.get(FACING);
         return SHAPES.get(facing);
     }
@@ -195,7 +195,7 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock 
     }
 
     @Override
-    public IOrientable getOrientable(final IBlockReader w, final BlockPos pos) {
+    public IOrientable getOrientable(final BlockView w, final BlockPos pos) {
         return new MetaRotation(w, pos, FACING);
     }
 

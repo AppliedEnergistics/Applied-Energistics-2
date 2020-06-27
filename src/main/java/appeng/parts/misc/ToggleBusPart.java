@@ -22,12 +22,12 @@ import java.util.EnumSet;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.BlockView;
 
 import appeng.api.AEApi;
 import appeng.api.exceptions.FailedConnectionException;
@@ -103,7 +103,7 @@ public class ToggleBusPart extends BasicStatePart {
     }
 
     @Override
-    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockView w, BlockPos pos, BlockPos neighbor) {
         final boolean oldHasRedstone = this.hasRedstone;
         this.hasRedstone = this.getHost().hasRedstone(this.getSide());
 
@@ -114,13 +114,13 @@ public class ToggleBusPart extends BasicStatePart {
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT extra) {
+    public void readFromNBT(final CompoundTag extra) {
         super.readFromNBT(extra);
         this.getOuterProxy().readFromNBT(extra);
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT extra) {
+    public void writeToNBT(final CompoundTag extra) {
         super.writeToNBT(extra);
         this.getOuterProxy().writeToNBT(extra);
     }

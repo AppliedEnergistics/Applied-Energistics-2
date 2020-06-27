@@ -24,7 +24,7 @@ import java.util.EnumSet;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -73,13 +73,13 @@ public class QuartzFiberPart extends AEBasePart implements IEnergyGridProvider {
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT extra) {
+    public void readFromNBT(final CompoundTag extra) {
         super.readFromNBT(extra);
         this.outerProxy.readFromNBT(extra);
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT extra) {
+    public void writeToNBT(final CompoundTag extra) {
         super.writeToNBT(extra);
         this.outerProxy.writeToNBT(extra);
     }

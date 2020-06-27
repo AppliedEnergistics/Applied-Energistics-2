@@ -29,7 +29,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.command.CommandSource;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -57,7 +57,7 @@ public class TestOreGenCommand implements ISubCommand {
     }
 
     @Override
-    public void call(final MinecraftServer srv, final CommandContext<CommandSource> data, final CommandSource sender) {
+    public void call(final MinecraftServer srv, final CommandContext<ServerCommandSource> data, final ServerCommandSource sender) {
 
         int radius = 1000;
 
@@ -97,7 +97,7 @@ public class TestOreGenCommand implements ISubCommand {
         sendLine(sender, "  Sub-Type Count: %s", chargedCount);
     }
 
-    private void checkChunk(CommandSource sender, ServerWorld world, ChunkPos cp, Stats stats) {
+    private void checkChunk(ServerCommandSource sender, ServerWorld world, ChunkPos cp, Stats stats) {
         IChunk chunk = world.getChunk(cp.x, cp.z, ChunkStatus.FULL, false);
         if (chunk == null) {
             sendLine(sender, "Skipping chunk %s", cp);
@@ -129,7 +129,7 @@ public class TestOreGenCommand implements ISubCommand {
         stats.chunks.add(chunkStats);
     }
 
-    private static void sendLine(CommandSource sender, String text, Object... args) {
+    private static void sendLine(ServerCommandSource sender, String text, Object... args) {
         sender.sendFeedback(new StringTextComponent(String.format(Locale.ROOT, text, args)), true);
     }
 

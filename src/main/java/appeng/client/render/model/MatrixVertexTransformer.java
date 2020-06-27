@@ -25,7 +25,7 @@ import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraftforge.client.model.pipeline.QuadGatheringTransformer;
 
 /**

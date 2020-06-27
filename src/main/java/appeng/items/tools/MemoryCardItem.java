@@ -25,9 +25,9 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -64,7 +64,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
                 this.getSettingsName(stack));
         lines.add(new TranslationTextComponent(firstLineKey));
 
-        final CompoundNBT data = this.getData(stack);
+        final CompoundTag data = this.getData(stack);
         if (data.contains("tooltip")) {
             String tooltipKey = getFirstValidTranslationKey(data.getString("tooltip") + ".name",
                     data.getString("tooltip"));
@@ -101,29 +101,29 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
     }
 
     @Override
-    public void setMemoryCardContents(final ItemStack is, final String settingsName, final CompoundNBT data) {
-        final CompoundNBT c = is.getOrCreateTag();
+    public void setMemoryCardContents(final ItemStack is, final String settingsName, final CompoundTag data) {
+        final CompoundTag c = is.getOrCreateTag();
         c.putString("Config", settingsName);
         c.put("Data", data);
     }
 
     @Override
     public String getSettingsName(final ItemStack is) {
-        final CompoundNBT c = is.getOrCreateTag();
+        final CompoundTag c = is.getOrCreateTag();
         final String name = c.getString("Config");
         return name.isEmpty() ? GuiText.Blank.getTranslationKey() : name;
     }
 
     @Override
-    public CompoundNBT getData(final ItemStack is) {
-        final CompoundNBT c = is.getOrCreateTag();
-        CompoundNBT o = c.getCompound("Data");
+    public CompoundTag getData(final ItemStack is) {
+        final CompoundTag c = is.getOrCreateTag();
+        CompoundTag o = c.getCompound("Data");
         return o.copy();
     }
 
     @Override
     public AEColor[] getColorCode(ItemStack is) {
-        final CompoundNBT tag = this.getData(is);
+        final CompoundTag tag = this.getData(is);
 
         if (tag.contains("colorCode")) {
             final int[] frequency = tag.getIntArray("colorCode");
@@ -164,19 +164,19 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
+    public ActionResult onItemUse(ItemUseContext context) {
         if (context.getPlayer().isCrouching()) {
             if (!context.getPlayer().world.isRemote) {
                 this.clearCard(context.getPlayer(), context.getWorld(), context.getHand());
             }
-            return ActionResultType.SUCCESS;
+            return ActionResult.SUCCESS;
         } else {
             return super.onItemUse(context);
         }
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World w, PlayerEntity player, Hand hand) {
+    public TypedActionResult<ItemStack> onItemRightClick(World w, PlayerEntity player, Hand hand) {
         if (player.isCrouching()) {
             if (!w.isRemote) {
                 this.clearCard(player, w, hand);

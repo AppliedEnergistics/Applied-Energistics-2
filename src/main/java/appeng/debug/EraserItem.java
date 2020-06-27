@@ -29,7 +29,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.ActionResultType;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -47,9 +47,9 @@ public class EraserItem extends AEBaseItem {
     }
 
     @Override
-    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
+    public ActionResult onItemUseFirst(ItemStack stack, ItemUseContext context) {
         if (context.getWorld().isRemote()) {
-            return ActionResultType.PASS;
+            return ActionResult.PASS;
         }
 
         final PlayerEntity player = context.getPlayer();
@@ -57,7 +57,7 @@ public class EraserItem extends AEBaseItem {
         final BlockPos pos = context.getPos();
 
         if (player == null) {
-            return ActionResultType.PASS;
+            return ActionResult.PASS;
         }
 
         final Block state = world.getBlockState(pos).getBlock();
@@ -101,7 +101,7 @@ public class EraserItem extends AEBaseItem {
 
         AELog.info("Delete " + blocks + " blocks");
 
-        return ActionResultType.SUCCESS;
+        return ActionResult.SUCCESS;
     }
 
     private boolean isInsideBox(BlockPos pos, BlockPos origin) {

@@ -28,18 +28,18 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.util.ActionResultType;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.block.ShapeContext;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.Explosion;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
@@ -51,23 +51,23 @@ public class TinyTNTBlock extends AEBaseBlock {
     private static final VoxelShape SHAPE = VoxelShapes
             .create(new AxisAlignedBB(0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f));
 
-    public TinyTNTBlock(Block.Properties props) {
+    public TinyTNTBlock(Settings props) {
         super(props);
         setFullSize(setOpaque(false));
     }
 
     @Override
-    public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos) {
+    public int getOpacity(BlockState state, BlockView worldIn, BlockPos pos) {
         return 2; // FIXME: Validate that this is the correct value range
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
         return SHAPE;
     }
 
     @Override
-    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
+    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         if (heldItem != null && heldItem.getItem() == Items.FLINT_AND_STEEL) {
             this.startFuse(w, pos, player);
@@ -75,7 +75,7 @@ public class TinyTNTBlock extends AEBaseBlock {
             heldItem.damageItem(1, player, p -> {
                 p.sendBreakAnimation(hand);
             }); // FIXME Check if onBroken is equivalent
-            return ActionResultType.SUCCESS;
+            return ActionResult.SUCCESS;
         } else {
             return super.onActivated(w, pos, player, hand, heldItem, hit);
         }

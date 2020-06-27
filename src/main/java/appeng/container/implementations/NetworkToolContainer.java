@@ -22,7 +22,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketBuffer;
 
 import appeng.api.implementations.guiobjects.INetworkTool;
@@ -68,7 +68,7 @@ public class NetworkToolContainer extends AEBaseContainer {
     }
 
     public void toggleFacadeMode() {
-        final CompoundNBT data = this.toolInv.getItemStack().getOrCreateTag();
+        final CompoundTag data = this.toolInv.getItemStack().getOrCreateTag();
         data.putBoolean("hideFacades", !data.getBoolean("hideFacades"));
         this.detectAndSendChanges();
     }
@@ -91,7 +91,7 @@ public class NetworkToolContainer extends AEBaseContainer {
         }
 
         if (this.isValidContainer()) {
-            final CompoundNBT data = currentItem.getOrCreateTag();
+            final CompoundTag data = currentItem.getOrCreateTag();
             this.setFacadeMode(data.getBoolean("hideFacades"));
         }
 

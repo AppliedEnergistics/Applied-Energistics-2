@@ -29,7 +29,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -101,5 +101,5 @@ public interface IStorageChannel<T extends IAEStack<T>> {
      * @return
      */
     @Nullable
-    T createFromNBT(@Nonnull CompoundNBT nbt);
+    T createFromNBT(@Nonnull CompoundTag nbt);
 }

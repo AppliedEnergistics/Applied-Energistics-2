@@ -20,10 +20,10 @@ package appeng.helpers;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.state.Property;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 import appeng.api.util.IOrientable;
@@ -32,10 +32,10 @@ import appeng.decorative.solid.QuartzPillarBlock;
 public class MetaRotation implements IOrientable {
 
     private final Property<Direction> facingProp;
-    private final IBlockReader w;
+    private final BlockView w;
     private final BlockPos pos;
 
-    public MetaRotation(final IBlockReader world, final BlockPos pos, final Property<Direction> facingProp) {
+    public MetaRotation(final BlockView world, final BlockPos pos, final Property<Direction> facingProp) {
         this.w = world;
         this.pos = pos;
         this.facingProp = facingProp;

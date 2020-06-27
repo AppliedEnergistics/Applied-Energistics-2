@@ -32,13 +32,13 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.SnowballItem;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.state.IProperty;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -115,7 +115,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
+    public ActionResult onItemUse(ItemUseContext context) {
         World w = context.getWorld();
         BlockPos pos = context.getPos();
         ItemStack is = context.getItem();
@@ -143,7 +143,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             }
 
             if (p != null && !Platform.hasPermissions(new DimensionalCoord(w, pos), p)) {
-                return ActionResultType.FAIL;
+                return ActionResult.FAIL;
             }
 
             final double powerPerUse = 100;
@@ -157,7 +157,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                             inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE,
                                     new BaseActionSource());
                             this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
-                            return ActionResultType.SUCCESS;
+                            return ActionResult.SUCCESS;
                         }
                     }
                 }
@@ -170,7 +170,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                     inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE, new BaseActionSource());
                     this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
                     ((PaintSplotchesTileEntity) painted).cleanSide(side.getOpposite());
-                    return ActionResultType.SUCCESS;
+                    return ActionResult.SUCCESS;
                 }
             } else if (!paintBall.isEmpty()) {
                 final AEColor color = this.getColorFromItem(paintBall);
@@ -180,7 +180,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                         inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.MODULATE,
                                 new BaseActionSource());
                         this.extractAEPower(is, powerPerUse, Actionable.MODULATE);
-                        return ActionResultType.SUCCESS;
+                        return ActionResult.SUCCESS;
                     }
                 }
             }
@@ -190,7 +190,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             this.cycleColors(is, paintBall, 1);
         }
 
-        return ActionResultType.FAIL;
+        return ActionResult.FAIL;
     }
 
     @Override
@@ -235,9 +235,9 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     public ItemStack getColor(final ItemStack is) {
-        final CompoundNBT c = is.getTag();
+        final CompoundTag c = is.getTag();
         if (c != null && c.contains(TAG_COLOR)) {
-            final CompoundNBT color = c.getCompound(TAG_COLOR);
+            final CompoundTag color = c.getCompound(TAG_COLOR);
             final ItemStack oldColor = ItemStack.read(color);
             if (!oldColor.isEmpty()) {
                 return oldColor;
@@ -307,11 +307,11 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     private void setColor(final ItemStack is, final ItemStack newColor) {
-        final CompoundNBT data = is.getOrCreateTag();
+        final CompoundTag data = is.getOrCreateTag();
         if (newColor.isEmpty()) {
             data.remove(TAG_COLOR);
         } else {
-            final CompoundNBT color = new CompoundNBT();
+            final CompoundTag color = new CompoundTag();
             newColor.write(color);
             data.put(TAG_COLOR, color);
         }

@@ -18,7 +18,7 @@
 
 package appeng.debug;
 
-import net.minecraft.block.material.Material;
+import net.minecraft.block.Material;
 
 import appeng.block.AEBaseTileBlock;
 

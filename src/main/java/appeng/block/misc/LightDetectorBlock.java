@@ -22,17 +22,17 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
+import net.minecraft.block.Material;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.block.ShapeContext;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -62,7 +62,7 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
     }
 
     @Override
-    public int getWeakPower(final BlockState state, final IBlockReader w, final BlockPos pos, final Direction side) {
+    public int getWeakPower(final BlockState state, final BlockView w, final BlockPos pos, final Direction side) {
         if (w instanceof World && this.getTileEntity(w, pos).isReady()) {
             // FIXME: This is ... uhm... fishy
             return ((World) w).getLight(pos) - 6;
@@ -91,14 +91,14 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
         return this.canPlaceAt(w, pos, up.getOpposite());
     }
 
-    private boolean canPlaceAt(final IBlockReader w, final BlockPos pos, final Direction dir) {
+    private boolean canPlaceAt(final BlockView w, final BlockPos pos, final Direction dir) {
         final BlockPos test = pos.offset(dir);
         BlockState blockstate = w.getBlockState(test);
         return blockstate.isSolidSide(w, test, dir.getOpposite());
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(BlockState state, BlockView w, BlockPos pos, ShapeContext context) {
 
         // FIXME: We should / rather MUST use state here because at startup, this gets
         // called without a world
@@ -112,8 +112,8 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos,
-            ISelectionContext context) {
+    public VoxelShape getCollisionShape(BlockState state, BlockView worldIn, BlockPos pos,
+            ShapeContext context) {
         return VoxelShapes.empty();
     }
 
@@ -143,7 +143,7 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorTileEntity>
     }
 
     @Override
-    public IOrientable getOrientable(final IBlockReader w, final BlockPos pos) {
+    public IOrientable getOrientable(final BlockView w, final BlockPos pos) {
         return new MetaRotation(w, pos, BlockStateProperties.FACING);
     }
 

@@ -7,8 +7,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.StringTextComponent;
@@ -35,34 +35,34 @@ public class DebugPartPlacerItem extends AEBaseItem {
     }
 
     @Override
-    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
+    public ActionResult onItemUseFirst(ItemStack stack, ItemUseContext context) {
         World world = context.getWorld();
         if (world.isRemote()) {
-            return ActionResultType.PASS;
+            return ActionResult.PASS;
         }
 
         PlayerEntity player = context.getPlayer();
         BlockPos pos = context.getPos();
 
         if (player == null) {
-            return ActionResultType.PASS;
+            return ActionResult.PASS;
         }
 
         if (!player.abilities.isCreativeMode) {
             player.sendMessage(new StringTextComponent("Only usable in creative mode"));
-            return ActionResultType.FAIL;
+            return ActionResult.FAIL;
         }
 
         TileEntity te = world.getTileEntity(pos);
         if (!(te instanceof IPartHost)) {
             player.sendMessage(new StringTextComponent("Right-click something that will accept parts"));
-            return ActionResultType.FAIL;
+            return ActionResult.FAIL;
         }
         IPartHost center = (IPartHost) te;
         IPart cable = center.getPart(AEPartLocation.INTERNAL);
         if (cable == null) {
             player.sendMessage(new StringTextComponent("Clicked part host must have an INSIDE part"));
-            return ActionResultType.FAIL;
+            return ActionResult.FAIL;
         }
 
         Direction face = context.getFace();
@@ -101,7 +101,7 @@ public class DebugPartPlacerItem extends AEBaseItem {
             }
         }
 
-        return ActionResultType.SUCCESS;
+        return ActionResult.SUCCESS;
     }
 
 }

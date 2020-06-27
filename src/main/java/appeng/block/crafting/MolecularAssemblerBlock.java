@@ -23,7 +23,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.util.ActionResultType;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -39,7 +39,7 @@ public class MolecularAssemblerBlock extends AEBaseTileBlock<MolecularAssemblerT
 
     public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
-    public MolecularAssemblerBlock(Block.Properties props) {
+    public MolecularAssemblerBlock(Settings props) {
         super(props);
         setDefaultState(getDefaultState().with(POWERED, false));
     }
@@ -56,7 +56,7 @@ public class MolecularAssemblerBlock extends AEBaseTileBlock<MolecularAssemblerT
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand,
+    public ActionResult onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand,
             BlockRayTraceResult hit) {
         final MolecularAssemblerTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null && !p.isCrouching()) {
@@ -64,7 +64,7 @@ public class MolecularAssemblerBlock extends AEBaseTileBlock<MolecularAssemblerT
                 ContainerOpener.openContainer(MolecularAssemblerContainer.TYPE, p,
                         ContainerLocator.forTileEntitySide(tg, hit.getFace()));
             }
-            return ActionResultType.SUCCESS;
+            return ActionResult.SUCCESS;
         }
 
         return super.onBlockActivated(state, w, pos, p, hand, hit);

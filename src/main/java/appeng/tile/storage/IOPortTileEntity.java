@@ -24,9 +24,9 @@ import java.util.Map;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
@@ -111,7 +111,7 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
+    public CompoundTag write(final CompoundTag data) {
         super.write(data);
         this.manager.writeToNBT(data);
         this.upgrades.writeToNBT(data, "upgrades");
@@ -120,7 +120,7 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public void read(final CompoundNBT data) {
+    public void read(final CompoundTag data) {
         super.read(data);
         this.manager.readFromNBT(data);
         this.upgrades.readFromNBT(data, "upgrades");

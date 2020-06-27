@@ -25,8 +25,8 @@ import com.mojang.authlib.GameProfile;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.math.Direction;
 
 import appeng.api.AEApi;
 import appeng.api.networking.GridFlags;
@@ -59,7 +59,7 @@ public class AENetworkProxy implements IGridBlock {
     private final boolean worldNode;
     private final String nbtName; // name
     private AEColor myColor = AEColor.TRANSPARENT;
-    private CompoundNBT data = null; // input
+    private CompoundTag data = null; // input
     private ItemStack myRepInstance = ItemStack.EMPTY;
     private boolean isReady = false;
     private IGridNode node = null;
@@ -81,7 +81,7 @@ public class AENetworkProxy implements IGridBlock {
         this.myRepInstance = is;
     }
 
-    public void writeToNBT(final CompoundNBT tag) {
+    public void writeToNBT(final CompoundTag tag) {
         if (this.node != null) {
             this.node.saveToNBT(this.nbtName, tag);
         }
@@ -137,7 +137,7 @@ public class AENetworkProxy implements IGridBlock {
         return this.node;
     }
 
-    public void readFromNBT(final CompoundNBT tag) {
+    public void readFromNBT(final CompoundTag tag) {
         this.data = tag;
         if (this.node != null && this.data != null) {
             this.node.loadFromNBT(this.nbtName, this.data);

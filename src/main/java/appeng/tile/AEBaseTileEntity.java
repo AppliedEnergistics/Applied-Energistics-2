@@ -32,13 +32,13 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -105,7 +105,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     }
 
     @Override
-    public void read(final CompoundNBT data) {
+    public void read(final CompoundTag data) {
         super.read(data);
 
         if (data.contains("customName")) {
@@ -124,7 +124,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
+    public CompoundTag write(final CompoundTag data) {
         super.write(data);
 
         if (this.canBeRotated()) {
@@ -159,8 +159,8 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
      * This builds a tag with the actual data that should be sent to the client for
      * update syncs. If the tile entity doesn't need update syncs, it returns null.
      */
-    private CompoundNBT writeUpdateData() {
-        final CompoundNBT data = new CompoundNBT();
+    private CompoundTag writeUpdateData() {
+        final CompoundTag data = new CompoundTag();
 
         final PacketBuffer stream = new PacketBuffer(Unpooled.buffer());
 
@@ -202,11 +202,11 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
      * chunk.
      */
     @Override
-    public CompoundNBT getUpdateTag() {
-        final CompoundNBT data = this.writeUpdateData();
+    public CompoundTag getUpdateTag() {
+        final CompoundTag data = this.writeUpdateData();
 
         if (data == null) {
-            return new CompoundNBT();
+            return new CompoundTag();
         }
 
         data.putInt("x", this.pos.getX());
@@ -220,7 +220,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
      * chunk.
      */
     @Override
-    public void handleUpdateTag(CompoundNBT tag) {
+    public void handleUpdateTag(CompoundTag tag) {
         final PacketBuffer stream = new PacketBuffer(Unpooled.copiedBuffer(tag.getByteArray("X")));
 
         if (this.readUpdateData(stream)) {
@@ -320,7 +320,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
      * @param from     source of settings
      * @param compound compound of source
      */
-    public void uploadSettings(final SettingsFrom from, final CompoundNBT compound) {
+    public void uploadSettings(final SettingsFrom from, final CompoundTag compound) {
         if (this instanceof IConfigurableObject) {
             final IConfigManager cm = ((IConfigurableObject) this).getConfigManager();
             if (cm != null) {
@@ -370,11 +370,11 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
      *
      * @return compound of source
      */
-    public CompoundNBT downloadSettings(final SettingsFrom from) {
-        final CompoundNBT output = new CompoundNBT();
+    public CompoundTag downloadSettings(final SettingsFrom from) {
+        final CompoundTag output = new CompoundTag();
 
         if (this.hasCustomInventoryName()) {
-            final CompoundNBT dsp = new CompoundNBT();
+            final CompoundTag dsp = new CompoundTag();
             dsp.putString("Name", this.customName);
             output.put("display", dsp);
         }

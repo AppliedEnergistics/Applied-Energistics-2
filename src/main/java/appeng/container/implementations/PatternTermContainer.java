@@ -34,7 +34,7 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
@@ -235,7 +235,7 @@ public class PatternTermContainer extends MEMonitorableContainer
         }
 
         // encode the slot.
-        final CompoundNBT encodedValue = new CompoundNBT();
+        final CompoundTag encodedValue = new CompoundTag();
 
         final ListNBT tagIn = new ListNBT();
         final ListNBT tagOut = new ListNBT();
@@ -316,7 +316,7 @@ public class PatternTermContainer extends MEMonitorableContainer
     }
 
     private INBT createItemTag(final ItemStack i) {
-        final CompoundNBT c = new CompoundNBT();
+        final CompoundTag c = new CompoundTag();
 
         if (!i.isEmpty()) {
             i.write(c);

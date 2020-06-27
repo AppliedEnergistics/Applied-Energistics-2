@@ -27,8 +27,8 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -75,7 +75,7 @@ public class AEBaseBlockItem extends BlockItem {
     }
 
     @Override
-    public ActionResultType tryPlace(BlockItemUseContext context) {
+    public ActionResult tryPlace(BlockItemUseContext context) {
 
         Direction up = null;
         Direction forward = null;
@@ -125,11 +125,11 @@ public class AEBaseBlockItem extends BlockItem {
         }
 
         if (!this.blockType.isValidOrientation(context.getWorld(), context.getPos(), forward, up)) {
-            return ActionResultType.FAIL;
+            return ActionResult.FAIL;
         }
 
-        ActionResultType result = super.tryPlace(context);
-        if (result != ActionResultType.SUCCESS) {
+        ActionResult result = super.tryPlace(context);
+        if (result != ActionResult.SUCCESS) {
             return result;
         }
 
@@ -139,7 +139,7 @@ public class AEBaseBlockItem extends BlockItem {
             ori = tile;
 
             if (tile == null) {
-                return ActionResultType.SUCCESS;
+                return ActionResult.SUCCESS;
             }
 
             if (ori.canBeRotated() && !this.blockType.hasCustomRotation()) {
@@ -155,7 +155,7 @@ public class AEBaseBlockItem extends BlockItem {
             ori.setOrientation(forward, up);
         }
 
-        return ActionResultType.SUCCESS;
+        return ActionResult.SUCCESS;
 
     }
 }

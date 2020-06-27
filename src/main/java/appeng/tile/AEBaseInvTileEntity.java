@@ -23,9 +23,9 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -45,13 +45,13 @@ public abstract class AEBaseInvTileEntity extends AEBaseTileEntity implements IA
     }
 
     @Override
-    public void read(final CompoundNBT data) {
+    public void read(final CompoundTag data) {
         super.read(data);
         final IItemHandler inv = this.getInternalInventory();
         if (inv != EmptyHandler.INSTANCE) {
-            final CompoundNBT opt = data.getCompound("inv");
+            final CompoundTag opt = data.getCompound("inv");
             for (int x = 0; x < inv.getSlots(); x++) {
-                final CompoundNBT item = opt.getCompound("item" + x);
+                final CompoundTag item = opt.getCompound("item" + x);
                 ItemHandlerUtil.setStackInSlot(inv, x, ItemStack.read(item));
             }
         }
@@ -60,13 +60,13 @@ public abstract class AEBaseInvTileEntity extends AEBaseTileEntity implements IA
     public abstract @Nonnull IItemHandler getInternalInventory();
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
+    public CompoundTag write(final CompoundTag data) {
         super.write(data);
         final IItemHandler inv = this.getInternalInventory();
         if (inv != EmptyHandler.INSTANCE) {
-            final CompoundNBT opt = new CompoundNBT();
+            final CompoundTag opt = new CompoundTag();
             for (int x = 0; x < inv.getSlots(); x++) {
-                final CompoundNBT item = new CompoundNBT();
+                final CompoundTag item = new CompoundTag();
                 final ItemStack is = inv.getStackInSlot(x);
                 if (!is.isEmpty()) {
                     is.write(item);

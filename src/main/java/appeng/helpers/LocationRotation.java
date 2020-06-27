@@ -18,19 +18,19 @@
 
 package appeng.helpers;
 
-import net.minecraft.util.Direction;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.BlockView;
 
 import appeng.api.util.IOrientable;
 
 public class LocationRotation implements IOrientable {
 
-    private final IBlockReader w;
+    private final BlockView w;
     private final int x;
     private final int y;
     private final int z;
 
-    public LocationRotation(final IBlockReader world, final int x, final int y, final int z) {
+    public LocationRotation(final BlockView world, final int x, final int y, final int z) {
         this.w = world;
         this.x = x;
         this.y = y;

@@ -20,7 +20,7 @@ package appeng.parts;
 
 import java.util.List;
 
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 
 import appeng.api.parts.IPartCollisionHelper;

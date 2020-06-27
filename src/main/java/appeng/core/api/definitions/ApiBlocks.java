@@ -23,9 +23,9 @@ import static appeng.block.AEBaseBlock.defaultProps;
 import net.minecraft.block.Block;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.SlabBlock;
-import net.minecraft.block.SoundType;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.block.StairsBlock;
-import net.minecraft.block.material.Material;
+import net.minecraft.block.Material;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.entity.EntityClassification;
 import net.minecraftforge.api.distmarker.Dist;
@@ -237,9 +237,9 @@ public final class ApiBlocks implements IBlocks {
     private final IBlockDefinition cubeGenerator;
     private final IBlockDefinition energyGenerator;
 
-    private static final Block.Properties QUARTZ_PROPERTIES = defaultProps(Material.ROCK).hardnessAndResistance(3, 5);
+    private static final AbstractBlock.Settings QUARTZ_PROPERTIES = defaultProps(Material.ROCK).hardnessAndResistance(3, 5);
 
-    private static final Block.Properties SKYSTONE_PROPERTIES = defaultProps(Material.ROCK).hardnessAndResistance(50,
+    private static final AbstractBlock.Settings SKYSTONE_PROPERTIES = defaultProps(Material.ROCK).hardnessAndResistance(50,
             150);
 
     public ApiBlocks(FeatureFactory registry) {
@@ -311,7 +311,7 @@ public final class ApiBlocks implements IBlocks {
                 .block("sky_stone_small_brick", () -> new SkyStoneBlock(SkystoneType.SMALL_BRICK, SKYSTONE_PROPERTIES))
                 .addFeatures(AEFeature.SKY_STONE).build();
 
-        Block.Properties skyStoneChestProps = defaultProps(Material.ROCK).hardnessAndResistance(50, 150).notSolid();
+        AbstractBlock.Settings skyStoneChestProps = defaultProps(Material.ROCK).hardnessAndResistance(50, 150).notSolid();
 
         TileEntityDefinition skyChestTile = registry
                 .tileEntity("sky_chest", SkyChestTileEntity.class, SkyChestTileEntity::new)
@@ -383,7 +383,7 @@ public final class ApiBlocks implements IBlocks {
         this.tinyTNT = registry
                 .block("tiny_tnt",
                         () -> new TinyTNTBlock(
-                                defaultProps(Material.TNT).sound(SoundType.GROUND).hardnessAndResistance(0).notSolid()))
+                                defaultProps(Material.TNT).sound(BlockSoundGroup.GROUND).hardnessAndResistance(0).notSolid()))
                 .features(AEFeature.TINY_TNT).bootstrap((block, item) -> (IInitComponent) () -> DispenserBlock
                         .registerDispenseBehavior(item, new TinyTNTDispenseItemBehavior()))
                 .build();
@@ -482,7 +482,7 @@ public final class ApiBlocks implements IBlocks {
                 .tileEntity("crafting_unit", CraftingTileEntity.class, CraftingTileEntity::new).build();
 
         FeatureFactory crafting = registry.features(AEFeature.CRAFTING_CPU);
-        Block.Properties craftingBlockProps = defaultProps(Material.IRON);
+        AbstractBlock.Settings craftingBlockProps = defaultProps(Material.IRON);
         this.craftingUnit = crafting
                 .block("crafting_unit", () -> new CraftingUnitBlock(craftingBlockProps, CraftingUnitType.UNIT))
                 .rendering(new CraftingCubeRendering()).tileEntity(craftingUnit).build();

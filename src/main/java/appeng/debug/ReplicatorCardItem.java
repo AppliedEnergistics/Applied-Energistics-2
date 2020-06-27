@@ -24,10 +24,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
@@ -49,9 +49,9 @@ public class ReplicatorCardItem extends AEBaseItem {
     }
 
     @Override
-    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
+    public ActionResult onItemUseFirst(ItemStack stack, ItemUseContext context) {
         if (context.getWorld().isRemote()) {
-            return ActionResultType.PASS;
+            return ActionResult.PASS;
         }
 
         PlayerEntity player = context.getPlayer();
@@ -61,7 +61,7 @@ public class ReplicatorCardItem extends AEBaseItem {
         Hand hand = context.getHand();
 
         if (player == null) {
-            return ActionResultType.PASS;
+            return ActionResult.PASS;
         }
 
         int x = pos.getX();
@@ -70,7 +70,7 @@ public class ReplicatorCardItem extends AEBaseItem {
 
         if (player.isCrouching()) {
             if (world.getTileEntity(pos) instanceof IGridHost) {
-                final CompoundNBT tag = new CompoundNBT();
+                final CompoundTag tag = new CompoundTag();
                 tag.putInt("x", x);
                 tag.putInt("y", y);
                 tag.putInt("z", z);
@@ -81,7 +81,7 @@ public class ReplicatorCardItem extends AEBaseItem {
                 this.outputMsg(player, "This is not a Grid Tile.");
             }
         } else {
-            final CompoundNBT ish = player.getHeldItem(hand).getTag();
+            final CompoundTag ish = player.getHeldItem(hand).getTag();
             if (ish != null) {
                 final int src_x = ish.getInt("x");
                 final int src_y = ish.getInt("y");
@@ -133,7 +133,7 @@ public class ReplicatorCardItem extends AEBaseItem {
                                             if (blk != null && blk.hasTileEntity(state)) {
                                                 final TileEntity ote = src_w.getTileEntity(p);
                                                 final TileEntity nte = blk.createTileEntity(state, world);
-                                                final CompoundNBT data = new CompoundNBT();
+                                                final CompoundTag data = new CompoundTag();
                                                 ote.write(data);
                                                 nte.read(data.copy());
                                                 world.setTileEntity(d, nte);
@@ -158,7 +158,7 @@ public class ReplicatorCardItem extends AEBaseItem {
                 this.outputMsg(player, "No Source Defined");
             }
         }
-        return ActionResultType.SUCCESS;
+        return ActionResult.SUCCESS;
     }
 
     private void outputMsg(final Entity player, final String string) {

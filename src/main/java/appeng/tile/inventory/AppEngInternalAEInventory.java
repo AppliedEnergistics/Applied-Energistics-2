@@ -23,7 +23,7 @@ import java.util.Iterator;
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -60,16 +60,16 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
         return this.inv[var1];
     }
 
-    public void writeToNBT(final CompoundNBT data, final String name) {
-        final CompoundNBT c = new CompoundNBT();
+    public void writeToNBT(final CompoundTag data, final String name) {
+        final CompoundTag c = new CompoundTag();
         this.writeToNBT(c);
         data.put(name, c);
     }
 
-    private void writeToNBT(final CompoundNBT target) {
+    private void writeToNBT(final CompoundTag target) {
         for (int x = 0; x < this.size; x++) {
             try {
-                final CompoundNBT c = new CompoundNBT();
+                final CompoundTag c = new CompoundTag();
 
                 if (this.inv[x] != null) {
                     this.inv[x].writeToNBT(c);
@@ -81,17 +81,17 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
         }
     }
 
-    public void readFromNBT(final CompoundNBT data, final String name) {
-        final CompoundNBT c = data.getCompound(name);
+    public void readFromNBT(final CompoundTag data, final String name) {
+        final CompoundTag c = data.getCompound(name);
         if (c != null) {
             this.readFromNBT(c);
         }
     }
 
-    private void readFromNBT(final CompoundNBT target) {
+    private void readFromNBT(final CompoundTag target) {
         for (int x = 0; x < this.size; x++) {
             try {
-                final CompoundNBT c = target.getCompound("#" + x);
+                final CompoundTag c = target.getCompound("#" + x);
 
                 if (c != null) {
                     this.inv[x] = AEItemStack.fromNBT(c);

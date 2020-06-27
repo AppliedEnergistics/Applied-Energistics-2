@@ -20,7 +20,7 @@ package appeng.integration.modules.theoneprobe.part;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.World;
 
 import mcjty.theoneprobe.api.IProbeHitData;
@@ -42,7 +42,7 @@ public class ChannelInfoProvider implements IPartProbInfoProvider {
             final int maxChannels = (part instanceof SmartDenseCablePart) ? 32 : 8;
 
             if (part.getGridNode().isActive()) {
-                final CompoundNBT tmp = new CompoundNBT();
+                final CompoundTag tmp = new CompoundTag();
                 part.writeToNBT(tmp);
                 usedChannels = tmp.getByte("usedChannels");
             } else {

@@ -28,12 +28,12 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.BlockView;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.common.util.Constants;
 
@@ -64,7 +64,7 @@ import appeng.util.Platform;
 public class CraftingTileEntity extends AENetworkTileEntity implements IAEMultiBlock, IPowerChannelState {
 
     private final CraftingCPUCalculator calc = new CraftingCPUCalculator(this);
-    private CompoundNBT previousState = null;
+    private CompoundTag previousState = null;
     private boolean isCoreBlock = false;
     private CraftingCPUCluster cluster;
 
@@ -181,7 +181,7 @@ public class CraftingTileEntity extends AENetworkTileEntity implements IAEMultiB
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
+    public CompoundTag write(final CompoundTag data) {
         super.write(data);
         data.putBoolean("core", this.isCoreBlock());
         if (this.isCoreBlock() && this.cluster != null) {
@@ -191,7 +191,7 @@ public class CraftingTileEntity extends AENetworkTileEntity implements IAEMultiB
     }
 
     @Override
-    public void read(final CompoundNBT data) {
+    public void read(final CompoundTag data) {
         super.read(data);
         this.setCoreBlock(data.getBoolean("core"));
         if (this.isCoreBlock()) {
@@ -323,11 +323,11 @@ public class CraftingTileEntity extends AENetworkTileEntity implements IAEMultiB
         this.isCoreBlock = isCoreBlock;
     }
 
-    public CompoundNBT getPreviousState() {
+    public CompoundTag getPreviousState() {
         return this.previousState;
     }
 
-    public void setPreviousState(final CompoundNBT previousState) {
+    public void setPreviousState(final CompoundTag previousState) {
         this.previousState = previousState;
     }
 
@@ -353,7 +353,7 @@ public class CraftingTileEntity extends AENetworkTileEntity implements IAEMultiB
         return connections;
     }
 
-    private boolean isConnected(IBlockReader world, BlockPos pos, Direction side) {
+    private boolean isConnected(BlockView world, BlockPos pos, Direction side) {
         BlockPos adjacentPos = pos.offset(side);
         return world.getBlockState(adjacentPos).getBlock() instanceof AbstractCraftingUnitBlock;
     }

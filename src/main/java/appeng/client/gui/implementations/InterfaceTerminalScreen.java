@@ -35,7 +35,7 @@ import org.lwjgl.glfw.GLFW;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
@@ -205,7 +205,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);
     }
 
-    public void postUpdate(final CompoundNBT in) {
+    public void postUpdate(final CompoundTag in) {
         if (in.getBoolean("clear")) {
             this.byId.clear();
             this.refreshList = true;
@@ -216,7 +216,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
             if (key.startsWith("=")) {
                 try {
                     final long id = Long.parseLong(key.substring(1), Character.MAX_RADIX);
-                    final CompoundNBT invData = in.getCompound(key);
+                    final CompoundTag invData = in.getCompound(key);
                     ITextComponent un = ITextComponent.Serializer.fromJson(invData.getString("un"));
                     final ClientDCInternalInv current = this.getById(id, invData.getLong("sortBy"), un);
 
@@ -307,7 +307,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
             return false;
         }
 
-        final CompoundNBT encodedValue = itemStack.getTag();
+        final CompoundTag encodedValue = itemStack.getTag();
 
         if (encodedValue == null) {
             return false;

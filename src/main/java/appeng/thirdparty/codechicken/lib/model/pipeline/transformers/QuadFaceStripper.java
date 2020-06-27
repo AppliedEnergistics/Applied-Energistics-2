@@ -18,9 +18,9 @@
 
 package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
-import static net.minecraft.util.Direction.AxisDirection.POSITIVE;
+import static net.minecraft.util.math.Direction.AxisDirection.POSITIVE;
 
-import net.minecraft.util.Direction.AxisDirection;
+import net.minecraft.util.math.Direction.AxisDirection;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 

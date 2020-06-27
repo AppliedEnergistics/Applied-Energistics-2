@@ -22,12 +22,12 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
+import net.minecraft.block.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.util.ActionResultType;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -72,12 +72,12 @@ public class ChestBlock extends AEBaseTileBlock<ChestTileEntity> {
     }
 
     @Override
-    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
+    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         final ChestTileEntity tg = this.getTileEntity(w, pos);
         if (tg != null && !p.isCrouching()) {
             if (w.isRemote()) {
-                return ActionResultType.SUCCESS;
+                return ActionResult.SUCCESS;
             }
 
             if (hit.getFace() == tg.getUp()) {
@@ -89,9 +89,9 @@ public class ChestBlock extends AEBaseTileBlock<ChestTileEntity> {
                         ContainerLocator.forTileEntitySide(tg, hit.getFace()));
             }
 
-            return ActionResultType.SUCCESS;
+            return ActionResult.SUCCESS;
         }
 
-        return ActionResultType.PASS;
+        return ActionResult.PASS;
     }
 }

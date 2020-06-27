@@ -20,10 +20,10 @@ package appeng.debug;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.material.Material;
+import net.minecraft.block.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResultType;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -38,11 +38,11 @@ public class PhantomNodeBlock extends AEBaseTileBlock<PhantomNodeTileEntity> {
     }
 
     @Override
-    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
+    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         final PhantomNodeTileEntity tpn = this.getTileEntity(w, pos);
         tpn.triggerCrashMode();
-        return ActionResultType.SUCCESS;
+        return ActionResult.SUCCESS;
     }
 
 }

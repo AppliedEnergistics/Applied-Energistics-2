@@ -24,7 +24,7 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -61,7 +61,7 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
         final double internalMaxPower = this.getMaxEnergyCapacity();
 
         if (internalMaxPower > 0) {
-            final CompoundNBT tag = stack.getTag();
+            final CompoundTag tag = stack.getTag();
             if (tag != null) {
                 internalCurrentPower = tag.getDouble("internalCurrentPower");
             }
@@ -135,12 +135,12 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
     }
 
     private double getInternal(final ItemStack is) {
-        final CompoundNBT nbt = is.getOrCreateTag();
+        final CompoundTag nbt = is.getOrCreateTag();
         return nbt.getDouble("internalCurrentPower");
     }
 
     private void setInternal(final ItemStack is, final double amt) {
-        final CompoundNBT nbt = is.getOrCreateTag();
+        final CompoundTag nbt = is.getOrCreateTag();
         nbt.putDouble("internalCurrentPower", amt);
     }
 

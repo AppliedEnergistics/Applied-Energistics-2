@@ -20,7 +20,7 @@ package appeng.services.compass;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.WorldSavedData;
 
@@ -125,7 +125,7 @@ final class CompassRegion {
         }
 
         @Override
-        public void read(CompoundNBT nbt) {
+        public void read(CompoundTag nbt) {
             this.bitmap = nbt.getByteArray("b");
             if (this.bitmap.length != BITMAP_LENGTH) {
                 throw new IllegalStateException("Invalid bitmap length: " + bitmap.length);
@@ -133,7 +133,7 @@ final class CompassRegion {
         }
 
         @Override
-        public CompoundNBT write(CompoundNBT compound) {
+        public CompoundTag write(CompoundTag compound) {
             compound.putByteArray("b", bitmap);
             return compound;
         }

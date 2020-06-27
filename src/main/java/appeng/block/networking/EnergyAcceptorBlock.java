@@ -18,7 +18,7 @@
 
 package appeng.block.networking;
 
-import net.minecraft.block.material.Material;
+import net.minecraft.block.Material;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.tile.networking.EnergyAcceptorTileEntity;

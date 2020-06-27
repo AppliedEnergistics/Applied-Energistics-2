@@ -21,13 +21,13 @@ package appeng.block.misc;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.block.ShapeContext;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -37,7 +37,7 @@ import appeng.tile.misc.SkyCompassTileEntity;
 
 public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassTileEntity> {
 
-    public SkyCompassBlock(Block.Properties props) {
+    public SkyCompassBlock(Settings props) {
         super(props);
     }
 
@@ -50,7 +50,7 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassTileEntity> {
         return this.canPlaceAt(w, pos, forward.getOpposite());
     }
 
-    private boolean canPlaceAt(final IBlockReader w, final BlockPos pos, final Direction dir) {
+    private boolean canPlaceAt(final BlockView w, final BlockPos pos, final Direction dir) {
         final BlockPos test = pos.offset(dir);
         BlockState blockstate = w.getBlockState(test);
         return blockstate.isSolidSide(w, test, dir.getOpposite());
@@ -83,7 +83,7 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassTileEntity> {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(BlockState state, BlockView w, BlockPos pos, ShapeContext context) {
 
         // TODO: This definitely needs to be memoized
 
@@ -145,8 +145,8 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassTileEntity> {
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos,
-            ISelectionContext context) {
+    public VoxelShape getCollisionShape(BlockState state, BlockView worldIn, BlockPos pos,
+            ShapeContext context) {
         return VoxelShapes.empty();
     }
 

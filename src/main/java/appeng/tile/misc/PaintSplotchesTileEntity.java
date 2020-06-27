@@ -31,10 +31,10 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.LightType;
@@ -67,7 +67,7 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
+    public CompoundTag write(final CompoundTag data) {
         super.write(data);
         final PacketBuffer myDat = new PacketBuffer(Unpooled.buffer());
         this.writeBuffer(myDat);
@@ -91,7 +91,7 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
     }
 
     @Override
-    public void read(final CompoundNBT data) {
+    public void read(final CompoundTag data) {
         super.read(data);
         if (data.contains("dots")) {
             this.readBuffer(new PacketBuffer(Unpooled.copiedBuffer(data.getByteArray("dots"))));

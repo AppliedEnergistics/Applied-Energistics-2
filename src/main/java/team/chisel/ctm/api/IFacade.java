@@ -1,9 +1,9 @@
 package team.chisel.ctm.api;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -15,11 +15,11 @@ import javax.annotation.Nullable;
 public interface IFacade {
 
     /**
-     * @deprecated Use {@link #getFacade(IBlockReader, BlockPos, Direction, BlockPos)}
+     * @deprecated Use {@link #getFacade(BlockView, BlockPos, Direction, BlockPos)}
      */
     @Nonnull
     @Deprecated
-    BlockState getFacade(@Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nullable Direction side);
+    BlockState getFacade(@Nonnull BlockView world, @Nonnull BlockPos pos, @Nullable Direction side);
 
     /**
      * Gets the blockstate this facade appears as.
@@ -37,7 +37,7 @@ public interface IFacade {
      * @return The blockstate which your block appears as.
      */
     @Nonnull
-    default BlockState getFacade(@Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nullable Direction side, @Nonnull BlockPos connection) {
+    default BlockState getFacade(@Nonnull BlockView world, @Nonnull BlockPos pos, @Nullable Direction side, @Nonnull BlockPos connection) {
         return getFacade(world, pos, side);
     }
 

@@ -21,7 +21,7 @@ package appeng.block.spatial;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
@@ -44,7 +44,7 @@ public class SpatialPylonBlock extends AEBaseTileBlock<SpatialPylonTileEntity> {
     }
 
     @Override
-    public int getLightValue(final BlockState state, final IBlockReader w, final BlockPos pos) {
+    public int getLightValue(final BlockState state, final BlockView w, final BlockPos pos) {
         final SpatialPylonTileEntity tsp = this.getTileEntity(w, pos);
         if (tsp != null) {
             return tsp.getLightValue();

@@ -20,19 +20,19 @@ package appeng.block.spatial;
 
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
+import net.minecraft.block.Material;
+import net.minecraft.block.MaterialColor;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.block.ShapeContext;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.Explosion;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -65,13 +65,13 @@ public class MatrixFrameBlock extends AEBaseBlock {
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos,
-            ISelectionContext context) {
+    public VoxelShape getCollisionShape(BlockState state, BlockView worldIn, BlockPos pos,
+            ShapeContext context) {
         return VoxelShapes.fullCube();
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
         // This also prevents any blocks from being placed on this block!
         return VoxelShapes.empty();
     }
@@ -87,17 +87,17 @@ public class MatrixFrameBlock extends AEBaseBlock {
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
+    public boolean propagatesSkylightDown(BlockState state, BlockView reader, BlockPos pos) {
         return true;
     }
 
     @Override
-    public float getAmbientOcclusionLightValue(BlockState state, IBlockReader worldIn, BlockPos pos) {
+    public float getAmbientOcclusionLightValue(BlockState state, BlockView worldIn, BlockPos pos) {
         return 1.0f;
     }
 
     @Override
-    public boolean canEntityDestroy(final BlockState state, final IBlockReader world, final BlockPos pos,
+    public boolean canEntityDestroy(final BlockState state, final BlockView world, final BlockPos pos,
             final Entity entity) {
         return false;
     }

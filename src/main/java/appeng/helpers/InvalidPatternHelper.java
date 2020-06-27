@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -38,7 +38,7 @@ public class InvalidPatternHelper {
     private final boolean canSubstitute;
 
     public InvalidPatternHelper(final ItemStack is) {
-        final CompoundNBT encodedValue = is.getTag();
+        final CompoundTag encodedValue = is.getTag();
 
         if (encodedValue == null) {
             throw new IllegalArgumentException("No pattern here!");
@@ -55,7 +55,7 @@ public class InvalidPatternHelper {
         }
 
         for (int i = 0; i < inTag.size(); i++) {
-            CompoundNBT in = inTag.getCompound(i);
+            CompoundTag in = inTag.getCompound(i);
 
             // skip empty slots in the crafting grid
             if (in.isEmpty()) {
@@ -89,7 +89,7 @@ public class InvalidPatternHelper {
 
         private ItemStack stack;
 
-        public PatternIngredient(CompoundNBT tag) {
+        public PatternIngredient(CompoundTag tag) {
             this.stack = ItemStack.read(tag);
 
             if (this.stack.isEmpty()) {

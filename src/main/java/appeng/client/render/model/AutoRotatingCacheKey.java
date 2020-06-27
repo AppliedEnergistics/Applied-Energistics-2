@@ -19,7 +19,7 @@
 package appeng.client.render.model;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 
 /**
  * Used as the cache key for caching automatically rotated baked models.

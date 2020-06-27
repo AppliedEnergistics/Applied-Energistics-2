@@ -18,7 +18,7 @@
 
 package appeng.tile.networking;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tileentity.TileEntityType;
 
 import appeng.api.config.AccessRestriction;
@@ -90,14 +90,14 @@ public class EnergyCellTileEntity extends AENetworkTileEntity implements IAEPowe
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
+    public CompoundTag write(final CompoundTag data) {
         super.write(data);
         data.putDouble("internalCurrentPower", this.internalCurrentPower);
         return data;
     }
 
     @Override
-    public void read(final CompoundNBT data) {
+    public void read(final CompoundTag data) {
         super.read(data);
         this.internalCurrentPower = data.getDouble("internalCurrentPower");
     }
@@ -108,16 +108,16 @@ public class EnergyCellTileEntity extends AENetworkTileEntity implements IAEPowe
     }
 
     @Override
-    public void uploadSettings(final SettingsFrom from, final CompoundNBT compound) {
+    public void uploadSettings(final SettingsFrom from, final CompoundTag compound) {
         if (from == SettingsFrom.DISMANTLE_ITEM) {
             this.internalCurrentPower = compound.getDouble("internalCurrentPower");
         }
     }
 
     @Override
-    public CompoundNBT downloadSettings(final SettingsFrom from) {
+    public CompoundTag downloadSettings(final SettingsFrom from) {
         if (from == SettingsFrom.DISMANTLE_ITEM) {
-            final CompoundNBT tag = new CompoundNBT();
+            final CompoundTag tag = new CompoundTag();
             tag.putDouble("internalCurrentPower", this.internalCurrentPower);
             tag.putDouble("internalMaxPower", this.getInternalMaxPower()); // used for tool tip.
             return tag;

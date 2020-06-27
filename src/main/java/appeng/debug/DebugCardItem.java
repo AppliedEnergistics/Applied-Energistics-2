@@ -26,8 +26,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
@@ -58,9 +58,9 @@ public class DebugCardItem extends AEBaseItem {
     }
 
     @Override
-    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
+    public ActionResult onItemUseFirst(ItemStack stack, ItemUseContext context) {
         if (context.getWorld().isRemote()) {
-            return ActionResultType.PASS;
+            return ActionResult.PASS;
         }
 
         PlayerEntity player = context.getPlayer();
@@ -69,7 +69,7 @@ public class DebugCardItem extends AEBaseItem {
         Direction side = context.getFace();
 
         if (player == null) {
-            return ActionResultType.PASS;
+            return ActionResult.PASS;
         }
 
         if (player.isCrouching()) {
@@ -182,7 +182,7 @@ public class DebugCardItem extends AEBaseItem {
                 }
             }
         }
-        return ActionResultType.SUCCESS;
+        return ActionResult.SUCCESS;
     }
 
     private void outputMsg(final Entity player, final String string) {

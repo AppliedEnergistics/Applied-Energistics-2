@@ -40,16 +40,16 @@ import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.block.ShapeContext;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -85,7 +85,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
+    public boolean propagatesSkylightDown(BlockState state, BlockView reader, BlockPos pos) {
         return true;
     }
 
@@ -100,7 +100,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Override
-    public int getWeakPower(final BlockState state, final IBlockReader w, final BlockPos pos, final Direction side) {
+    public int getWeakPower(final BlockState state, final BlockView w, final BlockPos pos, final Direction side) {
         return this.cb(w, pos).isProvidingWeakPower(side.getOpposite()); // TODO:
         // IS
         // OPPOSITE!?
@@ -117,14 +117,14 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Override
-    public int getStrongPower(final BlockState state, final IBlockReader w, final BlockPos pos, final Direction side) {
+    public int getStrongPower(final BlockState state, final BlockView w, final BlockPos pos, final Direction side) {
         return this.cb(w, pos).isProvidingStrongPower(side.getOpposite()); // TODO:
         // IS
         // OPPOSITE!?
     }
 
     @Override
-    public int getLightValue(final BlockState state, final IBlockReader world, final BlockPos pos) {
+    public int getLightValue(final BlockState state, final BlockView world, final BlockPos pos) {
         if (state.getBlock() != this) {
             return state.getBlock().getLightValue(state, world, pos);
         }
@@ -156,7 +156,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Override
-    public boolean canConnectRedstone(final BlockState state, final IBlockReader w, final BlockPos pos,
+    public boolean canConnectRedstone(final BlockState state, final BlockView w, final BlockPos pos,
             Direction side) {
         if (side == null) {
             side = Direction.UP;
@@ -166,7 +166,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Override
-    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos,
+    public ItemStack getPickBlock(BlockState state, RayTraceResult target, BlockView world, BlockPos pos,
             PlayerEntity player) {
         final Vec3d v3 = target.getHitVec().subtract(pos.getX(), pos.getY(), pos.getZ());
         final SelectedPart sp = this.cb(world, pos).selectPart(v3);
@@ -280,7 +280,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
         }
     }
 
-    private ICableBusContainer cb(final IBlockReader w, final BlockPos pos) {
+    private ICableBusContainer cb(final BlockView w, final BlockPos pos) {
         final TileEntity te = w.getTileEntity(pos);
         ICableBusContainer out = null;
 
@@ -292,7 +292,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Nullable
-    private IFacadeContainer fc(final IBlockReader w, final BlockPos pos) {
+    private IFacadeContainer fc(final BlockView w, final BlockPos pos) {
         final TileEntity te = w.getTileEntity(pos);
         IFacadeContainer out = null;
 
@@ -326,12 +326,12 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Override
-    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
+    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         // Transform from world into block space
         Vec3d hitVec = hit.getHitVec();
         Vec3d hitInBlock = new Vec3d(hitVec.x - pos.getX(), hitVec.y - pos.getY(), hitVec.z - pos.getZ());
-        return this.cb(w, pos).activate(player, hand, hitInBlock) ? ActionResultType.SUCCESS : ActionResultType.PASS;
+        return this.cb(w, pos).activate(player, hand, hitInBlock) ? ActionResult.SUCCESS : ActionResult.PASS;
     }
 
     @Override
@@ -339,7 +339,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
         return recolorBlock(world, pos, side, color, null);
     }
 
-    public boolean recolorBlock(final IBlockReader world, final BlockPos pos, final Direction side,
+    public boolean recolorBlock(final BlockView world, final BlockPos pos, final Direction side,
             final DyeColor color, final PlayerEntity who) {
         try {
             return this.cb(world, pos).recolourBlock(side, AEColor.values()[color.ordinal()], who);
@@ -355,7 +355,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Override
-    public BlockState getFacadeState(IBlockReader world, BlockPos pos, Direction side) {
+    public BlockState getFacadeState(BlockView world, BlockPos pos, Direction side) {
         if (side != null) {
             IFacadeContainer container = this.fc(world, pos);
             if (container != null) {
@@ -369,7 +369,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(BlockState state, BlockView w, BlockPos pos, ShapeContext context) {
         CableBusTileEntity te = getTileEntity(w, pos);
         if (te == null) {
             return VoxelShapes.empty();
@@ -379,7 +379,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getCollisionShape(BlockState state, BlockView w, BlockPos pos, ShapeContext context) {
         CableBusTileEntity te = getTileEntity(w, pos);
         if (te == null) {
             return VoxelShapes.empty();

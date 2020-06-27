@@ -26,7 +26,7 @@ import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.MutableClassToInstanceMap;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -92,7 +92,7 @@ public class ApiStorage implements IStorageHelper {
     }
 
     @Override
-    public ICraftingLink loadCraftingLink(final CompoundNBT data, final ICraftingRequester req) {
+    public ICraftingLink loadCraftingLink(final CompoundTag data, final ICraftingRequester req) {
         Preconditions.checkNotNull(data);
         Preconditions.checkNotNull(req);
 
@@ -140,7 +140,7 @@ public class ApiStorage implements IStorageHelper {
         }
 
         @Override
-        public IAEItemStack createFromNBT(CompoundNBT nbt) {
+        public IAEItemStack createFromNBT(CompoundTag nbt) {
             Preconditions.checkNotNull(nbt);
             return AEItemStack.fromNBT(nbt);
         }
@@ -197,7 +197,7 @@ public class ApiStorage implements IStorageHelper {
         }
 
         @Override
-        public IAEFluidStack createFromNBT(CompoundNBT nbt) {
+        public IAEFluidStack createFromNBT(CompoundTag nbt) {
             Preconditions.checkNotNull(nbt);
             return AEFluidStack.fromNBT(nbt);
         }

@@ -21,7 +21,7 @@ package appeng.fluids.items;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
@@ -52,7 +52,7 @@ public class FluidDummyItem extends AEBaseItem {
 
     public FluidStack getFluidStack(ItemStack is) {
         if (is.hasTag()) {
-            CompoundNBT tag = is.getTag();
+            CompoundTag tag = is.getTag();
             return FluidStack.loadFluidStackFromNBT(tag);
         }
         return FluidStack.EMPTY;
@@ -62,7 +62,7 @@ public class FluidDummyItem extends AEBaseItem {
         if (fs.isEmpty()) {
             is.setTag(null);
         } else {
-            CompoundNBT tag = new CompoundNBT();
+            CompoundTag tag = new CompoundTag();
             fs.writeToNBT(tag);
             is.setTag(tag);
         }

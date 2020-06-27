@@ -20,9 +20,9 @@ package appeng.fluids.helper;
 
 import java.util.Optional;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -402,13 +402,13 @@ public class DualityFluidInterface
         this.priority = newValue;
     }
 
-    public void writeToNBT(final CompoundNBT data) {
+    public void writeToNBT(final CompoundTag data) {
         data.putInt("priority", this.priority);
         this.tanks.writeToNBT(data, "storage");
         this.config.writeToNBT(data, "config");
     }
 
-    public void readFromNBT(final CompoundNBT data) {
+    public void readFromNBT(final CompoundTag data) {
         this.config.readFromNBT(data, "config");
         this.tanks.readFromNBT(data, "storage");
         this.priority = data.getInt("priority");

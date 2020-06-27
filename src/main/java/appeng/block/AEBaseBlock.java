@@ -20,21 +20,23 @@ package appeng.block;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
+import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.block.Material;
+import net.minecraft.block.MaterialColor;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
+import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
@@ -50,7 +52,7 @@ public abstract class AEBaseBlock extends Block {
     private boolean isFullSize = true;
     private boolean isInventory = false;
 
-    protected AEBaseBlock(final Block.Properties props) {
+    protected AEBaseBlock(final Settings props) {
         super(props);
     }
 
@@ -58,7 +60,7 @@ public abstract class AEBaseBlock extends Block {
      * Utility function to create block properties with some sensible defaults for
      * AE blocks.
      */
-    public static Block.Properties defaultProps(Material material) {
+    public static Settings defaultProps(Material material) {
         return defaultProps(material, material.getColor());
     }
 
@@ -66,37 +68,37 @@ public abstract class AEBaseBlock extends Block {
      * Utility function to create block properties with some sensible defaults for
      * AE blocks.
      */
-    public static Block.Properties defaultProps(Material material, MaterialColor color) {
-        return Block.Properties.create(material, color)
+    public static Settings defaultProps(Material material, MaterialColor color) {
+        return Settings.create(material, color)
                 // These values previousls were encoded in AEBaseBlock
                 .hardnessAndResistance(2.2f, 11.f).harvestTool(ToolType.PICKAXE).harvestLevel(0)
                 .sound(getDefaultSoundByMaterial(material));
     }
 
-    private static SoundType getDefaultSoundByMaterial(Material mat) {
+    private static BlockSoundGroup getDefaultSoundByMaterial(Material mat) {
         if (mat == AEGlassMaterial.INSTANCE || mat == Material.GLASS) {
-            return SoundType.GLASS;
+            return BlockSoundGroup.GLASS;
         } else if (mat == Material.ROCK) {
-            return SoundType.STONE;
+            return BlockSoundGroup.STONE;
         } else if (mat == Material.WOOD) {
-            return SoundType.WOOD;
+            return BlockSoundGroup.WOOD;
         } else {
-            return SoundType.METAL;
+            return BlockSoundGroup.METAL;
         }
     }
 
     @Override
-    public boolean isNormalCube(BlockState state, IBlockReader worldIn, BlockPos pos) {
+    public boolean isNormalCube(BlockState state, BlockView worldIn, BlockPos pos) {
         return this.isFullSize() && this.isOpaque();
     }
 
     @Override
-    public boolean hasComparatorInputOverride(BlockState state) {
+    public boolean hasComparatorOutput(BlockState state) {
         return this.isInventory();
     }
 
     @Override
-    public int getComparatorInputOverride(BlockState state, final World worldIn, final BlockPos pos) {
+    public int getComparatorOutput(BlockState state, final World worldIn, final BlockPos pos) {
         return 0;
     }
 
@@ -129,9 +131,9 @@ public abstract class AEBaseBlock extends Block {
         return false;
     }
 
-    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
+    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        return ActionResultType.PASS;
+        return ActionResult.PASS;
     }
 
     public final Direction mapRotation(final IOrientable ori, final Direction dir) {
@@ -206,7 +208,7 @@ public abstract class AEBaseBlock extends Block {
 
     }
 
-    protected IOrientable getOrientable(final IBlockReader w, final BlockPos pos) {
+    protected IOrientable getOrientable(final BlockView w, final BlockPos pos) {
         if (this instanceof IOrientableBlock) {
             IOrientableBlock orientable = (IOrientableBlock) this;
             return orientable.getOrientable(w, pos);

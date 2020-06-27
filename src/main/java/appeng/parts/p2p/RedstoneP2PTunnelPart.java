@@ -24,10 +24,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.RedstoneWireBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 import appeng.api.networking.events.MENetworkBootingStatusChange;
@@ -107,13 +107,13 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT tag) {
+    public void readFromNBT(final CompoundTag tag) {
         super.readFromNBT(tag);
         this.power = tag.getInt("power");
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT tag) {
+    public void writeToNBT(final CompoundTag tag) {
         super.writeToNBT(tag);
         tag.putInt("power", this.power);
     }
@@ -128,7 +128,7 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
     }
 
     @Override
-    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockView w, BlockPos pos, BlockPos neighbor) {
         if (!this.isOutput()) {
             final BlockPos target = this.getTile().getPos().offset(this.getSide().getFacing());
 

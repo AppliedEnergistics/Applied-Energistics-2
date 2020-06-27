@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 import com.google.common.base.Stopwatch;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
@@ -104,7 +104,7 @@ public class CraftingJob implements Runnable, ICraftingJob {
         return this.availableCheck.extractItems(available, Actionable.MODULATE, this.actionSrc);
     }
 
-    public void writeToNBT(final CompoundNBT out) {
+    public void writeToNBT(final CompoundTag out) {
 
     }
 

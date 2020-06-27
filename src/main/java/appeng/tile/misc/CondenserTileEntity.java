@@ -22,9 +22,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -86,7 +86,7 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
     }
 
     @Override
-    public CompoundNBT write(final CompoundNBT data) {
+    public CompoundTag write(final CompoundTag data) {
         super.write(data);
         this.cm.writeToNBT(data);
         data.putDouble("storedPower", this.getStoredPower());
@@ -94,7 +94,7 @@ public class CondenserTileEntity extends AEBaseInvTileEntity implements IConfigM
     }
 
     @Override
-    public void read(final CompoundNBT data) {
+    public void read(final CompoundTag data) {
         super.read(data);
         this.cm.readFromNBT(data);
         this.setStoredPower(data.getDouble("storedPower"));

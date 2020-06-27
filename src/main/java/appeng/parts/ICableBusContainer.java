@@ -24,11 +24,11 @@ import java.util.Random;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -51,7 +51,7 @@ public interface ICableBusContainer {
 
     boolean clicked(PlayerEntity player, Hand hand, Vec3d hitVec);
 
-    void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor);
+    void onNeighborChanged(BlockView w, BlockPos pos, BlockPos neighbor);
 
     boolean isEmpty();
 

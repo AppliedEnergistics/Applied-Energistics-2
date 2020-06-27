@@ -37,10 +37,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.WallOrFloorItem;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -150,14 +150,14 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT data) {
+    public void readFromNBT(final CompoundTag data) {
         super.readFromNBT(data);
         this.Config.readFromNBT(data, "config");
         this.updateHandler();
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT data) {
+    public void writeToNBT(final CompoundTag data) {
         super.writeToNBT(data);
         this.Config.writeToNBT(data, "config");
     }
@@ -243,20 +243,20 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
                         // Up or Down, Attempt 1??
                         if (side.xOffset == 0 && side.zOffset == 0) {
                             Worked = i.onItemUse(new DirectionalPlaceContext(w, placePos.offset(side.getFacing()),
-                                    lookDirection, is, side.getFacing())) == ActionResultType.SUCCESS;
+                                    lookDirection, is, side.getFacing())) == ActionResult.SUCCESS;
                         }
 
                         // Up or Down, Attempt 2??
                         if (!Worked && side.xOffset == 0 && side.zOffset == 0) {
                             Worked = i.onItemUse(new DirectionalPlaceContext(w,
                                     placePos.offset(side.getFacing().getOpposite()), lookDirection, is,
-                                    side.getFacing().getOpposite())) == ActionResultType.SUCCESS;
+                                    side.getFacing().getOpposite())) == ActionResult.SUCCESS;
                         }
 
                         // Horizontal, attempt 1??
                         if (!Worked && side.yOffset == 0) {
                             Worked = i.onItemUse(new DirectionalPlaceContext(w, placePos.offset(Direction.DOWN),
-                                    lookDirection, is, Direction.DOWN)) == ActionResultType.SUCCESS;
+                                    lookDirection, is, Direction.DOWN)) == ActionResult.SUCCESS;
                         }
 
                         if (!Worked) {

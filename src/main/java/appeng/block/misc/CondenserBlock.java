@@ -20,10 +20,10 @@ package appeng.block.misc;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.material.Material;
+import net.minecraft.block.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResultType;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -43,10 +43,10 @@ public class CondenserBlock extends AEBaseTileBlock<CondenserTileEntity> {
     }
 
     @Override
-    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
+    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         if (player.isCrouching()) {
-            return ActionResultType.PASS;
+            return ActionResult.PASS;
         }
 
         if (Platform.isServer()) {
@@ -54,10 +54,10 @@ public class CondenserBlock extends AEBaseTileBlock<CondenserTileEntity> {
             if (tc != null && !player.isCrouching()) {
                 ContainerOpener.openContainer(CondenserContainer.TYPE, player,
                         ContainerLocator.forTileEntitySide(tc, hit.getFace()));
-                return ActionResultType.SUCCESS;
+                return ActionResult.SUCCESS;
             }
         }
 
-        return ActionResultType.SUCCESS;
+        return ActionResult.SUCCESS;
     }
 }

@@ -22,7 +22,7 @@ import java.util.List;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -84,7 +84,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
 
     @Override
     public DimensionType getStoredDimension(final ItemStack is) {
-        final CompoundNBT c = is.getTag();
+        final CompoundTag c = is.getTag();
         if (c != null && c.contains(TAG_DIMENSION_ID)) {
             try {
                 ResourceLocation dimTypeId = new ResourceLocation(c.getString(TAG_DIMENSION_ID));
@@ -146,7 +146,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
     }
 
     private void setStoredDimension(final ItemStack is, DimensionType dim) {
-        final CompoundNBT c = is.getOrCreateTag();
+        final CompoundTag c = is.getOrCreateTag();
         c.putString(TAG_DIMENSION_ID, dim.getRegistryName().toString());
     }
 }

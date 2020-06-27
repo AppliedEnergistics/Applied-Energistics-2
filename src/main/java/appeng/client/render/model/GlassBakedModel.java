@@ -39,12 +39,12 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.ILightReader;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
@@ -321,7 +321,7 @@ class GlassBakedModel implements IDynamicBakedModel {
 
     }
 
-    private static boolean isGlassBlock(IBlockReader world, BlockPos pos, Direction facing) {
+    private static boolean isGlassBlock(BlockView world, BlockPos pos, Direction facing) {
         return world.getBlockState(pos.offset(facing)).getBlock() instanceof QuartzGlassBlock;
     }
 

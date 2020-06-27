@@ -22,8 +22,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -47,22 +47,22 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
+    public ActionResult onItemUse(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
         if (Platform.isServer() && player != null) {
             ContainerOpener.openContainer(QuartzKnifeContainer.TYPE, context.getPlayer(),
                     ContainerLocator.forItemUseContext(context));
         }
-        return ActionResultType.SUCCESS;
+        return ActionResult.SUCCESS;
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
+    public TypedActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
         if (Platform.isServer()) {
             ContainerOpener.openContainer(QuartzKnifeContainer.TYPE, p, ContainerLocator.forHand(p, hand));
         }
         p.swingArm(hand);
-        return new ActionResult<>(ActionResultType.SUCCESS, p.getHeldItem(hand));
+        return new TypedActionResult<>(ActionResult.SUCCESS, p.getHeldItem(hand));
     }
 
     @Override

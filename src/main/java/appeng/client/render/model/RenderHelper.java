@@ -24,7 +24,7 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
 // TODO: Investigate use of CubeBuilder instead

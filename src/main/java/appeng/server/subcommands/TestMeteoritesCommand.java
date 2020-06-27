@@ -18,7 +18,7 @@
 
 package appeng.server.subcommands;
 
-import static net.minecraft.command.Commands.literal;
+import static net.minecraft.server.command.CommandManager.literal;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -30,7 +30,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandSource;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -60,7 +60,7 @@ import appeng.worldgen.meteorite.PlacedMeteoriteSettings;
 public class TestMeteoritesCommand implements ISubCommand {
 
     @Override
-    public void addArguments(LiteralArgumentBuilder<CommandSource> builder) {
+    public void addArguments(LiteralArgumentBuilder<ServerCommandSource> builder) {
         builder.then(literal("force").executes(ctx -> {
             test(ServerLifecycleHooks.getCurrentServer(), ctx.getSource(), true);
             return 1;
@@ -68,11 +68,11 @@ public class TestMeteoritesCommand implements ISubCommand {
     }
 
     @Override
-    public void call(final MinecraftServer srv, final CommandContext<CommandSource> ctx, final CommandSource sender) {
+    public void call(final MinecraftServer srv, final CommandContext<ServerCommandSource> ctx, final ServerCommandSource sender) {
         test(srv, sender, false);
     }
 
-    private static void test(MinecraftServer srv, final CommandSource sender, boolean force) {
+    private static void test(MinecraftServer srv, final ServerCommandSource sender, boolean force) {
         int radius = 100;
 
         ServerPlayerEntity player = null;
@@ -205,7 +205,7 @@ public class TestMeteoritesCommand implements ISubCommand {
         return null;
     }
 
-    private static void sendLine(CommandSource sender, String text, Object... args) {
+    private static void sendLine(ServerCommandSource sender, String text, Object... args) {
         sender.sendFeedback(new StringTextComponent(String.format(Locale.ROOT, text, args)), true);
     }
 

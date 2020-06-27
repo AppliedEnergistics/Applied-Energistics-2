@@ -22,7 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 
@@ -49,13 +49,13 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
     }
 
     @Override
-    public void readFromNBT(final net.minecraft.nbt.CompoundNBT extra) {
+    public void readFromNBT(final net.minecraft.nbt.CompoundTag extra) {
         super.readFromNBT(extra);
         this.getConfig().readFromNBT(extra, "config");
     }
 
     @Override
-    public void writeToNBT(final net.minecraft.nbt.CompoundNBT extra) {
+    public void writeToNBT(final net.minecraft.nbt.CompoundTag extra) {
         super.writeToNBT(extra);
         this.getConfig().writeToNBT(extra, "config");
     }
@@ -70,7 +70,7 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
     }
 
     @Override
-    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockView w, BlockPos pos, BlockPos neighbor) {
         this.updateState();
         if (this.lastRedstone != this.getHost().hasRedstone(this.getSide())) {
             this.lastRedstone = !this.lastRedstone;

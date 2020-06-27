@@ -22,10 +22,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.play.server.SChunkDataPacket;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -51,14 +51,14 @@ public class MeteoritePlacerItem extends AEBaseItem {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
+    public TypedActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         if (world.isRemote()) {
-            return ActionResult.resultPass(player.getHeldItem(hand));
+            return TypedActionResult.resultPass(player.getHeldItem(hand));
         }
 
         if (player.isSneaking()) {
             final ItemStack itemStack = player.getHeldItem(hand);
-            final CompoundNBT tag = itemStack.getOrCreateTag();
+            final CompoundTag tag = itemStack.getOrCreateTag();
 
             if (tag.contains(MODE_TAG)) {
                 final byte mode = tag.getByte("mode");
@@ -71,16 +71,16 @@ public class MeteoritePlacerItem extends AEBaseItem {
 
             player.sendMessage(new StringTextComponent(craterType.name()));
 
-            return ActionResult.resultSuccess(itemStack);
+            return TypedActionResult.resultSuccess(itemStack);
         }
 
         return super.onItemRightClick(world, player, hand);
     }
 
     @Override
-    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
+    public ActionResult onItemUseFirst(ItemStack stack, ItemUseContext context) {
         if (context.getWorld().isRemote()) {
-            return ActionResultType.PASS;
+            return ActionResult.PASS;
         }
 
         ServerPlayerEntity player = (ServerPlayerEntity) context.getPlayer();
@@ -88,10 +88,10 @@ public class MeteoritePlacerItem extends AEBaseItem {
         BlockPos pos = context.getPos();
 
         if (player == null) {
-            return ActionResultType.PASS;
+            return ActionResult.PASS;
         }
 
-        CompoundNBT tag = stack.getOrCreateTag();
+        CompoundTag tag = stack.getOrCreateTag();
         if (!tag.contains(MODE_TAG)) {
             tag.putByte(MODE_TAG, (byte) CraterType.NORMAL.ordinal());
         }
@@ -107,7 +107,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
 
         if (spawned == null) {
             player.sendMessage(new StringTextComponent("Un-suitable Location."));
-            return ActionResultType.FAIL;
+            return ActionResult.FAIL;
         }
 
         // Since we don't know yet if the meteorite will be underground or not,
@@ -131,6 +131,6 @@ public class MeteoritePlacerItem extends AEBaseItem {
             player.connection.sendPacket(new SChunkDataPacket(c, 65535)); // 65535 == full chunk
         });
 
-        return ActionResultType.SUCCESS;
+        return ActionResult.SUCCESS;
     }
 }

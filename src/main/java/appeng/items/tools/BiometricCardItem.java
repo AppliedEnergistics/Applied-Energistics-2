@@ -27,9 +27,9 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NBTUtil;
-import net.minecraft.util.ActionResult;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -50,14 +50,14 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
+    public TypedActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
         if (p.isCrouching()) {
             this.encode(p.getHeldItem(hand), p);
             p.swingArm(hand);
-            return ActionResult.resultSuccess(p.getHeldItem(hand));
+            return TypedActionResult.resultSuccess(p.getHeldItem(hand));
         }
 
-        return ActionResult.resultPass(p.getHeldItem(hand));
+        return TypedActionResult.resultPass(p.getHeldItem(hand));
     }
 
     @Override
@@ -93,10 +93,10 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
 
     @Override
     public void setProfile(final ItemStack itemStack, final GameProfile profile) {
-        final CompoundNBT tag = itemStack.getOrCreateTag();
+        final CompoundTag tag = itemStack.getOrCreateTag();
 
         if (profile != null) {
-            final CompoundNBT pNBT = new CompoundNBT();
+            final CompoundTag pNBT = new CompoundTag();
             NBTUtil.writeGameProfile(pNBT, profile);
             tag.put("profile", pNBT);
         } else {
@@ -106,7 +106,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
 
     @Override
     public GameProfile getProfile(final ItemStack is) {
-        final CompoundNBT tag = is.getOrCreateTag();
+        final CompoundTag tag = is.getOrCreateTag();
         if (tag.contains("profile")) {
             return NBTUtil.readGameProfile(tag.getCompound("profile"));
         }
@@ -115,7 +115,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
 
     @Override
     public EnumSet<SecurityPermissions> getPermissions(final ItemStack is) {
-        final CompoundNBT tag = is.getOrCreateTag();
+        final CompoundTag tag = is.getOrCreateTag();
         final EnumSet<SecurityPermissions> result = EnumSet.noneOf(SecurityPermissions.class);
 
         for (final SecurityPermissions sp : SecurityPermissions.values()) {
@@ -129,13 +129,13 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
 
     @Override
     public boolean hasPermission(final ItemStack is, final SecurityPermissions permission) {
-        final CompoundNBT tag = is.getOrCreateTag();
+        final CompoundTag tag = is.getOrCreateTag();
         return tag.getBoolean(permission.name());
     }
 
     @Override
     public void removePermission(final ItemStack itemStack, final SecurityPermissions permission) {
-        final CompoundNBT tag = itemStack.getOrCreateTag();
+        final CompoundTag tag = itemStack.getOrCreateTag();
         if (tag.contains(permission.name())) {
             tag.remove(permission.name());
         }
@@ -143,7 +143,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
 
     @Override
     public void addPermission(final ItemStack itemStack, final SecurityPermissions permission) {
-        final CompoundNBT tag = itemStack.getOrCreateTag();
+        final CompoundTag tag = itemStack.getOrCreateTag();
         tag.putBoolean(permission.name(), true);
     }
 

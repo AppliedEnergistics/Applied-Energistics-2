@@ -21,7 +21,7 @@ package appeng.debug;
 import java.util.EnumSet;
 
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.util.AEPartLocation;

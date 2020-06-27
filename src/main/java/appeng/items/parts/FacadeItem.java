@@ -25,10 +25,10 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.item.*;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.Tag;
-import net.minecraft.util.ActionResultType;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -62,7 +62,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
     }
 
     @Override
-    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
+    public ActionResult onItemUseFirst(ItemStack stack, ItemUseContext context) {
         return AEApi.instance().partHelper().placeBus(stack, context.getPos(), context.getFace(), context.getPlayer(),
                 context.getHand(), context.getWorld());
     }
@@ -117,7 +117,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
             }
 
             final ItemStack is = new ItemStack(this);
-            final CompoundNBT data = new CompoundNBT();
+            final CompoundTag data = new CompoundTag();
             data.putString(NBT_ITEM_ID, itemStack.getItem().getRegistryName().toString());
             is.setTag(data);
             return is;
@@ -136,7 +136,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
     @Override
     public ItemStack getTextureItem(ItemStack is) {
-        CompoundNBT nbt = is.getTag();
+        CompoundTag nbt = is.getTag();
 
         if (nbt == null) {
             return ItemStack.EMPTY;
@@ -180,7 +180,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
             return ItemStack.EMPTY;
         }
 
-        final CompoundNBT facadeTag = new CompoundNBT();
+        final CompoundTag facadeTag = new CompoundTag();
         facadeTag.putString(NBT_ITEM_ID, item.getRegistryName().toString());
         facadeStack.setTag(facadeTag);
 

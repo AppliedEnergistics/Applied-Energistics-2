@@ -27,16 +27,16 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.block.ShapeContext;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -55,11 +55,11 @@ public class CrankBlock extends AEBaseTileBlock<CrankTileEntity> {
     }
 
     @Override
-    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
+    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         if (player instanceof FakePlayer || player == null) {
             this.dropCrank(w, pos);
-            return ActionResultType.SUCCESS;
+            return ActionResult.SUCCESS;
         }
 
         final CrankTileEntity tile = this.getTileEntity(w, pos);
@@ -67,10 +67,10 @@ public class CrankBlock extends AEBaseTileBlock<CrankTileEntity> {
             if (tile.power()) {
                 AeStats.TurnedCranks.addToPlayer(player, 1);
             }
-            return ActionResultType.SUCCESS;
+            return ActionResult.SUCCESS;
         }
 
-        return ActionResultType.PASS;
+        return ActionResult.PASS;
     }
 
     private void dropCrank(final World world, final BlockPos pos) {
@@ -100,7 +100,7 @@ public class CrankBlock extends AEBaseTileBlock<CrankTileEntity> {
         return !(te instanceof CrankTileEntity) || this.isCrankable(w, pos, up.getOpposite());
     }
 
-    private Direction findCrankable(final IBlockReader world, final BlockPos pos) {
+    private Direction findCrankable(final BlockView world, final BlockPos pos) {
         for (final Direction dir : Direction.values()) {
             if (this.isCrankable(world, pos, dir)) {
                 return dir;
@@ -109,7 +109,7 @@ public class CrankBlock extends AEBaseTileBlock<CrankTileEntity> {
         return null;
     }
 
-    private boolean isCrankable(final IBlockReader world, final BlockPos pos, final Direction offset) {
+    private boolean isCrankable(final BlockView world, final BlockPos pos, final Direction offset) {
         final BlockPos o = pos.offset(offset);
         final TileEntity te = world.getTileEntity(o);
 
@@ -139,13 +139,13 @@ public class CrankBlock extends AEBaseTileBlock<CrankTileEntity> {
         return this.findCrankable(w, pos) != null;
     }
 
-    private Direction getUp(IBlockReader world, BlockPos pos) {
+    private Direction getUp(BlockView world, BlockPos pos) {
         CrankTileEntity crank = getTileEntity(world, pos);
         return crank != null ? crank.getUp() : null;
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         Direction up = getUp(world, pos);
 
         if (up == null) {

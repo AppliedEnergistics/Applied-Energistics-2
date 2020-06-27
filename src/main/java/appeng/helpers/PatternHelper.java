@@ -30,7 +30,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.world.World;
 
@@ -61,7 +61,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
     private int priority = 0;
 
     public PatternHelper(final ItemStack is, final World w) {
-        final CompoundNBT encodedValue = is.getTag();
+        final CompoundTag encodedValue = is.getTag();
 
         if (encodedValue == null) {
             throw new IllegalArgumentException("No pattern here!");
@@ -79,7 +79,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
         final List<IAEItemStack> out = new ArrayList<>();
 
         for (int x = 0; x < inTag.size(); x++) {
-            CompoundNBT ingredient = inTag.getCompound(x);
+            CompoundTag ingredient = inTag.getCompound(x);
             final ItemStack gs = ItemStack.read(ingredient);
 
             if (!ingredient.isEmpty() && gs.isEmpty()) {
@@ -111,7 +111,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
             this.correctOutput = ItemStack.EMPTY;
 
             for (int x = 0; x < outTag.size(); x++) {
-                CompoundNBT resultItemTag = outTag.getCompound(x);
+                CompoundTag resultItemTag = outTag.getCompound(x);
                 final ItemStack gs = ItemStack.read(resultItemTag);
 
                 if (!resultItemTag.isEmpty() && gs.isEmpty()) {

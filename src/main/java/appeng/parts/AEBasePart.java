@@ -33,15 +33,15 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -202,7 +202,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
     }
 
     @Override
-    public void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChanged(BlockView w, BlockPos pos, BlockPos neighbor) {
 
     }
 
@@ -212,12 +212,12 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
     }
 
     @Override
-    public void readFromNBT(final CompoundNBT data) {
+    public void readFromNBT(final CompoundTag data) {
         this.proxy.readFromNBT(data);
     }
 
     @Override
-    public void writeToNBT(final CompoundNBT data) {
+    public void writeToNBT(final CompoundTag data) {
         this.proxy.writeToNBT(data);
     }
 
@@ -316,7 +316,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
      * @param from     source of settings
      * @param compound compound of source
      */
-    private void uploadSettings(final SettingsFrom from, final CompoundNBT compound) {
+    private void uploadSettings(final SettingsFrom from, final CompoundTag compound) {
         if (compound != null) {
             final IConfigManager cm = this.getConfigManager();
             if (cm != null) {
@@ -347,8 +347,8 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
      *
      * @return compound of source
      */
-    private CompoundNBT downloadSettings(final SettingsFrom from) {
-        final CompoundNBT output = new CompoundNBT();
+    private CompoundTag downloadSettings(final SettingsFrom from) {
+        final CompoundTag output = new CompoundTag();
 
         final IConfigManager cm = this.getConfigManager();
         if (cm != null) {
@@ -392,14 +392,14 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
             final String name = is.getTranslationKey();
 
             if (player.isCrouching()) {
-                final CompoundNBT data = this.downloadSettings(SettingsFrom.MEMORY_CARD);
+                final CompoundTag data = this.downloadSettings(SettingsFrom.MEMORY_CARD);
                 if (data != null) {
                     memoryCard.setMemoryCardContents(memCardIS, name, data);
                     memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_SAVED);
                 }
             } else {
                 final String storedName = memoryCard.getSettingsName(memCardIS);
-                final CompoundNBT data = memoryCard.getData(memCardIS);
+                final CompoundTag data = memoryCard.getData(memCardIS);
                 if (name.equals(storedName)) {
                     this.uploadSettings(SettingsFrom.MEMORY_CARD, data);
                     memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);

@@ -36,13 +36,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -110,14 +110,14 @@ public interface IPart extends ICustomCableConnection {
      *
      * @param data to be written nbt data
      */
-    void writeToNBT(CompoundNBT data);
+    void writeToNBT(CompoundTag data);
 
     /**
      * Read the previously written NBT Data. this is the mirror for writeToNBT
      *
      * @param data to be read nbt data
      */
-    void readFromNBT(CompoundNBT data);
+    void readFromNBT(CompoundTag data);
 
     /**
      * @return get the amount of light produced by the bus
@@ -136,7 +136,7 @@ public interface IPart extends ICustomCableConnection {
     /**
      * a block around the bus's host has been changed.
      */
-    void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor);
+    void onNeighborChanged(BlockView w, BlockPos pos, BlockPos neighbor);
 
     /**
      * @return output redstone on facing side
@@ -345,7 +345,7 @@ public interface IPart extends ICustomCableConnection {
      * capabilities on the cable bus will be forwarded to parts on the appropriate
      * side.
      *
-     * @see TileEntity#getCapability(Capability, net.minecraft.util.Direction)
+     * @see TileEntity#getCapability(Capability, net.minecraft.util.math.Direction)
      *
      * @return The capability or null.
      */

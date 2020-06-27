@@ -19,13 +19,13 @@
 package appeng.block.qnb;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
+import net.minecraft.block.Material;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.block.ShapeContext;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.BlockView;
 
 import appeng.tile.qnb.QuantumBridgeTileEntity;
 
@@ -40,7 +40,7 @@ public class QuantumRingBlock extends QuantumBaseBlock {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(BlockState state, BlockView w, BlockPos pos, ShapeContext context) {
         final QuantumBridgeTileEntity bridge = this.getTileEntity(w, pos);
         if (bridge != null && bridge.isCorner()) {
             return SHAPE_CORNER;

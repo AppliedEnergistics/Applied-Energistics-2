@@ -18,7 +18,7 @@
 
 package appeng.helpers;
 
-import net.minecraft.block.material.Material;
+import net.minecraft.block.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.block.material.PushReaction;
 

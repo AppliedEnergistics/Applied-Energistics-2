@@ -28,7 +28,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.items.IItemHandler;
@@ -83,7 +83,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
     private final Map<IInterfaceHost, InvTracker> diList = new HashMap<>();
     private final Map<Long, InvTracker> byId = new HashMap<>();
     private IGrid grid;
-    private CompoundNBT data = new CompoundNBT();
+    private CompoundTag data = new CompoundTag();
 
     public InterfaceTerminalContainer(int id, final PlayerInventory ip, final InterfaceTerminalPart anchor) {
         super(TYPE, id, ip, anchor);
@@ -183,7 +183,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
                 // :P
             }
 
-            this.data = new CompoundNBT();
+            this.data = new CompoundTag();
         }
     }
 
@@ -280,7 +280,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         }
     }
 
-    private void regenList(final CompoundNBT data) {
+    private void regenList(final CompoundTag data) {
         this.byId.clear();
         this.diList.clear();
 
@@ -327,9 +327,9 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         return !ItemStack.areItemStacksEqual(a, b);
     }
 
-    private void addItems(final CompoundNBT data, final InvTracker inv, final int offset, final int length) {
+    private void addItems(final CompoundTag data, final InvTracker inv, final int offset, final int length) {
         final String name = '=' + Long.toString(inv.which, Character.MAX_RADIX);
-        final CompoundNBT tag = data.getCompound(name);
+        final CompoundTag tag = data.getCompound(name);
 
         if (tag.isEmpty()) {
             tag.putLong("sortBy", inv.sortBy);
@@ -337,7 +337,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         }
 
         for (int x = 0; x < length; x++) {
-            final CompoundNBT itemNBT = new CompoundNBT();
+            final CompoundTag itemNBT = new CompoundTag();
 
             final ItemStack is = inv.server.getStackInSlot(x + offset);
 
