@@ -32,12 +32,12 @@ jobs:
         uses: GabrielBB/xvfb-action@v1.2
         with:
           run: ./gradlew runData --no-daemon
-      - name: Build with Gradle and sign
+      - name: Build, sign, and publish with Gradle
         env:
           KEY_STORE_PASS: ${{ secrets.KEY_STORE_PASS }}
           KEY_STORE_ALIAS: ${{ secrets.KEY_STORE_ALIAS }}
           KEY_STORE_KEY_PASS: ${{ secrets.KEY_STORE_KEY_PASS }}
-        run: ./gradlew build --no-daemon
+        run: ./gradlew build publish --no-daemon
       - name: Prepare artifact metadata
         id: prepare_artifact_metadata
         run: |
@@ -52,8 +52,3 @@ jobs:
           asset_path: ${{ steps.prepare_artifact_metadata.outputs.ARTIFACT_PATH }}
           asset_name: ${{ steps.prepare_artifact_metadata.outputs.ARTIFACT_NAME }}
           asset_content_type: application/zip
-      - name: Publish package
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE: ${{ github.event.release.tag_name }}
-        run: ./gradlew publish --no-daemon
