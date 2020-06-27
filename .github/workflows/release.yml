@@ -37,6 +37,7 @@ jobs:
           KEY_STORE_PASS: ${{ secrets.KEY_STORE_PASS }}
           KEY_STORE_ALIAS: ${{ secrets.KEY_STORE_ALIAS }}
           KEY_STORE_KEY_PASS: ${{ secrets.KEY_STORE_KEY_PASS }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew build publish --no-daemon
       - name: Prepare artifact metadata
         id: prepare_artifact_metadata
