@@ -52,9 +52,8 @@ jobs:
           asset_path: ${{ steps.prepare_artifact_metadata.outputs.ARTIFACT_PATH }}
           asset_name: ${{ steps.prepare_artifact_metadata.outputs.ARTIFACT_NAME }}
           asset_content_type: application/zip
-# Disabled for testing releases
-#      - name: Publish package
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#          RELEASE: ${{ github.event.release.tag_name }}
-#        run: ./gradlew publish --no-daemon
+      - name: Publish package
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE: ${{ github.event.release.tag_name }}
+        run: ./gradlew publish --no-daemon
