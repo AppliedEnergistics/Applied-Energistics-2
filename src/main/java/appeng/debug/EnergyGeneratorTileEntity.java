@@ -65,6 +65,9 @@ public class EnergyGeneratorTileEntity extends AEBaseTileEntity implements ITick
 
         for (Direction facing : Direction.values()) {
             final TileEntity te = this.getWorld().getTileEntity(this.getPos().offset(facing));
+            if (te == null) {
+                continue;
+            }
             final LazyOptional<IEnergyStorage> cap = te.getCapability(CapabilityEnergy.ENERGY, facing.getOpposite());
 
             cap.ifPresent(consumer -> {
