@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.items.IItemHandler;
@@ -109,6 +111,12 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
         this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
         this.inv.setFilter(new CellValidInventoryFilter());
         this.inventoryHandlers = new IdentityHashMap<>();
+    }
+
+    @Override
+    public void setOrientation(Direction inForward, Direction inUp) {
+        super.setOrientation(inForward, inUp);
+        this.getProxy().setValidSides(EnumSet.complementOf(EnumSet.of(inForward)));
     }
 
     @Override
