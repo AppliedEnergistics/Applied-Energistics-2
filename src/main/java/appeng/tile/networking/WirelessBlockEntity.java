@@ -138,7 +138,7 @@ public class WirelessBlockEntity extends AENetworkInvBlockEntity implements IWir
     }
 
     private int getBoosters() {
-        final ItemStack boosters = this.inv.getStackInSlot(0);
+        final ItemStack boosters = this.inv.getInvStack(0);
         return boosters == null ? 0 : boosters.getCount();
     }
 

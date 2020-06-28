@@ -106,7 +106,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
     public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
                                   final ItemStack removedStack, final ItemStack newStack) {
         if (inv == this.pattern && slot == 1) {
-            final ItemStack is = this.pattern.getStackInSlot(1);
+            final ItemStack is = this.pattern.getInvStack(1);
             if (!is.isEmpty() && is.getItem() instanceof ICraftingPatternItem) {
                 final ICraftingPatternItem pattern = (ICraftingPatternItem) is.getItem();
                 final ICraftingPatternDetails details = pattern.getPatternForItem(is,
@@ -136,7 +136,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
     private void fixCraftingRecipes() {
         if (this.craftingMode) {
             for (int x = 0; x < this.crafting.getSlots(); x++) {
-                final ItemStack is = this.crafting.getStackInSlot(x);
+                final ItemStack is = this.crafting.getInvStack(x);
                 if (!is.isEmpty()) {
                     is.setCount(1);
                 }

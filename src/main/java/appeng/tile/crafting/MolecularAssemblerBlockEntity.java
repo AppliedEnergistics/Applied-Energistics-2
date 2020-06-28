@@ -160,7 +160,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     private boolean canPush() {
-        return !this.gridInv.getStackInSlot(9).isEmpty();
+        return !this.gridInv.getInvStack(9).isEmpty();
     }
 
     private boolean hasMats() {
@@ -169,7 +169,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         }
 
         for (int x = 0; x < this.craftingInv.size(); x++) {
-            this.craftingInv.setStack(x, this.gridInv.getStackInSlot(x));
+            this.craftingInv.setStack(x, this.gridInv.getInvStack(x));
         }
 
         return !this.myPlan.getOutput(this.craftingInv, this.getWorld()).isEmpty();
@@ -247,7 +247,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             return;
         }
 
-        final ItemStack is = this.patternInv.getStackInSlot(0);
+        final ItemStack is = this.patternInv.getInvStack(0);
 
         if (!is.isEmpty() && is.getItem() instanceof EncodedPatternItem) {
             if (!ItemStack.areItemsEqual(is, this.myPattern)) {
@@ -332,7 +332,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         super.getDrops(w, pos, drops);
 
         for (int h = 0; h < this.upgrades.getSlots(); h++) {
-            final ItemStack is = this.upgrades.getStackInSlot(h);
+            final ItemStack is = this.upgrades.getInvStack(h);
             if (!is.isEmpty()) {
                 drops.add(is);
             }
@@ -348,11 +348,11 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
     @Override
     public TickRateModulation tickingRequest(final IGridNode node, int ticksSinceLastCall) {
-        if (!this.gridInv.getStackInSlot(9).isEmpty()) {
-            this.pushOut(this.gridInv.getStackInSlot(9));
+        if (!this.gridInv.getInvStack(9).isEmpty()) {
+            this.pushOut(this.gridInv.getInvStack(9));
 
             // did it eject?
-            if (this.gridInv.getStackInSlot(9).isEmpty()) {
+            if (this.gridInv.getInvStack(9).isEmpty()) {
                 this.saveChanges();
             }
 
@@ -400,7 +400,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
         if (this.progress >= 100) {
             for (int x = 0; x < this.craftingInv.size(); x++) {
-                this.craftingInv.setStack(x, this.gridInv.getStackInSlot(x));
+                this.craftingInv.setStack(x, this.gridInv.getInvStack(x));
             }
 
             this.progress = 0;
@@ -441,9 +441,9 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     private void ejectHeldItems() {
-        if (this.gridInv.getStackInSlot(9).isEmpty()) {
+        if (this.gridInv.getInvStack(9).isEmpty()) {
             for (int x = 0; x < 9; x++) {
-                final ItemStack is = this.gridInv.getStackInSlot(x);
+                final ItemStack is = this.gridInv.getInvStack(x);
                 if (!is.isEmpty()) {
                     if (this.myPlan == null || !this.myPlan.isValidItemForSlot(x, is, this.world)) {
                         this.gridInv.setStackInSlot(9, is);

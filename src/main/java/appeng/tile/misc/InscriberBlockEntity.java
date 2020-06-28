@@ -199,7 +199,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
         super.getDrops(w, pos, drops);
 
         for (int h = 0; h < this.upgrades.getSlots(); h++) {
-            final ItemStack is = this.upgrades.getStackInSlot(h);
+            final ItemStack is = this.upgrades.getInvStack(h);
             if (!is.isEmpty()) {
                 drops.add(is);
             }
@@ -249,9 +249,9 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
     @Nullable
     public InscriberRecipe getTask() {
         if (this.cachedTask == null && world != null) {
-            ItemStack input = this.sideItemHandler.getStackInSlot(0);
-            ItemStack plateA = this.topItemHandler.getStackInSlot(0);
-            ItemStack plateB = this.bottomItemHandler.getStackInSlot(0);
+            ItemStack input = this.sideItemHandler.getInvStack(0);
+            ItemStack plateA = this.topItemHandler.getInvStack(0);
+            ItemStack plateB = this.bottomItemHandler.getInvStack(0);
             if (input.isEmpty()) {
                 return null; // No input to handle
             }

@@ -262,7 +262,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
         try {
             final IEnergySource energy = this.getProxy().getEnergy();
             for (int x = 0; x < NUMBER_OF_CELL_SLOTS; x++) {
-                final ItemStack is = this.inputCells.getStackInSlot(x);
+                final ItemStack is = this.inputCells.getInvStack(x);
                 if (!is.isEmpty()) {
                     boolean shouldMove = true;
 
@@ -394,7 +394,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
 
     private boolean moveSlot(final int x) {
         final InventoryAdaptor ad = new AdaptorFixedInv(this.outputCells);
-        if (ad.addItems(this.inputCells.getStackInSlot(x)).isEmpty()) {
+        if (ad.addItems(this.inputCells.getInvStack(x)).isEmpty()) {
             this.inputCells.setStackInSlot(x, ItemStack.EMPTY);
             return true;
         }
@@ -438,7 +438,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
         super.getDrops(w, pos, drops);
 
         for (int upgradeIndex = 0; upgradeIndex < this.upgrades.getSlots(); upgradeIndex++) {
-            final ItemStack stackInSlot = this.upgrades.getStackInSlot(upgradeIndex);
+            final ItemStack stackInSlot = this.upgrades.getInvStack(upgradeIndex);
 
             if (!stackInSlot.isEmpty()) {
                 drops.add(stackInSlot);

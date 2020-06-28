@@ -127,12 +127,12 @@ public class AppEngSlot extends Slot {
 
     @Override
     public int getSlotStackLimit() {
-        return this.itemHandler.getSlotLimit(this.index);
+        return this.itemHandler.getMaxAmount(this.index, ItemStack.EMPTY);
     }
 
     @Override
     public int getItemStackLimit(@Nonnull ItemStack stack) {
-        return Math.min(this.getSlotStackLimit(), stack.getMaxStackSize());
+        return Math.min(this.getSlotStackLimit(), stack.getMaxCount());
     }
 
     @Override

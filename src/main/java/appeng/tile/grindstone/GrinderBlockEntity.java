@@ -81,10 +81,10 @@ public class GrinderBlockEntity extends AEBaseInvBlockEntity implements ICrankab
             return false;
         }
 
-        if (this.inv.getStackInSlot(6).isEmpty()) // Add if there isn't one...
+        if (this.inv.getInvStack(6).isEmpty()) // Add if there isn't one...
         {
             for (int x = 0; x < 3; x++) {
-                ItemStack item = this.inv.getStackInSlot(x);
+                ItemStack item = this.inv.getInvStack(x);
                 if (item.isEmpty()) {
                     continue;
                 }
@@ -93,7 +93,7 @@ public class GrinderBlockEntity extends AEBaseInvBlockEntity implements ICrankab
                 if (r != null) {
                     final ItemStack ais = item.copy();
                     ais.setCount(r.getIngredientCount());
-                    item.shrink(r.getIngredientCount());
+                    item.decrement(r.getIngredientCount());
 
                     if (item.getCount() <= 0) {
                         item = ItemStack.EMPTY;
@@ -117,7 +117,7 @@ public class GrinderBlockEntity extends AEBaseInvBlockEntity implements ICrankab
 
         this.points++;
 
-        final ItemStack processing = this.inv.getStackInSlot(SLOT_PROCESSING);
+        final ItemStack processing = this.inv.getInvStack(SLOT_PROCESSING);
         GrinderRecipe r = GrinderRecipes.findForInput(world, processing);
         if (r != null) {
             if (r.getTurns() > this.points) {

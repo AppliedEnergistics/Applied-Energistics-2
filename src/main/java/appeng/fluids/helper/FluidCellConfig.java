@@ -80,7 +80,7 @@ public class FluidCellConfig extends CellConfig {
     }
 
     @Override
-    public boolean isItemValid(int slot, ItemStack stack) {
+    public boolean isItemValidForSlot(int slot, ItemStack stack) {
         if (stack.isEmpty() || stack.getItem() instanceof FluidDummyItem) {
             super.isItemValid(slot, stack);
         }

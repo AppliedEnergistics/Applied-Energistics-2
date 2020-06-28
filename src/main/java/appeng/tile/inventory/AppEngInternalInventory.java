@@ -18,26 +18,28 @@
 
 package appeng.tile.inventory;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-
-import javax.annotation.Nonnull;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.items.ItemStackHandler;
-
+import alexiil.mc.lib.attributes.Simulation;
+import alexiil.mc.lib.attributes.item.FixedItemInvView;
+import alexiil.mc.lib.attributes.item.filter.ConstantItemFilter;
+import alexiil.mc.lib.attributes.item.filter.ItemFilter;
+import alexiil.mc.lib.attributes.item.impl.FullFixedItemInv;
 import appeng.util.Platform;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.IAEItemFilter;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 
-public class AppEngInternalInventory extends ItemStackHandler implements Iterable<ItemStack> {
+import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+
+// FIXME: the filtering is not correctly implemented and need to be reworked
+public class AppEngInternalInventory extends FullFixedItemInv implements Iterable<ItemStack> {
     private boolean enableClientEvents = false;
     private IAEAppEngInventory te;
     private final int[] maxStack;
-    private ItemStack previousStack = ItemStack.EMPTY;
     private IAEItemFilter filter;
     private boolean dirtyFlag = false;
 
@@ -48,6 +50,8 @@ public class AppEngInternalInventory extends ItemStackHandler implements Iterabl
         this.setFilter(filter);
         this.maxStack = new int[size];
         Arrays.fill(this.maxStack, maxStack);
+
+        setOwnerListener(this::onContentsChanged);
     }
 
     public AppEngInternalInventory(final IAEAppEngInventory inventory, final int size, final int maxStack) {
@@ -63,57 +67,24 @@ public class AppEngInternalInventory extends ItemStackHandler implements Iterabl
     }
 
     @Override
-    public int getSlotLimit(int slot) {
-        return this.maxStack[slot];
+    public int getMaxAmount(int slot, ItemStack stack) {
+        return Math.min(maxStack[slot], super.getMaxAmount(slot, stack));
     }
 
-    @Override
-    public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
-        this.previousStack = this.getStackInSlot(slot).copy();
-        super.setStackInSlot(slot, stack);
-    }
-
-    @Override
-    @Nonnull
-    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        if (this.filter != null && !this.filter.allowInsert(this, slot, stack)) {
-            return stack;
-        }
-
-        if (!simulate) {
-            this.previousStack = this.getStackInSlot(slot).copy();
-        }
-        return super.insertItem(slot, stack, simulate);
-    }
-
-    @Override
-    @Nonnull
-    public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if (this.filter != null && !this.filter.allowExtract(this, slot, amount)) {
-            return ItemStack.EMPTY;
-        }
-
-        if (!simulate) {
-            this.previousStack = this.getStackInSlot(slot).copy();
-        }
-        return super.extractItem(slot, amount, simulate);
-    }
-
-    @Override
-    protected void onContentsChanged(int slot) {
+    protected void onContentsChanged(FixedItemInvView inv, int slot, ItemStack previous, ItemStack current) {
         if (this.getBlockEntity() != null && this.eventsEnabled() && !this.dirtyFlag) {
             this.dirtyFlag = true;
-            ItemStack newStack = this.getStackInSlot(slot).copy();
-            ItemStack oldStack = this.previousStack;
+            ItemStack newStack = current.copy();
+            ItemStack oldStack = previous;
             InvOperation op = InvOperation.SET;
 
             if (newStack.isEmpty() || oldStack.isEmpty() || ItemStack.areItemsEqual(newStack, oldStack)) {
                 if (newStack.getCount() > oldStack.getCount()) {
-                    newStack.shrink(oldStack.getCount());
+                    newStack.decrement(oldStack.getCount());
                     oldStack = ItemStack.EMPTY;
                     op = InvOperation.INSERT;
                 } else {
-                    oldStack.shrink(newStack.getCount());
+                    oldStack.decrement(newStack.getCount());
                     newStack = ItemStack.EMPTY;
                     op = InvOperation.EXTRACT;
                 }
@@ -121,10 +92,8 @@ public class AppEngInternalInventory extends ItemStackHandler implements Iterabl
 
             this.getBlockEntity().onChangeInventory(this, slot, op, oldStack, newStack);
             this.getBlockEntity().saveChanges();
-            this.previousStack = ItemStack.EMPTY;
             this.dirtyFlag = false;
         }
-        super.onContentsChanged(slot);
     }
 
     protected boolean eventsEnabled() {
@@ -136,7 +105,25 @@ public class AppEngInternalInventory extends ItemStackHandler implements Iterabl
     }
 
     @Override
-    public boolean isItemValid(int slot, ItemStack stack) {
+    public ItemFilter getFilterForSlot(int slot) {
+        if (this.maxStack[slot] == 0) {
+            return ConstantItemFilter.NOTHING;
+        }
+        if (this.filter != null) {
+            return stack -> {
+                // FIXME: This is not correct...
+                if (stack == ItemStack.EMPTY) {
+                    return filter.allowExtract(this, slot, this.getSlot(slot).get().getCount());
+                } else {
+                    return filter.allowExtract(this, slot, this.getSlot(slot).get().getCount());
+                }
+            };
+        }
+        return ConstantItemFilter.ANYTHING;
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int slot, ItemStack stack) {
         if (this.maxStack[slot] == 0) {
             return false;
         }
@@ -147,7 +134,7 @@ public class AppEngInternalInventory extends ItemStackHandler implements Iterabl
     }
 
     public void writeToNBT(final CompoundTag data, final String name) {
-        data.put(name, this.serializeNBT());
+        data.put(name, this.toTag());
     }
 
     public void readFromNBT(final CompoundTag data, final String name) {
@@ -158,12 +145,12 @@ public class AppEngInternalInventory extends ItemStackHandler implements Iterabl
     }
 
     public void readFromNBT(final CompoundTag data) {
-        this.deserializeNBT(data);
+        this.fromTag(data);
     }
 
     @Override
     public Iterator<ItemStack> iterator() {
-        return Collections.unmodifiableList(super.stacks).iterator();
+        return stackIterable().iterator();
     }
 
     private boolean isEnableClientEvents() {

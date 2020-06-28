@@ -90,6 +90,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.RayTraceContext;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -1150,6 +1151,10 @@ public class Platform {
             return copy;
         }
         return ItemStack.EMPTY;
+    }
+
+    public static boolean canStack(ItemStack a, ItemStack b) {
+        return itemComparisons().isSameItem(a, b);
     }
 
 }

@@ -67,7 +67,7 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
                 return null;
             }
 
-            final ItemStack is = this.cell.getStackInSlot(0);
+            final ItemStack is = this.cell.getInvStack(0);
             if (is.isEmpty()) {
                 return null;
             }
@@ -83,12 +83,12 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     }
 
     public ICellWorkbenchItem getCell() {
-        if (this.cell.getStackInSlot(0).isEmpty()) {
+        if (this.cell.getInvStack(0).isEmpty()) {
             return null;
         }
 
-        if (this.cell.getStackInSlot(0).getItem() instanceof ICellWorkbenchItem) {
-            return ((ICellWorkbenchItem) this.cell.getStackInSlot(0).getItem());
+        if (this.cell.getInvStack(0).getItem() instanceof ICellWorkbenchItem) {
+            return ((ICellWorkbenchItem) this.cell.getInvStack(0).getItem());
         }
 
         return null;
@@ -183,7 +183,7 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
                 return null;
             }
 
-            final ItemStack is = this.cell.getStackInSlot(0);
+            final ItemStack is = this.cell.getInvStack(0);
             if (is.isEmpty()) {
                 return null;
             }
@@ -202,8 +202,8 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     public void getDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
         super.getDrops(w, pos, drops);
 
-        if (this.cell.getStackInSlot(0) != null) {
-            drops.add(this.cell.getStackInSlot(0));
+        if (this.cell.getInvStack(0) != null) {
+            drops.add(this.cell.getInvStack(0));
         }
     }
 

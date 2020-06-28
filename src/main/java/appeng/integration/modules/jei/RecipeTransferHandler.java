@@ -29,7 +29,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.ListTag;
 
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiIngredient;
@@ -78,7 +78,7 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
             for (final Slot slot : container.inventorySlots) {
                 if (slot instanceof CraftingMatrixSlot || slot instanceof FakeCraftingMatrixSlot) {
                     if (slot.getSlotIndex() == slotIndex) {
-                        final ListNBT tags = new ListNBT();
+                        final ListTag tags = new ListTag();
                         final List<ItemStack> list = new ArrayList<>();
                         final ItemStack displayed = ingredient.getDisplayedIngredient();
 

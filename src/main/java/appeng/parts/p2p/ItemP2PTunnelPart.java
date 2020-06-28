@@ -231,8 +231,8 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implemen
     }
 
     @Override
-    public int getSlotLimit(int slot) {
-        return this.getDestination().getSlotLimit(slot);
+    public int getMaxAmount(int slot, ItemStack is) {
+        return this.getDestination().getMaxAmount(slot, is);
     }
 
     public float getPowerDrainPerTick() {

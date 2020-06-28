@@ -280,7 +280,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity implements IAEMult
             for (IAEItemStack ais : inv.getAvailableItems(
                     AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList())) {
                 ais = ais.copy();
-                ais.setStackSize(ais.getDefinition().getMaxStackSize());
+                ais.setStackSize(ais.getDefinition().getMaxCount());
                 while (true) {
                     final IAEItemStack g = inv.extractItems(ais.copy(), Actionable.MODULATE,
                             this.cluster.getActionSource());

@@ -108,11 +108,11 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         if (action == InventoryAction.CRAFT_SHIFT) // craft into player inventory...
         {
             ia = InventoryAdaptor.getAdaptor(who);
-            maxTimesToCraft = (int) Math.floor((double) this.getStack().getMaxStackSize() / (double) howManyPerCraft);
+            maxTimesToCraft = (int) Math.floor((double) this.getStack().getMaxCount() / (double) howManyPerCraft);
         } else if (action == InventoryAction.CRAFT_STACK) // craft into hand, full stack
         {
             ia = new AdaptorFixedInv(new WrapperCursorItemHandler(who.inventory));
-            maxTimesToCraft = (int) Math.floor((double) this.getStack().getMaxStackSize() / (double) howManyPerCraft);
+            maxTimesToCraft = (int) Math.floor((double) this.getStack().getMaxCount() / (double) howManyPerCraft);
         } else
         // pick up what was crafted...
         {

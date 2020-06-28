@@ -106,7 +106,7 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
         }
 
         @Override
-        public int getSlotLimit(int slot) {
+        public int getMaxAmount(int slot, ItemStack stack) {
             return 1;
         }
 

@@ -39,7 +39,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -209,7 +209,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         this.craftingTracker.writeToNBT(data);
         data.putInt("priority", this.priority);
 
-        final ListNBT waitingToSend = new ListNBT();
+        final ListTag waitingToSend = new ListTag();
         if (this.waitingToSend != null) {
             for (final ItemStack is : this.waitingToSend) {
                 final CompoundTag item = new CompoundTag();
@@ -222,7 +222,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
     public void readFromNBT(final CompoundTag data) {
         this.waitingToSend = null;
-        final ListNBT waitingList = data.getList("waitingToSend", 10);
+        final ListTag waitingList = data.getList("waitingToSend", 10);
         if (waitingList != null) {
             for (int x = 0; x < waitingList.size(); x++) {
                 final CompoundTag c = waitingList.getCompound(x);
@@ -311,7 +311,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                 boolean found = false;
 
                 for (int x = 0; x < accountedFor.length; x++) {
-                    final ItemStack is = this.patterns.getStackInSlot(x);
+                    final ItemStack is = this.patterns.getInvStack(x);
                     if (details.getPattern() == is) {
                         accountedFor[x] = found = true;
                     }
@@ -325,7 +325,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
         for (int x = 0; x < accountedFor.length; x++) {
             if (!accountedFor[x]) {
-                this.addToCraftingList(this.patterns.getStackInSlot(x));
+                this.addToCraftingList(this.patterns.getInvStack(x));
             }
         }
 
@@ -357,7 +357,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
             req = null;
         }
 
-        final ItemStack stored = this.storage.getStackInSlot(slot);
+        final ItemStack stored = this.storage.getInvStack(slot);
 
         if (req == null && !stored.isEmpty()) {
             final IAEItemStack work = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)

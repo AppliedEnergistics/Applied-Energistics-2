@@ -23,7 +23,7 @@ import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.block.MaterialColor;
-import net.minecraft.block.material.PushReaction;
+import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -46,8 +46,8 @@ import appeng.block.AEBaseBlock;
  */
 public class MatrixFrameBlock extends AEBaseBlock {
 
-    private static final Material MATERIAL = new Material(MaterialColor.AIR, false, true, true, false, false, false,
-            false, PushReaction.PUSH_ONLY);
+    private static final Material MATERIAL = new Material(MaterialColor.CLEAR, false, true, true, false, false, false,
+            false, PistonBehavior.PUSH_ONLY);
 
     public MatrixFrameBlock() {
         super(Settings.create(MATERIAL).strength(-1.0F, 6000000.0F).notSolid().noDrops());

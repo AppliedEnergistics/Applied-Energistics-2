@@ -21,11 +21,15 @@ package appeng.tile.inventory;
 import java.util.Iterator;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import alexiil.mc.lib.attributes.ListenerRemovalToken;
+import alexiil.mc.lib.attributes.ListenerToken;
+import alexiil.mc.lib.attributes.Simulation;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
+import alexiil.mc.lib.attributes.item.InvMarkDirtyListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 import appeng.api.AEApi;
 import appeng.api.storage.channels.IItemStorageChannel;
@@ -35,10 +39,9 @@ import appeng.util.Platform;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 import appeng.util.item.AEItemStack;
-import appeng.util.iterators.AEInvIterator;
 import appeng.util.iterators.InvIterator;
 
-public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterable<ItemStack> {
+public class AppEngInternalAEInventory implements FixedItemInv, Iterable<ItemStack> {
     private final IAEAppEngInventory te;
     private final IAEItemStack[] inv;
     private final int size;
@@ -103,105 +106,74 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
     }
 
     protected int getStackLimit(int slot, @Nonnull ItemStack stack) {
-        return Math.min(this.getSlotLimit(slot), stack.getMaxStackSize());
+        return Math.min(this.getMaxAmount(slot, stack), stack.getMaxCount());
     }
 
     @Override
-    public int getSlots() {
+    public ItemStack getInvStack(int slot) {
+        if (this.inv[slot] == null) {
+            return ItemStack.EMPTY;
+        }
+
+        return this.inv[slot].createItemStack();
+    }
+
+    @Override
+    public boolean setInvStack(int slot, ItemStack to, Simulation simulation) {
+        if (this.te == null || !Platform.isServer()) {
+            return false;
+        }
+
+        // FIXME: We need to implement the actual checks here, stacking /caninsert/canremove
+        if (true) {
+            throw new IllegalStateException();
+        }
+
+        if (simulation == Simulation.SIMULATE) {
+            return true;
+        }
+
+        ItemStack oldStack = this.getInvStack(slot).copy();
+        this.inv[slot] = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)
+                .createStack(to);
+
+        ItemStack newStack = to.copy();
+        InvOperation op = InvOperation.SET;
+
+        if (ItemStack.areItemsEqual(oldStack, newStack)) {
+            if (newStack.getCount() > oldStack.getCount()) {
+                newStack.decrement(oldStack.getCount());
+                oldStack = ItemStack.EMPTY;
+                op = InvOperation.INSERT;
+            } else {
+                oldStack.decrement(newStack.getCount());
+                newStack = ItemStack.EMPTY;
+                op = InvOperation.EXTRACT;
+            }
+        }
+        this.fireOnChangeInventory(slot, op, oldStack, newStack);
+        return true;
+    }
+
+    @Override
+    public int getSlotCount() {
         return this.size;
     }
 
     @Override
-    public ItemStack getStackInSlot(final int var1) {
-        if (this.inv[var1] == null) {
-            return ItemStack.EMPTY;
-        }
-
-        return this.inv[var1].createItemStack();
+    public boolean isItemValidForSlot(int slot, ItemStack stack) {
+        return true;
     }
 
     @Override
-    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-        if (stack.isEmpty()) {
-            return ItemStack.EMPTY;
-        }
-
-        ItemStack existing = this.getStackInSlot(slot);
-        int limit = this.getStackLimit(slot, stack);
-
-        if (!existing.isEmpty()) {
-            if (!ItemHandlerHelper.canItemStacksStack(stack, existing)) {
-                return stack;
-            }
-
-            limit -= existing.getCount();
-        }
-
-        if (limit <= 0) {
-            return stack;
-        }
-
-        boolean reachedLimit = stack.getCount() > limit;
-
-        if (!simulate) {
-            if (existing.isEmpty()) {
-                this.inv[slot] = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)
-                        .createStack(reachedLimit ? Platform.copyStackWithSize(stack, limit) : stack);
-            } else {
-                existing.increment(reachedLimit ? limit : stack.getCount());
-            }
-            this.fireOnChangeInventory(slot, InvOperation.INSERT, ItemStack.EMPTY,
-                    reachedLimit ? Platform.copyStackWithSize(stack, limit) : stack);
-        }
-        return reachedLimit ? Platform.copyStackWithSize(stack, stack.getCount() - limit) : ItemStack.EMPTY;
+    public int getChangeValue() {
+        return 0;
     }
 
+    @Nullable
     @Override
-    public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if (this.inv[slot] != null) {
-            final ItemStack split = this.getStackInSlot(slot);
-
-            if (amount >= split.getCount()) {
-                if (!simulate) {
-                    this.inv[slot] = null;
-                    this.fireOnChangeInventory(slot, InvOperation.EXTRACT, split, ItemStack.EMPTY);
-                }
-                return split;
-            } else {
-                if (!simulate) {
-                    split.increment(-amount);
-                    this.fireOnChangeInventory(slot, InvOperation.EXTRACT,
-                            Platform.copyStackWithSize(split, amount), ItemStack.EMPTY);
-                }
-                return Platform.copyStackWithSize(split, amount);
-            }
-        }
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public void setStackInSlot(final int slot, final ItemStack newItemStack) {
-        ItemStack oldStack = this.getStackInSlot(slot).copy();
-        this.inv[slot] = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)
-                .createStack(newItemStack);
-
-        if (this.te != null && Platform.isServer()) {
-            ItemStack newStack = newItemStack.copy();
-            InvOperation op = InvOperation.SET;
-
-            if (ItemStack.areItemsEqual(oldStack, newStack)) {
-                if (newStack.getCount() > oldStack.getCount()) {
-                    newStack.shrink(oldStack.getCount());
-                    oldStack = ItemStack.EMPTY;
-                    op = InvOperation.INSERT;
-                } else {
-                    oldStack.shrink(newStack.getCount());
-                    newStack = ItemStack.EMPTY;
-                    op = InvOperation.EXTRACT;
-                }
-            }
-            this.fireOnChangeInventory(slot, op, oldStack, newStack);
-        }
+    public ListenerToken addListener(InvMarkDirtyListener listener, ListenerRemovalToken removalToken) {
+        return null;
     }
 
     private void fireOnChangeInventory(int slot, InvOperation op, ItemStack removed, ItemStack inserted) {
@@ -214,8 +186,8 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
     }
 
     @Override
-    public int getSlotLimit(int slot) {
-        return this.maxStack > 64 ? 64 : this.maxStack;
+    public int getMaxAmount(int slot, ItemStack is) {
+        return Math.min(this.maxStack, 64);
     }
 
     @Override
@@ -223,12 +195,4 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
         return new InvIterator(this);
     }
 
-    public Iterator<IAEItemStack> getNewAEIterator() {
-        return new AEInvIterator(this);
-    }
-
-    @Override
-    public boolean isItemValid(int slot, ItemStack stack) {
-        return true;
-    }
 }

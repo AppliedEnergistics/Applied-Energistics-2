@@ -98,7 +98,7 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity implements
 
     private void triggerTransition() {
         if (Platform.isServer()) {
-            final ItemStack cell = this.inv.getStackInSlot(0);
+            final ItemStack cell = this.inv.getInvStack(0);
             if (this.isSpatialCell(cell)) {
                 TickHandler.INSTANCE.addCallable(null, this);// this needs to be cross world synced.
             }
@@ -115,8 +115,8 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity implements
 
     @Override
     public Void call(final World world) throws Exception {
-        final ItemStack cell = this.inv.getStackInSlot(0);
-        if (this.isSpatialCell(cell) && this.inv.getStackInSlot(1).isEmpty()) {
+        final ItemStack cell = this.inv.getInvStack(0);
+        if (this.isSpatialCell(cell) && this.inv.getInvStack(1).isEmpty()) {
             final IGrid gi = this.getProxy().getGrid();
             final IEnergyGrid energy = this.getProxy().getEnergy();
 

@@ -144,7 +144,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     public ItemStack getCell() {
-        return this.cellInventory.getStackInSlot(0);
+        return this.cellInventory.getInvStack(0);
     }
 
     @Override
@@ -471,7 +471,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             if (this.cellHandler != null && this.cellHandler.getChannel() == AEApi.instance().storage()
                     .getStorageChannel(IItemStorageChannel.class)) {
                 final IAEItemStack returns = Platform.poweredInsert(this, this.cellHandler,
-                        AEItemStack.fromItemStack(this.inputInventory.getStackInSlot(0)), this.mySrc);
+                        AEItemStack.fromItemStack(this.inputInventory.getInvStack(0)), this.mySrc);
 
                 if (returns == null) {
                     this.inputInventory.setStackInSlot(0, ItemStack.EMPTY);

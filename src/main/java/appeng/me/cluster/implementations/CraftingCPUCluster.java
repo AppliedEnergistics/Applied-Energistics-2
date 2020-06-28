@@ -33,7 +33,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.text.Text;
 import net.minecraft.world.World;
 import net.minecraft.server.world.ServerWorld;
@@ -990,7 +990,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
             data.put("link", link);
         }
 
-        final ListNBT list = new ListNBT();
+        final ListTag list = new ListTag();
         for (final Entry<ICraftingPatternDetails, TaskProgress> e : this.tasks.entrySet()) {
             final CompoundTag item = this.writeItem(AEItemStack.fromItemStack(e.getKey().getPattern()));
             item.putLong("craftingProgress", e.getValue().value);
@@ -1015,8 +1015,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         return out;
     }
 
-    private ListNBT writeList(final IItemList<IAEItemStack> myList) {
-        final ListNBT out = new ListNBT();
+    private ListTag writeList(final IItemList<IAEItemStack> myList) {
+        final ListTag out = new ListTag();
 
         for (final IAEItemStack ais : myList) {
             out.add(this.writeItem(ais));
@@ -1054,7 +1054,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
             this.submitLink(this.myLastLink);
         }
 
-        final ListNBT list = data.getList("tasks", 10);
+        final ListTag list = data.getList("tasks", 10);
         for (int x = 0; x < list.size(); x++) {
             final CompoundTag item = list.getCompound(x);
             final IAEItemStack pattern = AEItemStack.fromNBT(item);
@@ -1095,7 +1095,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         }
     }
 
-    private IItemList<IAEItemStack> readList(final ListNBT tag) {
+    private IItemList<IAEItemStack> readList(final ListTag tag) {
         final IItemList<IAEItemStack> out = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)
                 .createList();
 

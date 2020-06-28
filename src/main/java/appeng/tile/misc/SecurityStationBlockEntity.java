@@ -118,7 +118,7 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     @Override
     public void getDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
         if (!ItemHandlerUtil.isEmpty(this.getConfigSlot())) {
-            drops.add(this.getConfigSlot().getStackInSlot(0));
+            drops.add(this.getConfigSlot().getInvStack(0));
         }
 
         for (final IAEItemStack ais : this.inventory.getStoredItems()) {

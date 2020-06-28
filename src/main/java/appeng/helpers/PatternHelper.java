@@ -31,7 +31,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
@@ -67,8 +67,8 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
             throw new IllegalArgumentException("No pattern here!");
         }
 
-        final ListNBT inTag = encodedValue.getList("in", 10);
-        final ListNBT outTag = encodedValue.getList("out", 10);
+        final ListTag inTag = encodedValue.getList("in", 10);
+        final ListTag outTag = encodedValue.getList("out", 10);
         this.isCrafting = encodedValue.getBoolean("crafting");
 
         this.canSubstitute = this.isCrafting && encodedValue.getBoolean("substitute");

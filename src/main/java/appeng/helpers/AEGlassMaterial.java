@@ -19,12 +19,12 @@
 package appeng.helpers;
 
 import net.minecraft.block.Material;
-import net.minecraft.block.material.MaterialColor;
-import net.minecraft.block.material.PushReaction;
+import net.minecraft.block.MaterialColor;
+import net.minecraft.block.piston.PistonBehavior;
 
 public class AEGlassMaterial {
 
-    public static final Material INSTANCE = new Material(MaterialColor.AIR, false, false, true, false, true, false,
-            false, PushReaction.NORMAL);
+    public static final Material INSTANCE = new Material(MaterialColor.CLEAR, false, false, true, false, false,
+            false, PistonBehavior.NORMAL);
 
 }

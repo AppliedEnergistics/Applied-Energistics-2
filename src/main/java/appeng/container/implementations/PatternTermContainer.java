@@ -37,7 +37,7 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.world.World;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
@@ -237,8 +237,8 @@ public class PatternTermContainer extends MEMonitorableContainer
         // encode the slot.
         final CompoundTag encodedValue = new CompoundTag();
 
-        final ListNBT tagIn = new ListNBT();
-        final ListNBT tagOut = new ListNBT();
+        final ListTag tagIn = new ListTag();
+        final ListTag tagOut = new ListTag();
 
         for (final ItemStack i : in) {
             tagIn.add(this.createItemTag(i));

@@ -405,7 +405,7 @@ public abstract class AEBaseContainer extends Container {
                             final ItemStack t = d.getStack().copy();
 
                             if (Platform.itemComparisons().isSameItem(t, tis)) {
-                                int maxSize = t.getMaxStackSize();
+                                int maxSize = t.getMaxCount();
                                 if (maxSize > d.getSlotStackLimit()) {
                                     maxSize = d.getSlotStackLimit();
                                 }
@@ -449,7 +449,7 @@ public abstract class AEBaseContainer extends Container {
                             final ItemStack t = d.getStack().copy();
 
                             if (Platform.itemComparisons().isSameItem(t, tis)) {
-                                int maxSize = t.getMaxStackSize();
+                                int maxSize = t.getMaxCount();
                                 if (maxSize > d.getSlotStackLimit()) {
                                     maxSize = d.getSlotStackLimit();
                                 }
@@ -478,7 +478,7 @@ public abstract class AEBaseContainer extends Container {
                                 }
                             }
                         } else {
-                            int maxSize = tis.getMaxStackSize();
+                            int maxSize = tis.getMaxCount();
                             if (maxSize > d.getSlotStackLimit()) {
                                 maxSize = d.getSlotStackLimit();
                             }
@@ -580,7 +580,7 @@ public abstract class AEBaseContainer extends Container {
                             if (hand.isEmpty()) {
                                 is.setCount(Math.max(1, is.getCount() - 1));
                             } else if (hand.isItemEqual(is)) {
-                                is.setCount(Math.min(is.getMaxStackSize(), is.getCount() + 1));
+                                is.setCount(Math.min(is.getMaxCount(), is.getCount() + 1));
                             } else {
                                 is = hand.copy();
                                 is.setCount(1);
@@ -632,7 +632,7 @@ public abstract class AEBaseContainer extends Container {
                     IAEItemStack ais = slotItem.copy();
                     ItemStack myItem = ais.createItemStack();
 
-                    ais.setStackSize(myItem.getMaxStackSize());
+                    ais.setStackSize(myItem.getMaxCount());
 
                     final InventoryAdaptor adp = InventoryAdaptor.getAdaptor(player);
                     myItem.setCount((int) ais.getStackSize());
@@ -691,7 +691,7 @@ public abstract class AEBaseContainer extends Container {
                     final ItemStack item = player.inventory.getItemStack();
 
                     if (!item.isEmpty()) {
-                        if (item.getCount() >= item.getMaxStackSize()) {
+                        if (item.getCount() >= item.getMaxCount()) {
                             liftQty = 0;
                         }
                         if (!Platform.itemComparisons().isSameItem(slotItem.getDefinition(), item)) {
@@ -726,7 +726,7 @@ public abstract class AEBaseContainer extends Container {
                 if (player.inventory.getItemStack().isEmpty()) {
                     if (slotItem != null) {
                         IAEItemStack ais = slotItem.copy();
-                        ais.setStackSize(ais.getDefinition().getMaxStackSize());
+                        ais.setStackSize(ais.getDefinition().getMaxCount());
                         ais = Platform.poweredExtraction(this.getPowerSource(), this.getCellInventory(), ais,
                                 this.getActionSource());
                         if (ais != null) {
@@ -758,7 +758,7 @@ public abstract class AEBaseContainer extends Container {
                 if (player.inventory.getItemStack().isEmpty()) {
                     if (slotItem != null) {
                         IAEItemStack ais = slotItem.copy();
-                        final long maxSize = ais.getDefinition().getMaxStackSize();
+                        final long maxSize = ais.getDefinition().getMaxCount();
                         ais.setStackSize(maxSize);
                         ais = this.getCellInventory().extractItems(ais, Actionable.SIMULATE, this.getActionSource());
 
@@ -796,7 +796,7 @@ public abstract class AEBaseContainer extends Container {
             case CREATIVE_DUPLICATE:
                 if (player.abilities.isCreativeMode && slotItem != null) {
                     final ItemStack is = slotItem.createItemStack();
-                    is.setCount(is.getMaxStackSize());
+                    is.setCount(is.getMaxCount());
                     player.inventory.setItemStack(is);
                     this.updateHeld(player);
                 }
@@ -813,7 +813,7 @@ public abstract class AEBaseContainer extends Container {
                         IAEItemStack ais = slotItem.copy();
                         ItemStack myItem = ais.createItemStack();
 
-                        ais.setStackSize(myItem.getMaxStackSize());
+                        ais.setStackSize(myItem.getMaxCount());
 
                         final InventoryAdaptor adp = InventoryAdaptor.getAdaptor(player);
                         myItem.setCount((int) ais.getStackSize());

@@ -91,7 +91,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
     @Override
     protected void writeToStream(final PacketByteBuf data) throws IOException {
         super.writeToStream(data);
-        final AEItemStack is = AEItemStack.fromItemStack(this.inv.getStackInSlot(0));
+        final AEItemStack is = AEItemStack.fromItemStack(this.inv.getInvStack(0));
         if (is != null) {
             is.writeToPacket(data);
         }
@@ -113,7 +113,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
     public void applyTurn() {
         this.injectExternalPower(PowerUnits.AE, POWER_PER_CRANK_TURN, Actionable.MODULATE);
 
-        final ItemStack myItem = this.inv.getStackInSlot(0);
+        final ItemStack myItem = this.inv.getInvStack(0);
         if (this.getInternalCurrentPower() > POWER_THRESHOLD) {
             final IMaterials materials = AEApi.instance().definitions().materials();
 
@@ -153,7 +153,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
             return;
         }
 
-        final ItemStack myItem = this.inv.getStackInSlot(0);
+        final ItemStack myItem = this.inv.getInvStack(0);
         if (myItem.isEmpty()) {
             ItemStack held = player.inventory.getCurrentItem();
 
@@ -181,7 +181,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
     }
 
     private boolean doWork() {
-        final ItemStack myItem = this.inv.getStackInSlot(0);
+        final ItemStack myItem = this.inv.getInvStack(0);
         boolean changed = false;
 
         if (!myItem.isEmpty()) {

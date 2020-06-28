@@ -213,7 +213,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         final ItemStack is = input.createItemStack();
         final Item i = is.getItem();
 
-        long maxStorage = Math.min(input.getStackSize(), is.getMaxStackSize());
+        long maxStorage = Math.min(input.getStackSize(), is.getMaxCount());
         boolean worked = false;
 
         final BlockEntity te = this.getHost().getTile();

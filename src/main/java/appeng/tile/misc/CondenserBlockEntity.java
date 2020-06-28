@@ -102,7 +102,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     }
 
     public double getStorage() {
-        final ItemStack is = this.storageSlot.getStackInSlot(0);
+        final ItemStack is = this.storageSlot.getInvStack(0);
         if (!is.isEmpty()) {
             if (is.getItem() instanceof IStorageComponent) {
                 final IStorageComponent sc = (IStorageComponent) is.getItem();
@@ -247,7 +247,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         }
 
         @Override
-        public int getSlotLimit(int slot) {
+        public int getMaxAmount(int slot, ItemStack is) {
             return 64;
         }
     }

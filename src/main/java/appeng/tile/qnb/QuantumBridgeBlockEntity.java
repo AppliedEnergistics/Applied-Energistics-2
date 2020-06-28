@@ -93,7 +93,7 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity implements
         super.writeToStream(data);
         int out = this.constructed;
 
-        if (!this.internalInventory.getStackInSlot(0).isEmpty() && this.constructed != -1) {
+        if (!this.internalInventory.getInvStack(0).isEmpty() && this.constructed != -1) {
             out |= this.hasSingularity;
         }
 
@@ -239,7 +239,7 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity implements
     }
 
     public long getQEFrequency() {
-        final ItemStack is = this.internalInventory.getStackInSlot(0);
+        final ItemStack is = this.internalInventory.getInvStack(0);
         if (!is.isEmpty()) {
             final CompoundTag c = is.getTag();
             if (c != null) {

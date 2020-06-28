@@ -335,7 +335,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
             final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory(null, target.getSlots());
             tmp.readFromNBT(compound, "config");
             for (int x = 0; x < tmp.getSlots(); x++) {
-                target.setStackInSlot(x, tmp.getStackInSlot(x));
+                target.setStackInSlot(x, tmp.getInvStack(x));
             }
         }
     }

@@ -207,7 +207,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
             return cellItems[slot];
         }
 
-        ItemStack stackInSlot = inv.getStackInSlot(slot);
+        ItemStack stackInSlot = inv.getInvStack(slot);
         if (!stackInSlot.isEmpty()) {
             return stackInSlot.getItem();
         }
@@ -336,7 +336,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
             double power = 2.0;
 
             for (int x = 0; x < this.inv.getSlots(); x++) {
-                final ItemStack is = this.inv.getStackInSlot(x);
+                final ItemStack is = this.inv.getInvStack(x);
                 this.invBySlot[x] = null;
                 this.handlersBySlot[x] = null;
 

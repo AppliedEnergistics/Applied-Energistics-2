@@ -26,7 +26,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.AEApi;
@@ -61,7 +61,7 @@ public class JEIRecipePacket extends BasePacket {
         if (comp != null) {
             this.recipe = new ItemStack[9][];
             for (int x = 0; x < this.recipe.length; x++) {
-                final ListNBT list = comp.getList("#" + x, 10);
+                final ListTag list = comp.getList("#" + x, 10);
                 if (list.size() > 0) {
                     this.recipe[x] = new ItemStack[list.size()];
                     for (int y = 0; y < list.size(); y++) {

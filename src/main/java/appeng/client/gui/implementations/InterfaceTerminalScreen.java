@@ -36,7 +36,7 @@ import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.text.Text;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
@@ -315,7 +315,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
         // Potential later use to filter by input
         // ListNBT inTag = encodedValue.getTagList( "in", 10 );
-        final ListNBT outTag = encodedValue.getList("out", 10);
+        final ListTag outTag = encodedValue.getList("out", 10);
 
         for (int i = 0; i < outTag.size(); i++) {
 

@@ -134,7 +134,7 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
     }
 
     private boolean canEatFuel() {
-        final ItemStack is = this.inv.getStackInSlot(0);
+        final ItemStack is = this.inv.getInvStack(0);
         if (!is.isEmpty()) {
             final int newBurnTime = ForgeHooks.getBurnTime(is);
             if (newBurnTime > 0 && is.getCount() > 0) {
@@ -206,7 +206,7 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
     }
 
     private void eatFuel() {
-        final ItemStack is = this.inv.getStackInSlot(0);
+        final ItemStack is = this.inv.getInvStack(0);
         if (!is.isEmpty()) {
             final int newBurnTime = ForgeHooks.getBurnTime(is);
             if (newBurnTime > 0 && is.getCount() > 0) {
@@ -214,7 +214,7 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
                 this.setMaxBurnTime(this.getBurnTime());
 
                 final Item fuelItem = is.getItem();
-                is.shrink(1);
+                is.decrement(1);
 
                 if (is.isEmpty()) {
                     this.inv.setStackInSlot(0, fuelItem.getRecipeRemainder(is));

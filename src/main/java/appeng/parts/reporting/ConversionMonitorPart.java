@@ -121,7 +121,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
         }
 
         if (this.getDisplayed() != null) {
-            this.extractItem(player, this.getDisplayed().getDefinition().getMaxStackSize());
+            this.extractItem(player, this.getDisplayed().getDefinition().getMaxCount());
         }
 
         return true;
