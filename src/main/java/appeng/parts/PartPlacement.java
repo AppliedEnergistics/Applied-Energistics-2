@@ -37,7 +37,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.RayTraceContext;
 import net.minecraft.util.hit.HitResult;
@@ -233,7 +233,7 @@ public class PartPlacement {
             final boolean multiPartPresent = maybeMultiPartBlock.isPresent() && maybeMultiPartStack.isPresent()
                     && maybeMultiPartBlockItem.isPresent();
             BlockState multiPartBlockState = maybeMultiPartBlock.get().getDefaultState();
-            final boolean canMultiPartBePlaced = multiPartBlockState.isValidPosition(world, te_pos);
+            final boolean canMultiPartBePlaced = multiPartBlockState.canPlaceAt(world, te_pos);
 
             // We cannot override the item stack of normal use context, so we use this hack
             ItemPlacementContext mpUseCtx = new ItemPlacementContext(

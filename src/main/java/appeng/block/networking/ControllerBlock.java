@@ -22,7 +22,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.state.EnumProperty;
-import net.minecraft.state.StateContainer;
+import net.minecraft.state.StateManager;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
@@ -67,14 +67,14 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerBlockEntity> {
             ControllerRenderType.class);
 
     public ControllerBlock() {
-        super(defaultProps(Material.IRON).strength(6));
+        super(defaultProps(Material.METAL).strength(6));
         this.setDefaultState(this.getDefaultState().with(CONTROLLER_STATE, ControllerBlockState.offline)
                 .with(CONTROLLER_TYPE, ControllerRenderType.block));
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
         builder.add(CONTROLLER_STATE);
         builder.add(CONTROLLER_TYPE);
     }
@@ -86,7 +86,7 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerBlockEntity> {
      * texture feel for the controller based on how it is placed.
      */
     @Override
-    public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, WorldAccess world,
+    public BlockState getStateForNeighborUpdate(BlockState state, Direction facing, BlockState facingState, WorldAccess world,
             BlockPos pos, BlockPos facingPos) {
 
         // FIXME: this might work, or might _NOT_ work, but needs to be investigated
@@ -130,7 +130,7 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerBlockEntity> {
     }
 
     @Override
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
         final ControllerBlockEntity tc = this.getBlockEntity(world, pos);
         if (tc != null) {

@@ -26,7 +26,7 @@ import appeng.bootstrap.TileEntityRenderingCustomizer;
 import appeng.client.render.tesr.SkyCompassTESR;
 import appeng.tile.misc.SkyCompassBlockEntity;
 
-public class SkyCompassRendering extends TileEntityRenderingCustomizer<SkyCompassBlockEntity> {
+public class SkyCompassRendering implements TileEntityRenderingCustomizer<SkyCompassBlockEntity> {
 
     @Override
     @Environment(EnvType.CLIENT)

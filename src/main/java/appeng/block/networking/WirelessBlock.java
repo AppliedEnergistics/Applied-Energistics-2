@@ -22,7 +22,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.EnumProperty;
-import net.minecraft.state.StateContainer;
+import net.minecraft.state.StateManager;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Direction;
@@ -79,8 +79,8 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessBlockEntity> {
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
         builder.add(STATE);
     }
 
@@ -92,7 +92,7 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessBlockEntity> {
         if (tg != null && !player.isInSneakingPose()) {
             if (Platform.isServer()) {
                 ContainerOpener.openContainer(WirelessContainer.TYPE, player,
-                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+                        ContainerLocator.forTileEntitySide(tg, hit.getSide()));
             }
             return ActionResult.SUCCESS;
         }
@@ -101,7 +101,7 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessBlockEntity> {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockView w, BlockPos pos, ShapeContext context) {
+    public VoxelShape getOutlineShape(BlockState state, BlockView w, BlockPos pos, ShapeContext context) {
         final WirelessBlockEntity tile = this.getBlockEntity(w, pos);
         if (tile != null) {
             final Direction forward = tile.getForward();
@@ -154,7 +154,7 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessBlockEntity> {
                     break;
             }
 
-            return VoxelShapes.create(new Box(minX, minY, minZ, maxX, maxY, maxZ));
+            return VoxelShapes.cuboid(new Box(minX, minY, minZ, maxX, maxY, maxZ));
         }
         return VoxelShapes.empty();
     }
@@ -214,7 +214,7 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessBlockEntity> {
                     break;
             }
 
-            return VoxelShapes.create(new Box(minX, minY, minZ, maxX, maxY, maxZ));
+            return VoxelShapes.cuboid(new Box(minX, minY, minZ, maxX, maxY, maxZ));
         } else {
             return VoxelShapes.empty();
         }

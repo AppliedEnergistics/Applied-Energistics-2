@@ -113,7 +113,7 @@ class ColorApplicatorBakedModel implements BakedModel {
     }
 
     @Override
-    public BakedModel handlePerspective(ModelTransformation.TransformType cameraTransformType, MatrixStack mat) {
+    public BakedModel handlePerspective(ModelTransformation.Mode cameraTransformType, MatrixStack mat) {
         return PerspectiveMapWrapper.handlePerspective(this, transforms, cameraTransformType, mat);
     }
 }

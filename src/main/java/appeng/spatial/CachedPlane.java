@@ -27,7 +27,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.network.play.server.SChunkDataPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.util.Tickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EmptyBlockReader;
 import net.minecraft.world.ITickList;
@@ -169,7 +169,7 @@ public class CachedPlane {
         for (final BlockEntity te : this.tiles) {
             try {
                 this.getWorld().loadedTileEntityList.remove(te);
-                if (te instanceof ITickableTileEntity) {
+                if (te instanceof Tickable) {
                     this.getWorld().tickableTileEntities.remove(te);
                 }
             } catch (final Exception e) {

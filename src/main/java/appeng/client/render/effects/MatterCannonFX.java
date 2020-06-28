@@ -20,13 +20,13 @@ package appeng.client.render.effects;
 
 import net.fabricmc.api.EnvType;
 import net.minecraft.client.particle.*;
-import net.minecraft.particles.BasicParticleType;
+import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.world.World;
 import net.fabricmc.api.Environment;
 
 import appeng.api.util.AEPartLocation;
 
-public class MatterCannonFX extends SpriteTexturedParticle {
+public class MatterCannonFX extends SpriteBillboardParticle {
 
     public MatterCannonFX(final World par1World, final double x, final double y, final double z,
             IAnimatedSprite sprite) {
@@ -73,7 +73,7 @@ public class MatterCannonFX extends SpriteTexturedParticle {
     }
 
     @Environment(EnvType.CLIENT)
-    public static class Factory implements IParticleFactory<BasicParticleType> {
+    public static class Factory implements IParticleFactory<DefaultParticleType> {
         private final IAnimatedSprite spriteSet;
 
         public Factory(IAnimatedSprite spriteSet) {
@@ -81,8 +81,8 @@ public class MatterCannonFX extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle makeParticle(BasicParticleType data, World world, double x, double y, double z, double xSpeed,
-                double ySpeed, double zSpeed) {
+        public Particle makeParticle(DefaultParticleType data, World world, double x, double y, double z, double xSpeed,
+                                     double ySpeed, double zSpeed) {
             return new MatterCannonFX(world, x, y, z, spriteSet);
         }
     }

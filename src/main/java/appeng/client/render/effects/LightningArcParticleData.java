@@ -6,15 +6,15 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleType;
+import net.minecraft.particle.ParticleEffect;
+import net.minecraft.particle.ParticleType;
 import net.minecraft.util.math.Vec3d;
 
 /**
  * Contains the target point of the lightning arc (the source point is infered
  * from the particle starting position).
  */
-public class LightningArcParticleData implements IParticleData {
+public class LightningArcParticleData implements ParticleEffect {
 
     public final Vec3d target;
 
@@ -22,10 +22,10 @@ public class LightningArcParticleData implements IParticleData {
         this.target = target;
     }
 
-    public static final IDeserializer<LightningArcParticleData> DESERIALIZER = new IDeserializer<LightningArcParticleData>() {
+    public static final Factory<LightningArcParticleData> DESERIALIZER = new Factory<LightningArcParticleData>() {
         @Override
-        public LightningArcParticleData deserialize(ParticleType<LightningArcParticleData> particleTypeIn,
-                StringReader reader) throws CommandSyntaxException {
+        public LightningArcParticleData read(ParticleType<LightningArcParticleData> particleTypeIn,
+                                                    StringReader reader) throws CommandSyntaxException {
             reader.expect(' ');
             float x = reader.readFloat();
             reader.expect(' ');
@@ -58,7 +58,7 @@ public class LightningArcParticleData implements IParticleData {
     }
 
     @Override
-    public String getParameters() {
+    public String asString() {
         return String.format(Locale.ROOT, "%.2f %.2f %.2f", target.x, target.y, target.z);
     }
 

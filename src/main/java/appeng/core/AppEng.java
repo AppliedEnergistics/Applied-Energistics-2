@@ -33,7 +33,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.particles.ParticleType;
+import net.minecraft.particle.ParticleType;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;

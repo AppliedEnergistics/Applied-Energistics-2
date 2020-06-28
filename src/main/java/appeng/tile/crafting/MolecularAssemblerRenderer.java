@@ -118,7 +118,7 @@ public class MolecularAssemblerRenderer extends BlockEntityRenderer<MolecularAss
 
             if (AppEng.proxy.shouldAddParticles(particleRandom)) {
                 for (int x = 0; x < (int) Math.ceil(status.getSpeed() / 5.0); x++) {
-                    minecraft.particles.addParticle(ParticleTypes.CRAFTING, centerX, centerY, centerZ, 0, 0, 0);
+                    minecraft.particleManager.addParticle(ParticleTypes.CRAFTING, centerX, centerY, centerZ, 0, 0, 0);
                 }
             }
         }
@@ -135,7 +135,7 @@ public class MolecularAssemblerRenderer extends BlockEntityRenderer<MolecularAss
             ms.translate(0, -0.2f, 0);
         }
 
-        itemRenderer.renderItem(is, ModelTransformation.TransformType.GROUND, combinedLightIn,
+        itemRenderer.renderItem(is, ModelTransformation.Mode.GROUND, combinedLightIn,
                 OverlayTexture.NO_OVERLAY, ms, bufferIn);
         ms.pop();
     }

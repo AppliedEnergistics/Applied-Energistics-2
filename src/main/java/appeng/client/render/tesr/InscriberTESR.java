@@ -178,7 +178,7 @@ public final class InscriberTESR extends BlockEntityRenderer<InscriberBlockEntit
         vb.tex(sprite.getInterpolatedU(texU), sprite.getInterpolatedV(texV));
         vb.overlay(overlayUV);
         vb.lightmap(lightmapUV);
-        vb.normal(ms.getLast().getNormal(), front.getOffsetX(), front.getOffsetY(), front.getZOffset());
+        vb.normal(ms.getLast().getNormal(), front.getOffsetX(), front.getOffsetY(), front.getOffsetZ());
         vb.endVertex();
     }
 
@@ -201,7 +201,7 @@ public final class InscriberTESR extends BlockEntityRenderer<InscriberBlockEntit
                 ms.scale(0.5f, 0.5f, 0.5f);
             }
 
-            itemRenderer.renderItem(stack, ModelTransformation.TransformType.FIXED, combinedLight, combinedOverlay, ms,
+            itemRenderer.renderItem(stack, ModelTransformation.Mode.FIXED, combinedLight, combinedOverlay, ms,
                     buffers);
             ms.pop();
         }

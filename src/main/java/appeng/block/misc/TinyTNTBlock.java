@@ -25,23 +25,22 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.Explosion;
+import net.minecraft.world.explosion.Explosion;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import net.minecraft.server.world.ServerWorld;
 
 import appeng.block.AEBaseBlock;
 import appeng.entity.TinyTNTPrimedEntity;
@@ -49,11 +48,10 @@ import appeng.entity.TinyTNTPrimedEntity;
 public class TinyTNTBlock extends AEBaseBlock {
 
     private static final VoxelShape SHAPE = VoxelShapes
-            .create(new Box(0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f));
+            .cuboid(new Box(0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f));
 
     public TinyTNTBlock(Settings props) {
         super(props);
-        setFullSize(setOpaque(false));
     }
 
     @Override
@@ -62,7 +60,7 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
+    public VoxelShape getOutlineShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
         return SHAPE;
     }
 
@@ -72,8 +70,8 @@ public class TinyTNTBlock extends AEBaseBlock {
         if (heldItem != null && heldItem.getItem() == Items.FLINT_AND_STEEL) {
             this.startFuse(w, pos, player);
             w.removeBlock(pos, false);
-            heldItem.damageItem(1, player, p -> {
-                p.sendBreakAnimation(hand);
+            heldItem.damage(1, player, p -> {
+                p.sendToolBreakStatus(hand);
             }); // FIXME Check if onBroken is equivalent
             return ActionResult.SUCCESS;
         } else {
@@ -92,9 +90,8 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
-            boolean isMoving) {
-        if (world.getRedstonePowerFromNeighbors(pos) > 0) {
+    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean notify) {
+        if (world.isReceivingRedstonePower(pos)) {
             this.startFuse(world, pos, null);
             world.removeBlock(pos, false);
         }
@@ -104,27 +101,23 @@ public class TinyTNTBlock extends AEBaseBlock {
     public void onBlockAdded(BlockState state, World w, BlockPos pos, BlockState oldState, boolean isMoving) {
         super.onBlockAdded(state, w, pos, oldState, isMoving);
 
-        if (w.getRedstonePowerFromNeighbors(pos) > 0) {
+        if (w.getReceivedStrongRedstonePower(pos) > 0) {
             this.startFuse(w, pos, null);
             w.removeBlock(pos, false);
         }
     }
 
     @Override
-    public void onEntityWalk(final World w, final BlockPos pos, final Entity entity) {
-        if (entity instanceof AbstractArrowEntity && !w.isClient) {
-            final AbstractArrowEntity entityarrow = (AbstractArrowEntity) entity;
+    public void onSteppedOn(final World w, final BlockPos pos, final Entity entity) {
+        if (entity instanceof PersistentProjectileEntity && !w.isClient) {
+            final PersistentProjectileEntity entityarrow = (PersistentProjectileEntity) entity;
 
-            if (entityarrow.isBurning()) {
+            if (entityarrow.isOnFire()) {
                 LivingEntity igniter = null;
                 // Check if the shooter still exists
-                if (w instanceof ServerWorld) {
-                    ServerWorld serverWorld = (ServerWorld) w;
-                    Entity shooter = serverWorld.getEntityByUuid(entityarrow.shootingEntity);
-                    if (shooter instanceof LivingEntity) {
-                        igniter = (LivingEntity) shooter;
-                    }
-
+                Entity shooter = entityarrow.getOwner();
+                if (shooter instanceof LivingEntity) {
+                    igniter = (LivingEntity) shooter;
                 }
                 this.startFuse(w, pos, igniter);
                 w.removeBlock(pos, false);
@@ -133,18 +126,18 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    public boolean canDropFromExplosion(final Explosion exp) {
+    public boolean shouldDropItemsOnExplosion(final Explosion exp) {
         return false;
     }
 
     @Override
-    public void onExplosionDestroy(final World w, final BlockPos pos, final Explosion exp) {
-        super.onExplosionDestroy(w, pos, exp);
+    public void onDestroyedByExplosion(final World w, final BlockPos pos, final Explosion exp) {
+        super.onDestroyedByExplosion(w, pos, exp);
         if (!w.isClient) {
             final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(w, pos.getX() + 0.5F,
-                    pos.getY() + 0.5F, pos.getZ() + 0.5F, exp.getExplosivePlacedBy());
+                    pos.getY() + 0.5F, pos.getZ() + 0.5F, exp.getCausingEntity());
             primedTinyTNTEntity
-                    .setFuse(w.rand.nextInt(primedTinyTNTEntity.getFuse() / 4) + primedTinyTNTEntity.getFuse() / 8);
+                    .setFuse(w.random.nextInt(primedTinyTNTEntity.getFuse() / 4) + primedTinyTNTEntity.getFuse() / 8);
             w.spawnEntity(primedTinyTNTEntity);
         }
     }

@@ -19,7 +19,7 @@
 package appeng.helpers;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.state.Property;
+import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
@@ -31,11 +31,11 @@ import appeng.decorative.solid.QuartzPillarBlock;
 
 public class MetaRotation implements IOrientable {
 
-    private final Property<Direction> facingProp;
+    private final DirectionProperty facingProp;
     private final BlockView w;
     private final BlockPos pos;
 
-    public MetaRotation(final BlockView world, final BlockPos pos, final Property<Direction> facingProp) {
+    public MetaRotation(final BlockView world, final BlockPos pos, final DirectionProperty facingProp) {
         this.w = world;
         this.pos = pos;
         this.facingProp = facingProp;
@@ -58,12 +58,12 @@ public class MetaRotation implements IOrientable {
     public Direction getUp() {
         final BlockState state = this.w.getBlockState(this.pos);
 
-        if (this.facingProp != null && state.has(this.facingProp)) {
+        if (this.facingProp != null && state.contains(this.facingProp)) {
             return state.get(this.facingProp);
         }
 
         // TODO 1.10.2-R - Temp
-        if (state.has(QuartzPillarBlock.AXIS)) {
+        if (state.contains(QuartzPillarBlock.AXIS)) {
             Axis a = state.get(QuartzPillarBlock.AXIS);
             switch (a) {
                 case X:

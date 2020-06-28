@@ -21,8 +21,8 @@ package appeng.block.crafting;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
+import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.state.StateManager;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -36,8 +36,8 @@ import appeng.container.implementations.CraftingCPUContainer;
 import appeng.tile.crafting.CraftingBlockEntity;
 
 public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> extends AEBaseTileBlock<T> {
-    public static final BooleanProperty FORMED = BooleanProperty.create("formed");
-    public static final BooleanProperty POWERED = BooleanProperty.create("powered");
+    public static final BooleanProperty FORMED = BooleanProperty.of("formed");
+    public static final BooleanProperty POWERED = BooleanProperty.of("powered");
 
     public final CraftingUnitType type;
 
@@ -48,14 +48,14 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
         builder.add(POWERED);
         builder.add(FORMED);
     }
 
     @Override
-    public void neighborChanged(final BlockState state, final World worldIn, final BlockPos pos, final Block blockIn,
+    public void neighborUpdate(final BlockState state, final World worldIn, final BlockPos pos, final Block blockIn,
             final BlockPos fromPos, boolean isMoving) {
         final CraftingBlockEntity cp = this.getBlockEntity(worldIn, pos);
         if (cp != null) {
@@ -85,7 +85,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
         if (tg != null && !p.isInSneakingPose() && tg.isFormed() && tg.isActive()) {
             if (!w.isClient()) {
                 ContainerOpener.openContainer(CraftingCPUContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+                        ContainerLocator.forTileEntitySide(tg, hit.getSide()));
             }
 
             return ActionResult.SUCCESS;

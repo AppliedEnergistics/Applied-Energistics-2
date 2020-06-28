@@ -10,7 +10,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.renderer.RenderState;
-import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

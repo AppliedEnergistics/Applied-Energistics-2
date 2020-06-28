@@ -27,9 +27,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.state.StateManager;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
@@ -42,17 +42,16 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.VibrationChamberContainer;
 import appeng.core.AEConfig;
-import appeng.tile.AEBaseBlockEntity;
 import appeng.tile.misc.VibrationChamberBlockEntity;
 import appeng.util.Platform;
 
 public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChamberBlockEntity> {
 
     // Indicates that the vibration chamber is currently working
-    private static final BooleanProperty ACTIVE = BooleanProperty.create("active");
+    private static final BooleanProperty ACTIVE = BooleanProperty.of("active");
 
     public VibrationChamberBlock() {
-        super(defaultProps(Material.IRON).strength(4.2F));
+        super(defaultProps(Material.METAL).strength(4.2F));
         this.setDefaultState(this.getDefaultState().with(ACTIVE, false));
     }
 
@@ -62,8 +61,8 @@ public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChambe
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
         builder.add(ACTIVE);
     }
 
@@ -78,7 +77,7 @@ public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChambe
             final VibrationChamberBlockEntity tc = this.getBlockEntity(w, pos);
             if (tc != null && !player.isInSneakingPose()) {
                 ContainerOpener.openContainer(VibrationChamberContainer.TYPE, player,
-                        ContainerLocator.forTileEntitySide(tc, hit.getFace()));
+                        ContainerLocator.forTileEntitySide(tc, hit.getSide()));
                 return ActionResult.SUCCESS;
             }
         }
@@ -87,44 +86,41 @@ public final class VibrationChamberBlock extends AEBaseTileBlock<VibrationChambe
     }
 
     @Override
-    public void animateTick(final BlockState state, final World w, final BlockPos pos, final Random r) {
+    public void randomDisplayTick(final BlockState state, final World w, final BlockPos pos, final Random r) {
         if (!AEConfig.instance().isEnableEffects()) {
             return;
         }
 
-        final AEBaseBlockEntity tile = this.getBlockEntity(w, pos);
-        if (tile instanceof VibrationChamberBlockEntity) {
-            final VibrationChamberBlockEntity tc = (VibrationChamberBlockEntity) tile;
-            if (tc.isOn) {
-                double f1 = pos.getX() + 0.5F;
-                double f2 = pos.getY() + 0.5F;
-                double f3 = pos.getZ() + 0.5F;
+        final VibrationChamberBlockEntity tile = this.getBlockEntity(w, pos);
+        if (tile != null && tile.isOn) {
+            double f1 = pos.getX() + 0.5F;
+            double f2 = pos.getY() + 0.5F;
+            double f3 = pos.getZ() + 0.5F;
 
-                final Direction forward = tc.getForward();
-                final Direction up = tc.getUp();
+            final Direction forward = tile.getForward();
+            final Direction up = tile.getUp();
 
-                final int west_x = forward.getOffsetY() * up.getOffsetZ() - forward.getOffsetZ() * up.getOffsetY();
-                final int west_y = forward.getOffsetZ() * up.getOffsetX() - forward.getOffsetX() * up.getOffsetZ();
-                final int west_z = forward.getOffsetX() * up.getOffsetY() - forward.getOffsetY() * up.getOffsetX();
+            final int west_x = forward.getOffsetY() * up.getOffsetZ() - forward.getOffsetZ() * up.getOffsetY();
+            final int west_y = forward.getOffsetZ() * up.getOffsetX() - forward.getOffsetX() * up.getOffsetZ();
+            final int west_z = forward.getOffsetX() * up.getOffsetY() - forward.getOffsetY() * up.getOffsetX();
 
-                f1 += forward.getOffsetX() * 0.6;
-                f2 += forward.getOffsetY() * 0.6;
-                f3 += forward.getOffsetZ() * 0.6;
+            f1 += forward.getOffsetX() * 0.6;
+            f2 += forward.getOffsetY() * 0.6;
+            f3 += forward.getOffsetZ() * 0.6;
 
-                final double ox = r.nextDouble();
-                final double oy = r.nextDouble() * 0.2f;
+            final double ox = r.nextDouble();
+            final double oy = r.nextDouble() * 0.2f;
 
-                f1 += up.getOffsetX() * (-0.3 + oy);
-                f2 += up.getOffsetY() * (-0.3 + oy);
-                f3 += up.getOffsetZ() * (-0.3 + oy);
+            f1 += up.getOffsetX() * (-0.3 + oy);
+            f2 += up.getOffsetY() * (-0.3 + oy);
+            f3 += up.getOffsetZ() * (-0.3 + oy);
 
-                f1 += west_x * (0.3 * ox - 0.15);
-                f2 += west_y * (0.3 * ox - 0.15);
-                f3 += west_z * (0.3 * ox - 0.15);
+            f1 += west_x * (0.3 * ox - 0.15);
+            f2 += west_y * (0.3 * ox - 0.15);
+            f3 += west_z * (0.3 * ox - 0.15);
 
-                w.addParticle(ParticleTypes.SMOKE, f1, f2, f3, 0.0D, 0.0D, 0.0D);
-                w.addParticle(ParticleTypes.FLAME, f1, f2, f3, 0.0D, 0.0D, 0.0D);
-            }
+            w.addParticle(ParticleTypes.SMOKE, f1, f2, f3, 0.0D, 0.0D, 0.0D);
+            w.addParticle(ParticleTypes.FLAME, f1, f2, f3, 0.0D, 0.0D, 0.0D);
         }
     }
 }

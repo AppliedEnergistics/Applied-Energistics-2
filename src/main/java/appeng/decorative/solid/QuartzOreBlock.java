@@ -30,7 +30,7 @@ public class QuartzOreBlock extends AEBaseBlock {
     }
 
     @Override
-    public int getExpDrop(BlockState state, net.minecraft.world.IWorldReader reader, BlockPos pos, int fortune,
+    public int getExpDrop(BlockState state, net.minecraft.world.WorldView reader, BlockPos pos, int fortune,
             int silktouch) {
         return silktouch == 0 ? MathHelper.nextInt(RANDOM, 2, 5) : 0;
     }

@@ -21,7 +21,7 @@ package appeng.spatial;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldAccess;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.WorldView;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationSettings;
@@ -52,17 +52,17 @@ public class StorageCellBiome extends Biome {
     }
 
     @Override
-    public boolean doesWaterFreeze(IWorldReader worldIn, BlockPos pos) {
+    public boolean doesWaterFreeze(WorldView worldIn, BlockPos pos) {
         return false;
     }
 
     @Override
-    public boolean doesWaterFreeze(IWorldReader worldIn, BlockPos water, boolean mustBeAtEdge) {
+    public boolean doesWaterFreeze(WorldView worldIn, BlockPos water, boolean mustBeAtEdge) {
         return false;
     }
 
     @Override
-    public boolean doesSnowGenerate(IWorldReader worldIn, BlockPos pos) {
+    public boolean doesSnowGenerate(WorldView worldIn, BlockPos pos) {
         return false;
     }
 

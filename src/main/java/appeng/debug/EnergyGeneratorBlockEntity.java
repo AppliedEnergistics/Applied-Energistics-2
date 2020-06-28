@@ -24,7 +24,7 @@ import com.google.common.math.IntMath;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -34,7 +34,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 
 import appeng.tile.AEBaseBlockEntity;
 
-public class EnergyGeneratorBlockEntity extends AEBaseBlockEntity implements ITickableTileEntity, IEnergyStorage {
+public class EnergyGeneratorBlockEntity extends AEBaseBlockEntity implements Tickable, IEnergyStorage {
     /**
      * The base energy injected each tick. Adjacent TileEnergyGenerators will
      * increase it to pow(base, #generators).

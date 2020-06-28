@@ -25,17 +25,17 @@ import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.SpriteTexturedParticle;
+import net.minecraft.client.particle.SpriteBillboardParticle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.particles.BasicParticleType;
+import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
-public class CraftingFx extends SpriteTexturedParticle {
+public class CraftingFx extends SpriteBillboardParticle {
 
     // Offset relative to center of block, is the starting point of the particle
     // movement
@@ -126,7 +126,7 @@ public class CraftingFx extends SpriteTexturedParticle {
     }
 
     @Environment(EnvType.CLIENT)
-    public static class Factory implements IParticleFactory<BasicParticleType> {
+    public static class Factory implements IParticleFactory<DefaultParticleType> {
         private final IAnimatedSprite spriteSet;
 
         public Factory(IAnimatedSprite p_i50477_1_) {
@@ -134,8 +134,8 @@ public class CraftingFx extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle makeParticle(BasicParticleType data, World worldIn, double x, double y, double z, double xSpeed,
-                double ySpeed, double zSpeed) {
+        public Particle makeParticle(DefaultParticleType data, World worldIn, double x, double y, double z, double xSpeed,
+                                     double ySpeed, double zSpeed) {
             return new CraftingFx(worldIn, x, y, z, spriteSet);
         }
     }

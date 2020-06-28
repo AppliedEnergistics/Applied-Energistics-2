@@ -152,7 +152,7 @@ public class QuartzKnifeContainer extends AEBaseContainer {
                 if (!this.getItemHandler().extractItem(0, 1, false).isEmpty()) {
                     final ItemStack item = QuartzKnifeContainer.this.toolInv.getItemStack();
                     final ItemStack before = item.copy();
-                    item.damageItem(1, QuartzKnifeContainer.this.getPlayerInv().player, p -> {
+                    item.damage(1, QuartzKnifeContainer.this.getPlayerInv().player, p -> {
                         QuartzKnifeContainer.this.getPlayerInv().setStack(
                                 QuartzKnifeContainer.this.getPlayerInv().currentItem, ItemStack.EMPTY);
                         MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(

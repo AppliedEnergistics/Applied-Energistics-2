@@ -24,12 +24,12 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleType;
+import net.minecraft.particle.ParticleEffect;
+import net.minecraft.particle.ParticleType;
 
 import appeng.api.util.AEPartLocation;
 
-public class EnergyParticleData implements IParticleData {
+public class EnergyParticleData implements ParticleEffect {
 
     public static final EnergyParticleData FOR_BLOCK = new EnergyParticleData(false, AEPartLocation.INTERNAL);
 
@@ -42,9 +42,9 @@ public class EnergyParticleData implements IParticleData {
         this.direction = direction;
     }
 
-    public static final IDeserializer<EnergyParticleData> DESERIALIZER = new IDeserializer<EnergyParticleData>() {
+    public static final Factory<EnergyParticleData> DESERIALIZER = new Factory<EnergyParticleData>() {
         @Override
-        public EnergyParticleData deserialize(ParticleType<EnergyParticleData> particleTypeIn, StringReader reader)
+        public EnergyParticleData read(ParticleType<EnergyParticleData> particleTypeIn, StringReader reader)
                 throws CommandSyntaxException {
             reader.expect(' ');
             boolean forItem = reader.readBoolean();
@@ -73,7 +73,7 @@ public class EnergyParticleData implements IParticleData {
     }
 
     @Override
-    public String getParameters() {
+    public String asString() {
         return String.format(Locale.ROOT, "%s %s", forItem ? "true" : "false", direction.name().toLowerCase());
     }
 

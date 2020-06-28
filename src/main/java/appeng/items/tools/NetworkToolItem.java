@@ -32,7 +32,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.hit.HitResult;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.WorldView;
 import net.minecraft.world.World;
 
 import appeng.api.implementations.guiobjects.IGuiItem;
@@ -112,7 +112,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
     }
 
     @Override
-    public boolean doesSneakBypassUse(ItemStack stack, IWorldReader world, BlockPos pos, PlayerEntity player) {
+    public boolean doesSneakBypassUse(ItemStack stack, WorldView world, BlockPos pos, PlayerEntity player) {
         return true;
     }
 
@@ -132,7 +132,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
             final BlockEntity te = w.getBlockEntity(pos);
             if (!(te instanceof IGridHost)) {
                 if (bs.rotate(w, pos, Rotation.CLOCKWISE_90) != bs) {
-                    bs.neighborChanged(w, pos, Blocks.AIR, pos, false);
+                    bs.neighborUpdate(w, pos, Blocks.AIR, pos, false);
                     p.swingArm(hand);
                     return !w.isClient;
                 }

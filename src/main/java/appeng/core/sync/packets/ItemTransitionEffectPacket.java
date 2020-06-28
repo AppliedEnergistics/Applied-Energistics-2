@@ -82,7 +82,7 @@ public class ItemTransitionEffectPacket extends BasePacket {
                 double speedX = 0.1f * this.d.xOffset;
                 double speedY = 0.1f * this.d.yOffset;
                 double speedZ = 0.1f * this.d.zOffset;
-                MinecraftClient.getInstance().particles.addParticle(data, x, y, z, speedX, speedY, speedZ);
+                MinecraftClient.getInstance().particleManager.addParticle(data, x, y, z, speedX, speedY, speedZ);
             }
         }
     }

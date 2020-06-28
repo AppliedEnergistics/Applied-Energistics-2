@@ -34,7 +34,7 @@ import appeng.block.AEBaseTileBlock;
 public class PhantomNodeBlock extends AEBaseTileBlock<PhantomNodeBlockEntity> {
 
     public PhantomNodeBlock() {
-        super(defaultProps(Material.IRON));
+        super(defaultProps(Material.METAL));
     }
 
     @Override

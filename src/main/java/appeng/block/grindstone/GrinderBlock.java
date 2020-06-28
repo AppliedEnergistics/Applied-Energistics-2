@@ -48,7 +48,7 @@ public class GrinderBlock extends AEBaseTileBlock<GrinderBlockEntity> {
         if (tg != null && !p.isInSneakingPose()) {
             if (p instanceof ServerPlayerEntity) {
                 ContainerOpener.openContainer(GrinderContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+                        ContainerLocator.forTileEntitySide(tg, hit.getSide()));
             }
             return ActionResult.SUCCESS;
         }

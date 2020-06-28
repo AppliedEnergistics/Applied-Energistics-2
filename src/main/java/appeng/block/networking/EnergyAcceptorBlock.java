@@ -26,6 +26,6 @@ import appeng.tile.networking.EnergyAcceptorBlockEntity;
 public class EnergyAcceptorBlock extends AEBaseTileBlock<EnergyAcceptorBlockEntity> {
 
     public EnergyAcceptorBlock() {
-        super(defaultProps(Material.IRON));
+        super(defaultProps(Material.METAL));
     }
 }

@@ -10,7 +10,7 @@ import net.minecraft.client.util.math.MatrixStack;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.TransformationMatrix;
+import net.minecraft.client.util.math.AffineTransformation;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -30,7 +30,7 @@ import appeng.items.misc.EncodedPatternItem;
  * a custom IBakedModel ({@link ShiftHoldingModelWrapper} if the player is
  * holding down shift from the override list. This custom baked model implements
  * {@link #doesHandlePerspectives()} and returns the crafting result model if
- * the model for {@link ModelTransformation.TransformType#GUI} is requested.
+ * the model for {@link ModelTransformation.Mode#GUI} is requested.
  */
 public class EncodedPatternBakedModel extends DelegateBakedModel {
 
@@ -71,11 +71,11 @@ public class EncodedPatternBakedModel extends DelegateBakedModel {
         }
 
         @Override
-        public BakedModel handlePerspective(ModelTransformation.TransformType cameraTransformType, MatrixStack mat) {
+        public BakedModel handlePerspective(ModelTransformation.Mode cameraTransformType, MatrixStack mat) {
             // No need to re-check for shift being held since this model is only handed out
             // in that case
-            if (cameraTransformType == ModelTransformation.TransformType.GUI) {
-                ImmutableMap<ModelTransformation.TransformType, TransformationMatrix> transforms = PerspectiveMapWrapper
+            if (cameraTransformType == ModelTransformation.Mode.GUI) {
+                ImmutableMap<ModelTransformation.Mode, AffineTransformation> transforms = PerspectiveMapWrapper
                         .getTransforms(outputModel.getTransformation());
                 return PerspectiveMapWrapper.handlePerspective(this.outputModel, transforms, cameraTransformType, mat);
             } else {
@@ -98,7 +98,7 @@ public class EncodedPatternBakedModel extends DelegateBakedModel {
     }
 
     @Override
-    public BakedModel handlePerspective(ModelTransformation.TransformType cameraTransformType, MatrixStack mat) {
+    public BakedModel handlePerspective(ModelTransformation.Mode cameraTransformType, MatrixStack mat) {
         return getBaseModel().handlePerspective(cameraTransformType, mat);
     }
 

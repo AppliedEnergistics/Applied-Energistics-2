@@ -36,11 +36,11 @@ public class QuantumRingBlock extends QuantumBaseBlock {
     private static final VoxelShape SHAPE_FORMED = createShape(1.0 / 16.0);
 
     public QuantumRingBlock() {
-        super(defaultProps(Material.IRON));
+        super(defaultProps(Material.METAL));
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockView w, BlockPos pos, ShapeContext context) {
+    public VoxelShape getOutlineShape(BlockState state, BlockView w, BlockPos pos, ShapeContext context) {
         final QuantumBridgeBlockEntity bridge = this.getBlockEntity(w, pos);
         if (bridge != null && bridge.isCorner()) {
             return SHAPE_CORNER;
@@ -51,7 +51,7 @@ public class QuantumRingBlock extends QuantumBaseBlock {
     }
 
     private static VoxelShape createShape(double onePixel) {
-        return VoxelShapes.create(
+        return VoxelShapes.cuboid(
                 new Box(onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel));
     }
 }

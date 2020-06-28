@@ -30,7 +30,7 @@ import com.google.common.collect.ImmutableList;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.renderer.TransformationMatrix;
+import net.minecraft.client.util.math.AffineTransformation;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.Material;
@@ -108,7 +108,7 @@ public class DummyFluidDispatcherBakedModel extends DelegateBakedModel {
                 }
 
                 return new DummyFluidBakedModel(
-                        ItemLayerModel.getQuadsForSprite(0, sprite, TransformationMatrix.identity()));
+                        ItemLayerModel.getQuadsForSprite(0, sprite, AffineTransformation.identity()));
             }
         };
     }

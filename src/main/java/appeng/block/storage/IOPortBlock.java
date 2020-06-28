@@ -41,11 +41,11 @@ import appeng.util.Platform;
 public class IOPortBlock extends AEBaseTileBlock<IOPortBlockEntity> {
 
     public IOPortBlock() {
-        super(defaultProps(Material.IRON));
+        super(defaultProps(Material.METAL));
     }
 
     @Override
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
         final IOPortBlockEntity te = this.getBlockEntity(world, pos);
         if (te != null) {
@@ -64,7 +64,7 @@ public class IOPortBlock extends AEBaseTileBlock<IOPortBlockEntity> {
         if (tg != null) {
             if (Platform.isServer()) {
                 ContainerOpener.openContainer(IOPortContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+                        ContainerLocator.forTileEntitySide(tg, hit.getSide()));
             }
             return ActionResult.SUCCESS;
         }

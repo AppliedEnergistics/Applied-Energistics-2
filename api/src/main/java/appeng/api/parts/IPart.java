@@ -133,7 +133,7 @@ public interface IPart extends ICustomCableConnection {
     /**
      * a block around the bus's host has been changed.
      */
-    void onNeighborChanged(BlockView w, BlockPos pos, BlockPos neighbor);
+    void onneighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor);
 
     /**
      * @return output redstone on facing side
@@ -278,13 +278,13 @@ public interface IPart extends ICustomCableConnection {
     public float getCableConnectionLength(AECableType cable);
 
     /**
-     * same as Block.animateTick, for but parts.
+     * same as Block.randomDisplayTick, for but parts.
      *
      * @param world world of block
      * @param pos   location of block
      * @param r     random
      */
-    void animateTick(World world, BlockPos pos, Random r);
+    void randomDisplayTick(World world, BlockPos pos, Random r);
 
     /**
      * Called when placed in the world by a player, this happens before addWorld.

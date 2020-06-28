@@ -38,7 +38,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.WorldView;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 
@@ -122,7 +122,7 @@ public class CrankBlock extends AEBaseTileBlock<CrankBlockEntity> {
     }
 
     @Override
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
         final AEBaseBlockEntity tile = this.getBlockEntity(world, pos);
         if (tile != null) {
@@ -135,7 +135,7 @@ public class CrankBlock extends AEBaseTileBlock<CrankBlockEntity> {
     }
 
     @Override
-    public boolean isValidPosition(BlockState state, IWorldReader w, BlockPos pos) {
+    public boolean canPlaceAt(BlockState state, WorldView w, BlockPos pos) {
         return this.findCrankable(w, pos) != null;
     }
 
@@ -145,7 +145,7 @@ public class CrankBlock extends AEBaseTileBlock<CrankBlockEntity> {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         Direction up = getUp(world, pos);
 
         if (up == null) {
@@ -155,7 +155,7 @@ public class CrankBlock extends AEBaseTileBlock<CrankBlockEntity> {
             final double xOff = -0.15 * up.getOffsetX();
             final double yOff = -0.15 * up.getOffsetY();
             final double zOff = -0.15 * up.getOffsetZ();
-            return VoxelShapes.create(
+            return VoxelShapes.cuboid(
                     new Box(xOff + 0.15, yOff + 0.15, zOff + 0.15, xOff + 0.85, yOff + 0.85, zOff + 0.85));
         }
 

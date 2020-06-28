@@ -38,7 +38,7 @@ public class QuartzLampBlock extends QuartzGlassBlock {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void animateTick(final BlockState state, final World w, final BlockPos pos, final Random r) {
+    public void randomDisplayTick(final BlockState state, final World w, final BlockPos pos, final Random r) {
         if (!AEConfig.instance().isEnableEffects()) {
             return;
         }

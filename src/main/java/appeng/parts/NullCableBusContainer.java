@@ -63,7 +63,7 @@ public class NullCableBusContainer implements ICableBusContainer {
     }
 
     @Override
-    public void onNeighborChanged(BlockView w, BlockPos pos, BlockPos neighbor) {
+    public void onneighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor) {
 
     }
 
@@ -88,7 +88,7 @@ public class NullCableBusContainer implements ICableBusContainer {
     }
 
     @Override
-    public void animateTick(final World world, final BlockPos pos, final Random r) {
+    public void randomDisplayTick(final World world, final BlockPos pos, final Random r) {
 
     }
 

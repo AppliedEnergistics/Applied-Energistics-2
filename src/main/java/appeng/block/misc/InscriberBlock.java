@@ -56,7 +56,7 @@ public class InscriberBlock extends AEBaseTileBlock<InscriberBlockEntity> {
             if (tg != null) {
                 if (!tg.isClient()) {
                     ContainerOpener.openContainer(InscriberContainer.TYPE, p,
-                            ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+                            ContainerLocator.forTileEntitySide(tg, hit.getSide()));
                 }
                 return ActionResult.SUCCESS;
             }

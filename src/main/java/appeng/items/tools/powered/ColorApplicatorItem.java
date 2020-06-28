@@ -64,9 +64,9 @@ import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.SnowballItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.state.IProperty;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.state.property.Property;
+import net.minecraft.tag.ItemTags;
+import net.minecraft.tag.Tag;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
@@ -327,7 +327,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         Block recolored = BlockRecolorer.recolor(blk, newColor);
         if (recolored != blk) {
             BlockState newState = recolored.getDefaultState();
-            for (IProperty<?> prop : newState.getProperties()) {
+            for (Property<?> prop : newState.getProperties()) {
                 newState = copyProp(state, newState, prop);
             }
 
@@ -353,8 +353,8 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     private static <T extends Comparable<T>> BlockState copyProp(BlockState oldState, BlockState newState,
-            IProperty<T> prop) {
-        if (newState.has(prop)) {
+            Property<T> prop) {
+        if (newState.contains(prop)) {
             return newState.with(prop, oldState.get(prop));
         }
         return newState;

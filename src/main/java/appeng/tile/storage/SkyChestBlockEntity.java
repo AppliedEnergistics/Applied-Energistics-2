@@ -24,11 +24,11 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.tileentity.IChestLid;
-import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.util.Tickable;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.MathHelper;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
@@ -37,7 +37,7 @@ import appeng.tile.AEBaseInvBlockEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.inv.InvOperation;
 
-public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements ITickableTileEntity, IChestLid {
+public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements Tickable, IChestLid {
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 9 * 4);
 

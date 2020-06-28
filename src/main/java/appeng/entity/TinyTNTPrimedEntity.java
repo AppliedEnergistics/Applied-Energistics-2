@@ -23,21 +23,17 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.*;
 import net.minecraft.entity.MoverType;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.item.TNTEntity;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.particles.ParticleTypes;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.Explosion.Mode;
+import net.minecraft.world.explosion.Explosion;
+import net.minecraft.world.explosion.Explosion.Mode;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
@@ -48,7 +44,7 @@ import appeng.core.AppEng;
 import appeng.core.sync.packets.MockExplosionPacket;
 import appeng.util.Platform;
 
-public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAdditionalSpawnData {
+public final class TinyTNTPrimedEntity extends TntEntity implements IEntityAdditionalSpawnData {
 
     public static EntityType<TinyTNTPrimedEntity> TYPE;
 

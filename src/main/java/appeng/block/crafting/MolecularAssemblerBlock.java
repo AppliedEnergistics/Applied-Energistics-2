@@ -21,8 +21,8 @@ package appeng.block.crafting;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
+import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.state.StateManager;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -37,7 +37,7 @@ import appeng.tile.crafting.MolecularAssemblerBlockEntity;
 
 public class MolecularAssemblerBlock extends AEBaseTileBlock<MolecularAssemblerBlockEntity> {
 
-    public static final BooleanProperty POWERED = BooleanProperty.create("powered");
+    public static final BooleanProperty POWERED = BooleanProperty.of("powered");
 
     public MolecularAssemblerBlock(Settings props) {
         super(props);
@@ -45,8 +45,8 @@ public class MolecularAssemblerBlock extends AEBaseTileBlock<MolecularAssemblerB
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
         builder.add(POWERED);
     }
 
@@ -62,7 +62,7 @@ public class MolecularAssemblerBlock extends AEBaseTileBlock<MolecularAssemblerB
         if (tg != null && !p.isInSneakingPose()) {
             if (!tg.isClient()) {
                 ContainerOpener.openContainer(MolecularAssemblerContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+                        ContainerLocator.forTileEntitySide(tg, hit.getSide()));
             }
             return ActionResult.SUCCESS;
         }

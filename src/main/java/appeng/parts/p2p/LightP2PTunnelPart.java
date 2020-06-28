@@ -96,7 +96,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
         final BlockEntity te = this.getTile();
         final World w = te.getWorld();
 
-        final int newLevel = w.getLight(te.getPos().offset(this.getSide().getFacing()));
+        final int newLevel = w.getLightLevel(te.getPos().offset(this.getSide().getFacing()));
 
         if (this.lastValue != newLevel && this.getProxy().isActive()) {
             this.lastValue = newLevel;
@@ -113,7 +113,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     }
 
     @Override
-    public void onNeighborChanged(BlockView w, BlockPos pos, BlockPos neighbor) {
+    public void onneighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor) {
         if (this.isOutput() && pos.offset(this.getSide().getFacing()).equals(neighbor)) {
             this.opacity = -1;
             this.getHost().markForUpdate();
@@ -139,7 +139,7 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     private int blockLight(final int emit) {
         if (this.opacity < 0) {
             final BlockEntity te = this.getTile();
-            this.opacity = 255 - te.getWorld().getLight(te.getPos().offset(this.getSide().getFacing()));
+            this.opacity = 255 - te.getWorld().getLightLevel(te.getPos().offset(this.getSide().getFacing()));
         }
 
         return (int) (emit * (this.opacity / 255.0f));

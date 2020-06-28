@@ -35,11 +35,11 @@ public class SpatialPylonBlock extends AEBaseTileBlock<SpatialPylonBlockEntity> 
     }
 
     @Override
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
         final SpatialPylonBlockEntity tsp = this.getBlockEntity(world, pos);
         if (tsp != null) {
-            tsp.neighborChanged();
+            tsp.neighborUpdate();
         }
     }
 

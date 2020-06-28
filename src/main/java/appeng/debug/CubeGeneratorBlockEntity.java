@@ -23,7 +23,7 @@ import net.minecraft.item.DirectionalPlaceContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
-import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.util.Tickable;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -33,7 +33,7 @@ import appeng.core.AppEng;
 import appeng.tile.AEBaseBlockEntity;
 import appeng.util.Platform;
 
-public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements ITickableTileEntity {
+public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements Tickable {
 
     private int size = 3;
     private ItemStack is = ItemStack.EMPTY;

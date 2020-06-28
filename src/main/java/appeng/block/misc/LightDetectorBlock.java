@@ -18,23 +18,18 @@
 
 package appeng.block.misc;
 
-import java.util.Random;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Material;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.block.*;
+import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.state.StateManager;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.block.ShapeContext;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.WorldView;
 import net.minecraft.world.World;
 
 import appeng.api.util.IOrientable;
@@ -46,44 +41,48 @@ import appeng.tile.misc.LightDetectorBlockEntity;
 public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorBlockEntity> implements IOrientableBlock {
 
     // Used to alternate between two variants of the fixture on adjacent blocks
-    public static final BooleanProperty ODD = BooleanProperty.create("odd");
+    public static final BooleanProperty ODD = BooleanProperty.of("odd");
 
     public LightDetectorBlock() {
-        super(defaultProps(Material.MISCELLANEOUS).notSolid());
-
-        this.setDefaultState(this.getDefaultState().with(BlockStateProperties.FACING, Direction.UP).with(ODD, false));
+        super(defaultProps(Material.SUPPORTED));
+        this.setDefaultState(this.getDefaultState().with(Properties.FACING, Direction.UP).with(ODD, false));
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
-        builder.add(BlockStateProperties.FACING);
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
+        builder.add(Properties.FACING);
         builder.add(ODD);
     }
 
     @Override
-    public int getWeakPower(final BlockState state, final BlockView w, final BlockPos pos, final Direction side) {
+    public int getWeakRedstonePower(final BlockState state, final BlockView w, final BlockPos pos, final Direction side) {
         if (w instanceof World && this.getBlockEntity(w, pos).isReady()) {
             // FIXME: This is ... uhm... fishy
-            return ((World) w).getLight(pos) - 6;
+            return ((World) w).getLightLevel(pos) - 6;
         }
 
         return 0;
     }
 
     @Override
-    public void onNeighborChange(BlockState state, IWorldReader world, BlockPos pos, BlockPos neighbor) {
-        super.onNeighborChange(state, world, pos, neighbor);
+    public boolean emitsRedstonePower(BlockState state) {
+        return true;
+    }
+
+    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState newState, WorldAccess world, BlockPos pos, BlockPos posFrom) {
+        final Direction up = this.getOrientable(world, pos).getUp();
+        if (!this.canPlaceAt(world, pos, up.getOpposite())) {
+            // FIXME: Double check that this actually updates neighbors
+            return Blocks.AIR.getDefaultState();
+        }
 
         final LightDetectorBlockEntity tld = this.getBlockEntity(world, pos);
         if (tld != null) {
             tld.updateLight();
         }
-    }
 
-    @Override
-    public void animateTick(final BlockState state, final World worldIn, final BlockPos pos, final Random rand) {
-        // cancel out lightning
+        return state;
     }
 
     @Override
@@ -94,11 +93,11 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorBlockEntity
     private boolean canPlaceAt(final BlockView w, final BlockPos pos, final Direction dir) {
         final BlockPos test = pos.offset(dir);
         BlockState blockstate = w.getBlockState(test);
-        return blockstate.isSolidSide(w, test, dir.getOpposite());
+        return blockstate.isSideSolidFullSquare(w, test, dir.getOpposite());
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockView w, BlockPos pos, ShapeContext context) {
+    public VoxelShape getOutlineShape(BlockState state, BlockView w, BlockPos pos, ShapeContext context) {
 
         // FIXME: We should / rather MUST use state here because at startup, this gets
         // called without a world
@@ -108,7 +107,7 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorBlockEntity
         final double yOff = -0.3 * up.getOffsetY();
         final double zOff = -0.3 * up.getOffsetZ();
         return VoxelShapes
-                .create(new Box(xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7));
+                .cuboid(new Box(xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7));
     }
 
     @Override
@@ -118,22 +117,7 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorBlockEntity
     }
 
     @Override
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
-            boolean isMoving) {
-        final Direction up = this.getOrientable(world, pos).getUp();
-        if (!this.canPlaceAt(world, pos, up.getOpposite())) {
-            this.dropTorch(world, pos);
-        }
-    }
-
-    private void dropTorch(final World w, final BlockPos pos) {
-        final BlockState prev = w.getBlockState(pos);
-        w.breakBlock(pos, true);
-        w.updateListeners(pos, prev, w.getBlockState(pos), 3);
-    }
-
-    @Override
-    public boolean isValidPosition(BlockState state, IWorldReader w, BlockPos pos) {
+    public boolean canPlaceAt(BlockState state, WorldView w, BlockPos pos) {
         for (final Direction dir : Direction.values()) {
             if (this.canPlaceAt(w, pos, dir)) {
                 return true;
@@ -144,7 +128,7 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorBlockEntity
 
     @Override
     public IOrientable getOrientable(final BlockView w, final BlockPos pos) {
-        return new MetaRotation(w, pos, BlockStateProperties.FACING);
+        return new MetaRotation(w, pos, Properties.FACING);
     }
 
 }

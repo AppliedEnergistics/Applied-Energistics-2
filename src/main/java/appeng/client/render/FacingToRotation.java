@@ -22,7 +22,7 @@ import net.minecraft.client.util.math.MatrixStack;
 
 import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.Quaternion;
-import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.IStringSerializable;

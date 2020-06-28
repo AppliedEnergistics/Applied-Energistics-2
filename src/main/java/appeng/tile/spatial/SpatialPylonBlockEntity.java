@@ -87,7 +87,7 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
     @Override
     public void onReady() {
         super.onReady();
-        this.neighborChanged();
+        this.neighborUpdate();
     }
 
     @Override
@@ -96,7 +96,7 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
         super.remove();
     }
 
-    public void neighborChanged() {
+    public void neighborUpdate() {
         this.calc.calculateMultiblock(this.world, this.getLocation());
     }
 

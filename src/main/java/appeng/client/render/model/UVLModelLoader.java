@@ -35,6 +35,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.util.math.AffineTransformation;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
 
@@ -42,7 +43,6 @@ import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.BlockFaceUV;
 import net.minecraft.client.render.model.BlockModel;
@@ -89,7 +89,7 @@ public class UVLModelLoader implements IModelLoader<UVLModelLoader.UVLModelWrapp
             .registerTypeAdapter(ItemTransformVec3f.class, new ItemTransformVec3f.Deserializer())
             .registerTypeAdapter(ModelTransformation.class, new ModelTransformation.Deserializer())
             .registerTypeAdapter(ItemOverride.class, new ItemOverride.Deserializer())
-            .registerTypeAdapter(TransformationMatrix.class, new TransformationHelper.Deserializer()).create();
+            .registerTypeAdapter(AffineTransformation.class, new TransformationHelper.Deserializer()).create();
 
     private static class BlockPartFaceOverrideSerializer extends BlockPartFace.Deserializer {
         @Override

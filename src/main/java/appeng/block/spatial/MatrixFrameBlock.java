@@ -32,9 +32,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.Explosion;
+import net.minecraft.world.explosion.Explosion;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.WorldView;
 import net.minecraft.world.World;
 import net.fabricmc.api.EnvType;
 
@@ -71,13 +71,13 @@ public class MatrixFrameBlock extends AEBaseBlock {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
+    public VoxelShape getOutlineShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
         // This also prevents any blocks from being placed on this block!
         return VoxelShapes.empty();
     }
 
     @Override
-    public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
+    public boolean canPlaceAt(BlockState state, WorldView worldIn, BlockPos pos) {
         return false;
     }
 

@@ -9,7 +9,7 @@ import appeng.bootstrap.TileEntityRenderingCustomizer;
 import appeng.client.render.tesr.InscriberTESR;
 import appeng.tile.misc.InscriberBlockEntity;
 
-public class InscriberRendering extends TileEntityRenderingCustomizer<InscriberBlockEntity> {
+public class InscriberRendering implements TileEntityRenderingCustomizer<InscriberBlockEntity> {
 
     @Environment(EnvType.CLIENT)
     @Override

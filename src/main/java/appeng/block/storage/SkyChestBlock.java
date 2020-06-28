@@ -86,10 +86,10 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestBlockEntity> {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
+    public VoxelShape getOutlineShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
         // TODO Cache this! It can't be that hard!
         Box aabb = computeAABB(worldIn, pos);
-        return VoxelShapes.create(aabb);
+        return VoxelShapes.cuboid(aabb);
     }
 
     private Box computeAABB(final BlockView w, final BlockPos pos) {

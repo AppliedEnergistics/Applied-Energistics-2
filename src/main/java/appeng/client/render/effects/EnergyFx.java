@@ -28,7 +28,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 @Environment(EnvType.CLIENT)
-public class EnergyFx extends SpriteTexturedParticle {
+public class EnergyFx extends SpriteBillboardParticle {
 
     private final int startBlkX;
     private final int startBlkY;

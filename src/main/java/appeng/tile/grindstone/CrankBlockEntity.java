@@ -24,13 +24,13 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
 
 import appeng.api.implementations.tiles.ICrankable;
 import appeng.tile.AEBaseBlockEntity;
 
-public class CrankBlockEntity extends AEBaseBlockEntity implements ITickableTileEntity {
+public class CrankBlockEntity extends AEBaseBlockEntity implements Tickable {
 
     private final int ticksPerRotation = 18;
 
@@ -92,7 +92,7 @@ public class CrankBlockEntity extends AEBaseBlockEntity implements ITickableTile
     public void setOrientation(final Direction inForward, final Direction inUp) {
         super.setOrientation(inForward, inUp);
         final BlockState state = this.world.getBlockState(this.pos);
-        state.getBlock().neighborChanged(state, this.world, this.pos, state.getBlock(), this.pos, false);
+        state.getBlock().neighborUpdate(state, this.world, this.pos, state.getBlock(), this.pos, false);
     }
 
     /**

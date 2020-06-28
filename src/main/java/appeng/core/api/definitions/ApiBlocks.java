@@ -329,7 +329,7 @@ public final class ApiBlocks implements IBlocks {
                         () -> new SkyChestBlock(SkyChestBlock.SkyChestType.BLOCK, skyStoneChestProps))
                 .features(AEFeature.SKY_STONE, AEFeature.SKY_STONE_CHESTS).tileEntity(skyChestTile).build();
 
-        this.skyCompass = registry.block("sky_compass", () -> new SkyCompassBlock(defaultProps(Material.MISCELLANEOUS)))
+        this.skyCompass = registry.block("sky_compass", () -> new SkyCompassBlock(defaultProps(Material.SUPPORTED)))
                 .features(AEFeature.METEORITE_COMPASS)
                 .tileEntity(registry.tileEntity("sky_compass", SkyCompassBlockEntity.class, SkyCompassBlockEntity::new)
                         .rendering(new SkyCompassRendering()).build())
@@ -353,7 +353,7 @@ public final class ApiBlocks implements IBlocks {
                             }
                         }).build())
                 .build();
-        this.inscriber = registry.block("inscriber", () -> new InscriberBlock(defaultProps(Material.IRON).notSolid()))
+        this.inscriber = registry.block("inscriber", () -> new InscriberBlock(defaultProps(Material.METAL).notSolid()))
                 .features(AEFeature.INSCRIBER)
                 .tileEntity(registry.tileEntity("inscriber", InscriberBlockEntity.class, InscriberBlockEntity::new)
                         .rendering(new InscriberRendering()).build())
@@ -481,7 +481,7 @@ public final class ApiBlocks implements IBlocks {
                 .tileEntity("crafting_unit", CraftingBlockEntity.class, CraftingBlockEntity::new).build();
 
         FeatureFactory crafting = registry.features(AEFeature.CRAFTING_CPU);
-        AbstractBlock.Settings craftingBlockProps = defaultProps(Material.IRON);
+        AbstractBlock.Settings craftingBlockProps = defaultProps(Material.METAL);
         this.craftingUnit = crafting
                 .block("crafting_unit", () -> new CraftingUnitBlock(craftingBlockProps, CraftingUnitType.UNIT))
                 .rendering(new CraftingCubeRendering()).tileEntity(craftingUnit).build();
@@ -539,7 +539,7 @@ public final class ApiBlocks implements IBlocks {
                 }).build();
 
         this.molecularAssembler = registry
-                .block("molecular_assembler", () -> new MolecularAssemblerBlock(defaultProps(Material.IRON).notSolid()))
+                .block("molecular_assembler", () -> new MolecularAssemblerBlock(defaultProps(Material.METAL).notSolid()))
                 .features(AEFeature.MOLECULAR_ASSEMBLER).rendering(new BlockRenderingCustomizer() {
                     @Environment(EnvType.CLIENT)
                     @Override

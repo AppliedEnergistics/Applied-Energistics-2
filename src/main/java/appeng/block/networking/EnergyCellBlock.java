@@ -26,7 +26,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.StateContainer;
+import net.minecraft.state.StateManager;
 import net.minecraft.util.NonNullList;
 
 import appeng.block.AEBaseTileBlock;
@@ -59,8 +59,8 @@ public class EnergyCellBlock extends AEBaseTileBlock<EnergyCellBlockEntity> {
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
         builder.add(ENERGY_STORAGE);
     }
 

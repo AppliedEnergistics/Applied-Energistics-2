@@ -29,16 +29,16 @@ import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.SpriteTexturedParticle;
+import net.minecraft.client.particle.SpriteBillboardParticle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.particles.BasicParticleType;
+import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 @Environment(EnvType.CLIENT)
-public class LightningFX extends SpriteTexturedParticle {
+public class LightningFX extends SpriteBillboardParticle {
 
     private static final Random RANDOM_GENERATOR = new Random();
     private static final int STEPS = 5;
@@ -245,7 +245,7 @@ public class LightningFX extends SpriteTexturedParticle {
     }
 
     @Environment(EnvType.CLIENT)
-    public static class Factory implements IParticleFactory<BasicParticleType> {
+    public static class Factory implements IParticleFactory<DefaultParticleType> {
         private final IAnimatedSprite spriteSet;
 
         public Factory(IAnimatedSprite spriteSet) {
@@ -253,8 +253,8 @@ public class LightningFX extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle makeParticle(BasicParticleType typeIn, World worldIn, double x, double y, double z,
-                double xSpeed, double ySpeed, double zSpeed) {
+        public Particle makeParticle(DefaultParticleType typeIn, World worldIn, double x, double y, double z,
+                                     double xSpeed, double ySpeed, double zSpeed) {
             LightningFX lightningFX = new LightningFX(worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
             lightningFX.selectSpriteRandomly(this.spriteSet);
             return lightningFX;

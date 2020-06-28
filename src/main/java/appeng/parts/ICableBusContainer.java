@@ -51,7 +51,7 @@ public interface ICableBusContainer {
 
     boolean clicked(PlayerEntity player, Hand hand, Vec3d hitVec);
 
-    void onNeighborChanged(BlockView w, BlockPos pos, BlockPos neighbor);
+    void onneighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor);
 
     boolean isEmpty();
 
@@ -62,7 +62,7 @@ public interface ICableBusContainer {
     boolean isLadder(LivingEntity entity);
 
     @Environment(EnvType.CLIENT)
-    void animateTick(World world, BlockPos pos, Random r);
+    void randomDisplayTick(World world, BlockPos pos, Random r);
 
     int getLightValue();
 

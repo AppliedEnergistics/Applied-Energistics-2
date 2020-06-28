@@ -29,7 +29,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.WorldView;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
@@ -53,11 +53,11 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassBlockEntity> {
     private boolean canPlaceAt(final BlockView w, final BlockPos pos, final Direction dir) {
         final BlockPos test = pos.offset(dir);
         BlockState blockstate = w.getBlockState(test);
-        return blockstate.isSolidSide(w, test, dir.getOpposite());
+        return blockstate.isSideSolidFullSquare(w, test, dir.getOpposite());
     }
 
     @Override
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
         final SkyCompassBlockEntity sc = this.getBlockEntity(world, pos);
         final Direction forward = sc.getForward();
@@ -73,7 +73,7 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassBlockEntity> {
     }
 
     @Override
-    public boolean isValidPosition(BlockState state, IWorldReader w, BlockPos pos) {
+    public boolean canPlaceAt(BlockState state, WorldView w, BlockPos pos) {
         for (final Direction dir : Direction.values()) {
             if (this.canPlaceAt(w, pos, dir)) {
                 return true;
@@ -83,7 +83,7 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassBlockEntity> {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockView w, BlockPos pos, ShapeContext context) {
+    public VoxelShape getOutlineShape(BlockState state, BlockView w, BlockPos pos, ShapeContext context) {
 
         // TODO: This definitely needs to be memoized
 
@@ -139,7 +139,7 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassBlockEntity> {
                     break;
             }
 
-            return VoxelShapes.create(new Box(minX, minY, minZ, maxX, maxY, maxZ));
+            return VoxelShapes.cuboid(new Box(minX, minY, minZ, maxX, maxY, maxZ));
         }
         return VoxelShapes.empty();
     }

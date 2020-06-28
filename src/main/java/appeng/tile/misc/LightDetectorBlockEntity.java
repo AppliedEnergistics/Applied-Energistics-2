@@ -18,13 +18,13 @@
 
 package appeng.tile.misc;
 
-import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.util.Tickable;
 import net.minecraft.block.entity.BlockEntityType;
 
 import appeng.tile.AEBaseBlockEntity;
 import appeng.util.Platform;
 
-public class LightDetectorBlockEntity extends AEBaseBlockEntity implements ITickableTileEntity {
+public class LightDetectorBlockEntity extends AEBaseBlockEntity implements Tickable {
 
     private int lastCheck = 30;
     private int lastLight = 0;
@@ -47,7 +47,7 @@ public class LightDetectorBlockEntity extends AEBaseBlockEntity implements ITick
     }
 
     public void updateLight() {
-        final int val = this.world.getLight(this.pos);
+        final int val = this.world.getLightLevel(this.pos);
 
         if (this.lastLight != val) {
             this.lastLight = val;

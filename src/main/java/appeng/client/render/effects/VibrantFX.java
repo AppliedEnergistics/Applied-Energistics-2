@@ -24,12 +24,12 @@ import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.SpriteTexturedParticle;
-import net.minecraft.particles.BasicParticleType;
+import net.minecraft.client.particle.SpriteBillboardParticle;
+import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.world.World;
 
 @Environment(EnvType.CLIENT)
-public class VibrantFX extends SpriteTexturedParticle {
+public class VibrantFX extends SpriteBillboardParticle {
 
     public VibrantFX(final World par1World, final double x, final double y, final double z, final double par8,
             final double par10, final double par12, IAnimatedSprite sprite) {
@@ -80,7 +80,7 @@ public class VibrantFX extends SpriteTexturedParticle {
     }
 
     @Environment(EnvType.CLIENT)
-    public static class Factory implements IParticleFactory<BasicParticleType> {
+    public static class Factory implements IParticleFactory<DefaultParticleType> {
         private final IAnimatedSprite spriteSet;
 
         public Factory(IAnimatedSprite spriteSet) {
@@ -88,8 +88,8 @@ public class VibrantFX extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle makeParticle(BasicParticleType typeIn, World worldIn, double x, double y, double z,
-                double xSpeed, double ySpeed, double zSpeed) {
+        public Particle makeParticle(DefaultParticleType typeIn, World worldIn, double x, double y, double z,
+                                     double xSpeed, double ySpeed, double zSpeed) {
             return new VibrantFX(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet);
         }
     }

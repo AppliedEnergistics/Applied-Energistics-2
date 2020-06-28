@@ -26,7 +26,7 @@ import net.minecraft.block.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.EnumProperty;
-import net.minecraft.state.StateContainer;
+import net.minecraft.state.StateManager;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Util;
@@ -47,13 +47,13 @@ public class ChestBlock extends AEBaseTileBlock<ChestBlockEntity> {
             DriveSlotState.class);
 
     public ChestBlock() {
-        super(defaultProps(Material.IRON));
+        super(defaultProps(Material.METAL));
         this.setDefaultState(this.getDefaultState().with(SLOT_STATE, DriveSlotState.EMPTY));
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
         builder.add(SLOT_STATE);
     }
 
@@ -87,7 +87,7 @@ public class ChestBlock extends AEBaseTileBlock<ChestBlockEntity> {
                 }
             } else {
                 ContainerOpener.openContainer(ChestContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+                        ContainerLocator.forTileEntitySide(tg, hit.getSide()));
             }
 
             return ActionResult.SUCCESS;

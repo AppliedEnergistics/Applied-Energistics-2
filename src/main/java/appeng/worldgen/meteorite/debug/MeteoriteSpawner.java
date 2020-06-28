@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.WorldView;
 
 import appeng.worldgen.meteorite.CraterType;
 import appeng.worldgen.meteorite.PlacedMeteoriteSettings;
@@ -35,7 +35,7 @@ public class MeteoriteSpawner {
     public MeteoriteSpawner() {
     }
 
-    public PlacedMeteoriteSettings trySpawnMeteoriteAtSuitableHeight(IWorldReader world, BlockPos startPos,
+    public PlacedMeteoriteSettings trySpawnMeteoriteAtSuitableHeight(WorldView world, BlockPos startPos,
             float coreRadius, CraterType craterType, boolean pureCrater, boolean worldGen) {
         int stepSize = Math.min(5, (int) Math.ceil(coreRadius) + 1);
         int minY = 10 + stepSize;
@@ -56,7 +56,7 @@ public class MeteoriteSpawner {
     }
 
     @Nullable
-    public PlacedMeteoriteSettings trySpawnMeteorite(IWorldReader world, BlockPos pos, float coreRadius,
+    public PlacedMeteoriteSettings trySpawnMeteorite(WorldView world, BlockPos pos, float coreRadius,
             CraterType craterType, boolean pureCrater) {
         if (!areSurroundingsSuitable(world, pos)) {
             return null;
@@ -79,7 +79,7 @@ public class MeteoriteSpawner {
         return new PlacedMeteoriteSettings(pos, coreRadius, craterType, null, pureCrater, craterLake);
     }
 
-    private static boolean isAirBelowSpawnPoint(IWorldReader w, BlockPos pos) {
+    private static boolean isAirBelowSpawnPoint(WorldView w, BlockPos pos) {
         BlockPos.Mutable testPos = new BlockPos.Mutable(pos);
         for (int j = pos.getY() - 15; j < pos.getY() - 1; j++) {
             testPos.setY(j);
@@ -90,7 +90,7 @@ public class MeteoriteSpawner {
         return false;
     }
 
-    private int countBlockWithSkyLight(IWorldReader w, BlockPos pos) {
+    private int countBlockWithSkyLight(WorldView w, BlockPos pos) {
         int skyMode = 0;
 
         BlockPos.Mutable testPos = new BlockPos.Mutable();
@@ -109,7 +109,7 @@ public class MeteoriteSpawner {
         return skyMode;
     }
 
-    private boolean areSurroundingsSuitable(IWorldReader w, BlockPos pos) {
+    private boolean areSurroundingsSuitable(WorldView w, BlockPos pos) {
         int realValidBlocks = 0;
 
         BlockPos.Mutable testPos = new BlockPos.Mutable();

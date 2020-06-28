@@ -56,7 +56,7 @@ public class GrinderBlockEntity extends AEBaseInvBlockEntity implements ICrankab
     public void setOrientation(final Direction inForward, final Direction inUp) {
         super.setOrientation(inForward, inUp);
         final BlockState state = this.world.getBlockState(this.pos);
-        state.getBlock().neighborChanged(state, this.world, this.pos, state.getBlock(), this.pos, false);
+        state.getBlock().neighborUpdate(state, this.world, this.pos, state.getBlock(), this.pos, false);
     }
 
     @Override

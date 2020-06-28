@@ -28,7 +28,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.client.render.model.Material;
 import net.minecraft.client.render.model.ModelRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;

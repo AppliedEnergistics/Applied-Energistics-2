@@ -53,7 +53,7 @@ import net.minecraft.block.ShapeContext;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.WorldView;
 import net.minecraft.world.World;
 
 import appeng.api.parts.IFacadeContainer;
@@ -81,7 +81,9 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
     private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
 
     public CableBusBlock() {
-        super(defaultProps(AEGlassMaterial.INSTANCE).notSolid().noDrops());
+        super(defaultProps(AEGlassMaterial.INSTANCE)
+                .nonOpaque()
+                .dropsNothing());
     }
 
     @Override
@@ -90,17 +92,17 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
     }
 
     @Override
-    public void animateTick(final BlockState state, final World worldIn, final BlockPos pos, final Random rand) {
-        this.cb(worldIn, pos).animateTick(worldIn, pos, rand);
+    public void randomDisplayTick(final BlockState state, final World worldIn, final BlockPos pos, final Random rand) {
+        this.cb(worldIn, pos).randomDisplayTick(worldIn, pos, rand);
     }
 
     @Override
-    public void onNeighborChange(BlockState state, IWorldReader w, BlockPos pos, BlockPos neighbor) {
-        this.cb(w, pos).onNeighborChanged(w, pos, neighbor);
+    public void onNeighborChange(BlockState state, WorldView w, BlockPos pos, BlockPos neighbor) {
+        this.cb(w, pos).onneighborUpdate(w, pos, neighbor);
     }
 
     @Override
-    public int getWeakPower(final BlockState state, final BlockView w, final BlockPos pos, final Direction side) {
+    public int getWeakRedstonePower(final BlockState state, final BlockView w, final BlockPos pos, final Direction side) {
         return this.cb(w, pos).isProvidingWeakPower(side.getOpposite()); // TODO:
         // IS
         // OPPOSITE!?
@@ -126,13 +128,13 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
     @Override
     public int getLightValue(final BlockState state, final BlockView world, final BlockPos pos) {
         if (state.getBlock() != this) {
-            return state.getBlock().getLightValue(state, world, pos);
+            return state.getLuminance();
         }
         return this.cb(world, pos).getLightValue();
     }
 
     @Override
-    public boolean isLadder(BlockState state, IWorldReader world, BlockPos pos, LivingEntity entity) {
+    public boolean isLadder(BlockState state, WorldView world, BlockPos pos, LivingEntity entity) {
         return this.cb(world, pos).isLadder(entity);
     }
 
@@ -273,10 +275,10 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
     }
 
     @Override
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
+    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos,
             boolean isMoving) {
         if (Platform.isServer()) {
-            this.cb(world, pos).onNeighborChanged(world, pos, fromPos);
+            this.cb(world, pos).onneighborUpdate(world, pos, fromPos);
         }
     }
 
@@ -364,7 +366,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockView w, BlockPos pos, ShapeContext context) {
+    public VoxelShape getOutlineShape(BlockState state, BlockView w, BlockPos pos, ShapeContext context) {
         CableBusBlockEntity te = getBlockEntity(w, pos);
         if (te == null) {
             return VoxelShapes.empty();

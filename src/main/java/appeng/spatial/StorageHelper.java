@@ -201,7 +201,7 @@ public class StorageHelper {
         public void visit(final BlockPos pos) {
             final BlockState state = this.dst.getBlockState(pos);
             final Block blk = state.getBlock();
-            blk.neighborChanged(state, this.dst, pos, blk, pos, false);
+            blk.neighborUpdate(state, this.dst, pos, blk, pos, false);
         }
     }
 

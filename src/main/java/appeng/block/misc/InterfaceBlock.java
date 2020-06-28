@@ -25,8 +25,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
+import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.state.StateManager;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Direction;
@@ -44,15 +44,15 @@ import appeng.util.Platform;
 
 public class InterfaceBlock extends AEBaseTileBlock<InterfaceBlockEntity> {
 
-    private static final BooleanProperty OMNIDIRECTIONAL = BooleanProperty.create("omnidirectional");
+    private static final BooleanProperty OMNIDIRECTIONAL = BooleanProperty.of("omnidirectional");
 
     public InterfaceBlock() {
-        super(defaultProps(Material.IRON));
+        super(defaultProps(Material.METAL));
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
         builder.add(OMNIDIRECTIONAL);
     }
 
@@ -72,7 +72,7 @@ public class InterfaceBlock extends AEBaseTileBlock<InterfaceBlockEntity> {
         if (tg != null) {
             if (Platform.isServer()) {
                 ContainerOpener.openContainer(InterfaceContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getFace()));
+                        ContainerLocator.forTileEntitySide(tg, hit.getSide()));
             }
             return ActionResult.SUCCESS;
         }

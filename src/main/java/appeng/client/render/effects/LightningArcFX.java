@@ -24,7 +24,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.SpriteTexturedParticle;
+import net.minecraft.client.particle.SpriteBillboardParticle;
 import net.minecraft.world.World;
 import net.fabricmc.api.EnvType;
 
@@ -77,7 +77,7 @@ public class LightningArcFX extends LightningFX {
         @Override
         public Particle makeParticle(LightningArcParticleData data, World worldIn, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
-            SpriteTexturedParticle lightningFX = new LightningArcFX(worldIn, x, y, z, data.target.x, data.target.y,
+            SpriteBillboardParticle lightningFX = new LightningArcFX(worldIn, x, y, z, data.target.x, data.target.y,
                     data.target.z, 0, 0, 0);
             lightningFX.selectSpriteRandomly(this.spriteSet);
             return lightningFX;

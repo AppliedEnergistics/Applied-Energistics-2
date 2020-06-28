@@ -671,13 +671,13 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     }
 
     @Override
-    public void onNeighborChanged(BlockView w, BlockPos pos, BlockPos neighbor) {
+    public void onneighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor) {
         this.hasRedstone = YesNo.UNDECIDED;
 
         for (final AEPartLocation s : AEPartLocation.values()) {
             final IPart part = this.getPart(s);
             if (part != null) {
-                part.onNeighborChanged(w, pos, neighbor);
+                part.onneighborUpdate(w, pos, neighbor);
             }
         }
 
@@ -700,11 +700,11 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     }
 
     @Override
-    public void animateTick(final World world, final BlockPos pos, final Random r) {
+    public void randomDisplayTick(final World world, final BlockPos pos, final Random r) {
         for (final AEPartLocation side : AEPartLocation.values()) {
             final IPart p = this.getPart(side);
             if (p != null) {
-                p.animateTick(world, pos, r);
+                p.randomDisplayTick(world, pos, r);
             }
         }
     }
@@ -1039,7 +1039,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     /**
      * See {@link net.minecraft.block.Block#getShape}
      */
-    public VoxelShape getShape() {
+    public VoxelShape getOutlineShape() {
         if (cachedShape == null) {
             cachedShape = createShape(false, false);
         }
@@ -1091,7 +1091,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
         VoxelShape shape = VoxelShapes.empty();
         for (final Box bx : boxes) {
-            shape = VoxelShapes.or(shape, VoxelShapes.create(bx));
+            shape = VoxelShapes.or(shape, VoxelShapes.cuboid(bx));
         }
         return shape;
     }

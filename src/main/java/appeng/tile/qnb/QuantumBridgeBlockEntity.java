@@ -22,14 +22,12 @@ import java.io.IOException;
 import java.util.EnumSet;
 import java.util.Optional;
 
-import javax.annotation.Nonnull;
-
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.util.Tickable;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.Direction;
@@ -56,7 +54,7 @@ import appeng.tile.grid.AENetworkInvBlockEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.inv.InvOperation;
 
-public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity implements IAEMultiBlock, ITickableTileEntity {
+public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity implements IAEMultiBlock, Tickable {
 
     public static final ModelProperty<QnbFormedState> FORMED_STATE = new ModelProperty<>();
 

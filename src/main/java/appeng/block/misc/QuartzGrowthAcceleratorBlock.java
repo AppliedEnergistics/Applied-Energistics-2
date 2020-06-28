@@ -26,8 +26,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.block.Material;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
+import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.state.StateManager;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -44,7 +44,7 @@ import appeng.util.Platform;
 public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAcceleratorBlockEntity>
         implements IOrientableBlock {
 
-    private static final BooleanProperty POWERED = BooleanProperty.create("powered");
+    private static final BooleanProperty POWERED = BooleanProperty.of("powered");
 
     public QuartzGrowthAcceleratorBlock() {
         super(defaultProps(Material.STONE).sounds(BlockSoundGroup.METAL));
@@ -57,14 +57,14 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
         builder.add(POWERED);
     }
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void animateTick(final BlockState state, final World w, final BlockPos pos, final Random r) {
+    public void randomDisplayTick(final BlockState state, final World w, final BlockPos pos, final Random r) {
         if (!AEConfig.instance().isEnableEffects()) {
             return;
         }
@@ -99,30 +99,30 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
                 case 0:
                     dx = 0.6;
                     dz = d1;
-                    pt = new BlockPos(x + west.getOffsetX(), y + west.getOffsetY(), z + west.getZOffset());
+                    pt = new BlockPos(x + west.getOffsetX(), y + west.getOffsetY(), z + west.getOffsetZ());
 
                     break;
                 case 1:
                     dx = d1;
                     dz += 0.6;
-                    pt = new BlockPos(x + forward.getOffsetX(), y + forward.getOffsetY(), z + forward.getZOffset());
+                    pt = new BlockPos(x + forward.getOffsetX(), y + forward.getOffsetY(), z + forward.getOffsetZ());
 
                     break;
                 case 2:
                     dx = d1;
                     dz = -0.6;
-                    pt = new BlockPos(x - forward.getOffsetX(), y - forward.getOffsetY(), z - forward.getZOffset());
+                    pt = new BlockPos(x - forward.getOffsetX(), y - forward.getOffsetY(), z - forward.getOffsetZ());
 
                     break;
                 case 3:
                     dx = -0.6;
                     dz = d1;
-                    pt = new BlockPos(x - west.getOffsetX(), y - west.getOffsetY(), z - west.getZOffset());
+                    pt = new BlockPos(x - west.getOffsetX(), y - west.getOffsetY(), z - west.getOffsetZ());
 
                     break;
             }
 
-            if (!w.getBlockState(pt).getBlock().isAir(w.getBlockState(pt), w, pt)) {
+            if (!w.getBlockState(pt).isAir()) {
                 return;
             }
 
@@ -134,7 +134,7 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
             ry += dz * forward.getOffsetY();
             rz += dz * forward.getOffsetZ();
 
-            MinecraftClient.getInstance().particles.addParticle(ParticleTypes.LIGHTNING, rx, ry, rz, 0.0D, 0.0D, 0.0D);
+            MinecraftClient.getInstance().particleManager.addParticle(ParticleTypes.LIGHTNING, rx, ry, rz, 0.0D, 0.0D, 0.0D);
         }
     }
 

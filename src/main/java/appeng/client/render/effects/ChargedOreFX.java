@@ -23,7 +23,7 @@ import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.RedstoneParticle;
-import net.minecraft.particles.BasicParticleType;
+import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.world.World;
 import net.fabricmc.api.EnvType;
@@ -50,7 +50,7 @@ public class ChargedOreFX extends RedstoneParticle {
     }
 
     @Environment(EnvType.CLIENT)
-    public static class Factory implements IParticleFactory<BasicParticleType> {
+    public static class Factory implements IParticleFactory<DefaultParticleType> {
         private final IAnimatedSprite spriteSet;
 
         public Factory(IAnimatedSprite p_i50477_1_) {
@@ -58,8 +58,8 @@ public class ChargedOreFX extends RedstoneParticle {
         }
 
         @Override
-        public Particle makeParticle(BasicParticleType typeIn, World worldIn, double x, double y, double z,
-                double xSpeed, double ySpeed, double zSpeed) {
+        public Particle makeParticle(DefaultParticleType typeIn, World worldIn, double x, double y, double z,
+                                     double xSpeed, double ySpeed, double zSpeed) {
             return new ChargedOreFX(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet);
         }
     }

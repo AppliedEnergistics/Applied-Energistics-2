@@ -385,7 +385,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
     }
 
     @Override
-    public void animateTick(final World world, final BlockPos pos, final Random r) {
+    public void randomDisplayTick(final World world, final BlockPos pos, final Random r) {
         if (this.isLevelEmitterOn()) {
             final AEPartLocation d = this.getSide();
 

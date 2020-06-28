@@ -1,7 +1,8 @@
 package appeng.client.render.effects;
 
-import net.minecraft.particles.BasicParticleType;
-import net.minecraft.particles.ParticleType;
+import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
+import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.particle.ParticleType;
 
 import appeng.core.AppEng;
 
@@ -10,15 +11,15 @@ public final class ParticleTypes {
     private ParticleTypes() {
     }
 
-    public static final BasicParticleType CHARGED_ORE = new BasicParticleType(false);
-    public static final BasicParticleType CRAFTING = new BasicParticleType(false);
-    public static final ParticleType<EnergyParticleData> ENERGY = new ParticleType<>(false,
+    public static final DefaultParticleType CHARGED_ORE = FabricParticleTypes.simple(false);
+    public static final DefaultParticleType CRAFTING = FabricParticleTypes.simple(false);
+    public static final ParticleType<EnergyParticleData> ENERGY = FabricParticleTypes.complex(false,
             EnergyParticleData.DESERIALIZER);
-    public static final ParticleType<LightningArcParticleData> LIGHTNING_ARC = new ParticleType<>(false,
+    public static final ParticleType<LightningArcParticleData> LIGHTNING_ARC = FabricParticleTypes.complex(false,
             LightningArcParticleData.DESERIALIZER);
-    public static final BasicParticleType LIGHTNING = new BasicParticleType(false);
-    public static final BasicParticleType MATTER_CANNON = new BasicParticleType(false);
-    public static final BasicParticleType VIBRANT = new BasicParticleType(false);
+    public static final DefaultParticleType LIGHTNING = FabricParticleTypes.simple(false);
+    public static final DefaultParticleType MATTER_CANNON = FabricParticleTypes.simple(false);
+    public static final DefaultParticleType VIBRANT = FabricParticleTypes.simple(false);
 
     static {
         CHARGED_ORE.setRegistryName(AppEng.MOD_ID, "charged_ore_fx");

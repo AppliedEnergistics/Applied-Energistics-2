@@ -51,7 +51,7 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
 
     static {
         final double onePixel = 2.0 / 16.0;
-        SHAPE = VoxelShapes.create(
+        SHAPE = VoxelShapes.cuboid(
                 new Box(onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel));
     }
 
@@ -60,7 +60,7 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
     }
 
     @Override
-    public void animateTick(final BlockState state, final World w, final BlockPos pos, final Random rand) {
+    public void randomDisplayTick(final BlockState state, final World w, final BlockPos pos, final Random rand) {
         final QuantumBridgeBlockEntity bridge = this.getBlockEntity(w, pos);
         if (bridge != null) {
             if (bridge.hasQES()) {
@@ -90,7 +90,7 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
+    public VoxelShape getOutlineShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
         return SHAPE;
     }
 

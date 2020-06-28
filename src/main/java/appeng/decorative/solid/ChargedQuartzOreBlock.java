@@ -38,7 +38,7 @@ public class ChargedQuartzOreBlock extends QuartzOreBlock {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void animateTick(final BlockState state, final World w, final BlockPos pos, final Random r) {
+    public void randomDisplayTick(final BlockState state, final World w, final BlockPos pos, final Random r) {
         if (!AEConfig.instance().isEnableEffects()) {
             return;
         }
@@ -72,7 +72,7 @@ public class ChargedQuartzOreBlock extends QuartzOreBlock {
         }
 
         if (AppEng.proxy.shouldAddParticles(r)) {
-            MinecraftClient.getInstance().particles.addParticle(ParticleTypes.CHARGED_ORE, pos.getX() + xOff,
+            MinecraftClient.getInstance().particleManager.addParticle(ParticleTypes.CHARGED_ORE, pos.getX() + xOff,
                     pos.getY() + yOff, pos.getZ() + zOff, 0.0f, 0.0f, 0.0f);
         }
     }

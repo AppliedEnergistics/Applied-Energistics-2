@@ -128,7 +128,7 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
     }
 
     @Override
-    public void onNeighborChanged(BlockView w, BlockPos pos, BlockPos neighbor) {
+    public void onneighborUpdate(BlockView w, BlockPos pos, BlockPos neighbor) {
         if (!this.isOutput()) {
             final BlockPos target = this.getTile().getPos().offset(this.getSide().getFacing());
 
@@ -140,8 +140,8 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
                     srcSide = Direction.UP;
                 }
 
-                this.power = b.getWeakPower(state, this.getTile().getWorld(), target, srcSide);
-                this.power = Math.max(this.power, b.getWeakPower(state, this.getTile().getWorld(), target, srcSide));
+                this.power = b.getWeakRedstonePower(state, this.getTile().getWorld(), target, srcSide);
+                this.power = Math.max(this.power, b.getWeakRedstonePower(state, this.getTile().getWorld(), target, srcSide));
                 this.sendToOutput(this.power);
             } else {
                 this.sendToOutput(0);

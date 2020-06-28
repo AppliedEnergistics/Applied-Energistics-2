@@ -25,6 +25,8 @@ import javax.annotation.Nullable;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.render.model.json.Transformation;
+import net.minecraft.client.util.math.AffineTransformation;
 import net.minecraft.util.math.Box;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -32,8 +34,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.renderer.TransformationMatrix;
-import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.entity.player.PlayerEntity;
@@ -63,9 +64,7 @@ import appeng.util.Platform;
 public class ChargerBlock extends AEBaseTileBlock<ChargerBlockEntity> {
 
     public ChargerBlock() {
-        super(defaultProps(Material.IRON).notSolid());
-
-        this.setFullSize(this.setOpaque(false));
+        super(defaultProps(Material.METAL));
     }
 
     @Override
@@ -92,7 +91,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerBlockEntity> {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void animateTick(final BlockState state, final World w, final BlockPos pos, final Random r) {
+    public void randomDisplayTick(final BlockState state, final World w, final BlockPos pos, final Random r) {
         if (!AEConfig.instance().isEnableEffects()) {
             return;
         }
@@ -111,7 +110,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerBlockEntity> {
 
                 for (int bolts = 0; bolts < 3; bolts++) {
                     if (AppEng.proxy.shouldAddParticles(r)) {
-                        MinecraftClient.getInstance().particles.addParticle(ParticleTypes.LIGHTNING, xOff + 0.5 + pos.getX(),
+                        MinecraftClient.getInstance().particleManager.addParticle(ParticleTypes.LIGHTNING, xOff + 0.5 + pos.getX(),
                                 yOff + 0.5 + pos.getY(), zOff + 0.5 + pos.getZ(), 0.0, 0.0, 0.0);
                     }
                 }
@@ -120,7 +119,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerBlockEntity> {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockView w, BlockPos pos, ShapeContext context) {
+    public VoxelShape getOutlineShape(BlockState state, BlockView w, BlockPos pos, ShapeContext context) {
 
         final ChargerBlockEntity tile = this.getBlockEntity(w, pos);
         if (tile != null) {
@@ -166,15 +165,15 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerBlockEntity> {
                     break;
             }
 
-            return VoxelShapes.create(bb.getBoundingBox());
+            return VoxelShapes.cuboid(bb.getBoundingBox());
         }
-        return VoxelShapes.create(new Box(0.0, 0, 0.0, 1.0, 1.0, 1.0));
+        return VoxelShapes.cuboid(new Box(0.0, 0, 0.0, 1.0, 1.0, 1.0));
     }
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockView worldIn, BlockPos pos,
             ShapeContext context) {
-        return VoxelShapes.create(new Box(0.0, 0.0, 0.0, 1.0, 1.0, 1.0));
+        return VoxelShapes.cuboid(new Box(0.0, 0.0, 0.0, 1.0, 1.0, 1.0));
     }
 
     @Environment(EnvType.CLIENT)
@@ -183,8 +182,8 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerBlockEntity> {
     }
 
     @Environment(EnvType.CLIENT)
-    private static Pair<ItemStack, TransformationMatrix> getRenderedItem(ChargerBlockEntity tile) {
-        TransformationMatrix transform = new TransformationMatrix(new Vector3f(0.5f, 0.375f, 0.5f), null, null, null);
+    private static Pair<ItemStack, Transformation> getRenderedItem(ChargerBlockEntity tile) {
+        Transformation transform = new Transformation(new Vector3f(), new Vector3f(0.5f, 0.375f, 0.5f), new Vector3f(1f, 1f, 1f));
         return new ImmutablePair<>(tile.getInternalInventory().getInvStack(0), transform);
     }
 

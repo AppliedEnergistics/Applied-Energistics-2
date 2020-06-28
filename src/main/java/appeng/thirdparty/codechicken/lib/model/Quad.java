@@ -18,7 +18,7 @@
 
 package appeng.thirdparty.codechicken.lib.model;
 
-import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;

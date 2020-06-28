@@ -57,7 +57,7 @@ public abstract class DelegateBakedModel implements BakedModel {
     }
 
     @Override
-    public BakedModel handlePerspective(ModelTransformation.TransformType cameraTransformType, MatrixStack mat) {
+    public BakedModel handlePerspective(ModelTransformation.Mode cameraTransformType, MatrixStack mat) {
         baseModel.handlePerspective(cameraTransformType, mat);
         return this;
     }

@@ -145,7 +145,7 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
         return true;
     }
 
-    public void neighborChanged() {
+    public void neighborUpdate() {
         if (this.dots == null) {
             return;
         }
@@ -162,7 +162,7 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
     public boolean isSideValid(final Direction side) {
         final BlockPos p = this.pos.offset(side);
         final BlockState blk = this.world.getBlockState(p);
-        return blk.isSolidSide(world, p, side.getOpposite());
+        return blk.isSideSolidFullSquare(world, p, side.getOpposite());
     }
 
     private void removeSide(final Direction side) {
@@ -215,7 +215,7 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
         final BlockPos p = this.pos.offset(side);
 
         final BlockState blk = this.world.getBlockState(p);
-        if (blk.isSolidSide(this.world, p, side.getOpposite())) {
+        if (blk.isSideSolidFullSquare(this.world, p, side.getOpposite())) {
             final PaintBallItem ipb = (PaintBallItem) type.getItem();
 
             final AEColor col = ipb.getColor();

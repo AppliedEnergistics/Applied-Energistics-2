@@ -18,7 +18,7 @@
 
 package appeng.debug;
 
-import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.util.Tickable;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -27,7 +27,7 @@ import net.minecraft.server.world.ServerWorld;
 import appeng.core.AELog;
 import appeng.tile.AEBaseBlockEntity;
 
-public class ChunkLoaderBlockEntity extends AEBaseBlockEntity implements ITickableTileEntity {
+public class ChunkLoaderBlockEntity extends AEBaseBlockEntity implements Tickable {
 
     public ChunkLoaderBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
