@@ -40,7 +40,7 @@ public class SkyStoneBlock extends AEBaseBlock {
     private static final double BREAK_SPEAK_THRESHOLD = 7.0;
     private final SkystoneType type;
 
-    public SkyStoneBlock(SkystoneType type, Properties props) {
+    public SkyStoneBlock(SkystoneType type, Settings props) {
         super(props);
         this.type = type;
 

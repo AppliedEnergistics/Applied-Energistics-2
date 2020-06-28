@@ -18,38 +18,29 @@
 
 package appeng.decorative.solid;
 
-import java.util.Random;
-
-import net.fabricmc.api.EnvType;
+import appeng.block.AEBaseBlock;
 import net.minecraft.block.BlockState;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.fabricmc.api.Environment;
 
-import appeng.client.render.effects.ParticleTypes;
-import appeng.core.AEConfig;
-import appeng.core.AppEng;
-
-public class QuartzLampBlock extends QuartzGlassBlock {
-
-    public QuartzLampBlock(Properties props) {
+public class QuartzOreBlock extends AEBaseBlock {
+    public QuartzOreBlock(Settings props) {
         super(props);
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
-    public void randomDisplayTick(final BlockState state, final World w, final BlockPos pos, final Random r) {
-        if (!AEConfig.instance().isEnableEffects()) {
-            return;
-        }
-
-        if (AppEng.proxy.shouldAddParticles(r)) {
-            final double d0 = (r.nextFloat() - 0.5F) * 0.96D;
-            final double d1 = (r.nextFloat() - 0.5F) * 0.96D;
-            final double d2 = (r.nextFloat() - 0.5F) * 0.96D;
-
-            w.addParticle(ParticleTypes.VIBRANT, 0.5 + pos.getX() + d0, 0.5 + pos.getY() + d1, 0.5 + pos.getZ() + d2, 0,
-                    0, 0);
+    public void onStacksDropped(BlockState state, World world, BlockPos pos, ItemStack stack) {
+        super.onStacksDropped(state, world, pos, stack);
+        if (EnchantmentHelper.getLevel(Enchantments.SILK_TOUCH, stack) == 0) {
+            int i = MathHelper.nextInt(world.random, 2, 5);
+            if (i > 0) {
+                this.dropExperience(world, pos, i);
+            }
         }
     }
+
 }

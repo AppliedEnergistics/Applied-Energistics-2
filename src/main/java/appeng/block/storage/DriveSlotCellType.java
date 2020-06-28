@@ -18,12 +18,12 @@
 
 package appeng.block.storage;
 
-import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.StringIdentifiable;
 
 /**
  * Describes the type of cell present in a slot.
  */
-public enum DriveSlotCellType implements IStringSerializable {
+public enum DriveSlotCellType implements StringIdentifiable {
 
     EMPTY("empty"),
 
@@ -38,7 +38,7 @@ public enum DriveSlotCellType implements IStringSerializable {
     }
 
     @Override
-    public String getName() {
+    public String asString() {
         return this.name;
     }
 

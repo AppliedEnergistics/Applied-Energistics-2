@@ -21,13 +21,13 @@ package appeng.block.networking;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.state.EnumProperty;
+import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.block.ShapeContext;
@@ -46,11 +46,11 @@ import appeng.util.Platform;
 
 public class WirelessBlock extends AEBaseTileBlock<WirelessBlockEntity> {
 
-    enum State implements IStringSerializable {
+    enum State implements StringIdentifiable {
         OFF, ON, HAS_CHANNEL;
 
         @Override
-        public String getName() {
+        public String asString() {
             return this.name().toLowerCase();
         }
     }

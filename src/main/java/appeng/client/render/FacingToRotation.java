@@ -24,14 +24,14 @@ import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.client.renderer.Vector4f;
+import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.Vec3i;
 
 /**
  * TODO: Removed useless stuff.
  */
-public enum FacingToRotation implements IStringSerializable {
+public enum FacingToRotation implements StringIdentifiable {
 
     // DUNSWE
     // @formatter:off
@@ -110,7 +110,7 @@ public enum FacingToRotation implements IStringSerializable {
     }
 
     @Override
-    public String getName() {
+    public String asString() {
         return name().toLowerCase();
     }
 }

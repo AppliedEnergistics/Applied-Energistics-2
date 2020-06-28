@@ -21,10 +21,10 @@ package appeng.block.networking;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
-import net.minecraft.state.EnumProperty;
+import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.StateManager;
+import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.World;
@@ -34,11 +34,11 @@ import appeng.tile.networking.ControllerBlockEntity;
 
 public class ControllerBlock extends AEBaseTileBlock<ControllerBlockEntity> {
 
-    public enum ControllerBlockState implements IStringSerializable {
+    public enum ControllerBlockState implements StringIdentifiable {
         offline, online, conflicted;
 
         @Override
-        public String getName() {
+        public String asString() {
             return this.name();
         }
 
@@ -50,11 +50,11 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerBlockEntity> {
      * enclosed by other controllers, and since they are always offline, they do not
      * have the usual sub-states.
      */
-    public enum ControllerRenderType implements IStringSerializable {
+    public enum ControllerRenderType implements StringIdentifiable {
         block, column_x, column_y, column_z, inside_a, inside_b;
 
         @Override
-        public String getName() {
+        public String asString() {
             return this.name();
         }
 

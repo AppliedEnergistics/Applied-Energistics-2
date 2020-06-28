@@ -21,18 +21,18 @@ package appeng.decorative.solid;
 import java.util.Random;
 
 import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.fabricmc.api.Environment;
 
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 
-public class ChargedQuartzOreBlock extends QuartzOreBlock {
-    public ChargedQuartzOreBlock(Properties props) {
+public class QuartzLampBlock extends QuartzGlassBlock {
+
+    public QuartzLampBlock(Settings props) {
         super(props);
     }
 
@@ -43,37 +43,13 @@ public class ChargedQuartzOreBlock extends QuartzOreBlock {
             return;
         }
 
-        double xOff = (r.nextFloat());
-        double yOff = (r.nextFloat());
-        double zOff = (r.nextFloat());
-
-        switch (r.nextInt(6)) {
-            case 0:
-                xOff = -0.01;
-                break;
-            case 1:
-                yOff = -0.01;
-                break;
-            case 2:
-                xOff = -0.01;
-                break;
-            case 3:
-                zOff = -0.01;
-                break;
-            case 4:
-                xOff = 1.01;
-                break;
-            case 5:
-                yOff = 1.01;
-                break;
-            case 6:
-                zOff = 1.01;
-                break;
-        }
-
         if (AppEng.proxy.shouldAddParticles(r)) {
-            MinecraftClient.getInstance().particleManager.addParticle(ParticleTypes.CHARGED_ORE, pos.getX() + xOff,
-                    pos.getY() + yOff, pos.getZ() + zOff, 0.0f, 0.0f, 0.0f);
+            final double d0 = (r.nextFloat() - 0.5F) * 0.96D;
+            final double d1 = (r.nextFloat() - 0.5F) * 0.96D;
+            final double d2 = (r.nextFloat() - 0.5F) * 0.96D;
+
+            w.addParticle(ParticleTypes.VIBRANT, 0.5 + pos.getX() + d0, 0.5 + pos.getY() + d1, 0.5 + pos.getZ() + d2, 0,
+                    0, 0);
         }
     }
 }

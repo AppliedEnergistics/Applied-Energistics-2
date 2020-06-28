@@ -82,7 +82,7 @@ public enum ButtonToolTips {
 
     @Deprecated
     public String getLocal() {
-        return getTranslationKey().getFormattedText();
+        return getTranslationKey().getString();
     }
 
     public Text getTranslationKey() {

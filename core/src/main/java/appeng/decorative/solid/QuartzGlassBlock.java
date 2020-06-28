@@ -18,21 +18,29 @@
 
 package appeng.decorative.solid;
 
+import net.minecraft.block.AbstractGlassBlock;
 import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.block.Material;
+import net.minecraft.util.math.Direction;
 
-import appeng.block.AEBaseBlock;
+import appeng.helpers.AEGlassMaterial;
 
-public class QuartzOreBlock extends AEBaseBlock {
-    public QuartzOreBlock(Properties props) {
+public class QuartzGlassBlock extends AbstractGlassBlock {
+
+    public QuartzGlassBlock(Settings props) {
         super(props);
     }
 
     @Override
-    public int getExpDrop(BlockState state, net.minecraft.world.WorldView reader, BlockPos pos, int fortune,
-            int silktouch) {
-        return silktouch == 0 ? MathHelper.nextInt(RANDOM, 2, 5) : 0;
+    public boolean isSideInvisible(BlockState state, BlockState adjacentBlockState, Direction side) {
+        final Material mat = adjacentBlockState.getMaterial();
+        if (mat == Material.GLASS || mat == AEGlassMaterial.INSTANCE) {
+            if (adjacentBlockState.getRenderType() == state.getRenderType()) {
+                return true;
+            }
+        }
+
+        return super.isSideInvisible(state, adjacentBlockState, side);
     }
 
 }
