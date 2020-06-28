@@ -1,20 +1,19 @@
 package appeng.recipes.handlers;
 
-import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.recipe.*;
+import net.minecraft.recipe.Ingredient;
+import net.minecraft.recipe.Recipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
 import appeng.api.features.InscriberProcessType;
 
-public class InscriberRecipe implements IRecipe<IInventory> {
+public class InscriberRecipe implements Recipe<Inventory> {
 
-    public static IRecipeType<InscriberRecipe> TYPE;
+    public static RecipeType<InscriberRecipe> TYPE;
 
     private final Identifier id;
     private final String group;
@@ -37,12 +36,12 @@ public class InscriberRecipe implements IRecipe<IInventory> {
     }
 
     @Override
-    public boolean matches(IInventory inv, World worldIn) {
+    public boolean matches(Inventory inv, World worldIn) {
         return false;
     }
 
     @Override
-    public ItemStack getCraftingResult(IInventory inv) {
+    public ItemStack craft(Inventory inv) {
         return this.output.copy();
     }
 
@@ -62,12 +61,12 @@ public class InscriberRecipe implements IRecipe<IInventory> {
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return InscriberRecipeSerializer.INSTANCE;
     }
 
     @Override
-    public IRecipeType<?> getType() {
+    public RecipeType<?> getType() {
         return TYPE;
     }
 

@@ -18,15 +18,16 @@
 
 package appeng.util.inv;
 
+import alexiil.mc.lib.attributes.Simulation;
+import alexiil.mc.lib.attributes.item.compat.FixedInventoryVanillaWrapper;
+import appeng.util.Platform;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
-import appeng.util.Platform;
+public class AdaptorItemHandlerPlayerInv extends AdaptorFixedInv {
 
-public class AdaptorItemHandlerPlayerInv extends AdaptorItemHandler {
     public AdaptorItemHandlerPlayerInv(final PlayerEntity playerInv) {
-        super(new PlayerMainInvWrapper(playerInv.inventory));
+        super(new FixedInventoryVanillaWrapper(playerInv.inventory));
     }
 
     /**
@@ -38,27 +39,23 @@ public class AdaptorItemHandlerPlayerInv extends AdaptorItemHandler {
             return ItemStack.EMPTY;
         }
 
+        Simulation sim = simulate ? Simulation.SIMULATE : Simulation.ACTION;
+
         ItemStack left = itemsToAdd.copy();
 
-        for (int slot = 0; slot < this.itemHandler.getSlots(); slot++) {
-            ItemStack is = this.itemHandler.getStackInSlot(slot);
+        // First try filling slots
+        for (int slot = 0; slot < this.itemHandler.getSlotCount(); slot++) {
+            ItemStack is = this.itemHandler.getInvStack(slot);
 
             if (Platform.itemComparisons().isSameItem(is, left)) {
-                left = this.itemHandler.insertItem(slot, left, simulate);
+                left = itemHandler.getSlot(slot).attemptInsertion(left, sim);
             }
             if (left.isEmpty()) {
                 return ItemStack.EMPTY;
             }
         }
 
-        for (int slot = 0; slot < this.itemHandler.getSlots(); slot++) {
-            left = this.itemHandler.insertItem(slot, left, simulate);
-            if (left.isEmpty()) {
-                return ItemStack.EMPTY;
-            }
-        }
-
-        return left;
+        return transferable.attemptInsertion(left, sim);
     }
 
 }

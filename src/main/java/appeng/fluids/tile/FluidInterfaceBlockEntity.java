@@ -22,7 +22,7 @@ import java.util.EnumSet;
 
 import javax.annotation.Nullable;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.block.BlockState;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
@@ -153,7 +153,7 @@ public class FluidInterfaceBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public ItemTransferable getInventoryByName(String name) {
+    public FixedItemInv getInventoryByName(String name) {
         return this.duality.getInventoryByName(name);
     }
 

@@ -24,7 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Upgrades;
@@ -61,7 +61,7 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
     }
 
     @Override
-    public ItemTransferable getInventoryByName(final String name) {
+    public FixedItemInv getInventoryByName(final String name) {
         if (name.equals("config")) {
             return this.getConfig();
         }

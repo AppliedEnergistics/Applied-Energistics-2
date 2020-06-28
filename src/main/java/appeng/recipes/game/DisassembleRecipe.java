@@ -25,9 +25,9 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 
 import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipe;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.util.Identifier;
@@ -46,7 +46,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.core.AppEng;
 
 public final class DisassembleRecipe extends SpecialRecipe {
-    public static final IRecipeSerializer<DisassembleRecipe> SERIALIZER = new SpecialRecipeSerializer<>(
+    public static final RecipeSerializer<DisassembleRecipe> SERIALIZER = new SpecialRecipeSerializer<>(
             DisassembleRecipe::new);
 
     static {
@@ -87,11 +87,11 @@ public final class DisassembleRecipe extends SpecialRecipe {
     }
 
     @Nonnull
-    private ItemStack getOutput(final IInventory inventory) {
+    private ItemStack getOutput(final Inventory inventory) {
         int itemCount = 0;
         ItemStack output = MISMATCHED_STACK;
 
-        for (int slotIndex = 0; slotIndex < inventory.getSizeInventory(); slotIndex++) {
+        for (int slotIndex = 0; slotIndex < inventory.size(); slotIndex++) {
             final ItemStack stackInSlot = inventory.getStackInSlot(slotIndex);
             if (!stackInSlot.isEmpty()) {
                 // needs a single input in the recipe
@@ -150,7 +150,7 @@ public final class DisassembleRecipe extends SpecialRecipe {
 
     @Nonnull
     @Override
-    public ItemStack getCraftingResult(@Nonnull final CraftingInventory inv) {
+    public ItemStack craft(@Nonnull final CraftingInventory inv) {
         return this.getOutput(inv);
     }
 
@@ -161,7 +161,7 @@ public final class DisassembleRecipe extends SpecialRecipe {
 
     @Nonnull
     @Override
-    public IRecipeSerializer<DisassembleRecipe> getSerializer() {
+    public RecipeSerializer<DisassembleRecipe> getSerializer() {
         return SERIALIZER;
     }
 

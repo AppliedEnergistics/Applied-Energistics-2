@@ -28,12 +28,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.text.Text;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.fabricmc.api.Environment;
@@ -73,7 +70,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
 
         if (data.contains("freq")) {
             final short freq = data.getShort("freq");
-            final String freqTooltip = TextFormatting.BOLD + Platform.p2p().toHexString(freq);
+            final String freqTooltip = Formatting.BOLD + Platform.p2p().toHexString(freq);
 
             lines.add(new TranslatableText("gui.tooltips.appliedenergistics2.P2PFrequency", freqTooltip));
         }
@@ -145,19 +142,19 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
 
         switch (msg) {
             case SETTINGS_CLEARED:
-                player.sendMessage(PlayerMessages.SettingCleared.get());
+                player.sendSystemMessage(PlayerMessages.SettingCleared.get(), Util.NIL_UUID);
                 break;
             case INVALID_MACHINE:
-                player.sendMessage(PlayerMessages.InvalidMachine.get());
+                player.sendSystemMessage(PlayerMessages.InvalidMachine.get(), Util.NIL_UUID);
                 break;
             case SETTINGS_LOADED:
-                player.sendMessage(PlayerMessages.LoadedSettings.get());
+                player.sendSystemMessage(PlayerMessages.LoadedSettings.get(), Util.NIL_UUID);
                 break;
             case SETTINGS_SAVED:
-                player.sendMessage(PlayerMessages.SavedSettings.get());
+                player.sendSystemMessage(PlayerMessages.SavedSettings.get(), Util.NIL_UUID);
                 break;
             case SETTINGS_RESET:
-                player.sendMessage(PlayerMessages.ResetSettings.get());
+                player.sendSystemMessage(PlayerMessages.ResetSettings.get(), Util.NIL_UUID);
                 break;
             default:
         }

@@ -29,7 +29,7 @@ import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.recipe.RecipeType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.world.World;
@@ -80,27 +80,27 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
         for (int x = 0; x < inTag.size(); x++) {
             CompoundTag ingredient = inTag.getCompound(x);
-            final ItemStack gs = ItemStack.read(ingredient);
+            final ItemStack gs = ItemStack.fromTag(ingredient);
 
             if (!ingredient.isEmpty() && gs.isEmpty()) {
                 throw new IllegalArgumentException("No pattern here!");
             }
 
-            this.crafting.setInventorySlotContents(x, gs);
+            this.crafting.setStack(x, gs);
 
             if (!gs.isEmpty() && (!this.isCrafting || !gs.hasTag())) {
                 this.markItemAs(x, gs, TestStatus.ACCEPT);
             }
 
             in.add(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(gs));
-            this.testFrame.setInventorySlotContents(x, gs);
+            this.testFrame.setStack(x, gs);
         }
 
         if (this.isCrafting) {
-            this.standardRecipe = w.getRecipeManager().getRecipe(IRecipeType.CRAFTING, this.crafting, w).orElse(null);
+            this.standardRecipe = w.getRecipeManager().getRecipe(RecipeType.CRAFTING, this.crafting, w).orElse(null);
 
             if (this.standardRecipe != null) {
-                this.correctOutput = this.standardRecipe.getCraftingResult(this.crafting);
+                this.correctOutput = this.standardRecipe.craft(this.crafting);
                 out.add(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)
                         .createStack(this.correctOutput));
             } else {
@@ -112,7 +112,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
             for (int x = 0; x < outTag.size(); x++) {
                 CompoundTag resultItemTag = outTag.getCompound(x);
-                final ItemStack gs = ItemStack.read(resultItemTag);
+                final ItemStack gs = ItemStack.fromTag(resultItemTag);
 
                 if (!resultItemTag.isEmpty() && gs.isEmpty()) {
                     throw new IllegalArgumentException("No pattern here!");
@@ -211,11 +211,11 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
                 break;
         }
 
-        for (int x = 0; x < this.crafting.getSizeInventory(); x++) {
-            this.testFrame.setInventorySlotContents(x, this.crafting.getStackInSlot(x));
+        for (int x = 0; x < this.crafting.size(); x++) {
+            this.testFrame.setStack(x, this.crafting.getStack(x));
         }
 
-        this.testFrame.setInventorySlotContents(slotIndex, i);
+        this.testFrame.setStack(slotIndex, i);
 
         // If we cannot substitute, the items must match exactly
         if (!canSubstitute && slotIndex < inputs.length) {
@@ -226,10 +226,10 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
         }
 
         if (this.standardRecipe.matches(this.testFrame, w)) {
-            final ItemStack testOutput = this.standardRecipe.getCraftingResult(this.testFrame);
+            final ItemStack testOutput = this.standardRecipe.craft(this.testFrame);
 
             if (Platform.itemComparisons().isSameItem(this.correctOutput, testOutput)) {
-                this.testFrame.setInventorySlotContents(slotIndex, this.crafting.getStackInSlot(slotIndex));
+                this.testFrame.setStack(slotIndex, this.crafting.getStack(slotIndex));
                 this.markItemAs(slotIndex, i, TestStatus.ACCEPT);
                 return true;
             }
@@ -275,8 +275,8 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
             throw new IllegalStateException("Only crafting recipes supported.");
         }
 
-        for (int x = 0; x < craftingInv.getSizeInventory(); x++) {
-            if (!this.isValidItemForSlot(x, craftingInv.getStackInSlot(x), w)) {
+        for (int x = 0; x < craftingInv.size(); x++) {
+            if (!this.isValidItemForSlot(x, craftingInv.getStack(x), w)) {
                 return ItemStack.EMPTY;
             }
         }
@@ -289,7 +289,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
     }
 
     private TestStatus getStatus(final int slotIndex, final ItemStack i) {
-        if (this.crafting.getStackInSlot(slotIndex).isEmpty()) {
+        if (this.crafting.getStack(slotIndex).isEmpty()) {
             return i.isEmpty() ? TestStatus.ACCEPT : TestStatus.DECLINE;
         }
 

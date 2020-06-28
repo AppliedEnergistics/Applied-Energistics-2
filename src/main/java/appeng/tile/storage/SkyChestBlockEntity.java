@@ -30,7 +30,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.block.storage.SkyChestBlock;
 import appeng.tile.AEBaseInvBlockEntity;
@@ -77,7 +77,7 @@ public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements ITickab
     }
 
     @Override
-    public ItemTransferable getInternalInventory() {
+    public FixedItemInv getInternalInventory() {
         return this.inv;
     }
 
@@ -118,9 +118,9 @@ public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements ITickab
         Block block = getCachedState().getBlock();
         if (block instanceof SkyChestBlock) {
             this.world.addBlockEvent(this.pos, block, 1, this.numPlayersUsing);
-            this.world.notifyNeighborsOfStateChange(this.pos, block);
+            this.world.updateNeighborsAlways(this.pos, block);
             // FIXME: Uhm, we are we doing this?
-            this.world.notifyNeighborsOfStateChange(this.pos.down(), block);
+            this.world.updateNeighborsAlways(this.pos.down(), block);
         }
     }
 
@@ -139,7 +139,7 @@ public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements ITickab
     }
 
     @Override
-    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
                                   final ItemStack removed, final ItemStack added) {
 
     }

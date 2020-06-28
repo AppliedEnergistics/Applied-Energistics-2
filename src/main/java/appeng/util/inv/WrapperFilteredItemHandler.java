@@ -19,66 +19,62 @@
 package appeng.util.inv;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import alexiil.mc.lib.attributes.ListenerRemovalToken;
+import alexiil.mc.lib.attributes.ListenerToken;
+import alexiil.mc.lib.attributes.Simulation;
+import alexiil.mc.lib.attributes.item.InvMarkDirtyListener;
+import alexiil.mc.lib.attributes.item.filter.ItemFilter;
 import net.minecraft.item.ItemStack;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
-import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.filter.IAEItemFilter;
 
-public class WrapperFilteredItemHandler implements IItemHandlerModifiable {
-    private final ItemTransferable handler;
+// FIXME: Needs to be double checked, LBA has better ways of doing this
+public class WrapperFilteredItemHandler implements FixedItemInv {
+    private final FixedItemInv handler;
     private final IAEItemFilter filter;
 
-    public WrapperFilteredItemHandler(@Nonnull ItemTransferable handler, @Nonnull IAEItemFilter filter) {
+    public WrapperFilteredItemHandler(@Nonnull FixedItemInv handler, @Nonnull IAEItemFilter filter) {
         this.handler = handler;
         this.filter = filter;
     }
 
     @Override
-    public void setStackInSlot(int slot, ItemStack stack) {
-        ItemHandlerUtil.setStackInSlot(this.handler, slot, stack);
+    public ItemStack getInvStack(int slot) {
+        return this.handler.getInvStack(slot);
     }
 
     @Override
-    public int getSlots() {
-        return this.handler.getSlots();
+    public boolean setInvStack(int slot, ItemStack to, Simulation simulation) {
+        return this.handler.setInvStack(slot, to, simulation);
     }
 
     @Override
-    public ItemStack getStackInSlot(int slot) {
-        return this.handler.getStackInSlot(slot);
+    public int getSlotCount() {
+        return this.handler.getSlotCount();
     }
 
     @Override
-    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-        if (!this.filter.allowInsert(this.handler, slot, stack)) {
-            return stack;
-        }
-
-        return this.handler.insertItem(slot, stack, simulate);
+    public boolean isItemValidForSlot(int slot, ItemStack stack) {
+        return filter.allowInsert(handler, slot, stack);
     }
 
     @Override
-    public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if (!this.filter.allowExtract(this.handler, slot, amount)) {
-            return ItemStack.EMPTY;
-        }
-
-        return this.handler.extractItem(slot, amount, simulate);
+    public ItemFilter getFilterForSlot(int slot) {
+        return stack -> filter.allowInsert(handler, slot, stack);
     }
 
     @Override
-    public int getSlotLimit(int slot) {
-        return this.handler.getSlotLimit(slot);
+    public int getChangeValue() {
+        return this.handler.getChangeValue();
     }
 
+    @Nullable
     @Override
-    public boolean isItemValid(int slot, ItemStack stack) {
-        if (!this.filter.allowInsert(this.handler, slot, stack)) {
-            return false;
-        }
-        return this.handler.isItemValid(slot, stack);
+    public ListenerToken addListener(InvMarkDirtyListener listener, ListenerRemovalToken removalToken) {
+        return this.handler.addListener(listener, removalToken);
     }
+
 }

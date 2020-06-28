@@ -62,9 +62,9 @@ public class EnergyFx extends SpriteTexturedParticle {
 
     @Override
     public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
-        float x = (float) (this.prevPosX + (this.posX - this.prevPosX) * partialTicks);
-        float y = (float) (this.prevPosY + (this.posY - this.prevPosY) * partialTicks);
-        float z = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * partialTicks);
+        float x = (float) (this.prevX + (this.posX - this.prevX) * partialTicks);
+        float y = (float) (this.prevY + (this.posY - this.prevY) * partialTicks);
+        float z = (float) (this.prevZ + (this.posZ - this.prevZ) * partialTicks);
 
         final int blkX = MathHelper.floor(x);
         final int blkY = MathHelper.floor(y);

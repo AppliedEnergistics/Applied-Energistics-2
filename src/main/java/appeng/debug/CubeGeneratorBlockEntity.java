@@ -51,7 +51,7 @@ public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements ITick
 
             if (this.countdown % 20 == 0) {
                 for (final PlayerEntity e : AppEng.proxy.getPlayers()) {
-                    e.sendMessage(new LiteralText("Spawning in... " + (this.countdown / 20)));
+                    e.sendSystemMessage(new LiteralText("Spawning in... " + (this.countdown / 20)), Util.NIL_UUID);
                 }
             }
 
@@ -102,7 +102,7 @@ public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements ITick
                     this.size = 64;
                 }
 
-                player.sendMessage(new LiteralText("Size: " + this.size));
+                player.sendSystemMessage(new LiteralText("Size: " + this.size), Util.NIL_UUID);
             } else {
                 this.countdown = 20 * 10;
                 this.is = hand;

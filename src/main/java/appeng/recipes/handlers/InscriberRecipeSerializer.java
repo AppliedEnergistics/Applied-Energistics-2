@@ -5,8 +5,8 @@ import javax.annotation.Nullable;
 import com.google.gson.JsonObject;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.recipe.Ingredient;
+import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
@@ -16,8 +16,8 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 import appeng.api.features.InscriberProcessType;
 import appeng.core.AppEng;
 
-public class InscriberRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>>
-        implements IRecipeSerializer<InscriberRecipe> {
+public class InscriberRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>>
+        implements RecipeSerializer<InscriberRecipe> {
 
     public static final InscriberRecipeSerializer INSTANCE = new InscriberRecipeSerializer();
 

@@ -20,7 +20,7 @@ package appeng.fluids.helper;
 
 import java.util.Optional;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.Direction;
@@ -491,7 +491,7 @@ public class DualityFluidInterface
     }
 
     @Override
-    public ItemTransferable getInventoryByName(String name) {
+    public FixedItemInv getInventoryByName(String name) {
         return null;
     }
 

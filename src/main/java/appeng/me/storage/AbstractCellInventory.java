@@ -18,7 +18,7 @@
 
 package appeng.me.storage;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 
@@ -212,12 +212,12 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
     }
 
     @Override
-    public ItemTransferable getConfigInventory() {
+    public FixedItemInv getConfigInventory() {
         return this.cellType.getConfigInventory(this.i);
     }
 
     @Override
-    public ItemTransferable getUpgradesInventory() {
+    public FixedItemInv getUpgradesInventory() {
         return this.cellType.getUpgradesInventory(this.i);
     }
 

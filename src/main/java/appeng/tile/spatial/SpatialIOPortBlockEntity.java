@@ -20,7 +20,7 @@ package appeng.tile.spatial;
 
 import javax.annotation.Nonnull;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -55,7 +55,7 @@ import appeng.util.inv.filter.IAEItemFilter;
 public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity implements IWorldCallable<Void> {
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 2);
-    private final ItemTransferable invExt = new WrapperFilteredItemHandler(this.inv, new SpatialIOFilter());
+    private final FixedItemInv invExt = new WrapperFilteredItemHandler(this.inv, new SpatialIOFilter());
     private YesNo lastRedstoneState = YesNo.UNDECIDED;
 
     public SpatialIOPortBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
@@ -161,29 +161,29 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity implements
 
     @Override
     protected @Nonnull
-    ItemTransferable getItemHandlerForSide(@Nonnull Direction side) {
+    FixedItemInv getItemHandlerForSide(@Nonnull Direction side) {
         return this.invExt;
     }
 
     @Override
-    public ItemTransferable getInternalInventory() {
+    public FixedItemInv getInternalInventory() {
         return this.inv;
     }
 
     @Override
-    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
                                   final ItemStack removed, final ItemStack added) {
 
     }
 
     private class SpatialIOFilter implements IAEItemFilter {
         @Override
-        public boolean allowExtract(ItemTransferable inv, int slot, int amount) {
+        public boolean allowExtract(FixedItemInv inv, int slot, int amount) {
             return slot == 1;
         }
 
         @Override
-        public boolean allowInsert(ItemTransferable inv, int slot, ItemStack stack) {
+        public boolean allowInsert(FixedItemInv inv, int slot, ItemStack stack) {
             return (slot == 0 && SpatialIOPortBlockEntity.this.isSpatialCell(stack));
         }
 

@@ -24,7 +24,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.AEApi;
 import appeng.api.definitions.IItemDefinition;
@@ -74,7 +74,7 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
         super(TYPE, id, ip, te);
         this.ti = te;
 
-        ItemTransferable inv = te.getInternalInventory();
+        FixedItemInv inv = te.getInternalInventory();
 
         RestrictedInputSlot top = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.INSCRIBER_PLATE, inv, 0,
                 45, 16, this.getPlayerInventory());
@@ -127,8 +127,8 @@ public class InscriberContainer extends UpgradeableContainer implements IProgres
 
     @Override
     public boolean isValidForSlot(final Slot s, final ItemStack is) {
-        final ItemStack top = this.ti.getInternalInventory().getStackInSlot(0);
-        final ItemStack bot = this.ti.getInternalInventory().getStackInSlot(1);
+        final ItemStack top = this.ti.getInternalInventory().getInvStack(0);
+        final ItemStack bot = this.ti.getInternalInventory().getInvStack(1);
 
         if (s == this.middle) {
             IItemDefinition press = AEApi.instance().definitions().materials().namePress();

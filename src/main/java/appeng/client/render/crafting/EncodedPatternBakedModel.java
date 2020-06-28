@@ -115,9 +115,9 @@ public class EncodedPatternBakedModel extends DelegateBakedModel {
         public BakedModel getModelWithOverrides(BakedModel originalModel, ItemStack stack, @Nullable World world,
                                                 @Nullable LivingEntity entity) {
             boolean shiftHeld = Screen.hasShiftDown();
-            if (shiftHeld) {
+            if (shiftHeld && world != null) {
                 EncodedPatternItem iep = (EncodedPatternItem) stack.getItem();
-                ItemStack output = iep.getOutput(stack);
+                ItemStack output = iep.getOutput(world, stack);
                 if (!output.isEmpty()) {
                     BakedModel realModel = MinecraftClient.getInstance().getItemRenderer().getItemModelMesher()
                             .getItemModel(output);

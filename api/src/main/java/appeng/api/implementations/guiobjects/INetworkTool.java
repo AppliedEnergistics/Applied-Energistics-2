@@ -23,7 +23,7 @@
 
 package appeng.api.implementations.guiobjects;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.networking.IGridHost;
 
@@ -33,5 +33,5 @@ import appeng.api.networking.IGridHost;
 public interface INetworkTool extends IGuiItemObject {
     IGridHost getGridHost(); // null for most purposes.
 
-    ItemTransferable getInventory();
+    FixedItemInv getInventory();
 }

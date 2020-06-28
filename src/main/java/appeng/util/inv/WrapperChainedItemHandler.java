@@ -18,129 +18,17 @@
 
 package appeng.util.inv;
 
-import java.util.ArrayList;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
+import alexiil.mc.lib.attributes.item.impl.CombinedFixedItemInv;
+import alexiil.mc.lib.attributes.item.impl.DelegatingFixedItemInv;
 
-import javax.annotation.Nonnull;
+import java.util.Arrays;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import alexiil.mc.lib.attributes.item.impl.EmptyFixedItemInv;
+// FIXME could be replaced by CombinedFixedItemInv directly
+public class WrapperChainedItemHandler extends DelegatingFixedItemInv {
 
-import appeng.util.helpers.ItemHandlerUtil;
-
-public class WrapperChainedItemHandler implements IItemHandlerModifiable {
-    private ItemTransferable[] itemHandler; // the handlers
-    private int[] baseIndex; // index-offsets of the different handlers
-    private int slotCount; // number of total slots
-
-    public WrapperChainedItemHandler(ItemTransferable... itemHandler) {
-        this.setItemHandlers(itemHandler);
+    public WrapperChainedItemHandler(FixedItemInv... itemHandler) {
+        super(CombinedFixedItemInv.create(Arrays.asList(itemHandler)));
     }
 
-    private void setItemHandlers(ItemTransferable[] handlers) {
-        this.itemHandler = handlers;
-        this.baseIndex = new int[this.itemHandler.length];
-        int index = 0;
-        for (int i = 0; i < this.itemHandler.length; i++) {
-            index += this.itemHandler[i].getSlots();
-            this.baseIndex[i] = index;
-        }
-        this.slotCount = index;
-    }
-
-    // returns the handler index for the slot
-    private int getIndexForSlot(int slot) {
-        if (slot < 0) {
-            return -1;
-        }
-
-        for (int i = 0; i < this.baseIndex.length; i++) {
-            if (slot - this.baseIndex[i] < 0) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    private ItemTransferable getHandlerFromIndex(int index) {
-        if (index < 0 || index >= this.itemHandler.length) {
-            return EmptyFixedItemInv.INSTANCE;
-        }
-        return this.itemHandler[index];
-    }
-
-    private int getSlotFromIndex(int slot, int index) {
-        if (index <= 0 || index >= this.baseIndex.length) {
-            return slot;
-        }
-        return slot - this.baseIndex[index - 1];
-    }
-
-    public void cycleOrder() {
-        if (this.itemHandler.length > 1) {
-            ArrayList<ItemTransferable> newOrder = new ArrayList<>();
-            newOrder.add(this.itemHandler[this.itemHandler.length - 1]);
-            for (int i = 0; i < this.itemHandler.length - 1; ++i) {
-                newOrder.add(this.itemHandler[i]);
-            }
-            this.setItemHandlers(newOrder.toArray(new ItemTransferable[this.itemHandler.length]));
-        }
-    }
-
-    @Override
-    public int getSlots() {
-        return this.slotCount;
-    }
-
-    @Override
-    @Nonnull
-    public ItemStack getStackInSlot(final int slot) {
-        int index = this.getIndexForSlot(slot);
-        ItemTransferable handler = this.getHandlerFromIndex(index);
-        int targetSlot = this.getSlotFromIndex(slot, index);
-        return handler.getStackInSlot(targetSlot);
-    }
-
-    @Override
-    @Nonnull
-    public ItemStack insertItem(final int slot, @Nonnull ItemStack stack, boolean simulate) {
-        int index = this.getIndexForSlot(slot);
-        ItemTransferable handler = this.getHandlerFromIndex(index);
-        int targetSlot = this.getSlotFromIndex(slot, index);
-        return handler.insertItem(targetSlot, stack, simulate);
-    }
-
-    @Override
-    @Nonnull
-    public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        int index = this.getIndexForSlot(slot);
-        ItemTransferable handler = this.getHandlerFromIndex(index);
-        int targetSlot = this.getSlotFromIndex(slot, index);
-        return handler.extractItem(targetSlot, amount, simulate);
-    }
-
-    @Override
-    public int getSlotLimit(int slot) {
-        int index = this.getIndexForSlot(slot);
-        ItemTransferable handler = this.getHandlerFromIndex(index);
-        int localSlot = this.getSlotFromIndex(slot, index);
-        return handler.getSlotLimit(localSlot);
-    }
-
-    @Override
-    public void setStackInSlot(int slot, ItemStack stack) {
-        int index = this.getIndexForSlot(slot);
-        ItemTransferable handler = this.getHandlerFromIndex(index);
-        int targetSlot = this.getSlotFromIndex(slot, index);
-        ItemHandlerUtil.setStackInSlot(handler, targetSlot, stack);
-    }
-
-    @Override
-    public boolean isItemValid(int slot, ItemStack stack) {
-        int index = this.getIndexForSlot(slot);
-        ItemTransferable handler = this.getHandlerFromIndex(index);
-        int targetSlot = this.getSlotFromIndex(slot, index);
-        return handler.isItemValid(targetSlot, stack);
-    }
 }

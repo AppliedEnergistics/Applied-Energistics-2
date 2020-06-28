@@ -33,11 +33,11 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.text.Text;
 import net.minecraft.text.LiteralText;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.world.chunk.ChunkStatus;
@@ -84,7 +84,7 @@ public class TestMeteoritesCommand implements ISubCommand {
         BlockPos centerBlock;
         if (player != null) {
             world = player.getServerWorld();
-            centerBlock = new BlockPos(player.getPosX(), 0, player.getPosZ());
+            centerBlock = new BlockPos(player.getX(), 0, player.getPosZ());
         } else {
             world = srv.getWorld(DimensionType.OVERWORLD);
             centerBlock = world.getSpawnPoint();
@@ -173,7 +173,7 @@ public class TestMeteoritesCommand implements ISubCommand {
             // Add a tooltip
             Text tooltip = new LiteralText(settings.toString() + "\nBiome: ")
                     .append(world.getBiome(pos).getName());
-            msg.applyTextStyle(style -> style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
+            msg.formatted(style -> style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
 
             sender.sendFeedback(msg, true);
         }
@@ -191,8 +191,8 @@ public class TestMeteoritesCommand implements ISubCommand {
         String displayText = String.format(Locale.ROOT, "pos=%d,%d,%d", tpPos.getX(), tpPos.getY(), tpPos.getZ());
         String tpCommand = String.format(Locale.ROOT, "/tp @s %d %d %d", tpPos.getX(), tpPos.getY(), tpPos.getZ());
 
-        return new LiteralText(displayText).applyTextStyle(TextFormatting.UNDERLINE)
-                .applyTextStyle(style -> style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, tpCommand)));
+        return new LiteralText(displayText).formatted(Formatting.UNDERLINE)
+                .formatted(style -> style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, tpCommand)));
     }
 
     private static MeteoriteStructurePiece getMeteoritePieceFromChunk(IChunk chunk) {

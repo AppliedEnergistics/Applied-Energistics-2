@@ -2,9 +2,9 @@ package appeng.recipes.handlers;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.recipe.Recipe;
 import net.minecraft.world.World;
 
 public final class GrinderRecipes {
@@ -18,7 +18,7 @@ public final class GrinderRecipes {
      */
     @Nullable
     public static GrinderRecipe findForInput(World world, ItemStack input) {
-        for (IRecipe<IInventory> recipe : world.getRecipeManager().getRecipes(GrinderRecipe.TYPE).values()) {
+        for (Recipe<Inventory> recipe : world.getRecipeManager().getRecipes(GrinderRecipe.TYPE).values()) {
             GrinderRecipe grinderRecipe = (GrinderRecipe) recipe;
             if (grinderRecipe.getIngredient().test(input) && input.getCount() >= grinderRecipe.getIngredientCount()) {
                 return grinderRecipe;
@@ -32,7 +32,7 @@ public final class GrinderRecipes {
      * disregarding its current size.
      */
     public static boolean isValidIngredient(World world, ItemStack stack) {
-        for (IRecipe<IInventory> recipe : world.getRecipeManager().getRecipes(GrinderRecipe.TYPE).values()) {
+        for (Recipe<Inventory> recipe : world.getRecipeManager().getRecipes(GrinderRecipe.TYPE).values()) {
             GrinderRecipe grinderRecipe = (GrinderRecipe) recipe;
             if (grinderRecipe.getIngredient().test(stack)) {
                 return true;

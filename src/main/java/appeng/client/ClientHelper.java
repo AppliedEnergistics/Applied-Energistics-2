@@ -65,15 +65,6 @@ public class ClientHelper extends ServerHelper {
     }
 
     @Override
-    public World getWorld() {
-        if (Platform.isClient()) {
-            return MinecraftClient.getInstance().world;
-        } else {
-            return super.getWorld();
-        }
-    }
-
-    @Override
     public void bindTileEntitySpecialRenderer(final Class<? extends BlockEntity> tile, final AEBaseBlock blk) {
 
     }
@@ -113,7 +104,7 @@ public class ClientHelper extends ServerHelper {
 
     @Override
     public boolean shouldAddParticles(final Random r) {
-        switch (MinecraftClient.getInstance().gameSettings.particles) {
+        switch (MinecraftClient.getInstance().options.particles) {
             default:
             case ALL:
                 return true;
@@ -154,9 +145,9 @@ public class ClientHelper extends ServerHelper {
 
         final PlayerEntity player = mc.player;
 
-        final int x = (int) player.getPosX();
-        final int y = (int) player.getPosY();
-        final int z = (int) player.getPosZ();
+        final int x = (int) player.getX();
+        final int y = (int) player.getY();
+        final int z = (int) player.getZ();
 
         final int range = 16 * 16;
 

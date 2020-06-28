@@ -20,6 +20,7 @@ package appeng.items.tools.powered;
 
 import java.util.*;
 
+import appeng.util.FakePlayer;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -32,13 +33,13 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.*;
 import net.minecraft.item.crafting.FurnaceRecipe;
-import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.recipe.RecipeType;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.*;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceContext;
+import net.minecraft.world.RayTraceContext;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
 import net.minecraft.server.world.ServerWorld;
@@ -203,7 +204,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     // considered for onItemUse
     @Override
     public TypedActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
-        final HitResult target = rayTrace(w, p, RayTraceContext.FluidMode.ANY);
+        final HitResult target = rayTrace(w, p, RayTraceContext.FluidHandling.ANY);
 
         if (target.getType() != HitResult.Type.BLOCK) {
             return new TypedActionResult<>(ActionResult.FAIL, p.getStackInHand(hand));
@@ -233,7 +234,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             if (w.isClient) {
                 return ActionResult.FAIL;
             }
-            p = Platform.getPlayer((ServerWorld) w);
+            p = FakePlayer.getOrCreate((ServerWorld) w);
             // Fake players cannot crouch and we cannot communicate whether they want to
             // heat or cool
             tryBoth = true;
@@ -280,11 +281,11 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
 
                 for (final ItemStack i : stack) {
                     CraftingInventory tempInv = new CraftingInventory(new ContainerNull(), 1, 1);
-                    tempInv.setInventorySlotContents(0, i);
-                    Optional<FurnaceRecipe> recipe = w.getRecipeManager().getRecipe(IRecipeType.SMELTING, tempInv, w);
+                    tempInv.setStack(0, i);
+                    Optional<FurnaceRecipe> recipe = w.getRecipeManager().getRecipe(RecipeType.SMELTING, tempInv, w);
 
                     if (recipe.isPresent()) {
-                        ItemStack result = recipe.get().getCraftingResult(tempInv);
+                        ItemStack result = recipe.get().craft(tempInv);
                         if (result.getItem() instanceof BlockItem) {
                             // Anti-Dupe-Bug I presume...
                             if (Block.getBlockFromItem(result.getItem()) == block) {

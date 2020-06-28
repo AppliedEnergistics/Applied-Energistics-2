@@ -21,7 +21,7 @@ package appeng.container.slot;
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 public class OptionalFakeSlot extends FakeSlot implements IOptionalSlot {
 
@@ -31,7 +31,7 @@ public class OptionalFakeSlot extends FakeSlot implements IOptionalSlot {
     private final IOptionalSlotHost host;
     private boolean renderDisabled = true;
 
-    public OptionalFakeSlot(final ItemTransferable inv, final IOptionalSlotHost containerBus, final int idx, final int x,
+    public OptionalFakeSlot(final FixedItemInv inv, final IOptionalSlotHost containerBus, final int idx, final int x,
                             final int y, final int offX, final int offY, final int groupNum) {
         super(inv, idx, x + offX * 18, y + offY * 18);
         this.srcX = x;

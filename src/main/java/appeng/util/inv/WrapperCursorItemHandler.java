@@ -18,21 +18,14 @@
 
 package appeng.util.inv;
 
+import alexiil.mc.lib.attributes.item.compat.FixedInventoryVanillaWrapper;
+import alexiil.mc.lib.attributes.item.impl.DelegatingFixedItemInv;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraftforge.items.ItemStackHandler;
 
-public class WrapperCursorItemHandler extends ItemStackHandler {
-    private final PlayerInventory inv;
+public class WrapperCursorItemHandler extends DelegatingFixedItemInv {
 
-    public WrapperCursorItemHandler(PlayerInventory PlayerInventory) {
-        super(1);
-
-        this.inv = PlayerInventory;
-        this.setStackInSlot(0, PlayerInventory.getItemStack());
+    public WrapperCursorItemHandler(PlayerInventory inventory) {
+        super(new FixedInventoryVanillaWrapper(inventory).getSubInv(0, 1));
     }
 
-    @Override
-    protected void onContentsChanged(int slot) {
-        this.inv.setItemStack(this.getStackInSlot(slot));
-    }
 }

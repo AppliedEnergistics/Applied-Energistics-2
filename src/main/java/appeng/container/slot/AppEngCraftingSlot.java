@@ -18,11 +18,11 @@
 
 package appeng.container.slot;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.recipe.RecipeType;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.hooks.BasicEventHooks;
@@ -35,7 +35,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
     /**
      * The craft matrix inventory linked to this result slot.
      */
-    private final ItemTransferable craftMatrix;
+    private final FixedItemInv craftMatrix;
 
     /**
      * The player that is using the GUI where this slot resides.
@@ -48,8 +48,8 @@ public class AppEngCraftingSlot extends AppEngSlot {
      */
     private int amountCrafted;
 
-    public AppEngCraftingSlot(final PlayerEntity par1PlayerEntity, final ItemTransferable par2IInventory,
-                              final ItemTransferable par3IInventory, final int par4, final int par5, final int par6) {
+    public AppEngCraftingSlot(final PlayerEntity par1PlayerEntity, final FixedItemInv par2IInventory,
+                              final FixedItemInv par3IInventory, final int par4, final int par5, final int par6) {
         super(par3IInventory, par4, par5, par6);
         this.thePlayer = par1PlayerEntity;
         this.craftMatrix = par2IInventory;
@@ -92,8 +92,8 @@ public class AppEngCraftingSlot extends AppEngSlot {
         net.minecraftforge.common.ForgeHooks.setCraftingPlayer(playerIn);
         final CraftingInventory ic = new CraftingInventory(this.getContainer(), 3, 3);
 
-        for (int x = 0; x < this.craftMatrix.getSlots(); x++) {
-            ic.setInventorySlotContents(x, this.craftMatrix.getStackInSlot(x));
+        for (int x = 0; x < this.craftMatrix.getSlotCount(); x++) {
+            ic.setStack(x, this.craftMatrix.getInvStack(x));
         }
 
         final NonNullList<ItemStack> aitemstack = this.getRemainingItems(ic, playerIn.world);
@@ -103,7 +103,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
         net.minecraftforge.common.ForgeHooks.setCraftingPlayer(null);
 
         for (int i = 0; i < aitemstack.size(); ++i) {
-            final ItemStack itemstack1 = this.craftMatrix.getStackInSlot(i);
+            final ItemStack itemstack1 = this.craftMatrix.getInvStack(i);
             final ItemStack itemstack2 = aitemstack.get(i);
 
             if (!itemstack1.isEmpty()) {
@@ -111,7 +111,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
             }
 
             if (!itemstack2.isEmpty()) {
-                if (this.craftMatrix.getStackInSlot(i).isEmpty()) {
+                if (this.craftMatrix.getInvStack(i).isEmpty()) {
                     ItemHandlerUtil.setStackInSlot(this.craftMatrix, i, itemstack2);
                 } else if (!this.thePlayer.inventory.addItemStackToInventory(itemstack2)) {
                     this.thePlayer.dropItem(itemstack2, false);
@@ -138,7 +138,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
     // TODO: This is really hacky and NEEDS to be solved with a full container/gui
     // refactoring.
     protected NonNullList<ItemStack> getRemainingItems(CraftingInventory ic, World world) {
-        return world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, ic, world)
+        return world.getRecipeManager().getRecipe(RecipeType.CRAFTING, ic, world)
                 .map(iCraftingRecipe -> iCraftingRecipe.getRemainingItems(ic))
                 .orElse(NonNullList.withSize(9, ItemStack.EMPTY));
     }

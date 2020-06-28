@@ -18,7 +18,7 @@
 
 package appeng.parts.automation;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -136,7 +136,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
     }
 
     @Override
-    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
                                   final ItemStack removedStack, final ItemStack newStack) {
         this.cached = false;
         if (this.parent != null && Platform.isServer()) {
@@ -147,12 +147,12 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
     private class UpgradeInvFilter implements IAEItemFilter {
 
         @Override
-        public boolean allowExtract(ItemTransferable inv, int slot, int amount) {
+        public boolean allowExtract(FixedItemInv inv, int slot, int amount) {
             return true;
         }
 
         @Override
-        public boolean allowInsert(ItemTransferable inv, int slot, ItemStack itemstack) {
+        public boolean allowInsert(FixedItemInv inv, int slot, ItemStack itemstack) {
             if (itemstack.isEmpty()) {
                 return false;
             }

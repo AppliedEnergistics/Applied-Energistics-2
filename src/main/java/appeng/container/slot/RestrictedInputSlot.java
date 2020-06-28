@@ -21,7 +21,7 @@ package appeng.container.slot;
 import java.util.List;
 import java.util.Set;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -70,7 +70,7 @@ public class RestrictedInputSlot extends AppEngSlot {
     private boolean allowEdit = true;
     private int stackLimit = -1;
 
-    public RestrictedInputSlot(final PlacableItemType valid, final ItemTransferable i, final int slotIndex, final int x,
+    public RestrictedInputSlot(final PlacableItemType valid, final FixedItemInv i, final int slotIndex, final int x,
                                final int y, final PlayerInventory p) {
         super(i, slotIndex, x, y);
         this.which = valid;
@@ -233,7 +233,7 @@ public class RestrictedInputSlot extends AppEngSlot {
             final ItemStack is = super.getStack();
             if (!is.isEmpty() && is.getItem() instanceof EncodedPatternItem) {
                 final EncodedPatternItem iep = (EncodedPatternItem) is.getItem();
-                final ItemStack out = iep.getOutput(is);
+                final ItemStack out = iep.getOutput(p.player.world, is);
                 if (!out.isEmpty()) {
                     return out;
                 }

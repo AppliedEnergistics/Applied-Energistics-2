@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
@@ -41,7 +41,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.world.World;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
@@ -53,7 +53,7 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.SelectedPart;
 import appeng.items.AEBaseItem;
 import appeng.util.InventoryAdaptor;
-import appeng.util.inv.AdaptorItemHandler;
+import appeng.util.inv.AdaptorFixedInv;
 
 public final class MaterialItem extends AEBaseItem implements IStorageComponent, IUpgradeModule {
 
@@ -143,7 +143,7 @@ public final class MaterialItem extends AEBaseItem implements IStorageComponent,
         Hand hand = context.getHand();
         if (player.isInSneakingPose()) {
             final BlockEntity te = context.getWorld().getBlockEntity(context.getBlockPos());
-            ItemTransferable upgrades = null;
+            FixedItemInv upgrades = null;
 
             if (te instanceof IPartHost) {
                 final SelectedPart sp = ((IPartHost) te).selectPart(context.getHitVec());
@@ -164,7 +164,7 @@ public final class MaterialItem extends AEBaseItem implements IStorageComponent,
                         return ActionResult.PASS;
                     }
 
-                    final InventoryAdaptor ad = new AdaptorItemHandler(upgrades);
+                    final InventoryAdaptor ad = new AdaptorFixedInv(upgrades);
                     player.setHeldItem(hand, ad.addItems(player.getStackInHand(hand)));
                     return ActionResult.SUCCESS;
                 }
@@ -186,7 +186,7 @@ public final class MaterialItem extends AEBaseItem implements IStorageComponent,
 
         try {
             eqi = droppedEntity.getConstructor(World.class, double.class, double.class, double.class, ItemStack.class)
-                    .newInstance(w, location.getPosX(), location.getPosY(), location.getPosZ(), itemstack);
+                    .newInstance(w, location.getX(), location.getY(), location.getZ(), itemstack);
         } catch (final Throwable t) {
             throw new IllegalStateException(t);
         }

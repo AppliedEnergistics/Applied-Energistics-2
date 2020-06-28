@@ -156,7 +156,7 @@ public class SkyCompassBakedModel implements IDynamicBakedModel {
                 if (world != null && entity instanceof ClientPlayerEntity) {
                     PlayerEntity player = (PlayerEntity) entity;
 
-                    float offRads = (float) (player.rotationYaw / 180.0f * (float) Math.PI + Math.PI);
+                    float offRads = (float) (player.yaw / 180.0f * (float) Math.PI + Math.PI);
 
                     SkyCompassBakedModel.this.fallbackRotation = offRads
                             + getAnimatedRotation(player.getPosition(), true);

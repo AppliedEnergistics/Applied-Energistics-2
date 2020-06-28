@@ -21,7 +21,7 @@ package appeng.items.storage;
 import java.util.List;
 import java.util.Set;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.fabricmc.api.EnvType;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
@@ -115,12 +115,12 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     }
 
     @Override
-    public ItemTransferable getUpgradesInventory(final ItemStack is) {
+    public FixedItemInv getUpgradesInventory(final ItemStack is) {
         return new CellUpgrades(is, 2);
     }
 
     @Override
-    public ItemTransferable getConfigInventory(final ItemStack is) {
+    public FixedItemInv getConfigInventory(final ItemStack is) {
         return new CellConfig(is);
     }
 
@@ -158,7 +158,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
                 final InventoryAdaptor ia = InventoryAdaptor.getAdaptor(player);
                 final IItemList<IAEItemStack> list = inv.getAvailableItems(this.getChannel().createList());
                 if (list.isEmpty() && ia != null) {
-                    playerInventory.setInventorySlotContents(playerInventory.currentItem, ItemStack.EMPTY);
+                    playerInventory.setStack(playerInventory.currentItem, ItemStack.EMPTY);
 
                     // drop core
                     final ItemStack extraB = ia.addItems(this.component.stack(1));
@@ -167,9 +167,9 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
                     }
 
                     // drop upgrades
-                    final ItemTransferable upgradesInventory = this.getUpgradesInventory(stack);
-                    for (int upgradeIndex = 0; upgradeIndex < upgradesInventory.getSlots(); upgradeIndex++) {
-                        final ItemStack upgradeStack = upgradesInventory.getStackInSlot(upgradeIndex);
+                    final FixedItemInv upgradesInventory = this.getUpgradesInventory(stack);
+                    for (int upgradeIndex = 0; upgradeIndex < upgradesInventory.getSlotCount(); upgradeIndex++) {
+                        final ItemStack upgradeStack = upgradesInventory.getInvStack(upgradeIndex);
                         final ItemStack leftStack = ia.addItems(upgradeStack);
                         if (!leftStack.isEmpty() && upgradeStack.getItem() instanceof IUpgradeModule) {
                             player.dropItem(upgradeStack, false);
@@ -199,14 +199,14 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     }
 
     @Override
-    public ItemStack getContainerItem(final ItemStack itemStack) {
+    public ItemStack getRecipeRemainder(final ItemStack itemStack) {
         return AEApi.instance().definitions().materials().emptyStorageCell().maybeStack(1)
                 .orElseThrow(() -> new MissingDefinitionException(
                         "Tried to use empty storage cells while basic storage cells are defined."));
     }
 
     @Override
-    public boolean hasContainerItem(final ItemStack stack) {
+    public boolean hasRecipeRemainder(final ItemStack stack) {
         return AEConfig.instance().isFeatureEnabled(AEFeature.ENABLE_DISASSEMBLY_CRAFTING);
     }
 

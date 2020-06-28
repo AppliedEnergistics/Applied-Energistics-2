@@ -23,9 +23,11 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import appeng.util.*;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -37,7 +39,7 @@ import net.minecraft.world.World;
 import net.minecraft.server.world.ServerWorld;
 import net.fabricmc.api.EnvType;
 import net.minecraftforge.fml.hooks.BasicEventHooks;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -71,10 +73,6 @@ import appeng.parts.automation.DefinitionUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.tile.grid.AENetworkInvBlockEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.util.ConfigManager;
-import appeng.util.IConfigManagerHost;
-import appeng.util.InventoryAdaptor;
-import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperChainedItemHandler;
@@ -90,8 +88,8 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     private final CraftingInventory craftingInv;
     private final AppEngInternalInventory gridInv = new AppEngInternalInventory(this, 9 + 1, 1);
     private final AppEngInternalInventory patternInv = new AppEngInternalInventory(this, 1, 1);
-    private final ItemTransferable gridInvExt = new WrapperFilteredItemHandler(this.gridInv, new CraftingGridFilter());
-    private final ItemTransferable internalInv = new WrapperChainedItemHandler(this.gridInv, this.patternInv);
+    private final FixedItemInv gridInvExt = new WrapperFilteredItemHandler(this.gridInv, new CraftingGridFilter());
+    private final FixedItemInv internalInv = new WrapperChainedItemHandler(this.gridInv, this.patternInv);
     private final IConfigManager settings;
     private final UpgradeInventory upgrades;
     private boolean isPowered = false;
@@ -133,8 +131,8 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
                 this.myPlan = patternDetails;
                 this.pushDirection = AEPartLocation.fromFacing(where);
 
-                for (int x = 0; x < table.getSizeInventory(); x++) {
-                    this.gridInv.setStackInSlot(x, table.getStackInSlot(x));
+                for (int x = 0; x < table.size(); x++) {
+                    this.gridInv.setStackInSlot(x, table.getStack(x));
                 }
 
                 this.updateSleepiness();
@@ -170,8 +168,8 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             return false;
         }
 
-        for (int x = 0; x < this.craftingInv.getSizeInventory(); x++) {
-            this.craftingInv.setInventorySlotContents(x, this.gridInv.getStackInSlot(x));
+        for (int x = 0; x < this.craftingInv.size(); x++) {
+            this.craftingInv.setStack(x, this.gridInv.getStackInSlot(x));
         }
 
         return !this.myPlan.getOutput(this.craftingInv, this.getWorld()).isEmpty();
@@ -208,7 +206,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             final ItemStack pattern = this.myPlan.getPattern();
             if (!pattern.isEmpty()) {
                 final CompoundTag compound = new CompoundTag();
-                pattern.write(compound);
+                pattern.toTag(compound);
                 data.put("myPlan", compound);
                 data.putInt("pushDirection", this.pushDirection.ordinal());
             }
@@ -223,7 +221,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     public void fromTag(BlockState state, final CompoundTag data) {
         super.fromTag(state, data);
         if (data.contains("myPlan")) {
-            final ItemStack myPat = ItemStack.read(data.getCompound("myPlan"));
+            final ItemStack myPat = ItemStack.fromTag(data.getCompound("myPlan"));
 
             if (!myPat.isEmpty() && myPat.getItem() instanceof EncodedPatternItem) {
                 final World w = this.getWorld();
@@ -290,7 +288,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public ItemTransferable getInventoryByName(final String name) {
+    public FixedItemInv getInventoryByName(final String name) {
         if (name.equals("upgrades")) {
             return this.upgrades;
         }
@@ -308,17 +306,17 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public ItemTransferable getInternalInventory() {
+    public FixedItemInv getInternalInventory() {
         return this.internalInv;
     }
 
     @Override
-    protected ItemTransferable getItemHandlerForSide(Direction side) {
+    protected FixedItemInv getItemHandlerForSide(Direction side) {
         return this.gridInvExt;
     }
 
     @Override
-    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
                                   final ItemStack removed, final ItemStack added) {
         if (inv == this.gridInv || inv == this.patternInv) {
             this.recalculatePlan();
@@ -401,20 +399,20 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         }
 
         if (this.progress >= 100) {
-            for (int x = 0; x < this.craftingInv.getSizeInventory(); x++) {
-                this.craftingInv.setInventorySlotContents(x, this.gridInv.getStackInSlot(x));
+            for (int x = 0; x < this.craftingInv.size(); x++) {
+                this.craftingInv.setStack(x, this.gridInv.getStackInSlot(x));
             }
 
             this.progress = 0;
             final ItemStack output = this.myPlan.getOutput(this.craftingInv, this.getWorld());
             if (!output.isEmpty()) {
-                BasicEventHooks.firePlayerCraftingEvent(Platform.getPlayer((ServerWorld) this.getWorld()), output,
+                BasicEventHooks.firePlayerCraftingEvent((PlayerEntity) FakePlayer.getOrCreate((ServerWorld) this.getWorld()), output,
                         this.craftingInv);
 
                 this.pushOut(output.copy());
 
-                for (int x = 0; x < this.craftingInv.getSizeInventory(); x++) {
-                    this.gridInv.setStackInSlot(x, Platform.getContainerItem(this.craftingInv.getStackInSlot(x)));
+                for (int x = 0; x < this.craftingInv.size(); x++) {
+                    this.gridInv.setStackInSlot(x, Platform.getRecipeRemainder(this.craftingInv.getStack(x)));
                 }
 
                 if (ItemHandlerUtil.isEmpty(this.patternInv)) {
@@ -561,12 +559,12 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         }
 
         @Override
-        public boolean allowExtract(ItemTransferable inv, int slot, int amount) {
+        public boolean allowExtract(FixedItemInv inv, int slot, int amount) {
             return slot == 9;
         }
 
         @Override
-        public boolean allowInsert(ItemTransferable inv, int slot, ItemStack stack) {
+        public boolean allowInsert(FixedItemInv inv, int slot, ItemStack stack) {
             if (slot >= 9) {
                 return false;
             }

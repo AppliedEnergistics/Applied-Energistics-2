@@ -18,7 +18,7 @@
 
 package appeng.me.storage;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 
@@ -49,15 +49,15 @@ public class BasicCellInventoryHandler<T extends IAEStack<T>> extends MEInventor
         if (ci != null) {
             final IItemList<T> priorityList = channel.createList();
 
-            final ItemTransferable upgrades = ci.getUpgradesInventory();
-            final ItemTransferable config = ci.getConfigInventory();
+            final FixedItemInv upgrades = ci.getUpgradesInventory();
+            final FixedItemInv config = ci.getConfigInventory();
             final FuzzyMode fzMode = ci.getFuzzyMode();
 
             boolean hasInverter = false;
             boolean hasFuzzy = false;
 
-            for (int x = 0; x < upgrades.getSlots(); x++) {
-                final ItemStack is = upgrades.getStackInSlot(x);
+            for (int x = 0; x < upgrades.getSlotCount(); x++) {
+                final ItemStack is = upgrades.getInvStack(x);
                 if (!is.isEmpty() && is.getItem() instanceof IUpgradeModule) {
                     final Upgrades u = ((IUpgradeModule) is.getItem()).getType(is);
                     if (u != null) {
@@ -74,8 +74,8 @@ public class BasicCellInventoryHandler<T extends IAEStack<T>> extends MEInventor
                 }
             }
 
-            for (int x = 0; x < config.getSlots(); x++) {
-                final ItemStack is = config.getStackInSlot(x);
+            for (int x = 0; x < config.getSlotCount(); x++) {
+                final ItemStack is = config.getInvStack(x);
                 if (!is.isEmpty()) {
                     final T configItem = channel.createStack(is);
                     if (configItem != null) {

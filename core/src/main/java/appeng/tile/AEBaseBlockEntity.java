@@ -18,7 +18,7 @@
 
 package appeng.tile;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.util.ICommonTile;
 import appeng.api.util.IConfigManager;
@@ -296,7 +296,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
         }
 
         if (this instanceof ISegmentedInventory) {
-            final ItemTransferable inv = ((ISegmentedInventory) this).getInventoryByName("config");
+            final FixedItemInv inv = ((ISegmentedInventory) this).getInventoryByName("config");
             if (inv instanceof AppEngInternalAEInventory) {
                 final AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
                 final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory(null, target.getSlots());
@@ -354,7 +354,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
         }
 
         if (this instanceof ISegmentedInventory) {
-            final ItemTransferable inv = ((ISegmentedInventory) this).getInventoryByName("config");
+            final FixedItemInv inv = ((ISegmentedInventory) this).getInventoryByName("config");
             if (inv instanceof AppEngInternalAEInventory) {
                 ((AppEngInternalAEInventory) inv).writeToNBT(output, "config");
             }

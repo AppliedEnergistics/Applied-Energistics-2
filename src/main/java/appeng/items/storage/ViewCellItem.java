@@ -18,7 +18,7 @@
 
 package appeng.items.storage;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
@@ -59,15 +59,15 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
                         .getStorageChannel(IItemStorageChannel.class).createList();
 
                 final ICellWorkbenchItem vc = (ICellWorkbenchItem) currentViewCell.getItem();
-                final ItemTransferable upgrades = vc.getUpgradesInventory(currentViewCell);
-                final ItemTransferable config = vc.getConfigInventory(currentViewCell);
+                final FixedItemInv upgrades = vc.getUpgradesInventory(currentViewCell);
+                final FixedItemInv config = vc.getConfigInventory(currentViewCell);
                 final FuzzyMode fzMode = vc.getFuzzyMode(currentViewCell);
 
                 boolean hasInverter = false;
                 boolean hasFuzzy = false;
 
-                for (int x = 0; x < upgrades.getSlots(); x++) {
-                    final ItemStack is = upgrades.getStackInSlot(x);
+                for (int x = 0; x < upgrades.getSlotCount(); x++) {
+                    final ItemStack is = upgrades.getInvStack(x);
                     if (!is.isEmpty() && is.getItem() instanceof IUpgradeModule) {
                         final Upgrades u = ((IUpgradeModule) is.getItem()).getType(is);
                         if (u != null) {
@@ -84,8 +84,8 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
                     }
                 }
 
-                for (int x = 0; x < config.getSlots(); x++) {
-                    final ItemStack is = config.getStackInSlot(x);
+                for (int x = 0; x < config.getSlotCount(); x++) {
+                    final ItemStack is = config.getInvStack(x);
                     if (!is.isEmpty()) {
                         priorityList.add(AEItemStack.fromItemStack(is));
                     }
@@ -112,12 +112,12 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
     }
 
     @Override
-    public ItemTransferable getUpgradesInventory(final ItemStack is) {
+    public FixedItemInv getUpgradesInventory(final ItemStack is) {
         return new CellUpgrades(is, 2);
     }
 
     @Override
-    public ItemTransferable getConfigInventory(final ItemStack is) {
+    public FixedItemInv getConfigInventory(final ItemStack is) {
         return new CellConfig(is);
     }
 

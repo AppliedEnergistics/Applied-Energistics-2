@@ -33,7 +33,7 @@ import net.minecraft.text.Text;
 import net.minecraft.world.World;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
@@ -129,12 +129,12 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
     }
 
     @Override
-    public ItemTransferable getUpgradesInventory(final ItemStack is) {
+    public FixedItemInv getUpgradesInventory(final ItemStack is) {
         return new CellUpgrades(is, 2);
     }
 
     @Override
-    public ItemTransferable getConfigInventory(final ItemStack is) {
+    public FixedItemInv getConfigInventory(final ItemStack is) {
         return new CellConfig(is);
     }
 

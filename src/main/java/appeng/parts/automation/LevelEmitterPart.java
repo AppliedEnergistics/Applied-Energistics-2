@@ -21,7 +21,7 @@ package appeng.parts.automation;
 import java.util.Collection;
 import java.util.Random;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
@@ -417,7 +417,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
     }
 
     @Override
-    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
                                   final ItemStack removedStack, final ItemStack newStack) {
         if (inv == this.config) {
             this.configureWatchers();
@@ -455,7 +455,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
     }
 
     @Override
-    public ItemTransferable getInventoryByName(final String name) {
+    public FixedItemInv getInventoryByName(final String name) {
         if (name.equals("config")) {
             return this.config;
         }

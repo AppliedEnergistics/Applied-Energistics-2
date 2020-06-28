@@ -21,9 +21,9 @@ package appeng.recipes.game;
 import javax.annotation.Nonnull;
 
 import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipe;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.util.Identifier;
@@ -55,7 +55,7 @@ public final class FacadeRecipe extends SpecialRecipe {
     }
 
     @Nonnull
-    private ItemStack getOutput(final IInventory inv, final boolean createFacade) {
+    private ItemStack getOutput(final Inventory inv, final boolean createFacade) {
         if (inv.getStackInSlot(0).isEmpty() && inv.getStackInSlot(2).isEmpty() && inv.getStackInSlot(6).isEmpty()
                 && inv.getStackInSlot(8).isEmpty()) {
             if (this.anchor.isSameAs(inv.getStackInSlot(1)) && this.anchor.isSameAs(inv.getStackInSlot(3))
@@ -72,7 +72,7 @@ public final class FacadeRecipe extends SpecialRecipe {
     }
 
     @Override
-    public ItemStack getCraftingResult(@Nonnull final CraftingInventory inv) {
+    public ItemStack craft(@Nonnull final CraftingInventory inv) {
         return this.getOutput(inv, true);
     }
 
@@ -83,11 +83,11 @@ public final class FacadeRecipe extends SpecialRecipe {
 
     @Nonnull
     @Override
-    public IRecipeSerializer<FacadeRecipe> getSerializer() {
+    public RecipeSerializer<FacadeRecipe> getSerializer() {
         return getSerializer(facade);
     }
 
-    public static IRecipeSerializer<FacadeRecipe> getSerializer(FacadeItem facade) {
+    public static RecipeSerializer<FacadeRecipe> getSerializer(FacadeItem facade) {
         if (SERIALIZER == null) {
             SERIALIZER = new SpecialRecipeSerializer<>(id -> new FacadeRecipe(id, facade));
             SERIALIZER.setRegistryName(new Identifier(AppEng.MOD_ID, "facade"));

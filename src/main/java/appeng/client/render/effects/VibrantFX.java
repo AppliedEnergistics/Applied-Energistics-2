@@ -44,9 +44,9 @@ public class VibrantFX extends SpriteTexturedParticle {
         this.motionX = 0.0D;
         this.motionY = 0.0D;
         this.motionZ = 0.0D;
-        this.prevPosX = this.posX;
-        this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
+        this.prevX = this.posX;
+        this.prevY = this.posY;
+        this.prevZ = this.posZ;
         this.maxAge = (int) (20.0D / (Math.random() * 0.8D + 0.1D));
     }
 
@@ -67,9 +67,9 @@ public class VibrantFX extends SpriteTexturedParticle {
      */
     @Override
     public void tick() {
-        this.prevPosX = this.posX;
-        this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
+        this.prevX = this.posX;
+        this.prevY = this.posY;
+        this.prevZ = this.posZ;
         // this.moveEntity(this.motionX, this.motionY, this.motionZ);
         this.particleScale *= 0.95;
 

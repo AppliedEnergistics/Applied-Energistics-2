@@ -26,8 +26,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import appeng.util.FakePlayer;
 import com.google.common.collect.ImmutableList;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -612,7 +614,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
                                                 if (!is.isEmpty()) {
                                                     this.postChange(AEItemStack.fromItemStack(is), this.machineSrc);
-                                                    ic.setInventorySlotContents(x, is);
+                                                    ic.setStack(x, is);
                                                     found = true;
                                                     break;
                                                 }
@@ -625,7 +627,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
                                         if (!is.isEmpty()) {
                                             this.postChange(input[x], this.machineSrc);
-                                            ic.setInventorySlotContents(x, is);
+                                            ic.setStack(x, is);
                                             if (is.getCount() == input[x].getStackSize()) {
                                                 found = true;
                                                 continue;
@@ -641,8 +643,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
                             if (!found) {
                                 // put stuff back..
-                                for (int x = 0; x < ic.getSizeInventory(); x++) {
-                                    final ItemStack is = ic.getStackInSlot(x);
+                                for (int x = 0; x < ic.size(); x++) {
+                                    final ItemStack is = ic.getStack(x);
                                     if (!is.isEmpty()) {
                                         this.inventory.injectItems(AEItemStack.fromItemStack(is), Actionable.MODULATE,
                                                 this.machineSrc);
@@ -664,11 +666,11 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
                             }
 
                             if (details.isCraftable()) {
-                                BasicEventHooks.firePlayerCraftingEvent(Platform.getPlayer((ServerWorld) getWorld()),
+                                BasicEventHooks.firePlayerCraftingEvent((PlayerEntity) FakePlayer.getOrCreate((ServerWorld) getWorld()),
                                         details.getOutput(ic, this.getWorld()), ic);
 
-                                for (int x = 0; x < ic.getSizeInventory(); x++) {
-                                    final ItemStack output = Platform.getContainerItem(ic.getStackInSlot(x));
+                                for (int x = 0; x < ic.size(); x++) {
+                                    final ItemStack output = Platform.getRecipeRemainder(ic.getStack(x));
                                     if (!output.isEmpty()) {
                                         final IAEItemStack cItem = AEItemStack.fromItemStack(output);
                                         this.postChange(cItem, this.machineSrc);
@@ -695,8 +697,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
                 if (ic != null) {
                     // put stuff back..
-                    for (int x = 0; x < ic.getSizeInventory(); x++) {
-                        final ItemStack is = ic.getStackInSlot(x);
+                    for (int x = 0; x < ic.size(); x++) {
+                        final ItemStack is = ic.getStack(x);
                         if (!is.isEmpty()) {
                             this.inventory.injectItems(AEItemStack.fromItemStack(is), Actionable.MODULATE,
                                     this.machineSrc);

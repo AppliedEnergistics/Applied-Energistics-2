@@ -21,13 +21,13 @@ package appeng.container.implementations;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
@@ -111,8 +111,8 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
             zCoord = mk.getPos().getZ();
         }
 
-        final IInventory pi = this.getPlayerInv();
-        for (int x = 0; x < pi.getSizeInventory(); x++) {
+        final Inventory pi = this.getPlayerInv();
+        for (int x = 0; x < pi.size(); x++) {
             final ItemStack pii = pi.getStackInSlot(x);
             if (!pii.isEmpty() && pii.getItem() instanceof NetworkToolItem) {
                 this.lockPlayerInventorySlot(x);
@@ -149,7 +149,7 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
     protected void setupConfig() {
         this.setupUpgrades();
 
-        final ItemTransferable inv = this.getUpgradeable().getInventoryByName("config");
+        final FixedItemInv inv = this.getUpgradeable().getInventoryByName("config");
         final int y = 40;
         final int x = 80;
         this.addSlot(new FakeTypeOnlySlot(inv, 0, x, y));
@@ -168,7 +168,7 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
     }
 
     protected void setupUpgrades() {
-        final ItemTransferable upgrades = this.getUpgradeable().getInventoryByName("upgrades");
+        final FixedItemInv upgrades = this.getUpgradeable().getInventoryByName("upgrades");
         if (this.availableUpgrades() > 0) {
             this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 0, 187, 8,
                     this.getPlayerInventory())).setNotDraggable());
@@ -229,12 +229,12 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
 
     protected void checkToolbox() {
         if (this.hasToolbox()) {
-            final ItemStack currentItem = this.getPlayerInv().getStackInSlot(this.tbSlot);
+            final ItemStack currentItem = this.getPlayerInv().getStack(this.tbSlot);
 
             if (currentItem != this.tbInventory.getItemStack()) {
                 if (!currentItem.isEmpty()) {
                     if (ItemStack.areItemsEqual(this.tbInventory.getItemStack(), currentItem)) {
-                        this.getPlayerInv().setInventorySlotContents(this.tbSlot, this.tbInventory.getItemStack());
+                        this.getPlayerInv().setStack(this.tbSlot, this.tbInventory.getItemStack());
                     } else {
                         this.setValidContainer(false);
                     }

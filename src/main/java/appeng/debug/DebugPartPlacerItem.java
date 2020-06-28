@@ -49,19 +49,19 @@ public class DebugPartPlacerItem extends AEBaseItem {
         }
 
         if (!player.abilities.isCreativeMode) {
-            player.sendMessage(new LiteralText("Only usable in creative mode"));
+            player.sendSystemMessage(new LiteralText("Only usable in creative mode"), Util.NIL_UUID);
             return ActionResult.FAIL;
         }
 
         BlockEntity te = world.getBlockEntity(pos);
         if (!(te instanceof IPartHost)) {
-            player.sendMessage(new LiteralText("Right-click something that will accept parts"));
+            player.sendSystemMessage(new LiteralText("Right-click something that will accept parts"), Util.NIL_UUID);
             return ActionResult.FAIL;
         }
         IPartHost center = (IPartHost) te;
         IPart cable = center.getPart(AEPartLocation.INTERNAL);
         if (cable == null) {
-            player.sendMessage(new LiteralText("Clicked part host must have an INSIDE part"));
+            player.sendSystemMessage(new LiteralText("Clicked part host must have an INSIDE part"), Util.NIL_UUID);
             return ActionResult.FAIL;
         }
 

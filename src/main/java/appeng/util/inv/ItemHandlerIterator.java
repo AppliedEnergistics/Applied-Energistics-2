@@ -21,32 +21,33 @@ package appeng.util.inv;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.Simulation;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 class ItemHandlerIterator implements Iterator<ItemSlot> {
 
-    private final ItemTransferable itemHandler;
+    private final FixedItemInv itemHandler;
 
     private final ItemSlot itemSlot = new ItemSlot();
 
     private int slot = 0;
 
-    ItemHandlerIterator(ItemTransferable itemHandler) {
+    ItemHandlerIterator(FixedItemInv itemHandler) {
         this.itemHandler = itemHandler;
     }
 
     @Override
     public boolean hasNext() {
-        return this.slot < this.itemHandler.getSlots();
+        return this.slot < this.itemHandler.getSlotCount();
     }
 
     @Override
     public ItemSlot next() {
-        if (this.slot >= this.itemHandler.getSlots()) {
+        if (this.slot >= this.itemHandler.getSlotCount()) {
             throw new NoSuchElementException();
         }
-        this.itemSlot.setExtractable(!this.itemHandler.extractItem(this.slot, 1, true).isEmpty());
-        this.itemSlot.setItemStack(this.itemHandler.getStackInSlot(this.slot));
+        this.itemSlot.setExtractable(!this.itemHandler.getSlot(this.slot).attemptAnyExtraction(1, Simulation.SIMULATE).isEmpty());
+        this.itemSlot.setItemStack(this.itemHandler.getInvStack(this.slot));
         this.itemSlot.setSlot(this.slot);
         this.slot++;
         return this.itemSlot;

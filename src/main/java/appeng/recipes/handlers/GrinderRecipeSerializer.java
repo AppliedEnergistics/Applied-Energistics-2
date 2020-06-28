@@ -11,8 +11,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.recipe.Ingredient;
+import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
@@ -22,8 +22,8 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 
-public class GrinderRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>>
-        implements IRecipeSerializer<GrinderRecipe> {
+public class GrinderRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>>
+        implements RecipeSerializer<GrinderRecipe> {
 
     public static final GrinderRecipeSerializer INSTANCE = new GrinderRecipeSerializer();
 

@@ -23,7 +23,7 @@
 
 package appeng.api.implementations.tiles;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 public interface IViewCellStorage {
 
@@ -32,5 +32,5 @@ public interface IViewCellStorage {
      *
      * @return inventory with at least 5 slot
      */
-    ItemTransferable getViewCellStorage();
+    FixedItemInv getViewCellStorage();
 }

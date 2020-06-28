@@ -22,7 +22,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraftforge.fml.client.gui.GuiUtils;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.ActionItems;
 import appeng.api.config.CopyMode;
@@ -118,9 +118,9 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
         this.copyMode.setState(this.container.getCopyMode() == CopyMode.CLEAR_ON_REMOVE);
 
         boolean hasFuzzy = false;
-        final ItemTransferable inv = this.container.getCellUpgradeInventory();
-        for (int x = 0; x < inv.getSlots(); x++) {
-            final ItemStack is = inv.getStackInSlot(x);
+        final FixedItemInv inv = this.container.getCellUpgradeInventory();
+        for (int x = 0; x < inv.getSlotCount(); x++) {
+            final ItemStack is = inv.getInvStack(x);
             if (!is.isEmpty() && is.getItem() instanceof IUpgradeModule) {
                 if (((IUpgradeModule) is.getItem()).getType(is) == Upgrades.FUZZY) {
                     hasFuzzy = true;

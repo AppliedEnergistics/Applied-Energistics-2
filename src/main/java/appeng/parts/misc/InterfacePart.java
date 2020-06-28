@@ -21,7 +21,7 @@ package appeng.parts.misc;
 import java.util.EnumSet;
 import java.util.List;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -159,7 +159,7 @@ public class InterfacePart extends BasicStatePart implements IGridTickable, ISto
     }
 
     @Override
-    public ItemTransferable getInventoryByName(final String name) {
+    public FixedItemInv getInventoryByName(final String name) {
         return this.duality.getInventoryByName(name);
     }
 
@@ -192,7 +192,7 @@ public class InterfacePart extends BasicStatePart implements IGridTickable, ISto
     }
 
     @Override
-    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
                                   final ItemStack removedStack, final ItemStack newStack) {
         this.duality.onChangeInventory(inv, slot, mc, removedStack, newStack);
     }

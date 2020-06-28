@@ -146,14 +146,14 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
         if (!simulate) {
             if (existing.isEmpty()) {
                 this.inv[slot] = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)
-                        .createStack(reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, limit) : stack);
+                        .createStack(reachedLimit ? Platform.copyStackWithSize(stack, limit) : stack);
             } else {
-                existing.grow(reachedLimit ? limit : stack.getCount());
+                existing.increment(reachedLimit ? limit : stack.getCount());
             }
             this.fireOnChangeInventory(slot, InvOperation.INSERT, ItemStack.EMPTY,
-                    reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, limit) : stack);
+                    reachedLimit ? Platform.copyStackWithSize(stack, limit) : stack);
         }
-        return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.getCount() - limit) : ItemStack.EMPTY;
+        return reachedLimit ? Platform.copyStackWithSize(stack, stack.getCount() - limit) : ItemStack.EMPTY;
     }
 
     @Override
@@ -169,11 +169,11 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
                 return split;
             } else {
                 if (!simulate) {
-                    split.grow(-amount);
+                    split.increment(-amount);
                     this.fireOnChangeInventory(slot, InvOperation.EXTRACT,
-                            ItemHandlerHelper.copyStackWithSize(split, amount), ItemStack.EMPTY);
+                            Platform.copyStackWithSize(split, amount), ItemStack.EMPTY);
                 }
-                return ItemHandlerHelper.copyStackWithSize(split, amount);
+                return Platform.copyStackWithSize(split, amount);
             }
         }
         return ItemStack.EMPTY;

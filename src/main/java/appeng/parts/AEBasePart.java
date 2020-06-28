@@ -45,7 +45,7 @@ import net.minecraft.text.Text;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.fabricmc.api.Environment;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
@@ -305,7 +305,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
     }
 
     @Override
-    public ItemTransferable getInventoryByName(final String name) {
+    public FixedItemInv getInventoryByName(final String name) {
         return null;
     }
 
@@ -329,7 +329,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
             pHost.setPriority(compound.getInt("priority"));
         }
 
-        final ItemTransferable inv = this.getInventoryByName("config");
+        final FixedItemInv inv = this.getInventoryByName("config");
         if (inv instanceof AppEngInternalAEInventory) {
             final AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
             final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory(null, target.getSlots());
@@ -360,7 +360,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
             output.putInt("priority", pHost.getPriority());
         }
 
-        final ItemTransferable inv = this.getInventoryByName("config");
+        final FixedItemInv inv = this.getInventoryByName("config");
         if (inv instanceof AppEngInternalAEInventory) {
             ((AppEngInternalAEInventory) inv).writeToNBT(output, "config");
         }

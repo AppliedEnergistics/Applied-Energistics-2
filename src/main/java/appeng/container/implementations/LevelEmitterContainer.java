@@ -18,7 +18,7 @@
 
 package appeng.container.implementations;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -84,7 +84,7 @@ public class LevelEmitterContainer extends UpgradeableContainer {
 
     @Override
     protected void setupConfig() {
-        final ItemTransferable upgrades = this.getUpgradeable().getInventoryByName("upgrades");
+        final FixedItemInv upgrades = this.getUpgradeable().getInventoryByName("upgrades");
         if (this.availableUpgrades() > 0) {
             this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 0, 187, 8,
                     this.getPlayerInventory())).setNotDraggable());
@@ -102,7 +102,7 @@ public class LevelEmitterContainer extends UpgradeableContainer {
                     8 + 18 * 3, this.getPlayerInventory())).setNotDraggable());
         }
 
-        final ItemTransferable inv = this.getUpgradeable().getInventoryByName("config");
+        final FixedItemInv inv = this.getUpgradeable().getInventoryByName("config");
         final int y = 40;
         final int x = 80 + 44;
         this.addSlot(new FakeTypeOnlySlot(inv, 0, x, y));

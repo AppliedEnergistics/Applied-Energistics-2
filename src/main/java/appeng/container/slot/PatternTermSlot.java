@@ -18,7 +18,7 @@
 
 package appeng.container.slot;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
@@ -37,8 +37,8 @@ public class PatternTermSlot extends CraftingTermSlot {
     private final IOptionalSlotHost host;
 
     public PatternTermSlot(final PlayerEntity player, final IActionSource mySrc, final IEnergySource energySrc,
-                           final IStorageMonitorable storage, final ItemTransferable cMatrix, final ItemTransferable secondMatrix,
-                           final ItemTransferable output, final int x, final int y, final IOptionalSlotHost h, final int groupNumber,
+                           final IStorageMonitorable storage, final FixedItemInv cMatrix, final FixedItemInv secondMatrix,
+                           final FixedItemInv output, final int x, final int y, final IOptionalSlotHost h, final int groupNumber,
                            final IContainerCraftingPacket c) {
         super(player, mySrc, energySrc, storage, cMatrix, secondMatrix, output, x, y, c);
 

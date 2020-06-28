@@ -20,7 +20,7 @@ package appeng.container.implementations;
 
 import java.util.Iterator;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -86,7 +86,7 @@ public class StorageBusContainer extends UpgradeableContainer {
         final int xo = 8;
         final int yo = 23 + 6;
 
-        final ItemTransferable config = this.getUpgradeable().getInventoryByName("config");
+        final FixedItemInv config = this.getUpgradeable().getInventoryByName("config");
         for (int y = 0; y < 7; y++) {
             for (int x = 0; x < 9; x++) {
                 if (y < 2) {
@@ -97,7 +97,7 @@ public class StorageBusContainer extends UpgradeableContainer {
             }
         }
 
-        final ItemTransferable upgrades = this.getUpgradeable().getInventoryByName("upgrades");
+        final FixedItemInv upgrades = this.getUpgradeable().getInventoryByName("upgrades");
         this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 0, 187, 8,
                 this.getPlayerInventory())).setNotDraggable());
         this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18,
@@ -148,7 +148,7 @@ public class StorageBusContainer extends UpgradeableContainer {
     }
 
     public void partition() {
-        final ItemTransferable inv = this.getUpgradeable().getInventoryByName("config");
+        final FixedItemInv inv = this.getUpgradeable().getInventoryByName("config");
 
         final IMEInventory<IAEItemStack> cellInv = this.storageBus.getInternalHandler();
 
@@ -159,7 +159,7 @@ public class StorageBusContainer extends UpgradeableContainer {
             i = list.iterator();
         }
 
-        for (int x = 0; x < inv.getSlots(); x++) {
+        for (int x = 0; x < inv.getSlotCount(); x++) {
             if (i.hasNext() && this.isSlotEnabled((x / 9) - 2)) {
                 // TODO: check if ok
                 final ItemStack g = i.next().asItemStackRepresentation();

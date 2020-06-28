@@ -18,7 +18,7 @@
 
 package appeng.util.inv.filter;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.item.ItemStack;
 
 public class AEItemFilters {
@@ -30,24 +30,24 @@ public class AEItemFilters {
 
     private static class InsertOnlyFilter implements IAEItemFilter {
         @Override
-        public boolean allowExtract(ItemTransferable inv, int slot, int amount) {
+        public boolean allowExtract(FixedItemInv inv, int slot, int amount) {
             return false;
         }
 
         @Override
-        public boolean allowInsert(ItemTransferable inv, int slot, ItemStack stack) {
+        public boolean allowInsert(FixedItemInv inv, int slot, ItemStack stack) {
             return true;
         }
     }
 
     private static class ExtractOnlyFilter implements IAEItemFilter {
         @Override
-        public boolean allowExtract(ItemTransferable inv, int slot, int amount) {
+        public boolean allowExtract(FixedItemInv inv, int slot, int amount) {
             return true;
         }
 
         @Override
-        public boolean allowInsert(ItemTransferable inv, int slot, ItemStack stack) {
+        public boolean allowInsert(FixedItemInv inv, int slot, ItemStack stack) {
             return false;
         }
     }

@@ -18,14 +18,14 @@
 
 package appeng.container.slot;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 public class OptionalNormalSlot extends AppEngSlot implements IOptionalSlot {
 
     private final int groupNum;
     private final IOptionalSlotHost host;
 
-    public OptionalNormalSlot(final ItemTransferable inv, final IOptionalSlotHost containerBus, final int slot,
+    public OptionalNormalSlot(final FixedItemInv inv, final IOptionalSlotHost containerBus, final int slot,
                               final int xPos, final int yPos, final int groupNum) {
         super(inv, slot, xPos, yPos);
         this.groupNum = groupNum;

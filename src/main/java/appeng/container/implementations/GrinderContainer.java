@@ -22,7 +22,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.network.PacketByteBuf;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
@@ -49,7 +49,7 @@ public class GrinderContainer extends AEBaseContainer {
     public GrinderContainer(int id, final PlayerInventory ip, final GrinderBlockEntity grinder) {
         super(TYPE, id, ip, grinder, null);
 
-        ItemTransferable inv = grinder.getInternalInventory();
+        FixedItemInv inv = grinder.getInternalInventory();
 
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ORE, inv, 0, 12, 17,
                 this.getPlayerInventory()));

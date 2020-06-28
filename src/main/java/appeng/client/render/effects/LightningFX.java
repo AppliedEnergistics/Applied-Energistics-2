@@ -91,9 +91,9 @@ public class LightningFX extends SpriteTexturedParticle {
 
     @Override
     public void tick() {
-        this.prevPosX = this.posX;
-        this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
+        this.prevX = this.posX;
+        this.prevY = this.posY;
+        this.prevZ = this.posZ;
 
         if (this.age++ >= this.maxAge) {
             this.setExpired();
@@ -109,9 +109,9 @@ public class LightningFX extends SpriteTexturedParticle {
     @Override
     public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
         Vec3d vec3d = renderInfo.getProjectedView();
-        float centerX = (float) (MathHelper.lerp(partialTicks, this.prevPosX, this.posX) - vec3d.getX());
-        float centerY = (float) (MathHelper.lerp(partialTicks, this.prevPosY, this.posY) - vec3d.getY());
-        float centerZ = (float) (MathHelper.lerp(partialTicks, this.prevPosZ, this.posZ) - vec3d.getZ());
+        float centerX = (float) (MathHelper.lerp(partialTicks, this.prevX, this.posX) - vec3d.getX());
+        float centerY = (float) (MathHelper.lerp(partialTicks, this.prevY, this.posY) - vec3d.getY());
+        float centerZ = (float) (MathHelper.lerp(partialTicks, this.prevZ, this.posZ) - vec3d.getZ());
 
         final float j = 1.0f;
         float red = this.particleRed * j * 0.9f;

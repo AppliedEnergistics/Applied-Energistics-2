@@ -21,7 +21,7 @@ package appeng.tile.grindstone;
 import java.util.ArrayList;
 import java.util.List;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.block.entity.BlockEntityType;
@@ -36,7 +36,7 @@ import appeng.tile.AEBaseInvBlockEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
-import appeng.util.inv.AdaptorItemHandler;
+import appeng.util.inv.AdaptorFixedInv;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.filter.IAEItemFilter;
@@ -45,7 +45,7 @@ public class GrinderBlockEntity extends AEBaseInvBlockEntity implements ICrankab
     private static final int SLOT_PROCESSING = 6;
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 7);
-    private final ItemTransferable invExt = new WrapperFilteredItemHandler(this.inv, new GrinderFilter());
+    private final FixedItemInv invExt = new WrapperFilteredItemHandler(this.inv, new GrinderFilter());
     private int points;
 
     public GrinderBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
@@ -60,17 +60,17 @@ public class GrinderBlockEntity extends AEBaseInvBlockEntity implements ICrankab
     }
 
     @Override
-    public ItemTransferable getInternalInventory() {
+    public FixedItemInv getInternalInventory() {
         return this.inv;
     }
 
     @Override
-    protected ItemTransferable getItemHandlerForSide(Direction side) {
+    protected FixedItemInv getItemHandlerForSide(Direction side) {
         return this.invExt;
     }
 
     @Override
-    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
                                   final ItemStack removed, final ItemStack added) {
 
     }
@@ -125,7 +125,7 @@ public class GrinderBlockEntity extends AEBaseInvBlockEntity implements ICrankab
             }
 
             this.points = 0;
-            final InventoryAdaptor sia = new AdaptorItemHandler(new RangedWrapper(this.inv, 3, 6));
+            final InventoryAdaptor sia = new AdaptorFixedInv(new RangedWrapper(this.inv, 3, 6));
 
             this.addItem(sia, r.getRecipeOutput());
 
@@ -162,12 +162,12 @@ public class GrinderBlockEntity extends AEBaseInvBlockEntity implements ICrankab
 
     private class GrinderFilter implements IAEItemFilter {
         @Override
-        public boolean allowExtract(ItemTransferable inv, int slotIndex, int amount) {
+        public boolean allowExtract(FixedItemInv inv, int slotIndex, int amount) {
             return slotIndex >= 3 && slotIndex <= 5;
         }
 
         @Override
-        public boolean allowInsert(ItemTransferable inv, int slotIndex, ItemStack stack) {
+        public boolean allowInsert(FixedItemInv inv, int slotIndex, ItemStack stack) {
             if (!GrinderRecipes.isValidIngredient(world, stack)) {
                 return false;
             }

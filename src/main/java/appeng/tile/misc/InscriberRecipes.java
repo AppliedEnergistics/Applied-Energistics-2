@@ -6,10 +6,10 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Iterables;
 
-import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.recipe.Ingredient;
+import net.minecraft.recipe.Recipe;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
@@ -38,7 +38,7 @@ public final class InscriberRecipes {
      * Returns an unmodifiable view of all registered inscriber recipes.
      */
     public static Iterable<InscriberRecipe> getRecipes(World world) {
-        Collection<IRecipe<IInventory>> unfilteredRecipes = world.getRecipeManager().getRecipes(InscriberRecipe.TYPE)
+        Collection<Recipe<Inventory>> unfilteredRecipes = world.getRecipeManager().getRecipes(InscriberRecipe.TYPE)
                 .values();
         return Iterables.filter(unfilteredRecipes, InscriberRecipe.class);
     }

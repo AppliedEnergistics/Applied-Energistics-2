@@ -69,7 +69,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
 
             CraterType craterType = CraterType.values()[tag.getByte(MODE_TAG)];
 
-            player.sendMessage(new LiteralText(craterType.name()));
+            player.sendSystemMessage(new LiteralText(craterType.name()), Util.NIL_UUID);
 
             return TypedActionResult.resultSuccess(itemStack);
         }

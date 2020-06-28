@@ -18,11 +18,11 @@
 
 package appeng.container.slot;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 public class NormalSlot extends AppEngSlot {
 
-    public NormalSlot(final ItemTransferable inv, final int slot, final int xPos, final int yPos) {
+    public NormalSlot(final FixedItemInv inv, final int slot, final int xPos, final int yPos) {
         super(inv, slot, xPos, yPos);
     }
 }

@@ -74,15 +74,15 @@ public class ServerHelper extends CommonHelper {
     @Override
     public void sendToAllNearExcept(final PlayerEntity p, final double x, final double y, final double z,
             final double dist, final World w, final BasePacket packet) {
-        if (Platform.isClient()) {
+        if (w.isClient()) {
             return;
         }
         for (final PlayerEntity o : this.getPlayers()) {
             final ServerPlayerEntity entityplayermp = (ServerPlayerEntity) o;
             if (entityplayermp != p && entityplayermp.world == w) {
-                final double dX = x - entityplayermp.getPosX();
-                final double dY = y - entityplayermp.getPosY();
-                final double dZ = z - entityplayermp.getPosZ();
+                final double dX = x - entityplayermp.getX();
+                final double dY = y - entityplayermp.getY();
+                final double dZ = z - entityplayermp.getZ();
                 if (dX * dX + dY * dY + dZ * dZ < dist * dist) {
                     NetworkHandler.instance().sendTo(packet, entityplayermp);
                 }
@@ -133,7 +133,7 @@ public class ServerHelper extends CommonHelper {
     protected CableRenderMode renderModeForPlayer(final PlayerEntity player) {
         if (player != null) {
             for (int x = 0; x < PlayerInventory.getHotbarSize(); x++) {
-                final ItemStack is = player.inventory.getStackInSlot(x);
+                final ItemStack is = player.inventory.getStack(x);
 
                 if (!is.isEmpty() && is.getItem() instanceof NetworkToolItem) {
                     final CompoundTag c = is.getTag();

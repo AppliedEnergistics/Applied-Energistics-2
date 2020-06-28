@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import appeng.util.FakePlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -68,15 +70,15 @@ public class CraftingTreeProcess {
 
             final CraftingInventory ic = new CraftingInventory(new ContainerNull(), 3, 3);
             final IAEItemStack[] is = details.getInputs();
-            for (int x = 0; x < ic.getSizeInventory(); x++) {
-                ic.setInventorySlotContents(x, is[x] == null ? ItemStack.EMPTY : is[x].createItemStack());
+            for (int x = 0; x < ic.size(); x++) {
+                ic.setStack(x, is[x] == null ? ItemStack.EMPTY : is[x].createItemStack());
             }
 
-            BasicEventHooks.firePlayerCraftingEvent(Platform.getPlayer((ServerWorld) world),
+            BasicEventHooks.firePlayerCraftingEvent((PlayerEntity) FakePlayer.getOrCreate((ServerWorld) world),
                     details.getOutput(ic, world), ic);
 
-            for (int x = 0; x < ic.getSizeInventory(); x++) {
-                final ItemStack g = ic.getStackInSlot(x);
+            for (int x = 0; x < ic.size(); x++) {
+                final ItemStack g = ic.getStack(x);
                 if (!g.isEmpty() && g.getCount() > 1) {
                     this.fullSimulation = true;
                 }
@@ -96,7 +98,7 @@ public class CraftingTreeProcess {
                     this.limitQty = true;
                 }
 
-                if (g.getItem().hasContainerItem(g)) {
+                if (g.getItem().hasRecipeRemainder(g)) {
                     this.limitQty = this.containerItems = true;
                 }
             }
@@ -170,15 +172,15 @@ public class CraftingTreeProcess {
                 final IAEItemStack item = entry.getKey().getStack(entry.getValue());
                 final IAEItemStack stack = entry.getKey().request(inv, item.getStackSize(), src);
 
-                ic.setInventorySlotContents(entry.getKey().getSlot(), stack.createItemStack());
+                ic.setStack(entry.getKey().getSlot(), stack.createItemStack());
             }
 
-            BasicEventHooks.firePlayerCraftingEvent(Platform.getPlayer((ServerWorld) this.world),
+            BasicEventHooks.firePlayerCraftingEvent((PlayerEntity) FakePlayer.getOrCreate((ServerWorld) this.world),
                     this.details.getOutput(ic, this.world), ic);
 
-            for (int x = 0; x < ic.getSizeInventory(); x++) {
-                ItemStack is = ic.getStackInSlot(x);
-                is = Platform.getContainerItem(is);
+            for (int x = 0; x < ic.size(); x++) {
+                ItemStack is = ic.getStack(x);
+                is = Platform.getRecipeRemainder(is);
 
                 final IAEItemStack o = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)
                         .createStack(is);
@@ -194,7 +196,7 @@ public class CraftingTreeProcess {
                 final IAEItemStack stack = entry.getKey().request(inv, item.getStackSize() * i, src);
 
                 if (this.containerItems) {
-                    final ItemStack is = Platform.getContainerItem(stack.createItemStack());
+                    final ItemStack is = Platform.getRecipeRemainder(stack.createItemStack());
                     final IAEItemStack o = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)
                             .createStack(is);
                     if (o != null) {

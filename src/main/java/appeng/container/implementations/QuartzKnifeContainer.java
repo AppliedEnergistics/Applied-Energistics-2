@@ -20,7 +20,7 @@ package appeng.container.implementations;
 
 import javax.annotation.Nonnull;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -57,7 +57,7 @@ public class QuartzKnifeContainer extends AEBaseContainer {
 
     private final QuartzKnifeObj toolInv;
 
-    private final ItemTransferable inSlot = new AppEngInternalInventory(null, 1, 1);
+    private final FixedItemInv inSlot = new AppEngInternalInventory(null, 1, 1);
     private String myName = "";
 
     public QuartzKnifeContainer(int id, final PlayerInventory ip, final QuartzKnifeObj te) {
@@ -84,7 +84,7 @@ public class QuartzKnifeContainer extends AEBaseContainer {
         if (currentItem != this.toolInv.getItemStack()) {
             if (!currentItem.isEmpty()) {
                 if (ItemStack.areItemsEqual(this.toolInv.getItemStack(), currentItem)) {
-                    this.getPlayerInv().setInventorySlotContents(this.getPlayerInv().currentItem,
+                    this.getPlayerInv().setStack(this.getPlayerInv().currentItem,
                             this.toolInv.getItemStack());
                 } else {
                     this.setValidContainer(false);
@@ -99,20 +99,20 @@ public class QuartzKnifeContainer extends AEBaseContainer {
 
     @Override
     public void onContainerClosed(final PlayerEntity par1PlayerEntity) {
-        if (this.inSlot.getStackInSlot(0) != null) {
-            par1PlayerEntity.dropItem(this.inSlot.getStackInSlot(0), false);
+        if (this.inSlot.getInvStack(0) != null) {
+            par1PlayerEntity.dropItem(this.inSlot.getInvStack(0), false);
         }
     }
 
     private class QuartzKniveSlot extends OutputSlot {
-        QuartzKniveSlot(ItemTransferable a, int b, int c, int d, int i) {
+        QuartzKniveSlot(FixedItemInv a, int b, int c, int d, int i) {
             super(a, b, c, d, i);
         }
 
         @Override
         public ItemStack getStack() {
-            final ItemTransferable baseInv = this.getItemHandler();
-            final ItemStack input = baseInv.getStackInSlot(0);
+            final FixedItemInv baseInv = this.getItemHandler();
+            final ItemStack input = baseInv.getInvStack(0);
             if (input == ItemStack.EMPTY) {
                 return ItemStack.EMPTY;
             }
@@ -153,7 +153,7 @@ public class QuartzKnifeContainer extends AEBaseContainer {
                     final ItemStack item = QuartzKnifeContainer.this.toolInv.getItemStack();
                     final ItemStack before = item.copy();
                     item.damageItem(1, QuartzKnifeContainer.this.getPlayerInv().player, p -> {
-                        QuartzKnifeContainer.this.getPlayerInv().setInventorySlotContents(
+                        QuartzKnifeContainer.this.getPlayerInv().setStack(
                                 QuartzKnifeContainer.this.getPlayerInv().currentItem, ItemStack.EMPTY);
                         MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(
                                 QuartzKnifeContainer.this.getPlayerInv().player, before, null));

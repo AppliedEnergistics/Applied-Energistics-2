@@ -25,10 +25,10 @@ import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.LiteralText;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.text.Text;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.fabricmc.api.Environment;
@@ -59,7 +59,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
             final TooltipContext advancedTooltips) {
         final DimensionType dimType = this.getStoredDimension(stack);
         if (dimType == null) {
-            lines.add(GuiText.Unformatted.textComponent().applyTextStyle(TextFormatting.ITALIC));
+            lines.add(GuiText.Unformatted.textComponent().formatted(Formatting.ITALIC));
             lines.add(GuiText.SpatialCapacity.textComponent(maxRegion, maxRegion, maxRegion));
         } else {
             SpatialDimensionManager.INSTANCE.addCellDimensionTooltip(dimType, lines);

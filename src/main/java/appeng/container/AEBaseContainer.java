@@ -24,12 +24,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
@@ -73,7 +73,7 @@ import appeng.helpers.InventoryAction;
 import appeng.me.helpers.PlayerSource;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
-import appeng.util.inv.AdaptorItemHandler;
+import appeng.util.inv.AdaptorFixedInv;
 import appeng.util.inv.WrapperCursorItemHandler;
 import appeng.util.item.AEItemStack;
 
@@ -262,7 +262,7 @@ public abstract class AEBaseContainer extends Container {
     }
 
     protected void bindPlayerInventory(final PlayerInventory PlayerInventory, final int offsetX, final int offsetY) {
-        ItemTransferable ih = new PlayerInvWrapper(PlayerInventory);
+        FixedItemInv ih = new PlayerInvWrapper(PlayerInventory);
 
         // bind player inventory
         for (int i = 0; i < 3; i++) {
@@ -523,8 +523,8 @@ public abstract class AEBaseContainer extends Container {
     @Override
     public boolean canInteractWith(final PlayerEntity PlayerEntity) {
         if (this.isValidContainer()) {
-            if (this.tileEntity instanceof IInventory) {
-                return ((IInventory) this.tileEntity).isUsableByPlayer(PlayerEntity);
+            if (this.tileEntity instanceof Inventory) {
+                return ((Inventory) this.tileEntity).isUsableByPlayer(PlayerEntity);
             }
             return true;
         }
@@ -666,7 +666,7 @@ public abstract class AEBaseContainer extends Container {
                     ais = Platform.poweredInsert(this.getPowerSource(), this.getCellInventory(), ais,
                             this.getActionSource());
                     if (ais == null) {
-                        final InventoryAdaptor ia = new AdaptorItemHandler(
+                        final InventoryAdaptor ia = new AdaptorFixedInv(
                                 new WrapperCursorItemHandler(player.inventory));
 
                         final ItemStack fail = ia.removeItems(1, extracted.getDefinition(), null);
@@ -705,7 +705,7 @@ public abstract class AEBaseContainer extends Container {
                         ais = Platform.poweredExtraction(this.getPowerSource(), this.getCellInventory(), ais,
                                 this.getActionSource());
                         if (ais != null) {
-                            final InventoryAdaptor ia = new AdaptorItemHandler(
+                            final InventoryAdaptor ia = new AdaptorFixedInv(
                                     new WrapperCursorItemHandler(player.inventory));
 
                             final ItemStack fail = ia.addItems(ais.createItemStack());

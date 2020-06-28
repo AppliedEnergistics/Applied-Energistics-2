@@ -18,11 +18,11 @@
 
 package appeng.container.slot;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 public class PatternOutputsSlot extends OptionalFakeSlot {
 
-    public PatternOutputsSlot(final ItemTransferable inv, final IOptionalSlotHost containerBus, final int idx, final int x,
+    public PatternOutputsSlot(final FixedItemInv inv, final IOptionalSlotHost containerBus, final int idx, final int x,
                               final int y, final int offX, final int offY, final int groupNum) {
         super(inv, containerBus, idx, x, y, offX, offY, groupNum);
     }

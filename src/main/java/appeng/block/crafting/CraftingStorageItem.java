@@ -33,12 +33,12 @@ public class CraftingStorageItem extends AEBaseBlockItem {
     }
 
     @Override
-    public ItemStack getContainerItem(final ItemStack itemStack) {
+    public ItemStack getRecipeRemainder(final ItemStack itemStack) {
         return AEApi.instance().definitions().blocks().craftingUnit().maybeStack(1).orElse(ItemStack.EMPTY);
     }
 
     @Override
-    public boolean hasContainerItem(final ItemStack stack) {
+    public boolean hasRecipeRemainder(final ItemStack stack) {
         return AEConfig.instance().isFeatureEnabled(AEFeature.ENABLE_DISASSEMBLY_CRAFTING);
     }
 }

@@ -39,7 +39,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceContext;
+import net.minecraft.world.RayTraceContext;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -81,9 +81,9 @@ public class PartPlacement {
 
         // FIXME: This was changed alot.
         final LookDirection dir = Platform.getPlayerRay(player);
-        RayTraceContext rtc = new RayTraceContext(dir.getA(), dir.getB(), RayTraceContext.BlockMode.OUTLINE,
-                RayTraceContext.FluidMode.NONE, player);
-        final BlockHitResult mop = world.rayTraceBlocks(rtc);
+        RayTraceContext rtc = new RayTraceContext(dir.getA(), dir.getB(), RayTraceContext.ShapeType.OUTLINE,
+                RayTraceContext.FluidHandling.NONE, player);
+        final BlockHitResult mop = world.rayTrace(rtc);
         ItemPlacementContext useContext = new ItemPlacementContext(new ItemUsageContext(player, hand, mop));
 
         if (!held.isEmpty() && Platform.isWrench(player, held, pos) && player.isInSneakingPose()) {
@@ -103,7 +103,7 @@ public class PartPlacement {
                     if (mop.getType() == HitResult.Type.BLOCK) {
                         final List<ItemStack> is = new ArrayList<>();
                         final SelectedPart sp = selectPart(player, host,
-                                mop.getHitVec().add(-mop.getPos().getX(), -mop.getPos().getY(), -mop.getPos().getZ()));
+                                mop.getPos().add(-mop.getPos().getX(), -mop.getPos().getY(), -mop.getPos().getZ()));
 
                         if (sp.part != null) {
                             is.add(sp.part.getItemStack(PartItemStack.WRENCH));
@@ -157,7 +157,7 @@ public class PartPlacement {
                                 host.markForSave();
                                 host.markForUpdate();
                                 if (!player.isCreative()) {
-                                    held.grow(-1);
+                                    held.increment(-1);
                                     ;
                                     if (held.getCount() == 0) {
                                         player.inventory.mainInventory.set(player.inventory.currentItem,
@@ -182,7 +182,7 @@ public class PartPlacement {
         if (held.isEmpty()) {
             if (host != null && player.isInSneakingPose() && world.isAirBlock(pos)) {
                 if (mop.getType() == HitResult.Type.BLOCK) {
-                    Vec3d hitVec = mop.getHitVec().add(-mop.getPos().getX(), -mop.getPos().getY(),
+                    Vec3d hitVec = mop.getPos().add(-mop.getPos().getX(), -mop.getPos().getY(),
                             -mop.getPos().getZ());
                     final SelectedPart sPart = selectPart(player, host, hitVec);
                     if (sPart != null && sPart.part != null) {
@@ -286,10 +286,10 @@ public class PartPlacement {
         if (!world.isClient) {
             if (mop.getType() != HitResult.Type.MISS) {
                 final SelectedPart sp = selectPart(player, host,
-                        mop.getHitVec().add(-mop.getPos().getX(), -mop.getPos().getY(), -mop.getPos().getZ()));
+                        mop.getPos().add(-mop.getPos().getX(), -mop.getPos().getY(), -mop.getPos().getZ()));
 
                 if (sp.part != null) {
-                    if (!player.isInSneakingPose() && sp.part.onActivate(player, hand, mop.getHitVec())) {
+                    if (!player.isInSneakingPose() && sp.part.onActivate(player, hand, mop.getPos())) {
                         return ActionResult.FAIL;
                     }
                 }
@@ -311,7 +311,7 @@ public class PartPlacement {
                 });
 
                 if (!player.isCreative()) {
-                    held.grow(-1);
+                    held.increment(-1);
                     if (held.getCount() == 0) {
                         player.setHeldItem(hand, ItemStack.EMPTY);
                         MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(player, held, hand));
@@ -370,7 +370,7 @@ public class PartPlacement {
             final double d0 = mc.playerController.getBlockReachDistance();
             final Vec3d vec3 = mc.getRenderViewEntity().getEyePosition(f);
 
-            if (mop instanceof BlockHitResult && mop.getHitVec().distanceTo(vec3) < d0) {
+            if (mop instanceof BlockHitResult && mop.getPos().distanceTo(vec3) < d0) {
                 BlockHitResult brtr = (BlockHitResult) mop;
 
                 final World w = event.getEntity().world;

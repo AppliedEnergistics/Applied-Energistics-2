@@ -57,7 +57,7 @@ public class WirelessTermContainer extends MEPortableCellContainer {
 
         if (!this.wirelessTerminalGUIObject.rangeCheck()) {
             if (Platform.isServer() && this.isValidContainer()) {
-                this.getPlayerInv().player.sendMessage(PlayerMessages.OutOfRange.get());
+                this.getPlayerInv().player.sendSystemMessage(PlayerMessages.OutOfRange.get(), Util.NIL_UUID);
             }
 
             this.setValidContainer(false);

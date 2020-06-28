@@ -18,11 +18,11 @@
 
 package appeng.util.inv.filter;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.item.ItemStack;
 
 public interface IAEItemFilter {
-    boolean allowExtract(ItemTransferable inv, int slot, int amount);
+    boolean allowExtract(FixedItemInv inv, int slot, int amount);
 
-    boolean allowInsert(ItemTransferable inv, int slot, ItemStack stack);
+    boolean allowInsert(FixedItemInv inv, int slot, ItemStack stack);
 }

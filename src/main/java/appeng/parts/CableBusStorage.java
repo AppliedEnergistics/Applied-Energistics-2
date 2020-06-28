@@ -58,7 +58,7 @@ public class CableBusStorage {
             this.sides[x] = null;
             this.sides = this.shrink(this.sides, true);
         } else if (part != null) {
-            this.sides = this.grow(this.sides, x, true);
+            this.sides = this.expand(this.sides, x, true);
             this.sides[x] = part;
         }
     }
@@ -114,7 +114,7 @@ public class CableBusStorage {
             this.facades[x] = null;
             this.facades = this.shrink(this.facades, false);
         } else {
-            this.facades = this.grow(this.facades, x, false);
+            this.facades = this.expand(this.facades, x, false);
             this.facades[x] = facade;
         }
     }

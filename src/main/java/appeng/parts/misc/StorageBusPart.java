@@ -35,7 +35,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockView;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
@@ -167,7 +167,7 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
                                   final ItemStack removedStack, final ItemStack newStack) {
         super.onChangeInventory(inv, slot, mc, removedStack, newStack);
 
@@ -197,7 +197,7 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public ItemTransferable getInventoryByName(final String name) {
+    public FixedItemInv getInventoryByName(final String name) {
         if (name.equals("config")) {
             return this.Config;
         }
@@ -355,7 +355,7 @@ public class StorageBusPart extends UpgradeablePart
         }
 
         // Check via cap for IItemHandler
-        final LazyOptional<ItemTransferable> handlerExtOpt = target
+        final LazyOptional<FixedItemInv> handlerExtOpt = target
                 .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide);
         if (handlerExtOpt.isPresent()) {
             return new ItemHandlerAdapter(handlerExtOpt.orElse(null), this);
@@ -380,12 +380,12 @@ public class StorageBusPart extends UpgradeablePart
             return Objects.hash(target, accessorOpt.orElse(null));
         }
 
-        final LazyOptional<ItemTransferable> itemHandlerOpt = target
+        final LazyOptional<FixedItemInv> itemHandlerOpt = target
                 .getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide);
 
         if (itemHandlerOpt.isPresent()) {
-            ItemTransferable itemHandler = itemHandlerOpt.orElse(null);
-            return Objects.hash(target, itemHandler, itemHandler.getSlots());
+            FixedItemInv itemHandler = itemHandlerOpt.orElse(null);
+            return Objects.hash(target, itemHandler, itemHandler.getSlotCount());
         }
 
         return 0;

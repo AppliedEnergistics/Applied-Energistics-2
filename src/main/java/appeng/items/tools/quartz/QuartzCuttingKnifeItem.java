@@ -71,7 +71,7 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
     }
 
     @Override
-    public ItemStack getContainerItem(final ItemStack itemStack) {
+    public ItemStack getRecipeRemainder(final ItemStack itemStack) {
         ItemStack copy = itemStack.copy();
         copy.setDamage(itemStack.getDamage() + 1);
 
@@ -79,7 +79,7 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
     }
 
     @Override
-    public boolean hasContainerItem(final ItemStack stack) {
+    public boolean hasRecipeRemainder(final ItemStack stack) {
         return true;
     }
 

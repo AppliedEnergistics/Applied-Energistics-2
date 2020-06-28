@@ -104,7 +104,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerBlockEntity> {
         final ChargerBlockEntity tile = this.getBlockEntity(w, pos);
         if (tile != null) {
             if (AEApi.instance().definitions().materials().certusQuartzCrystalCharged()
-                    .isSameAs(tile.getInternalInventory().getStackInSlot(0))) {
+                    .isSameAs(tile.getInternalInventory().getInvStack(0))) {
                 final double xOff = 0.0;
                 final double yOff = 0.0;
                 final double zOff = 0.0;
@@ -185,7 +185,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerBlockEntity> {
     @Environment(EnvType.CLIENT)
     private static Pair<ItemStack, TransformationMatrix> getRenderedItem(ChargerBlockEntity tile) {
         TransformationMatrix transform = new TransformationMatrix(new Vector3f(0.5f, 0.375f, 0.5f), null, null, null);
-        return new ImmutablePair<>(tile.getInternalInventory().getStackInSlot(0), transform);
+        return new ImmutablePair<>(tile.getInternalInventory().getInvStack(0), transform);
     }
 
 }

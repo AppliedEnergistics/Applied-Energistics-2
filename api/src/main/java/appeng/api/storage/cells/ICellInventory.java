@@ -23,7 +23,7 @@
 
 package appeng.api.storage.cells;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.config.FuzzyMode;
@@ -50,12 +50,12 @@ public interface ICellInventory<T extends IAEStack<T>> extends IMEInventory<T> {
     /**
      * @return access configured list
      */
-    ItemTransferable getConfigInventory();
+    FixedItemInv getConfigInventory();
 
     /**
      * @return access installed upgrades.
      */
-    ItemTransferable getUpgradesInventory();
+    FixedItemInv getUpgradesInventory();
 
     /**
      * @return How many bytes are used for each type?

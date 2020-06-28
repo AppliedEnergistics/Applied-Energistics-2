@@ -32,6 +32,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.Sprite;
+import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
@@ -53,7 +54,6 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.text.Text;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
@@ -198,11 +198,11 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         lines = Lists.newArrayList(lines); // Make a copy
 
         // Make the first line white
-        lines.set(0, TextFormatting.WHITE + lines.get(0));
+        lines.set(0, Formatting.WHITE + lines.get(0));
 
         // All lines after the first are colored gray
         for (int i = 1; i < lines.size(); i++) {
-            lines.set(i, TextFormatting.GRAY + lines.get(i));
+            lines.set(i, Formatting.GRAY + lines.get(i));
         }
 
         this.renderTooltip(lines, x, y, this.font);
@@ -504,7 +504,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
         if (getPlayer().inventory.getItemStack().isEmpty() && theSlot != null) {
             for (int j = 0; j < 9; ++j) {
-                if (getMinecraft().gameSettings.keyBindsHotbar[j].isActiveAndMatches(input)) {
+                if (getMinecraft().options.keyBindsHotbar[j].isActiveAndMatches(input)) {
                     final List<Slot> slots = this.getInventorySlots();
                     for (final Slot s : slots) {
                         if (s.getSlotIndex() == j && s.inventory == ((AEBaseContainer) this.container).getPlayerInv()) {

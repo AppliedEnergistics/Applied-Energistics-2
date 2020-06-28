@@ -38,7 +38,7 @@ public final class TinyTNTDispenseItemBehavior extends DefaultDispenseItemBehavi
         final int k = dispenser.getBlockPos().getZ() + Direction.getOffsetZ();
         final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(world, i + 0.5F, j + 0.5F, k + 0.5F,
                 null);
-        world.addEntity(primedTinyTNTEntity);
+        world.spawnEntity(primedTinyTNTEntity);
         dispensedItem.setCount(dispensedItem.getCount() - 1);
         return dispensedItem;
     }

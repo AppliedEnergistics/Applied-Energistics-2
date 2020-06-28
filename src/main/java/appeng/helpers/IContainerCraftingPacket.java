@@ -18,7 +18,7 @@
 
 package appeng.helpers;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.networking.IGridNode;
@@ -36,7 +36,7 @@ public interface IContainerCraftingPacket {
      *
      * @return the inventory of the part/tile by name.
      */
-    ItemTransferable getInventoryByName(String string);
+    FixedItemInv getInventoryByName(String string);
 
     /**
      * @return who are we?

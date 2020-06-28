@@ -168,7 +168,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
     @Override
     public ItemStack getPickBlock(BlockState state, HitResult target, BlockView world, BlockPos pos,
             PlayerEntity player) {
-        final Vec3d v3 = target.getHitVec().subtract(pos.getX(), pos.getY(), pos.getZ());
+        final Vec3d v3 = target.getPos().subtract(pos.getX(), pos.getY(), pos.getZ());
         final SelectedPart sp = this.cb(world, pos).selectPart(v3);
 
         if (sp.part != null) {
@@ -194,7 +194,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
         if (target.getType() != Type.BLOCK) {
             return false;
         }
-        BlockPos blockPos = new BlockPos(target.getHitVec().x, target.getHitVec().y, target.getHitVec().z);
+        BlockPos blockPos = new BlockPos(target.getPos().x, target.getPos().y, target.getPos().z);
 
         ICableBusContainer cb = this.cb(world, blockPos);
 
@@ -214,9 +214,9 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
         // Spawn a particle for one of the particle textures
         Sprite texture = Platform.pickRandom(cableBusModel.getParticleTextures(renderState));
         if (texture != null) {
-            double x = target.getHitVec().x;
-            double y = target.getHitVec().y;
-            double z = target.getHitVec().z;
+            double x = target.getPos().x;
+            double y = target.getPos().y;
+            double z = target.getPos().z;
             // FIXME: Check how this looks, probably like shit, maybe provide parts the
             // ability to supply particle textures???
             effectRenderer
@@ -310,7 +310,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
             if (rtr instanceof BlockHitResult) {
                 BlockHitResult brtr = (BlockHitResult) rtr;
                 if (brtr.getPos().equals(pos)) {
-                    final Vec3d hitVec = rtr.getHitVec().subtract(new Vec3d(pos));
+                    final Vec3d hitVec = rtr.getPos().subtract(new Vec3d(pos));
 
                     if (this.cb(worldIn, pos).clicked(player, Hand.MAIN_HAND, hitVec)) {
                         NetworkHandler.instance().sendToServer(new ClickPacket(pos, brtr.getSide(), (float) hitVec.x,
@@ -329,7 +329,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
     public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         // Transform from world into block space
-        Vec3d hitVec = hit.getHitVec();
+        Vec3d hitVec = hit.getPos();
         Vec3d hitInBlock = new Vec3d(hitVec.x - pos.getX(), hitVec.y - pos.getY(), hitVec.z - pos.getZ());
         return this.cb(w, pos).activate(player, hand, hitInBlock) ? ActionResult.SUCCESS : ActionResult.PASS;
     }

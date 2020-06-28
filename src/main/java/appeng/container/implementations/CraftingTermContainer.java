@@ -18,15 +18,15 @@
 
 package appeng.container.implementations;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.RecipeType;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.world.World;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
@@ -64,13 +64,13 @@ public class CraftingTermContainer extends MEMonitorableContainer
     private final AppEngInternalInventory output = new AppEngInternalInventory(this, 1);
     private final CraftingMatrixSlot[] craftingSlots = new CraftingMatrixSlot[9];
     private final CraftingTermSlot outputSlot;
-    private IRecipe<CraftingInventory> currentRecipe;
+    private Recipe<CraftingInventory> currentRecipe;
 
     public CraftingTermContainer(int id, final PlayerInventory ip, final ITerminalHost monitorable) {
         super(TYPE, id, ip, monitorable, false);
         this.ct = (CraftingTerminalPart) monitorable;
 
-        final ItemTransferable crafting = this.ct.getInventoryByName("crafting");
+        final FixedItemInv crafting = this.ct.getInventoryByName("crafting");
 
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 3; x++) {
@@ -92,23 +92,23 @@ public class CraftingTermContainer extends MEMonitorableContainer
      */
 
     @Override
-    public void onCraftMatrixChanged(IInventory inventory) {
+    public void onCraftMatrixChanged(Inventory inventory) {
         final ContainerNull cn = new ContainerNull();
         final CraftingInventory ic = new CraftingInventory(cn, 3, 3);
 
         for (int x = 0; x < 9; x++) {
-            ic.setInventorySlotContents(x, this.craftingSlots[x].getStack());
+            ic.setStack(x, this.craftingSlots[x].getStack());
         }
 
         if (this.currentRecipe == null || !this.currentRecipe.matches(ic, this.getPlayerInv().player.world)) {
             World world = this.getPlayerInv().player.world;
-            this.currentRecipe = world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, ic, world).orElse(null);
+            this.currentRecipe = world.getRecipeManager().getRecipe(RecipeType.CRAFTING, ic, world).orElse(null);
         }
 
         if (this.currentRecipe == null) {
             this.outputSlot.putStack(ItemStack.EMPTY);
         } else {
-            final ItemStack craftingResult = this.currentRecipe.getCraftingResult(ic);
+            final ItemStack craftingResult = this.currentRecipe.craft(ic);
 
             this.outputSlot.putStack(craftingResult);
         }
@@ -120,13 +120,13 @@ public class CraftingTermContainer extends MEMonitorableContainer
     }
 
     @Override
-    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
                                   final ItemStack removedStack, final ItemStack newStack) {
 
     }
 
     @Override
-    public ItemTransferable getInventoryByName(final String name) {
+    public FixedItemInv getInventoryByName(final String name) {
         if (name.equals("player")) {
             return new PlayerInvWrapper(this.getPlayerInventory());
         }
@@ -138,7 +138,7 @@ public class CraftingTermContainer extends MEMonitorableContainer
         return true;
     }
 
-    public IRecipe<CraftingInventory> getCurrentRecipe() {
+    public Recipe<CraftingInventory> getCurrentRecipe() {
         return this.currentRecipe;
     }
 }

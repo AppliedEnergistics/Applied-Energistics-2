@@ -25,7 +25,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -90,9 +90,9 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
     private final AppEngInternalInventory bottomItemHandler = new AppEngInternalInventory(this, 1, 1);
     private final AppEngInternalInventory sideItemHandler = new AppEngInternalInventory(this, 2, 1);
 
-    private final ItemTransferable topItemHandlerExtern;
-    private final ItemTransferable bottomItemHandlerExtern;
-    private final ItemTransferable sideItemHandlerExtern;
+    private final FixedItemInv topItemHandlerExtern;
+    private final FixedItemInv bottomItemHandlerExtern;
+    private final FixedItemInv sideItemHandlerExtern;
 
     private InscriberRecipe cachedTask = null;
 
@@ -207,12 +207,12 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public ItemTransferable getInternalInventory() {
+    public FixedItemInv getInternalInventory() {
         return this.inv;
     }
 
     @Override
-    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
                                   final ItemStack removed, final ItemStack added) {
         try {
             if (slot == 0) {
@@ -342,7 +342,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public ItemTransferable getInventoryByName(final String name) {
+    public FixedItemInv getInventoryByName(final String name) {
         if (name.equals("inv")) {
             return this.getInternalInventory();
         }
@@ -355,7 +355,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    protected ItemTransferable getItemHandlerForSide(@Nonnull Direction facing) {
+    protected FixedItemInv getItemHandlerForSide(@Nonnull Direction facing) {
         if (facing == this.getUp()) {
             return this.topItemHandlerExtern;
         } else if (facing == this.getUp().getOpposite()) {
@@ -411,7 +411,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
      */
     private class ItemHandlerFilter implements IAEItemFilter {
         @Override
-        public boolean allowExtract(ItemTransferable inv, int slot, int amount) {
+        public boolean allowExtract(FixedItemInv inv, int slot, int amount) {
             if (InscriberBlockEntity.this.isSmash()) {
                 return false;
             }
@@ -421,7 +421,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
         }
 
         @Override
-        public boolean allowInsert(ItemTransferable inv, int slot, ItemStack stack) {
+        public boolean allowInsert(FixedItemInv inv, int slot, ItemStack stack) {
             // output slot
             if (slot == 1) {
                 return false;

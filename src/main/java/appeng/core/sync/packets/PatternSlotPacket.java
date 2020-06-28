@@ -18,7 +18,7 @@
 
 package appeng.core.sync.packets;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -63,7 +63,7 @@ public class PatternSlotPacket extends BasePacket {
     }
 
     // api
-    public PatternSlotPacket(final ItemTransferable pat, final IAEItemStack slotItem, final boolean shift) {
+    public PatternSlotPacket(final FixedItemInv pat, final IAEItemStack slotItem, final boolean shift) {
 
         this.slotItem = slotItem;
         this.shift = shift;
@@ -77,7 +77,7 @@ public class PatternSlotPacket extends BasePacket {
         this.writeItem(slotItem, data);
         for (int x = 0; x < 9; x++) {
             this.pattern[x] = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)
-                    .createStack(pat.getStackInSlot(x));
+                    .createStack(pat.getInvStack(x));
             this.writeItem(this.pattern[x], data);
         }
 

@@ -20,7 +20,7 @@ package appeng.items.storage;
 
 import java.util.List;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.item.TooltipContext;
@@ -49,12 +49,12 @@ public class CreativeStorageCellItem extends AEBaseItem implements ICellWorkbenc
     }
 
     @Override
-    public ItemTransferable getUpgradesInventory(final ItemStack is) {
+    public FixedItemInv getUpgradesInventory(final ItemStack is) {
         return null;
     }
 
     @Override
-    public ItemTransferable getConfigInventory(final ItemStack is) {
+    public FixedItemInv getConfigInventory(final ItemStack is) {
         return new CellConfig(is);
     }
 

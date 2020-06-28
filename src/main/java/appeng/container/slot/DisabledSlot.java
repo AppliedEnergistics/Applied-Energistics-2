@@ -20,11 +20,11 @@ package appeng.container.slot;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 public class DisabledSlot extends AppEngSlot {
 
-    public DisabledSlot(final ItemTransferable par1iInventory, final int slotIndex, final int x, final int y) {
+    public DisabledSlot(final FixedItemInv par1iInventory, final int slotIndex, final int x, final int y) {
         super(par1iInventory, slotIndex, x, y);
     }
 

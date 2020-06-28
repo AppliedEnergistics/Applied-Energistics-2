@@ -22,7 +22,7 @@ import java.util.List;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.IPacket;
 import net.minecraft.util.math.Box;
@@ -39,14 +39,14 @@ public abstract class AEBaseItemEntity extends ItemEntity {
             final double y, final double z, final ItemStack stack) {
         this(entityType, world);
         this.setPosition(x, y, z);
-        this.rotationYaw = this.rand.nextFloat() * 360.0F;
+        this.yaw = this.rand.nextFloat() * 360.0F;
         this.setMotion(this.rand.nextDouble() * 0.2D - 0.1D, 0.2D, this.rand.nextDouble() * 0.2D - 0.1D);
         this.setItem(stack);
         this.lifespan = stack.getEntityLifespan(world);
     }
 
     protected List<Entity> getCheckedEntitiesWithinAABBExcludingEntity(final Box region) {
-        return this.world.getEntitiesWithinAABBExcludingEntity(this, region);
+        return this.world.getEntities(this, region);
     }
 
     @Override

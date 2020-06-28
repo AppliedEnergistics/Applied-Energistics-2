@@ -18,11 +18,11 @@
 
 package appeng.container.slot;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 public class FakeCraftingMatrixSlot extends FakeSlot {
 
-    public FakeCraftingMatrixSlot(final ItemTransferable inv, final int idx, final int x, final int y) {
+    public FakeCraftingMatrixSlot(final FixedItemInv inv, final int idx, final int x, final int y) {
         super(inv, idx, x, y);
     }
 }

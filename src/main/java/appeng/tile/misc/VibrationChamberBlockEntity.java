@@ -22,7 +22,7 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -56,7 +56,7 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
     public static final int MAX_BURN_SPEED = 200;
     public static final double DILATION_SCALING = 25.0; // x4 ~ 40 AE/t at max
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 1);
-    private final ItemTransferable invExt = new WrapperFilteredItemHandler(this.inv, new FuelSlotFilter());
+    private final FixedItemInv invExt = new WrapperFilteredItemHandler(this.inv, new FuelSlotFilter());
 
     private int burnSpeed = 100;
     private double burnTime = 0;
@@ -110,17 +110,17 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
     }
 
     @Override
-    protected ItemTransferable getItemHandlerForSide(@Nonnull Direction facing) {
+    protected FixedItemInv getItemHandlerForSide(@Nonnull Direction facing) {
         return this.invExt;
     }
 
     @Override
-    public ItemTransferable getInternalInventory() {
+    public FixedItemInv getInternalInventory() {
         return this.inv;
     }
 
     @Override
-    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
                                   final ItemStack removed, final ItemStack added) {
         if (this.getBurnTime() <= 0) {
             if (this.canEatFuel()) {
@@ -217,7 +217,7 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
                 is.shrink(1);
 
                 if (is.isEmpty()) {
-                    this.inv.setStackInSlot(0, fuelItem.getContainerItem(is));
+                    this.inv.setStackInSlot(0, fuelItem.getRecipeRemainder(is));
                 } else {
                     this.inv.setStackInSlot(0, is);
                 }
@@ -270,12 +270,12 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
 
     private class FuelSlotFilter implements IAEItemFilter {
         @Override
-        public boolean allowExtract(ItemTransferable inv, int slot, int amount) {
-            return ForgeHooks.getBurnTime(inv.getStackInSlot(slot)) == 0;
+        public boolean allowExtract(FixedItemInv inv, int slot, int amount) {
+            return ForgeHooks.getBurnTime(inv.getInvStack(slot)) == 0;
         }
 
         @Override
-        public boolean allowInsert(ItemTransferable inv, int slot, ItemStack stack) {
+        public boolean allowInsert(FixedItemInv inv, int slot, ItemStack stack) {
             return ForgeHooks.getBurnTime(stack) != 0;
         }
     }

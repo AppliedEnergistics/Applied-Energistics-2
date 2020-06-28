@@ -18,87 +18,19 @@
 
 package appeng.util.inv;
 
+import alexiil.mc.lib.attributes.item.FixedItemInv;
+import alexiil.mc.lib.attributes.item.compat.InventoryFixedWrapper;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
 
-import appeng.util.helpers.ItemHandlerUtil;
+public class WrapperInvItemHandler extends InventoryFixedWrapper {
 
-public class WrapperInvItemHandler implements IInventory {
-    private final ItemTransferable inv;
-
-    public WrapperInvItemHandler(final ItemTransferable inv) {
-        this.inv = inv;
+    public WrapperInvItemHandler(final FixedItemInv inv) {
+        super(inv);
     }
 
     @Override
-    public int getSizeInventory() {
-        return this.inv.getSlots();
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return ItemHandlerUtil.isEmpty(this.inv);
-    }
-
-    @Override
-    public ItemStack getStackInSlot(int index) {
-        return this.inv.getStackInSlot(index);
-    }
-
-    @Override
-    public ItemStack decrStackSize(int index, int count) {
-        return this.inv.extractItem(index, count, false);
-    }
-
-    @Override
-    public ItemStack removeStackFromSlot(int index) {
-        return this.inv.extractItem(index, this.inv.getSlotLimit(index), false);
-    }
-
-    @Override
-    public void setInventorySlotContents(int index, ItemStack stack) {
-        ItemHandlerUtil.setStackInSlot(this.inv, index, stack);
-    }
-
-    @Override
-    public int getInventoryStackLimit() {
-        int max = 0;
-        for (int i = 0; i < this.inv.getSlots(); ++i) {
-            max = Math.max(max, this.inv.getSlotLimit(i));
-        }
-        return max;
-    }
-
-    @Override
-    public void markDirty() {
-        // NOP
-    }
-
-    @Override
-    public boolean isUsableByPlayer(PlayerEntity player) {
+    public boolean canPlayerUse(PlayerEntity player) {
         return false;
-    }
-
-    @Override
-    public void openInventory(PlayerEntity player) {
-        // NOP
-    }
-
-    @Override
-    public void closeInventory(PlayerEntity player) {
-        // NOP
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack) {
-        return this.inv.isItemValid(index, stack);
-    }
-
-    @Override
-    public void clear() {
-        ItemHandlerUtil.clear(this.inv);
     }
 
 }

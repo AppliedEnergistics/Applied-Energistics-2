@@ -280,7 +280,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiTil
 
     @Override
     public void notifyNeighbors() {
-        if (this.world != null && this.world.isBlockLoaded(this.pos) && !CableBusContainer.isLoading()) {
+        if (this.world != null && this.world.isChunkLoaded(this.pos) && !CableBusContainer.isLoading()) {
             Platform.notifyBlocksOfNeighbors(this.world, this.pos);
         }
     }

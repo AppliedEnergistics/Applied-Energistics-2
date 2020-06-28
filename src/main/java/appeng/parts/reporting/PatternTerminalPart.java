@@ -25,7 +25,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.ICraftingPatternItem;
@@ -103,7 +103,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
     }
 
     @Override
-    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
                                   final ItemStack removedStack, final ItemStack newStack) {
         if (inv == this.pattern && slot == 1) {
             final ItemStack is = this.pattern.getStackInSlot(1);
@@ -162,7 +162,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
     }
 
     @Override
-    public ItemTransferable getInventoryByName(final String name) {
+    public FixedItemInv getInventoryByName(final String name) {
         if (name.equals("crafting")) {
             return this.crafting;
         }

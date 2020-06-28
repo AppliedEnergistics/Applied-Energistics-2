@@ -26,7 +26,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.Formatting;
 
 import appeng.util.Platform;
 
@@ -90,7 +90,7 @@ public class InvalidPatternHelper {
         private ItemStack stack;
 
         public PatternIngredient(CompoundTag tag) {
-            this.stack = ItemStack.read(tag);
+            this.stack = ItemStack.fromTag(tag);
 
             if (this.stack.isEmpty()) {
                 this.id = tag.getString("id");
@@ -128,7 +128,7 @@ public class InvalidPatternHelper {
             Text result = new LiteralText(this.getCount() + " ").append(this.getName());
 
             if (!this.isValid()) {
-                result.applyTextStyle(TextFormatting.RED);
+                result.formatted(Formatting.RED);
             }
 
             return result;

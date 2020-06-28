@@ -20,7 +20,7 @@ package appeng.tile.misc;
 
 import java.util.List;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -50,8 +50,8 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     private final AppEngInternalAEInventory config = new AppEngInternalAEInventory(this, 63);
     private final ConfigManager manager = new ConfigManager(this);
 
-    private ItemTransferable cacheUpgrades = null;
-    private ItemTransferable cacheConfig = null;
+    private FixedItemInv cacheUpgrades = null;
+    private FixedItemInv cacheConfig = null;
     private boolean locked = false;
 
     public CellWorkbenchBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
@@ -60,7 +60,7 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
         this.cell.setEnableClientEvents(true);
     }
 
-    public ItemTransferable getCellUpgradeInventory() {
+    public FixedItemInv getCellUpgradeInventory() {
         if (this.cacheUpgrades == null) {
             final ICellWorkbenchItem cell = this.getCell();
             if (cell == null) {
@@ -72,7 +72,7 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
                 return null;
             }
 
-            final ItemTransferable inv = cell.getUpgradesInventory(is);
+            final FixedItemInv inv = cell.getUpgradesInventory(is);
             if (inv == null) {
                 return null;
             }
@@ -112,7 +112,7 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     }
 
     @Override
-    public ItemTransferable getInventoryByName(final String name) {
+    public FixedItemInv getInventoryByName(final String name) {
         if (name.equals("config")) {
             return this.config;
         }
@@ -130,7 +130,7 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     }
 
     @Override
-    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
                                   final ItemStack removedStack, final ItemStack newStack) {
         if (inv == this.cell && !this.locked) {
             this.locked = true;
@@ -138,11 +138,11 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
             this.cacheUpgrades = null;
             this.cacheConfig = null;
 
-            final ItemTransferable configInventory = this.getCellConfigInventory();
+            final FixedItemInv configInventory = this.getCellConfigInventory();
             if (configInventory != null) {
                 boolean cellHasConfig = false;
-                for (int x = 0; x < configInventory.getSlots(); x++) {
-                    if (!configInventory.getStackInSlot(x).isEmpty()) {
+                for (int x = 0; x < configInventory.getSlotCount(); x++) {
+                    if (!configInventory.getInvStack(x).isEmpty()) {
                         cellHasConfig = true;
                         break;
                     }
@@ -150,7 +150,7 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
 
                 if (cellHasConfig) {
                     for (int x = 0; x < this.config.getSlots(); x++) {
-                        this.config.setStackInSlot(x, configInventory.getStackInSlot(x));
+                        this.config.setStackInSlot(x, configInventory.getInvStack(x));
                     }
                 } else {
                     ItemHandlerUtil.copy(this.config, configInventory, false);
@@ -166,7 +166,7 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
             this.locked = false;
         } else if (inv == this.config && !this.locked) {
             this.locked = true;
-            final ItemTransferable c = this.getCellConfigInventory();
+            final FixedItemInv c = this.getCellConfigInventory();
             if (c != null) {
                 ItemHandlerUtil.copy(this.config, c, false);
                 // copy items back. The ConfigInventory may changed the items on insert
@@ -176,7 +176,7 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
         }
     }
 
-    private ItemTransferable getCellConfigInventory() {
+    private FixedItemInv getCellConfigInventory() {
         if (this.cacheConfig == null) {
             final ICellWorkbenchItem cell = this.getCell();
             if (cell == null) {
@@ -188,7 +188,7 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
                 return null;
             }
 
-            final ItemTransferable inv = cell.getConfigInventory(is);
+            final FixedItemInv inv = cell.getConfigInventory(is);
             if (inv == null) {
                 return null;
             }

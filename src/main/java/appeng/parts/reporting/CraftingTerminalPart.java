@@ -20,7 +20,7 @@ package appeng.parts.reporting;
 
 import java.util.List;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
@@ -88,7 +88,7 @@ public class CraftingTerminalPart extends AbstractTerminalPart {
     }
 
     @Override
-    public ItemTransferable getInventoryByName(final String name) {
+    public FixedItemInv getInventoryByName(final String name) {
         if (name.equals("crafting")) {
             return this.craftingGrid;
         }

@@ -23,7 +23,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.impl.EmptyFixedItemInv;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
@@ -50,7 +50,7 @@ import appeng.me.cache.helpers.TunnelCollection;
 import appeng.util.Platform;
 import appeng.util.inv.WrapperChainedItemHandler;
 
-public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implements ItemTransferable, IGridTickable {
+public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implements FixedItemInv, IGridTickable {
     private static final float POWER_DRAIN = 2.0f;
     private static final P2PModels MODELS = new P2PModels("part/p2p/p2p_tunnel_items");
     private boolean partVisited = false;
@@ -62,7 +62,7 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implemen
 
     private int oldSize = 0;
     private boolean requested;
-    private ItemTransferable cachedInv;
+    private FixedItemInv cachedInv;
 
     public ItemP2PTunnelPart(final ItemStack is) {
         super(is);
@@ -77,14 +77,14 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implemen
         }
     }
 
-    private ItemTransferable getDestination() {
+    private FixedItemInv getDestination() {
         this.requested = true;
 
         if (this.cachedInv != null) {
             return this.cachedInv;
         }
 
-        final List<ItemTransferable> outs = new ArrayList<ItemTransferable>();
+        final List<FixedItemInv> outs = new ArrayList<FixedItemInv>();
         final TunnelCollection<ItemP2PTunnelPart> itemTunnels;
 
         try {
@@ -94,7 +94,7 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implemen
         }
 
         for (final ItemP2PTunnelPart t : itemTunnels) {
-            final ItemTransferable inv = t.getOutputInv();
+            final FixedItemInv inv = t.getOutputInv();
             if (inv != null && inv != this) {
                 if (Platform.getRandomInt() % 2 == 0) {
                     outs.add(inv);
@@ -104,11 +104,11 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implemen
             }
         }
 
-        return this.cachedInv = new WrapperChainedItemHandler(outs.toArray(new ItemTransferable[outs.size()]));
+        return this.cachedInv = new WrapperChainedItemHandler(outs.toArray(new FixedItemInv[outs.size()]));
     }
 
-    private ItemTransferable getOutputInv() {
-        ItemTransferable ret = null;
+    private FixedItemInv getOutputInv() {
+        FixedItemInv ret = null;
         if (!this.partVisited) {
             this.partVisited = true;
             if (this.getProxy().isActive()) {
@@ -147,7 +147,7 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implemen
         if (!this.isOutput()) {
             this.cachedInv = null;
             final int olderSize = this.oldSize;
-            this.oldSize = this.getDestination().getSlots();
+            this.oldSize = this.getDestination().getSlotCount();
             if (olderSize != this.oldSize) {
                 this.getHost().notifyNeighbors();
             }
@@ -159,7 +159,7 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implemen
         if (!this.isOutput()) {
             this.cachedInv = null;
             final int olderSize = this.oldSize;
-            this.oldSize = this.getDestination().getSlots();
+            this.oldSize = this.getDestination().getSlotCount();
             if (olderSize != this.oldSize) {
                 this.getHost().notifyNeighbors();
             }
@@ -171,7 +171,7 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implemen
         if (!this.isOutput()) {
             this.cachedInv = null;
             final int olderSize = this.oldSize;
-            this.oldSize = this.getDestination().getSlots();
+            this.oldSize = this.getDestination().getSlotCount();
             if (olderSize != this.oldSize) {
                 this.getHost().notifyNeighbors();
             }
@@ -183,7 +183,7 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implemen
         if (!this.isOutput()) {
             this.cachedInv = null;
             final int olderSize = this.oldSize;
-            this.oldSize = this.getDestination().getSlots();
+            this.oldSize = this.getDestination().getSlotCount();
             if (olderSize != this.oldSize) {
                 this.getHost().notifyNeighbors();
             }
@@ -207,7 +207,7 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implemen
 
     @Override
     public int getSlots() {
-        return this.getDestination().getSlots();
+        return this.getDestination().getSlotCount();
     }
 
     @Override
@@ -217,7 +217,7 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implemen
 
     @Override
     public ItemStack getStackInSlot(final int i) {
-        return this.getDestination().getStackInSlot(i);
+        return this.getDestination().getInvStack(i);
     }
 
     @Override

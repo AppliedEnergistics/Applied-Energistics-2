@@ -1,7 +1,7 @@
 
 package appeng.fluids.container;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -50,7 +50,7 @@ public class FluidFormationPlaneContainer extends FluidConfigurableContainer {
 
     @Override
     protected void setupConfig() {
-        final ItemTransferable upgrades = this.getUpgradeable().getInventoryByName("upgrades");
+        final FixedItemInv upgrades = this.getUpgradeable().getInventoryByName("upgrades");
         this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 0, 187, 8,
                 this.getPlayerInventory())).setNotDraggable());
         this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18,

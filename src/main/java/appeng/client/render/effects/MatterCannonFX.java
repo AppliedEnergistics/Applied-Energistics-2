@@ -54,9 +54,9 @@ public class MatterCannonFX extends SpriteTexturedParticle {
 
     @Override
     public void tick() {
-        this.prevPosX = this.posX;
-        this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
+        this.prevX = this.posX;
+        this.prevY = this.posY;
+        this.prevZ = this.posZ;
 
         if (this.age++ >= this.maxAge) {
             this.setExpired();

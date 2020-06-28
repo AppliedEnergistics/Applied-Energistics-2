@@ -19,11 +19,11 @@
 package appeng.container.slot;
 
 import net.minecraft.item.ItemStack;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 public class OutputSlot extends AppEngSlot {
 
-    public OutputSlot(final ItemTransferable a, final int b, final int c, final int d, final int i) {
+    public OutputSlot(final FixedItemInv a, final int b, final int c, final int d, final int i) {
         super(a, b, c, d);
         this.setIIcon(i);
     }

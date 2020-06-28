@@ -32,7 +32,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
-import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.Identifier;
@@ -120,7 +120,7 @@ public final class AppEng {
         modEventBus.addGenericListener(ParticleType.class, registration::registerParticleTypes);
         modEventBus.addGenericListener(BlockEntityType.class, registration::registerTileEntities);
         modEventBus.addGenericListener(ContainerType.class, registration::registerContainerTypes);
-        modEventBus.addGenericListener(IRecipeSerializer.class, registration::registerRecipeSerializers);
+        modEventBus.addGenericListener(RecipeSerializer.class, registration::registerRecipeSerializers);
         modEventBus.addGenericListener(Feature.class, registration::registerWorldGen);
         modEventBus.addGenericListener(Biome.class, registration::registerBiomes);
         modEventBus.addGenericListener(ModDimension.class, registration::registerModDimension);

@@ -18,7 +18,7 @@
 
 package appeng.items.tools.powered;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -46,6 +46,7 @@ import appeng.items.misc.PaintBallItem;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.BaseActionSource;
 import appeng.tile.misc.PaintSplotchesBlockEntity;
+import appeng.util.FakePlayer;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import com.google.common.collect.ImmutableMap;
@@ -124,7 +125,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         Direction side = context.getSide();
         PlayerEntity p = context.getPlayer(); // This can be null
         if (p == null && w instanceof ServerWorld) {
-            p = Platform.getPlayer((ServerWorld) w);
+            p = FakePlayer.getOrCreate((ServerWorld) w);
         }
 
         final Block blk = w.getBlockState(pos).getBlock();
@@ -240,7 +241,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         final CompoundTag c = is.getTag();
         if (c != null && c.contains(TAG_COLOR)) {
             final CompoundTag color = c.getCompound(TAG_COLOR);
-            final ItemStack oldColor = ItemStack.read(color);
+            final ItemStack oldColor = ItemStack.fromTag(color);
             if (!oldColor.isEmpty()) {
                 return oldColor;
             }
@@ -314,7 +315,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             data.remove(TAG_COLOR);
         } else {
             final CompoundTag color = new CompoundTag();
-            newColor.write(color);
+            newColor.toTag(color);
             data.put(TAG_COLOR, color);
         }
     }
@@ -433,12 +434,12 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public ItemTransferable getUpgradesInventory(final ItemStack is) {
+    public FixedItemInv getUpgradesInventory(final ItemStack is) {
         return new CellUpgrades(is, 2);
     }
 
     @Override
-    public ItemTransferable getConfigInventory(final ItemStack is) {
+    public FixedItemInv getConfigInventory(final ItemStack is) {
         return new CellConfig(is);
     }
 

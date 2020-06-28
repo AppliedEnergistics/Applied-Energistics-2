@@ -18,19 +18,18 @@
 
 package appeng.util;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.math.Direction;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
-
+import alexiil.mc.lib.attributes.SearchOptions;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
+import alexiil.mc.lib.attributes.item.ItemAttributes;
 import appeng.api.config.FuzzyMode;
-import appeng.util.inv.AdaptorItemHandler;
+import appeng.util.inv.AdaptorFixedInv;
 import appeng.util.inv.AdaptorItemHandlerPlayerInv;
 import appeng.util.inv.IInventoryDestination;
 import appeng.util.inv.ItemSlot;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.Direction;
 
 /**
  * Universal Facade for other inventories. Used to conveniently interact with
@@ -40,15 +39,14 @@ import appeng.util.inv.ItemSlot;
  */
 public abstract class InventoryAdaptor implements Iterable<ItemSlot> {
     public static InventoryAdaptor getAdaptor(final BlockEntity te, final Direction d) {
-        if (te != null) {
-            LazyOptional<ItemTransferable> cap = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, d);
 
-            // Attempt getting an IItemHandler for the given side via caps
-            if (cap.isPresent()) {
-                return new AdaptorItemHandler(cap.orElseThrow(IllegalStateException::new));
-            }
+        FixedItemInv inv = ItemAttributes.FIXED_INV.get(te.getWorld(), te.getPos().offset(d), SearchOptions.inDirection(d.getOpposite()));
+
+        if (inv == ItemAttributes.FIXED_INV.defaultValue) {
+            return null;
         }
-        return null;
+
+        return new AdaptorFixedInv(inv);
     }
 
     public static InventoryAdaptor getAdaptor(final PlayerEntity te) {
@@ -65,10 +63,10 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot> {
 
     // return what was extracted.
     public abstract ItemStack removeSimilarItems(int amount, ItemStack filter, FuzzyMode fuzzyMode,
-            IInventoryDestination destination);
+                                                 IInventoryDestination destination);
 
     public abstract ItemStack simulateSimilarRemove(int amount, ItemStack filter, FuzzyMode fuzzyMode,
-            IInventoryDestination destination);
+                                                    IInventoryDestination destination);
 
     // return what isn't used...
     public abstract ItemStack addItems(ItemStack toBeAdded);

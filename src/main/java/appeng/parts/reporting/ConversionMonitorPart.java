@@ -27,7 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
 import appeng.api.AEApi;
@@ -157,10 +157,10 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
             if (allItems) {
                 if (this.getDisplayed() != null) {
                     final IAEItemStack input = this.getDisplayed().copy();
-                    ItemTransferable inv = new PlayerMainInvWrapper(player.inventory);
+                    FixedItemInv inv = new PlayerMainInvWrapper(player.inventory);
 
-                    for (int x = 0; x < inv.getSlots(); x++) {
-                        final ItemStack targetStack = inv.getStackInSlot(x);
+                    for (int x = 0; x < inv.getSlotCount(); x++) {
+                        final ItemStack targetStack = inv.getInvStack(x);
                         if (input.equals(targetStack)) {
                             final ItemStack canExtract = inv.extractItem(x, targetStack.getCount(), true);
                             if (!canExtract.isEmpty()) {

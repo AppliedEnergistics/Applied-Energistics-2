@@ -223,7 +223,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
                     for (int x = 0; x < current.getInventory().getSlots(); x++) {
                         final String which = Integer.toString(x);
                         if (invData.contains(which)) {
-                            current.getInventory().setStackInSlot(x, ItemStack.read(invData.getCompound(which)));
+                            current.getInventory().setStackInSlot(x, ItemStack.fromTag(invData.getCompound(which)));
                         }
                     }
                 } catch (final NumberFormatException ignored) {
@@ -319,7 +319,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
         for (int i = 0; i < outTag.size(); i++) {
 
-            final ItemStack parsedItemStack = ItemStack.read(outTag.getCompound(i));
+            final ItemStack parsedItemStack = ItemStack.fromTag(outTag.getCompound(i));
             if (!parsedItemStack.isEmpty()) {
                 final String displayName = Platform.getItemDisplayName(AEApi.instance().storage()
                         .getStorageChannel(IItemStorageChannel.class).createStack(parsedItemStack)).getString()

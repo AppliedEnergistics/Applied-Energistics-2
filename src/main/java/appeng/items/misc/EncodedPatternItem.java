@@ -32,7 +32,7 @@ import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.text.Text;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -79,9 +79,9 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
             ItemStack is = AEApi.instance().definitions().materials().blankPattern().maybeStack(stack.getCount())
                     .orElse(ItemStack.EMPTY);
             if (!is.isEmpty()) {
-                for (int s = 0; s < player.inventory.getSizeInventory(); s++) {
-                    if (inv.getStackInSlot(s) == stack) {
-                        inv.setInventorySlotContents(s, is);
+                for (int s = 0; s < player.inventory.size(); s++) {
+                    if (inv.getStack(s) == stack) {
+                        inv.setStack(s, is);
                         return true;
                     }
                 }
@@ -102,7 +102,7 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
                 return;
             }
 
-            stack.setDisplayName(GuiText.InvalidPattern.textComponent().applyTextStyle(TextFormatting.RED));
+            stack.setDisplayName(GuiText.InvalidPattern.textComponent().formatted(Formatting.RED));
 
             InvalidPatternHelper invalid = new InvalidPatternHelper(stack);
 
@@ -190,16 +190,11 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
         }
     }
 
-    public ItemStack getOutput(final ItemStack item) {
+    public ItemStack getOutput(World w, final ItemStack item) {
         ItemStack out = SIMPLE_CACHE.get(item);
 
         if (out != null) {
             return out;
-        }
-
-        final World w = AppEng.proxy.getWorld();
-        if (w == null) {
-            return ItemStack.EMPTY;
         }
 
         final ICraftingPatternDetails details = this.getPatternForItem(item, w);

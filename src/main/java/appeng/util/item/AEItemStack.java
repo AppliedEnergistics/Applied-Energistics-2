@@ -31,7 +31,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 import net.fabricmc.api.EnvType;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
@@ -39,6 +38,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.util.Platform;
+import net.minecraft.util.registry.Registry;
 
 public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemStack {
     private static final String NBT_STACKSIZE = "cnt";
@@ -81,7 +81,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
             return null;
         }
 
-        final ItemStack itemstack = ItemStack.read(i.getCompound(NBT_ITEMSTACK));
+        final ItemStack itemstack = ItemStack.fromTag(i.getCompound(NBT_ITEMSTACK));
         if (itemstack.isEmpty()) {
             return null;
         }
@@ -96,7 +96,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
     @Override
     public void writeToNBT(final CompoundTag i) {
         final CompoundTag itemStack = new CompoundTag();
-        this.getDefinition().write(itemStack);
+        this.getDefinition().toTag(itemStack);
 
         i.put(NBT_ITEMSTACK, itemStack);
         i.putLong(NBT_STACKSIZE, this.getStackSize());
@@ -169,7 +169,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
     @Override
     public ItemStack createItemStack() {
-        return ItemHandlerHelper.copyStackWithSize(this.getDefinition(),
+        return Platform.copyStackWithSize(this.getDefinition(),
                 (int) Math.min(Integer.MAX_VALUE, this.getStackSize()));
     }
 
@@ -200,7 +200,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
         int oldSize = otherStack.getCount();
 
         otherStack.setCount(1);
-        boolean ret = ItemStack.areItemStacksEqual(this.getDefinition(), otherStack);
+        boolean ret = ItemStack.areEqual(this.getDefinition(), otherStack);
         otherStack.setCount(oldSize);
 
         return ret;
@@ -223,7 +223,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
     @Override
     public String toString() {
-        return this.getStackSize() + "x" + this.getDefinition().getItem().getRegistryName();
+        return this.getStackSize() + "x" + Registry.ITEM.getId(this.getDefinition().getItem());
     }
 
     @Environment(EnvType.CLIENT)
@@ -244,7 +244,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
     @Environment(EnvType.CLIENT)
     public String getModID() {
-        return this.getDefinition().getItem().getRegistryName().getNamespace();
+        return Registry.ITEM.getId(this.getDefinition().getItem()).getNamespace();
     }
 
     @Override

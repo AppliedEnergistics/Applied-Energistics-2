@@ -18,7 +18,7 @@
 
 package appeng.items.contents;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.implementations.guiobjects.INetworkTool;
@@ -52,7 +52,7 @@ public class NetworkToolViewer implements INetworkTool, IAEAppEngInventory {
     }
 
     @Override
-    public void onChangeInventory(ItemTransferable inv, int slot, InvOperation mc, ItemStack removedStack,
+    public void onChangeInventory(FixedItemInv inv, int slot, InvOperation mc, ItemStack removedStack,
                                   ItemStack newStack) {
     }
 
@@ -68,23 +68,23 @@ public class NetworkToolViewer implements INetworkTool, IAEAppEngInventory {
 
     private static class NetworkToolInventoryFilter implements IAEItemFilter {
         @Override
-        public boolean allowExtract(ItemTransferable inv, int slot, int amount) {
+        public boolean allowExtract(FixedItemInv inv, int slot, int amount) {
             return true;
         }
 
         @Override
-        public boolean allowInsert(ItemTransferable inv, int slot, ItemStack stack) {
+        public boolean allowInsert(FixedItemInv inv, int slot, ItemStack stack) {
             return stack.getItem() instanceof IUpgradeModule
                     && ((IUpgradeModule) stack.getItem()).getType(stack) != null;
         }
     }
 
-    public ItemTransferable getInternalInventory() {
+    public FixedItemInv getInternalInventory() {
         return this.inv;
     }
 
     @Override
-    public ItemTransferable getInventory() {
+    public FixedItemInv getInventory() {
         return this.inv;
     }
 }

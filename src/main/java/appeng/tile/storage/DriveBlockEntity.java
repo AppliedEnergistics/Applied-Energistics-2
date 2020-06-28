@@ -29,7 +29,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.inventory.container.ContainerType;
@@ -304,12 +304,12 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
     }
 
     @Override
-    public ItemTransferable getInternalInventory() {
+    public FixedItemInv getInternalInventory() {
         return this.inv;
     }
 
     @Override
-    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
                                   final ItemStack removed, final ItemStack added) {
         if (this.isCached) {
             this.isCached = false; // recalculate the storage cell.
@@ -422,12 +422,12 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
     private class CellValidInventoryFilter implements IAEItemFilter {
 
         @Override
-        public boolean allowExtract(ItemTransferable inv, int slot, int amount) {
+        public boolean allowExtract(FixedItemInv inv, int slot, int amount) {
             return true;
         }
 
         @Override
-        public boolean allowInsert(ItemTransferable inv, int slot, ItemStack stack) {
+        public boolean allowInsert(FixedItemInv inv, int slot, ItemStack stack) {
             return !stack.isEmpty() && AEApi.instance().registries().cell().isCellHandled(stack);
         }
 

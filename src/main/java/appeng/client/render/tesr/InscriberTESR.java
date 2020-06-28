@@ -1,7 +1,7 @@
 
 package appeng.client.render.tesr;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.model.json.ModelTransformation;
@@ -126,16 +126,16 @@ public final class InscriberTESR extends BlockEntityRenderer<InscriberBlockEntit
 
         // render items.
 
-        ItemTransferable tileInv = tile.getInternalInventory();
+        FixedItemInv tileInv = tile.getInternalInventory();
 
         int items = 0;
-        if (!tileInv.getStackInSlot(0).isEmpty()) {
+        if (!tileInv.getInvStack(0).isEmpty()) {
             items++;
         }
-        if (!tileInv.getStackInSlot(1).isEmpty()) {
+        if (!tileInv.getInvStack(1).isEmpty()) {
             items++;
         }
-        if (!tileInv.getStackInSlot(2).isEmpty()) {
+        if (!tileInv.getInvStack(2).isEmpty()) {
             items++;
         }
 
@@ -145,7 +145,7 @@ public final class InscriberTESR extends BlockEntityRenderer<InscriberBlockEntit
             // consumed, see below)
             renderPresses = false;
 
-            ItemStack is = tileInv.getStackInSlot(3);
+            ItemStack is = tileInv.getInvStack(3);
 
             if (is.isEmpty()) {
                 final InscriberRecipe ir = tile.getTask();
@@ -160,12 +160,12 @@ public final class InscriberTESR extends BlockEntityRenderer<InscriberBlockEntit
             this.renderItem(ms, is, 0.0f, buffers, combinedLight, combinedOverlay);
         } else {
             renderPresses = true;
-            this.renderItem(ms, tileInv.getStackInSlot(2), 0.0f, buffers, combinedLight, combinedOverlay);
+            this.renderItem(ms, tileInv.getInvStack(2), 0.0f, buffers, combinedLight, combinedOverlay);
         }
 
         if (renderPresses) {
-            this.renderItem(ms, tileInv.getStackInSlot(0), press, buffers, combinedLight, combinedOverlay);
-            this.renderItem(ms, tileInv.getStackInSlot(1), -press, buffers, combinedLight, combinedOverlay);
+            this.renderItem(ms, tileInv.getInvStack(0), press, buffers, combinedLight, combinedOverlay);
+            this.renderItem(ms, tileInv.getInvStack(1), -press, buffers, combinedLight, combinedOverlay);
         }
 
         ms.pop();

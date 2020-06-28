@@ -39,7 +39,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -196,7 +196,7 @@ public class InterfaceBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public ItemTransferable getInventoryByName(final String name) {
+    public FixedItemInv getInventoryByName(final String name) {
         return this.duality.getInventoryByName(name);
     }
 
@@ -211,12 +211,12 @@ public class InterfaceBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public ItemTransferable getInternalInventory() {
+    public FixedItemInv getInternalInventory() {
         return this.duality.getInternalInventory();
     }
 
     @Override
-    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
                                   final ItemStack removed, final ItemStack added) {
         this.duality.onChangeInventory(inv, slot, mc, removed, added);
     }

@@ -23,13 +23,15 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import appeng.util.FakePlayer;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -242,10 +244,10 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
             switch (this.getSide()) {
                 case DOWN:
                 case UP:
-                    if (entity.getPosX() > pos.getX() && entity.getPosX() < pos.getX() + 1) {
-                        if (entity.getPosZ() > pos.getZ() && entity.getPosZ() < pos.getZ() + 1) {
-                            if ((entity.getPosY() > pos.getY() + 0.9 && this.getSide() == AEPartLocation.UP)
-                                    || (entity.getPosY() < pos.getY() + 0.1 && this.getSide() == AEPartLocation.DOWN)) {
+                    if (entity.getX() > pos.getX() && entity.getX() < pos.getX() + 1) {
+                        if (entity.getZ() > pos.getZ() && entity.getZ() < pos.getZ() + 1) {
+                            if ((entity.getY() > pos.getY() + 0.9 && this.getSide() == AEPartLocation.UP)
+                                    || (entity.getY() < pos.getY() + 0.1 && this.getSide() == AEPartLocation.DOWN)) {
                                 capture = true;
                             }
                         }
@@ -253,10 +255,10 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
                     break;
                 case SOUTH:
                 case NORTH:
-                    if (entity.getPosX() > pos.getX() && entity.getPosX() < pos.getX() + 1) {
+                    if (entity.getX() > pos.getX() && entity.getX() < pos.getX() + 1) {
                         if (posYMiddle > pos.getY() && posYMiddle < pos.getY() + 1) {
-                            if ((entity.getPosZ() > pos.getZ() + 0.9 && this.getSide() == AEPartLocation.SOUTH)
-                                    || (entity.getPosZ() < pos.getZ() + 0.1
+                            if ((entity.getZ() > pos.getZ() + 0.9 && this.getSide() == AEPartLocation.SOUTH)
+                                    || (entity.getZ() < pos.getZ() + 0.1
                                             && this.getSide() == AEPartLocation.NORTH)) {
                                 capture = true;
                             }
@@ -265,10 +267,10 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
                     break;
                 case EAST:
                 case WEST:
-                    if (entity.getPosZ() > pos.getZ() && entity.getPosZ() < pos.getZ() + 1) {
+                    if (entity.getZ() > pos.getZ() && entity.getZ() < pos.getZ() + 1) {
                         if (posYMiddle > pos.getY() && posYMiddle < pos.getY() + 1) {
-                            if ((entity.getPosX() > pos.getX() + 0.9 && this.getSide() == AEPartLocation.EAST)
-                                    || (entity.getPosX() < pos.getX() + 0.1 && this.getSide() == AEPartLocation.WEST)) {
+                            if ((entity.getX() > pos.getX() + 0.9 && this.getSide() == AEPartLocation.EAST)
+                                    || (entity.getX() < pos.getX() + 0.1 && this.getSide() == AEPartLocation.WEST)) {
                                 capture = true;
                             }
                         }
@@ -284,8 +286,8 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
                 if (changed) {
                     AppEng.proxy.sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64,
-                            this.getTile().getWorld(), new ItemTransitionEffectPacket(entity.getPosX(),
-                                    entity.getPosY(), entity.getPosZ(), this.getSide().getOpposite()));
+                            this.getTile().getWorld(), new ItemTransitionEffectPacket(entity.getX(),
+                                    entity.getY(), entity.getZ(), this.getSide().getOpposite()));
                 }
             }
         }
@@ -481,8 +483,8 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         final boolean ignoreMaterials = material == Material.AIR || material == Material.LAVA
                 || material == Material.WATER || material.isLiquid();
 
-        return !ignoreMaterials && hardness >= 0f && w.isBlockLoaded(pos)
-                && w.canMineBlockBody(Platform.getPlayer(w), pos);
+        return !ignoreMaterials && hardness >= 0f && w.isChunkLoaded(pos)
+                && w.canPlayerModifyAt((PlayerEntity) FakePlayer.getOrCreate(w), pos);
     }
 
     protected List<ItemStack> obtainBlockDrops(final ServerWorld w, final BlockPos pos) {
@@ -504,7 +506,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         }
 
         BlockEntity te = w.getBlockEntity(pos);
-        return Block.getDrops(state, w, pos, te, fakePlayer, harvestTool);
+        return Block.getDroppedStacks(state, w, pos, te, fakePlayer, harvestTool);
     }
 
     /**

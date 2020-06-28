@@ -24,7 +24,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.Box;
@@ -64,7 +64,7 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
         }
 
         if (world.isClient && this.delay > 30 && AEConfig.instance().isEnableEffects()) {
-            AppEng.proxy.spawnEffect(EffectType.Lightning, this.world, this.getPosX(), this.getPosY(), this.getPosZ(),
+            AppEng.proxy.spawnEffect(EffectType.Lightning, this.world, this.getX(), this.getY(), this.getZ(),
                     null);
             this.delay = 0;
         }
@@ -95,8 +95,8 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
         final IMaterials materials = AEApi.instance().definitions().materials();
 
         if (materials.certusQuartzCrystalCharged().isSameAs(item)) {
-            final Box region = new Box(this.getPosX() - 1, this.getPosY() - 1, this.getPosZ() - 1,
-                    this.getPosX() + 1, this.getPosY() + 1, this.getPosZ() + 1);
+            final Box region = new Box(this.getX() - 1, this.getY() - 1, this.getZ() - 1,
+                    this.getX() + 1, this.getY() + 1, this.getZ() + 1);
             final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity(region);
 
             ItemEntity redstone = null;
@@ -135,10 +135,10 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
                 }
 
                 materials.fluixCrystal().maybeStack(2).ifPresent(is -> {
-                    final ItemEntity entity = new ItemEntity(this.world, this.getPosX(), this.getPosY(), this.getPosZ(),
+                    final ItemEntity entity = new ItemEntity(this.world, this.getX(), this.getY(), this.getZ(),
                             is);
 
-                    this.world.addEntity(entity);
+                    this.world.spawnEntity(entity);
                 });
 
                 return true;

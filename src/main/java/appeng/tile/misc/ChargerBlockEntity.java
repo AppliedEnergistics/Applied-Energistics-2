@@ -28,7 +28,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.Direction;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -132,12 +132,12 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
     }
 
     @Override
-    public ItemTransferable getInternalInventory() {
+    public FixedItemInv getInternalInventory() {
         return this.inv;
     }
 
     @Override
-    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
                                   final ItemStack removed, final ItemStack added) {
         try {
             this.getProxy().getTick().wakeDevice(this.getProxy().getNode());
@@ -253,15 +253,15 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
 
     private class ChargerInvFilter implements IAEItemFilter {
         @Override
-        public boolean allowInsert(ItemTransferable inv, final int i, final ItemStack itemstack) {
+        public boolean allowInsert(FixedItemInv inv, final int i, final ItemStack itemstack) {
             final IItemDefinition cert = AEApi.instance().definitions().materials().certusQuartzCrystal();
 
             return Platform.isChargeable(itemstack) || cert.isSameAs(itemstack);
         }
 
         @Override
-        public boolean allowExtract(ItemTransferable inv, final int slotIndex, int amount) {
-            ItemStack extractedItem = inv.getStackInSlot(slotIndex);
+        public boolean allowExtract(FixedItemInv inv, final int slotIndex, int amount) {
+            ItemStack extractedItem = inv.getInvStack(slotIndex);
 
             if (Platform.isChargeable(extractedItem)) {
                 final IAEItemPowerStorage ips = (IAEItemPowerStorage) extractedItem.getItem();

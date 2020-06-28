@@ -37,8 +37,6 @@ import appeng.core.sync.BasePacket;
 
 public abstract class CommonHelper {
 
-    public abstract World getWorld();
-
     public abstract void bindTileEntitySpecialRenderer(Class<? extends BlockEntity> tile, AEBaseBlock blk);
 
     public abstract List<? extends PlayerEntity> getPlayers();

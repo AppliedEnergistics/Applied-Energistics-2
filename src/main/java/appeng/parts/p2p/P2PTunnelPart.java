@@ -173,7 +173,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
             final IMemoryCard mc = (IMemoryCard) is.getItem();
             final CompoundTag data = mc.getData(is);
 
-            final ItemStack newType = ItemStack.read(data);
+            final ItemStack newType = ItemStack.fromTag(data);
             final short freq = data.getShort("freq");
 
             if (!newType.isEmpty()) {
@@ -312,7 +312,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
             final ItemStack p2pItem = this.getItemStack(PartItemStack.WRENCH);
             final String type = p2pItem.getTranslationKey();
 
-            p2pItem.write(data);
+            p2pItem.toTag(data);
             data.putShort("freq", this.getFrequency());
 
             final AEColor[] colors = Platform.p2p().toColors(this.getFrequency());

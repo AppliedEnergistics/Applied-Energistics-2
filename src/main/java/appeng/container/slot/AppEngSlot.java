@@ -20,11 +20,10 @@ package appeng.container.slot;
 
 import javax.annotation.Nonnull;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -33,8 +32,8 @@ import appeng.container.AEBaseContainer;
 import appeng.util.helpers.ItemHandlerUtil;
 
 public class AppEngSlot extends Slot {
-    private static IInventory emptyInventory = new Inventory(0);
-    private final ItemTransferable itemHandler;
+    private static Inventory emptyInventory = new Inventory(0);
+    private final FixedItemInv itemHandler;
     private final int index;
 
     private final int defX;
@@ -46,7 +45,7 @@ public class AppEngSlot extends Slot {
     private CalculatedValidity isValid;
     private boolean isDisplay = false;
 
-    public AppEngSlot(final ItemTransferable inv, final int idx, final int x, final int y) {
+    public AppEngSlot(final FixedItemInv inv, final int idx, final int x, final int y) {
         super(emptyInventory, idx, x, y);
         this.itemHandler = inv;
         this.index = idx;
@@ -89,7 +88,7 @@ public class AppEngSlot extends Slot {
             return ItemStack.EMPTY;
         }
 
-        if (this.itemHandler.getSlots() <= this.getSlotIndex()) {
+        if (this.itemHandler.getSlotCount() <= this.getSlotIndex()) {
             return ItemStack.EMPTY;
         }
 
@@ -98,7 +97,7 @@ public class AppEngSlot extends Slot {
             return this.getDisplayStack();
         }
 
-        return this.itemHandler.getStackInSlot(this.index);
+        return this.itemHandler.getInvStack(this.index);
     }
 
     @Override
@@ -115,7 +114,7 @@ public class AppEngSlot extends Slot {
         }
     }
 
-    public ItemTransferable getItemHandler() {
+    public FixedItemInv getItemHandler() {
         return this.itemHandler;
     }
 
@@ -166,7 +165,7 @@ public class AppEngSlot extends Slot {
     }
 
     public ItemStack getDisplayStack() {
-        return this.itemHandler.getStackInSlot(this.index);
+        return this.itemHandler.getInvStack(this.index);
     }
 
     public float getOpacityOfIcon() {

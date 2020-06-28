@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
@@ -52,11 +52,11 @@ import appeng.util.item.AEItemStack;
 class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAEItemStack>, ITickingMonitor {
     private final Map<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<>();
     private IActionSource mySource;
-    private final ItemTransferable itemHandler;
+    private final FixedItemInv itemHandler;
     private final IGridProxyable proxyable;
     private final InventoryCache cache;
 
-    ItemHandlerAdapter(ItemTransferable itemHandler, IGridProxyable proxy) {
+    ItemHandlerAdapter(FixedItemInv itemHandler, IGridProxyable proxy) {
         this.itemHandler = itemHandler;
         this.proxyable = proxy;
         this.cache = new InventoryCache(this.itemHandler);
@@ -67,7 +67,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
         ItemStack orgInput = iox.createItemStack();
         ItemStack remaining = orgInput;
 
-        int slotCount = this.itemHandler.getSlots();
+        int slotCount = this.itemHandler.getSlotCount();
         boolean simulate = (type == Actionable.SIMULATE);
 
         // This uses a brute force approach and tries to jam it in every slot the
@@ -104,8 +104,8 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 
         final boolean simulate = (mode == Actionable.SIMULATE);
 
-        for (int i = 0; i < this.itemHandler.getSlots(); i++) {
-            ItemStack stackInInventorySlot = this.itemHandler.getStackInSlot(i);
+        for (int i = 0; i < this.itemHandler.getSlotCount(); i++) {
+            ItemStack stackInInventorySlot = this.itemHandler.getInvStack(i);
 
             if (!Platform.itemComparisons().isSameItem(stackInInventorySlot, requestedItemStack)) {
                 continue;
@@ -139,7 +139,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
                     if (gathered.isEmpty()) {
                         gathered = extracted.copy();
                     } else {
-                        gathered.grow(extracted.getCount());
+                        gathered.increment(extracted.getCount());
                     }
                     remainingCurrentSlot -= extracted.getCount();
                 }
@@ -220,9 +220,9 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 
     private static class InventoryCache {
         private IAEItemStack[] cachedAeStacks = new IAEItemStack[0];
-        private final ItemTransferable itemHandler;
+        private final FixedItemInv itemHandler;
 
-        public InventoryCache(ItemTransferable itemHandler) {
+        public InventoryCache(FixedItemInv itemHandler) {
             this.itemHandler = itemHandler;
         }
 
@@ -233,7 +233,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 
         public List<IAEItemStack> update() {
             final List<IAEItemStack> changes = new ArrayList<>();
-            final int slots = this.itemHandler.getSlots();
+            final int slots = this.itemHandler.getSlotCount();
 
             // Make room for new slots
             if (slots > this.cachedAeStacks.length) {
@@ -243,7 +243,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
             for (int slot = 0; slot < slots; slot++) {
                 // Save the old stuff
                 final IAEItemStack oldAeIS = this.cachedAeStacks[slot];
-                final ItemStack newIS = this.itemHandler.getStackInSlot(slot);
+                final ItemStack newIS = this.itemHandler.getInvStack(slot);
 
                 this.handlePossibleSlotChanges(slot, oldAeIS, newIS, changes);
             }

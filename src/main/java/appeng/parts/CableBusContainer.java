@@ -351,7 +351,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                 final IPartCollisionHelper bch = new BusCollisionHelper(boxes, side, true);
                 p.getBoxes(bch);
                 for (Box bb : boxes) {
-                    bb = bb.grow(0.002, 0.002, 0.002);
+                    bb = bb.expand(0.002, 0.002, 0.002);
                     if (bb.contains(pos)) {
                         return new SelectedPart(p, side);
                     }
@@ -369,7 +369,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                     final IPartCollisionHelper bch = new BusCollisionHelper(boxes, side, true);
                     p.getBoxes(bch, true);
                     for (Box bb : boxes) {
-                        bb = bb.grow(0.01, 0.01, 0.01);
+                        bb = bb.expand(0.01, 0.01, 0.01);
                         if (bb.contains(pos)) {
                             return new SelectedPart(p, side);
                         }
@@ -800,7 +800,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
             final IPart part = this.getPart(s);
             if (part != null) {
                 final CompoundTag def = new CompoundTag();
-                part.getItemStack(PartItemStack.WORLD).write(def);
+                part.getItemStack(PartItemStack.WORLD).toTag(def);
 
                 final CompoundTag extra = new CompoundTag();
                 part.writeToNBT(extra);
@@ -842,7 +842,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                 final CompoundTag def = data.getCompound(defKey);
                 final CompoundTag extra = data.getCompound(extraKey);
                 IPart p = this.getPart(side);
-                final ItemStack iss = ItemStack.read(def);
+                final ItemStack iss = ItemStack.fromTag(def);
                 if (iss.isEmpty()) {
                     continue;
                 }

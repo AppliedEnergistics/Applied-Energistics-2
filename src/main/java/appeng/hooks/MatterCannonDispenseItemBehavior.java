@@ -18,6 +18,7 @@
 
 package appeng.hooks;
 
+import appeng.util.FakePlayer;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.dispenser.IBlockSource;
@@ -51,10 +52,10 @@ public final class MatterCannonDispenseItemBehavior extends DefaultDispenseItemB
 
             final World w = dispenser.getWorld();
             if (w instanceof ServerWorld) {
-                final PlayerEntity p = Platform.getPlayer((ServerWorld) w);
+                final PlayerEntity p = FakePlayer.getOrCreate((ServerWorld) w);
                 Platform.configurePlayer(p, dir, dispenser.getBlockTileEntity());
 
-                p.setPosition(p.getPosX() + dir.xOffset, p.getPosY() + dir.yOffset, p.getPosZ() + dir.zOffset);
+                p.setPosition(p.getX() + dir.xOffset, p.getY() + dir.yOffset, p.getZ() + dir.zOffset);
 
                 dispensedItem = tm.onItemRightClick(w, p, null).getResult();
             }

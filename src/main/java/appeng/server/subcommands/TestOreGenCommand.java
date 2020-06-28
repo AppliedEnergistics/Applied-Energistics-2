@@ -66,7 +66,7 @@ public class TestOreGenCommand implements ISubCommand {
         try {
             ServerPlayerEntity player = sender.asPlayer();
             world = player.getServerWorld();
-            center = new BlockPos(player.getPosX(), 0, player.getPosZ());
+            center = new BlockPos(player.getX(), 0, player.getPosZ());
         } catch (CommandSyntaxException e) {
             world = srv.getWorld(DimensionType.OVERWORLD);
             center = world.getSpawnPoint();

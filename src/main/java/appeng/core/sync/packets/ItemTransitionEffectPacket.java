@@ -72,8 +72,6 @@ public class ItemTransitionEffectPacket extends BasePacket {
     @Override
     @Environment(EnvType.CLIENT)
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
-        final World world = AppEng.proxy.getWorld();
-
         EnergyParticleData data = new EnergyParticleData(true, this.d);
         for (int zz = 0; zz < 8; zz++) {
             if (AppEng.proxy.shouldAddParticles(Platform.getRandom())) {

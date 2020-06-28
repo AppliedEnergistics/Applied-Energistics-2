@@ -23,7 +23,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -110,7 +110,7 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
                                   final ItemStack removedStack, final ItemStack newStack) {
 
     }
@@ -163,7 +163,7 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
         int offset = 0;
         for (final IAEItemStack ais : this.inventory.getStoredItems()) {
             final CompoundTag it = new CompoundTag();
-            ais.createItemStack().write(it);
+            ais.createItemStack().toTag(it);
             storedItems.put(String.valueOf(offset), it);
             offset++;
         }
@@ -187,7 +187,7 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
         for (final Object key : storedItems.keySet()) {
             final INBT obj = storedItems.get((String) key);
             if (obj instanceof CompoundTag) {
-                this.inventory.getStoredItems().add(AEItemStack.fromItemStack(ItemStack.read((CompoundTag) obj)));
+                this.inventory.getStoredItems().add(AEItemStack.fromItemStack(ItemStack.fromTag((CompoundTag) obj)));
             }
         }
     }

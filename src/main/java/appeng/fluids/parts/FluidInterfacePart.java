@@ -31,7 +31,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
@@ -200,7 +200,7 @@ public class FluidInterfacePart extends BasicStatePart
     }
 
     @Override
-    public ItemTransferable getInventoryByName(String name) {
+    public FixedItemInv getInventoryByName(String name) {
         return this.duality.getInventoryByName(name);
     }
 

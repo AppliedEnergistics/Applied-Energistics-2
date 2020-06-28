@@ -18,7 +18,7 @@
 
 package appeng.container.implementations;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -70,9 +70,9 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
     }
 
     public boolean isValidItemForSlot(final int slotIndex, final ItemStack i) {
-        final ItemTransferable mac = this.getUpgradeable().getInventoryByName(MolecularAssemblerBlockEntity.INVENTORY_MAIN);
+        final FixedItemInv mac = this.getUpgradeable().getInventoryByName(MolecularAssemblerBlockEntity.INVENTORY_MAIN);
 
-        final ItemStack is = mac.getStackInSlot(10);
+        final ItemStack is = mac.getInvStack(10);
         if (is.isEmpty()) {
             return false;
         }
@@ -99,7 +99,7 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
         int offX = 29;
         int offY = 30;
 
-        final ItemTransferable mac = this.getUpgradeable().getInventoryByName(MolecularAssemblerBlockEntity.INVENTORY_MAIN);
+        final FixedItemInv mac = this.getUpgradeable().getInventoryByName(MolecularAssemblerBlockEntity.INVENTORY_MAIN);
 
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 3; x++) {
@@ -120,7 +120,7 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
         offX = 122;
         offY = 17;
 
-        final ItemTransferable upgrades = this.getUpgradeable().getInventoryByName("upgrades");
+        final FixedItemInv upgrades = this.getUpgradeable().getInventoryByName("upgrades");
         this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 0, 187, 8,
                 this.getPlayerInventory())).setNotDraggable());
         this.addSlot((new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18,

@@ -117,9 +117,9 @@ public final class ContainerLocator {
         if (is.isEmpty()) {
             throw new IllegalArgumentException("Cannot open an item-inventory with empty hands");
         }
-        int invSize = player.inventory.getSizeInventory();
+        int invSize = player.inventory.size();
         for (int i = 0; i < invSize; i++) {
-            if (player.inventory.getStackInSlot(i) == is) {
+            if (player.inventory.getStack(i) == is) {
                 return i;
             }
         }

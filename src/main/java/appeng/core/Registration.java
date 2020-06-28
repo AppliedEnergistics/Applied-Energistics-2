@@ -30,7 +30,7 @@ import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;
@@ -309,8 +309,8 @@ final class Registration {
         return type;
     }
 
-    public void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
-        IForgeRegistry<IRecipeSerializer<?>> r = event.getRegistry();
+    public void registerRecipeSerializers(RegistryEvent.Register<RecipeSerializer<?>> event) {
+        IForgeRegistry<RecipeSerializer<?>> r = event.getRegistry();
 
         GrinderRecipe.TYPE = new AERecipeType<>(GrinderRecipeSerializer.INSTANCE.getRegistryName());
         InscriberRecipe.TYPE = new AERecipeType<>(InscriberRecipeSerializer.INSTANCE.getRegistryName());

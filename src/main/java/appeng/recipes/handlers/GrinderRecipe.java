@@ -4,19 +4,19 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.recipe.RecipeType;
+import net.minecraft.recipe.Ingredient;
+import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 
-public class GrinderRecipe implements IRecipe<IInventory> {
+public class GrinderRecipe implements Recipe<Inventory> {
 
-    public static IRecipeType<GrinderRecipe> TYPE;
+    public static RecipeType<GrinderRecipe> TYPE;
 
     private final Identifier id;
     private final String group;
@@ -43,12 +43,12 @@ public class GrinderRecipe implements IRecipe<IInventory> {
     }
 
     @Override
-    public boolean matches(IInventory inv, World worldIn) {
+    public boolean matches(Inventory inv, World worldIn) {
         return this.ingredient.test(inv.getStackInSlot(0));
     }
 
     @Override
-    public ItemStack getCraftingResult(IInventory inv) {
+    public ItemStack craft(Inventory inv) {
         // FIXME: What about secondary output
         return this.result.copy();
     }
@@ -69,12 +69,12 @@ public class GrinderRecipe implements IRecipe<IInventory> {
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return GrinderRecipeSerializer.INSTANCE;
     }
 
     @Override
-    public IRecipeType<?> getType() {
+    public RecipeType<?> getType() {
         return TYPE;
     }
 

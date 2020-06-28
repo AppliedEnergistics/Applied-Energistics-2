@@ -23,7 +23,7 @@ import java.util.List;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.DamageSource;
@@ -74,8 +74,8 @@ public final class SingularityEntity extends AEBaseItemEntity {
         final IMaterials materials = AEApi.instance().definitions().materials();
 
         if (materials.singularity().isSameAs(item)) {
-            final Box region = new Box(this.getPosX() - 4, this.getPosY() - 4, this.getPosZ() - 4,
-                    this.getPosX() + 4, this.getPosY() + 4, this.getPosZ() + 4);
+            final Box region = new Box(this.getX() - 4, this.getY() - 4, this.getZ() - 4,
+                    this.getX() + 4, this.getY() + 4, this.getZ() + 4);
             final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity(region);
 
             for (final Entity e : l) {
@@ -86,7 +86,7 @@ public final class SingularityEntity extends AEBaseItemEntity {
 
                         if (matches) {
                             while (item.getCount() > 0 && other.getCount() > 0) {
-                                other.grow(-1);
+                                other.increment(-1);
                                 ;
                                 if (other.getCount() == 0) {
                                     e.remove();
@@ -96,11 +96,11 @@ public final class SingularityEntity extends AEBaseItemEntity {
                                     final CompoundTag cmp = singularityStack.getOrCreateTag();
                                     cmp.putLong("freq", (new Date()).getTime() * 100 + (randTickSeed) % 100);
                                     randTickSeed++;
-                                    item.grow(-1);
+                                    item.increment(-1);
 
-                                    final SingularityEntity entity = new SingularityEntity(this.world, this.getPosX(),
-                                            this.getPosY(), this.getPosZ(), singularityStack);
-                                    this.world.addEntity(entity);
+                                    final SingularityEntity entity = new SingularityEntity(this.world, this.getX(),
+                                            this.getY(), this.getZ(), singularityStack);
+                                    this.world.spawnEntity(entity);
                                 });
                             }
 

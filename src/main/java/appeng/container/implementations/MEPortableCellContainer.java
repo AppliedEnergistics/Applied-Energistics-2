@@ -73,13 +73,13 @@ public class MEPortableCellContainer extends MEMonitorableContainer {
     @Override
     public void detectAndSendChanges() {
         final ItemStack currentItem = this.slot < 0 ? this.getPlayerInv().getCurrentItem()
-                : this.getPlayerInv().getStackInSlot(this.slot);
+                : this.getPlayerInv().getStack(this.slot);
 
         if (this.civ == null || currentItem.isEmpty()) {
             this.setValidContainer(false);
         } else if (this.civ != null && !this.civ.getItemStack().isEmpty() && currentItem != this.civ.getItemStack()) {
             if (ItemStack.areItemsEqual(this.civ.getItemStack(), currentItem)) {
-                this.getPlayerInv().setInventorySlotContents(this.getPlayerInv().currentItem, this.civ.getItemStack());
+                this.getPlayerInv().setStack(this.getPlayerInv().currentItem, this.civ.getItemStack());
             } else {
                 this.setValidContainer(false);
             }

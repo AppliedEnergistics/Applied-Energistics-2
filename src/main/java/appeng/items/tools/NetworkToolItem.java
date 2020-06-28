@@ -91,7 +91,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
         final BlockEntity te = context.getWorld().getBlockEntity(context.getBlockPos());
 
         if (te instanceof IPartHost) {
-            final SelectedPart part = ((IPartHost) te).selectPart(mop.getHitVec());
+            final SelectedPart part = ((IPartHost) te).selectPart(mop.getPos());
 
             if (part.part != null || part.facade != null) {
                 if (part.part instanceof INetworkToolAgent && !((INetworkToolAgent) part.part).showNetworkInfo(mop)) {

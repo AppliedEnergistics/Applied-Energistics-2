@@ -19,7 +19,7 @@
 package appeng.container.slot;
 
 import net.minecraft.item.ItemStack;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.container.implementations.MolecularAssemblerContainer;
 
@@ -27,7 +27,7 @@ public class MolecularAssemblerPatternSlot extends AppEngSlot {
 
     private final MolecularAssemblerContainer mac;
 
-    public MolecularAssemblerPatternSlot(final MolecularAssemblerContainer mac, final ItemTransferable i, final int slotIdx,
+    public MolecularAssemblerPatternSlot(final MolecularAssemblerContainer mac, final FixedItemInv i, final int slotIdx,
                                          final int x, final int y) {
         super(i, slotIdx, x, y);
         this.mac = mac;

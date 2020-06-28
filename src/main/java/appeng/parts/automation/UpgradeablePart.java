@@ -21,7 +21,7 @@ package appeng.parts.automation;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
@@ -53,7 +53,7 @@ public abstract class UpgradeablePart extends BasicStatePart implements IAEAppEn
     }
 
     @Override
-    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
                                   final ItemStack removedStack, final ItemStack newStack) {
         if (inv == this.upgrades) {
             this.upgradesChanged();
@@ -134,7 +134,7 @@ public abstract class UpgradeablePart extends BasicStatePart implements IAEAppEn
     }
 
     @Override
-    public ItemTransferable getInventoryByName(final String name) {
+    public FixedItemInv getInventoryByName(final String name) {
         if (name.equals("upgrades")) {
             return this.upgrades;
         }

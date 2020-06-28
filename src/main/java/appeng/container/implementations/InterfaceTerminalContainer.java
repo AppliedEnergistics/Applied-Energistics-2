@@ -31,7 +31,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
@@ -54,10 +54,9 @@ import appeng.tile.misc.InterfaceBlockEntity;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
-import appeng.util.inv.AdaptorItemHandler;
+import appeng.util.inv.AdaptorFixedInv;
 import appeng.util.inv.WrapperCursorItemHandler;
 import appeng.util.inv.WrapperFilteredItemHandler;
-import appeng.util.inv.WrapperRangeItemHandler;
 import appeng.util.inv.filter.IAEItemFilter;
 
 public final class InterfaceTerminalContainer extends AEBaseContainer {
@@ -167,8 +166,8 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         } else {
             for (final Entry<IInterfaceHost, InvTracker> en : this.diList.entrySet()) {
                 final InvTracker inv = en.getValue();
-                for (int x = 0; x < inv.server.getSlots(); x++) {
-                    if (this.isDifferent(inv.server.getStackInSlot(x), inv.client.getStackInSlot(x))) {
+                for (int x = 0; x < inv.server.getSlotCount(); x++) {
+                    if (this.isDifferent(inv.server.getInvStack(x), inv.client.getInvStack(x))) {
                         this.addItems(this.data, inv, x, 1);
                     }
                 }
@@ -191,20 +190,20 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
     public void doAction(final ServerPlayerEntity player, final InventoryAction action, final int slot, final long id) {
         final InvTracker inv = this.byId.get(id);
         if (inv != null) {
-            final ItemStack is = inv.server.getStackInSlot(slot);
+            final ItemStack is = inv.server.getInvStack(slot);
             final boolean hasItemInHand = !player.inventory.getItemStack().isEmpty();
 
-            final InventoryAdaptor playerHand = new AdaptorItemHandler(new WrapperCursorItemHandler(player.inventory));
+            final InventoryAdaptor playerHand = new AdaptorFixedInv(new WrapperCursorItemHandler(player.inventory));
 
-            final ItemTransferable theSlot = new WrapperFilteredItemHandler(
-                    new WrapperRangeItemHandler(inv.server, slot, slot + 1), new PatternSlotFilter());
-            final InventoryAdaptor interfaceSlot = new AdaptorItemHandler(theSlot);
+            final FixedItemInv theSlot = new WrapperFilteredItemHandler(
+                    inv.server.getSubInv(slot, slot + 1), new PatternSlotFilter());
+            final InventoryAdaptor interfaceSlot = new AdaptorFixedInv(theSlot);
 
             switch (action) {
                 case PICKUP_OR_SET_DOWN:
 
                     if (hasItemInHand) {
-                        ItemStack inSlot = theSlot.getStackInSlot(0);
+                        ItemStack inSlot = theSlot.getInvStack(0);
                         if (inSlot.isEmpty()) {
                             player.inventory.setItemStack(interfaceSlot.addItems(player.inventory.getItemStack()));
                         } else {
@@ -224,7 +223,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
                             }
                         }
                     } else {
-                        ItemHandlerUtil.setStackInSlot(theSlot, 0, playerHand.addItems(theSlot.getStackInSlot(0)));
+                        ItemHandlerUtil.setStackInSlot(theSlot, 0, playerHand.addItems(theSlot.getInvStack(0)));
                     }
 
                     break;
@@ -253,15 +252,15 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
 
                     final InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor(player);
 
-                    ItemHandlerUtil.setStackInSlot(theSlot, 0, playerInv.addItems(theSlot.getStackInSlot(0)));
+                    ItemHandlerUtil.setStackInSlot(theSlot, 0, playerInv.addItems(theSlot.getInvStack(0)));
 
                     break;
                 case MOVE_REGION:
 
                     final InventoryAdaptor playerInvAd = InventoryAdaptor.getAdaptor(player);
-                    for (int x = 0; x < inv.server.getSlots(); x++) {
+                    for (int x = 0; x < inv.server.getSlotCount(); x++) {
                         ItemHandlerUtil.setStackInSlot(inv.server, x,
-                                playerInvAd.addItems(inv.server.getStackInSlot(x)));
+                                playerInvAd.addItems(inv.server.getInvStack(x)));
                     }
 
                     break;
@@ -311,7 +310,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         for (final Entry<IInterfaceHost, InvTracker> en : this.diList.entrySet()) {
             final InvTracker inv = en.getValue();
             this.byId.put(inv.which, inv);
-            this.addItems(data, inv, 0, inv.server.getSlots());
+            this.addItems(data, inv, 0, inv.server.getSlotCount());
         }
     }
 
@@ -324,7 +323,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
             return true;
         }
 
-        return !ItemStack.areItemStacksEqual(a, b);
+        return !ItemStack.areEqual(a, b);
     }
 
     private void addItems(final CompoundTag data, final InvTracker inv, final int offset, final int length) {
@@ -339,13 +338,13 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         for (int x = 0; x < length; x++) {
             final CompoundTag itemNBT = new CompoundTag();
 
-            final ItemStack is = inv.server.getStackInSlot(x + offset);
+            final ItemStack is = inv.server.getInvStack(x + offset);
 
             // "update" client side.
             ItemHandlerUtil.setStackInSlot(inv.client, x + offset, is.isEmpty() ? ItemStack.EMPTY : is.copy());
 
             if (!is.isEmpty()) {
-                is.write(itemNBT);
+                is.toTag(itemNBT);
             }
 
             tag.put(Integer.toString(x + offset), itemNBT);
@@ -359,12 +358,12 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
         private final long sortBy;
         private final long which = autoBase++;
         private final Text name;
-        private final ItemTransferable client;
-        private final ItemTransferable server;
+        private final FixedItemInv client;
+        private final FixedItemInv server;
 
-        public InvTracker(final DualityInterface dual, final ItemTransferable patterns, final Text name) {
+        public InvTracker(final DualityInterface dual, final FixedItemInv patterns, final Text name) {
             this.server = patterns;
-            this.client = new AppEngInternalInventory(null, this.server.getSlots());
+            this.client = new AppEngInternalInventory(null, this.server.getSlotCount());
             this.name = name;
             this.sortBy = dual.getSortValue();
         }
@@ -372,12 +371,12 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
 
     private static class PatternSlotFilter implements IAEItemFilter {
         @Override
-        public boolean allowExtract(ItemTransferable inv, int slot, int amount) {
+        public boolean allowExtract(FixedItemInv inv, int slot, int amount) {
             return true;
         }
 
         @Override
-        public boolean allowInsert(ItemTransferable inv, int slot, ItemStack stack) {
+        public boolean allowInsert(FixedItemInv inv, int slot, ItemStack stack) {
             return !stack.isEmpty() && stack.getItem() instanceof EncodedPatternItem;
         }
     }

@@ -63,7 +63,7 @@ class CondenserItemInventory implements IMEMonitor<IAEItemStack>, ITickingMonito
     @Override
     public IAEItemStack extractItems(final IAEItemStack request, final Actionable mode, final IActionSource src) {
         AEItemStack ret = null;
-        ItemStack slotItem = this.target.getOutputSlot().getStackInSlot(0);
+        ItemStack slotItem = this.target.getOutputSlot().getInvStack(0);
         if (!slotItem.isEmpty() && request.isSameType(slotItem)) {
             int count = (int) Math.min(request.getStackSize(), Integer.MAX_VALUE);
             ret = AEItemStack
@@ -74,8 +74,8 @@ class CondenserItemInventory implements IMEMonitor<IAEItemStack>, ITickingMonito
 
     @Override
     public IItemList<IAEItemStack> getAvailableItems(final IItemList<IAEItemStack> out) {
-        if (!this.target.getOutputSlot().getStackInSlot(0).isEmpty()) {
-            out.add(AEItemStack.fromItemStack(this.target.getOutputSlot().getStackInSlot(0)));
+        if (!this.target.getOutputSlot().getInvStack(0).isEmpty()) {
+            out.add(AEItemStack.fromItemStack(this.target.getOutputSlot().getInvStack(0)));
         }
         return out;
     }

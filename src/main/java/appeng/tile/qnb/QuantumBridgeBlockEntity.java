@@ -24,7 +24,7 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -113,12 +113,12 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity implements
     }
 
     @Override
-    public ItemTransferable getInternalInventory() {
+    public FixedItemInv getInternalInventory() {
         return this.internalInventory;
     }
 
     @Override
-    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
                                   final ItemStack removed, final ItemStack added) {
         if (this.cluster != null) {
             this.cluster.updateStatus(true);
@@ -126,7 +126,7 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity implements
     }
 
     @Override
-    protected ItemTransferable getItemHandlerForSide(Direction side) {
+    protected FixedItemInv getItemHandlerForSide(Direction side) {
         if (this.isCenter()) {
             return this.internalInventory;
         }

@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.recipe.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.NonNullList;

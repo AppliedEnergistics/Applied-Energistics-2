@@ -161,21 +161,21 @@ public class StorageHelper {
         final List<Entity> dstE = dstWorld.getEntitiesWithinAABB(Entity.class, dstBox);
 
         for (final Entity e : dstE) {
-            this.teleportEntity(e, new TelDestination(srcWorld, srcBox, e.getPosX(), e.getPosY(), e.getPosZ(),
+            this.teleportEntity(e, new TelDestination(srcWorld, srcBox, e.getX(), e.getY(), e.getZ(),
                     -dstX + srcX, -dstY + srcY, -dstZ + srcZ));
         }
 
         for (final Entity e : srcE) {
-            this.teleportEntity(e, new TelDestination(dstWorld, dstBox, e.getPosX(), e.getPosY(), e.getPosZ(),
+            this.teleportEntity(e, new TelDestination(dstWorld, dstBox, e.getX(), e.getY(), e.getZ(),
                     -srcX + dstX, -srcY + dstY, -srcZ + dstZ));
         }
 
         for (final WorldCoord wc : cDst.getUpdates()) {
-            cSrc.getWorld().notifyNeighborsOfStateChange(wc.getPos(), Blocks.AIR);
+            cSrc.getWorld().updateNeighborsAlways(wc.getPos(), Blocks.AIR);
         }
 
         for (final WorldCoord wc : cSrc.getUpdates()) {
-            cSrc.getWorld().notifyNeighborsOfStateChange(wc.getPos(), Blocks.AIR);
+            cSrc.getWorld().updateNeighborsAlways(wc.getPos(), Blocks.AIR);
         }
 
         this.transverseEdges(srcX - 1, srcY - 1, srcZ - 1, srcX + scaleX + 1, srcY + scaleY + 1, srcZ + scaleZ + 1,
@@ -248,7 +248,7 @@ public class StorageHelper {
         public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw,
                 Function<Boolean, Entity> repositionEntity) {
             Entity newEntity = repositionEntity.apply(false);
-            newEntity.rotationYaw = yaw;
+            newEntity.yaw = yaw;
             newEntity.setPositionAndUpdate(this.destination.x, this.destination.y, this.destination.z);
             newEntity.setMotion(0, 0, 0);
             return newEntity;

@@ -23,7 +23,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.impl.EmptyFixedItemInv;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
@@ -49,12 +49,12 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
     @Override
     public void fromTag(BlockState state, final CompoundTag data) {
         super.fromTag(state, data);
-        final ItemTransferable inv = this.getInternalInventory();
+        final FixedItemInv inv = this.getInternalInventory();
         if (inv != EmptyFixedItemInv.INSTANCE) {
             final CompoundTag opt = data.getCompound("inv");
-            for (int x = 0; x < inv.getSlots(); x++) {
+            for (int x = 0; x < inv.getSlotCount(); x++) {
                 final CompoundTag item = opt.getCompound("item" + x);
-                ItemHandlerUtil.setStackInSlot(inv, x, ItemStack.read(item));
+                ItemHandlerUtil.setStackInSlot(inv, x, ItemStack.fromTag(item));
             }
         }
     }
@@ -83,10 +83,10 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
 
     @Override
     public void getDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
-        final ItemTransferable inv = this.getInternalInventory();
+        final FixedItemInv inv = this.getInternalInventory();
 
-        for (int l = 0; l < inv.getSlots(); l++) {
-            final ItemStack is = inv.getStackInSlot(l);
+        for (int l = 0; l < inv.getSlotCount(); l++) {
+            final ItemStack is = inv.getInvStack(l);
             if (!is.isEmpty()) {
                 drops.add(is);
             }
@@ -94,11 +94,11 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
     }
 
     @Override
-    public abstract void onChangeInventory(ItemTransferable inv, int slot, InvOperation mc, ItemStack removed,
+    public abstract void onChangeInventory(FixedItemInv inv, int slot, InvOperation mc, ItemStack removed,
                                            ItemStack added);
 
     protected @Nonnull
-    ItemTransferable getItemHandlerForSide(@Nonnull Direction side) {
+    FixedItemInv getItemHandlerForSide(@Nonnull Direction side) {
         return this.getInternalInventory();
     }
 

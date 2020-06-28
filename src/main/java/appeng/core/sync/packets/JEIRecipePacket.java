@@ -18,7 +18,7 @@
 
 package appeng.core.sync.packets;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -47,7 +47,7 @@ import appeng.helpers.IContainerCraftingPacket;
 import appeng.items.storage.ViewCellItem;
 import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
-import appeng.util.inv.AdaptorItemHandler;
+import appeng.util.inv.AdaptorFixedInv;
 import appeng.util.inv.WrapperInvItemHandler;
 import appeng.util.item.AEItemStack;
 import appeng.util.prioritylist.IPartitionList;
@@ -65,7 +65,7 @@ public class JEIRecipePacket extends BasePacket {
                 if (list.size() > 0) {
                     this.recipe[x] = new ItemStack[list.size()];
                     for (int y = 0; y < list.size(); y++) {
-                        this.recipe[x][y] = ItemStack.read(list.getCompound(y));
+                        this.recipe[x][y] = ItemStack.fromTag(list.getCompound(y));
                     }
                 }
             }
@@ -108,16 +108,16 @@ public class JEIRecipePacket extends BasePacket {
         final IEnergyGrid energy = grid.getCache(IEnergyGrid.class);
         final ISecurityGrid security = grid.getCache(ISecurityGrid.class);
         final ICraftingGrid crafting = grid.getCache(ICraftingGrid.class);
-        final ItemTransferable craftMatrix = cct.getInventoryByName("crafting");
-        final ItemTransferable playerInventory = cct.getInventoryByName("player");
+        final FixedItemInv craftMatrix = cct.getInventoryByName("crafting");
+        final FixedItemInv playerInventory = cct.getInventoryByName("player");
 
         if (inv != null && this.recipe != null && security != null) {
             final IMEMonitor<IAEItemStack> storage = inv
                     .getInventory(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
             final IPartitionList<IAEItemStack> filter = ViewCellItem.createFilter(cct.getViewCells());
 
-            for (int x = 0; x < craftMatrix.getSlots(); x++) {
-                ItemStack currentItem = craftMatrix.getStackInSlot(x);
+            for (int x = 0; x < craftMatrix.getSlotCount(); x++) {
+                ItemStack currentItem = craftMatrix.getInvStack(x);
 
                 // prepare slots
                 if (!currentItem.isEmpty()) {
@@ -168,7 +168,7 @@ public class JEIRecipePacket extends BasePacket {
 
                             // try inventory
                             if (currentItem.isEmpty()) {
-                                AdaptorItemHandler ad = new AdaptorItemHandler(playerInventory);
+                                AdaptorFixedInv ad = new AdaptorFixedInv(playerInventory);
 
                                 if (cct.useRealItems()) {
                                     currentItem = ad.removeItems(1, this.recipe[x][y], null);

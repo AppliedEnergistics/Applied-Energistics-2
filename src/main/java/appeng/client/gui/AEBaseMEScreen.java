@@ -26,7 +26,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.Formatting;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.me.SlotME;
@@ -63,7 +63,7 @@ public abstract class AEBaseMEScreen<T extends AEBaseContainer> extends AEBaseSc
                             .format(myStack.getStackSize());
                     final String format = String.format(local, formattedAmount);
 
-                    currentToolTip.add(TextFormatting.GRAY + format);
+                    currentToolTip.add(Formatting.GRAY + format);
                 }
 
                 if (myStack.getCountRequestable() > 0) {
@@ -82,7 +82,7 @@ public abstract class AEBaseMEScreen<T extends AEBaseContainer> extends AEBaseSc
                 final String formattedAmount = NumberFormat.getNumberInstance(Locale.US).format(stack.getCount());
                 final String format = String.format(local, formattedAmount);
 
-                currentToolTip.add(TextFormatting.GRAY + format);
+                currentToolTip.add(Formatting.GRAY + format);
 
                 this.renderTooltip(currentToolTip, x, y, this.font);
 

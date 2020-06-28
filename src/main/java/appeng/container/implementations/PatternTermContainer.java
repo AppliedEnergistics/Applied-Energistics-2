@@ -22,9 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.RecipeType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.inventory.CraftResultInventory;
 import net.minecraft.inventory.CraftingInventory;
@@ -33,8 +35,6 @@ import net.minecraft.inventory.container.CraftingResultSlot;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
@@ -68,7 +68,7 @@ import appeng.parts.reporting.PatternTerminalPart;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
-import appeng.util.inv.AdaptorItemHandler;
+import appeng.util.inv.AdaptorFixedInv;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperCursorItemHandler;
@@ -92,14 +92,14 @@ public class PatternTermContainer extends MEMonitorableContainer
 
     private final PatternTerminalPart patternTerminal;
     private final AppEngInternalInventory cOut = new AppEngInternalInventory(null, 1);
-    private final ItemTransferable crafting;
+    private final FixedItemInv crafting;
     private final FakeCraftingMatrixSlot[] craftingSlots = new FakeCraftingMatrixSlot[9];
     private final OptionalFakeSlot[] outputSlots = new OptionalFakeSlot[3];
     private final PatternTermSlot craftSlot;
     private final RestrictedInputSlot patternSlotIN;
     private final RestrictedInputSlot patternSlotOUT;
 
-    private IRecipe<CraftingInventory> currentRecipe;
+    private Recipe<CraftingInventory> currentRecipe;
     @GuiSync(97)
     public boolean craftingMode = true;
     @GuiSync(96)
@@ -109,8 +109,8 @@ public class PatternTermContainer extends MEMonitorableContainer
         super(TYPE, id, ip, monitorable, false);
         this.patternTerminal = (PatternTerminalPart) monitorable;
 
-        final ItemTransferable patternInv = this.getPatternTerminal().getInventoryByName("pattern");
-        final ItemTransferable output = this.getPatternTerminal().getInventoryByName("output");
+        final FixedItemInv patternInv = this.getPatternTerminal().getInventoryByName("pattern");
+        final FixedItemInv output = this.getPatternTerminal().getInventoryByName("output");
 
         this.crafting = this.getPatternTerminal().getInventoryByName("crafting");
 
@@ -168,12 +168,12 @@ public class PatternTermContainer extends MEMonitorableContainer
         final World world = this.getPlayerInv().player.world;
         final CraftingInventory ic = new CraftingInventory(this, 3, 3);
 
-        for (int x = 0; x < ic.getSizeInventory(); x++) {
-            ic.setInventorySlotContents(x, this.crafting.getStackInSlot(x));
+        for (int x = 0; x < ic.size(); x++) {
+            ic.setStack(x, this.crafting.getInvStack(x));
         }
 
         if (this.currentRecipe == null || !this.currentRecipe.matches(ic, world)) {
-            this.currentRecipe = world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, ic, world).orElse(null);
+            this.currentRecipe = world.getRecipeManager().getRecipe(RecipeType.CRAFTING, ic, world).orElse(null);
         }
 
         final ItemStack is;
@@ -181,7 +181,7 @@ public class PatternTermContainer extends MEMonitorableContainer
         if (this.currentRecipe == null) {
             is = ItemStack.EMPTY;
         } else {
-            is = this.currentRecipe.getCraftingResult(ic);
+            is = this.currentRecipe.craft(ic);
         }
 
         this.cOut.setStackInSlot(0, is);
@@ -194,7 +194,7 @@ public class PatternTermContainer extends MEMonitorableContainer
     }
 
     @Override
-    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
                                   final ItemStack removedStack, final ItemStack newStack) {
 
     }
@@ -319,7 +319,7 @@ public class PatternTermContainer extends MEMonitorableContainer
         final CompoundTag c = new CompoundTag();
 
         if (!i.isEmpty()) {
-            i.write(c);
+            i.toTag(c);
         }
 
         return c;
@@ -339,7 +339,7 @@ public class PatternTermContainer extends MEMonitorableContainer
     public void craftOrGetItem(final PatternSlotPacket packetPatternSlot) {
         if (packetPatternSlot.slotItem != null && this.getCellInventory() != null) {
             final IAEItemStack out = packetPatternSlot.slotItem.copy();
-            InventoryAdaptor inv = new AdaptorItemHandler(
+            InventoryAdaptor inv = new AdaptorFixedInv(
                     new WrapperCursorItemHandler(this.getPlayerInv().player.inventory));
             final InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor(this.getPlayerInv().player);
 
@@ -368,11 +368,11 @@ public class PatternTermContainer extends MEMonitorableContainer
             final CraftingInventory real = new CraftingInventory(new ContainerNull(), 3, 3);
 
             for (int x = 0; x < 9; x++) {
-                ic.setInventorySlotContents(x, packetPatternSlot.pattern[x] == null ? ItemStack.EMPTY
+                ic.setStack(x, packetPatternSlot.pattern[x] == null ? ItemStack.EMPTY
                         : packetPatternSlot.pattern[x].createItemStack());
             }
 
-            final IRecipe<CraftingInventory> r = p.world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, ic, p.world)
+            final Recipe<CraftingInventory> r = p.world.getRecipeManager().getRecipe(RecipeType.CRAFTING, ic, p.world)
                     .orElse(null);
 
             if (r == null) {
@@ -383,29 +383,29 @@ public class PatternTermContainer extends MEMonitorableContainer
                     .getInventory(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
             final IItemList<IAEItemStack> all = storage.getStorageList();
 
-            final ItemStack is = r.getCraftingResult(ic);
+            final ItemStack is = r.craft(ic);
 
-            for (int x = 0; x < ic.getSizeInventory(); x++) {
-                if (!ic.getStackInSlot(x).isEmpty()) {
+            for (int x = 0; x < ic.size(); x++) {
+                if (!ic.getStack(x).isEmpty()) {
                     final ItemStack pulled = Platform.extractItemsByRecipe(this.getPowerSource(),
-                            this.getActionSource(), storage, p.world, r, is, ic, ic.getStackInSlot(x), x, all,
+                            this.getActionSource(), storage, p.world, r, is, ic, ic.getStack(x), x, all,
                             Actionable.MODULATE, ViewCellItem.createFilter(this.getViewCells()));
-                    real.setInventorySlotContents(x, pulled);
+                    real.setStack(x, pulled);
                 }
             }
 
-            final IRecipe<CraftingInventory> rr = p.world.getRecipeManager()
-                    .getRecipe(IRecipeType.CRAFTING, real, p.world).orElse(null);
+            final Recipe<CraftingInventory> rr = p.world.getRecipeManager()
+                    .getRecipe(RecipeType.CRAFTING, real, p.world).orElse(null);
 
-            if (rr == r && Platform.itemComparisons().isSameItem(rr.getCraftingResult(real), is)) {
+            if (rr == r && Platform.itemComparisons().isSameItem(rr.craft(real), is)) {
                 final CraftResultInventory craftingResult = new CraftResultInventory();
                 craftingResult.setRecipeUsed(rr);
 
                 final CraftingResultSlot sc = new CraftingResultSlot(p, real, craftingResult, 0, 0, 0);
                 sc.onTake(p, is);
 
-                for (int x = 0; x < real.getSizeInventory(); x++) {
-                    final ItemStack failed = playerInv.addItems(real.getStackInSlot(x));
+                for (int x = 0; x < real.size(); x++) {
+                    final ItemStack failed = playerInv.addItems(real.getStack(x));
 
                     if (!failed.isEmpty()) {
                         p.dropItem(failed, false);
@@ -418,8 +418,8 @@ public class PatternTermContainer extends MEMonitorableContainer
                 }
                 this.detectAndSendChanges();
             } else {
-                for (int x = 0; x < real.getSizeInventory(); x++) {
-                    final ItemStack failed = real.getStackInSlot(x);
+                for (int x = 0; x < real.size(); x++) {
+                    final ItemStack failed = real.getStack(x);
                     if (!failed.isEmpty()) {
                         this.getCellInventory().injectItems(AEItemStack.fromItemStack(failed), Actionable.MODULATE,
                                 new MachineSource(this.getPatternTerminal()));
@@ -487,7 +487,7 @@ public class PatternTermContainer extends MEMonitorableContainer
     }
 
     @Override
-    public ItemTransferable getInventoryByName(final String name) {
+    public FixedItemInv getInventoryByName(final String name) {
         if (name.equals("player")) {
             return new PlayerInvWrapper(this.getPlayerInventory());
         }

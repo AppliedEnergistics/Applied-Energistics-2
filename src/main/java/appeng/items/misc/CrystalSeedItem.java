@@ -134,8 +134,8 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
 
     @Override
     public Entity createEntity(final World world, final Entity location, final ItemStack itemstack) {
-        final GrowingCrystalEntity egc = new GrowingCrystalEntity(world, location.getPosX(), location.getPosY(),
-                location.getPosZ(), itemstack);
+        final GrowingCrystalEntity egc = new GrowingCrystalEntity(world, location.getX(), location.getY(),
+                location.getZ(), itemstack);
 
         egc.setMotion(location.getMotion());
 

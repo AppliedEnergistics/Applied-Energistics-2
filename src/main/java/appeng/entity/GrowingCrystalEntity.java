@@ -117,8 +117,8 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
 
                 if (this.progress_1000 >= len) {
                     this.progress_1000 = 0;
-                    AppEng.proxy.spawnEffect(EffectType.Vibrant, this.world, this.getPosX(), this.getPosY() + 0.2,
-                            this.getPosZ(), null);
+                    AppEng.proxy.spawnEffect(EffectType.Vibrant, this.world, this.getX(), this.getY() + 0.2,
+                            this.getZ(), null);
                 }
             } else {
                 if (this.progress_1000 > 1000) {

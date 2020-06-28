@@ -98,7 +98,7 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
 
                         for (final ItemStack is : list) {
                             final CompoundTag tag = new CompoundTag();
-                            is.write(tag);
+                            is.toTag(tag);
                             tags.add(tag);
                         }
 

@@ -20,7 +20,7 @@ package appeng.parts.reporting;
 
 import java.util.List;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
@@ -133,12 +133,12 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     }
 
     @Override
-    public ItemTransferable getViewCellStorage() {
+    public FixedItemInv getViewCellStorage() {
         return this.viewCell;
     }
 
     @Override
-    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
                                   final ItemStack removedStack, final ItemStack newStack) {
         this.getHost().markForSave();
     }

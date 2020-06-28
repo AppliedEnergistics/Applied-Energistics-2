@@ -25,9 +25,10 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.util.FakePlayer;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
@@ -50,7 +51,7 @@ import net.minecraft.world.World;
 import net.minecraft.server.world.ServerWorld;
 
 import net.minecraftforge.common.IPlantable;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
@@ -140,7 +141,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     }
 
     @Override
-    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
                                   final ItemStack removedStack, final ItemStack newStack) {
         super.onChangeInventory(inv, slot, mc, removedStack, newStack);
 
@@ -163,7 +164,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     }
 
     @Override
-    public ItemTransferable getInventoryByName(final String name) {
+    public FixedItemInv getInventoryByName(final String name) {
         if (name.equals("config")) {
             return this.Config;
         }
@@ -224,7 +225,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         if (w.getBlockState(placePos).getMaterial().isReplaceable()) {
             if (placeBlock == YesNo.YES && (i instanceof BlockItem || i instanceof IPlantable
                     || i instanceof FireworkStarItem || i instanceof FireworkRocketItem || i instanceof IPartItem)) {
-                final PlayerEntity player = Platform.getPlayer((ServerWorld) w);
+                final PlayerEntity player = FakePlayer.getOrCreate((ServerWorld) w);
                 Platform.configurePlayer(player, side, this.getTile());
                 Hand hand = player.getActiveHand();
                 player.setHeldItem(hand, is);
@@ -306,7 +307,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
                             }
                         }
 
-                        if (!w.addEntity(result)) {
+                        if (!w.spawnEntity(result)) {
                             result.remove();
                             worked = false;
                         }

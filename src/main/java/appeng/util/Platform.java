@@ -18,62 +18,9 @@
 
 package appeng.util;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
-import java.util.WeakHashMap;
-
-import javax.annotation.Nullable;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Iterables;
-
-import net.fabricmc.api.Environment;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.*;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.text.Text;
-import net.minecraft.text.LiteralText;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.world.World;
-import net.minecraft.server.world.ServerWorld;
-import net.fabricmc.api.EnvType;
-import net.minecraftforge.common.util.FakePlayerFactory;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.common.thread.SidedThreadGroups;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.registries.ForgeRegistries;
-
 import appeng.api.AEApi;
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.config.PowerUnits;
-import appeng.api.config.SearchBoxMode;
-import appeng.api.config.SecurityPermissions;
-import appeng.api.config.SortOrder;
+import appeng.api.config.*;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IMaterials;
 import appeng.api.features.AEFeature;
@@ -110,6 +57,42 @@ import appeng.util.helpers.ItemComparisonHelper;
 import appeng.util.helpers.P2PHelper;
 import appeng.util.item.AEItemStack;
 import appeng.util.prioritylist.IPartitionList;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.recipe.Recipe;
+import net.minecraft.server.integrated.IntegratedServer;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
+import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.*;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.RayTraceContext;
+import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
+import java.text.DecimalFormat;
+import java.util.*;
 
 /**
  * @author AlgorithmX2
@@ -121,13 +104,14 @@ public class Platform {
 
     public static final int DEF_OFFSET = 16;
 
-    private static final boolean CLIENT_INSTALL = FMLEnvironment.dist.isClient();
+    private static final FabricLoader FABRIC = FabricLoader.getInstance();
+
+    private static final boolean CLIENT_INSTALL = FABRIC.getEnvironmentType() == EnvType.CLIENT;
 
     /*
      * random source, use it for item drop locations...
      */
     private static final Random RANDOM_GENERATOR = new Random();
-    private static final WeakHashMap<World, PlayerEntity> FAKE_PLAYERS = new WeakHashMap<>();
 
     private static final ItemComparisonHelper ITEM_COMPARISON_HELPER = new ItemComparisonHelper();
 
@@ -208,14 +192,17 @@ public class Platform {
      * @return True if client-side classes (such as Renderers) are available.
      */
     public static boolean hasClientClasses() {
-        return FMLEnvironment.dist.isClient();
+        return FABRIC.getEnvironmentType() ==  EnvType.CLIENT;
     }
 
     /*
      * returns true if the code is on the client.
      */
     public static boolean isClient() {
-        return Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER;
+        // FIXME: Move this to the proxy so it will work on a dedicated server
+        MinecraftClient client = MinecraftClient.getInstance();
+        IntegratedServer server = client.getServer();
+        return server == null || Thread.currentThread() != server.getThread();
     }
 
     /*
@@ -229,7 +216,7 @@ public class Platform {
         if (!dc.isInWorld(player.world)) {
             return false;
         }
-        return player.world.canMineBlockBody(player, dc.getPos());
+        return player.world.canPlayerModifyAt(player, dc.getPos());
     }
 
     public static boolean checkPermissions(final PlayerEntity player, final Object accessInterface,
@@ -251,8 +238,8 @@ public class Platform {
 
                     final ISecurityGrid sg = g.getCache(ISecurityGrid.class);
                     if (!sg.hasPermission(player, requiredPermission)) {
-                        player.sendMessage(new TranslatableText("appliedenergistics2.permission_denied")
-                                .applyTextStyle(TextFormatting.RED));
+                        player.sendSystemMessage(new TranslatableText("appliedenergistics2.permission_denied")
+                                .formatted(Formatting.RED), Util.NIL_UUID);
                         // FIXME trace logging?
                         return false;
                     }
@@ -275,7 +262,7 @@ public class Platform {
         final BlockState state = w.getBlockState(pos);
         final BlockEntity tileEntity = w.getBlockEntity(pos);
 
-        List<ItemStack> out = Block.getDrops(state, serverWorld, pos, tileEntity);
+        List<ItemStack> out = Block.getDroppedStacks(state, serverWorld, pos, tileEntity);
 
         return out.toArray(new ItemStack[0]);
     }
@@ -294,7 +281,7 @@ public class Platform {
                         final double offset_z = (getRandomInt() % 32 - 16) / 82;
                         final ItemEntity ei = new ItemEntity(w, 0.5 + offset_x + pos.getX(),
                                 0.5 + offset_y + pos.getY(), 0.2 + offset_z + pos.getZ(), i.copy());
-                        w.addEntity(ei);
+                        w.spawnEntity(ei);
                     }
                 }
             }
@@ -305,7 +292,7 @@ public class Platform {
      * returns true if the code is on the server.
      */
     public static boolean isServer() {
-        return Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER;
+        return !isClient();
     }
 
     public static int getRandomInt() {
@@ -329,9 +316,9 @@ public class Platform {
         }
 
         try {
-            TooltipContext.TooltipFlags tooltipFlag = MinecraftClient.getInstance().gameSettings.advancedItemTooltips
-                    ? TooltipContext.TooltipFlags.ADVANCED
-                    : TooltipContext.TooltipFlags.NORMAL;
+            TooltipContext tooltipFlag = MinecraftClient.getInstance().options.advancedItemTooltips
+                    ? TooltipContext.Default.ADVANCED
+                    : TooltipContext.Default.NORMAL;
             return itemStack.getTooltip(MinecraftClient.getInstance().player, tooltipFlag);
         } catch (final Exception errB) {
             return Collections.emptyList();
@@ -352,13 +339,13 @@ public class Platform {
             return "** Null";
         }
 
-        final Identifier n = ForgeRegistries.FLUIDS.getKey(fs.getFluidStack().getFluid());
-        return n == null ? "** Null" : n.getNamespace();
+        final Identifier n = Registry.FLUID.getId(fs.getFluidStack().getRawFluid());
+        return n == Registry.FLUID.getDefaultId() ? "** Null" : n.getNamespace();
     }
 
     public static String getModName(String modId) {
-        return "" + TextFormatting.BLUE + TextFormatting.ITALIC
-                + ModList.get().getModContainerById(modId).map(mc -> mc.getModInfo().getDisplayName()).orElse(null);
+        return "" + Formatting.BLUE + Formatting.ITALIC
+                + FABRIC.getModContainer(modId).map(mc -> mc.getMetadata().getName()).orElse(null);
     }
 
     public static Text getItemDisplayName(final Object o) {
@@ -399,11 +386,7 @@ public class Platform {
         } else {
             return new LiteralText("**Invalid Object");
         }
-        Text n = fluidStack.getName();
-        if (n == null) {
-            n = new TranslatableText(fluidStack.getTranslationKey());
-        }
-        return n;
+        return fluidStack.getName();
     }
 
     public static boolean isWrench(final PlayerEntity player, final ItemStack eq, final BlockPos pos) {
@@ -441,19 +424,6 @@ public class Platform {
             return ((IAEItemPowerStorage) it).getPowerFlow(i) != AccessRestriction.READ;
         }
         return false;
-    }
-
-    public static PlayerEntity getPlayer(final ServerWorld w) {
-        Objects.requireNonNull(w);
-
-        final PlayerEntity wrp = FAKE_PLAYERS.get(w);
-        if (wrp != null) {
-            return wrp;
-        }
-
-        final PlayerEntity p = FakePlayerFactory.getMinecraft(w);
-        FAKE_PLAYERS.put(w, p);
-        return p;
     }
 
     /**
@@ -664,17 +634,18 @@ public class Platform {
     }
 
     public static LookDirection getPlayerRay(final PlayerEntity playerIn) {
-        double reachDistance = playerIn.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
+        // FIXME this currently cant be modded in Fabric, see net.minecraft.server.network.ServerPlayerInteractionManager.processBlockBreakingAction
+        double reachDistance = 36.0D;
         return getPlayerRay(playerIn, reachDistance);
     }
 
     public static LookDirection getPlayerRay(final PlayerEntity playerIn, double reachDistance) {
-        final double x = playerIn.prevPosX + (playerIn.getPosX() - playerIn.prevPosX);
-        final double y = playerIn.prevPosY + (playerIn.getPosY() - playerIn.prevPosY) + playerIn.getEyeHeight();
-        final double z = playerIn.prevPosZ + (playerIn.getPosZ() - playerIn.prevPosZ);
+        final double x = playerIn.prevX + (playerIn.getX() - playerIn.prevX);
+        final double y = playerIn.prevY + (playerIn.getY() - playerIn.prevY) + playerIn.getEyeHeight(playerIn.getPose());
+        final double z = playerIn.prevZ + (playerIn.getZ() - playerIn.prevZ);
 
-        final float playerPitch = playerIn.prevRotationPitch + (playerIn.pitch - playerIn.prevRotationPitch);
-        final float playerYaw = playerIn.prevRotationYaw + (playerIn.rotationYaw - playerIn.prevRotationYaw);
+        final float playerPitch = playerIn.prevPitch + (playerIn.pitch - playerIn.prevPitch);
+        final float playerYaw = playerIn.prevYaw + (playerIn.yaw - playerIn.prevYaw);
 
         final float yawRayX = MathHelper.sin(-playerYaw * 0.017453292f - (float) Math.PI);
         final float yawRayZ = MathHelper.cos(-playerYaw * 0.017453292f - (float) Math.PI);
@@ -694,11 +665,11 @@ public class Platform {
         final World w = p.getEntityWorld();
 
         final float f = 1.0F;
-        float f1 = p.prevRotationPitch + (p.pitch - p.prevRotationPitch) * f;
-        final float f2 = p.prevRotationYaw + (p.rotationYaw - p.prevRotationYaw) * f;
-        final double d0 = p.prevPosX + (p.getPosX() - p.prevPosX) * f;
-        final double d1 = p.prevPosY + (p.getPosY() - p.prevPosY) * f + 1.62D - p.getOffsetY();
-        final double d2 = p.prevPosZ + (p.getPosZ() - p.prevPosZ) * f;
+        float f1 = p.prevPitch + (p.pitch - p.prevPitch) * f;
+        final float f2 = p.prevYaw + (p.yaw - p.prevYaw) * f;
+        final double d0 = p.prevX + (p.getX() - p.prevX) * f;
+        final double d1 = p.prevY + (p.getY() - p.prevY) * f + 1.62D - p.getHeightOffset();
+        final double d2 = p.prevZ + (p.getZ() - p.prevZ) * f;
         final Vec3d vec3 = new Vec3d(d0, d1, d2);
         final float f3 = MathHelper.cos(-f2 * 0.017453292F - (float) Math.PI);
         final float f4 = MathHelper.sin(-f2 * 0.017453292F - (float) Math.PI);
@@ -712,27 +683,27 @@ public class Platform {
 
         final Box bb = new Box(Math.min(vec3.x, vec31.x), Math.min(vec3.y, vec31.y),
                 Math.min(vec3.z, vec31.z), Math.max(vec3.x, vec31.x), Math.max(vec3.y, vec31.y),
-                Math.max(vec3.z, vec31.z)).grow(16, 16, 16);
+                Math.max(vec3.z, vec31.z)).expand(16, 16, 16);
 
         Entity entity = null;
         double closest = 9999999.0D;
         if (hitEntities) {
-            final List<Entity> list = w.getEntitiesWithinAABBExcludingEntity(p, bb);
+            final List<Entity> list = w.getEntities(p, bb);
 
             for (final Entity entity1 : list) {
                 if (entity1.isAlive() && entity1 != p && !(entity1 instanceof ItemEntity)) {
                     // prevent killing / flying of mounts.
-                    if (entity1.isRidingOrBeingRiddenBy(p)) {
+                    if (entity1.isConnectedThroughVehicle(p)) {
                         continue;
                     }
 
                     f1 = 0.3F;
                     // FIXME: Three different bounding boxes available, should double-check
-                    final Box boundingBox = entity1.getBoundingBox().grow(f1, f1, f1);
+                    final Box boundingBox = entity1.getBoundingBox().expand(f1, f1, f1);
                     final Vec3d rtResult = boundingBox.rayTrace(vec3, vec31).orElse(null);
 
                     if (rtResult != null) {
-                        final double nd = vec3.squareDistanceTo(rtResult);
+                        final double nd = vec3.squaredDistanceTo(rtResult);
 
                         if (nd < closest) {
                             entity = entity1;
@@ -749,14 +720,14 @@ public class Platform {
         if (hitBlocks) {
             vec = new Vec3d(d0, d1, d2);
             // FIXME: passing p as entity here might be incorrect
-            pos = w.rayTraceBlocks(new RayTraceContext(vec3, vec31, RayTraceContext.BlockMode.COLLIDER,
-                    RayTraceContext.FluidMode.ANY, p));
+            pos = w.rayTrace(new RayTraceContext(vec3, vec31, RayTraceContext.ShapeType.COLLIDER,
+                    RayTraceContext.FluidHandling.ANY, p));
         }
 
-        if (entity != null && pos != null && pos.getHitVec().squareDistanceTo(vec) > closest) {
-            pos = new EntityRayTraceResult(entity);
+        if (entity != null && pos != null && pos.getPos().squaredDistanceTo(vec) > closest) {
+            pos = new EntityHitResult(entity);
         } else if (entity != null && pos == null) {
-            pos = new EntityRayTraceResult(entity);
+            pos = new EntityHitResult(entity);
         }
 
         return pos;
@@ -1009,7 +980,7 @@ public class Platform {
                 break;
         }
 
-        player.setLocationAndAngles(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5,
+        player.refreshPositionAndAngles(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5,
                 yaw, pitch);
     }
 
@@ -1035,7 +1006,7 @@ public class Platform {
     }
 
     public static ItemStack extractItemsByRecipe(final IEnergySource energySrc, final IActionSource mySrc,
-            final IMEMonitor<IAEItemStack> src, final World w, final IRecipe<CraftingInventory> r,
+            final IMEMonitor<IAEItemStack> src, final World w, final Recipe<CraftingInventory> r,
             final ItemStack output, final CraftingInventory ci, final ItemStack providedTemplate, final int slot,
             final IItemList<IAEItemStack> items, final Actionable realForFake,
             final IPartitionList<IAEItemStack> filter) {
@@ -1073,8 +1044,8 @@ public class Platform {
                                                                                                                 // )
                         final ItemStack cp = sh.copy();
                         cp.setCount(1);
-                        ci.setInventorySlotContents(slot, cp);
-                        if (r.matches(ci, w) && ItemStack.areItemsEqual(r.getCraftingResult(ci), output)) {
+                        ci.setStack(slot, cp);
+                        if (r.matches(ci, w) && ItemStack.areItemsEqual(r.craft(ci), output)) {
                             final IAEItemStack ax = x.copy();
                             ax.setStackSize(1);
                             if (filter == null || filter.isListed(ax)) {
@@ -1085,7 +1056,7 @@ public class Platform {
                                 }
                             }
                         }
-                        ci.setInventorySlotContents(slot, providedTemplate);
+                        ci.setStack(slot, providedTemplate);
                     }
                 }
             }
@@ -1098,13 +1069,13 @@ public class Platform {
      * remains when the item is used for crafting, i.E. the empty bucket for a
      * bucket of water.
      */
-    public static ItemStack getContainerItem(final ItemStack stackInSlot) {
+    public static ItemStack getRecipeRemainder(final ItemStack stackInSlot) {
         if (stackInSlot == null) {
             return ItemStack.EMPTY;
         }
 
         final Item i = stackInSlot.getItem();
-        if (i == null || !i.hasContainerItem(stackInSlot)) {
+        if (i == null || !i.hasRecipeRemainder()) {
             if (stackInSlot.getCount() > 1) {
                 stackInSlot.setCount(stackInSlot.getCount() - 1);
                 return stackInSlot;
@@ -1112,7 +1083,7 @@ public class Platform {
             return ItemStack.EMPTY;
         }
 
-        ItemStack ci = i.getContainerItem(stackInSlot.copy());
+        ItemStack ci = new ItemStack(i.getRecipeRemainder());
         if (!ci.isEmpty() && ci.isDamageable() && ci.getDamage() == ci.getMaxDamage()) {
             ci = ItemStack.EMPTY;
         }
@@ -1148,7 +1119,7 @@ public class Platform {
     public static float getEyeOffset(final PlayerEntity player) {
         assert player.world.isClient : "Valid only on client";
         // FIXME: The entire premise of this seems broken
-        return (float) (player.getPosY() + player.getEyeHeight() - /* FIXME player.getDefaultEyeHeight() */ 1.62F);
+        return (float) player.getEyeY() - 1.62F;
     }
 
     public static boolean isRecipePrioritized(final ItemStack what) {
@@ -1170,6 +1141,15 @@ public class Platform {
             return JEIFacade.instance().isEnabled();
         }
         return true;
+    }
+
+    public static ItemStack copyStackWithSize(ItemStack stack, int size) {
+        if (!stack.isEmpty() && size > 0) {
+            ItemStack copy = stack.copy();
+            copy.setCount(size);
+            return copy;
+        }
+        return ItemStack.EMPTY;
     }
 
 }

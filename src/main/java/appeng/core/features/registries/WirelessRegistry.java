@@ -24,6 +24,7 @@ import java.util.List;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.world.BlockView;
 
 import appeng.api.AEApi;
@@ -77,28 +78,28 @@ public final class WirelessRegistry implements IWirelessTermRegistry {
         }
 
         if (!this.isWirelessTerminal(item)) {
-            player.sendMessage(PlayerMessages.DeviceNotWirelessTerminal.get());
+            player.sendSystemMessage(PlayerMessages.DeviceNotWirelessTerminal.get(), Util.NIL_UUID);
             return;
         }
 
         final IWirelessTermHandler handler = this.getWirelessTerminalHandler(item);
         final String unparsedKey = handler.getEncryptionKey(item);
         if (unparsedKey.isEmpty()) {
-            player.sendMessage(PlayerMessages.DeviceNotLinked.get());
+            player.sendSystemMessage(PlayerMessages.DeviceNotLinked.get(), Util.NIL_UUID);
             return;
         }
 
         final long parsedKey = Long.parseLong(unparsedKey);
         final ILocatable securityStation = AEApi.instance().registries().locatable().getLocatableBy(parsedKey);
         if (securityStation == null) {
-            player.sendMessage(PlayerMessages.StationCanNotBeLocated.get());
+            player.sendSystemMessage(PlayerMessages.StationCanNotBeLocated.get(), Util.NIL_UUID);
             return;
         }
 
         if (handler.hasPower(player, 0.5, item)) {
             ContainerOpener.openContainer(WirelessTermContainer.TYPE, player, ContainerLocator.forHand(player, hand));
         } else {
-            player.sendMessage(PlayerMessages.DeviceNotPowered.get());
+            player.sendSystemMessage(PlayerMessages.DeviceNotPowered.get(), Util.NIL_UUID);
         }
     }
 }

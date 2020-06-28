@@ -25,7 +25,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.impl.EmptyFixedItemInv;
 
 import appeng.api.config.Actionable;
@@ -168,12 +168,12 @@ public class ControllerBlockEntity extends AENetworkPowerBlockEntity {
     }
 
     @Override
-    public ItemTransferable getInternalInventory() {
+    public FixedItemInv getInternalInventory() {
         return EmptyFixedItemInv.INSTANCE;
     }
 
     @Override
-    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
                                   final ItemStack removed, final ItemStack added) {
     }
 

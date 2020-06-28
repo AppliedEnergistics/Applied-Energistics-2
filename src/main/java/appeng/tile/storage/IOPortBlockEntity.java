@@ -22,7 +22,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
@@ -69,7 +69,7 @@ import appeng.util.IConfigManagerHost;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
-import appeng.util.inv.AdaptorItemHandler;
+import appeng.util.inv.AdaptorFixedInv;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperChainedItemHandler;
 import appeng.util.inv.WrapperFilteredItemHandler;
@@ -84,11 +84,11 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
 
     private final AppEngInternalInventory inputCells = new AppEngInternalInventory(this, NUMBER_OF_CELL_SLOTS);
     private final AppEngInternalInventory outputCells = new AppEngInternalInventory(this, NUMBER_OF_CELL_SLOTS);
-    private final ItemTransferable combinedInventory = new WrapperChainedItemHandler(this.inputCells, this.outputCells);
+    private final FixedItemInv combinedInventory = new WrapperChainedItemHandler(this.inputCells, this.outputCells);
 
-    private final ItemTransferable inputCellsExt = new WrapperFilteredItemHandler(this.inputCells,
+    private final FixedItemInv inputCellsExt = new WrapperFilteredItemHandler(this.inputCells,
             AEItemFilters.INSERT_ONLY);
-    private final ItemTransferable outputCellsExt = new WrapperFilteredItemHandler(this.outputCells,
+    private final FixedItemInv outputCellsExt = new WrapperFilteredItemHandler(this.outputCells,
             AEItemFilters.EXTRACT_ONLY);
 
     private final UpgradeInventory upgrades;
@@ -186,7 +186,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public ItemTransferable getInventoryByName(final String name) {
+    public FixedItemInv getInventoryByName(final String name) {
         if (name.equals("upgrades")) {
             return this.upgrades;
         }
@@ -212,12 +212,12 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public ItemTransferable getInternalInventory() {
+    public FixedItemInv getInternalInventory() {
         return this.combinedInventory;
     }
 
     @Override
-    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
                                   final ItemStack removed, final ItemStack added) {
         if (this.inputCells == inv) {
             this.updateTask();
@@ -225,7 +225,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    protected ItemTransferable getItemHandlerForSide(final Direction facing) {
+    protected FixedItemInv getItemHandlerForSide(final Direction facing) {
         if (facing == this.getUp() || facing == this.getUp().getOpposite()) {
             return this.inputCellsExt;
         } else {
@@ -393,7 +393,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     }
 
     private boolean moveSlot(final int x) {
-        final InventoryAdaptor ad = new AdaptorItemHandler(this.outputCells);
+        final InventoryAdaptor ad = new AdaptorFixedInv(this.outputCells);
         if (ad.addItems(this.inputCells.getStackInSlot(x)).isEmpty()) {
             this.inputCells.setStackInSlot(x, ItemStack.EMPTY);
             return true;

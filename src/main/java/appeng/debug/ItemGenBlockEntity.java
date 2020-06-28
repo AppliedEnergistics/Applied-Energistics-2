@@ -24,7 +24,7 @@ import java.util.Queue;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -42,7 +42,7 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
 
     private static final Queue<ItemStack> POSSIBLE_ITEMS = new ArrayDeque<>();
 
-    private final ItemTransferable handler = new QueuedItemHandler();
+    private final FixedItemInv handler = new QueuedItemHandler();
 
     public ItemGenBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
@@ -81,7 +81,7 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
         return super.getCapability(capability, facing);
     }
 
-    class QueuedItemHandler implements ItemTransferable {
+    class QueuedItemHandler implements FixedItemInv {
 
         @Override
         @Nonnull

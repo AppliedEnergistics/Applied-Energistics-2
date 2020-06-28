@@ -27,7 +27,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
-import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.item.TNTEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particles.ParticleTypes;
@@ -69,9 +69,9 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
     public void tick() {
         this.handleWaterMovement();
 
-        this.prevPosX = this.getPosX();
-        this.prevPosY = this.getPosY();
-        this.prevPosZ = this.getPosZ();
+        this.prevX = this.getX();
+        this.prevY = this.getY();
+        this.prevZ = this.getZ();
         this.setMotion(this.getMotion().subtract(0, 0.03999999910593033D, 0));
         this.move(MoverType.SELF, this.getMotion());
         this.setMotion(this.getMotion().mul(0.9800000190734863D, 0.9800000190734863D, 0.9800000190734863D));
@@ -83,15 +83,15 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
         if (this.isInWater() && Platform.isServer()) // put out the fuse.
         {
             AEApi.instance().definitions().blocks().tinyTNT().maybeStack(1).ifPresent(tntStack -> {
-                final ItemEntity item = new ItemEntity(this.world, this.getPosX(), this.getPosY(), this.getPosZ(),
+                final ItemEntity item = new ItemEntity(this.world, this.getX(), this.getY(), this.getZ(),
                         tntStack);
 
                 item.setMotion(this.getMotion());
-                item.prevPosX = this.prevPosX;
-                item.prevPosY = this.prevPosY;
-                item.prevPosZ = this.prevPosZ;
+                item.prevX = this.prevX;
+                item.prevY = this.prevY;
+                item.prevZ = this.prevZ;
 
-                this.world.addEntity(item);
+                this.world.spawnEntity(item);
                 this.remove();
             });
         }
@@ -103,7 +103,7 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
                 this.explode();
             }
         } else {
-            this.world.addParticle(ParticleTypes.SMOKE, this.getPosX(), this.getPosY(), this.getPosZ(), 0.0D, 0.0D,
+            this.world.addParticle(ParticleTypes.SMOKE, this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D,
                     0.0D);
         }
         this.setFuse(this.getFuse() - 1);
@@ -112,7 +112,7 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
     // override :P
     @Override
     protected void explode() {
-        this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), SoundEvents.ENTITY_GENERIC_EXPLODE,
+        this.world.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_GENERIC_EXPLODE,
                 SoundCategory.BLOCKS, 4.0F,
                 (1.0F + (this.world.rand.nextFloat() - this.world.rand.nextFloat()) * 0.2F) * 32.9F);
 
@@ -120,11 +120,11 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
             return;
         }
 
-        final Explosion ex = new Explosion(this.world, this, this.getPosX(), this.getPosY(), this.getPosZ(), 0.2f,
+        final Explosion ex = new Explosion(this.world, this, this.getX(), this.getY(), this.getZ(), 0.2f,
                 false, Mode.BREAK);
-        final Box area = new Box(this.getPosX() - 1.5, this.getPosY() - 1.5f, this.getPosZ() - 1.5,
-                this.getPosX() + 1.5, this.getPosY() + 1.5, this.getPosZ() + 1.5);
-        final List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, area);
+        final Box area = new Box(this.getX() - 1.5, this.getY() - 1.5f, this.getZ() - 1.5,
+                this.getX() + 1.5, this.getY() + 1.5, this.getZ() + 1.5);
+        final List<Entity> list = this.world.getEntities(this, area);
 
         net.minecraftforge.event.ForgeEventFactory.onExplosionDetonate(this.world, ex, list, 0.2f * 2d);
 
@@ -133,11 +133,11 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
         }
 
         if (AEConfig.instance().isFeatureEnabled(AEFeature.TINY_TNT_BLOCK_DAMAGE)) {
-            this.setPosition(this.getPosX(), this.getPosY() - 0.25, this.getPosZ());
+            this.setPosition(this.getX(), this.getY() - 0.25, this.getPosZ());
 
-            for (int x = (int) (this.getPosX() - 2); x <= this.getPosX() + 2; x++) {
-                for (int y = (int) (this.getPosY() - 2); y <= this.getPosY() + 2; y++) {
-                    for (int z = (int) (this.getPosZ() - 2); z <= this.getPosZ() + 2; z++) {
+            for (int x = (int) (this.getX() - 2); x <= this.getX() + 2; x++) {
+                for (int y = (int) (this.getY() - 2); y <= this.getY() + 2; y++) {
+                    for (int z = (int) (this.getZ() - 2); z <= this.getZ() + 2; z++) {
                         final BlockPos point = new BlockPos(x, y, z);
                         final BlockState state = this.world.getBlockState(point);
                         final Block block = state.getBlock();
@@ -166,8 +166,8 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
             }
         }
 
-        AppEng.proxy.sendToAllNearExcept(null, this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world,
-                new MockExplosionPacket(this.getPosX(), this.getPosY(), this.getPosZ()));
+        AppEng.proxy.sendToAllNearExcept(null, this.getX(), this.getY(), this.getZ(), 64, this.world,
+                new MockExplosionPacket(this.getX(), this.getY(), this.getPosZ()));
     }
 
     @Override

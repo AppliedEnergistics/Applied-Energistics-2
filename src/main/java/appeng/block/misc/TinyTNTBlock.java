@@ -85,9 +85,9 @@ public class TinyTNTBlock extends AEBaseBlock {
         if (!w.isClient) {
             final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(w, pos.getX() + 0.5F,
                     pos.getY() + 0.5F, pos.getZ() + 0.5F, igniter);
-            w.addEntity(primedTinyTNTEntity);
-            w.playSound(null, primedTinyTNTEntity.getPosX(), primedTinyTNTEntity.getPosY(),
-                    primedTinyTNTEntity.getPosZ(), SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1, 1);
+            w.spawnEntity(primedTinyTNTEntity);
+            w.playSound(null, primedTinyTNTEntity.getX(), primedTinyTNTEntity.getY(),
+                    primedTinyTNTEntity.getZ(), SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1, 1);
         }
     }
 
@@ -145,7 +145,7 @@ public class TinyTNTBlock extends AEBaseBlock {
                     pos.getY() + 0.5F, pos.getZ() + 0.5F, exp.getExplosivePlacedBy());
             primedTinyTNTEntity
                     .setFuse(w.rand.nextInt(primedTinyTNTEntity.getFuse() / 4) + primedTinyTNTEntity.getFuse() / 8);
-            w.addEntity(primedTinyTNTEntity);
+            w.spawnEntity(primedTinyTNTEntity);
         }
     }
 

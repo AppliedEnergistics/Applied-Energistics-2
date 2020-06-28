@@ -23,7 +23,7 @@
 
 package appeng.api.implementations.tiles;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 public interface ISegmentedInventory {
 
@@ -36,5 +36,5 @@ public interface ISegmentedInventory {
      *
      * @return inventory with inventory name
      */
-    ItemTransferable getInventoryByName(String name);
+    FixedItemInv getInventoryByName(String name);
 }

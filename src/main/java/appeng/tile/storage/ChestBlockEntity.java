@@ -26,7 +26,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
@@ -113,7 +113,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         implements IMEChest, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableTile, ITickableTileEntity {
     private final AppEngInternalInventory inputInventory = new AppEngInternalInventory(this, 1);
     private final AppEngInternalInventory cellInventory = new AppEngInternalInventory(this, 1);
-    private final ItemTransferable internalInventory = new WrapperChainedItemHandler(this.inputInventory,
+    private final FixedItemInv internalInventory = new WrapperChainedItemHandler(this.inputInventory,
             this.cellInventory);
 
     private final IActionSource mySrc = new MachineSource(this);
@@ -425,12 +425,12 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public ItemTransferable getInternalInventory() {
+    public FixedItemInv getInternalInventory() {
         return this.internalInventory;
     }
 
     @Override
-    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
                                   final ItemStack removed, final ItemStack added) {
         if (inv == this.cellInventory) {
             this.cellHandler = null;
@@ -456,7 +456,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    protected ItemTransferable getItemHandlerForSide(@Nonnull Direction side) {
+    protected FixedItemInv getItemHandlerForSide(@Nonnull Direction side) {
         if (side == this.getForward()) {
             return this.cellInventory;
         } else {
@@ -785,12 +785,12 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
     private class InputInventoryFilter implements IAEItemFilter {
         @Override
-        public boolean allowExtract(ItemTransferable inv, int slot, int amount) {
+        public boolean allowExtract(FixedItemInv inv, int slot, int amount) {
             return false;
         }
 
         @Override
-        public boolean allowInsert(ItemTransferable inv, int slot, ItemStack stack) {
+        public boolean allowInsert(FixedItemInv inv, int slot, ItemStack stack) {
             if (ChestBlockEntity.this.isPowered()) {
                 ChestBlockEntity.this.updateHandler();
                 return ChestBlockEntity.this.cellHandler != null && ChestBlockEntity.this.cellHandler
@@ -803,12 +803,12 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     private static class CellInventoryFilter implements IAEItemFilter {
 
         @Override
-        public boolean allowExtract(ItemTransferable inv, int slot, int amount) {
+        public boolean allowExtract(FixedItemInv inv, int slot, int amount) {
             return true;
         }
 
         @Override
-        public boolean allowInsert(ItemTransferable inv, int slot, ItemStack stack) {
+        public boolean allowInsert(FixedItemInv inv, int slot, ItemStack stack) {
             return AEApi.instance().registries().cell().getHandler(stack) != null;
         }
 

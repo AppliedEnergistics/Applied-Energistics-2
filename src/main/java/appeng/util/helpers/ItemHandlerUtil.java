@@ -18,48 +18,42 @@
 
 package appeng.util.helpers;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandlerModifiable;
 
 public class ItemHandlerUtil {
     private ItemHandlerUtil() {
     }
 
-    public static void setStackInSlot(final ItemTransferable inv, final int slot, final ItemStack stack) {
-        if (inv instanceof IItemHandlerModifiable) {
-            ((IItemHandlerModifiable) inv).setStackInSlot(slot, stack);
-        } else {
-            inv.extractItem(slot, Integer.MAX_VALUE, false);
-            inv.insertItem(slot, stack, false);
-        }
+    public static void setStackInSlot(final FixedItemInv inv, final int slot, final ItemStack stack) {
+        inv.forceSetInvStack(slot, stack);
     }
 
-    public static void clear(final ItemTransferable inv) {
-        for (int x = 0; x < inv.getSlots(); x++) {
+    public static void clear(final FixedItemInv inv) {
+        for (int x = 0; x < inv.getSlotCount(); x++) {
             setStackInSlot(inv, x, ItemStack.EMPTY);
         }
     }
 
-    public static boolean isEmpty(final ItemTransferable inv) {
-        for (int x = 0; x < inv.getSlots(); x++) {
-            if (!inv.getStackInSlot(x).isEmpty()) {
+    public static boolean isEmpty(final FixedItemInv inv) {
+        for (int x = 0; x < inv.getSlotCount(); x++) {
+            if (!inv.getInvStack(x).isEmpty()) {
                 return false;
             }
         }
         return true;
     }
 
-    public static void copy(final ItemTransferable from, final ItemTransferable to, boolean deepCopy) {
-        for (int i = 0; i < Math.min(from.getSlots(), to.getSlots()); ++i) {
-            setStackInSlot(to, i, deepCopy ? from.getStackInSlot(i).copy() : from.getStackInSlot(i));
+    public static void copy(final FixedItemInv from, final FixedItemInv to, boolean deepCopy) {
+        for (int i = 0; i < Math.min(from.getSlotCount(), to.getSlotCount()); ++i) {
+            setStackInSlot(to, i, deepCopy ? from.getInvStack(i).copy() : from.getInvStack(i));
         }
     }
 
-    public static void copy(final CraftingInventory from, final ItemTransferable to, boolean deepCopy) {
-        for (int i = 0; i < Math.min(from.getSizeInventory(), to.getSlots()); ++i) {
-            setStackInSlot(to, i, deepCopy ? from.getStackInSlot(i).copy() : from.getStackInSlot(i));
+    public static void copy(final CraftingInventory from, final FixedItemInv to, boolean deepCopy) {
+        for (int i = 0; i < Math.min(from.size(), to.getSlotCount()); ++i) {
+            setStackInSlot(to, i, deepCopy ? from.getStack(i).copy() : from.getStack(i));
         }
     }
 }

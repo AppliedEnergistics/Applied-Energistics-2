@@ -18,11 +18,11 @@
 
 package appeng.util.inv;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.item.ItemStack;
 
 public interface IAEAppEngInventory {
     void saveChanges();
 
-    void onChangeInventory(ItemTransferable inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack);
+    void onChangeInventory(FixedItemInv inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack);
 }

@@ -20,51 +20,58 @@ package appeng.util.inv;
 
 import java.util.function.Supplier;
 
+import alexiil.mc.lib.attributes.ListenerRemovalToken;
+import alexiil.mc.lib.attributes.ListenerToken;
+import alexiil.mc.lib.attributes.Simulation;
+import alexiil.mc.lib.attributes.item.GroupedItemInv;
+import alexiil.mc.lib.attributes.item.InvMarkDirtyListener;
+import alexiil.mc.lib.attributes.item.impl.DelegatingGroupedItemInv;
 import net.minecraft.item.ItemStack;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
-import appeng.util.helpers.ItemHandlerUtil;
+import javax.annotation.Nullable;
 
-public class WrapperSupplierItemHandler implements IItemHandlerModifiable {
-    private final Supplier<ItemTransferable> sourceHandler;
+public class WrapperSupplierItemHandler implements FixedItemInv {
+    private final Supplier<FixedItemInv> sourceHandler;
 
-    public WrapperSupplierItemHandler(Supplier<ItemTransferable> source) {
+    public WrapperSupplierItemHandler(Supplier<FixedItemInv> source) {
         this.sourceHandler = source;
     }
 
     @Override
-    public int getSlots() {
-        return this.sourceHandler.get().getSlots();
+    public GroupedItemInv getGroupedInv() {
+        return new DelegatingGroupedItemInv(this.sourceHandler.get().getGroupedInv());
     }
 
     @Override
-    public ItemStack getStackInSlot(int slot) {
-        return this.sourceHandler.get().getStackInSlot(slot);
+    public ItemStack getInvStack(int slot) {
+        return this.sourceHandler.get().getInvStack(slot);
     }
 
     @Override
-    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-        return this.sourceHandler.get().insertItem(slot, stack, simulate);
+    public boolean setInvStack(int slot, ItemStack to, Simulation simulation) {
+        return this.sourceHandler.get().setInvStack(slot, to, simulation);
     }
 
     @Override
-    public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        return this.sourceHandler.get().extractItem(slot, amount, simulate);
+    public int getSlotCount() {
+        return this.sourceHandler.get().getSlotCount();
     }
 
     @Override
-    public int getSlotLimit(int slot) {
-        return this.sourceHandler.get().getSlotLimit(slot);
+    public boolean isItemValidForSlot(int slot, ItemStack stack) {
+        return this.sourceHandler.get().isItemValidForSlot(slot, stack);
     }
 
     @Override
-    public void setStackInSlot(int slot, ItemStack stack) {
-        ItemHandlerUtil.setStackInSlot(this.sourceHandler.get(), slot, stack);
+    public int getChangeValue() {
+        return this.sourceHandler.get().getChangeValue();
     }
 
+    @Nullable
     @Override
-    public boolean isItemValid(int slot, ItemStack stack) {
-        return this.sourceHandler.get().isItemValid(slot, stack);
+    public ListenerToken addListener(InvMarkDirtyListener listener, ListenerRemovalToken removalToken) {
+        return this.sourceHandler.get().addListener(listener, removalToken);
     }
+
 }

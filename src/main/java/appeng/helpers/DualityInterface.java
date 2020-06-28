@@ -28,7 +28,7 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.block.Block;
@@ -106,7 +106,7 @@ import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
-import appeng.util.inv.AdaptorItemHandler;
+import appeng.util.inv.AdaptorFixedInv;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.IInventoryDestination;
 import appeng.util.inv.InvOperation;
@@ -169,7 +169,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
     }
 
     @Override
-    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
                                   final ItemStack removed, final ItemStack added) {
         if (this.isWorking == slot) {
             return;
@@ -213,7 +213,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         if (this.waitingToSend != null) {
             for (final ItemStack is : this.waitingToSend) {
                 final CompoundTag item = new CompoundTag();
-                is.write(item);
+                is.toTag(item);
                 waitingToSend.add(item);
             }
         }
@@ -227,7 +227,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
             for (int x = 0; x < waitingList.size(); x++) {
                 final CompoundTag c = waitingList.getCompound(x);
                 if (c != null) {
-                    final ItemStack is = ItemStack.read(c);
+                    final ItemStack is = ItemStack.fromTag(c);
                     this.addToSendList(is);
                 }
             }
@@ -445,11 +445,11 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         // return after.stackSize != stack.stackSize;
     }
 
-    public ItemTransferable getConfig() {
+    public FixedItemInv getConfig() {
         return this.config;
     }
 
-    public ItemTransferable getPatterns() {
+    public FixedItemInv getPatterns() {
         return this.patterns;
     }
 
@@ -475,7 +475,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         return new DimensionalCoord(this.iHost.getBlockEntity());
     }
 
-    public ItemTransferable getInternalInventory() {
+    public FixedItemInv getInternalInventory() {
         return this.storage;
     }
 
@@ -631,7 +631,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
     }
 
     private InventoryAdaptor getAdaptor(final int slot) {
-        return new AdaptorItemHandler(new RangedWrapper(this.storage, slot, slot + 1));
+        return new AdaptorFixedInv(new RangedWrapper(this.storage, slot, slot + 1));
     }
 
     private boolean handleCrafting(final int x, final InventoryAdaptor d, final IAEItemStack itemStack) {
@@ -685,7 +685,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
     }
 
     @Override
-    public ItemTransferable getInventoryByName(final String name) {
+    public FixedItemInv getInventoryByName(final String name) {
         if (name.equals("storage")) {
             return this.storage;
         }
@@ -705,7 +705,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         return null;
     }
 
-    public ItemTransferable getStorage() {
+    public FixedItemInv getStorage() {
         return this.storage;
     }
 
@@ -786,8 +786,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                 }
 
                 if (this.acceptsItems(ad, table)) {
-                    for (int x = 0; x < table.getSizeInventory(); x++) {
-                        final ItemStack is = table.getStackInSlot(x);
+                    for (int x = 0; x < table.size(); x++) {
+                        final ItemStack is = table.getStack(x);
                         if (!is.isEmpty()) {
                             final ItemStack added = ad.addItems(is);
                             this.addToSendList(added);
@@ -844,8 +844,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
     }
 
     private boolean acceptsItems(final InventoryAdaptor ad, final CraftingInventory table) {
-        for (int x = 0; x < table.getSizeInventory(); x++) {
-            final ItemStack is = table.getStackInSlot(x);
+        for (int x = 0; x < table.size(); x++) {
+            final ItemStack is = table.getStack(x);
             if (is.isEmpty()) {
                 continue;
             }
@@ -1077,7 +1077,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
     private class InterfaceInventory extends MEMonitorIInventory {
 
         public InterfaceInventory(final DualityInterface tileInterface) {
-            super(new AdaptorItemHandler(tileInterface.storage));
+            super(new AdaptorFixedInv(tileInterface.storage));
             this.setActionSource(new MachineSource(DualityInterface.this.iHost));
         }
 

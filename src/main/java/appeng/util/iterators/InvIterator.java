@@ -20,18 +20,18 @@ package appeng.util.iterators;
 
 import java.util.Iterator;
 
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.item.ItemStack;
 
 public final class InvIterator implements Iterator<ItemStack> {
-    private final ItemTransferable inventory;
+    private final FixedItemInv inventory;
     private final int size;
 
     private int counter = 0;
 
-    public InvIterator(final ItemTransferable inventory) {
+    public InvIterator(final FixedItemInv inventory) {
         this.inventory = inventory;
-        this.size = this.inventory.getSlots();
+        this.size = this.inventory.getSlotCount();
     }
 
     @Override
@@ -41,7 +41,7 @@ public final class InvIterator implements Iterator<ItemStack> {
 
     @Override
     public ItemStack next() {
-        final ItemStack result = this.inventory.getStackInSlot(this.counter);
+        final ItemStack result = this.inventory.getInvStack(this.counter);
         this.counter++;
 
         return result;

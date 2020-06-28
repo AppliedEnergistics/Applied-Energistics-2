@@ -36,7 +36,7 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
 
     public AESharedItemStack(final ItemStack itemStack) {
         this.itemStack = itemStack;
-        this.itemId = Item.getIdFromItem(itemStack.getItem());
+        this.itemId = Item.getRawId(itemStack.getItem());
         this.itemDamage = itemStack.getDamage();
         this.hashCode = this.makeHashCode();
     }
@@ -73,7 +73,7 @@ final class AESharedItemStack implements Comparable<AESharedItemStack> {
             if (this.itemStack == other.itemStack) {
                 return true;
             }
-            return ItemStack.areItemStacksEqual(this.itemStack, other.itemStack);
+            return ItemStack.areEqual(this.itemStack, other.itemStack);
         }
         return false;
     }

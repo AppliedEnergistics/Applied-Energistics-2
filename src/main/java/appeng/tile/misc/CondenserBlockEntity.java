@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
-import alexiil.mc.lib.attributes.item.ItemTransferable;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -70,13 +70,13 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
     private final AppEngInternalInventory outputSlot = new AppEngInternalInventory(this, 1);
     private final AppEngInternalInventory storageSlot = new AppEngInternalInventory(this, 1);
-    private final ItemTransferable inputSlot = new CondenseItemHandler();
+    private final FixedItemInv inputSlot = new CondenseItemHandler();
     private final IFluidHandler fluidHandler = new FluidHandler();
     private final MEHandler meHandler = new MEHandler();
 
-    private final ItemTransferable externalInv = new WrapperChainedItemHandler(this.inputSlot,
+    private final FixedItemInv externalInv = new WrapperChainedItemHandler(this.inputSlot,
             new WrapperFilteredItemHandler(this.outputSlot, AEItemFilters.EXTRACT_ONLY));
-    private final ItemTransferable combinedInv = new WrapperChainedItemHandler(this.inputSlot, this.outputSlot,
+    private final FixedItemInv combinedInv = new WrapperChainedItemHandler(this.inputSlot, this.outputSlot,
             this.storageSlot);
 
     private double storedPower = 0;
@@ -143,7 +143,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         this.outputSlot.insertItem(0, output, false);
     }
 
-    ItemTransferable getOutputSlot() {
+    FixedItemInv getOutputSlot() {
         return this.outputSlot;
     }
 
@@ -168,12 +168,12 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     }
 
     @Override
-    public ItemTransferable getInternalInventory() {
+    public FixedItemInv getInternalInventory() {
         return this.combinedInv;
     }
 
     @Override
-    public void onChangeInventory(final ItemTransferable inv, final int slot, final InvOperation mc,
+    public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
                                   final ItemStack removed, final ItemStack added) {
         if (inv == this.outputSlot) {
             this.meHandler.outputChanged(added, removed);
@@ -211,7 +211,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         return super.getCapability(capability, facing);
     }
 
-    private class CondenseItemHandler implements ItemTransferable {
+    private class CondenseItemHandler implements FixedItemInv {
 
         @Override
         public int getSlots() {
