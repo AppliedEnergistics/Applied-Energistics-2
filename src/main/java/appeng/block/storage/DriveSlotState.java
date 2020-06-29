@@ -37,6 +37,9 @@ public enum DriveSlotState implements IStringSerializable {
     // Online and free space
     ONLINE("online"),
 
+    // Online and not space
+    NOT_EMPTY("not_empty"),
+
     // Types full, space left
     TYPES_FULL("types_full"),
 
@@ -60,8 +63,9 @@ public enum DriveSlotState implements IStringSerializable {
             case ABSENT:
                 return DriveSlotState.EMPTY;
             case EMPTY:
-            case NOT_EMPTY:
                 return DriveSlotState.ONLINE;
+            case NOT_EMPTY:
+                return DriveSlotState.NOT_EMPTY;
             case TYPES_FULL:
                 return DriveSlotState.TYPES_FULL;
             case FULL:
