@@ -340,8 +340,7 @@ final class Registration {
 
         FacadeItem facadeItem = (FacadeItem) Api.INSTANCE.definitions().items().facade().item();
         r.registerAll(DisassembleRecipe.SERIALIZER, GrinderRecipeSerializer.INSTANCE,
-                InscriberRecipeSerializer.INSTANCE, FacadeRecipe.getSerializer(facadeItem),
-                DisassembleRecipe.SERIALIZER);
+                InscriberRecipeSerializer.INSTANCE, FacadeRecipe.getSerializer(facadeItem));
     }
 
     public void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
