@@ -128,15 +128,6 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
                         upgradeInventory, this, iSLot, 187 + zz * 18, 8 + 18 * z, iSLot, this.getPlayerInventory()));
             }
         }
-        /*
-         * if ( supportCapacity() ) { for (int w = 0; w < 2; w++) for (int z = 0; z < 9;
-         * z++) addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, offset++,
-         * x, y, z, w, 1 ) ); for (int w = 0; w < 2; w++) for (int z = 0; z < 9; z++)
-         * addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, offset++, x, y,
-         * z, w + 2, 2 ) ); for (int w = 0; w < 2; w++) for (int z = 0; z < 9; z++)
-         * addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, offset++, x, y,
-         * z, w + 4, 3 ) ); }
-         */
     }
 
     @Override

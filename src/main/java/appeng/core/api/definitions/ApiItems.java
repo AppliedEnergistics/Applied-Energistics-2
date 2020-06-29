@@ -20,9 +20,14 @@ package appeng.core.api.definitions;
 
 import java.util.function.Consumer;
 
+import appeng.bootstrap.IItemRendering;
+import appeng.bootstrap.ItemRenderingCustomizer;
+import appeng.fluids.items.FluidDummyItemColor;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ToolType;
 
 import appeng.api.definitions.IItemDefinition;
@@ -42,7 +47,6 @@ import appeng.debug.ReplicatorCardItem;
 import appeng.entity.GrowingCrystalEntity;
 import appeng.fluids.items.BasicFluidStorageCell;
 import appeng.fluids.items.FluidDummyItem;
-import appeng.fluids.items.FluidDummyItemRendering;
 import appeng.hooks.BlockToolDispenseItemBehavior;
 import appeng.hooks.MatterCannonDispenseItemBehavior;
 import appeng.items.materials.MaterialType;
@@ -303,7 +307,14 @@ public final class ApiItems implements IItems {
         debugTools.item("debug_part_placer", DebugPartPlacerItem::new).build();
 
         this.dummyFluidItem = registry.item("dummy_fluid_item", FluidDummyItem::new)
-                .rendering(new FluidDummyItemRendering()).build();
+                .rendering(new ItemRenderingCustomizer() {
+                    @Override
+                    @OnlyIn(Dist.CLIENT)
+                    public void customize(IItemRendering rendering) {
+                        rendering.color(new FluidDummyItemColor());
+                    }
+                })
+                .build();
     }
 
     private static AEColoredItemDefinition createPaintBalls(FeatureFactory registry, String idSuffix, boolean lumen) {
