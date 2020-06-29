@@ -3,6 +3,7 @@ package appeng.client.render.tesr;
 import java.util.EnumMap;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -14,7 +15,6 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import appeng.block.storage.DriveSlotState;
 import appeng.client.render.FacingToRotation;
@@ -25,6 +25,14 @@ import appeng.tile.storage.DriveTileEntity;
  */
 @OnlyIn(Dist.CLIENT)
 public class DriveLedTileEntityRenderer extends TileEntityRenderer<DriveTileEntity> {
+
+    private static final RenderState.TransparencyState TRANSLUCENT_TRANSPARENCY = new RenderState.TransparencyState(
+            "translucent_transparency", () -> {
+                RenderSystem.enableBlend();
+                RenderSystem.defaultBlendFunc();
+            }, () -> {
+                RenderSystem.disableBlend();
+            });
 
     private static final EnumMap<DriveSlotState, Vector3f> STATE_COLORS;
 
@@ -80,8 +88,6 @@ public class DriveLedTileEntityRenderer extends TileEntityRenderer<DriveTileEnti
         FacingToRotation.get(drive.getForward(), drive.getUp()).push(ms);
         ms.translate(-0.5, -0.5, -0.5);
 
-        RenderState.TransparencyState TRANSLUCENT_TRANSPARENCY = ObfuscationReflectionHelper
-                .getPrivateValue(RenderState.class, null, "field_228515_g_");
         RenderType rt = RenderType.makeType("ae_drive_leds", DefaultVertexFormats.POSITION_COLOR, 7, 32565, false, true,
                 RenderType.State.getBuilder().transparency(TRANSLUCENT_TRANSPARENCY).build(false));
         IVertexBuilder buffer = buffers.getBuffer(STATE);
