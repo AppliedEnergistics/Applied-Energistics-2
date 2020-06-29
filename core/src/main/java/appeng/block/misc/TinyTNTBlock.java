@@ -65,9 +65,10 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
-        if (heldItem != null && heldItem.getItem() == Items.FLINT_AND_STEEL) {
+    public ActionResult onUse(BlockState state, World w, BlockPos pos, PlayerEntity player, Hand hand,
+            final BlockHitResult hit) {
+        ItemStack heldItem = player.getStackInHand(hand);
+        if (heldItem.getItem() == Items.FLINT_AND_STEEL) {
             this.startFuse(w, pos, player);
             w.removeBlock(pos, false);
             heldItem.damage(1, player, p -> {
@@ -75,7 +76,7 @@ public class TinyTNTBlock extends AEBaseBlock {
             }); // FIXME Check if onBroken is equivalent
             return ActionResult.SUCCESS;
         } else {
-            return super.onActivated(w, pos, player, hand, heldItem, hit);
+            return super.onUse(state, w, pos, player, hand, hit);
         }
     }
 

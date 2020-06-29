@@ -267,6 +267,11 @@ public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBas
         return this.onActivated(world, pos, player, hand, player.getStackInHand(hand), hit);
     }
 
+    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
+                                        final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+        return ActionResult.PASS;
+    }
+
     @Override
     public IOrientable getOrientable(final BlockView w, final BlockPos pos) {
         return this.getBlockEntity(w, pos);

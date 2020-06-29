@@ -187,7 +187,7 @@ public final class AEConfig {
     }
 
     public boolean isFeatureEnabled(final AEFeature f) {
-        return this.featureFlags.contains(f);
+        return (!f.isConfig() && f.isEnabled()) || this.featureFlags.contains(f);
     }
 
     public boolean areFeaturesEnabled(Collection<AEFeature> features) {

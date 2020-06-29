@@ -65,6 +65,9 @@ public class EnergyGeneratorBlockEntity extends AEBaseBlockEntity implements Tic
 
         for (Direction facing : Direction.values()) {
             final BlockEntity te = this.getWorld().getBlockEntity(this.getPos().offset(facing));
+            if (te == null) {
+                continue;
+            }
             final LazyOptional<IEnergyStorage> cap = te.getCapability(CapabilityEnergy.ENERGY, facing.getOpposite());
 
             cap.ifPresent(consumer -> {

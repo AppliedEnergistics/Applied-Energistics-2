@@ -38,7 +38,7 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
 
     public TinyTNTPrimedRenderer(final EntityRenderDispatcher manager) {
         super(manager);
-        this.shadowRadius = 0.5F;
+        this.shadowRadius = 0.25F;
     }
 
     @Override

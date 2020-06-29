@@ -125,6 +125,10 @@ public class DriveLedTileEntityRenderer extends BlockEntityRenderer<DriveBlockEn
             return null;
         }
 
+        if (!drive.isPowered()) {
+            return STATE_COLORS.get(DriveSlotState.OFFLINE);
+        }
+
         Vector3f col = STATE_COLORS.get(state);
         if (drive.isCellBlinking(slot)) {
             // 200 ms interval (100ms to get to red, then 100ms back)

@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,8 +37,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Identifier;
-
 import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.api.AEApi;
@@ -109,6 +110,12 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
         this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
         this.inv.setFilter(new CellValidInventoryFilter());
         this.inventoryHandlers = new IdentityHashMap<>();
+    }
+
+    @Override
+    public void setOrientation(Direction inForward, Direction inUp) {
+        super.setOrientation(inForward, inUp);
+        this.getProxy().setValidSides(EnumSet.complementOf(EnumSet.of(inForward)));
     }
 
     @Override

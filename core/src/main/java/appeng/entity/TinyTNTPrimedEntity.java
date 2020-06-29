@@ -27,6 +27,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.network.Packet;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -35,20 +36,37 @@ import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public final class TinyTNTPrimedEntity extends TntEntity {
 
     public static EntityType<TinyTNTPrimedEntity> TYPE;
 
+    private LivingEntity causingEntity;
+
     public TinyTNTPrimedEntity(EntityType<? extends TinyTNTPrimedEntity> type, World worldIn) {
         super(type, worldIn);
         this.inanimate = true;
     }
 
-    public TinyTNTPrimedEntity(final World w, final double x, final double y, final double z,
+    public TinyTNTPrimedEntity(final World world, final double x, final double y, final double z,
                                final LivingEntity igniter) {
-        super(w, x, y, z, igniter);
+        this(TYPE, world);
+        this.updatePosition(x, y, z);
+        double d = world.random.nextDouble() * 6.2831854820251465D;
+        this.setVelocity(-Math.sin(d) * 0.02D, 0.20000000298023224D, -Math.cos(d) * 0.02D);
+        this.setFuse(80);
+        this.prevX = x;
+        this.prevY = y;
+        this.prevZ = z;
+        this.causingEntity = igniter;
+    }
+
+    @Nullable
+    @Override
+    public LivingEntity getCausingEntity() {
+        return causingEntity;
     }
 
     /**
@@ -157,6 +175,12 @@ public final class TinyTNTPrimedEntity extends TntEntity {
 // FIXME FABRIC
 //        AppEng.proxy.sendToAllNearExcept(null, this.getX(), this.getY(), this.getZ(), 64, this.world,
 //                new MockExplosionPacket(this.getX(), this.getY(), this.getZ()));
+    }
+
+    @Override
+    public Packet<?> createSpawnPacket() {
+        // FIXME FABRIC
+        throw new IllegalStateException();
     }
 
 }

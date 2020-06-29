@@ -43,7 +43,7 @@ allprojects {
 
     ext.release = System.getenv('RELEASE') ?: ""
     if (ext.release) {
-        version = ext.release.substring(1)
+      version = ext.release
     }
 
     // Avoid build-directories for each subproject

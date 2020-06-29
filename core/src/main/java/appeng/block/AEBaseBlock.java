@@ -124,11 +124,6 @@ public abstract class AEBaseBlock extends Block {
         return false;
     }
 
-    public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
-        return ActionResult.PASS;
-    }
-
     public final Direction mapRotation(final IOrientable ori, final Direction dir) {
         // case DOWN: return bottomIcon;
         // case UP: return blockIcon;

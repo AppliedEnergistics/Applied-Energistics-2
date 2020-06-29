@@ -22,6 +22,9 @@ import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IItems;
 import appeng.api.util.AEColoredItemDefinition;
 import appeng.bootstrap.FeatureFactory;
+import appeng.bootstrap.IItemRendering;
+import appeng.bootstrap.ItemRenderingCustomizer;
+import appeng.fluids.items.FluidDummyItem;
 
 /**
  * Internal implementation for the API items
@@ -253,7 +256,14 @@ public final class ApiItems implements IItems {
 //        debugTools.item("debug_part_placer", DebugPartPlacerItem::new).build();
 //
 //        this.dummyFluidItem = registry.item("dummy_fluid_item", FluidDummyItem::new)
-//                .rendering(new FluidDummyItemRendering()).build();
+//                .rendering(new ItemRenderingCustomizer() {
+//                    @Override
+//                    @Environment(Dist.CLIENT)
+//                    public void customize(IItemRendering rendering) {
+//                        rendering.color(new FluidDummyItemColor());
+//                    }
+//                })
+//                .build();
     }
 
 //    private static AEColoredItemDefinition createPaintBalls(FeatureFactory registry, String idSuffix, boolean lumen) {
