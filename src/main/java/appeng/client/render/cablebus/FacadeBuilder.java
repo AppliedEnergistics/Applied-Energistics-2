@@ -33,7 +33,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.render.model.BakedQuad;
@@ -191,7 +191,7 @@ public class FacadeBuilder {
             List<Box> holeStrips = getBoxes(facadeBox, cutOutBox, side.getAxis());
             ILightReader facadeAccess = new FacadeBlockAccess(parentWorld, pos, side, blockState);
 
-            BlockRendererDispatcher dispatcher = MinecraftClient.getInstance().getBlockRendererDispatcher();
+            BlockRenderManager dispatcher = MinecraftClient.getInstance().getBlockRenderManager();
             BakedModel model = dispatcher.getModelForState(blockState);
             IModelData modelData = model.getModelData(facadeAccess, pos, blockState, EmptyModelData.INSTANCE);
 

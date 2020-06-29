@@ -35,7 +35,6 @@ import net.fabricmc.api.Environment;
 
 import appeng.api.features.AEFeature;
 import appeng.bootstrap.components.IInitComponent;
-import appeng.core.AEItemGroup;
 import appeng.core.AppEng;
 import appeng.core.CreativeTab;
 import appeng.core.features.ItemDefinition;
@@ -149,8 +148,8 @@ class ItemDefinitionBuilder implements IItemBuilder {
             this.itemRendering.apply(this.factory, item);
         }
 
-        if (itemGroup instanceof AEItemGroup) {
-            ((AEItemGroup) itemGroup).add(definition);
+        if (itemGroup == CreativeTab.INSTANCE) {
+            CreativeTab.add(definition);
         }
 
         return definition;

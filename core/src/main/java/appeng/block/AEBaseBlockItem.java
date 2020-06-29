@@ -37,7 +37,6 @@ import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.misc.LightDetectorBlock;
 import appeng.block.misc.SkyCompassBlock;
-import appeng.block.networking.WirelessBlock;
 import appeng.me.helpers.IGridProxyable;
 import appeng.tile.AEBaseBlockEntity;
 
@@ -85,7 +84,7 @@ public class AEBaseBlockItem extends BlockItem {
                 } else {
                     forward = Direction.UP;
                 }
-            } else if (this.blockType instanceof WirelessBlock || this.blockType instanceof SkyCompassBlock) {
+            } else if (/* FIXME FABRIC this.blockType instanceof WirelessBlock || */ this.blockType instanceof SkyCompassBlock) {
                 forward = side;
                 if (forward == Direction.UP || forward == Direction.DOWN) {
                     up = Direction.SOUTH;
@@ -141,7 +140,7 @@ public class AEBaseBlockItem extends BlockItem {
             }
 
             if (tile instanceof IGridProxyable) {
-                ((IGridProxyable) tile).getProxy().setOwner(player);
+                // FIXME FABRIC ((IGridProxyable) tile).getProxy().setOwner(player);
             }
 
             tile.onPlacement(context);

@@ -20,7 +20,7 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.config.SecurityPermissions;
@@ -31,7 +31,7 @@ import appeng.tile.storage.ChestBlockEntity;
 
 public class ChestContainer extends AEBaseContainer {
 
-    public static ContainerType<ChestContainer> TYPE;
+    public static ScreenHandlerType<ChestContainer> TYPE;
 
     private static final ContainerHelper<ChestContainer, ChestBlockEntity> helper = new ContainerHelper<>(
             ChestContainer::new, ChestBlockEntity.class, SecurityPermissions.BUILD);

@@ -130,11 +130,11 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
                     // Just to safeguard against tanks that prevent non-bucket-size extractions
                     if (this.handler.drain(FluidAttributes.BUCKET_VOLUME, IFluidHandler.FluidAction.SIMULATE)
                             .isEmpty()) {
-                        newIS = FluidVolume.EMPTY;
+                        newIS = FluidVolumeUtil.EMPTY;
                     }
                 }
             }
-            final FluidVolume oldIS = old == null ? FluidVolume.EMPTY : old.fluidStack;
+            final FluidVolume oldIS = old == null ? FluidVolumeUtil.EMPTY : old.fluidStack;
 
             if (isDifferent(newIS, oldIS)) {
                 final CachedFluidStack cis = new CachedFluidStack(newIS);
@@ -206,7 +206,7 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
         if (a.isEmpty() || b.isEmpty()) {
             return true;
         }
-        return !a.getFluid().equals(b.getFluid());
+        return !a.getFluidKey().equals(b.getFluidKey());
     }
 
     private void postDifference(final Iterable<IAEFluidStack> a) {
@@ -293,7 +293,7 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
 
         CachedFluidStack(final FluidVolume is) {
             if (is.isEmpty()) {
-                this.fluidStack = FluidVolume.EMPTY;
+                this.fluidStack = FluidVolumeUtil.EMPTY;
                 this.aeStack = null;
             } else {
                 this.fluidStack = is.copy();

@@ -48,11 +48,6 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.stats.AeStats;
 import appeng.fluids.util.AEFluidStack;
-import appeng.hooks.TickHandler;
-import appeng.integration.abstraction.JEIFacade;
-import appeng.me.GridAccessException;
-import appeng.me.GridNode;
-import appeng.me.helpers.AENetworkProxy;
 import appeng.util.helpers.ItemComparisonHelper;
 import appeng.util.helpers.P2PHelper;
 import appeng.util.item.AEItemStack;
@@ -887,43 +882,43 @@ public class Platform {
         }
     }
 
-    public static boolean securityCheck(final GridNode a, final GridNode b) {
-        if (a.getLastSecurityKey() == -1 && b.getLastSecurityKey() == -1) {
-            return true;
-        } else if (a.getLastSecurityKey() == b.getLastSecurityKey()) {
-            return true;
-        }
-
-        final boolean a_isSecure = isPowered(a.getGrid()) && a.getLastSecurityKey() != -1;
-        final boolean b_isSecure = isPowered(b.getGrid()) && b.getLastSecurityKey() != -1;
-
-        if (AEConfig.instance().isFeatureEnabled(AEFeature.LOG_SECURITY_AUDITS)) {
-            final String locationA = a.getGridBlock().isWorldAccessible() ? a.getGridBlock().getLocation().toString()
-                    : "notInWorld";
-            final String locationB = b.getGridBlock().isWorldAccessible() ? b.getGridBlock().getLocation().toString()
-                    : "notInWorld";
-
-            AELog.info(
-                    "Audit: Node A [isSecure=%b, key=%d, playerID=%d, location={%s}] vs Node B[isSecure=%b, key=%d, playerID=%d, location={%s}]",
-                    a_isSecure, a.getLastSecurityKey(), a.getPlayerID(), locationA, b_isSecure, b.getLastSecurityKey(),
-                    b.getPlayerID(), locationB);
-        }
-
-        // can't do that son...
-        if (a_isSecure && b_isSecure) {
-            return false;
-        }
-
-        if (!a_isSecure && b_isSecure) {
-            return checkPlayerPermissions(b.getGrid(), a.getPlayerID());
-        }
-
-        if (a_isSecure && !b_isSecure) {
-            return checkPlayerPermissions(a.getGrid(), b.getPlayerID());
-        }
-
-        return true;
-    }
+// FIXME FABRIC    public static boolean securityCheck(final GridNode a, final GridNode b) {
+// FIXME FABRIC        if (a.getLastSecurityKey() == -1 && b.getLastSecurityKey() == -1) {
+// FIXME FABRIC            return true;
+// FIXME FABRIC        } else if (a.getLastSecurityKey() == b.getLastSecurityKey()) {
+// FIXME FABRIC            return true;
+// FIXME FABRIC        }
+// FIXME FABRIC
+// FIXME FABRIC        final boolean a_isSecure = isPowered(a.getGrid()) && a.getLastSecurityKey() != -1;
+// FIXME FABRIC        final boolean b_isSecure = isPowered(b.getGrid()) && b.getLastSecurityKey() != -1;
+// FIXME FABRIC
+// FIXME FABRIC        if (AEConfig.instance().isFeatureEnabled(AEFeature.LOG_SECURITY_AUDITS)) {
+// FIXME FABRIC            final String locationA = a.getGridBlock().isWorldAccessible() ? a.getGridBlock().getLocation().toString()
+// FIXME FABRIC                    : "notInWorld";
+// FIXME FABRIC            final String locationB = b.getGridBlock().isWorldAccessible() ? b.getGridBlock().getLocation().toString()
+// FIXME FABRIC                    : "notInWorld";
+// FIXME FABRIC
+// FIXME FABRIC            AELog.info(
+// FIXME FABRIC                    "Audit: Node A [isSecure=%b, key=%d, playerID=%d, location={%s}] vs Node B[isSecure=%b, key=%d, playerID=%d, location={%s}]",
+// FIXME FABRIC                    a_isSecure, a.getLastSecurityKey(), a.getPlayerID(), locationA, b_isSecure, b.getLastSecurityKey(),
+// FIXME FABRIC                    b.getPlayerID(), locationB);
+// FIXME FABRIC        }
+// FIXME FABRIC
+// FIXME FABRIC        // can't do that son...
+// FIXME FABRIC        if (a_isSecure && b_isSecure) {
+// FIXME FABRIC            return false;
+// FIXME FABRIC        }
+// FIXME FABRIC
+// FIXME FABRIC        if (!a_isSecure && b_isSecure) {
+// FIXME FABRIC            return checkPlayerPermissions(b.getGrid(), a.getPlayerID());
+// FIXME FABRIC        }
+// FIXME FABRIC
+// FIXME FABRIC        if (a_isSecure && !b_isSecure) {
+// FIXME FABRIC            return checkPlayerPermissions(a.getGrid(), b.getPlayerID());
+// FIXME FABRIC        }
+// FIXME FABRIC
+// FIXME FABRIC        return true;
+// FIXME FABRIC    }
 
     private static boolean isPowered(final IGrid grid) {
         if (grid == null) {
@@ -985,26 +980,26 @@ public class Platform {
                 yaw, pitch);
     }
 
-    public static boolean canAccess(final AENetworkProxy gridProxy, final IActionSource src) {
-        try {
-            if (src.player().isPresent()) {
-                return gridProxy.getSecurity().hasPermission(src.player().get(), SecurityPermissions.BUILD);
-            } else if (src.machine().isPresent()) {
-                final IActionHost te = src.machine().get();
-                final IGridNode n = te.getActionableNode();
-                if (n == null) {
-                    return false;
-                }
-
-                final int playerID = n.getPlayerID();
-                return gridProxy.getSecurity().hasPermission(playerID, SecurityPermissions.BUILD);
-            } else {
-                return false;
-            }
-        } catch (final GridAccessException gae) {
-            return false;
-        }
-    }
+// FIXME FABRIC    public static boolean canAccess(final AENetworkProxy gridProxy, final IActionSource src) {
+// FIXME FABRIC        try {
+// FIXME FABRIC            if (src.player().isPresent()) {
+// FIXME FABRIC                return gridProxy.getSecurity().hasPermission(src.player().get(), SecurityPermissions.BUILD);
+// FIXME FABRIC            } else if (src.machine().isPresent()) {
+// FIXME FABRIC                final IActionHost te = src.machine().get();
+// FIXME FABRIC                final IGridNode n = te.getActionableNode();
+// FIXME FABRIC                if (n == null) {
+// FIXME FABRIC                    return false;
+// FIXME FABRIC                }
+// FIXME FABRIC
+// FIXME FABRIC                final int playerID = n.getPlayerID();
+// FIXME FABRIC                return gridProxy.getSecurity().hasPermission(playerID, SecurityPermissions.BUILD);
+// FIXME FABRIC            } else {
+// FIXME FABRIC                return false;
+// FIXME FABRIC            }
+// FIXME FABRIC        } catch (final GridAccessException gae) {
+// FIXME FABRIC            return false;
+// FIXME FABRIC        }
+// FIXME FABRIC    }
 
     public static ItemStack extractItemsByRecipe(final IEnergySource energySrc, final IActionSource mySrc,
             final IMEMonitor<IAEItemStack> src, final World w, final Recipe<CraftingInventory> r,
@@ -1094,7 +1089,8 @@ public class Platform {
 
     public static void notifyBlocksOfNeighbors(final World world, final BlockPos pos) {
         if (!world.isClient) {
-            TickHandler.INSTANCE.addCallable(world, new BlockUpdate(pos));
+            throw new IllegalStateException();
+            // FIXME FABRIC TickHandler.INSTANCE.addCallable(world, new BlockUpdate(pos));
         }
     }
 
@@ -1139,7 +1135,8 @@ public class Platform {
 
     public static boolean isSearchModeAvailable(SearchBoxMode mode) {
         if (mode.isRequiresJei()) {
-            return JEIFacade.instance().isEnabled();
+            throw new IllegalStateException();
+// FIXME FABRIC           return JEIFacade.instance().isEnabled();
         }
         return true;
     }

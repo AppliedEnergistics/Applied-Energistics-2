@@ -20,7 +20,7 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
@@ -45,7 +45,7 @@ import appeng.util.Platform;
  */
 public class InscriberContainer extends UpgradeableContainer implements IProgressProvider {
 
-    public static ContainerType<InscriberContainer> TYPE;
+    public static ScreenHandlerType<InscriberContainer> TYPE;
 
     private static final ContainerHelper<InscriberContainer, InscriberBlockEntity> helper = new ContainerHelper<>(
             InscriberContainer::new, InscriberBlockEntity.class);

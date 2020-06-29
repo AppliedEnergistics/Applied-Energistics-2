@@ -23,7 +23,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.RecipeType;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.hooks.BasicEventHooks;
 
@@ -96,7 +96,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
             ic.setStack(x, this.craftMatrix.getInvStack(x));
         }
 
-        final NonNullList<ItemStack> aitemstack = this.getRemainingItems(ic, playerIn.world);
+        final DefaultedList<ItemStack> aitemstack = this.getRemainingItems(ic, playerIn.world);
 
         ItemHandlerUtil.copy(ic, this.craftMatrix, false);
 
@@ -137,9 +137,9 @@ public class AppEngCraftingSlot extends AppEngSlot {
 
     // TODO: This is really hacky and NEEDS to be solved with a full container/gui
     // refactoring.
-    protected NonNullList<ItemStack> getRemainingItems(CraftingInventory ic, World world) {
+    protected DefaultedList<ItemStack> getRemainingItems(CraftingInventory ic, World world) {
         return world.getRecipeManager().getRecipe(RecipeType.CRAFTING, ic, world)
                 .map(iCraftingRecipe -> iCraftingRecipe.getRemainingItems(ic))
-                .orElse(NonNullList.withSize(9, ItemStack.EMPTY));
+                .orElse(DefaultedList.withSize(9, ItemStack.EMPTY));
     }
 }

@@ -16,7 +16,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.Material;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
@@ -35,11 +35,11 @@ import appeng.tile.misc.PaintSplotchesBlockEntity;
  */
 class PaintSplotchesBakedModel implements IDynamicBakedModel {
 
-    private static final Material TEXTURE_PAINT1 = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    private static final Material TEXTURE_PAINT1 = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier(AppEng.MOD_ID, "block/paint1"));
-    private static final Material TEXTURE_PAINT2 = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    private static final Material TEXTURE_PAINT2 = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier(AppEng.MOD_ID, "block/paint2"));
-    private static final Material TEXTURE_PAINT3 = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    private static final Material TEXTURE_PAINT3 = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier(AppEng.MOD_ID, "block/paint3"));
 
     private final Sprite[] textures;

@@ -27,7 +27,7 @@ import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.util.shape.VoxelShape;
@@ -60,7 +60,7 @@ public class MatrixFrameBlock extends AEBaseBlock {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> itemStacks) {
+    public void appendStacks(ItemGroup group, DefaultedList<ItemStack> itemStacks) {
         // do nothing
     }
 
@@ -87,7 +87,7 @@ public class MatrixFrameBlock extends AEBaseBlock {
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState state, BlockView reader, BlockPos pos) {
+    public boolean isTranslucent(BlockState state, BlockView reader, BlockPos pos) {
         return true;
     }
 

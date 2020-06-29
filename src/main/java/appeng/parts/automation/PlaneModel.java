@@ -31,7 +31,7 @@ import net.minecraft.client.render.model.IUnbakedModel;
 import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.Material;
 import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.Identifier;
 import net.minecraftforge.client.model.IModelConfiguration;
@@ -47,9 +47,9 @@ public class PlaneModel implements IModelGeometry<PlaneModel> {
     private final Material backTexture;
 
     public PlaneModel(Identifier frontTexture, Identifier sidesTexture, Identifier backTexture) {
-        this.frontTexture = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, frontTexture);
-        this.sidesTexture = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, sidesTexture);
-        this.backTexture = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, backTexture);
+        this.frontTexture = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX, frontTexture);
+        this.sidesTexture = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX, sidesTexture);
+        this.backTexture = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX, backTexture);
     }
 
     @Override

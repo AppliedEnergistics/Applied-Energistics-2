@@ -8,7 +8,7 @@ import com.mojang.datafixers.Dynamic;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.WorldAccess;
-import net.minecraft.world.chunk.IChunk;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.Heightmap;
@@ -41,7 +41,7 @@ public class ChargedQuartzOreFeature extends Feature<ChargedQuartzOreConfig> {
 
         BlockPos.Mutable bpos = new BlockPos.Mutable();
         int height = worldIn.getHeight(Heightmap.Type.WORLD_SURFACE_WG, pos.getX(), pos.getZ());
-        IChunk chunk = worldIn.getChunk(pos);
+        Chunk chunk = worldIn.getChunk(pos);
         for (int y = 0; y < height; y++) {
             bpos.setY(y);
             for (int x = chunkPos.getXStart(); x <= chunkPos.getXEnd(); x++) {

@@ -81,9 +81,9 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
         try {
             final IAEItemStack item = AEItemStack.fromPacket(data);
             final ItemStack is = item.createItemStack();
-            this.inv.setStackInSlot(0, is);
+            this.inv.setInvStack(0, is);
         } catch (final Throwable t) {
-            this.inv.setStackInSlot(0, ItemStack.EMPTY);
+            this.inv.setInvStack(0, ItemStack.EMPTY);
         }
         return c; // TESR doesn't need updates!
     }
@@ -121,7 +121,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
                 this.extractAEPower(this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG);
 
                 materials.certusQuartzCrystalCharged().maybeStack(myItem.getCount())
-                        .ifPresent(charged -> this.inv.setStackInSlot(0, charged));
+                        .ifPresent(charged -> this.inv.setInvStack(0, charged));
             }
         }
     }
@@ -160,12 +160,12 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
             if (AEApi.instance().definitions().materials().certusQuartzCrystal().isSameAs(held)
                     || Platform.isChargeable(held)) {
                 held = player.inventory.decrStackSize(player.inventory.currentItem, 1);
-                this.inv.setStackInSlot(0, held);
+                this.inv.setInvStack(0, held);
             }
         } else {
             final List<ItemStack> drops = new ArrayList<>();
             drops.add(myItem);
-            this.inv.setStackInSlot(0, ItemStack.EMPTY);
+            this.inv.setInvStack(0, ItemStack.EMPTY);
             Platform.spawnDrops(this.world, this.pos.offset(this.getForward()), drops);
         }
     }
@@ -222,7 +222,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
                     this.extractAEPower(this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG);
 
                     materials.certusQuartzCrystalCharged().maybeStack(myItem.getCount())
-                            .ifPresent(charged -> this.inv.setStackInSlot(0, charged));
+                            .ifPresent(charged -> this.inv.setInvStack(0, charged));
 
                     changed = true;
                 }

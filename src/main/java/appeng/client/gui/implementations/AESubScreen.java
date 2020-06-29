@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 import javax.annotation.Nullable;
 
 import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
@@ -34,7 +34,7 @@ import appeng.tile.storage.ChestBlockEntity;
 final class AESubScreen {
 
     private final AEBaseScreen<?> gui;
-    private final ContainerType<?> previousContainerType;
+    private final ScreenHandlerType<?> previousContainerType;
     private final ItemStack previousContainerIcon;
 
     /**

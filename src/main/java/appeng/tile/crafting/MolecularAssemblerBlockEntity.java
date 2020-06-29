@@ -132,7 +132,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
                 this.pushDirection = AEPartLocation.fromFacing(where);
 
                 for (int x = 0; x < table.size(); x++) {
-                    this.gridInv.setStackInSlot(x, table.getStack(x));
+                    this.gridInv.setInvStack(x, table.getStack(x));
                 }
 
                 this.updateSleepiness();
@@ -331,7 +331,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     public void getDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
         super.getDrops(w, pos, drops);
 
-        for (int h = 0; h < this.upgrades.getSlots(); h++) {
+        for (int h = 0; h < this.upgrades.getSlotCount(); h++) {
             final ItemStack is = this.upgrades.getInvStack(h);
             if (!is.isEmpty()) {
                 drops.add(is);
@@ -412,7 +412,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
                 this.pushOut(output.copy());
 
                 for (int x = 0; x < this.craftingInv.size(); x++) {
-                    this.gridInv.setStackInSlot(x, Platform.getRecipeRemainder(this.craftingInv.getStack(x)));
+                    this.gridInv.setInvStack(x, Platform.getRecipeRemainder(this.craftingInv.getStack(x)));
                 }
 
                 if (ItemHandlerUtil.isEmpty(this.patternInv)) {
@@ -446,8 +446,8 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
                 final ItemStack is = this.gridInv.getInvStack(x);
                 if (!is.isEmpty()) {
                     if (this.myPlan == null || !this.myPlan.isValidItemForSlot(x, is, this.world)) {
-                        this.gridInv.setStackInSlot(9, is);
-                        this.gridInv.setStackInSlot(x, ItemStack.EMPTY);
+                        this.gridInv.setInvStack(9, is);
+                        this.gridInv.setInvStack(x, ItemStack.EMPTY);
                         this.saveChanges();
                         return;
                     }
@@ -479,7 +479,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             this.recalculatePlan();
         }
 
-        this.gridInv.setStackInSlot(9, output);
+        this.gridInv.setInvStack(9, output);
     }
 
     private ItemStack pushTo(ItemStack output, final Direction d) {

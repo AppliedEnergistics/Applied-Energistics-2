@@ -20,7 +20,7 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.network.PacketByteBuf;
 
 import appeng.container.AEBaseContainer;
@@ -30,7 +30,7 @@ import appeng.tile.storage.DriveBlockEntity;
 
 public class DriveContainer extends AEBaseContainer {
 
-    public static ContainerType<DriveContainer> TYPE;
+    public static ScreenHandlerType<DriveContainer> TYPE;
 
     private static final ContainerHelper<DriveContainer, DriveBlockEntity> helper = new ContainerHelper<>(
             DriveContainer::new, DriveBlockEntity.class);

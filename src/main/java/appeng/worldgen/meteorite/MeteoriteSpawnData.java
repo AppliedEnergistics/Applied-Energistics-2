@@ -12,7 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.storage.WorldSavedData;
+import net.minecraft.world.PersistentState;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
@@ -144,11 +144,11 @@ public final class MeteoriteSpawnData {
             serverWorld = server.getWorld(world.getDimension().getType());
         }
 
-        SavedData savedData = serverWorld.getSavedData().getOrCreate(SavedData::new, NAME);
+        SavedData savedData = serverWorld.getPersistentStateManager().getOrCreate(SavedData::new, NAME);
         return new MeteoriteSpawnData(savedData);
     }
 
-    private static class SavedData extends WorldSavedData {
+    private static class SavedData extends PersistentState {
 
         private LongOpenHashSet generated;
         private CompoundTag spawns;
@@ -160,13 +160,13 @@ public final class MeteoriteSpawnData {
         }
 
         @Override
-        public synchronized void read(CompoundTag nbt) {
+        public synchronized void fromTag(CompoundTag nbt) {
             this.generated = new LongOpenHashSet(nbt.getLongArray("generated"));
             this.spawns = nbt.getCompound("spawns");
         }
 
         @Override
-        public synchronized CompoundTag write(CompoundTag compound) {
+        public synchronized CompoundTag toTag(CompoundTag compound) {
             compound.putLongArray("generated", generated.toLongArray());
             compound.put("spawns", spawns);
             return compound;

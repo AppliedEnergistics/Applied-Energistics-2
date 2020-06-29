@@ -20,7 +20,7 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
@@ -33,7 +33,7 @@ import appeng.container.slot.RestrictedInputSlot;
 
 public class NetworkToolContainer extends AEBaseContainer {
 
-    public static ContainerType<NetworkToolContainer> TYPE;
+    public static ScreenHandlerType<NetworkToolContainer> TYPE;
 
     private static final ContainerHelper<NetworkToolContainer, INetworkTool> helper = new ContainerHelper<>(
             NetworkToolContainer::new, INetworkTool.class);

@@ -30,6 +30,7 @@ import java.util.WeakHashMap;
 import com.google.common.collect.HashMultimap;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.util.InputMappings;
@@ -106,7 +107,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
             final Object lineObj = this.lines.get(ex + x);
             if (lineObj instanceof ClientDCInternalInv) {
                 final ClientDCInternalInv inv = (ClientDCInternalInv) lineObj;
-                for (int z = 0; z < inv.getInventory().getSlots(); z++) {
+                for (int z = 0; z < inv.getInventory().getSlotCount(); z++) {
                     this.container.inventorySlots.add(new SlotDisconnected(inv, z, z * 18 + 8, 1 + offset));
                 }
             } else if (lineObj instanceof String) {
@@ -153,7 +154,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
                 final ClientDCInternalInv inv = (ClientDCInternalInv) lineObj;
 
                 RenderSystem.color4f(1, 1, 1, 1);
-                final int width = inv.getInventory().getSlots() * 18;
+                final int width = inv.getInventory().getSlotCount() * 18;
                 GuiUtils.drawTexturedModalRect(offsetX + 7, offsetY + offset, 7, 139, width, 18, getBlitOffset());
             }
             offset += 18;
@@ -179,7 +180,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
 
-        InputMappings.Input input = InputMappings.getInputByCode(keyCode, scanCode);
+        InputUtil.Key input = InputMappings.getInputByCode(keyCode, scanCode);
 
         if (keyCode != GLFW.GLFW_KEY_ESCAPE) {
             if (AppEng.proxy.isActionKey(ActionKey.TOGGLE_FOCUS, input)) {
@@ -211,7 +212,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
             this.refreshList = true;
         }
 
-        for (final Object oKey : in.keySet()) {
+        for (final Object oKey : in.getKeys()) {
             final String key = (String) oKey;
             if (key.startsWith("=")) {
                 try {
@@ -220,10 +221,10 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
                     Text un = Text.Serializer.fromJson(invData.getString("un"));
                     final ClientDCInternalInv current = this.getById(id, invData.getLong("sortBy"), un);
 
-                    for (int x = 0; x < current.getInventory().getSlots(); x++) {
+                    for (int x = 0; x < current.getInventory().getSlotCount(); x++) {
                         final String which = Integer.toString(x);
                         if (invData.contains(which)) {
-                            current.getInventory().setStackInSlot(x, ItemStack.fromTag(invData.getCompound(which)));
+                            current.getInventory().setInvStack(x, ItemStack.fromTag(invData.getCompound(which)));
                         }
                     }
                 } catch (final NumberFormatException ignored) {

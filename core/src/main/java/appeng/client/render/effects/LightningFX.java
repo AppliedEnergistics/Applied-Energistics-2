@@ -20,22 +20,19 @@ package appeng.client.render.effects;
 
 import java.util.Random;
 
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.render.VertexConsumer;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.particle.IAnimatedSprite;
-import net.minecraft.client.particle.IParticleFactory;
-import net.minecraft.client.particle.IParticleRenderType;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.SpriteBillboardParticle;
-import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.particle.*;
+import net.minecraft.client.particle.ParticleTextureSheet;
+import net.minecraft.client.render.Camera;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 
 @Environment(EnvType.CLIENT)
 public class LightningFX extends SpriteBillboardParticle {
@@ -49,19 +46,19 @@ public class LightningFX extends SpriteBillboardParticle {
     private final double[] verticesWithUV = new double[3];
     private boolean hasData = false;
 
-    private LightningFX(final World w, final double x, final double y, final double z, final double r, final double g,
+    private LightningFX(ClientWorld world, final double x, final double y, final double z, final double r, final double g,
             final double b) {
-        this(w, x, y, z, r, g, b, 6);
+        this(world, x, y, z, r, g, b, 6);
         this.regen();
     }
 
-    protected LightningFX(final World w, final double x, final double y, final double z, final double r, final double g,
+    protected LightningFX(ClientWorld world, final double x, final double y, final double z, final double r, final double g,
             final double b, final int maxAge) {
-        super(w, x, y, z, r, g, b);
+        super(world, x, y, z, r, g, b);
         this.precomputedSteps = new double[LightningFX.STEPS][3];
-        this.motionX = 0;
-        this.motionY = 0;
-        this.motionZ = 0;
+        this.velocityX = 0;
+        this.velocityY = 0;
+        this.velocityZ = 0;
         this.maxAge = maxAge;
     }
 
@@ -84,40 +81,40 @@ public class LightningFX extends SpriteBillboardParticle {
     }
 
     @Override
-    public IParticleRenderType getRenderType() {
+    public ParticleTextureSheet getType() {
         // TODO: FIXME
-        return IParticleRenderType.PARTICLE_SHEET_OPAQUE;
+        return ParticleTextureSheet.PARTICLE_SHEET_OPAQUE;
     }
 
     @Override
     public void tick() {
-        this.prevX = this.posX;
-        this.prevY = this.posY;
-        this.prevZ = this.posZ;
+        this.prevPosX = this.x;
+        this.prevPosY = this.y;
+        this.prevPosZ = this.z;
 
         if (this.age++ >= this.maxAge) {
-            this.setExpired();
+            this.markDead();
         }
 
-        this.motionY -= 0.04D * this.particleGravity;
-        this.move(this.motionX, this.motionY, this.motionZ);
-        this.motionX *= 0.9800000190734863D;
-        this.motionY *= 0.9800000190734863D;
-        this.motionZ *= 0.9800000190734863D;
+        this.velocityY -= 0.04D * this.gravityStrength;
+        this.move(this.velocityX, this.velocityY, this.velocityZ);
+        this.velocityX *= 0.9800000190734863D;
+        this.velocityY *= 0.9800000190734863D;
+        this.velocityZ *= 0.9800000190734863D;
     }
 
     @Override
-    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
-        Vec3d vec3d = renderInfo.getProjectedView();
-        float centerX = (float) (MathHelper.lerp(partialTicks, this.prevX, this.posX) - vec3d.getX());
-        float centerY = (float) (MathHelper.lerp(partialTicks, this.prevY, this.posY) - vec3d.getY());
-        float centerZ = (float) (MathHelper.lerp(partialTicks, this.prevZ, this.posZ) - vec3d.getZ());
+    public void buildGeometry(VertexConsumer buffer, Camera camera, float partialTicks) {
+        Vec3d vec3d = camera.getPos();
+        float centerX = (float) (MathHelper.lerp(partialTicks, this.prevPosX, this.x) - vec3d.getX());
+        float centerY = (float) (MathHelper.lerp(partialTicks, this.prevPosY, this.y) - vec3d.getY());
+        float centerZ = (float) (MathHelper.lerp(partialTicks, this.prevPosZ, this.z) - vec3d.getZ());
 
         final float j = 1.0f;
-        float red = this.particleRed * j * 0.9f;
-        float green = this.particleGreen * j * 0.95f;
-        float blue = this.particleBlue * j;
-        final float alpha = this.particleAlpha;
+        float red = this.colorRed * j * 0.9f;
+        float green = this.colorGreen * j * 0.95f;
+        float blue = this.colorBlue * j;
+        final float alpha = this.colorAlpha;
 
         if (this.age == 3) {
             this.regen();
@@ -126,7 +123,7 @@ public class LightningFX extends SpriteBillboardParticle {
         float u = this.getMinU() + (this.getMaxU() - this.getMinU()) / 2;
         float v = this.getMinV() + (this.getMaxV() - this.getMinV()) / 2;
 
-        double scale = 0.02;// 0.02F * this.particleScale;
+        double scale = 0.02;// 0.02F * this.scale;
 
         final double[] a = new double[3];
         final double[] b = new double[3];
@@ -147,17 +144,17 @@ public class LightningFX extends SpriteBillboardParticle {
 //				FIXME offX *= 0.001;
 //				FIXME offY *= 0.001;
 //				FIXME offZ *= 0.001;
-                red = this.particleRed * j * 0.4f;
-                green = this.particleGreen * j * 0.25f;
-                blue = this.particleBlue * j * 0.45f;
+                red = this.colorRed * j * 0.4f;
+                green = this.colorGreen * j * 0.25f;
+                blue = this.colorBlue * j * 0.45f;
             } else {
 //				FIXME offX = 0;
 //				FIXME offY = 0;
 //				FIXME offZ = 0;
                 scale = 0.02;
-                red = this.particleRed * j * 0.9f;
-                green = this.particleGreen * j * 0.65f;
-                blue = this.particleBlue * j * 0.85f;
+                red = this.colorRed * j * 0.9f;
+                green = this.colorGreen * j * 0.65f;
+                blue = this.colorBlue * j * 0.85f;
             }
 
             for (int cycle = 0; cycle < 3; cycle++) {
@@ -221,17 +218,17 @@ public class LightningFX extends SpriteBillboardParticle {
         this.hasData = false;
     }
 
-    private void draw(float red, float green, float blue, final IVertexBuilder tess, final double[] a, final double[] b,
-            final float u, final float v) {
+    private void draw(float red, float green, float blue, final VertexConsumer tess, final double[] a, final double[] b,
+                      final float u, final float v) {
         if (this.hasData) {
-            tess.pos(a[0], a[1], a[2]).tex(u, v).color(red, green, blue, this.particleAlpha)
-                    .lightmap(BRIGHTNESS, BRIGHTNESS).endVertex();
-            tess.pos(this.vertices[0], this.vertices[1], this.vertices[2]).tex(u, v)
-                    .color(red, green, blue, this.particleAlpha).lightmap(BRIGHTNESS, BRIGHTNESS).endVertex();
-            tess.pos(this.verticesWithUV[0], this.verticesWithUV[1], this.verticesWithUV[2]).tex(u, v)
-                    .color(red, green, blue, this.particleAlpha).lightmap(BRIGHTNESS, BRIGHTNESS).endVertex();
-            tess.pos(b[0], b[1], b[2]).tex(u, v).color(red, green, blue, this.particleAlpha)
-                    .lightmap(BRIGHTNESS, BRIGHTNESS).endVertex();
+            tess.vertex(a[0], a[1], a[2]).texture(u, v).color(red, green, blue, this.colorAlpha)
+                    .light(BRIGHTNESS, BRIGHTNESS).next();
+            tess.vertex(this.vertices[0], this.vertices[1], this.vertices[2]).texture(u, v)
+                    .color(red, green, blue, this.colorAlpha).light(BRIGHTNESS, BRIGHTNESS).next();
+            tess.vertex(this.verticesWithUV[0], this.verticesWithUV[1], this.verticesWithUV[2]).texture(u, v)
+                    .color(red, green, blue, this.colorAlpha).light(BRIGHTNESS, BRIGHTNESS).next();
+            tess.vertex(b[0], b[1], b[2]).texture(u, v).color(red, green, blue, this.colorAlpha)
+                    .light(BRIGHTNESS, BRIGHTNESS).next();
         }
         this.hasData = true;
         for (int x = 0; x < 3; x++) {
@@ -245,18 +242,18 @@ public class LightningFX extends SpriteBillboardParticle {
     }
 
     @Environment(EnvType.CLIENT)
-    public static class Factory implements IParticleFactory<DefaultParticleType> {
-        private final IAnimatedSprite spriteSet;
+    public static class Factory implements ParticleFactory<DefaultParticleType> {
+        private final SpriteProvider spriteSet;
 
-        public Factory(IAnimatedSprite spriteSet) {
+        public Factory(SpriteProvider spriteSet) {
             this.spriteSet = spriteSet;
         }
 
         @Override
-        public Particle makeParticle(DefaultParticleType typeIn, World worldIn, double x, double y, double z,
-                                     double xSpeed, double ySpeed, double zSpeed) {
-            LightningFX lightningFX = new LightningFX(worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
-            lightningFX.selectSpriteRandomly(this.spriteSet);
+        public Particle createParticle(DefaultParticleType type, ClientWorld world, double x, double y, double z,
+                                       double xSpeed, double ySpeed, double zSpeed) {
+            LightningFX lightningFX = new LightningFX(world, x, y, z, xSpeed, ySpeed, zSpeed);
+            lightningFX.setSprite(this.spriteSet);
             return lightningFX;
         }
     }

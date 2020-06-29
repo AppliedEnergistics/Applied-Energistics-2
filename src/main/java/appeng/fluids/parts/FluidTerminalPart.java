@@ -19,7 +19,7 @@
 package appeng.fluids.parts;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
@@ -51,7 +51,7 @@ public class FluidTerminalPart extends AbstractTerminalPart {
     }
 
     @Override
-    public ContainerType<?> getContainerType(PlayerEntity player) {
+    public ScreenHandlerType<?> getContainerType(PlayerEntity player) {
         return FluidTerminalContainer.TYPE;
     }
 

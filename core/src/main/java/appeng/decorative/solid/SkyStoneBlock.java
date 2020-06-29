@@ -18,22 +18,15 @@
 
 package appeng.decorative.solid;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.WorldAccess;
-import net.minecraft.world.World;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraftforge.common.MinecraftForge;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-
 import appeng.block.AEBaseBlock;
 import appeng.core.worlddata.WorldData;
+import net.minecraft.block.BlockState;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 
 public class SkyStoneBlock extends AEBaseBlock {
     private static final float BREAK_SPEAK_SCALAR = 0.1f;
@@ -43,47 +36,50 @@ public class SkyStoneBlock extends AEBaseBlock {
     public SkyStoneBlock(SkystoneType type, Settings props) {
         super(props);
         this.type = type;
-
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
-    @SubscribeEvent
-    public void breakFaster(final PlayerEvent.BreakSpeed event) {
-        if (event.getState().getBlock() == this && event.getPlayer() != null) {
-            final ItemStack is = event.getPlayer().getItemStackFromSlot(EquipmentSlotType.MAINHAND);
-            int level = -1;
-
-            if (!is.isEmpty()) {
-                level = is.getItem().getHarvestLevel(is, FabricToolTags.PICKAXES, event.getPlayer(), event.getState());
-            }
-
-            if (this.type != SkystoneType.STONE || level >= 3 || event.getOriginalSpeed() > BREAK_SPEAK_THRESHOLD) {
-                event.setNewSpeed(event.getNewSpeed() / BREAK_SPEAK_SCALAR);
-            }
-        }
-    }
+// FIXME FABRIC
+//    @SubscribeEvent
+//    public void breakFaster(final PlayerEvent.BreakSpeed event) {
+//        if (event.getState().getBlock() == this && event.getPlayer() != null) {
+//            final ItemStack is = event.getPlayer().getItemStackFromSlot(EquipmentSlot.MAINHAND);
+//            int level = -1;
+//
+//            if (!is.isEmpty()) {
+//                level = is.getItem().getHarvestLevel(is, FabricToolTags.PICKAXES, event.getPlayer(), event.getState());
+//            }
+//
+//            if (this.type != SkystoneType.STONE || level >= 3 || event.getOriginalSpeed() > BREAK_SPEAK_THRESHOLD) {
+//                event.setNewSpeed(event.getNewSpeed() / BREAK_SPEAK_SCALAR);
+//            }
+//        }
+//    }
 
     @Override
     public BlockState getStateForNeighborUpdate(BlockState stateIn, Direction facing, BlockState facingState, WorldAccess worldIn,
             BlockPos currentPos, BlockPos facingPos) {
         if (worldIn instanceof ServerWorld) {
-            WorldData.instance().compassData().service().updateArea(worldIn, new ChunkPos(currentPos),
+            ServerWorld serverWorld = (ServerWorld) worldIn;
+            WorldData.instance().compassData().service().updateArea(serverWorld, new ChunkPos(currentPos),
                     currentPos.getY());
         }
 
         return super.getStateForNeighborUpdate(stateIn, facing, facingState, worldIn, currentPos, facingPos);
     }
 
+
+
     @Override
-    public void onReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onStateReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
         if (newState.getBlock() == state.getBlock()) {
             return; // Just a block state change
         }
 
-        super.onReplaced(state, w, pos, newState, isMoving);
+        super.onStateReplaced(state, w, pos, newState, isMoving);
 
         if (w instanceof ServerWorld) {
-            WorldData.instance().compassData().service().updateArea(w, new ChunkPos(pos), pos.getY());
+            ServerWorld serverWorld = (ServerWorld) w;
+            WorldData.instance().compassData().service().updateArea(serverWorld, new ChunkPos(pos), pos.getY());
         }
     }
 

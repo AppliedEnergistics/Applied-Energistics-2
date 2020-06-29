@@ -20,7 +20,7 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.network.PacketByteBuf;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
@@ -33,7 +33,7 @@ import appeng.tile.grindstone.GrinderBlockEntity;
 
 public class GrinderContainer extends AEBaseContainer {
 
-    public static ContainerType<GrinderContainer> TYPE;
+    public static ScreenHandlerType<GrinderContainer> TYPE;
 
     private static final ContainerHelper<GrinderContainer, GrinderBlockEntity> helper = new ContainerHelper<>(
             GrinderContainer::new, GrinderBlockEntity.class);

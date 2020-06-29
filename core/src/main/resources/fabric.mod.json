@@ -32,5 +32,6 @@
   },
   "suggests": {
     "flamingo": "*"
-  }
+  },
+  "accessWidener" : "appliedenergistics2.accesswidener"
 }

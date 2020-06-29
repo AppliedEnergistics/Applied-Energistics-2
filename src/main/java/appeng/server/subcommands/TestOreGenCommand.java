@@ -36,8 +36,7 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.ChunkStatus;
-import net.minecraft.world.chunk.IChunk;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.server.world.ServerWorld;
 
 import appeng.core.Api;
@@ -66,9 +65,9 @@ public class TestOreGenCommand implements ISubCommand {
         try {
             ServerPlayerEntity player = sender.asPlayer();
             world = player.getServerWorld();
-            center = new BlockPos(player.getX(), 0, player.getPosZ());
+            center = new BlockPos(player.getX(), 0, player.getZ());
         } catch (CommandSyntaxException e) {
-            world = srv.getWorld(DimensionType.OVERWORLD);
+            world = srv.getOverworld();
             center = world.getSpawnPoint();
         }
 
@@ -98,7 +97,7 @@ public class TestOreGenCommand implements ISubCommand {
     }
 
     private void checkChunk(ServerCommandSource sender, ServerWorld world, ChunkPos cp, Stats stats) {
-        IChunk chunk = world.getChunk(cp.x, cp.z, ChunkStatus.FULL, false);
+        Chunk chunk = world.getChunk(cp.x, cp.z, ChunkStatus.FULL, false);
         if (chunk == null) {
             sendLine(sender, "Skipping chunk %s", cp);
             return;

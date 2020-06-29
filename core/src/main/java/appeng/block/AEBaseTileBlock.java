@@ -25,6 +25,8 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import alexiil.mc.lib.attributes.AttributeList;
+import alexiil.mc.lib.attributes.AttributeProvider;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import com.google.common.collect.Lists;
 
@@ -49,15 +51,13 @@ import net.minecraft.world.World;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.util.IOrientable;
-import appeng.block.networking.CableBusBlock;
 import appeng.tile.AEBaseInvBlockEntity;
 import appeng.tile.AEBaseBlockEntity;
-import appeng.tile.networking.CableBusBlockEntity;
 import appeng.tile.storage.SkyChestBlockEntity;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
-public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBaseBlock implements BlockEntityProvider {
+public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBaseBlock implements BlockEntityProvider, AttributeProvider {
 
     @Nonnull
     private Class<T> blockEntityClass;
@@ -205,7 +205,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBas
                     return ActionResult.FAIL;
                 }
 
-                if (tile instanceof CableBusBlockEntity || tile instanceof SkyChestBlockEntity) {
+                if (/* FIXME FABRIC tile instanceof CableBusBlockEntity || */ tile instanceof SkyChestBlockEntity) {
                     return ActionResult.FAIL;
                 }
 
@@ -232,7 +232,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBas
                 return ActionResult.FAIL;
             }
 
-            if (heldItem.getItem() instanceof IMemoryCard && !(this instanceof CableBusBlock)) {
+            if (heldItem.getItem() instanceof IMemoryCard /* FIXME FABRIC && !(this instanceof CableBusBlock)*/) {
                 final IMemoryCard memoryCard = (IMemoryCard) heldItem.getItem();
                 final AEBaseBlockEntity tileEntity = this.getBlockEntity(world, pos);
 
@@ -297,6 +297,15 @@ public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBas
      */
     protected BlockState updateBlockStateFromTileEntity(BlockState currentState, T te) {
         return currentState;
+    }
+
+    // Gives our tile entity a chance to provide it's attributes
+    @Override
+    public void addAllAttributes(World world, BlockPos pos, BlockState state, AttributeList<?> to) {
+        T te = getBlockEntity(world, pos);
+        if (te != null) {
+            te.addAllAttributes(world, pos, state, to);
+        }
     }
 
 }

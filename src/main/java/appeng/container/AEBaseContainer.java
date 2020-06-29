@@ -28,10 +28,10 @@ import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -96,13 +96,13 @@ public abstract class AEBaseContainer extends Container {
     // Slots that were created to represent the player inventory
     private List<Slot> playerInventorySlots = null;
 
-    public AEBaseContainer(ContainerType<?> containerType, int id, final PlayerInventory ip, final BlockEntity myTile,
-            final IPart myPart) {
+    public AEBaseContainer(ScreenHandlerType<?> containerType, int id, final PlayerInventory ip, final BlockEntity myTile,
+                           final IPart myPart) {
         this(containerType, id, ip, myTile, myPart, null);
     }
 
-    public AEBaseContainer(ContainerType<?> containerType, int id, final PlayerInventory ip, final BlockEntity myTile,
-            final IPart myPart, final IGuiItemObject gio) {
+    public AEBaseContainer(ScreenHandlerType<?> containerType, int id, final PlayerInventory ip, final BlockEntity myTile,
+                           final IPart myPart, final IGuiItemObject gio) {
         super(containerType, id);
         this.invPlayer = ip;
         this.tileEntity = myTile;
@@ -112,7 +112,7 @@ public abstract class AEBaseContainer extends Container {
         this.prepareSync();
     }
 
-    public AEBaseContainer(ContainerType<?> containerType, int id, final PlayerInventory ip, final Object anchor) {
+    public AEBaseContainer(ScreenHandlerType<?> containerType, int id, final PlayerInventory ip, final Object anchor) {
         super(containerType, id);
         this.invPlayer = ip;
         this.tileEntity = anchor instanceof BlockEntity ? (BlockEntity) anchor : null;

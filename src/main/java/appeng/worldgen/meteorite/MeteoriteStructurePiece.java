@@ -90,7 +90,7 @@ public class MeteoriteStructurePiece extends StructurePiece {
         MeteoritePlacer placer = new MeteoritePlacer(world, settings, bounds);
         placer.place();
 
-        WorldData.instance().compassData().service().updateArea(world, chunkPos); // FIXME: We know the y-range here...
+        WorldData.instance().compassData().service().tryUpdateArea(world, chunkPos); // FIXME: We know the y-range here...
         return true;
     }
 }

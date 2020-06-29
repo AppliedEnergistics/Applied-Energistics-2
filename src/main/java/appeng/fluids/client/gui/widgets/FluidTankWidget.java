@@ -23,7 +23,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.Fluid;
 import net.fabricmc.api.Environment;
@@ -63,8 +63,8 @@ public class FluidTankWidget extends Widget implements ITooltip {
                 RenderSystem.color3f(red, green, blue);
 
                 MinecraftClient mc = MinecraftClient.getInstance();
-                mc.getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-                final Sprite sprite = mc.getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE)
+                mc.getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
+                final Sprite sprite = mc.getAtlasSpriteGetter(SpriteAtlasTexture.BLOCK_ATLAS_TEX)
                         .apply(attributes.getStillTexture(fluidStack.getFluidStack()));
 
                 final int scaledHeight = (int) (this.height

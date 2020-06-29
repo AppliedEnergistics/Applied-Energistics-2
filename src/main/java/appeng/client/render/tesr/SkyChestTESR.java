@@ -20,10 +20,10 @@ package appeng.client.render.tesr;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.Atlases;
@@ -73,23 +73,23 @@ public class SkyChestTESR extends BlockEntityRenderer<SkyChestBlockEntity> {
         matrixStackIn.push();
         float f = tileEntityIn.getForward().getHorizontalAngle();
         matrixStackIn.translate(0.5D, 0.5D, 0.5D);
-        matrixStackIn.rotate(Vector3f.YP.rotationDegrees(-f));
+        matrixStackIn.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(-f));
         matrixStackIn.translate(-0.5D, -0.5D, -0.5D);
 
         float f1 = tileEntityIn.getLidAngle(partialTicks);
         f1 = 1.0F - f1;
         f1 = 1.0F - f1 * f1 * f1;
         Material material = this.getMaterial(tileEntityIn);
-        IVertexBuilder ivertexbuilder = material.getBuffer(bufferIn, RenderLayer::getEntityCutout);
+        VertexConsumer ivertexbuilder = material.getBuffer(bufferIn, RenderLayer::getEntityCutout);
         this.renderModels(matrixStackIn, ivertexbuilder, this.singleLid, this.singleLatch, this.singleBottom, f1,
                 combinedLightIn, combinedOverlayIn);
 
         matrixStackIn.pop();
     }
 
-    private void renderModels(MatrixStack matrixStackIn, IVertexBuilder bufferIn, ModelRenderer chestLid,
-            ModelRenderer chestLatch, ModelRenderer chestBottom, float lidAngle, int combinedLightIn,
-            int combinedOverlayIn) {
+    private void renderModels(MatrixStack matrixStackIn, VertexConsumer bufferIn, ModelRenderer chestLid,
+                              ModelRenderer chestLatch, ModelRenderer chestBottom, float lidAngle, int combinedLightIn,
+                              int combinedOverlayIn) {
         chestLid.rotateAngleX = -(lidAngle * 1.5707964F);
         chestLatch.rotateAngleX = chestLid.rotateAngleX;
         chestLid.render(matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);

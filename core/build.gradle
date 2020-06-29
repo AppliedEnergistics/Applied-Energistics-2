@@ -1,4 +1,3 @@
-
 archivesBaseName = artifact_basename + "-core"
 
 dependencies {

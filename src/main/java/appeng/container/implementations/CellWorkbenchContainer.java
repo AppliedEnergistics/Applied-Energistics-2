@@ -23,8 +23,8 @@ import java.util.Iterator;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -56,7 +56,7 @@ import appeng.util.iterators.NullIterator;
 
 public class CellWorkbenchContainer extends UpgradeableContainer {
 
-    public static ContainerType<CellWorkbenchContainer> TYPE;
+    public static ScreenHandlerType<CellWorkbenchContainer> TYPE;
 
     private static final ContainerHelper<CellWorkbenchContainer, CellWorkbenchBlockEntity> helper = new ContainerHelper<>(
             CellWorkbenchContainer::new, CellWorkbenchBlockEntity.class);

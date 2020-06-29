@@ -34,7 +34,7 @@ import net.minecraft.client.render.model.IUnbakedModel;
 import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.Material;
 import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.Identifier;
 import net.minecraftforge.client.model.IModelConfiguration;
@@ -65,7 +65,7 @@ public class SpatialPylonModel implements IModelGeometry<SpatialPylonModel> {
     }
 
     private static Material getTexturePath(SpatialPylonTextureType type) {
-        return new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+        return new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
                 new Identifier(AppEng.MOD_ID, "block/spatial_pylon/" + type.name().toLowerCase()));
     }
 

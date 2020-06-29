@@ -29,8 +29,8 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -62,8 +62,8 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
                             continue;
                         }
 
-                        final NonNullList<ItemStack> list = NonNullList.create();
-                        mi.fillItemGroup(mi.getGroup(), list);
+                        final DefaultedList<ItemStack> list = DefaultedList.create();
+                        mi.appendStacks(mi.getGroup(), list);
                         POSSIBLE_ITEMS.addAll(list);
                     }
                 }

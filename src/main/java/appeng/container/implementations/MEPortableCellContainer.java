@@ -20,7 +20,7 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 
@@ -32,7 +32,7 @@ import appeng.container.interfaces.IInventorySlotAware;
 
 public class MEPortableCellContainer extends MEMonitorableContainer {
 
-    public static ContainerType<MEPortableCellContainer> TYPE;
+    public static ScreenHandlerType<MEPortableCellContainer> TYPE;
 
     private static final ContainerHelper<MEPortableCellContainer, IPortableCell> helper = new ContainerHelper<>(
             MEPortableCellContainer::new, IPortableCell.class);
@@ -55,8 +55,8 @@ public class MEPortableCellContainer extends MEMonitorableContainer {
         this(TYPE, id, ip, monitorable);
     }
 
-    protected MEPortableCellContainer(ContainerType<? extends MEPortableCellContainer> type, int id,
-            final PlayerInventory ip, final IPortableCell monitorable) {
+    protected MEPortableCellContainer(ScreenHandlerType<? extends MEPortableCellContainer> type, int id,
+                                      final PlayerInventory ip, final IPortableCell monitorable) {
         super(type, id, ip, monitorable, false);
         if (monitorable instanceof IInventorySlotAware) {
             final int slotIndex = ((IInventorySlotAware) monitorable).getInventorySlot();

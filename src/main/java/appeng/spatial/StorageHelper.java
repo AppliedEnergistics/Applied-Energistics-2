@@ -20,7 +20,6 @@ package appeng.spatial;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -33,7 +32,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraftforge.common.util.ITeleporter;
 
 import appeng.api.AEApi;
 import appeng.api.util.WorldCoord;
@@ -64,7 +62,7 @@ public class StorageHelper {
 
         try {
             oldWorld = (ServerWorld) entity.world;
-            newWorld = (ServerWorld) link.dim;
+            newWorld = link.dim;
         } catch (final Throwable e) {
             return entity;
         }
@@ -80,12 +78,12 @@ public class StorageHelper {
         }
 
         // Are we riding something? Teleport it instead.
-        if (entity.isPassenger()) {
-            return this.teleportEntity(entity.getRidingEntity(), link);
+        if (entity.hasVehicle()) {
+            return this.teleportEntity(entity.getVehicle(), link);
         }
 
         // Is something riding us? Handle it first.
-        final List<Entity> passengers = entity.getPassengers();
+        final List<Entity> passengers = entity.getPassengerList();
         final List<Entity> passengersOnOtherSide = new ArrayList<>(passengers.size());
         for (Entity passenger : passengers) {
             passenger.stopRiding();
@@ -94,14 +92,19 @@ public class StorageHelper {
         // We keep track of all so we can remount them on the other side.
 
         // load the chunk!
-        newWorld.getChunkProvider().getChunk(MathHelper.floor(link.x) >> 4, MathHelper.floor(link.z) >> 4,
+        newWorld.getChunkManager().getChunk(MathHelper.floor(link.x) >> 4, MathHelper.floor(link.z) >> 4,
                 ChunkStatus.FULL, true);
 
         if (entity instanceof ServerPlayerEntity && link.dim.getDimension() instanceof StorageCellDimension) {
             AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger((ServerPlayerEntity) entity);
         }
 
-        entity.changeDimension(link.dim.getDimension().getType(), new METeleporter(link));
+        // FIXME FABRIC new METeleporter(link)
+        float yaw = entity.yaw;
+        entity = entity.changeDimension(link.dim);
+        entity.yaw = yaw;
+        entity.refreshPositionAfterTeleport(link.x, link.y, link.z);
+        entity.setVelocity(0, 0, 0);
 
         if (!passengersOnOtherSide.isEmpty()) {
             for (Entity passanger : passengersOnOtherSide) {
@@ -136,7 +139,7 @@ public class StorageHelper {
         }
     }
 
-    public void swapRegions(final World srcWorld, final int srcX, final int srcY, final int srcZ, final World dstWorld,
+    public void swapRegions(final ServerWorld srcWorld, final int srcX, final int srcY, final int srcZ, final ServerWorld dstWorld,
             final int dstX, final int dstY, final int dstZ, final int scaleX, final int scaleY, final int scaleZ) {
         AEApi.instance().definitions().blocks().matrixFrame().maybeBlock()
                 .ifPresent(matrixFrameBlock -> this.transverseEdges(dstX - 1, dstY - 1, dstZ - 1, dstX + scaleX + 1,
@@ -157,8 +160,8 @@ public class StorageHelper {
         // do nearly all the work... swaps blocks, tiles, and block ticks
         cSrc.swap(cDst);
 
-        final List<Entity> srcE = srcWorld.getEntitiesWithinAABB(Entity.class, srcBox);
-        final List<Entity> dstE = dstWorld.getEntitiesWithinAABB(Entity.class, dstBox);
+        final List<Entity> srcE = srcWorld.getEntitiesIncludingUngeneratedChunks(Entity.class, srcBox);
+        final List<Entity> dstE = dstWorld.getEntitiesIncludingUngeneratedChunks(Entity.class, dstBox);
 
         for (final Entity e : dstE) {
             this.teleportEntity(e, new TelDestination(srcWorld, srcBox, e.getX(), e.getY(), e.getZ(),
@@ -222,12 +225,12 @@ public class StorageHelper {
     }
 
     private static class TelDestination {
-        private final World dim;
+        private final ServerWorld dim;
         private final double x;
         private final double y;
         private final double z;
 
-        TelDestination(final World dimension, final Box srcBox, final double x, final double y,
+        TelDestination(final ServerWorld dimension, final Box srcBox, final double x, final double y,
                        final double z, final int tileX, final int tileY, final int tileZ) {
             this.dim = dimension;
             this.x = Math.min(srcBox.maxX - 0.5, Math.max(srcBox.minX + 0.5, x + tileX));
@@ -236,22 +239,4 @@ public class StorageHelper {
         }
     }
 
-    private static class METeleporter implements ITeleporter {
-
-        private final TelDestination destination;
-
-        METeleporter(final TelDestination d) {
-            this.destination = d;
-        }
-
-        @Override
-        public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw,
-                Function<Boolean, Entity> repositionEntity) {
-            Entity newEntity = repositionEntity.apply(false);
-            newEntity.yaw = yaw;
-            newEntity.setPositionAndUpdate(this.destination.x, this.destination.y, this.destination.z);
-            newEntity.setMotion(0, 0, 0);
-            return newEntity;
-        }
-    }
 }

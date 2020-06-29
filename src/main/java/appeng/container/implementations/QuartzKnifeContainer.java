@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
@@ -42,7 +42,7 @@ import appeng.util.Platform;
 
 public class QuartzKnifeContainer extends AEBaseContainer {
 
-    public static ContainerType<QuartzKnifeContainer> TYPE;
+    public static ScreenHandlerType<QuartzKnifeContainer> TYPE;
 
     private static final ContainerHelper<QuartzKnifeContainer, QuartzKnifeObj> helper = new ContainerHelper<>(
             QuartzKnifeContainer::new, QuartzKnifeObj.class);

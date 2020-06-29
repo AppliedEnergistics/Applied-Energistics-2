@@ -26,6 +26,7 @@ import java.util.Random;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.Hand;
@@ -90,9 +91,6 @@ public class ClientHelper extends ServerHelper {
                     return;
                 case Energy:
                     this.spawnEnergy(world, posX, posY, posZ);
-                    return;
-                case Lightning:
-                    this.spawnLightning(world, posX, posY, posZ);
                     return;
                 case LightningArc:
                     this.spawnLightningArc(world, posX, posY, posZ, (Vec3d) o);
@@ -188,11 +186,6 @@ public class ClientHelper extends ServerHelper {
                 -x * 0.1, -y * 0.1, -z * 0.1);
     }
 
-    private void spawnLightning(final World world, final double posX, final double posY, final double posZ) {
-        MinecraftClient.getInstance().particleManager.addParticle(ParticleTypes.LIGHTNING, posX, posY + 0.3f, posZ, 0.0f, 0.0f,
-                0.0f);
-    }
-
     private void spawnLightningArc(final World world, final double posX, final double posY, final double posZ,
             final Vec3d second) {
         final LightningFX fx = new LightningArcFX(world, posX, posY, posZ, second.x, second.y, second.z, 0.0f, 0.0f,
@@ -220,7 +213,7 @@ public class ClientHelper extends ServerHelper {
     }
 
     @Override
-    public boolean isActionKey(ActionKey key, InputMappings.Input pressedKey) {
+    public boolean isActionKey(ActionKey key, InputUtil.Key pressedKey) {
         return this.bindings.get(key).isActiveAndMatches(pressedKey);
     }
 }

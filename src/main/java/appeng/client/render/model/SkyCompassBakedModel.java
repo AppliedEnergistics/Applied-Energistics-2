@@ -28,7 +28,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.util.math.Matrix4f;
 import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.ModelOverrideList;

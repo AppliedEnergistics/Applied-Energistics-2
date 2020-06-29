@@ -1,6 +1,6 @@
 package appeng.client.render.cablebus;
 
-import net.minecraft.client.particle.IParticleRenderType;
+import net.minecraft.client.particle.ParticleTextureSheet;
 import net.minecraft.client.particle.SpriteBillboardParticle;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.world.World;
@@ -19,7 +19,7 @@ public class CableBusBreakingParticle extends SpriteBillboardParticle {
             double speedZ, Sprite sprite) {
         super(world, x, y, z, speedX, speedY, speedZ);
         this.setSprite(sprite);
-        this.particleGravity = 1.0F;
+        this.gravityStrength = 1.0F;
         this.particleScale /= 2.0F;
         this.field_217571_C = this.rand.nextFloat() * 3.0F;
         this.field_217572_F = this.rand.nextFloat() * 3.0F;
@@ -30,8 +30,8 @@ public class CableBusBreakingParticle extends SpriteBillboardParticle {
     }
 
     @Override
-    public IParticleRenderType getRenderType() {
-        return IParticleRenderType.TERRAIN_SHEET;
+    public ParticleTextureSheet getRenderType() {
+        return ParticleTextureSheet.TERRAIN_SHEET;
     }
 
     @Override

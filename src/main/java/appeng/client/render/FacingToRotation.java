@@ -20,7 +20,7 @@ package appeng.client.render;
 
 import net.minecraft.client.util.math.MatrixStack;
 
-import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.util.math.Matrix4f;
 import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.client.renderer.Vector4f;
@@ -66,9 +66,9 @@ public enum FacingToRotation implements StringIdentifiable {
         this.rot = rot;
         this.mat = new Matrix4f();
         this.mat.setIdentity();
-        this.mat.mul(xRot = Vector3f.XP.rotationDegrees(rot.getX()));
-        this.mat.mul(yRot = Vector3f.YP.rotationDegrees(rot.getY()));
-        this.mat.mul(zRot = Vector3f.ZP.rotationDegrees(rot.getZ()));
+        this.mat.mul(xRot = Vector3f.POSITIVE_X.getDegreesQuaternion(rot.getX()));
+        this.mat.mul(yRot = Vector3f.POSITIVE_Y.getDegreesQuaternion(rot.getY()));
+        this.mat.mul(zRot = Vector3f.POSITIVE_Z.getDegreesQuaternion(rot.getZ()));
     }
 
     public boolean isRedundant() {
@@ -84,9 +84,9 @@ public enum FacingToRotation implements StringIdentifiable {
     }
 
     public void push(MatrixStack mStack) {
-        mStack.rotate(xRot);
-        mStack.rotate(yRot);
-        mStack.rotate(zRot);
+        mStack.multiply(xRot);
+        mStack.multiply(yRot);
+        mStack.multiply(zRot);
     }
 
     public Direction rotate(Direction facing) {

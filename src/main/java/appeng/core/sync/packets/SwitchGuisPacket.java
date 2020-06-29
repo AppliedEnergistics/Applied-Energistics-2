@@ -22,7 +22,7 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -34,14 +34,14 @@ import appeng.core.sync.network.INetworkInfo;
 
 public class SwitchGuisPacket extends BasePacket {
 
-    private final ContainerType<?> newGui;
+    private final ScreenHandlerType<?> newGui;
 
     public SwitchGuisPacket(final PacketByteBuf stream) {
         this.newGui = ForgeRegistries.CONTAINERS.getValue(stream.readResourceLocation());
     }
 
     // api
-    public SwitchGuisPacket(final ContainerType<?> newGui) {
+    public SwitchGuisPacket(final ScreenHandlerType<?> newGui) {
         this.newGui = newGui;
 
         final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());

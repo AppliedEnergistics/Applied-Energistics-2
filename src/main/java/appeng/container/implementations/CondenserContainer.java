@@ -20,7 +20,7 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.network.PacketByteBuf;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
@@ -37,7 +37,7 @@ import appeng.util.Platform;
 
 public class CondenserContainer extends AEBaseContainer implements IProgressProvider {
 
-    public static ContainerType<CondenserContainer> TYPE;
+    public static ScreenHandlerType<CondenserContainer> TYPE;
 
     private static final ContainerHelper<CondenserContainer, CondenserBlockEntity> helper = new ContainerHelper<>(
             CondenserContainer::new, CondenserBlockEntity.class);

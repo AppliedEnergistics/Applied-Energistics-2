@@ -228,7 +228,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
                 && this.getProxy().isActive()) {
 
             ItemEntity itemEntity = (ItemEntity) entity;
-            if (isItemBlacklisted(itemEntity.getItem().getItem())) {
+            if (isItemBlacklisted(itemEntity.getStack().getItem())) {
                 return;
             }
 
@@ -305,7 +305,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
      */
     private boolean storeEntityItem(final ItemEntity entityItem) {
         if (entityItem.isAlive()) {
-            final IAEItemStack overflow = this.storeItemStack(entityItem.getItem());
+            final IAEItemStack overflow = this.storeItemStack(entityItem.getStack());
 
             return this.handleOverflow(entityItem, overflow);
         }
@@ -355,11 +355,11 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
             return true;
         }
 
-        final int oldStackSize = entityItem.getItem().getCount();
+        final int oldStackSize = entityItem.getStack().getCount();
         final int newStackSize = (int) overflow.getStackSize();
         final boolean changed = oldStackSize != newStackSize;
 
-        entityItem.getItem().setCount(newStackSize);
+        entityItem.getStack().setCount(newStackSize);
 
         return changed;
     }

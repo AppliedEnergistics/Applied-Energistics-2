@@ -26,7 +26,7 @@ import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 
@@ -40,7 +40,7 @@ import appeng.util.Platform;
 
 public class CraftingStatusContainer extends CraftingCPUContainer {
 
-    public static ContainerType<CraftingStatusContainer> TYPE;
+    public static ScreenHandlerType<CraftingStatusContainer> TYPE;
 
     private static final ContainerHelper<CraftingStatusContainer, ITerminalHost> helper = new ContainerHelper<>(
             CraftingStatusContainer::new, ITerminalHost.class, SecurityPermissions.CRAFT);

@@ -30,13 +30,13 @@ import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
@@ -253,7 +253,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                     sh.setFleeceColor(col.dye);
                 }
 
-                entityHit.attackEntityFrom(DamageSource.causePlayerDamage(p), 0);
+                entityHit.damage(DamageSource.causePlayerDamage(p), 0);
                 NetworkHandler.instance().sendToAll(marker.getPacket());
             } else if (pos instanceof BlockHitResult) {
                 BlockHitResult blockResult = (BlockHitResult) pos;
@@ -357,14 +357,14 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                         el.knockBack(p, 0, -direction.x, -direction.z);
                         // el.knockBack( p, 0, Vec3d.x,
                         // Vec3d.z );
-                        el.attackEntityFrom(dmgSrc, dmg);
+                        el.damage(dmgSrc, dmg);
                         if (!el.isAlive()) {
                             hasDestroyed = true;
                         }
                     } else if (entityHit instanceof ItemEntity) {
                         hasDestroyed = true;
                         entityHit.remove();
-                    } else if (entityHit.attackEntityFrom(dmgSrc, dmg)) {
+                    } else if (entityHit.damage(dmgSrc, dmg)) {
                         hasDestroyed = true;
                     }
                 } else if (pos instanceof BlockHitResult) {

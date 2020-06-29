@@ -23,8 +23,8 @@
 
 package appeng.api.storage.data;
 
+import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
-import net.minecraft.fluid.Fluid;
 
 /**
  * An alternate version of FluidStack for AE to keep tabs on things easier, and
@@ -64,9 +64,9 @@ public interface IAEFluidStack extends IAEStack<IAEFluidStack> {
     IAEFluidStack copy();
 
     /**
-     * quick way to get access to the Forge Fluid Definition.
+     * quick way to get access to the libblockaccess Fluid Definition.
      *
      * @return fluid definition
      */
-    Fluid getFluid();
+    FluidKey getFluid();
 }

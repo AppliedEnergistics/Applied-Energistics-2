@@ -26,7 +26,7 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
@@ -438,7 +438,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
     }
 
     @Override
-    public ContainerType<?> getContainerType() {
+    public ScreenHandlerType<?> getContainerType() {
         return FluidStorageBusContainer.TYPE;
     }
 }

@@ -191,7 +191,7 @@ public final class MaterialItem extends AEBaseItem implements IStorageComponent,
             throw new IllegalStateException(t);
         }
 
-        eqi.setMotion(location.getMotion());
+        eqi.setVelocity(location.getVelocity());
 
         if (location instanceof ItemEntity && eqi instanceof ItemEntity) {
             ((ItemEntity) eqi).setDefaultPickupDelay();

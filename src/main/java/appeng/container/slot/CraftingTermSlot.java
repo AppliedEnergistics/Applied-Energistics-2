@@ -29,7 +29,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeType;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -139,7 +139,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
                     final List<ItemStack> drops = new ArrayList<>();
                     drops.add(extra);
                     Platform.spawnDrops(who.world,
-                            new BlockPos((int) who.getX(), (int) who.getY(), (int) who.getPosZ()), drops);
+                            new BlockPos((int) who.getX(), (int) who.getY(), (int) who.getZ()), drops);
                     return;
                 }
             }
@@ -164,7 +164,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     // TODO: This is really hacky and NEEDS to be solved with a full container/gui
     // refactoring.
     @Override
-    protected NonNullList<ItemStack> getRemainingItems(CraftingInventory ic, World world) {
+    protected DefaultedList<ItemStack> getRemainingItems(CraftingInventory ic, World world) {
         if (this.container instanceof CraftingTermContainer) {
             final CraftingTermContainer containerTerminal = (CraftingTermContainer) this.container;
             final Recipe<CraftingInventory> recipe = containerTerminal.getCurrentRecipe();
@@ -282,7 +282,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         }
 
         if (drops.size() > 0) {
-            Platform.spawnDrops(p.world, new BlockPos((int) p.getX(), (int) p.getY(), (int) p.getPosZ()), drops);
+            Platform.spawnDrops(p.world, new BlockPos((int) p.getX(), (int) p.getY(), (int) p.getZ()), drops);
         }
     }
 

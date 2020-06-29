@@ -20,7 +20,7 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.network.PacketByteBuf;
 
 import appeng.container.AEBaseContainer;
@@ -33,7 +33,7 @@ import appeng.util.Platform;
 
 public class VibrationChamberContainer extends AEBaseContainer implements IProgressProvider {
 
-    public static ContainerType<VibrationChamberContainer> TYPE;
+    public static ScreenHandlerType<VibrationChamberContainer> TYPE;
 
     private static final ContainerHelper<VibrationChamberContainer, VibrationChamberBlockEntity> helper = new ContainerHelper<>(
             VibrationChamberContainer::new, VibrationChamberBlockEntity.class);

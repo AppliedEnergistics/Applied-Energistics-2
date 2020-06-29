@@ -28,7 +28,7 @@ import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
@@ -311,7 +311,7 @@ public class InterfaceBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public ContainerType<?> getContainerType() {
+    public ScreenHandlerType<?> getContainerType() {
         return InterfaceContainer.TYPE;
     }
 }

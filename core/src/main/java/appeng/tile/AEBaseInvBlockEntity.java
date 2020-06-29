@@ -18,11 +18,12 @@
 
 package appeng.tile;
 
+import java.util.EnumMap;
 import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
+import alexiil.mc.lib.attributes.AttributeList;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.impl.EmptyFixedItemInv;
 import net.minecraft.block.BlockState;
@@ -31,10 +32,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.IAEAppEngInventory;
@@ -102,18 +102,34 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
         return this.getInternalInventory();
     }
 
-    @SuppressWarnings("unchecked")
-    @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            if (facing == null) {
-                return (LazyOptional<T>) LazyOptional.of(this::getInternalInventory);
-            } else {
-                return (LazyOptional<T>) LazyOptional.of(() -> getItemHandlerForSide(facing));
+    public void addAllAttributes(World world, BlockPos pos, BlockState state, AttributeList<?> to) {
+        super.addAllAttributes(world, pos, state, to);
+        offerItemInventory(to);
+    }
+
+    private void offerItemInventory(AttributeList<?> to) {
+        FixedItemInv internalHandler = getInternalInventory();
+
+        // Offer up the directional ones first
+        for (Direction side : Direction.values()) {
+            FixedItemInv inv = getItemHandlerForSide(side);
+            if (inv != internalHandler) {
+                to.offer(inv, FACE_SHAPES.get(side));
             }
         }
-        return super.getCapability(capability, facing);
+
+        to.offer(internalHandler);
+    }
+
+    private static final EnumMap<Direction, VoxelShape> FACE_SHAPES = new EnumMap<>(Direction.class);
+    static {
+        FACE_SHAPES.put(Direction.UP, VoxelShapes.cuboid(0f, 15f, 0f, 16f, 16f, 16f));
+        FACE_SHAPES.put(Direction.DOWN, VoxelShapes.cuboid(0f, 0f, 0f, 16f, 1f, 16f));
+        FACE_SHAPES.put(Direction.NORTH, VoxelShapes.cuboid(0f, 0f, 0f, 16f, 16f, 1f));
+        FACE_SHAPES.put(Direction.SOUTH, VoxelShapes.cuboid(0f, 0f, 15f, 16f, 16f, 16f));
+        FACE_SHAPES.put(Direction.WEST, VoxelShapes.cuboid(0f, 0f, 0f, 1f, 16f, 16f));
+        FACE_SHAPES.put(Direction.EAST, VoxelShapes.cuboid(15f, 0f, 0f, 16f, 16f, 16f));
     }
 
 }

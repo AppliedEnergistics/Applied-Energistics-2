@@ -21,7 +21,7 @@ package appeng.container.implementations;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.config.FullnessMode;
@@ -38,7 +38,7 @@ import appeng.util.Platform;
 
 public class IOPortContainer extends UpgradeableContainer {
 
-    public static ContainerType<IOPortContainer> TYPE;
+    public static ScreenHandlerType<IOPortContainer> TYPE;
 
     private static final ContainerHelper<IOPortContainer, IOPortBlockEntity> helper = new ContainerHelper<>(
             IOPortContainer::new, IOPortBlockEntity.class, SecurityPermissions.BUILD);

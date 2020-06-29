@@ -20,7 +20,7 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.config.SecurityPermissions;
@@ -39,7 +39,7 @@ import appeng.util.Platform;
 
 public class SpatialIOPortContainer extends AEBaseContainer {
 
-    public static ContainerType<SpatialIOPortContainer> TYPE;
+    public static ScreenHandlerType<SpatialIOPortContainer> TYPE;
 
     private static final ContainerHelper<SpatialIOPortContainer, SpatialIOPortBlockEntity> helper = new ContainerHelper<>(
             SpatialIOPortContainer::new, SpatialIOPortBlockEntity.class, SecurityPermissions.BUILD);

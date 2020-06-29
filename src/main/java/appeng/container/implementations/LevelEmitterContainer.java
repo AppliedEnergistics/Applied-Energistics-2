@@ -24,7 +24,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.config.FuzzyMode;
@@ -42,7 +42,7 @@ import appeng.util.Platform;
 
 public class LevelEmitterContainer extends UpgradeableContainer {
 
-    public static ContainerType<LevelEmitterContainer> TYPE;
+    public static ScreenHandlerType<LevelEmitterContainer> TYPE;
 
     private static final ContainerHelper<LevelEmitterContainer, LevelEmitterPart> helper = new ContainerHelper<>(
             LevelEmitterContainer::new, LevelEmitterPart.class, SecurityPermissions.BUILD);

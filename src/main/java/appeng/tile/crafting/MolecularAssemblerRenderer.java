@@ -23,11 +23,12 @@ import java.util.Random;
 import net.fabricmc.api.EnvType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import org.lwjgl.opengl.GL11;
 
@@ -35,7 +36,6 @@ import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.BlockItem;
@@ -99,9 +99,9 @@ public class MolecularAssemblerRenderer extends BlockEntityRenderer<MolecularAss
         // https://bugs.mojang.com/browse/MC-161917
         MinecraftClient minecraft = MinecraftClient.getInstance();
         BakedModel lightsModel = minecraft.getModelManager().getModel(LIGHTS_MODEL);
-        IVertexBuilder buffer = bufferIn.getBuffer(MC_161917_RENDERTYPE_FIX);
+        VertexConsumer buffer = bufferIn.getBuffer(MC_161917_RENDERTYPE_FIX);
 
-        minecraft.getBlockRendererDispatcher().getBlockModelRenderer().renderModel(ms.getLast(), buffer, null,
+        minecraft.getBlockRenderManager().getBlockModelRenderer().renderModel(ms.getLast(), buffer, null,
                 lightsModel, 1, 1, 1, combinedLightIn, combinedOverlayIn, EmptyModelData.INSTANCE);
     }
 
@@ -150,7 +150,7 @@ public class MolecularAssemblerRenderer extends BlockEntityRenderer<MolecularAss
         RenderState.TransparencyState TRANSLUCENT_TRANSPARENCY = ObfuscationReflectionHelper
                 .getPrivateValue(RenderState.class, null, "field_228515_g_");
         RenderState.TextureState mipmapBlockAtlasTexture = new RenderState.TextureState(
-                AtlasTexture.LOCATION_BLOCKS_TEXTURE, false, true);
+                SpriteAtlasTexture.BLOCK_ATLAS_TEX, false, true);
         RenderState.LightmapState disableLightmap = new RenderState.LightmapState(false);
         RenderLayer.State glState = RenderLayer.State.getBuilder().texture(mipmapBlockAtlasTexture)
                 .transparency(TRANSLUCENT_TRANSPARENCY).alpha(new RenderState.AlphaState(0.05F))

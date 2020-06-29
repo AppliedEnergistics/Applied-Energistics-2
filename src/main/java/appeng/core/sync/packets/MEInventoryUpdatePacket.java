@@ -34,11 +34,11 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.IPacket;
+import net.minecraft.network.NetworkSide;
+import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraftforge.fml.network.NetworkDirection;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.implementations.CraftConfirmScreen;
@@ -155,7 +155,7 @@ public class MEInventoryUpdatePacket extends BasePacket {
 
     @Nullable
     @Override
-    public IPacket<?> toPacket(NetworkDirection direction) {
+    public Packet<?> toPacket(NetworkSide direction) {
         try {
             this.compressFrame.close();
 

@@ -20,7 +20,7 @@ package appeng.fluids.container;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.config.SecurityPermissions;
@@ -36,7 +36,7 @@ import appeng.fluids.util.IAEFluidTank;
  */
 public class FluidIOContainer extends FluidConfigurableContainer {
 
-    public static ContainerType<FluidIOContainer> TYPE;
+    public static ScreenHandlerType<FluidIOContainer> TYPE;
 
     private static final ContainerHelper<FluidIOContainer, SharedFluidBusPart> helper = new ContainerHelper<>(
             FluidIOContainer::new, SharedFluidBusPart.class, SecurityPermissions.BUILD);

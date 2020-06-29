@@ -29,7 +29,7 @@ import com.google.common.base.Preconditions;
 
 import net.fabricmc.api.EnvType;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.crash.CrashReportCategory;
+import net.minecraft.util.crash.CrashReportSection;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -182,8 +182,8 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
         return this.getItemStack().hasCustomName();
     }
 
-    public void addEntityCrashInfo(final CrashReportCategory crashreportcategory) {
-        crashreportcategory.addDetail("Part Side", this.getSide());
+    public void addEntityCrashInfo(final CrashReportSection section) {
+        section.add("Part Side", this.getSide());
     }
 
     @Override
@@ -332,10 +332,10 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
         final FixedItemInv inv = this.getInventoryByName("config");
         if (inv instanceof AppEngInternalAEInventory) {
             final AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
-            final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory(null, target.getSlots());
+            final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory(null, target.getSlotCount());
             tmp.readFromNBT(compound, "config");
-            for (int x = 0; x < tmp.getSlots(); x++) {
-                target.setStackInSlot(x, tmp.getInvStack(x));
+            for (int x = 0; x < tmp.getSlotCount(); x++) {
+                target.setInvStack(x, tmp.getInvStack(x));
             }
         }
     }

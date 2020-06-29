@@ -19,15 +19,15 @@
 package appeng.client.render.tesr;
 
 import net.fabricmc.api.EnvType;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.renderer.Atlases;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.util.math.Direction;
@@ -41,7 +41,7 @@ import appeng.tile.misc.SkyCompassBlockEntity;
 @Environment(EnvType.CLIENT)
 public class SkyCompassTESR extends BlockEntityRenderer<SkyCompassBlockEntity> {
 
-    private static BlockRendererDispatcher blockRenderer;
+    private static BlockRenderManager blockRenderer;
 
     public SkyCompassTESR(BlockEntityRenderDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
@@ -52,10 +52,10 @@ public class SkyCompassTESR extends BlockEntityRenderer<SkyCompassBlockEntity> {
                        int combinedLightIn, int combinedOverlayIn) {
 
         if (blockRenderer == null) {
-            blockRenderer = MinecraftClient.getInstance().getBlockRendererDispatcher();
+            blockRenderer = MinecraftClient.getInstance().getBlockRenderManager();
         }
 
-        IVertexBuilder buffer = buffers.getBuffer(Atlases.getTranslucentBlockType());
+        VertexConsumer buffer = buffers.getBuffer(Atlases.getTranslucentBlockType());
 
         BlockState blockState = te.getCachedState();
         BakedModel model = blockRenderer.getBlockModelShapes().getModel(blockState);

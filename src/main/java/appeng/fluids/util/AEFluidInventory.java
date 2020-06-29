@@ -76,9 +76,9 @@ public class AEFluidInventory implements IAEFluidTank {
     @Override
     public FluidVolume getFluidInTank(int tank) {
         if (tank < 0 || tank >= fluids.length) {
-            return FluidVolume.EMPTY;
+            return FluidVolumeUtil.EMPTY;
         }
-        return fluids[tank] == null ? FluidVolume.EMPTY : fluids[tank].getFluidStack();
+        return fluids[tank] == null ? FluidVolumeUtil.EMPTY : fluids[tank].getFluidStack();
     }
 
     @Override
@@ -88,7 +88,7 @@ public class AEFluidInventory implements IAEFluidTank {
 
     @Override
     public boolean isFluidValid(int tank, @Nonnull FluidVolume stack) {
-        return stack != FluidVolume.EMPTY;
+        return stack != FluidVolumeUtil.EMPTY;
     }
 
     public int fill(final int slot, final FluidVolume resource, final boolean doFill) {
@@ -162,12 +162,12 @@ public class AEFluidInventory implements IAEFluidTank {
     @Override
     public FluidVolume drain(final FluidVolume fluid, final FluidAction action) {
         if (fluid.isEmpty() || fluid.getAmount() <= 0) {
-            return FluidVolume.EMPTY;
+            return FluidVolumeUtil.EMPTY;
         }
 
         final FluidVolume resource = fluid.copy();
 
-        FluidVolume totalDrained = FluidVolume.EMPTY;
+        FluidVolume totalDrained = FluidVolumeUtil.EMPTY;
         for (int slot = 0; slot < this.getSlots(); ++slot) {
             FluidVolume drain = this.drain(slot, resource, action == FluidAction.EXECUTE);
             if (drain != null) {
@@ -189,10 +189,10 @@ public class AEFluidInventory implements IAEFluidTank {
     @Override
     public FluidVolume drain(final int maxDrain, final FluidAction action) {
         if (maxDrain == 0) {
-            return FluidVolume.EMPTY;
+            return FluidVolumeUtil.EMPTY;
         }
 
-        FluidVolume totalDrained = FluidVolume.EMPTY;
+        FluidVolume totalDrained = FluidVolumeUtil.EMPTY;
         int toDrain = maxDrain;
 
         for (int slot = 0; slot < this.getSlots(); ++slot) {

@@ -376,7 +376,7 @@ public final class ApiBlocks implements IBlocks {
 
         TinyTNTPrimedEntity.TYPE = registry
                 .<TinyTNTPrimedEntity>entity("tiny_tnt_primed", TinyTNTPrimedEntity::new, SpawnGroup.MISC)
-                .customize(p -> p.setTrackingRange(16).setUpdateInterval(4).setShouldReceiveVelocityUpdates(true))
+                .customize(p -> p.trackable(16, 4, true))
                 .build();
 
         this.tinyTNT = registry

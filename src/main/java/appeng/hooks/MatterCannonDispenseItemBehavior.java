@@ -55,7 +55,7 @@ public final class MatterCannonDispenseItemBehavior extends DefaultDispenseItemB
                 final PlayerEntity p = FakePlayer.getOrCreate((ServerWorld) w);
                 Platform.configurePlayer(p, dir, dispenser.getBlockTileEntity());
 
-                p.setPosition(p.getX() + dir.xOffset, p.getY() + dir.yOffset, p.getZ() + dir.zOffset);
+                p.updatePosition(p.getX() + dir.xOffset, p.getY() + dir.yOffset, p.getZ() + dir.zOffset);
 
                 dispensedItem = tm.onItemRightClick(w, p, null).getResult();
             }

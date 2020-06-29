@@ -6,7 +6,7 @@ import java.util.Map;
 
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
@@ -24,7 +24,7 @@ import appeng.util.Platform;
 public abstract class FluidConfigurableContainer extends UpgradeableContainer implements IFluidSyncContainer {
     private FluidSyncHelper sync = null;
 
-    public FluidConfigurableContainer(ContainerType<?> containerType, int id, PlayerInventory ip, IUpgradeableHost te) {
+    public FluidConfigurableContainer(ScreenHandlerType<?> containerType, int id, PlayerInventory ip, IUpgradeableHost te) {
         super(containerType, id, ip, te);
     }
 

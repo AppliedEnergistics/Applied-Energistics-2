@@ -27,7 +27,7 @@ import java.util.function.Function;
 
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.Material;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Identifier;
@@ -99,7 +99,7 @@ class CableBuilder {
                 throw new IllegalStateException("Cable type " + cableType + " does not support connections.");
         }
 
-        return new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+        return new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
                 new Identifier(AppEng.MOD_ID, textureFolder + color.name().toLowerCase()));
     }
 

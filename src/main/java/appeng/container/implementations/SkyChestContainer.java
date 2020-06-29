@@ -20,7 +20,7 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.network.PacketByteBuf;
 
 import appeng.container.AEBaseContainer;
@@ -30,7 +30,7 @@ import appeng.tile.storage.SkyChestBlockEntity;
 
 public class SkyChestContainer extends AEBaseContainer {
 
-    public static ContainerType<SkyChestContainer> TYPE;
+    public static ScreenHandlerType<SkyChestContainer> TYPE;
 
     private static final ContainerHelper<SkyChestContainer, SkyChestBlockEntity> helper = new ContainerHelper<>(
             SkyChestContainer::new, SkyChestBlockEntity.class);

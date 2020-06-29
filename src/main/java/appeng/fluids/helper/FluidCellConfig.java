@@ -63,7 +63,7 @@ public class FluidCellConfig extends CellConfig {
     @Override
     public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
         if (stack.isEmpty() || stack.getItem() instanceof FluidDummyItem) {
-            super.setStackInSlot(slot, stack);
+            super.setInvStack(slot, stack);
         }
         LazyOptional<FluidVolume> fluidOpt = FluidUtil.getFluidContained(stack);
         if (!fluidOpt.isPresent()
@@ -76,7 +76,7 @@ public class FluidCellConfig extends CellConfig {
         ItemStack is = AEApi.instance().definitions().items().dummyFluidItem().maybeStack(1).get();
         FluidDummyItem item = (FluidDummyItem) is.getItem();
         item.setFluidStack(is, fluid);
-        super.setStackInSlot(slot, is);
+        super.setInvStack(slot, is);
     }
 
     @Override

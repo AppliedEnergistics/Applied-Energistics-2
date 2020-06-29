@@ -217,9 +217,9 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
                 is.decrement(1);
 
                 if (is.isEmpty()) {
-                    this.inv.setStackInSlot(0, fuelItem.getRecipeRemainder(is));
+                    this.inv.setInvStack(0, fuelItem.getRecipeRemainder(is));
                 } else {
-                    this.inv.setStackInSlot(0, is);
+                    this.inv.setInvStack(0, is);
                 }
                 this.saveChanges();
             }

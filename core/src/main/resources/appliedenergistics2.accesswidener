@@ -1,0 +1,5 @@
+accessWidener	v1	named
+accessible method net/minecraft/client/particle/RedDustParticle <init> (Lnet/minecraft/client/world/ClientWorld;DDDDDDLnet/minecraft/particle/DustParticleEffect;Lnet/minecraft/client/particle/SpriteProvider;)V
+
+# To disable water-bobbing of item entities (for growing crystals)
+extendable method net/minecraft/entity/ItemEntity applyBuoyancy ()V

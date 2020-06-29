@@ -28,7 +28,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.text.Text;
 import net.minecraft.world.World;
 import net.fabricmc.api.EnvType;
@@ -79,10 +79,10 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     }
 
     @Override
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-        super.fillItemGroup(group, items);
+    public void appendStacks(ItemGroup group, DefaultedList<ItemStack> items) {
+        super.appendStacks(group, items);
 
-        if (this.isInGroup(group)) {
+        if (this.isIn(group)) {
             final ItemStack charged = new ItemStack(this, 1);
             final CompoundTag tag = charged.getOrCreateTag();
             tag.putDouble(CURRENT_POWER_NBT_KEY, this.getAEMaxPower(charged));

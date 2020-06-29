@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.function.Function;
 
 import net.minecraft.client.render.model.Material;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.Identifier;
 
@@ -44,7 +44,7 @@ public class SmartCableTextures {
                     new Identifier(AppEng.MOD_ID, "parts/cable/smart/channels_12"), //
                     new Identifier(AppEng.MOD_ID, "parts/cable/smart/channels_13"), //
                     new Identifier(AppEng.MOD_ID, "parts/cable/smart/channels_14")//
-            }).map(e -> new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, e)).toArray(Material[]::new);
+            }).map(e -> new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX, e)).toArray(Material[]::new);
 
     // Textures used to display channels on smart cables. There's two sets of 5
     // textures each, and

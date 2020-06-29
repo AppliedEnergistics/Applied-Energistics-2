@@ -161,7 +161,7 @@ public class QuantumCluster implements ILocatable, IAECluster {
             final World theWorld = qc.center.getWorld();
             if (!qc.isDestroyed) {
                 ChunkPos cPos = new ChunkPos(qc.center.getPos());
-                if (theWorld.getChunkProvider().isChunkLoaded(cPos)) {
+                if (theWorld.getChunkManager().isChunkLoaded(cPos)) {
                     final DimensionType id = theWorld.dimension.getType();
                     final World cur = theWorld.getServer().getWorld(id);
 

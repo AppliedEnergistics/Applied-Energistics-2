@@ -43,10 +43,10 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.*;
 import net.minecraft.util.hit.HitResult.Type;
 import net.minecraft.block.ShapeContext;
@@ -87,7 +87,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState state, BlockView reader, BlockPos pos) {
+    public boolean isTranslucent(BlockState state, BlockView reader, BlockPos pos) {
         return true;
     }
 
@@ -201,7 +201,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
         ICableBusContainer cb = this.cb(world, blockPos);
 
         // Our built-in model has the actual baked sprites we need
-        BakedModel model = MinecraftClient.getInstance().getBlockRendererDispatcher()
+        BakedModel model = MinecraftClient.getInstance().getBlockRenderManager()
                 .getModelForState(this.getDefaultState());
 
         // We cannot add the effect if we don't have the model
@@ -234,7 +234,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
         ICableBusContainer cb = this.cb(world, pos);
 
         // Our built-in model has the actual baked sprites we need
-        BakedModel model = MinecraftClient.getInstance().getBlockRendererDispatcher()
+        BakedModel model = MinecraftClient.getInstance().getBlockRenderManager()
                 .getModelForState(this.getDefaultState());
 
         // We cannot add the effect if we dont have the model
@@ -347,7 +347,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> itemStacks) {
+    public void appendStacks(ItemGroup group, DefaultedList<ItemStack> itemStacks) {
         // do nothing
     }
 

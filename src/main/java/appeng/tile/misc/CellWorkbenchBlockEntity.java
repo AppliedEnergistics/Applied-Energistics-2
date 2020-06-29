@@ -149,15 +149,15 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
                 }
 
                 if (cellHasConfig) {
-                    for (int x = 0; x < this.config.getSlots(); x++) {
-                        this.config.setStackInSlot(x, configInventory.getInvStack(x));
+                    for (int x = 0; x < this.config.getSlotCount(); x++) {
+                        this.config.setInvStack(x, configInventory.getInvStack(x));
                     }
                 } else {
                     ItemHandlerUtil.copy(this.config, configInventory, false);
                 }
             } else if (this.manager.getSetting(Settings.COPY_MODE) == CopyMode.CLEAR_ON_REMOVE) {
-                for (int x = 0; x < this.config.getSlots(); x++) {
-                    this.config.setStackInSlot(x, ItemStack.EMPTY);
+                for (int x = 0; x < this.config.getSlotCount(); x++) {
+                    this.config.setInvStack(x, ItemStack.EMPTY);
                 }
 
                 this.saveChanges();

@@ -113,7 +113,7 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
     private BlockEntity getBlockEntity(final BlockEntity self, final BlockPos pos) {
         final World w = self.getWorld();
 
-        if (w.getChunkProvider().isChunkLoaded(new ChunkPos(pos))) {
+        if (w.getChunkManager().isChunkLoaded(new ChunkPos(pos))) {
             return w.getBlockEntity(pos);
         }
 

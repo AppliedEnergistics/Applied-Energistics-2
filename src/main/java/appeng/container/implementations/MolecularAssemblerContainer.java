@@ -21,7 +21,7 @@ package appeng.container.implementations;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
@@ -44,7 +44,7 @@ import appeng.util.Platform;
 
 public class MolecularAssemblerContainer extends UpgradeableContainer implements IProgressProvider {
 
-    public static ContainerType<MolecularAssemblerContainer> TYPE;
+    public static ScreenHandlerType<MolecularAssemblerContainer> TYPE;
 
     private static final ContainerHelper<MolecularAssemblerContainer, MolecularAssemblerBlockEntity> helper = new ContainerHelper<>(
             MolecularAssemblerContainer::new, MolecularAssemblerBlockEntity.class);

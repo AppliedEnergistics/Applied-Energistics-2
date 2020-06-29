@@ -25,7 +25,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.biome.provider.SingleBiomeProvider;
 import net.minecraft.world.biome.provider.SingleBiomeProviderSettings;
-import net.minecraft.world.chunk.IChunk;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.Heightmap;
@@ -53,12 +53,12 @@ public class StorageChunkGenerator extends ChunkGenerator<GenerationSettings> {
     }
 
     @Override
-    public void generateSurface(WorldGenRegion region, IChunk chunk) {
+    public void generateSurface(WorldGenRegion region, Chunk chunk) {
         this.fillChunk(chunk);
         chunk.setModified(false);
     }
 
-    private void fillChunk(IChunk chunk) {
+    private void fillChunk(Chunk chunk) {
         BlockPos.Mutable mutPos = new BlockPos.Mutable();
         for (int cx = 0; cx < 16; cx++) {
             mutPos.setX(cx);
@@ -80,7 +80,7 @@ public class StorageChunkGenerator extends ChunkGenerator<GenerationSettings> {
     }
 
     @Override
-    public void makeBase(WorldAccess worldIn, IChunk chunkIn) {
+    public void makeBase(WorldAccess worldIn, Chunk chunkIn) {
     }
 
     @Override

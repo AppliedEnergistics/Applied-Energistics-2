@@ -24,7 +24,7 @@ import java.util.Objects;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
@@ -438,7 +438,7 @@ public class StorageBusPart extends UpgradeablePart
                         .getStorageChannel(IItemStorageChannel.class).createList();
 
                 final int slotsToUse = 18 + this.getInstalledUpgrades(Upgrades.CAPACITY) * 9;
-                for (int x = 0; x < this.Config.getSlots() && x < slotsToUse; x++) {
+                for (int x = 0; x < this.Config.getSlotCount() && x < slotsToUse; x++) {
                     final IAEItemStack is = this.Config.getAEStackInSlot(x);
                     if (is != null) {
                         priorityList.add(is);
@@ -563,7 +563,7 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     @Override
-    public ContainerType<?> getContainerType() {
+    public ScreenHandlerType<?> getContainerType() {
         return StorageBusContainer.TYPE;
     }
 }

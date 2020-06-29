@@ -43,7 +43,7 @@ public class QuartzLampBlock extends QuartzGlassBlock {
             return;
         }
 
-        if (AppEng.proxy.shouldAddParticles(r)) {
+        if (AppEng.INSTANCE.shouldAddParticles(r)) {
             final double d0 = (r.nextFloat() - 0.5F) * 0.96D;
             final double d1 = (r.nextFloat() - 0.5F) * 0.96D;
             final double d2 = (r.nextFloat() - 0.5F) * 0.96D;

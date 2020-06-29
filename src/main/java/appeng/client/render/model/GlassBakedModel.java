@@ -35,7 +35,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.Material;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
@@ -64,13 +64,13 @@ class GlassBakedModel implements IDynamicBakedModel {
     private static final byte[][][] OFFSETS = generateOffsets();
 
     // Alternating textures based on position
-    static final Material TEXTURE_A = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    static final Material TEXTURE_A = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier("appliedenergistics2:block/glass/quartz_glass_a"));
-    static final Material TEXTURE_B = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    static final Material TEXTURE_B = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier("appliedenergistics2:block/glass/quartz_glass_b"));
-    static final Material TEXTURE_C = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    static final Material TEXTURE_C = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier("appliedenergistics2:block/glass/quartz_glass_c"));
-    static final Material TEXTURE_D = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    static final Material TEXTURE_D = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier("appliedenergistics2:block/glass/quartz_glass_d"));
 
     // Frame texture
@@ -80,7 +80,7 @@ class GlassBakedModel implements IDynamicBakedModel {
     private static Material[] generateTexturesFrame() {
         return IntStream.range(1, 16).mapToObj(Integer::toBinaryString).map(s -> Strings.padStart(s, 4, '0'))
                 .map(s -> new Identifier("appliedenergistics2:block/glass/quartz_glass_frame" + s))
-                .map(rl -> new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, rl)).toArray(Material[]::new);
+                .map(rl -> new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX, rl)).toArray(Material[]::new);
     }
 
     private final Sprite[] glassTextures;

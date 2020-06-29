@@ -99,8 +99,8 @@ public class GrinderBlockEntity extends AEBaseInvBlockEntity implements ICrankab
                         item = ItemStack.EMPTY;
                     }
 
-                    this.inv.setStackInSlot(x, item);
-                    this.inv.setStackInSlot(6, ais);
+                    this.inv.setInvStack(x, item);
+                    this.inv.setInvStack(6, ais);
                     return true;
                 }
             }
@@ -137,7 +137,7 @@ public class GrinderBlockEntity extends AEBaseInvBlockEntity implements ICrankab
                 }
             }
 
-            this.inv.setStackInSlot(6, ItemStack.EMPTY);
+            this.inv.setInvStack(6, ItemStack.EMPTY);
         }
     }
 

@@ -35,10 +35,10 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.IPacket;
+import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.fabricmc.api.EnvType;
-import net.minecraftforge.fml.network.NetworkDirection;
+import net.minecraft.network.NetworkSide;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.AELog;
@@ -144,7 +144,7 @@ public class MEFluidInventoryUpdatePacket extends BasePacket {
 
     @Nullable
     @Override
-    public IPacket<?> toPacket(NetworkDirection direction) {
+    public Packet<?> toPacket(NetworkSide direction) {
         try {
             this.compressFrame.close();
 

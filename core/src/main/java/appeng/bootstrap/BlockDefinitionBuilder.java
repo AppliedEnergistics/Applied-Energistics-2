@@ -24,7 +24,6 @@ import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseBlockItem;
 import appeng.block.AEBaseTileBlock;
 import appeng.bootstrap.definitions.TileEntityDefinition;
-import appeng.core.AEItemGroup;
 import appeng.core.AppEng;
 import appeng.core.CreativeTab;
 import appeng.core.features.BlockDefinition;
@@ -171,8 +170,8 @@ class BlockDefinitionBuilder implements IBlockBuilder {
             definition = (T) new BlockDefinition(this.id.getPath(), block, item, features);
         }
 
-        if (itemGroup instanceof AEItemGroup) {
-            ((AEItemGroup) itemGroup).add(definition);
+        if (itemGroup == CreativeTab.INSTANCE) {
+            CreativeTab.add(definition);
         }
 
         return definition;

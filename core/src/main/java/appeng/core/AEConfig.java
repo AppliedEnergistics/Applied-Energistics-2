@@ -18,57 +18,44 @@
 
 package appeng.core;
 
+import appeng.api.config.*;
+import appeng.api.features.AEFeature;
+import appeng.core.config.*;
+import appeng.core.settings.TickRates;
+import appeng.util.EnumCycler;
+import net.minecraft.world.dimension.DimensionType;
+
+import java.io.File;
 import java.util.*;
 import java.util.function.DoubleSupplier;
 import java.util.stream.Collectors;
 
-import com.google.common.base.Strings;
-
-import org.apache.commons.lang3.tuple.Pair;
-
-import net.minecraft.world.dimension.DimensionType;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
-import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
-import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
-import net.minecraftforge.common.ForgeConfigSpec.EnumValue;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-
-import appeng.api.config.*;
-import appeng.api.features.AEFeature;
-import appeng.core.settings.TickRates;
-import appeng.util.EnumCycler;
-
-@Mod.EventBusSubscriber(modid = AppEng.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class AEConfig {
 
-    public static final ClientConfig CLIENT;
-    public static final ForgeConfigSpec CLIENT_SPEC;
-    public static final CommonConfig COMMON;
-    public static final ForgeConfigSpec COMMON_SPEC;
+    public final ClientConfig clientConfig;
+    public final CommonConfig commonConfig;
+
+    public AEConfig(File configDir) {
+        ConfigSection clientRoot = ConfigSection.createRoot();
+        clientConfig = new ClientConfig(clientRoot);
+        syncClientConfig();
+
+        ConfigSection commonRoot = ConfigSection.createRoot();
+        commonConfig = new CommonConfig(commonRoot);
+        syncCommonConfig();
+
+        // FIXME config loading/saving
+    }
 
     // Default Energy Conversion Rates
     private static final double DEFAULT_IC2_EXCHANGE = 2.0;
     private static final double DEFAULT_RF_EXCHANGE = 0.5;
 
-    static {
-        final Pair<ClientConfig, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(ClientConfig::new);
-        CLIENT_SPEC = specPair.getRight();
-        CLIENT = specPair.getLeft();
-
-        final Pair<CommonConfig, ForgeConfigSpec> commonPair = new ForgeConfigSpec.Builder()
-                .configure(CommonConfig::new);
-        COMMON_SPEC = commonPair.getRight();
-        COMMON = commonPair.getLeft();
-    }
-
     public static final String VERSION = "@version@";
     public static final String CHANNEL = "@aechannel@";
 
     // Config instance
-    private static final AEConfig instance = new AEConfig();
+    private static AEConfig instance;
 
     private final EnumSet<AEFeature> featureFlags = EnumSet.noneOf(AEFeature.class);
 
@@ -86,7 +73,7 @@ public final class AEConfig {
     private final int[] craftByStacks = new int[4];
     private final int[] priorityByStacks = new int[4];
     private final int[] levelByStacks = new int[4];
-    private final int[] levelByMillibuckets = { 10, 100, 1000, 10000 };
+    private final int[] levelByMillibuckets = {10, 100, 1000, 10000};
 
     // Spatial IO/Dimension
     private double spatialPowerExponent;
@@ -119,65 +106,55 @@ public final class AEConfig {
     // Tunnels
     public static final double TUNNEL_POWER_LOSS = 0.05;
 
-    // FIXME: this is shit, move this concern out of the config class
-    @SubscribeEvent
-    public static void onModConfigEvent(final ModConfig.ModConfigEvent configEvent) {
-        if (configEvent.getConfig().getSpec() == CLIENT_SPEC) {
-            instance.syncClientConfig();
-        } else if (configEvent.getConfig().getSpec() == COMMON_SPEC) {
-            instance.syncCommonConfig();
-        }
-    }
-
     private void syncClientConfig() {
-        this.disableColoredCableRecipesInJEI = CLIENT.disableColoredCableRecipesInJEI.get();
-        this.enableEffects = CLIENT.enableEffects.get();
-        this.useLargeFonts = CLIENT.useLargeFonts.get();
-        this.useColoredCraftingStatus = CLIENT.useColoredCraftingStatus.get();
-        this.selectedPowerUnit = CLIENT.selectedPowerUnit.get();
+        this.disableColoredCableRecipesInJEI = clientConfig.disableColoredCableRecipesInJEI.get();
+        this.enableEffects = clientConfig.enableEffects.get();
+        this.useLargeFonts = clientConfig.useLargeFonts.get();
+        this.useColoredCraftingStatus = clientConfig.useColoredCraftingStatus.get();
+        this.selectedPowerUnit = clientConfig.selectedPowerUnit.get();
 
         // load buttons..
         for (int btnNum = 0; btnNum < 4; btnNum++) {
-            this.craftByStacks[btnNum] = CLIENT.craftByStacks.get(btnNum).get();
-            this.priorityByStacks[btnNum] = CLIENT.priorityByStacks.get(btnNum).get();
-            this.levelByStacks[btnNum] = CLIENT.levelByStacks.get(btnNum).get();
+            this.craftByStacks[btnNum] = clientConfig.craftByStacks.get(btnNum).get();
+            this.priorityByStacks[btnNum] = clientConfig.priorityByStacks.get(btnNum).get();
+            this.levelByStacks[btnNum] = clientConfig.levelByStacks.get(btnNum).get();
         }
     }
 
     private void syncCommonConfig() {
-        PowerUnits.EU.conversionRatio = COMMON.powerRatioIc2.get();
-        PowerUnits.RF.conversionRatio = COMMON.powerRatioForgeEnergy.get();
-        PowerMultiplier.CONFIG.multiplier = COMMON.powerUsageMultiplier.get();
+        PowerUnits.EU.conversionRatio = commonConfig.powerRatioIc2.get();
+        PowerUnits.RF.conversionRatio = commonConfig.powerRatioForgeEnergy.get();
+        PowerMultiplier.CONFIG.multiplier = commonConfig.powerUsageMultiplier.get();
 
-        CondenserOutput.MATTER_BALLS.requiredPower = COMMON.condenserMatterBallsPower.get();
-        CondenserOutput.SINGULARITY.requiredPower = COMMON.condenserSingularityPower.get();
+        CondenserOutput.MATTER_BALLS.requiredPower = commonConfig.condenserMatterBallsPower.get();
+        CondenserOutput.SINGULARITY.requiredPower = commonConfig.condenserSingularityPower.get();
 
-        this.oreDoublePercentage = COMMON.oreDoublePercentage.get().floatValue();
+        this.oreDoublePercentage = (float) commonConfig.oreDoublePercentage.get();
 
-        this.meteoriteMaximumSpawnHeight = COMMON.meteoriteMaximumSpawnHeight.get();
-        this.meteoriteDimensionWhitelist = new HashSet<>(COMMON.meteoriteDimensionWhitelist.get());
+        this.meteoriteMaximumSpawnHeight = commonConfig.meteoriteMaximumSpawnHeight.get();
+        this.meteoriteDimensionWhitelist = new HashSet<>(commonConfig.meteoriteDimensionWhitelist.get());
 
-        this.wirelessBaseCost = COMMON.wirelessBaseCost.get();
-        this.wirelessCostMultiplier = COMMON.wirelessCostMultiplier.get();
-        this.wirelessBaseRange = COMMON.wirelessBaseRange.get();
-        this.wirelessBoosterRangeMultiplier = COMMON.wirelessBoosterRangeMultiplier.get();
-        this.wirelessBoosterExp = COMMON.wirelessBoosterExp.get();
-        this.wirelessHighWirelessCount = COMMON.wirelessHighWirelessCount.get();
-        this.wirelessTerminalDrainMultiplier = COMMON.wirelessTerminalDrainMultiplier.get();
+        this.wirelessBaseCost = commonConfig.wirelessBaseCost.get();
+        this.wirelessCostMultiplier = commonConfig.wirelessCostMultiplier.get();
+        this.wirelessBaseRange = commonConfig.wirelessBaseRange.get();
+        this.wirelessBoosterRangeMultiplier = commonConfig.wirelessBoosterRangeMultiplier.get();
+        this.wirelessBoosterExp = commonConfig.wirelessBoosterExp.get();
+        this.wirelessHighWirelessCount = commonConfig.wirelessHighWirelessCount.get();
+        this.wirelessTerminalDrainMultiplier = commonConfig.wirelessTerminalDrainMultiplier.get();
 
-        this.formationPlaneEntityLimit = COMMON.formationPlaneEntityLimit.get();
+        this.formationPlaneEntityLimit = commonConfig.formationPlaneEntityLimit.get();
 
-        this.wirelessTerminalBattery = COMMON.wirelessTerminalBattery.get();
-        this.chargedStaffBattery = COMMON.chargedStaffBattery.get();
-        this.entropyManipulatorBattery = COMMON.entropyManipulatorBattery.get();
-        this.portableCellBattery = COMMON.portableCellBattery.get();
-        this.colorApplicatorBattery = COMMON.colorApplicatorBattery.get();
-        this.matterCannonBattery = COMMON.matterCannonBattery.get();
+        this.wirelessTerminalBattery = commonConfig.wirelessTerminalBattery.get();
+        this.chargedStaffBattery = commonConfig.chargedStaffBattery.get();
+        this.entropyManipulatorBattery = commonConfig.entropyManipulatorBattery.get();
+        this.portableCellBattery = commonConfig.portableCellBattery.get();
+        this.colorApplicatorBattery = commonConfig.colorApplicatorBattery.get();
+        this.matterCannonBattery = commonConfig.matterCannonBattery.get();
 
         this.featureFlags.clear();
         for (final AEFeature feature : AEFeature.values()) {
             if (feature.isVisible()) {
-                if (COMMON.enabledFeatures.containsKey(feature)) {
+                if (commonConfig.enabledFeatures.containsKey(feature)) {
                     this.featureFlags.add(feature);
                 }
             } else {
@@ -186,16 +163,16 @@ public final class AEConfig {
         }
 
         for (final TickRates tr : TickRates.values()) {
-            tr.setMin(COMMON.tickRateMin.get(tr).get());
-            tr.setMax(COMMON.tickRateMin.get(tr).get());
+            tr.setMin(commonConfig.tickRateMin.get(tr).get());
+            tr.setMax(commonConfig.tickRateMin.get(tr).get());
         }
 
-        this.spatialPowerMultiplier = COMMON.spatialPowerMultiplier.get();
-        this.spatialPowerExponent = COMMON.spatialPowerExponent.get();
+        this.spatialPowerMultiplier = commonConfig.spatialPowerMultiplier.get();
+        this.spatialPowerExponent = commonConfig.spatialPowerExponent.get();
 
-        this.craftingCalculationTimePerTick = COMMON.craftingCalculationTimePerTick.get();
+        this.craftingCalculationTimePerTick = commonConfig.craftingCalculationTimePerTick.get();
 
-        this.removeCrashingItemsOnLoad = COMMON.removeCrashingItemsOnLoad.get();
+        this.removeCrashingItemsOnLoad = commonConfig.removeCrashingItemsOnLoad.get();
     }
 
     public static AEConfig instance() {
@@ -225,34 +202,27 @@ public final class AEConfig {
     }
 
     public YesNo getSearchTooltips() {
-        return CLIENT.searchTooltips.get();
+        return clientConfig.searchTooltips.get();
     }
 
     public TerminalStyle getTerminalStyle() {
-        return CLIENT.terminalStyle.get();
+        return clientConfig.terminalStyle.get();
     }
 
     public void setTerminalStyle(TerminalStyle setting) {
-        CLIENT.terminalStyle.set(setting);
+        clientConfig.terminalStyle.set(setting);
     }
 
     public SearchBoxMode getTerminalSearchMode() {
-        return CLIENT.terminalSearchMode.get();
+        return clientConfig.terminalSearchMode.get();
     }
 
     public void setTerminalSearchMode(SearchBoxMode setting) {
-        CLIENT.terminalSearchMode.set(setting);
+        clientConfig.terminalSearchMode.set(setting);
     }
 
     public void save() {
-        if (CLIENT_SPEC.isLoaded()) {
-            CLIENT.selectedPowerUnit.set(this.selectedPowerUnit);
-            CLIENT_SPEC.save();
-        }
-
-        if (COMMON_SPEC.isLoaded()) {
-            COMMON_SPEC.save();
-        }
+        clientConfig.selectedPowerUnit.set(this.selectedPowerUnit);
     }
 
     public int craftItemsByStackAmounts(final int i) {
@@ -272,14 +242,14 @@ public final class AEConfig {
     }
 
     public PowerUnits getSelectedPowerUnit() {
-        return this.selectedPowerUnit;
+        return this.clientConfig.selectedPowerUnit.get();
     }
 
     @SuppressWarnings("unchecked")
     public void nextPowerUnit(final boolean backwards) {
-        this.selectedPowerUnit = EnumCycler.rotateEnum(this.selectedPowerUnit, backwards,
+        PowerUnits selectedPowerUnit = EnumCycler.rotateEnum(this.selectedPowerUnit, backwards,
                 (EnumSet<PowerUnits>) Settings.POWER_UNITS.getPossibleValues());
-        this.save();
+        clientConfig.selectedPowerUnit.set(selectedPowerUnit);
     }
 
     // Getters
@@ -348,15 +318,15 @@ public final class AEConfig {
     }
 
     public float getSpawnChargedChance() {
-        return COMMON.spawnChargedChance.get().floatValue();
+        return (float) commonConfig.spawnChargedChance.get();
     }
 
     public int getQuartzOresPerCluster() {
-        return COMMON.quartzOresPerCluster.get();
+        return commonConfig.quartzOresPerCluster.get();
     }
 
     public int getQuartzOresClusterAmount() {
-        return COMMON.quartzOresClusterAmount.get();
+        return commonConfig.quartzOresClusterAmount.get();
     }
 
     public int getMeteoriteMaximumSpawnHeight() {
@@ -372,32 +342,31 @@ public final class AEConfig {
     private static class ClientConfig {
 
         // Misc
-        public final BooleanValue enableEffects;
-        public final BooleanValue useLargeFonts;
-        public final BooleanValue useColoredCraftingStatus;
-        public final BooleanValue disableColoredCableRecipesInJEI;
-        public final EnumValue<PowerUnits> selectedPowerUnit;
+        public final BooleanOption enableEffects;
+        public final BooleanOption useLargeFonts;
+        public final BooleanOption useColoredCraftingStatus;
+        public final BooleanOption disableColoredCableRecipesInJEI;
+        public final EnumOption<PowerUnits> selectedPowerUnit;
 
         // GUI Buttons
-        private static final int[] BTN_BY_STACK_DEFAULTS = { 1, 10, 100, 1000 };
-        public final List<ConfigValue<Integer>> craftByStacks;
-        public final List<ConfigValue<Integer>> priorityByStacks;
-        public final List<ConfigValue<Integer>> levelByStacks;
+        private static final int[] BTN_BY_STACK_DEFAULTS = {1, 10, 100, 1000};
+        public final List<IntegerOption> craftByStacks;
+        public final List<IntegerOption> priorityByStacks;
+        public final List<IntegerOption> levelByStacks;
 
         // Terminal Settings
-        public final EnumValue<YesNo> searchTooltips;
-        public final EnumValue<TerminalStyle> terminalStyle;
-        public final EnumValue<SearchBoxMode> terminalSearchMode;
+        public final EnumOption<YesNo> searchTooltips;
+        public final EnumOption<TerminalStyle> terminalStyle;
+        public final EnumOption<SearchBoxMode> terminalSearchMode;
 
-        public ClientConfig(ForgeConfigSpec.Builder builder) {
-            builder.push("client");
-            this.disableColoredCableRecipesInJEI = builder.comment("TODO").define("disableColoredCableRecipesInJEI",
+        public ClientConfig(ConfigSection root) {
+            ConfigSection client = root.subsection("client");
+            this.disableColoredCableRecipesInJEI = client.addBoolean("disableColoredCableRecipesInJEI",
                     true);
-            this.enableEffects = builder.comment("TODO").define("enableEffects", true);
-            this.useLargeFonts = builder.comment("TODO").define("useTerminalUseLargeFont", false);
-            this.useColoredCraftingStatus = builder.comment("TODO").define("useColoredCraftingStatus", true);
-            this.selectedPowerUnit = builder.comment("Power unit shown in AE UIs").defineEnum("PowerUnit",
-                    PowerUnits.AE, PowerUnits.values());
+            this.enableEffects = client.addBoolean("enableEffects", true);
+            this.useLargeFonts = client.addBoolean("useTerminalUseLargeFont", false);
+            this.useColoredCraftingStatus = client.addBoolean("useColoredCraftingStatus", true);
+            this.selectedPowerUnit = client.addEnum("PowerUnit", PowerUnits.AE, "Power unit shown in AE UIs");
 
             this.craftByStacks = new ArrayList<>(4);
             this.priorityByStacks = new ArrayList<>(4);
@@ -407,23 +376,19 @@ public final class AEConfig {
                 int defaultValue = BTN_BY_STACK_DEFAULTS[btnNum];
                 final int buttonCap = (int) (Math.pow(10, btnNum + 1) - 1);
 
-                this.craftByStacks.add(builder.comment("Controls buttons on Crafting Screen")
-                        .defineInRange("craftByStacks" + btnNum, defaultValue, 1, buttonCap));
-                this.priorityByStacks.add(builder.comment("Controls buttons on Priority Screen")
-                        .defineInRange("priorityByStacks" + btnNum, defaultValue, 1, buttonCap));
-                this.levelByStacks.add(builder.comment("Controls buttons on Level Emitter Screen")
-                        .defineInRange("levelByStacks" + btnNum, defaultValue, 1, buttonCap));
+                this.craftByStacks.add(client
+                        .addInt("craftByStacks" + btnNum, defaultValue, 1, buttonCap, "Controls buttons on Crafting Screen"));
+                this.priorityByStacks.add(client
+                        .addInt("priorityByStacks" + btnNum, defaultValue, 1, buttonCap, "Controls buttons on Priority Screen"));
+                this.levelByStacks.add(client
+                        .addInt("levelByStacks" + btnNum, defaultValue, 1, buttonCap, "Controls buttons on Level Emitter Screen"));
             }
 
-            builder.pop();
-
-            builder.push("terminals");
-            this.searchTooltips = builder.comment("Should tooltips be searched. Performance impact")
-                    .defineEnum("searchTooltips", YesNo.YES, YesNo.values());
-            this.terminalStyle = builder.defineEnum("terminalStyle", TerminalStyle.TALL, TerminalStyle.values());
-            this.terminalSearchMode = builder.defineEnum("terminalSearchMode", SearchBoxMode.AUTOSEARCH,
-                    SearchBoxMode.values());
-            builder.pop();
+            ConfigSection terminals = root.subsection("terminals");
+            this.searchTooltips = terminals
+                    .addEnum("searchTooltips", YesNo.YES, "Should tooltips be searched. Performance impact");
+            this.terminalStyle = terminals.addEnum("terminalStyle", TerminalStyle.TALL);
+            this.terminalSearchMode = terminals.addEnum("terminalSearchMode", SearchBoxMode.AUTOSEARCH);
         }
 
     }
@@ -431,63 +396,62 @@ public final class AEConfig {
     private static class CommonConfig {
 
         // Feature toggles
-        public final Map<AEFeature, BooleanValue> enabledFeatures = new EnumMap<>(AEFeature.class);
+        public final Map<AEFeature, BooleanOption> enabledFeatures = new EnumMap<>(AEFeature.class);
 
         // Misc
-        public final BooleanValue removeCrashingItemsOnLoad;
-        public final ConfigValue<Integer> formationPlaneEntityLimit;
-        public final ConfigValue<Integer> craftingCalculationTimePerTick;
+        public final BooleanOption removeCrashingItemsOnLoad;
+        public final IntegerOption formationPlaneEntityLimit;
+        public final IntegerOption craftingCalculationTimePerTick;
 
         // Spatial IO/Dimension
-        public final ConfigValue<Double> spatialPowerExponent;
-        public final ConfigValue<Double> spatialPowerMultiplier;
+        public final DoubleOption spatialPowerExponent;
+        public final DoubleOption spatialPowerMultiplier;
 
         // Grindstone
-        public final DoubleValue oreDoublePercentage;
+        public final DoubleOption oreDoublePercentage;
 
         // Batteries
-        public final ConfigValue<Integer> wirelessTerminalBattery;
-        public final ConfigValue<Integer> entropyManipulatorBattery;
-        public final ConfigValue<Integer> matterCannonBattery;
-        public final ConfigValue<Integer> portableCellBattery;
-        public final ConfigValue<Integer> colorApplicatorBattery;
-        public final ConfigValue<Integer> chargedStaffBattery;
+        public final IntegerOption wirelessTerminalBattery;
+        public final IntegerOption entropyManipulatorBattery;
+        public final IntegerOption matterCannonBattery;
+        public final IntegerOption portableCellBattery;
+        public final IntegerOption colorApplicatorBattery;
+        public final IntegerOption chargedStaffBattery;
 
         // Certus quartz
-        public final DoubleValue spawnChargedChance;
-        public final ConfigValue<Integer> quartzOresPerCluster;
-        public final ConfigValue<Integer> quartzOresClusterAmount;
+        public final DoubleOption spawnChargedChance;
+        public final IntegerOption quartzOresPerCluster;
+        public final IntegerOption quartzOresClusterAmount;
 
         // Meteors
-        public final ConfigValue<Integer> meteoriteMaximumSpawnHeight;
-        public final ConfigValue<List<? extends String>> meteoriteDimensionWhitelist;
+        public final IntegerOption meteoriteMaximumSpawnHeight;
+        public final StringListOption meteoriteDimensionWhitelist;
 
         // Wireless
-        public final ConfigValue<Double> wirelessBaseCost;
-        public final ConfigValue<Double> wirelessCostMultiplier;
-        public final ConfigValue<Double> wirelessTerminalDrainMultiplier;
-        public final ConfigValue<Double> wirelessBaseRange;
-        public final ConfigValue<Double> wirelessBoosterRangeMultiplier;
-        public final ConfigValue<Double> wirelessBoosterExp;
-        public final ConfigValue<Double> wirelessHighWirelessCount;
+        public final DoubleOption wirelessBaseCost;
+        public final DoubleOption wirelessCostMultiplier;
+        public final DoubleOption wirelessTerminalDrainMultiplier;
+        public final DoubleOption wirelessBaseRange;
+        public final DoubleOption wirelessBoosterRangeMultiplier;
+        public final DoubleOption wirelessBoosterExp;
+        public final DoubleOption wirelessHighWirelessCount;
 
         // Power Ratios
-        public final ConfigValue<Double> powerRatioIc2;
-        public final ConfigValue<Double> powerRatioForgeEnergy;
-        public final DoubleValue powerUsageMultiplier;
+        public final DoubleOption powerRatioIc2;
+        public final DoubleOption powerRatioForgeEnergy;
+        public final DoubleOption powerUsageMultiplier;
 
         // Condenser Power Requirement
-        public final ConfigValue<Integer> condenserMatterBallsPower;
-        public final ConfigValue<Integer> condenserSingularityPower;
+        public final IntegerOption condenserMatterBallsPower;
+        public final IntegerOption condenserSingularityPower;
 
-        public final Map<TickRates, ConfigValue<Integer>> tickRateMin = new HashMap<>();
-        public final Map<TickRates, ConfigValue<Integer>> tickRateMax = new HashMap<>();
+        public final Map<TickRates, IntegerOption> tickRateMin = new HashMap<>();
+        public final Map<TickRates, IntegerOption> tickRateMax = new HashMap<>();
 
-        public CommonConfig(ForgeConfigSpec.Builder builder) {
+        public CommonConfig(ConfigSection root) {
 
             // Feature switches
-            builder.comment("Warning: Disabling a feature may disable other features depending on it.")
-                    .push("features");
+            ConfigSection features = root.subsection("features", "Warning: Disabling a feature may disable other features depending on it.");
 
             // We need to group by feature category
             Map<String, List<AEFeature>> groupedFeatures = Arrays.stream(AEFeature.values())
@@ -497,96 +461,74 @@ public final class AEConfig {
             for (final String category : groupedFeatures.keySet()) {
                 List<AEFeature> featuresInGroup = groupedFeatures.get(category);
 
-                builder.push(category);
+                ConfigSection categorySection = features.subsection(category);
                 for (AEFeature feature : featuresInGroup) {
                     if (feature.isConfig()) {
-                        enabledFeatures.put(feature, builder.comment(Strings.nullToEmpty(feature.comment()))
-                                .define(feature.key(), feature.isEnabled()));
+                        enabledFeatures.put(feature, categorySection.addBoolean(feature.key(), feature.isEnabled(), feature.comment()));
                     }
                 }
-                builder.pop();
             }
 
-            builder.pop();
+            ConfigSection general = root.subsection("general");
+            removeCrashingItemsOnLoad = general.addBoolean("removeCrashingItemsOnLoad", false, "Will auto-remove items that crash when being loaded from storage. This will destroy those items instead of crashing the game!");
 
-            builder.push("general");
-            removeCrashingItemsOnLoad = builder.comment(
-                    "Will auto-remove items that crash when being loaded from storage. This will destroy those items instead of crashing the game!")
-                    .define("removeCrashingItemsOnLoad", false);
-            builder.pop();
+            ConfigSection automation = root.subsection("automation");
+            formationPlaneEntityLimit = automation.addInt("formationPlaneEntityLimit", 128);
 
-            builder.push("automation");
-            formationPlaneEntityLimit = builder.comment("TODO").define("formationPlaneEntityLimit", 128);
-            builder.pop();
+            ConfigSection craftingCPU = root.subsection("craftingCPU");
+            this.craftingCalculationTimePerTick = craftingCPU.addInt("craftingCalculationTimePerTick", 5);
 
-            builder.push("craftingCPU");
 
-            this.craftingCalculationTimePerTick = builder.define("craftingCalculationTimePerTick", 5);
+            ConfigSection spatialio = root.subsection("spatialio");
+            this.spatialPowerMultiplier = spatialio.addDouble("spatialPowerMultiplier", 1250.0);
+            this.spatialPowerExponent = spatialio.addDouble("spatialPowerExponent", 1.35);
 
-            builder.pop();
+            ConfigSection grindStone = root.subsection("GrindStone");
+            this.oreDoublePercentage = grindStone.addDouble("oreDoublePercentage", 90.0, 0.0, 100.0, "Chance to actually get an output with stacksize > 1.");
 
-            builder.push("spatialio");
-            this.spatialPowerMultiplier = builder.define("spatialPowerMultiplier", 1250.0);
-            this.spatialPowerExponent = builder.define("spatialPowerExponent", 1.35);
-            builder.pop();
+            ConfigSection battery = root.subsection("battery");
+            this.wirelessTerminalBattery = battery.addInt("wirelessTerminal", 1600000);
+            this.chargedStaffBattery = battery.addInt("chargedStaff", 8000);
+            this.entropyManipulatorBattery = battery.addInt("entropyManipulator", 200000);
+            this.portableCellBattery = battery.addInt("portableCell", 20000);
+            this.colorApplicatorBattery = battery.addInt("colorApplicator", 20000);
+            this.matterCannonBattery = battery.addInt("matterCannon", 200000);
 
-            builder.push("GrindStone");
-            this.oreDoublePercentage = builder.comment("Chance to actually get an output with stacksize > 1.")
-                    .defineInRange("oreDoublePercentage", 90.0, 0.0, 100.0);
-            builder.pop();
+            ConfigSection worldGen = root.subsection("worldGen");
 
-            builder.push("battery");
-            this.wirelessTerminalBattery = builder.define("wirelessTerminal", 1600000);
-            this.chargedStaffBattery = builder.define("chargedStaff", 8000);
-            this.entropyManipulatorBattery = builder.define("entropyManipulator", 200000);
-            this.portableCellBattery = builder.define("portableCell", 20000);
-            this.colorApplicatorBattery = builder.define("colorApplicator", 20000);
-            this.matterCannonBattery = builder.define("matterCannon", 200000);
-            builder.pop();
-
-            builder.push("worldGen");
-
-            this.spawnChargedChance = builder.defineInRange("spawnChargedChance", 0.08, 0.0, 1.0);
-            this.meteoriteMaximumSpawnHeight = builder.define("meteoriteMaximumSpawnHeight", 180);
+            this.spawnChargedChance = worldGen.addDouble("spawnChargedChance", 0.08, 0.0, 1.0);
+            this.meteoriteMaximumSpawnHeight = worldGen.addInt("meteoriteMaximumSpawnHeight", 180);
             List<String> defaultDimensionWhitelist = new ArrayList<>();
-            defaultDimensionWhitelist.add(DimensionType.getKey(DimensionType.OVERWORLD).toString());
-            this.meteoriteDimensionWhitelist = builder.defineList("meteoriteDimensionWhitelist",
-                    defaultDimensionWhitelist, obj -> true);
+            defaultDimensionWhitelist.add(DimensionType.OVERWORLD_REGISTRY_KEY.getValue().toString());
+            this.meteoriteDimensionWhitelist = worldGen.addStringList("meteoriteDimensionWhitelist",
+                    defaultDimensionWhitelist);
 
-            this.quartzOresPerCluster = builder.define("quartzOresPerCluster", 4);
-            this.quartzOresClusterAmount = builder.define("quartzOresClusterAmount", 20);
+            this.quartzOresPerCluster = worldGen.addInt("quartzOresPerCluster", 4);
+            this.quartzOresClusterAmount = worldGen.addInt("quartzOresClusterAmount", 20);
 
-            builder.pop();
+            ConfigSection wireless = root.subsection("wireless");
+            this.wirelessBaseCost = wireless.addDouble("wirelessBaseCost", 8.0);
+            this.wirelessCostMultiplier = wireless.addDouble("wirelessCostMultiplier", 1.0);
+            this.wirelessBaseRange = wireless.addDouble("wirelessBaseRange", 16.0);
+            this.wirelessBoosterRangeMultiplier = wireless.addDouble("wirelessBoosterRangeMultiplier", 1.0);
+            this.wirelessBoosterExp = wireless.addDouble("wirelessBoosterExp", 1.5);
+            this.wirelessHighWirelessCount = wireless.addDouble("wirelessHighWirelessCount", 64.0);
+            this.wirelessTerminalDrainMultiplier = wireless.addDouble("wirelessTerminalDrainMultiplier", 1.0);
 
-            builder.push("wireless");
-            this.wirelessBaseCost = builder.define("wirelessBaseCost", 8.0);
-            this.wirelessCostMultiplier = builder.define("wirelessCostMultiplier", 1.0);
-            this.wirelessBaseRange = builder.define("wirelessBaseRange", 16.0);
-            this.wirelessBoosterRangeMultiplier = builder.define("wirelessBoosterRangeMultiplier", 1.0);
-            this.wirelessBoosterExp = builder.define("wirelessBoosterExp", 1.5);
-            this.wirelessHighWirelessCount = builder.define("wirelessHighWirelessCount", 64.0);
-            this.wirelessTerminalDrainMultiplier = builder.define("wirelessTerminalDrainMultiplier", 1.0);
-            builder.pop();
+            ConfigSection PowerRatios = root.subsection("PowerRatios");
+            powerRatioIc2 = PowerRatios.addDouble("IC2", DEFAULT_IC2_EXCHANGE);
+            powerRatioForgeEnergy = PowerRatios.addDouble("ForgeEnergy", DEFAULT_RF_EXCHANGE);
+            powerUsageMultiplier = PowerRatios.addDouble("UsageMultiplier", 1.0, 0.01, Double.MAX_VALUE);
 
-            builder.push("PowerRatios");
-            powerRatioIc2 = builder.define("IC2", DEFAULT_IC2_EXCHANGE);
-            powerRatioForgeEnergy = builder.define("ForgeEnergy", DEFAULT_RF_EXCHANGE);
-            powerUsageMultiplier = builder.defineInRange("UsageMultiplier", 1.0, 0.01, Double.MAX_VALUE);
-            builder.pop();
+            ConfigSection Condenser = root.subsection("Condenser");
+            condenserMatterBallsPower = Condenser.addInt("MatterBalls", 256);
+            condenserSingularityPower = Condenser.addInt("Singularity", 256000);
 
-            builder.push("Condenser");
-            condenserMatterBallsPower = builder.define("MatterBalls", 256);
-            condenserSingularityPower = builder.define("Singularity", 256000);
-            builder.pop();
-
-            builder.comment(
-                    " Min / Max Tickrates for dynamic ticking, most of these components also use sleeping, to prevent constant ticking, adjust with care, non standard rates are not supported or tested.")
-                    .push("tickRates");
+            ConfigSection tickrates = root.subsection("tickRates", " Min / Max Tickrates for dynamic ticking, most of these components also use sleeping, to prevent constant ticking, adjust with care, non standard rates are not supported or tested.");
             for (TickRates tickRate : TickRates.values()) {
-                tickRateMin.put(tickRate, builder.define(tickRate.name() + "Min", tickRate.getDefaultMin()));
-                tickRateMax.put(tickRate, builder.define(tickRate.name() + "Max", tickRate.getDefaultMax()));
+                tickRateMin.put(tickRate, tickrates.addInt(tickRate.name() + "Min", tickRate.getDefaultMin()));
+                tickRateMax.put(tickRate, tickrates.addInt(tickRate.name() + "Max", tickRate.getDefaultMax()));
             }
-            builder.pop();
         }
 
     }

@@ -21,7 +21,7 @@ package appeng.parts.reporting;
 import java.util.List;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
@@ -95,7 +95,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
     }
 
     @Override
-    public ContainerType<?> getContainerType(final PlayerEntity p) {
+    public ScreenHandlerType<?> getContainerType(final PlayerEntity p) {
         if (Platform.checkPermissions(p, this, SecurityPermissions.CRAFT, false)) {
             return PatternTermContainer.TYPE;
         }
@@ -115,14 +115,14 @@ public class PatternTerminalPart extends AbstractTerminalPart {
                     this.setCraftingRecipe(details.isCraftable());
                     this.setSubstitution(details.canSubstitute());
 
-                    for (int x = 0; x < this.crafting.getSlots() && x < details.getInputs().length; x++) {
+                    for (int x = 0; x < this.crafting.getSlotCount() && x < details.getInputs().length; x++) {
                         final IAEItemStack item = details.getInputs()[x];
-                        this.crafting.setStackInSlot(x, item == null ? ItemStack.EMPTY : item.createItemStack());
+                        this.crafting.setInvStack(x, item == null ? ItemStack.EMPTY : item.createItemStack());
                     }
 
-                    for (int x = 0; x < this.output.getSlots() && x < details.getOutputs().length; x++) {
+                    for (int x = 0; x < this.output.getSlotCount() && x < details.getOutputs().length; x++) {
                         final IAEItemStack item = details.getOutputs()[x];
-                        this.output.setStackInSlot(x, item == null ? ItemStack.EMPTY : item.createItemStack());
+                        this.output.setInvStack(x, item == null ? ItemStack.EMPTY : item.createItemStack());
                     }
                 }
             }
@@ -135,7 +135,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
 
     private void fixCraftingRecipes() {
         if (this.craftingMode) {
-            for (int x = 0; x < this.crafting.getSlots(); x++) {
+            for (int x = 0; x < this.crafting.getSlotCount(); x++) {
                 final ItemStack is = this.crafting.getInvStack(x);
                 if (!is.isEmpty()) {
                     is.setCount(1);

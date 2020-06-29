@@ -29,7 +29,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.particle.ParticleType;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.util.Identifier;
@@ -174,8 +174,8 @@ final class Registration {
                 .forEachRemaining(b -> b.register(registry));
     }
 
-    public void registerContainerTypes(RegistryEvent.Register<ContainerType<?>> event) {
-        final IForgeRegistry<ContainerType<?>> registry = event.getRegistry();
+    public void registerContainerTypes(RegistryEvent.Register<ScreenHandlerType<?>> event) {
+        final IForgeRegistry<ScreenHandlerType<?>> registry = event.getRegistry();
 
         CellWorkbenchContainer.TYPE = registerContainer(registry, "cellworkbench", CellWorkbenchContainer::fromNetwork,
                 CellWorkbenchContainer::open);
@@ -300,9 +300,9 @@ final class Registration {
         });
     }
 
-    private <T extends AEBaseContainer> ContainerType<T> registerContainer(IForgeRegistry<ContainerType<?>> registry,
-            String id, IContainerFactory<T> factory, ContainerOpener.Opener<T> opener) {
-        ContainerType<T> type = IForgeContainerType.create(factory);
+    private <T extends AEBaseContainer> ScreenHandlerType<T> registerContainer(IForgeRegistry<ScreenHandlerType<?>> registry,
+                                                                               String id, IContainerFactory<T> factory, ContainerOpener.Opener<T> opener) {
+        ScreenHandlerType<T> type = IForgeContainerType.create(factory);
         type.setRegistryName(AppEng.MOD_ID, id);
         registry.register(type);
         ContainerOpener.addOpener(type, opener);

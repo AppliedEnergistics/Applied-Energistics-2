@@ -20,7 +20,7 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.network.PacketByteBuf;
 
 import appeng.container.ContainerLocator;
@@ -31,7 +31,7 @@ import appeng.util.Platform;
 
 public class WirelessTermContainer extends MEPortableCellContainer {
 
-    public static ContainerType<WirelessTermContainer> TYPE;
+    public static ScreenHandlerType<WirelessTermContainer> TYPE;
 
     private static final ContainerHelper<WirelessTermContainer, WirelessTerminalGuiObject> helper = new ContainerHelper<>(
             WirelessTermContainer::new, WirelessTerminalGuiObject.class);

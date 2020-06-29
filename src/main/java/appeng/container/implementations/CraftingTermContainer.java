@@ -23,7 +23,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeType;
@@ -47,7 +47,7 @@ import appeng.util.inv.WrapperInvItemHandler;
 public class CraftingTermContainer extends MEMonitorableContainer
         implements IAEAppEngInventory, IContainerCraftingPacket {
 
-    public static ContainerType<CraftingTermContainer> TYPE;
+    public static ScreenHandlerType<CraftingTermContainer> TYPE;
 
     private static final ContainerHelper<CraftingTermContainer, ITerminalHost> helper = new ContainerHelper<>(
             CraftingTermContainer::new, ITerminalHost.class, SecurityPermissions.CRAFT);

@@ -30,7 +30,7 @@ import net.minecraft.recipe.RecipeType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.inventory.CraftResultInventory;
 import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.inventory.container.CraftingResultSlot;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
@@ -77,7 +77,7 @@ import appeng.util.item.AEItemStack;
 public class PatternTermContainer extends MEMonitorableContainer
         implements IAEAppEngInventory, IOptionalSlotHost, IContainerCraftingPacket {
 
-    public static ContainerType<PatternTermContainer> TYPE;
+    public static ScreenHandlerType<PatternTermContainer> TYPE;
 
     private static final ContainerHelper<PatternTermContainer, ITerminalHost> helper = new ContainerHelper<>(
             PatternTermContainer::new, ITerminalHost.class, SecurityPermissions.CRAFT);
@@ -184,7 +184,7 @@ public class PatternTermContainer extends MEMonitorableContainer
             is = this.currentRecipe.craft(ic);
         }
 
-        this.cOut.setStackInSlot(0, is);
+        this.cOut.setInvStack(0, is);
         return is;
     }
 

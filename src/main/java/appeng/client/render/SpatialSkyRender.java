@@ -82,7 +82,7 @@ public class SpatialSkyRender implements SkyRenderHandler {
         // The skybox is pitch black and untextured
         for (Quaternion rotation : SKYBOX_SIDE_ROTATIONS) {
             matrixStack.push();
-            matrixStack.rotate(rotation);
+            matrixStack.multiply(rotation);
 
             RenderSystem.disableTexture();
             VertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);

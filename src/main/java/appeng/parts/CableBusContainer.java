@@ -23,6 +23,7 @@ import java.util.*;
 
 import javax.annotation.Nullable;
 
+import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
@@ -837,8 +838,8 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
             String defKey = "def:" + side.ordinal();
             String extraKey = "extra:" + side.ordinal();
-            if (data.contains(defKey, Constants.NBT.TAG_COMPOUND)
-                    && data.contains(extraKey, Constants.NBT.TAG_COMPOUND)) {
+            if (data.contains(defKey, NbtType.COMPOUND)
+                    && data.contains(extraKey, NbtType.COMPOUND)) {
                 final CompoundTag def = data.getCompound(defKey);
                 final CompoundTag extra = data.getCompound(extraKey);
                 IPart p = this.getPart(side);

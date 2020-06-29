@@ -20,7 +20,7 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.config.SecurityPermissions;
@@ -37,7 +37,7 @@ import appeng.helpers.IInterfaceHost;
 
 public class InterfaceContainer extends UpgradeableContainer {
 
-    public static ContainerType<InterfaceContainer> TYPE;
+    public static ScreenHandlerType<InterfaceContainer> TYPE;
 
     private static final ContainerHelper<InterfaceContainer, IInterfaceHost> helper = new ContainerHelper<>(
             InterfaceContainer::new, IInterfaceHost.class, SecurityPermissions.BUILD);

@@ -26,13 +26,12 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -335,7 +334,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
 
             double power = 2.0;
 
-            for (int x = 0; x < this.inv.getSlots(); x++) {
+            for (int x = 0; x < this.inv.getSlotCount(); x++) {
                 final ItemStack is = this.inv.getInvStack(x);
                 this.invBySlot[x] = null;
                 this.handlersBySlot[x] = null;
@@ -444,7 +443,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
     }
 
     @Override
-    public ContainerType<?> getContainerType() {
+    public ScreenHandlerType<?> getContainerType() {
         return DriveContainer.TYPE;
     }
 

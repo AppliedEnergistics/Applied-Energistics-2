@@ -21,7 +21,7 @@ package appeng.container.implementations;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.config.FuzzyMode;
@@ -39,7 +39,7 @@ import appeng.util.Platform;
 
 public class FormationPlaneContainer extends UpgradeableContainer {
 
-    public static ContainerType<FormationPlaneContainer> TYPE;
+    public static ScreenHandlerType<FormationPlaneContainer> TYPE;
 
     private static final ContainerHelper<FormationPlaneContainer, FormationPlanePart> helper = new ContainerHelper<>(
             FormationPlaneContainer::new, FormationPlanePart.class, SecurityPermissions.BUILD);

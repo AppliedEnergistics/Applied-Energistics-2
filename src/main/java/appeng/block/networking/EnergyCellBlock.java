@@ -27,7 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateManager;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.collection.DefaultedList;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.helpers.AEGlassMaterial;
@@ -43,8 +43,8 @@ public class EnergyCellBlock extends AEBaseTileBlock<EnergyCellBlockEntity> {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> itemStacks) {
-        super.fillItemGroup(group, itemStacks);
+    public void appendStacks(ItemGroup group, DefaultedList<ItemStack> itemStacks) {
+        super.appendStacks(group, itemStacks);
 
         final ItemStack charged = new ItemStack(this, 1);
         final CompoundTag tag = charged.getOrCreateTag();

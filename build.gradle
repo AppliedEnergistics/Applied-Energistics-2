@@ -58,6 +58,7 @@ allprojects {
     }
 
     minecraft {
+        accessWidener "${project.rootDir}/core/src/main/resources/appliedenergistics2.accesswidener"
     }
 
     dependencies {

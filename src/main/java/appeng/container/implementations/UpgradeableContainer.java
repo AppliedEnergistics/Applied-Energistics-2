@@ -22,7 +22,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
@@ -55,7 +55,7 @@ import appeng.util.Platform;
 
 public class UpgradeableContainer extends AEBaseContainer implements IOptionalSlotHost {
 
-    public static ContainerType<UpgradeableContainer> TYPE;
+    public static ScreenHandlerType<UpgradeableContainer> TYPE;
 
     private static final ContainerHelper<UpgradeableContainer, IUpgradeableHost> helper = new ContainerHelper<>(
             UpgradeableContainer::new, IUpgradeableHost.class, SecurityPermissions.BUILD);
@@ -84,8 +84,8 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
         this(TYPE, id, ip, te);
     }
 
-    public UpgradeableContainer(ContainerType<?> containerType, int id, final PlayerInventory ip,
-            final IUpgradeableHost te) {
+    public UpgradeableContainer(ScreenHandlerType<?> containerType, int id, final PlayerInventory ip,
+                                final IUpgradeableHost te) {
         super(containerType, id, ip, (BlockEntity) (te instanceof BlockEntity ? te : null),
                 (IPart) (te instanceof IPart ? te : null));
         this.upgradeable = te;

@@ -321,14 +321,14 @@ public class CachedPlane {
 
                 // FIXME this was sending chunks to players...
                 SChunkDataPacket cdp = new SChunkDataPacket(c, verticalBits);
-                ((ServerChunkProvider) world.getChunkProvider()).chunkManager.getTrackingPlayers(c.getPos(), false)
+                ((ServerChunkProvider) world.getChunkManager()).chunkManager.getTrackingPlayers(c.getPos(), false)
                         .forEach(spe -> spe.connection.sendPacket(cdp));
 
             }
         }
 
         // FIXME check if this makes any sense at all to send changes to players asap
-        ServerChunkProvider serverChunkProvider = (ServerChunkProvider) world.getChunkProvider();
+        ServerChunkProvider serverChunkProvider = (ServerChunkProvider) world.getChunkManager();
         serverChunkProvider.tick(() -> false);
     }
 

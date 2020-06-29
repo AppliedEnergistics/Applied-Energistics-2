@@ -11,7 +11,7 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 
 public class GrinderRecipe implements Recipe<Inventory> {
@@ -91,8 +91,8 @@ public class GrinderRecipe implements Recipe<Inventory> {
     }
 
     @Override
-    public NonNullList<Ingredient> getIngredients() {
-        NonNullList<Ingredient> nonnulllist = NonNullList.create();
+    public DefaultedList<Ingredient> getIngredients() {
+        DefaultedList<Ingredient> nonnulllist = DefaultedList.create();
         nonnulllist.add(this.ingredient);
         return nonnulllist;
     }

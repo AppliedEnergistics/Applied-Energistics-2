@@ -3,7 +3,7 @@ package appeng.fluids.container;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.network.PacketByteBuf;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -19,7 +19,7 @@ import appeng.fluids.util.IAEFluidTank;
 import appeng.util.Platform;
 
 public class FluidLevelEmitterContainer extends FluidConfigurableContainer {
-    public static ContainerType<FluidLevelEmitterContainer> TYPE;
+    public static ScreenHandlerType<FluidLevelEmitterContainer> TYPE;
 
     private static final ContainerHelper<FluidLevelEmitterContainer, FluidLevelEmitterPart> helper = new ContainerHelper<>(
             FluidLevelEmitterContainer::new, FluidLevelEmitterPart.class, SecurityPermissions.BUILD);

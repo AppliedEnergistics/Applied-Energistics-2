@@ -40,9 +40,8 @@ import net.minecraft.text.Text;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
-import net.minecraft.world.chunk.IChunk;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.structure.StructureStart;
@@ -84,15 +83,15 @@ public class TestMeteoritesCommand implements ISubCommand {
         BlockPos centerBlock;
         if (player != null) {
             world = player.getServerWorld();
-            centerBlock = new BlockPos(player.getX(), 0, player.getPosZ());
+            centerBlock = new BlockPos(player.getX(), 0, player.getZ());
         } else {
-            world = srv.getWorld(DimensionType.OVERWORLD);
+            world = srv.getOverworld();
             centerBlock = world.getSpawnPoint();
         }
 
         ChunkPos center = new ChunkPos(centerBlock);
 
-        ChunkGenerator<?> generator = world.getChunkProvider().getChunkGenerator();
+        ChunkGenerator<?> generator = world.getChunkManager().getChunkGenerator();
 
         // Find all meteorites in the given rectangle
         List<PlacedMeteoriteSettings> found = new ArrayList<>();
@@ -104,7 +103,7 @@ public class TestMeteoritesCommand implements ISubCommand {
                 BlockPos p = new BlockPos(cp.getXStart(), 0, cp.getZStart());
                 BlockPos nearest = MeteoriteStructure.INSTANCE.findNearest(world, generator, p, 0, false);
                 if (nearest != null) {
-                    IChunk chunk = world.getChunk(cx, cz, ChunkStatus.STRUCTURE_STARTS);
+                    Chunk chunk = world.getChunk(cx, cz, ChunkStatus.STRUCTURE_STARTS);
                     // The actual relevant information is in the structure piece
                     MeteoriteStructurePiece piece = getMeteoritePieceFromChunk(chunk);
                     if (piece != null) {
@@ -147,7 +146,7 @@ public class TestMeteoritesCommand implements ISubCommand {
             String state = "not final";
 
             if (force && settings.getFallout() == null) {
-                IChunk chunk = world.getChunk(pos);
+                Chunk chunk = world.getChunk(pos);
                 MeteoriteStructurePiece piece = getMeteoritePieceFromChunk(chunk);
                 if (piece == null) {
                     state = "removed";
@@ -195,7 +194,7 @@ public class TestMeteoritesCommand implements ISubCommand {
                 .formatted(style -> style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, tpCommand)));
     }
 
-    private static MeteoriteStructurePiece getMeteoritePieceFromChunk(IChunk chunk) {
+    private static MeteoriteStructurePiece getMeteoritePieceFromChunk(Chunk chunk) {
         StructureStart start = chunk.getStructureStart(MeteoriteStructure.INSTANCE.getStructureName());
 
         if (start != null && start.getComponents().size() > 0

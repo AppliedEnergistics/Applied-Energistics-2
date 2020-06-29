@@ -30,11 +30,11 @@ import com.google.common.collect.ImmutableList;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.json.ModelOverrideList;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.AffineTransformation;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.Material;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.Fluids;
@@ -99,9 +99,9 @@ public class DummyFluidDispatcherBakedModel extends DelegateBakedModel {
                     fluidStack = new FluidVolume(Fluids.WATER, FluidAttributes.BUCKET_VOLUME);
                 }
 
-                FluidAttributes attributes = fluidStack.getFluid().getAttributes();
+                FluidAttributes attributes = fluidStack.getFluidKey().getAttributes();
                 Identifier stillTexture = attributes.getStillTexture(fluidStack);
-                Material stillMaterial = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, stillTexture);
+                Material stillMaterial = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX, stillTexture);
                 Sprite sprite = DummyFluidDispatcherBakedModel.this.bakedTextureGetter.apply(stillMaterial);
                 if (sprite == null) {
                     return new DummyFluidBakedModel(ImmutableList.of());

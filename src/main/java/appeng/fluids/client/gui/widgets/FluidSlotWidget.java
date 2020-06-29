@@ -5,7 +5,7 @@ import java.util.Collections;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
@@ -41,8 +41,8 @@ public class FluidSlotWidget extends CustomSlotWidget {
             RenderSystem.disableBlend();
             final Fluid fluid = fs.getFluid();
             final FluidAttributes attributes = fluid.getAttributes();
-            mc.getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-            final Sprite sprite = mc.getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE)
+            mc.getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
+            final Sprite sprite = mc.getAtlasSpriteGetter(SpriteAtlasTexture.BLOCK_ATLAS_TEX)
                     .apply(attributes.getStillTexture(fs.getFluidStack()));
 
             // Set color for dynamic fluids

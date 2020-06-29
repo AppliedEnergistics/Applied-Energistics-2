@@ -198,7 +198,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
     public void getDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
         super.getDrops(w, pos, drops);
 
-        for (int h = 0; h < this.upgrades.getSlots(); h++) {
+        for (int h = 0; h < this.upgrades.getSlotCount(); h++) {
             final ItemStack is = this.upgrades.getInvStack(h);
             if (!is.isEmpty()) {
                 drops.add(is);
@@ -278,10 +278,10 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
                     if (this.sideItemHandler.insertItem(1, outputCopy, false).isEmpty()) {
                         this.setProcessingTime(0);
                         if (out.getProcessType() == InscriberProcessType.PRESS) {
-                            this.topItemHandler.setStackInSlot(0, ItemStack.EMPTY);
-                            this.bottomItemHandler.setStackInSlot(0, ItemStack.EMPTY);
+                            this.topItemHandler.setInvStack(0, ItemStack.EMPTY);
+                            this.bottomItemHandler.setInvStack(0, ItemStack.EMPTY);
                         }
-                        this.sideItemHandler.setStackInSlot(0, ItemStack.EMPTY);
+                        this.sideItemHandler.setInvStack(0, ItemStack.EMPTY);
                     }
                 }
                 this.saveChanges();

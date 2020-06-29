@@ -18,7 +18,7 @@
 
 package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
-import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.util.math.Matrix4f;
 import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.util.math.Direction;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;

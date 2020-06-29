@@ -22,7 +22,7 @@ import java.util.Iterator;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.network.PacketByteBuf;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
@@ -53,7 +53,7 @@ import appeng.util.iterators.NullIterator;
  */
 public class FluidStorageBusContainer extends FluidConfigurableContainer {
 
-    public static ContainerType<FluidStorageBusContainer> TYPE;
+    public static ScreenHandlerType<FluidStorageBusContainer> TYPE;
 
     private static final ContainerHelper<FluidStorageBusContainer, FluidStorageBusPart> helper = new ContainerHelper<>(
             FluidStorageBusContainer::new, FluidStorageBusPart.class);

@@ -25,7 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.collection.DefaultedList;
 
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.recipe.IFocus;
@@ -104,7 +104,7 @@ class FacadeRegistryPlugin implements IRecipeManagerPlugin {
         Identifier id = new Identifier(AppEng.MOD_ID,
                 "facade/" + textureItem.getItem().getRegistryName().toString().replace(':', '/'));
 
-        NonNullList<Ingredient> ingredients = NonNullList.withSize(9, Ingredient.EMPTY);
+        DefaultedList<Ingredient> ingredients = DefaultedList.withSize(9, Ingredient.EMPTY);
         ingredients.set(1, Ingredient.fromStacks(cableAnchor));
         ingredients.set(3, Ingredient.fromStacks(cableAnchor));
         ingredients.set(5, Ingredient.fromStacks(cableAnchor));

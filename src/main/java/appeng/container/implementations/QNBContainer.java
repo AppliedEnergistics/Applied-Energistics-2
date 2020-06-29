@@ -20,7 +20,7 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.config.SecurityPermissions;
@@ -31,7 +31,7 @@ import appeng.tile.qnb.QuantumBridgeBlockEntity;
 
 public class QNBContainer extends AEBaseContainer {
 
-    public static ContainerType<QNBContainer> TYPE;
+    public static ScreenHandlerType<QNBContainer> TYPE;
 
     private static final ContainerHelper<QNBContainer, QuantumBridgeBlockEntity> helper = new ContainerHelper<>(
             QNBContainer::new, QuantumBridgeBlockEntity.class, SecurityPermissions.BUILD);

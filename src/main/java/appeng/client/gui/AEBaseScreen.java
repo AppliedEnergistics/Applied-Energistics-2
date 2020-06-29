@@ -32,6 +32,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
@@ -42,7 +43,7 @@ import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
@@ -499,7 +500,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         return Preconditions.checkNotNull(getMinecraft().player);
     }
 
-    protected boolean checkHotbarKeys(final InputMappings.Input input) {
+    protected boolean checkHotbarKeys(final InputUtil.Key input) {
         final Slot theSlot = this.getSlotUnderMouse();
 
         if (getPlayer().inventory.getItemStack().isEmpty() && theSlot != null) {
@@ -645,10 +646,10 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 RenderSystem.disableBlend();
                 final Fluid fluid = fs.getFluid();
                 FluidAttributes fluidAttributes = fluid.getAttributes();
-                bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+                bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
                 Identifier fluidStillTexture = fluidAttributes.getStillTexture(fs.getFluidStack());
                 final Sprite sprite = getMinecraft()
-                        .getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(fluidStillTexture);
+                        .getAtlasSpriteGetter(SpriteAtlasTexture.BLOCK_ATLAS_TEX).apply(fluidStillTexture);
 
                 // Set color for dynamic fluids
                 // Convert int color to RGB

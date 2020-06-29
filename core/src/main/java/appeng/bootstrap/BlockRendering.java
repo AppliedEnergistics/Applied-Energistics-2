@@ -26,14 +26,11 @@ import net.minecraft.block.Block;
 import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.util.Identifier;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.bootstrap.components.BlockColorComponent;
 import appeng.bootstrap.components.RenderTypeComponent;
-import appeng.client.render.model.AutoRotatingBakedModel;
-import net.minecraft.util.registry.Registry;
 
 class BlockRendering implements IBlockRendering {
 
@@ -79,7 +76,7 @@ class BlockRendering implements IBlockRendering {
             // This is a default rotating model if the base-block uses an AE block entity
             // which exposes UP/FRONT as
             // extended props
-            factory.addModelOverride(id.getPath(), (l, m) -> new AutoRotatingBakedModel(m));
+            // FIXME FABRIC factory.addModelOverride(id.getPath(), (l, m) -> new AutoRotatingBakedModel(m));
         }
 
         if (this.blockColor != null) {

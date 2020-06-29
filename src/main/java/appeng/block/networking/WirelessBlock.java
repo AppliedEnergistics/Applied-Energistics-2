@@ -221,7 +221,7 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessBlockEntity> {
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState state, BlockView reader, BlockPos pos) {
+    public boolean isTranslucent(BlockState state, BlockView reader, BlockPos pos) {
         return true;
     }
 

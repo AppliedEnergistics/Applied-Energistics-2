@@ -103,7 +103,7 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> implem
     @Override
     @Nonnull
     public FluidVolume getFluidInTank(int tank) {
-        return FluidVolume.EMPTY;
+        return FluidVolumeUtil.EMPTY;
     }
 
     @Override
@@ -129,7 +129,7 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> implem
 
         stack.push(this);
 
-        final List<FluidP2PTunnelPart> list = this.getOutputs(resource.getFluid());
+        final List<FluidP2PTunnelPart> list = this.getOutputs(resource.getFluidKey());
         int requestTotal = 0;
 
         Iterator<FluidP2PTunnelPart> i = list.iterator();
@@ -201,13 +201,13 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> implem
     @Override
     @Nonnull
     public FluidVolume drain(FluidVolume resource, FluidAction action) {
-        return FluidVolume.EMPTY;
+        return FluidVolumeUtil.EMPTY;
     }
 
     @Override
     @Nonnull
     public FluidVolume drain(int maxDrain, FluidAction action) {
-        return FluidVolume.EMPTY;
+        return FluidVolumeUtil.EMPTY;
     }
 
     private Deque<FluidP2PTunnelPart> getDepth() {

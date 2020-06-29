@@ -27,7 +27,7 @@ import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
@@ -85,7 +85,7 @@ import appeng.util.Platform;
 public class FluidTerminalContainer extends AEBaseContainer
         implements IConfigManagerHost, IConfigurableObject, IMEMonitorHandlerReceiver<IAEFluidStack> {
 
-    public static ContainerType<FluidTerminalContainer> TYPE;
+    public static ScreenHandlerType<FluidTerminalContainer> TYPE;
 
     private static final ContainerHelper<FluidTerminalContainer, ITerminalHost> helper = new ContainerHelper<>(
             FluidTerminalContainer::new, ITerminalHost.class, SecurityPermissions.BUILD);

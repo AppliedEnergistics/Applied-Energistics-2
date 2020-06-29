@@ -23,7 +23,7 @@ import java.util.Iterator;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 
@@ -50,7 +50,7 @@ import appeng.util.iterators.NullIterator;
 
 public class StorageBusContainer extends UpgradeableContainer {
 
-    public static ContainerType<StorageBusContainer> TYPE;
+    public static ScreenHandlerType<StorageBusContainer> TYPE;
 
     private static final ContainerHelper<StorageBusContainer, StorageBusPart> helper = new ContainerHelper<>(
             StorageBusContainer::new, StorageBusPart.class, SecurityPermissions.BUILD);

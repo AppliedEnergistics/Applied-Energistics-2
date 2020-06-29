@@ -18,6 +18,8 @@
 
 package appeng.tile;
 
+import alexiil.mc.lib.attributes.AttributeList;
+import alexiil.mc.lib.attributes.AttributeProvider;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.util.ICommonTile;
@@ -30,10 +32,10 @@ import appeng.core.AELog;
 import appeng.core.features.IStackSrc;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
-import appeng.hooks.TickHandler;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
+import com.sun.org.apache.bcel.internal.classfile.AttributeReader;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
@@ -58,7 +60,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AEBaseBlockEntity extends BlockEntity implements IOrientable, ICommonTile, ICustomNameObject, BlockEntityClientSerializable, RenderAttachmentBlockEntity {
+public class AEBaseBlockEntity extends BlockEntity implements IOrientable, ICommonTile, ICustomNameObject, BlockEntityClientSerializable, RenderAttachmentBlockEntity, AttributeProvider {
 
     private static final ThreadLocal<WeakReference<AEBaseBlockEntity>> DROP_NO_ITEMS = new ThreadLocal<>();
     private static final Map<Class<? extends BlockEntity>, IStackSrc> ITEM_STACKS = new HashMap<>();
@@ -299,10 +301,10 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
             final FixedItemInv inv = ((ISegmentedInventory) this).getInventoryByName("config");
             if (inv instanceof AppEngInternalAEInventory) {
                 final AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
-                final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory(null, target.getSlots());
+                final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory(null, target.getSlotCount());
                 tmp.readFromNBT(compound, "config");
-                for (int x = 0; x < tmp.getSlots(); x++) {
-                    target.setStackInSlot(x, tmp.getStackInSlot(x));
+                for (int x = 0; x < tmp.getSlotCount(); x++) {
+                    target.forceSetInvStack(x, tmp.getInvStack(x));
                 }
             }
         }
@@ -396,8 +398,9 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
         if (this.world != null) {
             this.world.markDirty(this.pos, this);
             if (!this.markDirtyQueued) {
-                TickHandler.INSTANCE.addCallable(null, this::markDirtyAtEndOfTick);
+                // FIXME FABRIC TickHandler.INSTANCE.addCallable(null, this::markDirtyAtEndOfTick);
                 this.markDirtyQueued = true;
+                throw new IllegalStateException();
             }
         }
     }
@@ -415,6 +418,10 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
     @Override
     public Object getRenderAttachmentData() {
         return new AEModelData(up, forward);
+    }
+
+    @Override
+    public void addAllAttributes(World world, BlockPos pos, BlockState state, AttributeList<?> to) {
     }
 
 }

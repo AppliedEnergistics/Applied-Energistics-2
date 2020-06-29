@@ -22,7 +22,7 @@ import java.util.List;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
@@ -80,7 +80,7 @@ public class CraftingTerminalPart extends AbstractTerminalPart {
     }
 
     @Override
-    public ContainerType<?> getContainerType(final PlayerEntity p) {
+    public ScreenHandlerType<?> getContainerType(final PlayerEntity p) {
         if (Platform.checkPermissions(p, this, SecurityPermissions.CRAFT, false)) {
             return CraftingTermContainer.TYPE;
         }

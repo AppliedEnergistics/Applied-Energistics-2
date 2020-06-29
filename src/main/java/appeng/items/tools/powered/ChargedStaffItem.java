@@ -21,7 +21,7 @@ package appeng.items.tools.powered;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.util.math.Box;
 
 import appeng.api.config.Actionable;
@@ -51,7 +51,7 @@ public class ChargedStaffItem extends AEBasePoweredItem {
                             new LightningPacket(dx, dy, dz));
                 }
             }
-            target.attackEntityFrom(DamageSource.MAGIC, 6);
+            target.damage(DamageSource.MAGIC, 6);
             return true;
         }
 

@@ -3,10 +3,10 @@ package appeng.client.render.tesr;
 import java.util.EnumMap;
 
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.renderer.RenderState;
@@ -84,7 +84,7 @@ public class DriveLedTileEntityRenderer extends BlockEntityRenderer<DriveBlockEn
                 .getPrivateValue(RenderState.class, null, "field_228515_g_");
         RenderLayer rt = RenderLayer.makeType("ae_drive_leds", DefaultVertexFormats.POSITION_COLOR, 7, 32565, false, true,
                 RenderLayer.State.getBuilder().transparency(TRANSLUCENT_TRANSPARENCY).build(false));
-        IVertexBuilder buffer = buffers.getBuffer(STATE);
+        VertexConsumer buffer = buffers.getBuffer(STATE);
 
         for (int row = 0; row < 5; row++) {
             for (int col = 0; col < 2; col++) {

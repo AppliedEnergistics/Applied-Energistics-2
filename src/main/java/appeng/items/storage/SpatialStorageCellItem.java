@@ -24,6 +24,7 @@ import net.fabricmc.api.EnvType;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -97,7 +98,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
     }
 
     @Override
-    public TransitionResult doSpatialTransition(final ItemStack is, final World w, final WorldCoord min,
+    public TransitionResult doSpatialTransition(final ItemStack is, final ServerWorld w, final WorldCoord min,
             final WorldCoord max, int playerId) {
         final int targetX = max.x - min.x - 1;
         final int targetY = max.y - min.y - 1;
@@ -120,7 +121,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
 
         try {
             if (manager.isCellDimension(storedDim)) {
-                World cellWorld = manager.getWorld(storedDim);
+                ServerWorld cellWorld = manager.getWorld(storedDim);
 
                 BlockPos scale = manager.getCellDimensionSize(storedDim);
 

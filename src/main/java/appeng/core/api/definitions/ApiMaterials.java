@@ -20,6 +20,7 @@ package appeng.core.api.definitions;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.SpawnGroup;
 
 import appeng.api.definitions.IItemDefinition;
@@ -27,7 +28,6 @@ import appeng.api.definitions.IMaterials;
 import appeng.api.features.AEFeature;
 import appeng.bootstrap.FeatureFactory;
 import appeng.core.AEConfig;
-import appeng.core.features.MaterialStackSrc;
 import appeng.entity.ChargedQuartzEntity;
 import appeng.entity.SingularityEntity;
 import appeng.items.materials.MaterialItem;
@@ -120,14 +120,12 @@ public final class ApiMaterials implements IMaterials {
 
         SingularityEntity.TYPE = registry
                 .<SingularityEntity>entity("singularity", SingularityEntity::new, SpawnGroup.MISC)
-                .customize(builder -> builder.size(0.2f, 0.2f).setTrackingRange(16).setUpdateInterval(4)
-                        .setShouldReceiveVelocityUpdates(true))
+                .customize(b -> b.trackable(16, 4, true).dimensions(EntityDimensions.fixed(0.2f, 0.2f)))
                 .build();
 
         ChargedQuartzEntity.TYPE = registry
                 .<ChargedQuartzEntity>entity("charged_quartz", ChargedQuartzEntity::new, SpawnGroup.MISC)
-                .customize(builder -> builder.size(0.2f, 0.2f).setTrackingRange(16).setUpdateInterval(4)
-                        .setShouldReceiveVelocityUpdates(true))
+                .customize(b -> b.trackable(16, 4, true).dimensions(EntityDimensions.fixed(0.2f, 0.2f)))
                 .build();
 
         this.cell2SpatialPart = createMaterial(MaterialType.SPATIAL_2_CELL_COMPONENT);
@@ -201,7 +199,6 @@ public final class ApiMaterials implements IMaterials {
             enabled = enabled && AEConfig.instance().isFeatureEnabled(f);
         }
 
-        mat.setStackSrc(new MaterialStackSrc(mat, enabled));
         mat.setItemInstance(def.item());
         mat.markReady();
         return def;

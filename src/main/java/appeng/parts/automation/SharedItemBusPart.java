@@ -90,7 +90,7 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
     private BlockEntity getBlockEntity(final BlockEntity self, final BlockPos pos) {
         final World w = self.getWorld();
 
-        if (w.getChunkProvider().isChunkLoaded(new ChunkPos(pos))) {
+        if (w.getChunkManager().isChunkLoaded(new ChunkPos(pos))) {
             return w.getBlockEntity(pos);
         }
 
@@ -98,7 +98,7 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
     }
 
     protected int availableSlots() {
-        return Math.min(1 + this.getInstalledUpgrades(Upgrades.CAPACITY) * 4, this.getConfig().getSlots());
+        return Math.min(1 + this.getInstalledUpgrades(Upgrades.CAPACITY) * 4, this.getConfig().getSlotCount());
     }
 
     protected int calculateItemsToSend() {
@@ -129,7 +129,7 @@ public abstract class SharedItemBusPart extends UpgradeablePart implements IGrid
         final BlockPos selfPos = self.getPos().offset(this.getSide().getFacing());
         final World world = self.getWorld();
 
-        return world != null && world.getChunkProvider().isChunkLoaded(new ChunkPos(selfPos));
+        return world != null && world.getChunkManager().isChunkLoaded(new ChunkPos(selfPos));
     }
 
     private void updateState() {

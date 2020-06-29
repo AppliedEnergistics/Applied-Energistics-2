@@ -47,25 +47,25 @@ public class TesrRenderHelper {
     public static void rotateToFace(MatrixStack mStack, Direction face, byte spin) {
         switch (face) {
             case UP:
-                mStack.rotate(Vector3f.XP.rotationDegrees(270));
-                mStack.rotate(Vector3f.ZP.rotationDegrees(-spin * 90.0F));
+                mStack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(270));
+                mStack.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(-spin * 90.0F));
                 break;
 
             case DOWN:
-                mStack.rotate(Vector3f.XP.rotationDegrees(90.0F));
-                mStack.rotate(Vector3f.ZP.rotationDegrees(spin * -90.0F));
+                mStack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(90.0F));
+                mStack.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(spin * -90.0F));
                 break;
 
             case EAST:
-                mStack.rotate(Vector3f.YP.rotationDegrees(90.0F));
+                mStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(90.0F));
                 break;
 
             case WEST:
-                mStack.rotate(Vector3f.YP.rotationDegrees(-90.0F));
+                mStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(-90.0F));
                 break;
 
             case NORTH:
-                mStack.rotate(Vector3f.YP.rotationDegrees(180.0F));
+                mStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(180.0F));
                 break;
 
             case SOUTH:

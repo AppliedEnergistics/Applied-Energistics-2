@@ -29,7 +29,7 @@ import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -474,9 +474,9 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
                         AEItemStack.fromItemStack(this.inputInventory.getInvStack(0)), this.mySrc);
 
                 if (returns == null) {
-                    this.inputInventory.setStackInSlot(0, ItemStack.EMPTY);
+                    this.inputInventory.setInvStack(0, ItemStack.EMPTY);
                 } else {
-                    this.inputInventory.setStackInSlot(0, returns.createItemStack());
+                    this.inputInventory.setInvStack(0, returns.createItemStack());
                 }
             }
         }
@@ -714,7 +714,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         @Nonnull
         @Override
         public FluidVolume getFluid() {
-            return FluidVolume.EMPTY;
+            return FluidVolumeUtil.EMPTY;
         }
 
         @Override
@@ -740,7 +740,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         @Nonnull
         @Override
         public FluidVolume getFluidInTank(int tank) {
-            return FluidVolume.EMPTY;
+            return FluidVolumeUtil.EMPTY;
         }
 
         @Override
@@ -773,13 +773,13 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         @Nonnull
         @Override
         public FluidVolume drain(FluidVolume resource, FluidAction action) {
-            return FluidVolume.EMPTY;
+            return FluidVolumeUtil.EMPTY;
         }
 
         @Nonnull
         @Override
         public FluidVolume drain(int maxDrain, FluidAction action) {
-            return FluidVolume.EMPTY;
+            return FluidVolumeUtil.EMPTY;
         }
     }
 
@@ -820,7 +820,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public ContainerType<?> getContainerType() {
+    public ScreenHandlerType<?> getContainerType() {
         this.updateHandler();
         if (this.cellHandler != null) {
             if (this.cellHandler.getChannel() == AEApi.instance().storage()

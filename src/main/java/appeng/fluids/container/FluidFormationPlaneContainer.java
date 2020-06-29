@@ -4,7 +4,7 @@ package appeng.fluids.container;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.config.SecurityPermissions;
@@ -18,7 +18,7 @@ import appeng.fluids.util.IAEFluidTank;
 
 public class FluidFormationPlaneContainer extends FluidConfigurableContainer {
 
-    public static ContainerType<FluidFormationPlaneContainer> TYPE;
+    public static ScreenHandlerType<FluidFormationPlaneContainer> TYPE;
 
     private static final ContainerHelper<FluidFormationPlaneContainer, FluidFormationPlanePart> helper = new ContainerHelper<>(
             FluidFormationPlaneContainer::new, FluidFormationPlanePart.class, SecurityPermissions.BUILD);

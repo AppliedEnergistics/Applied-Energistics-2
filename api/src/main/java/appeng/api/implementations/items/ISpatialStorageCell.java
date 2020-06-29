@@ -25,6 +25,7 @@ package appeng.api.implementations.items;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 
@@ -70,5 +71,5 @@ public interface ISpatialStorageCell {
      *
      * @return result of transition
      */
-    TransitionResult doSpatialTransition(ItemStack is, World w, WorldCoord min, WorldCoord max, int playerId);
+    TransitionResult doSpatialTransition(ItemStack is, ServerWorld w, WorldCoord min, WorldCoord max, int playerId);
 }

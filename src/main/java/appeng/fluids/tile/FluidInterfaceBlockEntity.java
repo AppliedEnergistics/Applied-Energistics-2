@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.block.BlockState;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.block.entity.BlockEntity;
@@ -163,7 +163,7 @@ public class FluidInterfaceBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public ContainerType<?> getContainerType() {
+    public ScreenHandlerType<?> getContainerType() {
         return FluidInterfaceContainer.TYPE;
     }
 }

@@ -20,7 +20,7 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
@@ -43,7 +43,7 @@ import appeng.util.inv.InvOperation;
 
 public class SecurityStationContainer extends MEMonitorableContainer implements IAEAppEngInventory {
 
-    public static ContainerType<SecurityStationContainer> TYPE;
+    public static ScreenHandlerType<SecurityStationContainer> TYPE;
 
     private static final ContainerHelper<SecurityStationContainer, ITerminalHost> helper = new ContainerHelper<>(
             SecurityStationContainer::new, ITerminalHost.class, SecurityPermissions.SECURITY);

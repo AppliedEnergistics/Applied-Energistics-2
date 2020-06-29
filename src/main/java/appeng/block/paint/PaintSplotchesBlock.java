@@ -26,7 +26,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.util.shape.VoxelShape;
@@ -49,7 +49,7 @@ public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesBlockEnti
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> itemStacks) {
+    public void appendStacks(ItemGroup group, DefaultedList<ItemStack> itemStacks) {
         // do nothing
     }
 

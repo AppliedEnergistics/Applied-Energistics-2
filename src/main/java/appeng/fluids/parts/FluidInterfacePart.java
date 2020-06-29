@@ -21,7 +21,7 @@ package appeng.fluids.parts;
 import java.util.EnumSet;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.block.entity.BlockEntity;
@@ -210,7 +210,7 @@ public class FluidInterfacePart extends BasicStatePart
     }
 
     @Override
-    public ContainerType<?> getContainerType() {
+    public ScreenHandlerType<?> getContainerType() {
         return FluidInterfaceContainer.TYPE;
     }
 }

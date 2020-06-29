@@ -23,7 +23,7 @@ import java.util.Map;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.network.PacketByteBuf;
 
@@ -40,7 +40,7 @@ import appeng.util.Platform;
 
 public class FluidInterfaceContainer extends FluidConfigurableContainer {
 
-    public static ContainerType<FluidInterfaceContainer> TYPE;
+    public static ScreenHandlerType<FluidInterfaceContainer> TYPE;
 
     private static final ContainerHelper<FluidInterfaceContainer, IFluidInterfaceHost> helper = new ContainerHelper<>(
             FluidInterfaceContainer::new, IFluidInterfaceHost.class, SecurityPermissions.BUILD);

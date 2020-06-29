@@ -1,6 +1,8 @@
 package appeng.bootstrap;
 
 import appeng.api.features.AEFeature;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
+import net.fabricmc.fabric.impl.object.builder.FabricEntityType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
@@ -19,7 +21,7 @@ public class EntityBuilder<T extends Entity> {
 
     private final String id;
 
-    private final EntityType.Builder<T> builder;
+    private final FabricEntityTypeBuilder<T> builder;
 
     private final EnumSet<AEFeature> features = EnumSet.noneOf(AEFeature.class);
 
@@ -27,7 +29,7 @@ public class EntityBuilder<T extends Entity> {
             SpawnGroup classification) {
         this.factory = factory;
         this.id = id;
-        this.builder = EntityType.Builder.create(entityFactory, classification);
+        this.builder = FabricEntityTypeBuilder.create(classification, entityFactory);
     }
 
     public EntityBuilder<T> features(AEFeature... features) {
@@ -41,14 +43,14 @@ public class EntityBuilder<T extends Entity> {
         return this;
     }
 
-    public EntityBuilder<T> customize(Consumer<EntityType.Builder<T>> function) {
+    public EntityBuilder<T> customize(Consumer<FabricEntityTypeBuilder<T>> function) {
         function.accept(builder);
         return this;
     }
 
     public EntityType<T> build() {
+        EntityType<T> entityType = builder.build();
         String fullId = "appliedenergistics2:" + this.id;
-        EntityType<T> entityType = builder.build(fullId);
         Registry.register(Registry.ENTITY_TYPE, fullId, entityType);
         return entityType;
     }

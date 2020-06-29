@@ -32,13 +32,13 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.LiteralText;
-import net.minecraft.util.IItemProvider;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.text.Text;
 import net.minecraft.world.World;
@@ -67,9 +67,9 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
     /**
      * The item to convert to, when growth finishes.
      */
-    private final IItemProvider grownItem;
+    private final ItemConvertible grownItem;
 
-    public CrystalSeedItem(Settings properties, IItemProvider grownItem) {
+    public CrystalSeedItem(Settings properties, ItemConvertible grownItem) {
         super(properties);
         this.grownItem = Preconditions.checkNotNull(grownItem);
         // Expose the growth of the seed to the model system
@@ -123,11 +123,6 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
     }
 
     @Override
-    public int getEntityLifespan(final ItemStack itemStack, final World world) {
-        return Integer.MAX_VALUE;
-    }
-
-    @Override
     public boolean hasCustomEntity(final ItemStack stack) {
         return true;
     }
@@ -137,7 +132,7 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
         final GrowingCrystalEntity egc = new GrowingCrystalEntity(world, location.getX(), location.getY(),
                 location.getZ(), itemstack);
 
-        egc.setMotion(location.getMotion());
+        egc.setVelocity(location.getVelocity());
 
         // Cannot read the pickup delay of the original item, so we
         // use the pickup delay used for items dropped by a player instead
@@ -147,8 +142,8 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
     }
 
     @Override
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-        if (this.isInGroup(group)) {
+    public void appendStacks(ItemGroup group, DefaultedList<ItemStack> items) {
+        if (this.isIn(group)) {
             // lvl 0
             items.add(new ItemStack(this, 1));
             // one tick before maturity

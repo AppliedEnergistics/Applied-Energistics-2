@@ -22,8 +22,8 @@ import java.io.IOException;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
@@ -55,7 +55,7 @@ import appeng.util.Platform;
 public class CraftingCPUContainer extends AEBaseContainer
         implements IMEMonitorHandlerReceiver<IAEItemStack>, ICustomNameObject {
 
-    public static ContainerType<CraftingCPUContainer> TYPE;
+    public static ScreenHandlerType<CraftingCPUContainer> TYPE;
 
     private static final ContainerHelper<CraftingCPUContainer, CraftingBlockEntity> helper = new ContainerHelper<>(
             CraftingCPUContainer::new, CraftingBlockEntity.class, SecurityPermissions.CRAFT);
@@ -73,7 +73,7 @@ public class CraftingCPUContainer extends AEBaseContainer
         this(TYPE, id, ip, te);
     }
 
-    public CraftingCPUContainer(ContainerType<?> containerType, int id, final PlayerInventory ip, final Object te) {
+    public CraftingCPUContainer(ScreenHandlerType<?> containerType, int id, final PlayerInventory ip, final Object te) {
         super(containerType, id, ip, te);
         final IActionHost host = (IActionHost) (te instanceof IActionHost ? te : null);
 

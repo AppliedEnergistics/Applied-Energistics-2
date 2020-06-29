@@ -29,8 +29,8 @@ import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
@@ -69,7 +69,7 @@ import appeng.util.Platform;
 
 public class CraftConfirmContainer extends AEBaseContainer {
 
-    public static ContainerType<CraftConfirmContainer> TYPE;
+    public static ScreenHandlerType<CraftConfirmContainer> TYPE;
 
     private static final ContainerHelper<CraftConfirmContainer, ITerminalHost> helper = new ContainerHelper<>(
             CraftConfirmContainer::new, ITerminalHost.class, SecurityPermissions.CRAFT);
@@ -293,7 +293,7 @@ public class CraftConfirmContainer extends AEBaseContainer {
     }
 
     public void startJob() {
-        ContainerType<?> originalGui = null;
+        ScreenHandlerType<?> originalGui = null;
 
         final IActionHost ah = this.getActionHost();
         if (ah instanceof WirelessTerminalGuiObject) {

@@ -20,7 +20,7 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.config.SecurityPermissions;
@@ -33,7 +33,7 @@ import appeng.tile.networking.WirelessBlockEntity;
 
 public class WirelessContainer extends AEBaseContainer {
 
-    public static ContainerType<WirelessContainer> TYPE;
+    public static ScreenHandlerType<WirelessContainer> TYPE;
 
     private static final ContainerHelper<WirelessContainer, WirelessBlockEntity> helper = new ContainerHelper<>(
             WirelessContainer::new, WirelessBlockEntity.class, SecurityPermissions.BUILD);

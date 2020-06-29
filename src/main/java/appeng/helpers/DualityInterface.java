@@ -298,7 +298,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
     private void updateCraftingList() {
         final Boolean[] accountedFor = { false, false, false, false, false, false, false, false, false }; // 9...
 
-        assert (accountedFor.length == this.patterns.getSlots());
+        assert (accountedFor.length == this.patterns.getSlotCount());
 
         if (!this.gridProxy.isReady()) {
             return;
@@ -353,7 +353,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
     private void updatePlan(final int slot) {
         IAEItemStack req = this.config.getAEStackInSlot(slot);
         if (req != null && req.getStackSize() <= 0) {
-            this.config.setStackInSlot(slot, ItemStack.EMPTY);
+            this.config.setInvStack(slot, ItemStack.EMPTY);
             req = null;
         }
 

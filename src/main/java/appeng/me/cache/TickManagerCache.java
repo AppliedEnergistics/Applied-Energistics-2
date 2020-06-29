@@ -23,9 +23,10 @@ import java.util.PriorityQueue;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.crash.CrashReport;
-import net.minecraft.crash.CrashReportCategory;
-import net.minecraft.crash.ReportedException;
+import net.minecraft.util.crash.CrashException;
+import net.minecraft.util.crash.CrashReport;
+import net.minecraft.util.crash.CrashReportSection;
+import net.minecraft.util.crash.CrashException;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
@@ -116,11 +117,11 @@ public class TickManagerCache implements ITickManager {
                 }
             }
         } catch (final Throwable t) {
-            final CrashReport crashreport = CrashReport.makeCrashReport(t, "Ticking GridNode");
-            final CrashReportCategory crashreportcategory = crashreport
-                    .makeCategory(tt.getGridTickable().getClass().getSimpleName() + " being ticked.");
-            tt.addEntityCrashInfo(crashreportcategory);
-            throw new ReportedException(crashreport);
+            final CrashReport crashreport = CrashReport.create(t, "Ticking GridNode");
+            final CrashReportSection section = crashreport
+                    .addElement(tt.getGridTickable().getClass().getSimpleName() + " being ticked.");
+            tt.addEntityCrashInfo(section);
+            throw new CrashException(crashreport);
         }
     }
 

@@ -41,7 +41,7 @@ public class FluidSlotPacket extends BasePacket {
         this.list = new HashMap<>();
         CompoundTag tag = stream.readCompoundTag();
 
-        for (final String key : tag.keySet()) {
+        for (final String key : tag.getKeys()) {
             this.list.put(Integer.parseInt(key), AEFluidStack.fromNBT(tag.getCompound(key)));
         }
     }

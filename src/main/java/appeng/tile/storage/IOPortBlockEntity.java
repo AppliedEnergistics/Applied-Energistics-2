@@ -395,7 +395,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     private boolean moveSlot(final int x) {
         final InventoryAdaptor ad = new AdaptorFixedInv(this.outputCells);
         if (ad.addItems(this.inputCells.getInvStack(x)).isEmpty()) {
-            this.inputCells.setStackInSlot(x, ItemStack.EMPTY);
+            this.inputCells.setInvStack(x, ItemStack.EMPTY);
             return true;
         }
         return false;
@@ -437,7 +437,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     public void getDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
         super.getDrops(w, pos, drops);
 
-        for (int upgradeIndex = 0; upgradeIndex < this.upgrades.getSlots(); upgradeIndex++) {
+        for (int upgradeIndex = 0; upgradeIndex < this.upgrades.getSlotCount(); upgradeIndex++) {
             final ItemStack stackInSlot = this.upgrades.getInvStack(upgradeIndex);
 
             if (!stackInSlot.isEmpty()) {

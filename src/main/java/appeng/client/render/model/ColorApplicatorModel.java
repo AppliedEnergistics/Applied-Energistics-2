@@ -13,7 +13,7 @@ import net.minecraft.client.render.model.IUnbakedModel;
 import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.Material;
 import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.Identifier;
 import net.minecraftforge.client.model.IModelConfiguration;
@@ -30,11 +30,11 @@ public class ColorApplicatorModel implements IModelGeometry<ColorApplicatorModel
     private static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID,
             "item/color_applicator_colored");
 
-    private static final Material TEXTURE_DARK = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    private static final Material TEXTURE_DARK = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier(AppEng.MOD_ID, "item/color_applicator_tip_dark"));
-    private static final Material TEXTURE_MEDIUM = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    private static final Material TEXTURE_MEDIUM = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier(AppEng.MOD_ID, "item/color_applicator_tip_medium"));
-    private static final Material TEXTURE_BRIGHT = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    private static final Material TEXTURE_BRIGHT = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier(AppEng.MOD_ID, "item/color_applicator_tip_bright"));
 
     @Override

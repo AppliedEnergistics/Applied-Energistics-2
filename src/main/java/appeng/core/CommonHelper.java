@@ -24,6 +24,7 @@ import java.util.Random;
 import javax.annotation.Nonnull;
 
 import net.minecraft.client.util.InputMappings;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.hit.HitResult;
@@ -42,10 +43,10 @@ public abstract class CommonHelper {
     public abstract List<? extends PlayerEntity> getPlayers();
 
     public abstract void sendToAllNearExcept(PlayerEntity p, double x, double y, double z, double dist, World w,
-            BasePacket packet);
+                                             BasePacket packet);
 
     public abstract void spawnEffect(EffectType effect, World world, double posX, double posY, double posZ,
-            Object extra);
+                                     Object extra);
 
     public abstract boolean shouldAddParticles(Random r);
 
@@ -59,6 +60,6 @@ public abstract class CommonHelper {
 
     public abstract void updateRenderMode(PlayerEntity player);
 
-    public abstract boolean isActionKey(@Nonnull final ActionKey key, InputMappings.Input input);
+    public abstract boolean isActionKey(@Nonnull final ActionKey key, InputUtil.Key input);
 
 }

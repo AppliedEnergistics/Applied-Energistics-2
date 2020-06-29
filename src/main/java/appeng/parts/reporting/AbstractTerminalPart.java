@@ -22,7 +22,7 @@ import java.util.List;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Hand;
@@ -113,7 +113,7 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
         return true;
     }
 
-    public ContainerType<?> getContainerType(final PlayerEntity player) {
+    public ScreenHandlerType<?> getContainerType(final PlayerEntity player) {
         return MEMonitorableContainer.TYPE;
     }
 

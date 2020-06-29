@@ -24,6 +24,7 @@ import java.util.Random;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.util.InputMappings;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -148,7 +149,7 @@ public class ServerHelper extends CommonHelper {
     }
 
     @Override
-    public boolean isActionKey(ActionKey key, InputMappings.Input input) {
+    public boolean isActionKey(ActionKey key, InputUtil.Key input) {
         return false;
     }
 }

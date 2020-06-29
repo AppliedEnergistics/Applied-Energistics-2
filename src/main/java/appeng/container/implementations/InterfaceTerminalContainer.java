@@ -25,8 +25,8 @@ import java.util.Map.Entry;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
@@ -61,7 +61,7 @@ import appeng.util.inv.filter.IAEItemFilter;
 
 public final class InterfaceTerminalContainer extends AEBaseContainer {
 
-    public static ContainerType<InterfaceTerminalContainer> TYPE;
+    public static ScreenHandlerType<InterfaceTerminalContainer> TYPE;
 
     private static final ContainerHelper<InterfaceTerminalContainer, InterfaceTerminalPart> helper = new ContainerHelper<>(
             InterfaceTerminalContainer::new, InterfaceTerminalPart.class, SecurityPermissions.BUILD);

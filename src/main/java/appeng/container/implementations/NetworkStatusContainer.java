@@ -22,8 +22,8 @@ import java.io.IOException;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 
@@ -48,7 +48,7 @@ import appeng.util.item.AEItemStack;
 
 public class NetworkStatusContainer extends AEBaseContainer {
 
-    public static ContainerType<NetworkStatusContainer> TYPE;
+    public static ScreenHandlerType<NetworkStatusContainer> TYPE;
 
     private static final ContainerHelper<NetworkStatusContainer, INetworkTool> helper = new ContainerHelper<>(
             NetworkStatusContainer::new, INetworkTool.class);

@@ -25,6 +25,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
@@ -115,6 +116,11 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity implements
 
     @Override
     public Void call(final World world) throws Exception {
+        if (!(world instanceof ServerWorld)) {
+            return null;
+        }
+        ServerWorld serverWorld = (ServerWorld) world;
+
         final ItemStack cell = this.inv.getInvStack(0);
         if (this.isSpatialCell(cell) && this.inv.getInvStack(1).isEmpty()) {
             final IGrid gi = this.getProxy().getGrid();
@@ -134,12 +140,12 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity implements
                             playerId = this.getProxy().getSecurity().getOwner();
                         }
 
-                        final TransitionResult tr = sc.doSpatialTransition(cell, this.world, spc.getMin(), spc.getMax(),
+                        final TransitionResult tr = sc.doSpatialTransition(cell, serverWorld, spc.getMin(), spc.getMax(),
                                 playerId);
                         if (tr.success) {
                             energy.extractAEPower(req, Actionable.MODULATE, PowerMultiplier.CONFIG);
-                            this.inv.setStackInSlot(0, ItemStack.EMPTY);
-                            this.inv.setStackInSlot(1, cell);
+                            this.inv.setInvStack(0, ItemStack.EMPTY);
+                            this.inv.setInvStack(1, cell);
                         }
                     }
                 }

@@ -30,7 +30,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.DirectionalPlaceContext;
 import net.minecraft.item.FireworkRocketItem;
@@ -119,7 +119,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
                 .getStorageChannel(IItemStorageChannel.class).createList();
 
         final int slotsToUse = 18 + this.getInstalledUpgrades(Upgrades.CAPACITY) * 9;
-        for (int x = 0; x < this.Config.getSlots() && x < slotsToUse; x++) {
+        for (int x = 0; x < this.Config.getSlotCount() && x < slotsToUse; x++) {
             final IAEItemStack is = this.Config.getAEStackInSlot(x);
             if (is != null) {
                 priorityList.add(is);
@@ -296,7 +296,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
                         Entity result = ei;
 
-                        ei.setMotion(side.xOffset * 0.2, side.yOffset * 0.2, side.zOffset * 0.2);
+                        ei.setVelocity(side.xOffset * 0.2, side.yOffset * 0.2, side.zOffset * 0.2);
 
                         if (is.getItem().hasCustomEntity(is)) {
                             result = is.getItem().createEntity(w, ei, is);
@@ -354,7 +354,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
     }
 
     @Override
-    public ContainerType<?> getContainerType() {
+    public ScreenHandlerType<?> getContainerType() {
         return FormationPlaneContainer.TYPE;
     }
 

@@ -21,7 +21,7 @@ package appeng.client.render.cablebus;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.util.math.Matrix4f;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;

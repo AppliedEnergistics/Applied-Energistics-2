@@ -184,7 +184,7 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
         this.getConfigSlot().readFromNBT(data, "config");
 
         final CompoundTag storedItems = data.getCompound("storedItems");
-        for (final Object key : storedItems.keySet()) {
+        for (final Object key : storedItems.getKeys()) {
             final INBT obj = storedItems.get((String) key);
             if (obj instanceof CompoundTag) {
                 this.inventory.getStoredItems().add(AEItemStack.fromItemStack(ItemStack.fromTag((CompoundTag) obj)));

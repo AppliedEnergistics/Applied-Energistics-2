@@ -261,7 +261,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         @Nonnull
         @Override
         public FluidVolume getFluid() {
-            return FluidVolume.EMPTY;
+            return FluidVolumeUtil.EMPTY;
         }
 
         @Override
@@ -294,13 +294,13 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         @Nonnull
         @Override
         public FluidVolume drain(int maxDrain, FluidAction action) {
-            return FluidVolume.EMPTY;
+            return FluidVolumeUtil.EMPTY;
         }
 
         @Nonnull
         @Override
         public FluidVolume drain(FluidVolume resource, FluidAction action) {
-            return FluidVolume.EMPTY;
+            return FluidVolumeUtil.EMPTY;
         }
 
         @Override
@@ -311,7 +311,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         @Nonnull
         @Override
         public FluidVolume getFluidInTank(int tank) {
-            return FluidVolume.EMPTY;
+            return FluidVolumeUtil.EMPTY;
         }
 
         @Override

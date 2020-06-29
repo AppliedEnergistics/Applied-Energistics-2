@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.world.World;
@@ -41,7 +41,7 @@ import appeng.tile.inventory.AppEngInternalInventory;
 
 public class CraftAmountContainer extends AEBaseContainer {
 
-    public static ContainerType<CraftAmountContainer> TYPE;
+    public static ScreenHandlerType<CraftAmountContainer> TYPE;
 
     private static final ContainerHelper<CraftAmountContainer, ITerminalHost> helper = new ContainerHelper<>(
             CraftAmountContainer::new, ITerminalHost.class, SecurityPermissions.CRAFT);

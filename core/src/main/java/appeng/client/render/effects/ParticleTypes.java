@@ -5,6 +5,7 @@ import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleType;
 
 import appeng.core.AppEng;
+import net.minecraft.util.registry.Registry;
 
 public final class ParticleTypes {
 
@@ -21,14 +22,14 @@ public final class ParticleTypes {
     public static final DefaultParticleType MATTER_CANNON = FabricParticleTypes.simple(false);
     public static final DefaultParticleType VIBRANT = FabricParticleTypes.simple(false);
 
-    static {
-        CHARGED_ORE.setRegistryName(AppEng.MOD_ID, "charged_ore_fx");
-        CRAFTING.setRegistryName(AppEng.MOD_ID, "crafting_fx");
-        ENERGY.setRegistryName(AppEng.MOD_ID, "energy_fx");
-        LIGHTNING_ARC.setRegistryName(AppEng.MOD_ID, "lightning_arc_fx");
-        LIGHTNING.setRegistryName(AppEng.MOD_ID, "lightning_fx");
-        MATTER_CANNON.setRegistryName(AppEng.MOD_ID, "matter_cannon_fx");
-        VIBRANT.setRegistryName(AppEng.MOD_ID, "vibrant_fx");
+    public static void register() {
+        Registry.register(Registry.PARTICLE_TYPE, AppEng.makeId("charged_ore_fx"), CHARGED_ORE);
+        Registry.register(Registry.PARTICLE_TYPE, AppEng.makeId("crafting_fx"), CRAFTING);
+        Registry.register(Registry.PARTICLE_TYPE, AppEng.makeId("energy_fx"), ENERGY);
+        Registry.register(Registry.PARTICLE_TYPE, AppEng.makeId("lightning_arc_fx"), LIGHTNING_ARC);
+        Registry.register(Registry.PARTICLE_TYPE, AppEng.makeId("lightning_fx"), LIGHTNING);
+        Registry.register(Registry.PARTICLE_TYPE, AppEng.makeId("matter_cannon_fx"), MATTER_CANNON);
+        Registry.register(Registry.PARTICLE_TYPE, AppEng.makeId("vibrant_fx"), VIBRANT);
     }
 
 }
