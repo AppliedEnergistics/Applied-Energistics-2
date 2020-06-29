@@ -23,7 +23,6 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.fluid.EmptyFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
@@ -240,26 +239,24 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 
     public static IAEFluidStack fromPacket(final PacketBuffer buffer) {
         final boolean isCraftable = buffer.readBoolean();
-        final FluidStack fluidStack = buffer.readFluidStack();
+        Fluid fluid = buffer.readRegistryIdUnsafe(ForgeRegistries.FLUIDS);
+        CompoundNBT tag = buffer.readCompoundTag();
 
         final long stackSize = buffer.readVarLong();
         final long countRequestable = buffer.readVarLong();
 
-        if (fluidStack.isEmpty()) {
-            return null;
-        }
-
-        final AEFluidStack fluid = AEFluidStack.fromFluidStack(fluidStack);
-        fluid.setStackSize(stackSize);
-        fluid.setCountRequestable(countRequestable);
-        fluid.setCraftable(isCraftable);
-        return fluid;
+        final AEFluidStack stack = new AEFluidStack(fluid, stackSize, tag);
+        stack.setCountRequestable(countRequestable);
+        stack.setCraftable(isCraftable);
+        return stack;
     }
 
     @Override
     public void writeToPacket(final PacketBuffer buffer) {
         buffer.writeBoolean(this.isCraftable());
-        buffer.writeFluidStack(this.getFluidStack());
+        // Cannot use writeFluidStack here because for FluidStacks with amount==0, it will not write the fluid
+        buffer.writeRegistryIdUnsafe(ForgeRegistries.FLUIDS, fluid);
+        buffer.writeCompoundTag(getFluidStack().getTag());
         buffer.writeVarLong(this.getStackSize());
         buffer.writeVarLong(this.getCountRequestable());
     }
