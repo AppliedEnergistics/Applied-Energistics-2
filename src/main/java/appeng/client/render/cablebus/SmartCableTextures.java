@@ -21,7 +21,7 @@ package appeng.client.render.cablebus;
 import java.util.Arrays;
 import java.util.function.Function;
 
-import net.minecraft.client.render.model.Material;
+import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.Identifier;
@@ -33,7 +33,7 @@ import appeng.core.AppEng;
  */
 public class SmartCableTextures {
 
-    public static final Material[] SMART_CHANNELS_TEXTURES = Arrays
+    public static final SpriteIdentifier[] SMART_CHANNELS_TEXTURES = Arrays
             .stream(new Identifier[] { new Identifier(AppEng.MOD_ID, "parts/cable/smart/channels_00"), //
                     new Identifier(AppEng.MOD_ID, "parts/cable/smart/channels_01"), //
                     new Identifier(AppEng.MOD_ID, "parts/cable/smart/channels_02"), //
@@ -44,14 +44,14 @@ public class SmartCableTextures {
                     new Identifier(AppEng.MOD_ID, "parts/cable/smart/channels_12"), //
                     new Identifier(AppEng.MOD_ID, "parts/cable/smart/channels_13"), //
                     new Identifier(AppEng.MOD_ID, "parts/cable/smart/channels_14")//
-            }).map(e -> new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX, e)).toArray(Material[]::new);
+            }).map(e -> new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, e)).toArray(SpriteIdentifier[]::new);
 
     // Textures used to display channels on smart cables. There's two sets of 5
     // textures each, and
     // one of each set are composed together to get even/odd colored channels
     private final Sprite[] textures;
 
-    public SmartCableTextures(Function<Material, Sprite> bakedTextureGetter) {
+    public SmartCableTextures(Function<SpriteIdentifier, Sprite> bakedTextureGetter) {
         this.textures = Arrays.stream(SMART_CHANNELS_TEXTURES)//
                 .map(bakedTextureGetter)//
                 .toArray(Sprite[]::new);

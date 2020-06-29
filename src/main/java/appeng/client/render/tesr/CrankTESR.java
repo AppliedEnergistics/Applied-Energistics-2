@@ -27,9 +27,9 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.render.VertexConsumer;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.Atlases;
+import net.minecraft.client.render.TexturedRenderLayers;
 import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.util.math.Quaternion;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 
@@ -62,8 +62,8 @@ public class CrankTESR extends BlockEntityRenderer<CrankBlockEntity> {
         BlockState blockState = te.getCachedState();
         BlockRenderManager dispatcher = MinecraftClient.getInstance().getBlockRenderManager();
         BakedModel model = dispatcher.getModelForState(blockState);
-        VertexConsumer buffer = buffers.getBuffer(Atlases.getTranslucentBlockType());
-        dispatcher.getBlockModelRenderer().renderModelBrightnessColor(ms.getLast(), buffer, null, model, 1, 1, 1,
+        VertexConsumer buffer = buffers.getBuffer(TexturedRenderLayers.getEntityTranslucentCull());
+        dispatcher.getModelRenderer().renderModelBrightnessColor(ms.peek(), buffer, null, model, 1, 1, 1,
                 combinedLightIn, combinedOverlayIn);
         ms.pop();
 

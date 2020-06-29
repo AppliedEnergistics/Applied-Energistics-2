@@ -7,6 +7,6 @@ import appeng.bootstrap.IBootstrapComponent;
 
 public interface IItemColorRegistrationComponent extends IBootstrapComponent {
 
-    void register(ItemColors itemColors, BlockColors blockColors);
+    void register();
 
 }

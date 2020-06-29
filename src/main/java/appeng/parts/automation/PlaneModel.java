@@ -29,7 +29,7 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.IModelTransform;
 import net.minecraft.client.render.model.IUnbakedModel;
 import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.render.model.Material;
+import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.texture.Sprite;
@@ -42,19 +42,19 @@ import net.minecraftforge.client.model.geometry.IModelGeometry;
  */
 public class PlaneModel implements IModelGeometry<PlaneModel> {
 
-    private final Material frontTexture;
-    private final Material sidesTexture;
-    private final Material backTexture;
+    private final SpriteIdentifier frontTexture;
+    private final SpriteIdentifier sidesTexture;
+    private final SpriteIdentifier backTexture;
 
     public PlaneModel(Identifier frontTexture, Identifier sidesTexture, Identifier backTexture) {
-        this.frontTexture = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX, frontTexture);
-        this.sidesTexture = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX, sidesTexture);
-        this.backTexture = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX, backTexture);
+        this.frontTexture = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, frontTexture);
+        this.sidesTexture = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, sidesTexture);
+        this.backTexture = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, backTexture);
     }
 
     @Override
     public BakedModel bake(IModelConfiguration owner, ModelLoader bakery,
-                           Function<Material, Sprite> spriteGetter, IModelTransform modelTransform,
+                           Function<SpriteIdentifier, Sprite> spriteGetter, IModelTransform modelTransform,
                            ModelOverrideList overrides, Identifier modelLocation) {
         Sprite frontSprite = spriteGetter.apply(this.frontTexture);
         Sprite sidesSprite = spriteGetter.apply(this.sidesTexture);
@@ -64,8 +64,8 @@ public class PlaneModel implements IModelGeometry<PlaneModel> {
     }
 
     @Override
-    public Collection<Material> getTextures(IModelConfiguration owner,
-                                            Function<Identifier, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+    public Collection<SpriteIdentifier> getTextures(IModelConfiguration owner,
+                                                    Function<Identifier, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
         return Arrays.asList(frontTexture, sidesTexture, backTexture);
     }
 

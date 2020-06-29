@@ -313,7 +313,7 @@ public class PartPlacement {
                 if (!player.isCreative()) {
                     held.increment(-1);
                     if (held.getCount() == 0) {
-                        player.setHeldItem(hand, ItemStack.EMPTY);
+                        player.setStackInHand(hand, ItemStack.EMPTY);
                         MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(player, held, hand));
                     }
                 }

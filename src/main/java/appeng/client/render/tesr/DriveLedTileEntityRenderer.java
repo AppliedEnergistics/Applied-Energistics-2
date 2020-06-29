@@ -107,7 +107,7 @@ public class DriveLedTileEntityRenderer extends BlockEntityRenderer<DriveBlockEn
                     float x = LED_QUADS[i];
                     float y = LED_QUADS[i + 1];
                     float z = LED_QUADS[i + 2];
-                    buffer.pos(ms.getLast().getMatrix(), x, y, z).color(color.getX(), color.getY(), color.getZ(), 1.f)
+                    buffer.pos(ms.peek().getMatrix(), x, y, z).color(color.getX(), color.getY(), color.getZ(), 1.f)
                             .endVertex();
                 }
 

@@ -20,8 +20,8 @@ package appeng.hooks;
 
 import appeng.util.FakePlayer;
 import net.minecraft.block.DispenserBlock;
-import net.minecraft.dispenser.DefaultDispenseItemBehavior;
-import net.minecraft.dispenser.IBlockSource;
+import net.minecraft.block.dispenser.ItemDispenserBehavior;
+import net.minecraft.util.math.BlockPointer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -33,10 +33,10 @@ import appeng.api.util.AEPartLocation;
 import appeng.items.tools.powered.MatterCannonItem;
 import appeng.util.Platform;
 
-public final class MatterCannonDispenseItemBehavior extends DefaultDispenseItemBehavior {
+public final class MatterCannonDispenseItemBehavior extends ItemDispenserBehavior {
 
     @Override
-    protected ItemStack dispenseStack(final IBlockSource dispenser, ItemStack dispensedItem) {
+    protected ItemStack dispenseSilently(final BlockPointer dispenser, ItemStack dispensedItem) {
         final Item i = dispensedItem.getItem();
         if (i instanceof MatterCannonItem) {
             final Direction Direction = dispenser.getBlockState().get(DispenserBlock.FACING);

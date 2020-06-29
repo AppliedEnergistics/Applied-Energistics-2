@@ -17,7 +17,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.render.model.Material;
+import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.Identifier;
@@ -32,17 +32,17 @@ import appeng.tile.qnb.QuantumBridgeBlockEntity;
 
 class QnbFormedBakedModel implements IDynamicBakedModel {
 
-    private static final Material TEXTURE_LINK = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    private static final SpriteIdentifier TEXTURE_LINK = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier(AppEng.MOD_ID, "block/quantum_link"));
-    private static final Material TEXTURE_RING = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    private static final SpriteIdentifier TEXTURE_RING = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier(AppEng.MOD_ID, "block/quantum_ring"));
-    private static final Material TEXTURE_RING_LIGHT = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    private static final SpriteIdentifier TEXTURE_RING_LIGHT = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier(AppEng.MOD_ID, "block/quantum_ring_light"));
-    private static final Material TEXTURE_RING_LIGHT_CORNER = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    private static final SpriteIdentifier TEXTURE_RING_LIGHT_CORNER = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier(AppEng.MOD_ID, "block/quantum_ring_light_corner"));
-    private static final Material TEXTURE_CABLE_GLASS = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    private static final SpriteIdentifier TEXTURE_CABLE_GLASS = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier(AppEng.MOD_ID, "parts/cable/glass/transparent"));
-    private static final Material TEXTURE_COVERED_CABLE = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    private static final SpriteIdentifier TEXTURE_COVERED_CABLE = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier(AppEng.MOD_ID, "parts/cable/covered/transparent"));
 
     private static final float DEFAULT_RENDER_MIN = 2.0f;
@@ -65,7 +65,7 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
     private final Sprite lightTexture;
     private final Sprite lightCornerTexture;
 
-    public QnbFormedBakedModel(BakedModel baseModel, Function<Material, Sprite> bakedTextureGetter) {
+    public QnbFormedBakedModel(BakedModel baseModel, Function<SpriteIdentifier, Sprite> bakedTextureGetter) {
         this.baseModel = baseModel;
         this.linkTexture = bakedTextureGetter.apply(TEXTURE_LINK);
         this.ringTexture = bakedTextureGetter.apply(TEXTURE_RING);
@@ -220,7 +220,7 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
         return this.baseModel.getOverrides();
     }
 
-    public static List<Material> getRequiredTextures() {
+    public static List<SpriteIdentifier> getRequiredTextures() {
         return ImmutableList.of(TEXTURE_LINK, TEXTURE_RING, TEXTURE_CABLE_GLASS, TEXTURE_COVERED_CABLE,
                 TEXTURE_RING_LIGHT, TEXTURE_RING_LIGHT_CORNER);
     }

@@ -18,6 +18,7 @@
 
 package appeng.items.contents;
 
+import alexiil.mc.lib.attributes.item.FixedItemInvView;
 import net.minecraft.item.ItemStack;
 
 import appeng.parts.automation.StackUpgradeInventory;
@@ -32,7 +33,7 @@ public final class CellUpgrades extends StackUpgradeInventory {
     }
 
     @Override
-    protected void onContentsChanged(int slot) {
+    protected void onContentsChanged(FixedItemInvView inv, int slot, ItemStack previous, ItemStack current) {
         this.writeToNBT(this.is.getOrCreateTag(), "upgrades");
     }
 }

@@ -11,7 +11,7 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.IModelTransform;
 import net.minecraft.client.render.model.IUnbakedModel;
 import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.render.model.Material;
+import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.texture.Sprite;
@@ -30,22 +30,22 @@ public class ColorApplicatorModel implements IModelGeometry<ColorApplicatorModel
     private static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID,
             "item/color_applicator_colored");
 
-    private static final Material TEXTURE_DARK = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    private static final SpriteIdentifier TEXTURE_DARK = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier(AppEng.MOD_ID, "item/color_applicator_tip_dark"));
-    private static final Material TEXTURE_MEDIUM = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    private static final SpriteIdentifier TEXTURE_MEDIUM = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier(AppEng.MOD_ID, "item/color_applicator_tip_medium"));
-    private static final Material TEXTURE_BRIGHT = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    private static final SpriteIdentifier TEXTURE_BRIGHT = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier(AppEng.MOD_ID, "item/color_applicator_tip_bright"));
 
     @Override
-    public Collection<Material> getTextures(IModelConfiguration owner,
-                                            Function<Identifier, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+    public Collection<SpriteIdentifier> getTextures(IModelConfiguration owner,
+                                                    Function<Identifier, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
         return Arrays.asList(TEXTURE_DARK, TEXTURE_MEDIUM, TEXTURE_DARK);
     }
 
     @Override
     public BakedModel bake(IModelConfiguration owner, ModelLoader bakery,
-                           Function<Material, Sprite> spriteGetter, IModelTransform modelTransform,
+                           Function<SpriteIdentifier, Sprite> spriteGetter, IModelTransform modelTransform,
                            ModelOverrideList overrides, Identifier modelLocation) {
         BakedModel baseModel = bakery.getBakedModel(MODEL_BASE, modelTransform, spriteGetter);
 

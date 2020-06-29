@@ -32,7 +32,7 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.IModelTransform;
 import net.minecraft.client.render.model.IUnbakedModel;
 import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.render.model.Material;
+import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.texture.Sprite;
@@ -46,7 +46,7 @@ public class SpatialPylonModel implements IModelGeometry<SpatialPylonModel> {
 
     @Override
     public BakedModel bake(IModelConfiguration owner, ModelLoader bakery,
-                           Function<Material, Sprite> spriteGetter, IModelTransform modelTransform,
+                           Function<SpriteIdentifier, Sprite> spriteGetter, IModelTransform modelTransform,
                            ModelOverrideList overrides, Identifier modelLocation) {
         Map<SpatialPylonTextureType, Sprite> textures = new EnumMap<>(SpatialPylonTextureType.class);
 
@@ -58,14 +58,14 @@ public class SpatialPylonModel implements IModelGeometry<SpatialPylonModel> {
     }
 
     @Override
-    public Collection<Material> getTextures(IModelConfiguration owner,
-                                            Function<Identifier, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+    public Collection<SpriteIdentifier> getTextures(IModelConfiguration owner,
+                                                    Function<Identifier, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
         return Arrays.stream(SpatialPylonTextureType.values()).map(SpatialPylonModel::getTexturePath)
                 .collect(Collectors.toList());
     }
 
-    private static Material getTexturePath(SpatialPylonTextureType type) {
-        return new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    private static SpriteIdentifier getTexturePath(SpatialPylonTextureType type) {
+        return new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
                 new Identifier(AppEng.MOD_ID, "block/spatial_pylon/" + type.name().toLowerCase()));
     }
 

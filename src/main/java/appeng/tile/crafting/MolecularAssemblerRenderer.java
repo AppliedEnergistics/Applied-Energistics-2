@@ -101,7 +101,7 @@ public class MolecularAssemblerRenderer extends BlockEntityRenderer<MolecularAss
         BakedModel lightsModel = minecraft.getModelManager().getModel(LIGHTS_MODEL);
         VertexConsumer buffer = bufferIn.getBuffer(MC_161917_RENDERTYPE_FIX);
 
-        minecraft.getBlockRenderManager().getBlockModelRenderer().renderModel(ms.getLast(), buffer, null,
+        minecraft.getBlockRenderManager().getModelRenderer().render(ms.peek(), buffer, null,
                 lightsModel, 1, 1, 1, combinedLightIn, combinedOverlayIn, EmptyModelData.INSTANCE);
     }
 

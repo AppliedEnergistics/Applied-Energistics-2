@@ -53,7 +53,7 @@ import net.minecraft.client.render.model.IUnbakedModel;
 import net.minecraft.client.render.model.ItemOverride;
 import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.ItemTransformVec3f;
-import net.minecraft.client.render.model.Material;
+import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.JSONUtils;
@@ -143,7 +143,7 @@ public class UVLModelLoader implements IModelLoader<UVLModelLoader.UVLModelWrapp
 
         @Override
         public BakedModel bake(IModelConfiguration owner, ModelLoader bakery,
-                               Function<Material, Sprite> spriteGetter, IModelTransform modelTransform,
+                               Function<SpriteIdentifier, Sprite> spriteGetter, IModelTransform modelTransform,
                                ModelOverrideList overrides, Identifier modelLocation) {
             Sprite particle = spriteGetter.apply(owner.resolveTexture("particle"));
 
@@ -199,9 +199,9 @@ public class UVLModelLoader implements IModelLoader<UVLModelLoader.UVLModelWrapp
         }
 
         @Override
-        public Collection<Material> getTextures(IModelConfiguration owner,
-                Function<Identifier, IUnbakedModel> modelGetter,
-                Set<com.mojang.datafixers.util.Pair<String, String>> missingTextureErrors) {
+        public Collection<SpriteIdentifier> getTextures(IModelConfiguration owner,
+                                                        Function<Identifier, IUnbakedModel> modelGetter,
+                                                        Set<com.mojang.datafixers.util.Pair<String, String>> missingTextureErrors) {
             return parent.getTextures(modelGetter, missingTextureErrors);
         }
 

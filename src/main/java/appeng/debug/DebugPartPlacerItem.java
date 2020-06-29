@@ -66,7 +66,7 @@ public class DebugPartPlacerItem extends AEBaseItem {
         }
 
         Direction face = context.getSide();
-        Vec3i offset = face.getDirectionVec();
+        Vec3i offset = face.getVector();
         Direction[] perpendicularFaces = Arrays.stream(Direction.values()).filter(d -> d.getAxis() != face.getAxis())
                 .toArray(Direction[]::new);
 

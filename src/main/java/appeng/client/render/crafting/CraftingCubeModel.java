@@ -29,7 +29,7 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.IModelTransform;
 import net.minecraft.client.render.model.IUnbakedModel;
 import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.render.model.Material;
+import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.texture.Sprite;
@@ -45,20 +45,20 @@ import appeng.core.AppEng;
  */
 class CraftingCubeModel implements IModelGeometry<CraftingCubeModel> {
 
-    private final static Material RING_CORNER = texture("ring_corner");
-    private final static Material RING_SIDE_HOR = texture("ring_side_hor");
-    private final static Material RING_SIDE_VER = texture("ring_side_ver");
-    private final static Material UNIT_BASE = texture("unit_base");
-    private final static Material LIGHT_BASE = texture("light_base");
-    private final static Material ACCELERATOR_LIGHT = texture("accelerator_light");
-    private final static Material STORAGE_1K_LIGHT = texture("1k_storage_light");
-    private final static Material STORAGE_4K_LIGHT = texture("4k_storage_light");
-    private final static Material STORAGE_16K_LIGHT = texture("16k_storage_light");
-    private final static Material STORAGE_64K_LIGHT = texture("64k_storage_light");
-    private final static Material MONITOR_BASE = texture("monitor_base");
-    private final static Material MONITOR_LIGHT_DARK = texture("monitor_light_dark");
-    private final static Material MONITOR_LIGHT_MEDIUM = texture("monitor_light_medium");
-    private final static Material MONITOR_LIGHT_BRIGHT = texture("monitor_light_bright");
+    private final static SpriteIdentifier RING_CORNER = texture("ring_corner");
+    private final static SpriteIdentifier RING_SIDE_HOR = texture("ring_side_hor");
+    private final static SpriteIdentifier RING_SIDE_VER = texture("ring_side_ver");
+    private final static SpriteIdentifier UNIT_BASE = texture("unit_base");
+    private final static SpriteIdentifier LIGHT_BASE = texture("light_base");
+    private final static SpriteIdentifier ACCELERATOR_LIGHT = texture("accelerator_light");
+    private final static SpriteIdentifier STORAGE_1K_LIGHT = texture("1k_storage_light");
+    private final static SpriteIdentifier STORAGE_4K_LIGHT = texture("4k_storage_light");
+    private final static SpriteIdentifier STORAGE_16K_LIGHT = texture("16k_storage_light");
+    private final static SpriteIdentifier STORAGE_64K_LIGHT = texture("64k_storage_light");
+    private final static SpriteIdentifier MONITOR_BASE = texture("monitor_base");
+    private final static SpriteIdentifier MONITOR_LIGHT_DARK = texture("monitor_light_dark");
+    private final static SpriteIdentifier MONITOR_LIGHT_MEDIUM = texture("monitor_light_medium");
+    private final static SpriteIdentifier MONITOR_LIGHT_BRIGHT = texture("monitor_light_bright");
 
     private final AbstractCraftingUnitBlock.CraftingUnitType type;
 
@@ -67,8 +67,8 @@ class CraftingCubeModel implements IModelGeometry<CraftingCubeModel> {
     }
 
     @Override
-    public Collection<Material> getTextures(IModelConfiguration owner,
-                                            Function<Identifier, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+    public Collection<SpriteIdentifier> getTextures(IModelConfiguration owner,
+                                                    Function<Identifier, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
         return ImmutableList.of(RING_CORNER, RING_SIDE_HOR, RING_SIDE_VER, UNIT_BASE, LIGHT_BASE, ACCELERATOR_LIGHT,
                 STORAGE_1K_LIGHT, STORAGE_4K_LIGHT, STORAGE_16K_LIGHT, STORAGE_64K_LIGHT, MONITOR_BASE,
                 MONITOR_LIGHT_DARK, MONITOR_LIGHT_MEDIUM, MONITOR_LIGHT_BRIGHT);
@@ -76,7 +76,7 @@ class CraftingCubeModel implements IModelGeometry<CraftingCubeModel> {
 
     @Override
     public BakedModel bake(IModelConfiguration owner, ModelLoader bakery,
-                           Function<Material, Sprite> spriteGetter, IModelTransform modelTransform,
+                           Function<SpriteIdentifier, Sprite> spriteGetter, IModelTransform modelTransform,
                            ModelOverrideList overrides, Identifier modelLocation) {
         // Retrieve our textures and pass them on to the baked model
         Sprite ringCorner = spriteGetter.apply(RING_CORNER);
@@ -102,7 +102,7 @@ class CraftingCubeModel implements IModelGeometry<CraftingCubeModel> {
         }
     }
 
-    private static Sprite getLightTexture(Function<Material, Sprite> textureGetter,
+    private static Sprite getLightTexture(Function<SpriteIdentifier, Sprite> textureGetter,
                                           AbstractCraftingUnitBlock.CraftingUnitType type) {
         switch (type) {
             case ACCELERATOR:
@@ -120,8 +120,8 @@ class CraftingCubeModel implements IModelGeometry<CraftingCubeModel> {
         }
     }
 
-    private static Material texture(String name) {
-        return new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    private static SpriteIdentifier texture(String name) {
+        return new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
                 new Identifier(AppEng.MOD_ID, "block/crafting/" + name));
     }
 }

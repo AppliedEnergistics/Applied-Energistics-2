@@ -35,7 +35,7 @@ public final class AEConfig {
     public final ClientConfig clientConfig;
     public final CommonConfig commonConfig;
 
-    public AEConfig(File configDir) {
+    AEConfig(File configDir) {
         ConfigSection clientRoot = ConfigSection.createRoot();
         clientConfig = new ClientConfig(clientRoot);
         syncClientConfig();
@@ -56,6 +56,13 @@ public final class AEConfig {
 
     // Config instance
     private static AEConfig instance;
+
+    static void load(File configFolder) {
+        if (instance != null) {
+            throw new IllegalStateException();
+        }
+        instance = new AEConfig(configFolder);
+    }
 
     private final EnumSet<AEFeature> featureFlags = EnumSet.noneOf(AEFeature.class);
 

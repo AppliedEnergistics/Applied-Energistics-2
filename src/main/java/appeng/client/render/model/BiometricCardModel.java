@@ -13,7 +13,7 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.IModelTransform;
 import net.minecraft.client.render.model.IUnbakedModel;
 import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.render.model.Material;
+import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.texture.Sprite;
@@ -30,19 +30,19 @@ import appeng.core.AppEng;
 public class BiometricCardModel implements IModelGeometry<BiometricCardModel> {
 
     public static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID, "item/biometric_card_base");
-    private static final Material TEXTURE = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    private static final SpriteIdentifier TEXTURE = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier(AppEng.MOD_ID, "item/biometric_card_hash"));
 
     @Override
-    public Collection<Material> getTextures(IModelConfiguration owner,
-                                            Function<Identifier, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+    public Collection<SpriteIdentifier> getTextures(IModelConfiguration owner,
+                                                    Function<Identifier, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
         return Collections.singleton(TEXTURE);
     }
 
     @Nullable
     @Override
     public BakedModel bake(IModelConfiguration owner, ModelLoader bakery,
-                           Function<Material, Sprite> spriteGetter, IModelTransform transformIn,
+                           Function<SpriteIdentifier, Sprite> spriteGetter, IModelTransform transformIn,
                            ModelOverrideList overrides, Identifier locationIn) {
         Sprite texture = spriteGetter.apply(TEXTURE);
 

@@ -34,7 +34,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.renderer.Vector4f;
+import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.texture.Sprite;
@@ -262,11 +262,11 @@ public class AutoRotatingBakedModel implements BakedModel {
             } else {
                 switch (fs.length) {
                     case 3:
-                        Vec3i vec = this.f2r.rotate(this.face).getDirectionVec();
+                        Vec3i vec = this.f2r.rotate(this.face).getVector();
                         return new float[] { vec.getX(), vec.getY(), vec.getZ() };
                     case 4:
                         Vector4f veccc = new Vector4f(fs[0], fs[1], fs[2], fs[3]);
-                        Vec3i vecc = this.f2r.rotate(this.face).getDirectionVec();
+                        Vec3i vecc = this.f2r.rotate(this.face).getVector();
                         return new float[] { vecc.getX(), vecc.getY(), vecc.getZ(), veccc.getW() };
 
                     default:

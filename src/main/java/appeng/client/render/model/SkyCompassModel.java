@@ -31,7 +31,7 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.IModelTransform;
 import net.minecraft.client.render.model.IUnbakedModel;
 import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.render.model.Material;
+import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.Identifier;
@@ -54,7 +54,7 @@ public class SkyCompassModel implements IModelGeometry<SkyCompassModel> {
 
     @Override
     public BakedModel bake(IModelConfiguration owner, ModelLoader bakery,
-                           Function<Material, Sprite> spriteGetter, IModelTransform modelTransform,
+                           Function<SpriteIdentifier, Sprite> spriteGetter, IModelTransform modelTransform,
                            ModelOverrideList overrides, Identifier modelLocation) {
         BakedModel baseModel = bakery.getBakedModel(MODEL_BASE, modelTransform, spriteGetter);
         BakedModel pointerModel = bakery.getBakedModel(MODEL_POINTER, modelTransform, spriteGetter);
@@ -62,8 +62,8 @@ public class SkyCompassModel implements IModelGeometry<SkyCompassModel> {
     }
 
     @Override
-    public Collection<Material> getTextures(IModelConfiguration owner,
-                                            Function<Identifier, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+    public Collection<SpriteIdentifier> getTextures(IModelConfiguration owner,
+                                                    Function<Identifier, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
         return Collections.emptyList();
     }
 

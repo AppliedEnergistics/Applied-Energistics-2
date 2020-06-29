@@ -36,9 +36,13 @@ import java.util.Random;
 
 public interface AppEng {
 
+    String MOD_NAME = "Applied Energistics 2";
+
     String MOD_ID = "appliedenergistics2";
 
-    AppEng INSTANCE = null;
+    static AppEng instance() {
+        return AppEngHolder.INSTANCE;
+    }
 
     static Identifier makeId(String id) {
         return new Identifier(MOD_ID, id);
@@ -68,27 +72,13 @@ public interface AppEng {
 
     boolean isActionKey(@Nonnull final ActionKey key, InputUtil.Key input);
 
-//    public static final String MOD_NAME = "Applied Energistics 2";
-//
-//    private static AppEng INSTANCE;
 //
 //    private final Registration registration;
 //
 //    public AppEng() {
-//        if (INSTANCE != null) {
-//            throw new IllegalStateException();
-//        }
 //        INSTANCE = this;
-//        ParticleTypes.register();
-//        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, AEConfig.CLIENT_SPEC);
-//        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, AEConfig.COMMON_SPEC);
-//
-//        proxy = DistExecutor.runForDist(() -> ClientHelper::new, () -> ServerHelper::new);
 //
 //        CrashReportExtender.registerCrashCallable(new ModCrashEnhancement());
-//
-//        CreativeTab.init();
-//        new FacadeItemGroup(); // This call has a side-effect (adding it to the creative screen)
 //
 //        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 //        registration = new Registration();
@@ -141,14 +131,6 @@ public interface AppEng {
 //    private void clientSetup(FMLClientSetupEvent event) {
 //
 //        ((ClientHelper) proxy).clientInit();
-//
-//        RenderingRegistry.registerEntityRenderingHandler(TinyTNTPrimedEntity.TYPE, TinyTNTPrimedRenderer::new);
-//        RenderingRegistry.registerEntityRenderingHandler(SingularityEntity.TYPE,
-//                m -> new ItemRenderer(m, MinecraftClient.getInstance().getItemRenderer()));
-//        RenderingRegistry.registerEntityRenderingHandler(GrowingCrystalEntity.TYPE,
-//                m -> new ItemRenderer(m, MinecraftClient.getInstance().getItemRenderer()));
-//        RenderingRegistry.registerEntityRenderingHandler(ChargedQuartzEntity.TYPE,
-//                m -> new ItemRenderer(m, MinecraftClient.getInstance().getItemRenderer()));
 //
 //        // TODO: Do not use the internal API
 //        final ApiDefinitions definitions = Api.INSTANCE.definitions();

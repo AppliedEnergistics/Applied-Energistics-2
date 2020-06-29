@@ -177,7 +177,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
                 final IAEItemStack input = AEItemStack.fromItemStack(player.getStackInHand(hand));
                 final IAEItemStack failedToInsert = Platform.poweredInsert(energy, cell, input,
                         new PlayerSource(player, this));
-                player.setHeldItem(hand, failedToInsert == null ? ItemStack.EMPTY : failedToInsert.createItemStack());
+                player.setStackInHand(hand, failedToInsert == null ? ItemStack.EMPTY : failedToInsert.createItemStack());
             }
         } catch (final GridAccessException e) {
             // :P

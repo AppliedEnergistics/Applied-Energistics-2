@@ -103,11 +103,11 @@ public class BlockEntityBuilder<T extends AEBaseBlockEntity> {
                     baseTileBlock.setTileEntity(tileClass, factory);
                 }
             }
-        });
 
-        if (Platform.hasClientClasses()) {
-            buildClient();
-        }
+            if (Platform.hasClientClasses()) {
+                buildClient();
+            }
+        });
 
         return new TileEntityDefinition(this::addBlock);
 
@@ -115,11 +115,9 @@ public class BlockEntityBuilder<T extends AEBaseBlockEntity> {
 
     @Environment(EnvType.CLIENT)
     private void buildClient() {
-        this.factory.addBootstrapComponent((IClientSetupComponent) () -> {
-            if (tileEntityRendering.tileEntityRenderer != null) {
-                BlockEntityRendererRegistry.INSTANCE.register(type, tileEntityRendering.tileEntityRenderer);
-            }
-        });
+        if (tileEntityRendering.tileEntityRenderer != null) {
+            BlockEntityRendererRegistry.INSTANCE.register(type, tileEntityRendering.tileEntityRenderer);
+        }
     }
 
     private void addBlock(Block block) {

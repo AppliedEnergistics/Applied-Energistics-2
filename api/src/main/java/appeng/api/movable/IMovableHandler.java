@@ -50,11 +50,11 @@ public interface IMovableHandler {
      * <pre>
      * {
      *     &#064;code
-     *     Chunk c = world.getChunkAt(x, z);
+     *     Chunk c = world.getChunk(x, z);
      *     c.setChunkBlockTileEntity(x &amp; 0xF, y + y, z &amp; 0xF, tile);
      *
      *     if (c.isChunkLoaded) {
-     *         world.addTileEntity(tile);
+     *         world.addBlockEntity(tile);
      *         world.markBlockForUpdate(x, y, z);
      *     }
      * }

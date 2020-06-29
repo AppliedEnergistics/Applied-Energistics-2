@@ -20,8 +20,8 @@ package appeng.client.render.model;
 
 import java.util.List;
 
+import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.math.Matrix4f;
-import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;

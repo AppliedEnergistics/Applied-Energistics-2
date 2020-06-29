@@ -19,6 +19,9 @@
   "environment": "*",
   "entrypoints": {
     "main": [
+    ],
+    "client": [
+      "appeng.core.AppEngClientStartup"
     ]
   },
   "mixins": [

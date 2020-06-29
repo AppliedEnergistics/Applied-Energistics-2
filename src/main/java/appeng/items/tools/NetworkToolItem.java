@@ -86,7 +86,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
 
     @Override
     public ActionResult onItemUseFirst(ItemStack stack, ItemUsageContext context) {
-        final BlockHitResult mop = new BlockHitResult(context.getHitVec(), context.getSide(),
+        final BlockHitResult mop = new BlockHitResult(context.getHitPos(), context.getSide(),
                 context.getBlockPos(), context.isInside());
         final BlockEntity te = context.getWorld().getBlockEntity(context.getBlockPos());
 
@@ -155,7 +155,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
 
             return true;
         } else {
-            BlockHitResult rtr = new BlockHitResult(useContext.getHitVec(), side, pos, false);
+            BlockHitResult rtr = new BlockHitResult(useContext.getHitPos(), side, pos, false);
             bs.onUse(w, p, hand, rtr);
         }
 

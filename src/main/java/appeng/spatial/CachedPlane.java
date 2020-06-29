@@ -284,7 +284,7 @@ public class CachedPlane {
                     final BlockPos pos = new BlockPos(x, y, z);
 
                     // attempt recovery...
-                    c.c.addTileEntity(te);
+                    c.c.addBlockEntity(te);
 
                     this.world.updateListeners(pos, this.world.getBlockState(pos), this.world.getBlockState(pos), z);
                 }

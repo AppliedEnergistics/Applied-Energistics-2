@@ -7,12 +7,12 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
 
 import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.util.math.Quaternion;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.model.Material;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.inventory.container.PlayerContainer;
@@ -35,7 +35,7 @@ public final class InscriberTESR extends BlockEntityRenderer<InscriberBlockEntit
 
     private static final float ITEM_RENDER_SCALE = 1.0f / 1.2f;
 
-    private static final Material TEXTURE_INSIDE = new Material(PlayerContainer.LOCATION_BLOCKS_TEXTURE,
+    private static final SpriteIdentifier TEXTURE_INSIDE = new SpriteIdentifier(PlayerContainer.LOCATION_BLOCKS_TEXTURE,
             new Identifier(AppEng.MOD_ID, "block/inscriber_inside"));
 
     public InscriberTESR(BlockEntityRenderDispatcher rendererDispatcherIn) {
@@ -173,12 +173,12 @@ public final class InscriberTESR extends BlockEntityRenderer<InscriberBlockEntit
 
     private static void addVertex(VertexConsumer vb, MatrixStack ms, Sprite sprite, float x, float y,
                                   float z, double texU, double texV, int overlayUV, int lightmapUV, Direction front) {
-        vb.pos(ms.getLast().getMatrix(), x, y, z);
+        vb.pos(ms.peek().getMatrix(), x, y, z);
         vb.color(1.0f, 1.0f, 1.0f, 1.0f);
         vb.tex(sprite.getInterpolatedU(texU), sprite.getInterpolatedV(texV));
         vb.overlay(overlayUV);
         vb.lightmap(lightmapUV);
-        vb.normal(ms.getLast().getNormal(), front.getOffsetX(), front.getOffsetY(), front.getOffsetZ());
+        vb.normal(ms.peek().getNormal(), front.getOffsetX(), front.getOffsetY(), front.getOffsetZ());
         vb.endVertex();
     }
 

@@ -15,7 +15,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.render.model.Material;
+import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.Identifier;
@@ -35,16 +35,16 @@ import appeng.tile.misc.PaintSplotchesBlockEntity;
  */
 class PaintSplotchesBakedModel implements IDynamicBakedModel {
 
-    private static final Material TEXTURE_PAINT1 = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    private static final SpriteIdentifier TEXTURE_PAINT1 = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier(AppEng.MOD_ID, "block/paint1"));
-    private static final Material TEXTURE_PAINT2 = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    private static final SpriteIdentifier TEXTURE_PAINT2 = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier(AppEng.MOD_ID, "block/paint2"));
-    private static final Material TEXTURE_PAINT3 = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    private static final SpriteIdentifier TEXTURE_PAINT3 = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier(AppEng.MOD_ID, "block/paint3"));
 
     private final Sprite[] textures;
 
-    PaintSplotchesBakedModel(Function<Material, Sprite> bakedTextureGetter) {
+    PaintSplotchesBakedModel(Function<SpriteIdentifier, Sprite> bakedTextureGetter) {
         this.textures = new Sprite[] { bakedTextureGetter.apply(TEXTURE_PAINT1),
                 bakedTextureGetter.apply(TEXTURE_PAINT2), bakedTextureGetter.apply(TEXTURE_PAINT3) };
     }
@@ -171,7 +171,7 @@ class PaintSplotchesBakedModel implements IDynamicBakedModel {
         return false;
     }
 
-    static List<Material> getRequiredTextures() {
+    static List<SpriteIdentifier> getRequiredTextures() {
         return ImmutableList.of(TEXTURE_PAINT1, TEXTURE_PAINT2, TEXTURE_PAINT3);
     }
 }

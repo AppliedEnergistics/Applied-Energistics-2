@@ -19,8 +19,8 @@
 package appeng.hooks;
 
 import net.minecraft.block.DispenserBlock;
-import net.minecraft.dispenser.DefaultDispenseItemBehavior;
-import net.minecraft.dispenser.IBlockSource;
+import net.minecraft.block.dispenser.ItemDispenserBehavior;
+import net.minecraft.util.math.BlockPointer;
 import net.minecraft.item.DirectionalPlaceContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -29,10 +29,10 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import net.minecraft.server.world.ServerWorld;
 
-public final class BlockToolDispenseItemBehavior extends DefaultDispenseItemBehavior {
+public final class BlockToolDispenseItemBehavior extends ItemDispenserBehavior {
 
     @Override
-    protected ItemStack dispenseStack(final IBlockSource dispenser, final ItemStack dispensedItem) {
+    protected ItemStack dispenseSilently(final BlockPointer dispenser, final ItemStack dispensedItem) {
         final Item i = dispensedItem.getItem();
         if (i instanceof IBlockTool) {
             final Direction direction = dispenser.getBlockState().get(DispenserBlock.FACING);

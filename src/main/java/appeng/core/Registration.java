@@ -115,34 +115,10 @@ import java.util.Map;
 final class Registration {
 
     public Registration() {
-        AeStats.register();
-        advancementTriggers = new AdvancementTriggers(Criteria::register);
     }
 
     AdvancementTriggers advancementTriggers;
 
-    public static void setupInternalRegistries() {
-        // TODO: Do not use the internal API
-        final Api api = Api.INSTANCE;
-        final IRegistryContainer registries = api.registries();
-
-        final IGridCacheRegistry gcr = registries.gridCache();
-        gcr.registerGridCache(ITickManager.class, TickManagerCache.class);
-        gcr.registerGridCache(IEnergyGrid.class, EnergyGridCache.class);
-        gcr.registerGridCache(IPathingGrid.class, PathGridCache.class);
-        gcr.registerGridCache(IStorageGrid.class, GridStorageCache.class);
-        gcr.registerGridCache(P2PCache.class, P2PCache.class);
-        gcr.registerGridCache(ISpatialCache.class, SpatialPylonCache.class);
-        gcr.registerGridCache(ISecurityGrid.class, SecurityCache.class);
-        gcr.registerGridCache(ICraftingGrid.class, CraftingGridCache.class);
-
-        registries.cell().addCellHandler(new BasicCellHandler());
-        registries.cell().addCellHandler(new CreativeCellHandler());
-        registries.cell().addCellGuiHandler(new BasicItemCellGuiHandler());
-        registries.cell().addCellGuiHandler(new BasicFluidCellGuiHandler());
-
-        registries.matterCannon().registerAmmoItem(api.definitions().materials().matterBall().item(), 32);
-    }
 
     @Environment(EnvType.CLIENT)
     public void modelRegistryEvent(ModelRegistryEvent event) {
@@ -164,14 +140,6 @@ final class Registration {
         PartModels partModels = (PartModels) Api.INSTANCE.registries().partModels();
         partModels.getModels().forEach(ModelLoader::addSpecialModel);
         partModels.setInitialized(true);
-    }
-
-    public void registerTileEntities(RegistryEvent.Register<BlockEntityType<?>> event) {
-        final IForgeRegistry<BlockEntityType<?>> registry = event.getRegistry();
-        // TODO: Do not use the internal API
-        final ApiDefinitions definitions = Api.INSTANCE.definitions();
-        definitions.getRegistry().getBootstrapComponents(ITileEntityRegistrationComponent.class)
-                .forEachRemaining(b -> b.register(registry));
     }
 
     public void registerContainerTypes(RegistryEvent.Register<ScreenHandlerType<?>> event) {
@@ -319,29 +287,6 @@ final class Registration {
         r.registerAll(DisassembleRecipe.SERIALIZER, GrinderRecipeSerializer.INSTANCE,
                 InscriberRecipeSerializer.INSTANCE, FacadeRecipe.getSerializer(facadeItem),
                 DisassembleRecipe.SERIALIZER);
-    }
-
-    public void registerParticleTypes(RegistryEvent.Register<ParticleType<?>> event) {
-        final IForgeRegistry<ParticleType<?>> registry = event.getRegistry();
-        registry.register(ParticleTypes.CHARGED_ORE);
-        registry.register(ParticleTypes.CRAFTING);
-        registry.register(ParticleTypes.ENERGY);
-        registry.register(ParticleTypes.LIGHTNING_ARC);
-        registry.register(ParticleTypes.LIGHTNING);
-        registry.register(ParticleTypes.MATTER_CANNON);
-        registry.register(ParticleTypes.VIBRANT);
-    }
-
-    @Environment(EnvType.CLIENT)
-    public void registerParticleFactories(ParticleFactoryRegisterEvent event) {
-        ParticleManager particles = MinecraftClient.getInstance().particles;
-        particles.registerFactory(ParticleTypes.CHARGED_ORE, ChargedOreFX.Factory::new);
-        particles.registerFactory(ParticleTypes.CRAFTING, CraftingFx.Factory::new);
-        particles.registerFactory(ParticleTypes.ENERGY, EnergyFx.Factory::new);
-        particles.registerFactory(ParticleTypes.LIGHTNING_ARC, LightningArcFX.Factory::new);
-        particles.registerFactory(ParticleTypes.LIGHTNING, LightningFX.Factory::new);
-        particles.registerFactory(ParticleTypes.MATTER_CANNON, MatterCannonFX.Factory::new);
-        particles.registerFactory(ParticleTypes.VIBRANT, VibrantFX.Factory::new);
     }
 
     // FIXME LATER
@@ -575,30 +520,8 @@ final class Registration {
         evt.getRegistry().register(StorageCellModDimension.INSTANCE);
     }
 
-    @Environment(EnvType.CLIENT)
-    public void registerTextures(TextureStitchEvent.Pre event) {
-        SkyChestTESR.registerTextures(event);
-        InscriberTESR.registerTexture(event);
-    }
-
     public void registerCommands(final FMLServerStartingEvent evt) {
         new AECommand().register(evt.getCommandDispatcher());
-    }
-
-    @Environment(EnvType.CLIENT)
-    public void registerItemColors(ColorHandlerEvent.Item event) {
-        // TODO: Do not use the internal API
-        final ApiDefinitions definitions = Api.INSTANCE.definitions();
-        definitions.getRegistry().getBootstrapComponents(IItemColorRegistrationComponent.class)
-                .forEachRemaining(c -> c.register(event.getItemColors(), event.getBlockColors()));
-    }
-
-    @Environment(EnvType.CLIENT)
-    public void onModelsReloaded(Map<Identifier, BakedModel> loadedModels) {
-        // TODO: Do not use the internal API
-        final ApiDefinitions definitions = Api.INSTANCE.definitions();
-        definitions.getRegistry().getBootstrapComponents(IModelBakeComponent.class)
-                .forEachRemaining(c -> c.onModelsReloaded(loadedModels));
     }
 
     @Environment(EnvType.CLIENT)

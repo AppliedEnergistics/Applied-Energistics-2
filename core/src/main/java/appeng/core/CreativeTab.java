@@ -41,7 +41,7 @@ public final class CreativeTab {
                 .icon(() -> {
                     final IDefinitions definitions = AEApi.instance().definitions();
                     final IBlocks blocks = definitions.blocks();
-                    return blocks.controller().stack(1);
+                    return blocks.quartzOre().stack(1); // FIXME FABRIC blocks.controller().stack(1);
                 })
                 .appendItems(CreativeTab::fill)
                 .build();

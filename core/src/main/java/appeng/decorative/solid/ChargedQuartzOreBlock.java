@@ -71,7 +71,7 @@ public class ChargedQuartzOreBlock extends QuartzOreBlock {
                 break;
         }
 
-        if (AppEng.INSTANCE.shouldAddParticles(r)) {
+        if (AppEng.instance().shouldAddParticles(r)) {
             MinecraftClient.getInstance().particleManager.addParticle(ParticleTypes.CHARGED_ORE, pos.getX() + xOff,
                     pos.getY() + yOff, pos.getZ() + zOff, 0.0f, 0.0f, 0.0f);
         }

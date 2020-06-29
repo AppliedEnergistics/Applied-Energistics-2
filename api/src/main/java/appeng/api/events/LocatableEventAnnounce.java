@@ -34,15 +34,15 @@ import net.fabricmc.fabric.api.event.EventFactory;
  */
 public interface LocatableEventAnnounce {
 
-    Event<LocatableEventAnnounce> EVENT = EventFactory.createArrayBacked(LocatableEventAnnounce.class, listeners -> (ILocatable o, LocatableEvent evt) -> {
+    Event<LocatableEventAnnounce> EVENT = EventFactory.createArrayBacked(LocatableEventAnnounce.class, listeners -> (ILocatable target, LocatableEvent change) -> {
         for (LocatableEventAnnounce listener : listeners) {
-            listener.onLocatableAnnounce(o, evt);
+            listener.onLocatableAnnounce(target, change);
         }
     });
 
-    void onLocatableAnnounce(final ILocatable o, final LocatableEvent ev);
+    void onLocatableAnnounce(final ILocatable target, final LocatableEvent change);
 
-    public enum LocatableEvent {
+    enum LocatableEvent {
         /**
          * Adds the locatable to the registry
          */

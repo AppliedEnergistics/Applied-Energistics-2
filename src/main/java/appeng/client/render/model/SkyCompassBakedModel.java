@@ -29,7 +29,7 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.util.math.Matrix4f;
-import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.util.math.Quaternion;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.texture.Sprite;
@@ -89,8 +89,8 @@ public class SkyCompassBakedModel implements IDynamicBakedModel {
         if (side == null) {
             // Set up the rotation around the Y-axis for the pointer
             Matrix4f matrix = new Matrix4f();
-            matrix.setIdentity();
-            matrix.mul(new Quaternion(0, rotation, 0, false));
+            matrix.loadIdentity();
+            matrix.multiply(new Quaternion(0, rotation, 0, false));
 
             MatrixVertexTransformer transformer = new MatrixVertexTransformer(matrix);
             for (BakedQuad bakedQuad : this.pointer.getQuads(state, side, rand, extraData)) {

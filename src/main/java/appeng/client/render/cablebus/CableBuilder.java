@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.Material;
+import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
@@ -49,7 +49,7 @@ class CableBuilder {
 
     private final SmartCableTextures smartCableTextures;
 
-    CableBuilder(Function<Material, Sprite> bakedTextureGetter) {
+    CableBuilder(Function<SpriteIdentifier, Sprite> bakedTextureGetter) {
         this.coreTextures = new EnumMap<>(CableCoreType.class);
 
         for (CableCoreType type : CableCoreType.values()) {
@@ -77,7 +77,7 @@ class CableBuilder {
         this.smartCableTextures = new SmartCableTextures(bakedTextureGetter);
     }
 
-    static Material getConnectionTexture(AECableType cableType, AEColor color) {
+    static SpriteIdentifier getConnectionTexture(AECableType cableType, AEColor color) {
         String textureFolder;
         switch (cableType) {
             case GLASS:
@@ -99,7 +99,7 @@ class CableBuilder {
                 throw new IllegalStateException("Cable type " + cableType + " does not support connections.");
         }
 
-        return new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+        return new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
                 new Identifier(AppEng.MOD_ID, textureFolder + color.name().toLowerCase()));
     }
 
@@ -701,8 +701,8 @@ class CableBuilder {
     }
 
     // Get all textures needed for building the actual cable quads
-    public static List<Material> getTextures() {
-        List<Material> locations = new ArrayList<>();
+    public static List<SpriteIdentifier> getTextures() {
+        List<SpriteIdentifier> locations = new ArrayList<>();
 
         for (CableCoreType coreType : CableCoreType.values()) {
             for (AEColor color : AEColor.values()) {

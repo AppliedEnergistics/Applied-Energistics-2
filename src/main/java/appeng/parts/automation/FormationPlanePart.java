@@ -228,7 +228,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
                 final PlayerEntity player = FakePlayer.getOrCreate((ServerWorld) w);
                 Platform.configurePlayer(player, side, this.getTile());
                 Hand hand = player.getActiveHand();
-                player.setHeldItem(hand, is);
+                player.setStackInHand(hand, is);
 
                 maxStorage = is.getCount();
                 worked = true;
@@ -276,7 +276,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
                 }
 
                 // Safe keeping
-                player.setHeldItem(hand, ItemStack.EMPTY);
+                player.setStackInHand(hand, ItemStack.EMPTY);
             } else {
                 worked = true;
 

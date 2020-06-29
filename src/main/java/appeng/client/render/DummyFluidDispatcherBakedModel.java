@@ -31,10 +31,10 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.util.math.AffineTransformation;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.Material;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.Fluids;
@@ -53,10 +53,10 @@ import appeng.fluids.items.FluidDummyItem;
  * Override List is used to accomplish this.
  */
 public class DummyFluidDispatcherBakedModel extends DelegateBakedModel {
-    private final Function<Material, Sprite> bakedTextureGetter;
+    private final Function<SpriteIdentifier, Sprite> bakedTextureGetter;
 
     public DummyFluidDispatcherBakedModel(BakedModel baseModel,
-                                          Function<Material, Sprite> bakedTextureGetter) {
+                                          Function<SpriteIdentifier, Sprite> bakedTextureGetter) {
         super(baseModel);
         this.bakedTextureGetter = bakedTextureGetter;
     }
@@ -101,7 +101,7 @@ public class DummyFluidDispatcherBakedModel extends DelegateBakedModel {
 
                 FluidAttributes attributes = fluidStack.getFluidKey().getAttributes();
                 Identifier stillTexture = attributes.getStillTexture(fluidStack);
-                Material stillMaterial = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX, stillTexture);
+                SpriteIdentifier stillMaterial = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, stillTexture);
                 Sprite sprite = DummyFluidDispatcherBakedModel.this.bakedTextureGetter.apply(stillMaterial);
                 if (sprite == null) {
                     return new DummyFluidBakedModel(ImmutableList.of());

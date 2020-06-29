@@ -201,7 +201,7 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
                 vertex.normal[3] = 0;
             }
         }
-        this.orientation = Direction.getFacingFromVector(this.normal.getX(), this.normal.getY(), this.normal.getZ());
+        this.orientation = Direction.getFacing(this.normal.getX(), this.normal.getY(), this.normal.getZ());
     }
 
     /**

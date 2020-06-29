@@ -1,6 +1,11 @@
 package appeng.client.render.effects;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleType;
 
@@ -22,14 +27,8 @@ public final class ParticleTypes {
     public static final DefaultParticleType MATTER_CANNON = FabricParticleTypes.simple(false);
     public static final DefaultParticleType VIBRANT = FabricParticleTypes.simple(false);
 
-    public static void register() {
-        Registry.register(Registry.PARTICLE_TYPE, AppEng.makeId("charged_ore_fx"), CHARGED_ORE);
-        Registry.register(Registry.PARTICLE_TYPE, AppEng.makeId("crafting_fx"), CRAFTING);
-        Registry.register(Registry.PARTICLE_TYPE, AppEng.makeId("energy_fx"), ENERGY);
-        Registry.register(Registry.PARTICLE_TYPE, AppEng.makeId("lightning_arc_fx"), LIGHTNING_ARC);
-        Registry.register(Registry.PARTICLE_TYPE, AppEng.makeId("lightning_fx"), LIGHTNING);
-        Registry.register(Registry.PARTICLE_TYPE, AppEng.makeId("matter_cannon_fx"), MATTER_CANNON);
-        Registry.register(Registry.PARTICLE_TYPE, AppEng.makeId("vibrant_fx"), VIBRANT);
+    public static void registerClient() {
     }
+
 
 }

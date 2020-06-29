@@ -34,7 +34,7 @@ import com.google.common.base.Strings;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.render.model.Material;
+import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -64,30 +64,30 @@ class GlassBakedModel implements IDynamicBakedModel {
     private static final byte[][][] OFFSETS = generateOffsets();
 
     // Alternating textures based on position
-    static final Material TEXTURE_A = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    static final SpriteIdentifier TEXTURE_A = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier("appliedenergistics2:block/glass/quartz_glass_a"));
-    static final Material TEXTURE_B = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    static final SpriteIdentifier TEXTURE_B = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier("appliedenergistics2:block/glass/quartz_glass_b"));
-    static final Material TEXTURE_C = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    static final SpriteIdentifier TEXTURE_C = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier("appliedenergistics2:block/glass/quartz_glass_c"));
-    static final Material TEXTURE_D = new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
+    static final SpriteIdentifier TEXTURE_D = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier("appliedenergistics2:block/glass/quartz_glass_d"));
 
     // Frame texture
-    static final Material[] TEXTURES_FRAME = generateTexturesFrame();
+    static final SpriteIdentifier[] TEXTURES_FRAME = generateTexturesFrame();
 
     // Generates the required textures for the frame
-    private static Material[] generateTexturesFrame() {
+    private static SpriteIdentifier[] generateTexturesFrame() {
         return IntStream.range(1, 16).mapToObj(Integer::toBinaryString).map(s -> Strings.padStart(s, 4, '0'))
                 .map(s -> new Identifier("appliedenergistics2:block/glass/quartz_glass_frame" + s))
-                .map(rl -> new Material(SpriteAtlasTexture.BLOCK_ATLAS_TEX, rl)).toArray(Material[]::new);
+                .map(rl -> new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, rl)).toArray(SpriteIdentifier[]::new);
     }
 
     private final Sprite[] glassTextures;
 
     private final Sprite[] frameTextures;
 
-    public GlassBakedModel(Function<Material, Sprite> bakedTextureGetter) {
+    public GlassBakedModel(Function<SpriteIdentifier, Sprite> bakedTextureGetter) {
         this.glassTextures = new Sprite[] { bakedTextureGetter.apply(TEXTURE_A),
                 bakedTextureGetter.apply(TEXTURE_B), bakedTextureGetter.apply(TEXTURE_C),
                 bakedTextureGetter.apply(TEXTURE_D) };
@@ -212,7 +212,7 @@ class GlassBakedModel implements IDynamicBakedModel {
 
     private BakedQuad createQuad(Direction side, Vec3d c1, Vec3d c2, Vec3d c3, Vec3d c4, Sprite sprite,
             float uOffset, float vOffset) {
-        Vec3d normal = new Vec3d(side.getDirectionVec());
+        Vec3d normal = new Vec3d(side.getVector());
 
         // Apply the u,v shift.
         // This mirrors the logic from OffsetIcon from 1.7
