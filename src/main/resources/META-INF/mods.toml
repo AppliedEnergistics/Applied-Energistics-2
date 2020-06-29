@@ -13,9 +13,16 @@ version="${file.jarVersion}"
 displayName="Applied Energistics 2"
 description="A Mod about Matter, Energy and using them to conquer the world.."
 
-[[dependencies.jei]]
+[[dependencies.appliedenergistics2]]
     modId="forge"
     mandatory=true
     versionRange="[31.0.0,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.appliedenergistics2]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.15.2]"
     ordering="NONE"
     side="BOTH"
