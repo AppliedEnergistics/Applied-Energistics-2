@@ -279,7 +279,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     }
 
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
-                                        final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         return ActionResultType.PASS;
     }
 

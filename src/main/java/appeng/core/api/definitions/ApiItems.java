@@ -20,9 +20,6 @@ package appeng.core.api.definitions;
 
 import java.util.function.Consumer;
 
-import appeng.bootstrap.IItemRendering;
-import appeng.bootstrap.ItemRenderingCustomizer;
-import appeng.fluids.items.FluidDummyItemColor;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -36,6 +33,8 @@ import appeng.api.features.AEFeature;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
 import appeng.bootstrap.FeatureFactory;
+import appeng.bootstrap.IItemRendering;
+import appeng.bootstrap.ItemRenderingCustomizer;
 import appeng.core.features.ActivityState;
 import appeng.core.features.ColoredItemDefinition;
 import appeng.core.features.ItemStackSrc;
@@ -47,6 +46,7 @@ import appeng.debug.ReplicatorCardItem;
 import appeng.entity.GrowingCrystalEntity;
 import appeng.fluids.items.BasicFluidStorageCell;
 import appeng.fluids.items.FluidDummyItem;
+import appeng.fluids.items.FluidDummyItemColor;
 import appeng.hooks.BlockToolDispenseItemBehavior;
 import appeng.hooks.MatterCannonDispenseItemBehavior;
 import appeng.items.materials.MaterialType;
@@ -313,8 +313,7 @@ public final class ApiItems implements IItems {
                     public void customize(IItemRendering rendering) {
                         rendering.color(new FluidDummyItemColor());
                     }
-                })
-                .build();
+                }).build();
     }
 
     private static AEColoredItemDefinition createPaintBalls(FeatureFactory registry, String idSuffix, boolean lumen) {

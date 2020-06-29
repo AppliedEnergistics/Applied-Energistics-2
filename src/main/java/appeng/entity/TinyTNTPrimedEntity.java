@@ -20,6 +20,8 @@ package appeng.entity;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -41,6 +43,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.Explosion.Mode;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import appeng.api.AEApi;
 import appeng.api.features.AEFeature;
@@ -48,9 +51,6 @@ import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.sync.packets.MockExplosionPacket;
 import appeng.util.Platform;
-import net.minecraftforge.fml.network.NetworkHooks;
-
-import javax.annotation.Nullable;
 
 public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAdditionalSpawnData {
 
@@ -67,8 +67,8 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
             final LivingEntity igniter) {
         super(TYPE, w);
         this.setPosition(x, y, z);
-        double d0 = w.rand.nextDouble() * (double)((float)Math.PI * 2F);
-        this.setMotion(-Math.sin(d0) * 0.02D, (double)0.2F, -Math.cos(d0) * 0.02D);
+        double d0 = w.rand.nextDouble() * (double) ((float) Math.PI * 2F);
+        this.setMotion(-Math.sin(d0) * 0.02D, (double) 0.2F, -Math.cos(d0) * 0.02D);
         this.setFuse(80);
         this.prevPosX = x;
         this.prevPosY = y;
