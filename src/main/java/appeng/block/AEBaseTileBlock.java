@@ -278,6 +278,11 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
         return this.onActivated(world, pos, player, hand, player.getHeldItem(hand), hit);
     }
 
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
+                                        final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+        return ActionResultType.PASS;
+    }
+
     @Override
     public IOrientable getOrientable(final IBlockReader w, final BlockPos pos) {
         return this.getTileEntity(w, pos);

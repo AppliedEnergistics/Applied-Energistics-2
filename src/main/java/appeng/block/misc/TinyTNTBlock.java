@@ -67,17 +67,17 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
-            final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
-        if (heldItem != null && heldItem.getItem() == Items.FLINT_AND_STEEL) {
-            this.startFuse(w, pos, player);
-            w.removeBlock(pos, false);
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+        ItemStack heldItem = player.getHeldItem(handIn);
+        if (!heldItem.isEmpty() && heldItem.getItem() == Items.FLINT_AND_STEEL) {
+            this.startFuse(world, pos, player);
+            world.removeBlock(pos, false);
             heldItem.damageItem(1, player, p -> {
-                p.sendBreakAnimation(hand);
+                p.sendBreakAnimation(handIn);
             }); // FIXME Check if onBroken is equivalent
             return ActionResultType.SUCCESS;
         } else {
-            return super.onActivated(w, pos, player, hand, heldItem, hit);
+            return super.onBlockActivated(state, world, pos, player, handIn, hit);
         }
     }
 
