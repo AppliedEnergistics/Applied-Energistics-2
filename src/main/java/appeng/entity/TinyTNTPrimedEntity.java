@@ -29,6 +29,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.item.TNTEntity;
+import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
@@ -47,10 +48,15 @@ import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.sync.packets.MockExplosionPacket;
 import appeng.util.Platform;
+import net.minecraftforge.fml.network.NetworkHooks;
+
+import javax.annotation.Nullable;
 
 public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAdditionalSpawnData {
 
     public static EntityType<TinyTNTPrimedEntity> TYPE;
+
+    private LivingEntity placedBy;
 
     public TinyTNTPrimedEntity(EntityType<? extends TinyTNTPrimedEntity> type, World worldIn) {
         super(type, worldIn);
@@ -59,7 +65,21 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
 
     public TinyTNTPrimedEntity(final World w, final double x, final double y, final double z,
             final LivingEntity igniter) {
-        super(w, x, y, z, igniter);
+        super(TYPE, w);
+        this.setPosition(x, y, z);
+        double d0 = w.rand.nextDouble() * (double)((float)Math.PI * 2F);
+        this.setMotion(-Math.sin(d0) * 0.02D, (double)0.2F, -Math.cos(d0) * 0.02D);
+        this.setFuse(80);
+        this.prevPosX = x;
+        this.prevPosY = y;
+        this.prevPosZ = z;
+        this.placedBy = igniter;
+    }
+
+    @Nullable
+    @Override
+    public LivingEntity getTntPlacedBy() {
+        return this.placedBy;
     }
 
     /**
@@ -168,6 +188,11 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
 
         AppEng.proxy.sendToAllNearExcept(null, this.getPosX(), this.getPosY(), this.getPosZ(), 64, this.world,
                 new MockExplosionPacket(this.getPosX(), this.getPosY(), this.getPosZ()));
+    }
+
+    @Override
+    public IPacket<?> createSpawnPacket() {
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override
