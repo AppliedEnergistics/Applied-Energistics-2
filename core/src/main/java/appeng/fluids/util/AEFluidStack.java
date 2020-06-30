@@ -237,32 +237,22 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
     public static IAEFluidStack fromPacket(final PacketByteBuf buffer) {
         final boolean isCraftable = buffer.readBoolean();
 
-        CompoundTag volumeTag = buffer.readCompoundTag();
-        final long stackSize = buffer.readVarLong();
+        FluidKey fluid = FluidKey.fromTag(buffer.readCompoundTag());
+        CompoundTag compoundTag = buffer.readCompoundTag();
+        final long amount = buffer.readVarLong();
         final long countRequestable = buffer.readVarLong();
 
-        if (volumeTag == null) {
-            return null;
-        }
-        FluidVolume fluidStack = FluidVolume.fromTag(volumeTag);
-        if (fluidStack.isEmpty()) {
-            return null;
-        }
-
-        final AEFluidStack fluid = AEFluidStack.fromFluidStack(fluidStack);
-        fluid.setStackSize(stackSize);
-        fluid.setCountRequestable(countRequestable);
-        fluid.setCraftable(isCraftable);
-        return fluid;
+        final AEFluidStack fluidStack = new AEFluidStack(fluid, amount, compoundTag);
+        fluidStack.setCountRequestable(countRequestable);
+        fluidStack.setCraftable(isCraftable);
+        return fluidStack;
     }
 
     @Override
     public void writeToPacket(final PacketByteBuf buffer) {
         buffer.writeBoolean(this.isCraftable());
-        // Cannot use writeFluidStack here because for FluidStacks with amount==0, it
-        // will not write the fluid
-        buffer.writeRegistryIdUnsafe(ForgeRegistries.FLUIDS, fluid);
-        buffer.writeCompoundTag(getFluidStack().getTag());
+        buffer.writeCompoundTag(fluid.toTag());
+        buffer.writeCompoundTag(tagCompound);
         buffer.writeVarLong(this.getStackSize());
         buffer.writeVarLong(this.getCountRequestable());
     }
