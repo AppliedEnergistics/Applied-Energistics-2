@@ -45,7 +45,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.ModDimension;
-import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -94,7 +93,6 @@ import appeng.core.features.registries.cell.BasicItemCellGuiHandler;
 import appeng.core.features.registries.cell.CreativeCellHandler;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.core.stats.AeStats;
-import appeng.core.stats.PartItemPredicate;
 import appeng.fluids.client.gui.*;
 import appeng.fluids.container.*;
 import appeng.fluids.registries.BasicFluidCellGuiHandler;
@@ -145,8 +143,6 @@ final class Registration {
         registries.cell().addCellGuiHandler(new BasicFluidCellGuiHandler());
 
         registries.matterCannon().registerAmmoItem(api.definitions().materials().matterBall().item(), 32);
-
-        PartItemPredicate.register();
     }
 
     @OnlyIn(Dist.CLIENT)
