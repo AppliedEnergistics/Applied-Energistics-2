@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:crafting_shapeless",
+  "type": "appliedenergistics2:quartz_knife",
   "result": {
     "item": "appliedenergistics2:cable_anchor",
     "count": 3

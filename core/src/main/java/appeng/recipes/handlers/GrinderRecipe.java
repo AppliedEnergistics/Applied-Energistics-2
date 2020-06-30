@@ -44,7 +44,7 @@ public class GrinderRecipe implements Recipe<Inventory> {
 
     @Override
     public boolean matches(Inventory inv, World worldIn) {
-        return this.ingredient.test(inv.getStackInSlot(0));
+        return this.ingredient.test(inv.getStack(0));
     }
 
     @Override
@@ -54,12 +54,12 @@ public class GrinderRecipe implements Recipe<Inventory> {
     }
 
     @Override
-    public boolean canFit(int width, int height) {
+    public boolean fits(int width, int height) {
         return true;
     }
 
     @Override
-    public ItemStack getRecipeOutput() {
+    public ItemStack getOutput() {
         return result;
     }
 
@@ -91,8 +91,8 @@ public class GrinderRecipe implements Recipe<Inventory> {
     }
 
     @Override
-    public DefaultedList<Ingredient> getIngredients() {
-        DefaultedList<Ingredient> nonnulllist = DefaultedList.create();
+    public DefaultedList<Ingredient> getPreviewInputs() {
+        DefaultedList<Ingredient> nonnulllist = DefaultedList.of();
         nonnulllist.add(this.ingredient);
         return nonnulllist;
     }

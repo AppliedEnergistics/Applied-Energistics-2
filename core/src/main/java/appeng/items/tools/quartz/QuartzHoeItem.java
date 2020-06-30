@@ -18,24 +18,25 @@
 
 package appeng.items.tools.quartz;
 
-import net.minecraft.item.AxeItem;
+import net.minecraft.item.HoeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTier;
+import net.minecraft.item.ToolMaterials;
 
 import appeng.api.features.AEFeature;
 import appeng.util.Platform;
 
-public class QuartzAxeItem extends AxeItem {
+public class QuartzHoeItem extends HoeItem {
     private final AEFeature type;
 
-    public QuartzAxeItem(Item.Settings props, final AEFeature type) {
-        super(ItemTier.IRON, 6.0F, -3.1F, props);
+    public QuartzHoeItem(Item.Settings props, final AEFeature type) {
+        super(ToolMaterials.IRON, -2, -1.0F, props);
         this.type = type;
     }
 
     @Override
-    public boolean getIsRepairable(final ItemStack a, final ItemStack b) {
+    public boolean canRepair(final ItemStack a, final ItemStack b) {
         return Platform.canRepair(this.type, a, b);
     }
+
 }

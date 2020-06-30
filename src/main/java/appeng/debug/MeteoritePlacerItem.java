@@ -51,7 +51,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
     }
 
     @Override
-    public TypedActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
+    public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
         if (world.isClient()) {
             return TypedActionResult.resultPass(player.getStackInHand(hand));
         }
@@ -74,7 +74,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
             return TypedActionResult.resultSuccess(itemStack);
         }
 
-        return super.onItemRightClick(world, player, hand);
+        return super.use(world, player, hand);
     }
 
     @Override

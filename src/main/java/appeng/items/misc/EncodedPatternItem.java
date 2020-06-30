@@ -57,7 +57,7 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
     }
 
     @Override
-    public TypedActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity player, final Hand hand) {
+    public TypedActionResult<ItemStack> use(final World w, final PlayerEntity player, final Hand hand) {
         this.clearPattern(player.getStackInHand(hand), player);
 
         return new TypedActionResult<>(ActionResult.SUCCESS, player.getStackInHand(hand));

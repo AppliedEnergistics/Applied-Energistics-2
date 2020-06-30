@@ -18,10 +18,10 @@
 
 package appeng.items.tools.quartz;
 
+import appeng.mixins.RemainderSetter;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -31,11 +31,7 @@ import net.minecraft.world.World;
 import appeng.api.features.AEFeature;
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.QuartzKnifeContainer;
 import appeng.items.AEBaseItem;
-import appeng.items.contents.QuartzKnifeObj;
 import appeng.util.Platform;
 
 public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
@@ -44,48 +40,24 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
     public QuartzCuttingKnifeItem(Item.Settings props, final AEFeature type) {
         super(props);
         this.type = type;
+        // See below for reasoning
+        ((RemainderSetter)this).setRecipeRemainder(this);
     }
 
     @Override
-    public ActionResult onItemUse(ItemUsageContext context) {
-        PlayerEntity player = context.getPlayer();
-        if (Platform.isServer() && player != null) {
-            ContainerOpener.openContainer(QuartzKnifeContainer.TYPE, context.getPlayer(),
-                    ContainerLocator.forItemUseContext(context));
-        }
-        return ActionResult.SUCCESS;
-    }
-
-    @Override
-    public TypedActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
+    public TypedActionResult<ItemStack> use(final World w, final PlayerEntity p, final Hand hand) {
         if (Platform.isServer()) {
-            ContainerOpener.openContainer(QuartzKnifeContainer.TYPE, p, ContainerLocator.forHand(p, hand));
+            // FIXME FABRIC ContainerOpener.openContainer(QuartzKnifeContainer.TYPE, p, ContainerLocator.forHand(p, hand));
+            throw new IllegalStateException();
         }
-        p.swingArm(hand);
+        p.swingHand(hand);
         return new TypedActionResult<>(ActionResult.SUCCESS, p.getStackInHand(hand));
-    }
-
-    @Override
-    public boolean getIsRepairable(final ItemStack a, final ItemStack b) {
-        return Platform.canRepair(this.type, a, b);
-    }
-
-    @Override
-    public ItemStack getRecipeRemainder(final ItemStack itemStack) {
-        ItemStack copy = itemStack.copy();
-        copy.setDamage(itemStack.getDamage() + 1);
-
-        return copy;
-    }
-
-    @Override
-    public boolean hasRecipeRemainder(final ItemStack stack) {
-        return true;
     }
 
     @Override
     public IGuiItemObject getGuiObject(final ItemStack is, int playerInventorySlot, final World world,
             final BlockPos pos) {
-        return new QuartzKnifeObj(is);
+       // FIXME FABRIC return new QuartzKnifeObj(is);
+        throw new IllegalStateException();
     }
 }

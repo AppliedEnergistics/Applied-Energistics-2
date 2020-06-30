@@ -126,7 +126,7 @@ public class PartPlacement {
                         }
                     }
                 } else {
-                    player.swingArm(hand);
+                    player.swingHand(hand);
                     NetworkHandler.instance()
                             .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
                 }
@@ -169,7 +169,7 @@ public class PartPlacement {
                             }
                         }
                     } else {
-                        player.swingArm(hand);
+                        player.swingHand(hand);
                         NetworkHandler.instance()
                                 .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
                         return ActionResult.SUCCESS;
@@ -252,7 +252,7 @@ public class PartPlacement {
 
                     pass = PlaceType.INTERACT_SECOND_PASS;
                 } else {
-                    player.swingArm(hand);
+                    player.swingHand(hand);
                     NetworkHandler.instance()
                             .sendToServer(new PartPlacementPacket(pos, side, getEyeOffset(player), hand));
                     return ActionResult.SUCCESS;
@@ -319,7 +319,7 @@ public class PartPlacement {
                 }
             }
         } else {
-            player.swingArm(hand);
+            player.swingHand(hand);
         }
         return ActionResult.SUCCESS;
     }

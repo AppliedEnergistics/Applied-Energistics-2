@@ -56,7 +56,7 @@ import net.minecraft.client.render.model.ItemTransformVec3f;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.JSONUtils;
+import net.minecraft.util.JsonHelper;
 import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
@@ -109,7 +109,7 @@ public class UVLModelLoader implements IModelLoader<UVLModelLoader.UVLModelWrapp
                 return null;
             }
             object = object.get("uvlightmap").getAsJsonObject();
-            return new ImmutablePair<>(JSONUtils.getFloat(object, "sky", 0), JSONUtils.getFloat(object, "block", 0));
+            return new ImmutablePair<>(JsonHelper.getFloat(object, "sky", 0), JsonHelper.getFloat(object, "block", 0));
         }
     }
 

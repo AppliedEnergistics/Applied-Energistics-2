@@ -57,7 +57,7 @@ public final class MatterCannonDispenseItemBehavior extends ItemDispenserBehavio
 
                 p.updatePosition(p.getX() + dir.xOffset, p.getY() + dir.yOffset, p.getZ() + dir.zOffset);
 
-                dispensedItem = tm.onItemRightClick(w, p, null).getResult();
+                dispensedItem = tm.use(w, p, null).getResult();
             }
         }
         return dispensedItem;

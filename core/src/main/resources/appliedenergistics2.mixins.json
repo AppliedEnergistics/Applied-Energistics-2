@@ -4,7 +4,9 @@
   "package": "appeng.mixins",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "CriteriaRegisterMixin"
+    "CriteriaRegisterMixin",
+    "RemainderSetter",
+    "ShapelessRecipeMixin"
   ],
   "client": [
     "ModelsReloadMixin"

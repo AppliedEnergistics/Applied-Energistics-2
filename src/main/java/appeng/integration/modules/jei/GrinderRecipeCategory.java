@@ -99,7 +99,7 @@ class GrinderRecipeCategory implements IRecipeCategory<GrinderRecipe> {
     public void setIngredients(GrinderRecipe recipe, IIngredients ingredients) {
         ingredients.setInputIngredients(Collections.singletonList(recipe.getIngredient()));
         List<ItemStack> outputs = new ArrayList<>(3);
-        outputs.add(recipe.getRecipeOutput());
+        outputs.add(recipe.getOutput());
         for (GrinderOptionalResult optionalResult : recipe.getOptionalResults()) {
             outputs.add(optionalResult.getResult());
         }

@@ -20,22 +20,22 @@ package appeng.items.tools.quartz;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTier;
-import net.minecraft.item.ShovelItem;
+import net.minecraft.item.ToolMaterials;
+import net.minecraft.item.SwordItem;
 
 import appeng.api.features.AEFeature;
 import appeng.util.Platform;
 
-public class QuartzSpadeItem extends ShovelItem {
+public class QuartzSwordItem extends SwordItem {
     private final AEFeature type;
 
-    public QuartzSpadeItem(Item.Settings props, final AEFeature type) {
-        super(ItemTier.IRON, 1.5F, -3.0F, props);
+    public QuartzSwordItem(Item.Settings props, AEFeature type) {
+        super(ToolMaterials.IRON, 3, -2.4F, props);
         this.type = type;
     }
 
     @Override
-    public boolean getIsRepairable(final ItemStack a, final ItemStack b) {
+    public boolean canRepair(final ItemStack a, final ItemStack b) {
         return Platform.canRepair(this.type, a, b);
     }
 }

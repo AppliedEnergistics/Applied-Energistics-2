@@ -140,7 +140,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     }
 
     @Override
-    public TypedActionResult<ItemStack> onItemRightClick(final World world, final PlayerEntity player, final Hand hand) {
+    public TypedActionResult<ItemStack> use(final World world, final PlayerEntity player, final Hand hand) {
         this.disassembleDrive(player.getStackInHand(hand), world, player);
         return new TypedActionResult<>(ActionResult.SUCCESS, player.getStackInHand(hand));
     }

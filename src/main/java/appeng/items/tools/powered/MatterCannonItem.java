@@ -105,7 +105,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
     }
 
     @Override
-    public TypedActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final @Nullable Hand hand) {
+    public TypedActionResult<ItemStack> use(final World w, final PlayerEntity p, final @Nullable Hand hand) {
         if (this.getAECurrentPower(p.getStackInHand(hand)) > ENERGY_PER_SHOT) {
             int shots = 1;
 

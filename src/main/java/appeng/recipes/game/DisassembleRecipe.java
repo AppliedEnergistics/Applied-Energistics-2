@@ -92,7 +92,7 @@ public final class DisassembleRecipe extends SpecialRecipe {
         ItemStack output = MISMATCHED_STACK;
 
         for (int slotIndex = 0; slotIndex < inventory.size(); slotIndex++) {
-            final ItemStack stackInSlot = inventory.getStackInSlot(slotIndex);
+            final ItemStack stackInSlot = inventory.getStack(slotIndex);
             if (!stackInSlot.isEmpty()) {
                 // needs a single input in the recipe
                 itemCount++;

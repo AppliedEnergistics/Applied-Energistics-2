@@ -7,29 +7,22 @@ import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.item.crafting.ShapedRecipe;
+import net.minecraft.recipe.ShapedRecipe;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.JSONUtils;
-import net.minecraftforge.registries.ForgeRegistryEntry;
+import net.minecraft.util.JsonHelper;
 
 import appeng.api.features.InscriberProcessType;
-import appeng.core.AppEng;
 
-public class InscriberRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>>
-        implements RecipeSerializer<InscriberRecipe> {
+public class InscriberRecipeSerializer implements RecipeSerializer<InscriberRecipe> {
 
     public static final InscriberRecipeSerializer INSTANCE = new InscriberRecipeSerializer();
-
-    static {
-        INSTANCE.setRegistryName(AppEng.MOD_ID, "inscriber");
-    }
 
     private InscriberRecipeSerializer() {
     }
 
     private static InscriberProcessType getMode(JsonObject json) {
-        String mode = JSONUtils.getString(json, "mode", "inscribe");
+        String mode = JsonHelper.getString(json, "mode", "inscribe");
         switch (mode) {
             case "inscribe":
                 return InscriberProcessType.INSCRIBE;
@@ -46,19 +39,19 @@ public class InscriberRecipeSerializer extends ForgeRegistryEntry<RecipeSerializ
 
         InscriberProcessType mode = getMode(json);
 
-        String group = JSONUtils.getString(json, "group", "");
-        ItemStack result = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, "result"));
+        String group = JsonHelper.getString(json, "group", "");
+        ItemStack result = ShapedRecipe.getItemStack(JsonHelper.getObject(json, "result"));
 
         // Deserialize the three parts of the input
-        JsonObject ingredients = JSONUtils.getJsonObject(json, "ingredients");
-        Ingredient middle = Ingredient.deserialize(ingredients.get("middle"));
+        JsonObject ingredients = JsonHelper.getObject(json, "ingredients");
+        Ingredient middle = Ingredient.fromJson(ingredients.get("middle"));
         Ingredient top = Ingredient.EMPTY;
         if (ingredients.has("top")) {
-            top = Ingredient.deserialize(ingredients.get("top"));
+            top = Ingredient.fromJson(ingredients.get("top"));
         }
         Ingredient bottom = Ingredient.EMPTY;
         if (ingredients.has("bottom")) {
-            bottom = Ingredient.deserialize(ingredients.get("bottom"));
+            bottom = Ingredient.fromJson(ingredients.get("bottom"));
         }
 
         return new InscriberRecipe(recipeId, group, middle, result, top, bottom, mode);
@@ -68,11 +61,11 @@ public class InscriberRecipeSerializer extends ForgeRegistryEntry<RecipeSerializ
     @Override
     public InscriberRecipe read(Identifier recipeId, PacketByteBuf buffer) {
         String group = buffer.readString();
-        Ingredient middle = Ingredient.read(buffer);
+        Ingredient middle = Ingredient.fromPacket(buffer);
         ItemStack result = buffer.readItemStack();
-        Ingredient top = Ingredient.read(buffer);
-        Ingredient bottom = Ingredient.read(buffer);
-        InscriberProcessType mode = buffer.readEnumValue(InscriberProcessType.class);
+        Ingredient top = Ingredient.fromPacket(buffer);
+        Ingredient bottom = Ingredient.fromPacket(buffer);
+        InscriberProcessType mode = buffer.readEnumConstant(InscriberProcessType.class);
 
         return new InscriberRecipe(recipeId, group, middle, result, top, bottom, mode);
     }
@@ -81,10 +74,10 @@ public class InscriberRecipeSerializer extends ForgeRegistryEntry<RecipeSerializ
     public void write(PacketByteBuf buffer, InscriberRecipe recipe) {
         buffer.writeString(recipe.getGroup());
         recipe.getMiddleInput().write(buffer);
-        buffer.writeItemStack(recipe.getRecipeOutput());
+        buffer.writeItemStack(recipe.getOutput());
         recipe.getTopOptional().write(buffer);
         recipe.getBottomOptional().write(buffer);
-        buffer.writeEnumValue(recipe.getProcessType());
+        buffer.writeEnumConstant(recipe.getProcessType());
     }
 
 }

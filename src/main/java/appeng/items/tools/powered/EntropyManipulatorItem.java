@@ -204,7 +204,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     // Overridden to allow use of the item on WATER and LAVA which are otherwise not
     // considered for onItemUse
     @Override
-    public TypedActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
+    public TypedActionResult<ItemStack> use(final World w, final PlayerEntity p, final Hand hand) {
         final HitResult target = rayTrace(w, p, RayTraceContext.FluidHandling.ANY);
 
         if (target.getType() != HitResult.Type.BLOCK) {

@@ -50,10 +50,10 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
     }
 
     @Override
-    public TypedActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
+    public TypedActionResult<ItemStack> use(final World w, final PlayerEntity p, final Hand hand) {
         if (p.isInSneakingPose()) {
             this.encode(p.getStackInHand(hand), p);
-            p.swingArm(hand);
+            p.swingHand(hand);
             return TypedActionResult.resultSuccess(p.getStackInHand(hand));
         }
 
@@ -68,7 +68,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
                 is = player.getStackInHand(hand);
             }
             this.encode(is, (PlayerEntity) target);
-            player.swingArm(hand);
+            player.swingHand(hand);
             return true;
         }
         return false;

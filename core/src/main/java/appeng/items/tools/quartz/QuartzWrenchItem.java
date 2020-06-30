@@ -18,6 +18,7 @@
 
 package appeng.items.tools.quartz;
 
+import appeng.hooks.AEToolItem;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -32,7 +33,7 @@ import appeng.block.AEBaseBlock;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 
-public class QuartzWrenchItem extends AEBaseItem implements IAEWrench {
+public class QuartzWrenchItem extends AEBaseItem implements IAEWrench, AEToolItem {
 
     public QuartzWrenchItem(Item.Settings props) {
         super(props);
@@ -52,8 +53,8 @@ public class QuartzWrenchItem extends AEBaseItem implements IAEWrench {
                 }
 
                 AEBaseBlock aeBlock = (AEBaseBlock) block;
-                if (aeBlock.rotateAroundFaceAxis(context.getWorld(), context.getBlockPos(), context.getFace())) {
-                    context.getPlayer().swingArm(context.getHand());
+                if (aeBlock.rotateAroundFaceAxis(context.getWorld(), context.getBlockPos(), context.getSide())) {
+                    context.getPlayer().swingHand(context.getHand());
                     return !context.getWorld().isClient ? ActionResult.SUCCESS : ActionResult.FAIL;
                 }
             }

@@ -13,40 +13,33 @@ import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.item.crafting.ShapedRecipe;
+import net.minecraft.recipe.ShapedRecipe;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.JSONUtils;
-import net.minecraftforge.registries.ForgeRegistryEntry;
+import net.minecraft.util.JsonHelper;
 
 import appeng.core.AEConfig;
-import appeng.core.AppEng;
 
-public class GrinderRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>>
-        implements RecipeSerializer<GrinderRecipe> {
+public class GrinderRecipeSerializer implements RecipeSerializer<GrinderRecipe> {
 
     public static final GrinderRecipeSerializer INSTANCE = new GrinderRecipeSerializer();
-
-    static {
-        INSTANCE.setRegistryName(AppEng.MOD_ID, "grinder");
-    }
 
     private GrinderRecipeSerializer() {
     }
 
     @Override
     public GrinderRecipe read(Identifier recipeId, JsonObject json) {
-        String group = JSONUtils.getString(json, "group", "");
-        JsonObject inputObj = JSONUtils.getJsonObject(json, "input");
-        Ingredient ingredient = Ingredient.deserialize(inputObj);
+        String group = JsonHelper.getString(json, "group", "");
+        JsonObject inputObj = JsonHelper.getObject(json, "input");
+        Ingredient ingredient = Ingredient.fromJson(inputObj);
         int ingredientCount = 1;
         if (inputObj.has("count")) {
             ingredientCount = inputObj.get("count").getAsInt();
         }
 
-        JsonObject result = JSONUtils.getJsonObject(json, "result");
-        ItemStack primaryResult = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(result, "primary"));
-        JsonArray optionalResultsJson = JSONUtils.getJsonArray(result, "optional", null);
+        JsonObject result = JsonHelper.getObject(json, "result");
+        ItemStack primaryResult = ShapedRecipe.getItemStack(JsonHelper.getObject(result, "primary"));
+        JsonArray optionalResultsJson = JsonHelper.getArray(result, "optional", null);
         List<GrinderOptionalResult> optionalResults = Collections.emptyList();
         if (optionalResultsJson != null) {
             optionalResults = new ArrayList<>(optionalResultsJson.size());
@@ -54,14 +47,14 @@ public class GrinderRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer
                 if (!optionalResultJson.isJsonObject()) {
                     throw new IllegalStateException("Entry in optional result list should be an object.");
                 }
-                ItemStack optionalResultItem = ShapedRecipe.deserializeItem(optionalResultJson.getAsJsonObject());
-                float optionalChance = JSONUtils.getFloat(optionalResultJson.getAsJsonObject(), "percentageChance",
+                ItemStack optionalResultItem = ShapedRecipe.getItemStack(optionalResultJson.getAsJsonObject());
+                float optionalChance = JsonHelper.getFloat(optionalResultJson.getAsJsonObject(), "percentageChance",
                         AEConfig.instance().getOreDoublePercentage()) / 100.0f;
                 optionalResults.add(new GrinderOptionalResult(optionalChance, optionalResultItem));
             }
         }
 
-        int turns = JSONUtils.getInt(json, "turns", 8);
+        int turns = JsonHelper.getInt(json, "turns", 8);
 
         return new GrinderRecipe(recipeId, group, ingredient, ingredientCount, primaryResult, turns, optionalResults);
     }
@@ -71,7 +64,7 @@ public class GrinderRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer
     public GrinderRecipe read(Identifier recipeId, PacketByteBuf buffer) {
 
         String group = buffer.readString();
-        Ingredient ingredient = Ingredient.read(buffer);
+        Ingredient ingredient = Ingredient.fromPacket(buffer);
         int ingredientCount = buffer.readVarInt();
         ItemStack result = buffer.readItemStack();
         int turns = buffer.readVarInt();
@@ -91,7 +84,7 @@ public class GrinderRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer
         buffer.writeString(recipe.getGroup());
         recipe.getIngredient().write(buffer);
         buffer.writeVarInt(recipe.getIngredientCount());
-        buffer.writeItemStack(recipe.getRecipeOutput());
+        buffer.writeItemStack(recipe.getOutput());
         buffer.writeVarInt(recipe.getTurns());
         List<GrinderOptionalResult> optionalResults = recipe.getOptionalResults();
         buffer.writeVarInt(optionalResults.size());

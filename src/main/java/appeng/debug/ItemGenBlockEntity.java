@@ -62,7 +62,7 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
                             continue;
                         }
 
-                        final DefaultedList<ItemStack> list = DefaultedList.create();
+                        final DefaultedList<ItemStack> list = DefaultedList.of();
                         mi.appendStacks(mi.getGroup(), list);
                         POSSIBLE_ITEMS.addAll(list);
                     }

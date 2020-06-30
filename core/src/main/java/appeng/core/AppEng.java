@@ -96,7 +96,6 @@ public interface AppEng {
 //        modEventBus.addGenericListener(ParticleType.class, registration::registerParticleTypes);
 //        modEventBus.addGenericListener(BlockEntityType.class, registration::registerTileEntities);
 //        modEventBus.addGenericListener(ScreenHandlerType.class, registration::registerContainerTypes);
-//        modEventBus.addGenericListener(RecipeSerializer.class, registration::registerRecipeSerializers);
 //        modEventBus.addGenericListener(Feature.class, registration::registerWorldGen);
 //        modEventBus.addGenericListener(Biome.class, registration::registerBiomes);
 //        modEventBus.addGenericListener(ModDimension.class, registration::registerModDimension);

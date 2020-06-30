@@ -113,7 +113,7 @@ public class UpgradeableContainer extends AEBaseContainer implements IOptionalSl
 
         final Inventory pi = this.getPlayerInv();
         for (int x = 0; x < pi.size(); x++) {
-            final ItemStack pii = pi.getStackInSlot(x);
+            final ItemStack pii = pi.getStack(x);
             if (!pii.isEmpty() && pii.getItem() instanceof NetworkToolItem) {
                 this.lockPlayerInventorySlot(x);
                 this.tbSlot = x;

@@ -173,14 +173,14 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
     }
 
     @Override
-    public TypedActionResult<ItemStack> onItemRightClick(World w, PlayerEntity player, Hand hand) {
+    public TypedActionResult<ItemStack> use(World w, PlayerEntity player, Hand hand) {
         if (player.isInSneakingPose()) {
             if (!w.isClient) {
                 this.clearCard(player, w, hand);
             }
         }
 
-        return super.onItemRightClick(w, player, hand);
+        return super.use(w, player, hand);
     }
 
     @Override

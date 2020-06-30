@@ -56,11 +56,11 @@ public final class FacadeRecipe extends SpecialRecipe {
 
     @Nonnull
     private ItemStack getOutput(final Inventory inv, final boolean createFacade) {
-        if (inv.getStackInSlot(0).isEmpty() && inv.getStackInSlot(2).isEmpty() && inv.getStackInSlot(6).isEmpty()
-                && inv.getStackInSlot(8).isEmpty()) {
-            if (this.anchor.isSameAs(inv.getStackInSlot(1)) && this.anchor.isSameAs(inv.getStackInSlot(3))
-                    && this.anchor.isSameAs(inv.getStackInSlot(5)) && this.anchor.isSameAs(inv.getStackInSlot(7))) {
-                final ItemStack facades = this.facade.createFacadeForItem(inv.getStackInSlot(4), !createFacade);
+        if (inv.getStack(0).isEmpty() && inv.getStack(2).isEmpty() && inv.getStack(6).isEmpty()
+                && inv.getStack(8).isEmpty()) {
+            if (this.anchor.isSameAs(inv.getStack(1)) && this.anchor.isSameAs(inv.getStack(3))
+                    && this.anchor.isSameAs(inv.getStack(5)) && this.anchor.isSameAs(inv.getStack(7))) {
+                final ItemStack facades = this.facade.createFacadeForItem(inv.getStack(4), !createFacade);
                 if (!facades.isEmpty() && createFacade) {
                     facades.setCount(4);
                 }

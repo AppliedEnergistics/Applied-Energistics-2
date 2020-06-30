@@ -72,7 +72,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
     }
 
     @Override
-    public TypedActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity p, final Hand hand) {
+    public TypedActionResult<ItemStack> use(final World w, final PlayerEntity p, final Hand hand) {
         if (Platform.isClient()) {
             final HitResult mop = AppEng.proxy.getRTR();
 
@@ -133,7 +133,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
             if (!(te instanceof IGridHost)) {
                 if (bs.rotate(w, pos, Rotation.CLOCKWISE_90) != bs) {
                     bs.neighborUpdate(w, pos, Blocks.AIR, pos, false);
-                    p.swingArm(hand);
+                    p.swingHand(hand);
                     return !w.isClient;
                 }
             }

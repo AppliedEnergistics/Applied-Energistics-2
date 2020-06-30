@@ -127,7 +127,7 @@ public class GrinderBlockEntity extends AEBaseInvBlockEntity implements ICrankab
             this.points = 0;
             final InventoryAdaptor sia = new AdaptorFixedInv(new RangedWrapper(this.inv, 3, 6));
 
-            this.addItem(sia, r.getRecipeOutput());
+            this.addItem(sia, r.getOutput());
 
             for (GrinderOptionalResult optionalResult : r.getOptionalResults()) {
                 final float chance = (Platform.getRandomInt() % 2000) / 2000.0f;

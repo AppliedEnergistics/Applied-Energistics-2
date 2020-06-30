@@ -93,6 +93,8 @@ public class SpawnEntityPacket extends BasePacket {
 
         if (entity != null) {
             entity.updateTrackedPosition(x, y, z);
+            // NOTE: Vanilla doesn't do this for all spawned entities, but why transfer the velocity???
+            entity.setVelocityClient(velocityX, velocityY, velocityZ);
             entity.refreshPositionAfterTeleport(x, y, z);
             entity.pitch = (float)(pitch * 360) / 256.0F;
             entity.yaw = (float)(yaw * 360) / 256.0F;

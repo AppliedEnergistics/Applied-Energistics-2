@@ -14,8 +14,12 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.network.TargetPoint;
 import appeng.hooks.ToolItemHook;
 import appeng.mixins.CriteriaRegisterMixin;
+import appeng.recipes.handlers.*;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.RecipeType;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
@@ -42,6 +46,8 @@ public abstract class AppEngBase implements AppEng {
         registerTileEntities();
 
         registerParticleTypes();
+        registerRecipeTypes();
+        registerRecipeSerializers();
 
         setupInternalRegistries();
 
@@ -80,10 +86,30 @@ public abstract class AppEngBase implements AppEng {
         Registry.register(Registry.PARTICLE_TYPE, AppEng.makeId("vibrant_fx"), ParticleTypes.VIBRANT);
     }
 
-    public void registerTileEntities() {
+    private void registerTileEntities() {
         final ApiDefinitions definitions = Api.INSTANCE.definitions();
         definitions.getRegistry().getBootstrapComponents(ITileEntityRegistrationComponent.class)
                 .forEachRemaining(ITileEntityRegistrationComponent::register);
+    }
+
+    private static <T extends Recipe<?>> RecipeType<T> registerRecipeType(String id) {
+        Identifier fullId = AppEng.makeId(id);
+        return Registry.register(Registry.RECIPE_TYPE, fullId, new AERecipeType<>(fullId));
+    }
+
+    private void registerRecipeTypes() {
+        GrinderRecipe.TYPE = registerRecipeType("grinder");
+        InscriberRecipe.TYPE = registerRecipeType("inscriber");
+    }
+
+    private void registerRecipeSerializers() {
+        Registry.register(Registry.RECIPE_SERIALIZER, AppEng.makeId("quartz_knife"), QuartzKnifeRecipeSerializer.INSTANCE);
+        Registry.register(Registry.RECIPE_SERIALIZER, AppEng.makeId("grinder"), GrinderRecipeSerializer.INSTANCE);
+        Registry.register(Registry.RECIPE_SERIALIZER, AppEng.makeId("inscriber"), InscriberRecipeSerializer.INSTANCE);
+
+        // FIXME FABRIC FacadeItem facadeItem = (FacadeItem) Api.INSTANCE.definitions().items().facade().item();
+        // FIXME FABRIC r.registerAll(DisassembleRecipe.SERIALIZER,
+        // FIXME FABRIC         FacadeRecipe.getSerializer(facadeItem));
     }
 
     @Override

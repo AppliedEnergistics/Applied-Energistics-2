@@ -46,12 +46,12 @@ public class InscriberRecipe implements Recipe<Inventory> {
     }
 
     @Override
-    public boolean canFit(int width, int height) {
+    public boolean fits(int width, int height) {
         return true;
     }
 
     @Override
-    public ItemStack getRecipeOutput() {
+    public ItemStack getOutput() {
         return output;
     }
 
@@ -71,8 +71,8 @@ public class InscriberRecipe implements Recipe<Inventory> {
     }
 
     @Override
-    public DefaultedList<Ingredient> getIngredients() {
-        DefaultedList<Ingredient> nonnulllist = DefaultedList.create();
+    public DefaultedList<Ingredient> getPreviewInputs() {
+        DefaultedList<Ingredient> nonnulllist = DefaultedList.of();
         nonnulllist.add(this.topOptional);
         nonnulllist.add(this.middleInput);
         nonnulllist.add(this.bottomOptional);
@@ -81,10 +81,6 @@ public class InscriberRecipe implements Recipe<Inventory> {
 
     public Ingredient getMiddleInput() {
         return middleInput;
-    }
-
-    public ItemStack getOutput() {
-        return output;
     }
 
     public Ingredient getTopOptional() {

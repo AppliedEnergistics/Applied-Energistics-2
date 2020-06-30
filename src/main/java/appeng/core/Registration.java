@@ -277,17 +277,6 @@ final class Registration {
         return type;
     }
 
-    public void registerRecipeSerializers(RegistryEvent.Register<RecipeSerializer<?>> event) {
-        IForgeRegistry<RecipeSerializer<?>> r = event.getRegistry();
-
-        GrinderRecipe.TYPE = new AERecipeType<>(GrinderRecipeSerializer.INSTANCE.getRegistryName());
-        InscriberRecipe.TYPE = new AERecipeType<>(InscriberRecipeSerializer.INSTANCE.getRegistryName());
-
-        FacadeItem facadeItem = (FacadeItem) Api.INSTANCE.definitions().items().facade().item();
-        r.registerAll(DisassembleRecipe.SERIALIZER, GrinderRecipeSerializer.INSTANCE,
-                InscriberRecipeSerializer.INSTANCE, FacadeRecipe.getSerializer(facadeItem));
-    }
-
     // FIXME LATER
     public static void postInit() {
         final IRegistryContainer registries = AEApi.instance().registries();

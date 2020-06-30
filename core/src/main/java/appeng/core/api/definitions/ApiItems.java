@@ -20,11 +20,14 @@ package appeng.core.api.definitions;
 
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IItems;
+import appeng.api.features.AEFeature;
 import appeng.api.util.AEColoredItemDefinition;
 import appeng.bootstrap.FeatureFactory;
 import appeng.bootstrap.IItemRendering;
 import appeng.bootstrap.ItemRenderingCustomizer;
 import appeng.fluids.items.FluidDummyItem;
+import appeng.items.tools.quartz.*;
+import net.minecraft.item.ItemGroup;
 
 /**
  * Internal implementation for the API items
@@ -93,57 +96,57 @@ public final class ApiItems implements IItems {
     private IItemDefinition dummyFluidItem;
 
     public ApiItems(FeatureFactory registry, ApiMaterials materials) {
-//        FeatureFactory certusTools = registry.features(AEFeature.CERTUS_QUARTZ_TOOLS);
-//        this.certusQuartzAxe = certusTools
-//                .item("certus_quartz_axe", props -> new QuartzAxeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
-//                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_AXE).build();
-//        this.certusQuartzHoe = certusTools
-//                .item("certus_quartz_hoe", props -> new QuartzHoeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
-//                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_HOE).build();
-//        this.certusQuartzShovel = certusTools
-//                .item("certus_quartz_shovel", props -> new QuartzSpadeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
-//                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_SPADE).build();
-//        this.certusQuartzPick = certusTools
-//                .item("certus_quartz_pickaxe", props -> new QuartzPickaxeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
-//                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_PICKAXE).build();
-//        this.certusQuartzSword = certusTools
-//                .item("certus_quartz_sword", props -> new QuartzSwordItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
-//                .itemGroup(ItemGroup.COMBAT).addFeatures(AEFeature.QUARTZ_SWORD).build();
-//        this.certusQuartzWrench = certusTools.item("certus_quartz_wrench", QuartzWrenchItem::new)
-//                .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1)).addFeatures(AEFeature.QUARTZ_WRENCH)
-//                .build();
-//        this.certusQuartzKnife = certusTools
-//                .item("certus_quartz_cutting_knife",
-//                        props -> new QuartzCuttingKnifeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
-//                .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1).maxDamage(50).setNoRepair())
-//                .addFeatures(AEFeature.QUARTZ_KNIFE).build();
-//
-//        FeatureFactory netherTools = registry.features(AEFeature.NETHER_QUARTZ_TOOLS);
-//        this.netherQuartzAxe = netherTools
-//                .item("nether_quartz_axe", props -> new QuartzAxeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
-//                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_AXE).build();
-//        this.netherQuartzHoe = netherTools
-//                .item("nether_quartz_hoe", props -> new QuartzHoeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
-//                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_HOE).build();
-//        this.netherQuartzShovel = netherTools
-//                .item("nether_quartz_shovel", props -> new QuartzSpadeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
-//                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_SPADE).build();
-//        this.netherQuartzPick = netherTools
-//                .item("nether_quartz_pickaxe", props -> new QuartzPickaxeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
-//                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_PICKAXE).build();
-//        this.netherQuartzSword = netherTools
-//                .item("nether_quartz_sword", props -> new QuartzSwordItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
-//                .itemGroup(ItemGroup.COMBAT).addFeatures(AEFeature.QUARTZ_SWORD).build();
-//        this.netherQuartzWrench = netherTools.item("nether_quartz_wrench", QuartzWrenchItem::new)
-//                .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1)).addFeatures(AEFeature.QUARTZ_WRENCH)
-//                .build();
-//        this.netherQuartzKnife = netherTools
-//                .item("nether_quartz_cutting_knife",
-//                        props -> new QuartzCuttingKnifeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
-//                .itemGroup(ItemGroup.TOOLS).props(props -> props.maxStackSize(1).maxDamage(50).setNoRepair())
-//                .addFeatures(AEFeature.QUARTZ_KNIFE).build();
-//
-//        Consumer<Item.Settings> chargedDefaults = props -> props.maxStackSize(1).maxDamage(32).setNoRepair();
+        FeatureFactory certusTools = registry.features(AEFeature.CERTUS_QUARTZ_TOOLS);
+        this.certusQuartzAxe = certusTools
+                .item("certus_quartz_axe", props -> new QuartzAxeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
+                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_AXE).build();
+        this.certusQuartzHoe = certusTools
+                .item("certus_quartz_hoe", props -> new QuartzHoeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
+                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_HOE).build();
+        this.certusQuartzShovel = certusTools
+                .item("certus_quartz_shovel", props -> new QuartzSpadeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
+                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_SPADE).build();
+        this.certusQuartzPick = certusTools
+                .item("certus_quartz_pickaxe", props -> new QuartzPickaxeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
+                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_PICKAXE).build();
+        this.certusQuartzSword = certusTools
+                .item("certus_quartz_sword", props -> new QuartzSwordItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
+                .itemGroup(ItemGroup.COMBAT).addFeatures(AEFeature.QUARTZ_SWORD).build();
+        this.certusQuartzWrench = certusTools.item("certus_quartz_wrench", QuartzWrenchItem::new)
+                .itemGroup(ItemGroup.TOOLS).props(props -> props.maxCount(1)).addFeatures(AEFeature.QUARTZ_WRENCH)
+                .build();
+        this.certusQuartzKnife = certusTools
+                .item("certus_quartz_cutting_knife",
+                        props -> new QuartzCuttingKnifeItem(props, AEFeature.CERTUS_QUARTZ_TOOLS))
+                .itemGroup(ItemGroup.TOOLS).props(props -> props.maxCount(1).maxDamage(50))
+                .addFeatures(AEFeature.QUARTZ_KNIFE).build();
+
+        FeatureFactory netherTools = registry.features(AEFeature.NETHER_QUARTZ_TOOLS);
+        this.netherQuartzAxe = netherTools
+                .item("nether_quartz_axe", props -> new QuartzAxeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
+                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_AXE).build();
+        this.netherQuartzHoe = netherTools
+                .item("nether_quartz_hoe", props -> new QuartzHoeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
+                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_HOE).build();
+        this.netherQuartzShovel = netherTools
+                .item("nether_quartz_shovel", props -> new QuartzSpadeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
+                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_SPADE).build();
+        this.netherQuartzPick = netherTools
+                .item("nether_quartz_pickaxe", props -> new QuartzPickaxeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
+                .itemGroup(ItemGroup.TOOLS).addFeatures(AEFeature.QUARTZ_PICKAXE).build();
+        this.netherQuartzSword = netherTools
+                .item("nether_quartz_sword", props -> new QuartzSwordItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
+                .itemGroup(ItemGroup.COMBAT).addFeatures(AEFeature.QUARTZ_SWORD).build();
+        this.netherQuartzWrench = netherTools.item("nether_quartz_wrench", QuartzWrenchItem::new)
+                .itemGroup(ItemGroup.TOOLS).props(props -> props.maxCount(1)).addFeatures(AEFeature.QUARTZ_WRENCH)
+                .build();
+        this.netherQuartzKnife = netherTools
+                .item("nether_quartz_cutting_knife",
+                        props -> new QuartzCuttingKnifeItem(props, AEFeature.NETHER_QUARTZ_TOOLS))
+                .itemGroup(ItemGroup.TOOLS).props(props -> props.maxCount(1).maxDamage(50))
+                .addFeatures(AEFeature.QUARTZ_KNIFE).build();
+
+//        Consumer<Item.Settings> chargedDefaults = props -> props.maxCount(1).maxDamage(32).setNoRepair();
 //
 //        FeatureFactory powerTools = registry.features(AEFeature.POWERED_TOOLS);
 //        this.entropyManipulator = powerTools.item("entropy_manipulator", EntropyManipulatorItem::new)
@@ -162,19 +165,19 @@ public final class ApiItems implements IItems {
 //                .rendering(new ColorApplicatorItemRendering()).build();
 //
 //        this.biometricCard = registry.item("biometric_card", BiometricCardItem::new)
-//                .props(props -> props.maxStackSize(1)).features(AEFeature.SECURITY).build();
-//        this.memoryCard = registry.item("memory_card", MemoryCardItem::new).props(props -> props.maxStackSize(1))
+//                .props(props -> props.maxCount(1)).features(AEFeature.SECURITY).build();
+//        this.memoryCard = registry.item("memory_card", MemoryCardItem::new).props(props -> props.maxCount(1))
 //                .features(AEFeature.MEMORY_CARD).build();
 //        this.networkTool = registry.item("network_tool", NetworkToolItem::new)
-//                .props(props -> props.maxStackSize(1).addToolType(FabricToolTags.get("wrench"), 0))
+//                .props(props -> props.maxCount(1).addToolType(FabricToolTags.get("wrench"), 0))
 //                .features(AEFeature.NETWORK_TOOL).build();
 //
 //        this.cellCreative = registry.item("creative_storage_cell", CreativeStorageCellItem::new)
-//                .props(props -> props.maxStackSize(1)).features(AEFeature.STORAGE_CELLS, AEFeature.CREATIVE).build();
-//        this.viewCell = registry.item("view_cell", ViewCellItem::new).props(props -> props.maxStackSize(1))
+//                .props(props -> props.maxCount(1)).features(AEFeature.STORAGE_CELLS, AEFeature.CREATIVE).build();
+//        this.viewCell = registry.item("view_cell", ViewCellItem::new).props(props -> props.maxCount(1))
 //                .features(AEFeature.VIEW_CELL).build();
 //
-//        Consumer<Item.Settings> storageCellProps = p -> p.maxStackSize(1);
+//        Consumer<Item.Settings> storageCellProps = p -> p.maxCount(1);
 //
 //        FeatureFactory storageCells = registry.features(AEFeature.STORAGE_CELLS);
 //        this.cell1k = storageCells
@@ -243,7 +246,7 @@ public final class ApiItems implements IItems {
 //
 //        // rv1
 //        this.encodedPattern = registry.item("encoded_pattern", EncodedPatternItem::new)
-//                .props(props -> props.maxStackSize(1)).features(AEFeature.PATTERNS).build();
+//                .props(props -> props.maxCount(1)).features(AEFeature.PATTERNS).build();
 //
 //        this.coloredPaintBall = createPaintBalls(registry, "_paint_ball", false);
 //        this.coloredLumenPaintBall = createPaintBalls(registry, "_lumen_paint_ball", true);
