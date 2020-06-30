@@ -8,9 +8,13 @@ import appeng.client.render.effects.*;
 import appeng.client.render.tesr.SkyChestTESR;
 import appeng.core.Api;
 import appeng.core.ApiDefinitions;
+import appeng.core.AppEng;
 import appeng.core.AppEngBase;
 import appeng.core.sync.network.ClientNetworkHandler;
 import appeng.entity.*;
+import appeng.hooks.ClientTickHandler;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
@@ -34,17 +38,25 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Environment(EnvType.CLIENT)
 public final class AppEngClient extends AppEngBase {
 
     private final MinecraftClient client;
 
     private final ClientNetworkHandler networkHandler;
 
+    private final ClientTickHandler tickHandler;
+
+    public static AppEngClient instance() {
+        return (AppEngClient) AppEng.instance();
+    }
+
     public AppEngClient() {
         super();
 
         client = MinecraftClient.getInstance();
         networkHandler = new ClientNetworkHandler();
+        tickHandler = new ClientTickHandler();
 
         ModelsReloadCallback.EVENT.register(this::onModelsReloaded);
 
@@ -94,9 +106,21 @@ public final class AppEngClient extends AppEngBase {
         return null;
     }
 
-    @Override
     public void triggerUpdates() {
+        if (client.player == null || client.world == null) {
+            return;
+        }
 
+        final PlayerEntity player = client.player;
+
+        final int x = (int) player.getX();
+        final int y = (int) player.getY();
+        final int z = (int) player.getZ();
+
+        final int range = 16 * 16;
+
+        client.worldRenderer.scheduleBlockRenders(x - range, y - range, z - range, x + range, y + range,
+                z + range);
     }
 
     @Override

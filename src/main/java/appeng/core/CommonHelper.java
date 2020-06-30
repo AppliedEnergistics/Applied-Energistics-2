@@ -56,8 +56,6 @@ public abstract class CommonHelper {
 
     public abstract CableRenderMode getRenderMode();
 
-    public abstract void triggerUpdates();
-
     public abstract void updateRenderMode(PlayerEntity player);
 
     public abstract boolean isActionKey(@Nonnull final ActionKey key, InputUtil.Key input);

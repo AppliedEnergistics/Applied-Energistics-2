@@ -6,6 +6,7 @@ import appeng.client.ActionKey;
 import appeng.client.EffectType;
 import appeng.core.AppEngBase;
 import appeng.core.sync.network.ServerNetworkHandler;
+import appeng.hooks.TickHandler;
 import net.fabricmc.fabric.api.server.PlayerStream;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.util.InputUtil;
@@ -25,9 +26,12 @@ public final class AppEngServer extends AppEngBase {
 
     private final ServerNetworkHandler networkHandler;
 
+    private final TickHandler tickHandler;
+
     public AppEngServer(MinecraftServer server) {
         this.server = server;
         this.networkHandler = new ServerNetworkHandler();
+        this.tickHandler = new TickHandler();
     }
 
     @Override
@@ -58,11 +62,6 @@ public final class AppEngServer extends AppEngBase {
     @Override
     public CableRenderMode getRenderMode() {
         return null;
-    }
-
-    @Override
-    public void triggerUpdates() {
-
     }
 
     @Override

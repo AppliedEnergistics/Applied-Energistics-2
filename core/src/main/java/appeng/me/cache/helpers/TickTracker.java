@@ -20,6 +20,7 @@ package appeng.me.cache.helpers;
 
 import javax.annotation.Nonnull;
 
+import appeng.api.parts.IPart;
 import net.minecraft.util.crash.CrashReportSection;
 
 import appeng.api.networking.IGridNode;
@@ -27,8 +28,6 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.DimensionalCoord;
 import appeng.me.cache.TickManagerCache;
-import appeng.parts.AEBasePart;
-import net.minecraft.util.crash.CrashReportSection;
 
 public class TickTracker implements Comparable<TickTracker> {
 
@@ -73,8 +72,8 @@ public class TickTracker implements Comparable<TickTracker> {
     }
 
     public void addEntityCrashInfo(final CrashReportSection section) {
-        if (this.getGridTickable() instanceof AEBasePart) {
-            final AEBasePart part = (AEBasePart) this.getGridTickable();
+        if (this.getGridTickable() instanceof IPart) {
+            final IPart part = (IPart) this.getGridTickable();
             part.addEntityCrashInfo(section);
         }
 

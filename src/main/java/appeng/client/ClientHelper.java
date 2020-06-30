@@ -134,24 +134,6 @@ public class ClientHelper extends ServerHelper {
         return this.renderModeForPlayer(player);
     }
 
-    @Override
-    public void triggerUpdates() {
-        final MinecraftClient mc = MinecraftClient.getInstance();
-        if (mc.player == null || mc.world == null) {
-            return;
-        }
-
-        final PlayerEntity player = mc.player;
-
-        final int x = (int) player.getX();
-        final int y = (int) player.getY();
-        final int z = (int) player.getZ();
-
-        final int range = 16 * 16;
-
-        mc.worldRenderer.markBlockRangeForRenderUpdate(x - range, y - range, z - range, x + range, y + range,
-                z + range);
-    }
 
     private void postPlayerRender(final RenderLivingEvent.Pre p) {
 //	FIXME	final PlayerColor player = TickHandler.INSTANCE.getPlayerColors().get( p.getEntity().getEntityId() );

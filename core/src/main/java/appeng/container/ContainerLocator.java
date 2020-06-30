@@ -18,23 +18,19 @@
 
 package appeng.container;
 
+import appeng.api.util.AEPartLocation;
 import com.google.common.base.Preconditions;
-
 import io.netty.handler.codec.DecoderException;
-
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-
-import appeng.api.parts.IPartHost;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
-import appeng.parts.AEBasePart;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
 
 /**
  * Describes how a container the player has opened was originally located. This
@@ -62,14 +58,18 @@ public final class ContainerLocator {
 
     private final Type type;
     private final int itemIndex;
-    private final int dimensionId;
+    private final Identifier worldId;
     private final BlockPos blockPos;
     private final AEPartLocation side;
 
-    private ContainerLocator(Type type, int itemIndex, int dimensionId, BlockPos blockPos, AEPartLocation side) {
+    private ContainerLocator(Type type, int itemIndex, World world, BlockPos blockPos, AEPartLocation side) {
+        this(type, itemIndex, world.getRegistryKey().getValue(), blockPos, side);
+    }
+
+    private ContainerLocator(Type type, int itemIndex, Identifier worldId, BlockPos blockPos, AEPartLocation side) {
         this.type = type;
         this.itemIndex = itemIndex;
-        this.dimensionId = dimensionId;
+        this.worldId = worldId;
         this.blockPos = blockPos;
         this.side = side;
     }
@@ -78,16 +78,14 @@ public final class ContainerLocator {
         if (te.getWorld() == null) {
             throw new IllegalArgumentException("Cannot open a block entity that is not in a world");
         }
-        int dimensionId = te.getWorld().getDimension().getType().getId();
-        return new ContainerLocator(Type.BLOCK, -1, dimensionId, te.getPos(), null);
+        return new ContainerLocator(Type.BLOCK, -1, te.getWorld(), te.getPos(), null);
     }
 
     public static ContainerLocator forTileEntitySide(BlockEntity te, Direction side) {
         if (te.getWorld() == null) {
             throw new IllegalArgumentException("Cannot open a block entity that is not in a world");
         }
-        int dimensionId = te.getWorld().getDimension().getType().getId();
-        return new ContainerLocator(Type.PART, -1, dimensionId, te.getPos(), AEPartLocation.fromFacing(side));
+        return new ContainerLocator(Type.PART, -1, te.getWorld(), te.getPos(), AEPartLocation.fromFacing(side));
     }
 
     /**
@@ -100,16 +98,15 @@ public final class ContainerLocator {
         if (player == null) {
             throw new IllegalArgumentException("Cannot open a container without a player");
         }
-        int dimensionId = player.world.getDimension().getType().getId();
         int slot = getPlayerInventorySlotFromHand(player, context.getHand());
-        AEPartLocation side = AEPartLocation.fromFacing(context.getFace());
-        return new ContainerLocator(Type.PLAYER_INVENTORY_WITH_BLOCK_CONTEXT, slot, dimensionId, context.getBlockPos(),
+        AEPartLocation side = AEPartLocation.fromFacing(context.getSide());
+        return new ContainerLocator(Type.PLAYER_INVENTORY_WITH_BLOCK_CONTEXT, slot, player.world, context.getBlockPos(),
                 side);
     }
 
     public static ContainerLocator forHand(PlayerEntity player, Hand hand) {
         int slot = getPlayerInventorySlotFromHand(player, hand);
-        return new ContainerLocator(Type.PLAYER_INVENTORY, slot, -1, null, null);
+        return new ContainerLocator(Type.PLAYER_INVENTORY, slot, (Identifier) null, null, null);
     }
 
     private static int getPlayerInventorySlotFromHand(PlayerEntity player, Hand hand) {
@@ -126,12 +123,12 @@ public final class ContainerLocator {
         throw new IllegalArgumentException("Could not find item held in hand " + hand + " in player inventory");
     }
 
-    public static ContainerLocator forPart(AEBasePart part) {
-        IPartHost host = part.getHost();
-        DimensionalCoord pos = host.getLocation();
-        return new ContainerLocator(Type.PART, -1, pos.getWorld().getDimension().getType().getId(), pos.getBlockPos(),
-                part.getSide());
-    }
+// FIXME FABRIC    public static ContainerLocator forPart(AEBasePart part) {
+// FIXME FABRIC        IPartHost host = part.getHost();
+// FIXME FABRIC        DimensionalCoord pos = host.getLocation();
+// FIXME FABRIC        return new ContainerLocator(Type.PART, -1, pos.getWorld().getDimension().getType().getId(), pos.getBlockPos(),
+// FIXME FABRIC                part.getSide());
+// FIXME FABRIC    }
 
     public boolean hasItemIndex() {
         return type == Type.PLAYER_INVENTORY || type == Type.PLAYER_INVENTORY_WITH_BLOCK_CONTEXT;
@@ -142,8 +139,8 @@ public final class ContainerLocator {
         return itemIndex;
     }
 
-    public int getDimensionId() {
-        return dimensionId;
+    public Identifier getWorldId() {
+        return worldId;
     }
 
     public boolean hasBlockPos() {
@@ -173,18 +170,18 @@ public final class ContainerLocator {
             case PLAYER_INVENTORY_WITH_BLOCK_CONTEXT:
                 buf.writeByte(1);
                 buf.writeInt(itemIndex);
-                buf.writeInt(dimensionId);
+                buf.writeIdentifier(worldId);
                 buf.writeBlockPos(blockPos);
                 buf.writeByte(side.ordinal());
                 break;
             case BLOCK:
                 buf.writeByte(2);
-                buf.writeInt(dimensionId);
+                buf.writeIdentifier(worldId);
                 buf.writeBlockPos(blockPos);
                 break;
             case PART:
                 buf.writeByte(3);
-                buf.writeInt(dimensionId);
+                buf.writeIdentifier(worldId);
                 buf.writeBlockPos(blockPos);
                 buf.writeByte(side.ordinal());
                 break;
@@ -197,14 +194,14 @@ public final class ContainerLocator {
         byte type = buf.readByte();
         switch (type) {
             case 0:
-                return new ContainerLocator(Type.PLAYER_INVENTORY, buf.readInt(), -1, null, null);
+                return new ContainerLocator(Type.PLAYER_INVENTORY, buf.readInt(), (Identifier) null, null, null);
             case 1:
-                return new ContainerLocator(Type.PLAYER_INVENTORY_WITH_BLOCK_CONTEXT, buf.readInt(), buf.readInt(),
+                return new ContainerLocator(Type.PLAYER_INVENTORY_WITH_BLOCK_CONTEXT, buf.readInt(), buf.readIdentifier(),
                         buf.readBlockPos(), AEPartLocation.values()[buf.readByte()]);
             case 2:
-                return new ContainerLocator(Type.BLOCK, -1, buf.readInt(), buf.readBlockPos(), null);
+                return new ContainerLocator(Type.BLOCK, -1, buf.readIdentifier(), buf.readBlockPos(), null);
             case 3:
-                return new ContainerLocator(Type.PART, -1, buf.readInt(), buf.readBlockPos(),
+                return new ContainerLocator(Type.PART, -1, buf.readIdentifier(), buf.readBlockPos(),
                         AEPartLocation.values()[buf.readByte()]);
             default:
                 throw new DecoderException("ContainerLocator type out of range: " + type);
@@ -219,7 +216,7 @@ public final class ContainerLocator {
             result.append("slot=").append(itemIndex).append(',');
         }
         if (hasBlockPos()) {
-            result.append("dim=").append(dimensionId).append(',');
+            result.append("dim=").append(worldId).append(',');
             result.append("pos=").append(blockPos).append(',');
         }
         if (hasSide()) {

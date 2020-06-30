@@ -18,43 +18,26 @@
 
 package appeng.hooks;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Queue;
-import java.util.Set;
-import java.util.WeakHashMap;
-import java.util.concurrent.TimeUnit;
-
-import com.google.common.base.Stopwatch;
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Multimap;
-
-import net.minecraft.world.WorldAccess;
-import net.minecraft.world.World;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.TickEvent.Phase;
-import net.minecraftforge.event.TickEvent.Type;
-import net.minecraftforge.event.TickEvent.WorldTickEvent;
-import net.minecraftforge.event.world.WorldEvent;
-
-import appeng.api.AEApi;
-import appeng.api.networking.IGridNode;
-import appeng.api.parts.CableRenderMode;
 import appeng.api.util.AEColor;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.core.AppEng;
 import appeng.core.sync.packets.PaintedEntityPacket;
 import appeng.crafting.CraftingJob;
 import appeng.me.Grid;
 import appeng.tile.AEBaseBlockEntity;
 import appeng.util.IWorldCallable;
 import appeng.util.Platform;
+import com.google.common.base.Stopwatch;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
+
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class TickHandler {
 
@@ -64,15 +47,18 @@ public class TickHandler {
     private final WeakHashMap<WorldAccess, Queue<IWorldCallable<?>>> callQueue = new WeakHashMap<>();
     private final HandlerRep server = new HandlerRep();
     private final HandlerRep client = new HandlerRep();
-    private final HashMap<Integer, PlayerColor> cliPlayerColors = new HashMap<>();
     private final HashMap<Integer, PlayerColor> srvPlayerColors = new HashMap<>();
-    private CableRenderMode crm = CableRenderMode.STANDARD;
+
+    public TickHandler() {
+        // Register for all the tick events we care about
+        ServerTickEvents.END_SERVER_TICK.register(this::onAfterServerTick);
+        ServerTickEvents.START_WORLD_TICK.register(this::onBeforeWorldTick);
+        ServerTickEvents.END_WORLD_TICK.register(this::onAfterWorldTick);
+
+    }
 
     public HashMap<Integer, PlayerColor> getPlayerColors() {
-        if (Platform.isServer()) {
-            return this.srvPlayerColors;
-        }
-        return this.cliPlayerColors;
+        return this.srvPlayerColors;
     }
 
     public void addCallable(final WorldAccess w, final IWorldCallable<?> c) {
@@ -126,86 +112,71 @@ public class TickHandler {
         this.getRepo().clear();
     }
 
-    public void unloadWorld(final WorldEvent.Unload ev) {
-        if (Platform.isServer()) // for no there is no reason to care about this on the client...
-        {
-            final List<IGridNode> toDestroy = new ArrayList<>();
+// FIXME FABRIC It does not look like worlds can ever unload in Fabric.
+// FIXME FABRIC    public void unloadWorld(final WorldEvent.Unload ev) {
+// FIXME FABRIC        if (Platform.isServer()) // for no there is no reason to care about this on the client...
+// FIXME FABRIC        {
+// FIXME FABRIC            final List<IGridNode> toDestroy = new ArrayList<>();
+// FIXME FABRIC
+// FIXME FABRIC            this.getRepo().updateNetworks();
+// FIXME FABRIC            for (final Grid g : this.getRepo().networks) {
+// FIXME FABRIC                for (final IGridNode n : g.getNodes()) {
+// FIXME FABRIC                    if (n.getWorld() == ev.getWorld()) {
+// FIXME FABRIC                        toDestroy.add(n);
+// FIXME FABRIC                    }
+// FIXME FABRIC                }
+// FIXME FABRIC            }
+// FIXME FABRIC
+// FIXME FABRIC            for (final IGridNode n : toDestroy) {
+// FIXME FABRIC                n.destroy();
+// FIXME FABRIC            }
+// FIXME FABRIC        }
+// FIXME FABRIC    }
 
-            this.getRepo().updateNetworks();
-            for (final Grid g : this.getRepo().networks) {
-                for (final IGridNode n : g.getNodes()) {
-                    if (n.getWorld() == ev.getWorld()) {
-                        toDestroy.add(n);
-                    }
-                }
-            }
-
-            for (final IGridNode n : toDestroy) {
-                n.destroy();
-            }
-        }
+    private void onBeforeWorldTick(ServerWorld world) {
+        final Queue<IWorldCallable<?>> queue = this.callQueue.get(world);
+        this.processQueue(queue, world);
     }
 
-    public void onTick(final TickEvent ev) {
-
-        if (ev.type == Type.CLIENT && ev.phase == Phase.START) {
-            this.tickColors(this.cliPlayerColors);
-            final CableRenderMode currentMode = AEApi.instance().partHelper().getCableRenderMode();
-            if (currentMode != this.crm) {
-                this.crm = currentMode;
-                AppEng.proxy.triggerUpdates();
-            }
-        }
-
-        if (ev.type == Type.WORLD && ev.phase == Phase.END) {
-            final WorldTickEvent wte = (WorldTickEvent) ev;
-            synchronized (this.craftingJobs) {
-                final Collection<CraftingJob> jobSet = this.craftingJobs.get(wte.world);
-                if (!jobSet.isEmpty()) {
-                    final int simTime = Math.max(1,
-                            AEConfig.instance().getCraftingCalculationTimePerTick() / jobSet.size());
-                    final Iterator<CraftingJob> i = jobSet.iterator();
-                    while (i.hasNext()) {
-                        final CraftingJob cj = i.next();
-                        if (!cj.simulateFor(simTime)) {
-                            i.remove();
-                        }
+    private void onAfterWorldTick(ServerWorld world) {
+        synchronized (this.craftingJobs) {
+            final Collection<CraftingJob> jobSet = this.craftingJobs.get(world);
+            if (!jobSet.isEmpty()) {
+                final int simTime = Math.max(1,
+                        AEConfig.instance().getCraftingCalculationTimePerTick() / jobSet.size());
+                final Iterator<CraftingJob> i = jobSet.iterator();
+                while (i.hasNext()) {
+                    final CraftingJob cj = i.next();
+                    if (!cj.simulateFor(simTime)) {
+                        i.remove();
                     }
                 }
             }
         }
-
-        // for no there is no reason to care about this on the client...
-        else if (ev.type == Type.SERVER && ev.phase == Phase.END) {
-            this.tickColors(this.srvPlayerColors);
-            // ready tiles.
-            final HandlerRep repo = this.getRepo();
-            while (!repo.tiles.isEmpty()) {
-                final AEBaseBlockEntity bt = repo.tiles.poll();
-                if (!bt.isRemoved()) {
-                    bt.onReady();
-                }
-            }
-
-            // tick networks.
-            this.getRepo().updateNetworks();
-            for (final Grid g : this.getRepo().networks) {
-                g.update();
-            }
-
-            // cross world queue.
-            this.processQueue(this.serverQueue, null);
-        }
-
-        // world synced queue(s)
-        if (ev.type == Type.WORLD && ev.phase == Phase.START) {
-            final World world = ((WorldTickEvent) ev).world;
-            final Queue<IWorldCallable<?>> queue = this.callQueue.get(world);
-            this.processQueue(queue, world);
-        }
     }
 
-    private void tickColors(final HashMap<Integer, PlayerColor> playerSet) {
+    private void onAfterServerTick(MinecraftServer server) {
+        this.tickColors(this.srvPlayerColors);
+        // ready tiles.
+        final HandlerRep repo = this.getRepo();
+        while (!repo.tiles.isEmpty()) {
+            final AEBaseBlockEntity bt = repo.tiles.poll();
+            if (!bt.isRemoved()) {
+                bt.onReady();
+            }
+        }
+
+        // tick networks.
+        this.getRepo().updateNetworks();
+        for (final Grid g : this.getRepo().networks) {
+            g.update();
+        }
+
+        // cross world queue.
+        this.processQueue(this.serverQueue, null);
+    }
+
+    protected void tickColors(final HashMap<Integer, PlayerColor> playerSet) {
         final Iterator<PlayerColor> i = playerSet.values().iterator();
         while (i.hasNext()) {
             final PlayerColor pc = i.next();

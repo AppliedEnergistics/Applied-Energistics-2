@@ -22,6 +22,7 @@ import appeng.api.parts.CableRenderMode;
 import appeng.block.AEBaseBlock;
 import appeng.client.ActionKey;
 import appeng.client.EffectType;
+import appeng.core.stats.AdvancementTriggers;
 import appeng.core.sync.BasePacket;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.util.InputUtil;
@@ -50,6 +51,8 @@ public interface AppEng {
         return new Identifier(MOD_ID, id);
     }
 
+    AdvancementTriggers getAdvancementTriggers();
+
     Stream<? extends PlayerEntity> getPlayers();
 
     void sendToAllNearExcept(PlayerEntity p, double x, double y, double z, double dist, World w,
@@ -65,8 +68,6 @@ public interface AppEng {
     void postInit();
 
     CableRenderMode getRenderMode();
-
-    void triggerUpdates();
 
     void updateRenderMode(PlayerEntity player);
 

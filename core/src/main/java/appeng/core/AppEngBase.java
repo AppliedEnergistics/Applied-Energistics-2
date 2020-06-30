@@ -12,6 +12,7 @@ import appeng.core.stats.AeStats;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.network.TargetPoint;
+import appeng.hooks.TickHandler;
 import appeng.hooks.ToolItemHook;
 import appeng.mixins.CriteriaRegisterMixin;
 import appeng.recipes.handlers.*;
@@ -110,6 +111,11 @@ public abstract class AppEngBase implements AppEng {
         // FIXME FABRIC FacadeItem facadeItem = (FacadeItem) Api.INSTANCE.definitions().items().facade().item();
         // FIXME FABRIC r.registerAll(DisassembleRecipe.SERIALIZER,
         // FIXME FABRIC         FacadeRecipe.getSerializer(facadeItem));
+    }
+
+    @Override
+    public AdvancementTriggers getAdvancementTriggers() {
+        return advancementTriggers;
     }
 
     @Override

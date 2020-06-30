@@ -18,20 +18,17 @@
 
 package appeng.entity;
 
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.TntMinecartEntityRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-
-import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.util.math.Vector3f;
-import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.util.Identifier;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.block.Blocks;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.EntityRenderer;
+import net.minecraft.client.render.entity.TntMinecartEntityRenderer;
+import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
 public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
@@ -44,7 +41,6 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
     @Override
     public void render(TinyTNTPrimedEntity tnt, float entityYaw, float partialTicks, MatrixStack mStack,
                        VertexConsumerProvider buffers, int packedLight) {
-        final BlockRenderManager blockrendererdispatcher = MinecraftClient.getInstance().getBlockRenderManager();
         mStack.push();
         mStack.translate(0, 0.25F, 0);
         float f2;
@@ -67,7 +63,6 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
         }
 
         mStack.scale(0.5f, 0.5f, 0.5f);
-        f2 = (1.0F - (tnt.getFuse() - partialTicks + 1.0F) / 100.0F) * 0.8F;
         mStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(-90.0F));
         mStack.translate(-0.5D, -0.5D, 0.5D);
         mStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(90.0F));

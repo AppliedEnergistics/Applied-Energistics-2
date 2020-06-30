@@ -23,19 +23,16 @@
 
 package appeng.api.parts;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Random;
-
-import javax.annotation.Nonnull;
-
 import alexiil.mc.lib.attributes.AttributeList;
+import appeng.api.networking.IGridNode;
+import appeng.api.util.AECableType;
+import appeng.api.util.AEColor;
+import appeng.api.util.AEPartLocation;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.util.math.MatrixStack;
-
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -43,15 +40,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Hand;
+import net.minecraft.util.crash.CrashReportSection;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-import appeng.api.networking.IGridNode;
-import appeng.api.util.AECableType;
-import appeng.api.util.AEColor;
-import appeng.api.util.AEPartLocation;
+import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.util.List;
+import java.util.Random;
 
 public interface IPart extends ICustomCableConnection {
 
@@ -343,8 +341,6 @@ public interface IPart extends ICustomCableConnection {
      * side.
      *
      * @see alexiil.mc.lib.attributes.AttributeProvider
-     *
-     * @return The capability or null.
      */
     default void addAllAttributes(AttributeList<?> to) {}
 
@@ -354,5 +350,13 @@ public interface IPart extends ICustomCableConnection {
      * @param bch collision boxes
      */
     void getBoxes(final IPartCollisionHelper bch);
+
+    /**
+     * This will be used by the core to add information about this part to a crash
+     * report if it is attached to a host that caused a crash during tick processing.
+     * @param section The crash report section the information will be added to.
+     */
+    default void addEntityCrashInfo(CrashReportSection section) {
+    }
 
 }

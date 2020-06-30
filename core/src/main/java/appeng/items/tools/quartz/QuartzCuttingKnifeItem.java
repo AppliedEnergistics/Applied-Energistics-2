@@ -18,6 +18,7 @@
 
 package appeng.items.tools.quartz;
 
+import appeng.container.ContainerLocator;
 import appeng.mixins.RemainderSetter;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -47,7 +48,7 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
     @Override
     public TypedActionResult<ItemStack> use(final World w, final PlayerEntity p, final Hand hand) {
         if (Platform.isServer()) {
-            // FIXME FABRIC ContainerOpener.openContainer(QuartzKnifeContainer.TYPE, p, ContainerLocator.forHand(p, hand));
+// FIXME FABRIC           ContainerOpener.openContainer(QuartzKnifeContainer.TYPE, p, ContainerLocator.forHand(p, hand));
             throw new IllegalStateException();
         }
         p.swingHand(hand);

@@ -122,11 +122,6 @@ public class ServerHelper extends CommonHelper {
     }
 
     @Override
-    public void triggerUpdates() {
-
-    }
-
-    @Override
     public void updateRenderMode(final PlayerEntity player) {
         this.renderModeBased = player;
     }
