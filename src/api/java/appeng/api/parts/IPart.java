@@ -32,6 +32,7 @@ import javax.annotation.Nonnull;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -370,5 +371,15 @@ public interface IPart extends ICustomCableConnection {
      * @param bch collision boxes
      */
     void getBoxes(final IPartCollisionHelper bch);
+
+    /**
+     * This will be used by the core to add information about this part to a crash
+     * report if it is attached to a host that caused a crash during tick
+     * processing.
+     * 
+     * @param section The crash report section the information will be added to.
+     */
+    default void addEntityCrashInfo(final CrashReportCategory section) {
+    }
 
 }

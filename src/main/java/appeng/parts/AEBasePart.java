@@ -182,6 +182,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
         return this.getItemStack().hasDisplayName();
     }
 
+    @Override
     public void addEntityCrashInfo(final CrashReportCategory crashreportcategory) {
         crashreportcategory.addDetail("Part Side", this.getSide());
     }

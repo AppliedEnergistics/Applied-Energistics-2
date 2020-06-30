@@ -130,14 +130,14 @@ final class Registration {
         final IRegistryContainer registries = api.registries();
 
         final IGridCacheRegistry gcr = registries.gridCache();
-        gcr.registerGridCache(ITickManager.class, TickManagerCache.class);
-        gcr.registerGridCache(IEnergyGrid.class, EnergyGridCache.class);
-        gcr.registerGridCache(IPathingGrid.class, PathGridCache.class);
-        gcr.registerGridCache(IStorageGrid.class, GridStorageCache.class);
-        gcr.registerGridCache(P2PCache.class, P2PCache.class);
-        gcr.registerGridCache(ISpatialCache.class, SpatialPylonCache.class);
-        gcr.registerGridCache(ISecurityGrid.class, SecurityCache.class);
-        gcr.registerGridCache(ICraftingGrid.class, CraftingGridCache.class);
+        gcr.registerGridCache(ITickManager.class, TickManagerCache::new);
+        gcr.registerGridCache(IEnergyGrid.class, EnergyGridCache::new);
+        gcr.registerGridCache(IPathingGrid.class, PathGridCache::new);
+        gcr.registerGridCache(IStorageGrid.class, GridStorageCache::new);
+        gcr.registerGridCache(P2PCache.class, P2PCache::new);
+        gcr.registerGridCache(ISpatialCache.class, SpatialPylonCache::new);
+        gcr.registerGridCache(ISecurityGrid.class, SecurityCache::new);
+        gcr.registerGridCache(ICraftingGrid.class, CraftingGridCache::new);
 
         registries.cell().addCellHandler(new BasicCellHandler());
         registries.cell().addCellHandler(new CreativeCellHandler());

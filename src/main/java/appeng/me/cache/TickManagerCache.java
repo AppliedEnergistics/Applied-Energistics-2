@@ -39,7 +39,6 @@ import appeng.me.cache.helpers.TickTracker;
 
 public class TickManagerCache implements ITickManager {
 
-    private final IGrid myGrid;
     private final HashMap<IGridNode, TickTracker> alertable = new HashMap<>();
     private final HashMap<IGridNode, TickTracker> sleeping = new HashMap<>();
     private final HashMap<IGridNode, TickTracker> awake = new HashMap<>();
@@ -47,12 +46,7 @@ public class TickManagerCache implements ITickManager {
 
     private long currentTick = 0;
 
-    public TickManagerCache(final IGrid g) {
-        this.myGrid = g;
-    }
-
-    public long getCurrentTick() {
-        return this.currentTick;
+    public TickManagerCache(@SuppressWarnings("unused") final IGrid g) {
     }
 
     public long getAvgNanoTime(final IGridNode node) {
@@ -66,7 +60,7 @@ public class TickManagerCache implements ITickManager {
             return -1;
         }
 
-        return tt.getAvgNanos();
+        return 0;
     }
 
     @Override
@@ -146,7 +140,7 @@ public class TickManagerCache implements ITickManager {
 
             Preconditions.checkNotNull(tr);
 
-            final TickTracker tt = new TickTracker(tr, gridNode, (IGridTickable) machine, this.currentTick, this);
+            final TickTracker tt = new TickTracker(tr, gridNode, (IGridTickable) machine, this.currentTick);
 
             if (tr.canBeAlerted) {
                 this.alertable.put(gridNode, tt);
@@ -184,9 +178,6 @@ public class TickManagerCache implements ITickManager {
         if (tt == null) {
             return false;
         }
-        // throw new RuntimeException(
-        // "Invalid alerted device, this node is not marked as alertable, or part of
-        // this grid." );
 
         // set to awake, this is for sanity.
         this.sleeping.remove(node);
