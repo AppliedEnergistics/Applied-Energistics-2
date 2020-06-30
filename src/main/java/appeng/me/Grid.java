@@ -42,7 +42,7 @@ import appeng.util.ReadOnlyCollection;
 public class Grid implements IGrid {
     private final NetworkEventBus eventBus = new NetworkEventBus();
     private final Map<Class<? extends IGridHost>, MachineSet> machines = new HashMap<>();
-    private final Map<Class<? extends IGridCache>, GridCacheWrapper> caches = new HashMap<>();
+    private final Map<Class<? extends IGridCache>, GridCacheWrapper> caches;
     private GridNode pivot;
     private int priority; // how import is this network?
     private GridStorage myStorage;
@@ -52,6 +52,7 @@ public class Grid implements IGrid {
 
         final Map<Class<? extends IGridCache>, IGridCache> myCaches = AEApi.instance().registries().gridCache()
                 .createCacheInstance(this);
+        this.caches = new HashMap<>(myCaches.size());
         for (final Entry<Class<? extends IGridCache>, IGridCache> c : myCaches.entrySet()) {
             final Class<? extends IGridCache> key = c.getKey();
             final IGridCache value = c.getValue();

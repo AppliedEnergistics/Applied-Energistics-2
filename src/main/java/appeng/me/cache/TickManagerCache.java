@@ -21,7 +21,6 @@ package appeng.me.cache;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
-import appeng.helpers.Reflected;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.crash.CrashReport;
@@ -47,7 +46,6 @@ public class TickManagerCache implements ITickManager {
 
     private long currentTick = 0;
 
-    @Reflected
     public TickManagerCache(@SuppressWarnings("unused") final IGrid g) {
     }
 
