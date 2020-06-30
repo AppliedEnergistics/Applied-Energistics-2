@@ -35,15 +35,12 @@ public final class DefinitionUpgradeInventory extends UpgradeInventory {
 
     @Override
     public int getMaxInstalled(final Upgrades upgrades) {
-        int max = 0;
-
-        for (final ItemStack stack : upgrades.getSupported().keySet()) {
-            if (this.definition.isSameAs(stack)) {
-                max = upgrades.getSupported().get(stack);
-                break;
+        for (final Upgrades.Supported supported : upgrades.getSupported()) {
+            if (supported.isSupported(definition.item())) {
+                return supported.getMaxCount();
             }
         }
 
-        return max;
+        return 0;
     }
 }

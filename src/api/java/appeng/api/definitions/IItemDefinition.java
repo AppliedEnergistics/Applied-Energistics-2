@@ -30,10 +30,11 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IItemProvider;
 
 import appeng.api.features.AEFeature;
 
-public interface IItemDefinition extends IComparableDefinition {
+public interface IItemDefinition extends IComparableDefinition, IItemProvider {
     /**
      * @return the unique name of the definition which will be used to register the
      *         underlying structure. Will never be null
@@ -63,4 +64,10 @@ public interface IItemDefinition extends IComparableDefinition {
      * @return an immutable set of the features of this item
      */
     Set<AEFeature> features();
+
+    @Override
+    default Item asItem() {
+        return item();
+    }
+
 }

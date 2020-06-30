@@ -52,7 +52,6 @@ import net.minecraftforge.items.IItemHandler;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
-import appeng.api.implementations.items.IItemGroup;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.storage.IMEInventory;
@@ -80,7 +79,7 @@ import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
 public class ColorApplicatorItem extends AEBasePoweredItem
-        implements IStorageCell<IAEItemStack>, IItemGroup, IBlockTool, IMouseWheelItem {
+        implements IStorageCell<IAEItemStack>, IBlockTool, IMouseWheelItem {
 
     private static final Map<ResourceLocation, AEColor> TAG_TO_COLOR = ImmutableMap.<ResourceLocation, AEColor>builder()
             .put(new ResourceLocation("forge:dyes/black"), AEColor.BLACK)
@@ -407,11 +406,6 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     @Override
     public IStorageChannel<IAEItemStack> getChannel() {
         return AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
-    }
-
-    @Override
-    public String getUnlocalizedGroupName(final Set<ItemStack> others, final ItemStack is) {
-        return GuiText.StorageCells.getTranslationKey();
     }
 
     @Override

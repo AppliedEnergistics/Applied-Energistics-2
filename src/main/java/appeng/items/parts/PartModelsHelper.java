@@ -18,9 +18,9 @@ import appeng.core.AELog;
  * Helps with the reflection magic needed to gather all models for AE2 cable bus
  * parts.
  */
-class PartModelsHelper {
+public class PartModelsHelper {
 
-    static List<ResourceLocation> createModels(Class<?> clazz) {
+    public static List<ResourceLocation> createModels(Class<?> clazz) {
         List<ResourceLocation> locations = new ArrayList<>();
 
         // Check all static fields for used models
@@ -78,7 +78,7 @@ class PartModelsHelper {
                 continue;
             }
 
-            Object value = null;
+            Object value;
             try {
                 method.setAccessible(true);
                 value = method.invoke(null);
@@ -108,7 +108,7 @@ class PartModelsHelper {
             locations.addAll(((IPartModel) value).getModels());
         } else if (value instanceof Collection) {
             // Check that each object is an IPartModel
-            Collection values = (Collection) value;
+            Collection<?> values = (Collection<?>) value;
             for (Object candidate : values) {
                 if (!(candidate instanceof IPartModel)) {
                     AELog.error("List of locations obtained from {} contains a non resource location: {}", source,

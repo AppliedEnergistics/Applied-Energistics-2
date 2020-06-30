@@ -33,15 +33,12 @@ public class StackUpgradeInventory extends UpgradeInventory {
 
     @Override
     public int getMaxInstalled(final Upgrades upgrades) {
-        int max = 0;
-
-        for (final ItemStack is : upgrades.getSupported().keySet()) {
-            if (ItemStack.areItemsEqual(this.stack, is)) {
-                max = upgrades.getSupported().get(is);
-                break;
+        for (final Upgrades.Supported supported : upgrades.getSupported()) {
+            if (supported.isSupported(stack.getItem())) {
+                return supported.getMaxCount();
             }
         }
 
-        return max;
+        return 0;
     }
 }
