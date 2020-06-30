@@ -1,0 +1,22 @@
+{
+  "textures": {
+    "cell": "appliedenergistics2:block/drive/item_cell"
+  },
+  "elements": [
+    {
+      "name": "Cell Backdrop",
+      "from": [9, 13, 1],
+      "to": [15, 15, 3],
+      "rotation": { "angle": 0, "axis": "y", "origin": [9, 8, 8] },
+      "faces": {
+        "north": {
+          "uv": [0, 2, 6, 4],
+          "texture": "#cell",
+          "cullface": "north"
+        },
+        "up": { "uv": [0, 0, 6, 2], "texture": "#cell", "cullface": "north" },
+        "down": { "uv": [0, 4, 6, 6], "texture": "#cell", "cullface": "north" }
+      }
+    }
+  ]
+}
