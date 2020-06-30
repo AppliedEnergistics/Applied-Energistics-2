@@ -33,7 +33,6 @@ import net.minecraft.util.crash.CrashReportSection;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
@@ -67,8 +66,6 @@ import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
-import appeng.items.parts.PartItem;
-import appeng.items.parts.PartType;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.IGridProxyable;
 import appeng.parts.networking.CablePart;
@@ -94,15 +91,6 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
     public IPartHost getHost() {
         return this.host;
-    }
-
-    public PartType getType() {
-        Item item = this.is.getItem();
-        if (!(item instanceof PartItem)) {
-            return PartType.INVALID_TYPE;
-        }
-
-        return ((PartItem<?>) item).getType();
     }
 
     @Override

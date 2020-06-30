@@ -33,6 +33,7 @@ import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.particle.ParticleType;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.GenerationStage;
@@ -88,6 +89,7 @@ import appeng.core.features.registries.PartModels;
 import appeng.core.features.registries.cell.BasicCellHandler;
 import appeng.core.features.registries.cell.BasicItemCellGuiHandler;
 import appeng.core.features.registries.cell.CreativeCellHandler;
+import appeng.core.localization.GuiText;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.core.stats.AeStats;
 import appeng.fluids.client.gui.*;
@@ -286,12 +288,19 @@ final class Registration {
         final IBlocks blocks = definitions.blocks();
         final IItems items = definitions.items();
 
+        // Block and part interface have different translation keys, but support the
+        // same upgrades
+        ITextComponent interfaceGroup = parts.iface().asItem().getName();
+        ITextComponent itemIoBusGroup = GuiText.IOBuses.textComponent();
+        ITextComponent fluidIoBusGroup = GuiText.IOBusesFluids.textComponent();
+        ITextComponent storageCellGroup = GuiText.IOBusesFluids.textComponent();
+
         // default settings..
         ((P2PTunnelRegistry) registries.p2pTunnel()).configure();
 
         // Interface
-        Upgrades.CRAFTING.registerItem(parts.iface(), 1);
-        Upgrades.CRAFTING.registerItem(blocks.iface(), 1);
+        Upgrades.CRAFTING.registerItem(parts.iface(), 1, interfaceGroup);
+        Upgrades.CRAFTING.registerItem(blocks.iface(), 1, interfaceGroup);
 
         // IO Port!
         Upgrades.SPEED.registerItem(blocks.iOPort(), 3);
@@ -302,43 +311,43 @@ final class Registration {
         Upgrades.CRAFTING.registerItem(parts.levelEmitter(), 1);
 
         // Import Bus
-        Upgrades.FUZZY.registerItem(parts.importBus(), 1);
-        Upgrades.REDSTONE.registerItem(parts.importBus(), 1);
-        Upgrades.CAPACITY.registerItem(parts.importBus(), 2);
-        Upgrades.SPEED.registerItem(parts.importBus(), 4);
+        Upgrades.FUZZY.registerItem(parts.importBus(), 1, itemIoBusGroup);
+        Upgrades.REDSTONE.registerItem(parts.importBus(), 1, itemIoBusGroup);
+        Upgrades.CAPACITY.registerItem(parts.importBus(), 2, itemIoBusGroup);
+        Upgrades.SPEED.registerItem(parts.importBus(), 4, itemIoBusGroup);
 
         // Fluid Import Bus
-        Upgrades.CAPACITY.registerItem(parts.fluidImportBus(), 2);
-        Upgrades.REDSTONE.registerItem(parts.fluidImportBus(), 1);
-        Upgrades.SPEED.registerItem(parts.fluidImportBus(), 4);
+        Upgrades.CAPACITY.registerItem(parts.fluidImportBus(), 2, fluidIoBusGroup);
+        Upgrades.REDSTONE.registerItem(parts.fluidImportBus(), 1, fluidIoBusGroup);
+        Upgrades.SPEED.registerItem(parts.fluidImportBus(), 4, fluidIoBusGroup);
 
         // Export Bus
-        Upgrades.FUZZY.registerItem(parts.exportBus(), 1);
-        Upgrades.REDSTONE.registerItem(parts.exportBus(), 1);
-        Upgrades.CAPACITY.registerItem(parts.exportBus(), 2);
-        Upgrades.SPEED.registerItem(parts.exportBus(), 4);
-        Upgrades.CRAFTING.registerItem(parts.exportBus(), 1);
+        Upgrades.FUZZY.registerItem(parts.exportBus(), 1, itemIoBusGroup);
+        Upgrades.REDSTONE.registerItem(parts.exportBus(), 1, itemIoBusGroup);
+        Upgrades.CAPACITY.registerItem(parts.exportBus(), 2, itemIoBusGroup);
+        Upgrades.SPEED.registerItem(parts.exportBus(), 4, itemIoBusGroup);
+        Upgrades.CRAFTING.registerItem(parts.exportBus(), 1, itemIoBusGroup);
 
         // Fluid Export Bus
-        Upgrades.CAPACITY.registerItem(parts.fluidExportBus(), 2);
-        Upgrades.REDSTONE.registerItem(parts.fluidExportBus(), 1);
-        Upgrades.SPEED.registerItem(parts.fluidExportBus(), 4);
+        Upgrades.CAPACITY.registerItem(parts.fluidExportBus(), 2, fluidIoBusGroup);
+        Upgrades.REDSTONE.registerItem(parts.fluidExportBus(), 1, fluidIoBusGroup);
+        Upgrades.SPEED.registerItem(parts.fluidExportBus(), 4, fluidIoBusGroup);
 
         // Storage Cells
-        Upgrades.FUZZY.registerItem(items.cell1k(), 1);
-        Upgrades.INVERTER.registerItem(items.cell1k(), 1);
+        Upgrades.FUZZY.registerItem(items.cell1k(), 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(items.cell1k(), 1, storageCellGroup);
 
-        Upgrades.FUZZY.registerItem(items.cell4k(), 1);
-        Upgrades.INVERTER.registerItem(items.cell4k(), 1);
+        Upgrades.FUZZY.registerItem(items.cell4k(), 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(items.cell4k(), 1, storageCellGroup);
 
-        Upgrades.FUZZY.registerItem(items.cell16k(), 1);
-        Upgrades.INVERTER.registerItem(items.cell16k(), 1);
+        Upgrades.FUZZY.registerItem(items.cell16k(), 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(items.cell16k(), 1, storageCellGroup);
 
-        Upgrades.FUZZY.registerItem(items.cell64k(), 1);
-        Upgrades.INVERTER.registerItem(items.cell64k(), 1);
+        Upgrades.FUZZY.registerItem(items.cell64k(), 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(items.cell64k(), 1, storageCellGroup);
 
-        Upgrades.FUZZY.registerItem(items.portableCell(), 1);
-        Upgrades.INVERTER.registerItem(items.portableCell(), 1);
+        Upgrades.FUZZY.registerItem(items.portableCell(), 1, storageCellGroup);
+        Upgrades.INVERTER.registerItem(items.portableCell(), 1, storageCellGroup);
 
         Upgrades.FUZZY.registerItem(items.viewCell(), 1);
         Upgrades.INVERTER.registerItem(items.viewCell(), 1);

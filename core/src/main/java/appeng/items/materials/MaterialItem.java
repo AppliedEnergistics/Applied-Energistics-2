@@ -18,12 +18,7 @@
 
 package appeng.items.materials;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import appeng.hooks.AEToolItem;
 import net.minecraft.client.item.TooltipContext;
@@ -45,7 +40,6 @@ import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
-import appeng.api.implementations.items.IItemGroup;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.implementations.tiles.ISegmentedInventory;
@@ -86,34 +80,7 @@ public final class MaterialItem extends AEBaseItem implements IStorageComponent,
 
         final Upgrades u = this.getType(stack);
         if (u != null) {
-            final List<Text> textList = new ArrayList<>();
-            for (final Entry<ItemStack, Integer> j : u.getSupported().entrySet()) {
-                Text name = null;
-
-                final int limit = j.getValue();
-
-                if (j.getKey().getItem() instanceof IItemGroup) {
-                    final IItemGroup ig = (IItemGroup) j.getKey().getItem();
-                    final String str = ig.getUnlocalizedGroupName(u.getSupported().keySet(), j.getKey());
-                    if (str != null) {
-                        name = new TranslatableText(str).append(limit > 1 ? " (" + limit + ')' : "");
-                    }
-                }
-
-                if (name == null) {
-                    name = j.getKey().getName().copy().append((limit > 1 ? " (" + limit + ')' : ""));
-                }
-
-                if (!textList.contains(name)) {
-                    textList.add(name);
-                }
-            }
-
-            final Pattern p = Pattern.compile("(\\d+)[^\\d]");
-            // FIXME This comparison is not great...
-            final SlightlyBetterSort s = new SlightlyBetterSort(p);
-            textList.sort(s);
-            lines.addAll(textList);
+            lines.addAll(u.getTooltipLines());
         }
     }
 
@@ -234,27 +201,4 @@ public final class MaterialItem extends AEBaseItem implements IStorageComponent,
         return false;
     }
 
-    private static class SlightlyBetterSort implements Comparator<Text> {
-        private final Pattern pattern;
-
-        public SlightlyBetterSort(final Pattern pattern) {
-            this.pattern = pattern;
-        }
-
-        @Override
-        public int compare(final Text o1, final Text o2) {
-            try {
-                final Matcher a = this.pattern.matcher(o1.getString());
-                final Matcher b = this.pattern.matcher(o2.getString());
-                if (a.find() && b.find()) {
-                    final int ia = Integer.parseInt(a.group(1));
-                    final int ib = Integer.parseInt(b.group(1));
-                    return Integer.compare(ia, ib);
-                }
-            } catch (final Throwable t) {
-                // ek!
-            }
-            return o1.getString().compareTo(o2.getString());
-        }
-    }
 }

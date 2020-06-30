@@ -22,7 +22,6 @@ import alexiil.mc.lib.attributes.item.FixedItemInv;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
-import appeng.api.implementations.items.IItemGroup;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.storage.IMEInventory;
@@ -79,7 +78,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class ColorApplicatorItem extends AEBasePoweredItem
-        implements IStorageCell<IAEItemStack>, IItemGroup, IBlockTool, IMouseWheelItem {
+        implements IStorageCell<IAEItemStack>, IBlockTool, IMouseWheelItem {
 
     private static final Map<Identifier, AEColor> TAG_TO_COLOR = ImmutableMap.<Identifier, AEColor>builder()
             .put(new Identifier("forge:dyes/black"), AEColor.BLACK)
@@ -421,11 +420,6 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     @Override
     public IStorageChannel<IAEItemStack> getChannel() {
         return AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
-    }
-
-    @Override
-    public String getUnlocalizedGroupName(final Set<ItemStack> others, final ItemStack is) {
-        return GuiText.StorageCells.getTranslationKey();
     }
 
     @Override

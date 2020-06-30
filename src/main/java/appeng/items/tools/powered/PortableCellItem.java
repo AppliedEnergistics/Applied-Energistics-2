@@ -39,7 +39,6 @@ import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
-import appeng.api.implementations.items.IItemGroup;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.cells.ICellInventoryHandler;
@@ -55,7 +54,7 @@ import appeng.items.contents.CellUpgrades;
 import appeng.items.contents.PortableCellViewer;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 
-public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<IAEItemStack>, IGuiItem, IItemGroup {
+public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<IAEItemStack>, IGuiItem {
     public PortableCellItem(Item.Settings props) {
         super(AEConfig.instance().getPortableCellBattery(), props);
     }
@@ -116,11 +115,6 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
     @Override
     public IStorageChannel<IAEItemStack> getChannel() {
         return AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
-    }
-
-    @Override
-    public String getUnlocalizedGroupName(final Set<ItemStack> others, final ItemStack is) {
-        return GuiText.StorageCells.getTranslationKey();
     }
 
     @Override
