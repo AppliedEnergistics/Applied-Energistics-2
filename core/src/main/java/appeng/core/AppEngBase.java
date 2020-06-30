@@ -2,13 +2,6 @@ package appeng.core;
 
 import appeng.api.features.IRegistryContainer;
 import appeng.api.networking.IGridCacheRegistry;
-import appeng.api.networking.crafting.ICraftingGrid;
-import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.pathing.IPathingGrid;
-import appeng.api.networking.security.ISecurityGrid;
-import appeng.api.networking.spatial.ISpatialCache;
-import appeng.api.networking.storage.IStorageGrid;
-import appeng.api.networking.ticking.ITickManager;
 import appeng.bootstrap.components.ITileEntityRegistrationComponent;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.features.registries.cell.BasicCellHandler;
@@ -16,10 +9,15 @@ import appeng.core.features.registries.cell.BasicItemCellGuiHandler;
 import appeng.core.features.registries.cell.CreativeCellHandler;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.core.stats.AeStats;
+import appeng.core.sync.BasePacket;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.network.TargetPoint;
 import appeng.hooks.ToolItemHook;
 import appeng.mixins.CriteriaRegisterMixin;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
 
 public abstract class AppEngBase implements AppEng {
 
@@ -86,6 +84,18 @@ public abstract class AppEngBase implements AppEng {
         final ApiDefinitions definitions = Api.INSTANCE.definitions();
         definitions.getRegistry().getBootstrapComponents(ITileEntityRegistrationComponent.class)
                 .forEachRemaining(ITileEntityRegistrationComponent::register);
+    }
+
+    @Override
+    public void sendToAllNearExcept(final PlayerEntity p, final double x, final double y, final double z,
+                                    final double dist, final World w, final BasePacket packet) {
+        if (w.isClient()) {
+            return;
+        }
+
+        NetworkHandler.instance().sendToAllAround(packet, new TargetPoint(
+                x, y, z, dist, w
+        ));
     }
 
 }

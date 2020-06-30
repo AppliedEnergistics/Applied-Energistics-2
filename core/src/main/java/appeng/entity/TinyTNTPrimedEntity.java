@@ -21,13 +21,17 @@ package appeng.entity;
 import appeng.api.AEApi;
 import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
+import appeng.core.sync.packets.ICustomEntity;
+import appeng.core.sync.packets.SpawnEntityPacket;
 import appeng.util.Platform;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.Material;
 import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.network.Packet;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -39,7 +43,7 @@ import net.minecraft.world.explosion.Explosion;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public final class TinyTNTPrimedEntity extends TntEntity {
+public final class TinyTNTPrimedEntity extends TntEntity implements ICustomEntity {
 
     public static EntityType<TinyTNTPrimedEntity> TYPE;
 
@@ -52,7 +56,7 @@ public final class TinyTNTPrimedEntity extends TntEntity {
 
     public TinyTNTPrimedEntity(final World world, final double x, final double y, final double z,
                                final LivingEntity igniter) {
-        this(TYPE, world);
+        super(TYPE, world);
         this.updatePosition(x, y, z);
         double d = world.random.nextDouble() * 6.2831854820251465D;
         this.setVelocity(-Math.sin(d) * 0.02D, 0.20000000298023224D, -Math.cos(d) * 0.02D);
@@ -74,33 +78,16 @@ public final class TinyTNTPrimedEntity extends TntEntity {
      */
     @Override
     public void tick() {
-        this.updateWaterState();
 
-        this.prevX = this.getX();
-        this.prevY = this.getY();
-        this.prevZ = this.getZ();
-        this.setVelocity(this.getVelocity().subtract(0, 0.03999999910593033D, 0));
-        this.move(MovementType.SELF, this.getVelocity());
-        this.setVelocity(this.getVelocity().multiply(0.9800000190734863D, 0.9800000190734863D, 0.9800000190734863D));
-
-        if (this.onGround) {
-            this.setVelocity(this.getVelocity().multiply(0.699999988079071D, 0.699999988079071D, -0.5D));
+        if (!this.hasNoGravity()) {
+            this.setVelocity(this.getVelocity().add(0.0D, -0.04D, 0.0D));
         }
 
-        if (this.isSubmergedInWater() && Platform.isServer()) // put out the fuse.
-        {
-            AEApi.instance().definitions().blocks().tinyTNT().maybeStack(1).ifPresent(tntStack -> {
-                final ItemEntity item = new ItemEntity(this.world, this.getX(), this.getY(), this.getZ(),
-                        tntStack);
-
-                item.setVelocity(this.getVelocity());
-                item.prevX = this.prevX;
-                item.prevY = this.prevY;
-                item.prevZ = this.prevZ;
-
-                this.world.spawnEntity(item);
-                this.remove();
-            });
+        this.move(MovementType.SELF, this.getVelocity());
+        this.setVelocity(this.getVelocity().multiply(0.98D));
+        if (this.onGround) {
+            // Bounce up
+            this.setVelocity(this.getVelocity().multiply(0.7D, -0.5D, 0.7D));
         }
 
         if (this.getFuse() <= 0) {
@@ -110,6 +97,23 @@ public final class TinyTNTPrimedEntity extends TntEntity {
                 this.explode();
             }
         } else {
+            this.updateWaterState();
+            if (this.isSubmergedInWater() && Platform.isServer()) // put out the fuse.
+            {
+                AEApi.instance().definitions().blocks().tinyTNT().maybeStack(1).ifPresent(tntStack -> {
+                    final ItemEntity item = new ItemEntity(this.world, this.getX(), this.getY(), this.getZ(),
+                            tntStack);
+
+                    item.setVelocity(this.getVelocity());
+                    item.prevX = this.prevX;
+                    item.prevY = this.prevY;
+                    item.prevZ = this.prevZ;
+
+                    this.world.spawnEntity(item);
+                    this.remove();
+                });
+            }
+
             this.world.addParticle(ParticleTypes.SMOKE, this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D,
                     0.0D);
         }
@@ -157,11 +161,12 @@ public final class TinyTNTPrimedEntity extends TntEntity {
                             strength -= (resistance + 0.3F) * 0.11f;
 
                             if (strength > 0.01) {
-                                if (state.getMaterial() == Material.AIR) {
+                                if (state.getMaterial() != Material.AIR) {
                                     if (block.shouldDropItemsOnExplosion(ex)) {
                                         Block.dropStacks(state, this.world, blockPos);
                                     }
 
+                                    this.world.setBlockState(blockPos, Blocks.AIR.getDefaultState(), 3);
                                     block.onDestroyedByExplosion(this.world, blockPos, ex);
                                 }
                             }
@@ -171,16 +176,22 @@ public final class TinyTNTPrimedEntity extends TntEntity {
             }
         }
 
-        throw new IllegalStateException();
-// FIXME FABRIC
-//        AppEng.proxy.sendToAllNearExcept(null, this.getX(), this.getY(), this.getZ(), 64, this.world,
-//                new MockExplosionPacket(this.getX(), this.getY(), this.getZ()));
+        this.world.addParticle(ParticleTypes.EXPLOSION, this.getX(), this.getY(), this.getZ(), 1.0D, 0.0D, 0.0D);
     }
 
     @Override
     public Packet<?> createSpawnPacket() {
-        // FIXME FABRIC
-        throw new IllegalStateException();
+        return SpawnEntityPacket.create(this);
+    }
+
+    @Override
+    public void writeAdditionalSpawnData(PacketByteBuf buf) {
+        buf.writeByte(this.getFuse());
+    }
+
+    @Override
+    public void readAdditionalSpawnData(PacketByteBuf buf) {
+        this.setFuse(buf.readByte());
     }
 
 }

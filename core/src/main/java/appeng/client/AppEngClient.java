@@ -1,7 +1,6 @@
 package appeng.client;
 
 import appeng.api.parts.CableRenderMode;
-import appeng.block.AEBaseBlock;
 import appeng.bootstrap.ModelsReloadCallback;
 import appeng.bootstrap.components.IItemColorRegistrationComponent;
 import appeng.bootstrap.components.IModelBakeComponent;
@@ -10,18 +9,19 @@ import appeng.client.render.tesr.SkyChestTESR;
 import appeng.core.Api;
 import appeng.core.ApiDefinitions;
 import appeng.core.AppEngBase;
-import appeng.core.sync.BasePacket;
+import appeng.core.sync.network.ClientNetworkHandler;
 import appeng.entity.*;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.ItemEntityRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
@@ -34,14 +34,17 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class AppEngClient extends AppEngBase {
+public final class AppEngClient extends AppEngBase {
 
     private final MinecraftClient client;
+
+    private final ClientNetworkHandler networkHandler;
 
     public AppEngClient() {
         super();
 
         client = MinecraftClient.getInstance();
+        networkHandler = new ClientNetworkHandler();
 
         ModelsReloadCallback.EVENT.register(this::onModelsReloaded);
 
@@ -52,18 +55,18 @@ public class AppEngClient extends AppEngBase {
     }
 
     @Override
-    public void bindTileEntitySpecialRenderer(Class<? extends BlockEntity> tile, AEBaseBlock blk) {
+    public MinecraftServer getServer() {
+        IntegratedServer server = client.getServer();
+        if (server != null) {
+            return server;
+        }
 
+        throw new IllegalStateException("No server is currently running.");
     }
 
     @Override
-    public List<? extends PlayerEntity> getPlayers() {
-        return null;
-    }
-
-    @Override
-    public void sendToAllNearExcept(PlayerEntity p, double x, double y, double z, double dist, World w, BasePacket packet) {
-
+    public Stream<? extends PlayerEntity> getPlayers() {
+        return Stream.empty();
     }
 
     @Override

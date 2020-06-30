@@ -26,6 +26,7 @@ import appeng.core.sync.BasePacket;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
@@ -33,6 +34,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Stream;
 
 public interface AppEng {
 
@@ -48,9 +50,7 @@ public interface AppEng {
         return new Identifier(MOD_ID, id);
     }
 
-    void bindTileEntitySpecialRenderer(Class<? extends BlockEntity> tile, AEBaseBlock blk);
-
-    List<? extends PlayerEntity> getPlayers();
+    Stream<? extends PlayerEntity> getPlayers();
 
     void sendToAllNearExcept(PlayerEntity p, double x, double y, double z, double dist, World w,
                              BasePacket packet);
@@ -71,6 +71,14 @@ public interface AppEng {
     void updateRenderMode(PlayerEntity player);
 
     boolean isActionKey(@Nonnull final ActionKey key, InputUtil.Key input);
+
+    /**
+     * Get the currently running server. On the client-side this may throw if no server
+     * is currently running or a remote server has been joined.
+     *
+     * @return The current server. Never null.
+     */
+    MinecraftServer getServer();
 
 //
 //    private final Registration registration;

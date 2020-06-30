@@ -43,8 +43,7 @@ public abstract class BasePacket {
     }
 
     public final int getPacketID() {
-        throw new IllegalStateException();
-        // FIXME FABRIC return BasePacketHandler.PacketTypes.getID(this.getClass()).ordinal();
+        return BasePacketHandler.PacketTypes.getID(this.getClass()).ordinal();
     }
 
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {

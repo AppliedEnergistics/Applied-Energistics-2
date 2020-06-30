@@ -83,7 +83,7 @@ public class TinyTNTBlock extends AEBaseBlock {
     public void startFuse(final World w, final BlockPos pos, final LivingEntity igniter) {
         if (!w.isClient) {
             final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(w, pos.getX() + 0.5F,
-                    pos.getY() + 0.5F, pos.getZ() + 0.5F, igniter);
+                    pos.getY(), pos.getZ() + 0.5F, igniter);
             w.spawnEntity(primedTinyTNTEntity);
             w.playSound(null, primedTinyTNTEntity.getX(), primedTinyTNTEntity.getY(),
                     primedTinyTNTEntity.getZ(), SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1, 1);

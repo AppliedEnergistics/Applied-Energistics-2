@@ -18,25 +18,24 @@
 
 package appeng.core.sync.network;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.INetHandler;
-import net.minecraft.network.PacketByteBuf;
-
-import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
-import appeng.core.sync.BasePacketHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.world.World;
 
-public final class ServerPacketHandler extends BasePacketHandler implements IPacketHandler {
+public interface NetworkHandler {
 
-    @Override
-    public void onPacketData(final INetworkInfo manager, final INetHandler handler, final PacketByteBuf packet,
-            final PlayerEntity player) {
-        try {
-            final int packetType = packet.readInt();
-            final BasePacket pack = PacketTypes.getPacket(packetType).parsePacket(packet);
-            pack.serverPacketData(manager, player);
-        } catch (final IllegalArgumentException e) {
-            AELog.debug(e);
-        }
+    static NetworkHandler instance() {
+        return NetworkHandlerHolder.INSTANCE;
     }
+
+    void sendToAll(final BasePacket message);
+
+    void sendTo(final BasePacket message, final ServerPlayerEntity player);
+
+    void sendToAllAround(final BasePacket message, final TargetPoint point);
+
+    void sendToDimension(final BasePacket message, final World world);
+
+    void sendToServer(final BasePacket message);
+
 }

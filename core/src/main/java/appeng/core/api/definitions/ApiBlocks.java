@@ -42,6 +42,7 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.*;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.sound.BlockSoundGroup;
 
@@ -280,7 +281,8 @@ public final class ApiBlocks implements IBlocks {
 
         TinyTNTPrimedEntity.TYPE = registry
                 .<TinyTNTPrimedEntity>entity("tiny_tnt_primed", TinyTNTPrimedEntity::new, SpawnGroup.MISC)
-                .customize(p -> p.trackable(16, 4, true))
+                // Entity properties are a copy of the standard TNT entity
+                .customize(p -> p.trackable(10, 10, true).dimensions(EntityDimensions.fixed(0.98f, 0.98f)))
                 .build();
 
         this.tinyTNT = registry
