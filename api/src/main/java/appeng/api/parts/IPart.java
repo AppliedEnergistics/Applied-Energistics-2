@@ -353,7 +353,9 @@ public interface IPart extends ICustomCableConnection {
 
     /**
      * This will be used by the core to add information about this part to a crash
-     * report if it is attached to a host that caused a crash during tick processing.
+     * report if it is attached to a host that caused a crash during tick
+     * processing.
+     *
      * @param section The crash report section the information will be added to.
      */
     default void addEntityCrashInfo(CrashReportSection section) {

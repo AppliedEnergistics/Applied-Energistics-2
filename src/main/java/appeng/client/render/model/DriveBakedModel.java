@@ -63,7 +63,7 @@ public class DriveBakedModel extends DelegateBakedModel {
 
         DriveSlotsState slotsState = driveModelData.getSlotsState();
 
-        if (side == null && slotsState != null) {
+        if (slotsState != null) {
             for (int row = 0; row < 5; row++) {
                 for (int col = 0; col < 2; col++) {
                     Matrix4f transform = new Matrix4f();
@@ -80,7 +80,7 @@ public class DriveBakedModel extends DelegateBakedModel {
                     // Add the drive chassis
                     Item cell = slotsState.getCell(slot);
                     BakedModel cellChassisModel = getCellChassisModel(cell);
-                    addModel(state, rand, extraData, result, cellChassisModel, transform);
+                    addModel(state, rand, extraData, result, side, cellChassisModel, transform);
                 }
             }
         }
@@ -112,9 +112,9 @@ public class DriveBakedModel extends DelegateBakedModel {
     }
 
     private static void addModel(@Nullable BlockState state, @Nonnull Random rand, @Nonnull IModelData extraData,
-                                 List<BakedQuad> result, BakedModel bakedCell, Matrix4f transform) {
+            List<BakedQuad> result, Direction side, IBakedModel bakedCell, Matrix4f transform) {
         MatrixVertexTransformer transformer = new MatrixVertexTransformer(transform);
-        for (BakedQuad bakedQuad : bakedCell.getQuads(state, null, rand, extraData)) {
+        for (BakedQuad bakedQuad : bakedCell.getQuads(state, side, rand, extraData)) {
             BakedQuadBuilder builder = new BakedQuadBuilder();
             transformer.setParent(builder);
             transformer.setVertexFormat(builder.getVertexFormat());

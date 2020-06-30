@@ -26,6 +26,7 @@ import net.minecraft.util.crash.CrashReportSection;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.parts.IPart;
 import appeng.api.util.DimensionalCoord;
 import appeng.me.cache.TickManagerCache;
 
@@ -35,22 +36,15 @@ public class TickTracker implements Comparable<TickTracker> {
     private final IGridTickable gt;
     private final IGridNode node;
 
-    private final long LastFiveTicksTime = 0;
-
     private long lastTick;
     private int currentRate;
 
-    public TickTracker(final TickingRequest req, final IGridNode node, final IGridTickable gt, final long currentTick,
-            final TickManagerCache tickManagerCache) {
+    public TickTracker(final TickingRequest req, final IGridNode node, final IGridTickable gt, final long currentTick) {
         this.request = req;
         this.gt = gt;
         this.node = node;
         this.setCurrentRate((req.minTickRate + req.maxTickRate) / 2);
         this.setLastTick(currentTick);
-    }
-
-    public long getAvgNanos() {
-        return (this.LastFiveTicksTime / 5);
     }
 
     @Override

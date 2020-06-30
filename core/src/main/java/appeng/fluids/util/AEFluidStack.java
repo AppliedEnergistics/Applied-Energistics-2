@@ -259,7 +259,10 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
     @Override
     public void writeToPacket(final PacketByteBuf buffer) {
         buffer.writeBoolean(this.isCraftable());
-        buffer.writeCompoundTag(this.getFluidStack().toTag());
+        // Cannot use writeFluidStack here because for FluidStacks with amount==0, it
+        // will not write the fluid
+        buffer.writeRegistryIdUnsafe(ForgeRegistries.FLUIDS, fluid);
+        buffer.writeCompoundTag(getFluidStack().getTag());
         buffer.writeVarLong(this.getStackSize());
         buffer.writeVarLong(this.getCountRequestable());
     }

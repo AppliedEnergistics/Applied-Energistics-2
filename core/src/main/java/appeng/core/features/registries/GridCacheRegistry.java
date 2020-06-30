@@ -18,54 +18,57 @@
 
 package appeng.core.features.registries;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nonnull;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridCache;
+import appeng.api.networking.IGridCacheFactory;
 import appeng.api.networking.IGridCacheRegistry;
 import appeng.core.AELog;
 
 public final class GridCacheRegistry implements IGridCacheRegistry {
-    private final Map<Class<? extends IGridCache>, Class<? extends IGridCache>> caches = new HashMap<>();
+
+    private final List<GridCacheRegistration<?>> registry = new ArrayList<>();
 
     @Override
-    public void registerGridCache(final Class<? extends IGridCache> iface,
-            final Class<? extends IGridCache> implementation) {
-        if (iface.isAssignableFrom(implementation)) {
-            this.caches.put(iface, implementation);
-        } else {
-            throw new IllegalArgumentException(
-                    "Invalid setup, grid cache must either be the same class, or an interface that the implementation implements. Gotten: "
-                            + iface + " and " + implementation);
+    public synchronized <T extends IGridCache> void registerGridCache(@Nonnull Class<T> iface,
+            @Nonnull IGridCacheFactory<T> factory) {
+
+        if (registry.stream().anyMatch(r -> r.cacheClass.equals(iface))) {
+            throw new IllegalArgumentException("Implementation for grid cache " + iface + " is already registered!");
         }
+
+        registry.add(new GridCacheRegistration<>(iface, factory));
+
     }
 
     @Override
-    public HashMap<Class<? extends IGridCache>, IGridCache> createCacheInstance(final IGrid g) {
-        final HashMap<Class<? extends IGridCache>, IGridCache> map = new HashMap<>();
+    public Map<Class<? extends IGridCache>, IGridCache> createCacheInstance(final IGrid g) {
+        final Map<Class<? extends IGridCache>, IGridCache> map = new HashMap<>(registry.size());
 
-        for (final Class<? extends IGridCache> iface : this.caches.keySet()) {
-            try {
-                final Constructor<? extends IGridCache> c = this.caches.get(iface).getConstructor(IGrid.class);
-                map.put(iface, c.newInstance(g));
-            } catch (final NoSuchMethodException e) {
-                AELog.error("Grid Caches must have a constructor with IGrid as the single param.");
-                throw new IllegalArgumentException(e);
-            } catch (final InvocationTargetException e) {
-                AELog.error("Grid Caches must have a constructor with IGrid as the single param.");
-                throw new IllegalStateException(e);
-            } catch (final InstantiationException e) {
-                AELog.error("Grid Caches must have a constructor with IGrid as the single param.");
-                throw new IllegalStateException(e);
-            } catch (final IllegalAccessException e) {
-                AELog.error("Grid Caches must have a constructor with IGrid as the single param.");
-                throw new IllegalStateException(e);
-            }
+        for (GridCacheRegistration<?> registration : registry) {
+            map.put(registration.cacheClass, registration.factory.createCache(g));
         }
 
         return map;
     }
+
+    private static class GridCacheRegistration<T extends IGridCache> {
+
+        private final Class<T> cacheClass;
+
+        private final IGridCacheFactory<T> factory;
+
+        public GridCacheRegistration(Class<T> cacheClass, IGridCacheFactory<T> factory) {
+            this.cacheClass = cacheClass;
+            this.factory = factory;
+        }
+
+    }
+
 }

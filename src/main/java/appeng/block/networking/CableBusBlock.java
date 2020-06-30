@@ -83,7 +83,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
     public CableBusBlock() {
         super(defaultProps(AEGlassMaterial.INSTANCE)
                 .nonOpaque()
-                .dropsNothing());
+                .dropsNothing().variableOpacity());
     }
 
     @Override

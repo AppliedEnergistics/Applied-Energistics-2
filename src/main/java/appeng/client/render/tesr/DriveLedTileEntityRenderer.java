@@ -7,6 +7,9 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.renderer.RenderState;
@@ -14,7 +17,6 @@ import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import appeng.block.storage.DriveSlotState;
 import appeng.client.render.FacingToRotation;
@@ -25,6 +27,14 @@ import appeng.tile.storage.DriveBlockEntity;
  */
 @Environment(EnvType.CLIENT)
 public class DriveLedTileEntityRenderer extends BlockEntityRenderer<DriveBlockEntity> {
+
+    private static final RenderState.TransparencyState TRANSLUCENT_TRANSPARENCY = new RenderState.TransparencyState(
+            "translucent_transparency", () -> {
+                RenderSystem.enableBlend();
+                RenderSystem.defaultBlendFunc();
+            }, () -> {
+                RenderSystem.disableBlend();
+            });
 
     private static final EnumMap<DriveSlotState, Vector3f> STATE_COLORS;
 
@@ -80,11 +90,9 @@ public class DriveLedTileEntityRenderer extends BlockEntityRenderer<DriveBlockEn
         FacingToRotation.get(drive.getForward(), drive.getUp()).push(ms);
         ms.translate(-0.5, -0.5, -0.5);
 
-        RenderState.TransparencyState TRANSLUCENT_TRANSPARENCY = ObfuscationReflectionHelper
-                .getPrivateValue(RenderState.class, null, "field_228515_g_");
-        RenderLayer rt = RenderLayer.makeType("ae_drive_leds", DefaultVertexFormats.POSITION_COLOR, 7, 32565, false, true,
-                RenderLayer.State.getBuilder().transparency(TRANSLUCENT_TRANSPARENCY).build(false));
-        VertexConsumer buffer = buffers.getBuffer(STATE);
+        RenderType rt = RenderType.makeType("ae_drive_leds", DefaultVertexFormats.POSITION_COLOR, 7, 32565, false, true,
+                RenderType.State.getBuilder().transparency(TRANSLUCENT_TRANSPARENCY).build(false));
+        IVertexBuilder buffer = buffers.getBuffer(STATE);
 
         for (int row = 0; row < 5; row++) {
             for (int col = 0; col < 2; col++) {
