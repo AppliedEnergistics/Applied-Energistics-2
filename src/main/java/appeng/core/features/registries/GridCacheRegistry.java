@@ -40,7 +40,7 @@ public final class GridCacheRegistry implements IGridCacheRegistry {
             @Nonnull IGridCacheFactory<T> factory) {
 
         if (registry.stream().anyMatch(r -> r.cacheClass.equals(iface))) {
-            throw new IllegalArgumentException("Implementation for grid cache "+ iface + " is already registered!");
+            throw new IllegalArgumentException("Implementation for grid cache " + iface + " is already registered!");
         }
 
         registry.add(new GridCacheRegistration<>(iface, factory));
