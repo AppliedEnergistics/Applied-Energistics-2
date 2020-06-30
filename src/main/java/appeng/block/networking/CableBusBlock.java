@@ -81,7 +81,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
 
     public CableBusBlock() {
-        super(defaultProps(AEGlassMaterial.INSTANCE).notSolid().noDrops());
+        super(defaultProps(AEGlassMaterial.INSTANCE).notSolid().noDrops().variableOpacity());
     }
 
     @Override
