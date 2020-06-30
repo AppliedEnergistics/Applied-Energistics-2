@@ -25,9 +25,9 @@ import net.minecraft.crash.CrashReportCategory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.parts.IPart;
 import appeng.api.util.DimensionalCoord;
 import appeng.me.cache.TickManagerCache;
-import appeng.parts.AEBasePart;
 
 public class TickTracker implements Comparable<TickTracker> {
 
@@ -72,8 +72,8 @@ public class TickTracker implements Comparable<TickTracker> {
     }
 
     public void addEntityCrashInfo(final CrashReportCategory crashreportcategory) {
-        if (this.getGridTickable() instanceof AEBasePart) {
-            final AEBasePart part = (AEBasePart) this.getGridTickable();
+        if (this.getGridTickable() instanceof IPart) {
+            final IPart part = (IPart) this.getGridTickable();
             part.addEntityCrashInfo(crashreportcategory);
         }
 
