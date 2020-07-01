@@ -18,6 +18,9 @@
 
 package appeng.core.api;
 
+import appeng.api.util.AEPartLocation;
+import appeng.me.GridConnection;
+import appeng.me.GridNode;
 import com.google.common.base.Preconditions;
 
 import appeng.api.exceptions.FailedConnectionException;
@@ -42,8 +45,7 @@ public class ApiGrid implements IGridHelper {
             throw new IllegalStateException("Grid features for " + blk + " are server side only.");
         }
 
-        // FIXME FABRIC return new GridNode(blk);
-        throw new IllegalStateException();
+        return new GridNode(blk);
     }
 
     @Override
@@ -51,8 +53,7 @@ public class ApiGrid implements IGridHelper {
         Preconditions.checkNotNull(a);
         Preconditions.checkNotNull(b);
 
-        // FIXME FABRIC return GridConnection.create(a, b, AEPartLocation.INTERNAL);
-        throw new IllegalStateException();
+        return GridConnection.create(a, b, AEPartLocation.INTERNAL);
     }
 
 }

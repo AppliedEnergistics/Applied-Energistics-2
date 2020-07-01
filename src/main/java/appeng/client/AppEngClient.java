@@ -13,6 +13,7 @@ import appeng.core.AppEng;
 import appeng.core.AppEngBase;
 import appeng.core.features.registries.PartModels;
 import appeng.core.sync.network.ClientNetworkHandler;
+import appeng.core.worlddata.WorldData;
 import appeng.entity.*;
 import appeng.hooks.ClientTickHandler;
 import appeng.util.Platform;
@@ -22,6 +23,7 @@ import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.ItemEntityRenderer;
 import net.minecraft.client.render.model.BakedModel;
@@ -69,6 +71,12 @@ public final class AppEngClient extends AppEngBase {
         registerEntityRenderers();
         registerItemColors();
         registerTextures();
+
+        // On the client, we'll register for server startup/shutdown to properly setup WorldData
+        // each time the integrated server starts&stops
+        ServerLifecycleEvents.SERVER_STARTED.register(WorldData::onServerStarting);
+        ServerLifecycleEvents.SERVER_STOPPING.register(server -> WorldData.instance().onServerStopping());
+        ServerLifecycleEvents.SERVER_STOPPED.register(server -> WorldData.instance().onServerStoppped());
     }
 
     @Override

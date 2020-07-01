@@ -6,7 +6,9 @@ import appeng.client.ActionKey;
 import appeng.client.EffectType;
 import appeng.core.AppEngBase;
 import appeng.core.sync.network.ServerNetworkHandler;
+import appeng.core.worlddata.WorldData;
 import appeng.hooks.TickHandler;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.server.PlayerStream;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.util.InputUtil;
@@ -32,6 +34,19 @@ public final class AppEngServer extends AppEngBase {
         this.server = server;
         this.networkHandler = new ServerNetworkHandler();
         this.tickHandler = new TickHandler();
+
+        // For a dedicated server, the lifecycle of WorldData is much simpler
+        WorldData.onServerStarting(server);
+        ServerLifecycleEvents.SERVER_STOPPING.register(s -> onServerStopping());
+        ServerLifecycleEvents.SERVER_STOPPED.register(s -> onServerStopped());
+    }
+
+    private void onServerStopping() {
+        WorldData.instance().onServerStopping();
+    }
+
+    private void onServerStopped() {
+        WorldData.instance().onServerStoppped();
     }
 
     @Override
