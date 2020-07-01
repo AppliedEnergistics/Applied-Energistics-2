@@ -18,10 +18,9 @@
 
 package appeng.block.misc;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -52,8 +51,7 @@ public class TinyTNTBlock extends AEBaseBlock {
             .create(new AxisAlignedBB(0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f));
 
     public TinyTNTBlock(Block.Properties props) {
-        super(props);
-        setFullSize(setOpaque(false));
+        super(defaultProps(Material.TNT).notSolid());
     }
 
     @Override

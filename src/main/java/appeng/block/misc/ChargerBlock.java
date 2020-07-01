@@ -64,8 +64,6 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
 
     public ChargerBlock() {
         super(defaultProps(Material.IRON).notSolid());
-
-        this.setFullSize(this.setOpaque(false));
     }
 
     @Override

@@ -68,7 +68,7 @@ import appeng.client.render.cablebus.CableBusBreakingParticle;
 import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ClickPacket;
-import appeng.helpers.AEGlassMaterial;
+import appeng.helpers.AEMaterials;
 import appeng.integration.abstraction.IAEFacade;
 import appeng.parts.ICableBusContainer;
 import appeng.parts.NullCableBusContainer;
@@ -81,7 +81,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
 
     public CableBusBlock() {
-        super(defaultProps(AEGlassMaterial.INSTANCE).notSolid().noDrops().variableOpacity());
+        super(defaultProps(AEMaterials.GLASS).notSolid().noDrops().variableOpacity());
     }
 
     @Override
