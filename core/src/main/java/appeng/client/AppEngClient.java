@@ -4,17 +4,21 @@ import appeng.api.parts.CableRenderMode;
 import appeng.bootstrap.ModelsReloadCallback;
 import appeng.bootstrap.components.IItemColorRegistrationComponent;
 import appeng.bootstrap.components.IModelBakeComponent;
+import appeng.client.render.cablebus.CableBusModelLoader;
 import appeng.client.render.effects.*;
 import appeng.client.render.tesr.SkyChestTESR;
 import appeng.core.Api;
 import appeng.core.ApiDefinitions;
 import appeng.core.AppEng;
 import appeng.core.AppEngBase;
+import appeng.core.features.registries.PartModels;
 import appeng.core.sync.network.ClientNetworkHandler;
 import appeng.entity.*;
 import appeng.hooks.ClientTickHandler;
+import appeng.util.Platform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
@@ -60,6 +64,7 @@ public final class AppEngClient extends AppEngBase {
 
         ModelsReloadCallback.EVENT.register(this::onModelsReloaded);
 
+        registerModelProviders();
         registerParticleRenderers();
         registerEntityRenderers();
         registerItemColors();
@@ -93,7 +98,7 @@ public final class AppEngClient extends AppEngBase {
 
     @Override
     public HitResult getRTR() {
-        return null;
+        return client.crosshairTarget;
     }
 
     @Override
@@ -103,7 +108,14 @@ public final class AppEngClient extends AppEngBase {
 
     @Override
     public CableRenderMode getRenderMode() {
-        return null;
+        if (Platform.isServer()) {
+            return super.getRenderMode();
+        }
+
+        final MinecraftClient mc = MinecraftClient.getInstance();
+        final PlayerEntity player = mc.player;
+
+        return this.renderModeForPlayer(player);
     }
 
     public void triggerUpdates() {
@@ -188,6 +200,33 @@ public final class AppEngClient extends AppEngBase {
                         }
                     });
         }
+    }
+
+    private void registerModelProviders() {
+
+        ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> new CableBusModelLoader((PartModels) Api.INSTANCE.registries().partModels()));
+
+// FIXME FABRIC       addBuiltInModel("glass", GlassModel::new);
+// FIXME FABRIC       addBuiltInModel("sky_compass", SkyCompassModel::new);
+// FIXME FABRIC       addBuiltInModel("dummy_fluid_item", DummyFluidItemModel::new);
+// FIXME FABRIC       addBuiltInModel("memory_card", MemoryCardModel::new);
+// FIXME FABRIC       addBuiltInModel("biometric_card", BiometricCardModel::new);
+// FIXME FABRIC       addBuiltInModel("drive", DriveModel::new);
+// FIXME FABRIC       addBuiltInModel("color_applicator", ColorApplicatorModel::new);
+// FIXME FABRIC       addBuiltInModel("spatial_pylon", SpatialPylonModel::new);
+// FIXME FABRIC       addBuiltInModel("paint_splotches", PaintSplotchesModel::new);
+// FIXME FABRIC       addBuiltInModel("quantum_bridge_formed", QnbFormedModel::new);
+// FIXME FABRIC       addBuiltInModel("p2p_tunnel_frequency", P2PTunnelFrequencyModel::new);
+// FIXME FABRIC       addBuiltInModel("facade", FacadeItemModel::new);
+// FIXME FABRIC       ModelLoaderRegistry.registerLoader(new Identifier(AppEng.MOD_ID, "encoded_pattern"),
+// FIXME FABRIC               EncodedPatternModelLoader.INSTANCE);
+// FIXME FABRIC       ModelLoaderRegistry.registerLoader(new Identifier(AppEng.MOD_ID, "part_plane"),
+// FIXME FABRIC               PlaneModelLoader.INSTANCE);
+// FIXME FABRIC       ModelLoaderRegistry.registerLoader(new Identifier(AppEng.MOD_ID, "crafting_cube"),
+// FIXME FABRIC               CraftingCubeModelLoader.INSTANCE);
+// FIXME FABRIC       ModelLoaderRegistry.registerLoader(new Identifier(AppEng.MOD_ID, "uvlightmap"), UVLModelLoader.INSTANCE);
+// FIXME FABRIC       ModelLoaderRegistry.registerLoader(new Identifier(AppEng.MOD_ID, "cable_bus"),
+// FIXME FABRIC               new CableBusModelLoader());
     }
 
 }

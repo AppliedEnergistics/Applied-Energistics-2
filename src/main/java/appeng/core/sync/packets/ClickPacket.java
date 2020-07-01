@@ -82,7 +82,7 @@ public class ClickPacket extends BasePacket {
 
     // API for when an item in hand was right-clicked, with no block context
     public ClickPacket(Hand hand) {
-        this(BlockPos.ZERO, null, 0, 0, 0, hand);
+        this(BlockPos.ORIGIN, null, 0, 0, 0, hand);
     }
 
     private ClickPacket(final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ,

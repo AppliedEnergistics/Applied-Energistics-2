@@ -56,9 +56,9 @@ public class CableBusStorage {
 
         if (this.sides != null && this.sides.length > x && part == null) {
             this.sides[x] = null;
-            this.sides = this.decrement(this.sides, true);
+            this.sides = this.shrink(this.sides, true);
         } else if (part != null) {
-            this.sides = this.expand(this.sides, x, true);
+            this.sides = this.grow(this.sides, x, true);
             this.sides[x] = part;
         }
     }
@@ -112,9 +112,9 @@ public class CableBusStorage {
     public void setFacade(final int x, @Nullable final IFacadePart facade) {
         if (this.facades != null && this.facades.length > x && facade == null) {
             this.facades[x] = null;
-            this.facades = this.decrement(this.facades, false);
+            this.facades = this.shrink(this.facades, false);
         } else {
-            this.facades = this.expand(this.facades, x, false);
+            this.facades = this.grow(this.facades, x, false);
             this.facades[x] = facade;
         }
     }

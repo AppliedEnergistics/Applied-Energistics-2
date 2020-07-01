@@ -47,7 +47,7 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
     public ItemGenBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         if (POSSIBLE_ITEMS.isEmpty()) {
-            for (final Item mi : ForgeRegistries.ITEMS) {
+            for (final Item mi : Registry.ITEM) {
                 if (mi != null && mi != Items.AIR) {
                     if (mi.isDamageable()) {
                         ItemStack sampleStack = new ItemStack(mi);

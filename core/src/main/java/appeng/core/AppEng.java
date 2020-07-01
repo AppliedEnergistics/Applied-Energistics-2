@@ -145,27 +145,6 @@ public interface AppEng {
 //        definitions.getRegistry().getBootstrapComponents(IClientSetupComponent.class)
 //                .forEachRemaining(IClientSetupComponent::setup);
 //
-//        addBuiltInModel("glass", GlassModel::new);
-//        addBuiltInModel("sky_compass", SkyCompassModel::new);
-//        addBuiltInModel("dummy_fluid_item", DummyFluidItemModel::new);
-//        addBuiltInModel("memory_card", MemoryCardModel::new);
-//        addBuiltInModel("biometric_card", BiometricCardModel::new);
-//        addBuiltInModel("drive", DriveModel::new);
-//        addBuiltInModel("color_applicator", ColorApplicatorModel::new);
-//        addBuiltInModel("spatial_pylon", SpatialPylonModel::new);
-//        addBuiltInModel("paint_splotches", PaintSplotchesModel::new);
-//        addBuiltInModel("quantum_bridge_formed", QnbFormedModel::new);
-//        addBuiltInModel("p2p_tunnel_frequency", P2PTunnelFrequencyModel::new);
-//        addBuiltInModel("facade", FacadeItemModel::new);
-//        ModelLoaderRegistry.registerLoader(new Identifier(AppEng.MOD_ID, "encoded_pattern"),
-//                EncodedPatternModelLoader.INSTANCE);
-//        ModelLoaderRegistry.registerLoader(new Identifier(AppEng.MOD_ID, "part_plane"),
-//                PlaneModelLoader.INSTANCE);
-//        ModelLoaderRegistry.registerLoader(new Identifier(AppEng.MOD_ID, "crafting_cube"),
-//                CraftingCubeModelLoader.INSTANCE);
-//        ModelLoaderRegistry.registerLoader(new Identifier(AppEng.MOD_ID, "uvlightmap"), UVLModelLoader.INSTANCE);
-//        ModelLoaderRegistry.registerLoader(new Identifier(AppEng.MOD_ID, "cable_bus"),
-//                new CableBusModelLoader((PartModels) Api.INSTANCE.registries().partModels()));
 //
 //    }
 //
@@ -214,7 +193,7 @@ public interface AppEng {
 ////
 ////		if( Platform.isClient() )
 ////		{
-////			AppEng.proxy.preinit();
+////			AppEng.instance().preinit();
 ////		}
 ////
 ////		IntegrationRegistry.INSTANCE.preInit();
@@ -243,7 +222,7 @@ public interface AppEng {
 //        // FIXME CrashReportExtender.registerCrashCallable( new
 //        // IntegrationCrashEnhancement() );
 //
-//        AppEng.proxy.postInit();
+//        AppEng.instance().postInit();
 //        AEConfig.instance().save();
 //
 //        NetworkHandler.init(new Identifier(MOD_ID, "main"));

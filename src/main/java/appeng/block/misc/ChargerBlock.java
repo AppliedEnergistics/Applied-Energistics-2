@@ -109,7 +109,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerBlockEntity> {
                 final double zOff = 0.0;
 
                 for (int bolts = 0; bolts < 3; bolts++) {
-                    if (AppEng.proxy.shouldAddParticles(r)) {
+                    if (AppEng.instance().shouldAddParticles(r)) {
                         MinecraftClient.getInstance().particleManager.addParticle(ParticleTypes.LIGHTNING, xOff + 0.5 + pos.getX(),
                                 yOff + 0.5 + pos.getY(), zOff + 0.5 + pos.getZ(), 0.0, 0.0, 0.0);
                     }

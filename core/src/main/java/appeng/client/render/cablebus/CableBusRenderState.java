@@ -28,9 +28,7 @@ import java.util.Objects;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ILightReader;
-
-import net.minecraftforge.client.model.data.ModelProperty;
+import net.minecraft.world.BlockRenderView;
 
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
@@ -41,8 +39,6 @@ import appeng.api.util.AEColor;
  * transports it to the rendering thread for processing.
  */
 public class CableBusRenderState {
-
-    public static final ModelProperty<CableBusRenderState> PROPERTY = new ModelProperty<>();
 
     // The cable type used for rendering the outgoing connections to other blocks
     // and attached parts
@@ -80,7 +76,7 @@ public class CableBusRenderState {
     private EnumMap<Direction, FacadeRenderState> facades = new EnumMap<>(Direction.class);
 
     // Used for Facades.
-    private WeakReference<ILightReader> world;
+    private WeakReference<BlockRenderView> world;
     private BlockPos pos;
 
     // Contains the bounding boxes of all parts on the cable bus to allow facades to
@@ -90,7 +86,7 @@ public class CableBusRenderState {
     private List<Box> boundingBoxes = new ArrayList<>();
 
     // Additional model data passed to the part models
-    private EnumMap<Direction, IModelData> partModelData = new EnumMap<>(Direction.class);
+    private EnumMap<Direction, Object> partModelData = new EnumMap<>(Direction.class);
 
     public CableCoreType getCoreType() {
         return this.coreType;
@@ -152,11 +148,11 @@ public class CableBusRenderState {
         return this.facades;
     }
 
-    public ILightReader getWorld() {
+    public BlockRenderView getWorld() {
         return this.world.get();
     }
 
-    public void setWorld(ILightReader world) {
+    public void setWorld(BlockRenderView world) {
         this.world = new WeakReference<>(world);
     }
 
@@ -172,7 +168,7 @@ public class CableBusRenderState {
         return this.boundingBoxes;
     }
 
-    public EnumMap<Direction, IModelData> getPartModelData() {
+    public EnumMap<Direction, Object> getPartModelData() {
         return this.partModelData;
     }
 

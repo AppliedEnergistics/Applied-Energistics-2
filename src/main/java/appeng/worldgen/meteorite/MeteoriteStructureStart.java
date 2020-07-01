@@ -26,8 +26,8 @@ import appeng.worldgen.meteorite.fallout.FalloutMode;
 
 public class MeteoriteStructureStart extends StructureStart {
 
-    private final Tag<Block> sandTag = BlockTags.getCollection().getOrCreate(new Identifier("minecraft:sand"));
-    private final Tag<Block> terracottaTag = BlockTags.getCollection()
+    private final Tag<Block> sandTag = BlockTags.getContainer().getOrCreate(new Identifier("minecraft:sand"));
+    private final Tag<Block> terracottaTag = BlockTags.getContainer()
             .getOrCreate(new Identifier("forge:terracotta"));
 
     public MeteoriteStructureStart(Structure<?> p_i225815_1_, int p_i225815_2_, int p_i225815_3_,

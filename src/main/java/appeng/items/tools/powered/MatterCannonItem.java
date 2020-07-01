@@ -226,7 +226,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
         }
 
         try {
-            AppEng.proxy.sendToAllNearExcept(null, d0, d1, d2, 128, w,
+            AppEng.instance().sendToAllNearExcept(null, d0, d1, d2, 128, w,
                     new MatterCannonPacket(d0, d1, d2, (float) direction.x, (float) direction.y, (float) direction.z,
                             (byte) (pos.getType() == HitResult.Type.MISS ? 32
                                     : pos.getPos().squaredDistanceTo(vec) + 1)));
@@ -265,7 +265,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                 }
 
                 final BlockState whatsThere = w.getBlockState(hitPos);
-                if (whatsThere.getMaterial().isReplaceable() && w.isAirBlock(hitPos)) {
+                if (whatsThere.getMaterial().isReplaceable() && w.isAir(hitPos)) {
                     AEApi.instance().definitions().blocks().paint().maybeBlock().ifPresent(paintBlock -> {
                         w.setBlockState(hitPos, paintBlock.getDefaultState(), 3);
                     });
@@ -335,7 +335,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
             }
 
             try {
-                AppEng.proxy.sendToAllNearExcept(null, d0, d1, d2, 128, w,
+                AppEng.instance().sendToAllNearExcept(null, d0, d1, d2, 128, w,
                         new MatterCannonPacket(d0, d1, d2, (float) direction.x, (float) direction.y,
                                 (float) direction.z, (byte) (pos.getType() == HitResult.Type.MISS ? 32
                                         : pos.getPos().squaredDistanceTo(vec) + 1)));

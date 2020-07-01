@@ -25,6 +25,7 @@ import javax.annotation.Nullable;
 
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -42,7 +43,6 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
 
 import appeng.api.AEApi;
 import appeng.api.config.YesNo;
@@ -460,7 +460,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
     private void updateRedstone() {
         final BlockEntity te = this.getTile();
-        this.hasRedstone = te.getWorld().getRedstonePowerFromNeighbors(te.getPos()) != 0 ? YesNo.YES : YesNo.NO;
+        this.hasRedstone = te.getWorld().getReceivedRedstonePower(te.getPos()) != 0 ? YesNo.YES : YesNo.NO;
     }
 
     private void updateDynamicRender() {
@@ -740,7 +740,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
             if (p != null) {
                 final ItemStack is = p.getItemStack(PartItemStack.NETWORK);
 
-                data.writeVarInt(Item.getIdFromItem(is.getItem()));
+                data.writeVarInt(Item.getRawId(is.getItem()));
 
                 p.writeToStream(data);
             }
@@ -761,7 +761,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
                 final int itemID = data.readVarInt();
 
-                final Item myItem = Item.getItemById(itemID);
+                final Item myItem = Item.byRawId(itemID);
 
                 final ItemStack current = p != null ? p.getItemStack(PartItemStack.NETWORK) : null;
                 if (current != null && current.getItem() == myItem) {
@@ -1030,7 +1030,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
             World world = getTile().getWorld();
             if (blockState != null && textureItem != null && world != null) {
                 return new FacadeRenderState(blockState,
-                        !facade.getBlockState().isOpaqueCube(world, getTile().getPos()));
+                        !facade.getBlockState().isOpaqueFullCube(world, getTile().getPos()));
             }
         }
 
@@ -1038,7 +1038,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     }
 
     /**
-     * See {@link net.minecraft.block.Block#getShape}
+     * See {@link net.minecraft.block.Block#getOutlineShape}
      */
     public VoxelShape getOutlineShape() {
         if (cachedShape == null) {
@@ -1092,7 +1092,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
         VoxelShape shape = VoxelShapes.empty();
         for (final Box bx : boxes) {
-            shape = VoxelShapes.or(shape, VoxelShapes.cuboid(bx));
+            shape = VoxelShapes.union(shape, VoxelShapes.cuboid(bx));
         }
         return shape;
     }

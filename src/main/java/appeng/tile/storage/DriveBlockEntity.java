@@ -189,7 +189,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
             if (idx > 0) {
                 --idx;
                 String itemId = uniqueStrs[idx];
-                item = ForgeRegistries.ITEMS.getValue(new Identifier(itemId));
+                item = Registry.ITEM.get(new Identifier(itemId));
             }
             if (cellItems[i] != item) {
                 changed = true;

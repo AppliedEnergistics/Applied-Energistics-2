@@ -23,9 +23,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
 /**
  * A modified version of the Minecraft text field. You can initialize it over
@@ -138,7 +138,7 @@ public class AETextField extends TextFieldWidget {
         RenderSystem.disableTexture();
         RenderSystem.enableColorLogicOp();
         RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-        bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
+        bufferbuilder.begin(7, VertexFormats.POSITION);
         bufferbuilder.pos(startX, endY, 0.0D).endVertex();
         bufferbuilder.pos(endX, endY, 0.0D).endVertex();
         bufferbuilder.pos(endX, startY, 0.0D).endVertex();

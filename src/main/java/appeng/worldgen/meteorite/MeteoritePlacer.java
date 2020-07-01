@@ -339,7 +339,7 @@ public final class MeteoritePlacer {
 
                     // TODO reconsider
                     if (state.getMaterial().isReplaceable()) {
-                        if (!world.isAirBlock(blockPosUp)) {
+                        if (!world.isAir(blockPosUp)) {
                             final BlockState stateUp = world.getBlockState(blockPosUp);
                             world.setBlockState(blockPos, stateUp, 3);
                         } else if (randomShit < 100 * this.crater) {
@@ -362,7 +362,7 @@ public final class MeteoritePlacer {
                         }
                     } else {
                         // decay.
-                        if (world.isAirBlock(blockPosUp)) {
+                        if (world.isAir(blockPosUp)) {
                             if (Math.random() > 0.4) {
                                 final double dx = i - x;
                                 final double dy = j - y;

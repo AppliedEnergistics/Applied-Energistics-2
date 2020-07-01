@@ -22,9 +22,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
+import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
+import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
@@ -42,36 +46,27 @@ import appeng.client.render.cablebus.FacadeBuilder;
  *
  * @author covers1624
  */
-public class FacadeBakedItemModel extends DelegateBakedModel {
+public class FacadeBakedItemModel extends ForwardingBakedModel implements FabricBakedModel {
 
     private final ItemStack textureStack;
     private final FacadeBuilder facadeBuilder;
     private List<BakedQuad> quads = null;
 
     protected FacadeBakedItemModel(BakedModel base, ItemStack textureStack, FacadeBuilder facadeBuilder) {
-        super(base);
+        this.wrapped = base;
         this.textureStack = textureStack;
         this.facadeBuilder = facadeBuilder;
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
-        return getQuads(state, side, rand, EmptyModelData.INSTANCE);
-    }
+    public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
+        super.emitItemQuads(stack, randomSupplier, context);
 
-    @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand,
-            IModelData data) {
-        if (side != null) {
-            return Collections.emptyList();
-        }
         if (quads == null) {
             quads = new ArrayList<>();
             quads.addAll(this.facadeBuilder.buildFacadeItemQuads(this.textureStack, Direction.NORTH));
-            quads.addAll(this.getBaseModel().getQuads(state, side, rand, data));
             quads = Collections.unmodifiableList(quads);
         }
-        return quads;
     }
 
     @Override

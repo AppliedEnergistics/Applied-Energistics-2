@@ -25,6 +25,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.texture.SpriteAtlasTexture;
@@ -37,7 +38,6 @@ import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
@@ -116,7 +116,7 @@ public class MolecularAssemblerRenderer extends BlockEntityRenderer<MolecularAss
         if (status.getTicksUntilParticles() <= 0) {
             status.setTicksUntilParticles(4);
 
-            if (AppEng.proxy.shouldAddParticles(particleRandom)) {
+            if (AppEng.instance().shouldAddParticles(particleRandom)) {
                 for (int x = 0; x < (int) Math.ceil(status.getSpeed() / 5.0); x++) {
                     minecraft.particleManager.addParticle(ParticleTypes.CRAFTING, centerX, centerY, centerZ, 0, 0, 0);
                 }
@@ -156,7 +156,7 @@ public class MolecularAssemblerRenderer extends BlockEntityRenderer<MolecularAss
                 .transparency(TRANSLUCENT_TRANSPARENCY).alpha(new RenderState.AlphaState(0.05F))
                 .lightmap(disableLightmap).build(true);
 
-        return RenderLayer.makeType("ae2_translucent_alphatest", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP,
+        return RenderLayer.makeType("ae2_translucent_alphatest", VertexFormats.POSITION_COLOR_TEX_LIGHTMAP,
                 GL11.GL_QUADS, 256, glState);
     }
 

@@ -71,7 +71,7 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
 
         final QuartzGrowthAcceleratorBlockEntity cga = this.getBlockEntity(w, pos);
 
-        if (cga != null && cga.isPowered() && AppEng.proxy.shouldAddParticles(r)) {
+        if (cga != null && cga.isPowered() && AppEng.instance().shouldAddParticles(r)) {
             final double d0 = r.nextFloat() - 0.5F;
             final double d1 = r.nextFloat() - 0.5F;
 

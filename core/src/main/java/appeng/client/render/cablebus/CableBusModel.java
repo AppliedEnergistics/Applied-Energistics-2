@@ -28,24 +28,23 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.IModelTransform;
-import net.minecraft.client.render.model.IUnbakedModel;
-import net.minecraft.client.render.model.json.ModelOverrideList;
+import net.minecraft.client.render.model.ModelBakeSettings;
+import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.Identifier;
-import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.geometry.IModelGeometry;
 
 import appeng.api.util.AEColor;
 import appeng.core.AELog;
 import appeng.core.features.registries.PartModels;
 
+import javax.annotation.Nullable;
+
 /**
  * The built-in model for the cable bus block.
  */
-public class CableBusModel implements IModelGeometry<CableBusModel> {
+public class CableBusModel implements UnbakedModel {
 
     private final PartModels partModels;
 
@@ -54,12 +53,17 @@ public class CableBusModel implements IModelGeometry<CableBusModel> {
     }
 
     @Override
-    public BakedModel bake(IModelConfiguration owner, ModelLoader bakery,
-                           Function<SpriteIdentifier, Sprite> spriteGetter, IModelTransform modelTransform,
-                           ModelOverrideList overrides, Identifier modelLocation) {
-        Map<Identifier, BakedModel> partModels = this.loadPartModels(bakery, spriteGetter, modelTransform);
+    public Collection<Identifier> getModelDependencies() {
 
-        CableBuilder cableBuilder = new CableBuilder(spriteGetter);
+        return Collections.emptyList();
+    }
+
+    @Nullable
+    @Override
+    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
+        Map<Identifier, BakedModel> partModels = this.loadPartModels(loader, rotationContainer);
+
+        CableBuilder cableBuilder = new CableBuilder(textureGetter);
         FacadeBuilder facadeBuilder = new FacadeBuilder();
 
         // This should normally not be used, but we *have* to provide a particle texture
@@ -71,17 +75,16 @@ public class CableBusModel implements IModelGeometry<CableBusModel> {
     }
 
     @Override
-    public Collection<SpriteIdentifier> getTextures(IModelConfiguration owner,
-                                                    Function<Identifier, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+    public Collection<SpriteIdentifier> getTextureDependencies(Function<Identifier, UnbakedModel> unbakedModelGetter, Set<Pair<String, String>> unresolvedTextureReferences) {
         return Collections.unmodifiableList(CableBuilder.getTextures());
     }
 
-    private Map<Identifier, BakedModel> loadPartModels(ModelLoader bakery,
-                                                       Function<SpriteIdentifier, Sprite> spriteGetterIn, IModelTransform transformIn) {
+    private Map<Identifier, BakedModel> loadPartModels(ModelLoader loader,
+                                                       ModelBakeSettings rotationContainer) {
         ImmutableMap.Builder<Identifier, BakedModel> result = ImmutableMap.builder();
 
         for (Identifier location : this.partModels.getModels()) {
-            BakedModel bakedModel = bakery.getBakedModel(location, transformIn, spriteGetterIn);
+            BakedModel bakedModel = loader.bake(location, rotationContainer);
             if (bakedModel == null) {
                 AELog.warn("Failed to bake part model {}", location);
             } else {

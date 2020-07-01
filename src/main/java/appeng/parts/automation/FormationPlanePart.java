@@ -32,7 +32,7 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.BlockItem;
-import net.minecraft.item.DirectionalPlaceContext;
+import net.minecraft.item.AutomaticItemPlacementContext;
 import net.minecraft.item.FireworkRocketItem;
 import net.minecraft.item.FireworkStarItem;
 import net.minecraft.item.Item;
@@ -243,31 +243,31 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
                         // Up or Down, Attempt 1??
                         if (side.xOffset == 0 && side.zOffset == 0) {
-                            Worked = i.onItemUse(new DirectionalPlaceContext(w, placePos.offset(side.getFacing()),
+                            Worked = i.onItemUse(new AutomaticItemPlacementContext(w, placePos.offset(side.getFacing()),
                                     lookDirection, is, side.getFacing())) == ActionResult.SUCCESS;
                         }
 
                         // Up or Down, Attempt 2??
                         if (!Worked && side.xOffset == 0 && side.zOffset == 0) {
-                            Worked = i.onItemUse(new DirectionalPlaceContext(w,
+                            Worked = i.onItemUse(new AutomaticItemPlacementContext(w,
                                     placePos.offset(side.getFacing().getOpposite()), lookDirection, is,
                                     side.getFacing().getOpposite())) == ActionResult.SUCCESS;
                         }
 
                         // Horizontal, attempt 1??
                         if (!Worked && side.yOffset == 0) {
-                            Worked = i.onItemUse(new DirectionalPlaceContext(w, placePos.offset(Direction.DOWN),
+                            Worked = i.onItemUse(new AutomaticItemPlacementContext(w, placePos.offset(Direction.DOWN),
                                     lookDirection, is, Direction.DOWN)) == ActionResult.SUCCESS;
                         }
 
                         if (!Worked) {
-                            i.onItemUse(new DirectionalPlaceContext(w, placePos, lookDirection, is,
+                            i.onItemUse(new AutomaticItemPlacementContext(w, placePos, lookDirection, is,
                                     lookDirection.getOpposite()));
                         }
 
                         maxStorage -= is.getCount();
                     } else {
-                        i.onItemUse(new DirectionalPlaceContext(w, placePos, lookDirection, is,
+                        i.onItemUse(new AutomaticItemPlacementContext(w, placePos, lookDirection, is,
                                 lookDirection.getOpposite()));
                         maxStorage -= is.getCount();
                     }

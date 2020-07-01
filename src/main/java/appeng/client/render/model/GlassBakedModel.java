@@ -32,20 +32,20 @@ import javax.annotation.Nullable;
 import com.google.common.base.Strings;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormatElement;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.BlockRenderView;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.ILightReader;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
 
 import net.minecraftforge.client.model.data.ModelDataMap;
@@ -240,7 +240,7 @@ class GlassBakedModel implements IDynamicBakedModel {
         VertexFormat vertexFormat = builder.getVertexFormat();
         for (int e = 0; e < vertexFormat.getElements().size(); e++) {
             VertexFormatElement el = vertexFormat.getElements().get(e);
-            switch (el.getUsage()) {
+            switch (el.getType()) {
                 case POSITION:
                     builder.put(e, (float) x, (float) y, (float) z, 1.0f);
                     break;
@@ -252,8 +252,8 @@ class GlassBakedModel implements IDynamicBakedModel {
                     break;
                 case UV:
                     if (el.getIndex() == 0) {
-                        u = sprite.getInterpolatedU(u);
-                        v = sprite.getInterpolatedV(v);
+                        u = sprite.getFrameU(u);
+                        v = sprite.getFrameV(v);
                         builder.put(e, u, v, 0f, 1f);
                         break;
                     }
@@ -305,8 +305,8 @@ class GlassBakedModel implements IDynamicBakedModel {
 
     @Nonnull
     @Override
-    public IModelData getModelData(@Nonnull ILightReader world, @Nonnull BlockPos pos, @Nonnull BlockState state,
-            @Nonnull IModelData tileData) {
+    public IModelData getModelData(@Nonnull BlockRenderView world, @Nonnull BlockPos pos, @Nonnull BlockState state,
+                                   @Nonnull IModelData tileData) {
 
         EnumSet<Direction> flushWith = EnumSet.noneOf(Direction.class);
         // Test every direction for another glass block

@@ -26,7 +26,7 @@ package appeng.api.networking;
 import javax.annotation.Nonnull;
 
 /**
- * Allows you to create a network wise service, AE2 uses these for providing
+ * Allows you to create a network wide service, AE2 uses these for providing
  * item, spatial, and tunnel services.
  *
  * Any Class that implements this, should have a public default constructor that

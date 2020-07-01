@@ -79,14 +79,14 @@ public class AENetworkBlockEntity extends AEBaseBlockEntity implements IActionHo
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void markRemoved() {
+        super.markRemoved();
         this.getProxy().remove();
     }
 
     @Override
-    public void validate() {
-        super.validate();
+    public void cancelRemoval() {
+        super.cancelRemoval();
         this.getProxy().validate();
     }
 

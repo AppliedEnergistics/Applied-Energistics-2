@@ -29,11 +29,13 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.item.ItemConvertible;
+import net.minecraft.text.Text;
 
 public enum Upgrades {
     /**
@@ -48,7 +50,7 @@ public enum Upgrades {
 
     private final int tier;
     private final List<Supported> supported = new ArrayList<>();
-    private List<ITextComponent> supportedTooltipLines;
+    private List<Text> supportedTooltipLines;
 
     Upgrades(final int tier) {
         this.tier = tier;
@@ -62,7 +64,7 @@ public enum Upgrades {
         return this.supported;
     }
 
-    public void registerItem(final IItemProvider item, final int maxSupported) {
+    public void registerItem(final ItemConvertible item, final int maxSupported) {
         this.registerItem(item, maxSupported, null);
     }
 
@@ -76,23 +78,24 @@ public enum Upgrades {
      *                     items have different maxSupported values, the highest
      *                     will be shown.
      */
-    public void registerItem(final IItemProvider item, final int maxSupported, @Nullable ITextComponent tooltipGroup) {
+    public void registerItem(final ItemConvertible item, final int maxSupported, @Nullable Text tooltipGroup) {
         Preconditions.checkNotNull(item);
         this.supported.add(new Supported(item.asItem(), maxSupported, tooltipGroup));
         supportedTooltipLines = null; // Reset tooltip
     }
 
-    public List<ITextComponent> getTooltipLines() {
+    @Environment(EnvType.CLIENT)
+    public List<Text> getTooltipLines() {
         if (supportedTooltipLines == null) {
             supported.sort(Comparator.comparingInt(o -> o.maxCount));
             supportedTooltipLines = new ArrayList<>(supported.size());
 
             // Use a separate set because the final text will include numbers
-            Set<ITextComponent> namesAdded = new HashSet<>();
+            Set<Text> namesAdded = new HashSet<>();
 
             for (int i = 0; i < supported.size(); i++) {
                 Supported supported = this.supported.get(i);
-                ITextComponent name = supported.item.getName();
+                Text name = supported.item.getName();
 
                 // If the group was already added by a previous item, skip this
                 if (supported.tooltipGroup != null && namesAdded.contains(supported.tooltipGroup)) {
@@ -103,7 +106,7 @@ public enum Upgrades {
                 // instead
                 if (supported.tooltipGroup != null) {
                     for (int j = i + 1; j < this.supported.size(); j++) {
-                        ITextComponent otherGroup = this.supported.get(j).tooltipGroup;
+                        Text otherGroup = this.supported.get(j).tooltipGroup;
                         if (supported.tooltipGroup.equals(otherGroup)) {
                             name = supported.tooltipGroup;
                             break;
@@ -114,7 +117,7 @@ public enum Upgrades {
                 if (namesAdded.add(name)) {
                     // append the supported count only if its > 1
                     if (supported.maxCount > 1) {
-                        name = name.deepCopy().appendText(" (" + supported.maxCount + ")");
+                        name = name.copy().append(" (" + supported.maxCount + ")");
                     }
                     supportedTooltipLines.add(name);
                 }
@@ -133,12 +136,12 @@ public enum Upgrades {
         private final Block block;
         private final int maxCount;
         @Nullable
-        private final ITextComponent tooltipGroup;
+        private final Text tooltipGroup;
 
-        public Supported(Item item, int maxCount, @Nullable ITextComponent tooltipGroup) {
+        public Supported(Item item, int maxCount, @Nullable Text tooltipGroup) {
             this.item = item;
-            if (item.getItem() instanceof BlockItem) {
-                this.block = ((BlockItem) item.getItem()).getBlock();
+            if (item instanceof BlockItem) {
+                this.block = ((BlockItem) item).getBlock();
             } else {
                 this.block = null;
             }

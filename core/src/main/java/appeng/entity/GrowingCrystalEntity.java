@@ -116,7 +116,7 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
 
                 if (this.progress_1000 >= len) {
                     this.progress_1000 = 0;
-                    // FIXME FABRIC AppEng.proxy.spawnEffect(EffectType.Vibrant, this.world, this.getX(), this.getY() + 0.2,
+                    // FIXME FABRIC AppEng.instance().spawnEffect(EffectType.Vibrant, this.world, this.getX(), this.getY() + 0.2,
                     // FIXME FABRIC         this.getZ(), null);
                 }
             } else {

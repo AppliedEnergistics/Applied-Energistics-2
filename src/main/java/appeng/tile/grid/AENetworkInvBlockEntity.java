@@ -78,14 +78,14 @@ public abstract class AENetworkInvBlockEntity extends AEBaseInvBlockEntity imple
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void markRemoved() {
+        super.markRemoved();
         this.getProxy().remove();
     }
 
     @Override
-    public void validate() {
-        super.validate();
+    public void cancelRemoval() {
+        super.cancelRemoval();
         this.getProxy().validate();
     }
 

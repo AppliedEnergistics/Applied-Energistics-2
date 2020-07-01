@@ -21,8 +21,8 @@ package appeng.thirdparty.codechicken.lib.model;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.renderer.vertex.VertexFormatElement;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormatElement;
 
 /**
  * A simple VertexFormat cache. This caches the existence of attributes and
@@ -73,7 +73,7 @@ public class CachedFormat {
         this.elementCount = format.getElements().size();
         for (int i = 0; i < this.elementCount; i++) {
             VertexFormatElement element = format.getElements().get(i);
-            switch (element.getUsage()) {
+            switch (element.getType()) {
                 case POSITION:
                     if (this.hasPosition) {
                         throw new IllegalStateException("Found 2 position elements..");

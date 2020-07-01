@@ -30,6 +30,7 @@ import alexiil.mc.lib.attributes.AttributeProvider;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import com.google.common.collect.Lists;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;

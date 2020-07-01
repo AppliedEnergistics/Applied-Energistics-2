@@ -135,9 +135,9 @@ public class InventoryActionPacket extends BasePacket {
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         if (this.action == InventoryAction.UPDATE_HAND) {
             if (this.slotItem == null) {
-                AppEng.proxy.getPlayers().get(0).inventory.setItemStack(ItemStack.EMPTY);
+                AppEng.instance().getPlayers().get(0).inventory.setItemStack(ItemStack.EMPTY);
             } else {
-                AppEng.proxy.getPlayers().get(0).inventory.setItemStack(this.slotItem.createItemStack());
+                AppEng.instance().getPlayers().get(0).inventory.setItemStack(this.slotItem.createItemStack());
             }
         }
     }

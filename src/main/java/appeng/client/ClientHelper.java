@@ -114,24 +114,7 @@ public class ClientHelper extends ServerHelper {
     }
 
     @Override
-    public HitResult getRTR() {
-        return MinecraftClient.getInstance().objectMouseOver;
-    }
-
-    @Override
     public void postInit() {
-    }
-
-    @Override
-    public CableRenderMode getRenderMode() {
-        if (Platform.isServer()) {
-            return super.getRenderMode();
-        }
-
-        final MinecraftClient mc = MinecraftClient.getInstance();
-        final PlayerEntity player = mc.player;
-
-        return this.renderModeForPlayer(player);
     }
 
 
@@ -149,7 +132,7 @@ public class ClientHelper extends ServerHelper {
     }
 
     private void spawnVibrant(final World w, final double x, final double y, final double z) {
-        if (AppEng.proxy.shouldAddParticles(Platform.getRandom())) {
+        if (AppEng.instance().shouldAddParticles(Platform.getRandom())) {
             final double d0 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
             final double d1 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
             final double d2 = (Platform.getRandomFloat() - 0.5F) * 0.26D;

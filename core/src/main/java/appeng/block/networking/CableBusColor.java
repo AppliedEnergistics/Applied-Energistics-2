@@ -24,7 +24,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ILightReader;
+import net.minecraft.world.BlockRenderView;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -40,7 +40,7 @@ import appeng.tile.networking.CableBusBlockEntity;
 public class CableBusColor implements BlockColorProvider {
 
     @Override
-    public int getColor(BlockState state, @Nullable ILightReader worldIn, @Nullable BlockPos pos, int color) {
+    public int getColor(BlockState state, @Nullable BlockRenderView worldIn, @Nullable BlockPos pos, int color) {
 
         AEColor busColor = AEColor.TRANSPARENT;
 

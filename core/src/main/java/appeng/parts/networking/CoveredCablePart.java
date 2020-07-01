@@ -27,12 +27,11 @@ import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
-import appeng.helpers.Reflected;
 import appeng.util.Platform;
 
-public class SmartCablePart extends CablePart {
-    @Reflected
-    public SmartCablePart(final ItemStack is) {
+public class CoveredCablePart extends CablePart {
+
+    public CoveredCablePart(final ItemStack is) {
         super(is);
     }
 
@@ -48,7 +47,7 @@ public class SmartCablePart extends CablePart {
 
     @Override
     public AECableType getCableConnectionType() {
-        return AECableType.SMART;
+        return AECableType.COVERED;
     }
 
     @Override

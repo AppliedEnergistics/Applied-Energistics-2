@@ -25,7 +25,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ILightReader;
+import net.minecraft.world.BlockRenderView;
 import net.minecraft.world.level.ColorResolver;
 import net.minecraft.world.lighting.WorldLightManager;
 
@@ -35,14 +35,14 @@ import net.minecraft.world.lighting.WorldLightManager;
  *
  * @author covers1624
  */
-public class FacadeBlockAccess implements ILightReader {
+public class FacadeBlockAccess implements BlockRenderView {
 
-    private final ILightReader world;
+    private final BlockRenderView world;
     private final BlockPos pos;
     private final Direction side;
     private final BlockState state;
 
-    public FacadeBlockAccess(ILightReader world, BlockPos pos, Direction side, BlockState state) {
+    public FacadeBlockAccess(BlockRenderView world, BlockPos pos, Direction side, BlockState state) {
         this.world = world;
         this.pos = pos;
         this.side = side;
@@ -69,8 +69,8 @@ public class FacadeBlockAccess implements ILightReader {
     }
 
     @Override
-    public WorldLightManager getLightManager() {
-        return world.getLightManager();
+    public WorldLightManager getLightingProvider() {
+        return world.getLightingProvider();
     }
 
     @Override

@@ -20,11 +20,11 @@ package appeng.client.render.model;
 
 import java.util.List;
 
+import net.minecraft.client.render.VertexFormatElement;
 import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.renderer.vertex.VertexFormatElement;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.util.math.Direction;
 import net.minecraftforge.client.model.pipeline.QuadGatheringTransformer;
 
@@ -48,9 +48,9 @@ final class MatrixVertexTransformer extends QuadGatheringTransformer {
         for (int v = 0; v < 4; v++) {
             for (int e = 0; e < count; e++) {
                 VertexFormatElement element = elements.get(e);
-                if (element.getUsage() == VertexFormatElement.Usage.POSITION) {
+                if (element.getType() == VertexFormatElement.Usage.POSITION) {
                     this.parent.put(e, this.transform(this.quadData[e][v], element.getElementCount()));
-                } else if (element.getUsage() == VertexFormatElement.Usage.NORMAL) {
+                } else if (element.getType() == VertexFormatElement.Usage.NORMAL) {
                     this.parent.put(e, this.transformNormal(this.quadData[e][v]));
                 } else {
                     this.parent.put(e, this.quadData[e][v]);

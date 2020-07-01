@@ -23,6 +23,8 @@ import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.ITileDefinition;
 import appeng.api.features.AEFeature;
 import appeng.block.misc.*;
+import appeng.block.networking.CableBusBlock;
+import appeng.block.networking.CableBusRendering;
 import appeng.block.storage.SkyChestBlock;
 import appeng.bootstrap.*;
 import appeng.bootstrap.components.IInitComponent;
@@ -35,6 +37,8 @@ import appeng.entity.TinyTNTPrimedEntity;
 import appeng.hooks.TinyTNTDispenseItemBehavior;
 import appeng.tile.misc.LightDetectorBlockEntity;
 import appeng.tile.misc.SkyCompassBlockEntity;
+import appeng.tile.networking.CableBusBlockEntity;
+import appeng.tile.networking.CableBusTESR;
 import appeng.tile.storage.SkyChestBlockEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -516,16 +520,16 @@ public final class ApiBlocks implements IBlocks {
                         () -> new AEStairsBlock(this.quartzPillar().block().getDefaultState(), QUARTZ_PROPERTIES))
                 .addFeatures(AEFeature.CERTUS).build();
 
-// FIXME        this.multiPart = registry.block("cable_bus", CableBusBlock::new).rendering(new CableBusRendering())
-// FIXME                .tileEntity(registry.tileEntity("cable_bus", CableBusBlockEntity.class, CableBusBlockEntity::new)
-// FIXME                        .rendering(new TileEntityRenderingCustomizer<CableBusBlockEntity>() {
-// FIXME                            @Override
-// FIXME                            @Environment(EnvType.CLIENT)
-// FIXME                            public void customize(TileEntityRendering<CableBusBlockEntity> rendering) {
-// FIXME                                rendering.tileEntityRenderer(CableBusTESR::new);
-// FIXME                            }
-// FIXME                        }).build())
-// FIXME                .build();
+        this.multiPart = registry.block("cable_bus", CableBusBlock::new).rendering(new CableBusRendering())
+                .tileEntity(registry.tileEntity("cable_bus", CableBusBlockEntity.class, CableBusBlockEntity::new)
+                        .rendering(new TileEntityRenderingCustomizer<CableBusBlockEntity>() {
+                            @Override
+                            @Environment(EnvType.CLIENT)
+                            public void customize(TileEntityRendering<CableBusBlockEntity> rendering) {
+                                rendering.tileEntityRenderer(CableBusTESR::new);
+                            }
+                        }).build())
+                .build();
 
         this.skyStoneSlab = deco.block("sky_stone_slab", () -> new SlabBlock(SKYSTONE_PROPERTIES))
                 .addFeatures(AEFeature.SKY_STONE).build();

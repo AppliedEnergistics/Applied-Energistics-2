@@ -18,11 +18,11 @@
 
 package appeng.thirdparty.codechicken.lib.model;
 
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
@@ -275,7 +275,7 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
      * @return The BakedQuad.
      */
     public BakedQuad bake() {
-        if (format.format != DefaultVertexFormats.BLOCK) {
+        if (format.format != VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL) {
             throw new IllegalStateException("Unable to bake this quad to the specified format. " + format.format);
         }
         int[] packedData = new int[this.format.format.getSize()];

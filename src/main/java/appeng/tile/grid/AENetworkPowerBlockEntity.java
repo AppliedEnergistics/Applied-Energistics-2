@@ -78,14 +78,14 @@ public abstract class AENetworkPowerBlockEntity extends AEBasePoweredBlockEntity
     }
 
     @Override
-    public void validate() {
-        super.validate();
+    public void cancelRemoval() {
+        super.cancelRemoval();
         this.getProxy().validate();
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void markRemoved() {
+        super.markRemoved();
         this.getProxy().remove();
     }
 

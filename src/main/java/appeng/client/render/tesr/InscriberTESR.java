@@ -175,7 +175,7 @@ public final class InscriberTESR extends BlockEntityRenderer<InscriberBlockEntit
                                   float z, double texU, double texV, int overlayUV, int lightmapUV, Direction front) {
         vb.pos(ms.peek().getMatrix(), x, y, z);
         vb.color(1.0f, 1.0f, 1.0f, 1.0f);
-        vb.tex(sprite.getInterpolatedU(texU), sprite.getInterpolatedV(texV));
+        vb.tex(sprite.getFrameU(texU), sprite.getFrameV(texV));
         vb.overlay(overlayUV);
         vb.lightmap(lightmapUV);
         vb.normal(ms.peek().getNormal(), front.getOffsetX(), front.getOffsetY(), front.getOffsetZ());

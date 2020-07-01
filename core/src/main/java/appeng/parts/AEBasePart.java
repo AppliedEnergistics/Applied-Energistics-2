@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+import alexiil.mc.lib.attributes.Simulation;
 import com.google.common.base.Preconditions;
 
 import net.fabricmc.api.EnvType;
@@ -324,7 +325,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
             final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory(null, target.getSlotCount());
             tmp.readFromNBT(compound, "config");
             for (int x = 0; x < tmp.getSlotCount(); x++) {
-                target.setInvStack(x, tmp.getInvStack(x));
+                target.forceSetInvStack(x, tmp.getInvStack(x));
             }
         }
     }
@@ -362,7 +363,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
     }
 
     private boolean useMemoryCard(final PlayerEntity player) {
-        final ItemStack memCardIS = player.inventory.getCurrentItem();
+        final ItemStack memCardIS = player.inventory.getMainHandStack();
 
         if (!memCardIS.isEmpty() && this.useStandardMemoryCard() && memCardIS.getItem() instanceof IMemoryCard) {
             final IMemoryCard memoryCard = (IMemoryCard) memCardIS.getItem();

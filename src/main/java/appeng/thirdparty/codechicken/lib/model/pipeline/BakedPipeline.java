@@ -25,9 +25,8 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.util.math.Direction;
-import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 
 import appeng.thirdparty.codechicken.lib.model.CachedFormat;
 import appeng.thirdparty.codechicken.lib.model.ISmartVertexConsumer;

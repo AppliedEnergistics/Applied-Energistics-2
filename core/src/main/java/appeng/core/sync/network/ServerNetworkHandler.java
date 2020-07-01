@@ -21,6 +21,7 @@ public class ServerNetworkHandler implements NetworkHandler {
     private final ServerSidePacketRegistry registry = ServerSidePacketRegistry.INSTANCE;
 
     public ServerNetworkHandler() {
+        NetworkHandlerHolder.INSTANCE = this;
         registry.register(BasePacket.CHANNEL, this::handlePacketFromClient);
     }
 

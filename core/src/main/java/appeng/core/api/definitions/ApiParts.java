@@ -20,9 +20,25 @@ package appeng.core.api.definitions;
 
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IParts;
+import appeng.api.parts.IPart;
+import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
 import appeng.bootstrap.FeatureFactory;
+import appeng.core.AppEng;
+import appeng.core.CreativeTab;
+import appeng.core.features.ActivityState;
+import appeng.core.features.ColoredItemDefinition;
+import appeng.core.features.ItemStackSrc;
 import appeng.core.features.registries.PartModels;
+import appeng.items.parts.ColoredPartItem;
+import appeng.items.parts.PartItem;
+import appeng.items.parts.PartItemRendering;
+import appeng.parts.misc.CableAnchorPart;
+import appeng.parts.networking.*;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Identifier;
+
+import java.util.function.Function;
 
 /**
  * Internal implementation for the API parts
@@ -73,110 +89,108 @@ public final class ApiParts implements IParts {
     public ApiParts(FeatureFactory registry, PartModels partModels) {
         registerPartModels(partModels);
 
-// FIXME       this.cableSmart = constructColoredDefinition(registry, "smart_cable", PartType.CABLE_SMART,
-// FIXME               SmartCablePart::new);
-// FIXME       this.cableCovered = constructColoredDefinition(registry, "covered_cable", PartType.CABLE_COVERED,
-// FIXME               CoveredCablePart::new);
-// FIXME       this.cableGlass = constructColoredDefinition(registry, "glass_cable", PartType.CABLE_GLASS,
-// FIXME               GlassCablePart::new);
-// FIXME       this.cableDenseCovered = constructColoredDefinition(registry, "covered_dense_cable",
-// FIXME               PartType.CABLE_DENSE_COVERED, CoveredDenseCablePart::new);
-// FIXME       this.cableDenseSmart = constructColoredDefinition(registry, "smart_dense_cable", PartType.CABLE_DENSE_SMART,
-// FIXME               SmartDenseCablePart::new);
-// FIXME       this.quartzFiber = createPart(registry, "quartz_fiber", PartType.QUARTZ_FIBER, QuartzFiberPart::new);
-// FIXME       this.toggleBus = createPart(registry, "toggle_bus", PartType.TOGGLE_BUS, ToggleBusPart::new);
-// FIXME       this.invertedToggleBus = createPart(registry, "inverted_toggle_bus", PartType.INVERTED_TOGGLE_BUS,
+       this.cableSmart = constructColoredDefinition(registry, "smart_cable", SmartCablePart::new);
+       this.cableCovered = constructColoredDefinition(registry, "covered_cable", CoveredCablePart::new);
+       this.cableGlass = constructColoredDefinition(registry, "glass_cable", 
+               GlassCablePart::new);
+       this.cableDenseCovered = constructColoredDefinition(registry, "covered_dense_cable",
+                CoveredDenseCablePart::new);
+       this.cableDenseSmart = constructColoredDefinition(registry, "smart_dense_cable", 
+               SmartDenseCablePart::new);
+      this.quartzFiber = createPart(registry, "quartz_fiber",  QuartzFiberPart::new);
+// FIXME       this.toggleBus = createPart(registry, "toggle_bus",  ToggleBusPart::new);
+// FIXME       this.invertedToggleBus = createPart(registry, "inverted_toggle_bus", 
 // FIXME               InvertedToggleBusPart::new);
-// FIXME       this.cableAnchor = createPart(registry, "cable_anchor", PartType.CABLE_ANCHOR, CableAnchorPart::new);
-// FIXME       this.monitor = createPart(registry, "monitor", PartType.MONITOR, PanelPart::new);
-// FIXME       this.semiDarkMonitor = createPart(registry, "semi_dark_monitor", PartType.SEMI_DARK_MONITOR,
+       this.cableAnchor = createPart(registry, "cable_anchor",  CableAnchorPart::new);
+// FIXME       this.monitor = createPart(registry, "monitor",  PanelPart::new);
+// FIXME       this.semiDarkMonitor = createPart(registry, "semi_dark_monitor", 
 // FIXME               SemiDarkPanelPart::new);
-// FIXME       this.darkMonitor = createPart(registry, "dark_monitor", PartType.DARK_MONITOR, DarkPanelPart::new);
-// FIXME       this.storageBus = createPart(registry, "storage_bus", PartType.STORAGE_BUS, StorageBusPart::new);
-// FIXME       this.fluidStorageBus = createPart(registry, "fluid_storage_bus", PartType.FLUID_STORAGE_BUS,
+// FIXME       this.darkMonitor = createPart(registry, "dark_monitor",  DarkPanelPart::new);
+// FIXME       this.storageBus = createPart(registry, "storage_bus",  StorageBusPart::new);
+// FIXME       this.fluidStorageBus = createPart(registry, "fluid_storage_bus", 
 // FIXME               FluidStorageBusPart::new);
-// FIXME       this.importBus = createPart(registry, "import_bus", PartType.IMPORT_BUS, ImportBusPart::new);
-// FIXME       this.fluidImportBus = createPart(registry, "fluid_import_bus", PartType.FLUID_IMPORT_BUS,
+// FIXME       this.importBus = createPart(registry, "import_bus",  ImportBusPart::new);
+// FIXME       this.fluidImportBus = createPart(registry, "fluid_import_bus", 
 // FIXME               FluidImportBusPart::new);
-// FIXME       this.exportBus = createPart(registry, "export_bus", PartType.EXPORT_BUS, ExportBusPart::new);
-// FIXME       this.fluidExportBus = createPart(registry, "fluid_export_bus", PartType.FLUID_EXPORT_BUS,
+// FIXME       this.exportBus = createPart(registry, "export_bus",  ExportBusPart::new);
+// FIXME       this.fluidExportBus = createPart(registry, "fluid_export_bus", 
 // FIXME               FluidExportBusPart::new);
-// FIXME       this.levelEmitter = createPart(registry, "level_emitter", PartType.LEVEL_EMITTER, LevelEmitterPart::new);
-// FIXME       this.fluidLevelEmitter = createPart(registry, "fluid_level_emitter", PartType.FLUID_LEVEL_EMITTER,
+// FIXME       this.levelEmitter = createPart(registry, "level_emitter",  LevelEmitterPart::new);
+// FIXME       this.fluidLevelEmitter = createPart(registry, "fluid_level_emitter", 
 // FIXME               FluidLevelEmitterPart::new);
-// FIXME       this.annihilationPlane = createPart(registry, "annihilation_plane", PartType.ANNIHILATION_PLANE,
+// FIXME       this.annihilationPlane = createPart(registry, "annihilation_plane", 
 // FIXME               AnnihilationPlanePart::new);
 // FIXME       this.identityAnnihilationPlane = createPart(registry, "identity_annihilation_plane",
-// FIXME               PartType.IDENTITY_ANNIHILATION_PLANE, IdentityAnnihilationPlanePart::new);
+// FIXME                IdentityAnnihilationPlanePart::new);
 // FIXME       this.fluidAnnihilationPlane = createPart(registry, "fluid_annihilation_plane",
-// FIXME               PartType.FLUID_ANNIHILATION_PLANE, FluidAnnihilationPlanePart::new);
-// FIXME       this.formationPlane = createPart(registry, "formation_plane", PartType.FORMATION_PLANE,
+// FIXME                FluidAnnihilationPlanePart::new);
+// FIXME       this.formationPlane = createPart(registry, "formation_plane", 
 // FIXME               FormationPlanePart::new);
-// FIXME       this.fluidFormationPlane = createPart(registry, "fluid_formation_plane", PartType.FLUID_FORMATION_PLANE,
+// FIXME       this.fluidFormationPlane = createPart(registry, "fluid_formation_plane", 
 // FIXME               FluidFormationPlanePart::new);
-// FIXME       this.patternTerminal = createPart(registry, "pattern_terminal", PartType.PATTERN_TERMINAL,
+// FIXME       this.patternTerminal = createPart(registry, "pattern_terminal", 
 // FIXME               PatternTerminalPart::new);
-// FIXME       this.craftingTerminal = createPart(registry, "crafting_terminal", PartType.CRAFTING_TERMINAL,
+// FIXME       this.craftingTerminal = createPart(registry, "crafting_terminal", 
 // FIXME               CraftingTerminalPart::new);
-// FIXME       this.terminal = createPart(registry, "terminal", PartType.TERMINAL, TerminalPart::new);
-// FIXME       this.storageMonitor = createPart(registry, "storage_monitor", PartType.STORAGE_MONITOR,
+// FIXME       this.terminal = createPart(registry, "terminal",  TerminalPart::new);
+// FIXME       this.storageMonitor = createPart(registry, "storage_monitor", 
 // FIXME               StorageMonitorPart::new);
-// FIXME       this.conversionMonitor = createPart(registry, "conversion_monitor", PartType.CONVERSION_MONITOR,
+// FIXME       this.conversionMonitor = createPart(registry, "conversion_monitor", 
 // FIXME               ConversionMonitorPart::new);
-// FIXME       this.iface = createPart(registry, "cable_interface", PartType.INTERFACE, InterfacePart::new);
-// FIXME       this.fluidIface = createPart(registry, "cable_fluid_interface", PartType.FLUID_INTERFACE,
+// FIXME       this.iface = createPart(registry, "cable_interface",  InterfacePart::new);
+// FIXME       this.fluidIface = createPart(registry, "cable_fluid_interface", 
 // FIXME               FluidInterfacePart::new);
-// FIXME       this.p2PTunnelME = createPart(registry, "me_p2p_tunnel", PartType.P2P_TUNNEL_ME, MEP2PTunnelPart::new);
-// FIXME       this.p2PTunnelRedstone = createPart(registry, "redstone_p2p_tunnel", PartType.P2P_TUNNEL_REDSTONE,
+// FIXME       this.p2PTunnelME = createPart(registry, "me_p2p_tunnel",  MEP2PTunnelPart::new);
+// FIXME       this.p2PTunnelRedstone = createPart(registry, "redstone_p2p_tunnel", 
 // FIXME               RedstoneP2PTunnelPart::new);
-// FIXME       this.p2PTunnelItems = createPart(registry, "item_p2p_tunnel", PartType.P2P_TUNNEL_ITEM, ItemP2PTunnelPart::new);
-// FIXME       this.p2PTunnelFluids = createPart(registry, "fluid_p2p_tunnel", PartType.P2P_TUNNEL_FLUID,
+// FIXME       this.p2PTunnelItems = createPart(registry, "item_p2p_tunnel",  ItemP2PTunnelPart::new);
+// FIXME       this.p2PTunnelFluids = createPart(registry, "fluid_p2p_tunnel", 
 // FIXME               FluidP2PTunnelPart::new);
-// FIXME       this.p2PTunnelEU = null; // FIXME createPart( "ic2_p2p_tunnel", PartType.P2P_TUNNEL_IC2,
+// FIXME       this.p2PTunnelEU = null; // FIXME createPart( "ic2_p2p_tunnel", 
 // FIXME                                // PartP2PIC2Power::new);
-// FIXME       this.p2PTunnelFE = createPart(registry, "fe_p2p_tunnel", PartType.P2P_TUNNEL_FE, FEP2PTunnelPart::new);
-// FIXME       this.p2PTunnelLight = createPart(registry, "light_p2p_tunnel", PartType.P2P_TUNNEL_LIGHT,
+// FIXME       this.p2PTunnelFE = createPart(registry, "fe_p2p_tunnel",  FEP2PTunnelPart::new);
+// FIXME       this.p2PTunnelLight = createPart(registry, "light_p2p_tunnel", 
 // FIXME               LightP2PTunnelPart::new);
-// FIXME       this.interfaceTerminal = createPart(registry, "interface_terminal", PartType.INTERFACE_TERMINAL,
+// FIXME       this.interfaceTerminal = createPart(registry, "interface_terminal", 
 // FIXME               InterfaceTerminalPart::new);
-// FIXME       this.fluidTerminal = createPart(registry, "fluid_terminal", PartType.FLUID_TERMINAL, FluidTerminalPart::new);
+// FIXME       this.fluidTerminal = createPart(registry, "fluid_terminal",  FluidTerminalPart::new);
     }
 
     private void registerPartModels(PartModels partModels) {
 
-// FIXME        // Register the built-in models for annihilation planes
-// FIXME        Identifier fluidFormationPlaneTexture = new Identifier(AppEng.MOD_ID,
-// FIXME                "item/part/fluid_formation_plane");
-// FIXME        Identifier fluidFormationPlaneOnTexture = new Identifier(AppEng.MOD_ID,
-// FIXME                "parts/fluid_formation_plane_on");
-// FIXME
-// FIXME        // Register all part models
-// FIXME        for (PartType partType : PartType.values()) {
-// FIXME            partModels.registerModels(partType.getModels());
-// FIXME        }
+        // Register the built-in models for annihilation planes
+        Identifier fluidFormationPlaneTexture = new Identifier(AppEng.MOD_ID,
+                "item/part/fluid_formation_plane");
+        Identifier fluidFormationPlaneOnTexture = new Identifier(AppEng.MOD_ID,
+                "parts/fluid_formation_plane_on");
+
+        // Register all part models
+// FIXME FABRIC        for (PartType partType : PartType.values()) {
+// FIXME FABRIC            partModels.registerModels(partType.getModels());
+// FIXME FABRIC        }
     }
 
-// FIXME    private <T extends IPart> IItemDefinition createPart(FeatureFactory registry, String id, PartType type,
-// FIXME            Function<ItemStack, T> factory) {
-// FIXME        return registry.item(id, props -> new PartItem<>(props, type, factory)).itemGroup(CreativeTab.INSTANCE)
-// FIXME                .rendering(new PartItemRendering()).build();
-// FIXME    }
-// FIXME
-// FIXME    private <T extends IPart> AEColoredItemDefinition constructColoredDefinition(FeatureFactory registry,
-// FIXME            String idSuffix, PartType type, Function<ItemStack, T> factory) {
-// FIXME        final ColoredItemDefinition definition = new ColoredItemDefinition();
-// FIXME
-// FIXME        for (final AEColor color : AEColor.values()) {
-// FIXME            String id = color.registryPrefix + '_' + idSuffix;
-// FIXME
-// FIXME            IItemDefinition itemDef = registry.item(id, props -> new ColoredPartItem<>(props, type, factory, color))
-// FIXME                    .itemGroup(CreativeTab.INSTANCE).rendering(new PartItemRendering(color)).build();
-// FIXME
-// FIXME            definition.add(color, new ItemStackSrc(itemDef.item(), ActivityState.Enabled));
-// FIXME        }
-// FIXME
-// FIXME        return definition;
-// FIXME    }
+    private <T extends IPart> IItemDefinition createPart(FeatureFactory registry, String id, 
+                                                         Function<ItemStack, T> factory) {
+        return registry.item(id, props -> new PartItem<>(props, factory)).itemGroup(CreativeTab.INSTANCE)
+                .rendering(new PartItemRendering()).build();
+    }
+ 
+    private <T extends IPart> AEColoredItemDefinition constructColoredDefinition(FeatureFactory registry,
+            String idSuffix, Function<ItemStack, T> factory) {
+        final ColoredItemDefinition definition = new ColoredItemDefinition();
+ 
+        for (final AEColor color : AEColor.values()) {
+            String id = color.registryPrefix + '_' + idSuffix;
+ 
+            IItemDefinition itemDef = registry.item(id, props -> new ColoredPartItem<>(props, factory, color))
+                    .itemGroup(CreativeTab.INSTANCE).rendering(new PartItemRendering(color)).build();
+ 
+            definition.add(color, new ItemStackSrc(itemDef.item(), ActivityState.Enabled));
+        }
+ 
+        return definition;
+    }
 
     @Override
     public AEColoredItemDefinition cableSmart() {

@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import appeng.core.sync.packets.PartPlacementPacket;
 import appeng.core.sync.packets.SpawnEntityPacket;
 import net.minecraft.network.PacketByteBuf;
 
@@ -40,14 +41,12 @@ public class BasePacketHandler {
 //        PACKET_ME_FLUID_INVENTORY_UPDATE(MEFluidInventoryUpdatePacket.class, MEFluidInventoryUpdatePacket::new),
 //
 //        PACKET_CONFIG_BUTTON(ConfigButtonPacket.class, ConfigButtonPacket::new),
-//
-//        PACKET_PART_PLACEMENT(PartPlacementPacket.class, PartPlacementPacket::new),
-//
+
+        PACKET_PART_PLACEMENT(PartPlacementPacket.class, PartPlacementPacket::new),
+
 //        PACKET_LIGHTNING(LightningPacket.class, LightningPacket::new),
 //
 //        PACKET_MATTER_CANNON(MatterCannonPacket.class, MatterCannonPacket::new),
-//
-//        PACKET_MOCK_EXPLOSION(MockExplosionPacket.class, MockExplosionPacket::new),
 //
 //        PACKET_VALUE_CONFIG(ConfigValuePacket.class, ConfigValuePacket::new),
 //

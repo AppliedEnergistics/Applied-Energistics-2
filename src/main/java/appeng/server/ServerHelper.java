@@ -47,7 +47,6 @@ import appeng.util.Platform;
 
 public class ServerHelper extends CommonHelper {
 
-    private PlayerEntity renderModeBased;
 
     @Override
     public World getWorld() {
@@ -114,33 +113,6 @@ public class ServerHelper extends CommonHelper {
 
     @Override
     public CableRenderMode getRenderMode() {
-        if (this.renderModeBased == null) {
-            return CableRenderMode.STANDARD;
-        }
-
-        return this.renderModeForPlayer(this.renderModeBased);
-    }
-
-    @Override
-    public void updateRenderMode(final PlayerEntity player) {
-        this.renderModeBased = player;
-    }
-
-    protected CableRenderMode renderModeForPlayer(final PlayerEntity player) {
-        if (player != null) {
-            for (int x = 0; x < PlayerInventory.getHotbarSize(); x++) {
-                final ItemStack is = player.inventory.getStack(x);
-
-                if (!is.isEmpty() && is.getItem() instanceof NetworkToolItem) {
-                    final CompoundTag c = is.getTag();
-                    if (c != null && c.getBoolean("hideFacades")) {
-                        return CableRenderMode.CABLE_VIEW;
-                    }
-                }
-            }
-        }
-
-        return CableRenderMode.STANDARD;
     }
 
     @Override

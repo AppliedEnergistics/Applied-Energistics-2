@@ -18,12 +18,16 @@
 
 package appeng.items.parts;
 
+import appeng.hooks.AEToolItem;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.api.EnvironmentInterface;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.client.render.RenderLayers;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tag.BlockTags;
@@ -34,8 +38,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.text.Text;
-import net.minecraft.world.EmptyBlockReader;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.world.EmptyBlockView;
 
 import appeng.api.AEApi;
 import appeng.api.exceptions.MissingDefinitionException;
@@ -48,7 +51,8 @@ import appeng.facade.FacadePart;
 import appeng.facade.IFacadeItem;
 import appeng.items.AEBaseItem;
 
-public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassItem {
+@EnvironmentInterface(value = EnvType.CLIENT, itf=IAlphaPassItem.class)
+public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassItem, AEToolItem {
 
     /**
      * Block tag used to explicitly whitelist blocks for use in facades.
@@ -72,7 +76,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
         try {
             final ItemStack in = this.getTextureItem(is);
             if (!in.isEmpty()) {
-                return super.getName(is).deepCopy().append(" - ").append(in.getName());
+                return super.getName(is).copy().append(" - ").append(in.getName());
             }
         } catch (final Throwable ignored) {
 
@@ -100,13 +104,13 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
         BlockState blockState = block.getDefaultState();
 
         final boolean areTileEntitiesEnabled = AEConfig.instance().isFeatureEnabled(AEFeature.TILE_ENTITY_FACADES);
-        Tag<Block> whitelistTag = BlockTags.getCollection().getOrCreate(TAG_WHITELISTED);
+        Tag<Block> whitelistTag = BlockTags.getContainer().getOrCreate(TAG_WHITELISTED);
         final boolean isWhiteListed = block.isIn(whitelistTag);
         final boolean isModel = blockState.getRenderType() == BlockRenderType.MODEL;
 
         final BlockState defaultState = block.getDefaultState();
-        final boolean isTileEntity = block.hasTileEntity(defaultState);
-        final boolean isFullCube = defaultState.isNormalCube(EmptyBlockReader.INSTANCE, BlockPos.ZERO);
+        final boolean isTileEntity = block.hasBlockEntity();
+        final boolean isFullCube = defaultState.isOpaqueFullCube(EmptyBlockView.INSTANCE, BlockPos.ORIGIN);
 
         final boolean isTileEntityAllowed = !isTileEntity || (areTileEntitiesEnabled && isWhiteListed);
         final boolean isBlockAllowed = isFullCube || isWhiteListed;
@@ -118,7 +122,8 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
             final ItemStack is = new ItemStack(this);
             final CompoundTag data = new CompoundTag();
-            data.putString(NBT_ITEM_ID, itemStack.getItem().getRegistryName().toString());
+            Identifier itemId = Registry.ITEM.getId(itemStack.getItem());
+            data.putString(NBT_ITEM_ID, itemId.toString());
             is.setTag(data);
             return is;
         }
@@ -143,13 +148,13 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
         }
 
         Identifier itemId = new Identifier(nbt.getString(NBT_ITEM_ID));
-        Item baseItem = ForgeRegistries.ITEMS.getValue(itemId);
+        Item baseItem = Registry.ITEM.getOrEmpty(itemId).orElse(null);
 
         if (baseItem == null) {
             return ItemStack.EMPTY;
         }
 
-        return new ItemStack(baseItem, 1);
+        return new ItemStack(baseItem);
     }
 
     @Override
@@ -175,18 +180,20 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
                 () -> new MissingDefinitionException("Tried to create a facade, while facades are being deactivated."));
 
         // Convert back to a registry name...
-        Item item = Registry.ITEM.getByValue(id);
+        Item item = Registry.ITEM.get(id);
         if (item == Items.AIR) {
             return ItemStack.EMPTY;
         }
+        Identifier longId = Registry.ITEM.getId(item);
 
         final CompoundTag facadeTag = new CompoundTag();
-        facadeTag.putString(NBT_ITEM_ID, item.getRegistryName().toString());
+        facadeTag.putString(NBT_ITEM_ID, longId.toString());
         facadeStack.setTag(facadeTag);
 
         return facadeStack;
     }
 
+    @Environment(EnvType.CLIENT)
     @Override
     public boolean useAlphaPass(final ItemStack is) {
         BlockState blockState = this.getTextureBlockState(is);
@@ -195,7 +202,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
             return false;
         }
 
-        return RenderTypeLookup.canRenderInLayer(blockState, RenderLayer.getTranslucent())
-                || RenderTypeLookup.canRenderInLayer(blockState, RenderLayer.getTranslucentNoCrumbling());
+        return RenderLayers.getBlockLayer(blockState) == RenderLayer.getTranslucent()
+                || RenderLayers.getBlockLayer(blockState) == RenderLayer.getTranslucentNoCrumbling();
     }
 }

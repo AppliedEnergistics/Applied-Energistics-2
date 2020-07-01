@@ -40,7 +40,7 @@ public class PartItem<T extends IPart> extends AEBaseItem implements IPartItem<T
     }
 
     @Override
-    public ActionResult onItemUse(ItemUsageContext context) {
+    public ActionResult useOnBlock(ItemUsageContext context) {
         PlayerEntity player = context.getPlayer();
         ItemStack held = player.getStackInHand(context.getHand());
         if (held.getItem() != this) {

@@ -284,7 +284,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
                 final boolean changed = this.storeEntityItem(itemEntity);
 
                 if (changed) {
-                    AppEng.proxy.sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64,
+                    AppEng.instance().sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64,
                             this.getTile().getWorld(), new ItemTransitionEffectPacket(entity.getX(),
                                     entity.getY(), entity.getZ(), this.getSide().getOpposite()));
                 }
@@ -444,7 +444,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
         energy.extractAEPower(requiredPower, Actionable.MODULATE, PowerMultiplier.CONFIG);
 
-        AppEng.proxy.sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64, w,
+        AppEng.instance().sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64, w,
                 new BlockTransitionEffectPacket(pos, blockState, this.getSide().getOpposite(),
                         BlockTransitionEffectPacket.SoundMode.NONE));
     }
@@ -620,7 +620,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     }
 
     public static boolean isBlockBlacklisted(Block b) {
-        Tag<Block> tag = BlockTags.getCollection().getOrCreate(TAG_BLACKLIST);
+        Tag<Block> tag = BlockTags.getContainer().getOrCreate(TAG_BLACKLIST);
         return b.isIn(tag);
     }
 

@@ -177,7 +177,7 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
         final boolean hasLight = this.getLightValue() > 0;
         if (hasLight != this.didHaveLight) {
             this.didHaveLight = hasLight;
-            this.world.getLightManager().checkBlock(this.pos);
+            this.world.getLightingProvider().checkBlock(this.pos);
         }
     }
 

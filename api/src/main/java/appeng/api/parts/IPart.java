@@ -47,6 +47,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.List;
 import java.util.Random;
@@ -230,7 +231,7 @@ public interface IPart extends ICustomCableConnection {
     boolean onShiftActivate(PlayerEntity player, Hand hand, Vec3d pos);
 
     /**
-     * Called when you left click the part, very similar to Block.onBlockClicked
+     * Called when you left click the part, very similar to Block.onBlockBreakStart
      *
      * @param player left clicking player
      * @param hand   hand used
@@ -245,7 +246,7 @@ public interface IPart extends ICustomCableConnection {
 
     /**
      * Called when you shift-left click the part, very similar to
-     * Block.onBlockClicked
+     * Block.onBlockBreakStart
      *
      * @param player shift-left clicking player
      * @param hand   hand used
@@ -343,6 +344,18 @@ public interface IPart extends ICustomCableConnection {
      * @see alexiil.mc.lib.attributes.AttributeProvider
      */
     default void addAllAttributes(AttributeList<?> to) {}
+
+
+    /**
+     * Additional rendering data to be passed to the models for rendering this part.
+     *
+     * @return The rendering data to pass to the model. Only useful if custom models are
+     *         used. Can be null to not pass anything.
+     */
+    @Nullable
+    default Object getModelData() {
+        return null;
+    }
 
     /**
      * add your collision information to the the list.

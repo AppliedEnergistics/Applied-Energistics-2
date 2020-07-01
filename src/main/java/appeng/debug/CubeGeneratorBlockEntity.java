@@ -19,7 +19,7 @@
 package appeng.debug;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.DirectionalPlaceContext;
+import net.minecraft.item.AutomaticItemPlacementContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
@@ -50,7 +50,7 @@ public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements Ticka
             this.countdown--;
 
             if (this.countdown % 20 == 0) {
-                for (final PlayerEntity e : AppEng.proxy.getPlayers()) {
+                for (final PlayerEntity e : AppEng.instance().getPlayers()) {
                     e.sendSystemMessage(new LiteralText("Spawning in... " + (this.countdown / 20)), Util.NIL_UUID);
                 }
             }
@@ -73,7 +73,7 @@ public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements Ticka
             for (int x = -half; x < half; x++) {
                 for (int z = -half; z < half; z++) {
                     final BlockPos p = this.pos.add(x, y - 1, z);
-                    ItemUsageContext useContext = new DirectionalPlaceContext(this.world, p, side, this.is,
+                    ItemUsageContext useContext = new AutomaticItemPlacementContext(this.world, p, side, this.is,
                             side.getOpposite());
                     i.onItemUse(useContext);
                 }

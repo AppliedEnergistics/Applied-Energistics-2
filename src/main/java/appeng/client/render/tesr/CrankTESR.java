@@ -61,7 +61,7 @@ public class CrankTESR extends BlockEntityRenderer<CrankBlockEntity> {
 
         BlockState blockState = te.getCachedState();
         BlockRenderManager dispatcher = MinecraftClient.getInstance().getBlockRenderManager();
-        BakedModel model = dispatcher.getModelForState(blockState);
+        BakedModel model = dispatcher.getModel(blockState);
         VertexConsumer buffer = buffers.getBuffer(TexturedRenderLayers.getEntityTranslucentCull());
         dispatcher.getModelRenderer().renderModelBrightnessColor(ms.peek(), buffer, null, model, 1, 1, 1,
                 combinedLightIn, combinedOverlayIn);

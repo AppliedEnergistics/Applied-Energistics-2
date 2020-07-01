@@ -32,18 +32,18 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormatElement;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.ILightReader;
+import net.minecraft.world.BlockRenderView;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
@@ -174,8 +174,8 @@ public class AutoRotatingBakedModel implements BakedModel {
 
     @Nonnull
     @Override
-    public IModelData getModelData(@Nonnull ILightReader world, @Nonnull BlockPos pos, @Nonnull BlockState state,
-            @Nonnull IModelData tileData) {
+    public IModelData getModelData(@Nonnull BlockRenderView world, @Nonnull BlockPos pos, @Nonnull BlockState state,
+                                   @Nonnull IModelData tileData) {
         return this.parent.getModelData(world, pos, state, tileData);
     }
 
@@ -205,9 +205,9 @@ public class AutoRotatingBakedModel implements BakedModel {
             for (int v = 0; v < 4; v++) {
                 for (int e = 0; e < elements.size(); e++) {
                     VertexFormatElement element = elements.get(e);
-                    if (element.getUsage() == VertexFormatElement.Usage.POSITION) {
+                    if (element.getType() == VertexFormatElement.Usage.POSITION) {
                         this.parent.put(e, this.transform(this.quadData[e][v]));
-                    } else if (element.getUsage() == VertexFormatElement.Usage.NORMAL) {
+                    } else if (element.getType() == VertexFormatElement.Usage.NORMAL) {
                         this.parent.put(e, this.transformNormal(this.quadData[e][v]));
                     } else {
                         this.parent.put(e, this.quadData[e][v]);

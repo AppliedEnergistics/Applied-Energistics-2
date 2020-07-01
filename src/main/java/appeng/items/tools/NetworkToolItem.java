@@ -74,7 +74,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench {
     @Override
     public TypedActionResult<ItemStack> use(final World w, final PlayerEntity p, final Hand hand) {
         if (Platform.isClient()) {
-            final HitResult mop = AppEng.proxy.getRTR();
+            final HitResult mop = AppEng.instance().getRTR();
 
             if (mop == null || mop.getType() == HitResult.Type.MISS) {
                 NetworkHandler.instance().sendToServer(new ClickPacket(hand));

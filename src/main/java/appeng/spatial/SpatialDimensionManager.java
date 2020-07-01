@@ -122,7 +122,7 @@ public final class SpatialDimensionManager implements ISpatialDimension {
     @Override
     public BlockPos getCellDimensionSize(DimensionType cellDim) {
         SpatialDimensionExtraData extraData = getExtraData(cellDim);
-        return extraData != null ? extraData.getSize() : BlockPos.ZERO;
+        return extraData != null ? extraData.getSize() : BlockPos.ORIGIN;
     }
 
     @Override

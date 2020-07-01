@@ -44,7 +44,7 @@ class NullSpatialDimension implements ISpatialDimension {
 
     @Override
     public BlockPos getCellDimensionSize(DimensionType cellDim) {
-        return BlockPos.ZERO;
+        return BlockPos.ORIGIN;
     }
 
     @Override

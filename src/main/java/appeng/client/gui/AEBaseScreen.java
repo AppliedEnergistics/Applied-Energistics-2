@@ -31,6 +31,7 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.util.Formatting;
@@ -44,7 +45,6 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -692,7 +692,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                             final Tessellator tessellator = Tessellator.getInstance();
                             final BufferBuilder vb = tessellator.getBuffer();
 
-                            vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+                            vb.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEX_COLOR);
 
                             final float f1 = 0.00390625F;
                             final float f = 0.00390625F;

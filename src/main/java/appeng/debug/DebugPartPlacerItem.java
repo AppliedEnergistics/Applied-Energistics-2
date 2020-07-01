@@ -71,7 +71,7 @@ public class DebugPartPlacerItem extends AEBaseItem {
                 .toArray(Direction[]::new);
 
         BlockPos nextPos = pos;
-        for (Item item : ForgeRegistries.ITEMS) {
+        for (Item item : Registry.ITEM) {
             if (!(item instanceof PartItem)) {
                 continue;
             }

@@ -29,7 +29,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.network.play.server.SChunkDataPacket;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.EmptyBlockReader;
+import net.minecraft.world.EmptyBlockView;
 import net.minecraft.world.ITickList;
 import net.minecraft.world.NextTickListEntry;
 import net.minecraft.world.World;
@@ -136,7 +136,7 @@ public class CachedPlane {
                             this.myColumns[tePOS.getX() - minX][tePOS.getZ() - minZ].fillData(tePOS.getY(), details);
 
                             // don't skip air, just let the code replace it...
-                            if (details.state.isAir(EmptyBlockReader.INSTANCE, tePOS)) {
+                            if (details.state.isAir(EmptyBlockView.INSTANCE, tePOS)) {
                                 w.removeBlock(tePOS, false);
                             } else {
                                 this.myColumns[tePOS.getX() - minX][tePOS.getZ() - minZ].setSkip(tePOS.getY());

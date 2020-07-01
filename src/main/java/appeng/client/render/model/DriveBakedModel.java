@@ -28,6 +28,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.item.Item;
@@ -73,7 +74,7 @@ public class DriveBakedModel extends DelegateBakedModel {
                     // cell-model being in slot 0,0 at the top left of the drive.
                     float xOffset = -col * 8 / 16.0f;
                     float yOffset = -row * 3 / 16.0f;
-                    transform.setTranslation(xOffset, yOffset, 0);
+                    transform.addToLastColumn(new Vector3f(xOffset, yOffset, 0));
 
                     int slot = row * 2 + col;
 

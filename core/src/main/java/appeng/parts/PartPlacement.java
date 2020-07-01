@@ -18,63 +18,55 @@
 
 package appeng.parts;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.DirectionalPlaceContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.RayTraceContext;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IItems;
-import appeng.api.parts.IFacadePart;
-import appeng.api.parts.IPartHost;
-import appeng.api.parts.IPartItem;
-import appeng.api.parts.PartItemStack;
-import appeng.api.parts.SelectedPart;
+import appeng.api.parts.*;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.ClickPacket;
 import appeng.core.sync.packets.PartPlacementPacket;
 import appeng.facade.IFacadeItem;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.*;
+import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.RayTraceContext;
+import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class PartPlacement {
 
     private static float eyeHeight = 0.0f;
-    private final ThreadLocal<Object> placing = new ThreadLocal<>();
-    private boolean wasCanceled = false;
+    private static final ThreadLocal<Object> placing = new ThreadLocal<>();
+    private static boolean wasCanceled = false;
+
+    static  {
+
+        UseBlockCallback.EVENT.register(PartPlacement::onPlayerUseBlock);
+
+    }
 
     public static ActionResult place(final ItemStack held, final BlockPos pos, Direction side,
-            final PlayerEntity player, final Hand hand, final World world, PlaceType pass, final int depth) {
+                                     final PlayerEntity player, final Hand hand, final World world, PlaceType pass, final int depth) {
         if (depth > 3) {
             return ActionResult.FAIL;
         }
@@ -158,11 +150,9 @@ public class PartPlacement {
                                 host.markForUpdate();
                                 if (!player.isCreative()) {
                                     held.increment(-1);
-                                    ;
                                     if (held.getCount() == 0) {
-                                        player.inventory.mainInventory.set(player.inventory.currentItem,
+                                        player.inventory.main.set(player.inventory.selectedSlot,
                                                 ItemStack.EMPTY);
-                                        MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(player, held, hand));
                                     }
                                 }
                                 return ActionResult.CONSUME;
@@ -180,7 +170,7 @@ public class PartPlacement {
         }
 
         if (held.isEmpty()) {
-            if (host != null && player.isInSneakingPose() && world.isAirBlock(pos)) {
+            if (host != null && player.isInSneakingPose() && world.isAir(pos)) {
                 if (mop.getType() == HitResult.Type.BLOCK) {
                     Vec3d hitVec = mop.getPos().add(-mop.getPos().getX(), -mop.getPos().getY(),
                             -mop.getPos().getZ());
@@ -211,7 +201,7 @@ public class PartPlacement {
             BlockState blockState = world.getBlockState(pos);
             // FIXME isReplacable on the block state allows for more control, but requires
             // an item use context
-            if (!blockState.isAir(world, pos) && !blockState.isReplaceable(useContext)) {
+            if (!blockState.isAir() && !blockState.canReplace(useContext)) {
                 offset = side;
                 if (Platform.isServer()) {
                     side = side.getOpposite();
@@ -237,7 +227,7 @@ public class PartPlacement {
 
             // We cannot override the item stack of normal use context, so we use this hack
             ItemPlacementContext mpUseCtx = new ItemPlacementContext(
-                    new DirectionalPlaceContext(world, te_pos, side, maybeMultiPartStack.get(), side));
+                    new AutomaticItemPlacementContext(world, te_pos, side, maybeMultiPartStack.get(), side));
 
             // FIXME: This is super-fishy and all needs to be re-checked. what does this
             // even do???
@@ -273,7 +263,7 @@ public class PartPlacement {
                 final BlockState blkState = world.getBlockState(te_pos);
 
                 // FIXME: this is always true (host was de-referenced above)
-                if (blkState.isAir(world, te_pos) || blkState.isReplaceable(useContext) || host != null) {
+                if (blkState.isAir() || blkState.canReplace(useContext) || host != null) {
                     return place(held, te_pos, side.getOpposite(), player, hand, world,
                             pass == PlaceType.INTERACT_FIRST_PASS ? PlaceType.INTERACT_SECOND_PASS
                                     : PlaceType.PLACE_ITEM,
@@ -304,7 +294,7 @@ public class PartPlacement {
             if (mySide != null) {
                 multiPart.maybeBlock().ifPresent(multiPartBlock -> {
                     BlockState blockState = world.getBlockState(pos);
-                    final BlockSoundGroup ss = multiPartBlock.getSoundType(blockState, world, pos, player);
+                    final BlockSoundGroup ss = multiPartBlock.getSoundGroup(blockState);
 
                     world.playSound(null, pos, ss.getPlaceSound(), SoundCategory.BLOCKS, (ss.getVolume() + 1.0F) / 2.0F,
                             ss.getPitch() * 0.8F);
@@ -314,7 +304,6 @@ public class PartPlacement {
                     held.increment(-1);
                     if (held.getCount() == 0) {
                         player.setStackInHand(hand, ItemStack.EMPTY);
-                        MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(player, held, hand));
                     }
                 }
             }
@@ -333,9 +322,9 @@ public class PartPlacement {
     }
 
     private static SelectedPart selectPart(final PlayerEntity player, final IPartHost host, final Vec3d pos) {
-        AppEng.proxy.updateRenderMode(player);
+        AppEng.instance().updateRenderMode(player);
         final SelectedPart sp = host.selectPart(pos);
-        AppEng.proxy.updateRenderMode(null);
+        AppEng.instance().updateRenderMode(null);
 
         return sp;
     }
@@ -348,64 +337,71 @@ public class PartPlacement {
         return null;
     }
 
-    @SubscribeEvent
-    public void playerInteract(final TickEvent.ClientTickEvent event) {
-        this.wasCanceled = false;
+    private static void playerInteract(final MinecraftClient client) {
+        wasCanceled = false;
     }
 
-    @SubscribeEvent
-    public void playerInteract(final PlayerInteractEvent event) {
-        // Only handle the main hand event
-        if (event.getHand() != Hand.MAIN_HAND) {
-            return;
+    private static ActionResult onPlayerUseBlock(PlayerEntity player, World world, Hand hand, BlockHitResult hit) {
+
+        if (world.isClient || player.isSpectator()) {
+            return ActionResult.PASS;
         }
 
-        if (event instanceof PlayerInteractEvent.RightClickEmpty && event.getPlayer().world.isClient) {
-            // re-check to see if this event was already channeled, cause these two events
-            // are really stupid...
-            final HitResult mop = Platform.rayTrace(event.getPlayer(), true, false);
-            final MinecraftClient mc = MinecraftClient.getInstance();
-
-            final float f = 1.0F;
-            final double d0 = mc.playerController.getBlockReachDistance();
-            final Vec3d vec3 = mc.getRenderViewEntity().getEyePosition(f);
-
-            if (mop instanceof BlockHitResult && mop.getPos().distanceTo(vec3) < d0) {
-                BlockHitResult brtr = (BlockHitResult) mop;
-
-                final World w = event.getEntity().world;
-                final BlockEntity te = w.getBlockEntity(brtr.getPos());
-                if (te instanceof IPartHost && this.wasCanceled) {
-                    event.setCanceled(true);
-                }
-            } else {
-                final ItemStack held = event.getPlayer().getStackInHand(event.getHand());
-                final IItems items = AEApi.instance().definitions().items();
-
-                boolean supportedItem = items.memoryCard().isSameAs(held);
-                supportedItem |= items.colorApplicator().isSameAs(held);
-
-                if (event.getPlayer().isInSneakingPose() && !held.isEmpty() && supportedItem) {
-                    NetworkHandler.instance().sendToServer(new ClickPacket(event.getHand()));
-                }
-            }
-        } else if (event instanceof PlayerInteractEvent.RightClickBlock && !event.getPlayer().world.isClient) {
-            if (this.placing.get() != null) {
-                return;
-            }
-
-            this.placing.set(event);
-
-            final ItemStack held = event.getPlayer().getStackInHand(event.getHand());
-            if (place(held, event.getPos(), event.getFace(), event.getPlayer(), event.getHand(),
-                    event.getPlayer().world, PlaceType.INTERACT_FIRST_PASS, 0) == ActionResult.SUCCESS) {
-                event.setCanceled(true);
-                this.wasCanceled = true;
-            }
-
-            this.placing.set(null);
+        if (placing.get() != null) {
+            return ActionResult.PASS;
         }
+
+        placing.set(true);
+
+        final ItemStack held = player.getStackInHand(hand);
+        if (place(held, hit.getBlockPos(), hit.getSide(), player, hand,
+                player.world, PlaceType.INTERACT_FIRST_PASS, 0) == ActionResult.SUCCESS) {
+            return ActionResult.SUCCESS;
+        }
+
+        placing.set(null);
+        return ActionResult.PASS;
     }
+
+// FIXME FABRIC    public static void playerInteract(final PlayerInteractEvent event) {
+// FIXME FABRIC        // Only handle the main hand event
+// FIXME FABRIC        if (event.getHand() != Hand.MAIN_HAND) {
+// FIXME FABRIC            return;
+// FIXME FABRIC        }
+// FIXME FABRIC
+// FIXME FABRIC        if (event instanceof PlayerInteractEvent.RightClickEmpty && event.getPlayer().world.isClient) {
+// FIXME FABRIC            // re-check to see if this event was already channeled, cause these two events
+// FIXME FABRIC            // are really stupid...
+// FIXME FABRIC            final HitResult mop = Platform.rayTrace(event.getPlayer(), true, false);
+// FIXME FABRIC            final MinecraftClient mc = MinecraftClient.getInstance();
+// FIXME FABRIC
+// FIXME FABRIC            final float f = 1.0F;
+// FIXME FABRIC            final double d0 = mc.playerController.getBlockReachDistance();
+// FIXME FABRIC            final Vec3d vec3 = mc.getRenderViewEntity().getEyePosition(f);
+// FIXME FABRIC
+// FIXME FABRIC            if (mop instanceof BlockHitResult && mop.getPos().distanceTo(vec3) < d0) {
+// FIXME FABRIC                BlockHitResult brtr = (BlockHitResult) mop;
+// FIXME FABRIC
+// FIXME FABRIC                final World w = event.getEntity().world;
+// FIXME FABRIC                final BlockEntity te = w.getBlockEntity(brtr.getPos());
+// FIXME FABRIC                if (te instanceof IPartHost && this.wasCanceled) {
+// FIXME FABRIC                    event.setCanceled(true);
+// FIXME FABRIC                }
+// FIXME FABRIC            } else {
+// FIXME FABRIC                final ItemStack held = event.getPlayer().getStackInHand(event.getHand());
+// FIXME FABRIC                final IItems items = AEApi.instance().definitions().items();
+// FIXME FABRIC
+// FIXME FABRIC                boolean supportedItem = items.memoryCard().isSameAs(held);
+// FIXME FABRIC                supportedItem |= items.colorApplicator().isSameAs(held);
+// FIXME FABRIC
+// FIXME FABRIC                if (event.getPlayer().isInSneakingPose() && !held.isEmpty() && supportedItem) {
+// FIXME FABRIC                    NetworkHandler.instance().sendToServer(new ClickPacket(event.getHand()));
+// FIXME FABRIC                }
+// FIXME FABRIC            }
+// FIXME FABRIC        } else if (event instanceof PlayerInteractEvent.RightClickBlock && !event.getPlayer().world.isClient) {
+// FIXME FABRIC
+// FIXME FABRIC        }
+// FIXME FABRIC    }
 
     private static float getEyeHeight() {
         return eyeHeight;

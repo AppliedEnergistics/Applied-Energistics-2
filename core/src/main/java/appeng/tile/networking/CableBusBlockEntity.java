@@ -25,6 +25,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import alexiil.mc.lib.attributes.AttributeList;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -36,11 +37,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.data.EmptyModelData;
-
-import net.minecraftforge.client.model.data.ModelDataMap;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IFacadeContainer;
@@ -89,7 +85,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiTil
         final int newLV = this.getCableBus().getLightValue();
         if (newLV != this.oldLV) {
             this.oldLV = newLV;
-            this.world.getLightManager().checkBlock(this.pos);
+            this.world.getLightingProvider().checkBlock(this.pos);
             ret = true;
         }
 
@@ -112,19 +108,19 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiTil
     }
 
     @Override
-    public double getMaxRenderDistanceSquared() {
+    public double getSquaredRenderDistance() {
         return 900.0;
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void markRemoved() {
+        super.markRemoved();
         this.getCableBus().removeFromWorld();
     }
 
     @Override
-    public void validate() {
-        super.validate();
+    public void cancelRemoval() {
+        super.cancelRemoval();
         TickHandler.INSTANCE.addInit(this);
     }
 
@@ -158,7 +154,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiTil
         final int newLV = this.getCableBus().getLightValue();
         if (newLV != this.oldLV) {
             this.oldLV = newLV;
-            this.world.getLightManager().checkBlock(this.pos);
+            this.world.getLightingProvider().checkBlock(this.pos);
         }
 
         super.markForUpdate();
@@ -304,32 +300,28 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiTil
     }
 
     @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass, @Nullable Direction fromSide) {
-        // Note that null will be translated to INTERNAL here
-        AEPartLocation partLocation = AEPartLocation.fromFacing(fromSide);
+    public void addAllAttributes(World world, BlockPos pos, BlockState state, AttributeList<?> to) {
+        super.addAllAttributes(world, pos, state, to);
 
-        IPart part = this.getPart(partLocation);
-        LazyOptional<T> result = part == null ? LazyOptional.empty() : part.getCapability(capabilityClass);
-
-        if (result != null) {
-            return result;
+        for (AEPartLocation location : AEPartLocation.values()) {
+            IPart part = this.cb.getPart(location);
+            if (part != null) {
+                part.addAllAttributes(to);
+            }
         }
-
-        return super.getCapability(capabilityClass, fromSide);
     }
 
-    @Nonnull
     @Override
     public CableBusRenderState getRenderAttachmentData() {
         World world = getWorld();
         if (world == null) {
-            return EmptyModelData.INSTANCE;
+            return null;
         }
 
         CableBusRenderState renderState = this.cb.getRenderState();
         renderState.setWorld(world);
         renderState.setPos(pos);
-        return new ModelDataMap.Builder().withInitial(CableBusRenderState.PROPERTY, renderState).build();
+        return renderState;
 
     }
 }

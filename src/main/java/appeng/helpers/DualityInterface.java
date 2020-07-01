@@ -29,6 +29,8 @@ import java.util.Optional;
 import javax.annotation.Nullable;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
+import appeng.block.networking.CableBusBlock;
+import appeng.tile.networking.CableBusBlockEntity;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.block.Block;
@@ -982,12 +984,13 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                     final BlockHitResult hit = null;// hostWorld.rayTraceBlocks( from, to ); //FIXME:
                                                          // https://github.com/MinecraftForge/MinecraftForge/pull/6708
                     if (hit != null && !BAD_BLOCKS.contains(directedBlock)) {
-                        if (hit.getPos().equals(directedTile.getPos())) {
-                            final ItemStack g = directedBlock.getPickBlock(directedBlockState, hit, hostWorld,
-                                    directedTile.getPos(), null);
-                            if (!g.isEmpty()) {
-                                what = g;
-                            }
+                        if (hit.getBlockPos().equals(directedTile.getPos())) {
+                            // FIXME FABRIC: Either add "getName" to the interface adaptor, or special-case cable buses here
+                            // FIXME FABRIC final ItemStack g = directedBlock.getPickBlock(directedBlockState, hit, hostWorld,
+                            // FIXME FABRIC         directedTile.getPos(), null);
+                            // FIXME FABRIC if (!g.isEmpty()) {
+                            // FIXME FABRIC what = g;
+                            // FIXME FABRIC }
                         }
                     }
                 } catch (final Throwable t) {
@@ -998,7 +1001,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                     return new TranslatableText(what.getTranslationKey());
                 }
 
-                final Item item = Item.getItemFromBlock(directedBlock);
+                final Item item = Item.fromBlock(directedBlock);
                 if (item == Items.AIR) {
                     return new TranslatableText(directedBlock.getTranslationKey());
                 }

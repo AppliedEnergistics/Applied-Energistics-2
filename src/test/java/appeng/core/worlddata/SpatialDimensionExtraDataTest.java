@@ -18,7 +18,7 @@ public class SpatialDimensionExtraDataTest {
      */
     @Test
     public void testCreatedBufferSize() {
-        PacketByteBuf buffer = new SpatialDimensionExtraData(BlockPos.ZERO).write();
+        PacketByteBuf buffer = new SpatialDimensionExtraData(BlockPos.ORIGIN).write();
         assertEquals(1 + 8 + 8, buffer.array().length);
     }
 
@@ -38,7 +38,7 @@ public class SpatialDimensionExtraDataTest {
      */
     @Test
     public void testHandleInvalidFormatVersion() {
-        PacketByteBuf buffer = new SpatialDimensionExtraData(BlockPos.ZERO).write();
+        PacketByteBuf buffer = new SpatialDimensionExtraData(BlockPos.ORIGIN).write();
         buffer.writerIndex(0);
         buffer.writeByte(5);
 

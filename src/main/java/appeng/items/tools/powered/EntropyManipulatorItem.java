@@ -205,16 +205,14 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     // considered for onItemUse
     @Override
     public TypedActionResult<ItemStack> use(final World w, final PlayerEntity p, final Hand hand) {
-        final HitResult target = rayTrace(w, p, RayTraceContext.FluidHandling.ANY);
+        final BlockHitResult target = rayTrace(w, p, RayTraceContext.FluidHandling.ANY);
 
         if (target.getType() != HitResult.Type.BLOCK) {
-            return new TypedActionResult<>(ActionResult.FAIL, p.getStackInHand(hand));
-        } else {
-            BlockPos pos = ((BlockHitResult) target).getPos();
+            BlockPos pos = target.getBlockPos();
             final BlockState state = w.getBlockState(pos);
             if (state.getMaterial() == Material.LAVA || state.getMaterial() == Material.WATER) {
                 if (Platform.hasPermissions(new DimensionalCoord(w, pos), p)) {
-                    ItemUsageContext context = new ItemUsageContext(p, hand, (BlockHitResult) target);
+                    ItemUsageContext context = new ItemUsageContext(p, hand, target);
                     this.onItemUse(context);
                 }
             }
@@ -327,7 +325,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
                         return ActionResult.FAIL;
                     }
 
-                    if (w.isAirBlock(offsetPos)) {
+                    if (w.isAir(offsetPos)) {
                         this.extractAEPower(item, 1600, Actionable.MODULATE);
                         w.playSound(p, offsetPos.getX() + 0.5D, offsetPos.getY() + 0.5D, offsetPos.getZ() + 0.5D,
                                 SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.PLAYERS, 1.0F,

@@ -88,7 +88,7 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity implements
     }
 
     public void updateRedstoneState() {
-        final YesNo currentState = this.world.getRedstonePowerFromNeighbors(this.pos) != 0 ? YesNo.YES : YesNo.NO;
+        final YesNo currentState = this.world.getReceivedRedstonePower(this.pos) != 0 ? YesNo.YES : YesNo.NO;
         if (this.lastRedstoneState != currentState) {
             this.lastRedstoneState = currentState;
             if (this.lastRedstoneState == YesNo.YES) {

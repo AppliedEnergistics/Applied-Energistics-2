@@ -9,18 +9,17 @@ import java.util.concurrent.ExecutionException;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
+import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
-import net.minecraftforge.client.model.data.IDynamicBakedModel;
-
 
 import appeng.api.util.AEColor;
 import appeng.util.Platform;
 
-public class P2PTunnelFrequencyBakedModel implements IDynamicBakedModel {
+public class P2PTunnelFrequencyBakedModel implements FabricBakedModel {
 
     private final Sprite texture;
 

@@ -31,11 +31,10 @@ import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
-import appeng.helpers.Reflected;
 import appeng.util.Platform;
 
 public abstract class DenseCablePart extends CablePart {
-    @Reflected
+
     public DenseCablePart(final ItemStack is) {
         super(is);
 

@@ -261,7 +261,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity implements IAEMult
                     for (final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS) {
                         final WorldCoord wc = new WorldCoord(te);
                         wc.add(d, 1);
-                        if (this.world.isAirBlock(wc.getPos())) {
+                        if (this.world.isAir(wc.getPos())) {
                             places.add(wc);
                         }
                     }

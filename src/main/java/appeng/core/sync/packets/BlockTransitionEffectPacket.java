@@ -107,7 +107,7 @@ public class BlockTransitionEffectPacket extends BasePacket {
 
         EnergyParticleData data = new EnergyParticleData(false, direction);
         for (int zz = 0; zz < 32; zz++) {
-            if (AppEng.proxy.shouldAddParticles(Platform.getRandom())) {
+            if (AppEng.instance().shouldAddParticles(Platform.getRandom())) {
                 // Distribute the spawn point across the entire block's area
                 double x = pos.getX() + Platform.getRandomFloat();
                 double y = pos.getY() + Platform.getRandomFloat();
@@ -140,7 +140,7 @@ public class BlockTransitionEffectPacket extends BasePacket {
             volume = 1;
             pitch = 1;
         } else if (soundMode == SoundMode.BLOCK) {
-            BlockSoundGroup soundType = blockState.getSoundType();
+            BlockSoundGroup soundType = blockState.getSoundGroup();
             soundEvent = soundType.getBreakSound();
             volume = soundType.volume;
             pitch = soundType.pitch;

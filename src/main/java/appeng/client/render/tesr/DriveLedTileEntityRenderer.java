@@ -4,17 +4,16 @@ import java.util.EnumMap;
 
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.util.math.Vector3f;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -70,7 +69,7 @@ public class DriveLedTileEntityRenderer extends BlockEntityRenderer<DriveBlockEn
             // Bottom Face
             R, B, FR, L, B, FR, L, B, BA, R, B, BA, };
 
-    private static final RenderLayer STATE = RenderLayer.makeType("ae_drive_leds", DefaultVertexFormats.POSITION_COLOR, 7,
+    private static final RenderLayer STATE = RenderLayer.makeType("ae_drive_leds", VertexFormats.POSITION_COLOR, 7,
             32565, false, true, RenderLayer.State.getBuilder().build(false));
 
     public DriveLedTileEntityRenderer(BlockEntityRenderDispatcher rendererDispatcherIn) {
@@ -90,9 +89,9 @@ public class DriveLedTileEntityRenderer extends BlockEntityRenderer<DriveBlockEn
         FacingToRotation.get(drive.getForward(), drive.getUp()).push(ms);
         ms.translate(-0.5, -0.5, -0.5);
 
-        RenderType rt = RenderType.makeType("ae_drive_leds", DefaultVertexFormats.POSITION_COLOR, 7, 32565, false, true,
+        RenderType rt = RenderType.makeType("ae_drive_leds", VertexFormats.POSITION_COLOR, 7, 32565, false, true,
                 RenderType.State.getBuilder().transparency(TRANSLUCENT_TRANSPARENCY).build(false));
-        IVertexBuilder buffer = buffers.getBuffer(STATE);
+        VertexConsumer buffer = buffers.getBuffer(STATE);
 
         for (int row = 0; row < 5; row++) {
             for (int col = 0; col < 2; col++) {

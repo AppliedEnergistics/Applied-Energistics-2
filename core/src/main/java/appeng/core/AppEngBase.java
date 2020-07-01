@@ -2,6 +2,12 @@ package appeng.core;
 
 import appeng.api.features.IRegistryContainer;
 import appeng.api.networking.IGridCacheRegistry;
+import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.pathing.IPathingGrid;
+import appeng.api.networking.security.ISecurityGrid;
+import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.networking.ticking.ITickManager;
+import appeng.api.parts.CableRenderMode;
 import appeng.bootstrap.components.ITileEntityRegistrationComponent;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.features.registries.cell.BasicCellHandler;
@@ -14,10 +20,14 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.network.TargetPoint;
 import appeng.hooks.TickHandler;
 import appeng.hooks.ToolItemHook;
+import appeng.me.cache.*;
 import appeng.mixins.CriteriaRegisterMixin;
 import appeng.recipes.handlers.*;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.util.Identifier;
@@ -27,6 +37,9 @@ import net.minecraft.world.World;
 public abstract class AppEngBase implements AppEng {
 
     protected AdvancementTriggers advancementTriggers;
+
+    // WTF is this doing? Should this be a ThreadLocal???
+    private PlayerEntity renderModeBased;
 
     public AppEngBase() {
         if (AppEng.instance() != null) {
@@ -60,13 +73,13 @@ public abstract class AppEngBase implements AppEng {
         final IRegistryContainer registries = api.registries();
 
         final IGridCacheRegistry gcr = registries.gridCache();
-// FIXME FABRIC        gcr.registerGridCache(ITickManager.class, TickManagerCache.class);
-// FIXME FABRIC        gcr.registerGridCache(IEnergyGrid.class, EnergyGridCache.class);
-// FIXME FABRIC        gcr.registerGridCache(IPathingGrid.class, PathGridCache.class);
-// FIXME FABRIC        gcr.registerGridCache(IStorageGrid.class, GridStorageCache.class);
+        gcr.registerGridCache(ITickManager.class, TickManagerCache::new);
+        gcr.registerGridCache(IEnergyGrid.class, EnergyGridCache::new);
+        gcr.registerGridCache(IPathingGrid.class, PathGridCache::new);
+        gcr.registerGridCache(IStorageGrid.class, GridStorageCache::new);
 // FIXME FABRIC        gcr.registerGridCache(P2PCache.class, P2PCache.class);
 // FIXME FABRIC        gcr.registerGridCache(ISpatialCache.class, SpatialPylonCache.class);
-// FIXME FABRIC        gcr.registerGridCache(ISecurityGrid.class, SecurityCache.class);
+        gcr.registerGridCache(ISecurityGrid.class, SecurityCache::new);
 // FIXME FABRIC        gcr.registerGridCache(ICraftingGrid.class, CraftingGridCache.class);
 
         registries.cell().addCellHandler(new BasicCellHandler());
@@ -128,6 +141,38 @@ public abstract class AppEngBase implements AppEng {
         NetworkHandler.instance().sendToAllAround(packet, new TargetPoint(
                 x, y, z, dist, w
         ));
+    }
+
+    @Override
+    public CableRenderMode getRenderMode() {
+        if (this.renderModeBased == null) {
+            return CableRenderMode.STANDARD;
+        }
+
+        return this.renderModeForPlayer(this.renderModeBased);
+    }
+
+    // FIXME this is some hot shit _FOR WHAT_?
+    @Override
+    public void updateRenderMode(final PlayerEntity player) {
+        this.renderModeBased = player;
+    }
+
+    protected CableRenderMode renderModeForPlayer(final PlayerEntity player) {
+        if (player != null) {
+            for (int x = 0; x < PlayerInventory.getHotbarSize(); x++) {
+                final ItemStack is = player.inventory.getStack(x);
+
+               // FIXME FABRIC if (!is.isEmpty() && is.getItem() instanceof NetworkToolItem) {
+               // FIXME FABRIC     final CompoundTag c = is.getTag();
+               // FIXME FABRIC     if (c != null && c.getBoolean("hideFacades")) {
+               // FIXME FABRIC         return CableRenderMode.CABLE_VIEW;
+               // FIXME FABRIC     }
+               // FIXME FABRIC }
+            }
+        }
+
+        return CableRenderMode.STANDARD;
     }
 
 }

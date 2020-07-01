@@ -83,7 +83,7 @@ public class MeteoriteSpawner {
         BlockPos.Mutable testPos = new BlockPos.Mutable(pos);
         for (int j = pos.getY() - 15; j < pos.getY() - 1; j++) {
             testPos.setY(j);
-            if (w.isAirBlock(testPos)) {
+            if (w.isAir(testPos)) {
                 return true;
             }
         }

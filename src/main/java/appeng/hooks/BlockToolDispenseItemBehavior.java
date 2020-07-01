@@ -21,7 +21,7 @@ package appeng.hooks;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.dispenser.ItemDispenserBehavior;
 import net.minecraft.util.math.BlockPointer;
-import net.minecraft.item.DirectionalPlaceContext;
+import net.minecraft.item.AutomaticItemPlacementContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
@@ -40,7 +40,7 @@ public final class BlockToolDispenseItemBehavior extends ItemDispenserBehavior {
 
             final World w = dispenser.getWorld();
             if (w instanceof ServerWorld) {
-                ItemUsageContext context = new DirectionalPlaceContext(w, dispenser.getBlockPos().offset(direction),
+                ItemUsageContext context = new AutomaticItemPlacementContext(w, dispenser.getBlockPos().offset(direction),
                         direction, dispensedItem, direction.getOpposite());
                 tm.onItemUse(context);
             }

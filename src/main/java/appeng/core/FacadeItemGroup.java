@@ -66,7 +66,7 @@ public final class FacadeItemGroup extends ItemGroup {
 
         for (final Block b : ForgeRegistries.BLOCKS) {
             try {
-                final Item item = Item.getItemFromBlock(b);
+                final Item item = Item.fromBlock(b);
                 if (item == Items.AIR) {
                     continue;
                 }

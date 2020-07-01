@@ -21,6 +21,7 @@ package appeng.facade;
 import java.io.IOException;
 import java.util.Optional;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
@@ -160,7 +161,7 @@ public class FacadeContainer implements IFacadeContainer {
         for (int x = 0; x < this.facades; x++) {
             final IFacadePart part = this.getFacade(AEPartLocation.fromOrdinal(x));
             if (part != null) {
-                final int itemID = net.minecraft.item.Item.getIdFromItem(part.getItem());
+                final int itemID = Item.getRawId(part.getItem());
                 out.writeInt(itemID * (part.notAEFacade() ? -1 : 1));
             }
         }

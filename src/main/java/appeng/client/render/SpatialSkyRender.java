@@ -20,6 +20,7 @@ package appeng.client.render;
 
 import java.util.Random;
 
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -30,7 +31,6 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.util.math.Quaternion;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.client.SkyRenderHandler;
@@ -85,7 +85,7 @@ public class SpatialSkyRender implements SkyRenderHandler {
             matrixStack.multiply(rotation);
 
             RenderSystem.disableTexture();
-            VertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
+            VertexBuffer.begin(GL11.GL_QUADS, VertexFormats.POSITION);
             VertexBuffer.pos(-100.0D, -100.0D, -100.0D).endVertex();
             VertexBuffer.pos(-100.0D, -100.0D, 100.0D).endVertex();
             VertexBuffer.pos(100.0D, -100.0D, 100.0D).endVertex();
@@ -123,7 +123,7 @@ public class SpatialSkyRender implements SkyRenderHandler {
     private void renderTwinkles() {
         final Tessellator tessellator = Tessellator.getInstance();
         final BufferBuilder vb = tessellator.getBuffer();
-        vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
+        vb.begin(GL11.GL_QUADS, VertexFormats.POSITION);
 
         for (int i = 0; i < 50; ++i) {
             double iX = this.random.nextFloat() * 2.0F - 1.0F;

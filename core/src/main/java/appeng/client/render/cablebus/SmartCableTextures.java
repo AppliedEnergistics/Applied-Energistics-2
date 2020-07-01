@@ -21,6 +21,8 @@ package appeng.client.render.cablebus;
 import java.util.Arrays;
 import java.util.function.Function;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.texture.Sprite;
@@ -31,6 +33,7 @@ import appeng.core.AppEng;
 /**
  * Manages the channel textures for smart cables.
  */
+@Environment(EnvType.CLIENT)
 public class SmartCableTextures {
 
     public static final SpriteIdentifier[] SMART_CHANNELS_TEXTURES = Arrays
