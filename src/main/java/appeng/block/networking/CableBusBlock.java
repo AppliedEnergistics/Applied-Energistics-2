@@ -158,11 +158,12 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     @Override
     public boolean canConnectRedstone(final BlockState state, final IBlockReader w, final BlockPos pos,
             Direction side) {
+        // TODO: Verify this.
         if (side == null) {
-            side = Direction.UP;
+            return false;
         }
 
-        return this.cb(w, pos).canConnectRedstone(EnumSet.of(side));
+        return this.cb(w, pos).canConnectRedstone(side.getOpposite());
     }
 
     @Override
