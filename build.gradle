@@ -88,6 +88,9 @@ dependencies {
     modCompile "alexiil.mc.lib:libblockattributes-all:0.7.0"
 
     compile 'com.google.code.findbugs:jsr305:3.0.2'
+
+    // unit test dependencies
+    testCompile "junit:junit:4.13"
 }
 
 processResources {
