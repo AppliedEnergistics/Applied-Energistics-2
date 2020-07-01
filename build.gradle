@@ -18,7 +18,7 @@
 
 plugins {
     id 'java'
-    id 'fabric-loom'
+    id 'fabric-loom' version "${loom_version}" apply false
     id 'maven-publish'
     id "org.jetbrains.kotlin.jvm" apply false
 }
@@ -62,12 +62,12 @@ allprojects {
     }
 
     dependencies {
-        minecraft "com.mojang:minecraft:1.16.1"
-        mappings "net.fabricmc:yarn:1.16.1+build.9:v2"
-        modImplementation "net.fabricmc:fabric-loader:0.8.8+build.202"
+        minecraft "com.mojang:minecraft:${project.minecraft_version}"
+        mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+        modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
         //Fabric api
-        modImplementation "net.fabricmc.fabric-api:fabric-api:0.14.0+build.371-1.16"
+        modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
         modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
 

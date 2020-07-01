@@ -15,8 +15,6 @@
 !LICENSE
 
 # include sourcecode except generated
-!core/
-!api/
 !src/
 src/generated
 
