@@ -225,24 +225,22 @@ public class PartPlacement {
                 host = (IPartHost) tile;
             }
 
-            final Optional<ItemStack> maybeMultiPartStack = multiPart.maybeStack(1);
-            final Optional<Block> maybeMultiPartBlock = multiPart.maybeBlock();
-            final Optional<BlockItem> maybeMultiPartBlockItem = multiPart.maybeBlockItem();
+            ItemStack multiPartStack = multiPart.stack(1);
+            Block multiPartBlock = multiPart.block();
+            BlockItem multiPartBlockItem = multiPart.blockItem();
 
-            final boolean hostIsNotPresent = host == null;
-            final boolean multiPartPresent = maybeMultiPartBlock.isPresent() && maybeMultiPartStack.isPresent()
-                    && maybeMultiPartBlockItem.isPresent();
-            BlockState multiPartBlockState = maybeMultiPartBlock.get().getDefaultState();
-            final boolean canMultiPartBePlaced = multiPartBlockState.isValidPosition(world, te_pos);
+            boolean hostIsNotPresent = host == null;
+            BlockState multiPartBlockState = multiPartBlock.getDefaultState();
+            boolean canMultiPartBePlaced = multiPartBlockState.isValidPosition(world, te_pos);
 
             // We cannot override the item stack of normal use context, so we use this hack
             BlockItemUseContext mpUseCtx = new BlockItemUseContext(
-                    new DirectionalPlaceContext(world, te_pos, side, maybeMultiPartStack.get(), side));
+                    new DirectionalPlaceContext(world, te_pos, side, multiPartStack, side));
 
             // FIXME: This is super-fishy and all needs to be re-checked. what does this
             // even do???
-            if (hostIsNotPresent && multiPartPresent && canMultiPartBePlaced
-                    && maybeMultiPartBlockItem.get().tryPlace(mpUseCtx) == ActionResultType.SUCCESS) {
+            if (hostIsNotPresent && canMultiPartBePlaced
+                    && multiPartBlockItem.tryPlace(mpUseCtx).isSuccessOrConsume()) {
                 if (!world.isRemote) {
                     tile = world.getTileEntity(te_pos);
 
