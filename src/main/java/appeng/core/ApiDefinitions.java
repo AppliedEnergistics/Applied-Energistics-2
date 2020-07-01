@@ -19,9 +19,6 @@
 package appeng.core;
 
 import appeng.api.definitions.IDefinitions;
-import appeng.api.definitions.IItems;
-import appeng.api.definitions.IMaterials;
-import appeng.api.definitions.IParts;
 import appeng.bootstrap.FeatureFactory;
 import appeng.core.api.definitions.ApiBlocks;
 import appeng.core.api.definitions.ApiItems;
@@ -57,17 +54,17 @@ public final class ApiDefinitions implements IDefinitions {
     }
 
     @Override
-    public IItems items() {
+    public ApiItems items() {
         return items;
     }
 
     @Override
-    public IMaterials materials() {
+    public ApiMaterials materials() {
         return materials;
     }
 
     @Override
-    public IParts parts() {
+    public ApiParts parts() {
         return parts;
     }
 }

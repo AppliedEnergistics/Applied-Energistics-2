@@ -159,9 +159,10 @@ public final class AEConfig {
         this.matterCannonBattery = commonConfig.matterCannonBattery.get();
 
         this.featureFlags.clear();
+
         for (final AEFeature feature : AEFeature.values()) {
-            if (feature.isVisible()) {
-                if (commonConfig.enabledFeatures.containsKey(feature)) {
+            if (feature.isVisible() && feature.isConfig()) {
+                if (commonConfig.enabledFeatures.containsKey(feature) && commonConfig.enabledFeatures.get(feature).get()) {
                     this.featureFlags.add(feature);
                 }
             } else {

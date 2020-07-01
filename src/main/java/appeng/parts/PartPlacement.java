@@ -20,7 +20,6 @@ package appeng.parts;
 
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlockDefinition;
-import appeng.api.definitions.IItems;
 import appeng.api.parts.*;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
@@ -51,7 +50,6 @@ import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class PartPlacement {
 
@@ -215,24 +213,22 @@ public class PartPlacement {
                 host = (IPartHost) tile;
             }
 
-            final Optional<ItemStack> maybeMultiPartStack = multiPart.maybeStack(1);
-            final Optional<Block> maybeMultiPartBlock = multiPart.maybeBlock();
-            final Optional<BlockItem> maybeMultiPartBlockItem = multiPart.maybeBlockItem();
+            ItemStack multiPartStack = multiPart.stack(1);
+            Block multiPartBlock = multiPart.block();
+            BlockItem multiPartBlockItem = multiPart.blockItem();
 
-            final boolean hostIsNotPresent = host == null;
-            final boolean multiPartPresent = maybeMultiPartBlock.isPresent() && maybeMultiPartStack.isPresent()
-                    && maybeMultiPartBlockItem.isPresent();
-            BlockState multiPartBlockState = maybeMultiPartBlock.get().getDefaultState();
-            final boolean canMultiPartBePlaced = multiPartBlockState.canPlaceAt(world, te_pos);
+            boolean hostIsNotPresent = host == null;
+            BlockState multiPartBlockState = multiPartBlock.getDefaultState();
+            boolean canMultiPartBePlaced = multiPartBlockState.canPlaceAt(world, te_pos);
 
             // We cannot override the item stack of normal use context, so we use this hack
             ItemPlacementContext mpUseCtx = new ItemPlacementContext(
-                    new AutomaticItemPlacementContext(world, te_pos, side, maybeMultiPartStack.get(), side));
+                    new AutomaticItemPlacementContext(world, te_pos, side, multiPartStack, side));
 
             // FIXME: This is super-fishy and all needs to be re-checked. what does this
             // even do???
-            if (hostIsNotPresent && multiPartPresent && canMultiPartBePlaced
-                    && maybeMultiPartBlockItem.get().place(mpUseCtx) == ActionResult.SUCCESS) {
+            if (hostIsNotPresent && canMultiPartBePlaced
+                    && multiPartBlockItem.place(mpUseCtx).isAccepted()) {
                 if (!world.isClient) {
                     tile = world.getBlockEntity(te_pos);
 

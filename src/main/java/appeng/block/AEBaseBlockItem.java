@@ -122,7 +122,7 @@ public class AEBaseBlockItem extends BlockItem {
         }
 
         ActionResult result = super.place(context);
-        if (result != ActionResult.SUCCESS) {
+        if (!result.isAccepted()) {
             return result;
         }
 
@@ -132,7 +132,7 @@ public class AEBaseBlockItem extends BlockItem {
             ori = tile;
 
             if (tile == null) {
-                return ActionResult.SUCCESS;
+                return result;
             }
 
             if (ori.canBeRotated() && !this.blockType.hasCustomRotation()) {
@@ -148,7 +148,7 @@ public class AEBaseBlockItem extends BlockItem {
             ori.setOrientation(forward, up);
         }
 
-        return ActionResult.SUCCESS;
+        return result;
 
     }
 }
