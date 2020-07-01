@@ -24,7 +24,7 @@ import appeng.api.util.DimensionalCoord;
 
 public interface IGridProxyable extends IGridHost {
 
-    IGridBlock getProxy(); // FIXME AENetworkProxy return type
+    AENetworkProxy getProxy();
 
     DimensionalCoord getLocation();
 
