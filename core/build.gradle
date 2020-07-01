@@ -1,5 +1,0 @@
-archivesBaseName = artifact_basename + "-core"
-
-dependencies {
-    compile project(":api")
-}

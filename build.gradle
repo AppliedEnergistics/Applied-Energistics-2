@@ -18,121 +18,115 @@
 
 plugins {
     id 'java'
-    id 'fabric-loom' version "${loom_version}" apply false
+    id 'fabric-loom'
     id 'maven-publish'
-    id "org.jetbrains.kotlin.jvm" apply false
+    id "org.jetbrains.kotlin.jvm"
+    id "org.sonarqube" version "2.8"
+    id "jacoco"
 }
 
-allprojects {
-
-    apply plugin: 'fabric-loom'
-
-    // Maven group and artifact name
-    group = artifact_group
-
-    // Create version number
-    ext.pr = System.getenv('PR_NUMBER') ?: ""
-    if (ext.pr) {
-        version = version + "+pr." + ext.pr
+repositories {
+    mavenLocal()
+    jcenter()
+    mavenCentral()
+    maven { url = "http://maven.fabricmc.net/" }
+    maven {
+        name = "BuildCraft"
+        url = "https://mod-buildcraft.com/maven"
     }
+}
 
-    ext.branch = System.getenv('BRANCH') ?: ""
-    if (ext.branch) {
-        version = version + "+branch." + ext.branch
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
+compileJava {
+    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+// ensure everything uses UTF-8 and not some random codepage chosen by gradle
+compileJava.options.encoding = 'UTF-8'
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+group = artifact_group
+archivesBaseName = artifact_basename
+
+sourceSets {
+    api {
     }
-
-    ext.release = System.getenv('RELEASE') ?: ""
-    if (ext.release) {
-      version = ext.release
+    main {
+        compileClasspath += sourceSets.api.output
+        runtimeClasspath += sourceSets.api.output
     }
-
-    // Avoid build-directories for each subproject
-    setBuildDir(rootProject.getBuildDir())
-
-    repositories {
-        maven { url = "http://maven.fabricmc.net/" }
-        maven {
-            name = "BuildCraft"
-            url = "https://mod-buildcraft.com/maven"
-        }
+    unported {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
     }
-
-    minecraft {
-        accessWidener "${project.rootDir}/core/src/main/resources/appliedenergistics2.accesswidener"
+    test {
+        compileClasspath += sourceSets.api.output
+        runtimeClasspath += sourceSets.api.output
     }
+}
 
-    dependencies {
-        minecraft "com.mojang:minecraft:${project.minecraft_version}"
-        mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-        modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+configurations {
+    apiCompile.extendsFrom(compileClasspath)
+}
 
-        //Fabric api
-        modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
-
-        modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
-
-        modCompile "alexiil.mc.lib:libblockattributes-all:0.7.0"
-
-        compile 'com.google.code.findbugs:jsr305:3.0.2'
-    }
+minecraft {
+    accessWidener "src/main/resources/appliedenergistics2.accesswidener"
 }
 
 dependencies {
-    compile project(":api")
-    compile project(":core")
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+    //Fabric api
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+
+    modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
+
+    modCompile "alexiil.mc.lib:libblockattributes-all:0.7.0"
+
+    compile 'com.google.code.findbugs:jsr305:3.0.2'
 }
 
-subprojects {
+processResources {
+    inputs.property "version", project.version
 
-    apply plugin: 'kotlin-platform-jvm'
-
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-
-    processResources {
-        inputs.property "version", project.version
-
-        from(sourceSets.main.resources.srcDirs) {
-            include "fabric.mod.json"
-            expand "version": project.version
-        }
-
-        from(sourceSets.main.resources.srcDirs) {
-            exclude "fabric.mod.json"
-        }
+    from(sourceSets.main.resources.srcDirs) {
+        include "fabric.mod.json"
+        expand "version": project.version
     }
 
-    // ensure that the encoding is set to UTF-8, no matter what the system default is
-    // this fixes some edge cases with special characters not displaying correctly
-    // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-    tasks.withType(JavaCompile) {
-        options.encoding = "UTF-8"
+    from(sourceSets.main.resources.srcDirs) {
+        exclude "fabric.mod.json"
     }
+}
 
-    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-    // if it is present.
-    // If you remove this task, sources will not be generated.
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier = "sources"
-        from sourceSets.main.allSource
-    }
 
-    jar {
-        from "LICENSE"
-    }
+// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+// if it is present.
+// If you remove this task, sources will not be generated.
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = "sources"
+    from sourceSets.main.allSource
+}
 
-    compileKotlin.kotlinOptions.jvmTarget = "1.8"
+jar {
+    from "LICENSE"
+}
 
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                // add all the jars that should be included when publishing to maven
-                artifact(remapJar) {
-                    builtBy remapJar
-                }
-                artifact(sourcesJar) {
-                    builtBy remapSourcesJar
-                }
+compileKotlin.kotlinOptions.jvmTarget = "1.8"
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            // add all the jars that should be included when publishing to maven
+            artifact(remapJar) {
+                builtBy remapJar
+            }
+            artifact(sourcesJar) {
+                builtBy remapSourcesJar
             }
         }
     }

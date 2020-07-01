@@ -14,6 +14,3 @@ pluginManagement {
     }
 
 }
-
-include "api"
-include "core"
