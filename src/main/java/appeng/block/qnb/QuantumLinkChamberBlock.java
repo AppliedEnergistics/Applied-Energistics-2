@@ -41,7 +41,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.QNBContainer;
 import appeng.core.AppEng;
-import appeng.helpers.AEGlassMaterial;
+import appeng.helpers.AEMaterials;
 import appeng.tile.qnb.QuantumBridgeTileEntity;
 import appeng.util.Platform;
 
@@ -56,7 +56,7 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
     }
 
     public QuantumLinkChamberBlock() {
-        super(defaultProps(AEGlassMaterial.INSTANCE));
+        super(defaultProps(AEMaterials.GLASS));
     }
 
     @Override

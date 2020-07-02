@@ -40,7 +40,7 @@ import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.WirelessContainer;
-import appeng.helpers.AEGlassMaterial;
+import appeng.helpers.AEMaterials;
 import appeng.tile.networking.WirelessTileEntity;
 import appeng.util.Platform;
 
@@ -58,9 +58,7 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
     public static final EnumProperty<State> STATE = EnumProperty.create("state", State.class);
 
     public WirelessBlock() {
-        super(defaultProps(AEGlassMaterial.INSTANCE).notSolid());
-        this.setFullSize(false);
-        this.setOpaque(false);
+        super(defaultProps(AEMaterials.GLASS).notSolid());
         this.setDefaultState(this.getDefaultState().with(STATE, State.OFF));
     }
 

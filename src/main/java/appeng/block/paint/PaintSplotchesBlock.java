@@ -42,9 +42,7 @@ import appeng.util.Platform;
 
 public class PaintSplotchesBlock extends AEBaseTileBlock<PaintSplotchesTileEntity> {
     public PaintSplotchesBlock() {
-        super(defaultProps(Material.WATER, MaterialColor.AIR));
-        this.setFullSize(false);
-        this.setOpaque(false);
+        super(defaultProps(Material.WATER, MaterialColor.AIR).notSolid());
     }
 
     @Override

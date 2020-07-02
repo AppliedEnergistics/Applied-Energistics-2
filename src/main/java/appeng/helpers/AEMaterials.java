@@ -22,9 +22,30 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.block.material.PushReaction;
 
-public class AEGlassMaterial {
+public class AEMaterials {
 
-    public static final Material INSTANCE = new Material(MaterialColor.AIR, false, false, true, false, true, false,
-            false, PushReaction.NORMAL);
+    public static final Material GLASS = make(MaterialColor.AIR, false, false, true, false, true, false, false,
+            PushReaction.NORMAL);
+
+    /**
+     * Small factory helper with named parameters.
+     * 
+     * @param color
+     * @param isLiquid
+     * @param isSolid
+     * @param blocksMovement
+     * @param isOpaque
+     * @param requiresNoTool
+     * @param flammable
+     * @param replaceable
+     * @param pushReaction
+     * @return
+     */
+    private static Material make(MaterialColor color, boolean isLiquid, boolean isSolid, boolean blocksMovement,
+            boolean isOpaque, boolean requiresNoTool, boolean flammable, boolean replaceable,
+            PushReaction pushReaction) {
+        return new Material(color, isLiquid, isSolid, blocksMovement, isOpaque, requiresNoTool, flammable, replaceable,
+                pushReaction);
+    }
 
 }

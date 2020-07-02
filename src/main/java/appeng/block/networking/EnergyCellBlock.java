@@ -30,7 +30,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.helpers.AEGlassMaterial;
+import appeng.helpers.AEMaterials;
 import appeng.tile.networking.EnergyCellTileEntity;
 
 public class EnergyCellBlock extends AEBaseTileBlock<EnergyCellTileEntity> {
@@ -38,7 +38,7 @@ public class EnergyCellBlock extends AEBaseTileBlock<EnergyCellTileEntity> {
     public static final IntegerProperty ENERGY_STORAGE = IntegerProperty.create("fullness", 0, 7);
 
     public EnergyCellBlock() {
-        super(defaultProps(AEGlassMaterial.INSTANCE));
+        super(defaultProps(AEMaterials.GLASS));
     }
 
     @Override

@@ -81,7 +81,7 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock 
 
     public QuartzFixtureBlock() {
         super(defaultProps(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0).lightValue(14)
-                .sound(SoundType.GLASS));
+                .sound(SoundType.GLASS).notSolid());
 
         this.setDefaultState(getDefaultState().with(FACING, Direction.UP).with(ODD, false));
     }
@@ -197,11 +197,6 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock 
     @Override
     public IOrientable getOrientable(final IBlockReader w, final BlockPos pos) {
         return new MetaRotation(w, pos, FACING);
-    }
-
-    @Override
-    public boolean isOpaque() {
-        return false;
     }
 
 }

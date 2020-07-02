@@ -18,22 +18,14 @@
 
 package appeng.block;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -41,13 +33,11 @@ import net.minecraftforge.common.ToolType;
 
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
-import appeng.helpers.AEGlassMaterial;
+import appeng.helpers.AEMaterials;
 import appeng.util.Platform;
 
 public abstract class AEBaseBlock extends Block {
 
-    private boolean isOpaque = true;
-    private boolean isFullSize = true;
     private boolean isInventory = false;
 
     protected AEBaseBlock(final Block.Properties props) {
@@ -74,7 +64,7 @@ public abstract class AEBaseBlock extends Block {
     }
 
     private static SoundType getDefaultSoundByMaterial(Material mat) {
-        if (mat == AEGlassMaterial.INSTANCE || mat == Material.GLASS) {
+        if (mat == AEMaterials.GLASS || mat == Material.GLASS) {
             return SoundType.GLASS;
         } else if (mat == Material.ROCK) {
             return SoundType.STONE;
@@ -83,11 +73,6 @@ public abstract class AEBaseBlock extends Block {
         } else {
             return SoundType.METAL;
         }
-    }
-
-    @Override
-    public boolean isNormalCube(BlockState state, IBlockReader worldIn, BlockPos pos) {
-        return this.isFullSize() && this.isOpaque();
     }
 
     @Override
@@ -212,24 +197,6 @@ public abstract class AEBaseBlock extends Block {
     protected boolean isValidOrientation(final IWorld w, final BlockPos pos, final Direction forward,
             final Direction up) {
         return true;
-    }
-
-    protected boolean isOpaque() {
-        return this.isOpaque;
-    }
-
-    protected boolean setOpaque(final boolean isOpaque) {
-        this.isOpaque = isOpaque;
-        return isOpaque;
-    }
-
-    protected boolean isFullSize() {
-        return this.isFullSize;
-    }
-
-    protected boolean setFullSize(final boolean isFullSize) {
-        this.isFullSize = isFullSize;
-        return isFullSize;
     }
 
     protected boolean isInventory() {
