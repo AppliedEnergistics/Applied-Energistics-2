@@ -3,11 +3,9 @@ package appeng.client.render.tesr;
 import java.util.EnumMap;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
@@ -25,14 +23,6 @@ import appeng.tile.storage.DriveTileEntity;
  */
 @OnlyIn(Dist.CLIENT)
 public class DriveLedTileEntityRenderer extends TileEntityRenderer<DriveTileEntity> {
-
-    private static final RenderState.TransparencyState TRANSLUCENT_TRANSPARENCY = new RenderState.TransparencyState(
-            "translucent_transparency", () -> {
-                RenderSystem.enableBlend();
-                RenderSystem.defaultBlendFunc();
-            }, () -> {
-                RenderSystem.disableBlend();
-            });
 
     private static final EnumMap<DriveSlotState, Vector3f> STATE_COLORS;
 
@@ -88,8 +78,6 @@ public class DriveLedTileEntityRenderer extends TileEntityRenderer<DriveTileEnti
         FacingToRotation.get(drive.getForward(), drive.getUp()).push(ms);
         ms.translate(-0.5, -0.5, -0.5);
 
-        RenderType rt = RenderType.makeType("ae_drive_leds", DefaultVertexFormats.POSITION_COLOR, 7, 32565, false, true,
-                RenderType.State.getBuilder().transparency(TRANSLUCENT_TRANSPARENCY).build(false));
         IVertexBuilder buffer = buffers.getBuffer(STATE);
 
         for (int row = 0; row < 5; row++) {
@@ -122,7 +110,6 @@ public class DriveLedTileEntityRenderer extends TileEntityRenderer<DriveTileEnti
         }
 
         ms.pop();
-
     }
 
     private Vector3f getColorForSlot(DriveTileEntity drive, int slot, float partialTicks) {
