@@ -19,12 +19,12 @@
 package appeng.block.networking;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.helpers.AEGlassMaterial;
+import appeng.helpers.AEMaterials;
 import appeng.tile.networking.CreativeEnergyCellBlockEntity;
 
 public class CreativeEnergyCellBlock extends AEBaseTileBlock<CreativeEnergyCellBlockEntity> {
 
     public CreativeEnergyCellBlock() {
-        super(defaultProps(AEGlassMaterial.INSTANCE));
+        super(defaultProps(AEMaterials.GLASS));
     }
 }

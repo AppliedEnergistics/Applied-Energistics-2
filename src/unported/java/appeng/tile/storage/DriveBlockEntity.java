@@ -76,9 +76,11 @@ import appeng.util.inv.filter.IAEItemFilter;
 
 public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestOrDrive, IPriorityHost {
 
-    private static final int BIT_POWER_MASK = 0x80000000;
-    private static final int BIT_BLINK_MASK = 0x24924924;
-    private static final int BIT_STATE_MASK = 0xDB6DB6DB;
+    private static final int BIT_POWER_MASK = Integer.MIN_VALUE;
+    private static final int BIT_STATE_MASK = 0b111111111111111111111111111111;
+
+    private static final int BIT_CELL_STATE_MASK = 0b111;
+    private static final int BIT_CELL_STATE_BITS = 3;
 
     private final AppEngCellInventory inv = new AppEngCellInventory(this, 10);
     private final ICellHandler[] handlersBySlot = new ICellHandler[10];
@@ -94,13 +96,18 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
     /**
      * The state of all cells inside a drive as bitset, using the following format.
      *
-     * Bit 31: power state. 0 = off, 1 = on. Bit 30: undefined Bit 29-0: 3 bits as
-     * state of each cell with the cell in slot 0 located in the 3 least significant
-     * bits.
+     * - Bit 31: power state. 0 = off, 1 = on.
+     * 
+     * - Bit 30: reserved
+     * 
+     * - Bit 29-0: 3 bits for the state of each cell
      *
-     * Cell states: Bit 2: blink. 0 = off, 1 = on. Bit 1-0: cell status
+     * Cell states:
+     * 
+     * - Bit 2-0: {@link CellState} ordinal
      *
      *
+     * 
      */
     private int state = 0;
 
@@ -127,8 +134,11 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
             newState |= BIT_POWER_MASK;
         }
         for (int x = 0; x < this.getCellCount(); x++) {
-            newState |= (this.getCellStatus(x).ordinal() << (3 * x));
+            final int o = this.getCellStatus(x).ordinal();
+            final int i = (o << (BIT_CELL_STATE_BITS * x));
+            newState |= i;
         }
+
         data.writeInt(newState);
 
         writeCellItemIds(data);
@@ -223,7 +233,8 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
     @Override
     public CellState getCellStatus(final int slot) {
         if (Platform.isClient()) {
-            return CellState.values()[(this.state >> (slot * 3)) & 3];
+            final int cellState = ((this.state >> (slot * BIT_CELL_STATE_BITS)) & BIT_CELL_STATE_MASK);
+            return CellState.values()[cellState];
         }
 
         final DriveWatcher handler = this.invBySlot[slot];
@@ -245,7 +256,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
 
     @Override
     public boolean isCellBlinking(final int slot) {
-        return ((this.state >> (slot * 3 + 2)) & 0x01) == 0x01;
+        return false;
     }
 
     @Override
@@ -285,7 +296,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
         }
 
         for (int x = 0; x < this.getCellCount(); x++) {
-            newState |= (this.getCellStatus(x).ordinal() << (3 * x));
+            newState |= (this.getCellStatus(x).ordinal() << (BIT_CELL_STATE_BITS * x));
         }
 
         if (newState != this.state) {
@@ -415,8 +426,6 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
 
     @Override
     public void blinkCell(final int slot) {
-        this.state |= 1 << (slot * 3 + 2);
-
         this.recalculateDisplay();
     }
 

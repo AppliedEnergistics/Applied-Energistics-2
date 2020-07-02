@@ -64,7 +64,7 @@ import appeng.util.Platform;
 public class ChargerBlock extends AEBaseTileBlock<ChargerBlockEntity> {
 
     public ChargerBlock() {
-        super(defaultProps(Material.METAL));
+        super(defaultProps(Material.METAL).solidBlock(false));
     }
 
     @Override

@@ -22,9 +22,9 @@ import net.minecraft.block.Material;
 import net.minecraft.block.MaterialColor;
 import net.minecraft.block.piston.PistonBehavior;
 
-public class AEGlassMaterial {
+public class AEMaterials {
 
-    public static final Material INSTANCE = new Material(MaterialColor.CLEAR, false, false, true, false, false,
+    public static final Material GLASS = new Material(MaterialColor.CLEAR, false, false, true, false, false,
             false, PistonBehavior.NORMAL);
 
 }

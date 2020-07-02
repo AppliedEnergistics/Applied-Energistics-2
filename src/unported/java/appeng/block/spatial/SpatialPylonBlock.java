@@ -25,13 +25,13 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.helpers.AEGlassMaterial;
+import appeng.helpers.AEMaterials;
 import appeng.tile.spatial.SpatialPylonBlockEntity;
 
 public class SpatialPylonBlock extends AEBaseTileBlock<SpatialPylonBlockEntity> {
 
     public SpatialPylonBlock() {
-        super(defaultProps(AEGlassMaterial.INSTANCE));
+        super(defaultProps(AEMaterials.GLASS));
     }
 
     @Override

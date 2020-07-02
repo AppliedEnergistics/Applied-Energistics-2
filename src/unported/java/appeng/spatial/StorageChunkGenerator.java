@@ -84,7 +84,7 @@ public class StorageChunkGenerator extends ChunkGenerator<GenerationSettings> {
     }
 
     @Override
-    public int func_222529_a(int p_222529_1_, int p_222529_2_, Heightmap.Type heightmapType) {
+    public int getHeight(int p_222529_1_, int p_222529_2_, Heightmap.Type heightmapType) {
         return 0;
     }
 

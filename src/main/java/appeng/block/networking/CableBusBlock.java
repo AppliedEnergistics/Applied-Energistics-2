@@ -29,7 +29,7 @@ import appeng.client.render.cablebus.CableBusBakedModel;
 import appeng.client.render.cablebus.CableBusBreakingParticle;
 import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.core.AppEng;
-import appeng.helpers.AEGlassMaterial;
+import appeng.helpers.AEMaterials;
 import appeng.integration.abstraction.IAEFacade;
 import appeng.parts.ICableBusContainer;
 import appeng.parts.NullCableBusContainer;
@@ -75,7 +75,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
     private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
 
     public CableBusBlock() {
-        super(defaultProps(AEGlassMaterial.INSTANCE)
+        super(defaultProps(AEMaterials.GLASS)
                 .nonOpaque()
                 .dropsNothing()
                 .dynamicBounds());
@@ -172,11 +172,12 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
 // FIXME FABRIC    @Override
 // FIXME FABRIC    public boolean canConnectRedstone(final BlockState state, final BlockView w, final BlockPos pos,
 // FIXME FABRIC            Direction side) {
+// FIXME FABRIC        // TODO: Verify this.
 // FIXME FABRIC        if (side == null) {
-// FIXME FABRIC            side = Direction.UP;
+// FIXME FABRIC            return false;
 // FIXME FABRIC        }
 // FIXME FABRIC
-// FIXME FABRIC        return this.cb(w, pos).canConnectRedstone(EnumSet.of(side));
+// FIXME FABRIC        return this.cb(w, pos).canConnectRedstone(side.getOpposite());
 // FIXME FABRIC    }
 
     public ItemStack getPickBlock(BlockState state, HitResult target, BlockView world, BlockPos pos,

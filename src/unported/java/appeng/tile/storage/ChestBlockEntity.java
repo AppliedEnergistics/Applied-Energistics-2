@@ -111,6 +111,12 @@ import appeng.util.item.AEItemStack;
 
 public class ChestBlockEntity extends AENetworkPowerBlockEntity
         implements IMEChest, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableTile, Tickable {
+
+    private static final int BIT_POWER_MASK = Byte.MIN_VALUE;
+    private static final int BIT_STATE_MASK = 0b111;
+
+    private static final int BIT_CELL_STATE_MASK = 0b111;
+    private static final int BIT_CELL_STATE_BITS = 3;
     private final AppEngInternalInventory inputInventory = new AppEngInternalInventory(this, 1);
     private final AppEngInternalInventory cellInventory = new AppEngInternalInventory(this, 1);
     private final FixedItemInv internalInventory = new WrapperChainedItemHandler(this.inputInventory,
@@ -164,13 +170,13 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         final int oldState = this.state;
 
         for (int x = 0; x < this.getCellCount(); x++) {
-            this.state |= (this.getCellStatus(x).ordinal() << (3 * x));
+            this.state |= (this.getCellStatus(x).ordinal() << (BIT_CELL_STATE_BITS * x));
         }
 
         if (this.isPowered()) {
-            this.state |= 0x40;
+            this.state |= BIT_POWER_MASK;
         } else {
-            this.state &= ~0x40;
+            this.state &= ~BIT_POWER_MASK;
         }
 
         final boolean currentActive = this.getProxy().isActive();
@@ -246,7 +252,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     @Override
     public CellState getCellStatus(final int slot) {
         if (isClient()) {
-            return CellState.values()[(this.state >> (slot * 3)) & 3];
+            return CellState.values()[(this.state >> (slot * BIT_CELL_STATE_BITS)) & BIT_CELL_STATE_MASK];
         }
 
         this.updateHandler();
@@ -274,7 +280,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     @Override
     public boolean isPowered() {
         if (isClient()) {
-            return (this.state & 0x40) == 0x40;
+            return (this.state & BIT_POWER_MASK) == BIT_POWER_MASK;
         }
 
         boolean gridPowered = this.getAECurrentPower() > 64;
@@ -291,12 +297,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
     @Override
     public boolean isCellBlinking(final int slot) {
-        final long now = this.world.getGameTime();
-        if (now - this.lastStateChange > 8) {
-            return false;
-        }
-
-        return ((this.state >> (slot * 3 + 2)) & 0x01) == 0x01;
+        return false;
     }
 
     @Override
@@ -328,14 +329,14 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         try {
             if (!this.getProxy().getEnergy().isNetworkPowered()) {
                 final double powerUsed = this.extractAEPower(idleUsage, Actionable.MODULATE, PowerMultiplier.CONFIG); // drain
-                if (powerUsed + 0.1 >= idleUsage != (this.state & 0x40) > 0) {
+                if (powerUsed + 0.1 >= idleUsage != (this.state & BIT_POWER_MASK) > 0) {
                     this.recalculateDisplay();
                 }
             }
         } catch (final GridAccessException e) {
             final double powerUsed = this.extractAEPower(this.getProxy().getIdlePowerUsage(), Actionable.MODULATE,
                     PowerMultiplier.CONFIG); // drain
-            if (powerUsed + 0.1 >= idleUsage != (this.state & 0x40) > 0) {
+            if (powerUsed + 0.1 >= idleUsage != (this.state & BIT_POWER_MASK) > 0) {
                 this.recalculateDisplay();
             }
         }
@@ -349,20 +350,16 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     protected void writeToStream(final PacketByteBuf data) throws IOException {
         super.writeToStream(data);
 
-        if (this.world.getGameTime() - this.lastStateChange > 8) {
-            this.state = 0;
-        } else {
-            this.state &= 0x24924924; // just keep the blinks...
-        }
+        this.state = 0;
 
         for (int x = 0; x < this.getCellCount(); x++) {
             this.state |= (this.getCellStatus(x).ordinal() << (3 * x));
         }
 
         if (this.isPowered()) {
-            this.state |= 0x40;
+            this.state |= BIT_POWER_MASK;
         } else {
-            this.state &= ~0x40;
+            this.state &= ~BIT_POWER_MASK;
         }
 
         data.writeByte(this.state);
@@ -520,7 +517,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
         this.lastStateChange = now;
 
-        this.state |= 1 << (slot * 3 + 2);
+        this.state |= 1 << (slot * BIT_CELL_STATE_BITS + 2);
 
         this.recalculateDisplay();
     }

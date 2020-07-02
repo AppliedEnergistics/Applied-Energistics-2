@@ -18,7 +18,6 @@
 
 package appeng.parts;
 
-import java.util.EnumSet;
 import java.util.Random;
 
 import net.minecraft.entity.Entity;
@@ -48,7 +47,7 @@ public class NullCableBusContainer implements ICableBusContainer {
     }
 
     @Override
-    public boolean canConnectRedstone(final EnumSet<Direction> of) {
+    public boolean canConnectRedstone(final Direction opposite) {
         return false;
     }
 

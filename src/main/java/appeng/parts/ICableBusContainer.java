@@ -18,7 +18,6 @@
 
 package appeng.parts;
 
-import java.util.EnumSet;
 import java.util.Random;
 
 import net.fabricmc.api.EnvType;
@@ -43,7 +42,7 @@ public interface ICableBusContainer {
 
     int isProvidingWeakPower(Direction opposite);
 
-    boolean canConnectRedstone(EnumSet<Direction> of);
+    boolean canConnectRedstone(Direction opposite);
 
     void onEntityCollision(Entity e);
 

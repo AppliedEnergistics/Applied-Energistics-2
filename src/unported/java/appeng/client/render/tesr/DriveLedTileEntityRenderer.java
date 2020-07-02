@@ -12,7 +12,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.util.math.Vector3f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -27,14 +26,6 @@ import appeng.tile.storage.DriveBlockEntity;
 @Environment(EnvType.CLIENT)
 public class DriveLedTileEntityRenderer extends BlockEntityRenderer<DriveBlockEntity> {
 
-    private static final RenderState.TransparencyState TRANSLUCENT_TRANSPARENCY = new RenderState.TransparencyState(
-            "translucent_transparency", () -> {
-                RenderSystem.enableBlend();
-                RenderSystem.defaultBlendFunc();
-            }, () -> {
-                RenderSystem.disableBlend();
-            });
-
     private static final EnumMap<DriveSlotState, Vector3f> STATE_COLORS;
 
     // Color used for the cell indicator for blinking during recent activity
@@ -44,7 +35,8 @@ public class DriveLedTileEntityRenderer extends BlockEntityRenderer<DriveBlockEn
         STATE_COLORS = new EnumMap<>(DriveSlotState.class);
         STATE_COLORS.put(DriveSlotState.OFFLINE, new Vector3f(0, 0, 0));
         STATE_COLORS.put(DriveSlotState.ONLINE, new Vector3f(0, 1, 0));
-        STATE_COLORS.put(DriveSlotState.TYPES_FULL, new Vector3f(0, 0.667f, 0));
+        STATE_COLORS.put(DriveSlotState.NOT_EMPTY, new Vector3f(0f, 0.667f, 1));
+        STATE_COLORS.put(DriveSlotState.TYPES_FULL, new Vector3f(1, 0.667f, 0));
         STATE_COLORS.put(DriveSlotState.FULL, new Vector3f(1, 0, 0));
     }
 
@@ -89,8 +81,6 @@ public class DriveLedTileEntityRenderer extends BlockEntityRenderer<DriveBlockEn
         FacingToRotation.get(drive.getForward(), drive.getUp()).push(ms);
         ms.translate(-0.5, -0.5, -0.5);
 
-        RenderType rt = RenderType.makeType("ae_drive_leds", VertexFormats.POSITION_COLOR, 7, 32565, false, true,
-                RenderType.State.getBuilder().transparency(TRANSLUCENT_TRANSPARENCY).build(false));
         VertexConsumer buffer = buffers.getBuffer(STATE);
 
         for (int row = 0; row < 5; row++) {
@@ -123,7 +113,6 @@ public class DriveLedTileEntityRenderer extends BlockEntityRenderer<DriveBlockEn
         }
 
         ms.pop();
-
     }
 
     private Vector3f getColorForSlot(DriveBlockEntity drive, int slot, float partialTicks) {

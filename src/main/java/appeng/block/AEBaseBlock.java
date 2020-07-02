@@ -42,7 +42,7 @@ import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
-import appeng.helpers.AEGlassMaterial;
+import appeng.helpers.AEMaterials;
 import appeng.util.Platform;
 
 public abstract class AEBaseBlock extends Block {
@@ -74,7 +74,7 @@ public abstract class AEBaseBlock extends Block {
     }
 
     private static BlockSoundGroup getDefaultSoundByMaterial(Material mat) {
-        if (mat == AEGlassMaterial.INSTANCE || mat == Material.GLASS) {
+        if (mat == AEMaterials.GLASS || mat == Material.GLASS) {
             return BlockSoundGroup.GLASS;
         } else if (mat == Material.STONE) {
             return BlockSoundGroup.STONE;

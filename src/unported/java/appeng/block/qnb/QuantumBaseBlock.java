@@ -46,7 +46,6 @@ public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeBloc
 
     public QuantumBaseBlock(Settings props) {
         super(props);
-        this.setFullSize(this.setOpaque(false));
         this.setDefaultState(this.getDefaultState().with(FORMED, false));
     }
 
