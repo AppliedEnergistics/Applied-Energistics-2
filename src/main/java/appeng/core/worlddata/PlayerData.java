@@ -77,7 +77,7 @@ final class PlayerData extends WorldSavedData implements IWorldPlayerData {
             this.mapping.put(profile.getId(), playerId);
             markDirty();
 
-            AELog.info("Assigning ME player id {} to Minecraft profile {} ({})", playerId, profile.getId(),
+            AELog.info("Assigning ME player id %s to Minecraft profile %s (%s)", playerId, profile.getId(),
                     profile.getName());
         }
 
@@ -101,7 +101,7 @@ final class PlayerData extends WorldSavedData implements IWorldPlayerData {
             UUID profileId = new UUID(profileIds[i * 2], profileIds[i * 2 + 1]);
             highestPlayerId = Math.max(playerId, highestPlayerId);
             mapping.put(profileId, playerId);
-            AELog.debug("AE player ID {} is assigned to profile ID {}", playerId, profileId);
+            AELog.debug("AE player ID %s is assigned to profile ID %s", playerId, profileId);
         }
         this.nextPlayerId = highestPlayerId + 1;
     }
