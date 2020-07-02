@@ -106,6 +106,7 @@ public final class AEConfig {
     // Spatial IO/Dimension
     private double spatialPowerExponent;
     private double spatialPowerMultiplier;
+    private boolean spatialBlockTags;
 
     // Grindstone
     private float oreDoublePercentage;
@@ -208,6 +209,7 @@ public final class AEConfig {
 
         this.spatialPowerMultiplier = COMMON.spatialPowerMultiplier.get();
         this.spatialPowerExponent = COMMON.spatialPowerExponent.get();
+        this.spatialBlockTags = COMMON.spatialBlockTags.get();
 
         this.craftingCalculationTimePerTick = COMMON.craftingCalculationTimePerTick.get();
 
@@ -335,6 +337,10 @@ public final class AEConfig {
         return this.spatialPowerMultiplier;
     }
 
+    public boolean getSpatialBlockTags() {
+        return this.spatialBlockTags;
+    }
+
     public float getOreDoublePercentage() {
         return this.oreDoublePercentage;
     }
@@ -457,6 +463,7 @@ public final class AEConfig {
         // Spatial IO/Dimension
         public final ConfigValue<Double> spatialPowerExponent;
         public final ConfigValue<Double> spatialPowerMultiplier;
+        public final ConfigValue<Boolean> spatialBlockTags;
 
         // Grindstone
         public final DoubleValue oreDoublePercentage;
@@ -544,6 +551,9 @@ public final class AEConfig {
             builder.push("spatialio");
             this.spatialPowerMultiplier = builder.define("spatialPowerMultiplier", 1250.0);
             this.spatialPowerExponent = builder.define("spatialPowerExponent", 1.35);
+            this.spatialBlockTags = builder
+                    .comment("BE CAREFUL, CAN CORRUPT YOUR WORLD! Will use #spatial/whitelist as whitelist.")
+                    .define("spatialBlockTags", false);
             builder.pop();
 
             builder.push("GrindStone");
