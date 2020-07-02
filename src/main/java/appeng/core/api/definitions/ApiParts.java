@@ -34,7 +34,12 @@ import appeng.items.parts.ColoredPartItem;
 import appeng.items.parts.PartItem;
 import appeng.items.parts.PartItemRendering;
 import appeng.parts.misc.CableAnchorPart;
+import appeng.parts.misc.InvertedToggleBusPart;
+import appeng.parts.misc.ToggleBusPart;
 import appeng.parts.networking.*;
+import appeng.parts.reporting.DarkPanelPart;
+import appeng.parts.reporting.PanelPart;
+import appeng.parts.reporting.SemiDarkPanelPart;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
@@ -98,14 +103,14 @@ public final class ApiParts implements IParts {
        this.cableDenseSmart = constructColoredDefinition(registry, "smart_dense_cable", 
                SmartDenseCablePart::new);
       this.quartzFiber = createPart(registry, "quartz_fiber",  QuartzFiberPart::new);
-// FIXME       this.toggleBus = createPart(registry, "toggle_bus",  ToggleBusPart::new);
-// FIXME       this.invertedToggleBus = createPart(registry, "inverted_toggle_bus", 
-// FIXME               InvertedToggleBusPart::new);
+       this.toggleBus = createPart(registry, "toggle_bus",  ToggleBusPart::new);
+       this.invertedToggleBus = createPart(registry, "inverted_toggle_bus",
+               InvertedToggleBusPart::new);
        this.cableAnchor = createPart(registry, "cable_anchor",  CableAnchorPart::new);
-// FIXME       this.monitor = createPart(registry, "monitor",  PanelPart::new);
-// FIXME       this.semiDarkMonitor = createPart(registry, "semi_dark_monitor", 
-// FIXME               SemiDarkPanelPart::new);
-// FIXME       this.darkMonitor = createPart(registry, "dark_monitor",  DarkPanelPart::new);
+       this.monitor = createPart(registry, "monitor",  PanelPart::new);
+       this.semiDarkMonitor = createPart(registry, "semi_dark_monitor",
+               SemiDarkPanelPart::new);
+       this.darkMonitor = createPart(registry, "dark_monitor",  DarkPanelPart::new);
 // FIXME       this.storageBus = createPart(registry, "storage_bus",  StorageBusPart::new);
 // FIXME       this.fluidStorageBus = createPart(registry, "fluid_storage_bus", 
 // FIXME               FluidStorageBusPart::new);
@@ -165,9 +170,9 @@ public final class ApiParts implements IParts {
                 "parts/fluid_formation_plane_on");
 
         // Register all part models
-// FIXME FABRIC        for (PartType partType : PartType.values()) {
-// FIXME FABRIC            partModels.registerModels(partType.getModels());
-// FIXME FABRIC        }
+        for (PartType partType : PartType.values()) {
+            partModels.registerModels(partType.getModels());
+        }
     }
 
     private <T extends IPart> IItemDefinition createPart(FeatureFactory registry, String id, 

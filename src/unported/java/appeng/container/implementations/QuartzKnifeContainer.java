@@ -79,7 +79,7 @@ public class QuartzKnifeContainer extends AEBaseContainer {
 
     @Override
     public void detectAndSendChanges() {
-        final ItemStack currentItem = this.getPlayerInv().getCurrentItem();
+        final ItemStack currentItem = this.getPlayerInv().getMainHandStack();
 
         if (currentItem != this.toolInv.getItemStack()) {
             if (!currentItem.isEmpty()) {

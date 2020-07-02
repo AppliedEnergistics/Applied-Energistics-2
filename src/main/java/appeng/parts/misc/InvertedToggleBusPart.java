@@ -16,43 +16,47 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.parts.reporting;
+package appeng.parts.misc;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
-import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 
-public class SemiDarkPanelPart extends AbstractPanelPart {
+public class InvertedToggleBusPart extends ToggleBusPart {
     @PartModels
-    public static final Identifier MODEL_OFF = new Identifier(AppEng.MOD_ID, "part/monitor_medium_off");
-    @PartModels
-    public static final Identifier MODEL_ON = new Identifier(AppEng.MOD_ID, "part/monitor_medium_on");
+    public static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID,
+            "part/inverted_toggle_bus_base");
 
-    public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF);
-    public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON);
+    public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_STATUS_OFF);
+    public static final PartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_STATUS_ON);
+    public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_STATUS_HAS_CHANNEL);
 
-    @Reflected
-    public SemiDarkPanelPart(final ItemStack is) {
+    public InvertedToggleBusPart(final ItemStack is) {
         super(is);
+        this.getProxy().setIdlePowerUsage(0.0);
+        this.getOuterProxy().setIdlePowerUsage(0.0);
+        this.getProxy().setFlags();
+        this.getOuterProxy().setFlags();
     }
 
     @Override
-    protected int getBrightnessColor() {
-        final int light = this.getColor().whiteVariant;
-        final int dark = this.getColor().mediumVariant;
-        return (((((light >> 16) & 0xff) + ((dark >> 16) & 0xff)) / 2) << 16)
-                | (((((light >> 8) & 0xff) + ((dark >> 8) & 0xff)) / 2) << 8)
-                | ((((light) & 0xff) + ((dark) & 0xff)) / 2);
+    protected boolean getIntention() {
+        return !super.getIntention();
     }
 
     @Override
     public IPartModel getStaticModels() {
-        return this.isPowered() ? MODELS_ON : MODELS_OFF;
+        if (this.hasRedstoneFlag() && this.isActive() && this.isPowered()) {
+            return MODELS_HAS_CHANNEL;
+        } else if (this.hasRedstoneFlag() && this.isPowered()) {
+            return MODELS_ON;
+        } else {
+            return MODELS_OFF;
+        }
     }
 
 }

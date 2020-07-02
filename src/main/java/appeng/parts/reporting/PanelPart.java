@@ -16,49 +16,38 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.parts.misc;
+package appeng.parts.reporting;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
-import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 
-public class InvertedToggleBusPart extends ToggleBusPart {
+public class PanelPart extends AbstractPanelPart {
+
     @PartModels
-    public static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID,
-            "part/inverted_toggle_bus_base");
+    public static final Identifier MODEL_OFF = new Identifier(AppEng.MOD_ID, "part/monitor_bright_off");
+    @PartModels
+    public static final Identifier MODEL_ON = new Identifier(AppEng.MOD_ID, "part/monitor_bright_on");
 
-    public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_STATUS_OFF);
-    public static final PartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_STATUS_ON);
-    public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_STATUS_HAS_CHANNEL);
+    public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF);
+    public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON);
 
-    @Reflected
-    public InvertedToggleBusPart(final ItemStack is) {
+    public PanelPart(final ItemStack is) {
         super(is);
-        this.getProxy().setIdlePowerUsage(0.0);
-        this.getOuterProxy().setIdlePowerUsage(0.0);
-        this.getProxy().setFlags();
-        this.getOuterProxy().setFlags();
     }
 
     @Override
-    protected boolean getIntention() {
-        return !super.getIntention();
+    protected int getBrightnessColor() {
+        return this.getColor().whiteVariant;
     }
 
     @Override
     public IPartModel getStaticModels() {
-        if (this.hasRedstoneFlag() && this.isActive() && this.isPowered()) {
-            return MODELS_HAS_CHANNEL;
-        } else if (this.hasRedstoneFlag() && this.isPowered()) {
-            return MODELS_ON;
-        } else {
-            return MODELS_OFF;
-        }
+        return this.isPowered() ? MODELS_ON : MODELS_OFF;
     }
 
 }

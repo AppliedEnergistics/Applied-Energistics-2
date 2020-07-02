@@ -155,7 +155,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
 
         final ItemStack myItem = this.inv.getInvStack(0);
         if (myItem.isEmpty()) {
-            ItemStack held = player.inventory.getCurrentItem();
+            ItemStack held = player.inventory.getMainHandStack();
 
             if (AEApi.instance().definitions().materials().certusQuartzCrystal().isSameAs(held)
                     || Platform.isChargeable(held)) {

@@ -83,7 +83,7 @@ public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements Ticka
 
     void click(final PlayerEntity player) {
         if (Platform.isServer()) {
-            final ItemStack hand = player.inventory.getCurrentItem();
+            final ItemStack hand = player.inventory.getMainHandStack();
             this.who = player;
 
             if (hand.isEmpty()) {

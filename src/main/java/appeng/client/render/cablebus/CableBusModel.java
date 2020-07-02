@@ -27,6 +27,8 @@ import java.util.function.Function;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.util.Pair;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.render.model.UnbakedModel;
@@ -44,6 +46,7 @@ import javax.annotation.Nullable;
 /**
  * The built-in model for the cable bus block.
  */
+@Environment(EnvType.CLIENT)
 public class CableBusModel implements UnbakedModel {
 
     private final PartModels partModels;
