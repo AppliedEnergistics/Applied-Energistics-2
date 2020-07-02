@@ -60,6 +60,7 @@ public enum FacingToRotation implements StringIdentifiable {
     private final Quaternion xRot;
     private final Quaternion yRot;
     private final Quaternion zRot;
+    private final Quaternion combinedRotation;
     private final Matrix4f mat;
 
     private FacingToRotation(Vector3f rot) {
@@ -69,14 +70,15 @@ public enum FacingToRotation implements StringIdentifiable {
         this.mat.multiply(xRot = Vector3f.POSITIVE_X.getDegreesQuaternion(rot.getX()));
         this.mat.multiply(yRot = Vector3f.POSITIVE_Y.getDegreesQuaternion(rot.getY()));
         this.mat.multiply(zRot = Vector3f.POSITIVE_Z.getDegreesQuaternion(rot.getZ()));
+        this.combinedRotation = new Quaternion(rot.getX(), rot.getY(), rot.getZ(), true);
     }
 
     public boolean isRedundant() {
         return rot.getX() == 0 && rot.getY() == 0 && rot.getZ() == 0;
     }
 
-    public Vector3f getRot() {
-        return this.rot;
+    public Quaternion getRot() {
+        return this.combinedRotation;
     }
 
     public Matrix4f getMat() {

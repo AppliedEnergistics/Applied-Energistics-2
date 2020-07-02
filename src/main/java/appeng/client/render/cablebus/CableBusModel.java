@@ -18,30 +18,28 @@
 
 package appeng.client.render.cablebus;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-
+import appeng.api.util.AEColor;
+import appeng.core.AELog;
+import appeng.core.features.registries.PartModels;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.util.Pair;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.ModelBakeSettings;
-import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.render.model.ModelLoader;
+import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.Identifier;
 
-import appeng.api.util.AEColor;
-import appeng.core.AELog;
-import appeng.core.features.registries.PartModels;
-
 import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * The built-in model for the cable bus block.
@@ -57,6 +55,7 @@ public class CableBusModel implements UnbakedModel {
 
     @Override
     public Collection<Identifier> getModelDependencies() {
+        partModels.setInitialized(true);
         return partModels.getModels();
     }
 
@@ -78,7 +77,12 @@ public class CableBusModel implements UnbakedModel {
 
     @Override
     public Collection<SpriteIdentifier> getTextureDependencies(Function<Identifier, UnbakedModel> unbakedModelGetter, Set<Pair<String, String>> unresolvedTextureReferences) {
-        return Collections.unmodifiableList(CableBuilder.getTextures());
+        return Stream.concat(
+                getModelDependencies().stream()
+                        .map(unbakedModelGetter)
+                        .flatMap(ubm -> ubm.getTextureDependencies(unbakedModelGetter, unresolvedTextureReferences).stream()),
+                CableBuilder.getTextures().stream()
+        ).collect(Collectors.toList());
     }
 
     private Map<Identifier, BakedModel> loadPartModels(ModelLoader loader,

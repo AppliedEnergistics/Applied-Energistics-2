@@ -22,6 +22,7 @@ import java.util.function.BiFunction;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.render.RenderLayer;
@@ -80,7 +81,7 @@ class BlockRendering implements IBlockRendering {
         }
 
         if (this.blockColor != null) {
-            factory.addBootstrapComponent(new BlockColorComponent(block, this.blockColor));
+            ColorProviderRegistry.BLOCK.register(this.blockColor, block);
         }
 
         if (this.renderType != null) {
