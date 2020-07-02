@@ -623,14 +623,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     }
 
     @Override
-    public boolean canConnectRedstone(final EnumSet<Direction> enumSet) {
-        for (final Direction dir : enumSet) {
-            final IPart part = this.getPart(dir);
-            if (part != null && part.canConnectRedstone()) {
-                return true;
-            }
-        }
-        return false;
+    public boolean canConnectRedstone(final Direction opposite) {
+        final IPart part = this.getPart(opposite);
+        return part != null && part.canConnectRedstone();
     }
 
     @Override
