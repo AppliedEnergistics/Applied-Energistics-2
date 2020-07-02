@@ -39,7 +39,6 @@ import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.exceptions.MissingDefinitionException;
 import appeng.api.features.AEFeature;
-import appeng.api.implementations.items.IItemGroup;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.storage.IMEInventoryHandler;
@@ -60,8 +59,7 @@ import appeng.util.Platform;
  * @version rv6 - 2018-01-17
  * @since rv6 2018-01-17
  */
-public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseItem
-        implements IStorageCell<T>, IItemGroup {
+public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseItem implements IStorageCell<T> {
     protected final MaterialType component;
     protected final int totalBytes;
 
@@ -102,11 +100,6 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     @Override
     public boolean isStorageCell(final ItemStack i) {
         return true;
-    }
-
-    @Override
-    public String getUnlocalizedGroupName(final Set<ItemStack> others, final ItemStack is) {
-        return GuiText.StorageCells.getTranslationKey();
     }
 
     @Override

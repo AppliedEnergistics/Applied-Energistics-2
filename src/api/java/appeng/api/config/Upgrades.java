@@ -23,12 +23,17 @@
 
 package appeng.api.config;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-import net.minecraft.item.ItemStack;
+import javax.annotation.Nullable;
 
-import appeng.api.definitions.IItemDefinition;
+import com.google.common.base.Preconditions;
+
+import net.minecraft.block.Block;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.util.IItemProvider;
+import net.minecraft.util.text.ITextComponent;
 
 public enum Upgrades {
     /**
@@ -42,7 +47,8 @@ public enum Upgrades {
     FUZZY(1), SPEED(1), INVERTER(1);
 
     private final int tier;
-    private final Map<ItemStack, Integer> supportedMax = new HashMap<>();
+    private final List<Supported> supported = new ArrayList<>();
+    private List<ITextComponent> supportedTooltipLines;
 
     Upgrades(final int tier) {
         this.tier = tier;
@@ -52,8 +58,12 @@ public enum Upgrades {
      * @return list of Items/Blocks that support this upgrade, and how many it
      *         supports.
      */
-    public Map<ItemStack, Integer> getSupported() {
-        return this.supportedMax;
+    public List<Supported> getSupported() {
+        return this.supported;
+    }
+
+    public void registerItem(final IItemProvider item, final int maxSupported) {
+        this.registerItem(item, maxSupported, null);
     }
 
     /**
@@ -61,24 +71,93 @@ public enum Upgrades {
      *
      * @param item         machine in which this upgrade can be installed
      * @param maxSupported amount how many upgrades can be installed
+     * @param tooltipGroup If more than one item of the same group are supported,
+     *                     the tooltip will show this group name instead. If the
+     *                     items have different maxSupported values, the highest
+     *                     will be shown.
      */
-    public void registerItem(final IItemDefinition item, final int maxSupported) {
-        item.maybeStack(1).ifPresent(is -> this.registerItem(is, maxSupported));
+    public void registerItem(final IItemProvider item, final int maxSupported, @Nullable ITextComponent tooltipGroup) {
+        Preconditions.checkNotNull(item);
+        this.supported.add(new Supported(item.asItem(), maxSupported, tooltipGroup));
+        supportedTooltipLines = null; // Reset tooltip
     }
 
-    /**
-     * Registers a specific amount of this upgrade into a specific machine
-     *
-     * @param stack        machine in which this upgrade can be installed
-     * @param maxSupported amount how many upgrades can be installed
-     */
-    public void registerItem(final ItemStack stack, final int maxSupported) {
-        if (stack != null) {
-            this.supportedMax.put(stack, maxSupported);
+    public List<ITextComponent> getTooltipLines() {
+        if (supportedTooltipLines == null) {
+            supported.sort(Comparator.comparingInt(o -> o.maxCount));
+            supportedTooltipLines = new ArrayList<>(supported.size());
+
+            // Use a separate set because the final text will include numbers
+            Set<ITextComponent> namesAdded = new HashSet<>();
+
+            for (int i = 0; i < supported.size(); i++) {
+                Supported supported = this.supported.get(i);
+                ITextComponent name = supported.item.getName();
+
+                // If the group was already added by a previous item, skip this
+                if (supported.tooltipGroup != null && namesAdded.contains(supported.tooltipGroup)) {
+                    continue;
+                }
+
+                // If any of the following items would be of the same group, use the group name
+                // instead
+                if (supported.tooltipGroup != null) {
+                    for (int j = i + 1; j < this.supported.size(); j++) {
+                        ITextComponent otherGroup = this.supported.get(j).tooltipGroup;
+                        if (supported.tooltipGroup.equals(otherGroup)) {
+                            name = supported.tooltipGroup;
+                            break;
+                        }
+                    }
+                }
+
+                if (namesAdded.add(name)) {
+                    // append the supported count only if its > 1
+                    if (supported.maxCount > 1) {
+                        name = name.deepCopy().appendText(" (" + supported.maxCount + ")");
+                    }
+                    supportedTooltipLines.add(name);
+                }
+            }
         }
+
+        return supportedTooltipLines;
     }
 
     public int getTier() {
         return this.tier;
     }
+
+    public static class Supported {
+        private final Item item;
+        private final Block block;
+        private final int maxCount;
+        @Nullable
+        private final ITextComponent tooltipGroup;
+
+        public Supported(Item item, int maxCount, @Nullable ITextComponent tooltipGroup) {
+            this.item = item;
+            if (item.getItem() instanceof BlockItem) {
+                this.block = ((BlockItem) item.getItem()).getBlock();
+            } else {
+                this.block = null;
+            }
+            this.maxCount = maxCount;
+            this.tooltipGroup = tooltipGroup;
+        }
+
+        public int getMaxCount() {
+            return maxCount;
+        }
+
+        public boolean isSupported(Block block) {
+            return block != null && this.block == block;
+        }
+
+        public boolean isSupported(Item item) {
+            return item != null && this.item == item;
+        }
+
+    }
+
 }
