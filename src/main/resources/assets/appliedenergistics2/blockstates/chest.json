@@ -15,7 +15,7 @@
     },
     {
       "when": {
-        "slot_state": "online|types_full|full"
+        "slot_state": "online|not_empty|types_full|full"
       },
       "apply": {
         "model": "appliedenergistics2:block/chest/lights_on"
@@ -43,6 +43,14 @@
       },
       "apply": {
         "model": "appliedenergistics2:block/chest/cell_state_online"
+      }
+    },
+    {
+      "when": {
+        "slot_state": "not_empty"
+      },
+      "apply": {
+        "model": "appliedenergistics2:block/chest/cell_state_not_empty"
       }
     },
     {

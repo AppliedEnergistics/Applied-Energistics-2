@@ -50,5 +50,5 @@ public enum CellState {
     /**
      * Full cell, technically could have free types
      */
-    FULL,
+    FULL;
 }
