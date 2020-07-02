@@ -19,19 +19,14 @@
 package appeng.client.render.cablebus;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
-import net.fabricmc.fabric.impl.client.indigo.renderer.IndigoRenderer;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.Vector4f;
-import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
 
@@ -40,8 +35,6 @@ import net.minecraft.util.math.Direction;
  */
 @Environment(EnvType.CLIENT)
 public class CubeBuilder {
-
-    private final List<BakedQuad> output;
 
     private final EnumMap<Direction, Sprite> textures = new EnumMap<>(Direction.class);
 
@@ -57,25 +50,12 @@ public class CubeBuilder {
 
     private boolean renderFullBright;
 
-    private final MeshBuilder meshBuilder;
-
     private final QuadEmitter emitter;
 
     private int vertexIndex = 0;
 
-    public CubeBuilder(List<BakedQuad> output) {
-        this.output = output;
-
-        meshBuilder = IndigoRenderer.INSTANCE.meshBuilder();
-        emitter = meshBuilder.getEmitter();
-
-        emitter.emit();
-        meshBuilder.build();
-        ModelHelper.toQuadLists(meshBuilder.build());
-    }
-
-    public CubeBuilder() {
-        this(new ArrayList<>(6));
+    public CubeBuilder(QuadEmitter emitter) {
+        this.emitter = emitter;
     }
 
     public void addCube(float x1, float y1, float z1, float x2, float y2, float z2) {
@@ -171,10 +151,8 @@ public class CubeBuilder {
             emitter.lightmap(lightmap, lightmap, lightmap, lightmap);
         }
 
-        // FIXME: this is unnecessarily inefficient
         emitter.emit();
-        List<BakedQuad>[] quads = ModelHelper.toQuadLists(meshBuilder.build());
-        this.output.addAll(Arrays.stream(quads).flatMap(Collection::stream).collect(Collectors.toList()));
+        this.vertexIndex = 0;
     }
 
     private UvVector getDefaultUv(Direction face, Sprite texture, float x1, float y1, float z1, float x2,
@@ -382,10 +360,10 @@ public class CubeBuilder {
     private void putVertex(Direction face, float x, float y, float z, float u, float v) {
 
         emitter.pos(vertexIndex, x, y, z);
-        emitter.pos(vertexIndex, face.getOffsetX(), face.getOffsetY(), face.getOffsetZ());
+        emitter.normal(vertexIndex, face.getOffsetX(), face.getOffsetY(), face.getOffsetZ());
 
         // Color format is RGBA
-        emitter.spriteColor(vertexIndex, this.color);
+        emitter.spriteColor(vertexIndex, 0, this.color);
 
         emitter.sprite(vertexIndex, 0, u, v);
 
@@ -458,7 +436,4 @@ public class CubeBuilder {
         this.useStandardUV = true;
     }
 
-    public List<BakedQuad> getOutput() {
-        return this.output;
-    }
 }

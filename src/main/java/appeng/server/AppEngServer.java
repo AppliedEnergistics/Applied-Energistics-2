@@ -1,7 +1,6 @@
 package appeng.server;
 
 import appeng.api.parts.CableRenderMode;
-import appeng.block.AEBaseBlock;
 import appeng.client.ActionKey;
 import appeng.client.EffectType;
 import appeng.core.AppEngBase;
@@ -10,7 +9,6 @@ import appeng.core.worlddata.WorldData;
 import appeng.hooks.TickHandler;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.server.PlayerStream;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
@@ -18,7 +16,6 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 import java.util.Random;
 import java.util.stream.Stream;
 

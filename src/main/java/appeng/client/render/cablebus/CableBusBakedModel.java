@@ -21,7 +21,12 @@ package appeng.client.render.cablebus;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
+import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
+import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
+import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
@@ -48,7 +53,10 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Supplier;
 
+@Environment(EnvType.CLIENT)
 public class CableBusBakedModel implements BakedModel, FabricBakedModel {
+
+    private static final Renderer RENDERER = RendererAccess.INSTANCE.getRenderer();
 
     // FIXME: This entire cache seems dumb as shit
     private static final Map<CableBusRenderState, Mesh> CABLE_MODEL_CACHE = new HashMap<>();
@@ -94,46 +102,39 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
             return;
         }
 
-        RenderLayer layer = RenderLayer.getCutout(); // FIXME: Fabric can only render within one layer (?)
+        // First, handle the cable at the center of the cable bus
+        final Mesh cableModel = CABLE_MODEL_CACHE.computeIfAbsent(renderState, this::buildCableModel);
+        if (cableModel != null) {
+            context.meshConsumer().accept(cableModel);
+        }
 
-        // The core parts of the cable will only be rendered in the CUTOUT layer.
-        // Facades will add them selves to what ever the block would be rendered with,
-        // except when transparent facades are enabled, they are forced to TRANSPARENT.
-        if (layer == RenderLayer.getCutout()) {
-            // First, handle the cable at the center of the cable bus
-            final Mesh cableModel = CABLE_MODEL_CACHE.computeIfAbsent(renderState, this::buildCableModel);
-            if (cableModel != null) {
-                context.meshConsumer().accept(cableModel);
+        // Then handle attachments
+        for (Direction facing : Direction.values()) {
+            final IPartModel partModel = renderState.getAttachments().get(facing);
+            if (partModel == null) {
+                continue;
             }
 
-            // Then handle attachments
-            for (Direction facing : Direction.values()) {
-                final IPartModel partModel = renderState.getAttachments().get(facing);
-                if (partModel == null) {
-                    continue;
+            Object partModelData = renderState.getPartModelData().get(facing);
+
+            for (Identifier model : partModel.getModels()) {
+                BakedModel bakedModel = this.partModels.get(model);
+
+                if (bakedModel == null) {
+                    throw new IllegalStateException("Trying to use an unregistered part model: " + model);
                 }
 
-                Object partModelData = renderState.getPartModelData().get(facing);
-
-                for (Identifier model : partModel.getModels()) {
-                    BakedModel bakedModel = this.partModels.get(model);
-
-                    if (bakedModel == null) {
-                        throw new IllegalStateException("Trying to use an unregistered part model: " + model);
-                    }
-
-                    context.pushTransform(QuadRotator.get(facing, Direction.UP));
-                    if (bakedModel instanceof FabricBakedModel) {
-                        ((FabricBakedModel) bakedModel).emitBlockQuads(blockView, state, pos, randomSupplier, context);
-                    } else {
-                        context.fallbackConsumer().accept(bakedModel);
-                    }
-                    context.popTransform();
+                context.pushTransform(QuadRotator.get(facing, Direction.UP));
+                if (bakedModel instanceof FabricBakedModel) {
+                    ((FabricBakedModel) bakedModel).emitBlockQuads(blockView, state, pos, randomSupplier, context);
+                } else {
+                    context.fallbackConsumer().accept(bakedModel);
                 }
+                context.popTransform();
             }
         }
 
-        this.facadeBuilder.buildFacadeQuads(layer, renderState, randomSupplier, context, this.partModels::get);
+        // FIXME this.facadeBuilder.buildFacadeQuads(layer, renderState, randomSupplier, context, this.partModels::get);
     }
 
     // Determines whether a cable is connected to exactly two sides that are
@@ -172,101 +173,101 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
         AEColor cableColor = renderState.getCableColor();
         EnumMap<Direction, AECableType> connectionTypes = renderState.getConnectionTypes();
 
-        MeshBuilder builder = IndigoRenderer.INSTANCE.meshBuilder();
+        MeshBuilder builder = RENDERER.meshBuilder();
         QuadEmitter emitter = builder.getEmitter();
-// FIXME
-// FIXME        // If the connection is straight, no busses are attached, and no covered core
-// FIXME        // has been forced (in case of glass
-// FIXME        // cables), then render the cable as a simplified straight line.
-// FIXME        boolean noAttachments = !renderState.getAttachments().values().stream()
-// FIXME                .anyMatch(IPartModel::requireCableConnection);
-// FIXME        if (noAttachments && isStraightLine(cableType, connectionTypes)) {
-// FIXME            Direction facing = connectionTypes.keySet().iterator().next();
-// FIXME
-// FIXME            switch (cableType) {
-// FIXME                case GLASS:
-// FIXME                    this.cableBuilder.addStraightGlassConnection(facing, cableColor, emitter);
-// FIXME                    break;
-// FIXME                case COVERED:
-// FIXME                    this.cableBuilder.addStraightCoveredConnection(facing, cableColor, emitter);
-// FIXME                    break;
-// FIXME                case SMART:
-// FIXME                    this.cableBuilder.addStraightSmartConnection(facing, cableColor,
-// FIXME                            renderState.getChannelsOnSide().get(facing), emitter);
-// FIXME                    break;
-// FIXME                case DENSE_COVERED:
-// FIXME                    this.cableBuilder.addStraightDenseCoveredConnection(facing, cableColor, emitter);
-// FIXME                    break;
-// FIXME                case DENSE_SMART:
-// FIXME                    this.cableBuilder.addStraightDenseSmartConnection(facing, cableColor,
-// FIXME                            renderState.getChannelsOnSide().get(facing), emitter);
-// FIXME                    break;
-// FIXME                default:
-// FIXME                    break;
-// FIXME            }
-// FIXME
-// FIXME            return null; // Don't render the other form of connection
-// FIXME        }
-// FIXME
-// FIXME        this.cableBuilder.addCableCore(renderState.getCoreType(), cableColor, emitter);
-// FIXME
-// FIXME        // Render all internal connections to attachments
-// FIXME        EnumMap<Direction, Integer> attachmentConnections = renderState.getAttachmentConnections();
-// FIXME        for (Direction facing : attachmentConnections.keySet()) {
-// FIXME            int distance = attachmentConnections.get(facing);
-// FIXME            int channels = renderState.getChannelsOnSide().get(facing);
-// FIXME
-// FIXME            switch (cableType) {
-// FIXME                case GLASS:
-// FIXME                    this.cableBuilder.addConstrainedGlassConnection(facing, cableColor, distance, emitter);
-// FIXME                    break;
-// FIXME                case COVERED:
-// FIXME                    this.cableBuilder.addConstrainedCoveredConnection(facing, cableColor, distance, emitter);
-// FIXME                    break;
-// FIXME                case SMART:
-// FIXME                    this.cableBuilder.addConstrainedSmartConnection(facing, cableColor, distance, channels, emitter);
-// FIXME                    break;
-// FIXME                case DENSE_COVERED:
-// FIXME                case DENSE_SMART:
-// FIXME                    // Dense cables do not render connections to parts since none can be attached
-// FIXME                    break;
-// FIXME                default:
-// FIXME                    break;
-// FIXME            }
-// FIXME        }
-// FIXME
-// FIXME        // Render all outgoing connections using the appropriate type
-// FIXME        for (final Entry<Direction, AECableType> connection : connectionTypes.entrySet()) {
-// FIXME            final Direction facing = connection.getKey();
-// FIXME            final AECableType connectionType = connection.getValue();
-// FIXME            final boolean cableBusAdjacent = renderState.getCableBusAdjacent().contains(facing);
-// FIXME            final int channels = renderState.getChannelsOnSide().get(facing);
-// FIXME
-// FIXME            switch (cableType) {
-// FIXME                case GLASS:
-// FIXME                    this.cableBuilder.addGlassConnection(facing, cableColor, connectionType, cableBusAdjacent,
-// FIXME                            emitter);
-// FIXME                    break;
-// FIXME                case COVERED:
-// FIXME                    this.cableBuilder.addCoveredConnection(facing, cableColor, connectionType, cableBusAdjacent,
-// FIXME                            emitter);
-// FIXME                    break;
-// FIXME                case SMART:
-// FIXME                    this.cableBuilder.addSmartConnection(facing, cableColor, connectionType, cableBusAdjacent, channels,
-// FIXME                            emitter);
-// FIXME                    break;
-// FIXME                case DENSE_COVERED:
-// FIXME                    this.cableBuilder.addDenseCoveredConnection(facing, cableColor, connectionType, cableBusAdjacent,
-// FIXME                            emitter);
-// FIXME                    break;
-// FIXME                case DENSE_SMART:
-// FIXME                    this.cableBuilder.addDenseSmartConnection(facing, cableColor, connectionType, cableBusAdjacent,
-// FIXME                            channels, emitter);
-// FIXME                    break;
-// FIXME                default:
-// FIXME                    break;
-// FIXME            }
-// FIXME        }
+
+        // If the connection is straight, no busses are attached, and no covered core
+        // has been forced (in case of glass
+        // cables), then render the cable as a simplified straight line.
+        boolean noAttachments = !renderState.getAttachments().values().stream()
+                .anyMatch(IPartModel::requireCableConnection);
+        if (noAttachments && isStraightLine(cableType, connectionTypes)) {
+            Direction facing = connectionTypes.keySet().iterator().next();
+
+            switch (cableType) {
+                case GLASS:
+                    this.cableBuilder.addStraightGlassConnection(facing, cableColor, emitter);
+                    break;
+                case COVERED:
+                    this.cableBuilder.addStraightCoveredConnection(facing, cableColor, emitter);
+                    break;
+                case SMART:
+                    this.cableBuilder.addStraightSmartConnection(facing, cableColor,
+                            renderState.getChannelsOnSide().get(facing), emitter);
+                    break;
+                case DENSE_COVERED:
+                    this.cableBuilder.addStraightDenseCoveredConnection(facing, cableColor, emitter);
+                    break;
+                case DENSE_SMART:
+                    this.cableBuilder.addStraightDenseSmartConnection(facing, cableColor,
+                            renderState.getChannelsOnSide().get(facing), emitter);
+                    break;
+                default:
+                    break;
+            }
+
+            return builder.build(); // Don't render the other form of connection
+        }
+
+        this.cableBuilder.addCableCore(renderState.getCoreType(), cableColor, emitter);
+
+        // Render all internal connections to attachments
+        EnumMap<Direction, Integer> attachmentConnections = renderState.getAttachmentConnections();
+        for (Direction facing : attachmentConnections.keySet()) {
+            int distance = attachmentConnections.get(facing);
+            int channels = renderState.getChannelsOnSide().get(facing);
+
+            switch (cableType) {
+                case GLASS:
+                    this.cableBuilder.addConstrainedGlassConnection(facing, cableColor, distance, emitter);
+                    break;
+                case COVERED:
+                    this.cableBuilder.addConstrainedCoveredConnection(facing, cableColor, distance, emitter);
+                    break;
+                case SMART:
+                    this.cableBuilder.addConstrainedSmartConnection(facing, cableColor, distance, channels, emitter);
+                    break;
+                case DENSE_COVERED:
+                case DENSE_SMART:
+                    // Dense cables do not render connections to parts since none can be attached
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        // Render all outgoing connections using the appropriate type
+        for (final Entry<Direction, AECableType> connection : connectionTypes.entrySet()) {
+            final Direction facing = connection.getKey();
+            final AECableType connectionType = connection.getValue();
+            final boolean cableBusAdjacent = renderState.getCableBusAdjacent().contains(facing);
+            final int channels = renderState.getChannelsOnSide().get(facing);
+
+            switch (cableType) {
+                case GLASS:
+                    this.cableBuilder.addGlassConnection(facing, cableColor, connectionType, cableBusAdjacent,
+                            emitter);
+                    break;
+                case COVERED:
+                    this.cableBuilder.addCoveredConnection(facing, cableColor, connectionType, cableBusAdjacent,
+                            emitter);
+                    break;
+                case SMART:
+                    this.cableBuilder.addSmartConnection(facing, cableColor, connectionType, cableBusAdjacent, channels,
+                            emitter);
+                    break;
+                case DENSE_COVERED:
+                    this.cableBuilder.addDenseCoveredConnection(facing, cableColor, connectionType, cableBusAdjacent,
+                            emitter);
+                    break;
+                case DENSE_SMART:
+                    this.cableBuilder.addDenseSmartConnection(facing, cableColor, connectionType, cableBusAdjacent,
+                            channels, emitter);
+                    break;
+                default:
+                    break;
+            }
+        }
 
         return builder.build();
     }

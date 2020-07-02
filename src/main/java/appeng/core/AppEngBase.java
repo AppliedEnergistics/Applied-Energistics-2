@@ -8,6 +8,7 @@ import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.parts.CableRenderMode;
+import appeng.bootstrap.IBootstrapComponent;
 import appeng.bootstrap.components.ITileEntityRegistrationComponent;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.features.registries.cell.BasicCellHandler;
@@ -18,7 +19,6 @@ import appeng.core.stats.AeStats;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.network.TargetPoint;
-import appeng.hooks.TickHandler;
 import appeng.hooks.ToolItemHook;
 import appeng.me.cache.*;
 import appeng.mixins.CriteriaRegisterMixin;
@@ -27,12 +27,13 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+
+import java.util.function.Consumer;
 
 public abstract class AppEngBase implements AppEng {
 
@@ -57,7 +58,7 @@ public abstract class AppEngBase implements AppEng {
         ToolItemHook.install();
 
         Api.INSTANCE = new Api();
-        registerTileEntities();
+        registerBlockEntities();
 
         registerParticleTypes();
         registerRecipeTypes();
@@ -100,10 +101,9 @@ public abstract class AppEngBase implements AppEng {
         Registry.register(Registry.PARTICLE_TYPE, AppEng.makeId("vibrant_fx"), ParticleTypes.VIBRANT);
     }
 
-    private void registerTileEntities() {
-        final ApiDefinitions definitions = Api.INSTANCE.definitions();
-        definitions.getRegistry().getBootstrapComponents(ITileEntityRegistrationComponent.class)
-                .forEachRemaining(ITileEntityRegistrationComponent::register);
+    private void registerBlockEntities() {
+        callDeferredBootstrapComponents(ITileEntityRegistrationComponent.class,
+                ITileEntityRegistrationComponent::register);
     }
 
     private static <T extends Recipe<?>> RecipeType<T> registerRecipeType(String id) {
@@ -156,6 +156,12 @@ public abstract class AppEngBase implements AppEng {
     @Override
     public void updateRenderMode(final PlayerEntity player) {
         this.renderModeBased = player;
+    }
+
+    protected final <T extends IBootstrapComponent> void callDeferredBootstrapComponents(Class<T> componentClass, Consumer<T> invoker) {
+        final ApiDefinitions definitions = Api.INSTANCE.definitions();
+        definitions.getRegistry().getBootstrapComponents(componentClass)
+                .forEachRemaining(invoker);
     }
 
     protected CableRenderMode renderModeForPlayer(final PlayerEntity player) {

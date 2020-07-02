@@ -2,8 +2,10 @@ package appeng.client;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.bootstrap.ModelsReloadCallback;
+import appeng.bootstrap.components.IClientSetupComponent;
 import appeng.bootstrap.components.IItemColorRegistrationComponent;
 import appeng.bootstrap.components.IModelBakeComponent;
+import appeng.bootstrap.components.ITileEntityRegistrationComponent;
 import appeng.client.render.cablebus.CableBusModelLoader;
 import appeng.client.render.effects.*;
 import appeng.client.render.tesr.SkyChestTESR;
@@ -66,6 +68,8 @@ public final class AppEngClient extends AppEngBase {
 
         ModelsReloadCallback.EVENT.register(this::onModelsReloaded);
 
+        callDeferredBootstrapComponents(IClientSetupComponent.class,
+                IClientSetupComponent::setup);
         registerModelProviders();
         registerParticleRenderers();
         registerEntityRenderers();

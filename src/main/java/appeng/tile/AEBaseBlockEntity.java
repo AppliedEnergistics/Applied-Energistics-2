@@ -32,6 +32,7 @@ import appeng.core.AELog;
 import appeng.core.features.IStackSrc;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
+import appeng.hooks.TickHandler;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
@@ -422,9 +423,8 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
         if (this.world != null) {
             this.world.markDirty(this.pos, this);
             if (!this.markDirtyQueued) {
-                // FIXME FABRIC TickHandler.INSTANCE.addCallable(null, this::markDirtyAtEndOfTick);
+                TickHandler.INSTANCE.addCallable(null, this::markDirtyAtEndOfTick);
                 this.markDirtyQueued = true;
-                throw new IllegalStateException();
             }
         }
     }

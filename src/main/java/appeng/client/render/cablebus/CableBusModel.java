@@ -54,8 +54,7 @@ public class CableBusModel implements UnbakedModel {
 
     @Override
     public Collection<Identifier> getModelDependencies() {
-
-        return Collections.emptyList();
+        return partModels.getModels();
     }
 
     @Nullable

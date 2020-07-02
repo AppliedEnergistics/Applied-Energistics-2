@@ -48,6 +48,7 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.stats.AeStats;
 import appeng.fluids.util.AEFluidStack;
+import appeng.hooks.TickHandler;
 import appeng.me.GridAccessException;
 import appeng.me.GridNode;
 import appeng.util.helpers.ItemComparisonHelper;
@@ -1091,8 +1092,7 @@ public class Platform {
 
     public static void notifyBlocksOfNeighbors(final World world, final BlockPos pos) {
         if (!world.isClient) {
-            throw new IllegalStateException();
-            // FIXME FABRIC TickHandler.INSTANCE.addCallable(world, new BlockUpdate(pos));
+            TickHandler.INSTANCE.addCallable(world, new BlockUpdate(pos));
         }
     }
 

@@ -24,6 +24,7 @@ import net.fabricmc.api.Environment;
 import appeng.bootstrap.BlockRenderingCustomizer;
 import appeng.bootstrap.IBlockRendering;
 import appeng.bootstrap.IItemRendering;
+import net.minecraft.client.render.RenderLayer;
 
 /**
  * Customizes the rendering behavior for cable busses, which are the biggest
@@ -36,6 +37,7 @@ public class CableBusRendering extends BlockRenderingCustomizer {
     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
         // FIXME This is straight up impossible in Vanilla, and questionable if it's actually needed.
         // FIXME rendering.renderType(rt -> true);
+        rendering.renderType(RenderLayer.getCutout());
 
         rendering.blockColor(new CableBusColor());
         rendering.modelCustomizer((loc, model) -> model);
