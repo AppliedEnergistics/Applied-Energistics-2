@@ -18,14 +18,13 @@
 
 package appeng.core.api;
 
+import java.math.RoundingMode;
 import java.util.Collection;
 import java.util.Collections;
 
-import alexiil.mc.lib.attributes.Attributes;
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.fluid.FluidAttributes;
 import alexiil.mc.lib.attributes.fluid.FluidExtractable;
-import alexiil.mc.lib.attributes.fluid.FluidVolumeUtil;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import appeng.fluids.util.FluidList;
@@ -180,17 +179,17 @@ public class ApiStorage implements IStorageHelper {
             Preconditions.checkNotNull(input);
 
             if (input instanceof FluidVolume) {
-                return AEFluidStack.fromFluidStack((FluidVolume) input);
+                return AEFluidStack.fromFluidVolume((FluidVolume) input, RoundingMode.DOWN);
             }
             if (input instanceof ItemStack) {
                 final ItemStack is = (ItemStack) input;
                 if (is.getItem() instanceof FluidDummyItem) {
-                    return AEFluidStack.fromFluidStack(((FluidDummyItem) is.getItem()).getFluidStack(is));
+                    return AEFluidStack.fromFluidVolume(((FluidDummyItem) is.getItem()).getFluidStack(is), RoundingMode.DOWN);
                 } else {
                     FluidExtractable fluidExtractable = FluidAttributes.EXTRACTABLE.get(is);
                     FluidVolume fluidVolume = fluidExtractable.attemptAnyExtraction(FluidAmount.MAX_VALUE, Simulation.ACTION);
                     if (!fluidVolume.isEmpty()) {
-                        return AEFluidStack.fromFluidStack(fluidVolume);
+                        return AEFluidStack.fromFluidVolume(fluidVolume, RoundingMode.DOWN);
                     }
                 }
             }

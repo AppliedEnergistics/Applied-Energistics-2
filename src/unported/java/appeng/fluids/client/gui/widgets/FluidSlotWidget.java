@@ -70,7 +70,7 @@ public class FluidSlotWidget extends CustomSlotWidget {
         } else if (mouseButton == 0) {
             final LazyOptional<FluidVolume> fluidOpt = FluidUtil.getFluidContained(clickStack);
             fluidOpt.ifPresent(fluid -> {
-                this.setFluidStack(AEFluidStack.fromFluidStack(fluid));
+                this.setFluidStack(AEFluidStack.fromFluidVolume(fluid));
             });
         }
     }

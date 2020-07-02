@@ -42,7 +42,7 @@ public abstract class FluidConfigurableContainer extends UpgradeableContainer im
         LazyOptional<FluidVolume> fsOpt = FluidUtil.getFluidContained(input);
         if (fsOpt.isPresent()) {
             final IAEFluidTank t = this.getFluidConfigInventory();
-            final IAEFluidStack stack = AEFluidStack.fromFluidStack(fsOpt.orElse(null));
+            final IAEFluidStack stack = AEFluidStack.fromFluidVolume(fsOpt.orElse(null));
             for (int i = 0; i < t.getSlots(); ++i) {
                 if (t.getFluidInSlot(i) == null && this.isValidForConfig(i, stack)) {
                     t.setFluidInSlot(i, stack);

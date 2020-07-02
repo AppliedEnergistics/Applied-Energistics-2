@@ -23,6 +23,7 @@
 
 package appeng.api.storage.data;
 
+import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 
@@ -46,6 +47,11 @@ public interface IAEFluidStack extends IAEStack<IAEFluidStack> {
      * @return new FluidStack
      */
     FluidVolume getFluidStack();
+
+    /**
+     * The fluid amount represented by this stack.
+     */
+    FluidAmount getAmount();
 
     /**
      * Combines two IAEItemStacks via addition.

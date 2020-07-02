@@ -60,10 +60,10 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerBlockEntity> {
 
     }
 
-    public static final EnumProperty<ControllerBlockState> CONTROLLER_STATE = EnumProperty.create("state",
+    public static final EnumProperty<ControllerBlockState> CONTROLLER_STATE = EnumProperty.of("state",
             ControllerBlockState.class);
 
-    public static final EnumProperty<ControllerRenderType> CONTROLLER_TYPE = EnumProperty.create("type",
+    public static final EnumProperty<ControllerRenderType> CONTROLLER_TYPE = EnumProperty.of("type",
             ControllerRenderType.class);
 
     public ControllerBlock() {

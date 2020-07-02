@@ -241,14 +241,14 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
             if (fluid != Fluids.EMPTY && fluidState.isSource()) {
                 // Attempt to store the fluid in the network
                 final IAEFluidStack blockFluid = AEFluidStack
-                        .fromFluidStack(new FluidVolume(fluidState.getFluid(), FluidAttributes.BUCKET_VOLUME));
+                        .fromFluidVolume(new FluidVolume(fluidState.getFluid(), FluidAttributes.BUCKET_VOLUME));
                 if (this.storeFluid(blockFluid, false)) {
                     // If that would succeed, actually slurp up the liquid as if we were using a
                     // bucket
                     // This _MIGHT_ change the liquid, and if it does, and we dont have enough
                     // space, tough luck. you loose the source block.
                     fluid = ((IBucketPickupHandler) blockstate.getBlock()).pickupFluid(w, pos, blockstate);
-                    this.storeFluid(AEFluidStack.fromFluidStack(new FluidVolume(fluid, FluidAttributes.BUCKET_VOLUME)),
+                    this.storeFluid(AEFluidStack.fromFluidVolume(new FluidVolume(fluid, FluidAttributes.BUCKET_VOLUME)),
                             true);
 
                     AppEng.instance().sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64, w,

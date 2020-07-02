@@ -41,6 +41,8 @@ import appeng.fluids.items.FluidDummyItem;
 import appeng.util.Platform;
 import appeng.util.item.AEStack;
 
+import java.math.RoundingMode;
+
 public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFluidStack, Comparable<AEFluidStack> {
     private static final String NBT_STACKSIZE = "cnt";
     private static final String NBT_REQUESTABLE = "req";
@@ -72,7 +74,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
         this.tagCompound = tag;
     }
 
-    public static AEFluidStack fromFluidStack(final FluidVolume input) {
+    public static AEFluidStack fromFluidVolume(final FluidVolume input, RoundingMode roundingMode) {
         if (input.isEmpty()) {
             return null;
         }
@@ -87,8 +89,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
             tag = null;
         }
 
-        // FIXME FABRIC NOPE NO FRACTIONS YOU FREAKS THIS IS NOT FROG FRACTIONS
-        long amount = (long)(input.amount().asInexactDouble() * 1000.0);
+        long amount = input.amount().asLong(1000, roundingMode);
 
         return new AEFluidStack(fluid, amount, tag);
     }
@@ -216,6 +217,11 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
     public FluidVolume getFluidStack() {
         FluidAmount amount = FluidAmount.of(this.getStackSize(), 1000);
         return this.fluid.readVolume(tagCompound).withAmount(amount);
+    }
+
+    @Override
+    public FluidAmount getAmount() {
+        return FluidAmount.of(getStackSize(), 1000);
     }
 
     @Override

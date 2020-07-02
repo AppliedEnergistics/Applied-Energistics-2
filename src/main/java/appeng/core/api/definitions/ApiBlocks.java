@@ -25,6 +25,8 @@ import appeng.api.features.AEFeature;
 import appeng.block.misc.*;
 import appeng.block.networking.CableBusBlock;
 import appeng.block.networking.CableBusRendering;
+import appeng.block.storage.ChestBlock;
+import appeng.block.storage.ChestRendering;
 import appeng.block.storage.SkyChestBlock;
 import appeng.bootstrap.*;
 import appeng.bootstrap.components.IInitComponent;
@@ -39,6 +41,7 @@ import appeng.tile.misc.LightDetectorBlockEntity;
 import appeng.tile.misc.SkyCompassBlockEntity;
 import appeng.tile.networking.CableBusBlockEntity;
 import appeng.tile.networking.CableBusTESR;
+import appeng.tile.storage.ChestBlockEntity;
 import appeng.tile.storage.SkyChestBlockEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -334,9 +337,9 @@ public final class ApiBlocks implements IBlocks {
 // FIXME                           }
 // FIXME                       }).build())
 // FIXME               .rendering(new DriveRendering()).build();
-// FIXME       this.chest = registry.block("chest", ChestBlock::new).features(AEFeature.STORAGE_CELLS, AEFeature.ME_CHEST)
-// FIXME               .tileEntity(registry.tileEntity("chest", ChestBlockEntity.class, ChestBlockEntity::new).build())
-// FIXME               .rendering(new ChestRendering()).build();
+       this.chest = registry.block("chest", ChestBlock::new).features(AEFeature.STORAGE_CELLS, AEFeature.ME_CHEST)
+               .tileEntity(registry.tileEntity("chest", ChestBlockEntity.class, ChestBlockEntity::new).build())
+               .rendering(new ChestRendering()).build();
 // FIXME       this.iface = registry.block("interface", InterfaceBlock::new).features(AEFeature.INTERFACE)
 // FIXME               .tileEntity(
 // FIXME                       registry.tileEntity("interface", InterfaceBlockEntity.class, InterfaceBlockEntity::new).build())

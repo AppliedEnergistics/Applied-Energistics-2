@@ -51,6 +51,7 @@ import appeng.fluids.util.AEFluidStack;
 import appeng.hooks.TickHandler;
 import appeng.me.GridAccessException;
 import appeng.me.GridNode;
+import appeng.me.helpers.AENetworkProxy;
 import appeng.util.helpers.ItemComparisonHelper;
 import appeng.util.helpers.P2PHelper;
 import appeng.util.item.AEItemStack;
@@ -781,6 +782,9 @@ public class Platform {
         return poweredInsert(energy, cell, input, src, Actionable.MODULATE);
     }
 
+    /**
+     * @return The remainder (non-inserted) _or_ null if everything was inserted.
+     */
     public static <T extends IAEStack<T>> T poweredInsert(final IEnergySource energy, final IMEInventory<T> cell,
             final T input, final IActionSource src, final Actionable mode) {
         Preconditions.checkNotNull(energy);
@@ -983,26 +987,26 @@ public class Platform {
                 yaw, pitch);
     }
 
-// FIXME    public static boolean canAccess(final AENetworkProxy gridProxy, final IActionSource src) {
-// FIXME        try {
-// FIXME            if (src.player().isPresent()) {
-// FIXME                return gridProxy.getSecurity().hasPermission(src.player().get(), SecurityPermissions.BUILD);
-// FIXME            } else if (src.machine().isPresent()) {
-// FIXME                final IActionHost te = src.machine().get();
-// FIXME                final IGridNode n = te.getActionableNode();
-// FIXME                if (n == null) {
-// FIXME                    return false;
-// FIXME                }
-// FIXME
-// FIXME                final int playerID = n.getPlayerID();
-// FIXME                return gridProxy.getSecurity().hasPermission(playerID, SecurityPermissions.BUILD);
-// FIXME            } else {
-// FIXME                return false;
-// FIXME            }
-// FIXME        } catch (final GridAccessException gae) {
-// FIXME            return false;
-// FIXME        }
-// FIXME    }
+    public static boolean canAccess(final AENetworkProxy gridProxy, final IActionSource src) {
+        try {
+            if (src.player().isPresent()) {
+                return gridProxy.getSecurity().hasPermission(src.player().get(), SecurityPermissions.BUILD);
+            } else if (src.machine().isPresent()) {
+                final IActionHost te = src.machine().get();
+                final IGridNode n = te.getActionableNode();
+                if (n == null) {
+                    return false;
+                }
+
+                final int playerID = n.getPlayerID();
+                return gridProxy.getSecurity().hasPermission(playerID, SecurityPermissions.BUILD);
+            } else {
+                return false;
+            }
+        } catch (final GridAccessException gae) {
+            return false;
+        }
+    }
 
     public static ItemStack extractItemsByRecipe(final IEnergySource energySrc, final IActionSource mySrc,
             final IMEMonitor<IAEItemStack> src, final World w, final Recipe<CraftingInventory> r,

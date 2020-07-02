@@ -21,17 +21,15 @@ package appeng.tile.powersink;
 import java.util.EnumSet;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-
+import alexiil.mc.lib.attributes.AttributeList;
+import alexiil.mc.lib.attributes.AttributeProvider;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -39,11 +37,11 @@ import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
-import appeng.capabilities.Capabilities;
 import appeng.tile.AEBaseInvBlockEntity;
+import net.minecraft.world.World;
 
 public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
-        implements IAEPowerStorage, IExternalPowerSink {
+        implements IAEPowerStorage, IExternalPowerSink, AttributeProvider {
 
     // values that determine general function, are set by inheriting classes if
     // needed. These should generally remain static.
@@ -54,16 +52,11 @@ public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
     private double internalCurrentPower = 0;
     private static final Set<Direction> ALL_SIDES = ImmutableSet.copyOf(EnumSet.allOf(Direction.class));
     private Set<Direction> internalPowerSides = ALL_SIDES;
-    private final IEnergyStorage forgeEnergyAdapter;
-    // Cache the optional to not continuously re-allocate it or the supplier
-    private final LazyOptional<IEnergyStorage> forgeEnergyAdapterOptional;
 
     // IC2 private IC2PowerSink ic2Sink;
 
     public AEBasePoweredBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        this.forgeEnergyAdapter = new ForgeEnergyAdapter(this);
-        this.forgeEnergyAdapterOptional = LazyOptional.of(() -> forgeEnergyAdapter);
         // IC2 this.ic2Sink = Integrations.ic2().createPowerSink( this, this );
         // IC2 this.ic2Sink.setValidFaces( this.internalPowerSides );
     }
@@ -235,31 +228,11 @@ public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
         // IC2 this.ic2Sink.invalidate();
     }
 
-    @SuppressWarnings("unchecked")
-    @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability) {
+    public void addAllAttributes(World world, BlockPos pos, BlockState state, AttributeList<?> to) {
+        super.addAllAttributes(world, pos, state, to);
 
-        if (capability == Capabilities.FORGE_ENERGY) {
-            if (this.getPowerSides().equals(ALL_SIDES)) {
-                return (LazyOptional<T>) this.forgeEnergyAdapterOptional;
-            }
-        }
-
-        return super.getCapability(capability);
-
-    }
-
-    @SuppressWarnings("unchecked")
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {
-        if (capability == Capabilities.FORGE_ENERGY) {
-            if (this.getPowerSides().contains(facing)) {
-                return (LazyOptional<T>) this.forgeEnergyAdapterOptional;
-            }
-        }
-        return super.getCapability(capability, facing);
+        // FIXME FABRIC: Offer energy attributes
     }
 
 }

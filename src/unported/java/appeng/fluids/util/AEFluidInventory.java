@@ -112,7 +112,7 @@ public class AEFluidInventory implements IAEFluidTank {
 
         if (doFill) {
             if (fluid == null) {
-                this.setFluidInSlot(slot, AEFluidStack.fromFluidStack(resource));
+                this.setFluidInSlot(slot, AEFluidStack.fromFluidVolume(resource));
             } else {
                 fluid.setStackSize(fluid.getStackSize() + amountToStore);
                 this.onContentChanged(slot);
@@ -149,7 +149,7 @@ public class AEFluidInventory implements IAEFluidTank {
 
         if (action == FluidAction.EXECUTE) {
             if (fluid == null) {
-                this.setFluidInSlot(slot, AEFluidStack.fromFluidStack(resource));
+                this.setFluidInSlot(slot, AEFluidStack.fromFluidVolume(resource));
             } else {
                 fluid.setStackSize(fluid.getStackSize() + amountToStore);
                 this.onContentChanged(slot);

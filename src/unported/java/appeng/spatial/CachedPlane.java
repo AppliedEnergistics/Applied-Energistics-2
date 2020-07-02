@@ -149,7 +149,7 @@ public class CachedPlane {
                     c.getBlockEntityMap().remove(cp);
                 }
 
-                final long gameTime = this.getWorld().getGameTime();
+                final long gameTime = this.getWorld().getTime();
                 final ITickList<Block> pendingBlockTicks = this.getWorld().getPendingBlockTicks();
                 if (pendingBlockTicks instanceof ServerTickList) {
                     List<NextTickListEntry<Block>> pending = ((ServerTickList<Block>) pendingBlockTicks)

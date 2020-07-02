@@ -87,7 +87,7 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 
         fluidStack.setAmount(remaining);
 
-        return AEFluidStack.fromFluidStack(fluidStack);
+        return AEFluidStack.fromFluidVolume(fluidStack);
     }
 
     @Override
@@ -108,7 +108,7 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
                 // meh
             }
         }
-        return AEFluidStack.fromFluidStack(gathered);
+        return AEFluidStack.fromFluidVolume(gathered);
     }
 
     @Override
@@ -237,7 +237,7 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
         private void handleFluidChanged(int slot, IAEFluidStack oldAeFS, FluidVolume newFS,
                 List<IAEFluidStack> changes) {
             // Completely different fluid
-            this.cachedAeStacks[slot] = AEFluidStack.fromFluidStack(newFS);
+            this.cachedAeStacks[slot] = AEFluidStack.fromFluidVolume(newFS);
 
             // If we had a stack previously in this slot, notify the network about its
             // disappearance

@@ -372,7 +372,7 @@ public class FluidTerminalContainer extends AEBaseContainer
 
             // Check if we can push into the system
             final IAEFluidStack notStorable = Platform.poweredInsert(this.getPowerSource(), this.monitor,
-                    AEFluidStack.fromFluidStack(extract), this.getActionSource(), Actionable.SIMULATE);
+                    AEFluidStack.fromFluidVolume(extract), this.getActionSource(), Actionable.SIMULATE);
 
             if (notStorable != null && notStorable.getStackSize() > 0) {
                 final int toStore = (int) (extract.getAmount() - notStorable.getStackSize());
@@ -390,7 +390,7 @@ public class FluidTerminalContainer extends AEBaseContainer
             extract.setAmount(drained.getAmount());
 
             final IAEFluidStack notInserted = Platform.poweredInsert(this.getPowerSource(), this.monitor,
-                    AEFluidStack.fromFluidStack(extract), this.getActionSource());
+                    AEFluidStack.fromFluidVolume(extract), this.getActionSource());
 
             if (notInserted != null && notInserted.getStackSize() > 0) {
                 AELog.error("Fluid item [%s] reported a different possible amount to drain than it actually provided.",

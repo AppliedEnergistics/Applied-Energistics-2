@@ -50,7 +50,7 @@ public class AEFluidTank extends FluidTank implements IAEFluidTank {
     @Override
     public IAEFluidStack getFluidInSlot(int slot) {
         if (slot == 0) {
-            return AEFluidStack.fromFluidStack(this.getFluid());
+            return AEFluidStack.fromFluidVolume(this.getFluid());
         }
         return null;
     }

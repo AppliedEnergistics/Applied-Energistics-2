@@ -112,7 +112,7 @@ public class FluidImportBusPart extends SharedFluidBusPart {
                         return TickRateModulation.SLOWER;
                     }
 
-                    final AEFluidStack aeFluidStack = AEFluidStack.fromFluidStack(fluidStack);
+                    final AEFluidStack aeFluidStack = AEFluidStack.fromFluidVolume(fluidStack);
 
                     if (aeFluidStack != null) {
                         final IAEFluidStack notInserted = inv.injectItems(aeFluidStack, Actionable.MODULATE,

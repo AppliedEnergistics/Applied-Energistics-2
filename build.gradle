@@ -58,6 +58,9 @@ sourceSets {
         runtimeClasspath += sourceSets.api.output
     }
     unported {
+        compileClasspath += sourceSets.api.output
+        runtimeClasspath += sourceSets.api.output
+
         compileClasspath += sourceSets.main.output
         runtimeClasspath += sourceSets.main.output
     }
@@ -69,6 +72,7 @@ sourceSets {
 
 configurations {
     apiCompile.extendsFrom(compileClasspath)
+    unportedCompile.extendsFrom(compileClasspath)
 }
 
 minecraft {

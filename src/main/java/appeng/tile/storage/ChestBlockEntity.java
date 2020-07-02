@@ -18,70 +18,31 @@
 
 package appeng.tile.storage;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import alexiil.mc.lib.attributes.AttributeList;
+import alexiil.mc.lib.attributes.Simulation;
+import alexiil.mc.lib.attributes.fluid.FluidInsertable;
+import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
+import alexiil.mc.lib.attributes.fluid.filter.ConstantFluidFilter;
+import alexiil.mc.lib.attributes.fluid.filter.FluidFilter;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Tickable;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.util.math.Direction;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-
 import appeng.api.AEApi;
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.config.SecurityPermissions;
-import appeng.api.config.Settings;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.ViewItems;
+import appeng.api.config.*;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.implementations.tiles.IMEChest;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.events.MENetworkCellArrayUpdate;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
-import appeng.api.networking.events.MENetworkPowerStorage;
+import appeng.api.networking.events.*;
 import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.storage.IStorageGrid;
-import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.IStorageMonitorable;
-import appeng.api.storage.IStorageMonitorableAccessor;
-import appeng.api.storage.ITerminalHost;
-import appeng.api.storage.cells.CellState;
-import appeng.api.storage.cells.ICellGuiHandler;
-import appeng.api.storage.cells.ICellHandler;
-import appeng.api.storage.cells.ICellInventory;
-import appeng.api.storage.cells.ICellInventoryHandler;
+import appeng.api.storage.*;
+import appeng.api.storage.cells.*;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
@@ -89,9 +50,6 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AEColor;
 import appeng.api.util.IConfigManager;
-import appeng.capabilities.Capabilities;
-import appeng.container.implementations.MEMonitorableContainer;
-import appeng.fluids.container.FluidTerminalContainer;
 import appeng.fluids.util.AEFluidStack;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
@@ -108,6 +66,25 @@ import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperChainedItemHandler;
 import appeng.util.inv.filter.IAEItemFilter;
 import appeng.util.item.AEItemStack;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.util.Tickable;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.math.RoundingMode;
+import java.util.Collections;
+import java.util.List;
 
 public class ChestBlockEntity extends AENetworkPowerBlockEntity
         implements IMEChest, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableTile, Tickable {
@@ -132,7 +109,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     private boolean isCached = false;
     private ChestMonitorHandler cellHandler;
     private Accessor accessor;
-    private IFluidHandler fluidHandler;
+    private FluidInsertable fluidInsertable;
 
     public ChestBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
@@ -204,7 +181,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         if (!this.isCached) {
             this.cellHandler = null;
             this.accessor = null;
-            this.fluidHandler = null;
+            this.fluidInsertable = null;
 
             final ItemStack is = this.getCell();
             if (!is.isEmpty()) {
@@ -228,7 +205,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
                     if (this.cellHandler != null && this.cellHandler.getChannel() == AEApi.instance().storage()
                             .getStorageChannel(IFluidStorageChannel.class)) {
-                        this.fluidHandler = new FluidHandler();
+                        this.fluidInsertable = new FluidHandler();
                     }
                 }
             }
@@ -376,7 +353,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         final AEColor oldPaintedColor = this.paintedColor;
         this.paintedColor = AEColor.values()[data.readByte()];
 
-        this.lastStateChange = this.world.getGameTime();
+        this.lastStateChange = this.world.getTime();
 
         return oldPaintedColor != this.paintedColor || (this.state & 0xDB6DB6DB) != (oldState & 0xDB6DB6DB) || c;
     }
@@ -471,9 +448,9 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
                         AEItemStack.fromItemStack(this.inputInventory.getInvStack(0)), this.mySrc);
 
                 if (returns == null) {
-                    this.inputInventory.setInvStack(0, ItemStack.EMPTY);
+                    this.inputInventory.forceSetInvStack(0, ItemStack.EMPTY);
                 } else {
-                    this.inputInventory.setInvStack(0, returns.createItemStack());
+                    this.inputInventory.forceSetInvStack(0, returns.createItemStack());
                 }
             }
         }
@@ -511,7 +488,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
     @Override
     public void blinkCell(final int slot) {
-        final long now = this.world.getGameTime();
+        final long now = this.world.getTime();
         if (now - this.lastStateChange > 8) {
             this.state = 0;
         }
@@ -675,19 +652,15 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-        this.updateHandler();
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && this.fluidHandler != null
-                && facing != this.getForward()) {
-            return (LazyOptional<T>) LazyOptional.of(() -> this.fluidHandler);
+    public void addAllAttributes(World world, BlockPos pos, BlockState state, AttributeList<?> to) {
+        super.addAllAttributes(world, pos, state, to);
+
+        if (fluidInsertable != null && to.getSearchDirection() != getForward()) {
+            to.offer(fluidInsertable);
         }
-        if (capability == Capabilities.STORAGE_MONITORABLE_ACCESSOR && this.accessor != null
-                && facing != this.getForward()) {
-            return (LazyOptional<T>) LazyOptional.of(() -> this.accessor);
-        }
-        return super.getCapability(capability, facing);
+
+        // FIXME FABRIC: STORAGE_MONITORABLE_ACCESSOR
     }
 
     private class Accessor implements IStorageMonitorableAccessor {
@@ -701,83 +674,44 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
     }
 
-    private class FluidHandler implements IFluidHandler, IFluidTank {
+    private class FluidHandler implements FluidInsertable {
 
         private boolean canAcceptLiquids() {
             return ChestBlockEntity.this.cellHandler != null && ChestBlockEntity.this.cellHandler.getChannel() == AEApi
                     .instance().storage().getStorageChannel(IFluidStorageChannel.class);
         }
 
-        @Nonnull
         @Override
-        public FluidVolume getFluid() {
-            return FluidVolumeUtil.EMPTY;
-        }
-
-        @Override
-        public int getFluidAmount() {
-            return 0;
-        }
-
-        @Override
-        public int getCapacity() {
-            return canAcceptLiquids() ? FluidAttributes.BUCKET_VOLUME : 0;
-        }
-
-        @Override
-        public boolean isFluidValid(FluidVolume stack) {
-            return canAcceptLiquids();
-        }
-
-        @Override
-        public int getTanks() {
-            return 1;
-        }
-
-        @Nonnull
-        @Override
-        public FluidVolume getFluidInTank(int tank) {
-            return FluidVolumeUtil.EMPTY;
-        }
-
-        @Override
-        public int getTankCapacity(int tank) {
-            return tank == 0 ? FluidAttributes.BUCKET_VOLUME : 0;
-        }
-
-        @Override
-        public boolean isFluidValid(int tank, @Nonnull FluidVolume stack) {
-            return tank == 0;
-        }
-
-        @Override
-        public int fill(FluidVolume resource, FluidAction action) {
+        public FluidVolume attemptInsertion(FluidVolume fluidVolume, Simulation simulation) {
             ChestBlockEntity.this.updateHandler();
-            if (canAcceptLiquids()) {
-                final IAEFluidStack results = Platform.poweredInsert(ChestBlockEntity.this,
-                        ChestBlockEntity.this.cellHandler, AEFluidStack.fromFluidStack(resource),
-                        ChestBlockEntity.this.mySrc,
-                        action == FluidAction.EXECUTE ? Actionable.MODULATE : Actionable.SIMULATE);
-
-                if (results == null) {
-                    return resource.getAmount();
-                }
-                return resource.getAmount() - (int) results.getStackSize();
+            if (!canAcceptLiquids()) {
+                return fluidVolume;
             }
-            return 0;
+
+            // Rounds down to representable amount of fluid
+            AEFluidStack toInsert = AEFluidStack.fromFluidVolume(fluidVolume, RoundingMode.DOWN);
+
+            if (toInsert == null) {
+                return fluidVolume;
+            }
+
+            IAEFluidStack remaining = Platform.poweredInsert(ChestBlockEntity.this,
+                    ChestBlockEntity.this.cellHandler,
+                    toInsert,
+                    ChestBlockEntity.this.mySrc,
+                    simulation == Simulation.ACTION ? Actionable.MODULATE : Actionable.SIMULATE);
+
+            FluidAmount filledAmt = remaining != null ? remaining.getAmount() : toInsert.getAmount();
+            FluidAmount remainingAmt = fluidVolume.amount().roundedSub(filledAmt, RoundingMode.DOWN);
+            return fluidVolume.withAmount(remainingAmt);
         }
 
-        @Nonnull
         @Override
-        public FluidVolume drain(FluidVolume resource, FluidAction action) {
-            return FluidVolumeUtil.EMPTY;
+        public FluidFilter getInsertionFilter() {
+            ChestBlockEntity.this.updateHandler();
+            return canAcceptLiquids() ? ConstantFluidFilter.ANYTHING : ConstantFluidFilter.NOTHING;
         }
 
-        @Nonnull
-        @Override
-        public FluidVolume drain(int maxDrain, FluidAction action) {
-            return FluidVolumeUtil.EMPTY;
-        }
     }
 
     private class InputInventoryFilter implements IAEItemFilter {
@@ -822,11 +756,13 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         if (this.cellHandler != null) {
             if (this.cellHandler.getChannel() == AEApi.instance().storage()
                     .getStorageChannel(IItemStorageChannel.class)) {
-                return MEMonitorableContainer.TYPE;
+                throw new IllegalStateException();
+                // FIXME FABRIC return MEMonitorableContainer.TYPE;
             }
             if (this.cellHandler.getChannel() == AEApi.instance().storage()
                     .getStorageChannel(IFluidStorageChannel.class)) {
-                return FluidTerminalContainer.TYPE;
+                throw new IllegalStateException();
+                // FIXME FABRIC return FluidTerminalContainer.TYPE;
             }
         }
         return null;

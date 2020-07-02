@@ -35,15 +35,12 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.ChestContainer;
 import appeng.core.localization.PlayerMessages;
 import appeng.tile.storage.ChestBlockEntity;
 
 public class ChestBlock extends AEBaseTileBlock<ChestBlockEntity> {
 
-    private final static EnumProperty<DriveSlotState> SLOT_STATE = EnumProperty.create("slot_state",
+    private final static EnumProperty<DriveSlotState> SLOT_STATE = EnumProperty.of("slot_state",
             DriveSlotState.class);
 
     public ChestBlock() {
@@ -86,8 +83,9 @@ public class ChestBlock extends AEBaseTileBlock<ChestBlockEntity> {
                     p.sendSystemMessage(PlayerMessages.ChestCannotReadStorageCell.get(), Util.NIL_UUID);
                 }
             } else {
-                ContainerOpener.openContainer(ChestContainer.TYPE, p,
-                        ContainerLocator.forTileEntitySide(tg, hit.getSide()));
+                // FIXME FABRIC ContainerOpener.openContainer(ChestContainer.TYPE, p,
+                // FIXME FABRIC         ContainerLocator.forTileEntitySide(tg, hit.getSide()));
+                throw new IllegalStateException();
             }
 
             return ActionResult.SUCCESS;

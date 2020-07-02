@@ -55,7 +55,7 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessBlockEntity> {
         }
     }
 
-    public static final EnumProperty<State> STATE = EnumProperty.create("state", State.class);
+    public static final EnumProperty<State> STATE = EnumProperty.of("state", State.class);
 
     public WirelessBlock() {
         super(defaultProps(AEMaterials.GLASS)
