@@ -108,8 +108,8 @@ public interface IAEItemStack extends IAEStack<IAEItemStack> {
     ItemStack getDefinition();
 
     /**
-     * Compare this AE item stack to another item stack, but ignores
-     * the amount. It checks the item type, NBT and damage values.
+     * Compare this AE item stack to another item stack, but ignores the amount. It
+     * checks the item type, NBT and damage values.
      *
      * @param is An item stack
      */
