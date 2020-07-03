@@ -216,9 +216,14 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
         if (ia instanceof AEItemStack) {
             return this.isSameType((AEItemStack) ia);
         } else if (ia instanceof ItemStack) {
-            return this.isSameType((ItemStack) ia);
+            // this actually breaks the equals contract (being equals to unrelated classes)
+            return equals((ItemStack) ia);
         }
         return false;
+    }
+
+    public boolean equals(final ItemStack is) {
+        return this.isSameType(is);
     }
 
     @Override
