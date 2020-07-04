@@ -122,7 +122,7 @@ class GrinderRecipeCategory implements IRecipeCategory<GrinderRecipe> {
 // FIXME		if( this.recipe.getOptionalOutput() != null )
 // FIXME		{
 // FIXME			String text = String.format( "%d%%", (int) ( this.recipe.getOptionalChance() * 100 ) );
-// FIXME			float width = fr.getStringWidth( text ) * scale;
+// FIXME			float width = fr.getWidth( text ) * scale;
 // FIXME			int xScaled = Math.round( ( x + ( 18 - width ) / 2 ) * invScale );
 // FIXME			fr.drawString( text, xScaled, (int) ( 65 * invScale ), Color.gray.getRGB() );
 // FIXME			x += 18;
@@ -131,7 +131,7 @@ class GrinderRecipeCategory implements IRecipeCategory<GrinderRecipe> {
 // FIXME		if( this.recipe.getSecondOptionalOutput() != null )
 // FIXME		{
 // FIXME			String text = String.format( "%d%%", (int) ( this.recipe.getSecondOptionalChance() * 100 ) );
-// FIXME			float width = fr.getStringWidth( text ) * scale;
+// FIXME			float width = fr.getWidth( text ) * scale;
 // FIXME			int xScaled = Math.round( ( x + ( 18 - width ) / 2 ) * invScale );
 // FIXME			fr.drawString( text, xScaled, (int) ( 65 * invScale ), Color.gray.getRGB() );
 // FIXME		}

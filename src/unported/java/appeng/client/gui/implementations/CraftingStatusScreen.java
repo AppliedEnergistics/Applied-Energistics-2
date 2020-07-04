@@ -22,7 +22,8 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 
@@ -35,7 +36,7 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
 
     private final AESubScreen subGui;
 
-    private Button selectCPU;
+    private ButtonWidget selectCPU;
 
     public CraftingStatusScreen(CraftingStatusContainer container, PlayerInventory playerInventory,
             Text title) {
@@ -47,7 +48,7 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
     public void init() {
         super.init();
 
-        this.selectCPU = new Button(this.guiLeft + 8, this.guiTop + this.ySize - 25, 150, 20,
+        this.selectCPU = new ButtonWidget(this.x + 8, this.y + this.backgroundHeight - 25, 150, 20,
                 GuiText.CraftingCPU.getLocal() + ": " + GuiText.NoCraftingCPUs, btn -> selectNextCpu());
         this.addButton(this.selectCPU);
 
@@ -58,25 +59,25 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
     }
 
     @Override
-    public void render(final int mouseX, final int mouseY, final float btn) {
+    public void render(MatrixStack matrices, final int mouseX, final int mouseY, final float btn) {
         this.updateCPUButtonText();
-        super.render(mouseX, mouseY, btn);
+        super.render(matrices, mouseX, mouseY, btn);
     }
 
     private void updateCPUButtonText() {
         String btnTextText = GuiText.NoCraftingJobs.getLocal();
 
-        if (this.container.selectedCpu >= 0)// && status.selectedCpu < status.cpus.size() )
+        if (this.handler.selectedCpu >= 0)// && status.selectedCpu < status.cpus.size() )
         {
-            if (this.container.myName != null) {
-                final String name = this.container.myName.getStringTruncated(20);
+            if (this.handler.myName != null) {
+                final String name = this.handler.myName.getStringTruncated(20);
                 btnTextText = GuiText.CPUs.getLocal() + ": " + name;
             } else {
-                btnTextText = GuiText.CPUs.getLocal() + ": #" + this.container.selectedCpu;
+                btnTextText = GuiText.CPUs.getLocal() + ": #" + this.handler.selectedCpu;
             }
         }
 
-        if (this.container.noCPU) {
+        if (this.handler.noCPU) {
             btnTextText = GuiText.NoCraftingJobs.getLocal();
         }
 
@@ -90,7 +91,7 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
 
     // FIXME: Extract to separate class? Shared with GuiCraftConfirm
     private void selectNextCpu() {
-        final boolean backwards = minecraft.mouseHelper.isRightDown();
+        final boolean backwards = minecraft.mouse.wasRightButtonClicked();
         NetworkHandler.instance().sendToServer(new ConfigValuePacket("Terminal.Cpu", backwards ? "Prev" : "Next"));
     }
 

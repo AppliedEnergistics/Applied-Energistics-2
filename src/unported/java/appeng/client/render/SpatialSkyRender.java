@@ -27,10 +27,10 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.util.math.Quaternion;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.client.SkyRenderHandler;
@@ -86,10 +86,10 @@ public class SpatialSkyRender implements SkyRenderHandler {
 
             RenderSystem.disableTexture();
             VertexBuffer.begin(GL11.GL_QUADS, VertexFormats.POSITION);
-            VertexBuffer.pos(-100.0D, -100.0D, -100.0D).endVertex();
-            VertexBuffer.pos(-100.0D, -100.0D, 100.0D).endVertex();
-            VertexBuffer.pos(100.0D, -100.0D, 100.0D).endVertex();
-            VertexBuffer.pos(100.0D, -100.0D, -100.0D).endVertex();
+            VertexBuffer.pos(-100.0D, -100.0D, -100.0D).next();
+            VertexBuffer.pos(-100.0D, -100.0D, 100.0D).next();
+            VertexBuffer.pos(100.0D, -100.0D, 100.0D).next();
+            VertexBuffer.pos(100.0D, -100.0D, -100.0D).next();
             tessellator.draw();
             RenderSystem.enableTexture();
             matrixStack.pop();
@@ -160,7 +160,7 @@ public class SpatialSkyRender implements SkyRenderHandler {
                     final double d23 = d17 * d12 - d20 * d13;
                     final double d24 = d23 * d9 - d21 * d10;
                     final double d25 = d21 * d9 + d23 * d10;
-                    vb.pos(x + d24, y + d22, z + d25).endVertex();
+                    vb.pos(x + d24, y + d22, z + d25).next();
                 }
             }
         }

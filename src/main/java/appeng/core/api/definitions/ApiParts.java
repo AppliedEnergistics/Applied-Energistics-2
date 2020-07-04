@@ -20,6 +20,8 @@ package appeng.core.api.definitions;
 
 import java.util.function.Function;
 
+import appeng.fluids.parts.*;
+import appeng.parts.automation.*;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.definitions.IItemDefinition;
@@ -109,57 +111,45 @@ public final class ApiParts implements IParts {
         this.monitor = createPart("monitor", PanelPart.class, PanelPart::new);
         this.semiDarkMonitor = createPart("semi_dark_monitor", SemiDarkPanelPart.class, SemiDarkPanelPart::new);
         this.darkMonitor = createPart("dark_monitor", DarkPanelPart.class, DarkPanelPart::new);
-// FIXME FABRIC        this.storageBus = createPart("storage_bus", StorageBusPart.class, StorageBusPart::new);
-// FIXME FABRIC        this.fluidStorageBus = createPart("fluid_storage_bus", FluidStorageBusPart.class, FluidStorageBusPart::new);
-// FIXME FABRIC        this.importBus = createPart("import_bus", ImportBusPart.class, ImportBusPart::new);
-// FIXME FABRIC        this.fluidImportBus = createPart("fluid_import_bus", FluidImportBusPart.class, FluidImportBusPart::new);
-// FIXME FABRIC        this.exportBus = createPart("export_bus", ExportBusPart.class, ExportBusPart::new);
-// FIXME FABRIC        this.fluidExportBus = createPart("fluid_export_bus", FluidExportBusPart.class, FluidExportBusPart::new);
-// FIXME FABRIC        this.levelEmitter = createPart("level_emitter", LevelEmitterPart.class, LevelEmitterPart::new);
-// FIXME FABRIC        this.fluidLevelEmitter = createPart("fluid_level_emitter", FluidLevelEmitterPart.class,
-// FIXME FABRIC                FluidLevelEmitterPart::new);
-// FIXME FABRIC        this.annihilationPlane = createPart("annihilation_plane", AnnihilationPlanePart.class,
-// FIXME FABRIC                AnnihilationPlanePart::new);
-// FIXME FABRIC        this.identityAnnihilationPlane = createPart("identity_annihilation_plane", IdentityAnnihilationPlanePart.class,
-// FIXME FABRIC                IdentityAnnihilationPlanePart::new);
-// FIXME FABRIC        this.fluidAnnihilationPlane = createPart("fluid_annihilation_plane", FluidAnnihilationPlanePart.class,
-// FIXME FABRIC                FluidAnnihilationPlanePart::new);
-// FIXME FABRIC        this.formationPlane = createPart("formation_plane", FormationPlanePart.class, FormationPlanePart::new);
-// FIXME FABRIC        this.fluidFormationPlane = createPart("fluid_formation_plane", FluidFormationPlanePart.class,
-// FIXME FABRIC                FluidFormationPlanePart::new);
-// FIXME FABRIC        this.patternTerminal = createPart("pattern_terminal", PatternTerminalPart.class, PatternTerminalPart::new);
-// FIXME FABRIC        this.craftingTerminal = createPart("crafting_terminal", CraftingTerminalPart.class, CraftingTerminalPart::new);
-// FIXME FABRIC        this.terminal = createPart("terminal", TerminalPart.class, TerminalPart::new);
-// FIXME FABRIC        this.storageMonitor = createPart("storage_monitor", StorageMonitorPart.class, StorageMonitorPart::new);
-// FIXME FABRIC        this.conversionMonitor = createPart("conversion_monitor", ConversionMonitorPart.class,
-// FIXME FABRIC                ConversionMonitorPart::new);
-// FIXME FABRIC        this.iface = createPart("cable_interface", InterfacePart.class, InterfacePart::new);
-// FIXME FABRIC        this.fluidIface = createPart("cable_fluid_interface", FluidInterfacePart.class, FluidInterfacePart::new);
-// FIXME FABRIC        this.p2PTunnelME = createPart("me_p2p_tunnel", MEP2PTunnelPart.class, MEP2PTunnelPart::new);
-// FIXME FABRIC        this.p2PTunnelRedstone = createPart("redstone_p2p_tunnel", RedstoneP2PTunnelPart.class,
-// FIXME FABRIC                RedstoneP2PTunnelPart::new);
-// FIXME FABRIC        this.p2PTunnelItems = createPart("item_p2p_tunnel", ItemP2PTunnelPart.class, ItemP2PTunnelPart::new);
-// FIXME FABRIC        this.p2PTunnelFluids = createPart("fluid_p2p_tunnel", FluidP2PTunnelPart.class, FluidP2PTunnelPart::new);
-// FIXME FABRIC        this.p2PTunnelEU = null; // FIXME createPart( "ic2_p2p_tunnel", PartType.P2P_TUNNEL_IC2,
-// FIXME FABRIC                                 // PartP2PIC2Power.class, PartP2PIC2Power::new);
-// FIXME FABRIC        this.p2PTunnelFE = createPart("fe_p2p_tunnel", FEP2PTunnelPart.class, FEP2PTunnelPart::new);
-// FIXME FABRIC        this.p2PTunnelLight = createPart("light_p2p_tunnel", LightP2PTunnelPart.class, LightP2PTunnelPart::new);
-// FIXME FABRIC        this.interfaceTerminal = createPart("interface_terminal", InterfaceTerminalPart.class,
-// FIXME FABRIC                InterfaceTerminalPart::new);
-// FIXME FABRIC        this.fluidTerminal = createPart("fluid_terminal", FluidTerminalPart.class, FluidTerminalPart::new);
+        this.storageBus = createPart("storage_bus", StorageBusPart.class, StorageBusPart::new);
+        this.fluidStorageBus = createPart("fluid_storage_bus", FluidStorageBusPart.class, FluidStorageBusPart::new);
+        this.importBus = createPart("import_bus", ImportBusPart.class, ImportBusPart::new);
+        this.fluidImportBus = createPart("fluid_import_bus", FluidImportBusPart.class, FluidImportBusPart::new);
+        this.exportBus = createPart("export_bus", ExportBusPart.class, ExportBusPart::new);
+         this.fluidExportBus = createPart("fluid_export_bus", FluidExportBusPart.class, FluidExportBusPart::new);
+        this.levelEmitter = createPart("level_emitter", LevelEmitterPart.class, LevelEmitterPart::new);
+         this.fluidLevelEmitter = createPart("fluid_level_emitter", FluidLevelEmitterPart.class,
+                 FluidLevelEmitterPart::new);
+        this.annihilationPlane = createPart("annihilation_plane", AnnihilationPlanePart.class,
+                AnnihilationPlanePart::new);
+        this.identityAnnihilationPlane = createPart("identity_annihilation_plane", IdentityAnnihilationPlanePart.class,
+                IdentityAnnihilationPlanePart::new);
+         this.fluidAnnihilationPlane = createPart("fluid_annihilation_plane", FluidAnnihilationPlanePart.class,
+                 FluidAnnihilationPlanePart::new);
+        this.formationPlane = createPart("formation_plane", FormationPlanePart.class, FormationPlanePart::new);
+         this.fluidFormationPlane = createPart("fluid_formation_plane", FluidFormationPlanePart.class,
+                 FluidFormationPlanePart::new);
+        this.patternTerminal = createPart("pattern_terminal", PatternTerminalPart.class, PatternTerminalPart::new);
+        this.craftingTerminal = createPart("crafting_terminal", CraftingTerminalPart.class, CraftingTerminalPart::new);
+        this.terminal = createPart("terminal", TerminalPart.class, TerminalPart::new);
+        this.storageMonitor = createPart("storage_monitor", StorageMonitorPart.class, StorageMonitorPart::new);
+        this.conversionMonitor = createPart("conversion_monitor", ConversionMonitorPart.class,
+                ConversionMonitorPart::new);
+        this.iface = createPart("cable_interface", InterfacePart.class, InterfacePart::new);
+         this.fluidIface = createPart("cable_fluid_interface", FluidInterfacePart.class, FluidInterfacePart::new);
+// FIXME FABRIC         this.p2PTunnelME = createPart("me_p2p_tunnel", MEP2PTunnelPart.class, MEP2PTunnelPart::new);
+// FIXME FABRIC         this.p2PTunnelRedstone = createPart("redstone_p2p_tunnel", RedstoneP2PTunnelPart.class,
+// FIXME FABRIC                 RedstoneP2PTunnelPart::new);
+// FIXME FABRIC         this.p2PTunnelItems = createPart("item_p2p_tunnel", ItemP2PTunnelPart.class, ItemP2PTunnelPart::new);
+// FIXME FABRIC         this.p2PTunnelFluids = createPart("fluid_p2p_tunnel", FluidP2PTunnelPart.class, FluidP2PTunnelPart::new);
+// FIXME FABRIC         this.p2PTunnelEU = null; // FIXME createPart( "ic2_p2p_tunnel", PartType.P2P_TUNNEL_IC2,
+// FIXME FABRIC                                  // PartP2PIC2Power.class, PartP2PIC2Power::new);
+// FIXME FABRIC         this.p2PTunnelFE = createPart("fe_p2p_tunnel", FEP2PTunnelPart.class, FEP2PTunnelPart::new);
+// FIXME FABRIC         this.p2PTunnelLight = createPart("light_p2p_tunnel", LightP2PTunnelPart.class, LightP2PTunnelPart::new);
+        this.interfaceTerminal = createPart("interface_terminal", InterfaceTerminalPart.class,
+                InterfaceTerminalPart::new);
+         this.fluidTerminal = createPart("fluid_terminal", FluidTerminalPart.class, FluidTerminalPart::new);
 
-        this.storageBus = null;
-        this.importBus = null;
-        this.exportBus = null;
-        this.iface = null;
-        this.fluidIface = null;
-        this.levelEmitter = null;
-        this.fluidLevelEmitter = null;
-        this.annihilationPlane = null;
-        this.identityAnnihilationPlane = null;
-        this.fluidAnnihilationPlane = null;
-        this.formationPlane = null;
-        this.fluidFormationPlane = null;
         this.p2PTunnelME = null;
         this.p2PTunnelRedstone = null;
         this.p2PTunnelItems = null;
@@ -167,16 +157,6 @@ public final class ApiParts implements IParts {
         this.p2PTunnelEU = null;
         this.p2PTunnelFE = null;
         this.p2PTunnelLight = null;
-        this.interfaceTerminal = null;
-        this.patternTerminal = null;
-        this.craftingTerminal = null;
-        this.terminal = null;
-        this.storageMonitor = null;
-        this.conversionMonitor = null;
-        this.fluidImportBus = null;
-        this.fluidExportBus = null;
-        this.fluidTerminal = null;
-        this.fluidStorageBus = null;
 
         this.registry = null;
         this.partModels = null;

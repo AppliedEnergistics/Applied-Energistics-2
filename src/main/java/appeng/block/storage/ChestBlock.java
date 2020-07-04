@@ -20,6 +20,9 @@ package appeng.block.storage;
 
 import javax.annotation.Nullable;
 
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.ChestContainer;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
@@ -83,8 +86,8 @@ public class ChestBlock extends AEBaseTileBlock<ChestBlockEntity> {
                     p.sendSystemMessage(PlayerMessages.ChestCannotReadStorageCell.get(), Util.NIL_UUID);
                 }
             } else {
-                // FIXME FABRIC ContainerOpener.openContainer(ChestContainer.TYPE, p,
-                // FIXME FABRIC         ContainerLocator.forTileEntitySide(tg, hit.getSide()));
+                ContainerOpener.openContainer(ChestContainer.TYPE, p,
+                        ContainerLocator.forTileEntitySide(tg, hit.getSide()));
                 throw new IllegalStateException();
             }
 

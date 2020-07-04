@@ -3,3 +3,8 @@ accessible method net/minecraft/client/particle/RedDustParticle <init> (Lnet/min
 
 # To disable water-bobbing of item entities (for growing crystals)
 extendable method net/minecraft/entity/ItemEntity applyBuoyancy ()V
+
+extendable method net/minecraft/client/gui/screen/ingame/HandledScreen drawSlot (Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/screen/slot/Slot;)V
+
+# Show selection highlight only on focus
+extendable method net/minecraft/client/gui/widget/TextFieldWidget drawSelectionHighlight (IIII)V

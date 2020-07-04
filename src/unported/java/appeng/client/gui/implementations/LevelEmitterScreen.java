@@ -18,8 +18,8 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.util.InputMappings;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 
@@ -42,14 +42,14 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
 
     private NumberBox level;
 
-    private Button plus1;
-    private Button plus10;
-    private Button plus100;
-    private Button plus1000;
-    private Button minus1;
-    private Button minus10;
-    private Button minus100;
-    private Button minus1000;
+    private ButtonWidget plus1;
+    private ButtonWidget plus10;
+    private ButtonWidget plus100;
+    private ButtonWidget plus1000;
+    private ButtonWidget minus1;
+    private ButtonWidget minus10;
+    private ButtonWidget minus100;
+    private ButtonWidget minus1000;
 
     private SettingToggleButton<LevelType> levelMode;
     private SettingToggleButton<YesNo> craftingMode;
@@ -62,25 +62,25 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
     public void init() {
         super.init();
 
-        this.level = new NumberBox(this.font, this.guiLeft + 24, this.guiTop + 43, 79, this.font.FONT_HEIGHT,
+        this.level = new NumberBox(this.textRenderer, this.x + 24, this.y + 43, 79, this.textRenderer.FONT_HEIGHT,
                 Long.class);
-        this.level.setEnableBackgroundDrawing(false);
-        this.level.setMaxStringLength(16);
-        this.level.setTextColor(0xFFFFFF);
+        this.level.setHasBorder(false);
+        this.level.setMaxLength(16);
+        this.level.setEditableColor(0xFFFFFF);
         this.level.setVisible(true);
-        this.level.setFocused2(true);
+        this.level.setFocused(true);
         container.setTextField(this.level);
     }
 
     @Override
     protected void addButtons() {
-        this.levelMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 8, Settings.LEVEL_TYPE,
+        this.levelMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 8, Settings.LEVEL_TYPE,
                 LevelType.ITEM_LEVEL);
-        this.redstoneMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 28,
+        this.redstoneMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 28,
                 Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL);
-        this.fuzzyMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 48, Settings.FUZZY_MODE,
+        this.fuzzyMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 48, Settings.FUZZY_MODE,
                 FuzzyMode.IGNORE_ALL);
-        this.craftingMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 48,
+        this.craftingMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 48,
                 Settings.CRAFT_VIA_REDSTONE, YesNo.NO);
 
         final int a = AEConfig.instance().levelByStackAmounts(0);
@@ -88,22 +88,22 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
         final int c = AEConfig.instance().levelByStackAmounts(2);
         final int d = AEConfig.instance().levelByStackAmounts(3);
 
-        this.addButton(this.plus1 = new Button(this.guiLeft + 20, this.guiTop + 17, 22, 20, "+" + a, btn -> addQty(a)));
+        this.addButton(this.plus1 = new ButtonWidget(this.x + 20, this.y + 17, 22, 20, "+" + a, btn -> addQty(a)));
         this.addButton(
-                this.plus10 = new Button(this.guiLeft + 48, this.guiTop + 17, 28, 20, "+" + b, btn -> addQty(b)));
+                this.plus10 = new ButtonWidget(this.x + 48, this.y + 17, 28, 20, "+" + b, btn -> addQty(b)));
         this.addButton(
-                this.plus100 = new Button(this.guiLeft + 82, this.guiTop + 17, 32, 20, "+" + c, btn -> addQty(c)));
+                this.plus100 = new ButtonWidget(this.x + 82, this.y + 17, 32, 20, "+" + c, btn -> addQty(c)));
         this.addButton(
-                this.plus1000 = new Button(this.guiLeft + 120, this.guiTop + 17, 38, 20, "+" + d, btn -> addQty(d)));
+                this.plus1000 = new ButtonWidget(this.x + 120, this.y + 17, 38, 20, "+" + d, btn -> addQty(d)));
 
         this.addButton(
-                this.minus1 = new Button(this.guiLeft + 20, this.guiTop + 59, 22, 20, "-" + a, btn -> addQty(-a)));
+                this.minus1 = new ButtonWidget(this.x + 20, this.y + 59, 22, 20, "-" + a, btn -> addQty(-a)));
         this.addButton(
-                this.minus10 = new Button(this.guiLeft + 48, this.guiTop + 59, 28, 20, "-" + b, btn -> addQty(-b)));
+                this.minus10 = new ButtonWidget(this.x + 48, this.y + 59, 28, 20, "-" + b, btn -> addQty(-b)));
         this.addButton(
-                this.minus100 = new Button(this.guiLeft + 82, this.guiTop + 59, 32, 20, "-" + c, btn -> addQty(-c)));
+                this.minus100 = new ButtonWidget(this.x + 82, this.y + 59, 32, 20, "-" + c, btn -> addQty(-c)));
         this.addButton(
-                this.minus1000 = new Button(this.guiLeft + 120, this.guiTop + 59, 38, 20, "-" + d, btn -> addQty(-d)));
+                this.minus1000 = new ButtonWidget(this.x + 120, this.y + 59, 38, 20, "-" + d, btn -> addQty(-d)));
 
         this.addButton(this.levelMode);
         this.addButton(this.redstoneMode);
@@ -111,7 +111,7 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
     }
 
     @Override
-    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
         final boolean notCraftingMode = this.bc.getInstalledUpgrades(Upgrades.CRAFTING) == 0;
 
         // configure enabled status...
@@ -127,7 +127,7 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
         this.levelMode.active = notCraftingMode;
         this.redstoneMode.active = notCraftingMode;
 
-        super.drawFG(offsetX, offsetY, mouseX, mouseY);
+        super.drawFG(matrices, offsetX, offsetY, mouseX, mouseY);
 
         if (this.craftingMode != null) {
             this.craftingMode.set(this.cvb.getCraftingMode());
@@ -139,8 +139,8 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
     }
 
     @Override
-    public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
-        super.drawBG(offsetX, offsetY, mouseX, mouseY, partialTicks);
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+        super.drawBG(matrices, offsetX, offsetY, mouseX, mouseY, partialTicks);
         this.level.render(mouseX, mouseY, partialTicks);
     }
 
@@ -201,7 +201,7 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
-        if (!this.checkHotbarKeys(InputMappings.getInputByCode(keyCode, scanCode))) {
+        if (!this.checkHotbarKeys(keyCode, scanCode)) {
             if (keyCode == 211 || keyCode == 205 || keyCode == 203 || keyCode == 14) {
                 String Out = this.level.getText();
 

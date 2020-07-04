@@ -455,4 +455,5 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
     public ItemStack getItemStack() {
         return this.is;
     }
+
 }

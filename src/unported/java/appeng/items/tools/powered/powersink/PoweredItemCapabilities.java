@@ -30,7 +30,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerUnits;
 import appeng.api.implementations.items.IAEItemPowerStorage;
-import appeng.capabilities.Capabilities;
+import appeng.attributes.MEAttributes;
 
 /**
  * The capability provider to expose chargable items to other mods.
@@ -49,7 +49,7 @@ class PoweredItemCapabilities implements ICapabilityProvider, IEnergyStorage {
     @SuppressWarnings("unchecked")
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-        if (capability == Capabilities.FORGE_ENERGY) {
+        if (capability == MEAttributes.FORGE_ENERGY) {
             return (LazyOptional<T>) LazyOptional.of(() -> this);
         }
         return LazyOptional.empty();

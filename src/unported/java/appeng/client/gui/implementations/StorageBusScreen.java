@@ -18,6 +18,7 @@
 
 package appeng.client.gui.implementations;
 
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 
@@ -44,21 +45,21 @@ public class StorageBusScreen extends UpgradeableScreen<StorageBusContainer> {
 
     public StorageBusScreen(StorageBusContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
-        this.ySize = 251;
+        this.backgroundHeight = 251;
     }
 
     @Override
     protected void addButtons() {
-        addButton(new ActionButton(this.guiLeft - 18, this.guiTop + 8, ActionItems.CLOSE, btn -> clear()));
-        addButton(new ActionButton(this.guiLeft - 18, this.guiTop + 28, ActionItems.WRENCH, btn -> partition()));
-        this.rwMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 48, Settings.ACCESS,
+        addButton(new ActionButton(this.x - 18, this.y + 8, ActionItems.CLOSE, btn -> clear()));
+        addButton(new ActionButton(this.x - 18, this.y + 28, ActionItems.WRENCH, btn -> partition()));
+        this.rwMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 48, Settings.ACCESS,
                 AccessRestriction.READ_WRITE);
-        this.storageFilter = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 68,
+        this.storageFilter = new ServerSettingToggleButton<>(this.x - 18, this.y + 68,
                 Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
-        this.fuzzyMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 88, Settings.FUZZY_MODE,
+        this.fuzzyMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 88, Settings.FUZZY_MODE,
                 FuzzyMode.IGNORE_ALL);
 
-        this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(),
+        this.addButton(new TabButton(this.x + 154, this.y, 2 + 4 * 16, GuiText.Priority.getLocal(),
                 this.itemRenderer, btn -> openPriorityGui()));
 
         this.addButton(this.storageFilter);
@@ -67,9 +68,9 @@ public class StorageBusScreen extends UpgradeableScreen<StorageBusContainer> {
     }
 
     @Override
-    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.font.drawString(this.getGuiDisplayName(GuiText.StorageBus.getLocal()), 8, 6, 4210752);
-        this.font.drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+        this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.StorageBus.getLocal()), 8, 6, 4210752);
+        this.textRenderer.draw(matrices, GuiText.inventory.getLocal(), 8, this.backgroundHeight - 96 + 3, 4210752);
 
         if (this.fuzzyMode != null) {
             this.fuzzyMode.set(this.cvb.getFuzzyMode());

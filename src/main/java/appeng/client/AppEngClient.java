@@ -6,9 +6,12 @@ import appeng.bootstrap.components.IClientSetupComponent;
 import appeng.bootstrap.components.IItemColorRegistrationComponent;
 import appeng.bootstrap.components.IModelBakeComponent;
 import appeng.bootstrap.components.ITileEntityRegistrationComponent;
+import appeng.client.gui.implementations.*;
 import appeng.client.render.cablebus.CableBusModelLoader;
 import appeng.client.render.effects.*;
+import appeng.client.render.tesr.InscriberTESR;
 import appeng.client.render.tesr.SkyChestTESR;
+import appeng.container.implementations.*;
 import appeng.core.Api;
 import appeng.core.ApiDefinitions;
 import appeng.core.AppEng;
@@ -24,9 +27,12 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.render.entity.ItemEntityRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.InputUtil;
@@ -39,10 +45,7 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -54,6 +57,8 @@ public final class AppEngClient extends AppEngBase {
     private final ClientNetworkHandler networkHandler;
 
     private final ClientTickHandler tickHandler;
+
+    private final EnumMap<ActionKey, KeyBinding> bindings = new EnumMap<>(ActionKey.class);
 
     public static AppEngClient instance() {
         return (AppEngClient) AppEng.instance();
@@ -75,6 +80,7 @@ public final class AppEngClient extends AppEngBase {
         registerEntityRenderers();
         registerItemColors();
         registerTextures();
+        registerScreens();
 
         // On the client, we'll register for server startup/shutdown to properly setup WorldData
         // each time the integrated server starts&stops
@@ -153,8 +159,8 @@ public final class AppEngClient extends AppEngBase {
     }
 
     @Override
-    public boolean isActionKey(@Nonnull ActionKey key, InputUtil.Key input) {
-        return false;
+    public boolean isActionKey(@Nonnull ActionKey key, int keyCode, int scanCode) {
+        return this.bindings.get(key).matchesKey(keyCode, scanCode);
     }
 
     protected void registerParticleRenderers() {
@@ -194,9 +200,9 @@ public final class AppEngClient extends AppEngBase {
     }
 
     public void registerTextures() {
-        // FIXME FABRIC InscriberTESR.registerTexture();
         Stream<Collection<SpriteIdentifier>> sprites = Stream.of(
-                SkyChestTESR.SPRITES
+                SkyChestTESR.SPRITES,
+                InscriberTESR.SPRITES
         );
 
         // Group every needed sprite by atlas, since every atlas has their own event
@@ -239,6 +245,51 @@ public final class AppEngClient extends AppEngBase {
 // FIXME FABRIC       ModelLoaderRegistry.registerLoader(new Identifier(AppEng.MOD_ID, "uvlightmap"), UVLModelLoader.INSTANCE);
 // FIXME FABRIC       ModelLoaderRegistry.registerLoader(new Identifier(AppEng.MOD_ID, "cable_bus"),
 // FIXME FABRIC               new CableBusModelLoader());
+    }
+
+    private void registerScreens() {
+        ScreenRegistry.register(GrinderContainer.TYPE, GrinderScreen::new);
+        ScreenRegistry.register(QNBContainer.TYPE, QNBScreen::new);
+        ScreenRegistry.register(SkyChestContainer.TYPE, SkyChestScreen::new);
+        ScreenRegistry.register(ChestContainer.TYPE, ChestScreen::new);
+        ScreenRegistry.register(WirelessContainer.TYPE, WirelessScreen::new);
+// FIXME FABRIC       ScreenRegistry.<MEMonitorableContainer, MEMonitorableScreen<MEMonitorableContainer>>register(
+// FIXME FABRIC               MEMonitorableContainer.TYPE, MEMonitorableScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(MEPortableCellContainer.TYPE, MEPortableCellScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(WirelessTermContainer.TYPE, WirelessTermScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(NetworkStatusContainer.TYPE, NetworkStatusScreen::new);
+// FIXME FABRIC       ScreenRegistry.<CraftingCPUContainer, CraftingCPUScreen<CraftingCPUContainer>>register(
+// FIXME FABRIC               CraftingCPUContainer.TYPE, CraftingCPUScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(NetworkToolContainer.TYPE, NetworkToolScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(QuartzKnifeContainer.TYPE, QuartzKnifeScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(DriveContainer.TYPE, DriveScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(VibrationChamberContainer.TYPE, VibrationChamberScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(CondenserContainer.TYPE, CondenserScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(InterfaceContainer.TYPE, InterfaceScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(FluidInterfaceContainer.TYPE, FluidInterfaceScreen::new);
+// FIXME FABRIC       ScreenRegistry.<UpgradeableContainer, UpgradeableScreen<UpgradeableContainer>>register(
+// FIXME FABRIC               UpgradeableContainer.TYPE, UpgradeableScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(FluidIOContainer.TYPE, FluidIOScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(IOPortContainer.TYPE, IOPortScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(StorageBusContainer.TYPE, StorageBusScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(FluidStorageBusContainer.TYPE, FluidStorageBusScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(FormationPlaneContainer.TYPE, FormationPlaneScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(FluidFormationPlaneContainer.TYPE, FluidFormationPlaneScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(PriorityContainer.TYPE, PriorityScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(SecurityStationContainer.TYPE, SecurityStationScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(CraftingTermContainer.TYPE, CraftingTermScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(PatternTermContainer.TYPE, PatternTermScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(FluidTerminalContainer.TYPE, FluidTerminalScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(LevelEmitterContainer.TYPE, LevelEmitterScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(FluidLevelEmitterContainer.TYPE, FluidLevelEmitterScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(SpatialIOPortContainer.TYPE, SpatialIOPortScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(InscriberContainer.TYPE, InscriberScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(CellWorkbenchContainer.TYPE, CellWorkbenchScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(MolecularAssemblerContainer.TYPE, MolecularAssemblerScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(CraftAmountContainer.TYPE, CraftAmountScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(CraftConfirmContainer.TYPE, CraftConfirmScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(InterfaceTerminalContainer.TYPE, InterfaceTerminalScreen::new);
+// FIXME FABRIC       ScreenRegistry.register(CraftingStatusContainer.TYPE, CraftingStatusScreen::new);
     }
 
 }

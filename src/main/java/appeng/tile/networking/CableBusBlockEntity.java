@@ -303,11 +303,14 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiTil
     public void addAllAttributes(World world, BlockPos pos, BlockState state, AttributeList<?> to) {
         super.addAllAttributes(world, pos, state, to);
 
-        for (AEPartLocation location : AEPartLocation.values()) {
-            IPart part = this.cb.getPart(location);
-            if (part != null) {
-                part.addAllAttributes(to);
-            }
+        Direction direction = to.getSearchDirection();
+        if (direction == null) {
+            return;
+        }
+        AEPartLocation partLocation = AEPartLocation.fromFacing(direction.getOpposite());
+        IPart part = this.cb.getPart(partLocation);
+        if (part != null) {
+            part.addAllAttributes(to);
         }
     }
 

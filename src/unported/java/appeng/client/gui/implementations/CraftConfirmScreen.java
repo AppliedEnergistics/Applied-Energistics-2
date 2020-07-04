@@ -26,12 +26,12 @@ import java.util.List;
 import com.google.common.base.Joiner;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.util.InputMappings;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraftforge.fml.client.gui.GuiUtils;
+
 
 import appeng.api.AEApi;
 import appeng.api.storage.channels.IItemStorageChannel;
@@ -60,51 +60,51 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
 
     private final List<IAEItemStack> visual = new ArrayList<>();
 
-    private Button start;
-    private Button selectCPU;
+    private ButtonWidget start;
+    private ButtonWidget selectCPU;
     private int tooltip = -1;
 
     public CraftConfirmScreen(CraftConfirmContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
         this.subGui = new AESubScreen(this, container.getTarget());
-        this.xSize = 238;
-        this.ySize = 206;
+        this.backgroundWidth = 238;
+        this.backgroundHeight = 206;
 
         final Scrollbar scrollbar = new Scrollbar();
         this.setScrollBar(scrollbar);
     }
 
     boolean isAutoStart() {
-        return this.container.isAutoStart();
+        return this.handler.isAutoStart();
     }
 
     @Override
     public void init() {
         super.init();
 
-        this.start = new Button(this.guiLeft + 162, this.guiTop + this.ySize - 25, 50, 20, GuiText.Start.getLocal(),
+        this.start = new ButtonWidget(this.x + 162, this.y + this.backgroundHeight - 25, 50, 20, GuiText.Start.getLocal(),
                 btn -> start());
         this.start.active = false;
         this.addButton(this.start);
 
-        this.selectCPU = new Button(this.guiLeft + (219 - 180) / 2, this.guiTop + this.ySize - 68, 180, 20,
+        this.selectCPU = new ButtonWidget(this.x + (219 - 180) / 2, this.y + this.backgroundHeight - 68, 180, 20,
                 GuiText.CraftingCPU.getLocal() + ": " + GuiText.Automatic, btn -> selectNextCpu());
         this.selectCPU.active = false;
         this.addButton(this.selectCPU);
 
-        addButton(new Button(this.guiLeft + 6, this.guiTop + this.ySize - 25, 50, 20, GuiText.Cancel.getLocal(),
+        addButton(new ButtonWidget(this.x + 6, this.y + this.backgroundHeight - 25, 50, 20, GuiText.Cancel.getLocal(),
                 btn -> subGui.goBack()));
     }
 
     @Override
-    public void render(final int mouseX, final int mouseY, final float btn) {
+    public void render(MatrixStack matrices, final int mouseX, final int mouseY, final float btn) {
         this.updateCPUButtonText();
 
-        this.start.active = !(this.container.hasNoCPU() || this.isSimulation());
+        this.start.active = !(this.handler.hasNoCPU() || this.isSimulation());
         this.selectCPU.active = !this.isSimulation();
 
-        final int gx = (this.width - this.xSize) / 2;
-        final int gy = (this.height - this.ySize) / 2;
+        final int gx = (this.width - this.backgroundWidth) / 2;
+        final int gy = (this.height - this.backgroundHeight) / 2;
 
         this.tooltip = -1;
 
@@ -130,22 +130,22 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
             }
         }
 
-        super.render(mouseX, mouseY, btn);
+        super.render(matrices, mouseX, mouseY, btn);
     }
 
     private void updateCPUButtonText() {
         String btnTextText = GuiText.CraftingCPU.getLocal() + ": " + GuiText.Automatic.getLocal();
-        if (this.container.getSelectedCpu() >= 0)// && status.selectedCpu < status.cpus.size() )
+        if (this.handler.getSelectedCpu() >= 0)// && status.selectedCpu < status.cpus.size() )
         {
-            if (this.container.getName() != null) {
-                final String name = this.container.getName().getStringTruncated(20);
+            if (this.handler.getName() != null) {
+                final String name = this.handler.getName().getStringTruncated(20);
                 btnTextText = GuiText.CraftingCPU.getLocal() + ": " + name;
             } else {
-                btnTextText = GuiText.CraftingCPU.getLocal() + ": #" + this.container.getSelectedCpu();
+                btnTextText = GuiText.CraftingCPU.getLocal() + ": #" + this.handler.getSelectedCpu();
             }
         }
 
-        if (this.container.hasNoCPU()) {
+        if (this.handler.hasNoCPU()) {
             btnTextText = GuiText.NoCraftingCPUs.getLocal();
         }
 
@@ -153,30 +153,30 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     }
 
     private boolean isSimulation() {
-        return this.container.isSimulation();
+        return this.handler.isSimulation();
     }
 
     @Override
-    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        final long BytesUsed = this.container.getUsedBytes();
+    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+        final long BytesUsed = this.handler.getUsedBytes();
         final String byteUsed = NumberFormat.getInstance().format(BytesUsed);
         final String Add = BytesUsed > 0 ? (byteUsed + ' ' + GuiText.BytesUsed.getLocal())
                 : GuiText.CalculatingWait.getLocal();
-        this.font.drawString(GuiText.CraftingPlan.getLocal() + " - " + Add, 8, 7, 4210752);
+        this.textRenderer.draw(matrices, GuiText.CraftingPlan.getLocal() + " - " + Add, 8, 7, 4210752);
 
         String dsp = null;
 
         if (this.isSimulation()) {
             dsp = GuiText.Simulation.getLocal();
         } else {
-            dsp = this.container.getCpuAvailableBytes() > 0
-                    ? (GuiText.Bytes.getLocal() + ": " + this.container.getCpuAvailableBytes() + " : "
-                            + GuiText.CoProcessors.getLocal() + ": " + this.container.getCpuCoProcessors())
+            dsp = this.handler.getCpuAvailableBytes() > 0
+                    ? (GuiText.Bytes.getLocal() + ": " + this.handler.getCpuAvailableBytes() + " : "
+                            + GuiText.CoProcessors.getLocal() + ": " + this.handler.getCpuCoProcessors())
                     : GuiText.Bytes.getLocal() + ": N/A : " + GuiText.CoProcessors.getLocal() + ": N/A";
         }
 
-        final int offset = (219 - this.font.getStringWidth(dsp)) / 2;
-        this.font.drawString(dsp, offset, 165, 4210752);
+        final int offset = (219 - this.textRenderer.getWidth(dsp)) / 2;
+        this.textRenderer.draw(matrices, dsp, offset, 165, 4210752);
 
         final int sectionLength = 67;
 
@@ -229,8 +229,8 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
                     }
 
                     str = GuiText.FromStorage.getLocal() + ": " + str;
-                    final int w = 4 + this.font.getStringWidth(str);
-                    this.font.drawString(str,
+                    final int w = 4 + this.textRenderer.getWidth(str);
+                    this.textRenderer.draw(matrices, str,
                             (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2),
                             (y * offY + yo + 6 - negY + downY) * 2, 4210752);
 
@@ -252,8 +252,8 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
                     }
 
                     str = GuiText.Missing.getLocal() + ": " + str;
-                    final int w = 4 + this.font.getStringWidth(str);
-                    this.font.drawString(str,
+                    final int w = 4 + this.textRenderer.getWidth(str);
+                    this.textRenderer.draw(matrices, str,
                             (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2),
                             (y * offY + yo + 6 - negY + downY) * 2, 4210752);
 
@@ -275,8 +275,8 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
                     }
 
                     str = GuiText.ToCraft.getLocal() + ": " + str;
-                    final int w = 4 + this.font.getStringWidth(str);
-                    this.font.drawString(str,
+                    final int w = 4 + this.textRenderer.getWidth(str);
+                    this.textRenderer.draw(matrices, str,
                             (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2),
                             (y * offY + yo + 6 - negY + downY) * 2, 4210752);
 
@@ -320,15 +320,15 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
         }
 
         if (this.tooltip >= 0 && !dspToolTip.isEmpty()) {
-            this.drawTooltip(toolPosX, toolPosY + 10, dspToolTip);
+            this.drawTooltip(, toolPosX, toolPosY + 10, dspToolTip);
         }
     }
 
     @Override
-    public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
         this.setScrollBar();
         this.bindTexture("guis/craftingreport.png");
-        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());
+        drawTexture(matrices, offsetX, offsetY, 0, 0, this.backgroundWidth, this.backgroundHeight);
     }
 
     private void setScrollBar() {
@@ -439,7 +439,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
-        if (!this.checkHotbarKeys(InputMappings.getInputByCode(keyCode, scanCode))) {
+        if (!this.checkHotbarKeys(keyCode, scanCode)) {
             if (keyCode == 28) {
                 this.start();
                 return true;
@@ -449,7 +449,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     }
 
     private void selectNextCpu() {
-        final boolean backwards = minecraft.mouseHelper.isRightDown();
+        final boolean backwards = minecraft.mouse.wasRightButtonClicked();
         NetworkHandler.instance().sendToServer(new ConfigValuePacket("Terminal.Cpu", backwards ? "Prev" : "Next"));
     }
 

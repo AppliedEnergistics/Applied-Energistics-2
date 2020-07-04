@@ -18,6 +18,7 @@
 
 package appeng.client.gui.implementations;
 
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 
@@ -40,17 +41,17 @@ public class FormationPlaneScreen extends UpgradeableScreen<FormationPlaneContai
     public FormationPlaneScreen(FormationPlaneContainer container, PlayerInventory playerInventory,
             Text title) {
         super(container, playerInventory, title);
-        this.ySize = 251;
+        this.backgroundHeight = 251;
     }
 
     @Override
     protected void addButtons() {
-        this.placeMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 28, Settings.PLACE_BLOCK,
+        this.placeMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 28, Settings.PLACE_BLOCK,
                 YesNo.YES);
-        this.fuzzyMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 48, Settings.FUZZY_MODE,
+        this.fuzzyMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 48, Settings.FUZZY_MODE,
                 FuzzyMode.IGNORE_ALL);
 
-        this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(),
+        this.addButton(new TabButton(this.x + 154, this.y, 2 + 4 * 16, GuiText.Priority.getLocal(),
                 this.itemRenderer, btn -> openPriorityGui()));
 
         this.addButton(this.placeMode);
@@ -58,9 +59,9 @@ public class FormationPlaneScreen extends UpgradeableScreen<FormationPlaneContai
     }
 
     @Override
-    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.font.drawString(this.getGuiDisplayName(GuiText.FormationPlane.getLocal()), 8, 6, 4210752);
-        this.font.drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+        this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.FormationPlane.getLocal()), 8, 6, 4210752);
+        this.textRenderer.draw(matrices, GuiText.inventory.getLocal(), 8, this.backgroundHeight - 96 + 3, 4210752);
 
         if (this.fuzzyMode != null) {
             this.fuzzyMode.set(this.cvb.getFuzzyMode());

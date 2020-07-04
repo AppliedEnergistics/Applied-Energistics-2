@@ -1,8 +1,8 @@
 
 package appeng.fluids.client.gui;
 
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.util.InputMappings;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 
@@ -30,23 +30,23 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
     public void init() {
         super.init();
 
-        this.level = new NumberBox(this.font, this.guiLeft + 24, this.guiTop + 43, 79, this.font.FONT_HEIGHT,
+        this.level = new NumberBox(this.textRenderer, this.x + 24, this.y + 43, 79, this.textRenderer.FONT_HEIGHT,
                 Long.class);
-        this.level.setEnableBackgroundDrawing(false);
-        this.level.setMaxStringLength(16);
-        this.level.setTextColor(0xFFFFFF);
+        this.level.setHasBorder(false);
+        this.level.setMaxLength(16);
+        this.level.setEditableColor(0xFFFFFF);
         this.level.setVisible(true);
         this.level.changeFocus(true);
         container.setTextField(this.level);
 
         final int y = 40;
         final int x = 80 + 44;
-        this.guiSlots.add(new FluidSlotWidget(this.container.getFluidConfigInventory(), 0, 0, x, y));
+        this.guiSlots.add(new FluidSlotWidget(this.handler.getFluidConfigInventory(), 0, 0, x, y));
     }
 
     @Override
     protected void addButtons() {
-        this.redstoneMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 28,
+        this.redstoneMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 28,
                 Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL);
 
         final int a = AEConfig.instance().levelByMillyBuckets(0);
@@ -54,22 +54,22 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
         final int c = AEConfig.instance().levelByMillyBuckets(2);
         final int d = AEConfig.instance().levelByMillyBuckets(3);
 
-        this.addButton(new Button(this.guiLeft + 20, this.guiTop + 17, 22, 20, "+" + a, btn -> addQty(a)));
-        this.addButton(new Button(this.guiLeft + 48, this.guiTop + 17, 28, 20, "+" + b, btn -> addQty(b)));
-        this.addButton(new Button(this.guiLeft + 82, this.guiTop + 17, 32, 20, "+" + c, btn -> addQty(c)));
-        this.addButton(new Button(this.guiLeft + 120, this.guiTop + 17, 38, 20, "+" + d, btn -> addQty(d)));
+        this.addButton(new ButtonWidget(this.x + 20, this.y + 17, 22, 20, "+" + a, btn -> addQty(a)));
+        this.addButton(new ButtonWidget(this.x + 48, this.y + 17, 28, 20, "+" + b, btn -> addQty(b)));
+        this.addButton(new ButtonWidget(this.x + 82, this.y + 17, 32, 20, "+" + c, btn -> addQty(c)));
+        this.addButton(new ButtonWidget(this.x + 120, this.y + 17, 38, 20, "+" + d, btn -> addQty(d)));
 
-        this.addButton(new Button(this.guiLeft + 20, this.guiTop + 59, 22, 20, "-" + a, btn -> addQty(-a)));
-        this.addButton(new Button(this.guiLeft + 48, this.guiTop + 59, 28, 20, "-" + b, btn -> addQty(-b)));
-        this.addButton(new Button(this.guiLeft + 82, this.guiTop + 59, 32, 20, "-" + c, btn -> addQty(-c)));
-        this.addButton(new Button(this.guiLeft + 120, this.guiTop + 59, 38, 20, "-" + d, btn -> addQty(-d)));
+        this.addButton(new ButtonWidget(this.x + 20, this.y + 59, 22, 20, "-" + a, btn -> addQty(-a)));
+        this.addButton(new ButtonWidget(this.x + 48, this.y + 59, 28, 20, "-" + b, btn -> addQty(-b)));
+        this.addButton(new ButtonWidget(this.x + 82, this.y + 59, 32, 20, "-" + c, btn -> addQty(-c)));
+        this.addButton(new ButtonWidget(this.x + 120, this.y + 59, 38, 20, "-" + d, btn -> addQty(-d)));
 
         this.addButton(this.redstoneMode);
     }
 
     @Override
-    public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
-        super.drawBG(offsetX, offsetY, mouseX, mouseY, partialTicks);
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+        super.drawBG(matrices, offsetX, offsetY, mouseX, mouseY, partialTicks);
         this.level.render(mouseX, mouseY, partialTicks);
     }
 
@@ -152,7 +152,7 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
-        if (!this.checkHotbarKeys(InputMappings.getInputByCode(keyCode, scanCode))) {
+        if (!this.checkHotbarKeys(keyCode, scanCode)) {
             if ((keyCode == 211 || keyCode == 205 || keyCode == 203 || keyCode == 14)
                     && this.level.keyPressed(keyCode, scanCode, p_keyPressed_3_)) {
                 String Out = this.level.getText();

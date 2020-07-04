@@ -25,8 +25,8 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -42,7 +42,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.JEIRecipePacket;
 import appeng.util.Platform;
 
-class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandler<T> {
+class RecipeTransferHandler<T extends ScreenHandler> implements IRecipeTransferHandler<T> {
 
     private final Class<T> containerClass;
 
@@ -75,7 +75,7 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
                 continue;
             }
 
-            for (final Slot slot : container.inventorySlots) {
+            for (final Slot slot : container.slots) {
                 if (slot instanceof CraftingMatrixSlot || slot instanceof FakeCraftingMatrixSlot) {
                     if (slot.getSlotIndex() == slotIndex) {
                         final ListTag tags = new ListTag();

@@ -74,7 +74,7 @@ public final class FacadeItemGroup extends ItemGroup {
                 Item blockItem = b.asItem();
                 if (blockItem != Items.AIR && blockItem.getGroup() != null) {
                     final DefaultedList<ItemStack> tmpList = DefaultedList.of();
-                    b.appendStacks(blockItem.getGroup(), tmpList);
+                    b.addStacksForDisplay(blockItem.getGroup(), tmpList);
                     for (final ItemStack l : tmpList) {
                         final ItemStack facade = itemFacade.createFacadeForItem(l, false);
                         if (!facade.isEmpty()) {

@@ -25,12 +25,10 @@ import java.util.Random;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.client.util.InputMappings;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.InputEvent;
@@ -38,7 +36,6 @@ import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
-import appeng.api.parts.CableRenderMode;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.effects.*;
 import appeng.core.AEConfig;
@@ -52,7 +49,6 @@ import appeng.util.Platform;
 public class ClientHelper extends ServerHelper {
     private final static String KEY_CATEGORY = "key.appliedenergistics2.category";
 
-    private final EnumMap<ActionKey, KeyBinding> bindings = new EnumMap<>(ActionKey.class);
 
     public void clientInit() {
         MinecraftForge.EVENT_BUS.addListener(this::postPlayerRender);
@@ -177,8 +173,4 @@ public class ClientHelper extends ServerHelper {
         }
     }
 
-    @Override
-    public boolean isActionKey(ActionKey key, InputUtil.Key pressedKey) {
-        return this.bindings.get(key).isActiveAndMatches(pressedKey);
-    }
 }

@@ -31,7 +31,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 
 import appeng.api.config.PowerUnits;
 import appeng.api.parts.IPartModel;
-import appeng.capabilities.Capabilities;
+import appeng.attributes.MEAttributes;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 
@@ -67,7 +67,7 @@ public class FEP2PTunnelPart extends P2PTunnelPart<FEP2PTunnelPart> {
             final BlockEntity te = self.getWorld().getBlockEntity(self.getPos().offset(this.getSide().getFacing()));
 
             if (te != null) {
-                energyStorageOpt = te.getCapability(Capabilities.FORGE_ENERGY,
+                energyStorageOpt = te.getCapability(MEAttributes.FORGE_ENERGY,
                         this.getSide().getOpposite().getFacing());
             }
         }
@@ -78,7 +78,7 @@ public class FEP2PTunnelPart extends P2PTunnelPart<FEP2PTunnelPart> {
     @Nullable
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability) {
-        if (capability == Capabilities.FORGE_ENERGY) {
+        if (capability == MEAttributes.FORGE_ENERGY) {
             if (this.isOutput()) {
                 return (LazyOptional<T>) LazyOptional.of(() -> this.outputHandler);
             }

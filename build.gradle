@@ -39,6 +39,7 @@ repositories {
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 compileJava {
     sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
+    options.deprecation = false
 }
 
 // ensure everything uses UTF-8 and not some random codepage chosen by gradle

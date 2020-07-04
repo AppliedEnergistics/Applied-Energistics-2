@@ -71,7 +71,7 @@ public interface AppEng {
 
     void updateRenderMode(PlayerEntity player);
 
-    boolean isActionKey(@Nonnull final ActionKey key, InputUtil.Key input);
+    boolean isActionKey(@Nonnull final ActionKey key, int keyCode, int scanCode);
 
     /**
      * Get the currently running server. On the client-side this may throw if no server

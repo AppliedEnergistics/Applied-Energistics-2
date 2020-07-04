@@ -6,10 +6,14 @@
   "mixins": [
     "CriteriaRegisterMixin",
     "RemainderSetter",
-    "ShapelessRecipeMixin"
+    "ScreenHandlerListeners",
+    "ShapelessRecipeMixin",
+    "SlotMixin",
+    "TntAccessor"
   ],
   "client": [
-    "ModelsReloadMixin"
+    "ModelsReloadMixin",
+    "RenderPhaseMixin"
   ],
   "server": [],
   "injectors": {

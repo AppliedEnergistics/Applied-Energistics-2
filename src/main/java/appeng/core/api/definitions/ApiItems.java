@@ -21,13 +21,47 @@ package appeng.core.api.definitions;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IItems;
 import appeng.api.features.AEFeature;
+import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
 import appeng.bootstrap.FeatureFactory;
 import appeng.bootstrap.IItemRendering;
 import appeng.bootstrap.ItemRenderingCustomizer;
+import appeng.core.features.ActivityState;
+import appeng.core.features.ColoredItemDefinition;
+import appeng.core.features.ItemStackSrc;
+import appeng.debug.DebugCardItem;
+import appeng.debug.DebugPartPlacerItem;
+import appeng.debug.EraserItem;
+import appeng.debug.ReplicatorCardItem;
+import appeng.entity.GrowingCrystalEntity;
+import appeng.fluids.items.BasicFluidStorageCell;
 import appeng.fluids.items.FluidDummyItem;
+import appeng.fluids.items.FluidDummyItemColor;
+import appeng.hooks.BlockToolDispenseItemBehavior;
+import appeng.hooks.MatterCannonDispenseItemBehavior;
+import appeng.items.materials.MaterialType;
+import appeng.items.misc.CrystalSeedItem;
+import appeng.items.misc.EncodedPatternItem;
+import appeng.items.misc.PaintBallItem;
+import appeng.items.misc.PaintBallItemRendering;
+import appeng.items.parts.FacadeItem;
+import appeng.items.storage.BasicStorageCellItem;
+import appeng.items.storage.CreativeStorageCellItem;
+import appeng.items.storage.ViewCellItem;
+import appeng.items.tools.BiometricCardItem;
+import appeng.items.tools.MemoryCardItem;
+import appeng.items.tools.NetworkToolItem;
+import appeng.items.tools.powered.*;
 import appeng.items.tools.quartz.*;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
+import net.minecraft.entity.EntityDimensions;
+import net.minecraft.entity.SpawnGroup;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+
+import java.util.function.Consumer;
 
 /**
  * Internal implementation for the API items
@@ -146,144 +180,144 @@ public final class ApiItems implements IItems {
                 .itemGroup(ItemGroup.TOOLS).props(props -> props.maxCount(1).maxDamage(50))
                 .addFeatures(AEFeature.QUARTZ_KNIFE).build();
 
-//        Consumer<Item.Settings> chargedDefaults = props -> props.maxCount(1).maxDamage(32).setNoRepair();
-//
-//        FeatureFactory powerTools = registry.features(AEFeature.POWERED_TOOLS);
-//        this.entropyManipulator = powerTools.item("entropy_manipulator", EntropyManipulatorItem::new)
-//                .props(chargedDefaults).addFeatures(AEFeature.ENTROPY_MANIPULATOR)
-//                .dispenserBehavior(BlockToolDispenseItemBehavior::new).build();
-//        this.wirelessTerminal = powerTools.item("wireless_terminal", WirelessTerminalItem::new).props(chargedDefaults)
-//                .addFeatures(AEFeature.WIRELESS_ACCESS_TERMINAL).build();
-//        this.chargedStaff = powerTools.item("charged_staff", ChargedStaffItem::new).props(chargedDefaults)
-//                .addFeatures(AEFeature.CHARGED_STAFF).build();
-//        this.massCannon = powerTools.item("matter_cannon", MatterCannonItem::new).props(chargedDefaults)
-//                .addFeatures(AEFeature.MATTER_CANNON).dispenserBehavior(MatterCannonDispenseItemBehavior::new).build();
-//        this.portableCell = powerTools.item("portable_cell", PortableCellItem::new).props(chargedDefaults)
-//                .addFeatures(AEFeature.PORTABLE_CELL, AEFeature.STORAGE_CELLS).build();
-//        this.colorApplicator = powerTools.item("color_applicator", ColorApplicatorItem::new).props(chargedDefaults)
-//                .addFeatures(AEFeature.COLOR_APPLICATOR).dispenserBehavior(BlockToolDispenseItemBehavior::new)
-//                .rendering(new ColorApplicatorItemRendering()).build();
-//
-//        this.biometricCard = registry.item("biometric_card", BiometricCardItem::new)
-//                .props(props -> props.maxCount(1)).features(AEFeature.SECURITY).build();
-//        this.memoryCard = registry.item("memory_card", MemoryCardItem::new).props(props -> props.maxCount(1))
-//                .features(AEFeature.MEMORY_CARD).build();
-//        this.networkTool = registry.item("network_tool", NetworkToolItem::new)
-//                .props(props -> props.maxCount(1).addToolType(FabricToolTags.get("wrench"), 0))
-//                .features(AEFeature.NETWORK_TOOL).build();
-//
-//        this.cellCreative = registry.item("creative_storage_cell", CreativeStorageCellItem::new)
-//                .props(props -> props.maxCount(1)).features(AEFeature.STORAGE_CELLS, AEFeature.CREATIVE).build();
-//        this.viewCell = registry.item("view_cell", ViewCellItem::new).props(props -> props.maxCount(1))
-//                .features(AEFeature.VIEW_CELL).build();
-//
-//        Consumer<Item.Settings> storageCellProps = p -> p.maxCount(1);
-//
-//        FeatureFactory storageCells = registry.features(AEFeature.STORAGE_CELLS);
-//        this.cell1k = storageCells
-//                .item("1k_storage_cell",
-//                        props -> new BasicStorageCellItem(props, MaterialType.ITEM_1K_CELL_COMPONENT, 1))
-//                .props(storageCellProps).build();
-//        this.cell4k = storageCells
-//                .item("4k_storage_cell",
-//                        props -> new BasicStorageCellItem(props, MaterialType.ITEM_4K_CELL_COMPONENT, 4))
-//                .props(storageCellProps).build();
-//        this.cell16k = storageCells
-//                .item("16k_storage_cell",
-//                        props -> new BasicStorageCellItem(props, MaterialType.ITEM_16K_CELL_COMPONENT, 16))
-//                .props(storageCellProps).build();
-//        this.cell64k = storageCells
-//                .item("64k_storage_cell",
-//                        props -> new BasicStorageCellItem(props, MaterialType.ITEM_64K_CELL_COMPONENT, 64))
-//                .props(storageCellProps).build();
-//
-//        this.fluidCell1k = storageCells
-//                .item("1k_fluid_storage_cell",
-//                        props -> new BasicFluidStorageCell(props, MaterialType.FLUID_1K_CELL_COMPONENT, 1))
-//                .props(storageCellProps).build();
-//        this.fluidCell4k = storageCells
-//                .item("4k_fluid_storage_cell",
-//                        props -> new BasicFluidStorageCell(props, MaterialType.FLUID_4K_CELL_COMPONENT, 4))
-//                .props(storageCellProps).build();
-//        this.fluidCell16k = storageCells
-//                .item("16k_fluid_storage_cell",
-//                        props -> new BasicFluidStorageCell(props, MaterialType.FLUID_16K_CELL_COMPONENT, 16))
-//                .props(storageCellProps).build();
-//        this.fluidCell64k = storageCells
-//                .item("64k_fluid_storage_cell",
-//                        props -> new BasicFluidStorageCell(props, MaterialType.FLUID_64K_CELL_COMPONENT, 64))
-//                .props(storageCellProps).build();
-//
-//        FeatureFactory spatialCells = registry.features(AEFeature.SPATIAL_IO);
-//        this.spatialCell2 = spatialCells
-//                .item("2_cubed_spatial_storage_cell", props -> new SpatialStorageCellItem(props, 2))
-//                .props(storageCellProps).build();
-//        this.spatialCell16 = spatialCells
-//                .item("16_cubed_spatial_storage_cell", props -> new SpatialStorageCellItem(props, 16))
-//                .props(storageCellProps).build();
-//        this.spatialCell128 = spatialCells
-//                .item("128_cubed_spatial_storage_cell", props -> new SpatialStorageCellItem(props, 128))
-//                .props(storageCellProps).build();
-//
-//        this.facade = registry.item("facade", FacadeItem::new).features(AEFeature.FACADES).build();
-//
-//        this.certusCrystalSeed = registry
-//                .item("certus_crystal_seed",
-//                        props -> new CrystalSeedItem(props, materials.purifiedCertusQuartzCrystal().item()))
-//                .features(AEFeature.CRYSTAL_SEEDS).build();
-//        this.fluixCrystalSeed = registry
-//                .item("fluix_crystal_seed",
-//                        props -> new CrystalSeedItem(props, materials.purifiedFluixCrystal().item()))
-//                .features(AEFeature.CRYSTAL_SEEDS).build();
-//        this.netherQuartzSeed = registry
-//                .item("nether_quartz_seed",
-//                        props -> new CrystalSeedItem(props, materials.purifiedNetherQuartzCrystal().item()))
-//                .features(AEFeature.CRYSTAL_SEEDS).build();
-//
-//        GrowingCrystalEntity.TYPE = registry
-//                .<GrowingCrystalEntity>entity("growing_crystal", GrowingCrystalEntity::new, SpawnGroup.MISC)
-//                .customize(builder -> builder.size(0.25F, 0.25F)).build();
-//
-//        // rv1
-//        this.encodedPattern = registry.item("encoded_pattern", EncodedPatternItem::new)
-//                .props(props -> props.maxCount(1)).features(AEFeature.PATTERNS).build();
-//
-//        this.coloredPaintBall = createPaintBalls(registry, "_paint_ball", false);
-//        this.coloredLumenPaintBall = createPaintBalls(registry, "_lumen_paint_ball", true);
-//
-//        FeatureFactory debugTools = registry.features(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE);
-//        this.toolEraser = debugTools.item("debug_eraser", EraserItem::new).build();
-//        this.toolMeteoritePlacer = debugTools.item("debug_meteorite_placer", MeteoritePlacerItem::new).build();
-//        this.toolDebugCard = debugTools.item("debug_card", DebugCardItem::new).build();
-//        this.toolReplicatorCard = debugTools.item("debug_replicator_card", ReplicatorCardItem::new).build();
-//        debugTools.item("debug_part_placer", DebugPartPlacerItem::new).build();
-//
-//        this.dummyFluidItem = registry.item("dummy_fluid_item", FluidDummyItem::new)
-//                .rendering(new ItemRenderingCustomizer() {
-//                    @Override
-//                    @Environment(Dist.CLIENT)
-//                    public void customize(IItemRendering rendering) {
-//                        rendering.color(new FluidDummyItemColor());
-//                    }
-//                })
-//                .build();
+        Consumer<Item.Settings> chargedDefaults = props -> props.maxCount(1).maxDamage(32);
+
+      FeatureFactory powerTools = registry.features(AEFeature.POWERED_TOOLS);
+        this.entropyManipulator = powerTools.item("entropy_manipulator", EntropyManipulatorItem::new)
+                .props(chargedDefaults).addFeatures(AEFeature.ENTROPY_MANIPULATOR)
+                .dispenserBehavior(BlockToolDispenseItemBehavior::new).build();
+        this.wirelessTerminal = powerTools.item("wireless_terminal", WirelessTerminalItem::new).props(chargedDefaults)
+                .addFeatures(AEFeature.WIRELESS_ACCESS_TERMINAL).build();
+        this.chargedStaff = powerTools.item("charged_staff", ChargedStaffItem::new).props(chargedDefaults)
+                .addFeatures(AEFeature.CHARGED_STAFF).build();
+        this.massCannon = powerTools.item("matter_cannon", MatterCannonItem::new).props(chargedDefaults)
+                .addFeatures(AEFeature.MATTER_CANNON).dispenserBehavior(MatterCannonDispenseItemBehavior::new).build();
+        this.portableCell = powerTools.item("portable_cell", PortableCellItem::new).props(chargedDefaults)
+                .addFeatures(AEFeature.PORTABLE_CELL, AEFeature.STORAGE_CELLS).build();
+      this.colorApplicator = powerTools.item("color_applicator", ColorApplicatorItem::new).props(chargedDefaults)
+              .addFeatures(AEFeature.COLOR_APPLICATOR).dispenserBehavior(BlockToolDispenseItemBehavior::new)
+              .rendering(new ColorApplicatorItemRendering()).build();
+
+        this.biometricCard = registry.item("biometric_card", BiometricCardItem::new)
+                .props(props -> props.maxCount(1)).features(AEFeature.SECURITY).build();
+        this.memoryCard = registry.item("memory_card", MemoryCardItem::new).props(props -> props.maxCount(1))
+                .features(AEFeature.MEMORY_CARD).build();
+        this.networkTool = registry.item("network_tool", NetworkToolItem::new)
+                .props(props -> props.maxCount(1)) // FIXME FABRIC .addToolType(FabricToolTags.get("wrench"), 0) (how???, just add a tag???)
+                .features(AEFeature.NETWORK_TOOL).build();
+
+        this.cellCreative = registry.item("creative_storage_cell", CreativeStorageCellItem::new)
+                .props(props -> props.maxCount(1)).features(AEFeature.STORAGE_CELLS, AEFeature.CREATIVE).build();
+        this.viewCell = registry.item("view_cell", ViewCellItem::new).props(props -> props.maxCount(1))
+                .features(AEFeature.VIEW_CELL).build();
+
+        Consumer<Item.Settings> storageCellProps = p -> p.maxCount(1);
+
+        FeatureFactory storageCells = registry.features(AEFeature.STORAGE_CELLS);
+        this.cell1k = storageCells
+                .item("1k_storage_cell",
+                        props -> new BasicStorageCellItem(props, MaterialType.ITEM_1K_CELL_COMPONENT, 1))
+                .props(storageCellProps).build();
+        this.cell4k = storageCells
+                .item("4k_storage_cell",
+                        props -> new BasicStorageCellItem(props, MaterialType.ITEM_4K_CELL_COMPONENT, 4))
+                .props(storageCellProps).build();
+        this.cell16k = storageCells
+                .item("16k_storage_cell",
+                        props -> new BasicStorageCellItem(props, MaterialType.ITEM_16K_CELL_COMPONENT, 16))
+                .props(storageCellProps).build();
+        this.cell64k = storageCells
+                .item("64k_storage_cell",
+                        props -> new BasicStorageCellItem(props, MaterialType.ITEM_64K_CELL_COMPONENT, 64))
+                .props(storageCellProps).build();
+
+        this.fluidCell1k = storageCells
+                .item("1k_fluid_storage_cell",
+                        props -> new BasicFluidStorageCell(props, MaterialType.FLUID_1K_CELL_COMPONENT, 1))
+                .props(storageCellProps).build();
+        this.fluidCell4k = storageCells
+                .item("4k_fluid_storage_cell",
+                        props -> new BasicFluidStorageCell(props, MaterialType.FLUID_4K_CELL_COMPONENT, 4))
+                .props(storageCellProps).build();
+        this.fluidCell16k = storageCells
+                .item("16k_fluid_storage_cell",
+                        props -> new BasicFluidStorageCell(props, MaterialType.FLUID_16K_CELL_COMPONENT, 16))
+                .props(storageCellProps).build();
+        this.fluidCell64k = storageCells
+                .item("64k_fluid_storage_cell",
+                        props -> new BasicFluidStorageCell(props, MaterialType.FLUID_64K_CELL_COMPONENT, 64))
+                .props(storageCellProps).build();
+
+        FeatureFactory spatialCells = registry.features(AEFeature.SPATIAL_IO);
+// FIXME FABRIC        this.spatialCell2 = spatialCells
+// FIXME FABRIC                .item("2_cubed_spatial_storage_cell", props -> new SpatialStorageCellItem(props, 2))
+// FIXME FABRIC                .props(storageCellProps).build();
+// FIXME FABRIC        this.spatialCell16 = spatialCells
+// FIXME FABRIC                .item("16_cubed_spatial_storage_cell", props -> new SpatialStorageCellItem(props, 16))
+// FIXME FABRIC                .props(storageCellProps).build();
+// FIXME FABRIC        this.spatialCell128 = spatialCells
+// FIXME FABRIC                .item("128_cubed_spatial_storage_cell", props -> new SpatialStorageCellItem(props, 128))
+// FIXME FABRIC                .props(storageCellProps).build();
+
+        this.facade = registry.item("facade", FacadeItem::new).features(AEFeature.FACADES).build();
+
+        this.certusCrystalSeed = registry
+                .item("certus_crystal_seed",
+                        props -> new CrystalSeedItem(props, materials.purifiedCertusQuartzCrystal().item()))
+                .features(AEFeature.CRYSTAL_SEEDS).build();
+        this.fluixCrystalSeed = registry
+                .item("fluix_crystal_seed",
+                        props -> new CrystalSeedItem(props, materials.purifiedFluixCrystal().item()))
+                .features(AEFeature.CRYSTAL_SEEDS).build();
+        this.netherQuartzSeed = registry
+                .item("nether_quartz_seed",
+                        props -> new CrystalSeedItem(props, materials.purifiedNetherQuartzCrystal().item()))
+                .features(AEFeature.CRYSTAL_SEEDS).build();
+
+        GrowingCrystalEntity.TYPE = registry
+                .<GrowingCrystalEntity>entity("growing_crystal", GrowingCrystalEntity::new, SpawnGroup.MISC)
+                .customize(builder -> builder.dimensions(EntityDimensions.fixed(0.25F, 0.25F))).build();
+
+        // rv1
+         this.encodedPattern = registry.item("encoded_pattern", EncodedPatternItem::new)
+                .props(props -> props.maxCount(1)).features(AEFeature.PATTERNS).build();
+
+        this.coloredPaintBall = createPaintBalls(registry, "_paint_ball", false);
+        this.coloredLumenPaintBall = createPaintBalls(registry, "_lumen_paint_ball", true);
+
+        FeatureFactory debugTools = registry.features(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE);
+        this.toolEraser = debugTools.item("debug_eraser", EraserItem::new).build();
+// FIXME FABRIC        this.toolMeteoritePlacer = debugTools.item("debug_meteorite_placer", MeteoritePlacerItem::new).build();
+        this.toolDebugCard = debugTools.item("debug_card", DebugCardItem::new).build();
+        this.toolReplicatorCard = debugTools.item("debug_replicator_card", ReplicatorCardItem::new).build();
+        debugTools.item("debug_part_placer", DebugPartPlacerItem::new).build();
+
+        this.dummyFluidItem = registry.item("dummy_fluid_item", FluidDummyItem::new)
+                .rendering(new ItemRenderingCustomizer() {
+                    @Override
+                    @Environment(EnvType.CLIENT)
+                    public void customize(IItemRendering rendering) {
+                        rendering.color(new FluidDummyItemColor());
+                    }
+                })
+                .build();
     }
 
-//    private static AEColoredItemDefinition createPaintBalls(FeatureFactory registry, String idSuffix, boolean lumen) {
-//        ColoredItemDefinition colors = new ColoredItemDefinition();
-//        for (AEColor color : AEColor.values()) {
-//            if (color == AEColor.TRANSPARENT) {
-//                continue; // Fluix paintballs don't exist
-//            }
-//
-//            String id = color.registryPrefix + idSuffix;
-//            IItemDefinition paintBall = registry.item(id, props -> new PaintBallItem(props, color, lumen))
-//                    .features(AEFeature.PAINT_BALLS).rendering(new PaintBallItemRendering(color, lumen)).build();
-//            colors.add(color, new ItemStackSrc(paintBall.item(), ActivityState.Enabled));
-//        }
-//        return colors;
-//    }
-//
+    private static AEColoredItemDefinition createPaintBalls(FeatureFactory registry, String idSuffix, boolean lumen) {
+        ColoredItemDefinition colors = new ColoredItemDefinition();
+        for (AEColor color : AEColor.values()) {
+            if (color == AEColor.TRANSPARENT) {
+                continue; // Fluix paintballs don't exist
+            }
+
+            String id = color.registryPrefix + idSuffix;
+            IItemDefinition paintBall = registry.item(id, props -> new PaintBallItem(props, color, lumen))
+                    .features(AEFeature.PAINT_BALLS).rendering(new PaintBallItemRendering(color, lumen)).build();
+            colors.add(color, new ItemStackSrc(paintBall.item(), ActivityState.Enabled));
+        }
+        return colors;
+    }
+
     @Override
     public IItemDefinition certusQuartzAxe() {
         return this.certusQuartzAxe;

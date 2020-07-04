@@ -18,9 +18,10 @@
 
 package appeng.client.gui.implementations;
 
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
-import net.minecraftforge.fml.client.gui.GuiUtils;
+
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.widgets.ToggleButton;
@@ -35,14 +36,14 @@ public class NetworkToolScreen extends AEBaseScreen<NetworkToolContainer> {
 
     public NetworkToolScreen(NetworkToolContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
-        this.ySize = 166;
+        this.backgroundHeight = 166;
     }
 
     @Override
     public void init() {
         super.init();
 
-        this.tFacades = new ToggleButton(this.guiLeft - 18, this.guiTop + 8, 23, 22,
+        this.tFacades = new ToggleButton(this.x - 18, this.y + 8, 23, 22,
                 GuiText.TransparentFacades.getLocal(), GuiText.TransparentFacadesHint.getLocal(),
                 btn -> toggleFacades());
 
@@ -54,18 +55,18 @@ public class NetworkToolScreen extends AEBaseScreen<NetworkToolContainer> {
     }
 
     @Override
-    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
         if (this.tFacades != null) {
             this.tFacades.setState(container.isFacadeMode());
         }
 
-        this.font.drawString(this.getGuiDisplayName(GuiText.NetworkTool.getLocal()), 8, 6, 4210752);
-        this.font.drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+        this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.NetworkTool.getLocal()), 8, 6, 4210752);
+        this.textRenderer.draw(matrices, GuiText.inventory.getLocal(), 8, this.backgroundHeight - 96 + 3, 4210752);
     }
 
     @Override
-    public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
         this.bindTexture("guis/toolbox.png");
-        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());
+        drawTexture(matrices, offsetX, offsetY, 0, 0, this.backgroundWidth, this.backgroundHeight);
     }
 }

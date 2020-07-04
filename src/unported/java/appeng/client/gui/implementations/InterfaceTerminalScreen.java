@@ -31,15 +31,15 @@ import com.google.common.collect.HashMultimap;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.util.math.MatrixStack;
 import org.lwjgl.glfw.GLFW;
 
-import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.text.Text;
-import net.minecraftforge.fml.client.gui.GuiUtils;
+
 
 import appeng.api.AEApi;
 import appeng.api.storage.channels.IItemStorageChannel;
@@ -73,8 +73,8 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         super(container, playerInventory, title);
         final Scrollbar scrollbar = new Scrollbar();
         this.setScrollBar(scrollbar);
-        this.xSize = 195;
-        this.ySize = 222;
+        this.backgroundWidth = 195;
+        this.backgroundHeight = 222;
     }
 
     @Override
@@ -85,22 +85,22 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
         this.getScrollBar().setHeight(106);
         this.getScrollBar().setTop(18);
 
-        this.searchField = new AETextField(this.font, this.guiLeft + 104, this.guiTop + 4, 65, 12);
-        this.searchField.setEnableBackgroundDrawing(false);
-        this.searchField.setMaxStringLength(25);
-        this.searchField.setTextColor(0xFFFFFF);
+        this.searchField = new AETextField(this.textRenderer, this.x + 104, this.y + 4, 65, 12);
+        this.searchField.setHasBorder(false);
+        this.searchField.setMaxLength(25);
+        this.searchField.setEditableColor(0xFFFFFF);
         this.searchField.setVisible(true);
-        this.searchField.setFocused2(true);
+        this.searchField.setFocused(true);
     }
 
     @Override
-    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.font.drawString(this.getGuiDisplayName(GuiText.InterfaceTerminal.getLocal()), 8, 6, 4210752);
-        this.font.drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+        this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.InterfaceTerminal.getLocal()), 8, 6, 4210752);
+        this.textRenderer.draw(matrices, GuiText.inventory.getLocal(), 8, this.backgroundHeight - 96 + 3, 4210752);
 
         final int ex = this.getScrollBar().getCurrentScroll();
 
-        this.container.inventorySlots.removeIf(slot -> slot instanceof SlotDisconnected);
+        this.handler.slots.removeIf(slot -> slot instanceof SlotDisconnected);
 
         int offset = 17;
         for (int x = 0; x < LINES_ON_PAGE && ex + x < this.lines.size(); x++) {
@@ -108,7 +108,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
             if (lineObj instanceof ClientDCInternalInv) {
                 final ClientDCInternalInv inv = (ClientDCInternalInv) lineObj;
                 for (int z = 0; z < inv.getInventory().getSlotCount(); z++) {
-                    this.container.inventorySlots.add(new SlotDisconnected(inv, z, z * 18 + 8, 1 + offset));
+                    this.handler.slots.add(new SlotDisconnected(inv, z, z * 18 + 8, 1 + offset));
                 }
             } else if (lineObj instanceof String) {
                 String name = (String) lineObj;
@@ -117,11 +117,11 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
                     name = name + " (" + rows + ')';
                 }
 
-                while (name.length() > 2 && this.font.getStringWidth(name) > 155) {
+                while (name.length() > 2 && this.textRenderer.getWidth(name) > 155) {
                     name = name.substring(0, name.length() - 1);
                 }
 
-                this.font.drawString(name, 10, 6 + offset, 4210752);
+                this.textRenderer.draw(matrices, name, 10, 6 + offset, 4210752);
             }
             offset += 18;
         }
@@ -141,9 +141,9 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     }
 
     @Override
-    public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
         this.bindTexture("guis/interfaceterminal.png");
-        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());
+        drawTexture(matrices, offsetX, offsetY, 0, 0, this.backgroundWidth, this.backgroundHeight);
 
         int offset = 17;
         final int ex = this.getScrollBar().getCurrentScroll();
@@ -155,7 +155,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
                 RenderSystem.color4f(1, 1, 1, 1);
                 final int width = inv.getInventory().getSlotCount() * 18;
-                GuiUtils.drawTexturedModalRect(offsetX + 7, offsetY + offset, 7, 139, width, 18, getBlitOffset());
+                drawTexture(matrices, offsetX + 7, offsetY + offset, 7, 139, width, 18);
             }
             offset += 18;
         }
@@ -180,18 +180,16 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
 
-        InputUtil.Key input = InputMappings.getInputByCode(keyCode, scanCode);
-
         if (keyCode != GLFW.GLFW_KEY_ESCAPE) {
-            if (AppEng.instance().isActionKey(ActionKey.TOGGLE_FOCUS, input)) {
-                this.searchField.setFocused2(!this.searchField.isFocused());
+            if (AppEng.instance().isActionKey(ActionKey.TOGGLE_FOCUS, keyCode, scanCode)) {
+                this.searchField.setFocused(!this.searchField.isFocused());
                 return true;
             }
 
             // Forward keypresses to the search field
             if (this.searchField.isFocused()) {
                 if (keyCode == GLFW.GLFW_KEY_ENTER) {
-                    this.searchField.setFocused2(false);
+                    this.searchField.setFocused(false);
                     return true;
                 }
 

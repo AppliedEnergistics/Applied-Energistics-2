@@ -18,9 +18,10 @@
 
 package appeng.fluids.client.gui;
 
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
-import net.minecraftforge.fml.client.gui.GuiUtils;
+
 
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.widgets.TabButton;
@@ -38,15 +39,15 @@ public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceContai
     public FluidInterfaceScreen(FluidInterfaceContainer container, PlayerInventory playerInventory,
             Text title) {
         super(container, playerInventory, title);
-        this.ySize = 231;
+        this.backgroundHeight = 231;
     }
 
     @Override
     public void init() {
         super.init();
 
-        final IAEFluidTank configFluids = this.container.getFluidConfigInventory();
-        final IAEFluidTank fluidTank = this.container.getTanks();
+        final IAEFluidTank configFluids = this.handler.getFluidConfigInventory();
+        final IAEFluidTank fluidTank = this.handler.getTanks();
 
         for (int i = 0; i < DualityFluidInterface.NUMBER_OF_TANKS; ++i) {
             final FluidTankWidget guiTank = new FluidTankWidget(fluidTank, i, this.getGuiLeft() + 35 + 18 * i,
@@ -64,17 +65,17 @@ public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceContai
     }
 
     @Override
-    public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY) {
-        this.font.drawString(this.getGuiDisplayName(GuiText.FluidInterface.getLocal()), 8, 6, 4210752);
-        this.font.drawString(GuiText.Config.getLocal(), 35, 6 + 11 + 7, 4210752);
-        this.font.drawString(GuiText.StoredFluids.getLocal(), 35, 6 + 112 + 7, 4210752);
-        this.font.drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+    public void drawFG(MatrixStack matrices, int offsetX, int offsetY, int mouseX, int mouseY) {
+        this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.FluidInterface.getLocal()), 8, 6, 4210752);
+        this.textRenderer.draw(matrices, GuiText.Config.getLocal(), 35, 6 + 11 + 7, 4210752);
+        this.textRenderer.draw(matrices, GuiText.StoredFluids.getLocal(), 35, 6 + 112 + 7, 4210752);
+        this.textRenderer.draw(matrices, GuiText.inventory.getLocal(), 8, this.backgroundHeight - 96 + 3, 4210752);
     }
 
     @Override
-    public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks) {
         this.bindTexture("guis/interfacefluid.png");
-        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME ZINDEX */ );
+        drawTexture(matrices, offsetX, offsetY, 0, 0, this.backgroundWidth, this.backgroundHeight, 0 /* FIXME ZINDEX */ );
     }
 
     private void openPriorityGui() {

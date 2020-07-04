@@ -9,7 +9,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.Feature;
@@ -36,7 +36,7 @@ public class ChargedQuartzOreFeature extends Feature<ChargedQuartzOreConfig> {
 
     @Override
     public boolean place(WorldAccess worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand,
-            BlockPos pos, ChargedQuartzOreConfig config) {
+                         BlockPos pos, ChargedQuartzOreConfig config) {
         ChunkPos chunkPos = new ChunkPos(pos);
 
         BlockPos.Mutable bpos = new BlockPos.Mutable();

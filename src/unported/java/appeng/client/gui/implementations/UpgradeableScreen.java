@@ -18,9 +18,10 @@
 
 package appeng.client.gui.implementations;
 
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
-import net.minecraftforge.fml.client.gui.GuiUtils;
+
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
@@ -52,12 +53,12 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
         this.cvb = container;
 
         this.bc = (IUpgradeableHost) container.getTarget();
-        this.xSize = this.hasToolbox() ? 246 : 211;
-        this.ySize = 184;
+        this.backgroundWidth = this.hasToolbox() ? 246 : 211;
+        this.backgroundHeight = 184;
     }
 
     protected boolean hasToolbox() {
-        return (this.container).hasToolbox();
+        return (this.handler).hasToolbox();
     }
 
     @Override
@@ -67,24 +68,24 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
     }
 
     protected void addButtons() {
-        this.redstoneMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 8,
+        this.redstoneMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 8,
                 Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
         addButton(this.redstoneMode);
-        this.fuzzyMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 28, Settings.FUZZY_MODE,
+        this.fuzzyMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 28, Settings.FUZZY_MODE,
                 FuzzyMode.IGNORE_ALL);
         addButton(this.fuzzyMode);
-        this.craftMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 48, Settings.CRAFT_ONLY,
+        this.craftMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 48, Settings.CRAFT_ONLY,
                 YesNo.NO);
         addButton(this.craftMode);
-        this.schedulingMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 68,
+        this.schedulingMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 68,
                 Settings.SCHEDULING_MODE, SchedulingMode.DEFAULT);
         addButton(this.schedulingMode);
     }
 
     @Override
-    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.font.drawString(this.getGuiDisplayName(this.getName().getLocal()), 8, 6, 4210752);
-        this.font.drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+        this.textRenderer.draw(matrices, this.getGuiDisplayName(this.getName().getLocal()), 8, 6, 4210752);
+        this.textRenderer.draw(matrices, GuiText.inventory.getLocal(), 8, this.backgroundHeight - 96 + 3, 4210752);
 
         if (this.redstoneMode != null) {
             this.redstoneMode.set(this.cvb.getRedStoneMode());
@@ -104,18 +105,16 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
     }
 
     @Override
-    public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
         this.handleButtonVisibility();
 
         this.bindTexture(this.getBackground());
-        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, 211 - 34, this.ySize, getBlitOffset());
+        drawTexture(matrices, offsetX, offsetY, 0, 0, 211 - 34, this.backgroundHeight);
         if (this.drawUpgrades()) {
-            GuiUtils.drawTexturedModalRect(offsetX + 177, offsetY, 177, 0, 35, 14 + this.cvb.availableUpgrades() * 18,
-                    getBlitOffset());
+            drawTexture(matrices, offsetX + 177, offsetY, 177, 0, 35, 14 + this.cvb.availableUpgrades() * 18);
         }
         if (this.hasToolbox()) {
-            GuiUtils.drawTexturedModalRect(offsetX + 178, offsetY + this.ySize - 90, 178, this.ySize - 90, 68, 68,
-                    getBlitOffset());
+            drawTexture(matrices, offsetX + 178, offsetY + this.backgroundHeight - 90, 178, this.backgroundHeight - 90, 68, 68);
         }
     }
 

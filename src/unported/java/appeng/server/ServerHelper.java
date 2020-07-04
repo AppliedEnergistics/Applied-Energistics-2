@@ -23,13 +23,9 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.util.InputMappings;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
@@ -42,7 +38,6 @@ import appeng.client.EffectType;
 import appeng.core.CommonHelper;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.items.tools.NetworkToolItem;
 import appeng.util.Platform;
 
 public class ServerHelper extends CommonHelper {

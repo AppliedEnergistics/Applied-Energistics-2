@@ -1,0 +1,210 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
+package appeng.core.sync.packets;
+
+import appeng.api.config.FuzzyMode;
+import appeng.api.config.Settings;
+import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigurableObject;
+import appeng.container.AEBaseContainer;
+import appeng.container.implementations.CellWorkbenchContainer;
+import appeng.container.implementations.NetworkToolContainer;
+import appeng.container.implementations.PatternTermContainer;
+import appeng.core.sync.BasePacket;
+import appeng.core.sync.network.INetworkInfo;
+import appeng.helpers.IMouseWheelItem;
+import io.netty.buffer.Unpooled;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.util.Hand;
+
+public class ConfigValuePacket extends BasePacket {
+
+    private final String Name;
+    private final String Value;
+
+    public ConfigValuePacket(final PacketByteBuf stream) {
+        this.Name = stream.readString();
+        this.Value = stream.readString();
+    }
+
+    // api
+    public ConfigValuePacket(final String name, final String value) {
+        this.Name = name;
+        this.Value = value;
+
+        final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+
+        data.writeInt(this.getPacketID());
+
+        data.writeString(name);
+        data.writeString(value);
+
+        this.configureWrite(data);
+    }
+
+    @Override
+    public void serverPacketData(final INetworkInfo manager, final PlayerEntity player) {
+        final ScreenHandler c = player.currentScreenHandler;
+        if (this.Name.equals("Item") && ((!player.getStackInHand(Hand.MAIN_HAND).isEmpty()
+                && player.getStackInHand(Hand.MAIN_HAND).getItem() instanceof IMouseWheelItem)
+                || (!player.getStackInHand(Hand.OFF_HAND).isEmpty()
+                        && player.getStackInHand(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem))) {
+            final Hand hand;
+            if (!player.getStackInHand(Hand.MAIN_HAND).isEmpty()
+                    && player.getStackInHand(Hand.MAIN_HAND).getItem() instanceof IMouseWheelItem) {
+                hand = Hand.MAIN_HAND;
+            } else if (!player.getStackInHand(Hand.OFF_HAND).isEmpty()
+                    && player.getStackInHand(Hand.OFF_HAND).getItem() instanceof IMouseWheelItem) {
+                hand = Hand.OFF_HAND;
+            } else {
+                return;
+            }
+
+            final ItemStack is = player.getStackInHand(hand);
+            final IMouseWheelItem si = (IMouseWheelItem) is.getItem();
+            si.onWheel(is, this.Value.equals("WheelUp"));
+// FIXME FABRIC        } else if (this.Name.equals("Terminal.Cpu") && c instanceof CraftingStatusContainer) {
+// FIXME FABRIC            final CraftingStatusContainer qk = (CraftingStatusContainer) c;
+// FIXME FABRIC            qk.cycleCpu(this.Value.equals("Next"));
+// FIXME FABRIC        } else if (this.Name.equals("Terminal.Cpu") && c instanceof CraftConfirmContainer) {
+// FIXME FABRIC            final CraftConfirmContainer qk = (CraftConfirmContainer) c;
+// FIXME FABRIC            qk.cycleCpu(this.Value.equals("Next"));
+// FIXME FABRIC        } else if (this.Name.equals("Terminal.Start") && c instanceof CraftConfirmContainer) {
+// FIXME FABRIC            final CraftConfirmContainer qk = (CraftConfirmContainer) c;
+// FIXME FABRIC            qk.startJob();
+// FIXME FABRIC        } else if (this.Name.equals("TileCrafting.Cancel") && c instanceof CraftingCPUContainer) {
+// FIXME FABRIC            final CraftingCPUContainer qk = (CraftingCPUContainer) c;
+// FIXME FABRIC            qk.cancelCrafting();
+// FIXME FABRIC        } else if (this.Name.equals("QuartzKnife.Name") && c instanceof QuartzKnifeContainer) {
+// FIXME FABRIC            final QuartzKnifeContainer qk = (QuartzKnifeContainer) c;
+// FIXME FABRIC            qk.setName(this.Value);
+// FIXME FABRIC        } else if (this.Name.equals("TileSecurityStation.ToggleOption") && c instanceof SecurityStationContainer) {
+// FIXME FABRIC            final SecurityStationContainer sc = (SecurityStationContainer) c;
+// FIXME FABRIC            sc.toggleSetting(this.Value, player);
+// FIXME FABRIC        } else if (this.Name.equals("PriorityHost.Priority") && c instanceof PriorityContainer) {
+// FIXME FABRIC            final PriorityContainer pc = (PriorityContainer) c;
+// FIXME FABRIC            pc.setPriority(Integer.parseInt(this.Value), player);
+// FIXME FABRIC        } else if (this.Name.equals("LevelEmitter.Value") && c instanceof LevelEmitterContainer) {
+// FIXME FABRIC            final LevelEmitterContainer lvc = (LevelEmitterContainer) c;
+// FIXME FABRIC            lvc.setLevel(Long.parseLong(this.Value), player);
+// FIXME FABRIC        } else if (this.Name.equals("FluidLevelEmitter.Value") && c instanceof FluidLevelEmitterContainer) {
+// FIXME FABRIC            final FluidLevelEmitterContainer lvc = (FluidLevelEmitterContainer) c;
+// FIXME FABRIC            lvc.setLevel(Long.parseLong(this.Value), player);
+        } else if (this.Name.startsWith("PatternTerminal.") && c instanceof PatternTermContainer) {
+            final PatternTermContainer cpt = (PatternTermContainer) c;
+            if (this.Name.equals("PatternTerminal.CraftMode")) {
+                cpt.getPatternTerminal().setCraftingRecipe(this.Value.equals("1"));
+            } else if (this.Name.equals("PatternTerminal.Encode")) {
+                cpt.encode();
+            } else if (this.Name.equals("PatternTerminal.Clear")) {
+                cpt.clear();
+            } else if (this.Name.equals("PatternTerminal.Substitute")) {
+                cpt.getPatternTerminal().setSubstitution(this.Value.equals("1"));
+            }
+// FIXME FABRIC        } else if (this.Name.startsWith("StorageBus.")) {
+// FIXME FABRIC            if (this.Name.equals("StorageBus.Action")) {
+// FIXME FABRIC                if (this.Value.equals("Partition")) {
+// FIXME FABRIC                    if (c instanceof StorageBusContainer) {
+// FIXME FABRIC                        ((StorageBusContainer) c).partition();
+// FIXME FABRIC                    } else if (c instanceof FluidStorageBusContainer) {
+// FIXME FABRIC                        ((FluidStorageBusContainer) c).partition();
+// FIXME FABRIC                    }
+// FIXME FABRIC                } else if (this.Value.equals("Clear")) {
+// FIXME FABRIC                    if (c instanceof StorageBusContainer) {
+// FIXME FABRIC                        ((StorageBusContainer) c).clear();
+// FIXME FABRIC                    } else if (c instanceof FluidStorageBusContainer) {
+// FIXME FABRIC                        ((FluidStorageBusContainer) c).clear();
+// FIXME FABRIC                    }
+// FIXME FABRIC                }
+// FIXME FABRIC            }
+        } else if (this.Name.startsWith("CellWorkbench.") && c instanceof CellWorkbenchContainer) {
+            final CellWorkbenchContainer ccw = (CellWorkbenchContainer) c;
+            if (this.Name.equals("CellWorkbench.Action")) {
+                if (this.Value.equals("CopyMode")) {
+                    ccw.nextWorkBenchCopyMode();
+                } else if (this.Value.equals("Partition")) {
+                    ccw.partition();
+                } else if (this.Value.equals("Clear")) {
+                    ccw.clear();
+                }
+            } else if (this.Name.equals("CellWorkbench.Fuzzy")) {
+                ccw.setFuzzy(FuzzyMode.valueOf(this.Value));
+            }
+        } else if (c instanceof NetworkToolContainer) {
+            if (this.Name.equals("NetworkTool") && this.Value.equals("Toggle")) {
+                ((NetworkToolContainer) c).toggleFacadeMode();
+            }
+        } else if (c instanceof IConfigurableObject) {
+            final IConfigManager cm = ((IConfigurableObject) c).getConfigManager();
+
+            for (final Settings e : cm.getSettings()) {
+                if (e.name().equals(this.Name)) {
+                    final Enum<?> def = cm.getSetting(e);
+
+                    try {
+                        cm.putSetting(e, Enum.valueOf(def.getClass(), this.Value));
+                    } catch (final IllegalArgumentException err) {
+                        // :P
+                    }
+
+                    break;
+                }
+            }
+        }
+        throw new IllegalStateException();
+    }
+
+    @Override
+    public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
+        final ScreenHandler c = player.currentScreenHandler;
+
+        if (this.Name.equals("CustomName") && c instanceof AEBaseContainer) {
+            ((AEBaseContainer) c).setCustomName(this.Value);
+        } else if (this.Name.startsWith("SyncDat.")) {
+            ((AEBaseContainer) c).stringSync(Integer.parseInt(this.Name.substring(8)), this.Value);
+        } else if (this.Name.equals("CraftingStatus") && this.Value.equals("Clear")) {
+            final Screen gs = MinecraftClient.getInstance().currentScreen;
+// FIXME FABRIC            if (gs instanceof CraftingCPUScreen) {
+// FIXME FABRIC                ((CraftingCPUScreen<?>) gs).clearItems();
+// FIXME FABRIC            }
+            throw new IllegalStateException();
+        } else if (c instanceof IConfigurableObject) {
+            final IConfigManager cm = ((IConfigurableObject) c).getConfigManager();
+
+            for (final Settings e : cm.getSettings()) {
+                if (e.name().equals(this.Name)) {
+                    final Enum<?> def = cm.getSetting(e);
+
+                    try {
+                        cm.putSetting(e, Enum.valueOf(def.getClass(), this.Value));
+                    } catch (final IllegalArgumentException err) {
+                        // :P
+                    }
+
+                    break;
+                }
+            }
+        }
+    }
+}

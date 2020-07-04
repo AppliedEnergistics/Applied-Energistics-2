@@ -72,7 +72,7 @@ public interface IMovableRegistry {
      * If you tile is handled with IMovableHandler or IMovableTile you do not need
      * to white list it.
      */
-    void whiteListTileEntity(Class<? extends BlockEntity> c);
+    void whiteListBlockEntity(Class<? extends BlockEntity> c);
 
     /**
      * @param te to be moved block entity

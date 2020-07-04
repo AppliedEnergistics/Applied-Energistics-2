@@ -49,7 +49,7 @@ public class MovableTileRegistry implements IMovableRegistry {
     }
 
     @Override
-    public void whiteListTileEntity(final Class<? extends BlockEntity> c) {
+    public void whiteListBlockEntity(final Class<? extends BlockEntity> c) {
         if (c.getName().equals(BlockEntity.class.getName())) {
             throw new IllegalArgumentException(new AppEngException("Someone tried to make all tiles movable with " + c
                     + ", this is a clear violation of the purpose of the white list."));

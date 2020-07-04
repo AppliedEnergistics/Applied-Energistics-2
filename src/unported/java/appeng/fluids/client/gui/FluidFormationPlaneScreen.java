@@ -19,7 +19,7 @@ public class FluidFormationPlaneScreen extends UpgradeableScreen<FluidFormationP
     public FluidFormationPlaneScreen(FluidFormationPlaneContainer container, PlayerInventory playerInventory,
             Text title) {
         super(container, playerInventory, title);
-        this.ySize = 251;
+        this.backgroundHeight = 251;
     }
 
     @Override
@@ -45,7 +45,7 @@ public class FluidFormationPlaneScreen extends UpgradeableScreen<FluidFormationP
 
     @Override
     protected void addButtons() {
-        this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(),
+        this.addButton(new TabButton(this.x + 154, this.y, 2 + 4 * 16, GuiText.Priority.getLocal(),
                 this.itemRenderer, btn -> openPriorityGui()));
     }
 

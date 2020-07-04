@@ -21,6 +21,7 @@ package appeng.tile.storage;
 import alexiil.mc.lib.attributes.AttributeList;
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.fluid.FluidInsertable;
+import alexiil.mc.lib.attributes.fluid.FluidVolumeUtil;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.filter.ConstantFluidFilter;
 import alexiil.mc.lib.attributes.fluid.filter.FluidFilter;
@@ -50,6 +51,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AEColor;
 import appeng.api.util.IConfigManager;
+import appeng.container.implementations.MEMonitorableContainer;
 import appeng.fluids.util.AEFluidStack;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
@@ -703,6 +705,9 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
             FluidAmount filledAmt = remaining != null ? remaining.getAmount() : toInsert.getAmount();
             FluidAmount remainingAmt = fluidVolume.amount().roundedSub(filledAmt, RoundingMode.DOWN);
+            if (remainingAmt.isZero()) {
+                return FluidVolumeUtil.EMPTY;
+            }
             return fluidVolume.withAmount(remainingAmt);
         }
 
@@ -756,8 +761,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         if (this.cellHandler != null) {
             if (this.cellHandler.getChannel() == AEApi.instance().storage()
                     .getStorageChannel(IItemStorageChannel.class)) {
-                throw new IllegalStateException();
-                // FIXME FABRIC return MEMonitorableContainer.TYPE;
+                return MEMonitorableContainer.TYPE;
             }
             if (this.cellHandler.getChannel() == AEApi.instance().storage()
                     .getStorageChannel(IFluidStorageChannel.class)) {

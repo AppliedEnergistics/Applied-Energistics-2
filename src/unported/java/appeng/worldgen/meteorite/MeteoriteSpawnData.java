@@ -6,7 +6,7 @@ import java.util.Collection;
 import javax.annotation.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -49,7 +49,7 @@ public final class MeteoriteSpawnData {
         chunkX /= 16;
         chunkZ /= 16;
         String key = chunkX + "," + chunkZ;
-        INBT inbt = data.spawns.get(key);
+        Tag inbt = data.spawns.get(key);
         if (!(inbt instanceof CompoundTag)) {
             if (create) {
                 inbt = new CompoundTag();

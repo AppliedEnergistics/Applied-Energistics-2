@@ -46,7 +46,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
 
     private static final String MODE_TAG = "mode";
 
-    public MeteoritePlacerItem(Properties properties) {
+    public MeteoritePlacerItem(Settings properties) {
         super(properties);
     }
 

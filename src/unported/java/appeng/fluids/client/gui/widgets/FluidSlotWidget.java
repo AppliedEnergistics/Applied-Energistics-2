@@ -11,6 +11,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
@@ -52,13 +53,13 @@ public class FluidSlotWidget extends CustomSlotWidget {
             final float blue = (attributes.getColor() & 255) / 255.0F;
             RenderSystem.color3f(red, green, blue);
 
-            blit(xPos(), yPos(), this.getBlitOffset(), getWidth(), getHeight(), sprite);
+            drawTexture(matrices, xPos(), yPos(), this.getZOffset(), getWidth(), getHeight(), sprite);
         }
     }
 
     @Override
     public boolean canClick(final PlayerEntity player) {
-        final ItemStack mouseStack = player.inventory.getItemStack();
+        final ItemStack mouseStack = player.inventory.getCursorStack();
         return mouseStack.isEmpty()
                 || mouseStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent();
     }
@@ -76,7 +77,7 @@ public class FluidSlotWidget extends CustomSlotWidget {
     }
 
     @Override
-    public String getMessage() {
+    public Text getMessage() {
         final IAEFluidStack fluid = this.getFluidStack();
         if (fluid != null) {
             return I18n.format(fluid.getFluidStack().getTranslationKey());

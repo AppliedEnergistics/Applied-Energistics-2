@@ -7,6 +7,7 @@ import com.google.common.math.StatsAccumulator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.structure.StructureStart;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
@@ -15,16 +16,17 @@ import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.biome.Biome.TempCategory;
-import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.Heightmap.Type;
+import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructureStart;
-import net.minecraft.world.gen.feature.template.TemplateManager;
+import net.minecraft.structure.StructureManager;
 
 import appeng.worldgen.meteorite.fallout.FalloutMode;
 
-public class MeteoriteStructureStart extends StructureStart {
+public class MeteoriteStructureStart extends StructureStart<DefaultFeatureConfig> {
 
     private final Tag<Block> sandTag = BlockTags.getContainer().getOrCreate(new Identifier("minecraft:sand"));
     private final Tag<Block> terracottaTag = BlockTags.getContainer()
@@ -35,8 +37,9 @@ public class MeteoriteStructureStart extends StructureStart {
         super(p_i225815_1_, p_i225815_2_, p_i225815_3_, p_i225815_4_, p_i225815_5_, p_i225815_6_);
     }
 
-    public void init(ChunkGenerator<?> generator, TemplateManager templateManagerIn, int chunkX, int chunkZ,
-            Biome biome) {
+    @Override
+    public void init(ChunkGenerator generator, StructureManager templateManagerIn, int chunkX, int chunkZ,
+                     Biome biome, DefaultFeatureConfig config) {
         final int centerX = chunkX * 16 + this.rand.nextInt(16);
         final int centerZ = chunkZ * 16 + this.rand.nextInt(16);
         final float meteoriteRadius = (this.rand.nextFloat() * 6.0f) + 2;
@@ -87,7 +90,7 @@ public class MeteoriteStructureStart extends StructureStart {
      * 
      * @return true, if it found a single block of water
      */
-    private boolean locateWaterAroundTheCrater(ChunkGenerator<?> generator, BlockPos pos, float radius) {
+    private boolean locateWaterAroundTheCrater(ChunkGenerator generator, BlockPos pos, float radius) {
         final int seaLevel = generator.getSeaLevel();
         final int maxY = seaLevel - 1;
         BlockPos.Mutable blockPos = new BlockPos.Mutable();

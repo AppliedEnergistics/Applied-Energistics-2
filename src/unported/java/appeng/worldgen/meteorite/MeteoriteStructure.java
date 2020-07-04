@@ -7,30 +7,32 @@ import com.mojang.datafixers.Dynamic;
 
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeManager;
-import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.EndChunkGenerator;
 import net.minecraft.world.gen.NetherChunkGenerator;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.gen.feature.DefaultFeatureConfig;
+import net.minecraft.world.gen.feature.DefaultFeatureConfig;
+import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.structure.ScatteredStructure;
 import net.minecraft.world.gen.feature.structure.Structure;
 
 import appeng.core.AELog;
 import appeng.core.AppEng;
 
-public class MeteoriteStructure extends ScatteredStructure<NoFeatureConfig> {
+public class MeteoriteStructure extends StructureFeature<DefaultFeatureConfig> {
 
-    public static final Structure<NoFeatureConfig> INSTANCE = new MeteoriteStructure(NoFeatureConfig::deserialize);
+    public static final StructureFeature<DefaultFeatureConfig> INSTANCE = new MeteoriteStructure(DefaultFeatureConfig::deserialize);
 
     static {
         INSTANCE.setRegistryName(AppEng.MOD_ID, "meteorite");
     }
 
-    public MeteoriteStructure(Function<Dynamic<?>, ? extends NoFeatureConfig> configFactoryIn) {
+    public MeteoriteStructure(Function<Dynamic<?>, ? extends DefaultFeatureConfig> configFactoryIn) {
         super(configFactoryIn);
     }
 
     @Override
-    public boolean canBeGenerated(BiomeManager biomeManagerIn, ChunkGenerator<?> generator, Random randIn, int chunkX,
+    public boolean canBeGenerated(BiomeManager biomeManagerIn, ChunkGenerator generator, Random randIn, int chunkX,
             int chunkZ, Biome biomeIn) {
         if (super.canBeGenerated(biomeManagerIn, generator, randIn, chunkX, chunkZ, biomeIn)) {
             // In case the biome blacklist fails, we still double-check here that we're not
@@ -62,7 +64,7 @@ public class MeteoriteStructure extends ScatteredStructure<NoFeatureConfig> {
     }
 
     @Override
-    public Structure.IStartFactory getStartFactory() {
+    public StructureStartFactory<DefaultFeatureConfig> getStructureStartFactory() {
         return MeteoriteStructureStart::new;
     }
 

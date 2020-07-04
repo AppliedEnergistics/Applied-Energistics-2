@@ -43,7 +43,7 @@ import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
-import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.server.world.ServerWorld;
@@ -92,7 +92,7 @@ public class TestMeteoritesCommand implements ISubCommand {
 
         ChunkPos center = new ChunkPos(centerBlock);
 
-        ChunkGenerator<?> generator = world.getChunkManager().getChunkGenerator();
+        ChunkGenerator generator = world.getChunkManager().getChunkGenerator();
 
         // Find all meteorites in the given rectangle
         List<PlacedMeteoriteSettings> found = new ArrayList<>();

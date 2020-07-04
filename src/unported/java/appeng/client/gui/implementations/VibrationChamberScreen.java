@@ -20,9 +20,10 @@ package appeng.client.gui.implementations;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
-import net.minecraftforge.fml.client.gui.GuiUtils;
+
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.widgets.ProgressBar;
@@ -38,40 +39,40 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContain
     public VibrationChamberScreen(VibrationChamberContainer container, PlayerInventory playerInventory,
             Text title) {
         super(container, playerInventory, title);
-        this.ySize = 166;
+        this.backgroundHeight = 166;
     }
 
     @Override
     public void init() {
         super.init();
 
-        this.pb = new ProgressBar(this.container, "guis/vibchamber.png", 99, 36, 176, 14, 6, 18, Direction.VERTICAL);
+        this.pb = new ProgressBar(this.handler, "guis/vibchamber.png", 99, 36, 176, 14, 6, 18, Direction.VERTICAL);
         this.addButton(this.pb);
     }
 
     @Override
-    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.font.drawString(this.getGuiDisplayName(GuiText.VibrationChamber.getLocal()), 8, 6, 4210752);
-        this.font.drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+        this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.VibrationChamber.getLocal()), 8, 6, 4210752);
+        this.textRenderer.draw(matrices, GuiText.inventory.getLocal(), 8, this.backgroundHeight - 96 + 3, 4210752);
 
-        this.pb.setFullMsg(VibrationChamberBlockEntity.POWER_PER_TICK * this.container.getCurrentProgress()
+        this.pb.setFullMsg(VibrationChamberBlockEntity.POWER_PER_TICK * this.handler.getCurrentProgress()
                 / VibrationChamberBlockEntity.DILATION_SCALING + " AE/t");
 
-        if (this.container.getRemainingBurnTime() > 0) {
-            final int i1 = this.container.getRemainingBurnTime() * 12 / 100;
+        if (this.handler.getRemainingBurnTime() > 0) {
+            final int i1 = this.handler.getRemainingBurnTime() * 12 / 100;
             this.bindTexture("guis/vibchamber.png");
             RenderSystem.color3f(1, 1, 1);
             final int l = -15;
             final int k = 25;
-            GuiUtils.drawTexturedModalRect(k + 56, l + 36 + 12 - i1, 176, 12 - i1, 14, i1 + 2, getBlitOffset());
+            drawTexture(matrices, k + 56, l + 36 + 12 - i1, 176, 12 - i1, 14, i1 + 2);
         }
     }
 
     @Override
-    public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
         this.bindTexture("guis/vibchamber.png");
-        this.pb.x = 99 + this.guiLeft;
-        this.pb.y = 36 + this.guiTop;
-        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());
+        this.pb.x = 99 + this.x;
+        this.pb.y = 36 + this.y;
+        drawTexture(matrices, offsetX, offsetY, 0, 0, this.backgroundWidth, this.backgroundHeight);
     }
 }

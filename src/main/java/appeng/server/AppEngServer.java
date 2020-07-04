@@ -82,7 +82,7 @@ public final class AppEngServer extends AppEngBase {
     }
 
     @Override
-    public boolean isActionKey(@Nonnull ActionKey key, InputUtil.Key input) {
+    public boolean isActionKey(@Nonnull ActionKey key, int keyCode, int scanCode) {
         return false;
     }
 

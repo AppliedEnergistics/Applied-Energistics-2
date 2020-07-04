@@ -18,7 +18,10 @@
 
 package appeng.container;
 
+import appeng.api.parts.IPartHost;
 import appeng.api.util.AEPartLocation;
+import appeng.api.util.DimensionalCoord;
+import appeng.parts.AEBasePart;
 import com.google.common.base.Preconditions;
 import io.netty.handler.codec.DecoderException;
 import net.minecraft.block.entity.BlockEntity;
@@ -123,12 +126,11 @@ public final class ContainerLocator {
         throw new IllegalArgumentException("Could not find item held in hand " + hand + " in player inventory");
     }
 
-// FIXME FABRIC    public static ContainerLocator forPart(AEBasePart part) {
-// FIXME FABRIC        IPartHost host = part.getHost();
-// FIXME FABRIC        DimensionalCoord pos = host.getLocation();
-// FIXME FABRIC        return new ContainerLocator(Type.PART, -1, pos.getWorld().getDimension().getType().getId(), pos.getBlockPos(),
-// FIXME FABRIC                part.getSide());
-// FIXME FABRIC    }
+    public static ContainerLocator forPart(AEBasePart part) {
+        IPartHost host = part.getHost();
+        DimensionalCoord pos = host.getLocation();
+        return new ContainerLocator(Type.PART, -1, pos.getWorld().getWorld(), pos.getBlockPos(), part.getSide());
+    }
 
     public boolean hasItemIndex() {
         return type == Type.PLAYER_INVENTORY || type == Type.PLAYER_INVENTORY_WITH_BLOCK_CONTEXT;

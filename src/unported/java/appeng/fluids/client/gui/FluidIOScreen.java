@@ -44,7 +44,7 @@ public class FluidIOScreen extends UpgradeableScreen<FluidIOContainer> {
     public void init() {
         super.init();
 
-        final IAEFluidTank inv = this.container.getFluidConfigInventory();
+        final IAEFluidTank inv = this.handler.getFluidConfigInventory();
         final int y = 40;
         final int x = 80;
 

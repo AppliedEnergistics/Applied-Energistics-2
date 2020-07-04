@@ -23,9 +23,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.GenerationSettings;
-import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.surfacebuilders.SurfaceBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -67,7 +67,7 @@ public class StorageCellBiome extends Biome {
     }
 
     @Override
-    public void decorate(GenerationStage.Decoration stage, ChunkGenerator<? extends GenerationSettings> chunkGenerator,
+    public void decorate(GenerationStep.Decoration stage, ChunkGenerator<? extends GenerationSettings> chunkGenerator,
             WorldAccess worldIn, long seed, SharedSeedRandom random, BlockPos pos) {
         // Nothing should ever generate here...
     }

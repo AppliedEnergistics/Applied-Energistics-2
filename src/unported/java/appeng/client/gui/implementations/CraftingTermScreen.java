@@ -18,8 +18,9 @@
 
 package appeng.client.gui.implementations;
 
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 
 import appeng.api.config.ActionItems;
@@ -40,14 +41,14 @@ public class CraftingTermScreen extends MEMonitorableScreen<CraftingTermContaine
 
     private void clear() {
         Slot s = null;
-        for (final Object j : this.container.inventorySlots) {
+        for (final Object j : this.handler.slots) {
             if (j instanceof CraftingMatrixSlot) {
                 s = (Slot) j;
             }
         }
 
         if (s != null) {
-            final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, s.slotNumber, 0);
+            final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, s.id, 0);
             NetworkHandler.instance().sendToServer(p);
         }
     }
@@ -56,14 +57,14 @@ public class CraftingTermScreen extends MEMonitorableScreen<CraftingTermContaine
     public void init() {
         super.init();
         ActionButton clearBtn = this.addButton(
-                new ActionButton(this.guiLeft + 92, this.guiTop + this.ySize - 156, ActionItems.STASH, btn -> clear()));
+                new ActionButton(this.x + 92, this.y + this.backgroundHeight - 156, ActionItems.STASH, btn -> clear()));
         clearBtn.setHalfSize(true);
     }
 
     @Override
-    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        super.drawFG(offsetX, offsetY, mouseX, mouseY);
-        this.font.drawString(GuiText.CraftingTerminal.getLocal(), 8, this.ySize - 96 + 1 - this.getReservedSpace(),
+    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+        super.drawFG(matrices, offsetX, offsetY, mouseX, mouseY);
+        this.textRenderer.draw(matrices, GuiText.CraftingTerminal.getLocal(), 8, this.backgroundHeight - 96 + 1 - this.getReservedSpace(),
                 4210752);
     }
 

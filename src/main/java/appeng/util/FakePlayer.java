@@ -48,6 +48,11 @@ public class FakePlayer extends ServerPlayerEntity {
         return p;
     }
 
+    public static boolean isFakePlayer(PlayerEntity player) {
+        // FIXME FABRIC: Is there a reliable way of detecting fake players of other mods???
+        return player instanceof FakePlayer;
+    }
+
     @Override
     public void tick() {
     }

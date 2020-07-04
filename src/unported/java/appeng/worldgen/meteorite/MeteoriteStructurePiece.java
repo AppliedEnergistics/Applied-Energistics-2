@@ -24,10 +24,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.WorldAccess;
-import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
-import net.minecraft.world.gen.feature.template.TemplateManager;
+import net.minecraft.structure.StructureManager;
 
 import appeng.core.worlddata.WorldData;
 import appeng.worldgen.meteorite.fallout.FalloutMode;
@@ -53,7 +53,7 @@ public class MeteoriteStructurePiece extends StructurePiece {
                 chunkPos.getZStart() - range, chunkPos.getXEnd() + range, center.getY(), chunkPos.getZEnd() + range);
     }
 
-    public MeteoriteStructurePiece(TemplateManager templateManager, CompoundTag tag) {
+    public MeteoriteStructurePiece(StructureManager templateManager, CompoundTag tag) {
         super(TYPE, tag);
 
         BlockPos center = BlockPos.fromLong(tag.getLong(Constants.TAG_POS));
@@ -85,8 +85,8 @@ public class MeteoriteStructurePiece extends StructurePiece {
     }
 
     @Override
-    public boolean create(WorldAccess world, ChunkGenerator<?> chunkGeneratorIn, Random rand, MutableBoundingBox bounds,
-            ChunkPos chunkPos) {
+    public boolean create(WorldAccess world, ChunkGenerator chunkGeneratorIn, Random rand, MutableBoundingBox bounds,
+                          ChunkPos chunkPos) {
         MeteoritePlacer placer = new MeteoritePlacer(world, settings, bounds);
         placer.place();
 

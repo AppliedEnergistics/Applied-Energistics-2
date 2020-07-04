@@ -23,7 +23,6 @@ import java.util.Random;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.client.util.InputMappings;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.block.entity.BlockEntity;

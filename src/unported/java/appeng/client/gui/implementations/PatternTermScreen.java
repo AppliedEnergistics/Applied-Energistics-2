@@ -19,6 +19,7 @@
 package appeng.client.gui.implementations;
 
 import net.minecraft.block.Blocks;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -57,32 +58,32 @@ public class PatternTermScreen extends MEMonitorableScreen<PatternTermContainer>
     public void init() {
         super.init();
 
-        this.tabCraftButton = new TabButton(this.guiLeft + 173, this.guiTop + this.ySize - 177,
+        this.tabCraftButton = new TabButton(this.x + 173, this.y + this.backgroundHeight - 177,
                 new ItemStack(Blocks.CRAFTING_TABLE), GuiText.CraftingPattern.getLocal(), this.itemRenderer,
                 btn -> toggleCraftMode(CRAFTMODE_PROCESSING));
         this.addButton(this.tabCraftButton);
 
-        this.tabProcessButton = new TabButton(this.guiLeft + 173, this.guiTop + this.ySize - 177,
+        this.tabProcessButton = new TabButton(this.x + 173, this.y + this.backgroundHeight - 177,
                 new ItemStack(Blocks.FURNACE), GuiText.ProcessingPattern.getLocal(), this.itemRenderer,
                 btn -> toggleCraftMode(CRAFTMODE_CRFTING));
         this.addButton(this.tabProcessButton);
 
-        this.substitutionsEnabledBtn = new ActionButton(this.guiLeft + 84, this.guiTop + this.ySize - 163,
+        this.substitutionsEnabledBtn = new ActionButton(this.x + 84, this.y + this.backgroundHeight - 163,
                 ActionItems.ENABLE_SUBSTITUTION, act -> toggleSubstitutions(SUBSITUTION_DISABLE));
         this.substitutionsEnabledBtn.setHalfSize(true);
         this.addButton(this.substitutionsEnabledBtn);
 
-        this.substitutionsDisabledBtn = new ActionButton(this.guiLeft + 84, this.guiTop + this.ySize - 163,
+        this.substitutionsDisabledBtn = new ActionButton(this.x + 84, this.y + this.backgroundHeight - 163,
                 ActionItems.DISABLE_SUBSTITUTION, act -> toggleSubstitutions(SUBSITUTION_ENABLE));
         this.substitutionsDisabledBtn.setHalfSize(true);
         this.addButton(this.substitutionsDisabledBtn);
 
-        ActionButton clearBtn = new ActionButton(this.guiLeft + 74, this.guiTop + this.ySize - 163, ActionItems.CLOSE,
+        ActionButton clearBtn = new ActionButton(this.x + 74, this.y + this.backgroundHeight - 163, ActionItems.CLOSE,
                 act -> clear());
         clearBtn.setHalfSize(true);
         this.addButton(clearBtn);
 
-        ActionButton encodeBtn = new ActionButton(this.guiLeft + 147, this.guiTop + this.ySize - 142,
+        ActionButton encodeBtn = new ActionButton(this.x + 147, this.y + this.backgroundHeight - 142,
                 ActionItems.ENCODE, act -> encode());
         this.addButton(encodeBtn);
     }
@@ -104,12 +105,12 @@ public class PatternTermScreen extends MEMonitorableScreen<PatternTermContainer>
     }
 
     @Override
-    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        if (this.container.isCraftingMode()) {
+    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+        if (this.handler.isCraftingMode()) {
             this.tabCraftButton.visible = true;
             this.tabProcessButton.visible = false;
 
-            if (this.container.substitute) {
+            if (this.handler.substitute) {
                 this.substitutionsEnabledBtn.visible = true;
                 this.substitutionsDisabledBtn.visible = false;
             } else {
@@ -123,14 +124,14 @@ public class PatternTermScreen extends MEMonitorableScreen<PatternTermContainer>
             this.substitutionsDisabledBtn.visible = false;
         }
 
-        super.drawFG(offsetX, offsetY, mouseX, mouseY);
-        this.font.drawString(GuiText.PatternTerminal.getLocal(), 8, this.ySize - 96 + 2 - this.getReservedSpace(),
+        super.drawFG(matrices, offsetX, offsetY, mouseX, mouseY);
+        this.textRenderer.draw(matrices, GuiText.PatternTerminal.getLocal(), 8, this.backgroundHeight - 96 + 2 - this.getReservedSpace(),
                 4210752);
     }
 
     @Override
     protected String getBackground() {
-        if (this.container.isCraftingMode()) {
+        if (this.handler.isCraftingMode()) {
             return BACKGROUND_CRAFTING_MODE;
         }
 
@@ -141,7 +142,7 @@ public class PatternTermScreen extends MEMonitorableScreen<PatternTermContainer>
     protected void repositionSlot(final AppEngSlot s) {
         final int offsetPlayerSide = s.isPlayerSide() ? 5 : 3;
 
-        s.yPos = s.getY() + this.ySize - 78 - offsetPlayerSide;
+        s.y = s.getY() + this.backgroundHeight - 78 - offsetPlayerSide;
     }
 
 }

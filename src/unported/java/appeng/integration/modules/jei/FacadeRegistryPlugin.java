@@ -105,11 +105,11 @@ class FacadeRegistryPlugin implements IRecipeManagerPlugin {
                 "facade/" + textureItem.getItem().getRegistryName().toString().replace(':', '/'));
 
         DefaultedList<Ingredient> ingredients = DefaultedList.withSize(9, Ingredient.EMPTY);
-        ingredients.set(1, Ingredient.fromStacks(cableAnchor));
-        ingredients.set(3, Ingredient.fromStacks(cableAnchor));
-        ingredients.set(5, Ingredient.fromStacks(cableAnchor));
-        ingredients.set(7, Ingredient.fromStacks(cableAnchor));
-        ingredients.set(4, Ingredient.fromStacks(textureItem));
+        ingredients.set(1, Ingredient.ofStacks(cableAnchor));
+        ingredients.set(3, Ingredient.ofStacks(cableAnchor));
+        ingredients.set(5, Ingredient.ofStacks(cableAnchor));
+        ingredients.set(7, Ingredient.ofStacks(cableAnchor));
+        ingredients.set(4, Ingredient.ofStacks(textureItem));
 
         return new ShapedRecipe(id, "", 3, 3, ingredients, result);
     }

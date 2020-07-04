@@ -18,6 +18,7 @@
 
 package appeng.client.gui.implementations;
 
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 
@@ -41,25 +42,25 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
 
     public InterfaceScreen(InterfaceContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
-        this.ySize = 211;
+        this.backgroundHeight = 211;
     }
 
     @Override
     protected void addButtons() {
-        this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(),
+        this.addButton(new TabButton(this.x + 154, this.y, 2 + 4 * 16, GuiText.Priority.getLocal(),
                 this.itemRenderer, btn -> openPriorityGui()));
 
-        this.blockMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 8, Settings.BLOCK, YesNo.NO);
+        this.blockMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 8, Settings.BLOCK, YesNo.NO);
         this.addButton(this.blockMode);
 
-        this.interfaceMode = new ToggleButton(this.guiLeft - 18, this.guiTop + 26, 84, 85,
+        this.interfaceMode = new ToggleButton(this.x - 18, this.y + 26, 84, 85,
                 GuiText.InterfaceTerminal.getLocal(), GuiText.InterfaceTerminalHint.getLocal(),
                 btn -> selectNextInterfaceMode());
         this.addButton(this.interfaceMode);
     }
 
     @Override
-    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
         if (this.blockMode != null) {
             this.blockMode.set(((InterfaceContainer) this.cvb).getBlockingMode());
         }
@@ -68,13 +69,13 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
             this.interfaceMode.setState(((InterfaceContainer) this.cvb).getInterfaceTerminalMode() == YesNo.YES);
         }
 
-        this.font.drawString(this.getGuiDisplayName(GuiText.Interface.getLocal()), 8, 6, 4210752);
+        this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.Interface.getLocal()), 8, 6, 4210752);
 
-        this.font.drawString(GuiText.Config.getLocal(), 8, 6 + 11 + 7, 4210752);
-        this.font.drawString(GuiText.StoredItems.getLocal(), 8, 6 + 60 + 7, 4210752);
-        this.font.drawString(GuiText.Patterns.getLocal(), 8, 6 + 73 + 7, 4210752);
+        this.textRenderer.draw(matrices, GuiText.Config.getLocal(), 8, 6 + 11 + 7, 4210752);
+        this.textRenderer.draw(matrices, GuiText.StoredItems.getLocal(), 8, 6 + 60 + 7, 4210752);
+        this.textRenderer.draw(matrices, GuiText.Patterns.getLocal(), 8, 6 + 73 + 7, 4210752);
 
-        this.font.drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+        this.textRenderer.draw(matrices, GuiText.inventory.getLocal(), 8, this.backgroundHeight - 96 + 3, 4210752);
     }
 
     @Override
@@ -87,7 +88,7 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
     }
 
     private void selectNextInterfaceMode() {
-        final boolean backwards = getMinecraft().mouseHelper.isRightDown();
+        final boolean backwards = getClient().mouse.wasRightButtonClicked();
         NetworkHandler.instance().sendToServer(new ConfigButtonPacket(Settings.INTERFACE_TERMINAL, backwards));
     }
 

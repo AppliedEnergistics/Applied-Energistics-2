@@ -18,6 +18,7 @@
 
 package appeng.client.gui.implementations;
 
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 
@@ -44,8 +45,8 @@ public class SecurityStationScreen extends MEMonitorableScreen<SecurityStationCo
         this.setReservedSpace(33);
 
         // increase size so that the slot is over the gui.
-        this.xSize += 56;
-        this.setStandardSize(this.xSize);
+        this.backgroundWidth += 56;
+        this.setStandardSize(this.backgroundWidth);
     }
 
     private void toggleOption(SecurityPermissions permission) {
@@ -57,32 +58,32 @@ public class SecurityStationScreen extends MEMonitorableScreen<SecurityStationCo
     public void init() {
         super.init();
 
-        final int top = this.guiTop + this.ySize - 116;
-        this.inject = this.addButton(new ToggleButton(this.guiLeft + 56, top, 11 * 16, 12 * 16,
+        final int top = this.y + this.backgroundHeight - 116;
+        this.inject = this.addButton(new ToggleButton(this.x + 56, top, 11 * 16, 12 * 16,
                 SecurityPermissions.INJECT.getTranslatedName(), SecurityPermissions.INJECT.getTranslatedTip(),
                 btn -> toggleOption(SecurityPermissions.INJECT)));
 
-        this.extract = this.addButton(new ToggleButton(this.guiLeft + 56 + 18, top, 11 * 16 + 1, 12 * 16 + 1,
+        this.extract = this.addButton(new ToggleButton(this.x + 56 + 18, top, 11 * 16 + 1, 12 * 16 + 1,
                 SecurityPermissions.EXTRACT.getTranslatedName(), SecurityPermissions.EXTRACT.getTranslatedTip(),
                 btn -> toggleOption(SecurityPermissions.EXTRACT)));
 
-        this.craft = this.addButton(new ToggleButton(this.guiLeft + 56 + 18 * 2, top, 11 * 16 + 2, 12 * 16 + 2,
+        this.craft = this.addButton(new ToggleButton(this.x + 56 + 18 * 2, top, 11 * 16 + 2, 12 * 16 + 2,
                 SecurityPermissions.CRAFT.getTranslatedName(), SecurityPermissions.CRAFT.getTranslatedTip(),
                 btn -> toggleOption(SecurityPermissions.CRAFT)));
 
-        this.build = this.addButton(new ToggleButton(this.guiLeft + 56 + 18 * 3, top, 11 * 16 + 3, 12 * 16 + 3,
+        this.build = this.addButton(new ToggleButton(this.x + 56 + 18 * 3, top, 11 * 16 + 3, 12 * 16 + 3,
                 SecurityPermissions.BUILD.getTranslatedName(), SecurityPermissions.BUILD.getTranslatedTip(),
                 btn -> toggleOption(SecurityPermissions.BUILD)));
 
-        this.security = this.addButton(new ToggleButton(this.guiLeft + 56 + 18 * 4, top, 11 * 16 + 4, 12 * 16 + 4,
+        this.security = this.addButton(new ToggleButton(this.x + 56 + 18 * 4, top, 11 * 16 + 4, 12 * 16 + 4,
                 SecurityPermissions.SECURITY.getTranslatedName(), SecurityPermissions.SECURITY.getTranslatedTip(),
                 btn -> toggleOption(SecurityPermissions.SECURITY)));
     }
 
     @Override
-    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        super.drawFG(offsetX, offsetY, mouseX, mouseY);
-        this.font.drawString(GuiText.SecurityCardEditor.getLocal(), 8, this.ySize - 96 + 1 - this.getReservedSpace(),
+    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+        super.drawFG(matrices, offsetX, offsetY, mouseX, mouseY);
+        this.textRenderer.draw(matrices, GuiText.SecurityCardEditor.getLocal(), 8, this.backgroundHeight - 96 + 1 - this.getReservedSpace(),
                 4210752);
     }
 

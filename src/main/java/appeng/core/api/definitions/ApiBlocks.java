@@ -22,26 +22,47 @@ import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.ITileDefinition;
 import appeng.api.features.AEFeature;
+import appeng.block.AEBaseBlockItemChargeable;
+import appeng.block.crafting.*;
+import appeng.block.grindstone.CrankBlock;
+import appeng.block.grindstone.GrinderBlock;
 import appeng.block.misc.*;
-import appeng.block.networking.CableBusBlock;
-import appeng.block.networking.CableBusRendering;
+import appeng.block.networking.*;
+import appeng.block.paint.PaintSplotchesBlock;
+import appeng.block.paint.PaintSplotchesRendering;
+import appeng.block.qnb.QuantumBridgeRendering;
+import appeng.block.qnb.QuantumLinkChamberBlock;
+import appeng.block.qnb.QuantumRingBlock;
+import appeng.block.spatial.MatrixFrameBlock;
+import appeng.block.spatial.SpatialIOPortBlock;
+import appeng.block.spatial.SpatialPylonBlock;
+import appeng.block.storage.*;
 import appeng.block.storage.ChestBlock;
-import appeng.block.storage.ChestRendering;
-import appeng.block.storage.SkyChestBlock;
 import appeng.bootstrap.*;
+import static appeng.block.crafting.AbstractCraftingUnitBlock.CraftingUnitType;
 import appeng.bootstrap.components.IInitComponent;
 import appeng.bootstrap.definitions.TileEntityDefinition;
+import appeng.client.render.crafting.CraftingCubeRendering;
+import appeng.client.render.spatial.SpatialPylonRendering;
+import appeng.client.render.tesr.CrankTESR;
+import appeng.client.render.tesr.DriveLedTileEntityRenderer;
 import appeng.client.render.tesr.SkyChestTESR;
 import appeng.decorative.AEDecorativeBlock;
 import appeng.decorative.solid.*;
 import appeng.decorative.solid.SkyStoneBlock.SkystoneType;
 import appeng.entity.TinyTNTPrimedEntity;
 import appeng.hooks.TinyTNTDispenseItemBehavior;
-import appeng.tile.misc.LightDetectorBlockEntity;
-import appeng.tile.misc.SkyCompassBlockEntity;
-import appeng.tile.networking.CableBusBlockEntity;
-import appeng.tile.networking.CableBusTESR;
+import appeng.tile.crafting.*;
+import appeng.tile.grindstone.CrankBlockEntity;
+import appeng.tile.grindstone.GrinderBlockEntity;
+import appeng.tile.misc.*;
+import appeng.tile.networking.*;
+import appeng.tile.qnb.QuantumBridgeBlockEntity;
+import appeng.tile.spatial.SpatialIOPortBlockEntity;
+import appeng.tile.spatial.SpatialPylonBlockEntity;
 import appeng.tile.storage.ChestBlockEntity;
+import appeng.tile.storage.DriveBlockEntity;
+import appeng.tile.storage.IOPortBlockEntity;
 import appeng.tile.storage.SkyChestBlockEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -162,7 +183,7 @@ public final class ApiBlocks implements IBlocks {
                         rendering.renderType(RenderLayer.getCutout());
                     }
                 }).build();
-// FIXME FABRIC        this.matrixFrame = registry.block("matrix_frame", MatrixFrameBlock::new).features(AEFeature.SPATIAL_IO).build();
+        this.matrixFrame = registry.block("matrix_frame", MatrixFrameBlock::new).features(AEFeature.SPATIAL_IO).build();
 
         FeatureFactory deco = registry.features(AEFeature.DECORATIVE_BLOCKS);
         this.quartzBlock = deco.block("quartz_block", () -> new AEDecorativeBlock(QUARTZ_PROPERTIES)).build();
@@ -246,45 +267,45 @@ public final class ApiBlocks implements IBlocks {
                 .tileEntity(registry.tileEntity("sky_compass", SkyCompassBlockEntity.class, SkyCompassBlockEntity::new)
                         .rendering(new SkyCompassRendering()).build())
                 .build();
-// FIXME FABRIC        this.grindstone = registry
-// FIXME FABRIC                .block("grindstone", () -> new GrinderBlock(defaultProps(Material.STONE).strength(3.2f)))
-// FIXME FABRIC                .features(AEFeature.GRIND_STONE)
-// FIXME FABRIC                .tileEntity(registry.tileEntity("grindstone", GrinderBlockEntity.class, GrinderBlockEntity::new).build())
-// FIXME FABRIC                .build();
-// FIXME FABRIC        this.crank = registry
-// FIXME FABRIC                .block("crank",
-// FIXME FABRIC                        () -> new CrankBlock(
-// FIXME FABRIC                                defaultProps(Material.WOOD).breakByTool(FabricToolTags.AXES, 0).notSolid()))
-// FIXME FABRIC                .features(AEFeature.GRIND_STONE)
-// FIXME FABRIC                .tileEntity(registry.tileEntity("crank", CrankBlockEntity.class, CrankBlockEntity::new)
-// FIXME FABRIC                        .rendering(new TileEntityRenderingCustomizer<CrankBlockEntity>() {
-// FIXME FABRIC                            @Override
-// FIXME FABRIC                            @Environment(EnvType.CLIENT)
-// FIXME FABRIC                            public void customize(TileEntityRendering<CrankBlockEntity> rendering) {
-// FIXME FABRIC                                rendering.tileEntityRenderer(CrankTESR::new);
-// FIXME FABRIC                            }
-// FIXME FABRIC                        }).build())
-// FIXME FABRIC                .build();
-// FIXME FABRIC        this.inscriber = registry.block("inscriber", () -> new InscriberBlock(defaultProps(Material.METAL).notSolid()))
-// FIXME FABRIC                .features(AEFeature.INSCRIBER)
-// FIXME FABRIC                .tileEntity(registry.tileEntity("inscriber", InscriberBlockEntity.class, InscriberBlockEntity::new)
-// FIXME FABRIC                        .rendering(new InscriberRendering()).build())
-// FIXME FABRIC                .build();
-// FIXME FABRIC        this.wirelessAccessPoint = registry.block("wireless_access_point", WirelessBlock::new)
-// FIXME FABRIC                .features(AEFeature.WIRELESS_ACCESS_TERMINAL)
-// FIXME FABRIC                .tileEntity(registry
-// FIXME FABRIC                        .tileEntity("wireless_access_point", WirelessBlockEntity.class, WirelessBlockEntity::new).build())
-// FIXME FABRIC                .rendering(new WirelessRendering()).build();
-// FIXME FABRIC        this.charger = registry.block("charger", ChargerBlock::new).features(AEFeature.CHARGER)
-// FIXME FABRIC                .tileEntity(registry.tileEntity("charger", ChargerBlockEntity.class, ChargerBlockEntity::new)
-// FIXME FABRIC                        .rendering(new TileEntityRenderingCustomizer<ChargerBlockEntity>() {
-// FIXME FABRIC                            @Override
-// FIXME FABRIC                            @Environment(EnvType.CLIENT)
-// FIXME FABRIC                            public void customize(TileEntityRendering<ChargerBlockEntity> rendering) {
-// FIXME FABRIC                                rendering.tileEntityRenderer(ChargerBlock.createTesr());
-// FIXME FABRIC                            }
-// FIXME FABRIC                        }).build())
-// FIXME FABRIC                .build();
+        this.grindstone = registry
+                .block("grindstone", () -> new GrinderBlock(defaultProps(Material.STONE).strength(3.2f)))
+                .features(AEFeature.GRIND_STONE)
+                .tileEntity(registry.tileEntity("grindstone", GrinderBlockEntity.class, GrinderBlockEntity::new).build())
+                .build();
+        this.crank = registry
+                .block("crank",
+                        () -> new CrankBlock(
+                                defaultProps(Material.WOOD).breakByTool(FabricToolTags.AXES, 0).solidBlock((state, world, pos) -> false)))
+                .features(AEFeature.GRIND_STONE)
+                .tileEntity(registry.tileEntity("crank", CrankBlockEntity.class, CrankBlockEntity::new)
+                        .rendering(new TileEntityRenderingCustomizer<CrankBlockEntity>() {
+                            @Override
+                            @Environment(EnvType.CLIENT)
+                            public void customize(TileEntityRendering<CrankBlockEntity> rendering) {
+                                rendering.tileEntityRenderer(CrankTESR::new);
+                            }
+                        }).build())
+                .build();
+        this.inscriber = registry.block("inscriber", () -> new InscriberBlock(defaultProps(Material.METAL).solidBlock((state, world, pos) -> false)))
+                .features(AEFeature.INSCRIBER)
+                .tileEntity(registry.tileEntity("inscriber", InscriberBlockEntity.class, InscriberBlockEntity::new)
+                        .rendering(new InscriberRendering()).build())
+                .build();
+            this.wirelessAccessPoint = registry.block("wireless_access_point", WirelessBlock::new)
+                    .features(AEFeature.WIRELESS_ACCESS_TERMINAL)
+                    .tileEntity(registry
+                            .tileEntity("wireless_access_point", WirelessBlockEntity.class, WirelessBlockEntity::new).build())
+                    .rendering(new WirelessRendering()).build();
+        this.charger = registry.block("charger", ChargerBlock::new).features(AEFeature.CHARGER)
+                .tileEntity(registry.tileEntity("charger", ChargerBlockEntity.class, ChargerBlockEntity::new)
+                        .rendering(new TileEntityRenderingCustomizer<ChargerBlockEntity>() {
+                            @Override
+                            @Environment(EnvType.CLIENT)
+                            public void customize(TileEntityRendering<ChargerBlockEntity> rendering) {
+                                rendering.tileEntityRenderer(ChargerBlock.createTesr());
+                            }
+                        }).build())
+                .build();
 
         TinyTNTPrimedEntity.TYPE = registry
                 .<TinyTNTPrimedEntity>entity("tiny_tnt_primed", TinyTNTPrimedEntity::new, SpawnGroup.MISC)
@@ -299,178 +320,178 @@ public final class ApiBlocks implements IBlocks {
                 .features(AEFeature.TINY_TNT).bootstrap((block, item) -> (IInitComponent) () -> DispenserBlock
                         .registerBehavior(item, new TinyTNTDispenseItemBehavior()))
                 .build();
-// FIXME       this.securityStation = registry.block("security_station", SecurityStationBlock::new)
-// FIXME               .features(AEFeature.SECURITY)
-// FIXME               .tileEntity(registry
-// FIXME                       .tileEntity("security_station", SecurityStationBlockEntity.class, SecurityStationBlockEntity::new)
-// FIXME                       .build())
-// FIXME               .rendering(new SecurityStationRendering()).build();
-// FIXME
-// FIXME       TileEntityDefinition quantumRingTile = registry
-// FIXME               .tileEntity("quantum_ring", QuantumBridgeBlockEntity.class, QuantumBridgeBlockEntity::new).build();
-// FIXME       this.quantumRing = registry.block("quantum_ring", QuantumRingBlock::new)
-// FIXME               .features(AEFeature.QUANTUM_NETWORK_BRIDGE).tileEntity(quantumRingTile)
-// FIXME               .rendering(new QuantumBridgeRendering()).build();
-// FIXME       this.quantumLink = registry.block("quantum_link", QuantumLinkChamberBlock::new)
-// FIXME               .features(AEFeature.QUANTUM_NETWORK_BRIDGE).tileEntity(quantumRingTile)
-// FIXME               .rendering(new QuantumBridgeRendering()).build();
-// FIXME       this.spatialPylon = registry.block("spatial_pylon", SpatialPylonBlock::new).features(AEFeature.SPATIAL_IO)
-// FIXME               .tileEntity(registry
-// FIXME                       .tileEntity("spatial_pylon", SpatialPylonBlockEntity.class, SpatialPylonBlockEntity::new).build())
-// FIXME               .rendering(new SpatialPylonRendering()).build();
-// FIXME       this.spatialIOPort = registry.block("spatial_io_port", SpatialIOPortBlock::new).features(AEFeature.SPATIAL_IO)
-// FIXME               .tileEntity(registry
-// FIXME                       .tileEntity("spatial_io_port", SpatialIOPortBlockEntity.class, SpatialIOPortBlockEntity::new)
-// FIXME                       .build())
-// FIXME               .build();
-// FIXME       this.controller = registry
-// FIXME               .block("controller", ControllerBlock::new).features(AEFeature.CHANNELS).tileEntity(registry
-// FIXME                       .tileEntity("controller", ControllerBlockEntity.class, ControllerBlockEntity::new).build())
-// FIXME               .rendering(new ControllerRendering()).build();
-// FIXME       this.drive = registry.block("drive", DriveBlock::new).features(AEFeature.STORAGE_CELLS, AEFeature.ME_DRIVE)
-// FIXME               .tileEntity(registry.tileEntity("drive", DriveBlockEntity.class, DriveBlockEntity::new)
-// FIXME                       .rendering(new TileEntityRenderingCustomizer<DriveBlockEntity>() {
-// FIXME                           @Override
-// FIXME                           @Environment(EnvType.CLIENT)
-// FIXME                           public void customize(TileEntityRendering<DriveBlockEntity> rendering) {
-// FIXME                               rendering.tileEntityRenderer(DriveLedTileEntityRenderer::new);
-// FIXME                           }
-// FIXME                       }).build())
-// FIXME               .rendering(new DriveRendering()).build();
+       this.securityStation = registry.block("security_station", SecurityStationBlock::new)
+               .features(AEFeature.SECURITY)
+               .tileEntity(registry
+                       .tileEntity("security_station", SecurityStationBlockEntity.class, SecurityStationBlockEntity::new)
+                       .build())
+               .rendering(new SecurityStationRendering()).build();
+
+       TileEntityDefinition quantumRingTile = registry
+               .tileEntity("quantum_ring", QuantumBridgeBlockEntity.class, QuantumBridgeBlockEntity::new).build();
+       this.quantumRing = registry.block("quantum_ring", QuantumRingBlock::new)
+               .features(AEFeature.QUANTUM_NETWORK_BRIDGE).tileEntity(quantumRingTile)
+               .rendering(new QuantumBridgeRendering()).build();
+       this.quantumLink = registry.block("quantum_link", QuantumLinkChamberBlock::new)
+               .features(AEFeature.QUANTUM_NETWORK_BRIDGE).tileEntity(quantumRingTile)
+               .rendering(new QuantumBridgeRendering()).build();
+       this.spatialPylon = registry.block("spatial_pylon", SpatialPylonBlock::new).features(AEFeature.SPATIAL_IO)
+               .tileEntity(registry
+                       .tileEntity("spatial_pylon", SpatialPylonBlockEntity.class, SpatialPylonBlockEntity::new).build())
+               .rendering(new SpatialPylonRendering()).build();
+       this.spatialIOPort = registry.block("spatial_io_port", SpatialIOPortBlock::new).features(AEFeature.SPATIAL_IO)
+               .tileEntity(registry
+                       .tileEntity("spatial_io_port", SpatialIOPortBlockEntity.class, SpatialIOPortBlockEntity::new)
+                       .build())
+               .build();
+       this.controller = registry
+               .block("controller", ControllerBlock::new).features(AEFeature.CHANNELS).tileEntity(registry
+                       .tileEntity("controller", ControllerBlockEntity.class, ControllerBlockEntity::new).build())
+               .rendering(new ControllerRendering()).build();
+       this.drive = registry.block("drive", DriveBlock::new).features(AEFeature.STORAGE_CELLS, AEFeature.ME_DRIVE)
+               .tileEntity(registry.tileEntity("drive", DriveBlockEntity.class, DriveBlockEntity::new)
+                       .rendering(new TileEntityRenderingCustomizer<DriveBlockEntity>() {
+                           @Override
+                           @Environment(EnvType.CLIENT)
+                           public void customize(TileEntityRendering<DriveBlockEntity> rendering) {
+                               rendering.tileEntityRenderer(DriveLedTileEntityRenderer::new);
+                           }
+                       }).build())
+               .rendering(new DriveRendering()).build();
        this.chest = registry.block("chest", ChestBlock::new).features(AEFeature.STORAGE_CELLS, AEFeature.ME_CHEST)
                .tileEntity(registry.tileEntity("chest", ChestBlockEntity.class, ChestBlockEntity::new).build())
                .rendering(new ChestRendering()).build();
-// FIXME       this.iface = registry.block("interface", InterfaceBlock::new).features(AEFeature.INTERFACE)
-// FIXME               .tileEntity(
-// FIXME                       registry.tileEntity("interface", InterfaceBlockEntity.class, InterfaceBlockEntity::new).build())
-// FIXME               .build();
+       this.iface = registry.block("interface", InterfaceBlock::new).features(AEFeature.INTERFACE)
+               .tileEntity(
+                       registry.tileEntity("interface", InterfaceBlockEntity.class, InterfaceBlockEntity::new).build())
+               .build();
 // FIXME       this.fluidIface = registry.block("fluid_interface", FluidInterfaceBlock::new)
 // FIXME               .features(AEFeature.FLUID_INTERFACE)
 // FIXME               .tileEntity(registry
 // FIXME                       .tileEntity("fluid_interface", FluidInterfaceBlockEntity.class, FluidInterfaceBlockEntity::new)
 // FIXME                       .build())
 // FIXME               .build();
-// FIXME       this.cellWorkbench = registry.block("cell_workbench", CellWorkbenchBlock::new).features(AEFeature.STORAGE_CELLS)
-// FIXME               .tileEntity(registry
-// FIXME                       .tileEntity("cell_workbench", CellWorkbenchBlockEntity.class, CellWorkbenchBlockEntity::new)
-// FIXME                       .build())
-// FIXME               .build();
-// FIXME       this.iOPort = registry.block("io_port", IOPortBlock::new).features(AEFeature.STORAGE_CELLS, AEFeature.IO_PORT)
-// FIXME               .tileEntity(registry.tileEntity("io_port", IOPortBlockEntity.class, IOPortBlockEntity::new).build())
-// FIXME               .build();
-// FIXME       this.condenser = registry.block("condenser", CondenserBlock::new).features(AEFeature.CONDENSER)
-// FIXME               .tileEntity(
-// FIXME                       registry.tileEntity("condenser", CondenserBlockEntity.class, CondenserBlockEntity::new).build())
-// FIXME               .build();
-// FIXME       this.energyAcceptor = registry.block("energy_acceptor", EnergyAcceptorBlock::new)
-// FIXME               .features(AEFeature.ENERGY_ACCEPTOR)
-// FIXME               .tileEntity(registry
-// FIXME                       .tileEntity("energy_acceptor", EnergyAcceptorBlockEntity.class, EnergyAcceptorBlockEntity::new)
-// FIXME                       .build())
-// FIXME               .build();
-// FIXME       this.vibrationChamber = registry.block("vibration_chamber", VibrationChamberBlock::new)
-// FIXME               .features(AEFeature.POWER_GEN).tileEntity(registry.tileEntity("vibration_chamber",
-// FIXME                       VibrationChamberBlockEntity.class, VibrationChamberBlockEntity::new).build())
-// FIXME               .build();
-// FIXME       this.quartzGrowthAccelerator = registry.block("quartz_growth_accelerator", QuartzGrowthAcceleratorBlock::new)
-// FIXME               .tileEntity(registry.tileEntity("quartz_growth_accelerator", QuartzGrowthAcceleratorBlockEntity.class,
-// FIXME                       QuartzGrowthAcceleratorBlockEntity::new).build())
-// FIXME               .features(AEFeature.CRYSTAL_GROWTH_ACCELERATOR).build();
-// FIXME       this.energyCell = registry.block("energy_cell", EnergyCellBlock::new).features(AEFeature.ENERGY_CELLS)
-// FIXME               .item(AEBaseBlockItemChargeable::new).tileEntity(registry
-// FIXME                       .tileEntity("energy_cell", EnergyCellBlockEntity.class, EnergyCellBlockEntity::new).build())
-// FIXME               .build();
-// FIXME       this.energyCellDense = registry.block("dense_energy_cell", DenseEnergyCellBlock::new)
-// FIXME               .features(AEFeature.ENERGY_CELLS, AEFeature.DENSE_ENERGY_CELLS).item(AEBaseBlockItemChargeable::new)
-// FIXME               .tileEntity(registry.tileEntity("dense_energy_cell", DenseEnergyCellBlockEntity.class,
-// FIXME                       DenseEnergyCellBlockEntity::new).build())
-// FIXME               .build();
-// FIXME       this.energyCellCreative = registry.block("creative_energy_cell", CreativeEnergyCellBlock::new)
-// FIXME               .features(AEFeature.CREATIVE).tileEntity(registry.tileEntity("creative_energy_cell",
-// FIXME                       CreativeEnergyCellBlockEntity.class, CreativeEnergyCellBlockEntity::new).build())
-// FIXME               .build();
-// FIXME
-// FIXME       TileEntityDefinition craftingUnit = registry
-// FIXME               .tileEntity("crafting_unit", CraftingBlockEntity.class, CraftingBlockEntity::new).build();
-// FIXME
-// FIXME       FeatureFactory crafting = registry.features(AEFeature.CRAFTING_CPU);
-// FIXME       AbstractBlock.Settings craftingBlockProps = defaultProps(Material.METAL);
-// FIXME       this.craftingUnit = crafting
-// FIXME               .block("crafting_unit", () -> new CraftingUnitBlock(craftingBlockProps, CraftingUnitType.UNIT))
-// FIXME               .rendering(new CraftingCubeRendering()).tileEntity(craftingUnit).build();
-// FIXME       this.craftingAccelerator = crafting
-// FIXME               .block("crafting_accelerator",
-// FIXME                       () -> new CraftingUnitBlock(craftingBlockProps, CraftingUnitType.ACCELERATOR))
-// FIXME               .rendering(new CraftingCubeRendering()).tileEntity(craftingUnit).build();
-// FIXME
-// FIXME       TileEntityDefinition craftingStorage = registry
-// FIXME               .tileEntity("crafting_storage", CraftingStorageBlockEntity.class, CraftingStorageBlockEntity::new)
-// FIXME               .build();
-// FIXME       this.craftingStorage1k = crafting
-// FIXME               .block("1k_crafting_storage",
-// FIXME                       () -> new CraftingStorageBlock(craftingBlockProps, CraftingUnitType.STORAGE_1K))
-// FIXME               .item(CraftingStorageItem::new).tileEntity(craftingStorage).rendering(new CraftingCubeRendering())
-// FIXME               .build();
-// FIXME       this.craftingStorage4k = crafting
-// FIXME               .block("4k_crafting_storage",
-// FIXME                       () -> new CraftingStorageBlock(craftingBlockProps, CraftingUnitType.STORAGE_4K))
-// FIXME               .item(CraftingStorageItem::new).tileEntity(craftingStorage).rendering(new CraftingCubeRendering())
-// FIXME               .build();
-// FIXME       this.craftingStorage16k = crafting
-// FIXME               .block("16k_crafting_storage",
-// FIXME                       () -> new CraftingStorageBlock(craftingBlockProps, CraftingUnitType.STORAGE_16K))
-// FIXME               .item(CraftingStorageItem::new).tileEntity(craftingStorage).rendering(new CraftingCubeRendering())
-// FIXME               .build();
-// FIXME       this.craftingStorage64k = crafting
-// FIXME               .block("64k_crafting_storage",
-// FIXME                       () -> new CraftingStorageBlock(craftingBlockProps, CraftingUnitType.STORAGE_64K))
-// FIXME               .item(CraftingStorageItem::new).tileEntity(craftingStorage).rendering(new CraftingCubeRendering())
-// FIXME               .build();
-// FIXME       this.craftingMonitor = crafting.block("crafting_monitor", () -> new CraftingMonitorBlock(craftingBlockProps))
-// FIXME               .tileEntity(registry
-// FIXME                       .tileEntity("crafting_monitor", CraftingMonitorBlockEntity.class, CraftingMonitorBlockEntity::new)
-// FIXME                       .rendering(new TileEntityRenderingCustomizer<CraftingMonitorBlockEntity>() {
-// FIXME                           @Environment(EnvType.CLIENT)
-// FIXME                           @Override
-// FIXME                           public void customize(TileEntityRendering<CraftingMonitorBlockEntity> rendering) {
-// FIXME                               rendering.tileEntityRenderer(CraftingMonitorTESR::new);
-// FIXME                           }
-// FIXME                       }).build())
-// FIXME               .rendering(new BlockRenderingCustomizer() {
-// FIXME                   @Override
-// FIXME                   @Environment(EnvType.CLIENT)
-// FIXME                   public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
-// FIXME                       rendering.renderType(RenderLayer.getCutout());
-// FIXME                       rendering.modelCustomizer((path, model) -> {
-// FIXME                           // The formed model handles rotations itself, the unformed one does not
-// FIXME                           if (model instanceof MonitorBakedModel) {
-// FIXME                               return model;
-// FIXME                           }
-// FIXME                           return new AutoRotatingBakedModel(model);
-// FIXME                       });
-// FIXME                   }
-// FIXME               }).build();
-// FIXME
-// FIXME       this.molecularAssembler = registry
-// FIXME               .block("molecular_assembler", () -> new MolecularAssemblerBlock(defaultProps(Material.METAL).notSolid()))
-// FIXME               .features(AEFeature.MOLECULAR_ASSEMBLER).rendering(new BlockRenderingCustomizer() {
-// FIXME                   @Environment(EnvType.CLIENT)
-// FIXME                   @Override
-// FIXME                   public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
-// FIXME                       rendering.renderType(RenderLayer.getCutout());
-// FIXME                   }
-// FIXME               })
-// FIXME               .tileEntity(registry
-// FIXME                       .tileEntity("molecular_assembler", MolecularAssemblerBlockEntity.class,
-// FIXME                               MolecularAssemblerBlockEntity::new)
-// FIXME                       .rendering(new TileEntityRenderingCustomizer<MolecularAssemblerBlockEntity>() {
-// FIXME                           @Override
-// FIXME                           @Environment(EnvType.CLIENT)
-// FIXME                           public void customize(TileEntityRendering<MolecularAssemblerBlockEntity> rendering) {
-// FIXME                               rendering.tileEntityRenderer(MolecularAssemblerRenderer::new);
-// FIXME                           }
-// FIXME                       }).build())
-// FIXME               .build();
+       this.cellWorkbench = registry.block("cell_workbench", CellWorkbenchBlock::new).features(AEFeature.STORAGE_CELLS)
+               .tileEntity(registry
+                       .tileEntity("cell_workbench", CellWorkbenchBlockEntity.class, CellWorkbenchBlockEntity::new)
+                       .build())
+               .build();
+       this.iOPort = registry.block("io_port", IOPortBlock::new).features(AEFeature.STORAGE_CELLS, AEFeature.IO_PORT)
+               .tileEntity(registry.tileEntity("io_port", IOPortBlockEntity.class, IOPortBlockEntity::new).build())
+               .build();
+       this.condenser = registry.block("condenser", CondenserBlock::new).features(AEFeature.CONDENSER)
+               .tileEntity(
+                       registry.tileEntity("condenser", CondenserBlockEntity.class, CondenserBlockEntity::new).build())
+               .build();
+       this.energyAcceptor = registry.block("energy_acceptor", EnergyAcceptorBlock::new)
+               .features(AEFeature.ENERGY_ACCEPTOR)
+               .tileEntity(registry
+                       .tileEntity("energy_acceptor", EnergyAcceptorBlockEntity.class, EnergyAcceptorBlockEntity::new)
+                       .build())
+               .build();
+       this.vibrationChamber = registry.block("vibration_chamber", VibrationChamberBlock::new)
+               .features(AEFeature.POWER_GEN).tileEntity(registry.tileEntity("vibration_chamber",
+                       VibrationChamberBlockEntity.class, VibrationChamberBlockEntity::new).build())
+               .build();
+       this.quartzGrowthAccelerator = registry.block("quartz_growth_accelerator", QuartzGrowthAcceleratorBlock::new)
+               .tileEntity(registry.tileEntity("quartz_growth_accelerator", QuartzGrowthAcceleratorBlockEntity.class,
+                       QuartzGrowthAcceleratorBlockEntity::new).build())
+               .features(AEFeature.CRYSTAL_GROWTH_ACCELERATOR).build();
+       this.energyCell = registry.block("energy_cell", EnergyCellBlock::new).features(AEFeature.ENERGY_CELLS)
+               .item(AEBaseBlockItemChargeable::new).tileEntity(registry
+                       .tileEntity("energy_cell", EnergyCellBlockEntity.class, EnergyCellBlockEntity::new).build())
+               .build();
+       this.energyCellDense = registry.block("dense_energy_cell", DenseEnergyCellBlock::new)
+               .features(AEFeature.ENERGY_CELLS, AEFeature.DENSE_ENERGY_CELLS).item(AEBaseBlockItemChargeable::new)
+               .tileEntity(registry.tileEntity("dense_energy_cell", DenseEnergyCellBlockEntity.class,
+                       DenseEnergyCellBlockEntity::new).build())
+               .build();
+       this.energyCellCreative = registry.block("creative_energy_cell", CreativeEnergyCellBlock::new)
+               .features(AEFeature.CREATIVE).tileEntity(registry.tileEntity("creative_energy_cell",
+                       CreativeEnergyCellBlockEntity.class, CreativeEnergyCellBlockEntity::new).build())
+               .build();
+
+       TileEntityDefinition craftingUnit = registry
+               .tileEntity("crafting_unit", CraftingBlockEntity.class, CraftingBlockEntity::new).build();
+
+       FeatureFactory crafting = registry.features(AEFeature.CRAFTING_CPU);
+       AbstractBlock.Settings craftingBlockProps = defaultProps(Material.METAL);
+       this.craftingUnit = crafting
+               .block("crafting_unit", () -> new CraftingUnitBlock(craftingBlockProps, CraftingUnitType.UNIT))
+               .rendering(new CraftingCubeRendering()).tileEntity(craftingUnit).build();
+       this.craftingAccelerator = crafting
+               .block("crafting_accelerator",
+                       () -> new CraftingUnitBlock(craftingBlockProps, CraftingUnitType.ACCELERATOR))
+               .rendering(new CraftingCubeRendering()).tileEntity(craftingUnit).build();
+
+       TileEntityDefinition craftingStorage = registry
+               .tileEntity("crafting_storage", CraftingStorageBlockEntity.class, CraftingStorageBlockEntity::new)
+               .build();
+       this.craftingStorage1k = crafting
+               .block("1k_crafting_storage",
+                       () -> new CraftingStorageBlock(craftingBlockProps, CraftingUnitType.STORAGE_1K))
+               .item(CraftingStorageItem::new).tileEntity(craftingStorage).rendering(new CraftingCubeRendering())
+               .build();
+       this.craftingStorage4k = crafting
+               .block("4k_crafting_storage",
+                       () -> new CraftingStorageBlock(craftingBlockProps, CraftingUnitType.STORAGE_4K))
+               .item(CraftingStorageItem::new).tileEntity(craftingStorage).rendering(new CraftingCubeRendering())
+               .build();
+       this.craftingStorage16k = crafting
+               .block("16k_crafting_storage",
+                       () -> new CraftingStorageBlock(craftingBlockProps, CraftingUnitType.STORAGE_16K))
+               .item(CraftingStorageItem::new).tileEntity(craftingStorage).rendering(new CraftingCubeRendering())
+               .build();
+       this.craftingStorage64k = crafting
+               .block("64k_crafting_storage",
+                       () -> new CraftingStorageBlock(craftingBlockProps, CraftingUnitType.STORAGE_64K))
+               .item(CraftingStorageItem::new).tileEntity(craftingStorage).rendering(new CraftingCubeRendering())
+               .build();
+       this.craftingMonitor = crafting.block("crafting_monitor", () -> new CraftingMonitorBlock(craftingBlockProps))
+               .tileEntity(registry
+                       .tileEntity("crafting_monitor", CraftingMonitorBlockEntity.class, CraftingMonitorBlockEntity::new)
+                       .rendering(new TileEntityRenderingCustomizer<CraftingMonitorBlockEntity>() {
+                           @Environment(EnvType.CLIENT)
+                           @Override
+                           public void customize(TileEntityRendering<CraftingMonitorBlockEntity> rendering) {
+                               // FIXME FABRIC rendering.tileEntityRenderer(CraftingMonitorTESR::new);
+                           }
+                       }).build())
+               .rendering(new BlockRenderingCustomizer() {
+                   @Override
+                   @Environment(EnvType.CLIENT)
+                   public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
+                       rendering.renderType(RenderLayer.getCutout());
+                       // FIXME FABRIC rendering.modelCustomizer((path, model) -> {
+                       // FIXME FABRIC     // The formed model handles rotations itself, the unformed one does not
+                       // FIXME FABRIC     if (model instanceof MonitorBakedModel) {
+                       // FIXME FABRIC         return model;
+                       // FIXME FABRIC     }
+                       // FIXME FABRIC     return new AutoRotatingBakedModel(model);
+                       // FIXME FABRIC });
+                   }
+               }).build();
+
+       this.molecularAssembler = registry
+               .block("molecular_assembler", () -> new MolecularAssemblerBlock(defaultProps(Material.METAL).solidBlock((state, world, pos) -> false)))
+               .features(AEFeature.MOLECULAR_ASSEMBLER).rendering(new BlockRenderingCustomizer() {
+                   @Environment(EnvType.CLIENT)
+                   @Override
+                   public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
+                       rendering.renderType(RenderLayer.getCutout());
+                   }
+               })
+               .tileEntity(registry
+                       .tileEntity("molecular_assembler", MolecularAssemblerBlockEntity.class,
+                               MolecularAssemblerBlockEntity::new)
+                       .rendering(new TileEntityRenderingCustomizer<MolecularAssemblerBlockEntity>() {
+                           @Override
+                           @Environment(EnvType.CLIENT)
+                           public void customize(TileEntityRendering<MolecularAssemblerBlockEntity> rendering) {
+                               rendering.tileEntityRenderer(MolecularAssemblerRenderer::new);
+                           }
+                       }).build())
+               .build();
 
         this.lightDetector = registry.block("light_detector", LightDetectorBlock::new)
                 .features(AEFeature.LIGHT_DETECTOR)
@@ -484,10 +505,10 @@ public final class ApiBlocks implements IBlocks {
                         rendering.renderType(RenderLayer.getCutout());
                     }
                 }).build();
-// FIXME        this.paint = registry
-// FIXME                .block("paint", PaintSplotchesBlock::new).features(AEFeature.PAINT_BALLS).tileEntity(registry
-// FIXME                        .tileEntity("paint", PaintSplotchesBlockEntity.class, PaintSplotchesBlockEntity::new).build())
-// FIXME                .rendering(new PaintSplotchesRendering()).build();
+        this.paint = registry
+                .block("paint", PaintSplotchesBlock::new).features(AEFeature.PAINT_BALLS).tileEntity(registry
+                        .tileEntity("paint", PaintSplotchesBlockEntity.class, PaintSplotchesBlockEntity::new).build())
+                .rendering(new PaintSplotchesRendering()).build();
 
         this.skyStoneStairs = deco
                 .block("sky_stone_stairs",

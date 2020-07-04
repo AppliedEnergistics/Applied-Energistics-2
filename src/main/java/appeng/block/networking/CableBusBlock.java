@@ -158,8 +158,8 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
 // FIXME FABRIC Hook does not exist
 // FIXME FABRIC    @Override
 // FIXME FABRIC    public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player,
-// FIXME FABRIC            boolean willHarvest, IFluidState fluid) {
-// FIXME FABRIC        if (player.abilities.isCreativeMode) {
+// FIXME FABRIC            boolean willHarvest, FluidState fluid) {
+// FIXME FABRIC        if (player.isCreative()) {
 // FIXME FABRIC            final AEBaseBlockEntity tile = this.getBlockEntity(world, pos);
 // FIXME FABRIC            if (tile != null) {
 // FIXME FABRIC                tile.disableDrops();

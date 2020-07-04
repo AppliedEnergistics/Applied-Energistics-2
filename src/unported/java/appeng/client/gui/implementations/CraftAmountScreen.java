@@ -18,11 +18,11 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.util.InputMappings;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
-import net.minecraftforge.fml.client.gui.GuiUtils;
+
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.widgets.NumberBox;
@@ -37,7 +37,7 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
 
     private NumberBox amountToCraft;
 
-    private Button next;
+    private ButtonWidget next;
 
     public CraftAmountScreen(CraftAmountContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
@@ -53,47 +53,47 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
         final int c = AEConfig.instance().craftItemsByStackAmounts(2);
         final int d = AEConfig.instance().craftItemsByStackAmounts(3);
 
-        this.addButton(new Button(this.guiLeft + 20, this.guiTop + 26, 22, 20, "+" + a, btn -> addQty(a)));
-        this.addButton(new Button(this.guiLeft + 48, this.guiTop + 26, 28, 20, "+" + b, btn -> addQty(b)));
-        this.addButton(new Button(this.guiLeft + 82, this.guiTop + 26, 32, 20, "+" + c, btn -> addQty(c)));
-        this.addButton(new Button(this.guiLeft + 120, this.guiTop + 26, 38, 20, "+" + d, btn -> addQty(d)));
+        this.addButton(new ButtonWidget(this.x + 20, this.y + 26, 22, 20, "+" + a, btn -> addQty(a)));
+        this.addButton(new ButtonWidget(this.x + 48, this.y + 26, 28, 20, "+" + b, btn -> addQty(b)));
+        this.addButton(new ButtonWidget(this.x + 82, this.y + 26, 32, 20, "+" + c, btn -> addQty(c)));
+        this.addButton(new ButtonWidget(this.x + 120, this.y + 26, 38, 20, "+" + d, btn -> addQty(d)));
 
-        this.addButton(new Button(this.guiLeft + 20, this.guiTop + 75, 22, 20, "-" + a, btn -> addQty(-a)));
-        this.addButton(new Button(this.guiLeft + 48, this.guiTop + 75, 28, 20, "-" + b, btn -> addQty(-b)));
-        this.addButton(new Button(this.guiLeft + 82, this.guiTop + 75, 32, 20, "-" + c, btn -> addQty(-c)));
-        this.addButton(new Button(this.guiLeft + 120, this.guiTop + 75, 38, 20, "-" + d, btn -> addQty(-d)));
+        this.addButton(new ButtonWidget(this.x + 20, this.y + 75, 22, 20, "-" + a, btn -> addQty(-a)));
+        this.addButton(new ButtonWidget(this.x + 48, this.y + 75, 28, 20, "-" + b, btn -> addQty(-b)));
+        this.addButton(new ButtonWidget(this.x + 82, this.y + 75, 32, 20, "-" + c, btn -> addQty(-c)));
+        this.addButton(new ButtonWidget(this.x + 120, this.y + 75, 38, 20, "-" + d, btn -> addQty(-d)));
 
         this.next = this.addButton(
-                new Button(this.guiLeft + 128, this.guiTop + 51, 38, 20, GuiText.Next.getLocal(), this::confirm));
+                new ButtonWidget(this.x + 128, this.y + 51, 38, 20, GuiText.Next.getLocal(), this::confirm));
 
         subGui.addBackButton(this::addButton, 154, 0);
 
-        this.amountToCraft = new NumberBox(this.font, this.guiLeft + 62, this.guiTop + 57, 59, this.font.FONT_HEIGHT,
+        this.amountToCraft = new NumberBox(this.textRenderer, this.x + 62, this.y + 57, 59, this.textRenderer.FONT_HEIGHT,
                 Integer.class);
-        this.amountToCraft.setEnableBackgroundDrawing(false);
-        this.amountToCraft.setMaxStringLength(16);
-        this.amountToCraft.setTextColor(0xFFFFFF);
+        this.amountToCraft.setHasBorder(false);
+        this.amountToCraft.setMaxLength(16);
+        this.amountToCraft.setEditableColor(0xFFFFFF);
         this.amountToCraft.setVisible(true);
-        this.amountToCraft.setFocused2(true);
+        this.amountToCraft.setFocused(true);
         this.amountToCraft.setText("1");
     }
 
-    private void confirm(Button button) {
+    private void confirm(ButtonWidget button) {
         NetworkHandler.instance()
                 .sendToServer(new CraftRequestPacket(Integer.parseInt(this.amountToCraft.getText()), hasShiftDown()));
     }
 
     @Override
-    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.font.drawString(GuiText.SelectAmount.getLocal(), 8, 6, 4210752);
+    public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+        this.textRenderer.draw(matrices, GuiText.SelectAmount.getLocal(), 8, 6, 4210752);
     }
 
     @Override
-    public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
         this.next.setMessage(hasShiftDown() ? GuiText.Start.getLocal() : GuiText.Next.getLocal());
 
         this.bindTexture("guis/craft_amt.png");
-        GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());
+        drawTexture(matrices, offsetX, offsetY, 0, 0, this.backgroundWidth, this.backgroundHeight);
 
         try {
             Long.parseLong(this.amountToCraft.getText());
@@ -113,7 +113,7 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
-        if (!this.checkHotbarKeys(InputMappings.getInputByCode(keyCode, scanCode))) {
+        if (!this.checkHotbarKeys(keyCode, scanCode)) {
             if (keyCode == 28) {
                 this.next.onPress();
             }
