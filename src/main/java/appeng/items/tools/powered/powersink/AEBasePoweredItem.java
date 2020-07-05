@@ -66,7 +66,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 
         final double percent = internalCurrentPower / internalMaxPower;
 
-        lines.add(GuiText.StoredEnergy.textComponent().copy()
+        lines.add(GuiText.StoredEnergy.text().copy()
                 .append(':' + MessageFormat.format(" {0,number,#} ", internalCurrentPower))
                 .append(new TranslatableText(PowerUnits.AE.unlocalizedName))
                 .append(" - " + MessageFormat.format(" {0,number,#.##%} ", percent)));

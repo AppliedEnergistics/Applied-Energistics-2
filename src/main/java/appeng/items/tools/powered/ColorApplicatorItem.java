@@ -197,7 +197,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     @Override
     public Text getName(final ItemStack is) {
-        Text extra = GuiText.Empty.textComponent();
+        Text extra = GuiText.Empty.text();
 
         final AEColor selected = this.getActiveColor(is);
 

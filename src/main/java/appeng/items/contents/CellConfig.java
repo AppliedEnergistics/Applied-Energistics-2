@@ -34,7 +34,7 @@ public class CellConfig extends AppEngInternalInventory {
     }
 
     @Override
-    protected void onContentsChanged(FixedItemInvView inv, int slot, ItemStack previous, ItemStack current) {
+    protected void onContentsChanged(int slot, ItemStack previous, ItemStack current) {
         this.writeToNBT(this.is.getOrCreateTag(), "list");
     }
 }

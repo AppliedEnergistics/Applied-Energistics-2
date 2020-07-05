@@ -5,7 +5,6 @@ import appeng.bootstrap.ModelsReloadCallback;
 import appeng.bootstrap.components.IClientSetupComponent;
 import appeng.bootstrap.components.IItemColorRegistrationComponent;
 import appeng.bootstrap.components.IModelBakeComponent;
-import appeng.bootstrap.components.ITileEntityRegistrationComponent;
 import appeng.client.gui.implementations.*;
 import appeng.client.render.cablebus.CableBusModelLoader;
 import appeng.client.render.effects.*;
@@ -20,22 +19,23 @@ import appeng.core.features.registries.PartModels;
 import appeng.core.sync.network.ClientNetworkHandler;
 import appeng.core.worlddata.WorldData;
 import appeng.entity.*;
+import appeng.fluids.client.gui.*;
+import appeng.fluids.container.*;
 import appeng.hooks.ClientTickHandler;
 import appeng.util.Platform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.render.entity.ItemEntityRenderer;
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
@@ -52,13 +52,15 @@ import java.util.stream.Stream;
 @Environment(EnvType.CLIENT)
 public final class AppEngClient extends AppEngBase {
 
+    private final static String KEY_CATEGORY = "key.appliedenergistics2.category";
+
     private final MinecraftClient client;
 
     private final ClientNetworkHandler networkHandler;
 
     private final ClientTickHandler tickHandler;
 
-    private final EnumMap<ActionKey, KeyBinding> bindings = new EnumMap<>(ActionKey.class);
+    private final EnumMap<ActionKey, KeyBinding> bindings;
 
     public static AppEngClient instance() {
         return (AppEngClient) AppEng.instance();
@@ -87,6 +89,13 @@ public final class AppEngClient extends AppEngBase {
         ServerLifecycleEvents.SERVER_STARTED.register(WorldData::onServerStarting);
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> WorldData.instance().onServerStopping());
         ServerLifecycleEvents.SERVER_STOPPED.register(server -> WorldData.instance().onServerStoppped());
+
+        this.bindings = new EnumMap<>(ActionKey.class);
+        for (ActionKey key : ActionKey.values()) {
+            final KeyBinding binding = new KeyBinding(key.getTranslationKey(), key.getDefaultKey(), KEY_CATEGORY);
+            KeyBindingHelper.registerKeyBinding(binding);
+            this.bindings.put(key, binding);
+        }
     }
 
     @Override
@@ -253,43 +262,43 @@ public final class AppEngClient extends AppEngBase {
         ScreenRegistry.register(SkyChestContainer.TYPE, SkyChestScreen::new);
         ScreenRegistry.register(ChestContainer.TYPE, ChestScreen::new);
         ScreenRegistry.register(WirelessContainer.TYPE, WirelessScreen::new);
-// FIXME FABRIC       ScreenRegistry.<MEMonitorableContainer, MEMonitorableScreen<MEMonitorableContainer>>register(
-// FIXME FABRIC               MEMonitorableContainer.TYPE, MEMonitorableScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(MEPortableCellContainer.TYPE, MEPortableCellScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(WirelessTermContainer.TYPE, WirelessTermScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(NetworkStatusContainer.TYPE, NetworkStatusScreen::new);
-// FIXME FABRIC       ScreenRegistry.<CraftingCPUContainer, CraftingCPUScreen<CraftingCPUContainer>>register(
-// FIXME FABRIC               CraftingCPUContainer.TYPE, CraftingCPUScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(NetworkToolContainer.TYPE, NetworkToolScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(QuartzKnifeContainer.TYPE, QuartzKnifeScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(DriveContainer.TYPE, DriveScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(VibrationChamberContainer.TYPE, VibrationChamberScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(CondenserContainer.TYPE, CondenserScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(InterfaceContainer.TYPE, InterfaceScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(FluidInterfaceContainer.TYPE, FluidInterfaceScreen::new);
-// FIXME FABRIC       ScreenRegistry.<UpgradeableContainer, UpgradeableScreen<UpgradeableContainer>>register(
-// FIXME FABRIC               UpgradeableContainer.TYPE, UpgradeableScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(FluidIOContainer.TYPE, FluidIOScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(IOPortContainer.TYPE, IOPortScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(StorageBusContainer.TYPE, StorageBusScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(FluidStorageBusContainer.TYPE, FluidStorageBusScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(FormationPlaneContainer.TYPE, FormationPlaneScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(FluidFormationPlaneContainer.TYPE, FluidFormationPlaneScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(PriorityContainer.TYPE, PriorityScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(SecurityStationContainer.TYPE, SecurityStationScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(CraftingTermContainer.TYPE, CraftingTermScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(PatternTermContainer.TYPE, PatternTermScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(FluidTerminalContainer.TYPE, FluidTerminalScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(LevelEmitterContainer.TYPE, LevelEmitterScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(FluidLevelEmitterContainer.TYPE, FluidLevelEmitterScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(SpatialIOPortContainer.TYPE, SpatialIOPortScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(InscriberContainer.TYPE, InscriberScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(CellWorkbenchContainer.TYPE, CellWorkbenchScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(MolecularAssemblerContainer.TYPE, MolecularAssemblerScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(CraftAmountContainer.TYPE, CraftAmountScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(CraftConfirmContainer.TYPE, CraftConfirmScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(InterfaceTerminalContainer.TYPE, InterfaceTerminalScreen::new);
-// FIXME FABRIC       ScreenRegistry.register(CraftingStatusContainer.TYPE, CraftingStatusScreen::new);
+       ScreenRegistry.<MEMonitorableContainer, MEMonitorableScreen<MEMonitorableContainer>>register(
+               MEMonitorableContainer.TYPE, MEMonitorableScreen::new);
+       ScreenRegistry.register(MEPortableCellContainer.TYPE, MEPortableCellScreen::new);
+       ScreenRegistry.register(WirelessTermContainer.TYPE, WirelessTermScreen::new);
+       ScreenRegistry.register(NetworkStatusContainer.TYPE, NetworkStatusScreen::new);
+       ScreenRegistry.<CraftingCPUContainer, CraftingCPUScreen<CraftingCPUContainer>>register(
+               CraftingCPUContainer.TYPE, CraftingCPUScreen::new);
+       ScreenRegistry.register(NetworkToolContainer.TYPE, NetworkToolScreen::new);
+       ScreenRegistry.register(QuartzKnifeContainer.TYPE, QuartzKnifeScreen::new);
+       ScreenRegistry.register(DriveContainer.TYPE, DriveScreen::new);
+       ScreenRegistry.register(VibrationChamberContainer.TYPE, VibrationChamberScreen::new);
+       ScreenRegistry.register(CondenserContainer.TYPE, CondenserScreen::new);
+       ScreenRegistry.register(InterfaceContainer.TYPE, InterfaceScreen::new);
+       ScreenRegistry.register(FluidInterfaceContainer.TYPE, FluidInterfaceScreen::new);
+       ScreenRegistry.<UpgradeableContainer, UpgradeableScreen<UpgradeableContainer>>register(
+               UpgradeableContainer.TYPE, UpgradeableScreen::new);
+       ScreenRegistry.register(FluidIOContainer.TYPE, FluidIOScreen::new);
+       ScreenRegistry.register(IOPortContainer.TYPE, IOPortScreen::new);
+       ScreenRegistry.register(StorageBusContainer.TYPE, StorageBusScreen::new);
+       ScreenRegistry.register(FluidStorageBusContainer.TYPE, FluidStorageBusScreen::new);
+       ScreenRegistry.register(FormationPlaneContainer.TYPE, FormationPlaneScreen::new);
+       ScreenRegistry.register(FluidFormationPlaneContainer.TYPE, FluidFormationPlaneScreen::new);
+       ScreenRegistry.register(PriorityContainer.TYPE, PriorityScreen::new);
+       ScreenRegistry.register(SecurityStationContainer.TYPE, SecurityStationScreen::new);
+       ScreenRegistry.register(CraftingTermContainer.TYPE, CraftingTermScreen::new);
+       ScreenRegistry.register(PatternTermContainer.TYPE, PatternTermScreen::new);
+       ScreenRegistry.register(FluidTerminalContainer.TYPE, FluidTerminalScreen::new);
+       ScreenRegistry.register(LevelEmitterContainer.TYPE, LevelEmitterScreen::new);
+       ScreenRegistry.register(FluidLevelEmitterContainer.TYPE, FluidLevelEmitterScreen::new);
+       ScreenRegistry.register(SpatialIOPortContainer.TYPE, SpatialIOPortScreen::new);
+       ScreenRegistry.register(InscriberContainer.TYPE, InscriberScreen::new);
+       ScreenRegistry.register(CellWorkbenchContainer.TYPE, CellWorkbenchScreen::new);
+       ScreenRegistry.register(MolecularAssemblerContainer.TYPE, MolecularAssemblerScreen::new);
+       ScreenRegistry.register(CraftAmountContainer.TYPE, CraftAmountScreen::new);
+       ScreenRegistry.register(CraftConfirmContainer.TYPE, CraftConfirmScreen::new);
+       ScreenRegistry.register(InterfaceTerminalContainer.TYPE, InterfaceTerminalScreen::new);
+       ScreenRegistry.register(CraftingStatusContainer.TYPE, CraftingStatusScreen::new);
     }
 
 }

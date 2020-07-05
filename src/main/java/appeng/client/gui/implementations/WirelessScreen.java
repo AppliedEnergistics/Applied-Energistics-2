@@ -45,12 +45,12 @@ public class WirelessScreen extends AEBaseScreen<WirelessContainer> {
 
     @Override
     public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.Wireless.getLocal()), 8, 6, 4210752);
-        this.textRenderer.draw(matrices, GuiText.inventory.getLocal(), 8, this.backgroundHeight - 96 + 3, 4210752);
+        this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.Wireless.text()), 8, 6, 4210752);
+        this.textRenderer.draw(matrices, GuiText.inventory.text(), 8, this.backgroundHeight - 96 + 3, 4210752);
 
         if (handler.getRange() > 0) {
-            final String firstMessage = GuiText.Range.getLocal() + ": " + (handler.getRange() / 10.0) + " m";
-            final String secondMessage = GuiText.PowerUsageRate.getLocal() + ": "
+            final String firstMessage = GuiText.Range.text() + ": " + (handler.getRange() / 10.0) + " m";
+            final String secondMessage = GuiText.PowerUsageRate.text() + ": "
                     + Platform.formatPowerLong(handler.getDrain(), true);
 
             final int strWidth = Math.max(this.textRenderer.getWidth(firstMessage),

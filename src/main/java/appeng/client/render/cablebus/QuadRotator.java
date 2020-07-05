@@ -24,10 +24,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.client.util.math.Vector3f;
-import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Matrix3f;
-import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Quaternion;
 
 import java.util.EnumMap;
@@ -39,7 +36,7 @@ import java.util.EnumMap;
 @Environment(EnvType.CLIENT)
 public class QuadRotator implements RenderContext.QuadTransform {
 
-    private static final RenderContext.QuadTransform NULL_TRANSFORM = quad -> true;
+    public static final RenderContext.QuadTransform NULL_TRANSFORM = quad -> true;
 
     private static final EnumMap<FacingToRotation, RenderContext.QuadTransform> TRANSFORMS
             = new EnumMap<>(FacingToRotation.class);
@@ -58,16 +55,20 @@ public class QuadRotator implements RenderContext.QuadTransform {
 
     private final Quaternion quaternion;
 
-    public QuadRotator(FacingToRotation rotation) {
+    private QuadRotator(FacingToRotation rotation) {
         this.rotation = rotation;
         this.quaternion = rotation.getRot();
     }
 
     public static RenderContext.QuadTransform get(Direction newForward, Direction newUp) {
-        if (newForward == Direction.NORTH && newUp == Direction.UP) {
+        return get(getRotation(newForward, newUp));
+    }
+
+    public static RenderContext.QuadTransform get(FacingToRotation rotation) {
+        if (rotation.isRedundant()) {
             return NULL_TRANSFORM; // This is the default orientation
         }
-        return TRANSFORMS.get(getRotation(newForward, newUp));
+        return TRANSFORMS.get(rotation);
     }
 
     @Override
@@ -85,12 +86,17 @@ public class QuadRotator implements RenderContext.QuadTransform {
 
             // Transform the normal
             quad.copyNormal(i, tmp);
-            tmp.rotate(rotation.getRot());
+            tmp.rotate(quaternion);
             quad.normal(i, tmp);
-
-            // Transform the nominal face
-            quad.nominalFace(rotation.rotate(quad.nominalFace()));
         }
+
+        // Transform the nominal face
+        quad.nominalFace(rotation.rotate(quad.nominalFace()));
+        Direction cullFace = quad.cullFace();
+        if (cullFace != null) {
+            quad.cullFace(rotation.rotate(cullFace));
+        }
+
         return true;
     }
 

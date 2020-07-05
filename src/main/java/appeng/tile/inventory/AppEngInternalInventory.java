@@ -19,10 +19,9 @@
 package appeng.tile.inventory;
 
 import alexiil.mc.lib.attributes.Simulation;
-import alexiil.mc.lib.attributes.item.FixedItemInvView;
 import alexiil.mc.lib.attributes.item.filter.ConstantItemFilter;
 import alexiil.mc.lib.attributes.item.filter.ItemFilter;
-import alexiil.mc.lib.attributes.item.impl.FullFixedItemInv;
+import alexiil.mc.lib.attributes.item.impl.DirectFixedItemInv;
 import appeng.util.Platform;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
@@ -30,13 +29,11 @@ import appeng.util.inv.filter.IAEItemFilter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 
-import javax.annotation.Nonnull;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 
 // FIXME: the filtering is not correctly implemented and need to be reworked
-public class AppEngInternalInventory extends FullFixedItemInv implements Iterable<ItemStack> {
+public class AppEngInternalInventory extends DirectFixedItemInv implements Iterable<ItemStack> {
     private boolean enableClientEvents = false;
     private IAEAppEngInventory te;
     private final int[] maxStack;
@@ -50,8 +47,6 @@ public class AppEngInternalInventory extends FullFixedItemInv implements Iterabl
         this.setFilter(filter);
         this.maxStack = new int[size];
         Arrays.fill(this.maxStack, maxStack);
-
-        setOwnerListener(this::onContentsChanged);
     }
 
     public AppEngInternalInventory(final IAEAppEngInventory inventory, final int size, final int maxStack) {
@@ -71,7 +66,21 @@ public class AppEngInternalInventory extends FullFixedItemInv implements Iterabl
         return Math.min(maxStack[slot], super.getMaxAmount(slot, stack));
     }
 
-    protected void onContentsChanged(FixedItemInvView inv, int slot, ItemStack previous, ItemStack current) {
+    @Override
+    public boolean setInvStack(int slot, ItemStack to, Simulation simulation) {
+        if (!simulation.isAction()) {
+            return super.setInvStack(slot, to, simulation);
+        }
+
+        ItemStack previous = getInvStack(slot).copy();
+        if (super.setInvStack(slot, to, simulation)) {
+            onContentsChanged(slot, previous, to);
+            return true;
+        }
+        return false;
+    }
+
+    protected void onContentsChanged(int slot, ItemStack previous, ItemStack current) {
         if (this.getBlockEntity() != null && this.eventsEnabled() && !this.dirtyFlag) {
             this.dirtyFlag = true;
             ItemStack newStack = current.copy();
@@ -111,11 +120,14 @@ public class AppEngInternalInventory extends FullFixedItemInv implements Iterabl
         }
         if (this.filter != null) {
             return stack -> {
-                // FIXME: This is not correct...
-                if (stack == ItemStack.EMPTY) {
-                    return filter.allowExtract(this, slot, this.getSlot(slot).get().getCount());
+                if (stack.isEmpty()) {
+                    ItemStack current = this.getInvStack(slot);
+                    if (current.isEmpty()) {
+                        return true; // Replacing empty with empty... okay
+                    }
+                    return filter.allowExtract(this, slot, current.getCount());
                 } else {
-                    return filter.allowExtract(this, slot, this.getSlot(slot).get().getCount());
+                    return filter.allowInsert(this, slot, stack);
                 }
             };
         }
@@ -128,6 +140,13 @@ public class AppEngInternalInventory extends FullFixedItemInv implements Iterabl
             return false;
         }
         if (this.filter != null) {
+            if (stack.isEmpty()) {
+                ItemStack current = this.getInvStack(slot);
+                if (current.isEmpty()) {
+                    return true; // Replacing empty with empty... okay
+                }
+                return filter.allowExtract(this, slot, current.getCount());
+            }
             return this.filter.allowInsert(this, slot, stack);
         }
         return true;

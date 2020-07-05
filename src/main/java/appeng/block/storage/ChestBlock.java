@@ -88,7 +88,6 @@ public class ChestBlock extends AEBaseTileBlock<ChestBlockEntity> {
             } else {
                 ContainerOpener.openContainer(ChestContainer.TYPE, p,
                         ContainerLocator.forTileEntitySide(tg, hit.getSide()));
-                throw new IllegalStateException();
             }
 
             return ActionResult.SUCCESS;

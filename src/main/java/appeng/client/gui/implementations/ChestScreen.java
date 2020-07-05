@@ -42,7 +42,7 @@ public class ChestScreen extends AEBaseScreen<ChestContainer> {
     public void init() {
         super.init();
 
-        this.addButton(new TabButton(this.x + 154, this.y, 2 + 4 * 16, GuiText.Priority.textComponent(),
+        this.addButton(new TabButton(this.x + 154, this.y, 2 + 4 * 16, GuiText.Priority.text(),
                 this.itemRenderer, btn -> openPriority()));
     }
 
@@ -52,8 +52,8 @@ public class ChestScreen extends AEBaseScreen<ChestContainer> {
 
     @Override
     public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.Chest.getLocal()), 8, 6, 4210752);
-        this.textRenderer.draw(matrices, GuiText.inventory.getLocal(), 8, this.backgroundHeight - 96 + 3, 4210752);
+        this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.Chest.text()), 8, 6, 4210752);
+        this.textRenderer.draw(matrices, GuiText.inventory.text(), 8, this.backgroundHeight - 96 + 3, 4210752);
     }
 
     @Override

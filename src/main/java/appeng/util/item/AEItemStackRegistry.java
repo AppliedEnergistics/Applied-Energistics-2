@@ -30,21 +30,10 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
 
-import appeng.util.Platform;
-
 public final class AEItemStackRegistry {
-    private static final WeakHashMap<AESharedItemStack, WeakReference<AESharedItemStack>> SERVER_REGISTRY = new WeakHashMap<>();
-    private static final WeakHashMap<AESharedItemStack, WeakReference<AESharedItemStack>> CLIENT_REGISTRY = new WeakHashMap<>();
+    private static final WeakHashMap<AESharedItemStack, WeakReference<AESharedItemStack>> REGISTRY = new WeakHashMap<>();
 
     private AEItemStackRegistry() {
-    }
-
-    private static WeakHashMap<AESharedItemStack, WeakReference<AESharedItemStack>> registry() {
-        if (Platform.isClient()) {
-            return CLIENT_REGISTRY;
-        } else {
-            return SERVER_REGISTRY;
-        }
     }
 
     static synchronized AESharedItemStack getRegisteredStack(final @Nonnull ItemStack itemStack) {
@@ -56,7 +45,7 @@ public final class AEItemStackRegistry {
         itemStack.setCount(1);
 
         AESharedItemStack search = new AESharedItemStack(itemStack);
-        WeakReference<AESharedItemStack> weak = registry().get(search);
+        WeakReference<AESharedItemStack> weak = REGISTRY.get(search);
         AESharedItemStack ret = null;
 
         if (weak != null) {
@@ -65,7 +54,7 @@ public final class AEItemStackRegistry {
 
         if (ret == null) {
             ret = new AESharedItemStack(itemStack.copy());
-            registry().put(ret, new WeakReference<>(ret));
+            REGISTRY.put(ret, new WeakReference<>(ret));
         }
         itemStack.setCount(oldStackSize);
 

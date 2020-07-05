@@ -26,7 +26,7 @@ import appeng.integration.abstraction.IJEI;
 
 class JeiRuntimeAdapter implements IJEI {
 
-    private final IJeiRuntime runtime;
+    private final IReiRuntime runtime;
 
     JeiRuntimeAdapter(IJeiRuntime jeiRuntime) {
         this.runtime = jeiRuntime;

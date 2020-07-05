@@ -49,6 +49,7 @@ import appeng.core.AELog;
 import appeng.core.stats.AeStats;
 import appeng.fluids.util.AEFluidStack;
 import appeng.hooks.TickHandler;
+import appeng.integration.abstraction.JEIFacade;
 import appeng.me.GridAccessException;
 import appeng.me.GridNode;
 import appeng.me.helpers.AENetworkProxy;
@@ -1141,8 +1142,7 @@ public class Platform {
 
     public static boolean isSearchModeAvailable(SearchBoxMode mode) {
         if (mode.isRequiresJei()) {
-            throw new IllegalStateException();
-// FIXME FABRIC           return JEIFacade.instance().isEnabled();
+           return JEIFacade.instance().isEnabled();
         }
         return true;
     }

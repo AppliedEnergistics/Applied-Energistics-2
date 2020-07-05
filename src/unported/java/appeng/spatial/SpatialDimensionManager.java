@@ -139,7 +139,7 @@ public final class SpatialDimensionManager implements ISpatialDimension {
 
         // Add the actual stored size
         BlockPos size = SpatialDimensionManager.INSTANCE.getCellDimensionSize(cellDim);
-        lines.add(GuiText.StoredSize.textComponent(size.getX(), size.getY(), size.getZ()));
+        lines.add(GuiText.StoredSize.text(size.getX(), size.getY(), size.getZ()));
 
         // Add a serial number to allows players to keep different cells apart
         int dimId;
@@ -152,7 +152,7 @@ public final class SpatialDimensionManager implements ISpatialDimension {
 
         // Try to make this a little more flavorful.
         String serialNumber = String.format(Locale.ROOT, "SP-%04d", dimId);
-        lines.add(GuiText.SerialNumber.textComponent(serialNumber));
+        lines.add(GuiText.SerialNumber.text(serialNumber));
     }
 
     @Nullable

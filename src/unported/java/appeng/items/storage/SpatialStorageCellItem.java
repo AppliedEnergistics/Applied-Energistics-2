@@ -60,8 +60,8 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
             final TooltipContext advancedTooltips) {
         final DimensionType dimType = this.getStoredDimension(stack);
         if (dimType == null) {
-            lines.add(GuiText.Unformatted.textComponent().formatted(Formatting.ITALIC));
-            lines.add(GuiText.SpatialCapacity.textComponent(maxRegion, maxRegion, maxRegion));
+            lines.add(GuiText.Unformatted.text().formatted(Formatting.ITALIC));
+            lines.add(GuiText.SpatialCapacity.text(maxRegion, maxRegion, maxRegion));
         } else {
             SpatialDimensionManager.INSTANCE.addCellDimensionTooltip(dimType, lines);
         }

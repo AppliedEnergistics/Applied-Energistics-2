@@ -18,6 +18,7 @@
 
 package appeng.core.localization;
 
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
@@ -85,14 +86,16 @@ public enum GuiText {
 
     private final String root;
 
-    private final Text text = new TranslatableText(getTranslationKey());
+    private final Text text;
 
     GuiText() {
         this.root = "gui.appliedenergistics2";
+        this.text = new TranslatableText(getTranslationKey());
     }
 
     GuiText(final String r) {
         this.root = r;
+        this.text = new TranslatableText(getTranslationKey());
     }
 
     public String getLocal() {
@@ -103,11 +106,19 @@ public enum GuiText {
         return this.root + '.' + this.toString();
     }
 
-    public Text textComponent() {
+    public Text text() {
         return text;
     }
 
-    public Text textComponent(Object... args) {
+    public MutableText withSuffix(String text) {
+        return text().copy().append(text);
+    }
+
+    public MutableText withSuffix(Text text) {
+        return text().copy().append(text);
+    }
+
+    public MutableText text(Object... args) {
         return new TranslatableText(getTranslationKey(), args);
     }
 

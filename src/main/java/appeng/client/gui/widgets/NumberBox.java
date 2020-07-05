@@ -25,10 +25,10 @@ import net.minecraft.text.LiteralText;
 // FIXME: Fix this piece of crap (i.e. onChange listener)
 public class NumberBox extends TextFieldWidget {
 
-    private final Class type;
+    private final Class<?> type;
 
     public NumberBox(final TextRenderer fontRenderer, final int x, final int y, final int width, final int height,
-                     final Class type) {
+                     final Class<?> type) {
         super(fontRenderer, x, y, width, height, new LiteralText("0"));
         this.type = type;
     }
@@ -50,4 +50,10 @@ public class NumberBox extends TextFieldWidget {
             this.setText(original);
         }
     }
+
+    @Override
+    public void setFocused(boolean focused) {
+        super.setFocused(focused);
+    }
+
 }

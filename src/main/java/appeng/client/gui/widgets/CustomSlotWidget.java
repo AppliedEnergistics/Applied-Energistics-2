@@ -3,6 +3,7 @@ package appeng.client.gui.widgets;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -31,7 +32,7 @@ public abstract class CustomSlotWidget extends DrawableHelper implements IToolti
 
     public abstract void drawContent(final MinecraftClient mc, final int mouseX, final int mouseY, final float partialTicks);
 
-    public void drawBackground(int guileft, int guitop, int currentZIndex) {
+    public void drawBackground(MatrixStack matrices, int guileft, int guitop, int currentZIndex) {
     }
 
     @Override

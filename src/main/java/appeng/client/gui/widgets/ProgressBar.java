@@ -84,7 +84,7 @@ public class ProgressBar extends AbstractButtonWidget implements ITooltip {
 
         Text text = this.titleName != null ? this.titleName : LiteralText.EMPTY;
         return text.copy().append("\n" + this.source.getCurrentProgress() + " ")
-                .append(GuiText.Of.textComponent())
+                .append(GuiText.Of.text())
                 .append(" " + this.source.getMaxProgress());
     }
 

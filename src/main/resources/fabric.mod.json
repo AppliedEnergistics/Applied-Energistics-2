@@ -36,5 +36,11 @@
   "suggests": {
     "flamingo": "*"
   },
-  "accessWidener" : "appliedenergistics2.accesswidener"
+  "accessWidener" : "appliedenergistics2.accesswidener",
+  "custom": {
+    "waila:plugins": {
+      "id": "appliedenergistics2:hwyla",
+      "initializer": "appeng.integration.modules.waila.WailaModule"
+    }
+  }
 }

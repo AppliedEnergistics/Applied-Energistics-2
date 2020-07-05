@@ -43,7 +43,6 @@ import appeng.api.AEApi;
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.helpers.InvalidPatternHelper;
 import appeng.helpers.PatternHelper;
@@ -104,15 +103,15 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
                 return;
             }
 
-            stack.setCustomName(GuiText.InvalidPattern.textComponent().copy().formatted(Formatting.RED));
+            stack.setCustomName(GuiText.InvalidPattern.text().copy().formatted(Formatting.RED));
 
             InvalidPatternHelper invalid = new InvalidPatternHelper(stack);
 
-            final Text label = (invalid.isCraftable() ? GuiText.Crafts.textComponent()
-                    : GuiText.Creates.textComponent()).copy().append(": ");
-            final Text and = new LiteralText(" ").append(GuiText.And.textComponent())
+            final Text label = (invalid.isCraftable() ? GuiText.Crafts.text()
+                    : GuiText.Creates.text()).copy().append(": ");
+            final Text and = new LiteralText(" ").append(GuiText.And.text())
                     .append(" ");
-            final Text with = GuiText.With.textComponent().copy().append(": ");
+            final Text with = GuiText.With.text().copy().append(": ");
 
             boolean first = true;
             for (final InvalidPatternHelper.PatternIngredient output : invalid.getOutputs()) {
@@ -127,9 +126,9 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
             }
 
             if (invalid.isCraftable()) {
-                final MutableText substitutionLabel = GuiText.Substitute.textComponent().copy().append(" ");
-                final Text canSubstitute = invalid.canSubstitute() ? GuiText.Yes.textComponent()
-                        : GuiText.No.textComponent();
+                final MutableText substitutionLabel = GuiText.Substitute.text().copy().append(" ");
+                final Text canSubstitute = invalid.canSubstitute() ? GuiText.Yes.text()
+                        : GuiText.No.text();
 
                 lines.add(substitutionLabel.append(canSubstitute));
             }
@@ -147,11 +146,11 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
         final IAEItemStack[] in = details.getCondensedInputs();
         final IAEItemStack[] out = details.getCondensedOutputs();
 
-        final Text label = (isCrafting ? GuiText.Crafts.textComponent() : GuiText.Creates.textComponent())
+        final Text label = (isCrafting ? GuiText.Crafts.text() : GuiText.Creates.text())
                 .copy().append(": ");
-        final Text and = new LiteralText(" ").append(GuiText.And.textComponent())
+        final Text and = new LiteralText(" ").append(GuiText.And.text())
                 .append(" ");
-        final Text with = GuiText.With.textComponent().copy().append(": ");
+        final Text with = GuiText.With.text().copy().append(": ");
 
         boolean first = true;
         for (final IAEItemStack anOut : out) {
@@ -176,8 +175,8 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
         }
 
         if (isCrafting) {
-            final MutableText substitutionLabel = GuiText.Substitute.textComponent().copy().append(" ");
-            final Text canSubstitute = substitute ? GuiText.Yes.textComponent() : GuiText.No.textComponent();
+            final MutableText substitutionLabel = GuiText.Substitute.text().copy().append(" ");
+            final Text canSubstitute = substitute ? GuiText.Yes.text() : GuiText.No.text();
 
             lines.add(substitutionLabel.append(canSubstitute));
         }

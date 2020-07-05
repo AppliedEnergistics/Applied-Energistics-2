@@ -2,9 +2,11 @@ package appeng.core;
 
 import appeng.api.features.IRegistryContainer;
 import appeng.api.networking.IGridCacheRegistry;
+import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.networking.security.ISecurityGrid;
+import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.parts.CableRenderMode;
@@ -22,7 +24,11 @@ import appeng.core.stats.AeStats;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.network.TargetPoint;
+import appeng.fluids.container.*;
+import appeng.fluids.registries.BasicFluidCellGuiHandler;
 import appeng.hooks.ToolItemHook;
+import appeng.items.parts.FacadeItem;
+import appeng.items.tools.NetworkToolItem;
 import appeng.me.cache.*;
 import appeng.mixins.CriteriaRegisterMixin;
 import appeng.recipes.handlers.*;
@@ -31,6 +37,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.screen.ScreenHandlerType;
@@ -84,15 +91,15 @@ public abstract class AppEngBase implements AppEng {
         gcr.registerGridCache(IEnergyGrid.class, EnergyGridCache::new);
         gcr.registerGridCache(IPathingGrid.class, PathGridCache::new);
         gcr.registerGridCache(IStorageGrid.class, GridStorageCache::new);
-// FIXME FABRIC        gcr.registerGridCache(P2PCache.class, P2PCache.class);
-// FIXME FABRIC        gcr.registerGridCache(ISpatialCache.class, SpatialPylonCache.class);
+        gcr.registerGridCache(P2PCache.class, P2PCache::new);
+        gcr.registerGridCache(ISpatialCache.class, SpatialPylonCache::new);
         gcr.registerGridCache(ISecurityGrid.class, SecurityCache::new);
-// FIXME FABRIC        gcr.registerGridCache(ICraftingGrid.class, CraftingGridCache.class);
+        gcr.registerGridCache(ICraftingGrid.class, CraftingGridCache::new);
 
         registries.cell().addCellHandler(new BasicCellHandler());
         registries.cell().addCellHandler(new CreativeCellHandler());
         registries.cell().addCellGuiHandler(new BasicItemCellGuiHandler());
-// FIXME FABRIC        registries.cell().addCellGuiHandler(new BasicFluidCellGuiHandler());
+        registries.cell().addCellGuiHandler(new BasicFluidCellGuiHandler());
 
         registries.matterCannon().registerAmmoItem(api.definitions().materials().matterBall().item(), 32);
     }
@@ -175,12 +182,12 @@ public abstract class AppEngBase implements AppEng {
             for (int x = 0; x < PlayerInventory.getHotbarSize(); x++) {
                 final ItemStack is = player.inventory.getStack(x);
 
-               // FIXME FABRIC if (!is.isEmpty() && is.getItem() instanceof NetworkToolItem) {
-               // FIXME FABRIC     final CompoundTag c = is.getTag();
-               // FIXME FABRIC     if (c != null && c.getBoolean("hideFacades")) {
-               // FIXME FABRIC         return CableRenderMode.CABLE_VIEW;
-               // FIXME FABRIC     }
-               // FIXME FABRIC }
+                if (!is.isEmpty() && is.getItem() instanceof NetworkToolItem) {
+                    final CompoundTag c = is.getTag();
+                    if (c != null && c.getBoolean("hideFacades")) {
+                        return CableRenderMode.CABLE_VIEW;
+                    }
+                }
             }
         }
 
@@ -253,18 +260,18 @@ public abstract class AppEngBase implements AppEng {
         WirelessTermContainer.TYPE = registerScreenHandler("wirelessterm", WirelessTermContainer::fromNetwork,
                 WirelessTermContainer::open);
 
-// FIXME FABRIC  FluidFormationPlaneContainer.TYPE = registerScreenHandler("fluid_formation_plane",
-// FIXME FABRIC          FluidFormationPlaneContainer::fromNetwork, FluidFormationPlaneContainer::open);
-// FIXME FABRIC  FluidIOContainer.TYPE = registerScreenHandler("fluid_io", FluidIOContainer::fromNetwork,
-// FIXME FABRIC          FluidIOContainer::open);
-// FIXME FABRIC  FluidInterfaceContainer.TYPE = registerScreenHandler("fluid_interface",
-// FIXME FABRIC          FluidInterfaceContainer::fromNetwork, FluidInterfaceContainer::open);
-// FIXME FABRIC  FluidLevelEmitterContainer.TYPE = registerScreenHandler("fluid_level_emitter",
-// FIXME FABRIC          FluidLevelEmitterContainer::fromNetwork, FluidLevelEmitterContainer::open);
-// FIXME FABRIC  FluidStorageBusContainer.TYPE = registerScreenHandler("fluid_storage_bus",
-// FIXME FABRIC          FluidStorageBusContainer::fromNetwork, FluidStorageBusContainer::open);
-// FIXME FABRIC  FluidTerminalContainer.TYPE = registerScreenHandler("fluid_terminal", FluidTerminalContainer::fromNetwork,
-// FIXME FABRIC          FluidTerminalContainer::open);
+        FluidFormationPlaneContainer.TYPE = registerScreenHandler("fluid_formation_plane",
+                FluidFormationPlaneContainer::fromNetwork, FluidFormationPlaneContainer::open);
+        FluidIOContainer.TYPE = registerScreenHandler("fluid_io", FluidIOContainer::fromNetwork,
+                FluidIOContainer::open);
+        FluidInterfaceContainer.TYPE = registerScreenHandler("fluid_interface",
+                FluidInterfaceContainer::fromNetwork, FluidInterfaceContainer::open);
+        FluidLevelEmitterContainer.TYPE = registerScreenHandler("fluid_level_emitter",
+                FluidLevelEmitterContainer::fromNetwork, FluidLevelEmitterContainer::open);
+        FluidStorageBusContainer.TYPE = registerScreenHandler("fluid_storage_bus",
+                FluidStorageBusContainer::fromNetwork, FluidStorageBusContainer::open);
+        FluidTerminalContainer.TYPE = registerScreenHandler("fluid_terminal", FluidTerminalContainer::fromNetwork,
+                FluidTerminalContainer::open);
 
     }
 

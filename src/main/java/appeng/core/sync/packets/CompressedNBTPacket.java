@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import appeng.client.gui.implementations.InterfaceTerminalScreen;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.MinecraftClient;
@@ -97,9 +98,8 @@ public class CompressedNBTPacket extends BasePacket {
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         final Screen gs = MinecraftClient.getInstance().currentScreen;
 
-        throw new IllegalStateException();
-        // FIXME FABRIC if (gs instanceof InterfaceTerminalScreen) {
-        // FIXME FABRIC     ((InterfaceTerminalScreen) gs).postUpdate(this.in);
-        // FIXME FABRIC }
+        if (gs instanceof InterfaceTerminalScreen) {
+            ((InterfaceTerminalScreen) gs).postUpdate(this.in);
+        }
     }
 }

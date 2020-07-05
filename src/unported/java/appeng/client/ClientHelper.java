@@ -47,18 +47,11 @@ import appeng.server.ServerHelper;
 import appeng.util.Platform;
 
 public class ClientHelper extends ServerHelper {
-    private final static String KEY_CATEGORY = "key.appliedenergistics2.category";
-
 
     public void clientInit() {
         MinecraftForge.EVENT_BUS.addListener(this::postPlayerRender);
         MinecraftForge.EVENT_BUS.addListener(this::wheelEvent);
 
-        for (ActionKey key : ActionKey.values()) {
-            final KeyBinding binding = new KeyBinding(key.getTranslationKey(), key.getDefaultKey(), KEY_CATEGORY);
-            ClientRegistry.registerKeyBinding(binding);
-            this.bindings.put(key, binding);
-        }
     }
 
     @Override

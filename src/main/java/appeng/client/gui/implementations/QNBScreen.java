@@ -36,8 +36,8 @@ public class QNBScreen extends AEBaseScreen<QNBContainer> {
 
     @Override
     public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.QuantumLinkChamber.getLocal()), 8, 6, 4210752);
-        this.textRenderer.draw(matrices, GuiText.inventory.getLocal(), 8, this.backgroundHeight - 96 + 3, 4210752);
+        this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.QuantumLinkChamber.text()), 8, 6, 4210752);
+        this.textRenderer.draw(matrices, GuiText.inventory.text(), 8, this.backgroundHeight - 96 + 3, 4210752);
     }
 
     @Override

@@ -29,6 +29,10 @@ import java.util.zip.GZIPOutputStream;
 
 import javax.annotation.Nullable;
 
+import appeng.client.gui.implementations.CraftConfirmScreen;
+import appeng.client.gui.implementations.CraftingCPUScreen;
+import appeng.client.gui.implementations.MEMonitorableScreen;
+import appeng.client.gui.implementations.NetworkStatusScreen;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.MinecraftClient;
@@ -132,22 +136,21 @@ public class MEInventoryUpdatePacket extends BasePacket {
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         final Screen gs = MinecraftClient.getInstance().currentScreen;
 
-        throw new IllegalStateException();
-// FIXME FABRIC        if (gs instanceof CraftConfirmScreen) {
-// FIXME FABRIC            ((CraftConfirmScreen) gs).postUpdate(this.list, this.ref);
-// FIXME FABRIC        }
-// FIXME FABRIC
-// FIXME FABRIC        if (gs instanceof CraftingCPUScreen) {
-// FIXME FABRIC            ((CraftingCPUScreen<?>) gs).postUpdate(this.list, this.ref);
-// FIXME FABRIC        }
-// FIXME FABRIC
-// FIXME FABRIC        if (gs instanceof MEMonitorableScreen) {
-// FIXME FABRIC            ((MEMonitorableScreen<?>) gs).postUpdate(this.list);
-// FIXME FABRIC        }
-// FIXME FABRIC
-// FIXME FABRIC        if (gs instanceof NetworkStatusScreen) {
-// FIXME FABRIC            ((NetworkStatusScreen) gs).postUpdate(this.list);
-// FIXME FABRIC        }
+        if (gs instanceof CraftConfirmScreen) {
+            ((CraftConfirmScreen) gs).postUpdate(this.list, this.ref);
+        }
+
+        if (gs instanceof CraftingCPUScreen) {
+            ((CraftingCPUScreen<?>) gs).postUpdate(this.list, this.ref);
+        }
+
+        if (gs instanceof MEMonitorableScreen) {
+            ((MEMonitorableScreen<?>) gs).postUpdate(this.list);
+        }
+
+        if (gs instanceof NetworkStatusScreen) {
+            ((NetworkStatusScreen) gs).postUpdate(this.list);
+        }
     }
 
     @Nullable

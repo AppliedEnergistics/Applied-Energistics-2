@@ -23,6 +23,9 @@
 
 package appeng.api.config;
 
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+
 /**
  * Represent the security systems basic permissions, these are not for
  * anti-griefing, they are part of the mod as a gameplay feature.
@@ -64,7 +67,17 @@ public enum SecurityPermissions {
         return this.translationKey + ".name";
     }
 
+    public Text nameText() {
+        return new TranslatableText(getTranslatedName());
+    }
+
     public String getTranslatedTip() {
         return this.translationKey + ".tip";
     }
+
+
+    public Text tooltipText() {
+        return new TranslatableText(getTranslatedTip());
+    }
+
 }

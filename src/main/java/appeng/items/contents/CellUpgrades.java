@@ -33,7 +33,7 @@ public final class CellUpgrades extends StackUpgradeInventory {
     }
 
     @Override
-    protected void onContentsChanged(FixedItemInvView inv, int slot, ItemStack previous, ItemStack current) {
+    protected void onContentsChanged(int slot, ItemStack previous, ItemStack current) {
         this.writeToNBT(this.is.getOrCreateTag(), "upgrades");
     }
 }

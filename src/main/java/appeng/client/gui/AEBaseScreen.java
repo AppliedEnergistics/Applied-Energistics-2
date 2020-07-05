@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import appeng.mixins.SlotMixin;
 import com.google.common.base.Preconditions;
@@ -40,7 +41,7 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.StringRenderable;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
 import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
@@ -175,8 +176,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
     }
 
     private void drawTooltip(MatrixStack matrices, ITooltip tooltip, int mouseX, int mouseY) {
-        final int x = tooltip.xPos(); // ((GuiImgButton) c).x;
-        int y = tooltip.yPos(); // ((GuiImgButton) c).y;
+        final int x = tooltip.xPos();
+        int y = tooltip.yPos();
 
         if (x < mouseX && x + tooltip.getWidth() > mouseX && tooltip.isVisible()) {
             if (y < mouseY && y + tooltip.getHeight() > mouseY) {
@@ -194,28 +195,28 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
 
     protected void drawTooltip(MatrixStack matrices, int x, int y, Text message) {
         String[] lines = message.getString().split("\n"); // FIXME FABRIC
-        this.drawTooltip(matrices, x, y, Arrays.asList(lines));
+        List<Text> textLines = Arrays.stream(lines).map(LiteralText::new).collect(Collectors.toList());
+        this.drawTooltip(matrices, x, y, textLines);
     }
 
     // FIXME FABRIC: move out to json (?)
     private static final Style TOOLTIP_HEADER = Style.EMPTY.withColor(Formatting.WHITE);
     private static final Style TOOLTIP_BODY = Style.EMPTY.withColor(Formatting.GRAY);
 
-    protected void drawTooltip(MatrixStack matrices, int x, int y, List<String> lines) {
+    protected void drawTooltip(MatrixStack matrices, int x, int y, List<Text> lines) {
         if (lines.isEmpty()) {
             return;
         }
 
-        List<StringRenderable> renderableLines = new ArrayList<>(lines.size());
-
         // Make the first line white
         // All lines after the first are colored gray
+        List<Text> styledLines = new ArrayList<>(lines.size());
         for (int i = 0; i < lines.size(); i++) {
             Style style = (i == 0) ? TOOLTIP_HEADER : TOOLTIP_BODY;
-            renderableLines.add(StringRenderable.styled(lines.get(0), style));
+            styledLines.add(lines.get(i).copy().styled(s -> style));
         }
 
-        this.renderTooltip(matrices, renderableLines, x, y);
+        this.renderTooltip(matrices, styledLines, x, y);
     }
 
     @Override
@@ -261,7 +262,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
         }
 
         for (final CustomSlotWidget slot : this.guiSlots) {
-            slot.drawBackground(ox, oy, getZOffset());
+            slot.drawBackground(matrices, ox, oy, getZOffset());
         }
 
     }
@@ -608,8 +609,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
         this.itemRenderer.zOffset = 0.0F;
     }
 
-    protected String getGuiDisplayName(final String in) {
-        return this.hasCustomInventoryName() ? this.getInventoryName() : in;
+    protected Text getGuiDisplayName(final Text in) {
+        return this.hasCustomInventoryName() ? new LiteralText(this.getInventoryName()) : in;
     }
 
     private boolean hasCustomInventoryName() {

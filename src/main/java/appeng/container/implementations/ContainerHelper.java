@@ -84,10 +84,9 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
             return false;
         }
 
-        // FIXME FABRIC The containers usually handle this themselves...
         Text title = findContainerTitle(player.world, locator, accessInterface);
 
-        player.openHandledScreen(new HandlerFactory(locator, accessInterface));
+        player.openHandledScreen(new HandlerFactory(locator, title, accessInterface));
 
         return true;
     }
@@ -98,8 +97,11 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
 
         private final I accessInterface;
 
-        public HandlerFactory(ContainerLocator locator, I accessInterface) {
+        private final Text title;
+
+        public HandlerFactory(ContainerLocator locator, Text title, I accessInterface) {
             this.locator = locator;
+            this.title = title;
             this.accessInterface = accessInterface;
         }
 
@@ -110,7 +112,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
 
         @Override
         public Text getDisplayName() {
-            return null;
+            return title;
         }
 
         @Nullable

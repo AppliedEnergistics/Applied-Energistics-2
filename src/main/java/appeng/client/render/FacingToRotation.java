@@ -63,7 +63,7 @@ public enum FacingToRotation implements StringIdentifiable {
     private final Quaternion combinedRotation;
     private final Matrix4f mat;
 
-    private FacingToRotation(Vector3f rot) {
+    FacingToRotation(Vector3f rot) {
         this.rot = rot;
         this.mat = new Matrix4f();
         this.mat.loadIdentity();

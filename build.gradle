@@ -34,6 +34,10 @@ repositories {
         name = "BuildCraft"
         url = "https://mod-buildcraft.com/maven"
     }
+    maven {
+        name = "HYWLA"
+        url = "https://maven.tehnut.info/"
+    }
 }
 
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
@@ -90,9 +94,11 @@ dependencies {
 
     modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
 
-    modCompile "alexiil.mc.lib:libblockattributes-all:0.7.0"
+    modImplementation "alexiil.mc.lib:libblockattributes-all:0.7.0"
+    modImplementation "me.shedaniel:RoughlyEnoughItems:4.6.6"
+    modImplementation "mcp.mobius.waila:Hwyla:1.16.1-1.9.22-75"
 
-    compile 'com.google.code.findbugs:jsr305:3.0.2'
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
     // unit test dependencies
     testCompile "junit:junit:4.13"

@@ -22,12 +22,13 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
+import appeng.client.gui.implementations.CraftingCPUScreen;
 import appeng.container.AEBaseContainer;
-import appeng.container.implementations.CellWorkbenchContainer;
-import appeng.container.implementations.NetworkToolContainer;
-import appeng.container.implementations.PatternTermContainer;
+import appeng.container.implementations.*;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
+import appeng.fluids.container.FluidLevelEmitterContainer;
+import appeng.fluids.container.FluidStorageBusContainer;
 import appeng.helpers.IMouseWheelItem;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.MinecraftClient;
@@ -84,33 +85,33 @@ public class ConfigValuePacket extends BasePacket {
             final ItemStack is = player.getStackInHand(hand);
             final IMouseWheelItem si = (IMouseWheelItem) is.getItem();
             si.onWheel(is, this.Value.equals("WheelUp"));
-// FIXME FABRIC        } else if (this.Name.equals("Terminal.Cpu") && c instanceof CraftingStatusContainer) {
-// FIXME FABRIC            final CraftingStatusContainer qk = (CraftingStatusContainer) c;
-// FIXME FABRIC            qk.cycleCpu(this.Value.equals("Next"));
-// FIXME FABRIC        } else if (this.Name.equals("Terminal.Cpu") && c instanceof CraftConfirmContainer) {
-// FIXME FABRIC            final CraftConfirmContainer qk = (CraftConfirmContainer) c;
-// FIXME FABRIC            qk.cycleCpu(this.Value.equals("Next"));
-// FIXME FABRIC        } else if (this.Name.equals("Terminal.Start") && c instanceof CraftConfirmContainer) {
-// FIXME FABRIC            final CraftConfirmContainer qk = (CraftConfirmContainer) c;
-// FIXME FABRIC            qk.startJob();
-// FIXME FABRIC        } else if (this.Name.equals("TileCrafting.Cancel") && c instanceof CraftingCPUContainer) {
-// FIXME FABRIC            final CraftingCPUContainer qk = (CraftingCPUContainer) c;
-// FIXME FABRIC            qk.cancelCrafting();
-// FIXME FABRIC        } else if (this.Name.equals("QuartzKnife.Name") && c instanceof QuartzKnifeContainer) {
-// FIXME FABRIC            final QuartzKnifeContainer qk = (QuartzKnifeContainer) c;
-// FIXME FABRIC            qk.setName(this.Value);
-// FIXME FABRIC        } else if (this.Name.equals("TileSecurityStation.ToggleOption") && c instanceof SecurityStationContainer) {
-// FIXME FABRIC            final SecurityStationContainer sc = (SecurityStationContainer) c;
-// FIXME FABRIC            sc.toggleSetting(this.Value, player);
-// FIXME FABRIC        } else if (this.Name.equals("PriorityHost.Priority") && c instanceof PriorityContainer) {
-// FIXME FABRIC            final PriorityContainer pc = (PriorityContainer) c;
-// FIXME FABRIC            pc.setPriority(Integer.parseInt(this.Value), player);
-// FIXME FABRIC        } else if (this.Name.equals("LevelEmitter.Value") && c instanceof LevelEmitterContainer) {
-// FIXME FABRIC            final LevelEmitterContainer lvc = (LevelEmitterContainer) c;
-// FIXME FABRIC            lvc.setLevel(Long.parseLong(this.Value), player);
-// FIXME FABRIC        } else if (this.Name.equals("FluidLevelEmitter.Value") && c instanceof FluidLevelEmitterContainer) {
-// FIXME FABRIC            final FluidLevelEmitterContainer lvc = (FluidLevelEmitterContainer) c;
-// FIXME FABRIC            lvc.setLevel(Long.parseLong(this.Value), player);
+        } else if (this.Name.equals("Terminal.Cpu") && c instanceof CraftingStatusContainer) {
+            final CraftingStatusContainer qk = (CraftingStatusContainer) c;
+            qk.cycleCpu(this.Value.equals("Next"));
+        } else if (this.Name.equals("Terminal.Cpu") && c instanceof CraftConfirmContainer) {
+            final CraftConfirmContainer qk = (CraftConfirmContainer) c;
+            qk.cycleCpu(this.Value.equals("Next"));
+        } else if (this.Name.equals("Terminal.Start") && c instanceof CraftConfirmContainer) {
+            final CraftConfirmContainer qk = (CraftConfirmContainer) c;
+            qk.startJob();
+        } else if (this.Name.equals("TileCrafting.Cancel") && c instanceof CraftingCPUContainer) {
+            final CraftingCPUContainer qk = (CraftingCPUContainer) c;
+            qk.cancelCrafting();
+        } else if (this.Name.equals("QuartzKnife.Name") && c instanceof QuartzKnifeContainer) {
+            final QuartzKnifeContainer qk = (QuartzKnifeContainer) c;
+            qk.setName(this.Value);
+        } else if (this.Name.equals("TileSecurityStation.ToggleOption") && c instanceof SecurityStationContainer) {
+            final SecurityStationContainer sc = (SecurityStationContainer) c;
+            sc.toggleSetting(this.Value, player);
+        } else if (this.Name.equals("PriorityHost.Priority") && c instanceof PriorityContainer) {
+            final PriorityContainer pc = (PriorityContainer) c;
+            pc.setPriority(Integer.parseInt(this.Value), player);
+        } else if (this.Name.equals("LevelEmitter.Value") && c instanceof LevelEmitterContainer) {
+            final LevelEmitterContainer lvc = (LevelEmitterContainer) c;
+            lvc.setLevel(Long.parseLong(this.Value), player);
+        } else if (this.Name.equals("FluidLevelEmitter.Value") && c instanceof FluidLevelEmitterContainer) {
+            final FluidLevelEmitterContainer lvc = (FluidLevelEmitterContainer) c;
+            lvc.setLevel(Long.parseLong(this.Value), player);
         } else if (this.Name.startsWith("PatternTerminal.") && c instanceof PatternTermContainer) {
             final PatternTermContainer cpt = (PatternTermContainer) c;
             if (this.Name.equals("PatternTerminal.CraftMode")) {
@@ -122,22 +123,22 @@ public class ConfigValuePacket extends BasePacket {
             } else if (this.Name.equals("PatternTerminal.Substitute")) {
                 cpt.getPatternTerminal().setSubstitution(this.Value.equals("1"));
             }
-// FIXME FABRIC        } else if (this.Name.startsWith("StorageBus.")) {
-// FIXME FABRIC            if (this.Name.equals("StorageBus.Action")) {
-// FIXME FABRIC                if (this.Value.equals("Partition")) {
-// FIXME FABRIC                    if (c instanceof StorageBusContainer) {
-// FIXME FABRIC                        ((StorageBusContainer) c).partition();
-// FIXME FABRIC                    } else if (c instanceof FluidStorageBusContainer) {
-// FIXME FABRIC                        ((FluidStorageBusContainer) c).partition();
-// FIXME FABRIC                    }
-// FIXME FABRIC                } else if (this.Value.equals("Clear")) {
-// FIXME FABRIC                    if (c instanceof StorageBusContainer) {
-// FIXME FABRIC                        ((StorageBusContainer) c).clear();
-// FIXME FABRIC                    } else if (c instanceof FluidStorageBusContainer) {
-// FIXME FABRIC                        ((FluidStorageBusContainer) c).clear();
-// FIXME FABRIC                    }
-// FIXME FABRIC                }
-// FIXME FABRIC            }
+        } else if (this.Name.startsWith("StorageBus.")) {
+            if (this.Name.equals("StorageBus.Action")) {
+                if (this.Value.equals("Partition")) {
+                    if (c instanceof StorageBusContainer) {
+                        ((StorageBusContainer) c).partition();
+                    } else if (c instanceof FluidStorageBusContainer) {
+                        ((FluidStorageBusContainer) c).partition();
+                    }
+                } else if (this.Value.equals("Clear")) {
+                    if (c instanceof StorageBusContainer) {
+                        ((StorageBusContainer) c).clear();
+                    } else if (c instanceof FluidStorageBusContainer) {
+                        ((FluidStorageBusContainer) c).clear();
+                    }
+                }
+            }
         } else if (this.Name.startsWith("CellWorkbench.") && c instanceof CellWorkbenchContainer) {
             final CellWorkbenchContainer ccw = (CellWorkbenchContainer) c;
             if (this.Name.equals("CellWorkbench.Action")) {
@@ -172,7 +173,6 @@ public class ConfigValuePacket extends BasePacket {
                 }
             }
         }
-        throw new IllegalStateException();
     }
 
     @Override
@@ -185,10 +185,9 @@ public class ConfigValuePacket extends BasePacket {
             ((AEBaseContainer) c).stringSync(Integer.parseInt(this.Name.substring(8)), this.Value);
         } else if (this.Name.equals("CraftingStatus") && this.Value.equals("Clear")) {
             final Screen gs = MinecraftClient.getInstance().currentScreen;
-// FIXME FABRIC            if (gs instanceof CraftingCPUScreen) {
-// FIXME FABRIC                ((CraftingCPUScreen<?>) gs).clearItems();
-// FIXME FABRIC            }
-            throw new IllegalStateException();
+            if (gs instanceof CraftingCPUScreen) {
+                ((CraftingCPUScreen<?>) gs).clearItems();
+            }
         } else if (c instanceof IConfigurableObject) {
             final IConfigManager cm = ((IConfigurableObject) c).getConfigManager();
 

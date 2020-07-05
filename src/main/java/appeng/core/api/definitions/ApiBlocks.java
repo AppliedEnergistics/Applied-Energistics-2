@@ -43,6 +43,7 @@ import static appeng.block.crafting.AbstractCraftingUnitBlock.CraftingUnitType;
 import appeng.bootstrap.components.IInitComponent;
 import appeng.bootstrap.definitions.TileEntityDefinition;
 import appeng.client.render.crafting.CraftingCubeRendering;
+import appeng.client.render.model.AutoRotatingBakedModel;
 import appeng.client.render.spatial.SpatialPylonRendering;
 import appeng.client.render.tesr.CrankTESR;
 import appeng.client.render.tesr.DriveLedTileEntityRenderer;
@@ -51,6 +52,8 @@ import appeng.decorative.AEDecorativeBlock;
 import appeng.decorative.solid.*;
 import appeng.decorative.solid.SkyStoneBlock.SkystoneType;
 import appeng.entity.TinyTNTPrimedEntity;
+import appeng.fluids.block.FluidInterfaceBlock;
+import appeng.fluids.tile.FluidInterfaceBlockEntity;
 import appeng.hooks.TinyTNTDispenseItemBehavior;
 import appeng.tile.crafting.*;
 import appeng.tile.grindstone.CrankBlockEntity;
@@ -365,12 +368,12 @@ public final class ApiBlocks implements IBlocks {
                .tileEntity(
                        registry.tileEntity("interface", InterfaceBlockEntity.class, InterfaceBlockEntity::new).build())
                .build();
-// FIXME       this.fluidIface = registry.block("fluid_interface", FluidInterfaceBlock::new)
-// FIXME               .features(AEFeature.FLUID_INTERFACE)
-// FIXME               .tileEntity(registry
-// FIXME                       .tileEntity("fluid_interface", FluidInterfaceBlockEntity.class, FluidInterfaceBlockEntity::new)
-// FIXME                       .build())
-// FIXME               .build();
+       this.fluidIface = registry.block("fluid_interface", FluidInterfaceBlock::new)
+               .features(AEFeature.FLUID_INTERFACE)
+               .tileEntity(registry
+                       .tileEntity("fluid_interface", FluidInterfaceBlockEntity.class, FluidInterfaceBlockEntity::new)
+                       .build())
+               .build();
        this.cellWorkbench = registry.block("cell_workbench", CellWorkbenchBlock::new).features(AEFeature.STORAGE_CELLS)
                .tileEntity(registry
                        .tileEntity("cell_workbench", CellWorkbenchBlockEntity.class, CellWorkbenchBlockEntity::new)
@@ -462,13 +465,13 @@ public final class ApiBlocks implements IBlocks {
                    @Environment(EnvType.CLIENT)
                    public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
                        rendering.renderType(RenderLayer.getCutout());
-                       // FIXME FABRIC rendering.modelCustomizer((path, model) -> {
-                       // FIXME FABRIC     // The formed model handles rotations itself, the unformed one does not
-                       // FIXME FABRIC     if (model instanceof MonitorBakedModel) {
-                       // FIXME FABRIC         return model;
-                       // FIXME FABRIC     }
-                       // FIXME FABRIC     return new AutoRotatingBakedModel(model);
-                       // FIXME FABRIC });
+                       rendering.modelCustomizer((path, model) -> {
+                           // The formed model handles rotations itself, the unformed one does not
+                           // FIXME FABRIC if (model instanceof MonitorBakedModel) {
+                           // FIXME FABRIC     return model;
+                           // FIXME FABRIC }
+                           return new AutoRotatingBakedModel(model);
+                       });
                    }
                }).build();
 

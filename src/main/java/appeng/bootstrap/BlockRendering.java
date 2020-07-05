@@ -20,6 +20,7 @@ package appeng.bootstrap;
 
 import java.util.function.BiFunction;
 
+import appeng.client.render.model.AutoRotatingBakedModel;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
@@ -77,7 +78,7 @@ class BlockRendering implements IBlockRendering {
             // This is a default rotating model if the base-block uses an AE block entity
             // which exposes UP/FRONT as
             // extended props
-            // FIXME FABRIC factory.addModelOverride(id.getPath(), (l, m) -> new AutoRotatingBakedModel(m));
+            factory.addModelOverride(id.getPath(), (l, m) -> new AutoRotatingBakedModel(m));
         }
 
         if (this.blockColor != null) {
