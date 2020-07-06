@@ -28,6 +28,10 @@ public class AutoRotatingBakedModel extends ForwardingBakedModel implements Fabr
         return false;
     }
 
+    public BakedModel getWrapped() {
+        return wrapped;
+    }
+
     @Override
     public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
         RenderContext.QuadTransform transform = getTransform(blockView, pos);

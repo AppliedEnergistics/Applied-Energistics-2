@@ -18,31 +18,30 @@
 
 package appeng.client.render.model;
 
+import appeng.client.render.BasicUnbakedModel;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.ModelBakeSettings;
+import net.minecraft.client.render.model.ModelLoader;
+import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.util.SpriteIdentifier;
+import net.minecraft.util.Identifier;
+
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
-import com.google.common.collect.ImmutableList;
-import com.mojang.datafixers.util.Pair;
-
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.IModelTransform;
-import net.minecraft.client.render.model.IUnbakedModel;
-import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.util.Identifier;
-import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.geometry.IModelGeometry;
-
 /**
  * The parent model for the compass baked model. Declares the dependencies for
  * the base and pointer submodels mostly.
  */
-public class SkyCompassModel implements IModelGeometry<SkyCompassModel> {
+public class SkyCompassModel implements BasicUnbakedModel {
 
     private static final Identifier MODEL_BASE = new Identifier(
             "appliedenergistics2:block/sky_compass_base");
@@ -52,19 +51,17 @@ public class SkyCompassModel implements IModelGeometry<SkyCompassModel> {
 
     public static final List<Identifier> DEPENDENCIES = ImmutableList.of(MODEL_BASE, MODEL_POINTER);
 
+    @Nullable
     @Override
-    public BakedModel bake(IModelConfiguration owner, ModelLoader bakery,
-                           Function<SpriteIdentifier, Sprite> spriteGetter, IModelTransform modelTransform,
-                           ModelOverrideList overrides, Identifier modelLocation) {
-        BakedModel baseModel = bakery.getBakedModel(MODEL_BASE, modelTransform, spriteGetter);
-        BakedModel pointerModel = bakery.getBakedModel(MODEL_POINTER, modelTransform, spriteGetter);
+    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
+        BakedModel baseModel = loader.bake(MODEL_BASE, rotationContainer);
+        BakedModel pointerModel = loader.bake(MODEL_POINTER, rotationContainer);
         return new SkyCompassBakedModel(baseModel, pointerModel);
     }
 
     @Override
-    public Collection<SpriteIdentifier> getTextures(IModelConfiguration owner,
-                                                    Function<Identifier, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-        return Collections.emptyList();
+    public Collection<Identifier> getModelDependencies() {
+        return ImmutableSet.of(MODEL_BASE, MODEL_POINTER);
     }
 
 }

@@ -33,7 +33,6 @@ import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.decorator.Decorator;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.FeatureConfig;
-import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
 import net.minecraft.world.gen.placement.CountRangeConfig;
 import net.minecraft.world.gen.placement.IPlacementConfig;
@@ -280,32 +279,6 @@ final class Registration {
         b.addStructureFeature(MeteoriteStructure.INSTANCE.configure(FeatureConfig.DEFAULT));
         b.addFeature(GenerationStep.Feature.TOP_LAYER_MODIFICATION,
                 MeteoriteStructure.INSTANCE.configure(FeatureConfig.DEFAULT));
-    }
-
-    private static void addQuartzWorldGen(Biome b) {
-        if (!AEConfig.instance().isFeatureEnabled(AEFeature.CERTUS_QUARTZ_WORLD_GEN)) {
-            return;
-        }
-
-        BlockState quartzOre = AEApi.instance().definitions().blocks().quartzOre().block().getDefaultState();
-        b.addFeature(GenerationStep.Feature.UNDERGROUND_ORES,
-                Feature.ORE
-                        .configure(new OreFeatureConfig(OreFeatureConfig.Target.NATURAL_STONE,
-                                quartzOre, AEConfig.instance().getQuartzOresPerCluster()))
-                        .createDecoratedFeature(Decorator.COUNT_RANGE.configure(
-                                new CountRangeConfig(AEConfig.instance().getQuartzOresClusterAmount(), 12, 12, 72))));
-
-        if (AEConfig.instance().isFeatureEnabled(AEFeature.CHARGED_CERTUS_ORE)) {
-
-            BlockState chargedQuartzOre = AEApi.instance().definitions().blocks().quartzOreCharged().block()
-                    .getDefaultState();
-            b.addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION,
-                    ChargedQuartzOreFeature.INSTANCE
-                            .configure(new ChargedQuartzOreConfig(quartzOre, chargedQuartzOre,
-                                    AEConfig.instance().getSpawnChargedChance()))
-                            .createDecoratedFeature(Decorator.NOPE.configure(IPlacementConfig.NO_PLACEMENT_CONFIG)));
-
-        }
     }
 
     public void registerWorldGen(RegistryEvent.Register<Feature<?>> evt) {

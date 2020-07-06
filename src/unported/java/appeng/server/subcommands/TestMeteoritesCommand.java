@@ -44,7 +44,7 @@ import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.Heightmap;
+import net.minecraft.world.Heightmap;
 import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;

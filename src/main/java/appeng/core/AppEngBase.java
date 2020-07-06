@@ -1,5 +1,7 @@
 package appeng.core;
 
+import appeng.api.AEApi;
+import appeng.api.features.AEFeature;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.networking.IGridCacheRegistry;
 import appeng.api.networking.crafting.ICraftingGrid;
@@ -27,13 +29,15 @@ import appeng.core.sync.network.TargetPoint;
 import appeng.fluids.container.*;
 import appeng.fluids.registries.BasicFluidCellGuiHandler;
 import appeng.hooks.ToolItemHook;
-import appeng.items.parts.FacadeItem;
 import appeng.items.tools.NetworkToolItem;
 import appeng.me.cache.*;
 import appeng.mixins.CriteriaRegisterMixin;
 import appeng.recipes.handlers.*;
+import appeng.worldgen.ChargedQuartzOreConfig;
+import appeng.worldgen.ChargedQuartzOreFeature;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -44,6 +48,13 @@ import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.decorator.Decorator;
+import net.minecraft.world.gen.decorator.NopeDecoratorConfig;
+import net.minecraft.world.gen.decorator.RangeDecoratorConfig;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.OreFeatureConfig;
 
 import java.util.function.Consumer;
 
@@ -76,8 +87,10 @@ public abstract class AppEngBase implements AppEng {
         registerParticleTypes();
         registerRecipeTypes();
         registerRecipeSerializers();
+        registerWorldGen();
 
         setupInternalRegistries();
+
 
     }
 
@@ -279,6 +292,41 @@ public abstract class AppEngBase implements AppEng {
         ScreenHandlerType<T> type = ScreenHandlerRegistry.registerExtended(AppEng.makeId(id), factory);
         ContainerOpener.addOpener(type, opener);
         return type;
+    }
+
+    private void registerWorldGen() {
+        Registry.register(Registry.FEATURE, AppEng.makeId("charged_quartz_ore"), new ChargedQuartzOreFeature(ChargedQuartzOreConfig.CODEC));
+
+        Biome.BIOMES.forEach(b -> {
+// FIXME FABRIC           addMeteoriteWorldGen(b);
+            addQuartzWorldGen(b);
+        });
+    }
+
+    private static void addQuartzWorldGen(Biome b) {
+        if (!AEConfig.instance().isFeatureEnabled(AEFeature.CERTUS_QUARTZ_WORLD_GEN)) {
+            return;
+        }
+
+        BlockState quartzOre = AEApi.instance().definitions().blocks().quartzOre().block().getDefaultState();
+        b.addFeature(GenerationStep.Feature.UNDERGROUND_ORES,
+                Feature.ORE
+                        .configure(new OreFeatureConfig(OreFeatureConfig.Target.NATURAL_STONE,
+                                quartzOre, AEConfig.instance().getQuartzOresPerCluster()))
+                        .createDecoratedFeature(Decorator.COUNT_RANGE.configure(
+                                new RangeDecoratorConfig(AEConfig.instance().getQuartzOresClusterAmount(), 12, 12, 72))));
+
+        if (AEConfig.instance().isFeatureEnabled(AEFeature.CHARGED_CERTUS_ORE)) {
+
+            BlockState chargedQuartzOre = AEApi.instance().definitions().blocks().quartzOreCharged().block()
+                    .getDefaultState();
+            b.addFeature(GenerationStep.Feature.UNDERGROUND_DECORATION,
+                    ChargedQuartzOreFeature.INSTANCE
+                            .configure(new ChargedQuartzOreConfig(quartzOre, chargedQuartzOre,
+                                    AEConfig.instance().getSpawnChargedChance()))
+                            .createDecoratedFeature(Decorator.NOPE.configure(NopeDecoratorConfig.field_24892)));
+
+        }
     }
 
 }

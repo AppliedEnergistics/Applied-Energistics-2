@@ -6,8 +6,10 @@ import appeng.bootstrap.components.IClientSetupComponent;
 import appeng.bootstrap.components.IItemColorRegistrationComponent;
 import appeng.bootstrap.components.IModelBakeComponent;
 import appeng.client.gui.implementations.*;
+import appeng.client.render.SimpleModelLoader;
 import appeng.client.render.cablebus.CableBusModelLoader;
 import appeng.client.render.effects.*;
+import appeng.client.render.model.SkyCompassModel;
 import appeng.client.render.tesr.InscriberTESR;
 import appeng.client.render.tesr.SkyChestTESR;
 import appeng.container.implementations.*;
@@ -36,6 +38,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.render.entity.ItemEntityRenderer;
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
@@ -46,6 +49,7 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -234,7 +238,8 @@ public final class AppEngClient extends AppEngBase {
         ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> new CableBusModelLoader((PartModels) Api.INSTANCE.registries().partModels()));
 
 // FIXME FABRIC       addBuiltInModel("glass", GlassModel::new);
-// FIXME FABRIC       addBuiltInModel("sky_compass", SkyCompassModel::new);
+       addBuiltInModel("block/sky_compass", SkyCompassModel::new);
+       addBuiltInModel("item/sky_compass", SkyCompassModel::new);
 // FIXME FABRIC       addBuiltInModel("dummy_fluid_item", DummyFluidItemModel::new);
 // FIXME FABRIC       addBuiltInModel("memory_card", MemoryCardModel::new);
 // FIXME FABRIC       addBuiltInModel("biometric_card", BiometricCardModel::new);
@@ -254,6 +259,12 @@ public final class AppEngClient extends AppEngBase {
 // FIXME FABRIC       ModelLoaderRegistry.registerLoader(new Identifier(AppEng.MOD_ID, "uvlightmap"), UVLModelLoader.INSTANCE);
 // FIXME FABRIC       ModelLoaderRegistry.registerLoader(new Identifier(AppEng.MOD_ID, "cable_bus"),
 // FIXME FABRIC               new CableBusModelLoader());
+    }
+
+    private static <T extends UnbakedModel> void addBuiltInModel(String id, Supplier<T> modelFactory) {
+        ModelLoadingRegistry.INSTANCE.registerResourceProvider(
+                resourceManager -> new SimpleModelLoader<T>(AppEng.makeId(id), modelFactory)
+        );
     }
 
     private void registerScreens() {

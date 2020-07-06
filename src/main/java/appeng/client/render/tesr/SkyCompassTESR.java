@@ -18,23 +18,29 @@
 
 package appeng.client.render.tesr;
 
+import appeng.client.render.BakedModelUnwrapper;
+import appeng.client.render.FacingToRotation;
+import appeng.client.render.model.SkyCompassBakedModel;
+import appeng.tile.misc.SkyCompassBlockEntity;
 import net.fabricmc.api.EnvType;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.util.math.MatrixStack;
-
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
+import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.TexturedRenderLayers;
-import net.minecraft.client.render.block.BlockRenderManager;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.block.BlockModelRenderer;
+import net.minecraft.client.render.block.BlockRenderManager;
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Direction;
-import net.fabricmc.api.Environment;
+import net.minecraft.util.math.Quaternion;
 
-import appeng.client.render.FacingToRotation;
-import appeng.tile.misc.SkyCompassBlockEntity;
+import java.util.Random;
 
 @Environment(EnvType.CLIENT)
 public class SkyCompassTESR extends BlockEntityRenderer<SkyCompassBlockEntity> {
@@ -48,18 +54,22 @@ public class SkyCompassTESR extends BlockEntityRenderer<SkyCompassBlockEntity> {
     @Override
     public void render(SkyCompassBlockEntity te, float partialTicks, MatrixStack ms, VertexConsumerProvider buffers,
                        int combinedLightIn, int combinedOverlayIn) {
-
         if (blockRenderer == null) {
             blockRenderer = MinecraftClient.getInstance().getBlockRenderManager();
         }
 
-        VertexConsumer buffer = buffers.getBuffer(TexturedRenderLayers.getEntityTranslucentCull());
+        BlockModelRenderer modelRenderer = blockRenderer.getModelRenderer();
 
         BlockState blockState = te.getCachedState();
         BakedModel model = blockRenderer.getModels().getModel(blockState);
+        SkyCompassBakedModel skyCompassModel = BakedModelUnwrapper.unwrap(model, SkyCompassBakedModel.class);
+        if (skyCompassModel == null) {
+            return;
+        }
 
-        // FIXME: Rotation was previously handled by an auto rotating model I think, but
-        // FIXME: Should be handled using matrices instead
+        BakedModel baseModel = skyCompassModel.getBase();
+        BakedModel pointerModel = skyCompassModel.getPointer();
+
         Direction forward = te.getForward();
         Direction up = te.getUp();
         // This ensures the needle isn't flipped by the model rotator. Since the model
@@ -71,14 +81,19 @@ public class SkyCompassTESR extends BlockEntityRenderer<SkyCompassBlockEntity> {
         // Flip forward/up for rendering, the base model is facing up without any
         // rotation
         ms.push();
+
+        VertexConsumer buffer = buffers.getBuffer(RenderLayer.getSolid());
+
+        modelRenderer.render(te.getWorld(), model, blockState, te.getPos(), ms, buffer, false, new Random(), 42L, combinedOverlayIn);
+//        modelRenderer.render(ms.peek(), buffer, null, baseModel, 1, 1, 1, combinedLightIn, combinedOverlayIn);
+
+        float rotation = getRotation(te);
         ms.translate(0.5D, 0.5D, 0.5D);
         FacingToRotation.get(up, forward).push(ms);
+        ms.multiply(new Quaternion(0, rotation, 0, false));
         ms.translate(-0.5D, -0.5D, -0.5D);
 
-        // FIXME FABRIC ModelDataMap modelData = new ModelDataMap.Builder().withInitial(SkyCompassBakedModel.ROTATION, getRotation(te)).build();
-
-        blockRenderer.getModelRenderer().render(ms.peek(), buffer, null, model, 1, 1, 1, combinedLightIn,
-                combinedOverlayIn);
+        modelRenderer.render(ms.peek(), buffer, null, pointerModel, 1, 1, 1, combinedLightIn, combinedOverlayIn);
         ms.pop();
 
     }
@@ -88,13 +103,13 @@ public class SkyCompassTESR extends BlockEntityRenderer<SkyCompassBlockEntity> {
         float rotation = 0;
 
         if (skyCompass.getForward() == Direction.UP || skyCompass.getForward() == Direction.DOWN) {
-            // FIXME FABRIC rotation = SkyCompassBakedModel.getAnimatedRotation(skyCompass.getPos(), false);
+            rotation = SkyCompassBakedModel.getAnimatedRotation(skyCompass.getPos(), false);
         } else {
-            // FIXME FABRIC rotation = SkyCompassBakedModel.getAnimatedRotation(null, false);
+            rotation = SkyCompassBakedModel.getAnimatedRotation(null, false);
         }
 
         if (skyCompass.getForward() == Direction.DOWN) {
-            // FIXME FABRIC rotation = flipidiy(rotation);
+            rotation = flipidiy(rotation);
         }
 
         return rotation;
