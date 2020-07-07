@@ -383,10 +383,10 @@ final class Registration {
 
         // Block and part interface have different translation keys, but support the
         // same upgrades
-        ITextComponent interfaceGroup = parts.iface().asItem().getName();
-        ITextComponent itemIoBusGroup = GuiText.IOBuses.textComponent();
-        ITextComponent fluidIoBusGroup = GuiText.IOBusesFluids.textComponent();
-        ITextComponent storageCellGroup = GuiText.IOBusesFluids.textComponent();
+        String interfaceGroup = parts.iface().asItem().getTranslationKey();
+        String itemIoBusGroup = GuiText.IOBuses.getTranslationKey();
+        String fluidIoBusGroup = GuiText.IOBusesFluids.getTranslationKey();
+        String storageCellGroup = GuiText.IOBusesFluids.getTranslationKey();
 
         // default settings..
         ((P2PTunnelRegistry) registries.p2pTunnel()).configure();
