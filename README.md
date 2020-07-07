@@ -12,10 +12,9 @@
 * [Downloads](#downloads)
 * [Installation](#installation)
 * [Issues](#issues)
+* [API](#applied-energistics-2-api)
 * [Building](#building)
 * [Contribution](#contribution)
-* [API](#applied-energistics-2-api)
-* [CraftTweaker](#applied-energistics-2-crafttweaker)
 * [Localization](#applied-energistics-2-localization)
 * [Credits](#credits)
 
@@ -67,6 +66,38 @@ Providing as many details as possible does help us to find and resolve the issue
 
 Please note that we might close any issue not matching these requirements. 
 
+## Applied Energistics 2 API
+
+The API for Applied Energistics 2. It is open source to discuss changes, improve documentation, and provide better add-on support in general.
+
+### Maven
+
+We use Github Packages as maven repository now. You can use the following snippet as example on how to add a repository to your gradle build file.
+
+    repositories {
+        maven {
+            name "AE2"
+            url "https://maven.pkg.github.com/AppliedEnergistics/Applied-Energistics-2"
+        }
+    }
+
+When compiling against the AE2 API you can use gradle dependencies, just add
+
+    dependencies {
+        compileOnly "appeng:appliedenergistics2:VERSION:api"
+    }
+
+or add the `compileOnly` line to your existing dependencies task to your build.gradle.
+
+Replace `VERSION` with the desired one. With 1.15+ we switched to using [semver](https://semver.org/). 
+It is highly recommended following its specification and further considering an upper bound for the dependency version.
+A change of the `MAJOR` version will be an API break and can lead to various crashes. Better to inform a player about the addon not supporting the new version until it could be tested or updated.
+
+An example string would be `appeng:appliedenergistics2:7.0.0-alpha.6:api` for the API only or `appeng:appliedenergistics2:7.0.0-alpha.6` for the whole mod.
+
+Builds obtained [here](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases) or via [maven](https://github.com/AppliedEnergistics/Applied-Energistics-2/packages) should work in a development environment.
+However the dependency might need to be wrapped in `fg.deobf()` like `runtimeOnly fg.deobf("appeng:appliedenergistics2:VERSION:api")`
+
 ## Building
 
 1. Clone this repository via 
@@ -109,66 +140,6 @@ Here are a few things to keep in mind that will help get your PR approved.
 9. Squash commits for cleaner history
 
 If you are only doing single file pull requests, GitHub supports using a quick way without the need of cloning your fork. Also read up about [synching](https://help.github.com/articles/syncing-a-fork) if you plan to contribute on regular basis.
-
-## Applied Energistics 2 API
-
-The API for Applied Energistics 2. It is open source to discuss changes, improve documentation, and provide better add-on support in general.
-
-Universal builds obtained [Here](http://ae2.ae-mod.info/Downloads/) should work in a development environment.
-
-### Maven
-
-When compiling against the AE2 API you can use gradle dependencies, just add
-
-    dependencies {
-        compile "appeng:appliedenergistics2:rv_-_____-__:api"
-    }
-
-or add the compile line to your existing dependencies task to your build.gradle
-
-Where the __ are filled in with the correct version criteria; AE2 is available from the default forge maven so no additional repositories are necessary.
-
-An example string would be `appeng:appliedenergistics2:rv5-stable-1:api` for the API only or `appeng:appliedenergistics2:rv5-stable-1`  for the whole mod.
-
-## Applied Energistics 2 CraftTweaker
-
-### Inscriber
-
-The inscriber uses the vanilla recipe system with a custom `type` of `appliedenergistics2:inscriber`.
-See the [inscriber recipe folder](src/main/resources/data/appliedenergistics2/recipes/inscriber) for some examples.
-
-### Grindstone
-
-The grindstone uses the vanilla recipe system with a custom `type` of `appliedenergistics2:grinder`.
-See the [grinder recipe folder](src/main/resources/data/appliedenergistics2/recipes/grinder) for some examples.
-
-### Spatial
-Whitelist a TileEntity class for Spatial IO.
-
-	mods.appliedenergistics2.Spatial.whitelistEntity( String fullEntityClassName );
-
-### Attunement
-Attune a ItemStack or ModID to a specific P2P-Tunnel type. ModID's are used as fallback when no ItemStack was found.
-
-	mods.appliedenergistics2.Attunement.attuneME( ItemStack itemStack );
-	mods.appliedenergistics2.Attunement.attuneME( String modID );
-	mods.appliedenergistics2.Attunement.attuneItem( ItemStack itemStack );
-	mods.appliedenergistics2.Attunement.attuneItem( String modID );
-	mods.appliedenergistics2.Attunement.attuneFluid( ItemStack itemStack );
-	mods.appliedenergistics2.Attunement.attuneFluid( String modID );
-	mods.appliedenergistics2.Attunement.attuneRedstone( ItemStack itemStack );
-	mods.appliedenergistics2.Attunement.attuneRedstone( String modID );
-	mods.appliedenergistics2.Attunement.attuneRF( ItemStack itemStack );
-	mods.appliedenergistics2.Attunement.attuneRF( String modID );
-	mods.appliedenergistics2.Attunement.attuneIC2( ItemStack itemStack );
-	mods.appliedenergistics2.Attunement.attuneIC2( String modID );
-	mods.appliedenergistics2.Attunement.attuneLight( ItemStack itemStack );
-	mods.appliedenergistics2.Attunement.attuneLight( String modID );
-
-### Cannon
-Add ammo types for the matter cannon.
-
-	mods.appliedenergistics2.Cannon.registerAmmo( ItemStack itemStack, double weight );
 
 ## Applied Energistics 2 Localization
 
