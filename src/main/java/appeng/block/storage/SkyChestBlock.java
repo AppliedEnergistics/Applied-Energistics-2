@@ -20,6 +20,9 @@ package appeng.block.storage;
 
 import javax.annotation.Nullable;
 
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.SkyChestContainer;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -76,8 +79,7 @@ public class SkyChestBlock extends AEBaseTileBlock<SkyChestBlockEntity> {
                 return ActionResult.PASS;
             }
 
-            throw new IllegalStateException();
-            // FIXME FABRIC ContainerOpener.openContainer(SkyChestContainer.TYPE, player, ContainerLocator.forTileEntity(tile));
+            ContainerOpener.openContainer(SkyChestContainer.TYPE, player, ContainerLocator.forTileEntity(tile));
         }
 
         return ActionResult.SUCCESS;

@@ -21,6 +21,12 @@ package appeng.worldgen.meteorite;
 import java.util.ArrayList;
 import java.util.List;
 
+import alexiil.mc.lib.attributes.AttributeList;
+import alexiil.mc.lib.attributes.AttributeProvider;
+import alexiil.mc.lib.attributes.AttributeUtil;
+import alexiil.mc.lib.attributes.item.ItemAttributes;
+import appeng.tile.storage.SkyChestBlockEntity;
+import appeng.util.inv.AdaptorFixedInv;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -203,8 +209,12 @@ public final class MeteoritePlacer {
         if (AEConfig.instance().isFeatureEnabled(AEFeature.SPAWN_PRESSES_IN_METEORITES)) {
             this.putter.put(world, pos, this.skyChestDefinition.block().getDefaultState());
 
-            final BlockEntity te = world.getBlockEntity(pos); // FIXME: this is also probably a band-aid for another issue
-            final InventoryAdaptor ap = InventoryAdaptor.getAdaptor(te, Direction.UP);
+            final SkyChestBlockEntity te = (SkyChestBlockEntity) world.getBlockEntity(pos);
+            InventoryAdaptor ap = null;
+            if (te != null) {
+                ap = new AdaptorFixedInv(te.getInternalInventory());
+            }
+
             if (ap != null && !ap.containsItems()) // FIXME: band-aid for meteorites being generated multiple times
             {
                 // TODO: loot tables would be better

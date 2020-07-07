@@ -35,6 +35,8 @@ import appeng.mixins.CriteriaRegisterMixin;
 import appeng.recipes.handlers.*;
 import appeng.worldgen.ChargedQuartzOreConfig;
 import appeng.worldgen.ChargedQuartzOreFeature;
+import appeng.worldgen.meteorite.MeteoriteStructure;
+import net.earthcomputer.libstructure.LibStructure;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.BlockState;
@@ -50,11 +52,11 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.chunk.StructureConfig;
 import net.minecraft.world.gen.decorator.Decorator;
 import net.minecraft.world.gen.decorator.NopeDecoratorConfig;
 import net.minecraft.world.gen.decorator.RangeDecoratorConfig;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.OreFeatureConfig;
+import net.minecraft.world.gen.feature.*;
 
 import java.util.function.Consumer;
 
@@ -295,12 +297,31 @@ public abstract class AppEngBase implements AppEng {
     }
 
     private void registerWorldGen() {
+        LibStructure.registerStructure(
+                MeteoriteStructure.ID,
+                MeteoriteStructure.INSTANCE,
+                GenerationStep.Feature.TOP_LAYER_MODIFICATION,
+                new StructureConfig(32, 8, 124895654),
+                new MeteoriteStructure(DefaultFeatureConfig.CODEC).configure(DefaultFeatureConfig.INSTANCE)
+        );
         Registry.register(Registry.FEATURE, AppEng.makeId("charged_quartz_ore"), new ChargedQuartzOreFeature(ChargedQuartzOreConfig.CODEC));
 
         Biome.BIOMES.forEach(b -> {
-// FIXME FABRIC           addMeteoriteWorldGen(b);
+            addMeteoriteWorldGen(b);
             addQuartzWorldGen(b);
         });
+    }
+
+    private static void addMeteoriteWorldGen(Biome b) {
+        if (!AEConfig.instance().isFeatureEnabled(AEFeature.METEORITE_WORLD_GEN)) {
+            return;
+        }
+
+        if (b.getCategory() == Biome.Category.THEEND || b.getCategory() == Biome.Category.NETHER) {
+            return;
+        }
+
+        b.addStructureFeature(MeteoriteStructure.INSTANCE.configure(FeatureConfig.DEFAULT));
     }
 
     private static void addQuartzWorldGen(Biome b) {

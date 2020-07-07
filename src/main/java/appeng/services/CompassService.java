@@ -31,6 +31,7 @@ import net.minecraft.block.Block;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.Chunk;
@@ -90,38 +91,52 @@ public final class CompassService {
 
     public void tryUpdateArea(final WorldAccess w, ChunkPos chunkPos) {
         // If this seems weird: during worldgen, WorldAccess is a specific region, but getWorld is
-        // still the server world
+        // still the server world. We do need to use the world access to get the chunk in question
+        // though, since during worldgen, it's not comitted to the actual world yet.
         World world = w.getWorld();
         if (!(world instanceof ServerWorld)) {
             return;
         }
-        updateArea((ServerWorld) world, chunkPos);
+        Chunk chunk = w.getChunk(chunkPos.x, chunkPos.z);
+        updateArea((ServerWorld) world, chunk);
     }
 
     public void updateArea(final ServerWorld w, ChunkPos chunkPos) {
-        this.updateArea(w, chunkPos, CHUNK_SIZE);
-        this.updateArea(w, chunkPos, CHUNK_SIZE + 32);
-        this.updateArea(w, chunkPos, CHUNK_SIZE + 64);
-        this.updateArea(w, chunkPos, CHUNK_SIZE + 96);
-
-        this.updateArea(w, chunkPos, CHUNK_SIZE + 128);
-        this.updateArea(w, chunkPos, CHUNK_SIZE + 160);
-        this.updateArea(w, chunkPos, CHUNK_SIZE + 192);
-        this.updateArea(w, chunkPos, CHUNK_SIZE + 224);
+        Chunk chunk = w.getChunk(chunkPos.x, chunkPos.z);
+        updateArea(w, chunk);
     }
 
-    public Future<?> updateArea(final ServerWorld w, ChunkPos chunkPos, int y) {
+    public void updateArea(final ServerWorld w, Chunk chunk) {
+        this.updateArea(w, chunk, CHUNK_SIZE);
+        this.updateArea(w, chunk, CHUNK_SIZE + 32);
+        this.updateArea(w, chunk, CHUNK_SIZE + 64);
+        this.updateArea(w, chunk, CHUNK_SIZE + 96);
+
+        this.updateArea(w, chunk, CHUNK_SIZE + 128);
+        this.updateArea(w, chunk, CHUNK_SIZE + 160);
+        this.updateArea(w, chunk, CHUNK_SIZE + 192);
+        this.updateArea(w, chunk, CHUNK_SIZE + 224);
+    }
+
+    /**
+     * Notifies the compass service that a skystone block has either been placed or replaced
+     * at the give position.
+     */
+    public void notifyBlockChange(final ServerWorld w, BlockPos pos) {
+        Chunk chunk = w.getChunk(pos);
+        updateArea(w, chunk, pos.getY());
+    }
+
+    private Future<?> updateArea(final ServerWorld w, Chunk c, int y) {
         this.jobSize++;
 
-        final int cx = chunkPos.x;
         final int cdy = y >> 5;
-        final int cz = chunkPos.z;
-
         final int low_y = cdy << 5;
         final int hi_y = low_y + 32;
 
         // lower level...
-        final Chunk c = w.getChunk(cx, cz);
+        int cx = c.getPos().x;
+        int cz = c.getPos().z;
 
         Block skyStoneBlock = AEApi.instance().definitions().blocks().skyStoneBlock().block();
         BlockPos.Mutable pos = new BlockPos.Mutable();

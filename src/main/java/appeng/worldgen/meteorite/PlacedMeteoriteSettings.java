@@ -71,7 +71,7 @@ public final class PlacedMeteoriteSettings {
     }
 
     public CompoundTag write(CompoundTag tag) {
-        tag.putLong(Constants.TAG_POS, pos.toLong());
+        tag.putLong(Constants.TAG_POS, pos.asLong());
 
         tag.putFloat(Constants.TAG_RADIUS, meteoriteRadius);
         tag.putByte(Constants.TAG_CRATER, (byte) craterType.ordinal());

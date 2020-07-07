@@ -267,20 +267,6 @@ final class Registration {
         });
     }
 
-    private static void addMeteoriteWorldGen(Biome b) {
-        if (!AEConfig.instance().isFeatureEnabled(AEFeature.METEORITE_WORLD_GEN)) {
-            return;
-        }
-
-        if (b.getCategory() == Biome.Category.THEEND || b.getCategory() == Biome.Category.NETHER) {
-            return;
-        }
-
-        b.addStructureFeature(MeteoriteStructure.INSTANCE.configure(FeatureConfig.DEFAULT));
-        b.addFeature(GenerationStep.Feature.TOP_LAYER_MODIFICATION,
-                MeteoriteStructure.INSTANCE.configure(FeatureConfig.DEFAULT));
-    }
-
     public void registerWorldGen(RegistryEvent.Register<Feature<?>> evt) {
         IForgeRegistry<Feature<?>> r = evt.getRegistry();
 
