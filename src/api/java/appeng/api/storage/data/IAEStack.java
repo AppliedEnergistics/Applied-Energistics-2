@@ -179,17 +179,7 @@ public interface IAEStack<T extends IAEStack<T>> {
     T empty();
 
     /**
-     * @return true if the stack is a {@link IAEItemStack}
-     */
-    boolean isItem();
-
-    /**
-     * @return true if the stack is a {@link IAEFluidStack}
-     */
-    boolean isFluid();
-
-    /**
-     * @return ITEM or FLUID
+     * @return The {@link IStorageChannel} backing this stack.
      */
     IStorageChannel<T> getChannel();
 

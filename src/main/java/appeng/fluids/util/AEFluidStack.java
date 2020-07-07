@@ -153,16 +153,6 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
     }
 
     @Override
-    public boolean isItem() {
-        return false;
-    }
-
-    @Override
-    public boolean isFluid() {
-        return true;
-    }
-
-    @Override
     public IStorageChannel<IAEFluidStack> getChannel() {
         return AEApi.instance().storage().getStorageChannel(IFluidStorageChannel.class);
     }
