@@ -28,9 +28,9 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.server.world.ServerWorld;
@@ -114,7 +114,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
         // we have to assume maximum size
         int range = (int) Math.ceil((coreRadius * 2 + 5) * 5f);
 
-        MutableBoundingBox boundingBox = new MutableBoundingBox(pos.getX() - range, pos.getY(), pos.getZ() - range,
+        BlockBox boundingBox = new BlockBox(pos.getX() - range, pos.getY(), pos.getZ() - range,
                 pos.getX() + range, pos.getY(), pos.getZ() + range);
 
         final MeteoritePlacer placer = new MeteoritePlacer(world, spawned, boundingBox);

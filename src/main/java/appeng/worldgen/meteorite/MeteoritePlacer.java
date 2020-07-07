@@ -32,7 +32,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.util.math.BlockBox;
 import net.minecraft.world.WorldAccess;
 
 import appeng.api.AEApi;
@@ -71,9 +71,9 @@ public final class MeteoritePlacer {
     private final CraterType craterType;
     private final boolean pureCrater;
     private final boolean craterLake;
-    private final MutableBoundingBox boundingBox;
+    private final BlockBox boundingBox;
 
-    public MeteoritePlacer(WorldAccess world, PlacedMeteoriteSettings settings, MutableBoundingBox boundingBox) {
+    public MeteoritePlacer(WorldAccess world, PlacedMeteoriteSettings settings, BlockBox boundingBox) {
         this.boundingBox = boundingBox;
         this.world = world;
         this.pos = settings.getPos();
@@ -186,8 +186,7 @@ public final class MeteoritePlacer {
             }
         }
 
-        for (final Object o : world.getEntitiesWithinAABB(ItemEntity.class,
-                new Box(minX(x - 30), y - 5, minZ(z - 30), maxX(x + 30), y + 30, maxZ(z + 30)))) {
+        for (final Object o : world.getEntities(ItemEntity.class, new Box(minX(x - 30), y - 5, minZ(z - 30), maxX(x + 30), y + 30, maxZ(z + 30)), null)) {
             final Entity e = (Entity) o;
             e.remove();
         }
@@ -354,7 +353,7 @@ public final class MeteoritePlacer {
                                 final double height = this.crater * (extraRange + 0.2)
                                         - Math.abs(dist - this.crater * 1.7);
 
-                                if (!xf.isAir(world, blockPosDown) && height > 0 && Math.random() > 0.6) {
+                                if (!xf.isAir() && height > 0 && Math.random() > 0.6) {
                                     randomShit++;
                                     this.type.getRandomFall(world, blockPos);
                                 }

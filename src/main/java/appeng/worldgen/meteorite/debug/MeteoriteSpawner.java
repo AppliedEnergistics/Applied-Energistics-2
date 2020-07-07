@@ -39,7 +39,7 @@ public class MeteoriteSpawner {
             float coreRadius, CraterType craterType, boolean pureCrater, boolean worldGen) {
         int stepSize = Math.min(5, (int) Math.ceil(coreRadius) + 1);
         int minY = 10 + stepSize;
-        BlockPos.Mutable mutablePos = new BlockPos.Mutable(startPos);
+        BlockPos.Mutable mutablePos = startPos.mutableCopy();
 
         mutablePos.move(Direction.DOWN, stepSize);
 
@@ -80,7 +80,7 @@ public class MeteoriteSpawner {
     }
 
     private static boolean isAirBelowSpawnPoint(WorldView w, BlockPos pos) {
-        BlockPos.Mutable testPos = new BlockPos.Mutable(pos);
+        BlockPos.Mutable testPos = pos.mutableCopy();
         for (int j = pos.getY() - 15; j < pos.getY() - 1; j++) {
             testPos.setY(j);
             if (w.isAir(testPos)) {
@@ -100,7 +100,7 @@ public class MeteoriteSpawner {
                 testPos.setY(j);
                 for (int k = pos.getZ() - 15; k < pos.getZ() + 15; k++) {
                     testPos.setZ(k);
-                    if (w.canBlockSeeSky(testPos)) {
+                    if (w.isSkyVisibleAllowingSea(testPos)) {
                         skyMode++;
                     }
                 }
