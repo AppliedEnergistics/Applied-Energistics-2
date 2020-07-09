@@ -286,11 +286,6 @@ public class AENetworkProxy implements IGridBlock {
     }
 
     @Override
-    public void setNetworkStatus(final IGrid grid, final int channelsInUse) {
-
-    }
-
-    @Override
     public EnumSet<Direction> getConnectableSides() {
         return this.validSides;
     }

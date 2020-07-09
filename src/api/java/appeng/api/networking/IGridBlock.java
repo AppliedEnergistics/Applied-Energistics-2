@@ -92,16 +92,6 @@ public interface IGridBlock {
     void onGridNotification(@Nonnull GridNotification notification);
 
     /**
-     * Update Blocks network/connection/booting status. grid,
-     *
-     * @param grid          grid
-     * @param channelsInUse used channels
-     * @deprecated to be removed in rv7
-     */
-    @Deprecated
-    void setNetworkStatus(IGrid grid, int channelsInUse);
-
-    /**
      * Determine which sides of the block can be connected too, only used when
      * isWorldAccessible returns true, not used for {@link IPart} implementations.
      */
