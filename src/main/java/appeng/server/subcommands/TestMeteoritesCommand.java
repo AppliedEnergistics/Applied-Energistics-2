@@ -25,6 +25,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
+import appeng.core.AppEng;
 import com.google.common.math.StatsAccumulator;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -33,21 +34,16 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.text.ClickEvent;
+import net.minecraft.structure.StructureStart;
+import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.text.Text;
-import net.minecraft.text.LiteralText;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.Heightmap;
-import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import appeng.server.ISubCommand;
 import appeng.worldgen.meteorite.MeteoriteStructure;
@@ -62,7 +58,8 @@ public class TestMeteoritesCommand implements ISubCommand {
     @Override
     public void addArguments(LiteralArgumentBuilder<ServerCommandSource> builder) {
         builder.then(literal("force").executes(ctx -> {
-            test(ServerLifecycleHooks.getCurrentServer(), ctx.getSource(), true);
+            MinecraftServer server = AppEng.instance().getServer();
+            test(server, ctx.getSource(), true);
             return 1;
         }));
     }
@@ -77,7 +74,7 @@ public class TestMeteoritesCommand implements ISubCommand {
 
         ServerPlayerEntity player = null;
         try {
-            player = sender.asPlayer();
+            player = sender.getPlayer();
         } catch (CommandSyntaxException ignored) {
         }
         ServerWorld world;
@@ -87,7 +84,7 @@ public class TestMeteoritesCommand implements ISubCommand {
             centerBlock = new BlockPos(player.getX(), 0, player.getZ());
         } else {
             world = srv.getOverworld();
-            centerBlock = world.getSpawnPoint();
+            centerBlock = world.getSpawnPos();
         }
 
         ChunkPos center = new ChunkPos(centerBlock);
@@ -101,8 +98,8 @@ public class TestMeteoritesCommand implements ISubCommand {
             for (int cz = center.z - radius; cz <= center.z + radius; cz++) {
                 chunksChecked++;
                 ChunkPos cp = new ChunkPos(cx, cz);
-                BlockPos p = new BlockPos(cp.getXStart(), 0, cp.getZStart());
-                BlockPos nearest = MeteoriteStructure.INSTANCE.findNearest(world, generator, p, 0, false);
+                BlockPos p = new BlockPos(cp.getStartX(), 0, cp.getStartZ());
+                BlockPos nearest = generator.locateStructure(world, MeteoriteStructure.INSTANCE, p, 0, false);
                 if (nearest != null) {
                     Chunk chunk = world.getChunk(cx, cz, ChunkStatus.STRUCTURE_STARTS);
                     // The actual relevant information is in the structure piece
@@ -120,7 +117,7 @@ public class TestMeteoritesCommand implements ISubCommand {
             double closestOther = Double.NaN;
             for (PlacedMeteoriteSettings otherSettings : found) {
                 if (otherSettings != settings) {
-                    double d = settings.getPos().distanceSq(otherSettings.getPos());
+                    double d = settings.getPos().getSquaredDistance(otherSettings.getPos());
                     if (Double.isNaN(closestOther) || d < closestOther) {
                         closestOther = d;
                     }
@@ -132,7 +129,7 @@ public class TestMeteoritesCommand implements ISubCommand {
             }
         }
 
-        found.sort(Comparator.comparingDouble(settings -> settings.getPos().distanceSq(centerBlock)));
+        found.sort(Comparator.comparingDouble(settings -> settings.getPos().getSquaredDistance(centerBlock)));
 
         sendLine(sender, "Chunks checked: %d", chunksChecked);
         sendLine(sender, "Meteorites found: %d", found.size());
@@ -167,13 +164,13 @@ public class TestMeteoritesCommand implements ISubCommand {
                         settings.getFallout().name().toLowerCase()));
             }
 
-            Text msg = new LiteralText(" #" + (i + 1) + " ");
+            MutableText msg = new LiteralText(" #" + (i + 1) + " ");
             msg.append(getClickablePosition(world, settings, pos)).append(restOfLine);
 
             // Add a tooltip
-            Text tooltip = new LiteralText(settings.toString() + "\nBiome: ")
+            MutableText tooltip = new LiteralText(settings.toString() + "\nBiome: ")
                     .append(world.getBiome(pos).getName());
-            msg.formatted(style -> style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
+            msg.styled(style -> style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
 
             sender.sendFeedback(msg, true);
         }
@@ -183,7 +180,7 @@ public class TestMeteoritesCommand implements ISubCommand {
     private static Text getClickablePosition(ServerWorld world, PlacedMeteoriteSettings settings,
             BlockPos pos) {
         BlockPos tpPos = pos.up((int) Math.ceil(settings.getMeteoriteRadius()));
-        int surfaceY = world.getHeight(Heightmap.Type.WORLD_SURFACE, tpPos).getY();
+        int surfaceY = world.getTopY(Heightmap.Type.WORLD_SURFACE, tpPos.getX(), tpPos.getZ());
         if (surfaceY > tpPos.getY()) {
             tpPos = new BlockPos(tpPos.getX(), surfaceY, tpPos.getZ());
         }
@@ -197,11 +194,11 @@ public class TestMeteoritesCommand implements ISubCommand {
     }
 
     private static MeteoriteStructurePiece getMeteoritePieceFromChunk(Chunk chunk) {
-        StructureStart start = chunk.getStructureStart(MeteoriteStructure.INSTANCE.getStructureName());
+        StructureStart<?> start = chunk.getStructureStart(MeteoriteStructure.INSTANCE);
 
-        if (start != null && start.getComponents().size() > 0
-                && start.getComponents().get(0) instanceof MeteoriteStructurePiece) {
-            return (MeteoriteStructurePiece) start.getComponents().get(0);
+        if (start != null && start.getChildren().size() > 0
+                && start.getChildren().get(0) instanceof MeteoriteStructurePiece) {
+            return (MeteoriteStructurePiece) start.getChildren().get(0);
         }
         return null;
     }

@@ -33,18 +33,32 @@ import java.util.stream.Collectors;
 public final class AEConfig {
 
     public final ClientConfig clientConfig;
+    public final ConfigFileManager clientConfigManager;
     public final CommonConfig commonConfig;
+    public final ConfigFileManager commonConfigManager;
 
     AEConfig(File configDir) {
         ConfigSection clientRoot = ConfigSection.createRoot();
         clientConfig = new ClientConfig(clientRoot);
-        syncClientConfig();
+        clientConfigManager = createConfigFileManager(clientRoot, configDir, "appliedenergistics2/client.json");
 
         ConfigSection commonRoot = ConfigSection.createRoot();
         commonConfig = new CommonConfig(commonRoot);
-        syncCommonConfig();
+        commonConfigManager = createConfigFileManager(commonRoot, configDir, "appliedenergistics2/common.json");
 
-        // FIXME config loading/saving
+        syncClientConfig();
+        syncCommonConfig();
+    }
+
+    private static ConfigFileManager createConfigFileManager(ConfigSection commonRoot, File configDir, String filename) {
+        File configFile = new File(configDir, filename);
+        ConfigFileManager result = new ConfigFileManager(commonRoot, configFile);
+        if (!configFile.exists()) {
+            result.save(); // Save a default file
+        } else {
+            result.load();
+        }
+        return result;
     }
 
     // Default Energy Conversion Rates

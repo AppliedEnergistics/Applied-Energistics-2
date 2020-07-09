@@ -33,10 +33,12 @@ import appeng.items.tools.NetworkToolItem;
 import appeng.me.cache.*;
 import appeng.mixins.CriteriaRegisterMixin;
 import appeng.recipes.handlers.*;
+import appeng.server.AECommand;
 import appeng.worldgen.ChargedQuartzOreConfig;
 import appeng.worldgen.ChargedQuartzOreFeature;
 import appeng.worldgen.meteorite.MeteoriteStructure;
 import net.earthcomputer.libstructure.LibStructure;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.BlockState;
@@ -56,7 +58,10 @@ import net.minecraft.world.gen.chunk.StructureConfig;
 import net.minecraft.world.gen.decorator.Decorator;
 import net.minecraft.world.gen.decorator.NopeDecoratorConfig;
 import net.minecraft.world.gen.decorator.RangeDecoratorConfig;
-import net.minecraft.world.gen.feature.*;
+import net.minecraft.world.gen.feature.DefaultFeatureConfig;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.FeatureConfig;
+import net.minecraft.world.gen.feature.OreFeatureConfig;
 
 import java.util.function.Consumer;
 
@@ -90,9 +95,9 @@ public abstract class AppEngBase implements AppEng {
         registerRecipeTypes();
         registerRecipeSerializers();
         registerWorldGen();
+        registerServerCommands();
 
         setupInternalRegistries();
-
 
     }
 
@@ -348,6 +353,13 @@ public abstract class AppEngBase implements AppEng {
                             .createDecoratedFeature(Decorator.NOPE.configure(NopeDecoratorConfig.field_24892)));
 
         }
+    }
+
+    private void registerServerCommands() {
+        // The server commands need to know what the current minecraft server is.
+        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+            new AECommand().register(dispatcher);
+        });
     }
 
 }

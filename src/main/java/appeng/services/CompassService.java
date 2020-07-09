@@ -101,11 +101,6 @@ public final class CompassService {
         updateArea((ServerWorld) world, chunk);
     }
 
-    public void updateArea(final ServerWorld w, ChunkPos chunkPos) {
-        Chunk chunk = w.getChunk(chunkPos.x, chunkPos.z);
-        updateArea(w, chunk);
-    }
-
     public void updateArea(final ServerWorld w, Chunk chunk) {
         this.updateArea(w, chunk, CHUNK_SIZE);
         this.updateArea(w, chunk, CHUNK_SIZE + 32);

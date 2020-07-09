@@ -1,10 +1,17 @@
 package appeng.core.config;
 
+import com.google.gson.JsonObject;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class ConfigSection {
 
     private final ConfigSection parent;
+
+    private final List<ConfigSection> subsections = new ArrayList<>();
+
+    private final List<BaseOption> options = new ArrayList<>();
 
     private final String id;
 
@@ -41,7 +48,14 @@ public class ConfigSection {
     }
 
     public ConfigSection subsection(String id, String comment) {
-        return new ConfigSection(this, id, comment);
+        ConfigSection section = new ConfigSection(this, id, comment);
+        subsections.add(section);
+        return section;
+    }
+
+    private <T extends BaseOption> T addOption(T option) {
+        this.options.add(option);
+        return option;
     }
 
     public IntegerOption addInt(String id, int defaultValue) {
@@ -53,7 +67,7 @@ public class ConfigSection {
     }
 
     public IntegerOption addInt(String id, int defaultValue, int minValue, int maxValue, String comment) {
-        return new IntegerOption(this, id, comment, defaultValue, minValue, maxValue);
+        return addOption(new IntegerOption(this, id, comment, defaultValue, minValue, maxValue));
     }
 
     public DoubleOption addDouble(String id, double defaultValue) {
@@ -69,7 +83,7 @@ public class ConfigSection {
     }
 
     public DoubleOption addDouble(String id, double defaultValue, double minValue, double maxValue, String comment) {
-        return new DoubleOption(this, id, comment, defaultValue, minValue, maxValue);
+        return addOption(new DoubleOption(this, id, comment, defaultValue, minValue, maxValue));
     }
 
     public BooleanOption addBoolean(String id, boolean defaultValue) {
@@ -77,7 +91,7 @@ public class ConfigSection {
     }
 
     public BooleanOption addBoolean(String id, boolean defaultValue, String comment) {
-        return new BooleanOption(this, id, comment, defaultValue);
+        return addOption(new BooleanOption(this, id, comment, defaultValue));
     }
 
     public StringListOption addStringList(String id, List<String> defaultValue) {
@@ -85,7 +99,7 @@ public class ConfigSection {
     }
 
     public StringListOption addStringList(String id, List<String> defaultValue, String comment) {
-        return new StringListOption(this, id, comment, defaultValue);
+        return addOption(new StringListOption(this, id, comment, defaultValue));
     }
 
     public <T extends Enum<T>> EnumOption<T> addEnum(String id, T defaultValue) {
@@ -93,7 +107,7 @@ public class ConfigSection {
     }
 
     public <T extends Enum<T>> EnumOption<T> addEnum(String id, T defaultValue, String comment) {
-        return new EnumOption<>(this, id, comment, defaultValue);
+        return addOption(new EnumOption<>(this, id, comment, defaultValue));
     }
 
     public void setChangeListener(Runnable changeListener) {
@@ -109,5 +123,41 @@ public class ConfigSection {
         }
     }
 
+    public JsonObject write() {
+        JsonObject obj = new JsonObject();
+
+        if (comment != null) {
+            obj.addProperty("__comment", comment);
+        }
+
+        for (BaseOption option : options) {
+            if (option.comment != null) {
+                obj.addProperty("__comment", option.comment);
+            }
+            obj.add(option.id, option.write());
+        }
+
+        for (ConfigSection subsection : subsections) {
+            obj.add(subsection.id, subsection.write());
+        }
+
+        return obj;
+    }
+
+    public void read(JsonObject obj) {
+
+        for (BaseOption option : options) {
+            if (obj.has(option.id)) {
+                option.read(obj.get(option.id));
+            }
+        }
+
+        for (ConfigSection subsection : subsections) {
+            if (obj.has(subsection.id)) {
+                subsection.read(obj.getAsJsonObject(subsection.id));
+            }
+        }
+
+    }
 }
 

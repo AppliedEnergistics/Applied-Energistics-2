@@ -63,12 +63,12 @@ public class TestOreGenCommand implements ISubCommand {
         ServerWorld world;
         BlockPos center;
         try {
-            ServerPlayerEntity player = sender.asPlayer();
+            ServerPlayerEntity player = sender.getPlayer();
             world = player.getServerWorld();
             center = new BlockPos(player.getX(), 0, player.getZ());
         } catch (CommandSyntaxException e) {
             world = srv.getOverworld();
-            center = world.getSpawnPoint();
+            center = world.getSpawnPos();
         }
 
         ChunkPos tl = new ChunkPos(center.add(-radius, 0, -radius));
@@ -107,11 +107,11 @@ public class TestOreGenCommand implements ISubCommand {
 
         BlockPos.Mutable blockPos = new BlockPos.Mutable();
         sendLine(sender, "Checking chunk %s", cp);
-        for (int x = cp.getXStart(); x <= cp.getXEnd(); x++) {
+        for (int x = cp.getStartX(); x <= cp.getEndX(); x++) {
             blockPos.setX(x);
-            for (int z = cp.getZStart(); z <= cp.getZEnd(); z++) {
+            for (int z = cp.getStartZ(); z <= cp.getEndZ(); z++) {
                 blockPos.setZ(z);
-                for (int y = 0; y < world.getMaxHeight(); y++) {
+                for (int y = 0; y < world.getHeight(); y++) {
                     blockPos.setY(y);
                     BlockState state = chunk.getBlockState(blockPos);
                     if (state == quartzOre || state == chargedQuartzOre) {

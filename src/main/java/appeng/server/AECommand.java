@@ -18,16 +18,16 @@
 
 package appeng.server;
 
-import static net.minecraft.server.command.CommandManager.literal;
+import appeng.api.features.AEFeature;
+import appeng.core.AEConfig;
+import appeng.core.AppEng;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-import appeng.api.features.AEFeature;
-import appeng.core.AEConfig;
+import static net.minecraft.server.command.CommandManager.literal;
 
 public final class AECommand {
 
@@ -44,13 +44,14 @@ public final class AECommand {
         dispatcher.register(builder);
     }
 
-    private void add(LiteralArgumentBuilder<net.minecraft.server.command.ServerCommandSource> builder, Commands subCommand) {
+    private void add(LiteralArgumentBuilder<ServerCommandSource> builder, Commands subCommand) {
 
         LiteralArgumentBuilder<ServerCommandSource> subCommandBuilder = literal(subCommand.name().toLowerCase())
                 .requires(src -> src.hasPermissionLevel(subCommand.level));
         subCommand.command.addArguments(subCommandBuilder);
         subCommandBuilder.executes(ctx -> {
-            subCommand.command.call(ServerLifecycleHooks.getCurrentServer(), ctx, ctx.getSource());
+            MinecraftServer server = AppEng.instance().getServer();
+            subCommand.command.call(server, ctx, ctx.getSource());
             return 1;
         });
         builder.then(subCommandBuilder);
