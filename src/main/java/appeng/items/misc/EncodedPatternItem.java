@@ -56,11 +56,11 @@ import appeng.util.Platform;
 
 public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternItem {
 
-    private static final String NBT_INGREDIENTS = "in";
-    private static final String NBT_PRODUCTS = "out";
-    private static final String NBT_CRAFTING = "crafting";
-    private static final String NBT_SUBSITUTE = "substitute";
-    private static final String NBT_RECIPE = "recipe";
+    public static final String NBT_INGREDIENTS = "in";
+    public static final String NBT_PRODUCTS = "out";
+    public static final String NBT_CRAFTING = "crafting";
+    public static final String NBT_SUBSITUTE = "substitute";
+    public static final String NBT_RECIPE = "recipe";
 
     // rather simple client side caching.
     private static final Map<ItemStack, ItemStack> SIMPLE_CACHE = new WeakHashMap<>();
@@ -216,21 +216,21 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
 
     @Override
     public ResourceLocation recipe(ItemStack itemStack) {
-        final CompoundNBT encodedValue = itemStack.getTag();
-        Preconditions.checkArgument(encodedValue != null, "itemStack missing a NBT tag");
+        final CompoundNBT tag = itemStack.getTag();
+        Preconditions.checkArgument(tag != null, "itemStack missing a NBT tag");
 
-        return null;
+        return new ResourceLocation(tag.getString(NBT_RECIPE));
     }
 
     @Override
     public List<IAEItemStack> ingredients(ItemStack itemStack) {
-        final CompoundNBT encodedValue = itemStack.getTag();
-        Preconditions.checkArgument(encodedValue != null, "itemStack missing a NBT tag");
+        final CompoundNBT tag = itemStack.getTag();
+        Preconditions.checkArgument(tag != null, "itemStack missing a NBT tag");
 
-        final ListNBT inTag = encodedValue.getList(NBT_INGREDIENTS, 10);
+        final ListNBT inTag = tag.getList(NBT_INGREDIENTS, 10);
         Preconditions.checkArgument(inTag.size() < 10, "Cannot use more than 9 ingredients");
 
-        final List<IAEItemStack> in = new ArrayList<>();
+        final List<IAEItemStack> in = new ArrayList<>(inTag.size());
         for (int x = 0; x < inTag.size(); x++) {
             CompoundNBT ingredient = inTag.getCompound(x);
             final ItemStack gs = ItemStack.read(ingredient);
@@ -245,14 +245,14 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
 
     @Override
     public List<IAEItemStack> products(ItemStack itemStack) {
-        final CompoundNBT encodedValue = itemStack.getTag();
+        final CompoundNBT tag = itemStack.getTag();
 
-        Preconditions.checkArgument(encodedValue != null, "itemStack missing a NBT tag");
+        Preconditions.checkArgument(tag != null, "itemStack missing a NBT tag");
 
-        final ListNBT outTag = encodedValue.getList(NBT_PRODUCTS, 10);
+        final ListNBT outTag = tag.getList(NBT_PRODUCTS, 10);
         Preconditions.checkArgument(outTag.size() < 4, "Cannot use more than 3 ingredients");
 
-        final List<IAEItemStack> out = new ArrayList<>();
+        final List<IAEItemStack> out = new ArrayList<>(outTag.size());
         for (int x = 0; x < outTag.size(); x++) {
             CompoundNBT ingredient = outTag.getCompound(x);
             final ItemStack gs = ItemStack.read(ingredient);
@@ -268,19 +268,19 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
 
     @Override
     public boolean isCrafting(ItemStack itemStack) {
-        final CompoundNBT encodedValue = itemStack.getTag();
+        final CompoundNBT tag = itemStack.getTag();
 
-        Preconditions.checkArgument(encodedValue != null, "itemStack missing a NBT tag");
+        Preconditions.checkArgument(tag != null, "itemStack missing a NBT tag");
 
-        return encodedValue.getBoolean(NBT_CRAFTING);
+        return tag.getBoolean(NBT_CRAFTING);
     }
 
     @Override
     public boolean allowsSubstitution(ItemStack itemStack) {
-        final CompoundNBT encodedValue = itemStack.getTag();
+        final CompoundNBT tag = itemStack.getTag();
 
-        Preconditions.checkArgument(encodedValue != null, "itemStack missing a NBT tag");
+        Preconditions.checkArgument(tag != null, "itemStack missing a NBT tag");
 
-        return this.isCrafting(itemStack) && encodedValue.getBoolean(NBT_SUBSITUTE);
+        return this.isCrafting(itemStack) && tag.getBoolean(NBT_SUBSITUTE);
     }
 }

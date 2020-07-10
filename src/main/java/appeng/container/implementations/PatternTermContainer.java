@@ -62,6 +62,7 @@ import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
 import appeng.core.sync.packets.PatternSlotPacket;
 import appeng.helpers.IContainerCraftingPacket;
+import appeng.items.misc.EncodedPatternItem;
 import appeng.items.storage.ViewCellItem;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.reporting.PatternTerminalPart;
@@ -248,10 +249,14 @@ public class PatternTermContainer extends MEMonitorableContainer
             tagOut.add(this.createItemTag(i));
         }
 
-        encodedValue.put("in", tagIn);
-        encodedValue.put("out", tagOut);
-        encodedValue.putBoolean("crafting", this.isCraftingMode());
-        encodedValue.putBoolean("substitute", this.isSubstitute());
+        encodedValue.put(EncodedPatternItem.NBT_INGREDIENTS, tagIn);
+        encodedValue.put(EncodedPatternItem.NBT_PRODUCTS, tagOut);
+        encodedValue.putBoolean(EncodedPatternItem.NBT_CRAFTING, this.isCraftingMode());
+        encodedValue.putBoolean(EncodedPatternItem.NBT_SUBSITUTE, this.isSubstitute());
+
+        if (this.isCraftingMode()) {
+            encodedValue.putString(EncodedPatternItem.NBT_RECIPE, this.currentRecipe.getId().toString());
+        }
 
         output.setTag(encodedValue);
     }
