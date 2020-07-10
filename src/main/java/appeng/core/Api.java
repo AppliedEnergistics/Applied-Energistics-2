@@ -20,10 +20,10 @@ package appeng.core;
 
 import appeng.api.AEAddon;
 import appeng.api.IAppEngApi;
+import appeng.api.client.IClientHelper;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.networking.IGridHelper;
 import appeng.api.storage.IStorageHelper;
-import appeng.api.util.IClientHelper;
 import appeng.core.api.ApiClientHelper;
 import appeng.core.api.ApiGrid;
 import appeng.core.api.ApiPart;
@@ -67,7 +67,7 @@ public final class Api implements IAppEngApi {
         this.registryContainer = new RegistryContainer();
         this.partHelper = new ApiPart();
         this.definitions = new ApiDefinitions((PartModels) this.registryContainer.partModels());
-        this.client = new ApiClientHelper();
+        this.client = new ApiClientHelper(this.definitions);
     }
 
     public PartModels getPartModels() {

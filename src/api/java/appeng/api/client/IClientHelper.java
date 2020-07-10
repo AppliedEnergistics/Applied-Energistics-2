@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.util;
+package appeng.api.client;
 
 import java.util.List;
 
@@ -38,5 +38,12 @@ public interface IClientHelper {
      * @param lines   List of lines to add to.
      */
     <T extends IAEStack<T>> void addCellInformation(ICellInventoryHandler<T> handler, List<ITextComponent> lines);
+
+    /**
+     * A helper to work with clientside related tasks for cells.
+     * 
+     * @return
+     */
+    ICellModelRegistry cells();
 
 }
