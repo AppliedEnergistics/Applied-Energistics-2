@@ -23,7 +23,6 @@
 
 package appeng.api.networking.security;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import appeng.api.networking.IGridNode;
