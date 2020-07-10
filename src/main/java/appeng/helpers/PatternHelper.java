@@ -25,26 +25,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.base.Preconditions;
+
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.world.World;
 
+import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.ContainerNull;
 import appeng.core.Api;
 import appeng.util.Platform;
-import appeng.util.item.AEItemStack;
 
 public class PatternHelper implements ICraftingPatternDetails, Comparable<PatternHelper> {
 
-    private final ItemStack patternItem;
     private final CraftingInventory crafting = new CraftingInventory(new ContainerNull(), 3, 3);
     private final CraftingInventory testFrame = new CraftingInventory(new ContainerNull(), 3, 3);
     private final ItemStack correctOutput;
@@ -60,39 +59,34 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
     private final IAEItemStack pattern;
     private int priority = 0;
 
-    public PatternHelper(final ItemStack is, final World w) {
-        final CompoundNBT encodedValue = is.getTag();
+    public PatternHelper(final IAEItemStack is, final World w) {
+        Preconditions.checkArgument(is.getItem() instanceof ICraftingPatternItem,
+                "itemStack is not a ICraftingPatternItem");
 
-        if (encodedValue == null) {
-            throw new IllegalArgumentException("No pattern here!");
-        }
+        final ICraftingPatternItem templateItem = (ICraftingPatternItem) is.getItem();
+        final ItemStack itemStack = is.createItemStack();
 
-        final ListNBT inTag = encodedValue.getList("in", 10);
-        final ListNBT outTag = encodedValue.getList("out", 10);
-        this.isCrafting = encodedValue.getBoolean("crafting");
+        final List<IAEItemStack> ingredients = templateItem.ingredients(itemStack);
+        final List<IAEItemStack> products = templateItem.products(itemStack);
 
-        this.canSubstitute = this.isCrafting && encodedValue.getBoolean("substitute");
-        this.patternItem = is;
-        this.pattern = AEItemStack.fromItemStack(is);
+        this.pattern = is.copy();
+        this.isCrafting = templateItem.isCrafting(itemStack);
+        this.canSubstitute = templateItem.allowsSubstitution(itemStack);
 
         final List<IAEItemStack> in = new ArrayList<>();
         final List<IAEItemStack> out = new ArrayList<>();
 
-        for (int x = 0; x < inTag.size(); x++) {
-            CompoundNBT ingredient = inTag.getCompound(x);
-            final ItemStack gs = ItemStack.read(ingredient);
-
-            if (!ingredient.isEmpty() && gs.isEmpty()) {
-                throw new IllegalArgumentException("No pattern here!");
-            }
+        for (int x = 0; x < 9; x++) {
+            final IAEItemStack ais = ingredients.get(x);
+            final ItemStack gs = ais != null ? ais.createItemStack() : ItemStack.EMPTY;
 
             this.crafting.setInventorySlotContents(x, gs);
 
-            if (!gs.isEmpty() && (!this.isCrafting || !gs.hasTag())) {
+            if (!gs.isEmpty() && (!this.isCrafting) || !gs.hasTag()) {
                 this.markItemAs(x, gs, TestStatus.ACCEPT);
             }
 
-            in.add(Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(gs));
+            in.add(ais != null ? ais.copy() : null);
             this.testFrame.setInventorySlotContents(x, gs);
         }
 
@@ -101,6 +95,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
             if (this.standardRecipe != null) {
                 this.correctOutput = this.standardRecipe.getCraftingResult(this.crafting);
+
                 out.add(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
                         .createStack(this.correctOutput));
             } else {
@@ -110,22 +105,18 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
             this.standardRecipe = null;
             this.correctOutput = ItemStack.EMPTY;
 
-            for (int x = 0; x < outTag.size(); x++) {
-                CompoundNBT resultItemTag = outTag.getCompound(x);
-                final ItemStack gs = ItemStack.read(resultItemTag);
-
-                if (!resultItemTag.isEmpty() && gs.isEmpty()) {
-                    throw new IllegalArgumentException("No pattern here!");
-                }
+            for (int x = 0; x < 3; x++) {
+                final IAEItemStack ais = products.get(x);
+                final ItemStack gs = ais.createItemStack();
 
                 if (!gs.isEmpty()) {
-                    out.add(Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(gs));
+                    out.add(ais.copy());
                 }
             }
         }
 
-        this.outputs = out.toArray(new IAEItemStack[0]);
         this.inputs = in.toArray(new IAEItemStack[0]);
+        this.outputs = out.toArray(new IAEItemStack[0]);
 
         final Map<IAEItemStack, IAEItemStack> tmpOutputs = new HashMap<>();
 
@@ -190,7 +181,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
     @Override
     public ItemStack getPattern() {
-        return this.patternItem;
+        return this.pattern.createItemStack();
     }
 
     @Override

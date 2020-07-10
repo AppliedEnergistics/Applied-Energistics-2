@@ -89,7 +89,7 @@ public class RestrictedInputSlot extends AppEngSlot {
     public boolean isValid(final ItemStack is, final World theWorld) {
         if (this.which == PlacableItemType.VALID_ENCODED_PATTERN_W_OUTPUT) {
             final ICraftingPatternDetails ap = is.getItem() instanceof ICraftingPatternItem
-                    ? ((ICraftingPatternItem) is.getItem()).getPatternForItem(is, theWorld)
+                    ? Api.instance().crafting().getPattern(is, theWorld)
                     : null;
             return ap != null;
         }
@@ -130,8 +130,7 @@ public class RestrictedInputSlot extends AppEngSlot {
         switch (this.which) {
             case ENCODED_CRAFTING_PATTERN:
                 if (i.getItem() instanceof ICraftingPatternItem) {
-                    final ICraftingPatternItem b = (ICraftingPatternItem) i.getItem();
-                    final ICraftingPatternDetails de = b.getPatternForItem(i, this.p.player.world);
+                    final ICraftingPatternDetails de = Api.instance().crafting().getPattern(i, this.p.player.world);
                     if (de != null) {
                         return de.isCraftable();
                     }

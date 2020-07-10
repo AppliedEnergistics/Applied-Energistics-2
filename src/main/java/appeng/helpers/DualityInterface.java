@@ -412,8 +412,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         }
 
         if (is.getItem() instanceof ICraftingPatternItem) {
-            final ICraftingPatternItem cpi = (ICraftingPatternItem) is.getItem();
-            final ICraftingPatternDetails details = cpi.getPatternForItem(is, this.iHost.getTileEntity().getWorld());
+            final ICraftingPatternDetails details = Api.instance().crafting().getPattern(is,
+                    this.iHost.getTileEntity().getWorld());
 
             if (details != null) {
                 if (this.craftingList == null) {

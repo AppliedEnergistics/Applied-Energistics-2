@@ -34,6 +34,7 @@ import appeng.api.parts.IPartModel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.implementations.MEMonitorableContainer;
 import appeng.container.implementations.PatternTermContainer;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
@@ -108,8 +109,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
         if (inv == this.pattern && slot == 1) {
             final ItemStack is = this.pattern.getStackInSlot(1);
             if (!is.isEmpty() && is.getItem() instanceof ICraftingPatternItem) {
-                final ICraftingPatternItem pattern = (ICraftingPatternItem) is.getItem();
-                final ICraftingPatternDetails details = pattern.getPatternForItem(is,
+                final ICraftingPatternDetails details = Api.instance().crafting().getPattern(is,
                         this.getHost().getTile().getWorld());
                 if (details != null) {
                     this.setCraftingRecipe(details.isCraftable());

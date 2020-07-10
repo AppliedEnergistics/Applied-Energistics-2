@@ -1057,9 +1057,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
             final CompoundNBT item = list.getCompound(x);
             final IAEItemStack pattern = AEItemStack.fromNBT(item);
             if (pattern != null && pattern.getItem() instanceof ICraftingPatternItem) {
-                final ICraftingPatternItem cpi = (ICraftingPatternItem) pattern.getItem();
-                final ICraftingPatternDetails details = cpi.getPatternForItem(pattern.createItemStack(),
-                        this.getWorld());
+                final ICraftingPatternDetails details = Api.instance().crafting()
+                        .getPattern(pattern.createItemStack(), this.getWorld());
                 if (details != null) {
                     final TaskProgress tp = new TaskProgress();
                     tp.value = item.getLong("craftingProgress");

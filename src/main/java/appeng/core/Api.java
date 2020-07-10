@@ -21,10 +21,12 @@ package appeng.core;
 import appeng.api.AEAddon;
 import appeng.api.IAppEngApi;
 import appeng.api.client.IClientHelper;
+import appeng.api.crafting.ICraftingHelper;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.networking.IGridHelper;
 import appeng.api.storage.IStorageHelper;
 import appeng.core.api.ApiClientHelper;
+import appeng.core.api.ApiCrafting;
 import appeng.core.api.ApiGrid;
 import appeng.core.api.ApiPart;
 import appeng.core.api.ApiStorage;
@@ -57,12 +59,14 @@ public final class Api implements IAppEngApi {
     // private MovableTileRegistry MovableRegistry = new MovableTileRegistry();
     private final IRegistryContainer registryContainer;
     private final IStorageHelper storageHelper;
+    private final ICraftingHelper craftingHelper;
     private final IGridHelper networkHelper;
     private final ApiDefinitions definitions;
     private final IClientHelper client;
 
     private Api() {
         this.storageHelper = new ApiStorage();
+        this.craftingHelper = new ApiCrafting();
         this.networkHelper = new ApiGrid();
         this.registryContainer = new RegistryContainer();
         this.partHelper = new ApiPart();
@@ -82,6 +86,11 @@ public final class Api implements IAppEngApi {
     @Override
     public IStorageHelper storage() {
         return this.storageHelper;
+    }
+
+    @Override
+    public ICraftingHelper crafting() {
+        return this.craftingHelper;
     }
 
     @Override

@@ -38,6 +38,7 @@ import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.MolecularAssemblerPatternSlot;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
+import appeng.core.Api;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.tile.crafting.MolecularAssemblerTileEntity;
 import appeng.util.Platform;
@@ -79,8 +80,7 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
 
         if (is.getItem() instanceof EncodedPatternItem) {
             final World w = this.getTileEntity().getWorld();
-            final EncodedPatternItem iep = (EncodedPatternItem) is.getItem();
-            final ICraftingPatternDetails ph = iep.getPatternForItem(is, w);
+            final ICraftingPatternDetails ph = Api.instance().crafting().getPattern(is, w);
             if (ph.isCraftable()) {
                 return ph.isValidItemForSlot(slotIndex, i, w);
             }

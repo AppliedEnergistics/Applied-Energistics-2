@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2013 AlgorithmX2
+ * Copyright (c) 2020 TeamAppliedEnergistics
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -21,27 +21,27 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.networking.crafting;
+package appeng.api.crafting;
 
-import appeng.api.crafting.ICraftingHelper;
-import appeng.api.storage.data.IAEItemStack;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 
-/**
- * Passed to a ICraftingProvider as a interface to manipulate the available
- * crafting jobs.
- */
-public interface ICraftingProviderHelper {
+import appeng.api.implementations.ICraftingPatternItem;
+import appeng.api.networking.crafting.ICraftingPatternDetails;
+
+public interface ICraftingHelper {
 
     /**
-     * Add new Pattern to AE's crafting cache.
+     * Retrieve details about a pattern.
      * 
-     * This will only accept instances created by
-     * {@link ICraftingHelper#getPattern(net.minecraft.item.ItemStack, net.minecraft.world.World)}
+     * The item backing the {@link ItemStack} needs to implement
+     * {@link ICraftingPatternItem}.
+     *
+     * @param itemStack pattern
+     * @param world     crafting world
+     *
+     * @return details of pattern
      */
-    void addCraftingOption(ICraftingMedium medium, ICraftingPatternDetails api);
+    ICraftingPatternDetails getPattern(ItemStack itemStack, World world);
 
-    /**
-     * Set an item can Emitable
-     */
-    void setEmitable(IAEItemStack what);
 }

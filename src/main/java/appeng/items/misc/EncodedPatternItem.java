@@ -18,18 +18,24 @@
 
 package appeng.items.misc;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+
+import com.google.common.base.Preconditions;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -39,16 +45,23 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.helpers.InvalidPatternHelper;
-import appeng.helpers.PatternHelper;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 
 public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternItem {
+
+    private static final String NBT_INGREDIENTS = "in";
+    private static final String NBT_PRODUCTS = "out";
+    private static final String NBT_CRAFTING = "crafting";
+    private static final String NBT_SUBSITUTE = "substitute";
+    private static final String NBT_RECIPE = "recipe";
+
     // rather simple client side caching.
     private static final Map<ItemStack, ItemStack> SIMPLE_CACHE = new WeakHashMap<>();
 
@@ -95,7 +108,7 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
     @OnlyIn(Dist.CLIENT)
     public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
             final ITooltipFlag advancedTooltips) {
-        final ICraftingPatternDetails details = this.getPatternForItem(stack, world);
+        final ICraftingPatternDetails details = Api.instance().crafting().getPattern(stack, world);
 
         if (details == null) {
             if (!stack.hasTag()) {
@@ -181,15 +194,6 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
         }
     }
 
-    @Override
-    public ICraftingPatternDetails getPatternForItem(final ItemStack is, final World w) {
-        try {
-            return new PatternHelper(is, w);
-        } catch (final Throwable t) {
-            return null;
-        }
-    }
-
     public ItemStack getOutput(final ItemStack item) {
         ItemStack out = SIMPLE_CACHE.get(item);
 
@@ -202,11 +206,81 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
             return ItemStack.EMPTY;
         }
 
-        final ICraftingPatternDetails details = this.getPatternForItem(item, w);
+        final ICraftingPatternDetails details = Api.instance().crafting().getPattern(item, w);
 
         out = details != null ? details.getOutputs()[0].createItemStack() : ItemStack.EMPTY;
 
         SIMPLE_CACHE.put(item, out);
         return out;
+    }
+
+    @Override
+    public ResourceLocation recipe(ItemStack itemStack) {
+        final CompoundNBT encodedValue = itemStack.getTag();
+        Preconditions.checkArgument(encodedValue != null, "itemStack missing a NBT tag");
+
+        return null;
+    }
+
+    @Override
+    public List<IAEItemStack> ingredients(ItemStack itemStack) {
+        final CompoundNBT encodedValue = itemStack.getTag();
+        Preconditions.checkArgument(encodedValue != null, "itemStack missing a NBT tag");
+
+        final ListNBT inTag = encodedValue.getList(NBT_INGREDIENTS, 10);
+        Preconditions.checkArgument(inTag.size() < 10, "Cannot use more than 9 ingredients");
+
+        final List<IAEItemStack> in = new ArrayList<>();
+        for (int x = 0; x < inTag.size(); x++) {
+            CompoundNBT ingredient = inTag.getCompound(x);
+            final ItemStack gs = ItemStack.read(ingredient);
+
+            Preconditions.checkArgument(!(!ingredient.isEmpty() && gs.isEmpty()), "invalid itemStack in slot", x);
+
+            in.add(Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(gs));
+        }
+
+        return in;
+    }
+
+    @Override
+    public List<IAEItemStack> products(ItemStack itemStack) {
+        final CompoundNBT encodedValue = itemStack.getTag();
+
+        Preconditions.checkArgument(encodedValue != null, "itemStack missing a NBT tag");
+
+        final ListNBT outTag = encodedValue.getList(NBT_PRODUCTS, 10);
+        Preconditions.checkArgument(outTag.size() < 4, "Cannot use more than 3 ingredients");
+
+        final List<IAEItemStack> out = new ArrayList<>();
+        for (int x = 0; x < outTag.size(); x++) {
+            CompoundNBT ingredient = outTag.getCompound(x);
+            final ItemStack gs = ItemStack.read(ingredient);
+
+            Preconditions.checkArgument(!(!ingredient.isEmpty() && gs.isEmpty()), "invalid itemStack in slot", x);
+
+            out.add(Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(gs));
+        }
+
+        return out;
+
+    }
+
+    @Override
+    public boolean isCrafting(ItemStack itemStack) {
+        final CompoundNBT encodedValue = itemStack.getTag();
+
+        Preconditions.checkArgument(encodedValue != null, "itemStack missing a NBT tag");
+
+        return encodedValue.getBoolean(NBT_CRAFTING);
+    }
+
+    @Override
+    public boolean allowsSubstitution(ItemStack itemStack) {
+        final CompoundNBT encodedValue = itemStack.getTag();
+
+        Preconditions.checkArgument(encodedValue != null, "itemStack missing a NBT tag");
+
+        return this.isCrafting(itemStack) && encodedValue.getBoolean(NBT_SUBSITUTE);
     }
 }

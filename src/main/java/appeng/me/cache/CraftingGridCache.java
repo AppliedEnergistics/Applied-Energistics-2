@@ -35,6 +35,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
@@ -80,6 +81,7 @@ import appeng.crafting.CraftingJob;
 import appeng.crafting.CraftingLink;
 import appeng.crafting.CraftingLinkNexus;
 import appeng.crafting.CraftingWatcher;
+import appeng.helpers.PatternHelper;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.GenericInterestManager;
@@ -303,6 +305,8 @@ public class CraftingGridCache
 
     @Override
     public void addCraftingOption(final ICraftingMedium medium, final ICraftingPatternDetails api) {
+        Preconditions.checkArgument(api.getClass() == PatternHelper.class,
+                "Only supports internal ICraftingPatternDetails for now");
         List<ICraftingMedium> details = this.craftingMethods.get(api);
         if (details == null) {
             details = new ArrayList<>();
