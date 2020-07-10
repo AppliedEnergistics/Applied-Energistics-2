@@ -28,18 +28,25 @@ import javax.annotation.Nonnull;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.cells.ICellHandler;
+import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.api.storage.data.IAEStack;
 
 /**
  * Any item which implements this can be treated as an IMEInventory via
- * Util.getCell / Util.isCell It automatically handles the internals and NBT
- * data, which is both nice, and bad for you!
+ * {@link ICellHandler#getCellInventory(ItemStack, appeng.api.storage.cells.ISaveProvider, IStorageChannel)}
+ * or {@link ICellHandler#isCell(ItemStack)}. It automatically handles the
+ * internals and NBT data, which is both nice, and bad for you!
  *
  * Good cause it means you don't have to do anything, bad because you have
  * little to no control over it.
- *
- * The standard AE implementation only provides 1-63 Types
+ * 
+ * Limited to {@link Integer} internally for most calculations. E.g. if the used
+ * or remaining bytes would overflow {@link Integer#MAX_VALUE} the behaviour is
+ * no longer specified. Even if {@link ICellInventory} is using {@link Long}.
+ * 
+ * The standard AE implementation also only provides 1-63 Types.
  */
 public interface IStorageCell<T extends IAEStack<T>> extends ICellWorkbenchItem {
 
