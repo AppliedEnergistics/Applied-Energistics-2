@@ -38,7 +38,8 @@ public interface ICraftingHelper {
      * {@link ICraftingPatternItem}.
      *
      * @param itemStack pattern
-     * @param world     world used to access the {@link net.minecraft.item.crafting.RecipeManager}.
+     * @param world     world used to access the
+     *                  {@link net.minecraft.item.crafting.RecipeManager}.
      *
      * @return details of pattern
      */
