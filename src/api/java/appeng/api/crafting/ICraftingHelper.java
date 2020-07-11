@@ -32,7 +32,7 @@ import appeng.api.networking.crafting.ICraftingPatternDetails;
 public interface ICraftingHelper {
 
     /**
-     * Retrieve details about a pattern.
+     * Retrieve details from an encoded crafting pattern.
      * 
      * The item backing the {@link ItemStack} needs to implement
      * {@link ICraftingPatternItem}.
