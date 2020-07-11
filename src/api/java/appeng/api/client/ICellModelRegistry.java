@@ -55,7 +55,8 @@ public interface ICellModelRegistry {
     boolean registerModel(@Nonnull Item item, @Nonnull ResourceLocation model);
 
     /**
-     * The model represented as {@link ResourceLocation} for an {@link Item}
+     * The {@link ResourceLocation} of the model used to render the given storage cell {@link Item}
+     * when inserted into a drive or similar.
      * 
      * @param item
      * @return
