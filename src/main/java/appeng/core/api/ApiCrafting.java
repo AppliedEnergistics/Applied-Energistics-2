@@ -18,9 +18,6 @@
 
 package appeng.core.api;
 
-import java.util.IdentityHashMap;
-import java.util.Map;
-
 import com.google.common.base.Preconditions;
 
 import net.minecraft.item.ItemStack;
@@ -36,10 +33,11 @@ import appeng.helpers.PatternHelper;
 
 public class ApiCrafting implements ICraftingHelper {
 
-    final private Map<ItemStack, PatternHelper> patternCache;
+    // // Cache is disabled for now.
+    // final private Map<ItemStack, PatternHelper> patternCache;
 
     public ApiCrafting() {
-        this.patternCache = new IdentityHashMap<>();
+        // this.patternCache = new IdentityHashMap<>();
     }
 
     @Override
@@ -52,14 +50,14 @@ public class ApiCrafting implements ICraftingHelper {
 
         // We use the shared itemstack for an identity lookup.
         IAEItemStack ais = Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(is);
-        final ItemStack sharedStack = ais.getDefinition();
+        // final ItemStack sharedStack = ais.getDefinition();
 
-        return this.patternCache.computeIfAbsent(sharedStack, key -> {
-            try {
-                return new PatternHelper(ais, world);
-            } catch (final Throwable t) {
-                return null;
-            }
-        });
+        // return this.patternCache.computeIfAbsent(sharedStack, key -> {
+        try {
+            return new PatternHelper(ais, world);
+        } catch (final Throwable t) {
+            return null;
+        }
+        // });
     }
 }

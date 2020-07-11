@@ -31,7 +31,9 @@ import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import appeng.api.implementations.ICraftingPatternItem;
@@ -68,6 +70,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
         final List<IAEItemStack> ingredients = templateItem.ingredients(itemStack);
         final List<IAEItemStack> products = templateItem.products(itemStack);
+        final ResourceLocation recipeId = templateItem.recipe(itemStack);
 
         this.pattern = is.copy();
         this.isCrafting = templateItem.isCrafting(itemStack);
@@ -91,16 +94,17 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
         }
 
         if (this.isCrafting) {
-            this.standardRecipe = w.getRecipeManager().getRecipe(IRecipeType.CRAFTING, this.crafting, w).orElse(null);
+            IRecipe<?> recipe = w.getRecipeManager().getRecipe(recipeId).orElse(null);
 
-            if (this.standardRecipe != null) {
-                this.correctOutput = this.standardRecipe.getCraftingResult(this.crafting);
-
-                out.add(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
-                        .createStack(this.correctOutput));
-            } else {
-                throw new IllegalStateException("No pattern here!");
+            if (recipe == null || recipe.getType() != IRecipeType.CRAFTING) {
+                throw new IllegalStateException("recipe id is not a crafting recipe");
             }
+
+            this.standardRecipe = (ICraftingRecipe) recipe;
+            this.correctOutput = this.standardRecipe.getCraftingResult(this.crafting);
+
+            out.add(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
+                    .createStack(this.correctOutput));
         } else {
             this.standardRecipe = null;
             this.correctOutput = ItemStack.EMPTY;
