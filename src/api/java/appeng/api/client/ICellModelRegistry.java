@@ -38,7 +38,7 @@ import net.minecraft.util.ResourceLocation;
 public interface ICellModelRegistry {
 
     /**
-     * Register a new model for an item baking a cell.
+     * Register a new model for a storage cell item.
      * 
      * Model loading is not part of it at all. The only use case it provides is to
      * map an {@link Item} to a {@link ResourceLocation} which can be looked up from
