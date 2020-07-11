@@ -43,7 +43,7 @@ public interface ICellModelRegistry {
      * <p>
      * You are responsible for ensuring that the given model is actually loaded by the game. 
      * See {@see  net.minecraftforge.client.model.ModelLoader#addSpecialModel}.
-     * map an {@link Item} to a {@link ResourceLocation} which can be looked up from
+     * This method only maps an {@link Item} to a {@link ResourceLocation} which can be looked up from
      * the {@link ModelBakery}. No validation about missing models will be done.
      * 
      * For examples look at our cell part models within the drive model directory.
