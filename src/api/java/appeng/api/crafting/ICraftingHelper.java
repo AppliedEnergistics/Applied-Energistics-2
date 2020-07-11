@@ -33,12 +33,12 @@ public interface ICraftingHelper {
 
     /**
      * Retrieve details from an encoded crafting pattern.
-     * 
+     * <p>
      * The item backing the {@link ItemStack} needs to implement
      * {@link ICraftingPatternItem}.
      *
      * @param itemStack pattern
-     * @param world     crafting world
+     * @param world     world used to access the {@link net.minecraft.item.crafting.RecipeManager}.
      *
      * @return details of pattern
      */

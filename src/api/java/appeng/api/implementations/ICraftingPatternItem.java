@@ -36,9 +36,8 @@ import net.minecraft.util.ResourceLocation;
 import appeng.api.storage.data.IAEItemStack;
 
 /**
- * Implemented on a {@link Item}.
+ * Implemented by {@link Item} subclasses that represent encoded crafting patterns.
  * 
- * All methods should accept an {@link ItemStack} to provide the actual data.
  */
 public interface ICraftingPatternItem {
 
@@ -51,7 +50,8 @@ public interface ICraftingPatternItem {
     ResourceLocation recipe(ItemStack itemStack);
 
     /**
-     * Corresponds to a vanilla 3x3 crafting inventory.
+     * Get the ingredients for an encoded crafting pattern represented similar to a 3x3 crafting inventory.
+     * <p>
      * 
      * This can contain null entries for empty slots.
      * 
