@@ -1,6 +1,6 @@
 {
   "textures": {
-    "cell": "appliedenergistics2:block/drive/item_cell"
+    "cell": "appliedenergistics2:block/drive/cells/default_cell"
   },
   "elements": [
     {

@@ -1,5 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
+ * 
  * Copyright (c) 2013 - 2020, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
@@ -23,14 +24,24 @@ import java.util.List;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
+import appeng.api.client.ICellModelRegistry;
+import appeng.api.client.IClientHelper;
 import appeng.api.config.IncludeExclude;
 import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.util.IClientHelper;
+import appeng.core.ApiDefinitions;
+import appeng.core.api.client.ApiCellModelRegistry;
 import appeng.core.localization.GuiText;
 
 public class ApiClientHelper implements IClientHelper {
+
+    private final ICellModelRegistry cells;
+
+    public ApiClientHelper(ApiDefinitions definitions) {
+        this.cells = new ApiCellModelRegistry(definitions);
+    }
+
     @Override
     public <T extends IAEStack<T>> void addCellInformation(ICellInventoryHandler<T> handler,
             List<ITextComponent> lines) {
@@ -63,6 +74,11 @@ public class ApiClientHelper implements IClientHelper {
             }
         }
 
+    }
+
+    @Override
+    public ICellModelRegistry cells() {
+        return this.cells;
     }
 
 }

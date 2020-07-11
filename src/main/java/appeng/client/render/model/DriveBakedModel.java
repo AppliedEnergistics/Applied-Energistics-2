@@ -31,22 +31,22 @@ import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.util.Direction;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 
-import appeng.api.definitions.IItems;
-import appeng.block.storage.DriveSlotCellType;
 import appeng.block.storage.DriveSlotsState;
 import appeng.client.render.DelegateBakedModel;
-import appeng.core.Api;
 
 public class DriveBakedModel extends DelegateBakedModel {
-    private final Map<DriveSlotCellType, IBakedModel> bakedCells;
+    private final Map<Item, IBakedModel> bakedCells;
+    private final IBakedModel defaultCell;
 
-    public DriveBakedModel(IBakedModel bakedBase, Map<DriveSlotCellType, IBakedModel> bakedCells) {
+    public DriveBakedModel(IBakedModel bakedBase, Map<Item, IBakedModel> cellModels, IBakedModel defaultCell) {
         super(bakedBase);
-        this.bakedCells = bakedCells;
+        this.bakedCells = cellModels;
+        this.defaultCell = defaultCell;
     }
 
     @Nonnull
@@ -92,23 +92,18 @@ public class DriveBakedModel extends DelegateBakedModel {
     public boolean isAmbientOcclusion() {
         // We have faces inside the chassis that are facing east, but should not receive
         // ambient occlusion from the east-side, but sadly this cannot be fine-tuned on
-        // a
-        // face-by-face basis.
+        // a face-by-face basis.
         return false;
     }
 
     // Determine which drive chassis to show based on the used cell
     private IBakedModel getCellChassisModel(Item cell) {
-        IItems items = Api.INSTANCE.definitions().items();
         if (cell == null) {
-            return bakedCells.get(DriveSlotCellType.EMPTY);
-        } else if (items.fluidCell1k().item() == cell || items.fluidCell4k().item() == cell
-                || items.fluidCell16k().item() == cell || items.fluidCell64k().item() == cell) {
-            return bakedCells.get(DriveSlotCellType.FLUID);
-        } else {
-            // Fall back to an item model
-            return bakedCells.get(DriveSlotCellType.ITEM);
+            return bakedCells.get(Items.AIR);
         }
+        final IBakedModel model = bakedCells.get(cell);
+
+        return model != null ? model : defaultCell;
     }
 
     private static void addModel(@Nullable BlockState state, @Nonnull Random rand, @Nonnull IModelData extraData,

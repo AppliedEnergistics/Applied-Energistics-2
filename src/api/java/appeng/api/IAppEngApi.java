@@ -23,15 +23,21 @@
 
 package appeng.api;
 
+import appeng.api.client.IClientHelper;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.networking.IGridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IPartHelper;
 import appeng.api.storage.IStorageHelper;
-import appeng.api.util.IClientHelper;
 
 public interface IAppEngApi {
+
+    /**
+     * @return An accessible list of all AE definitions
+     */
+    IDefinitions definitions();
+
     /**
      * @return Registry Container for the numerous registries in AE2.
      */
@@ -51,11 +57,6 @@ public interface IAppEngApi {
      * @return A helper for working with grids, and buses.
      */
     IPartHelper partHelper();
-
-    /**
-     * @return An accessible list of all AE definitions
-     */
-    IDefinitions definitions();
 
     /**
      * @return Utility methods primarily useful for client side stuff
