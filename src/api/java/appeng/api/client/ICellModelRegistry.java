@@ -40,7 +40,9 @@ public interface ICellModelRegistry {
     /**
      * Register a new model for a storage cell item.
      * 
-     * Model loading is not part of it at all. The only use case it provides is to
+     * <p>
+     * You are responsible for ensuring that the given model is actually loaded by the game. 
+     * See {@see  net.minecraftforge.client.model.ModelLoader#addSpecialModel}.
      * map an {@link Item} to a {@link ResourceLocation} which can be looked up from
      * the {@link ModelBakery}. No validation about missing models will be done.
      * 
