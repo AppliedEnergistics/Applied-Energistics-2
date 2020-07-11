@@ -44,7 +44,7 @@ public interface ICraftingPatternItem {
     /**
      * @param itemStack Providing the actual data.
      * 
-     * @return the {@link ResourceLocation} for the related {@link IRecipe}
+     * @return The {@link ResourceLocation id} of the {@link IRecipe recipe} encoded in the given crafting pattern. Null, if the given item stack does not encode a valid pattern, or is not of the required type.
      */
     @Nullable
     ResourceLocation recipe(ItemStack itemStack);
