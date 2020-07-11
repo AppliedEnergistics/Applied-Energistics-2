@@ -23,7 +23,6 @@
 
 package appeng.api;
 
-
 import appeng.api.client.IClientHelper;
 import appeng.api.crafting.ICraftingHelper;
 import appeng.api.definitions.IDefinitions;

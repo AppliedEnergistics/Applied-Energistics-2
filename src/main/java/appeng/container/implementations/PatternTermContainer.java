@@ -235,30 +235,12 @@ public class PatternTermContainer extends MEMonitorableContainer
             }
         }
 
-        // encode the slot.
-        final CompoundNBT encodedValue = new CompoundNBT();
-
-        final ListNBT tagIn = new ListNBT();
-        final ListNBT tagOut = new ListNBT();
-
-        for (final ItemStack i : in) {
-            tagIn.add(this.createItemTag(i));
-        }
-
-        for (final ItemStack i : out) {
-            tagOut.add(this.createItemTag(i));
-        }
-
-        encodedValue.put(EncodedPatternItem.NBT_INGREDIENTS, tagIn);
-        encodedValue.put(EncodedPatternItem.NBT_PRODUCTS, tagOut);
-        encodedValue.putBoolean(EncodedPatternItem.NBT_CRAFTING, this.isCraftingMode());
-        encodedValue.putBoolean(EncodedPatternItem.NBT_SUBSITUTE, this.isSubstitute());
-
         if (this.isCraftingMode()) {
-            encodedValue.putString(EncodedPatternItem.NBT_RECIPE, this.currentRecipe.getId().toString());
+            EncodedPatternItem.encodeCraftingPattern(output, in, out, this.currentRecipe.getId(), isSubstitute());
+        } else {
+            EncodedPatternItem.encodeProcessingPattern(output, in, out);
         }
 
-        output.setTag(encodedValue);
     }
 
     private ItemStack[] getInputs() {
@@ -318,16 +300,6 @@ public class PatternTermContainer extends MEMonitorableContainer
         isPattern |= definitions.materials().blankPattern().isSameAs(output);
 
         return isPattern;
-    }
-
-    private INBT createItemTag(final ItemStack i) {
-        final CompoundNBT c = new CompoundNBT();
-
-        if (!i.isEmpty()) {
-            i.write(c);
-        }
-
-        return c;
     }
 
     @Override

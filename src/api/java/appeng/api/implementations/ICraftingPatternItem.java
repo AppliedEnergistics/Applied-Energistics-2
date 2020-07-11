@@ -46,8 +46,8 @@ public interface ICraftingPatternItem {
      * @param itemStack Providing the actual data.
      * 
      * @return The {@link ResourceLocation id} of the {@link IRecipe recipe} encoded
-     *         in the given crafting pattern. Null, if the given item stack does not
-     *         encode a valid pattern, or is not of the required type.
+     *         in the given crafting pattern. Null, if
+     *         {@link #isCrafting(ItemStack)} is false, not-null otherwise.
      */
     @Nullable
     ResourceLocation recipe(ItemStack itemStack);
@@ -81,11 +81,12 @@ public interface ICraftingPatternItem {
     /**
      * If this is a crafting or processing pattern.
      * 
-     * Crafting recipes will be validated against an existing {@link IRecipe}.
+     * Crafting recipes will be validated against an existing {@link IRecipe}, which
+     * is identified by {@link #recipe(ItemStack)}.
      * 
      * @param itemStack Providing the actual data.
      * 
-     * @return true, if this should be a crafting pattern
+     * @return true, if the given stack encodes a crafting pattern
      */
     boolean isCrafting(ItemStack itemStack);
 

@@ -31,6 +31,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
@@ -42,6 +43,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants;
 
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
@@ -58,9 +60,8 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
 
     public static final String NBT_INGREDIENTS = "in";
     public static final String NBT_PRODUCTS = "out";
-    public static final String NBT_CRAFTING = "crafting";
     public static final String NBT_SUBSITUTE = "substitute";
-    public static final String NBT_RECIPE = "recipe";
+    public static final String NBT_RECIPE_ID = "recipe";
 
     // rather simple client side caching.
     private static final Map<ItemStack, ItemStack> SIMPLE_CACHE = new WeakHashMap<>();
@@ -219,7 +220,7 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
         final CompoundNBT tag = itemStack.getTag();
         Preconditions.checkArgument(tag != null, "itemStack missing a NBT tag");
 
-        return new ResourceLocation(tag.getString(NBT_RECIPE));
+        return new ResourceLocation(tag.getString(NBT_RECIPE_ID));
     }
 
     @Override
@@ -269,10 +270,9 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
     @Override
     public boolean isCrafting(ItemStack itemStack) {
         final CompoundNBT tag = itemStack.getTag();
-
         Preconditions.checkArgument(tag != null, "itemStack missing a NBT tag");
 
-        return tag.getBoolean(NBT_CRAFTING);
+        return tag.contains(NBT_RECIPE_ID, Constants.NBT.TAG_STRING);
     }
 
     @Override
@@ -283,4 +283,46 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
 
         return this.isCrafting(itemStack) && tag.getBoolean(NBT_SUBSITUTE);
     }
+
+    public static void encodeCraftingPattern(ItemStack stack, ItemStack[] in, ItemStack[] out,
+            ResourceLocation recipeId, boolean allowSubstitutes) {
+        CompoundNBT encodedValue = encodeInputsAndOutputs(in, out);
+        encodedValue.putString(EncodedPatternItem.NBT_RECIPE_ID, recipeId.toString());
+        encodedValue.putBoolean(EncodedPatternItem.NBT_SUBSITUTE, allowSubstitutes);
+        stack.setTag(encodedValue);
+    }
+
+    public static void encodeProcessingPattern(ItemStack stack, ItemStack[] in, ItemStack[] out) {
+        stack.setTag(encodeInputsAndOutputs(in, out));
+    }
+
+    private static CompoundNBT encodeInputsAndOutputs(ItemStack[] in, ItemStack[] out) {
+        final CompoundNBT encodedValue = new CompoundNBT();
+
+        final ListNBT tagIn = new ListNBT();
+        final ListNBT tagOut = new ListNBT();
+
+        for (final ItemStack i : in) {
+            tagIn.add(createItemTag(i));
+        }
+
+        for (final ItemStack i : out) {
+            tagOut.add(createItemTag(i));
+        }
+
+        encodedValue.put(EncodedPatternItem.NBT_INGREDIENTS, tagIn);
+        encodedValue.put(EncodedPatternItem.NBT_PRODUCTS, tagOut);
+        return encodedValue;
+    }
+
+    private static INBT createItemTag(final ItemStack i) {
+        final CompoundNBT c = new CompoundNBT();
+
+        if (!i.isEmpty()) {
+            i.write(c);
+        }
+
+        return c;
+    }
+
 }
