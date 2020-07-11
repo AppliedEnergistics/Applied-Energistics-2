@@ -36,7 +36,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
@@ -66,6 +65,7 @@ import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
+import appeng.core.Api;
 import appeng.helpers.PlayerSecurityWrapper;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MEMonitorHandler;
@@ -253,7 +253,7 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
 
     @Override
     public <T extends IAEStack<T>> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
-        if (channel == AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)) {
+        if (channel == Api.instance().storage().getStorageChannel(IItemStorageChannel.class)) {
             return (IMEMonitor<T>) this.securityMonitor;
         }
         return null;
@@ -286,7 +286,7 @@ public class SecurityStationTileEntity extends AENetworkTileEntity implements IT
 
     @Override
     public void readPermissions(final Map<Integer, EnumSet<SecurityPermissions>> playerPerms) {
-        final IPlayerRegistry pr = AEApi.instance().registries().players();
+        final IPlayerRegistry pr = Api.instance().registries().players();
 
         // read permissions
         for (final IAEItemStack ais : this.inventory.getStoredItems()) {

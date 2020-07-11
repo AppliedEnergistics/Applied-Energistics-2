@@ -20,14 +20,16 @@ package appeng.client.render.effects;
 
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
-import net.minecraft.client.particle.*;
+import net.minecraft.client.particle.IAnimatedSprite;
+import net.minecraft.client.particle.IParticleFactory;
+import net.minecraft.client.particle.IParticleRenderType;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import appeng.core.AppEng;
 
 @OnlyIn(Dist.CLIENT)
 public class EnergyFx extends SpriteTexturedParticle {

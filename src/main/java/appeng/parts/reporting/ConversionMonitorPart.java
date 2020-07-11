@@ -30,12 +30,12 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
-import appeng.api.AEApi;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
@@ -152,7 +152,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
         try {
             final IEnergySource energy = this.getProxy().getEnergy();
             final IMEMonitor<IAEItemStack> cell = this.getProxy().getStorage()
-                    .getInventory(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                    .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
 
             if (allItems) {
                 if (this.getDisplayed() != null) {
@@ -194,7 +194,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
 
                 final IEnergySource energy = this.getProxy().getEnergy();
                 final IMEMonitor<IAEItemStack> cell = this.getProxy().getStorage()
-                        .getInventory(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                        .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
 
                 input.setStackSize(count);
 

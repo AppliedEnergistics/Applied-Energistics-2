@@ -28,7 +28,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.hooks.BasicEventHooks;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
@@ -37,6 +36,7 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.ContainerNull;
+import appeng.core.Api;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.util.Platform;
 
@@ -180,7 +180,7 @@ public class CraftingTreeProcess {
                 ItemStack is = ic.getStackInSlot(x);
                 is = Platform.getContainerItem(is);
 
-                final IAEItemStack o = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)
+                final IAEItemStack o = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
                         .createStack(is);
                 if (o != null) {
                     this.bytes++;
@@ -195,7 +195,7 @@ public class CraftingTreeProcess {
 
                 if (this.containerItems) {
                     final ItemStack is = Platform.getContainerItem(stack.createItemStack());
-                    final IAEItemStack o = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)
+                    final IAEItemStack o = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
                             .createStack(is);
                     if (o != null) {
                         this.bytes++;

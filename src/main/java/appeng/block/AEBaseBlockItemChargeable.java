@@ -32,12 +32,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerUnits;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.implementations.items.IAEItemPowerStorage;
+import appeng.core.Api;
 import appeng.core.localization.GuiText;
 
 public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEItemPowerStorage {
@@ -123,7 +123,7 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
 
     private double getMaxEnergyCapacity() {
         final Block blockID = Block.getBlockFromItem(this);
-        final IBlockDefinition energyCell = AEApi.instance().definitions().blocks().energyCell();
+        final IBlockDefinition energyCell = Api.instance().definitions().blocks().energyCell();
 
         return energyCell.maybeBlock().map(block -> {
             if (blockID == block) {

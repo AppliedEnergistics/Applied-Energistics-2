@@ -37,7 +37,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
@@ -58,6 +57,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.guisync.GuiSync;
 import appeng.core.AELog;
+import appeng.core.Api;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.MEInventoryUpdatePacket;
 import appeng.helpers.WirelessTerminalGuiObject;
@@ -197,7 +197,7 @@ public class CraftConfirmContainer extends AEBaseContainer {
                     final MEInventoryUpdatePacket c = this.result.isSimulation() ? new MEInventoryUpdatePacket((byte) 2)
                             : null;
 
-                    final IItemList<IAEItemStack> plan = AEApi.instance().storage()
+                    final IItemList<IAEItemStack> plan = Api.instance().storage()
                             .getStorageChannel(IItemStorageChannel.class).createList();
                     this.result.populatePlan(plan);
 
@@ -215,7 +215,7 @@ public class CraftConfirmContainer extends AEBaseContainer {
 
                         final IStorageGrid sg = this.getGrid().getCache(IStorageGrid.class);
                         final IMEInventory<IAEItemStack> items = sg
-                                .getInventory(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                                .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
 
                         IAEItemStack m = null;
                         if (c != null && this.result.isSimulation()) {

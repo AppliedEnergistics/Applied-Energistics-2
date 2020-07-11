@@ -28,7 +28,6 @@ import javax.annotation.Nonnull;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
-import appeng.api.AEApi;
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
@@ -39,6 +38,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.client.gui.widgets.IScrollSource;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.core.AEConfig;
+import appeng.core.Api;
 import appeng.integration.abstraction.JEIFacade;
 import appeng.items.storage.ViewCellItem;
 import appeng.util.ItemSorters;
@@ -47,7 +47,7 @@ import appeng.util.prioritylist.IPartitionList;
 
 public class ItemRepo {
 
-    private final IItemList<IAEItemStack> list = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)
+    private final IItemList<IAEItemStack> list = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
             .createList();
     private final ArrayList<IAEItemStack> view = new ArrayList<>();
     private final IScrollSource src;

@@ -31,7 +31,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.model.data.IModelData;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
@@ -48,6 +47,7 @@ import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.client.render.cablebus.P2PTunnelFrequencyModelData;
 import appeng.core.AEConfig;
+import appeng.core.Api;
 import appeng.me.GridAccessException;
 import appeng.me.cache.P2PCache;
 import appeng.me.cache.helpers.TunnelCollection;
@@ -110,7 +110,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
             return super.getItemStack(type);
         }
 
-        final Optional<ItemStack> maybeMEStack = AEApi.instance().definitions().parts().p2PTunnelME().maybeStack(1);
+        final Optional<ItemStack> maybeMEStack = Api.instance().definitions().parts().p2PTunnelME().maybeStack(1);
         if (maybeMEStack.isPresent()) {
             return maybeMEStack.get();
         }
@@ -168,7 +168,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
 
         final ItemStack is = player.getHeldItem(hand);
 
-        final TunnelType tt = AEApi.instance().registries().p2pTunnel().getTunnelTypeByItem(is);
+        final TunnelType tt = Api.instance().registries().p2pTunnel().getTunnelTypeByItem(is);
         if (!is.isEmpty() && is.getItem() instanceof IMemoryCard) {
             final IMemoryCard mc = (IMemoryCard) is.getItem();
             final CompoundNBT data = mc.getData(is);
@@ -208,7 +208,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
         {
             final ItemStack newType;
 
-            final IParts parts = AEApi.instance().definitions().parts();
+            final IParts parts = Api.instance().definitions().parts();
 
             switch (tt) {
                 case LIGHT:

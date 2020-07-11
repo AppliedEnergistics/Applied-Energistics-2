@@ -20,7 +20,6 @@ package appeng.parts;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -49,7 +48,6 @@ import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import appeng.api.AEApi;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IItems;
 import appeng.api.parts.IFacadePart;
@@ -59,6 +57,7 @@ import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ClickPacket;
@@ -204,7 +203,7 @@ public class PartPlacement {
 
         BlockPos te_pos = pos;
 
-        final IBlockDefinition multiPart = AEApi.instance().definitions().blocks().multiPart();
+        final IBlockDefinition multiPart = Api.instance().definitions().blocks().multiPart();
         if (host == null && pass == PlaceType.PLACE_ITEM) {
             Direction offset = null;
 
@@ -378,7 +377,7 @@ public class PartPlacement {
                 }
             } else {
                 final ItemStack held = event.getPlayer().getHeldItem(event.getHand());
-                final IItems items = AEApi.instance().definitions().items();
+                final IItems items = Api.instance().definitions().items();
 
                 boolean supportedItem = items.memoryCard().isSameAs(held);
                 supportedItem |= items.colorApplicator().isSameAs(held);

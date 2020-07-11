@@ -25,7 +25,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
@@ -46,6 +45,7 @@ import appeng.api.util.AECableType;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.UpgradeableContainer;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.helpers.Reflected;
@@ -92,10 +92,10 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
 
         try {
             final IMEMonitor<IAEItemStack> inv = this.getProxy().getStorage()
-                    .getInventory(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                    .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
 
             final IAEItemStack out = inv.injectItems(
-                    AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(stack),
+                    Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(stack),
                     Actionable.SIMULATE, this.source);
             if (out == null) {
                 return true;
@@ -152,7 +152,7 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
                 this.itemsToSend = this.calculateItemsToSend();
 
                 final IMEMonitor<IAEItemStack> inv = this.getProxy().getStorage()
-                        .getInventory(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                        .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
                 final IEnergyGrid energy = this.getProxy().getEnergy();
 
                 boolean Configured = false;
@@ -199,7 +199,7 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
         }
 
         if (!newItems.isEmpty()) {
-            final IAEItemStack aeStack = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)
+            final IAEItemStack aeStack = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
                     .createStack(newItems);
             final IAEItemStack failed = Platform.poweredInsert(energy, inv, aeStack, this.source);
 

@@ -33,10 +33,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.IModelData;
 
-import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
+import appeng.core.Api;
 import appeng.util.item.AEItemStack;
 
 public class CraftingMonitorTileEntity extends CraftingTileEntity implements IColorableTile {
@@ -161,7 +161,7 @@ public class CraftingMonitorTileEntity extends CraftingTileEntity implements ICo
 
     @Override
     protected ItemStack getItemFromTile(final Object obj) {
-        final Optional<ItemStack> is = AEApi.instance().definitions().blocks().craftingMonitor().maybeStack(1);
+        final Optional<ItemStack> is = Api.instance().definitions().blocks().craftingMonitor().maybeStack(1);
 
         return is.orElseGet(() -> super.getItemFromTile(obj));
     }

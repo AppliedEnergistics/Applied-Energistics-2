@@ -34,7 +34,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
-import appeng.api.AEApi;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
@@ -47,6 +46,7 @@ import appeng.client.gui.widgets.ISortSource;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.container.implementations.CraftingCPUContainer;
 import appeng.core.AEConfig;
+import appeng.core.Api;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
@@ -79,11 +79,11 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
     private static final int ITEMSTACK_LEFT_OFFSET = 9;
     private static final int ITEMSTACK_TOP_OFFSET = 22;
 
-    private IItemList<IAEItemStack> storage = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)
+    private IItemList<IAEItemStack> storage = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
             .createList();
-    private IItemList<IAEItemStack> active = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)
+    private IItemList<IAEItemStack> active = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
             .createList();
-    private IItemList<IAEItemStack> pending = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)
+    private IItemList<IAEItemStack> pending = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
             .createList();
 
     private List<IAEItemStack> visual = new ArrayList<>();
@@ -100,9 +100,9 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
     }
 
     public void clearItems() {
-        this.storage = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
-        this.active = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
-        this.pending = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
+        this.storage = Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
+        this.active = Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
+        this.pending = Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
         this.visual = new ArrayList<>();
     }
 

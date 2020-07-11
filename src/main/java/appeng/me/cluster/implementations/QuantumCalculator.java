@@ -23,10 +23,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
 import appeng.api.util.WorldCoord;
+import appeng.core.Api;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
@@ -77,7 +77,7 @@ public class QuantumCalculator extends MBCalculator {
                     }
 
                     num++;
-                    final IBlocks blocks = AEApi.instance().definitions().blocks();
+                    final IBlocks blocks = Api.instance().definitions().blocks();
                     if (num == 5) {
                         if (!this.isBlockAtLocation(w, p, blocks.quantumLink())) {
                             return false;

@@ -36,7 +36,6 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.SecurityPermissions;
@@ -66,6 +65,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.container.implementations.ContainerHelper;
 import appeng.core.AELog;
+import appeng.core.Api;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.MEFluidInventoryUpdatePacket;
@@ -100,7 +100,7 @@ public class FluidTerminalContainer extends AEBaseContainer
 
     private final IConfigManager clientCM;
     private final IMEMonitor<IAEFluidStack> monitor;
-    private final IItemList<IAEFluidStack> fluids = AEApi.instance().storage()
+    private final IItemList<IAEFluidStack> fluids = Api.instance().storage()
             .getStorageChannel(IFluidStorageChannel.class).createList();
     @GuiSync(99)
     public boolean hasPower = false;
@@ -122,7 +122,7 @@ public class FluidTerminalContainer extends AEBaseContainer
         if (Platform.isServer()) {
             this.serverCM = terminal.getConfigManager();
             this.monitor = terminal
-                    .getInventory(AEApi.instance().storage().getStorageChannel(IFluidStorageChannel.class));
+                    .getInventory(Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
 
             if (this.monitor != null) {
                 this.monitor.addListener(this, null);
@@ -248,7 +248,7 @@ public class FluidTerminalContainer extends AEBaseContainer
     public void detectAndSendChanges() {
         if (Platform.isServer()) {
             if (this.monitor != this.terminal
-                    .getInventory(AEApi.instance().storage().getStorageChannel(IFluidStorageChannel.class))) {
+                    .getInventory(Api.instance().storage().getStorageChannel(IFluidStorageChannel.class))) {
                 this.setValidContainer(false);
             }
 

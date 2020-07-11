@@ -33,7 +33,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.AEApi;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItems;
 import appeng.api.definitions.IMaterials;
@@ -45,6 +44,7 @@ import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.cells.ICellWorkbenchItem;
+import appeng.core.Api;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.recipes.handlers.GrinderRecipes;
 import appeng.tile.misc.InscriberRecipes;
@@ -123,7 +123,7 @@ public class RestrictedInputSlot extends AppEngSlot {
             return false;
         }
 
-        final IDefinitions definitions = AEApi.instance().definitions();
+        final IDefinitions definitions = Api.instance().definitions();
         final IMaterials materials = definitions.materials();
         final IItems items = definitions.items();
 
@@ -195,14 +195,14 @@ public class RestrictedInputSlot extends AppEngSlot {
                 return i.getItem() instanceof ISpatialStorageCell
                         && ((ISpatialStorageCell) i.getItem()).isSpatialStorage(i);
             case STORAGE_CELLS:
-                return AEApi.instance().registries().cell().isCellHandled(i);
+                return Api.instance().registries().cell().isCellHandled(i);
             case WORKBENCH_CELL:
                 return i.getItem() instanceof ICellWorkbenchItem && ((ICellWorkbenchItem) i.getItem()).isEditable(i);
             case STORAGE_COMPONENT:
                 return i.getItem() instanceof IStorageComponent
                         && ((IStorageComponent) i.getItem()).isStorageComponent(i);
             case TRASH:
-                if (AEApi.instance().registries().cell().isCellHandled(i)) {
+                if (Api.instance().registries().cell().isCellHandled(i)) {
                     return false;
                 }
 
@@ -210,7 +210,7 @@ public class RestrictedInputSlot extends AppEngSlot {
                         && ((IStorageComponent) i.getItem()).isStorageComponent(i));
             case ENCODABLE_ITEM:
                 return i.getItem() instanceof INetworkEncodable
-                        || AEApi.instance().registries().wireless().isWirelessTerminal(i);
+                        || Api.instance().registries().wireless().isWirelessTerminal(i);
             case BIOMETRIC_CARD:
                 return i.getItem() instanceof IBiometricCard;
             case UPGRADES:

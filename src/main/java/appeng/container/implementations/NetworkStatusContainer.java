@@ -27,7 +27,6 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 
-import appeng.api.AEApi;
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridBlock;
@@ -41,6 +40,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
+import appeng.core.Api;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.MEInventoryUpdatePacket;
 import appeng.util.Platform;
@@ -115,7 +115,7 @@ public class NetworkStatusContainer extends AEBaseContainer {
                 final MEInventoryUpdatePacket piu = new MEInventoryUpdatePacket();
 
                 for (final Class<? extends IGridHost> machineClass : this.network.getMachinesClasses()) {
-                    final IItemList<IAEItemStack> list = AEApi.instance().storage()
+                    final IItemList<IAEItemStack> list = Api.instance().storage()
                             .getStorageChannel(IItemStorageChannel.class).createList();
                     for (final IGridNode machine : this.network.getMachines(machineClass)) {
                         final IGridBlock blk = machine.getGridBlock();

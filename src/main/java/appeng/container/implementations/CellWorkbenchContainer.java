@@ -31,7 +31,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
-import appeng.api.AEApi;
 import appeng.api.config.CopyMode;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
@@ -47,6 +46,7 @@ import appeng.container.guisync.GuiSync;
 import appeng.container.slot.FakeTypeOnlySlot;
 import appeng.container.slot.OptionalRestrictedInputSlot;
 import appeng.container.slot.RestrictedInputSlot;
+import appeng.core.Api;
 import appeng.tile.misc.CellWorkbenchTileEntity;
 import appeng.util.EnumCycler;
 import appeng.util.Platform;
@@ -208,9 +208,9 @@ public class CellWorkbenchContainer extends UpgradeableContainer {
         final ItemStack is = this.getUpgradeable().getInventoryByName("cell").getStackInSlot(0);
         final IStorageChannel channel = is.getItem() instanceof IStorageCell
                 ? ((IStorageCell) is.getItem()).getChannel()
-                : AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
+                : Api.instance().storage().getStorageChannel(IItemStorageChannel.class);
 
-        final IMEInventory cellInv = AEApi.instance().registries().cell().getCellInventory(is, null, channel);
+        final IMEInventory cellInv = Api.instance().registries().cell().getCellInventory(is, null, channel);
 
         Iterator<IAEStack> i = new NullIterator<>();
         if (cellInv != null) {

@@ -49,13 +49,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.api.AEApi;
 import appeng.api.util.AEAxisAlignedBB;
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.client.render.renderable.ItemRenderable;
 import appeng.client.render.tesr.ModularTESR;
 import appeng.core.AEConfig;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.tile.misc.ChargerTileEntity;
 import appeng.util.Platform;
@@ -101,7 +101,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerTileEntity> {
 
         final ChargerTileEntity tile = this.getTileEntity(w, pos);
         if (tile != null) {
-            if (AEApi.instance().definitions().materials().certusQuartzCrystalCharged()
+            if (Api.instance().definitions().materials().certusQuartzCrystalCharged()
                     .isSameAs(tile.getInternalInventory().getStackInSlot(0))) {
                 final double xOff = 0.0;
                 final double yOff = 0.0;

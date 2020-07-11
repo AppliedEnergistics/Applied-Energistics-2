@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2013 AlgorithmX2
+ * Copyright (c) 2020 TeamAppliedEnergistics
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -23,43 +23,28 @@
 
 package appeng.api;
 
-import appeng.api.definitions.IDefinitions;
-import appeng.api.features.IRegistryContainer;
-import appeng.api.networking.IGridHelper;
-import appeng.api.networking.IGridNode;
-import appeng.api.parts.IPartHelper;
-import appeng.api.storage.IStorageHelper;
-import appeng.api.util.IClientHelper;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
-public interface IAppEngApi {
-    /**
-     * @return Registry Container for the numerous registries in AE2.
-     */
-    IRegistryContainer registries();
+/**
+ * Every AE2 addon requiring access to {@link IAppEngApi}, needs to provide at
+ * least one class implementing this interface.
+ * 
+ * Further it requires the class to be annotated with {@link AEAddon}.
+ * 
+ */
+public interface IAEAddon {
 
     /**
-     * @return A helper for working with storage data types.
+     * This gets called once the API is successfully constructed and ready to be
+     * used.
+     * 
+     * For now this happens during {@link FMLCommonSetupEvent}.
+     * 
+     * Each addon is responsible to maintain a reference to {@link IAppEngApi} for
+     * future use. Otherwise there is no alternative to access it later.
+     * 
+     * @param api The API instance when ready.
      */
-    IStorageHelper storage();
-
-    /**
-     * @return A helper to create {@link IGridNode} and other grid related objects.
-     */
-    IGridHelper grid();
-
-    /**
-     * @return A helper for working with grids, and buses.
-     */
-    IPartHelper partHelper();
-
-    /**
-     * @return An accessible list of all AE definitions
-     */
-    IDefinitions definitions();
-
-    /**
-     * @return Utility methods primarily useful for client side stuff
-     */
-    IClientHelper client();
+    void onAPIAvailable(IAppEngApi api);
 
 }

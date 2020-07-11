@@ -28,7 +28,6 @@ import java.util.Set;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 
-import appeng.api.AEApi;
 import appeng.api.features.AEFeature;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
@@ -47,6 +46,7 @@ import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.stats.IAdvancementTrigger;
 import appeng.me.GridConnection;
@@ -287,7 +287,7 @@ public class PathGridCache implements IPathingGrid {
             final IAdvancementTrigger lastBracket = this.getAchievementBracket(this.lastChannels);
             if (currentBracket != lastBracket && currentBracket != null) {
                 for (final IGridNode n : this.requireChannels) {
-                    PlayerEntity player = AEApi.instance().registries().players().findPlayer(n.getPlayerID());
+                    PlayerEntity player = Api.instance().registries().players().findPlayer(n.getPlayerID());
                     if (player instanceof ServerPlayerEntity) {
                         currentBracket.trigger((ServerPlayerEntity) player);
                     }

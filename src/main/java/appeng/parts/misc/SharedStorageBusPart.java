@@ -26,7 +26,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 
-import appeng.api.AEApi;
 import appeng.api.config.Settings;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
 import appeng.api.networking.events.MENetworkChannelsChanged;
@@ -41,6 +40,7 @@ import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
+import appeng.core.Api;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
 import appeng.parts.automation.UpgradeablePart;
@@ -83,7 +83,7 @@ public abstract class SharedStorageBusPart extends UpgradeablePart
      * @return Storage channel
      */
     public IStorageChannel getStorageChannel() {
-        return AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
+        return Api.instance().storage().getStorageChannel(IItemStorageChannel.class);
     }
 
     protected abstract void resetCache();

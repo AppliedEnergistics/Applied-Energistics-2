@@ -28,7 +28,6 @@ import java.util.Map;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
-import appeng.api.AEApi;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -49,6 +48,7 @@ import appeng.api.storage.cells.ICellProvider;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+import appeng.core.Api;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.GenericInterestManager;
 import appeng.me.helpers.MachineSource;
@@ -71,7 +71,7 @@ public class GridStorageCache implements IStorageGrid {
         this.storageNetworks = new IdentityHashMap<>();
         this.storageMonitors = new IdentityHashMap<>();
 
-        AEApi.instance().storage().storageChannels()
+        Api.instance().storage().storageChannels()
                 .forEach(channel -> this.storageMonitors.put(channel, new NetworkMonitor<>(this, channel)));
     }
 

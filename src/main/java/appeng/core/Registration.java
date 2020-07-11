@@ -31,7 +31,6 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.GenerationStage;
@@ -43,7 +42,11 @@ import net.minecraft.world.gen.placement.IPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.*;
+import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.ModDimension;
 import net.minecraftforge.common.extensions.IForgeContainerType;
@@ -57,7 +60,6 @@ import net.minecraftforge.fml.network.IContainerFactory;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 
-import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IItems;
@@ -75,9 +77,53 @@ import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
-import appeng.bootstrap.components.*;
-import appeng.client.gui.implementations.*;
-import appeng.client.render.effects.*;
+import appeng.bootstrap.components.IBlockRegistrationComponent;
+import appeng.bootstrap.components.IEntityRegistrationComponent;
+import appeng.bootstrap.components.IItemColorRegistrationComponent;
+import appeng.bootstrap.components.IItemRegistrationComponent;
+import appeng.bootstrap.components.IModelBakeComponent;
+import appeng.bootstrap.components.ITileEntityRegistrationComponent;
+import appeng.client.gui.implementations.CellWorkbenchScreen;
+import appeng.client.gui.implementations.ChestScreen;
+import appeng.client.gui.implementations.CondenserScreen;
+import appeng.client.gui.implementations.CraftAmountScreen;
+import appeng.client.gui.implementations.CraftConfirmScreen;
+import appeng.client.gui.implementations.CraftingCPUScreen;
+import appeng.client.gui.implementations.CraftingStatusScreen;
+import appeng.client.gui.implementations.CraftingTermScreen;
+import appeng.client.gui.implementations.DriveScreen;
+import appeng.client.gui.implementations.FormationPlaneScreen;
+import appeng.client.gui.implementations.GrinderScreen;
+import appeng.client.gui.implementations.IOPortScreen;
+import appeng.client.gui.implementations.InscriberScreen;
+import appeng.client.gui.implementations.InterfaceScreen;
+import appeng.client.gui.implementations.InterfaceTerminalScreen;
+import appeng.client.gui.implementations.LevelEmitterScreen;
+import appeng.client.gui.implementations.MEMonitorableScreen;
+import appeng.client.gui.implementations.MEPortableCellScreen;
+import appeng.client.gui.implementations.MolecularAssemblerScreen;
+import appeng.client.gui.implementations.NetworkStatusScreen;
+import appeng.client.gui.implementations.NetworkToolScreen;
+import appeng.client.gui.implementations.PatternTermScreen;
+import appeng.client.gui.implementations.PriorityScreen;
+import appeng.client.gui.implementations.QNBScreen;
+import appeng.client.gui.implementations.QuartzKnifeScreen;
+import appeng.client.gui.implementations.SecurityStationScreen;
+import appeng.client.gui.implementations.SkyChestScreen;
+import appeng.client.gui.implementations.SpatialIOPortScreen;
+import appeng.client.gui.implementations.StorageBusScreen;
+import appeng.client.gui.implementations.UpgradeableScreen;
+import appeng.client.gui.implementations.VibrationChamberScreen;
+import appeng.client.gui.implementations.WirelessScreen;
+import appeng.client.gui.implementations.WirelessTermScreen;
+import appeng.client.render.effects.ChargedOreFX;
+import appeng.client.render.effects.CraftingFx;
+import appeng.client.render.effects.EnergyFx;
+import appeng.client.render.effects.LightningArcFX;
+import appeng.client.render.effects.LightningFX;
+import appeng.client.render.effects.MatterCannonFX;
+import appeng.client.render.effects.ParticleTypes;
+import appeng.client.render.effects.VibrantFX;
 import appeng.client.render.model.BiometricCardModel;
 import appeng.client.render.model.DriveModel;
 import appeng.client.render.model.MemoryCardModel;
@@ -86,7 +132,39 @@ import appeng.client.render.tesr.InscriberTESR;
 import appeng.client.render.tesr.SkyChestTESR;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerOpener;
-import appeng.container.implementations.*;
+import appeng.container.implementations.CellWorkbenchContainer;
+import appeng.container.implementations.ChestContainer;
+import appeng.container.implementations.CondenserContainer;
+import appeng.container.implementations.CraftAmountContainer;
+import appeng.container.implementations.CraftConfirmContainer;
+import appeng.container.implementations.CraftingCPUContainer;
+import appeng.container.implementations.CraftingStatusContainer;
+import appeng.container.implementations.CraftingTermContainer;
+import appeng.container.implementations.DriveContainer;
+import appeng.container.implementations.FormationPlaneContainer;
+import appeng.container.implementations.GrinderContainer;
+import appeng.container.implementations.IOPortContainer;
+import appeng.container.implementations.InscriberContainer;
+import appeng.container.implementations.InterfaceContainer;
+import appeng.container.implementations.InterfaceTerminalContainer;
+import appeng.container.implementations.LevelEmitterContainer;
+import appeng.container.implementations.MEMonitorableContainer;
+import appeng.container.implementations.MEPortableCellContainer;
+import appeng.container.implementations.MolecularAssemblerContainer;
+import appeng.container.implementations.NetworkStatusContainer;
+import appeng.container.implementations.NetworkToolContainer;
+import appeng.container.implementations.PatternTermContainer;
+import appeng.container.implementations.PriorityContainer;
+import appeng.container.implementations.QNBContainer;
+import appeng.container.implementations.QuartzKnifeContainer;
+import appeng.container.implementations.SecurityStationContainer;
+import appeng.container.implementations.SkyChestContainer;
+import appeng.container.implementations.SpatialIOPortContainer;
+import appeng.container.implementations.StorageBusContainer;
+import appeng.container.implementations.UpgradeableContainer;
+import appeng.container.implementations.VibrationChamberContainer;
+import appeng.container.implementations.WirelessContainer;
+import appeng.container.implementations.WirelessTermContainer;
 import appeng.core.features.registries.P2PTunnelRegistry;
 import appeng.core.features.registries.PartModels;
 import appeng.core.features.registries.cell.BasicCellHandler;
@@ -95,11 +173,28 @@ import appeng.core.features.registries.cell.CreativeCellHandler;
 import appeng.core.localization.GuiText;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.core.stats.AeStats;
-import appeng.fluids.client.gui.*;
-import appeng.fluids.container.*;
+import appeng.fluids.client.gui.FluidFormationPlaneScreen;
+import appeng.fluids.client.gui.FluidIOScreen;
+import appeng.fluids.client.gui.FluidInterfaceScreen;
+import appeng.fluids.client.gui.FluidLevelEmitterScreen;
+import appeng.fluids.client.gui.FluidStorageBusScreen;
+import appeng.fluids.client.gui.FluidTerminalScreen;
+import appeng.fluids.container.FluidFormationPlaneContainer;
+import appeng.fluids.container.FluidIOContainer;
+import appeng.fluids.container.FluidInterfaceContainer;
+import appeng.fluids.container.FluidLevelEmitterContainer;
+import appeng.fluids.container.FluidStorageBusContainer;
+import appeng.fluids.container.FluidTerminalContainer;
 import appeng.fluids.registries.BasicFluidCellGuiHandler;
 import appeng.items.parts.FacadeItem;
-import appeng.me.cache.*;
+import appeng.me.cache.CraftingGridCache;
+import appeng.me.cache.EnergyGridCache;
+import appeng.me.cache.GridStorageCache;
+import appeng.me.cache.P2PCache;
+import appeng.me.cache.PathGridCache;
+import appeng.me.cache.SecurityCache;
+import appeng.me.cache.SpatialPylonCache;
+import appeng.me.cache.TickManagerCache;
 import appeng.recipes.game.DisassembleRecipe;
 import appeng.recipes.game.FacadeRecipe;
 import appeng.recipes.handlers.GrinderRecipe;
@@ -374,7 +469,7 @@ final class Registration {
 
     // FIXME LATER
     public static void postInit() {
-        final IRegistryContainer registries = AEApi.instance().registries();
+        final IRegistryContainer registries = Api.instance().registries();
         // TODO: Do not use the internal API
         ApiDefinitions definitions = Api.INSTANCE.definitions();
         final IParts parts = definitions.parts();
@@ -573,7 +668,7 @@ final class Registration {
             return;
         }
 
-        BlockState quartzOre = AEApi.instance().definitions().blocks().quartzOre().block().getDefaultState();
+        BlockState quartzOre = Api.instance().definitions().blocks().quartzOre().block().getDefaultState();
         b.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES,
                 Feature.ORE
                         .withConfiguration(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE,
@@ -583,7 +678,7 @@ final class Registration {
 
         if (AEConfig.instance().isFeatureEnabled(AEFeature.CHARGED_CERTUS_ORE)) {
 
-            BlockState chargedQuartzOre = AEApi.instance().definitions().blocks().quartzOreCharged().block()
+            BlockState chargedQuartzOre = Api.instance().definitions().blocks().quartzOreCharged().block()
                     .getDefaultState();
             b.addFeature(GenerationStage.Decoration.UNDERGROUND_DECORATION,
                     ChargedQuartzOreFeature.INSTANCE

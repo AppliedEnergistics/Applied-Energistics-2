@@ -23,9 +23,9 @@ import java.util.Optional;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
 
-import appeng.api.AEApi;
 import appeng.api.definitions.IBlocks;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
+import appeng.core.Api;
 
 public class CraftingStorageTileEntity extends CraftingTileEntity {
     private static final int KILO_SCALAR = 1024;
@@ -36,7 +36,7 @@ public class CraftingStorageTileEntity extends CraftingTileEntity {
 
     @Override
     protected ItemStack getItemFromTile(final Object obj) {
-        final IBlocks blocks = AEApi.instance().definitions().blocks();
+        final IBlocks blocks = Api.instance().definitions().blocks();
         final int storage = ((CraftingTileEntity) obj).getStorageBytes() / KILO_SCALAR;
 
         Optional<ItemStack> is;

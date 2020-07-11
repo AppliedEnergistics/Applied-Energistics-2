@@ -29,7 +29,6 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridCache;
 import appeng.api.networking.IGridCacheFactory;
 import appeng.api.networking.IGridCacheRegistry;
-import appeng.core.AELog;
 
 public final class GridCacheRegistry implements IGridCacheRegistry {
 

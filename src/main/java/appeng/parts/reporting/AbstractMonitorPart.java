@@ -34,7 +34,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.api.AEApi;
 import appeng.api.implementations.parts.IStorageMonitorPart;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStackWatcher;
@@ -47,6 +46,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.client.render.TesrRenderHelper;
+import appeng.core.Api;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.Reflected;
 import appeng.me.GridAccessException;
@@ -199,7 +199,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
                 }
 
                 this.updateReportingValue(this.getProxy().getStorage()
-                        .getInventory(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)));
+                        .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)));
             }
         } catch (final GridAccessException e) {
             // >.>

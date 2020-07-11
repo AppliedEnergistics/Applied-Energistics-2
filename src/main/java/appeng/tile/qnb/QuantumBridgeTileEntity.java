@@ -38,7 +38,6 @@ import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
-import appeng.api.AEApi;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkEventSubscribe;
@@ -47,6 +46,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.block.qnb.QnbFormedState;
+import appeng.core.Api;
 import appeng.me.GridAccessException;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.IAEMultiBlock;
@@ -134,7 +134,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity implements I
     }
 
     private boolean isCenter() {
-        return AEApi.instance().definitions().blocks().quantumLink().maybeBlock()
+        return Api.instance().definitions().blocks().quantumLink().maybeBlock()
                 .map(link -> this.getBlockState().getBlock() == link).orElse(false);
     }
 
@@ -153,7 +153,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity implements I
     public void onReady() {
         super.onReady();
 
-        final IBlockDefinition quantumRing = AEApi.instance().definitions().blocks().quantumRing();
+        final IBlockDefinition quantumRing = Api.instance().definitions().blocks().quantumRing();
         final Optional<Block> maybeLinkBlock = quantumRing.maybeBlock();
         final Optional<ItemStack> maybeLinkStack = quantumRing.maybeStack(1);
 

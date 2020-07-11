@@ -22,11 +22,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.AEApi;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.core.Api;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.packets.PatternSlotPacket;
 import appeng.helpers.IContainerCraftingPacket;
@@ -48,7 +48,7 @@ public class PatternTermSlot extends CraftingTermSlot {
 
     public BasePacket getRequest(final boolean shift) {
         return new PatternSlotPacket(this.getPattern(),
-                AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(this.getStack()),
+                Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(this.getStack()),
                 shift);
     }
 
