@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 
 /**
  * Marks interfaces that can be used as injectable constructor arguments for an
- * {@link AEPlugin}.
+ * {@link AEAddon}.
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

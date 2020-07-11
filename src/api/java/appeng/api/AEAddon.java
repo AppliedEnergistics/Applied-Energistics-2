@@ -26,12 +26,16 @@ import java.lang.annotation.Target;
 
 /**
  * Use this annotation on a class in your Mod to have it instantiated during the
- * initialization phase of Applied Energistics. AE expects your class to have a
- * single constructor and can supply certain arguments to your constructor using
- * dependency injection.
+ * initialization phase of Applied Energistics.
+ * 
+ * The class also needs to implement {@link IAEAddon}.
+ * 
+ * AE expects your class to have a single constructor without any parameters.
+ * 
+ * This is the only way to get access to the public {@link IAppEngApi} instance.
  */
 @Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
+@Retention(RetentionPolicy.CLASS)
 @Documented
-public @interface AEPlugin {
+public @interface AEAddon {
 }

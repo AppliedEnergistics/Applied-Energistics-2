@@ -71,14 +71,24 @@ import appeng.client.render.cablebus.CableBusModelLoader;
 import appeng.client.render.cablebus.P2PTunnelFrequencyModel;
 import appeng.client.render.crafting.CraftingCubeModelLoader;
 import appeng.client.render.crafting.EncodedPatternModelLoader;
-import appeng.client.render.model.*;
+import appeng.client.render.model.BiometricCardModel;
+import appeng.client.render.model.ColorApplicatorModel;
+import appeng.client.render.model.DriveModel;
+import appeng.client.render.model.GlassModel;
+import appeng.client.render.model.MemoryCardModel;
+import appeng.client.render.model.SkyCompassModel;
+import appeng.client.render.model.UVLModelLoader;
 import appeng.client.render.spatial.SpatialPylonModel;
 import appeng.core.crash.ModCrashEnhancement;
 import appeng.core.features.registries.PartModels;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.worlddata.WorldData;
-import appeng.entity.*;
+import appeng.entity.ChargedQuartzEntity;
+import appeng.entity.GrowingCrystalEntity;
+import appeng.entity.SingularityEntity;
+import appeng.entity.TinyTNTPrimedEntity;
+import appeng.entity.TinyTNTPrimedRenderer;
 import appeng.hooks.TickHandler;
 import appeng.integration.Integrations;
 import appeng.parts.PartPlacement;
@@ -157,6 +167,7 @@ public final class AppEng {
 
         registerNetworkHandler();
 
+        AddonLoader.loadAddons(Api.INSTANCE);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -253,10 +264,6 @@ public final class AppEng {
 //
 //		AELog.info( "Pre Initialization ( ended after " + watch.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
 //
-//		// Instantiate all Plugins
-//		List<Object> injectables = Lists.newArrayList(
-//				AEApi.instance() );
-//		new PluginLoader().loadPlugins( injectables, event.getAsmData() );
 //	}
 
     private void startService(final String serviceName, final Thread thread) {
