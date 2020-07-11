@@ -23,6 +23,9 @@
 
 package appeng.api.crafting;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -41,8 +44,9 @@ public interface ICraftingHelper {
      * @param world     world used to access the
      *                  {@link net.minecraft.item.crafting.RecipeManager}.
      *
-     * @return details of pattern
+     * @return A pattern if successful, otherwise null
      */
-    ICraftingPatternDetails getPattern(ItemStack itemStack, World world);
+    @Nullable
+    ICraftingPatternDetails getPattern(@Nonnull ItemStack itemStack, @Nonnull World world);
 
 }
