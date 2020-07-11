@@ -81,7 +81,7 @@ import appeng.crafting.CraftingJob;
 import appeng.crafting.CraftingLink;
 import appeng.crafting.CraftingLinkNexus;
 import appeng.crafting.CraftingWatcher;
-import appeng.helpers.PatternHelper;
+import appeng.helpers.CraftingPatternDetails;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.GenericInterestManager;
@@ -305,7 +305,7 @@ public class CraftingGridCache
 
     @Override
     public void addCraftingOption(final ICraftingMedium medium, final ICraftingPatternDetails api) {
-        Preconditions.checkArgument(api.getClass() == PatternHelper.class,
+        Preconditions.checkArgument(api.getClass() == CraftingPatternDetails.class,
                 "Only supports internal ICraftingPatternDetails for now");
         List<ICraftingMedium> details = this.craftingMethods.get(api);
         if (details == null) {

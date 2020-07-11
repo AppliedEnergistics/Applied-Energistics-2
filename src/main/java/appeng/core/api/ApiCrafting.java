@@ -29,7 +29,7 @@ import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.Api;
-import appeng.helpers.PatternHelper;
+import appeng.helpers.CraftingPatternDetails;
 
 public class ApiCrafting implements ICraftingHelper {
 
@@ -54,7 +54,7 @@ public class ApiCrafting implements ICraftingHelper {
 
         // return this.patternCache.computeIfAbsent(sharedStack, key -> {
         try {
-            return new PatternHelper(ais, world);
+            return new CraftingPatternDetails(ais, world);
         } catch (final Throwable t) {
             return null;
         }

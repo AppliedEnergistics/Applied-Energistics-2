@@ -44,7 +44,7 @@ import appeng.container.ContainerNull;
 import appeng.core.Api;
 import appeng.util.Platform;
 
-public class PatternHelper implements ICraftingPatternDetails, Comparable<PatternHelper> {
+public class CraftingPatternDetails implements ICraftingPatternDetails, Comparable<CraftingPatternDetails> {
 
     private final CraftingInventory crafting = new CraftingInventory(new ContainerNull(), 3, 3);
     private final CraftingInventory testFrame = new CraftingInventory(new ContainerNull(), 3, 3);
@@ -61,7 +61,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
     private final IAEItemStack pattern;
     private int priority = 0;
 
-    public PatternHelper(final IAEItemStack is, final World w) {
+    public CraftingPatternDetails(final IAEItemStack is, final World w) {
         Preconditions.checkArgument(is.getItem() instanceof ICraftingPatternItem,
                 "itemStack is not a ICraftingPatternItem");
 
@@ -318,7 +318,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
     }
 
     @Override
-    public int compareTo(final PatternHelper o) {
+    public int compareTo(final CraftingPatternDetails o) {
         return Integer.compare(o.priority, this.priority);
     }
 
@@ -336,7 +336,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
             return false;
         }
 
-        final PatternHelper other = (PatternHelper) obj;
+        final CraftingPatternDetails other = (CraftingPatternDetails) obj;
 
         if (this.pattern != null && other.pattern != null) {
             return this.pattern.equals(other.pattern);
