@@ -36,18 +36,17 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 
-import appeng.api.AEApi;
 import appeng.block.storage.DriveSlotsState;
 import appeng.client.render.DelegateBakedModel;
 
 public class DriveBakedModel extends DelegateBakedModel {
     private final Map<Item, IBakedModel> bakedCells;
-    private final Item fallbackCellItem;
+    private final IBakedModel defaultCell;
 
-    public DriveBakedModel(IBakedModel bakedBase, Map<Item, IBakedModel> cellModels) {
+    public DriveBakedModel(IBakedModel bakedBase, Map<Item, IBakedModel> cellModels, IBakedModel defaultCell) {
         super(bakedBase);
         this.bakedCells = cellModels;
-        this.fallbackCellItem = AEApi.instance().definitions().items().cell1k().item();
+        this.defaultCell = defaultCell;
     }
 
     @Nonnull
@@ -104,7 +103,7 @@ public class DriveBakedModel extends DelegateBakedModel {
         }
         final IBakedModel model = bakedCells.get(cell);
 
-        return model != null ? model : bakedCells.get(this.fallbackCellItem);
+        return model != null ? model : defaultCell;
     }
 
     private static void addModel(@Nullable BlockState state, @Nonnull Random rand, @Nonnull IModelData extraData,

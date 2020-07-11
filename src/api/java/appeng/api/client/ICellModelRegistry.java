@@ -78,4 +78,11 @@ public interface ICellModelRegistry {
     @Nonnull
     Map<Item, ResourceLocation> models();
 
+    /**
+     * Returns the default model, which can be used when no explicit model is
+     * registered.
+     */
+    @Nonnull
+    ResourceLocation getDefaultModel();
+
 }

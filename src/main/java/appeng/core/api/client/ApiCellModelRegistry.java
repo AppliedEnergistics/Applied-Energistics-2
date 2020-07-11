@@ -42,6 +42,8 @@ public class ApiCellModelRegistry implements ICellModelRegistry {
             "appliedenergistics2:block/drive/drive_base");
     private static final ResourceLocation MODEL_CELL_EMPTY = new ResourceLocation(
             "appliedenergistics2:block/drive/drive_cell_empty");
+    private static final ResourceLocation MODEL_CELL_DEFAULT = new ResourceLocation(
+            "appliedenergistics2:block/drive/drive_cell");
     private static final ResourceLocation MODEL_CELL_ITEMS_1K = new ResourceLocation(
             "appliedenergistics2:block/drive/cells/1k_item_cell");
     private static final ResourceLocation MODEL_CELL_ITEMS_4K = new ResourceLocation(
@@ -58,10 +60,12 @@ public class ApiCellModelRegistry implements ICellModelRegistry {
             "appliedenergistics2:block/drive/cells/16k_fluid_cell");
     private static final ResourceLocation MODEL_CELL_FLUIDS_64K = new ResourceLocation(
             "appliedenergistics2:block/drive/cells/64k_fluid_cell");
+    private static final ResourceLocation MODEL_CELL_CREATIVE = new ResourceLocation(
+            "appliedenergistics2:block/drive/cells/creative_cell");
 
-    private static final ResourceLocation[] MODELS = { MODEL_BASE, MODEL_CELL_EMPTY, MODEL_CELL_ITEMS_1K,
-            MODEL_CELL_ITEMS_4K, MODEL_CELL_ITEMS_16K, MODEL_CELL_ITEMS_64K, MODEL_CELL_FLUIDS_1K, MODEL_CELL_FLUIDS_4K,
-            MODEL_CELL_FLUIDS_16K, MODEL_CELL_FLUIDS_64K };
+    private static final ResourceLocation[] MODELS = { MODEL_BASE, MODEL_CELL_EMPTY, MODEL_CELL_DEFAULT,
+            MODEL_CELL_ITEMS_1K, MODEL_CELL_ITEMS_4K, MODEL_CELL_ITEMS_16K, MODEL_CELL_ITEMS_64K, MODEL_CELL_FLUIDS_1K,
+            MODEL_CELL_FLUIDS_4K, MODEL_CELL_FLUIDS_16K, MODEL_CELL_FLUIDS_64K, MODEL_CELL_CREATIVE };
 
     public static void registerModels() {
         Arrays.stream(MODELS).forEach(ModelLoader::addSpecialModel);
@@ -79,6 +83,8 @@ public class ApiCellModelRegistry implements ICellModelRegistry {
         this.registry.put(definitions.items().fluidCell4k().item(), MODEL_CELL_FLUIDS_4K);
         this.registry.put(definitions.items().fluidCell16k().item(), MODEL_CELL_FLUIDS_16K);
         this.registry.put(definitions.items().fluidCell64k().item(), MODEL_CELL_FLUIDS_64K);
+        this.registry.put(definitions.items().fluidCell64k().item(), MODEL_CELL_FLUIDS_64K);
+        this.registry.put(definitions.items().cellCreative().item(), MODEL_CELL_CREATIVE);
     }
 
     @Override
@@ -102,6 +108,12 @@ public class ApiCellModelRegistry implements ICellModelRegistry {
     @Nonnull
     public Map<Item, ResourceLocation> models() {
         return Collections.unmodifiableMap(this.registry);
+    }
+
+    @Override
+    @Nonnull
+    public ResourceLocation getDefaultModel() {
+        return MODEL_CELL_DEFAULT;
     }
 
 }

@@ -42,6 +42,7 @@ import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 
 import appeng.api.AEApi;
+import appeng.api.client.ICellModelRegistry;
 
 public class DriveModel implements IModelGeometry<DriveModel> {
 
@@ -54,18 +55,20 @@ public class DriveModel implements IModelGeometry<DriveModel> {
     public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
             Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
             ItemOverrideList overrides, ResourceLocation modelLocation) {
-        Map<Item, IBakedModel> cellModels = new IdentityHashMap<>();
+        final ICellModelRegistry cellRegistry = AEApi.instance().client().cells();
+        final Map<Item, IBakedModel> cellModels = new IdentityHashMap<>();
 
         // Load the base model and the model for each cell model.
-        for (Entry<Item, ResourceLocation> entry : AEApi.instance().client().cells().models().entrySet()) {
+        for (Entry<Item, ResourceLocation> entry : cellRegistry.models().entrySet()) {
             IBakedModel cellModel = bakery.getBakedModel(entry.getValue(), modelTransform, spriteGetter);
             cellModels.put(entry.getKey(), cellModel);
         }
 
-        IBakedModel baseModel = bakery.getBakedModel(MODEL_BASE, modelTransform, spriteGetter);
+        final IBakedModel baseModel = bakery.getBakedModel(MODEL_BASE, modelTransform, spriteGetter);
+        final IBakedModel defaultCell = bakery.getBakedModel(cellRegistry.getDefaultModel(), modelTransform, spriteGetter);
         cellModels.put(Items.AIR, bakery.getBakedModel(MODEL_CELL_EMPTY, modelTransform, spriteGetter));
 
-        return new DriveBakedModel(baseModel, cellModels);
+        return new DriveBakedModel(baseModel, cellModels, defaultCell);
     }
 
     @Override
