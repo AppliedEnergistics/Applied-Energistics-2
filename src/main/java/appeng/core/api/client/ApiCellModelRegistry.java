@@ -25,6 +25,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
@@ -81,16 +82,16 @@ public class ApiCellModelRegistry implements ICellModelRegistry {
     }
 
     @Override
-    public boolean registerModel(Item item, ResourceLocation model) {
+    public void registerModel(Item item, ResourceLocation model) {
         Preconditions.checkNotNull(item);
         Preconditions.checkNotNull(model);
         Preconditions.checkArgument(!this.registry.containsKey(item), "Cannot register an item twice.");
 
-        return this.registry.put(item, model) != null;
+        this.registry.put(item, model);
     }
 
     @Override
-    @Nonnull
+    @Nullable
     public ResourceLocation model(@Nonnull Item item) {
         Preconditions.checkNotNull(item);
 
