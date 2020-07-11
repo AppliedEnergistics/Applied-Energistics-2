@@ -31,6 +31,10 @@ import net.minecraft.client.renderer.model.ModelBakery;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
+/**
+ * A registry for 3D models used to render storage cells in the world, when they are 
+ * inserted into a drive or similar machines.
+ */
 public interface ICellModelRegistry {
 
     /**
