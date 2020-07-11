@@ -22,7 +22,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
-import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
@@ -32,13 +31,14 @@ import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
+import appeng.core.Api;
 import appeng.fluids.container.FluidTerminalContainer;
 
 public class BasicFluidCellGuiHandler implements ICellGuiHandler {
 
     @Override
     public <T extends IAEStack<T>> boolean isHandlerFor(final IStorageChannel<T> channel) {
-        return channel == AEApi.instance().storage().getStorageChannel(IFluidStorageChannel.class);
+        return channel == Api.instance().storage().getStorageChannel(IFluidStorageChannel.class);
     }
 
     @Override

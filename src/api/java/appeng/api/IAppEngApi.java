@@ -31,7 +31,6 @@ import appeng.api.parts.IPartHelper;
 import appeng.api.storage.IStorageHelper;
 import appeng.api.util.IClientHelper;
 
-@AEInjectable
 public interface IAppEngApi {
     /**
      * @return Registry Container for the numerous registries in AE2.

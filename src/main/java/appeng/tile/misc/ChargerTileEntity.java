@@ -30,7 +30,6 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
@@ -46,6 +45,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
+import appeng.core.Api;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkPowerTileEntity;
@@ -115,7 +115,7 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
 
         final ItemStack myItem = this.inv.getStackInSlot(0);
         if (this.getInternalCurrentPower() > POWER_THRESHOLD) {
-            final IMaterials materials = AEApi.instance().definitions().materials();
+            final IMaterials materials = Api.instance().definitions().materials();
 
             if (materials.certusQuartzCrystal().isSameAs(myItem)) {
                 this.extractAEPower(this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG);
@@ -157,7 +157,7 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
         if (myItem.isEmpty()) {
             ItemStack held = player.inventory.getCurrentItem();
 
-            if (AEApi.instance().definitions().materials().certusQuartzCrystal().isSameAs(held)
+            if (Api.instance().definitions().materials().certusQuartzCrystal().isSameAs(held)
                     || Platform.isChargeable(held)) {
                 held = player.inventory.decrStackSize(player.inventory.currentItem, 1);
                 this.inv.setStackInSlot(0, held);
@@ -185,13 +185,13 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
         boolean changed = false;
 
         if (!myItem.isEmpty()) {
-            final IMaterials materials = AEApi.instance().definitions().materials();
+            final IMaterials materials = Api.instance().definitions().materials();
 
             if (Platform.isChargeable(myItem)) {
                 final IAEItemPowerStorage ps = (IAEItemPowerStorage) myItem.getItem();
 
                 if (ps.getAEMaxPower(myItem) > ps.getAECurrentPower(myItem)) {
-                    final double chargeRate = AEApi.instance().registries().charger().getChargeRate(myItem.getItem());
+                    final double chargeRate = Api.instance().registries().charger().getChargeRate(myItem.getItem());
 
                     double extractedAmount = this.extractAEPower(chargeRate, Actionable.MODULATE,
                             PowerMultiplier.CONFIG);
@@ -254,7 +254,7 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
     private class ChargerInvFilter implements IAEItemFilter {
         @Override
         public boolean allowInsert(IItemHandler inv, final int i, final ItemStack itemstack) {
-            final IItemDefinition cert = AEApi.instance().definitions().materials().certusQuartzCrystal();
+            final IItemDefinition cert = Api.instance().definitions().materials().certusQuartzCrystal();
 
             return Platform.isChargeable(itemstack) || cert.isSameAs(itemstack);
         }
@@ -270,7 +270,7 @@ public class ChargerTileEntity extends AENetworkPowerTileEntity implements ICran
                 }
             }
 
-            return AEApi.instance().definitions().materials().certusQuartzCrystalCharged().isSameAs(extractedItem);
+            return Api.instance().definitions().materials().certusQuartzCrystalCharged().isSameAs(extractedItem);
         }
     }
 }

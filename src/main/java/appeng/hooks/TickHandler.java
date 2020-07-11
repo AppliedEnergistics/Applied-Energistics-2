@@ -42,12 +42,12 @@ import net.minecraftforge.event.TickEvent.Type;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
-import appeng.api.AEApi;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.CableRenderMode;
 import appeng.api.util.AEColor;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.sync.packets.PaintedEntityPacket;
 import appeng.crafting.CraftingJob;
@@ -150,7 +150,7 @@ public class TickHandler {
 
         if (ev.type == Type.CLIENT && ev.phase == Phase.START) {
             this.tickColors(this.cliPlayerColors);
-            final CableRenderMode currentMode = AEApi.instance().partHelper().getCableRenderMode();
+            final CableRenderMode currentMode = Api.instance().partHelper().getCableRenderMode();
             if (currentMode != this.crm) {
                 this.crm = currentMode;
                 AppEng.proxy.triggerUpdates();

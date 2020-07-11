@@ -31,7 +31,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FullnessMode;
 import appeng.api.config.OperationMode;
@@ -56,6 +55,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
+import appeng.core.Api;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
@@ -106,7 +106,7 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
         this.mySrc = new MachineSource(this);
         this.lastRedstoneState = YesNo.UNDECIDED;
 
-        final Block ioPortBlock = AEApi.instance().definitions().blocks().iOPort().maybeBlock().get();
+        final Block ioPortBlock = Api.instance().definitions().blocks().iOPort().maybeBlock().get();
         this.upgrades = new BlockUpgradeInventory(ioPortBlock, this, NUMBER_OF_UPGRADE_SLOTS);
     }
 
@@ -265,7 +265,7 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
                 if (!is.isEmpty()) {
                     boolean shouldMove = true;
 
-                    for (IStorageChannel<? extends IAEStack<?>> c : AEApi.instance().storage().storageChannels()) {
+                    for (IStorageChannel<? extends IAEStack<?>> c : Api.instance().storage().storageChannels()) {
                         if (itemsToMove > 0) {
                             final IMEMonitor<? extends IAEStack<?>> network = this.getProxy().getStorage()
                                     .getInventory(c);
@@ -316,8 +316,8 @@ public class IOPortTileEntity extends AENetworkInvTileEntity
             this.currentCell = is;
             this.cachedInventories = new IdentityHashMap<>();
 
-            for (IStorageChannel<? extends IAEStack<?>> c : AEApi.instance().storage().storageChannels()) {
-                this.cachedInventories.put(c, AEApi.instance().registries().cell().getCellInventory(is, null, c));
+            for (IStorageChannel<? extends IAEStack<?>> c : Api.instance().storage().storageChannels()) {
+                this.cachedInventories.put(c, Api.instance().registries().cell().getCellInventory(is, null, c));
             }
         }
 

@@ -34,7 +34,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
@@ -43,6 +42,7 @@ import appeng.api.config.ViewItems;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.util.IConfigManager;
 import appeng.core.AEConfig;
+import appeng.core.Api;
 import appeng.core.localization.GuiText;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.ConfigManager;
@@ -55,7 +55,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IWireless
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(final World w, final PlayerEntity player, final Hand hand) {
-        AEApi.instance().registries().wireless().openWirelessTerminalGui(player.getHeldItem(hand), w, player, hand);
+        Api.instance().registries().wireless().openWirelessTerminalGui(player.getHeldItem(hand), w, player, hand);
         return new ActionResult<>(ActionResultType.SUCCESS, player.getHeldItem(hand));
     }
 
@@ -83,7 +83,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IWireless
 
     @Override
     public boolean canHandle(final ItemStack is) {
-        return AEApi.instance().definitions().items().wirelessTerminal().isSameAs(is);
+        return Api.instance().definitions().items().wirelessTerminal().isSameAs(is);
     }
 
     @Override

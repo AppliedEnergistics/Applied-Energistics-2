@@ -32,11 +32,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
 import appeng.api.definitions.IMaterials;
 import appeng.api.features.AEFeature;
 import appeng.client.EffectType;
 import appeng.core.AEConfig;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.util.Platform;
 
@@ -92,7 +92,7 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
 
     private boolean transform() {
         final ItemStack item = this.getItem();
-        final IMaterials materials = AEApi.instance().definitions().materials();
+        final IMaterials materials = Api.instance().definitions().materials();
 
         if (materials.certusQuartzCrystalCharged().isSameAs(item)) {
             final AxisAlignedBB region = new AxisAlignedBB(this.getPosX() - 1, this.getPosY() - 1, this.getPosZ() - 1,

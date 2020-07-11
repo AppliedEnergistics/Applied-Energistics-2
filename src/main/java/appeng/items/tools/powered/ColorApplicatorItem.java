@@ -18,7 +18,10 @@
 
 package appeng.items.tools.powered;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -49,7 +52,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.items.IStorageCell;
@@ -65,6 +67,7 @@ import appeng.api.util.DimensionalCoord;
 import appeng.block.networking.CableBusBlock;
 import appeng.block.paint.PaintSplotchesBlock;
 import appeng.core.AEConfig;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.helpers.IMouseWheelItem;
@@ -128,8 +131,8 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
         ItemStack paintBall = this.getColor(is);
 
-        final IMEInventory<IAEItemStack> inv = AEApi.instance().registries().cell().getCellInventory(is, null,
-                AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
+        final IMEInventory<IAEItemStack> inv = Api.instance().registries().cell().getCellInventory(is, null,
+                Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
         if (inv != null) {
             final IAEItemStack option = inv.extractItems(AEItemStack.fromItemStack(paintBall), Actionable.SIMULATE,
                     new BaseActionSource());
@@ -249,11 +252,11 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     private ItemStack findNextColor(final ItemStack is, final ItemStack anchor, final int scrollOffset) {
         ItemStack newColor = ItemStack.EMPTY;
 
-        final IMEInventory<IAEItemStack> inv = AEApi.instance().registries().cell().getCellInventory(is, null,
-                AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
+        final IMEInventory<IAEItemStack> inv = Api.instance().registries().cell().getCellInventory(is, null,
+                Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
         if (inv != null) {
             final IItemList<IAEItemStack> itemList = inv.getAvailableItems(
-                    AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList());
+                    Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createList());
             if (anchor.isEmpty()) {
                 final IAEItemStack firstItem = itemList.getFirstItem();
                 if (firstItem != null) {
@@ -359,10 +362,10 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             final ITooltipFlag advancedTooltips) {
         super.addInformation(stack, world, lines, advancedTooltips);
 
-        final ICellInventoryHandler<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory(stack,
-                null, AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
+        final ICellInventoryHandler<IAEItemStack> cdi = Api.instance().registries().cell().getCellInventory(stack, null,
+                Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
 
-        AEApi.instance().client().addCellInformation(cdi, lines);
+        Api.instance().client().addCellInformation(cdi, lines);
     }
 
     @Override
@@ -405,7 +408,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     @Override
     public IStorageChannel<IAEItemStack> getChannel() {
-        return AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
+        return Api.instance().storage().getStorageChannel(IItemStorageChannel.class);
     }
 
     @Override

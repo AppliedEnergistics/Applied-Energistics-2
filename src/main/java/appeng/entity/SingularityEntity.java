@@ -30,10 +30,10 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
 import appeng.api.definitions.IMaterials;
 import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
+import appeng.core.Api;
 import appeng.util.Platform;
 
 public final class SingularityEntity extends AEBaseItemEntity {
@@ -71,7 +71,7 @@ public final class SingularityEntity extends AEBaseItemEntity {
 
         final ItemStack item = this.getItem();
 
-        final IMaterials materials = AEApi.instance().definitions().materials();
+        final IMaterials materials = Api.instance().definitions().materials();
 
         if (materials.singularity().isSameAs(item)) {
             final AxisAlignedBB region = new AxisAlignedBB(this.getPosX() - 4, this.getPosY() - 4, this.getPosZ() - 4,

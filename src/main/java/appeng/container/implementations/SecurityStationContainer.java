@@ -26,7 +26,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.features.INetworkEncodable;
 import appeng.api.features.IWirelessTermHandler;
@@ -36,6 +35,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
+import appeng.core.Api;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.misc.SecurityStationTileEntity;
 import appeng.util.inv.IAEAppEngInventory;
@@ -150,7 +150,7 @@ public class SecurityStationContainer extends MEMonitorableContainer implements 
                     networkEncodable = (INetworkEncodable) term.getItem();
                 }
 
-                final IWirelessTermHandler wTermHandler = AEApi.instance().registries().wireless()
+                final IWirelessTermHandler wTermHandler = Api.instance().registries().wireless()
                         .getWirelessTerminalHandler(term);
                 if (wTermHandler != null) {
                     networkEncodable = wTermHandler;

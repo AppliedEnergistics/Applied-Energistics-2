@@ -28,8 +28,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.core.AppEng;
-
 @OnlyIn(Dist.CLIENT)
 public class VibrantFX extends SpriteTexturedParticle {
 

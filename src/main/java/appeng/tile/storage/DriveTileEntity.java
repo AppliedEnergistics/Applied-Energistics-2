@@ -42,7 +42,6 @@ import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
@@ -65,6 +64,7 @@ import appeng.api.util.DimensionalCoord;
 import appeng.block.storage.DriveSlotsState;
 import appeng.client.render.model.DriveModelData;
 import appeng.container.implementations.DriveContainer;
+import appeng.core.Api;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
@@ -347,7 +347,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
 
     private void updateState() {
         if (!this.isCached) {
-            final Collection<IStorageChannel<? extends IAEStack<?>>> storageChannels = AEApi.instance().storage()
+            final Collection<IStorageChannel<? extends IAEStack<?>>> storageChannels = Api.instance().storage()
                     .storageChannels();
             storageChannels.forEach(channel -> this.inventoryHandlers.put(channel, new ArrayList<>(10)));
 
@@ -359,7 +359,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
                 this.handlersBySlot[x] = null;
 
                 if (!is.isEmpty()) {
-                    this.handlersBySlot[x] = AEApi.instance().registries().cell().getHandler(is);
+                    this.handlersBySlot[x] = Api.instance().registries().cell().getHandler(is);
 
                     if (this.handlersBySlot[x] != null) {
                         for (IStorageChannel<? extends IAEStack<?>> channel : storageChannels) {
@@ -444,14 +444,14 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
 
         @Override
         public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
-            return !stack.isEmpty() && AEApi.instance().registries().cell().isCellHandled(stack);
+            return !stack.isEmpty() && Api.instance().registries().cell().isCellHandled(stack);
         }
 
     }
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return AEApi.instance().definitions().blocks().drive().maybeStack(1).orElse(ItemStack.EMPTY);
+        return Api.instance().definitions().blocks().drive().maybeStack(1).orElse(ItemStack.EMPTY);
     }
 
     @Nonnull

@@ -46,7 +46,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.implementations.IUpgradeableHost;
@@ -64,6 +63,7 @@ import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
+import appeng.core.Api;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
 import appeng.me.helpers.AENetworkProxy;
@@ -370,7 +370,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
             ItemStack is = this.getItemStack(PartItemStack.NETWORK);
 
             // Blocks and parts share the same soul!
-            final IDefinitions definitions = AEApi.instance().definitions();
+            final IDefinitions definitions = Api.instance().definitions();
             if (definitions.parts().iface().isSameAs(is)) {
                 Optional<ItemStack> iface = definitions.blocks().iface().maybeStack(1);
                 if (iface.isPresent()) {

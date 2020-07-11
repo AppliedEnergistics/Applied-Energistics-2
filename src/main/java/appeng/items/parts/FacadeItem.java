@@ -24,7 +24,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.item.*;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.Tag;
@@ -37,12 +42,12 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.EmptyBlockReader;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import appeng.api.AEApi;
 import appeng.api.exceptions.MissingDefinitionException;
 import appeng.api.features.AEFeature;
 import appeng.api.parts.IAlphaPassItem;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AEConfig;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.facade.FacadePart;
 import appeng.facade.IFacadeItem;
@@ -63,7 +68,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        return AEApi.instance().partHelper().placeBus(stack, context.getPos(), context.getFace(), context.getPlayer(),
+        return Api.instance().partHelper().placeBus(stack, context.getPos(), context.getFace(), context.getPlayer(),
                 context.getHand(), context.getWorld());
     }
 
@@ -171,7 +176,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
     }
 
     public ItemStack createFromID(final int id) {
-        ItemStack facadeStack = AEApi.instance().definitions().items().facade().maybeStack(1).orElseThrow(
+        ItemStack facadeStack = Api.instance().definitions().items().facade().maybeStack(1).orElseThrow(
                 () -> new MissingDefinitionException("Tried to create a facade, while facades are being deactivated."));
 
         // Convert back to a registry name...

@@ -21,10 +21,10 @@ package appeng.block.crafting;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 
-import appeng.api.AEApi;
 import appeng.api.features.AEFeature;
 import appeng.block.AEBaseBlockItem;
 import appeng.core.AEConfig;
+import appeng.core.Api;
 
 public class CraftingStorageItem extends AEBaseBlockItem {
 
@@ -34,7 +34,7 @@ public class CraftingStorageItem extends AEBaseBlockItem {
 
     @Override
     public ItemStack getContainerItem(final ItemStack itemStack) {
-        return AEApi.instance().definitions().blocks().craftingUnit().maybeStack(1).orElse(ItemStack.EMPTY);
+        return Api.instance().definitions().blocks().craftingUnit().maybeStack(1).orElse(ItemStack.EMPTY);
     }
 
     @Override

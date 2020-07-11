@@ -42,7 +42,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.definitions.IDefinitions;
@@ -60,6 +59,7 @@ import appeng.container.slot.OptionalFakeSlot;
 import appeng.container.slot.PatternOutputsSlot;
 import appeng.container.slot.PatternTermSlot;
 import appeng.container.slot.RestrictedInputSlot;
+import appeng.core.Api;
 import appeng.core.sync.packets.PatternSlotPacket;
 import appeng.helpers.IContainerCraftingPacket;
 import appeng.items.storage.ViewCellItem;
@@ -227,7 +227,7 @@ public class PatternTermContainer extends MEMonitorableContainer
             }
 
             // add a new encoded pattern.
-            Optional<ItemStack> maybePattern = AEApi.instance().definitions().items().encodedPattern().maybeStack(1);
+            Optional<ItemStack> maybePattern = Api.instance().definitions().items().encodedPattern().maybeStack(1);
             if (maybePattern.isPresent()) {
                 output = maybePattern.get();
                 this.patternSlotOUT.putStack(output);
@@ -307,7 +307,7 @@ public class PatternTermContainer extends MEMonitorableContainer
             return false;
         }
 
-        final IDefinitions definitions = AEApi.instance().definitions();
+        final IDefinitions definitions = Api.instance().definitions();
 
         boolean isPattern = definitions.items().encodedPattern().isSameAs(output);
         isPattern |= definitions.materials().blankPattern().isSameAs(output);
@@ -380,7 +380,7 @@ public class PatternTermContainer extends MEMonitorableContainer
             }
 
             final IMEMonitor<IAEItemStack> storage = this.getPatternTerminal()
-                    .getInventory(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                    .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
             final IItemList<IAEItemStack> all = storage.getStorageList();
 
             final ItemStack is = r.getCraftingResult(ic);

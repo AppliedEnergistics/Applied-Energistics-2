@@ -37,10 +37,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.api.AEApi;
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.helpers.InvalidPatternHelper;
@@ -76,7 +76,7 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
 
             final PlayerInventory inv = player.inventory;
 
-            ItemStack is = AEApi.instance().definitions().materials().blankPattern().maybeStack(stack.getCount())
+            ItemStack is = Api.instance().definitions().materials().blankPattern().maybeStack(stack.getCount())
                     .orElse(ItemStack.EMPTY);
             if (!is.isEmpty()) {
                 for (int s = 0; s < player.inventory.getSizeInventory(); s++) {

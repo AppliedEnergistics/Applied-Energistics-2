@@ -39,7 +39,10 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.block.AEBaseBlock;
-import appeng.client.render.effects.*;
+import appeng.client.render.effects.EnergyParticleData;
+import appeng.client.render.effects.LightningArcFX;
+import appeng.client.render.effects.LightningFX;
+import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;

@@ -21,7 +21,6 @@ package appeng.items.storage;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.items.IUpgradeModule;
@@ -29,6 +28,7 @@ import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.core.Api;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
@@ -55,7 +55,7 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
             }
 
             if ((currentViewCell.getItem() instanceof ViewCellItem)) {
-                final IItemList<IAEItemStack> priorityList = AEApi.instance().storage()
+                final IItemList<IAEItemStack> priorityList = Api.instance().storage()
                         .getStorageChannel(IItemStorageChannel.class).createList();
 
                 final ICellWorkbenchItem vc = (ICellWorkbenchItem) currentViewCell.getItem();

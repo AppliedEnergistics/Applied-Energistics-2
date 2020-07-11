@@ -29,7 +29,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 
-import appeng.api.AEApi;
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
@@ -41,6 +40,7 @@ import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AELog;
+import appeng.core.Api;
 import appeng.core.settings.TickRates;
 import appeng.hooks.TickHandler;
 import appeng.items.parts.PartModels;
@@ -193,7 +193,7 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
 
                 for (final MEP2PTunnelPart me : newSides) {
                     try {
-                        connections.getConnections().put(me.getGridNode(), new TunnelConnection(me, AEApi.instance()
+                        connections.getConnections().put(me.getGridNode(), new TunnelConnection(me, Api.instance()
                                 .grid().createGridConnection(this.outerProxy.getNode(), me.outerProxy.getNode())));
                     } catch (final FailedConnectionException e) {
                         final TileEntity start = this.getTile();

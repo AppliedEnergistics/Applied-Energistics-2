@@ -31,7 +31,7 @@ import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.WorldGenRegion;
 
-import appeng.api.AEApi;
+import appeng.core.Api;
 
 public class StorageChunkGenerator extends ChunkGenerator<GenerationSettings> {
 
@@ -39,7 +39,7 @@ public class StorageChunkGenerator extends ChunkGenerator<GenerationSettings> {
 
     public StorageChunkGenerator(final World world) {
         super(world, createBiomeProvider(), createSettings());
-        this.defaultBlockState = AEApi.instance().definitions().blocks().matrixFrame().block().getDefaultState();
+        this.defaultBlockState = Api.instance().definitions().blocks().matrixFrame().block().getDefaultState();
     }
 
     private static BiomeProvider createBiomeProvider() {

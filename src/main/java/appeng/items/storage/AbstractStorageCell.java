@@ -19,7 +19,6 @@
 package appeng.items.storage;
 
 import java.util.List;
-import java.util.Set;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
@@ -35,7 +34,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.exceptions.MissingDefinitionException;
 import appeng.api.features.AEFeature;
@@ -46,7 +44,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.AEConfig;
-import appeng.core.localization.GuiText;
+import appeng.core.Api;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
@@ -73,8 +71,8 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     @Override
     public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
             final ITooltipFlag advancedTooltips) {
-        AEApi.instance().client().addCellInformation(
-                AEApi.instance().registries().cell().getCellInventory(stack, null, this.getChannel()), lines);
+        Api.instance().client().addCellInformation(
+                Api.instance().registries().cell().getCellInventory(stack, null, this.getChannel()), lines);
     }
 
     @Override
@@ -145,7 +143,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
             }
 
             final PlayerInventory playerInventory = player.inventory;
-            final IMEInventoryHandler inv = AEApi.instance().registries().cell().getCellInventory(stack, null,
+            final IMEInventoryHandler inv = Api.instance().registries().cell().getCellInventory(stack, null,
                     this.getChannel());
             if (inv != null && playerInventory.getCurrentItem() == stack) {
                 final InventoryAdaptor ia = InventoryAdaptor.getAdaptor(player);
@@ -193,7 +191,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 
     @Override
     public ItemStack getContainerItem(final ItemStack itemStack) {
-        return AEApi.instance().definitions().materials().emptyStorageCell().maybeStack(1)
+        return Api.instance().definitions().materials().emptyStorageCell().maybeStack(1)
                 .orElseThrow(() -> new MissingDefinitionException(
                         "Tried to use empty storage cells while basic storage cells are defined."));
     }

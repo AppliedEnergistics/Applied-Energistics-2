@@ -33,7 +33,6 @@ import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItemDefinition;
@@ -43,6 +42,7 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.core.Api;
 import appeng.core.AppEng;
 
 public final class DisassembleRecipe extends SpecialRecipe {
@@ -61,7 +61,7 @@ public final class DisassembleRecipe extends SpecialRecipe {
     public DisassembleRecipe(ResourceLocation id) {
         super(id);
 
-        final IDefinitions definitions = AEApi.instance().definitions();
+        final IDefinitions definitions = Api.instance().definitions();
         final IBlocks blocks = definitions.blocks();
         final IItems items = definitions.items();
         final IMaterials mats = definitions.materials();
@@ -105,11 +105,11 @@ public final class DisassembleRecipe extends SpecialRecipe {
                 if (maybeCellOutput.isPresent()) {
                     ItemStack storageCellStack = maybeCellOutput.get();
                     // make sure the storage cell stackInSlot empty...
-                    final IMEInventory<IAEItemStack> cellInv = AEApi.instance().registries().cell().getCellInventory(
-                            stackInSlot, null, AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                    final IMEInventory<IAEItemStack> cellInv = Api.instance().registries().cell().getCellInventory(
+                            stackInSlot, null, Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
                     if (cellInv != null) {
                         final IItemList<IAEItemStack> list = cellInv.getAvailableItems(
-                                AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList());
+                                Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createList());
                         if (!list.isEmpty()) {
                             return ItemStack.EMPTY;
                         }

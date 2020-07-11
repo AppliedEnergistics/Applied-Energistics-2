@@ -41,7 +41,6 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 
-import appeng.api.AEApi;
 import appeng.api.config.CondenserOutput;
 import appeng.api.definitions.IMaterials;
 import appeng.api.implementations.items.IStorageComponent;
@@ -161,7 +160,7 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
     }
 
     private List<ItemStack> getViableStorageComponents(CondenserOutput condenserOutput) {
-        IMaterials materials = AEApi.instance().definitions().materials();
+        IMaterials materials = Api.instance().definitions().materials();
         List<ItemStack> viableComponents = new ArrayList<>();
         materials.cell1kPart().maybeStack(1)
                 .ifPresent(itemStack -> this.addViableComponent(condenserOutput, viableComponents, itemStack));

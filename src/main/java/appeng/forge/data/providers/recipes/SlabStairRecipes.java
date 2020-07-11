@@ -12,7 +12,6 @@ import net.minecraft.data.ShapedRecipeBuilder;
 import net.minecraft.data.SingleItemRecipeBuilder;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.crafting.ConditionalRecipe;
 
 import appeng.api.definitions.IBlockDefinition;
 import appeng.core.AppEng;

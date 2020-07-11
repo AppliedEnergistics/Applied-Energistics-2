@@ -15,9 +15,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
 import appeng.api.definitions.IComparableDefinition;
 import appeng.api.features.InscriberProcessType;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.items.materials.MaterialItem;
 import appeng.recipes.handlers.InscriberRecipe;
@@ -47,7 +47,7 @@ public final class InscriberRecipes {
     public static InscriberRecipe findRecipe(World world, ItemStack input, ItemStack plateA, ItemStack plateB,
             boolean supportNamePress) {
         if (supportNamePress) {
-            IComparableDefinition namePress = AEApi.instance().definitions().materials().namePress();
+            IComparableDefinition namePress = Api.instance().definitions().materials().namePress();
             boolean isNameA = namePress.isSameAs(plateA);
             boolean isNameB = namePress.isSameAs(plateB);
 

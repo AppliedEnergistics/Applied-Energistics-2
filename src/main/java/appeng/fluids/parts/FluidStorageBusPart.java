@@ -37,7 +37,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.IncludeExclude;
@@ -66,6 +65,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.capabilities.Capabilities;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.fluids.container.FluidStorageBusContainer;
@@ -127,7 +127,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
         if (accessor != null) {
             IStorageMonitorable inventory = accessor.getInventory(this.source);
             if (inventory != null) {
-                return inventory.getInventory(AEApi.instance().storage().getStorageChannel(IFluidStorageChannel.class));
+                return inventory.getInventory(Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
             }
 
             // So this could / can be a design decision. If the tile does support our custom
@@ -169,7 +169,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
         this.resetCacheLogic = 0;
 
         final IMEInventory<IAEFluidStack> in = this.getInternalHandler();
-        IItemList<IAEFluidStack> before = AEApi.instance().storage().getStorageChannel(IFluidStorageChannel.class)
+        IItemList<IAEFluidStack> before = Api.instance().storage().getStorageChannel(IFluidStorageChannel.class)
                 .createList();
         if (in != null) {
             before = in.getAvailableItems(before);
@@ -183,7 +183,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
         final IMEInventory<IAEFluidStack> out = this.getInternalHandler();
 
         if (in != out) {
-            IItemList<IAEFluidStack> after = AEApi.instance().storage().getStorageChannel(IFluidStorageChannel.class)
+            IItemList<IAEFluidStack> after = Api.instance().storage().getStorageChannel(IFluidStorageChannel.class)
                     .createList();
             if (out != null) {
                 after = out.getAvailableItems(after);
@@ -250,7 +250,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
         try {
             if (this.getProxy().isActive()) {
                 this.getProxy().getStorage().postAlterationOfStoredItems(
-                        AEApi.instance().storage().getStorageChannel(IFluidStorageChannel.class), change, this.source);
+                        Api.instance().storage().getStorageChannel(IFluidStorageChannel.class), change, this.source);
             }
         } catch (final GridAccessException e) {
             // :(
@@ -287,14 +287,14 @@ public class FluidStorageBusPart extends SharedStorageBusPart
                 this.checkInterfaceVsStorageBus(target, this.getSide().getOpposite());
 
                 this.handler = new MEInventoryHandler<>(inv,
-                        AEApi.instance().storage().getStorageChannel(IFluidStorageChannel.class));
+                        Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
 
                 this.handler.setBaseAccess((AccessRestriction) this.getConfigManager().getSetting(Settings.ACCESS));
                 this.handler.setWhitelist(this.getInstalledUpgrades(Upgrades.INVERTER) > 0 ? IncludeExclude.BLACKLIST
                         : IncludeExclude.WHITELIST);
                 this.handler.setPriority(this.getPriority());
 
-                final IItemList<IAEFluidStack> priorityList = AEApi.instance().storage()
+                final IItemList<IAEFluidStack> priorityList = Api.instance().storage()
                         .getStorageChannel(IFluidStorageChannel.class).createList();
 
                 final int slotsToUse = 18 + this.getInstalledUpgrades(Upgrades.CAPACITY) * 9;
@@ -413,7 +413,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
 
     @Override
     public IStorageChannel getStorageChannel() {
-        return AEApi.instance().storage().getStorageChannel(IFluidStorageChannel.class);
+        return Api.instance().storage().getStorageChannel(IFluidStorageChannel.class);
     }
 
     public IAEFluidTank getConfig() {
@@ -434,7 +434,7 @@ public class FluidStorageBusPart extends SharedStorageBusPart
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return AEApi.instance().definitions().parts().fluidStorageBus().maybeStack(1).orElse(ItemStack.EMPTY);
+        return Api.instance().definitions().parts().fluidStorageBus().maybeStack(1).orElse(ItemStack.EMPTY);
     }
 
     @Override

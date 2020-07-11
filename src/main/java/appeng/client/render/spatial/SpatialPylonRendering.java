@@ -19,14 +19,12 @@
 package appeng.client.render.spatial;
 
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.bootstrap.BlockRenderingCustomizer;
 import appeng.bootstrap.IBlockRendering;
 import appeng.bootstrap.IItemRendering;
-import appeng.core.AppEng;
 
 public class SpatialPylonRendering extends BlockRenderingCustomizer {
 

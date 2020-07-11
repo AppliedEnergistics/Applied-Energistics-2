@@ -42,7 +42,6 @@ import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 
-import appeng.api.AEApi;
 import appeng.api.config.CondenserOutput;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItemDefinition;
@@ -70,7 +69,7 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerItemSubtypes(ISubtypeRegistration subtypeRegistry) {
-        final Optional<Item> maybeFacade = AEApi.instance().definitions().items().facade().maybeItem();
+        final Optional<Item> maybeFacade = Api.instance().definitions().items().facade().maybeItem();
         maybeFacade.ifPresent(subtypeRegistry::useNbtForSubtypes);
     }
 
@@ -93,7 +92,7 @@ public class JEIPlugin implements IModPlugin {
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
 
-        IDefinitions definitions = AEApi.instance().definitions();
+        IDefinitions definitions = Api.instance().definitions();
 
         RecipeManager recipeManager = Minecraft.getInstance().world.getRecipeManager();
         registration.addRecipes(recipeManager.getRecipes(GrinderRecipe.TYPE).values(), GrinderRecipeCategory.UID);
@@ -106,7 +105,7 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        IDefinitions definitions = AEApi.instance().definitions();
+        IDefinitions definitions = Api.instance().definitions();
 
         ItemStack grindstone = definitions.blocks().grindstone().stack(1);
         registration.addRecipeCatalyst(grindstone, GrinderRecipeCategory.UID);
@@ -165,7 +164,7 @@ public class JEIPlugin implements IModPlugin {
     @Override
     public void registerAdvanced(IAdvancedRegistration registration) {
 
-        IDefinitions definitions = AEApi.instance().definitions();
+        IDefinitions definitions = Api.instance().definitions();
 
         if (AEConfig.instance().isFeatureEnabled(AEFeature.ENABLE_FACADE_CRAFTING)) {
             FacadeItem itemFacade = (FacadeItem) definitions.items().facade().item();

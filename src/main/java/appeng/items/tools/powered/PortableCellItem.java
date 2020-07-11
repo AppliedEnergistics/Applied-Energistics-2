@@ -19,7 +19,6 @@
 package appeng.items.tools.powered;
 
 import java.util.List;
-import java.util.Set;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
@@ -35,7 +34,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
@@ -48,7 +46,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.MEPortableCellContainer;
 import appeng.core.AEConfig;
-import appeng.core.localization.GuiText;
+import appeng.core.Api;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
 import appeng.items.contents.PortableCellViewer;
@@ -71,10 +69,10 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
             final ITooltipFlag advancedTooltips) {
         super.addInformation(stack, world, lines, advancedTooltips);
 
-        final ICellInventoryHandler<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory(stack,
-                null, AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
+        final ICellInventoryHandler<IAEItemStack> cdi = Api.instance().registries().cell().getCellInventory(stack, null,
+                Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
 
-        AEApi.instance().client().addCellInformation(cdi, lines);
+        Api.instance().client().addCellInformation(cdi, lines);
     }
 
     @Override
@@ -114,7 +112,7 @@ public class PortableCellItem extends AEBasePoweredItem implements IStorageCell<
 
     @Override
     public IStorageChannel<IAEItemStack> getChannel() {
-        return AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
+        return Api.instance().storage().getStorageChannel(IItemStorageChannel.class);
     }
 
     @Override

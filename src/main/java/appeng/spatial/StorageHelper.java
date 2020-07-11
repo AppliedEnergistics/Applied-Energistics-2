@@ -35,10 +35,9 @@ import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.ITeleporter;
 
-import appeng.api.AEApi;
 import appeng.api.util.WorldCoord;
+import appeng.core.Api;
 import appeng.core.AppEng;
-import appeng.util.Platform;
 
 public class StorageHelper {
 
@@ -139,7 +138,7 @@ public class StorageHelper {
 
     public void swapRegions(final World srcWorld, final int srcX, final int srcY, final int srcZ, final World dstWorld,
             final int dstX, final int dstY, final int dstZ, final int scaleX, final int scaleY, final int scaleZ) {
-        AEApi.instance().definitions().blocks().matrixFrame().maybeBlock()
+        Api.instance().definitions().blocks().matrixFrame().maybeBlock()
                 .ifPresent(matrixFrameBlock -> this.transverseEdges(dstX - 1, dstY - 1, dstZ - 1, dstX + scaleX + 1,
                         dstY + scaleY + 1, dstZ + scaleZ + 1,
                         new WrapInMatrixFrame(matrixFrameBlock.getDefaultState(), dstWorld)));

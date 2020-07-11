@@ -23,13 +23,10 @@ import java.util.Collection;
 
 import net.minecraft.util.ResourceLocation;
 
-import appeng.api.AEInjectable;
-
 /**
  * Allows registration of part models that can then be used in
  * {@link IPart#getStaticModels()}.
  */
-@AEInjectable
 public interface IPartModels {
 
     /**

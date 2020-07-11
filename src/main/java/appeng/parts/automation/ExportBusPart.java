@@ -28,7 +28,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.PowerMultiplier;
@@ -56,6 +55,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.UpgradeableContainer;
 import appeng.core.AELog;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.helpers.MultiCraftingTracker;
@@ -127,7 +127,7 @@ public class ExportBusPart extends SharedItemBusPart implements ICraftingRequest
         try {
             final InventoryAdaptor destination = this.getHandler();
             final IMEMonitor<IAEItemStack> inv = this.getProxy().getStorage()
-                    .getInventory(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                    .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
             final IEnergyGrid energy = this.getProxy().getEnergy();
             final ICraftingGrid cg = this.getProxy().getCrafting();
             final FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting(Settings.FUZZY_MODE);

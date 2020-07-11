@@ -30,8 +30,6 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
 
-import appeng.util.Platform;
-
 public final class AEItemStackRegistry {
     private static final WeakHashMap<AESharedItemStack, WeakReference<AESharedItemStack>> REGISTRY = new WeakHashMap<>();
 

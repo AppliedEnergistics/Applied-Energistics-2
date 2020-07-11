@@ -35,7 +35,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.Settings;
@@ -52,6 +51,7 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
+import appeng.core.Api;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 import appeng.parts.automation.DefinitionUpgradeInventory;
@@ -106,7 +106,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
         this.getProxy().setIdlePowerUsage(0);
         this.settings = new ConfigManager(this);
 
-        final ITileDefinition inscriberDefinition = AEApi.instance().definitions().blocks().inscriber();
+        final ITileDefinition inscriberDefinition = Api.instance().definitions().blocks().inscriber();
         this.upgrades = new DefinitionUpgradeInventory(inscriberDefinition, this, this.getUpgradeSlots());
 
         this.sideItemHandler.setMaxStackSize(1, 64);
@@ -431,7 +431,7 @@ public class InscriberTileEntity extends AENetworkPowerTileEntity
             }
 
             if (inv == InscriberTileEntity.this.topItemHandler || inv == InscriberTileEntity.this.bottomItemHandler) {
-                if (AEApi.instance().definitions().materials().namePress().isSameAs(stack)) {
+                if (Api.instance().definitions().materials().namePress().isSameAs(stack)) {
                     return true;
                 }
                 return InscriberRecipes.isValidOptionalIngredient(getWorld(), stack);
