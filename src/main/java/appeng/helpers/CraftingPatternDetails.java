@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import appeng.items.misc.EncodedPatternItem;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.inventory.CraftingInventory;
@@ -42,6 +41,7 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.ContainerNull;
 import appeng.core.Api;
+import appeng.items.misc.EncodedPatternItem;
 import appeng.util.Platform;
 
 public class CraftingPatternDetails implements ICraftingPatternDetails, Comparable<CraftingPatternDetails> {
@@ -54,7 +54,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
     private final IAEItemStack[] condensedOutputs;
     private final IAEItemStack[] inputs;
     private final IAEItemStack[] outputs;
-    private final boolean isCrafting;
+    private final boolean isCraftable;
     private final boolean canSubstitute;
     private final Set<TestLookup> failCache = new HashSet<>();
     private final Set<TestLookup> passCache = new HashSet<>();
@@ -73,7 +73,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
         final ResourceLocation recipeId = templateItem.getCraftingRecipeId(itemStack);
 
         this.pattern = is.copy();
-        this.isCrafting = recipeId != null;
+        this.isCraftable = recipeId != null;
         this.canSubstitute = templateItem.allowsSubstitution(itemStack);
 
         final List<IAEItemStack> in = new ArrayList<>();
@@ -85,7 +85,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
 
             this.crafting.setInventorySlotContents(x, gs);
 
-            if (!gs.isEmpty() && (!this.isCrafting) || !gs.hasTag()) {
+            if (!gs.isEmpty() && (!this.isCraftable) || !gs.hasTag()) {
                 this.markItemAs(x, gs, TestStatus.ACCEPT);
             }
 
@@ -93,7 +93,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
             this.testFrame.setInventorySlotContents(x, gs);
         }
 
-        if (this.isCrafting) {
+        if (this.isCraftable) {
             IRecipe<?> recipe = w.getRecipeManager().getRecipes(IRecipeType.CRAFTING).get(recipeId);
 
             if (recipe == null || recipe.getType() != IRecipeType.CRAFTING) {
@@ -190,7 +190,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
 
     @Override
     public synchronized boolean isValidItemForSlot(final int slotIndex, final ItemStack i, final World w) {
-        if (!this.isCrafting) {
+        if (!this.isCraftable) {
             throw new IllegalStateException("Only crafting recipes supported.");
         }
 
@@ -236,7 +236,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
 
     @Override
     public boolean isCraftable() {
-        return this.isCrafting;
+        return this.isCraftable;
     }
 
     @Override
@@ -266,7 +266,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
 
     @Override
     public ItemStack getOutput(final CraftingInventory craftingInv, final World w) {
-        if (!this.isCrafting) {
+        if (!this.isCraftable) {
             throw new IllegalStateException("Only crafting recipes supported.");
         }
 

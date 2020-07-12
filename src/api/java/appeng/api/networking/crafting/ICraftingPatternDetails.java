@@ -30,7 +30,8 @@ import net.minecraft.world.World;
 import appeng.api.storage.data.IAEItemStack;
 
 /**
- * Describes a crafting or processing pattern decoded by {@link appeng.api.crafting.ICraftingHelper}.
+ * Describes a crafting or processing pattern decoded by
+ * {@link appeng.api.crafting.ICraftingHelper}.
  * <p>
  * Do not cache instances of this class unless you handle recipe reloads on the
  * server and client correctly.

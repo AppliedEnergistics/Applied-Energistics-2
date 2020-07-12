@@ -21,7 +21,6 @@ package appeng.container.slot;
 import java.util.List;
 import java.util.Set;
 
-import appeng.api.crafting.ICraftingHelper;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -34,6 +33,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.crafting.ICraftingHelper;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItems;
 import appeng.api.definitions.IMaterials;
@@ -140,8 +140,7 @@ public class RestrictedInputSlot extends AppEngSlot {
                 return materials.blankPattern().isSameAs(i);
 
             case PATTERN:
-                return materials.blankPattern().isSameAs(i)
-                        || crafting.isEncodedPattern(i);
+                return materials.blankPattern().isSameAs(i) || crafting.isEncodedPattern(i);
 
             case INSCRIBER_PLATE:
                 if (materials.namePress().isSameAs(i)) {

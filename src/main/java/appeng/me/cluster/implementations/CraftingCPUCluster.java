@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import appeng.api.crafting.ICraftingHelper;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.inventory.CraftingInventory;
@@ -41,6 +40,7 @@ import net.minecraftforge.fml.hooks.BasicEventHooks;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.crafting.ICraftingHelper;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -1058,8 +1058,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
             final IAEItemStack pattern = AEItemStack.fromNBT(item);
             ICraftingHelper craftingHelper = Api.instance().crafting();
             if (craftingHelper.isEncodedPattern(pattern)) {
-                final ICraftingPatternDetails details = craftingHelper
-                        .decodePattern(pattern.createItemStack(), this.getWorld());
+                final ICraftingPatternDetails details = craftingHelper.decodePattern(pattern.createItemStack(),
+                        this.getWorld());
                 if (details != null) {
                     final TaskProgress tp = new TaskProgress();
                     tp.value = item.getLong("craftingProgress");

@@ -20,7 +20,6 @@ package appeng.container.implementations;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;

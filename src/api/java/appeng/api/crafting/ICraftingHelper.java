@@ -26,12 +26,12 @@ package appeng.api.crafting;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import appeng.api.storage.data.IAEItemStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.world.World;
 
 import appeng.api.networking.crafting.ICraftingPatternDetails;
+import appeng.api.storage.data.IAEItemStack;
 
 public interface ICraftingHelper {
 
