@@ -36,7 +36,7 @@ public interface ICraftingProviderHelper {
      * Add new Pattern to AE's crafting cache.
      * 
      * This will only accept instances created by
-     * {@link ICraftingHelper#getPattern(net.minecraft.item.ItemStack, net.minecraft.world.World)}
+     * {@link ICraftingHelper#decodePattern(net.minecraft.item.ItemStack, net.minecraft.world.World)}
      */
     void addCraftingOption(ICraftingMedium medium, ICraftingPatternDetails api);
 

@@ -32,11 +32,9 @@ import net.minecraft.inventory.container.CraftingResultSlot;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
@@ -44,6 +42,7 @@ import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
+import appeng.api.crafting.ICraftingHelper;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.ITerminalHost;
@@ -62,7 +61,6 @@ import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
 import appeng.core.sync.packets.PatternSlotPacket;
 import appeng.helpers.IContainerCraftingPacket;
-import appeng.items.misc.EncodedPatternItem;
 import appeng.items.storage.ViewCellItem;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.reporting.PatternTerminalPart;
@@ -99,8 +97,9 @@ public class PatternTermContainer extends MEMonitorableContainer
     private final PatternTermSlot craftSlot;
     private final RestrictedInputSlot patternSlotIN;
     private final RestrictedInputSlot patternSlotOUT;
+    private final ICraftingHelper craftingHelper = Api.INSTANCE.crafting();
 
-    private IRecipe<CraftingInventory> currentRecipe;
+    private ICraftingRecipe currentRecipe;
     @GuiSync(97)
     public boolean craftingMode = true;
     @GuiSync(96)
@@ -207,17 +206,17 @@ public class PatternTermContainer extends MEMonitorableContainer
         final ItemStack[] out = this.getOutputs();
 
         // if there is no input, this would be silly.
-        if (in == null || out == null) {
+        if (in == null || out == null || isCraftingMode() && currentRecipe == null) {
             return;
         }
 
         // first check the output slots, should either be null, or a pattern
-        if (!output.isEmpty() && !this.isPattern(output)) {
+        if (!output.isEmpty() && !craftingHelper.isEncodedPattern(output)) {
             return;
         } // if nothing is there we should snag a new pattern.
         else if (output.isEmpty()) {
             output = this.patternSlotIN.getStack();
-            if (output.isEmpty() || !this.isPattern(output)) {
+            if (output.isEmpty() || !isPattern(output)) {
                 return; // no blanks.
             }
 
@@ -227,19 +226,16 @@ public class PatternTermContainer extends MEMonitorableContainer
                 this.patternSlotIN.putStack(ItemStack.EMPTY);
             }
 
-            // add a new encoded pattern.
-            Optional<ItemStack> maybePattern = Api.instance().definitions().items().encodedPattern().maybeStack(1);
-            if (maybePattern.isPresent()) {
-                output = maybePattern.get();
-                this.patternSlotOUT.putStack(output);
-            }
+            // let the crafting helper create a new encoded pattern
+            output = null;
         }
 
         if (this.isCraftingMode()) {
-            EncodedPatternItem.encodeCraftingPattern(output, in, out, this.currentRecipe.getId(), isSubstitute());
+            output = craftingHelper.encodeCraftingPattern(output, this.currentRecipe, in, out[0], isSubstitute());
         } else {
-            EncodedPatternItem.encodeProcessingPattern(output, in, out);
+            output = craftingHelper.encodeProcessingPattern(output, in, out);
         }
+        this.patternSlotOUT.putStack(output);
 
     }
 
@@ -295,11 +291,7 @@ public class PatternTermContainer extends MEMonitorableContainer
         }
 
         final IDefinitions definitions = Api.instance().definitions();
-
-        boolean isPattern = definitions.items().encodedPattern().isSameAs(output);
-        isPattern |= definitions.materials().blankPattern().isSameAs(output);
-
-        return isPattern;
+        return definitions.materials().blankPattern().isSameAs(output);
     }
 
     @Override

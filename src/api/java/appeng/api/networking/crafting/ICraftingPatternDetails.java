@@ -27,14 +27,10 @@ import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.storage.data.IAEItemStack;
 
 /**
- * Describes a crafting or processing pattern encoded in a
- * {@link ICraftingPatternItem}.
- * <p>
- * Do not implement. Provided by {@link appeng.api.crafting.ICraftingHelper}.
+ * Describes a crafting or processing pattern decoded by {@link appeng.api.crafting.ICraftingHelper}.
  * <p>
  * Do not cache instances of this class unless you handle recipe reloads on the
  * server and client correctly.

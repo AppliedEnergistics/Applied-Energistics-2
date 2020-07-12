@@ -21,6 +21,7 @@ package appeng.container.slot;
 import java.util.List;
 import java.util.Set;
 
+import appeng.api.crafting.ICraftingHelper;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -37,7 +38,6 @@ import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItems;
 import appeng.api.definitions.IMaterials;
 import appeng.api.features.INetworkEncodable;
-import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.api.implementations.items.IStorageComponent;
@@ -88,10 +88,7 @@ public class RestrictedInputSlot extends AppEngSlot {
 
     public boolean isValid(final ItemStack is, final World theWorld) {
         if (this.which == PlacableItemType.VALID_ENCODED_PATTERN_W_OUTPUT) {
-            final ICraftingPatternDetails ap = is.getItem() instanceof ICraftingPatternItem
-                    ? Api.instance().crafting().getPattern(is, theWorld)
-                    : null;
-            return ap != null;
+            return Api.instance().crafting().decodePattern(is, theWorld) != null;
         }
         return true;
     }
@@ -126,38 +123,25 @@ public class RestrictedInputSlot extends AppEngSlot {
         final IDefinitions definitions = Api.instance().definitions();
         final IMaterials materials = definitions.materials();
         final IItems items = definitions.items();
+        final ICraftingHelper crafting = Api.instance().crafting();
 
         switch (this.which) {
             case ENCODED_CRAFTING_PATTERN:
-                if (i.getItem() instanceof ICraftingPatternItem) {
-                    final ICraftingPatternDetails de = Api.instance().crafting().getPattern(i, this.p.player.world);
-                    if (de != null) {
-                        return de.isCraftable();
-                    }
+                final ICraftingPatternDetails de = crafting.decodePattern(i, this.p.player.world);
+                if (de != null) {
+                    return de.isCraftable();
                 }
                 return false;
             case VALID_ENCODED_PATTERN_W_OUTPUT:
             case ENCODED_PATTERN_W_OUTPUT:
-            case ENCODED_PATTERN: {
-                if (i.getItem() instanceof ICraftingPatternItem) {
-                    return true;
-                }
-                // ICraftingPatternDetails pattern = i.getItem() instanceof ICraftingPatternItem
-                // ?
-                // ((ICraftingPatternItem)
-                // i.getItem()).getPatternForItem( i ) : null;
-                return false;// pattern != null;
-            }
+            case ENCODED_PATTERN:
+                return crafting.isEncodedPattern(i);
             case BLANK_PATTERN:
                 return materials.blankPattern().isSameAs(i);
 
             case PATTERN:
-
-                if (i.getItem() instanceof ICraftingPatternItem) {
-                    return true;
-                }
-
-                return materials.blankPattern().isSameAs(i);
+                return materials.blankPattern().isSameAs(i)
+                        || crafting.isEncodedPattern(i);
 
             case INSCRIBER_PLATE:
                 if (materials.namePress().isSameAs(i)) {

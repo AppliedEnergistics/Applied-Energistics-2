@@ -57,7 +57,6 @@ import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
-import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.tiles.ICraftingMachine;
 import appeng.api.networking.GridFlags;
@@ -407,21 +406,15 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
     }
 
     private void addToCraftingList(final ItemStack is) {
-        if (is.isEmpty()) {
-            return;
-        }
+        final ICraftingPatternDetails details = Api.instance().crafting().decodePattern(is,
+                this.iHost.getTileEntity().getWorld());
 
-        if (is.getItem() instanceof ICraftingPatternItem) {
-            final ICraftingPatternDetails details = Api.instance().crafting().getPattern(is,
-                    this.iHost.getTileEntity().getWorld());
-
-            if (details != null) {
-                if (this.craftingList == null) {
-                    this.craftingList = new ArrayList<>();
-                }
-
-                this.craftingList.add(details);
+        if (details != null) {
+            if (this.craftingList == null) {
+                this.craftingList = new ArrayList<>();
             }
+
+            this.craftingList.add(details);
         }
     }
 

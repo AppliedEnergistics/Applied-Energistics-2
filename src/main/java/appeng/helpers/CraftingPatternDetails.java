@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import appeng.items.misc.EncodedPatternItem;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.inventory.CraftingInventory;
@@ -36,7 +37,6 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
@@ -62,18 +62,18 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
     private int priority = 0;
 
     public CraftingPatternDetails(final IAEItemStack is, final World w) {
-        Preconditions.checkArgument(is.getItem() instanceof ICraftingPatternItem,
+        Preconditions.checkArgument(is.getItem() instanceof EncodedPatternItem,
                 "itemStack is not a ICraftingPatternItem");
 
-        final ICraftingPatternItem templateItem = (ICraftingPatternItem) is.getItem();
+        final EncodedPatternItem templateItem = (EncodedPatternItem) is.getItem();
         final ItemStack itemStack = is.createItemStack();
 
-        final List<IAEItemStack> ingredients = templateItem.ingredients(itemStack);
-        final List<IAEItemStack> products = templateItem.products(itemStack);
-        final ResourceLocation recipeId = templateItem.recipe(itemStack);
+        final List<IAEItemStack> ingredients = templateItem.getIngredients(itemStack);
+        final List<IAEItemStack> products = templateItem.getProducts(itemStack);
+        final ResourceLocation recipeId = templateItem.getCraftingRecipeId(itemStack);
 
         this.pattern = is.copy();
-        this.isCrafting = templateItem.isCrafting(itemStack);
+        this.isCrafting = recipeId != null;
         this.canSubstitute = templateItem.allowsSubstitution(itemStack);
 
         final List<IAEItemStack> in = new ArrayList<>();
@@ -94,7 +94,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
         }
 
         if (this.isCrafting) {
-            IRecipe<?> recipe = w.getRecipeManager().getRecipe(recipeId).orElse(null);
+            IRecipe<?> recipe = w.getRecipeManager().getRecipes(IRecipeType.CRAFTING).get(recipeId);
 
             if (recipe == null || recipe.getType() != IRecipeType.CRAFTING) {
                 throw new IllegalStateException("recipe id is not a crafting recipe");
