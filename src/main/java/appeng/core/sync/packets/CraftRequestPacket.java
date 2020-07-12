@@ -101,7 +101,7 @@ public class CraftRequestPacket extends BasePacket {
                     if (futureJob != null) {
                         futureJob.cancel(true);
                     }
-                    AELog.debug(e);
+                    AELog.info(e);
                 }
             }
         }

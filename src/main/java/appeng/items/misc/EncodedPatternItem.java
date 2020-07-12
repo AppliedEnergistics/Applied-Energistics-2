@@ -18,37 +18,50 @@
 
 package appeng.items.misc;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+
+import com.google.common.base.Preconditions;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants;
 
-import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.helpers.InvalidPatternHelper;
-import appeng.helpers.PatternHelper;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 
-public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternItem {
+public class EncodedPatternItem extends AEBaseItem {
+
+    public static final String NBT_INGREDIENTS = "in";
+    public static final String NBT_PRODUCTS = "out";
+    public static final String NBT_SUBSITUTE = "substitute";
+    public static final String NBT_RECIPE_ID = "recipe";
+
     // rather simple client side caching.
     private static final Map<ItemStack, ItemStack> SIMPLE_CACHE = new WeakHashMap<>();
 
@@ -95,7 +108,7 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
     @OnlyIn(Dist.CLIENT)
     public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
             final ITooltipFlag advancedTooltips) {
-        final ICraftingPatternDetails details = this.getPatternForItem(stack, world);
+        final ICraftingPatternDetails details = Api.instance().crafting().decodePattern(stack, world);
 
         if (details == null) {
             if (!stack.hasTag()) {
@@ -181,15 +194,6 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
         }
     }
 
-    @Override
-    public ICraftingPatternDetails getPatternForItem(final ItemStack is, final World w) {
-        try {
-            return new PatternHelper(is, w);
-        } catch (final Throwable t) {
-            return null;
-        }
-    }
-
     public ItemStack getOutput(final ItemStack item) {
         ItemStack out = SIMPLE_CACHE.get(item);
 
@@ -202,11 +206,127 @@ public class EncodedPatternItem extends AEBaseItem implements ICraftingPatternIt
             return ItemStack.EMPTY;
         }
 
-        final ICraftingPatternDetails details = this.getPatternForItem(item, w);
+        final ICraftingPatternDetails details = Api.instance().crafting().decodePattern(item, w);
 
         out = details != null ? details.getOutputs()[0].createItemStack() : ItemStack.EMPTY;
 
         SIMPLE_CACHE.put(item, out);
         return out;
     }
+
+    public boolean isEncodedPattern(ItemStack itemStack) {
+        return itemStack != null && !itemStack.isEmpty() && itemStack.getItem() == this && itemStack.getTag() != null
+                && itemStack.getTag().contains(NBT_INGREDIENTS, Constants.NBT.TAG_LIST)
+                && itemStack.getTag().contains(NBT_PRODUCTS, Constants.NBT.TAG_LIST);
+    }
+
+    public ResourceLocation getCraftingRecipeId(ItemStack itemStack) {
+        Preconditions.checkArgument(itemStack.getItem() == this, "Given item stack %s is not an encoded pattern.",
+                itemStack);
+        final CompoundNBT tag = itemStack.getTag();
+        Preconditions.checkArgument(tag != null, "itemStack missing a NBT tag");
+
+        return new ResourceLocation(tag.getString(NBT_RECIPE_ID));
+    }
+
+    public List<IAEItemStack> getIngredients(ItemStack itemStack) {
+        Preconditions.checkArgument(itemStack.getItem() == this, "Given item stack %s is not an encoded pattern.",
+                itemStack);
+        final CompoundNBT tag = itemStack.getTag();
+        Preconditions.checkArgument(tag != null, "itemStack missing a NBT tag");
+
+        final ListNBT inTag = tag.getList(NBT_INGREDIENTS, 10);
+        Preconditions.checkArgument(inTag.size() < 10, "Cannot use more than 9 ingredients");
+
+        final List<IAEItemStack> in = new ArrayList<>(inTag.size());
+        for (int x = 0; x < inTag.size(); x++) {
+            CompoundNBT ingredient = inTag.getCompound(x);
+            final ItemStack gs = ItemStack.read(ingredient);
+
+            Preconditions.checkArgument(!(!ingredient.isEmpty() && gs.isEmpty()), "invalid itemStack in slot", x);
+
+            in.add(Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(gs));
+        }
+
+        return in;
+    }
+
+    public List<IAEItemStack> getProducts(ItemStack itemStack) {
+        Preconditions.checkArgument(itemStack.getItem() == this, "Given item stack %s is not an encoded pattern.",
+                itemStack);
+        final CompoundNBT tag = itemStack.getTag();
+        Preconditions.checkArgument(tag != null, "itemStack missing a NBT tag");
+
+        final ListNBT outTag = tag.getList(NBT_PRODUCTS, 10);
+        Preconditions.checkArgument(outTag.size() < 4, "Cannot use more than 3 ingredients");
+
+        final List<IAEItemStack> out = new ArrayList<>(outTag.size());
+        for (int x = 0; x < outTag.size(); x++) {
+            CompoundNBT ingredient = outTag.getCompound(x);
+            final ItemStack gs = ItemStack.read(ingredient);
+
+            Preconditions.checkArgument(!(!ingredient.isEmpty() && gs.isEmpty()), "invalid itemStack in slot", x);
+
+            out.add(Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(gs));
+        }
+
+        return out;
+
+    }
+
+    public boolean allowsSubstitution(ItemStack itemStack) {
+        final CompoundNBT tag = itemStack.getTag();
+
+        Preconditions.checkArgument(tag != null, "itemStack missing a NBT tag");
+
+        return getCraftingRecipeId(itemStack) == null && tag.getBoolean(NBT_SUBSITUTE);
+    }
+
+    /**
+     * Use the public API instead {@link appeng.core.api.ApiCrafting}
+     */
+    public static void encodeCraftingPattern(ItemStack stack, ItemStack[] in, ItemStack[] out,
+            ResourceLocation recipeId, boolean allowSubstitutes) {
+        CompoundNBT encodedValue = encodeInputsAndOutputs(in, out);
+        encodedValue.putString(EncodedPatternItem.NBT_RECIPE_ID, recipeId.toString());
+        encodedValue.putBoolean(EncodedPatternItem.NBT_SUBSITUTE, allowSubstitutes);
+        stack.setTag(encodedValue);
+    }
+
+    /**
+     * Use the public API instead {@link appeng.core.api.ApiCrafting}
+     */
+    public static void encodeProcessingPattern(ItemStack stack, ItemStack[] in, ItemStack[] out) {
+        stack.setTag(encodeInputsAndOutputs(in, out));
+    }
+
+    private static CompoundNBT encodeInputsAndOutputs(ItemStack[] in, ItemStack[] out) {
+        final CompoundNBT encodedValue = new CompoundNBT();
+
+        final ListNBT tagIn = new ListNBT();
+        final ListNBT tagOut = new ListNBT();
+
+        for (final ItemStack i : in) {
+            tagIn.add(createItemTag(i));
+        }
+
+        for (final ItemStack i : out) {
+            tagOut.add(createItemTag(i));
+        }
+
+        encodedValue.put(EncodedPatternItem.NBT_INGREDIENTS, tagIn);
+        encodedValue.put(EncodedPatternItem.NBT_PRODUCTS, tagOut);
+        return encodedValue;
+    }
+
+    private static INBT createItemTag(final ItemStack i) {
+        final CompoundNBT c = new CompoundNBT();
+
+        if (!i.isEmpty()) {
+            i.write(c);
+        }
+
+        return c;
+    }
+
 }

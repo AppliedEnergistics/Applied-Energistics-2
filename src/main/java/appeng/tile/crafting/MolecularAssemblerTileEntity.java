@@ -226,8 +226,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
 
             if (!myPat.isEmpty() && myPat.getItem() instanceof EncodedPatternItem) {
                 final World w = this.getWorld();
-                final EncodedPatternItem iep = (EncodedPatternItem) myPat.getItem();
-                final ICraftingPatternDetails ph = iep.getPatternForItem(myPat, w);
+                final ICraftingPatternDetails ph = Api.instance().crafting().decodePattern(myPat, w);
                 if (ph != null && ph.isCraftable()) {
                     this.forcePlan = true;
                     this.myPlan = ph;
@@ -253,8 +252,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
         if (!is.isEmpty() && is.getItem() instanceof EncodedPatternItem) {
             if (!ItemStack.areItemsEqual(is, this.myPattern)) {
                 final World w = this.getWorld();
-                final EncodedPatternItem iep = (EncodedPatternItem) is.getItem();
-                final ICraftingPatternDetails ph = iep.getPatternForItem(is, w);
+                final ICraftingPatternDetails ph = Api.instance().crafting().decodePattern(is, w);
 
                 if (ph != null && ph.isCraftable()) {
                     this.progress = 0;

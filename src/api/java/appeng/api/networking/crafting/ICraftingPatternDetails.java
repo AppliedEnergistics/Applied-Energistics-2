@@ -27,18 +27,19 @@ import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.storage.data.IAEItemStack;
 
 /**
- * do not implement provided by {@link ICraftingPatternItem}
- *
- * caching this INSTANCE will increase performance of validation and checks.
+ * Describes a crafting or processing pattern decoded by
+ * {@link appeng.api.crafting.ICraftingHelper}.
+ * <p>
+ * Do not cache instances of this class unless you handle recipe reloads on the
+ * server and client correctly.
  */
 public interface ICraftingPatternDetails {
 
     /**
-     * @return source item.
+     * @return encodes this crafting pattern into a new item stack.
      */
     ItemStack getPattern();
 
@@ -52,7 +53,9 @@ public interface ICraftingPatternDetails {
     boolean isValidItemForSlot(int slotIndex, ItemStack itemStack, World world);
 
     /**
-     * @return if this pattern is a crafting pattern ( work bench )
+     * @return if this pattern is for a Vanilla
+     *         {@link net.minecraft.item.crafting.IRecipeType#CRAFTING crafting
+     *         recipe}.
      */
     boolean isCraftable();
 

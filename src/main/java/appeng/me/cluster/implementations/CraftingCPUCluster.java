@@ -40,7 +40,7 @@ import net.minecraftforge.fml.hooks.BasicEventHooks;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.implementations.ICraftingPatternItem;
+import appeng.api.crafting.ICraftingHelper;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -1056,9 +1056,9 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         for (int x = 0; x < list.size(); x++) {
             final CompoundNBT item = list.getCompound(x);
             final IAEItemStack pattern = AEItemStack.fromNBT(item);
-            if (pattern != null && pattern.getItem() instanceof ICraftingPatternItem) {
-                final ICraftingPatternItem cpi = (ICraftingPatternItem) pattern.getItem();
-                final ICraftingPatternDetails details = cpi.getPatternForItem(pattern.createItemStack(),
+            ICraftingHelper craftingHelper = Api.instance().crafting();
+            if (craftingHelper.isEncodedPattern(pattern)) {
+                final ICraftingPatternDetails details = craftingHelper.decodePattern(pattern.createItemStack(),
                         this.getWorld());
                 if (details != null) {
                     final TaskProgress tp = new TaskProgress();
