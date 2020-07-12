@@ -188,26 +188,24 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
         for (int l = 0; l < list.size(); ++l) {
             final Entity entity1 = (Entity) list.get(l);
 
-            if (!entity1.isAlive() && entity1 != p && !(entity1 instanceof ItemEntity)) {
-                if (entity1.isAlive()) {
-                    // prevent killing / flying of mounts.
-                    if (entity1.isRidingOrBeingRiddenBy(p)) {
-                        continue;
-                    }
+            if (entity1.isAlive() && entity1 != p && !(entity1 instanceof ItemEntity)) {
+                // prevent killing / flying of mounts.
+                if (entity1.isRidingOrBeingRiddenBy(p)) {
+                    continue;
+                }
 
-                    final float f1 = 0.3F;
+                final float f1 = 0.3F;
 
-                    final AxisAlignedBB boundingBox = entity1.getBoundingBox().grow(f1, f1, f1);
-                    final Vec3d intersection = boundingBox.rayTrace(Vec3d, Vec3d1).orElse(null);
+                final AxisAlignedBB boundingBox = entity1.getBoundingBox().grow(f1, f1, f1);
+                final Vec3d intersection = boundingBox.rayTrace(Vec3d, Vec3d1).orElse(null);
 
-                    if (intersection != null) {
-                        final double nd = Vec3d.squareDistanceTo(intersection);
+                if (intersection != null) {
+                    final double nd = Vec3d.squareDistanceTo(intersection);
 
-                        if (nd < closest) {
-                            entity = entity1;
-                            entityIntersection = intersection;
-                            closest = nd;
-                        }
+                    if (nd < closest) {
+                        entity = entity1;
+                        entityIntersection = intersection;
+                        closest = nd;
                     }
                 }
             }
