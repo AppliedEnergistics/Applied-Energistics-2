@@ -9,7 +9,7 @@
       "item": "appliedenergistics2:logic_processor_press"
     },
     "middle": {
-      "tag": "forge:ingots/gold"
+      "tag": "c:gold_ingots"
     }
   }
 }

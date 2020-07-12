@@ -9,7 +9,7 @@
       "item": "appliedenergistics2:quartz_glass"
     },
     "a": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:redstone_dusts"
     },
     "c": {
       "item": "appliedenergistics2:1k_cell_component"

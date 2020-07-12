@@ -9,7 +9,7 @@
       "item": "minecraft:lever"
     },
     "a": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:redstone_dusts"
     },
     "b": {
       "item": "appliedenergistics2:fluix_glass_cable"

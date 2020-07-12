@@ -6,13 +6,13 @@
   "pattern": ["aba", "cdc", "ccc"],
   "key": {
     "c": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "a": {
       "tag": "appliedenergistics2:wool"
     },
     "d": {
-      "tag": "forge:chests/wooden"
+      "tag": "c:wooden_chests"
     },
     "b": {
       "item": "appliedenergistics2:calculation_processor"

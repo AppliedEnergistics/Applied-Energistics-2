@@ -10,7 +10,7 @@ import java.nio.file.Files;
 
 public class ConfigFileManager {
 
-    private static Gson GSON = new GsonBuilder()
+    private static final Gson GSON = new GsonBuilder()
             .setPrettyPrinting()
             .setLenient()
             .create();

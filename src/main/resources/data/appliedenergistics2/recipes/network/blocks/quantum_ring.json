@@ -12,7 +12,7 @@
       "item": "appliedenergistics2:fluix_smart_dense_cable"
     },
     "a": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "d": {
       "item": "appliedenergistics2:energy_cell"

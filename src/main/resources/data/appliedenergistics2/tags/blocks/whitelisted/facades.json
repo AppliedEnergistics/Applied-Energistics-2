@@ -1,7 +1,6 @@
 {
   "values": [
-    "minecraft:glass",
-    "#forge:stained_glass",
+    "#c:glass_blocks",
     "appliedenergistics2:quartz_glass",
     "appliedenergistics2:quartz_vibrant_glass"
   ]

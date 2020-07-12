@@ -6,7 +6,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "tag": "forge:sand"
+      "tag": "c:sand_blocks"
     },
     {
       "tag": "appliedenergistics2:dusts/nether_quartz"

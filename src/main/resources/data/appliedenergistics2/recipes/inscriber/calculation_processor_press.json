@@ -9,7 +9,7 @@
       "item": "appliedenergistics2:calculation_processor_press"
     },
     "middle": {
-      "tag": "forge:storage_blocks/iron"
+      "item": "minecraft:iron_block"
     }
   }
 }

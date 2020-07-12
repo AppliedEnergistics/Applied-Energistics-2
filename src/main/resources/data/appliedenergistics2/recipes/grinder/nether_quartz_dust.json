@@ -1,7 +1,7 @@
 {
   "type": "appliedenergistics2:grinder",
   "input": {
-    "tag": "forge:gems/quartz"
+    "tag": "c:nether_quartz_crystals"
   },
   "result": {
     "primary": {

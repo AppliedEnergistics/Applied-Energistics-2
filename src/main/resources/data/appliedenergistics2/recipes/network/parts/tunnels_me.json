@@ -9,7 +9,7 @@
       "item": "appliedenergistics2:engineering_processor"
     },
     "a": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "c": {
       "tag": "appliedenergistics2:crystals/fluix"

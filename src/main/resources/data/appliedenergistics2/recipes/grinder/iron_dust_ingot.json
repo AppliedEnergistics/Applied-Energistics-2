@@ -1,7 +1,7 @@
 {
   "type": "appliedenergistics2:grinder",
   "input": {
-    "tag": "forge:ingots/iron"
+    "tag": "c:iron_ingots"
   },
   "result": {
     "primary": {

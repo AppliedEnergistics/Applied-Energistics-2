@@ -9,7 +9,7 @@
       "item": "minecraft:sticky_piston"
     },
     "b": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "a": {
       "item": "appliedenergistics2:annihilation_core"

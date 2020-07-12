@@ -9,7 +9,7 @@
       "item": "appliedenergistics2:quartz_glass"
     },
     "a": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "b": {
       "item": "appliedenergistics2:fluix_glass_cable"

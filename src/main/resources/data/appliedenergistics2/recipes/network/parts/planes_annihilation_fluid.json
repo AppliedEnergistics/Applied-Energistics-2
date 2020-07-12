@@ -6,7 +6,7 @@
   "pattern": ["aaa", "ddd", "bcb"],
   "key": {
     "b": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "a": {
       "tag": "appliedenergistics2:crystals/fluix"
@@ -15,7 +15,7 @@
       "item": "appliedenergistics2:annihilation_core"
     },
     "d": {
-      "tag": "forge:dyes/blue"
+      "tag": "c:blue_dyes"
     }
   }
 }

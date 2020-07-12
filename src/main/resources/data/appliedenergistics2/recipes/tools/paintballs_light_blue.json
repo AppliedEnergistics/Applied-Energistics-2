@@ -7,7 +7,7 @@
   "pattern": ["aaa", "aba", "aaa"],
   "key": {
     "b": {
-      "tag": "forge:dyes/light_blue"
+      "tag": "c:light_blue_dyes"
     },
     "a": {
       "item": "appliedenergistics2:matter_ball"

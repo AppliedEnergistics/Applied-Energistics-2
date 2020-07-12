@@ -1,8 +1,6 @@
 {
   "type": "minecraft:smelting",
-  "result": {
-    "item": "minecraft:bread"
-  },
+  "result": "minecraft:bread",
   "ingredient": {
     "item": "appliedenergistics2:flour"
   },

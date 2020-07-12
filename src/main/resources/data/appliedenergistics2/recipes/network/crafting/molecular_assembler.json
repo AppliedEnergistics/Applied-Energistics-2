@@ -15,7 +15,7 @@
       "tag": "appliedenergistics2:workbench"
     },
     "a": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "c": {
       "item": "appliedenergistics2:annihilation_core"

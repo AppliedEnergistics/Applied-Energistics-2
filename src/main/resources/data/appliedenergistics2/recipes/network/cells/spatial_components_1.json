@@ -12,7 +12,7 @@
       "item": "appliedenergistics2:16_cubed_spatial_cell_component"
     },
     "a": {
-      "tag": "forge:dusts/glowstone"
+      "tag": "c:glowstone_dusts"
     }
   }
 }

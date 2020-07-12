@@ -9,7 +9,7 @@
       "item": "minecraft:sticky_piston"
     },
     "a": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "c": {
       "tag": "appliedenergistics2:crystals/fluix"

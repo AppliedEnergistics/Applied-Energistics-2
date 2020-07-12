@@ -9,10 +9,10 @@
       "tag": "appliedenergistics2:crystals/quartz"
     },
     "a": {
-      "tag": "forge:stone"
+      "item": "minecraft:stone"
     },
     "d": {
-      "tag": "forge:cobblestone"
+      "item": "minecraft:cobblestone"
     },
     "b": {
       "tag": "appliedenergistics2:gears/wooden"

@@ -6,10 +6,10 @@
   "pattern": ["aa", "ab", " b"],
   "key": {
     "a": {
-      "tag": "forge:gems/quartz"
+      "tag": "c:nether_quartz_crystals"
     },
     "b": {
-      "tag": "forge:rods/wooden"
+      "tag": "c:wooden_rods"
     }
   }
 }

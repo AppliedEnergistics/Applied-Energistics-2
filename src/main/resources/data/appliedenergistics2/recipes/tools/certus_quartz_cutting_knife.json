@@ -6,13 +6,13 @@
   "pattern": ["  a", "ba ", "cc "],
   "key": {
     "b": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "c": {
       "tag": "appliedenergistics2:crystals/certus_quartz"
     },
     "a": {
-      "tag": "forge:rods/wooden"
+      "tag": "c:wooden_rods"
     }
   }
 }

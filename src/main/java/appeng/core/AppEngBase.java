@@ -28,6 +28,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.network.TargetPoint;
 import appeng.fluids.container.*;
 import appeng.fluids.registries.BasicFluidCellGuiHandler;
+import appeng.forge.data.AE2DataGenerators;
 import appeng.hooks.ToolItemHook;
 import appeng.items.tools.NetworkToolItem;
 import appeng.me.cache.*;
@@ -98,6 +99,11 @@ public abstract class AppEngBase implements AppEng {
         registerServerCommands();
 
         setupInternalRegistries();
+
+        if (System.getProperty("appeng2.generatedataendexit", "false").equals("true")) {
+            AE2DataGenerators.dump();
+            System.exit(0);
+        }
 
     }
 

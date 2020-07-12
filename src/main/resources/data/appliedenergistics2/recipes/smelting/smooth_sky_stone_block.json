@@ -1,8 +1,6 @@
 {
   "type": "minecraft:smelting",
-  "result": {
-    "item": "appliedenergistics2:smooth_sky_stone_block"
-  },
+  "result": "appliedenergistics2:smooth_sky_stone_block",
   "ingredient": {
     "item": "appliedenergistics2:sky_stone_block"
   },

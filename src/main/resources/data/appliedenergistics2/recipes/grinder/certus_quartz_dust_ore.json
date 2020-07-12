@@ -1,7 +1,7 @@
 {
   "type": "appliedenergistics2:grinder",
   "input": {
-    "tag": "forge:ores/certus_quartz"
+    "tag": "c:certus_quartz_ores"
   },
   "result": {
     "primary": {

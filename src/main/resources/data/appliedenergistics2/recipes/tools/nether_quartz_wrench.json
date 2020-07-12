@@ -6,7 +6,7 @@
   "pattern": ["a a", " a ", "a a"],
   "key": {
     "a": {
-      "tag": "forge:gems/quartz"
+      "tag": "c:nether_quartz_crystals"
     }
   }
 }

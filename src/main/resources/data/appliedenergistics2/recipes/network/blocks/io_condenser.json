@@ -6,10 +6,10 @@
   "pattern": ["aba", "bcb", "aba"],
   "key": {
     "b": {
-      "tag": "appliedenergistics2:glass"
+      "tag": "c:glass_blocks"
     },
     "a": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "c": {
       "tag": "appliedenergistics2:dusts/fluix"

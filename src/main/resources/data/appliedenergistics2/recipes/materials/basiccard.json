@@ -7,13 +7,13 @@
   "pattern": ["ab ", "cdb", "ab "],
   "key": {
     "b": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "c": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:redstone_dusts"
     },
     "a": {
-      "tag": "forge:ingots/gold"
+      "tag": "c:gold_ingots"
     },
     "d": {
       "item": "appliedenergistics2:calculation_processor"

@@ -22,8 +22,6 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
-import net.minecraftforge.client.model.data.IDynamicBakedModel;
-
 
 import appeng.api.AEApi;
 import appeng.client.render.cablebus.CubeBuilder;

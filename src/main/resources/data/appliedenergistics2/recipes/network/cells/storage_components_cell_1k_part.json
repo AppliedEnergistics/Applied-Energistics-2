@@ -6,7 +6,7 @@
   "pattern": ["aba", "bcb", "aba"],
   "key": {
     "a": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:redstone_dusts"
     },
     "b": {
       "tag": "appliedenergistics2:crystals/certus"

@@ -9,10 +9,10 @@
       "item": "appliedenergistics2:formation_core"
     },
     "b": {
-      "tag": "appliedenergistics2:glass"
+      "tag": "c:glass_blocks"
     },
     "a": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "c": {
       "item": "appliedenergistics2:annihilation_core"

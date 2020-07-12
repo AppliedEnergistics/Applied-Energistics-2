@@ -6,7 +6,7 @@
   "pattern": ["aba", "a  ", "aba"],
   "key": {
     "a": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "b": {
       "tag": "appliedenergistics2:crystals/fluix"

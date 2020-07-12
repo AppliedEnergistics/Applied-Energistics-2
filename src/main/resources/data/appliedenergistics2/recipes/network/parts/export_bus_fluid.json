@@ -9,7 +9,7 @@
       "item": "appliedenergistics2:formation_core"
     },
     "a": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "c": {
       "item": "minecraft:piston"

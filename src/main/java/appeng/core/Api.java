@@ -41,7 +41,7 @@ public final class Api implements IAppEngApi {
     private final ApiDefinitions definitions;
     private final IClientHelper client;
 
-    Api() {
+    public Api() {
         this.storageHelper = new ApiStorage();
         this.networkHelper = new ApiGrid();
         this.registryContainer = new RegistryContainer();

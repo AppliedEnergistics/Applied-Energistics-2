@@ -1,7 +1,7 @@
 {
   "type": "appliedenergistics2:grinder",
   "input": {
-    "tag": "forge:ender_pearls"
+    "tag": "c:ender_pearls"
   },
   "result": {
     "primary": {

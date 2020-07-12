@@ -7,7 +7,7 @@
   "pattern": ["aaa", "aba", "aaa"],
   "key": {
     "b": {
-      "tag": "forge:dusts/glowstone"
+      "tag": "c:glowstone_dusts"
     },
     "a": {
       "item": "appliedenergistics2:orange_paint_ball"

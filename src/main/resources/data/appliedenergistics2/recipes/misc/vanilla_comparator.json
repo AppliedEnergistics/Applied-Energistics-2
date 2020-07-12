@@ -12,7 +12,7 @@
       "item": "minecraft:redstone_torch"
     },
     "c": {
-      "tag": "forge:stone"
+      "item": "minecraft:stone"
     }
   }
 }

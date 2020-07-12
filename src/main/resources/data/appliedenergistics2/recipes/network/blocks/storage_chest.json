@@ -6,13 +6,13 @@
   "pattern": ["aba", "c c", "ded"],
   "key": {
     "a": {
-      "tag": "appliedenergistics2:glass"
+      "tag": "c:glass_blocks"
     },
     "b": {
       "item": "appliedenergistics2:terminal"
     },
     "d": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "c": {
       "item": "appliedenergistics2:fluix_glass_cable"

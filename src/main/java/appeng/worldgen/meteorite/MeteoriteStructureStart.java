@@ -28,7 +28,7 @@ public class MeteoriteStructureStart extends StructureStart<DefaultFeatureConfig
 
     private final Tag<Block> sandTag = BlockTags.getContainer().getOrCreate(new Identifier("minecraft:sand"));
     private final Tag<Block> terracottaTag = BlockTags.getContainer()
-            .getOrCreate(new Identifier("forge:terracotta"));
+            .getOrCreate(new Identifier("c:terracotta_blocks"));
 
     public MeteoriteStructureStart(StructureFeature<DefaultFeatureConfig> feature, int chunkX, int chunkZ, BlockBox box, int references, long seed) {
         super(feature, chunkX, chunkZ, box, references, seed);

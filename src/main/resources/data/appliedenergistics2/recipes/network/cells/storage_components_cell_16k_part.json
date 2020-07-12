@@ -15,7 +15,7 @@
       "item": "appliedenergistics2:4k_cell_component"
     },
     "a": {
-      "tag": "forge:dusts/glowstone"
+      "tag": "c:glowstone_dusts"
     }
   }
 }

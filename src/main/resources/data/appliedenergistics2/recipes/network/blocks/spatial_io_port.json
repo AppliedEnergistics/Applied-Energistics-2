@@ -6,13 +6,13 @@
   "pattern": ["aaa", "bcb", "ded"],
   "key": {
     "a": {
-      "tag": "appliedenergistics2:glass"
+      "tag": "c:glass_blocks"
     },
     "e": {
       "item": "appliedenergistics2:engineering_processor"
     },
     "d": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "c": {
       "item": "appliedenergistics2:io_port"

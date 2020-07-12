@@ -7,7 +7,7 @@
   "pattern": ["aba", "bab", "aba"],
   "key": {
     "b": {
-      "tag": "appliedenergistics2:glass"
+      "tag": "c:glass_blocks"
     },
     "a": {
       "tag": "appliedenergistics2:dusts/quartz"

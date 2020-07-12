@@ -1,7 +1,7 @@
 {
   "type": "appliedenergistics2:grinder",
   "input": {
-    "tag": "forge:ores/gold"
+    "tag": "c:gold_ores"
   },
   "result": {
     "primary": {

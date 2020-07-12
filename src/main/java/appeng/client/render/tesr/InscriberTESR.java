@@ -13,9 +13,7 @@ import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
 
 import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.item.Item;
-import net.minecraft.tag.ItemTags;
-import net.minecraft.tag.Tag;
+import net.minecraft.item.BlockItem;
 import net.minecraft.util.math.Quaternion;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
@@ -189,8 +187,6 @@ public final class InscriberTESR extends BlockEntityRenderer<InscriberBlockEntit
         vb.next();
     }
 
-    private static final Identifier TAG_STORAGE_BLOCKS = new Identifier("forge:storage_blocks");
-
     private void renderItem(MatrixStack ms, final ItemStack stack, final float o, VertexConsumerProvider buffers,
             int combinedLight, int combinedOverlay) {
         if (!stack.isEmpty()) {
@@ -204,8 +200,8 @@ public final class InscriberTESR extends BlockEntityRenderer<InscriberBlockEntit
             ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
 
             // heuristic to scale items down much further than blocks
-            Tag<Item> storageBlockTag = ItemTags.getContainer().get(TAG_STORAGE_BLOCKS);
-            if (storageBlockTag == null || !stack.getItem().isIn(storageBlockTag)) {
+            boolean renderAsCube = (stack.getItem() instanceof BlockItem);
+            if (!renderAsCube) {
                 ms.scale(0.5f, 0.5f, 0.5f);
             }
 

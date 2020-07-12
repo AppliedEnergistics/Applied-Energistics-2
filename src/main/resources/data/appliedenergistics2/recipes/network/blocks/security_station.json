@@ -15,7 +15,7 @@
       "item": "appliedenergistics2:chest"
     },
     "a": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "c": {
       "item": "appliedenergistics2:fluix_glass_cable"

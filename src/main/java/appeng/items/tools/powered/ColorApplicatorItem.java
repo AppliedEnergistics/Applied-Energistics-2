@@ -81,22 +81,22 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         implements IStorageCell<IAEItemStack>, IBlockTool, IMouseWheelItem {
 
     private static final Map<Identifier, AEColor> TAG_TO_COLOR = ImmutableMap.<Identifier, AEColor>builder()
-            .put(new Identifier("forge:dyes/black"), AEColor.BLACK)
-            .put(new Identifier("forge:dyes/blue"), AEColor.BLUE)
-            .put(new Identifier("forge:dyes/brown"), AEColor.BROWN)
-            .put(new Identifier("forge:dyes/cyan"), AEColor.CYAN)
-            .put(new Identifier("forge:dyes/gray"), AEColor.GRAY)
-            .put(new Identifier("forge:dyes/green"), AEColor.GREEN)
-            .put(new Identifier("forge:dyes/light_blue"), AEColor.LIGHT_BLUE)
-            .put(new Identifier("forge:dyes/light_gray"), AEColor.LIGHT_GRAY)
-            .put(new Identifier("forge:dyes/lime"), AEColor.LIME)
-            .put(new Identifier("forge:dyes/magenta"), AEColor.MAGENTA)
-            .put(new Identifier("forge:dyes/orange"), AEColor.ORANGE)
-            .put(new Identifier("forge:dyes/pink"), AEColor.PINK)
-            .put(new Identifier("forge:dyes/purple"), AEColor.PURPLE)
-            .put(new Identifier("forge:dyes/red"), AEColor.RED)
-            .put(new Identifier("forge:dyes/white"), AEColor.WHITE)
-            .put(new Identifier("forge:dyes/yellow"), AEColor.YELLOW).build();
+            .put(new Identifier("c:black_dyes"), AEColor.BLACK)
+            .put(new Identifier("c:blue_dyes"), AEColor.BLUE)
+            .put(new Identifier("c:brown_dyes"), AEColor.BROWN)
+            .put(new Identifier("c:cyan_dyes"), AEColor.CYAN)
+            .put(new Identifier("c:gray_dyes"), AEColor.GRAY)
+            .put(new Identifier("c:green_dyes"), AEColor.GREEN)
+            .put(new Identifier("c:light_blue_dyes"), AEColor.LIGHT_BLUE)
+            .put(new Identifier("c:light_gray_dyes"), AEColor.LIGHT_GRAY)
+            .put(new Identifier("c:lime_dyes"), AEColor.LIME)
+            .put(new Identifier("c:magenta_dyes"), AEColor.MAGENTA)
+            .put(new Identifier("c:orange_dyes"), AEColor.ORANGE)
+            .put(new Identifier("c:pink_dyes"), AEColor.PINK)
+            .put(new Identifier("c:purple_dyes"), AEColor.PURPLE)
+            .put(new Identifier("c:red_dyes"), AEColor.RED)
+            .put(new Identifier("c:white_dyes"), AEColor.WHITE)
+            .put(new Identifier("c:yellow_dyes"), AEColor.YELLOW).build();
 
     private static final String TAG_COLOR = "color";
 

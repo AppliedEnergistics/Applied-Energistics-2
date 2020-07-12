@@ -7,7 +7,7 @@
   "pattern": ["abc", "ddd"],
   "key": {
     "d": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "b": {
       "tag": "appliedenergistics2:crystals/certus"

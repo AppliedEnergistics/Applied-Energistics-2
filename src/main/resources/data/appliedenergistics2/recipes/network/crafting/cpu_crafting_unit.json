@@ -6,7 +6,7 @@
   "pattern": ["aba", "cdc", "aba"],
   "key": {
     "a": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "d": {
       "item": "appliedenergistics2:logic_processor"

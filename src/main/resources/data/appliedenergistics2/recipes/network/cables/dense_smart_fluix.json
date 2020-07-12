@@ -8,10 +8,10 @@
       "item": "appliedenergistics2:fluix_covered_dense_cable"
     },
     {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:redstone_dusts"
     },
     {
-      "tag": "forge:dusts/glowstone"
+      "tag": "c:glowstone_dusts"
     }
   ]
 }

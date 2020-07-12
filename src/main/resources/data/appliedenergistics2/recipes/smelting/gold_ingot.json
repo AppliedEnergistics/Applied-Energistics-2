@@ -1,10 +1,8 @@
 {
   "type": "minecraft:smelting",
-  "result": {
-    "item": "minecraft:gold_ingot"
-  },
+  "result": "minecraft:gold_ingot",
   "ingredient": {
-    "tag": "forge:dusts/gold"
+    "tag": "c:gold_dusts"
   },
   "experience": 0.0
 }

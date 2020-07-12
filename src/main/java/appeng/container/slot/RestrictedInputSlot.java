@@ -61,11 +61,11 @@ import appeng.util.Platform;
 public class RestrictedInputSlot extends AppEngSlot {
 
     private static final List<Identifier> METAL_INGOT_TAGS = ImmutableList.of(
-            new Identifier("forge:ingots/copper"), new Identifier("forge:ingots/tin"),
-            new Identifier("forge:ingots/iron"), new Identifier("forge:ingots/gold"),
-            new Identifier("forge:ingots/lead"), new Identifier("forge:ingots/bronze"),
-            new Identifier("forge:ingots/brass"), new Identifier("forge:ingots/nickel"),
-            new Identifier("forge:ingots/aluminium"));
+            new Identifier("c:copper_ingots"), new Identifier("c:tin_ingots"),
+            new Identifier("c:iron_ingots"), new Identifier("c:gold_ingots"),
+            new Identifier("c:lead_ingots"), new Identifier("c:bronze_ingots"),
+            new Identifier("c:brass_ingots"), new Identifier("c:nickel_ingots"),
+            new Identifier("c:aluminium_ingots"));
 
     private final PlacableItemType which;
     private final PlayerInventory p;

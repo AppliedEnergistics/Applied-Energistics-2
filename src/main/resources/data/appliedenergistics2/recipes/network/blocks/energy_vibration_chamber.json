@@ -6,7 +6,7 @@
   "pattern": ["aaa", "aba", "aca"],
   "key": {
     "a": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "c": {
       "item": "appliedenergistics2:energy_acceptor"

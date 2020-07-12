@@ -9,7 +9,7 @@
       "item": "appliedenergistics2:engineering_processor"
     },
     "d": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "b": {
       "item": "appliedenergistics2:energy_cell"

@@ -1,10 +1,8 @@
 {
   "type": "minecraft:smelting",
-  "result": {
-    "item": "minecraft:iron_ingot"
-  },
+  "result": "minecraft:iron_ingot",
   "ingredient": {
-    "tag": "forge:dusts/iron"
+    "tag": "c:iron_dusts"
   },
   "experience": 0.0
 }

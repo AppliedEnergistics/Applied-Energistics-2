@@ -6,13 +6,13 @@
   "pattern": ["abb", "cdc"],
   "key": {
     "b": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "d": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:redstone_dusts"
     },
     "c": {
-      "tag": "forge:ingots/gold"
+      "tag": "c:gold_ingots"
     },
     "a": {
       "item": "appliedenergistics2:calculation_processor"

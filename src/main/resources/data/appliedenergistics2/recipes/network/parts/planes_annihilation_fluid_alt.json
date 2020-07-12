@@ -6,7 +6,7 @@
   "pattern": ["adb", "cdb", "adb"],
   "key": {
     "a": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "b": {
       "tag": "appliedenergistics2:crystals/fluix"
@@ -15,7 +15,7 @@
       "item": "appliedenergistics2:annihilation_core"
     },
     "d": {
-      "tag": "forge:dyes/blue"
+      "tag": "c:blue_dyes"
     }
   }
 }

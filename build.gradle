@@ -65,6 +65,9 @@ sourceSets {
     main {
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output
+        resources {
+            srcDir 'src/generated/resources'
+        }
     }
     unported {
         compileClasspath += sourceSets.api.output

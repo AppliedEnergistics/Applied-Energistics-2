@@ -9,13 +9,13 @@
       "item": "appliedenergistics2:quartz_glass"
     },
     "d": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "c": {
       "tag": "appliedenergistics2:crystals/certus"
     },
     "b": {
-      "tag": "forge:dusts/glowstone"
+      "tag": "c:glowstone_dusts"
     }
   }
 }

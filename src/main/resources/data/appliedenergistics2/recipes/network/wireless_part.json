@@ -6,7 +6,7 @@
   "pattern": [" a ", "bcb", " b "],
   "key": {
     "b": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "c": {
       "item": "appliedenergistics2:quartz_fiber"

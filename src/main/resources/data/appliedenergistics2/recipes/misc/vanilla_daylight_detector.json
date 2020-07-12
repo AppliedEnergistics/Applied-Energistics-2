@@ -6,7 +6,7 @@
   "pattern": ["aaa", "bbb", "ccc"],
   "key": {
     "a": {
-      "tag": "appliedenergistics2:glass"
+      "tag": "c:glass_blocks"
     },
     "b": {
       "tag": "appliedenergistics2:crystals/nether"

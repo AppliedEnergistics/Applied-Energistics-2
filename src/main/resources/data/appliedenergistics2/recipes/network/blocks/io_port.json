@@ -6,10 +6,10 @@
   "pattern": ["aaa", "bcb", "ded"],
   "key": {
     "a": {
-      "tag": "appliedenergistics2:glass"
+      "tag": "c:glass_blocks"
     },
     "d": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "b": {
       "item": "appliedenergistics2:drive"

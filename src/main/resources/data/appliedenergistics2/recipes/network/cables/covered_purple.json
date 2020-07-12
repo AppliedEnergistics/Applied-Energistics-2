@@ -7,7 +7,7 @@
   "pattern": ["aaa", "aba", "aaa"],
   "key": {
     "b": {
-      "tag": "forge:dyes/purple"
+      "tag": "c:purple_dyes"
     },
     "a": {
       "item": "appliedenergistics2:fluix_covered_cable"

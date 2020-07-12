@@ -9,13 +9,13 @@
       "item": "appliedenergistics2:quartz_glass"
     },
     "d": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:iron_ingots"
     },
     "c": {
       "item": "appliedenergistics2:16_cubed_spatial_cell_component"
     },
     "b": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:redstone_dusts"
     }
   }
 }

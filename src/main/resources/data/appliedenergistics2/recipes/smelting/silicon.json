@@ -1,8 +1,6 @@
 {
   "type": "minecraft:smelting",
-  "result": {
-    "item": "appliedenergistics2:silicon"
-  },
+  "result": "appliedenergistics2:silicon",
   "ingredient": [
     {
       "tag": "appliedenergistics2:dusts/nether_quartz"

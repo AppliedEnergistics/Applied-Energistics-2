@@ -10,7 +10,7 @@
       "item": "appliedenergistics2:light_gray_paint_ball"
     },
     "b": {
-      "tag": "forge:dusts/glowstone"
+      "tag": "c:glowstone_dusts"
     }
   }
 }
