@@ -80,7 +80,7 @@ public class MolecularAssemblerContainer extends UpgradeableContainer implements
 
         if (is.getItem() instanceof EncodedPatternItem) {
             final World w = this.getTileEntity().getWorld();
-            final ICraftingPatternDetails ph = Api.instance().crafting().getPattern(is, w);
+            final ICraftingPatternDetails ph = Api.instance().crafting().decodePattern(is, w);
             if (ph.isCraftable()) {
                 return ph.isValidItemForSlot(slotIndex, i, w);
             }

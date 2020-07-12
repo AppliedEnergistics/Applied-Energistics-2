@@ -18,46 +18,150 @@
 
 package appeng.core.api;
 
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import com.google.common.base.Preconditions;
 
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.ICraftingRecipe;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.item.crafting.RecipeManager;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import appeng.api.crafting.ICraftingHelper;
-import appeng.api.implementations.ICraftingPatternItem;
+import appeng.api.definitions.IItemDefinition;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.container.ContainerNull;
+import appeng.core.AELog;
 import appeng.core.Api;
+import appeng.core.ApiDefinitions;
 import appeng.helpers.CraftingPatternDetails;
+import appeng.items.misc.EncodedPatternItem;
 
 public class ApiCrafting implements ICraftingHelper {
 
-    // // Cache is disabled for now.
-    // final private Map<ItemStack, PatternHelper> patternCache;
+    private final IItemDefinition encodedPattern;
 
-    public ApiCrafting() {
-        // this.patternCache = new IdentityHashMap<>();
+    public ApiCrafting(ApiDefinitions definitions) {
+        this.encodedPattern = definitions.items().encodedPattern();
     }
 
     @Override
-    public ICraftingPatternDetails getPattern(final ItemStack is, final World world) {
+    public boolean isEncodedPattern(@Nullable IAEItemStack item) {
+        return item != null && item.getItem() instanceof EncodedPatternItem;
+    }
+
+    @Override
+    public boolean isEncodedPattern(ItemStack item) {
+        return !item.isEmpty() && item.getItem() instanceof EncodedPatternItem;
+    }
+
+    @Override
+    public ItemStack encodeCraftingPattern(@Nullable ItemStack stack, ICraftingRecipe recipe, ItemStack[] in,
+            ItemStack out, boolean allowSubstitutes) {
+        if (stack == null) {
+            stack = encodedPattern.stack(1);
+        } else {
+            Preconditions.checkArgument(isEncodedPattern(stack));
+        }
+
+        EncodedPatternItem.encodeCraftingPattern(stack, in, new ItemStack[] { out }, recipe.getId(), allowSubstitutes);
+        return stack;
+    }
+
+    @Override
+    public ItemStack encodeProcessingPattern(@Nullable ItemStack stack, ItemStack[] in, ItemStack[] out) {
+        if (stack == null) {
+            stack = encodedPattern.stack(1);
+        } else {
+            Preconditions.checkArgument(isEncodedPattern(stack));
+        }
+
+        EncodedPatternItem.encodeProcessingPattern(stack, in, out);
+        return stack;
+    }
+
+    @Override
+    public ICraftingPatternDetails decodePattern(final ItemStack is, final World world, boolean autoRecovery) {
         if (is == null || world == null) {
             return null;
         }
-        Preconditions.checkArgument(is.getItem() instanceof ICraftingPatternItem,
-                "Item needs to implement ICraftingPatternItem");
+
+        EncodedPatternItem patternItem = getPatternItem(is);
+        if (patternItem == null || !patternItem.isEncodedPattern(is)) {
+            return null;
+        }
+
+        // The recipe ids encoded in a pattern can go stale. This code attempts to find
+        // the new id
+        // based on the stored inputs/outputs if that happens.
+        ResourceLocation recipeId = patternItem.getCraftingRecipeId(is);
+        if (recipeId != null) {
+            IRecipe<?> recipe = world.getRecipeManager().getRecipes(IRecipeType.CRAFTING).get(recipeId);
+            if (!(recipe instanceof ICraftingRecipe)) {
+                if (!autoRecovery || !attemptRecovery(patternItem, is, world)) {
+                    return null;
+                }
+            }
+        }
 
         // We use the shared itemstack for an identity lookup.
         IAEItemStack ais = Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(is);
-        // final ItemStack sharedStack = ais.getDefinition();
 
-        // return this.patternCache.computeIfAbsent(sharedStack, key -> {
-        try {
-            return new CraftingPatternDetails(ais, world);
-        } catch (final Throwable t) {
-            return null;
-        }
-        // });
+        return new CraftingPatternDetails(ais, world);
     }
+
+    private boolean attemptRecovery(EncodedPatternItem patternItem, ItemStack itemStack, World world) {
+
+        RecipeManager recipeManager = world.getRecipeManager();
+
+        List<IAEItemStack> ingredients = patternItem.getIngredients(itemStack);
+        List<IAEItemStack> products = patternItem.getProducts(itemStack);
+        if (ingredients.size() < 9 || products.size() < 1) {
+            return false;
+        }
+
+        ResourceLocation currentRecipeId = patternItem.getCraftingRecipeId(itemStack);
+
+        // Fill a crafting inventory with the ingredients to find a suitable recipe
+        CraftingInventory testInventory = new CraftingInventory(new ContainerNull(), 3, 3);
+        for (int x = 0; x < 9; x++) {
+            final IAEItemStack ais = ingredients.get(x);
+            final ItemStack gs = ais != null ? ais.createItemStack() : ItemStack.EMPTY;
+            testInventory.setInventorySlotContents(x, gs);
+        }
+
+        ICraftingRecipe potentialRecipe = recipeManager.getRecipe(IRecipeType.CRAFTING, testInventory, world)
+                .orElse(null);
+
+        if (potentialRecipe != null) {
+            // Check that it matches the expected output
+            if (products.get(0).isSameType(potentialRecipe.getCraftingResult(testInventory))) {
+                // Yay we found a match, reencode the pattern
+                AELog.debug("Re-Encoding pattern from %s -> %s", currentRecipeId, potentialRecipe.getId());
+                ItemStack[] in = ingredients.stream().map(ais -> ais != null ? ais.createItemStack() : ItemStack.EMPTY)
+                        .toArray(ItemStack[]::new);
+                ItemStack out = products.get(0).createItemStack();
+                encodeCraftingPattern(itemStack, potentialRecipe, in, out, patternItem.allowsSubstitution(itemStack));
+            }
+        }
+
+        AELog.debug("Failed to recover encoded crafting pattern for recipe %s", currentRecipeId);
+        return false;
+    }
+
+    private static EncodedPatternItem getPatternItem(ItemStack itemStack) {
+        if (itemStack.getItem() instanceof EncodedPatternItem) {
+            return (EncodedPatternItem) itemStack.getItem();
+        }
+        return null;
+    }
+
 }
