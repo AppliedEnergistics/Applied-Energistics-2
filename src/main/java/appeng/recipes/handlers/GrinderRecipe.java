@@ -101,4 +101,9 @@ public class GrinderRecipe implements Recipe<Inventory> {
         return optionalResults;
     }
 
+    @Override
+    public boolean isIgnoredInRecipeBook() {
+        return true;
+    }
+
 }

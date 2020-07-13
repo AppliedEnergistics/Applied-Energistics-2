@@ -18,31 +18,24 @@
 
 package appeng.integration.modules.jei;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nullable;
-
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiIngredient;
-import mezz.jei.api.recipe.transfer.IRecipeTransferError;
-import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
-
 import appeng.container.slot.CraftingMatrixSlot;
 import appeng.container.slot.FakeCraftingMatrixSlot;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.JEIRecipePacket;
+import appeng.mixins.SlotMixin;
 import appeng.util.Platform;
+import me.shedaniel.rei.api.AutoTransferHandler;
+import me.shedaniel.rei.api.EntryStack;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.slot.Slot;
 
-class RecipeTransferHandler<T extends ScreenHandler> implements IRecipeTransferHandler<T> {
+import java.util.ArrayList;
+import java.util.List;
+
+class RecipeTransferHandler<T extends ScreenHandler> implements AutoTransferHandler {
 
     private final Class<T> containerClass;
 
@@ -51,48 +44,39 @@ class RecipeTransferHandler<T extends ScreenHandler> implements IRecipeTransferH
     }
 
     @Override
-    public Class<T> getContainerClass() {
-        return this.containerClass;
-    }
+    public Result handle(Context context) {
 
-    @Nullable
-    @Override
-    public IRecipeTransferError transferRecipe(T container, IRecipeLayout recipeLayout, PlayerEntity player,
-            boolean maxTransfer, boolean doTransfer) {
-        if (!doTransfer) {
-            return null;
+        ScreenHandler container = context.getContainerScreen().getScreenHandler();
+
+        if (!containerClass.isInstance(container)) {
+            return Result.createNotApplicable();
         }
 
-        Map<Integer, ? extends IGuiIngredient<ItemStack>> ingredients = recipeLayout.getItemStacks()
-                .getGuiIngredients();
+        if (!context.isActuallyCrafting()) {
+            // This is just to check whether the button is enabled
+            return Result.createSuccessful();
+        }
+
+        List<List<EntryStack>> ingredients = context.getRecipe().getInputEntries();
 
         final CompoundTag recipe = new CompoundTag();
 
-        int slotIndex = 0;
-        for (Map.Entry<Integer, ? extends IGuiIngredient<ItemStack>> ingredientEntry : ingredients.entrySet()) {
-            IGuiIngredient<ItemStack> ingredient = ingredientEntry.getValue();
-            if (!ingredient.isInput()) {
-                continue;
-            }
+        for (int slotIndex = 0; slotIndex < ingredients.size(); slotIndex++) {
+            List<EntryStack> ingredientEntry = ingredients.get(slotIndex);
 
             for (final Slot slot : container.slots) {
                 if (slot instanceof CraftingMatrixSlot || slot instanceof FakeCraftingMatrixSlot) {
-                    if (slot.getSlotIndex() == slotIndex) {
+                    int containerSlotInvIdx = ((SlotMixin) slot).getIndex();
+                    if (containerSlotInvIdx == slotIndex) {
                         final ListTag tags = new ListTag();
                         final List<ItemStack> list = new ArrayList<>();
-                        final ItemStack displayed = ingredient.getDisplayedIngredient();
-
-                        // prefer currently displayed item
-                        if (displayed != null && !displayed.isEmpty()) {
-                            list.add(displayed);
-                        }
 
                         // prefer pure crystals.
-                        for (ItemStack stack : ingredient.getAllIngredients()) {
-                            if (Platform.isRecipePrioritized(stack)) {
-                                list.add(0, stack);
+                        for (EntryStack stack : ingredientEntry) {
+                            if (Platform.isRecipePrioritized(stack.getItemStack())) {
+                                list.add(0, stack.getItemStack());
                             } else {
-                                list.add(stack);
+                                list.add(stack.getItemStack());
                             }
                         }
 
@@ -102,17 +86,16 @@ class RecipeTransferHandler<T extends ScreenHandler> implements IRecipeTransferH
                             tags.add(tag);
                         }
 
-                        recipe.put("#" + slot.getSlotIndex(), tags);
+                        recipe.put("#" + containerSlotInvIdx, tags);
                         break;
                     }
                 }
             }
-
-            slotIndex++;
         }
 
         NetworkHandler.instance().sendToServer(new JEIRecipePacket(recipe));
 
-        return null;
+        return Result.createFailed(""); // this will return to the screen
     }
+
 }

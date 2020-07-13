@@ -99,4 +99,10 @@ public class InscriberRecipe implements Recipe<Inventory> {
     public String getGroup() {
         return group;
     }
+
+    @Override
+    public boolean isIgnoredInRecipeBook() {
+        return true;
+    }
+
 }

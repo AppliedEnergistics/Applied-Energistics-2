@@ -73,7 +73,6 @@ public class QuadRotator implements RenderContext.QuadTransform {
 
     @Override
     public boolean transform(MutableQuadView quad) {
-
         Vector3f tmp = new Vector3f();
 
         for (int i = 0; i < 4; i++) {
@@ -85,9 +84,11 @@ public class QuadRotator implements RenderContext.QuadTransform {
             quad.pos(i, tmp);
 
             // Transform the normal
-            quad.copyNormal(i, tmp);
-            tmp.rotate(quaternion);
-            quad.normal(i, tmp);
+            if (quad.hasNormal(i)) {
+                quad.copyNormal(i, tmp);
+                tmp.rotate(quaternion);
+                quad.normal(i, tmp);
+            }
         }
 
         // Transform the nominal face

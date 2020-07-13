@@ -22,6 +22,9 @@
     ],
     "client": [
       "appeng.core.AppEngClientStartup"
+    ],
+    "rei_plugins": [
+      "appeng.integration.modules.jei.ReiPlugin"
     ]
   },
   "mixins": [
