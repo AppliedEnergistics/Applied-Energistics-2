@@ -39,7 +39,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.client.gui.widgets.IScrollSource;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.core.AEConfig;
-import appeng.integration.abstraction.JEIFacade;
+import appeng.integration.abstraction.ReiFacade;
 import appeng.items.storage.ViewCellItem;
 import appeng.util.ItemSorters;
 import appeng.util.Platform;
@@ -191,7 +191,7 @@ public class ItemRepo {
     }
 
     private void updateJEI(String filter) {
-        JEIFacade.instance().setSearchText(filter);
+        ReiFacade.instance().setSearchText(filter);
     }
 
     public int size() {

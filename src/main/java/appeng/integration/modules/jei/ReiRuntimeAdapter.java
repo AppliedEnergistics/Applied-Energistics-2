@@ -16,22 +16,34 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration.abstraction;
+package appeng.integration.modules.jei;
 
-import appeng.integration.IIntegrationModule;
+import com.google.common.base.Strings;
 
-/**
- * Abstracts access to the JEI API functionality.
- */
-public interface IJEI extends IIntegrationModule {
+import me.shedaniel.rei.api.REIHelper;
 
-    default String getSearchText() {
-        return "";
+import appeng.integration.abstraction.IRei;
+
+class ReiRuntimeAdapter implements IRei {
+
+    private final REIHelper runtime;
+
+    ReiRuntimeAdapter() {
+        this.runtime = REIHelper.getInstance();
     }
 
-    default void setSearchText(String searchText) {
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
-    class Stub extends IIntegrationModule.Stub implements IJEI {
+    @Override
+    public String getSearchText() {
+        return Strings.nullToEmpty(this.runtime.getSearchTextField().getText());
+    }
+
+    @Override
+    public void setSearchText(String searchText) {
+        this.runtime.getSearchTextField().setText(Strings.nullToEmpty(searchText));
     }
 }

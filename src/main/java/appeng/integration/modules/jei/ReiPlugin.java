@@ -29,6 +29,7 @@ import appeng.container.implementations.PatternTermContainer;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
+import appeng.integration.abstraction.ReiFacade;
 import appeng.recipes.handlers.GrinderRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
 import com.google.common.collect.ImmutableList;
@@ -93,6 +94,8 @@ public class ReiPlugin implements REIPluginV0 {
     public void postRegister() {
         IDefinitions definitions = AEApi.instance().definitions();
         registerDescriptions(definitions);
+
+        ReiFacade.setInstance(new ReiRuntimeAdapter());
     }
 
     private void registerWorkingStations(RecipeHelper registration) {

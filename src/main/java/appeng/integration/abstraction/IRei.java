@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2020, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,15 +16,22 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration;
+package appeng.integration.abstraction;
 
-import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
+import appeng.integration.IIntegrationModule;
 
-import appeng.integration.modules.theoneprobe.TOP;
+/**
+ * Abstracts access to the JEI API functionality.
+ */
+public interface IRei extends IIntegrationModule {
 
-public class Integrations {
+    default String getSearchText() {
+        return "";
+    }
 
-    public static void enqueueIMC(final InterModEnqueueEvent event) {
-        TOP.enqueueIMC(event);
+    default void setSearchText(String searchText) {
+    }
+
+    class Stub extends IIntegrationModule.Stub implements IRei {
     }
 }

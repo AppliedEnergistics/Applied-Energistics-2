@@ -21,7 +21,6 @@ package appeng.client.gui.implementations;
 import java.util.List;
 
 import appeng.mixins.SlotMixin;
-import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import org.lwjgl.glfw.GLFW;
 
@@ -54,7 +53,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.helpers.WirelessTerminalGuiObject;
-import appeng.integration.abstraction.JEIFacade;
+import appeng.integration.abstraction.ReiFacade;
 import appeng.parts.reporting.AbstractTerminalPart;
 import appeng.tile.misc.SecurityStationBlockEntity;
 import appeng.util.IConfigManagerHost;
@@ -242,7 +241,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         this.searchField.setFocused(this.isAutoFocus);
 
         if (isJEIEnabled) {
-            memoryText = JEIFacade.instance().getSearchText();
+            memoryText = ReiFacade.instance().getSearchText();
         }
 
         if (isKeepFilter && memoryText != null && !memoryText.isEmpty()) {

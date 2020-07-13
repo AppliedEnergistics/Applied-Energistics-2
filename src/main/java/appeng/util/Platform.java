@@ -49,7 +49,7 @@ import appeng.core.AELog;
 import appeng.core.stats.AeStats;
 import appeng.fluids.util.AEFluidStack;
 import appeng.hooks.TickHandler;
-import appeng.integration.abstraction.JEIFacade;
+import appeng.integration.abstraction.ReiFacade;
 import appeng.me.GridAccessException;
 import appeng.me.GridNode;
 import appeng.me.helpers.AENetworkProxy;
@@ -90,7 +90,6 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.RayTraceContext;
 import net.minecraft.world.World;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -1142,7 +1141,7 @@ public class Platform {
 
     public static boolean isSearchModeAvailable(SearchBoxMode mode) {
         if (mode.isRequiresJei()) {
-           return JEIFacade.instance().isEnabled();
+           return ReiFacade.instance().isEnabled();
         }
         return true;
     }
