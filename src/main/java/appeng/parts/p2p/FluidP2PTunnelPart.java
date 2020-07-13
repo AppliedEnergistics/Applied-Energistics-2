@@ -158,7 +158,7 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> implem
             return 0;
         }
 
-        if (action == FluidAction.EXECUTE) {
+        if (action != FluidAction.EXECUTE) {
             if (stack.pop() != this) {
                 throw new IllegalStateException("Invalid Recursion detected.");
             }
