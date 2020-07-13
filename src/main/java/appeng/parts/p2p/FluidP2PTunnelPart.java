@@ -18,37 +18,30 @@
 
 package appeng.parts.p2p;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
+import alexiil.mc.lib.attributes.AttributeList;
+import alexiil.mc.lib.attributes.Simulation;
+import alexiil.mc.lib.attributes.fluid.FluidAttributes;
+import alexiil.mc.lib.attributes.fluid.FluidInsertable;
+import alexiil.mc.lib.attributes.fluid.FluidVolumeUtil;
+import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
+import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.ItemStack;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-
 import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.BlockView;
 
-public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> implements IFluidHandler {
+import java.util.*;
+
+public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> implements FluidInsertable {
 
     private static final P2PModels MODELS = new P2PModels("part/p2p/p2p_tunnel_fluids");
 
     private static final ThreadLocal<Deque<FluidP2PTunnelPart>> DEPTH = new ThreadLocal<>();;
 
-    private LazyOptional<IFluidHandler> cachedTank;
-    private int tmpUsed;
+    private FluidInsertable cachedTank;
 
     public FluidP2PTunnelPart(final ItemStack is) {
         super(is);
@@ -80,14 +73,9 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> implem
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass) {
-        if (capabilityClass == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return (LazyOptional<T>) LazyOptional.of(() -> this);
-        }
-
-        return super.getCapability(capabilityClass);
+    public void addAllAttributes(AttributeList<?> to) {
+        to.offer(this);
     }
 
     @Override
@@ -96,118 +84,81 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> implem
     }
 
     @Override
-    public int getTanks() {
-        return 0;
-    }
-
-    @Override
-    @Nonnull
-    public FluidVolume getFluidInTank(int tank) {
-        return FluidVolumeUtil.EMPTY;
-    }
-
-    @Override
-    public int getTankCapacity(int tank) {
-        return 1000;
-    }
-
-    @Override
-    public boolean isFluidValid(int tank, @Nonnull FluidVolume stack) {
-        return false;
-    }
-
-    @Override
-    public int fill(FluidVolume resource, FluidAction action) {
+    public FluidVolume attemptInsertion(FluidVolume fluid, Simulation simulation) {
 
         final Deque<FluidP2PTunnelPart> stack = this.getDepth();
 
         for (final FluidP2PTunnelPart t : stack) {
             if (t == this) {
-                return 0;
+                return fluid;
             }
         }
 
         stack.push(this);
 
-        final List<FluidP2PTunnelPart> list = this.getOutputs(resource.getFluidKey());
-        int requestTotal = 0;
+        final List<FluidP2PTunnelPart> list = this.getOutputs(fluid.getFluidKey());
+        FluidAmount requestTotal = FluidAmount.ZERO;
 
         Iterator<FluidP2PTunnelPart> i = list.iterator();
 
         while (i.hasNext()) {
             final FluidP2PTunnelPart l = i.next();
-            final IFluidHandler tank = l.getTarget().orElse(null);
+            final FluidInsertable tank = l.getTarget();
+            FluidAmount inserted;
             if (tank != null) {
-                l.tmpUsed = tank.fill(resource.copy(), FluidAction.SIMULATE);
+                inserted = fluid.amount().sub(tank.attemptInsertion(fluid.copy(), Simulation.SIMULATE).amount());
             } else {
-                l.tmpUsed = 0;
+                inserted = FluidAmount.ZERO;
             }
 
-            if (l.tmpUsed <= 0) {
+            if (inserted.isZero()) {
                 i.remove();
             } else {
-                requestTotal += l.tmpUsed;
+                requestTotal = requestTotal.add(inserted);
             }
         }
 
-        if (requestTotal <= 0) {
+        if (requestTotal.isZero()) {
             if (stack.pop() != this) {
                 throw new IllegalStateException("Invalid Recursion detected.");
             }
 
-            return 0;
+            return fluid;
         }
 
-        if (action == FluidAction.EXECUTE) {
+        if (simulation != Simulation.ACTION) {
             if (stack.pop() != this) {
                 throw new IllegalStateException("Invalid Recursion detected.");
             }
 
-            return Math.min(resource.getAmount(), requestTotal);
+            return fluid.copy().split(fluid.amount().min(requestTotal));
         }
 
-        int available = resource.getAmount();
+        FluidAmount remaining = fluid.amount();
 
         i = list.iterator();
-        int used = 0;
 
-        while (i.hasNext() && available > 0) {
+        while (i.hasNext() && !remaining.isZero()) {
             final FluidP2PTunnelPart l = i.next();
 
-            final FluidVolume insert = resource.copy();
-            insert.setAmount((int) Math.ceil(insert.getAmount() * ((double) l.tmpUsed / (double) requestTotal)));
-            if (insert.getAmount() > available) {
-                insert.setAmount(available);
+            FluidVolume insert = fluid.withAmount(
+                    fluid.amount().div(list.size())
+            );
+            if (insert.amount().isGreaterThan(remaining)) {
+                insert = insert.withAmount(remaining);
             }
 
-            final IFluidHandler tank = l.getTarget().orElse(null);
+            FluidInsertable tank = l.getTarget();
             if (tank != null) {
-                l.tmpUsed = tank.fill(insert.copy(), action);
-            } else {
-                l.tmpUsed = 0;
+                 remaining = remaining.sub(insert.amount().sub(tank.attemptInsertion(insert, Simulation.ACTION).amount()));
             }
-
-            available -= insert.getAmount();
-            used += l.tmpUsed;
         }
 
         if (stack.pop() != this) {
             throw new IllegalStateException("Invalid Recursion detected.");
         }
 
-        return used;
-    }
-
-    @Override
-    @Nonnull
-    public FluidVolume drain(FluidVolume resource, FluidAction action) {
-        return FluidVolumeUtil.EMPTY;
-    }
-
-    @Override
-    @Nonnull
-    public FluidVolume drain(int maxDrain, FluidAction action) {
-        return FluidVolumeUtil.EMPTY;
+        return remaining.isZero() ? FluidVolumeUtil.EMPTY : fluid.withAmount(remaining);
     }
 
     private Deque<FluidP2PTunnelPart> getDepth() {
@@ -220,12 +171,12 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> implem
         return s;
     }
 
-    private List<FluidP2PTunnelPart> getOutputs(final Fluid input) {
+    private List<FluidP2PTunnelPart> getOutputs(final FluidKey input) {
         final List<FluidP2PTunnelPart> outs = new ArrayList<>();
 
         try {
             for (final FluidP2PTunnelPart l : this.getOutputs()) {
-                final IFluidHandler handler = l.getTarget().orElse(null);
+                final FluidInsertable handler = l.getTarget();
 
                 if (handler != null) {
                     outs.add(l);
@@ -238,7 +189,7 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> implem
         return outs;
     }
 
-    private LazyOptional<IFluidHandler> getTarget() {
+    private FluidInsertable getTarget() {
         if (!this.getProxy().isActive()) {
             return null;
         }
@@ -247,16 +198,7 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> implem
             return this.cachedTank;
         }
 
-        final BlockEntity te = this.getTile().getWorld()
-                .getBlockEntity(this.getTile().getPos().offset(this.getSide().getFacing()));
-
-        if (te != null && te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
-                this.getSide().getFacing().getOpposite()).isPresent()) {
-            return this.cachedTank = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
-                    this.getSide().getFacing().getOpposite());
-        }
-
-        return null;
+        return this.cachedTank = FluidAttributes.INSERTABLE.getFirstOrNullFromNeighbour(this.getTile(), this.getSide().getFacing());
     }
 
 }

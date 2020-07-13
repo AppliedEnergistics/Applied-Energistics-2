@@ -22,6 +22,7 @@ import java.util.function.Function;
 
 import appeng.fluids.parts.*;
 import appeng.parts.automation.*;
+import appeng.parts.p2p.*;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.definitions.IItemDefinition;
@@ -137,26 +138,21 @@ public final class ApiParts implements IParts {
                 ConversionMonitorPart::new);
         this.iface = createPart("cable_interface", InterfacePart.class, InterfacePart::new);
          this.fluidIface = createPart("cable_fluid_interface", FluidInterfacePart.class, FluidInterfacePart::new);
-// FIXME FABRIC         this.p2PTunnelME = createPart("me_p2p_tunnel", MEP2PTunnelPart.class, MEP2PTunnelPart::new);
-// FIXME FABRIC         this.p2PTunnelRedstone = createPart("redstone_p2p_tunnel", RedstoneP2PTunnelPart.class,
-// FIXME FABRIC                 RedstoneP2PTunnelPart::new);
-// FIXME FABRIC         this.p2PTunnelItems = createPart("item_p2p_tunnel", ItemP2PTunnelPart.class, ItemP2PTunnelPart::new);
-// FIXME FABRIC         this.p2PTunnelFluids = createPart("fluid_p2p_tunnel", FluidP2PTunnelPart.class, FluidP2PTunnelPart::new);
+         this.p2PTunnelME = createPart("me_p2p_tunnel", MEP2PTunnelPart.class, MEP2PTunnelPart::new);
+         this.p2PTunnelRedstone = createPart("redstone_p2p_tunnel", RedstoneP2PTunnelPart.class,
+                 RedstoneP2PTunnelPart::new);
+         this.p2PTunnelItems = createPart("item_p2p_tunnel", ItemP2PTunnelPart.class, ItemP2PTunnelPart::new);
+         this.p2PTunnelFluids = createPart("fluid_p2p_tunnel", FluidP2PTunnelPart.class, FluidP2PTunnelPart::new);
 // FIXME FABRIC         this.p2PTunnelEU = null; // FIXME createPart( "ic2_p2p_tunnel", PartType.P2P_TUNNEL_IC2,
 // FIXME FABRIC                                  // PartP2PIC2Power.class, PartP2PIC2Power::new);
 // FIXME FABRIC         this.p2PTunnelFE = createPart("fe_p2p_tunnel", FEP2PTunnelPart.class, FEP2PTunnelPart::new);
-// FIXME FABRIC         this.p2PTunnelLight = createPart("light_p2p_tunnel", LightP2PTunnelPart.class, LightP2PTunnelPart::new);
+         this.p2PTunnelLight = createPart("light_p2p_tunnel", LightP2PTunnelPart.class, LightP2PTunnelPart::new);
         this.interfaceTerminal = createPart("interface_terminal", InterfaceTerminalPart.class,
                 InterfaceTerminalPart::new);
          this.fluidTerminal = createPart("fluid_terminal", FluidTerminalPart.class, FluidTerminalPart::new);
 
-        this.p2PTunnelME = null;
-        this.p2PTunnelRedstone = null;
-        this.p2PTunnelItems = null;
-        this.p2PTunnelFluids = null;
         this.p2PTunnelEU = null;
         this.p2PTunnelFE = null;
-        this.p2PTunnelLight = null;
 
         this.registry = null;
         this.partModels = null;
