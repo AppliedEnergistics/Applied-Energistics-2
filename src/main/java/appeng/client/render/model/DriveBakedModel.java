@@ -28,6 +28,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.item.Item;
@@ -49,6 +50,19 @@ public class DriveBakedModel extends DelegateBakedModel {
         this.defaultCell = defaultCell;
     }
 
+    /**
+     * Calculates the origin of a drive slot for positioning a cell model into it.
+     */
+    public static void getSlotOrigin(int row, int col, Vector3f translation) {
+        // Position this drive model copy at the correct slot. The transform is based on
+        // the cell-model being in slot 0,0,0 while the upper left slot's origin is at
+        // 9,13,1
+        float xOffset = (9 - col * 8) / 16.0f;
+        float yOffset = (13 - row * 3) / 16.0f;
+        float zOffset = 1 / 16.0f;
+        translation.set(xOffset, yOffset, zOffset);
+    }
+
     @Nonnull
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand,
@@ -63,17 +77,14 @@ public class DriveBakedModel extends DelegateBakedModel {
 
         DriveSlotsState slotsState = driveModelData.getSlotsState();
 
+        Vector3f slotTranslation = new Vector3f();
         if (slotsState != null) {
             for (int row = 0; row < 5; row++) {
                 for (int col = 0; col < 2; col++) {
                     Matrix4f transform = new Matrix4f();
 
-                    // Position this drive model copy at the correct slot. The transform is based on
-                    // the
-                    // cell-model being in slot 0,0 at the top left of the drive.
-                    float xOffset = -col * 8 / 16.0f;
-                    float yOffset = -row * 3 / 16.0f;
-                    transform.setTranslation(xOffset, yOffset, 0);
+                    getSlotOrigin(row, col, slotTranslation);
+                    transform.setTranslation(slotTranslation.getX(), slotTranslation.getY(), slotTranslation.getZ());
 
                     int slot = row * 2 + col;
 

@@ -7,7 +7,7 @@
     },
     {
       "when": {
-        "slot_state": "empty|offline"
+        "lights_on": false
       },
       "apply": {
         "model": "appliedenergistics2:block/chest/lights_off"
@@ -15,58 +15,10 @@
     },
     {
       "when": {
-        "slot_state": "online|not_empty|types_full|full"
+        "lights_on": true
       },
       "apply": {
         "model": "appliedenergistics2:block/chest/lights_on"
-      }
-    },
-    {
-      "when": {
-        "slot_state": "empty"
-      },
-      "apply": {
-        "model": "appliedenergistics2:block/chest/cell_state_empty"
-      }
-    },
-    {
-      "when": {
-        "slot_state": "offline"
-      },
-      "apply": {
-        "model": "appliedenergistics2:block/chest/cell_state_offline"
-      }
-    },
-    {
-      "when": {
-        "slot_state": "online"
-      },
-      "apply": {
-        "model": "appliedenergistics2:block/chest/cell_state_online"
-      }
-    },
-    {
-      "when": {
-        "slot_state": "not_empty"
-      },
-      "apply": {
-        "model": "appliedenergistics2:block/chest/cell_state_not_empty"
-      }
-    },
-    {
-      "when": {
-        "slot_state": "types_full"
-      },
-      "apply": {
-        "model": "appliedenergistics2:block/chest/cell_state_types_full"
-      }
-    },
-    {
-      "when": {
-        "slot_state": "full"
-      },
-      "apply": {
-        "model": "appliedenergistics2:block/chest/cell_state_full"
       }
     }
   ]
