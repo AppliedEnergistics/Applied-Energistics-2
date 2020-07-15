@@ -16,7 +16,7 @@ description="A Mod about Matter, Energy and using them to conquer the world.."
 [[dependencies.appliedenergistics2]]
     modId="forge"
     mandatory=true
-    versionRange="[31.0.0,)"
+    versionRange="[31.2.31,32.0.0)"
     ordering="NONE"
     side="BOTH"
 
