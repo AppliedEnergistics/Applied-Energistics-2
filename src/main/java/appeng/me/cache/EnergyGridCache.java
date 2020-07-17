@@ -75,7 +75,9 @@ public class EnergyGridCache implements IEnergyGrid {
     private final NavigableSet<EnergyThreshold> interests = Sets.newTreeSet();
     private final double averageLength = 40.0;
     private final Set<IAEPowerStorage> providers = new LinkedHashSet<>();
+    private long providersGeneration;
     private final Set<IAEPowerStorage> requesters = new LinkedHashSet<>();
+    private long requestersGeneration;
     private final Multiset<IEnergyGridProvider> energyGridProviders = HashMultiset.create();
     private final IGrid myGrid;
     private final HashMap<IGridNode, IEnergyWatcher> watchers = new HashMap<>();
@@ -139,11 +141,13 @@ public class EnergyGridCache implements IEnergyGrid {
                 case PROVIDE_POWER:
                     if (ev.storage.getPowerFlow() != AccessRestriction.WRITE) {
                         this.providers.add(ev.storage);
+                        this.providersGeneration++;
                     }
                     break;
                 case REQUEST_POWER:
                     if (ev.storage.getPowerFlow() != AccessRestriction.READ) {
                         this.requesters.add(ev.storage);
+                        this.requestersGeneration++;
                     }
                     break;
             }
@@ -269,6 +273,7 @@ public class EnergyGridCache implements IEnergyGrid {
     public double extractProviderPower(final double amt, final Actionable mode) {
         double extractedPower = 0;
 
+        long startGeneration = this.providersGeneration;
         final Iterator<IAEPowerStorage> it = this.providers.iterator();
 
         while (extractedPower < amt && it.hasNext()) {
@@ -277,6 +282,11 @@ public class EnergyGridCache implements IEnergyGrid {
             final double req = amt - extractedPower;
             final double newPower = node.extractAEPower(req, mode, PowerMultiplier.ONE);
             extractedPower += newPower;
+
+            // Extract could change the actual grid, leading to a CME
+            if (startGeneration != this.providersGeneration) {
+                break;
+            }
 
             if (newPower < req && mode == Actionable.MODULATE) {
                 it.remove();
@@ -301,11 +311,17 @@ public class EnergyGridCache implements IEnergyGrid {
     public double injectProviderPower(double amt, final Actionable mode) {
         final double originalAmount = amt;
 
+        long startGeneration = this.requestersGeneration;
         final Iterator<IAEPowerStorage> it = this.requesters.iterator();
 
         while (amt > 0 && it.hasNext()) {
             final IAEPowerStorage node = it.next();
             amt = node.injectAEPower(amt, mode);
+
+            // Extract could change the actual grid, leading to a CME
+            if (startGeneration != this.requestersGeneration) {
+                break;
+            }
 
             if (amt > 0 && mode == Actionable.MODULATE) {
                 it.remove();
@@ -443,7 +459,9 @@ public class EnergyGridCache implements IEnergyGrid {
                 }
 
                 this.providers.remove(ps);
+                this.providersGeneration++;
                 this.requesters.remove(ps);
+                this.requestersGeneration++;
             }
         }
 
@@ -483,10 +501,12 @@ public class EnergyGridCache implements IEnergyGrid {
                 if (current > 0 && ps.getPowerFlow() != AccessRestriction.WRITE) {
                     this.globalAvailablePower += current;
                     this.providers.add(ps);
+                    this.providersGeneration++;
                 }
 
                 if (current < max && ps.getPowerFlow() != AccessRestriction.READ) {
                     this.requesters.add(ps);
+                    this.requestersGeneration++;
                 }
             }
         }
