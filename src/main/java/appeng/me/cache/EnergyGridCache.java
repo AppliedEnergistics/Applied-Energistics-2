@@ -23,15 +23,17 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.NavigableSet;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
+import java.util.SortedSet;
 
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Sets;
+
+import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -72,10 +74,15 @@ public class EnergyGridCache implements IEnergyGrid {
         return Double.compare(percent1, percent2);
     };
 
+    private static final Comparator<IAEPowerStorage> COMPARATOR_HIGHEST_PRIORITY_FIRST = (o1, o2) -> Integer
+            .compare(o2.getPriority(), o1.getPriority());
+    private static final Comparator<IAEPowerStorage> COMPARATOR_LOWEST_PRIORITY_FIRST = (o1, o2) -> Integer
+            .compare(o1.getPriority(), o2.getPriority());
+
     private final NavigableSet<EnergyThreshold> interests = Sets.newTreeSet();
     private final double averageLength = 40.0;
-    private final Set<IAEPowerStorage> providers = new LinkedHashSet<>();
-    private final Set<IAEPowerStorage> requesters = new LinkedHashSet<>();
+    private final SortedSet<IAEPowerStorage> providers = new ObjectRBTreeSet<>(COMPARATOR_HIGHEST_PRIORITY_FIRST);
+    private final SortedSet<IAEPowerStorage> requesters = new ObjectRBTreeSet<>(COMPARATOR_LOWEST_PRIORITY_FIRST);
     private final Multiset<IEnergyGridProvider> energyGridProviders = HashMultiset.create();
     private final IGrid myGrid;
     private final HashMap<IGridNode, IEnergyWatcher> watchers = new HashMap<>();
@@ -570,6 +577,12 @@ public class EnergyGridCache implements IEnergyGrid {
         @Override
         public double getAECurrentPower() {
             return this.stored;
+        }
+
+        @Override
+        public int getPriority() {
+            // MIN_VALUE to push it to the back
+            return Integer.MIN_VALUE;
         }
 
         private void addCurrentAEPower(double amount) {

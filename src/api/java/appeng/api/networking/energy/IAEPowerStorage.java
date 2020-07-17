@@ -71,4 +71,17 @@ public interface IAEPowerStorage extends IEnergySource {
      */
     @Nonnull
     AccessRestriction getPowerFlow();
+
+    /**
+     * The priority to use this energy storage.
+     * 
+     * A higher value means it is more likely to be used.
+     * 
+     * This should never use {@link Integer#MIN_VALUE} or {@link Integer#MAX_VALUE}.
+     * 
+     * @return the priority for this storage
+     */
+    default int getPriority() {
+        return 0;
+    }
 }
