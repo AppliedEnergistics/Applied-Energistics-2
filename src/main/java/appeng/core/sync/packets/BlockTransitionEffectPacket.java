@@ -103,6 +103,7 @@ public class BlockTransitionEffectPacket extends BasePacket {
         playBreakOrPickupSound();
     }
 
+    @OnlyIn(Dist.CLIENT)
     private void spawnParticles() {
 
         EnergyParticleData data = new EnergyParticleData(false, direction);
@@ -121,6 +122,7 @@ public class BlockTransitionEffectPacket extends BasePacket {
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     private void playBreakOrPickupSound() {
 
         SoundEvent soundEvent;
