@@ -27,6 +27,7 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 
@@ -37,6 +38,8 @@ import appeng.core.Api;
 import appeng.util.Platform;
 
 public final class SingularityEntity extends AEBaseItemEntity {
+
+    private static final ResourceLocation TAG_ENDER_PEARL = new ResourceLocation("forge:ender_pearls");
 
     public static EntityType<SingularityEntity> TYPE;
 
@@ -83,6 +86,18 @@ public final class SingularityEntity extends AEBaseItemEntity {
                     final ItemStack other = ((ItemEntity) e).getItem();
                     if (!other.isEmpty()) {
                         boolean matches = false;
+
+                        if (materials.enderDust().isSameAs(other)) {
+                            matches = true;
+                        }
+
+                        // check... other name.
+                        if( !matches )
+                        {
+                            if (other.getItem().getTags().contains(TAG_ENDER_PEARL)) {
+                                matches = true;
+                            }
+                        }
 
                         if (matches) {
                             while (item.getCount() > 0 && other.getCount() > 0) {
