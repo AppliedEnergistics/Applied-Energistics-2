@@ -32,11 +32,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
 
-import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.core.Api;
 import appeng.fluids.items.FluidDummyItem;
 import appeng.util.Platform;
 import appeng.util.item.AEStack;
@@ -153,18 +153,8 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
     }
 
     @Override
-    public boolean isItem() {
-        return false;
-    }
-
-    @Override
-    public boolean isFluid() {
-        return true;
-    }
-
-    @Override
     public IStorageChannel<IAEFluidStack> getChannel() {
-        return AEApi.instance().storage().getStorageChannel(IFluidStorageChannel.class);
+        return Api.instance().storage().getStorageChannel(IFluidStorageChannel.class);
     }
 
     @Override
@@ -231,7 +221,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 
     @Override
     public ItemStack asItemStackRepresentation() {
-        ItemStack is = AEApi.instance().definitions().items().dummyFluidItem().maybeStack(1).orElse(ItemStack.EMPTY);
+        ItemStack is = Api.instance().definitions().items().dummyFluidItem().maybeStack(1).orElse(ItemStack.EMPTY);
         if (!is.isEmpty()) {
             FluidDummyItem item = (FluidDummyItem) is.getItem();
             item.setFluidStack(is, this.getFluidStack());

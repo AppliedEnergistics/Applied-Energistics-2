@@ -14,7 +14,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.networking.events.MENetworkChannelsChanged;
@@ -38,6 +37,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.fluids.container.FluidLevelEmitterContainer;
 import appeng.fluids.util.AEFluidInventory;
@@ -112,7 +112,7 @@ public class FluidLevelEmitterPart extends UpgradeablePart
     @Override
     public void onStackChange(IItemList<?> o, IAEStack<?> fullStack, IAEStack<?> diffStack, IActionSource src,
             IStorageChannel<?> chan) {
-        if (chan == AEApi.instance().storage().getStorageChannel(IFluidStorageChannel.class)
+        if (chan == Api.instance().storage().getStorageChannel(IFluidStorageChannel.class)
                 && fullStack.equals(this.config.getFluidInSlot(0))) {
             this.lastReportedValue = fullStack.getStackSize();
             this.updateState();
@@ -167,7 +167,7 @@ public class FluidLevelEmitterPart extends UpgradeablePart
     @Override
     public void onListUpdate() {
         try {
-            final IStorageChannel<IAEFluidStack> channel = AEApi.instance().storage()
+            final IStorageChannel<IAEFluidStack> channel = Api.instance().storage()
                     .getStorageChannel(IFluidStorageChannel.class);
             final IMEMonitor<IAEFluidStack> inventory = this.getProxy().getStorage().getInventory(channel);
 
@@ -189,7 +189,7 @@ public class FluidLevelEmitterPart extends UpgradeablePart
     }
 
     private void configureWatchers() {
-        final IFluidStorageChannel channel = AEApi.instance().storage().getStorageChannel(IFluidStorageChannel.class);
+        final IFluidStorageChannel channel = Api.instance().storage().getStorageChannel(IFluidStorageChannel.class);
 
         if (this.stackWatcher != null) {
             this.stackWatcher.reset();

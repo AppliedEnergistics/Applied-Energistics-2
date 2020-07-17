@@ -25,10 +25,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 
-import appeng.api.AEApi;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.implementations.PatternTermContainer;
+import appeng.core.Api;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.item.AEItemStack;
@@ -76,7 +76,7 @@ public class PatternSlotPacket extends BasePacket {
 
         this.writeItem(slotItem, data);
         for (int x = 0; x < 9; x++) {
-            this.pattern[x] = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)
+            this.pattern[x] = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
                     .createStack(pat.getInvStack(x));
             this.writeItem(this.pattern[x], data);
         }

@@ -52,6 +52,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AEColor;
 import appeng.api.util.IConfigManager;
 import appeng.container.implementations.MEMonitorableContainer;
+import appeng.core.Api;
 import appeng.fluids.util.AEFluidStack;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
@@ -112,6 +113,10 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     private ChestMonitorHandler cellHandler;
     private Accessor accessor;
     private FluidInsertable fluidInsertable;
+    // This is only used on the client to display the right cell model without
+    // synchronizing the entire
+    // cell's inventory when a chest comes into view.
+    private Item cellItem = Items.AIR;
 
     public ChestBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
@@ -188,11 +193,11 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             final ItemStack is = this.getCell();
             if (!is.isEmpty()) {
                 this.isCached = true;
-                ICellHandler cellHandler = AEApi.instance().registries().cell().getHandler(is);
+                ICellHandler cellHandler = Api.instance().registries().cell().getHandler(is);
                 if (cellHandler != null) {
                     double power = 1.0;
 
-                    for (IStorageChannel channel : AEApi.instance().storage().storageChannels()) {
+                    for (IStorageChannel channel : Api.instance().storage().storageChannels()) {
                         final ICellInventoryHandler<IAEItemStack> newCell = cellHandler.getCellInventory(is, this,
                                 channel);
                         if (newCell != null) {
@@ -205,7 +210,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
                     this.getProxy().setIdlePowerUsage(power);
                     this.accessor = new Accessor();
 
-                    if (this.cellHandler != null && this.cellHandler.getChannel() == AEApi.instance().storage()
+                    if (this.cellHandler != null && this.cellHandler.getChannel() == Api.instance().storage()
                             .getStorageChannel(IFluidStorageChannel.class)) {
                         this.fluidInsertable = new FluidHandler();
                     }
@@ -237,7 +242,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         this.updateHandler();
 
         final ItemStack cell = this.getCell();
-        final ICellHandler ch = AEApi.instance().registries().cell().getHandler(cell);
+        final ICellHandler ch = Api.instance().registries().cell().getHandler(cell);
 
         if (this.cellHandler != null && ch != null) {
             return ch.getStatusForCell(cell, this.cellHandler.getInternalHandler());
@@ -251,6 +256,10 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     public Item getCellItem(int slot) {
         if (slot != 0) {
             return null;
+        }
+        // Client-side we'll need to actually use the synced state
+        if (world == null || world.isRemote) {
+            return cellItem;
         }
         ItemStack cell = getCell();
         return cell.isEmpty() ? null : cell.getItem();
@@ -343,6 +352,12 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
         data.writeByte(this.state);
         data.writeByte(this.paintedColor.ordinal());
+
+        // Note that we trust that the change detection in recalculateDisplay will trip
+        // when it changes from
+        // empty->non-empty, so when the cell is changed, it should re-send the state
+        // because of that
+        data.writeRegistryIdUnsafe(ForgeRegistries.ITEMS, getCell().getItem().getRegistryName());
     }
 
     @Override
@@ -354,6 +369,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         this.state = data.readByte();
         final AEColor oldPaintedColor = this.paintedColor;
         this.paintedColor = AEColor.values()[data.readByte()];
+        this.cellItem = data.readRegistryIdUnsafe(ForgeRegistries.ITEMS);
 
         this.lastStateChange = this.world.getTime();
 
@@ -444,7 +460,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         if (!ItemHandlerUtil.isEmpty(this.inputInventory)) {
             this.updateHandler();
 
-            if (this.cellHandler != null && this.cellHandler.getChannel() == AEApi.instance().storage()
+            if (this.cellHandler != null && this.cellHandler.getChannel() == Api.instance().storage()
                     .getStorageChannel(IItemStorageChannel.class)) {
                 final IAEItemStack returns = Platform.poweredInsert(this, this.cellHandler,
                         AEItemStack.fromItemStack(this.inputInventory.getInvStack(0)), this.mySrc);
@@ -514,10 +530,10 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     public boolean openGui(final PlayerEntity p) {
         this.updateHandler();
         if (this.cellHandler != null) {
-            final ICellHandler ch = AEApi.instance().registries().cell().getHandler(this.getCell());
+            final ICellHandler ch = Api.instance().registries().cell().getHandler(this.getCell());
 
             if (ch != null) {
-                final ICellGuiHandler chg = AEApi.instance().registries().cell()
+                final ICellGuiHandler chg = Api.instance().registries().cell()
                         .getGuiHandler(this.cellHandler.getChannel(), this.getCell());
                 if (chg != null) {
                     chg.openChestGui(p, this, ch, this.cellHandler, this.getCell(), this.cellHandler.getChannel());
@@ -679,7 +695,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     private class FluidHandler implements FluidInsertable {
 
         private boolean canAcceptLiquids() {
-            return ChestBlockEntity.this.cellHandler != null && ChestBlockEntity.this.cellHandler.getChannel() == AEApi
+            return ChestBlockEntity.this.cellHandler != null && ChestBlockEntity.this.cellHandler.getChannel() == Api
                     .instance().storage().getStorageChannel(IFluidStorageChannel.class);
         }
 
@@ -729,8 +745,8 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         public boolean allowInsert(FixedItemInv inv, int slot, ItemStack stack) {
             if (ChestBlockEntity.this.isPowered()) {
                 ChestBlockEntity.this.updateHandler();
-                return ChestBlockEntity.this.cellHandler != null && ChestBlockEntity.this.cellHandler
-                        .getChannel() == AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
+                return ChestBlockEntity.this.cellHandler != null && ChestBlockEntity.this.cellHandler.getChannel() == Api
+                        .instance().storage().getStorageChannel(IItemStorageChannel.class);
             }
             return false;
         }
@@ -745,25 +761,25 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
         @Override
         public boolean allowInsert(FixedItemInv inv, int slot, ItemStack stack) {
-            return AEApi.instance().registries().cell().getHandler(stack) != null;
+            return Api.instance().registries().cell().getHandler(stack) != null;
         }
 
     }
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return AEApi.instance().definitions().blocks().chest().maybeStack(1).orElse(ItemStack.EMPTY);
+        return Api.instance().definitions().blocks().chest().maybeStack(1).orElse(ItemStack.EMPTY);
     }
 
     @Override
     public ScreenHandlerType<?> getContainerType() {
         this.updateHandler();
         if (this.cellHandler != null) {
-            if (this.cellHandler.getChannel() == AEApi.instance().storage()
+            if (this.cellHandler.getChannel() == Api.instance().storage()
                     .getStorageChannel(IItemStorageChannel.class)) {
                 return MEMonitorableContainer.TYPE;
             }
-            if (this.cellHandler.getChannel() == AEApi.instance().storage()
+            if (this.cellHandler.getChannel() == Api.instance().storage()
                     .getStorageChannel(IFluidStorageChannel.class)) {
                 throw new IllegalStateException();
                 // FIXME FABRIC return FluidTerminalContainer.TYPE;

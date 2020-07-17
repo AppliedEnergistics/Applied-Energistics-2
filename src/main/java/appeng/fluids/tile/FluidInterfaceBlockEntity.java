@@ -31,7 +31,6 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
-import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkChannelsChanged;
@@ -44,6 +43,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
+import appeng.core.Api;
 import appeng.fluids.container.FluidInterfaceContainer;
 import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.helper.IFluidInterfaceHost;
@@ -155,7 +155,7 @@ public class FluidInterfaceBlockEntity extends AENetworkBlockEntity
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return AEApi.instance().definitions().blocks().fluidIface().maybeStack(1).orElse(ItemStack.EMPTY);
+        return Api.instance().definitions().blocks().fluidIface().maybeStack(1).orElse(ItemStack.EMPTY);
     }
 
     @Override

@@ -21,7 +21,6 @@ package appeng.helpers;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
-import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -45,6 +44,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.container.interfaces.IInventorySlotAware;
+import appeng.core.Api;
 import appeng.tile.networking.WirelessBlockEntity;
 
 public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, IInventorySlotAware {
@@ -73,7 +73,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 
         try {
             final long encKey = Long.parseLong(this.encryptionKey);
-            obj = AEApi.instance().registries().locatable().getLocatableBy(encKey);
+            obj = Api.instance().registries().locatable().getLocatableBy(encKey);
         } catch (final NumberFormatException err) {
             // :P
         }
@@ -86,7 +86,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
                     this.sg = this.targetGrid.getCache(IStorageGrid.class);
                     if (this.sg != null) {
                         this.itemStorage = this.sg
-                                .getInventory(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                                .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
                     }
                 }
             }
@@ -198,7 +198,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
         if (this.itemStorage != null) {
             return this.itemStorage.getChannel();
         }
-        return AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
+        return Api.instance().storage().getStorageChannel(IItemStorageChannel.class);
     }
 
     @Override

@@ -28,7 +28,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.property.EnumProperty;
+import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.StateManager;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -43,18 +43,17 @@ import appeng.tile.storage.ChestBlockEntity;
 
 public class ChestBlock extends AEBaseTileBlock<ChestBlockEntity> {
 
-    private final static EnumProperty<DriveSlotState> SLOT_STATE = EnumProperty.of("slot_state",
-            DriveSlotState.class);
+    private final static BooleanProperty LIGHTS_ON = BooleanProperty.of("lights_on");
 
     public ChestBlock() {
         super(defaultProps(Material.METAL));
-        this.setDefaultState(this.getDefaultState().with(SLOT_STATE, DriveSlotState.EMPTY));
+        this.setDefaultState(this.getDefaultState().with(LIGHTS_ON, false));
     }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         super.appendProperties(builder);
-        builder.add(SLOT_STATE);
+        builder.add(LIGHTS_ON);
     }
 
     @Override
@@ -69,7 +68,7 @@ public class ChestBlock extends AEBaseTileBlock<ChestBlockEntity> {
             slotState = DriveSlotState.OFFLINE;
         }
 
-        return currentState.with(SLOT_STATE, slotState);
+        return currentState.with(LIGHTS_ON, slotState != DriveSlotState.EMPTY && slotState != DriveSlotState.OFFLINE);
     }
 
     @Override

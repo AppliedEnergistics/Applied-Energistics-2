@@ -26,7 +26,6 @@ import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.network.PacketByteBuf;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
-import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.SecurityPermissions;
@@ -41,6 +40,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.container.implementations.ContainerHelper;
 import appeng.container.slot.RestrictedInputSlot;
+import appeng.core.Api;
 import appeng.fluids.parts.FluidStorageBusPart;
 import appeng.fluids.util.IAEFluidTank;
 import appeng.util.Platform;
@@ -162,7 +162,7 @@ public class FluidStorageBusContainer extends FluidConfigurableContainer {
         Iterator<IAEFluidStack> i = new NullIterator<>();
         if (cellInv != null) {
             final IItemList<IAEFluidStack> list = cellInv.getAvailableItems(
-                    AEApi.instance().storage().getStorageChannel(IFluidStorageChannel.class).createList());
+                    Api.instance().storage().getStorageChannel(IFluidStorageChannel.class).createList());
             i = list.iterator();
         }
 

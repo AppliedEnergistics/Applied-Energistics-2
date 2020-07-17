@@ -20,7 +20,6 @@ package appeng.tile.crafting;
 
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
-import appeng.api.AEApi;
 import appeng.api.config.*;
 import appeng.api.definitions.ITileDefinition;
 import appeng.api.implementations.IPowerChannelState;
@@ -39,6 +38,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.container.ContainerNull;
+import appeng.core.Api;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.network.TargetPoint;
 import appeng.core.sync.packets.AssemblerAnimationPacket;
@@ -101,7 +101,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
     public MolecularAssemblerBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        final ITileDefinition assembler = AEApi.instance().definitions().blocks().molecularAssembler();
+        final ITileDefinition assembler = Api.instance().definitions().blocks().molecularAssembler();
 
         this.settings = new ConfigManager(this);
         this.settings.registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
@@ -220,8 +220,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
             if (!myPat.isEmpty() && myPat.getItem() instanceof EncodedPatternItem) {
                 final World w = this.getWorld();
-                final EncodedPatternItem iep = (EncodedPatternItem) myPat.getItem();
-                final ICraftingPatternDetails ph = iep.getPatternForItem(myPat, w);
+                final ICraftingPatternDetails ph = Api.instance().crafting().decodePattern(myPat, w);
                 if (ph != null && ph.isCraftable()) {
                     this.forcePlan = true;
                     this.myPlan = ph;
@@ -247,8 +246,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         if (!is.isEmpty() && is.getItem() instanceof EncodedPatternItem) {
             if (!ItemStack.areItemsEqual(is, this.myPattern)) {
                 final World w = this.getWorld();
-                final EncodedPatternItem iep = (EncodedPatternItem) is.getItem();
-                final ICraftingPatternDetails ph = iep.getPatternForItem(is, w);
+                final ICraftingPatternDetails ph = Api.instance().crafting().decodePattern(is, w);
 
                 if (ph != null && ph.isCraftable()) {
                     this.progress = 0;

@@ -28,7 +28,6 @@ import java.util.concurrent.ConcurrentSkipListMap;
 
 import net.minecraft.item.ItemStack;
 
-import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.StorageFilter;
@@ -40,6 +39,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.core.Api;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.ItemSlot;
@@ -47,7 +47,7 @@ import appeng.util.inv.ItemSlot;
 public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMonitor {
 
     private final InventoryAdaptor adaptor;
-    private final IItemList<IAEItemStack> list = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)
+    private final IItemList<IAEItemStack> list = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
             .createList();
     private final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<>();
     private final NavigableMap<Integer, CachedItemStack> memory;
@@ -120,7 +120,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 
     @Override
     public IStorageChannel getChannel() {
-        return AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
+        return Api.instance().storage().getStorageChannel(IItemStorageChannel.class);
     }
 
     @Override
@@ -160,7 +160,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
                 final int diff = newSize - (oldIS.isEmpty() ? 0 : oldIS.getCount());
 
                 final IAEItemStack stack = (old == null || old.aeStack == null
-                        ? AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(newIS)
+                        ? Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(newIS)
                         : old.aeStack.copy());
                 if (stack != null) {
                     stack.setStackSize(newSize);
@@ -302,7 +302,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
                 this.aeStack = null;
             } else {
                 this.itemStack = is.copy();
-                this.aeStack = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(is);
+                this.aeStack = Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(is);
             }
         }
     }

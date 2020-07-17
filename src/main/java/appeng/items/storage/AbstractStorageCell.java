@@ -19,7 +19,6 @@
 package appeng.items.storage;
 
 import java.util.List;
-import java.util.Set;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import appeng.hooks.AEToolItem;
@@ -36,7 +35,6 @@ import net.minecraft.text.Text;
 import net.minecraft.world.World;
 import net.fabricmc.api.Environment;
 
-import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.exceptions.MissingDefinitionException;
 import appeng.api.features.AEFeature;
@@ -47,7 +45,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.AEConfig;
-import appeng.core.localization.GuiText;
+import appeng.core.Api;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
@@ -74,8 +72,8 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     @Override
     public void appendTooltip(final ItemStack stack, final World world, final List<Text> lines,
             final TooltipContext advancedTooltips) {
-        AEApi.instance().client().addCellInformation(
-                AEApi.instance().registries().cell().getCellInventory(stack, null, this.getChannel()), lines);
+        Api.instance().client().addCellInformation(
+                Api.instance().registries().cell().getCellInventory(stack, null, this.getChannel()), lines);
     }
 
     @Override
@@ -121,6 +119,9 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
     @Override
     public FuzzyMode getFuzzyMode(final ItemStack is) {
         final String fz = is.getOrCreateTag().getString("FuzzyMode");
+        if (fz.isEmpty()) {
+            return FuzzyMode.IGNORE_ALL;
+        }
         try {
             return FuzzyMode.valueOf(fz);
         } catch (final Throwable t) {
@@ -146,7 +147,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
             }
 
             final PlayerInventory playerInventory = player.inventory;
-            final IMEInventoryHandler inv = AEApi.instance().registries().cell().getCellInventory(stack, null,
+            final IMEInventoryHandler inv = Api.instance().registries().cell().getCellInventory(stack, null,
                     this.getChannel());
             if (inv != null && playerInventory.getMainHandStack() == stack) {
                 final InventoryAdaptor ia = InventoryAdaptor.getAdaptor(player);
@@ -195,7 +196,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 // FIXME FABRIC: Handle this in the disassemble recipe
 // FIXME FABRIC    @Override
 // FIXME FABRIC    public ItemStack getRecipeRemainder(final ItemStack itemStack) {
-// FIXME FABRIC        return AEApi.instance().definitions().materials().emptyStorageCell().maybeStack(1)
+// FIXME FABRIC        return Api.instance().definitions().materials().emptyStorageCell().maybeStack(1)
 // FIXME FABRIC                .orElseThrow(() -> new MissingDefinitionException(
 // FIXME FABRIC                        "Tried to use empty storage cells while basic storage cells are defined."));
 // FIXME FABRIC    }

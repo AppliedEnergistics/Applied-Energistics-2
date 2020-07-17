@@ -28,7 +28,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Direction;
 
-import appeng.api.AEApi;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridNotification;
 import appeng.api.networking.IGrid;
@@ -45,6 +44,7 @@ import appeng.api.networking.ticking.ITickManager;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IOrientable;
+import appeng.core.Api;
 import appeng.core.worlddata.WorldData;
 import appeng.hooks.TickHandler;
 import appeng.me.GridAccessException;
@@ -129,7 +129,7 @@ public class AENetworkProxy implements IGridBlock {
 
     public IGridNode getNode() {
         if (this.node == null && Platform.isServer() && this.isReady) {
-            this.node = AEApi.instance().grid().createGridNode(this);
+            this.node = Api.instance().grid().createGridNode(this);
             this.readFromNBT(this.data);
             this.node.updateState();
         }
@@ -283,11 +283,6 @@ public class AENetworkProxy implements IGridBlock {
         if (this.gp instanceof CablePart) {
             ((CablePart) this.gp).markForUpdate();
         }
-    }
-
-    @Override
-    public void setNetworkStatus(final IGrid grid, final int channelsInUse) {
-
     }
 
     @Override

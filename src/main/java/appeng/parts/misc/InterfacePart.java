@@ -36,7 +36,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
@@ -61,6 +60,7 @@ import appeng.api.util.IConfigManager;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.InterfaceContainer;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
@@ -267,7 +267,7 @@ public class InterfacePart extends BasicStatePart implements IGridTickable, ISto
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return AEApi.instance().definitions().parts().iface().maybeStack(1).orElse(ItemStack.EMPTY);
+        return Api.instance().definitions().parts().iface().maybeStack(1).orElse(ItemStack.EMPTY);
     }
 
     @Override

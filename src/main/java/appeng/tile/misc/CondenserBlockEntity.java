@@ -35,7 +35,6 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
 import appeng.api.definitions.IMaterials;
@@ -51,6 +50,7 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
+import appeng.core.Api;
 import appeng.tile.AEBaseInvBlockEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;
@@ -142,7 +142,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     }
 
     private ItemStack getOutput() {
-        final IMaterials materials = AEApi.instance().definitions().materials();
+        final IMaterials materials = Api.instance().definitions().materials();
 
         switch ((CondenserOutput) this.cm.getSetting(Settings.CONDENSER_OUTPUT)) {
             case MATTER_BALLS:
@@ -223,7 +223,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         @Override
         public FluidVolume attemptInsertion(FluidVolume fluid, Simulation simulation) {
             if (simulation == Simulation.ACTION) {
-                final IStorageChannel<IAEFluidStack> chan = AEApi.instance().storage()
+                final IStorageChannel<IAEFluidStack> chan = Api.instance().storage()
                         .getStorageChannel(IFluidStorageChannel.class);
                 CondenserBlockEntity.this
                         .addPower((fluid.isEmpty() ? 0.0 : fluid.getAmount_F().asInexactDouble() * 1000.0) / chan.transferFactor());
@@ -260,7 +260,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
         @Override
         public <T extends IAEStack<T>> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
-            if (channel == AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)) {
+            if (channel == Api.instance().storage().getStorageChannel(IItemStorageChannel.class)) {
                 return (IMEMonitor<T>) this.itemInventory;
             } else {
                 return new CondenserVoidInventory<>(CondenserBlockEntity.this, channel);

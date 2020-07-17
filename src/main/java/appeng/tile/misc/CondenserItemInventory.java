@@ -26,7 +26,6 @@ import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.filter.ConstantItemFilter;
 import net.minecraft.item.ItemStack;
 
-import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
@@ -37,6 +36,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.core.Api;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.storage.ITickingMonitor;
 import appeng.util.item.AEItemStack;
@@ -94,7 +94,7 @@ class CondenserItemInventory implements IMEMonitor<IAEItemStack>, ITickingMonito
 
     @Override
     public IStorageChannel<IAEItemStack> getChannel() {
-        return AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
+        return Api.instance().storage().getStorageChannel(IItemStorageChannel.class);
     }
 
     @Override

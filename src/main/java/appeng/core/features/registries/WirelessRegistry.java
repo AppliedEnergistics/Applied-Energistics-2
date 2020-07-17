@@ -27,10 +27,13 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Util;
 import net.minecraft.world.BlockView;
 
-import appeng.api.AEApi;
 import appeng.api.features.ILocatable;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.features.IWirelessTermRegistry;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.WirelessTermContainer;
+import appeng.core.Api;
 import appeng.core.localization.PlayerMessages;
 import appeng.util.Platform;
 
@@ -87,7 +90,7 @@ public final class WirelessRegistry implements IWirelessTermRegistry {
         }
 
         final long parsedKey = Long.parseLong(unparsedKey);
-        final ILocatable securityStation = AEApi.instance().registries().locatable().getLocatableBy(parsedKey);
+        final ILocatable securityStation = Api.instance().registries().locatable().getLocatableBy(parsedKey);
         if (securityStation == null) {
             player.sendSystemMessage(PlayerMessages.StationCanNotBeLocated.get(), Util.NIL_UUID);
             return;

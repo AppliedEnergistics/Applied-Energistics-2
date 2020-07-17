@@ -35,6 +35,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
@@ -43,7 +44,6 @@ import com.google.common.collect.Multimap;
 
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
@@ -76,10 +76,12 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+import appeng.core.Api;
 import appeng.crafting.CraftingJob;
 import appeng.crafting.CraftingLink;
 import appeng.crafting.CraftingLinkNexus;
 import appeng.crafting.CraftingWatcher;
+import appeng.helpers.CraftingPatternDetails;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.GenericInterestManager;
@@ -224,7 +226,7 @@ public class CraftingGridCache
 
         // update the stuff that was in the list...
         this.storageGrid.postAlterationOfStoredItems(
-                AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class), oldItems.keySet(),
+                Api.instance().storage().getStorageChannel(IItemStorageChannel.class), oldItems.keySet(),
                 new BaseActionSource());
 
         // re-create list..
@@ -257,7 +259,7 @@ public class CraftingGridCache
         }
 
         this.storageGrid.postAlterationOfStoredItems(
-                AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class), this.craftableItems.keySet(),
+                Api.instance().storage().getStorageChannel(IItemStorageChannel.class), this.craftableItems.keySet(),
                 new BaseActionSource());
     }
 
@@ -303,6 +305,8 @@ public class CraftingGridCache
 
     @Override
     public void addCraftingOption(final ICraftingMedium medium, final ICraftingPatternDetails api) {
+        Preconditions.checkArgument(api.getClass() == CraftingPatternDetails.class,
+                "Only supports internal ICraftingPatternDetails for now");
         List<ICraftingMedium> details = this.craftingMethods.get(api);
         if (details == null) {
             details = new ArrayList<>();
@@ -322,7 +326,7 @@ public class CraftingGridCache
     public List<IMEInventoryHandler> getCellArray(final IStorageChannel<?> channel) {
         final List<IMEInventoryHandler> list = new ArrayList<>(1);
 
-        if (channel == AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)) {
+        if (channel == Api.instance().storage().getStorageChannel(IItemStorageChannel.class)) {
             list.add(this);
         }
 
@@ -395,7 +399,7 @@ public class CraftingGridCache
 
     @Override
     public IStorageChannel<IAEItemStack> getChannel() {
-        return AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
+        return Api.instance().storage().getStorageChannel(IItemStorageChannel.class);
     }
 
     @Override

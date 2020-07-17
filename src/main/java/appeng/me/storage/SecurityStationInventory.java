@@ -20,7 +20,6 @@ package appeng.me.storage;
 
 import com.mojang.authlib.GameProfile;
 
-import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
@@ -31,12 +30,13 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.core.Api;
 import appeng.me.GridAccessException;
 import appeng.tile.misc.SecurityStationBlockEntity;
 
 public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStack> {
 
-    private final IItemList<IAEItemStack> storedItems = AEApi.instance().storage()
+    private final IItemList<IAEItemStack> storedItems = Api.instance().storage()
             .getStorageChannel(IItemStorageChannel.class).createList();
     private final SecurityStationBlockEntity securityTile;
 
@@ -47,7 +47,7 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
     @Override
     public IAEItemStack injectItems(final IAEItemStack input, final Actionable type, final IActionSource src) {
         if (this.hasPermission(src)) {
-            if (AEApi.instance().definitions().items().biometricCard().isSameAs(input.createItemStack())) {
+            if (Api.instance().definitions().items().biometricCard().isSameAs(input.createItemStack())) {
                 if (this.canAccept(input)) {
                     if (type == Actionable.SIMULATE) {
                         return null;
@@ -104,7 +104,7 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
 
     @Override
     public IStorageChannel getChannel() {
-        return AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
+        return Api.instance().storage().getStorageChannel(IItemStorageChannel.class);
     }
 
     @Override
@@ -123,7 +123,7 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
             final IBiometricCard tbc = (IBiometricCard) input.getItem();
             final GameProfile newUser = tbc.getProfile(input.createItemStack());
 
-            final int PlayerID = AEApi.instance().registries().players().getID(newUser);
+            final int PlayerID = Api.instance().registries().players().getID(newUser);
             if (this.securityTile.getOwner() == PlayerID) {
                 return false;
             }

@@ -45,6 +45,7 @@ import appeng.bootstrap.definitions.TileEntityDefinition;
 import appeng.client.render.crafting.CraftingCubeRendering;
 import appeng.client.render.model.AutoRotatingBakedModel;
 import appeng.client.render.spatial.SpatialPylonRendering;
+import appeng.client.render.tesr.ChestTileEntityRenderer;
 import appeng.client.render.tesr.CrankTESR;
 import appeng.client.render.tesr.DriveLedTileEntityRenderer;
 import appeng.client.render.tesr.SkyChestTESR;
@@ -362,7 +363,14 @@ public final class ApiBlocks implements IBlocks {
                        }).build())
                .rendering(new DriveRendering()).build();
        this.chest = registry.block("chest", ChestBlock::new).features(AEFeature.STORAGE_CELLS, AEFeature.ME_CHEST)
-               .tileEntity(registry.tileEntity("chest", ChestBlockEntity.class, ChestBlockEntity::new).build())
+               .tileEntity(registry.tileEntity("chest", ChestBlockEntity.class, ChestBlockEntity::new)
+                        .rendering(new TileEntityRenderingCustomizer<ChestTileEntity>() {
+                            @Override
+                            @OnlyIn(Dist.CLIENT)
+                            public void customize(TileEntityRendering<ChestTileEntity> rendering) {
+                                rendering.tileEntityRenderer(ChestTileEntityRenderer::new);
+                            }
+                        }).build())
                .rendering(new ChestRendering()).build();
        this.iface = registry.block("interface", InterfaceBlock::new).features(AEFeature.INTERFACE)
                .tileEntity(

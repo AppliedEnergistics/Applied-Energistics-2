@@ -28,12 +28,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.cells.ICellInventoryHandler;
 import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.core.Api;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
 
@@ -72,8 +72,8 @@ public class CreativeStorageCellItem extends AEBaseItem implements ICellWorkbenc
     @Override
     public void appendTooltip(final ItemStack stack, final World world, final List<Text> lines,
             final TooltipContext advancedTooltips) {
-        final IMEInventoryHandler<?> inventory = AEApi.instance().registries().cell().getCellInventory(stack, null,
-                AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
+        final IMEInventoryHandler<?> inventory = Api.instance().registries().cell().getCellInventory(stack, null,
+                Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
 
         if (inventory instanceof ICellInventoryHandler) {
             final CellConfig cc = new CellConfig(stack);

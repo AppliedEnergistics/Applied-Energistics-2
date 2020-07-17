@@ -1,0 +1,6 @@
+{
+  "parent": "appliedenergistics2:block/drive/drive_cell",
+  "textures": {
+    "cell": "appliedenergistics2:block/drive/cells/1k_item_cell"
+  }
+}

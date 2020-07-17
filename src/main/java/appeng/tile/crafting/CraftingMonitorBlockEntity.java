@@ -34,10 +34,10 @@ import net.minecraft.util.math.Direction;
 import net.fabricmc.api.EnvType;
 
 
-import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
+import appeng.core.Api;
 import appeng.util.item.AEItemStack;
 
 public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements IColorableTile {
@@ -162,7 +162,7 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
 
     @Override
     protected ItemStack getItemFromTile(final Object obj) {
-        final Optional<ItemStack> is = AEApi.instance().definitions().blocks().craftingMonitor().maybeStack(1);
+        final Optional<ItemStack> is = Api.instance().definitions().blocks().craftingMonitor().maybeStack(1);
 
         return is.orElseGet(() -> super.getItemFromTile(obj));
     }

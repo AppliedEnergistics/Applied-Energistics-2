@@ -60,7 +60,7 @@ public class CachedPlane {
     private final List<BlockEntity> tiles = new ArrayList<>();
     private final List<ScheduledTick<Block>> ticks = new ArrayList<>();
     private final World world;
-    private final IMovableRegistry reg = AEApi.instance().registries().movable();
+    private final IMovableRegistry reg = Api.instance().registries().movable();
     private final List<WorldCoord> updates = new ArrayList<>();
     private int verticalBits;
     private final BlockState matrixBlockState;
@@ -68,7 +68,7 @@ public class CachedPlane {
     public CachedPlane(final World w, final int minX, final int minY, final int minZ, final int maxX, final int maxY,
             final int maxZ) {
 
-        Block matrixFrameBlock = AEApi.instance().definitions().blocks().matrixFrame().maybeBlock().orElse(null);
+        Block matrixFrameBlock = Api.instance().definitions().blocks().matrixFrame().maybeBlock().orElse(null);
         if (matrixFrameBlock != null) {
             this.matrixBlockState = matrixFrameBlock.getDefaultState();
         } else {
@@ -111,7 +111,7 @@ public class CachedPlane {
             }
         }
 
-        final IMovableRegistry mr = AEApi.instance().registries().movable();
+        final IMovableRegistry mr = Api.instance().registries().movable();
 
         for (int cx = 0; cx < this.cx_size; cx++) {
             for (int cz = 0; cz < this.cz_size; cz++) {
@@ -180,12 +180,12 @@ public class CachedPlane {
     }
 
     private IMovableHandler getHandler(final BlockEntity te) {
-        final IMovableRegistry mr = AEApi.instance().registries().movable();
+        final IMovableRegistry mr = Api.instance().registries().movable();
         return mr.getHandler(te);
     }
 
     void swap(final CachedPlane dst) {
-        final IMovableRegistry mr = AEApi.instance().registries().movable();
+        final IMovableRegistry mr = Api.instance().registries().movable();
 
         if (dst.x_size == this.x_size && dst.y_size == this.y_size && dst.z_size == this.z_size) {
             AELog.info("Block Copy Scale: " + this.x_size + ", " + this.y_size + ", " + this.z_size);

@@ -28,12 +28,12 @@ import net.minecraft.util.Identifier;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.SecurityPermissions;
-import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.implementations.MEMonitorableContainer;
 import appeng.container.implementations.PatternTermContainer;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
@@ -105,23 +105,20 @@ public class PatternTerminalPart extends AbstractTerminalPart {
                                   final ItemStack removedStack, final ItemStack newStack) {
         if (inv == this.pattern && slot == 1) {
             final ItemStack is = this.pattern.getInvStack(1);
-            if (!is.isEmpty() && is.getItem() instanceof ICraftingPatternItem) {
-                final ICraftingPatternItem pattern = (ICraftingPatternItem) is.getItem();
-                final ICraftingPatternDetails details = pattern.getPatternForItem(is,
-                        this.getHost().getTile().getWorld());
-                if (details != null) {
-                    this.setCraftingRecipe(details.isCraftable());
-                    this.setSubstitution(details.canSubstitute());
+            final ICraftingPatternDetails details = Api.instance().crafting().decodePattern(is,
+                    this.getHost().getTile().getWorld());
+            if (details != null) {
+                this.setCraftingRecipe(details.isCraftable());
+                this.setSubstitution(details.canSubstitute());
 
-                    for (int x = 0; x < this.crafting.getSlotCount() && x < details.getInputs().length; x++) {
-                        final IAEItemStack item = details.getInputs()[x];
-                        this.crafting.forceSetInvStack(x, item == null ? ItemStack.EMPTY : item.createItemStack());
-                    }
+                for (int x = 0; x < this.crafting.getSlotCount() && x < details.getInputs().length; x++) {
+                    final IAEItemStack item = details.getInputs()[x];
+                    this.crafting.forceSetInvStack(x, item == null ? ItemStack.EMPTY : item.createItemStack());
+                }
 
-                    for (int x = 0; x < this.output.getSlotCount() && x < details.getOutputs().length; x++) {
-                        final IAEItemStack item = details.getOutputs()[x];
-                        this.output.forceSetInvStack(x, item == null ? ItemStack.EMPTY : item.createItemStack());
-                    }
+                for (int x = 0; x < this.output.getSlotCount() && x < details.getOutputs().length; x++) {
+                    final IAEItemStack item = details.getOutputs()[x];
+                    this.output.forceSetInvStack(x, item == null ? ItemStack.EMPTY : item.createItemStack());
                 }
             }
         } else if (inv == this.crafting) {

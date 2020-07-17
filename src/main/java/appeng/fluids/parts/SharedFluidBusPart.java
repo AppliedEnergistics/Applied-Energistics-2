@@ -29,7 +29,6 @@ import net.minecraft.util.math.*;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.ticking.IGridTickable;
@@ -39,6 +38,7 @@ import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.util.AECableType;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
+import appeng.core.Api;
 import appeng.fluids.container.FluidIOContainer;
 import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.IAEFluidTank;
@@ -138,7 +138,7 @@ public abstract class SharedFluidBusPart extends UpgradeablePart implements IGri
     }
 
     protected IFluidStorageChannel getChannel() {
-        return AEApi.instance().storage().getStorageChannel(IFluidStorageChannel.class);
+        return Api.instance().storage().getStorageChannel(IFluidStorageChannel.class);
     }
 
     @Override

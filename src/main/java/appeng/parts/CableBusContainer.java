@@ -19,7 +19,11 @@
 package appeng.parts;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -44,13 +48,20 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
 import appeng.api.config.YesNo;
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.implementations.parts.ICablePart;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
-import appeng.api.parts.*;
+import appeng.api.parts.IFacadeContainer;
+import appeng.api.parts.IFacadePart;
+import appeng.api.parts.IPart;
+import appeng.api.parts.IPartCollisionHelper;
+import appeng.api.parts.IPartHost;
+import appeng.api.parts.IPartItem;
+import appeng.api.parts.LayerFlags;
+import appeng.api.parts.PartItemStack;
+import appeng.api.parts.SelectedPart;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
@@ -59,6 +70,7 @@ import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.client.render.cablebus.CableCoreType;
 import appeng.client.render.cablebus.FacadeRenderState;
 import appeng.core.AELog;
+import appeng.core.Api;
 import appeng.facade.FacadeContainer;
 import appeng.helpers.AEMultiTile;
 import appeng.me.GridConnection;
@@ -360,7 +372,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
             }
         }
 
-        if (AEApi.instance().partHelper().getCableRenderMode().opaqueFacades) {
+        if (Api.instance().partHelper().getCableRenderMode().opaqueFacades) {
             final IFacadeContainer fc = this.getFacadeContainer();
             for (final AEPartLocation side : AEPartLocation.SIDE_LOCATIONS) {
                 final IFacadePart p = fc.getFacade(side);
@@ -525,7 +537,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                             final IGridNode cn = center.getGridNode();
                             if (cn != null) {
                                 try {
-                                    AEApi.instance().grid().createGridConnection(cn, sn);
+                                    Api.instance().grid().createGridConnection(cn, sn);
                                 } catch (final FailedConnectionException e) {
                                     // ekk
                                     AELog.debug(e);
@@ -1075,7 +1087,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
                 part.getBoxes(bch);
             }
 
-            if (AEApi.instance().partHelper().getCableRenderMode().opaqueFacades || forCollision) {
+            if (Api.instance().partHelper().getCableRenderMode().opaqueFacades || forCollision) {
                 if (s != AEPartLocation.INTERNAL) {
                     final IFacadePart fp = fc.getFacade(s);
                     if (fp != null) {

@@ -29,7 +29,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.PacketByteBuf;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
@@ -41,6 +40,7 @@ import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.core.Api;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.IContainerCraftingPacket;
@@ -113,7 +113,7 @@ public class JEIRecipePacket extends BasePacket {
 
         if (inv != null && this.recipe != null && security != null) {
             final IMEMonitor<IAEItemStack> storage = inv
-                    .getInventory(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                    .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
             final IPartitionList<IAEItemStack> filter = ViewCellItem.createFilter(cct.getViewCells());
 
             for (int x = 0; x < craftMatrix.getSlotCount(); x++) {

@@ -27,7 +27,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
@@ -44,6 +43,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AELog;
+import appeng.core.Api;
 import appeng.hooks.TickHandler;
 
 public class CraftingJob implements Runnable, ICraftingJob {
@@ -52,9 +52,9 @@ public class CraftingJob implements Runnable, ICraftingJob {
 
     private final MECraftingInventory original;
     private final World world;
-    private final IItemList<IAEItemStack> crafting = AEApi.instance().storage()
+    private final IItemList<IAEItemStack> crafting = Api.instance().storage()
             .getStorageChannel(IItemStorageChannel.class).createList();
-    private final IItemList<IAEItemStack> missing = AEApi.instance().storage()
+    private final IItemList<IAEItemStack> missing = Api.instance().storage()
             .getStorageChannel(IItemStorageChannel.class).createList();
     private final HashMap<String, TwoIntegers> opsAndMultiplier = new HashMap<>();
     private final Object monitor = new Object();
@@ -85,7 +85,7 @@ public class CraftingJob implements Runnable, ICraftingJob {
         final ICraftingGrid cc = grid.getCache(ICraftingGrid.class);
         final IStorageGrid sg = grid.getCache(IStorageGrid.class);
         this.original = new MECraftingInventory(
-                sg.getInventory(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)), actionSrc,
+                sg.getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)), actionSrc,
                 false, false, false);
 
         this.setTree(this.getCraftingTree(cc, what));

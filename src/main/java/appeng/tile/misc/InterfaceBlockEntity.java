@@ -38,7 +38,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
@@ -57,6 +56,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.container.implementations.InterfaceContainer;
+import appeng.core.Api;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
@@ -302,7 +302,7 @@ public class InterfaceBlockEntity extends AENetworkInvBlockEntity
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return AEApi.instance().definitions().blocks().iface().maybeStack(1).orElse(ItemStack.EMPTY);
+        return Api.instance().definitions().blocks().iface().maybeStack(1).orElse(ItemStack.EMPTY);
     }
 
     @Override

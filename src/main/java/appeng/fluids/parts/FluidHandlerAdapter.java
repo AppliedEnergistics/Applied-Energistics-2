@@ -35,6 +35,7 @@ import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
 import appeng.fluids.helper.GroupedFluidInvCache;
+import appeng.core.Api;
 import appeng.fluids.util.AEFluidStack;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.IGridProxyable;
@@ -132,7 +133,7 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 
     @Override
     public IStorageChannel<IAEFluidStack> getChannel() {
-        return AEApi.instance().storage().getStorageChannel(IFluidStorageChannel.class);
+        return Api.instance().storage().getStorageChannel(IFluidStorageChannel.class);
     }
 
     @Override

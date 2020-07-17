@@ -38,7 +38,6 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.screen.ScreenHandlerListener;
 import net.minecraft.item.ItemStack;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
@@ -65,6 +64,7 @@ import appeng.container.slot.InaccessibleSlot;
 import appeng.container.slot.PlayerHotBarSlot;
 import appeng.container.slot.PlayerInvSlot;
 import appeng.core.AELog;
+import appeng.core.Api;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.InventoryActionPacket;
@@ -664,7 +664,7 @@ public abstract class AEBaseContainer extends ScreenHandler {
                 final ItemStack isg = player.inventory.getCursorStack();
 
                 if (!isg.isEmpty() && releaseQty > 0) {
-                    IAEItemStack ais = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)
+                    IAEItemStack ais = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
                             .createStack(isg);
                     ais.setStackSize(1);
                     final IAEItemStack extracted = ais.copy();
@@ -743,7 +743,7 @@ public abstract class AEBaseContainer extends ScreenHandler {
                         this.updateHeld(player);
                     }
                 } else {
-                    IAEItemStack ais = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)
+                    IAEItemStack ais = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
                             .createStack(player.inventory.getCursorStack());
                     ais = Platform.poweredInsert(this.getPowerSource(), this.getCellInventory(), ais,
                             this.getActionSource());
@@ -783,7 +783,7 @@ public abstract class AEBaseContainer extends ScreenHandler {
                         this.updateHeld(player);
                     }
                 } else {
-                    IAEItemStack ais = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)
+                    IAEItemStack ais = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
                             .createStack(player.inventory.getCursorStack());
                     ais.setStackSize(1);
                     ais = Platform.poweredInsert(this.getPowerSource(), this.getCellInventory(), ais,
@@ -861,7 +861,7 @@ public abstract class AEBaseContainer extends ScreenHandler {
             return input;
         }
         final IAEItemStack ais = Platform.poweredInsert(this.getPowerSource(), this.getCellInventory(),
-                AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(input),
+                Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(input),
                 this.getActionSource());
         if (ais == null) {
             return ItemStack.EMPTY;

@@ -28,11 +28,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
 
-import appeng.api.AEApi;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
+import appeng.core.Api;
 import appeng.items.contents.QuartzKnifeObj;
 import appeng.items.materials.MaterialItem;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -113,7 +113,7 @@ public class QuartzKnifeContainer extends AEBaseContainer {
 
             if (RestrictedInputSlot.isMetalIngot(input)) {
                 if (QuartzKnifeContainer.this.myName.length() > 0) {
-                    return AEApi.instance().definitions().materials().namePress().maybeStack(1).map(namePressStack -> {
+                    return Api.instance().definitions().materials().namePress().maybeStack(1).map(namePressStack -> {
                         final CompoundTag compound = namePressStack.getOrCreateTag();
                         compound.putString(MaterialItem.TAG_INSCRIBE_NAME, QuartzKnifeContainer.this.myName);
 

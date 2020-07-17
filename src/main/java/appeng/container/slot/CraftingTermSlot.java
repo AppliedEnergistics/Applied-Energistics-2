@@ -33,7 +33,6 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
@@ -44,6 +43,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.ContainerNull;
 import appeng.container.implementations.CraftingTermContainer;
+import appeng.core.Api;
 import appeng.helpers.IContainerCraftingPacket;
 import appeng.helpers.InventoryAction;
 import appeng.items.storage.ViewCellItem;
@@ -100,7 +100,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         }
 
         final IMEMonitor<IAEItemStack> inv = this.storage
-                .getInventory(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
         final int howManyPerCraft = this.getStack().getCount();
         int maxTimesToCraft = 0;
 

@@ -27,7 +27,6 @@ import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 
-import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.SecurityPermissions;
@@ -43,6 +42,7 @@ import appeng.container.guisync.GuiSync;
 import appeng.container.slot.FakeTypeOnlySlot;
 import appeng.container.slot.OptionalTypeOnlyFakeSlot;
 import appeng.container.slot.RestrictedInputSlot;
+import appeng.core.Api;
 import appeng.parts.misc.StorageBusPart;
 import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
@@ -155,7 +155,7 @@ public class StorageBusContainer extends UpgradeableContainer {
         Iterator<IAEItemStack> i = new NullIterator<>();
         if (cellInv != null) {
             final IItemList<IAEItemStack> list = cellInv.getAvailableItems(
-                    AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList());
+                    Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createList());
             i = list.iterator();
         }
 

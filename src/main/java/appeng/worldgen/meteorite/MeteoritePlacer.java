@@ -41,12 +41,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.world.WorldAccess;
 
-import appeng.api.AEApi;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IMaterials;
 import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
+import appeng.core.Api;
 import appeng.core.worlddata.WorldData;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
@@ -95,7 +95,7 @@ public final class MeteoritePlacer {
         this.squaredMeteoriteSize = this.meteoriteSize * this.meteoriteSize;
         this.crater = this.realCrater * this.realCrater;
 
-        final IBlocks blocks = AEApi.instance().definitions().blocks();
+        final IBlocks blocks = Api.instance().definitions().blocks();
 
         this.skyChestDefinition = blocks.skyStoneChest();
         this.skyStone = blocks.skyStoneBlock().block().getDefaultState();
@@ -239,7 +239,7 @@ public final class MeteoritePlacer {
                         }
 
                         ItemStack toAdd = ItemStack.EMPTY;
-                        final IMaterials materials = AEApi.instance().definitions().materials();
+                        final IMaterials materials = Api.instance().definitions().materials();
 
                         switch (r % 4) {
                             case 0:

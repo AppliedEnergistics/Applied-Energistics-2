@@ -32,11 +32,11 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 import net.fabricmc.api.EnvType;
 
-import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.core.Api;
 import appeng.util.Platform;
 import net.minecraft.util.registry.Registry;
 
@@ -153,18 +153,8 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
     }
 
     @Override
-    public boolean isItem() {
-        return true;
-    }
-
-    @Override
-    public boolean isFluid() {
-        return false;
-    }
-
-    @Override
     public IStorageChannel<IAEItemStack> getChannel() {
-        return AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
+        return Api.instance().storage().getStorageChannel(IItemStorageChannel.class);
     }
 
     @Override
@@ -216,9 +206,14 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
         if (ia instanceof AEItemStack) {
             return this.isSameType((AEItemStack) ia);
         } else if (ia instanceof ItemStack) {
-            return this.isSameType((ItemStack) ia);
+            // this actually breaks the equals contract (being equals to unrelated classes)
+            return equals((ItemStack) ia);
         }
         return false;
+    }
+
+    public boolean equals(final ItemStack is) {
+        return this.isSameType(is);
     }
 
     @Override

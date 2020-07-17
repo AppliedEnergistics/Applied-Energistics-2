@@ -27,7 +27,6 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.Direction;
 
-import appeng.api.AEApi;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.tiles.IWirelessAccessPoint;
 import appeng.api.networking.GridFlags;
@@ -39,6 +38,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
+import appeng.core.Api;
 import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkInvBlockEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -56,7 +56,7 @@ public class WirelessBlockEntity extends AENetworkInvBlockEntity implements IWir
 
     public WirelessBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        this.inv.setFilter(new AEItemDefinitionFilter(AEApi.instance().definitions().materials().wirelessBooster()));
+        this.inv.setFilter(new AEItemDefinitionFilter(Api.instance().definitions().materials().wirelessBooster()));
         this.getProxy().setFlags(GridFlags.REQUIRE_CHANNEL);
         this.getProxy().setValidSides(EnumSet.noneOf(Direction.class));
     }

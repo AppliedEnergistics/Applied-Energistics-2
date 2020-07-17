@@ -32,7 +32,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.block.entity.BlockEntity;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.SecurityPermissions;
@@ -67,6 +66,7 @@ import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.AELog;
+import appeng.core.Api;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.MEInventoryUpdatePacket;
@@ -93,8 +93,8 @@ public class MEMonitorableContainer extends AEBaseContainer
 
     private final RestrictedInputSlot[] cellView = new RestrictedInputSlot[5];
     private final IMEMonitor<IAEItemStack> monitor;
-    private final IItemList<IAEItemStack> items = AEApi.instance().storage()
-            .getStorageChannel(IItemStorageChannel.class).createList();
+    private final IItemList<IAEItemStack> items = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
+            .createList();
     private final IConfigManager clientCM;
     private final ITerminalHost host;
     @GuiSync(99)
@@ -126,7 +126,7 @@ public class MEMonitorableContainer extends AEBaseContainer
             this.serverCM = monitorable.getConfigManager();
 
             this.monitor = monitorable
-                    .getInventory(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                    .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
             if (this.monitor != null) {
                 this.monitor.addListener(this, null);
 
@@ -185,7 +185,7 @@ public class MEMonitorableContainer extends AEBaseContainer
     public void sendContentUpdates() {
         if (Platform.isServer()) {
             if (this.monitor != this.host
-                    .getInventory(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class))) {
+                    .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class))) {
                 this.setValidContainer(false);
             }
 

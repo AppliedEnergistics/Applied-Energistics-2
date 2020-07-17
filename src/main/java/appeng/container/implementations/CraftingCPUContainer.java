@@ -28,7 +28,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 
-import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.CraftingItemList;
@@ -43,6 +42,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
+import appeng.core.Api;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.MEInventoryUpdatePacket;
@@ -60,7 +60,7 @@ public class CraftingCPUContainer extends AEBaseContainer
     private static final ContainerHelper<CraftingCPUContainer, CraftingBlockEntity> helper = new ContainerHelper<>(
             CraftingCPUContainer::new, CraftingBlockEntity.class, SecurityPermissions.CRAFT);
 
-    private final IItemList<IAEItemStack> list = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)
+    private final IItemList<IAEItemStack> list = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
             .createList();
     private IGrid network;
     private CraftingCPUCluster monitor = null;

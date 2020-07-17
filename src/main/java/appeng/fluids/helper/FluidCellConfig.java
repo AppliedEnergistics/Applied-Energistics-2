@@ -24,7 +24,7 @@ import alexiil.mc.lib.attributes.fluid.FluidExtractable;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import alexiil.mc.lib.attributes.item.filter.ItemFilter;
-import appeng.api.AEApi;
+import appeng.core.Api;
 import appeng.fluids.items.FluidDummyItem;
 import appeng.items.contents.CellConfig;
 import net.minecraft.item.ItemStack;
@@ -57,7 +57,7 @@ public class FluidCellConfig extends CellConfig {
 
         fluid = fluid.withAmount(FluidAmount.BUCKET);
 
-        ItemStack is = AEApi.instance().definitions().items().dummyFluidItem().stack(1);
+        ItemStack is = Api.instance().definitions().items().dummyFluidItem().stack(1);
         FluidDummyItem item = (FluidDummyItem) is.getItem();
         item.setFluidStack(is, fluid);
         return is;

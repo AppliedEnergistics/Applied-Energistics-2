@@ -48,7 +48,7 @@ public class EnergyGeneratorBlockEntity extends AEBaseBlockEntity implements Tic
     @Override
     public void tick() {
         World world = this.getWorld();
-        if (world == null) {
+        if (world == null || world.isRemote) {
             return;
         }
 

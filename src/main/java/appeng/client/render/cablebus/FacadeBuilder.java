@@ -50,8 +50,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
 
 
-import appeng.api.AEApi;
 import appeng.api.util.AEAxisAlignedBB;
+import appeng.core.Api;
 import appeng.parts.misc.CableAnchorPart;
 /**
  * The FacadeBuilder builds for facades..
@@ -99,7 +99,7 @@ public class FacadeBuilder {
                                  RenderContext context, Function<Identifier, BakedModel> modelLookup) {
 //FIXME        BakedPipeline pipeline = this.pipelines.get();
 //FIXME          Quad collectorQuad = this.collectors.get();
-        boolean transparent = AEApi.instance().partHelper().getCableRenderMode().transparentFacades;
+        boolean transparent = Api.instance().partHelper().getCableRenderMode().transparentFacades;
         Map<Direction, FacadeRenderState> facadeStates = renderState.getFacades();
         List<Box> partBoxes = renderState.getBoundingBoxes();
         Set<Direction> sidesWithParts = renderState.getAttachments().keySet();

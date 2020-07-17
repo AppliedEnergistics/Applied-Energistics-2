@@ -34,7 +34,6 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
@@ -49,6 +48,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.WorldCoord;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.block.crafting.AbstractCraftingUnitBlock.CraftingUnitType;
+import appeng.core.Api;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.CraftingCPUCalculator;
@@ -81,9 +81,9 @@ public class CraftingBlockEntity extends AENetworkBlockEntity implements IAEMult
         Optional<ItemStack> is;
 
         if (((CraftingBlockEntity) obj).isAccelerator()) {
-            is = AEApi.instance().definitions().blocks().craftingAccelerator().maybeStack(1);
+            is = Api.instance().definitions().blocks().craftingAccelerator().maybeStack(1);
         } else {
-            is = AEApi.instance().definitions().blocks().craftingUnit().maybeStack(1);
+            is = Api.instance().definitions().blocks().craftingUnit().maybeStack(1);
         }
 
         return is.orElseGet(() -> super.getItemFromTile(obj));
@@ -243,6 +243,11 @@ public class CraftingBlockEntity extends AENetworkBlockEntity implements IAEMult
     }
 
     public void breakCluster() {
+        // Since breaking the cluster will most likely also update the TE's state,
+        // it's essential that we're not working with outdated block-state information,
+        // since this particular TE's block might already have been removed (state=air)
+        updateContainingBlockInfo();
+
         if (this.cluster != null) {
             this.cluster.cancel();
             final IMEInventory<IAEItemStack> inv = this.cluster.getInventory();
@@ -275,7 +280,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity implements IAEMult
             }
 
             for (IAEItemStack ais : inv.getAvailableItems(
-                    AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList())) {
+                    Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createList())) {
                 ais = ais.copy();
                 ais.setStackSize(ais.getDefinition().getMaxCount());
                 while (true) {

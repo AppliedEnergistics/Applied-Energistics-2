@@ -31,7 +31,6 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.Direction;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
@@ -47,6 +46,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
+import appeng.core.Api;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkPowerBlockEntity;
@@ -116,7 +116,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
 
         final ItemStack myItem = this.inv.getInvStack(0);
         if (this.getInternalCurrentPower() > POWER_THRESHOLD) {
-            final IMaterials materials = AEApi.instance().definitions().materials();
+            final IMaterials materials = Api.instance().definitions().materials();
 
             if (materials.certusQuartzCrystal().isSameAs(myItem)) {
                 this.extractAEPower(this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG);
@@ -158,7 +158,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
         if (myItem.isEmpty()) {
             ItemStack held = player.inventory.getMainHandStack();
 
-            if (AEApi.instance().definitions().materials().certusQuartzCrystal().isSameAs(held)
+            if (Api.instance().definitions().materials().certusQuartzCrystal().isSameAs(held)
                     || Platform.isChargeable(held)) {
                 held = player.inventory.removeStack(player.inventory.selectedSlot, 1);
                 this.inv.setInvStack(0, held, Simulation.ACTION);
@@ -186,13 +186,13 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
         boolean changed = false;
 
         if (!myItem.isEmpty()) {
-            final IMaterials materials = AEApi.instance().definitions().materials();
+            final IMaterials materials = Api.instance().definitions().materials();
 
             if (Platform.isChargeable(myItem)) {
                 final IAEItemPowerStorage ps = (IAEItemPowerStorage) myItem.getItem();
 
                 if (ps.getAEMaxPower(myItem) > ps.getAECurrentPower(myItem)) {
-                    final double chargeRate = AEApi.instance().registries().charger().getChargeRate(myItem.getItem());
+                    final double chargeRate = Api.instance().registries().charger().getChargeRate(myItem.getItem());
 
                     double extractedAmount = this.extractAEPower(chargeRate, Actionable.MODULATE,
                             PowerMultiplier.CONFIG);
@@ -255,7 +255,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
     private class ChargerInvFilter implements IAEItemFilter {
         @Override
         public boolean allowInsert(FixedItemInv inv, final int i, final ItemStack itemstack) {
-            final IItemDefinition cert = AEApi.instance().definitions().materials().certusQuartzCrystal();
+            final IItemDefinition cert = Api.instance().definitions().materials().certusQuartzCrystal();
 
             return Platform.isChargeable(itemstack) || cert.isSameAs(itemstack);
         }
@@ -271,7 +271,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
                 }
             }
 
-            return AEApi.instance().definitions().materials().certusQuartzCrystalCharged().isSameAs(extractedItem);
+            return Api.instance().definitions().materials().certusQuartzCrystalCharged().isSameAs(extractedItem);
         }
     }
 }

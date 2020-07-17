@@ -38,6 +38,9 @@ import net.minecraft.world.dimension.DimensionType;
 
 import java.util.ArrayList;
 import java.util.List;
+import appeng.api.util.WorldCoord;
+import appeng.core.Api;
+import appeng.core.AppEng;
 
 public class StorageHelper {
 
@@ -143,7 +146,7 @@ public class StorageHelper {
 
     public void swapRegions(final ServerWorld srcWorld, final int srcX, final int srcY, final int srcZ, final ServerWorld dstWorld,
             final int dstX, final int dstY, final int dstZ, final int scaleX, final int scaleY, final int scaleZ) {
-        AEApi.instance().definitions().blocks().matrixFrame().maybeBlock()
+        Api.instance().definitions().blocks().matrixFrame().maybeBlock()
                 .ifPresent(matrixFrameBlock -> this.transverseEdges(dstX - 1, dstY - 1, dstZ - 1, dstX + scaleX + 1,
                         dstY + scaleY + 1, dstZ + scaleZ + 1,
                         new WrapInMatrixFrame(matrixFrameBlock.getDefaultState(), dstWorld)));

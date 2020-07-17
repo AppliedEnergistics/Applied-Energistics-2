@@ -31,10 +31,10 @@ import alexiil.mc.lib.attributes.item.InvMarkDirtyListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 
-import appeng.api.AEApi;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AELog;
+import appeng.core.Api;
 import appeng.util.Platform;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
@@ -134,7 +134,7 @@ public class AppEngInternalAEInventory implements FixedItemInv, Iterable<ItemSta
         }
 
         ItemStack oldStack = this.getInvStack(slot).copy();
-        this.inv[slot] = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)
+        this.inv[slot] = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
                 .createStack(to);
 
         ItemStack newStack = to.copy();

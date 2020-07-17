@@ -25,7 +25,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.IGridNode;
@@ -47,6 +46,7 @@ import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.core.sync.packets.BlockTransitionEffectPacket;
@@ -281,7 +281,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
         try {
             final IStorageGrid storage = this.getProxy().getStorage();
             final IMEInventory<IAEFluidStack> inv = storage
-                    .getInventory(AEApi.instance().storage().getStorageChannel(IFluidStorageChannel.class));
+                    .getInventory(Api.instance().storage().getStorageChannel(IFluidStorageChannel.class));
 
             if (modulate) {
                 final IEnergyGrid energy = this.getProxy().getEnergy();

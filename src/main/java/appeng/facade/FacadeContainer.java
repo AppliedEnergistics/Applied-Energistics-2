@@ -26,11 +26,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
 
-import appeng.api.AEApi;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.AEPartLocation;
+import appeng.core.Api;
 import appeng.items.parts.FacadeItem;
 import appeng.parts.CableBusStorage;
 
@@ -110,7 +110,7 @@ public class FacadeContainer implements IFacadeContainer {
             if ((facadeSides & ix) == ix) {
                 final int id = Math.abs(out.readInt());
 
-                Optional<net.minecraft.item.Item> maybeFacadeItem = AEApi.instance().definitions().items().facade()
+                Optional<net.minecraft.item.Item> maybeFacadeItem = Api.instance().definitions().items().facade()
                         .maybeItem();
                 if (maybeFacadeItem.isPresent()) {
                     final FacadeItem ifa = (FacadeItem) maybeFacadeItem.get();

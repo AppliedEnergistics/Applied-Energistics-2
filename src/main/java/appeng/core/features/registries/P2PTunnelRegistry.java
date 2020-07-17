@@ -34,7 +34,6 @@ import net.minecraft.item.Items;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Identifier;
 
-import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IDefinitions;
@@ -43,6 +42,7 @@ import appeng.api.definitions.IParts;
 import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.util.AEColor;
 import net.minecraft.util.registry.Registry;
+import appeng.core.Api;
 
 public final class P2PTunnelRegistry implements IP2PTunnelRegistry {
     private static final int INITIAL_CAPACITY = 40;
@@ -53,7 +53,7 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry {
 
     public void configure() {
 
-        final IDefinitions definitions = AEApi.instance().definitions();
+        final IDefinitions definitions = Api.instance().definitions();
         final IBlocks blocks = definitions.blocks();
         final IParts parts = definitions.parts();
 

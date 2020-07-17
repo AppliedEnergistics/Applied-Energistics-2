@@ -29,7 +29,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 
-import appeng.api.AEApi;
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
@@ -39,6 +38,7 @@ import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AELog;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.AENetworkProxy;
@@ -166,7 +166,7 @@ public class ToggleBusPart extends BasicStatePart {
             if (this.getProxy().getNode() != null && this.getOuterProxy().getNode() != null) {
                 if (intention) {
                     try {
-                        this.connection = AEApi.instance().grid().createGridConnection(this.getProxy().getNode(),
+                        this.connection = Api.instance().grid().createGridConnection(this.getProxy().getNode(),
                                 this.getOuterProxy().getNode());
                     } catch (final FailedConnectionException e) {
                         // :(

@@ -8,7 +8,6 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
-import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
@@ -16,11 +15,15 @@ import appeng.api.storage.cells.ICellGuiHandler;
 import appeng.api.storage.cells.ICellHandler;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEStack;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.MEMonitorableContainer;
+import appeng.core.Api;
 
 public class BasicItemCellGuiHandler implements ICellGuiHandler {
     @Override
     public <T extends IAEStack<T>> boolean isHandlerFor(final IStorageChannel<T> channel) {
-        return channel == AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
+        return channel == Api.instance().storage().getStorageChannel(IItemStorageChannel.class);
     }
 
     @Override

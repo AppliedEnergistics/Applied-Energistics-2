@@ -28,26 +28,39 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.util.math.Direction;
-
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 
-import appeng.api.definitions.IItems;
-import appeng.block.storage.DriveSlotCellType;
 import appeng.block.storage.DriveSlotsState;
 import appeng.client.render.DelegateBakedModel;
-import appeng.core.Api;
 
 public class DriveBakedModel extends DelegateBakedModel {
-    private final Map<DriveSlotCellType, BakedModel> bakedCells;
+    private final Map<Item, BakedModel> bakedCells;
+    private final IBakedModel defaultCell;
 
-    public DriveBakedModel(BakedModel bakedBase, Map<DriveSlotCellType, BakedModel> bakedCells) {
+    public DriveBakedModel(BakedModel bakedBase, Map<Item, BakedModel> cellModels, IBakedModel defaultCell) {
         super(bakedBase);
-        this.bakedCells = bakedCells;
+        this.bakedCells = cellModels;
+        this.defaultCell = defaultCell;
+    }
+
+    /**
+     * Calculates the origin of a drive slot for positioning a cell model into it.
+     */
+    public static void getSlotOrigin(int row, int col, Vector3f translation) {
+        // Position this drive model copy at the correct slot. The transform is based on
+        // the cell-model being in slot 0,0,0 while the upper left slot's origin is at
+        // 9,13,1
+        float xOffset = (9 - col * 8) / 16.0f;
+        float yOffset = (13 - row * 3) / 16.0f;
+        float zOffset = 1 / 16.0f;
+        translation.set(xOffset, yOffset, zOffset);
     }
 
     @Nonnull
@@ -64,17 +77,14 @@ public class DriveBakedModel extends DelegateBakedModel {
 
         DriveSlotsState slotsState = driveModelData.getSlotsState();
 
+        Vector3f slotTranslation = new Vector3f();
         if (slotsState != null) {
             for (int row = 0; row < 5; row++) {
                 for (int col = 0; col < 2; col++) {
                     Matrix4f transform = new Matrix4f();
 
-                    // Position this drive model copy at the correct slot. The transform is based on
-                    // the
-                    // cell-model being in slot 0,0 at the top left of the drive.
-                    float xOffset = -col * 8 / 16.0f;
-                    float yOffset = -row * 3 / 16.0f;
-                    transform.addToLastColumn(new Vector3f(xOffset, yOffset, 0));
+                    getSlotOrigin(row, col, slotTranslation);
+                    transform.addToLastColumn(new Vector3f(slotTranslation.getX(), slotTranslation.getY(), slotTranslation.getZ()));
 
                     int slot = row * 2 + col;
 
@@ -93,23 +103,18 @@ public class DriveBakedModel extends DelegateBakedModel {
     public boolean useAmbientOcclusion() {
         // We have faces inside the chassis that are facing east, but should not receive
         // ambient occlusion from the east-side, but sadly this cannot be fine-tuned on
-        // a
-        // face-by-face basis.
+        // a face-by-face basis.
         return false;
     }
 
     // Determine which drive chassis to show based on the used cell
     private BakedModel getCellChassisModel(Item cell) {
-        IItems items = Api.INSTANCE.definitions().items();
         if (cell == null) {
-            return bakedCells.get(DriveSlotCellType.EMPTY);
-        } else if (items.fluidCell1k().item() == cell || items.fluidCell4k().item() == cell
-                || items.fluidCell16k().item() == cell || items.fluidCell64k().item() == cell) {
-            return bakedCells.get(DriveSlotCellType.FLUID);
-        } else {
-            // Fall back to an item model
-            return bakedCells.get(DriveSlotCellType.ITEM);
+            return bakedCells.get(Items.AIR);
         }
+        final IBakedModel model = bakedCells.get(cell);
+
+        return model != null ? model : defaultCell;
     }
 
     private static void addModel(@Nullable BlockState state, @Nonnull Random rand, @Nonnull IModelData extraData,

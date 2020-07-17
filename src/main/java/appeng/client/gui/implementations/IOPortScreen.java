@@ -22,7 +22,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 
-import appeng.api.AEApi;
 import appeng.api.config.FullnessMode;
 import appeng.api.config.OperationMode;
 import appeng.api.config.RedstoneMode;
@@ -31,6 +30,7 @@ import appeng.api.definitions.IDefinitions;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.container.implementations.IOPortContainer;
+import appeng.core.Api;
 import appeng.core.localization.GuiText;
 
 public class IOPortScreen extends UpgradeableScreen<IOPortContainer> {
@@ -79,7 +79,7 @@ public class IOPortScreen extends UpgradeableScreen<IOPortContainer> {
     public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
         super.drawBG(matrices, offsetX, offsetY, mouseX, mouseY, partialTicks);
 
-        final IDefinitions definitions = AEApi.instance().definitions();
+        final IDefinitions definitions = Api.instance().definitions();
 
         definitions.items().cell1k().maybeStack(1)
                 .ifPresent(cell1kStack -> this.drawItem(offsetX + 66 - 8, offsetY + 17, cell1kStack));

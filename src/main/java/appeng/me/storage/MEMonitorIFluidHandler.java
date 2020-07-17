@@ -42,11 +42,12 @@ import appeng.fluids.util.AEFluidStack;
 import java.math.RoundingMode;
 import java.util.*;
 import java.util.Map.Entry;
+import appeng.core.Api;
 
 public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITickingMonitor {
     private final GroupedFluidInv handler;
-    private final IItemList<IAEFluidStack> list = AEApi.instance().storage()
-            .getStorageChannel(IFluidStorageChannel.class).createList();
+    private final IItemList<IAEFluidStack> list = Api.instance().storage().getStorageChannel(IFluidStorageChannel.class)
+            .createList();
     private final HashMap<IMEMonitorHandlerReceiver<IAEFluidStack>, Object> listeners = new HashMap<>();
     private final Map<FluidKey, CachedFluidStack> memory;
     private IActionSource mySource;
@@ -110,7 +111,7 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
 
     @Override
     public IStorageChannel getChannel() {
-        return AEApi.instance().storage().getStorageChannel(IFluidStorageChannel.class);
+        return Api.instance().storage().getStorageChannel(IFluidStorageChannel.class);
     }
 
     private static final FluidAmount MIN_EXTRACTION_AMOUNT = FluidAmount.of(1, 1000);

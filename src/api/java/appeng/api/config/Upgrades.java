@@ -23,7 +23,11 @@
 
 package appeng.api.config;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -36,6 +40,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.text.Text;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public enum Upgrades {
     /**
@@ -74,11 +79,11 @@ public enum Upgrades {
      * @param item         machine in which this upgrade can be installed
      * @param maxSupported amount how many upgrades can be installed
      * @param tooltipGroup If more than one item of the same group are supported,
-     *                     the tooltip will show this group name instead. If the
-     *                     items have different maxSupported values, the highest
+     *                     the tooltip will show this translation key instead. If
+     *                     the items have different maxSupported values, the highest
      *                     will be shown.
      */
-    public void registerItem(final ItemConvertible item, final int maxSupported, @Nullable Text tooltipGroup) {
+    public void registerItem(final ItemConvertible item, final int maxSupported, @Nullable String tooltipGroup) {
         Preconditions.checkNotNull(item);
         this.supported.add(new Supported(item.asItem(), maxSupported, tooltipGroup));
         supportedTooltipLines = null; // Reset tooltip
@@ -98,17 +103,17 @@ public enum Upgrades {
                 Text name = supported.item.getName();
 
                 // If the group was already added by a previous item, skip this
-                if (supported.tooltipGroup != null && namesAdded.contains(supported.tooltipGroup)) {
+                if (supported.getTooltipGroup() != null && namesAdded.contains(supported.getTooltipGroup())) {
                     continue;
                 }
 
                 // If any of the following items would be of the same group, use the group name
                 // instead
-                if (supported.tooltipGroup != null) {
+                if (supported.getTooltipGroup() != null) {
                     for (int j = i + 1; j < this.supported.size(); j++) {
-                        Text otherGroup = this.supported.get(j).tooltipGroup;
-                        if (supported.tooltipGroup.equals(otherGroup)) {
-                            name = supported.tooltipGroup;
+                        Text otherGroup = this.supported.get(j).getTooltipGroup();
+                        if (supported.getTooltipGroup().equals(otherGroup)) {
+                            name = supported.getTooltipGroup();
                             break;
                         }
                     }
@@ -135,10 +140,11 @@ public enum Upgrades {
         private final Item item;
         private final Block block;
         private final int maxCount;
+        // Translation key of the tooltip group
         @Nullable
-        private final Text tooltipGroup;
+        private final String tooltipGroup;
 
-        public Supported(Item item, int maxCount, @Nullable Text tooltipGroup) {
+        public Supported(Item item, int maxCount, @Nullable String tooltipGroup) {
             this.item = item;
             if (item instanceof BlockItem) {
                 this.block = ((BlockItem) item).getBlock();
@@ -159,6 +165,10 @@ public enum Upgrades {
 
         public boolean isSupported(Item item) {
             return item != null && this.item == item;
+        }
+
+        public ITextComponent getTooltipGroup() {
+            return this.tooltipGroup != null ? new TranslationTextComponent(this.tooltipGroup) : null;
         }
 
     }

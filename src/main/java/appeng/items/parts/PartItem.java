@@ -25,9 +25,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.ActionResult;
 
-import appeng.api.AEApi;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
+import appeng.core.Api;
 import appeng.items.AEBaseItem;
 
 public class PartItem<T extends IPart> extends AEBaseItem implements IPartItem<T> {
@@ -47,7 +47,7 @@ public class PartItem<T extends IPart> extends AEBaseItem implements IPartItem<T
             return ActionResult.PASS;
         }
 
-        return AEApi.instance().partHelper().placeBus(held, context.getBlockPos(), context.getSide(), player,
+        return Api.instance().partHelper().placeBus(held, context.getBlockPos(), context.getSide(), player,
                 context.getHand(), context.getWorld());
     }
 

@@ -23,6 +23,7 @@ import appeng.api.definitions.IBlockDefinition;
 import appeng.api.parts.*;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PartPlacementPacket;
@@ -192,7 +193,7 @@ public class PartPlacement {
 
         BlockPos te_pos = pos;
 
-        final IBlockDefinition multiPart = AEApi.instance().definitions().blocks().multiPart();
+        final IBlockDefinition multiPart = Api.instance().definitions().blocks().multiPart();
         if (host == null && pass == PlaceType.PLACE_ITEM) {
             Direction offset = null;
 

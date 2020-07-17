@@ -21,7 +21,6 @@ package appeng.items.contents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.Settings;
@@ -37,6 +36,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.IConfigManager;
 import appeng.container.interfaces.IInventorySlotAware;
+import appeng.core.Api;
 import appeng.me.helpers.MEMonitorHandler;
 import appeng.util.ConfigManager;
 
@@ -47,8 +47,8 @@ public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implement
     private final int inventorySlot;
 
     public PortableCellViewer(final ItemStack is, final int slot) {
-        super(AEApi.instance().registries().cell().getCellInventory(is, null,
-                AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)));
+        super(Api.instance().registries().cell().getCellInventory(is, null,
+                Api.instance().storage().getStorageChannel(IItemStorageChannel.class)));
         this.ips = (IAEItemPowerStorage) is.getItem();
         this.target = is;
         this.inventorySlot = slot;
@@ -77,7 +77,7 @@ public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implement
 
     @Override
     public <T extends IAEStack<T>> IMEMonitor<T> getInventory(IStorageChannel<T> channel) {
-        if (channel == AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)) {
+        if (channel == Api.instance().storage().getStorageChannel(IItemStorageChannel.class)) {
             return (IMEMonitor<T>) this;
         }
         return null;

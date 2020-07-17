@@ -35,18 +35,18 @@ import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
+import appeng.api.crafting.ICraftingHelper;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItems;
 import appeng.api.definitions.IMaterials;
 import appeng.api.features.INetworkEncodable;
-import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.cells.ICellWorkbenchItem;
+import appeng.core.Api;
 import appeng.items.misc.EncodedPatternItem;
 import appeng.recipes.handlers.GrinderRecipes;
 import appeng.tile.misc.InscriberRecipes;
@@ -90,10 +90,7 @@ public class RestrictedInputSlot extends AppEngSlot {
 
     public boolean isValid(final ItemStack is, final World theWorld) {
         if (this.which == PlacableItemType.VALID_ENCODED_PATTERN_W_OUTPUT) {
-            final ICraftingPatternDetails ap = is.getItem() instanceof ICraftingPatternItem
-                    ? ((ICraftingPatternItem) is.getItem()).getPatternForItem(is, theWorld)
-                    : null;
-            return ap != null;
+            return Api.instance().crafting().decodePattern(is, theWorld) != null;
         }
         return true;
     }
@@ -125,42 +122,27 @@ public class RestrictedInputSlot extends AppEngSlot {
             return false;
         }
 
-        final IDefinitions definitions = AEApi.instance().definitions();
+        final IDefinitions definitions = Api.instance().definitions();
         final IMaterials materials = definitions.materials();
         final IItems items = definitions.items();
+        final ICraftingHelper crafting = Api.instance().crafting();
 
         switch (this.which) {
             case ENCODED_CRAFTING_PATTERN:
-                if (i.getItem() instanceof ICraftingPatternItem) {
-                    final ICraftingPatternItem b = (ICraftingPatternItem) i.getItem();
-                    final ICraftingPatternDetails de = b.getPatternForItem(i, this.p.player.world);
-                    if (de != null) {
-                        return de.isCraftable();
-                    }
+                final ICraftingPatternDetails de = crafting.decodePattern(i, this.p.player.world);
+                if (de != null) {
+                    return de.isCraftable();
                 }
                 return false;
             case VALID_ENCODED_PATTERN_W_OUTPUT:
             case ENCODED_PATTERN_W_OUTPUT:
-            case ENCODED_PATTERN: {
-                if (i.getItem() instanceof ICraftingPatternItem) {
-                    return true;
-                }
-                // ICraftingPatternDetails pattern = i.getItem() instanceof ICraftingPatternItem
-                // ?
-                // ((ICraftingPatternItem)
-                // i.getItem()).getPatternForItem( i ) : null;
-                return false;// pattern != null;
-            }
+            case ENCODED_PATTERN:
+                return crafting.isEncodedPattern(i);
             case BLANK_PATTERN:
                 return materials.blankPattern().isSameAs(i);
 
             case PATTERN:
-
-                if (i.getItem() instanceof ICraftingPatternItem) {
-                    return true;
-                }
-
-                return materials.blankPattern().isSameAs(i);
+                return materials.blankPattern().isSameAs(i) || crafting.isEncodedPattern(i);
 
             case INSCRIBER_PLATE:
                 if (materials.namePress().isSameAs(i)) {
@@ -197,14 +179,14 @@ public class RestrictedInputSlot extends AppEngSlot {
                 return i.getItem() instanceof ISpatialStorageCell
                         && ((ISpatialStorageCell) i.getItem()).isSpatialStorage(i);
             case STORAGE_CELLS:
-                return AEApi.instance().registries().cell().isCellHandled(i);
+                return Api.instance().registries().cell().isCellHandled(i);
             case WORKBENCH_CELL:
                 return i.getItem() instanceof ICellWorkbenchItem && ((ICellWorkbenchItem) i.getItem()).isEditable(i);
             case STORAGE_COMPONENT:
                 return i.getItem() instanceof IStorageComponent
                         && ((IStorageComponent) i.getItem()).isStorageComponent(i);
             case TRASH:
-                if (AEApi.instance().registries().cell().isCellHandled(i)) {
+                if (Api.instance().registries().cell().isCellHandled(i)) {
                     return false;
                 }
 
@@ -212,7 +194,7 @@ public class RestrictedInputSlot extends AppEngSlot {
                         && ((IStorageComponent) i.getItem()).isStorageComponent(i));
             case ENCODABLE_ITEM:
                 return i.getItem() instanceof INetworkEncodable
-                        || AEApi.instance().registries().wireless().isWirelessTerminal(i);
+                        || Api.instance().registries().wireless().isWirelessTerminal(i);
             case BIOMETRIC_CARD:
                 return i.getItem() instanceof IBiometricCard;
             case UPGRADES:

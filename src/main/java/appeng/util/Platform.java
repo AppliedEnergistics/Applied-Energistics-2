@@ -46,6 +46,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
+import appeng.core.Api;
 import appeng.core.stats.AeStats;
 import appeng.fluids.util.AEFluidStack;
 import appeng.hooks.TickHandler;
@@ -843,11 +844,11 @@ public class Platform {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static void postChanges(final IStorageGrid gs, final ItemStack removed, final ItemStack added,
             final IActionSource src) {
-        for (final IStorageChannel<?> chan : AEApi.instance().storage().storageChannels()) {
+        for (final IStorageChannel<?> chan : Api.instance().storage().storageChannels()) {
             final IItemList<?> myChanges = chan.createList();
 
             if (!removed.isEmpty()) {
-                final IMEInventory myInv = AEApi.instance().registries().cell().getCellInventory(removed, null, chan);
+                final IMEInventory myInv = Api.instance().registries().cell().getCellInventory(removed, null, chan);
                 if (myInv != null) {
                     myInv.getAvailableItems(myChanges);
                     for (final IAEStack is : myChanges) {
@@ -856,7 +857,7 @@ public class Platform {
                 }
             }
             if (!added.isEmpty()) {
-                final IMEInventory myInv = AEApi.instance().registries().cell().getCellInventory(added, null, chan);
+                final IMEInventory myInv = Api.instance().registries().cell().getCellInventory(added, null, chan);
                 if (myInv != null) {
                     myInv.getAvailableItems(myChanges);
                 }
@@ -1106,8 +1107,7 @@ public class Platform {
         }
 
         if (type == AEFeature.CERTUS_QUARTZ_TOOLS) {
-            final IItemDefinition certusQuartzCrystal = AEApi.instance().definitions().materials()
-                    .certusQuartzCrystal();
+            final IItemDefinition certusQuartzCrystal = Api.instance().definitions().materials().certusQuartzCrystal();
 
             return certusQuartzCrystal.isSameAs(b);
         }
@@ -1126,7 +1126,7 @@ public class Platform {
     }
 
     public static boolean isRecipePrioritized(final ItemStack what) {
-        final IMaterials materials = AEApi.instance().definitions().materials();
+        final IMaterials materials = Api.instance().definitions().materials();
 
         boolean isPurified = materials.purifiedCertusQuartzCrystal().isSameAs(what);
         isPurified |= materials.purifiedFluixCrystal().isSameAs(what);

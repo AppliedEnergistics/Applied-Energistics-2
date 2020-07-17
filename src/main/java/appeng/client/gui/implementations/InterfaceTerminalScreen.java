@@ -42,7 +42,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.text.Text;
 
 
-import appeng.api.AEApi;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.client.ActionKey;
 import appeng.client.gui.AEBaseScreen;
@@ -51,6 +50,7 @@ import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.me.ClientDCInternalInv;
 import appeng.client.me.SlotDisconnected;
 import appeng.container.implementations.InterfaceTerminalContainer;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
@@ -321,7 +321,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
 
             final ItemStack parsedItemStack = ItemStack.fromTag(outTag.getCompound(i));
             if (!parsedItemStack.isEmpty()) {
-                final String displayName = Platform.getItemDisplayName(AEApi.instance().storage()
+                final String displayName = Platform.getItemDisplayName(Api.instance().storage()
                         .getStorageChannel(IItemStorageChannel.class).createStack(parsedItemStack)).getString()
                         .toLowerCase();
                 if (displayName.contains(searchTerm)) {

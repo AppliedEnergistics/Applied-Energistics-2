@@ -27,8 +27,6 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.text.Text;
 
-import appeng.api.AEApi;
-import appeng.api.config.Settings;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.config.YesNo;
@@ -38,6 +36,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.client.gui.widgets.IScrollSource;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.core.AEConfig;
+import appeng.core.Api;
 import appeng.fluids.util.FluidSorters;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
@@ -48,8 +47,8 @@ import appeng.util.prioritylist.IPartitionList;
  * @since rv6 22/05/2018
  */
 public class FluidRepo {
-    private final IItemList<IAEFluidStack> list = AEApi.instance().storage()
-            .getStorageChannel(IFluidStorageChannel.class).createList();
+    private final IItemList<IAEFluidStack> list = Api.instance().storage().getStorageChannel(IFluidStorageChannel.class)
+            .createList();
     private final ArrayList<IAEFluidStack> view = new ArrayList<>();
     private final IScrollSource src;
     private final ISortSource sortSrc;

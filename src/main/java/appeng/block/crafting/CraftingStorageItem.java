@@ -22,10 +22,10 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import appeng.api.AEApi;
 import appeng.api.features.AEFeature;
 import appeng.block.AEBaseBlockItem;
 import appeng.core.AEConfig;
+import appeng.core.Api;
 
 public class CraftingStorageItem extends AEBaseBlockItem {
 
@@ -36,7 +36,7 @@ public class CraftingStorageItem extends AEBaseBlockItem {
 // FIXME FABRIC needs to move to disassembly crafting recipes
 // FIXME FABRIC    @Override
 // FIXME FABRIC    public Item getRecipeRemainder() {
-// FIXME FABRIC        return AEApi.instance().definitions().blocks().craftingUnit().item();
+// FIXME FABRIC        return Api.instance().definitions().blocks().craftingUnit().item();
 // FIXME FABRIC    }
 // FIXME FABRIC
 // FIXME FABRIC    @Override

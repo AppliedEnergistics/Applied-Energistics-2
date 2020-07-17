@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import appeng.api.AEApi;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridCache;
 import appeng.api.networking.IGridHost;
@@ -35,6 +34,7 @@ import appeng.api.networking.IMachineSet;
 import appeng.api.networking.events.MENetworkEvent;
 import appeng.api.networking.events.MENetworkPostCacheConstruction;
 import appeng.api.util.IReadOnlyCollection;
+import appeng.core.Api;
 import appeng.core.worlddata.WorldData;
 import appeng.hooks.TickHandler;
 import appeng.util.ReadOnlyCollection;
@@ -50,7 +50,7 @@ public class Grid implements IGrid {
     public Grid(final GridNode center) {
         this.pivot = center;
 
-        final Map<Class<? extends IGridCache>, IGridCache> myCaches = AEApi.instance().registries().gridCache()
+        final Map<Class<? extends IGridCache>, IGridCache> myCaches = Api.instance().registries().gridCache()
                 .createCacheInstance(this);
         this.caches = new HashMap<>(myCaches.size());
         for (final Entry<Class<? extends IGridCache>, IGridCache> c : myCaches.entrySet()) {

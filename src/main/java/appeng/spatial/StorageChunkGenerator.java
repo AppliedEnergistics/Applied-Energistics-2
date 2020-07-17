@@ -54,7 +54,7 @@ public class StorageChunkGenerator extends ChunkGenerator {
 
     private StorageChunkGenerator() {
         super(createBiomeProvider(), createSettings());
-        this.defaultBlockState = AEApi.instance().definitions().blocks().matrixFrame().block().getDefaultState();
+        this.defaultBlockState = Api.instance().definitions().blocks().matrixFrame().block().getDefaultState();
 
         // Vertical sample is mostly used for Feature generation, for those purposes we're all filled with matrix blocks
         BlockState[] columnSample = new BlockState[256];
@@ -74,7 +74,7 @@ public class StorageChunkGenerator extends ChunkGenerator {
     private static StructuresConfig createSettings() {
         return new StructuresConfig(Optional.empty(), Collections.emptyMap());
     }
-    
+
     @Override
     public void buildSurface(ChunkRegion region, Chunk chunk) {
         this.fillChunk(chunk);

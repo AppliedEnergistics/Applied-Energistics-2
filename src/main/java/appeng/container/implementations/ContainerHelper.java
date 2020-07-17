@@ -14,7 +14,6 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.implementations.guiobjects.IGuiItem;
@@ -24,6 +23,7 @@ import appeng.api.parts.IPartHost;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.core.AELog;
+import appeng.core.Api;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.util.Platform;
@@ -212,7 +212,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
         }
 
         if (interfaceClass.isAssignableFrom(WirelessTerminalGuiObject.class)) {
-            final IWirelessTermHandler wh = AEApi.instance().registries().wireless().getWirelessTerminalHandler(it);
+            final IWirelessTermHandler wh = Api.instance().registries().wireless().getWirelessTerminalHandler(it);
             if (wh != null) {
                 return interfaceClass.cast(new WirelessTerminalGuiObject(wh, it, player, locator.getItemIndex()));
             }

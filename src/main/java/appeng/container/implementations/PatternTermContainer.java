@@ -20,7 +20,6 @@ package appeng.container.implementations;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.compat.FixedInventoryVanillaWrapper;
@@ -43,9 +42,9 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
+import appeng.api.crafting.ICraftingHelper;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.ITerminalHost;
@@ -61,6 +60,7 @@ import appeng.container.slot.OptionalFakeSlot;
 import appeng.container.slot.PatternOutputsSlot;
 import appeng.container.slot.PatternTermSlot;
 import appeng.container.slot.RestrictedInputSlot;
+import appeng.core.Api;
 import appeng.core.sync.packets.PatternSlotPacket;
 import appeng.helpers.IContainerCraftingPacket;
 import appeng.items.storage.ViewCellItem;
@@ -99,6 +99,7 @@ public class PatternTermContainer extends MEMonitorableContainer
     private final PatternTermSlot craftSlot;
     private final RestrictedInputSlot patternSlotIN;
     private final RestrictedInputSlot patternSlotOUT;
+    private final ICraftingHelper craftingHelper = Api.INSTANCE.crafting();
 
     private Recipe<CraftingInventory> currentRecipe;
     @GuiSync(97)
@@ -212,17 +213,17 @@ public class PatternTermContainer extends MEMonitorableContainer
         final ItemStack[] out = this.getOutputs();
 
         // if there is no input, this would be silly.
-        if (in == null || out == null) {
+        if (in == null || out == null || isCraftingMode() && currentRecipe == null) {
             return;
         }
 
         // first check the output slots, should either be null, or a pattern
-        if (!output.isEmpty() && !this.isPattern(output)) {
+        if (!output.isEmpty() && !craftingHelper.isEncodedPattern(output)) {
             return;
         } // if nothing is there we should snag a new pattern.
         else if (output.isEmpty()) {
             output = this.patternSlotIN.getStack();
-            if (output.isEmpty() || !this.isPattern(output)) {
+            if (output.isEmpty() || !isPattern(output)) {
                 return; // no blanks.
             }
 
@@ -232,34 +233,17 @@ public class PatternTermContainer extends MEMonitorableContainer
                 this.patternSlotIN.setStack(ItemStack.EMPTY);
             }
 
-            // add a new encoded pattern.
-            Optional<ItemStack> maybePattern = AEApi.instance().definitions().items().encodedPattern().maybeStack(1);
-            if (maybePattern.isPresent()) {
-                output = maybePattern.get();
-                this.patternSlotOUT.setStack(output);
-            }
+            // let the crafting helper create a new encoded pattern
+            output = null;
         }
 
-        // encode the slot.
-        final CompoundTag encodedValue = new CompoundTag();
-
-        final ListTag tagIn = new ListTag();
-        final ListTag tagOut = new ListTag();
-
-        for (final ItemStack i : in) {
-            tagIn.add(this.createItemTag(i));
+        if (this.isCraftingMode()) {
+            output = craftingHelper.encodeCraftingPattern(output, this.currentRecipe, in, out[0], isSubstitute());
+        } else {
+            output = craftingHelper.encodeProcessingPattern(output, in, out);
         }
+        this.patternSlotOUT.putStack(output);
 
-        for (final ItemStack i : out) {
-            tagOut.add(this.createItemTag(i));
-        }
-
-        encodedValue.put("in", tagIn);
-        encodedValue.put("out", tagOut);
-        encodedValue.putBoolean("crafting", this.isCraftingMode());
-        encodedValue.putBoolean("substitute", this.isSubstitute());
-
-        output.setTag(encodedValue);
     }
 
     private ItemStack[] getInputs() {
@@ -313,22 +297,8 @@ public class PatternTermContainer extends MEMonitorableContainer
             return false;
         }
 
-        final IDefinitions definitions = AEApi.instance().definitions();
-
-        boolean isPattern = definitions.items().encodedPattern().isSameAs(output);
-        isPattern |= definitions.materials().blankPattern().isSameAs(output);
-
-        return isPattern;
-    }
-
-    private Tag createItemTag(final ItemStack i) {
-        final CompoundTag c = new CompoundTag();
-
-        if (!i.isEmpty()) {
-            i.toTag(c);
-        }
-
-        return c;
+        final IDefinitions definitions = Api.instance().definitions();
+        return definitions.materials().blankPattern().isSameAs(output);
     }
 
     @Override
@@ -386,7 +356,7 @@ public class PatternTermContainer extends MEMonitorableContainer
             }
 
             final IMEMonitor<IAEItemStack> storage = this.getPatternTerminal()
-                    .getInventory(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                    .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
             final IItemList<IAEItemStack> all = storage.getStorageList();
 
             final ItemStack is = r.craft(ic);

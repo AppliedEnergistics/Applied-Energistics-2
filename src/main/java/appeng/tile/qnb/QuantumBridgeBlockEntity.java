@@ -34,7 +34,6 @@ import net.minecraft.util.math.Direction;
 
 import alexiil.mc.lib.attributes.item.impl.EmptyFixedItemInv;
 
-import appeng.api.AEApi;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkEventSubscribe;
@@ -43,6 +42,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.block.qnb.QnbFormedState;
+import appeng.core.Api;
 import appeng.me.GridAccessException;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.IAEMultiBlock;
@@ -128,7 +128,7 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity implements
     }
 
     private boolean isCenter() {
-        return AEApi.instance().definitions().blocks().quantumLink().maybeBlock()
+        return Api.instance().definitions().blocks().quantumLink().maybeBlock()
                 .map(link -> getCachedState().getBlock() == link).orElse(false);
     }
 
@@ -147,7 +147,7 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity implements
     public void onReady() {
         super.onReady();
 
-        final IBlockDefinition quantumRing = AEApi.instance().definitions().blocks().quantumRing();
+        final IBlockDefinition quantumRing = Api.instance().definitions().blocks().quantumRing();
         final Optional<Block> maybeLinkBlock = quantumRing.maybeBlock();
         final Optional<ItemStack> maybeLinkStack = quantumRing.maybeStack(1);
 
@@ -283,6 +283,11 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity implements
     }
 
     public void breakCluster() {
+        // Since breaking the cluster will most likely also update the TE's state,
+        // it's essential that we're not working with outdated block-state information,
+        // since this particular TE's block might already have been removed (state=air)
+        updateContainingBlockInfo();
+
         if (this.cluster != null) {
             this.cluster.destroy();
         }

@@ -35,11 +35,10 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.text.Text;
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.implementations.ICraftingPatternItem;
+import appeng.api.crafting.ICraftingHelper;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -63,6 +62,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.WorldCoord;
 import appeng.container.ContainerNull;
 import appeng.core.AELog;
+import appeng.core.Api;
 import appeng.crafting.CraftBranchFailure;
 import appeng.crafting.CraftingJob;
 import appeng.crafting.CraftingLink;
@@ -98,7 +98,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
     private MECraftingInventory inventory = new MECraftingInventory();
     private IAEItemStack finalOutput;
     private boolean waiting = false;
-    private IItemList<IAEItemStack> waitingFor = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)
+    private IItemList<IAEItemStack> waitingFor = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
             .createList();
     private long availableStorage = 0;
     private MachineSource machineSrc = null;
@@ -464,7 +464,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         }
 
         final IItemList<IAEItemStack> list;
-        this.getListOfItem(list = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList(),
+        this.getListOfItem(list = Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createList(),
                 CraftingItemList.ALL);
         for (final IAEItemStack is : list) {
             this.postChange(is, this.machineSrc);
@@ -714,7 +714,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
         final IStorageGrid sg = g.getCache(IStorageGrid.class);
         final IMEInventory<IAEItemStack> ii = sg
-                .getInventory(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
 
         for (IAEItemStack is : this.inventory.getItemList()) {
             is = this.inventory.extractItems(is.copy(), Actionable.MODULATE, this.machineSrc);
@@ -752,7 +752,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
         final IStorageGrid sg = g.getCache(IStorageGrid.class);
         final IMEInventory<IAEItemStack> storage = sg
-                .getInventory(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                .getInventory(Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
         final MECraftingInventory ci = new MECraftingInventory(storage, true, false, false);
 
         try {
@@ -782,7 +782,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
                 this.submitLink(this.myLastLink);
                 this.submitLink(whatLink);
 
-                final IItemList<IAEItemStack> list = AEApi.instance().storage()
+                final IItemList<IAEItemStack> list = Api.instance().storage()
                         .getStorageChannel(IItemStorageChannel.class).createList();
                 this.getListOfItem(list, CraftingItemList.ALL);
                 for (final IAEItemStack ge : list) {
@@ -1054,9 +1054,9 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         for (int x = 0; x < list.size(); x++) {
             final CompoundTag item = list.getCompound(x);
             final IAEItemStack pattern = AEItemStack.fromNBT(item);
-            if (pattern != null && pattern.getItem() instanceof ICraftingPatternItem) {
-                final ICraftingPatternItem cpi = (ICraftingPatternItem) pattern.getItem();
-                final ICraftingPatternDetails details = cpi.getPatternForItem(pattern.createItemStack(),
+            ICraftingHelper craftingHelper = Api.instance().crafting();
+            if (craftingHelper.isEncodedPattern(pattern)) {
+                final ICraftingPatternDetails details = craftingHelper.decodePattern(pattern.createItemStack(),
                         this.getWorld());
                 if (details != null) {
                     final TaskProgress tp = new TaskProgress();
@@ -1092,7 +1092,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
     }
 
     private IItemList<IAEItemStack> readList(final ListTag tag) {
-        final IItemList<IAEItemStack> out = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)
+        final IItemList<IAEItemStack> out = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
                 .createList();
 
         if (tag == null) {
@@ -1129,7 +1129,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         this.lastTime = System.nanoTime();
         this.elapsedTime = 0;
 
-        final IItemList<IAEItemStack> list = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)
+        final IItemList<IAEItemStack> list = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
                 .createList();
 
         this.getListOfItem(list, CraftingItemList.ACTIVE);

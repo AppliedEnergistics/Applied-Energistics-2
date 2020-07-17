@@ -27,16 +27,19 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
 import appeng.api.definitions.IMaterials;
 import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
+import appeng.core.Api;
 import appeng.util.Platform;
 
 public final class SingularityEntity extends AEBaseItemEntity {
+
+    private static final ResourceLocation TAG_ENDER_PEARL = new ResourceLocation("forge:ender_pearls");
 
     public static EntityType<SingularityEntity> TYPE;
 
@@ -71,7 +74,7 @@ public final class SingularityEntity extends AEBaseItemEntity {
 
         final ItemStack item = this.getStack();
 
-        final IMaterials materials = AEApi.instance().definitions().materials();
+        final IMaterials materials = Api.instance().definitions().materials();
 
         if (materials.singularity().isSameAs(item)) {
             final Box region = new Box(this.getX() - 4, this.getY() - 4, this.getZ() - 4,
@@ -83,6 +86,17 @@ public final class SingularityEntity extends AEBaseItemEntity {
                     final ItemStack other = ((ItemEntity) e).getStack();
                     if (!other.isEmpty()) {
                         boolean matches = false;
+
+                        if (materials.enderDust().isSameAs(other)) {
+                            matches = true;
+                        }
+
+                        // check... other name.
+                        if (!matches) {
+                            if (other.getItem().getTags().contains(TAG_ENDER_PEARL)) {
+                                matches = true;
+                            }
+                        }
 
                         if (matches) {
                             while (item.getCount() > 0 && other.getCount() > 0) {

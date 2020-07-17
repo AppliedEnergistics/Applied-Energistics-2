@@ -8,7 +8,6 @@ import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
 
-import appeng.api.AEApi;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IParts;
 import appeng.client.gui.AEBaseScreen;
@@ -18,6 +17,7 @@ import appeng.container.implementations.CraftingTermContainer;
 import appeng.container.implementations.MEMonitorableContainer;
 import appeng.container.implementations.PatternTermContainer;
 import appeng.container.implementations.WirelessTermContainer;
+import appeng.core.Api;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.helpers.IPriorityHost;
@@ -45,7 +45,7 @@ final class AESubScreen {
     public AESubScreen(AEBaseScreen<?> gui, Object containerTarget) {
         this.gui = gui;
 
-        final IDefinitions definitions = AEApi.instance().definitions();
+        final IDefinitions definitions = Api.instance().definitions();
         final IParts parts = definitions.parts();
 
         if (containerTarget instanceof ChestBlockEntity) {

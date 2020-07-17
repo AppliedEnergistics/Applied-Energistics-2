@@ -34,13 +34,13 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
 
-import appeng.api.AEApi;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.container.implementations.CraftConfirmContainer;
+import appeng.core.Api;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
@@ -52,11 +52,11 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
 
     private final int rows = 5;
 
-    private final IItemList<IAEItemStack> storage = AEApi.instance().storage()
+    private final IItemList<IAEItemStack> storage = Api.instance().storage()
             .getStorageChannel(IItemStorageChannel.class).createList();
-    private final IItemList<IAEItemStack> pending = AEApi.instance().storage()
+    private final IItemList<IAEItemStack> pending = Api.instance().storage()
             .getStorageChannel(IItemStorageChannel.class).createList();
-    private final IItemList<IAEItemStack> missing = AEApi.instance().storage()
+    private final IItemList<IAEItemStack> missing = Api.instance().storage()
             .getStorageChannel(IItemStorageChannel.class).createList();
 
     private final List<IAEItemStack> visual = new ArrayList<>();

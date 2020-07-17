@@ -52,7 +52,6 @@ import net.minecraft.text.Text;
 import net.minecraft.world.World;
 import net.fabricmc.api.Environment;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Upgrades;
@@ -67,6 +66,7 @@ import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.network.NetworkHandler;
@@ -99,10 +99,10 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
             final TooltipContext advancedTooltips) {
         super.appendTooltip(stack, world, lines, advancedTooltips);
 
-        final ICellInventoryHandler<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory(stack,
-                null, AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
+        final ICellInventoryHandler<IAEItemStack> cdi = Api.instance().registries().cell().getCellInventory(stack, null,
+                Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
 
-        AEApi.instance().client().addCellInformation(cdi, lines);
+        Api.instance().client().addCellInformation(cdi, lines);
     }
 
     @Override
@@ -115,11 +115,11 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                 shots += cu.getInstalledUpgrades(Upgrades.SPEED);
             }
 
-            final ICellInventoryHandler<IAEItemStack> inv = AEApi.instance().registries().cell().getCellInventory(
-                    p.getStackInHand(hand), null, AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
+            final ICellInventoryHandler<IAEItemStack> inv = Api.instance().registries().cell().getCellInventory(
+                    p.getStackInHand(hand), null, Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
             if (inv != null) {
                 final IItemList<IAEItemStack> itemList = inv.getAvailableItems(
-                        AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList());
+                        Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createList());
                 IAEItemStack req = itemList.getFirstItem();
                 if (req instanceof IAEItemStack) {
                     shots = Math.min(shots, (int) req.getStackSize());
@@ -153,7 +153,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                         final double d1 = rayFrom.y;
                         final double d2 = rayFrom.z;
 
-                        final float penetration = AEApi.instance().registries().matterCannon().getPenetration(ammo); // 196.96655f;
+                        final float penetration = Api.instance().registries().matterCannon().getPenetration(ammo); // 196.96655f;
                         if (penetration <= 0) {
                             final ItemStack type = aeAmmo.asItemStackRepresentation();
                             if (type.getItem() instanceof PaintBallItem) {
@@ -189,26 +189,24 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
         for (int l = 0; l < list.size(); ++l) {
             final Entity entity1 = (Entity) list.get(l);
 
-            if (!entity1.isAlive() && entity1 != p && !(entity1 instanceof ItemEntity)) {
-                if (entity1.isAlive()) {
-                    // prevent killing / flying of mounts.
-                    if (entity1.isConnectedThroughVehicle(p)) {
-                        continue;
-                    }
+            if (entity1.isAlive() && entity1 != p && !(entity1 instanceof ItemEntity)) {
+                // prevent killing / flying of mounts.
+                if (entity1.isConnectedThroughVehicle(p)) {
+                    continue;
+                }
 
-                    final float f1 = 0.3F;
+                final float f1 = 0.3F;
 
-                    final Box boundingBox = entity1.getBoundingBox().expand(f1, f1, f1);
-                    final Vec3d intersection = boundingBox.rayTrace(Vec3d, Vec3d1).orElse(null);
+                final Box boundingBox = entity1.getBoundingBox().expand(f1, f1, f1);
+                final Vec3d intersection = boundingBox.rayTrace(Vec3d, Vec3d1).orElse(null);
 
-                    if (intersection != null) {
-                        final double nd = Vec3d.squaredDistanceTo(intersection);
+                if (intersection != null) {
+                    final double nd = Vec3d.squaredDistanceTo(intersection);
 
-                        if (nd < closest) {
-                            entity = entity1;
-                            entityIntersection = intersection;
-                            closest = nd;
-                        }
+                    if (nd < closest) {
+                        entity = entity1;
+                        entityIntersection = intersection;
+                        closest = nd;
                     }
                 }
             }
@@ -267,7 +265,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
 
                 final BlockState whatsThere = w.getBlockState(hitPos);
                 if (whatsThere.getMaterial().isReplaceable() && w.isAir(hitPos)) {
-                    AEApi.instance().definitions().blocks().paint().maybeBlock().ifPresent(paintBlock -> {
+                    Api.instance().definitions().blocks().paint().maybeBlock().ifPresent(paintBlock -> {
                         w.setBlockState(hitPos, paintBlock.getDefaultState(), 3);
                     });
                 }
@@ -438,7 +436,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
 
     @Override
     public boolean isBlackListed(final ItemStack cellItem, final IAEItemStack requestedAddition) {
-        final float pen = AEApi.instance().registries().matterCannon()
+        final float pen = Api.instance().registries().matterCannon()
                 .getPenetration(requestedAddition.createItemStack());
         if (pen > 0) {
             return false;
@@ -468,6 +466,6 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
 
     @Override
     public IStorageChannel<IAEItemStack> getChannel() {
-        return AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class);
+        return Api.instance().storage().getStorageChannel(IItemStorageChannel.class);
     }
 }

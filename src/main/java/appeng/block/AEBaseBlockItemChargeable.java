@@ -18,7 +18,7 @@
 
 package appeng.block;
 
-import appeng.api.AEApi;
+import appeng.core.Api;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerUnits;
@@ -129,7 +129,7 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
 
     private double getMaxEnergyCapacity() {
         final Block blockID = Block.getBlockFromItem(this);
-        final IBlockDefinition energyCell = AEApi.instance().definitions().blocks().energyCell();
+        final IBlockDefinition energyCell = Api.instance().definitions().blocks().energyCell();
 
         return energyCell.maybeBlock().map(block -> {
             if (blockID == block) {

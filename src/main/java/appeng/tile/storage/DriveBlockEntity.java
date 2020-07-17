@@ -39,7 +39,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
-import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
@@ -62,6 +61,7 @@ import appeng.api.util.DimensionalCoord;
 import appeng.block.storage.DriveSlotsState;
 import appeng.client.render.model.DriveModelData;
 import appeng.container.implementations.DriveContainer;
+import appeng.core.Api;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
@@ -345,7 +345,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
 
     private void updateState() {
         if (!this.isCached) {
-            final Collection<IStorageChannel<? extends IAEStack<?>>> storageChannels = AEApi.instance().storage()
+            final Collection<IStorageChannel<? extends IAEStack<?>>> storageChannels = Api.instance().storage()
                     .storageChannels();
             storageChannels.forEach(channel -> this.inventoryHandlers.put(channel, new ArrayList<>(10)));
 
@@ -357,7 +357,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
                 this.handlersBySlot[x] = null;
 
                 if (!is.isEmpty()) {
-                    this.handlersBySlot[x] = AEApi.instance().registries().cell().getHandler(is);
+                    this.handlersBySlot[x] = Api.instance().registries().cell().getHandler(is);
 
                     if (this.handlersBySlot[x] != null) {
                         for (IStorageChannel<? extends IAEStack<?>> channel : storageChannels) {
@@ -435,7 +435,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
 
     @Override
     public ItemStack getItemStackRepresentation() {
-        return AEApi.instance().definitions().blocks().drive().maybeStack(1).orElse(ItemStack.EMPTY);
+        return Api.instance().definitions().blocks().drive().maybeStack(1).orElse(ItemStack.EMPTY);
     }
 
     @Override
