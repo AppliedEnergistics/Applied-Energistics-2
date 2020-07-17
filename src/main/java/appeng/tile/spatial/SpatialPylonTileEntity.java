@@ -26,6 +26,7 @@ import javax.annotation.Nonnull;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
@@ -87,7 +88,7 @@ public class SpatialPylonTileEntity extends AENetworkTileEntity implements IAEMu
     @Override
     public void onReady() {
         super.onReady();
-        this.neighborChanged();
+        this.calc.calculateMultiblock(world, getLocation());
     }
 
     @Override
@@ -96,8 +97,8 @@ public class SpatialPylonTileEntity extends AENetworkTileEntity implements IAEMu
         super.remove();
     }
 
-    public void neighborChanged() {
-        this.calc.calculateMultiblock(this.world, this.getLocation());
+    public void neighborChanged(BlockPos changedPos) {
+        this.calc.updateMultiblockAfterNeighborUpdate(this.world, this.getLocation(), changedPos);
     }
 
     @Override
@@ -130,9 +131,9 @@ public class SpatialPylonTileEntity extends AENetworkTileEntity implements IAEMu
         this.displayBits = 0;
 
         if (this.cluster != null) {
-            if (this.cluster.getMin().equals(this.getLocation())) {
+            if (this.cluster.getBoundsMin().equals(this.getLocation())) {
                 this.displayBits = DISPLAY_END_MIN;
-            } else if (this.cluster.getMax().equals(this.getLocation())) {
+            } else if (this.cluster.getBoundsMax().equals(this.getLocation())) {
                 this.displayBits = DISPLAY_END_MAX;
             } else {
                 this.displayBits = DISPLAY_MIDDLE;

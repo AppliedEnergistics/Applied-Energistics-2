@@ -82,21 +82,21 @@ public class SpatialPylonCache implements ISpatialCache {
         int pylonBlocks = 0;
         for (final SpatialPylonCluster cl : this.clusters.values()) {
             if (this.captureMax == null) {
-                this.captureMax = cl.getMax().copy();
+                this.captureMax = new DimensionalCoord(cl.getWorld(), cl.getBoundsMax());
             }
             if (this.captureMin == null) {
-                this.captureMin = cl.getMin().copy();
+                this.captureMin = new DimensionalCoord(cl.getWorld(), cl.getBoundsMin());
             }
 
             pylonBlocks += cl.tileCount();
 
-            this.captureMin.x = Math.min(this.captureMin.x, cl.getMin().x);
-            this.captureMin.y = Math.min(this.captureMin.y, cl.getMin().y);
-            this.captureMin.z = Math.min(this.captureMin.z, cl.getMin().z);
+            this.captureMin.x = Math.min(this.captureMin.x, cl.getBoundsMin().getX());
+            this.captureMin.y = Math.min(this.captureMin.y, cl.getBoundsMin().getY());
+            this.captureMin.z = Math.min(this.captureMin.z, cl.getBoundsMin().getZ());
 
-            this.captureMax.x = Math.max(this.captureMax.x, cl.getMax().x);
-            this.captureMax.y = Math.max(this.captureMax.y, cl.getMax().y);
-            this.captureMax.z = Math.max(this.captureMax.z, cl.getMax().z);
+            this.captureMax.x = Math.max(this.captureMax.x, cl.getBoundsMax().getX());
+            this.captureMax.y = Math.max(this.captureMax.y, cl.getBoundsMax().getY());
+            this.captureMax.z = Math.max(this.captureMax.z, cl.getBoundsMax().getZ());
         }
 
         double maxPower = 0;
@@ -110,28 +110,40 @@ public class SpatialPylonCache implements ISpatialCache {
                     case X:
 
                         this.isValid = this.isValid
-                                && ((this.captureMax.y == cl.getMin().y || this.captureMin.y == cl.getMax().y)
-                                        || (this.captureMax.z == cl.getMin().z || this.captureMin.z == cl.getMax().z))
-                                && ((this.captureMax.y == cl.getMax().y || this.captureMin.y == cl.getMin().y)
-                                        || (this.captureMax.z == cl.getMax().z || this.captureMin.z == cl.getMin().z));
+                                && ((this.captureMax.y == cl.getBoundsMin().getY()
+                                        || this.captureMin.y == cl.getBoundsMax().getY())
+                                        || (this.captureMax.z == cl.getBoundsMin().getZ()
+                                                || this.captureMin.z == cl.getBoundsMax().getZ()))
+                                && ((this.captureMax.y == cl.getBoundsMax().getY()
+                                        || this.captureMin.y == cl.getBoundsMin().getY())
+                                        || (this.captureMax.z == cl.getBoundsMax().getZ()
+                                                || this.captureMin.z == cl.getBoundsMin().getZ()));
 
                         break;
                     case Y:
 
                         this.isValid = this.isValid
-                                && ((this.captureMax.x == cl.getMin().x || this.captureMin.x == cl.getMax().x)
-                                        || (this.captureMax.z == cl.getMin().z || this.captureMin.z == cl.getMax().z))
-                                && ((this.captureMax.x == cl.getMax().x || this.captureMin.x == cl.getMin().x)
-                                        || (this.captureMax.z == cl.getMax().z || this.captureMin.z == cl.getMin().z));
+                                && ((this.captureMax.x == cl.getBoundsMin().getX()
+                                        || this.captureMin.x == cl.getBoundsMax().getX())
+                                        || (this.captureMax.z == cl.getBoundsMin().getZ()
+                                                || this.captureMin.z == cl.getBoundsMax().getZ()))
+                                && ((this.captureMax.x == cl.getBoundsMax().getX()
+                                        || this.captureMin.x == cl.getBoundsMin().getX())
+                                        || (this.captureMax.z == cl.getBoundsMax().getZ()
+                                                || this.captureMin.z == cl.getBoundsMin().getZ()));
 
                         break;
                     case Z:
 
                         this.isValid = this.isValid
-                                && ((this.captureMax.y == cl.getMin().y || this.captureMin.y == cl.getMax().y)
-                                        || (this.captureMax.x == cl.getMin().x || this.captureMin.x == cl.getMax().x))
-                                && ((this.captureMax.y == cl.getMax().y || this.captureMin.y == cl.getMin().y)
-                                        || (this.captureMax.x == cl.getMax().x || this.captureMin.x == cl.getMin().x));
+                                && ((this.captureMax.y == cl.getBoundsMin().getY()
+                                        || this.captureMin.y == cl.getBoundsMax().getY())
+                                        || (this.captureMax.x == cl.getBoundsMin().getX()
+                                                || this.captureMin.x == cl.getBoundsMax().getX()))
+                                && ((this.captureMax.y == cl.getBoundsMax().getY()
+                                        || this.captureMin.y == cl.getBoundsMin().getY())
+                                        || (this.captureMax.x == cl.getBoundsMax().getX()
+                                                || this.captureMin.x == cl.getBoundsMin().getX()));
 
                         break;
                     case UNFORMED:

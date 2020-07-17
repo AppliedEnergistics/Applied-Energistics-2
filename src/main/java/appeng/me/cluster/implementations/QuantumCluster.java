@@ -21,6 +21,7 @@ package appeng.me.cluster.implementations;
 import java.util.Iterator;
 
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
@@ -46,8 +47,8 @@ import appeng.util.iterators.ChainedIterator;
 
 public class QuantumCluster implements ILocatable, IAECluster {
 
-    private final WorldCoord min;
-    private final WorldCoord max;
+    private final BlockPos boundsMin;
+    private final BlockPos boundsMax;
     private boolean isDestroyed = false;
     private boolean updateStatus = true;
     private QuantumBridgeTileEntity[] Ring;
@@ -58,8 +59,8 @@ public class QuantumCluster implements ILocatable, IAECluster {
     private QuantumBridgeTileEntity center;
 
     public QuantumCluster(final WorldCoord min, final WorldCoord max) {
-        this.min = min;
-        this.max = max;
+        this.boundsMin = min.getBlockPos();
+        this.boundsMax = max.getBlockPos();
         this.setRing(new QuantumBridgeTileEntity[8]);
     }
 
@@ -188,6 +189,16 @@ public class QuantumCluster implements ILocatable, IAECluster {
 
     private boolean hasQES() {
         return this.thisSide != 0;
+    }
+
+    @Override
+    public BlockPos getBoundsMin() {
+        return boundsMin;
+    }
+
+    @Override
+    public BlockPos getBoundsMax() {
+        return boundsMax;
     }
 
     @Override

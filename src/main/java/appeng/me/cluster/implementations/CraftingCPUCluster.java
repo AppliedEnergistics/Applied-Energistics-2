@@ -32,6 +32,7 @@ import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -83,8 +84,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
     private static final String LOG_MARK_AS_COMPLETE = "Completed job for %s.";
 
-    private final WorldCoord min;
-    private final WorldCoord max;
+    private final BlockPos boundsMin;
+    private final BlockPos boundsMax;
     private final int[] usedOps = new int[3];
     private final Map<ICraftingPatternDetails, TaskProgress> tasks = new HashMap<>();
     // INSTANCE sate
@@ -115,9 +116,9 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
     private long startItemCount;
     private long remainingItemCount;
 
-    public CraftingCPUCluster(final WorldCoord min, final WorldCoord max) {
-        this.min = min;
-        this.max = max;
+    public CraftingCPUCluster(final WorldCoord boundsMin, final WorldCoord boundsMax) {
+        this.boundsMin = boundsMin.getBlockPos();
+        this.boundsMax = boundsMax.getBlockPos();
     }
 
     @Override
@@ -127,6 +128,16 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
     public ICraftingLink getLastCraftingLink() {
         return this.myLastLink;
+    }
+
+    @Override
+    public BlockPos getBoundsMin() {
+        return boundsMin;
+    }
+
+    @Override
+    public BlockPos getBoundsMax() {
+        return boundsMax;
     }
 
     /**

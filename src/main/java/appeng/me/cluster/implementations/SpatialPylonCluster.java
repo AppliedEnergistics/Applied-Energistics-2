@@ -22,31 +22,35 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
 import appeng.api.networking.IGridHost;
-import appeng.api.util.DimensionalCoord;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.MBCalculator;
 import appeng.tile.spatial.SpatialPylonTileEntity;
 
 public class SpatialPylonCluster implements IAECluster {
 
-    private final DimensionalCoord min;
-    private final DimensionalCoord max;
+    private final World world;
+    private final BlockPos boundsMin;
+    private final BlockPos boundsMax;
     private final List<SpatialPylonTileEntity> line = new ArrayList<>();
     private boolean isDestroyed = false;
 
     private Axis currentAxis = Axis.UNFORMED;
     private boolean isValid;
 
-    public SpatialPylonCluster(final DimensionalCoord min, final DimensionalCoord max) {
-        this.min = min.copy();
-        this.max = max.copy();
+    public SpatialPylonCluster(final World world, final BlockPos boundsMin, final BlockPos boundsMax) {
+        this.world = world;
+        this.boundsMin = boundsMin.toImmutable();
+        this.boundsMax = boundsMax.toImmutable();
 
-        if (this.getMin().x != this.getMax().x) {
+        if (this.getBoundsMin().getX() != this.getBoundsMax().getX()) {
             this.setCurrentAxis(Axis.X);
-        } else if (this.getMin().y != this.getMax().y) {
+        } else if (this.getBoundsMin().getY() != this.getBoundsMax().getY()) {
             this.setCurrentAxis(Axis.Y);
-        } else if (this.getMin().z != this.getMax().z) {
+        } else if (this.getBoundsMin().getZ() != this.getBoundsMax().getZ()) {
             this.setCurrentAxis(Axis.Z);
         } else {
             this.setCurrentAxis(Axis.UNFORMED);
@@ -108,12 +112,18 @@ public class SpatialPylonCluster implements IAECluster {
         this.isValid = isValid;
     }
 
-    public DimensionalCoord getMax() {
-        return this.max;
+    public World getWorld() {
+        return world;
     }
 
-    public DimensionalCoord getMin() {
-        return this.min;
+    @Override
+    public BlockPos getBoundsMax() {
+        return this.boundsMax;
+    }
+
+    @Override
+    public BlockPos getBoundsMin() {
+        return this.boundsMin;
     }
 
     List<SpatialPylonTileEntity> getLine() {
