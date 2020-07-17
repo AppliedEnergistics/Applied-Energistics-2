@@ -10,6 +10,7 @@ import appeng.client.render.SimpleModelLoader;
 import appeng.client.render.cablebus.CableBusModelLoader;
 import appeng.client.render.effects.*;
 import appeng.client.render.model.SkyCompassModel;
+import appeng.client.render.spatial.SpatialPylonModel;
 import appeng.client.render.tesr.InscriberTESR;
 import appeng.client.render.tesr.SkyChestTESR;
 import appeng.container.implementations.*;
@@ -245,7 +246,7 @@ public final class AppEngClient extends AppEngBase {
 // FIXME FABRIC       addBuiltInModel("biometric_card", BiometricCardModel::new);
 // FIXME FABRIC       addBuiltInModel("drive", DriveModel::new);
 // FIXME FABRIC       addBuiltInModel("color_applicator", ColorApplicatorModel::new);
-// FIXME FABRIC       addBuiltInModel("spatial_pylon", SpatialPylonModel::new);
+       addBuiltInModel("block/spatial_pylon", SpatialPylonModel::new);
 // FIXME FABRIC       addBuiltInModel("paint_splotches", PaintSplotchesModel::new);
 // FIXME FABRIC       addBuiltInModel("quantum_bridge_formed", QnbFormedModel::new);
 // FIXME FABRIC       addBuiltInModel("p2p_tunnel_frequency", P2PTunnelFrequencyModel::new);

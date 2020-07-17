@@ -24,27 +24,29 @@ import javax.annotation.Nullable;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.text.Text;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.server.world.ServerWorld;
 
 public interface ISpatialDimension {
-    ServerWorld getWorld(DimensionType cellDim);
+    ServerWorld getWorld(RegistryKey<World> cellDim);
 
     @Nullable
-    DimensionType createNewCellDimension(BlockPos capacity);
+    RegistryKey<World> createNewCellDimension(BlockPos capacity);
 
-    void deleteCellDimension(DimensionType cellDim);
+    void deleteCellDimension(RegistryKey<World> cellDim);
 
-    boolean isCellDimension(DimensionType cellDim);
+    boolean isCellDimension(RegistryKey<World> cellDim);
 
-    BlockPos getCellDimensionOrigin(DimensionType cellDim);
+    BlockPos getCellDimensionOrigin(RegistryKey<World> cellDim);
 
-    BlockPos getCellDimensionSize(DimensionType cellDim);
+    BlockPos getCellDimensionSize(RegistryKey<World> cellDim);
 
     /**
      * Adds a user-facing tooltip that describes this dimension so that a player can
      * keep storage cells apart.
      */
-    void addCellDimensionTooltip(DimensionType cellDim, List<Text> lines);
+    void addCellDimensionTooltip(RegistryKey<World> cellDim, List<Text> lines);
 
 }

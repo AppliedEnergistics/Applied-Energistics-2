@@ -18,50 +18,40 @@
 
 package appeng.client.render.spatial;
 
+import appeng.client.render.BasicUnbakedModel;
+import appeng.core.AppEng;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.ModelBakeSettings;
+import net.minecraft.client.render.model.ModelLoader;
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.util.SpriteIdentifier;
+import net.minecraft.util.Identifier;
+
+import javax.annotation.Nullable;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import com.mojang.datafixers.util.Pair;
+public class SpatialPylonModel implements BasicUnbakedModel {
 
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.IModelTransform;
-import net.minecraft.client.render.model.IUnbakedModel;
-import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.util.Identifier;
-import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.geometry.IModelGeometry;
-
-import appeng.core.AppEng;
-
-public class SpatialPylonModel implements IModelGeometry<SpatialPylonModel> {
-
+    @Nullable
     @Override
-    public BakedModel bake(IModelConfiguration owner, ModelLoader bakery,
-                           Function<SpriteIdentifier, Sprite> spriteGetter, IModelTransform modelTransform,
-                           ModelOverrideList overrides, Identifier modelLocation) {
+    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
         Map<SpatialPylonTextureType, Sprite> textures = new EnumMap<>(SpatialPylonTextureType.class);
 
         for (SpatialPylonTextureType type : SpatialPylonTextureType.values()) {
-            textures.put(type, spriteGetter.apply(getTexturePath(type)));
+            textures.put(type, textureGetter.apply(getTexturePath(type)));
         }
 
         return new SpatialPylonBakedModel(textures);
     }
 
     @Override
-    public Collection<SpriteIdentifier> getTextures(IModelConfiguration owner,
-                                                    Function<Identifier, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-        return Arrays.stream(SpatialPylonTextureType.values()).map(SpatialPylonModel::getTexturePath)
-                .collect(Collectors.toList());
+    public Stream<SpriteIdentifier> getAdditionalTextures() {
+        return Arrays.stream(SpatialPylonTextureType.values()).map(SpatialPylonModel::getTexturePath);
     }
 
     private static SpriteIdentifier getTexturePath(SpatialPylonTextureType type) {

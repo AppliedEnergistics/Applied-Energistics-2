@@ -33,8 +33,12 @@ import appeng.hooks.ToolItemHook;
 import appeng.items.tools.NetworkToolItem;
 import appeng.me.cache.*;
 import appeng.mixins.CriteriaRegisterMixin;
+import appeng.hooks.RegisterDimensionTypeCallback;
 import appeng.recipes.handlers.*;
 import appeng.server.AECommand;
+import appeng.spatial.SpatialDimensionManager;
+import appeng.spatial.StorageCellBiome;
+import appeng.spatial.StorageChunkGenerator;
 import appeng.worldgen.ChargedQuartzOreConfig;
 import appeng.worldgen.ChargedQuartzOreFeature;
 import appeng.worldgen.meteorite.MeteoriteStructure;
@@ -50,10 +54,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.tag.BlockTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.chunk.StructureConfig;
 import net.minecraft.world.gen.decorator.Decorator;
@@ -64,6 +70,7 @@ import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.FeatureConfig;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
 
+import java.util.OptionalLong;
 import java.util.function.Consumer;
 
 public abstract class AppEngBase implements AppEng {
@@ -97,6 +104,7 @@ public abstract class AppEngBase implements AppEng {
         registerRecipeSerializers();
         registerWorldGen();
         registerServerCommands();
+        registerDimension();
 
         setupInternalRegistries();
 
@@ -365,6 +373,33 @@ public abstract class AppEngBase implements AppEng {
         // The server commands need to know what the current minecraft server is.
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
             new AECommand().register(dispatcher);
+        });
+    }
+
+    private void registerDimension() {
+        Registry.register(Registry.BIOME, AppEng.makeId("storage"), StorageCellBiome.INSTANCE);
+        Registry.register(Registry.CHUNK_GENERATOR, AppEng.makeId("storage"), StorageChunkGenerator.CODEC);
+
+        RegisterDimensionTypeCallback.EVENT.register(registryTracker -> {
+
+            registryTracker.addDimensionType(
+                    SpatialDimensionManager.STORAGE_DIMENSION_TYPE,
+                    new DimensionType(
+                            OptionalLong.of(12000),
+                            false,
+                            false,
+                            false,
+                            false,
+                            false,
+                            false,
+                            true,
+                            true,
+                            false,
+                            256,
+                            BlockTags.INFINIBURN_OVERWORLD.getId(),
+                            0.5f
+                    )
+            );
         });
     }
 

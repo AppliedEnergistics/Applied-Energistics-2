@@ -26,6 +26,7 @@ package appeng.api.implementations.items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 
@@ -58,7 +59,7 @@ public interface ISpatialStorageCell {
      *
      * @return dimension id or -1
      */
-    DimensionType getStoredDimension(ItemStack is);
+    RegistryKey<World> getStoredDimension(ItemStack is);
 
     /**
      * Perform a spatial swap with the contents of the cell, and the world.

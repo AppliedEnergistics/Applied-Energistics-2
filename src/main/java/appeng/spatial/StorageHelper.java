@@ -18,24 +18,26 @@
 
 package appeng.spatial;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import appeng.api.AEApi;
+import appeng.api.util.WorldCoord;
+import appeng.core.AppEng;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.math.Box;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkStatus;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.dimension.DimensionType;
 
-import appeng.api.AEApi;
-import appeng.api.util.WorldCoord;
-import appeng.core.AppEng;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StorageHelper {
 
@@ -95,7 +97,7 @@ public class StorageHelper {
         newWorld.getChunkManager().getChunk(MathHelper.floor(link.x) >> 4, MathHelper.floor(link.z) >> 4,
                 ChunkStatus.FULL, true);
 
-        if (entity instanceof ServerPlayerEntity && link.dim.getDimension() instanceof StorageCellDimension) {
+        if (entity instanceof ServerPlayerEntity && link.dim.getDimensionRegistryKey().equals(SpatialDimensionManager.STORAGE_DIMENSION_TYPE)) {
             AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger((ServerPlayerEntity) entity);
         }
 

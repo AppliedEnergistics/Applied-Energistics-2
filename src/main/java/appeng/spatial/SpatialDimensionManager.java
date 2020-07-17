@@ -18,27 +18,33 @@
 
 package appeng.spatial;
 
-import java.util.List;
-import java.util.Locale;
-
-import javax.annotation.Nullable;
-
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.text.Text;
-import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
-
 import appeng.api.storage.ISpatialDimension;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
+import appeng.hooks.DynamicDimensions;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Locale;
 
 public final class SpatialDimensionManager implements ISpatialDimension {
+
+    // A region file is 512x512 blocks (32x32 chunks),
+    // to avoid creating the 4 regions around 0,0,0,
+    // we move the origin to the middle of region 0,0
+    public static final BlockPos REGION_CENTER = new BlockPos(512 / 2, 64, 512 / 2);
+
+    public static final RegistryKey<DimensionType> STORAGE_DIMENSION_TYPE = RegistryKey.of(Registry.DIMENSION_TYPE_KEY, AppEng.makeId("storage_cell"));
 
     public static final ISpatialDimension INSTANCE = new SpatialDimensionManager();
 
@@ -48,18 +54,26 @@ public final class SpatialDimensionManager implements ISpatialDimension {
     }
 
     @Override
-    public ServerWorld getWorld(DimensionType cellDim) {
-        return DimensionManager.getWorld(getServer(), cellDim, true, true);
+    public ServerWorld getWorld(RegistryKey<World> cellDim) {
+        MinecraftServer server = getServer();
+        return server.getWorld(cellDim);
     }
 
     @Override
-    public DimensionType createNewCellDimension(BlockPos size) {
+    public RegistryKey<World> createNewCellDimension(BlockPos size) {
         Identifier dimKey = findFreeDimensionId();
         AELog.info("Allocating storage cell dimension '%s'", dimKey);
 
-        PacketByteBuf extraData = new SpatialDimensionExtraData(size).write();
+        DynamicDimensions dynamicDimensions = (DynamicDimensions) getServer();
 
-        return DimensionManager.registerDimension(dimKey, StorageCellModDimension.INSTANCE, extraData, true);
+        RegistryKey<World> worldId = RegistryKey.of(Registry.DIMENSION, dimKey);
+
+        ServerWorld world = dynamicDimensions.addWorld(worldId, STORAGE_DIMENSION_TYPE, StorageChunkGenerator.INSTANCE);
+
+        SpatialDimensionExtraData spatialExtraData = world.getPersistentStateManager().getOrCreate(SpatialDimensionExtraData::new, SpatialDimensionExtraData.ID);
+        spatialExtraData.setSize(size);
+
+        return worldId;
     }
 
     /**
@@ -68,8 +82,8 @@ public final class SpatialDimensionManager implements ISpatialDimension {
      */
     private Identifier findFreeDimensionId() {
         int maxId = 0;
-        for (DimensionType dimensionType : DimensionType.getAll()) {
-            Identifier regName = dimensionType.getRegistryName();
+        for (RegistryKey<World> worldId : getServer().getWorldRegistryKeys()) {
+            Identifier regName = worldId.getValue();
             if (regName == null || !AppEng.MOD_ID.equals(regName.getNamespace())) {
                 continue;
             }
@@ -93,42 +107,52 @@ public final class SpatialDimensionManager implements ISpatialDimension {
     }
 
     @Override
-    public void deleteCellDimension(DimensionType cellDim) {
-        AELog.info("Unregistering storage cell dimension %s", cellDim.getRegistryName());
+    public void deleteCellDimension(RegistryKey<World> worldId) {
+        AELog.info("Unregistering storage cell dimension %s", worldId.getValue());
         MinecraftServer server = getServer();
-        ServerWorld world = DimensionManager.getWorld(server, cellDim, false, false);
-        if (world != null) {
-            DimensionManager.unloadWorld(world);
-        }
-        DimensionManager.unloadWorlds(server, true);
-        DimensionManager.unregisterDimension(cellDim.getId());
+// FIXME FABRIC        ServerWorld world = DimensionManager.getWorld(server, worldId, false, false);
+// FIXME FABRIC        if (world != null) {
+// FIXME FABRIC            DimensionManager.unloadWorld(world);
+// FIXME FABRIC        }
+// FIXME FABRIC        DimensionManager.unloadWorlds(server, true);
+// FIXME FABRIC        DimensionManager.unregisterDimension(worldId.getId());
+        throw new IllegalStateException();
     }
 
     @Override
-    public boolean isCellDimension(DimensionType cellDim) {
-        // Check if the cell dimension type is even registered
-        if (cellDim.getRegistryName() == null || !cellDim.getRegistryName().equals(DimensionType.getKey(cellDim))) {
+    public boolean isCellDimension(RegistryKey<World> worldId) {
+        Identifier id = worldId.getValue();
+        if (!id.getNamespace().equals(AppEng.MOD_ID)) {
+            return false; // World belongs to a different mod
+        }
+        if (!id.getPath().startsWith(DIM_ID_PREFIX)) {
             return false;
         }
 
-        return cellDim.getModType() instanceof StorageCellModDimension;
+        // Check that the world has the right dimension type
+        ServerWorld world = getServer().getWorld(worldId);
+        if (world == null) {
+            return false; // Non-existent world
+        }
+
+        return world.getDimensionRegistryKey().equals(STORAGE_DIMENSION_TYPE);
     }
 
     @Override
-    public BlockPos getCellDimensionOrigin(DimensionType cellDim) {
-        return StorageCellDimension.REGION_CENTER;
+    public BlockPos getCellDimensionOrigin(RegistryKey<World> worldId) {
+        return REGION_CENTER;
     }
 
     @Override
-    public BlockPos getCellDimensionSize(DimensionType cellDim) {
-        SpatialDimensionExtraData extraData = getExtraData(cellDim);
+    public BlockPos getCellDimensionSize(RegistryKey<World> worldId) {
+        SpatialDimensionExtraData extraData = getExtraData(worldId);
         return extraData != null ? extraData.getSize() : BlockPos.ORIGIN;
     }
 
     @Override
-    public void addCellDimensionTooltip(DimensionType cellDim, List<Text> lines) {
+    public void addCellDimensionTooltip(RegistryKey<World> worldId, List<Text> lines) {
         // Check if the cell dimension type is even registered
-        Identifier registryName = cellDim.getRegistryName();
+        Identifier registryName = worldId.getValue();
         if (registryName == null || !AppEng.MOD_ID.equals(registryName.getNamespace())) {
             return;
         }
@@ -138,7 +162,7 @@ public final class SpatialDimensionManager implements ISpatialDimension {
         }
 
         // Add the actual stored size
-        BlockPos size = SpatialDimensionManager.INSTANCE.getCellDimensionSize(cellDim);
+        BlockPos size = SpatialDimensionManager.INSTANCE.getCellDimensionSize(worldId);
         lines.add(GuiText.StoredSize.text(size.getX(), size.getY(), size.getZ()));
 
         // Add a serial number to allows players to keep different cells apart
@@ -156,15 +180,17 @@ public final class SpatialDimensionManager implements ISpatialDimension {
     }
 
     @Nullable
-    private SpatialDimensionExtraData getExtraData(DimensionType cellDim) {
-        if (!(cellDim.getModType() instanceof StorageCellModDimension)) {
+    private SpatialDimensionExtraData getExtraData(RegistryKey<World> worldId) {
+        ServerWorld world = getWorld(worldId);
+        if (world == null) {
             return null;
         }
-        return SpatialDimensionExtraData.read(cellDim.getData());
+
+        return world.getPersistentStateManager().get(SpatialDimensionExtraData::new, SpatialDimensionExtraData.ID);
     }
 
     private static MinecraftServer getServer() {
-        return ServerLifecycleHooks.getCurrentServer();
+        return AppEng.instance().getServer();
     }
 
 }

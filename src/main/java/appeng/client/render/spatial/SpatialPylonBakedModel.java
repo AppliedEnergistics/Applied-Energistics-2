@@ -18,21 +18,30 @@
 
 package appeng.client.render.spatial;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 
+import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.ModelOverrideList;
+import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraftforge.client.model.data.IDynamicBakedModel;
+import net.minecraft.world.BlockRenderView;
 
 
 import appeng.client.render.cablebus.CubeBuilder;
@@ -41,7 +50,7 @@ import appeng.tile.spatial.SpatialPylonBlockEntity;
 /**
  * The baked model that will be used for rendering the spatial pylon.
  */
-class SpatialPylonBakedModel implements IDynamicBakedModel {
+class SpatialPylonBakedModel implements BakedModel, FabricBakedModel {
 
     private final Map<SpatialPylonTextureType, Sprite> textures;
 
@@ -49,13 +58,16 @@ class SpatialPylonBakedModel implements IDynamicBakedModel {
         this.textures = ImmutableMap.copyOf(textures);
     }
 
-    @Nonnull
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand,
-            @Nonnull IModelData extraData) {
-        int flags = this.getFlags(extraData);
+    public boolean isVanillaAdapter() {
+        return false;
+    }
 
-        CubeBuilder builder = new CubeBuilder();
+    @Override
+    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+        int flags = getFlags(blockView, pos);
+
+        CubeBuilder builder = new CubeBuilder(context.getEmitter());
 
         if (flags != 0) {
             Direction ori = null;
@@ -134,13 +146,31 @@ class SpatialPylonBakedModel implements IDynamicBakedModel {
             builder.setTexture(this.textures.get(SpatialPylonTextureType.DIM));
             builder.addCube(0, 0, 0, 16, 16, 16);
         }
-
-        return builder.getOutput();
     }
 
-    private int getFlags(IModelData modelData) {
-        Integer flags = modelData.getData(SpatialPylonBlockEntity.STATE);
-        return flags != null ? flags : 0;
+    @Override
+    public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
+        // Not intended to be used as an item model.
+    }
+
+    @Nonnull
+    @Override
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand) {
+        // Can only sensibly render using the new API
+        return Collections.emptyList();
+    }
+
+    private int getFlags(BlockRenderView blockRenderView, BlockPos pos) {
+        if (!(blockRenderView instanceof RenderAttachedBlockView)) {
+            return 0;
+        }
+
+        Object attachment = ((RenderAttachedBlockView) blockRenderView).getBlockEntityRenderAttachment(pos);
+        if (!(attachment instanceof Integer)) {
+            return 0;
+        }
+
+        return (Integer) attachment;
     }
 
     private static SpatialPylonTextureType getTextureTypeFromSideOutside(int flags, Direction ori, Direction dir) {
@@ -200,6 +230,11 @@ class SpatialPylonBakedModel implements IDynamicBakedModel {
     @Override
     public Sprite getSprite() {
         return this.textures.get(SpatialPylonTextureType.DIM);
+    }
+
+    @Override
+    public ModelTransformation getTransformation() {
+        return ModelTransformation.NONE;
     }
 
     @Override

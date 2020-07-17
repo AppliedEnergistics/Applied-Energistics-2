@@ -1,12 +1,25 @@
 {
-  "parent": "block/cube",
-  "textures": {
-    "particle": "appliedenergistics2:block/chest/side",
-    "up": "appliedenergistics2:block/chest/top",
-    "down": "appliedenergistics2:block/chest/bottom",
-    "north": "appliedenergistics2:block/chest/front",
-    "east": "appliedenergistics2:block/chest/side",
-    "south": "appliedenergistics2:block/chest/side",
-    "west": "appliedenergistics2:block/chest/side"
-  }
+	"credit": "Made with Blockbench",
+	"parent": "block/cube",
+	"textures": {
+		"up": "appliedenergistics2:block/chest/top",
+		"down": "appliedenergistics2:block/chest/bottom",
+		"north": "appliedenergistics2:block/chest/front",
+		"particle": "appliedenergistics2:block/chest/side",
+		"east": "appliedenergistics2:block/chest/side"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 16, 16],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#north"},
+				"east": {"uv": [0, 0, 16, 16], "texture": "#east"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#east"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#east"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#up"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#down"}
+			}
+		}
+	]
 }

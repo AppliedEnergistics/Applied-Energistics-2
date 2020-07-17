@@ -117,10 +117,10 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity implements
 
     @Override
     public Void call(final World world) throws Exception {
-        if (!(world instanceof ServerWorld)) {
+        if (!(this.world instanceof ServerWorld)) {
             return null;
         }
-        ServerWorld serverWorld = (ServerWorld) world;
+        ServerWorld serverWorld = (ServerWorld) this.world;
 
         final ItemStack cell = this.inv.getInvStack(0);
         if (this.isSpatialCell(cell) && this.inv.getInvStack(1).isEmpty()) {

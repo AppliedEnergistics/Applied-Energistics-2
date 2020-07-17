@@ -16,3 +16,5 @@ accessible method net/minecraft/data/server/RecipesProvider saveRecipeAdvancemen
 
 accessible method net/minecraft/data/server/BlockLootTableGenerator dropsWithSilkTouch (Lnet/minecraft/block/Block;Lnet/minecraft/loot/entry/LootPoolEntry$Builder;)Lnet/minecraft/loot/LootTable$Builder;
 accessible method net/minecraft/data/server/BlockLootTableGenerator applyExplosionDecay (Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/loot/function/LootFunctionConsumingBuilder;)Ljava/lang/Object;
+
+accessible method net/minecraft/world/dimension/DimensionType <init> (Ljava/util/OptionalLong;ZZZZZZZZZILnet/minecraft/util/Identifier;F)V

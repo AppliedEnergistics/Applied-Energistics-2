@@ -47,6 +47,7 @@ import appeng.items.misc.PaintBallItemRendering;
 import appeng.items.parts.FacadeItem;
 import appeng.items.storage.BasicStorageCellItem;
 import appeng.items.storage.CreativeStorageCellItem;
+import appeng.items.storage.SpatialStorageCellItem;
 import appeng.items.storage.ViewCellItem;
 import appeng.items.tools.BiometricCardItem;
 import appeng.items.tools.MemoryCardItem;
@@ -55,7 +56,6 @@ import appeng.items.tools.powered.*;
 import appeng.items.tools.quartz.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.item.Item;
@@ -67,59 +67,59 @@ import java.util.function.Consumer;
  * Internal implementation for the API items
  */
 public final class ApiItems implements IItems {
-    private IItemDefinition certusQuartzAxe;
-    private IItemDefinition certusQuartzHoe;
-    private IItemDefinition certusQuartzShovel;
-    private IItemDefinition certusQuartzPick;
-    private IItemDefinition certusQuartzSword;
-    private IItemDefinition certusQuartzWrench;
-    private IItemDefinition certusQuartzKnife;
+    private final IItemDefinition certusQuartzAxe;
+    private final IItemDefinition certusQuartzHoe;
+    private final IItemDefinition certusQuartzShovel;
+    private final IItemDefinition certusQuartzPick;
+    private final IItemDefinition certusQuartzSword;
+    private final IItemDefinition certusQuartzWrench;
+    private final IItemDefinition certusQuartzKnife;
 
-    private IItemDefinition netherQuartzAxe;
-    private IItemDefinition netherQuartzHoe;
-    private IItemDefinition netherQuartzShovel;
-    private IItemDefinition netherQuartzPick;
-    private IItemDefinition netherQuartzSword;
-    private IItemDefinition netherQuartzWrench;
-    private IItemDefinition netherQuartzKnife;
+    private final IItemDefinition netherQuartzAxe;
+    private final IItemDefinition netherQuartzHoe;
+    private final IItemDefinition netherQuartzShovel;
+    private final IItemDefinition netherQuartzPick;
+    private final IItemDefinition netherQuartzSword;
+    private final IItemDefinition netherQuartzWrench;
+    private final IItemDefinition netherQuartzKnife;
 
-    private IItemDefinition entropyManipulator;
-    private IItemDefinition wirelessTerminal;
-    private IItemDefinition biometricCard;
-    private IItemDefinition chargedStaff;
-    private IItemDefinition massCannon;
-    private IItemDefinition memoryCard;
-    private IItemDefinition networkTool;
-    private IItemDefinition portableCell;
+    private final IItemDefinition entropyManipulator;
+    private final IItemDefinition wirelessTerminal;
+    private final IItemDefinition biometricCard;
+    private final IItemDefinition chargedStaff;
+    private final IItemDefinition massCannon;
+    private final IItemDefinition memoryCard;
+    private final IItemDefinition networkTool;
+    private final IItemDefinition portableCell;
 
-    private IItemDefinition cellCreative;
-    private IItemDefinition viewCell;
+    private final IItemDefinition cellCreative;
+    private final IItemDefinition viewCell;
 
-    private IItemDefinition cell1k;
-    private IItemDefinition cell4k;
-    private IItemDefinition cell16k;
-    private IItemDefinition cell64k;
+    private final IItemDefinition cell1k;
+    private final IItemDefinition cell4k;
+    private final IItemDefinition cell16k;
+    private final IItemDefinition cell64k;
 
-    private IItemDefinition fluidCell1k;
-    private IItemDefinition fluidCell4k;
-    private IItemDefinition fluidCell16k;
-    private IItemDefinition fluidCell64k;
+    private final IItemDefinition fluidCell1k;
+    private final IItemDefinition fluidCell4k;
+    private final IItemDefinition fluidCell16k;
+    private final IItemDefinition fluidCell64k;
 
-    private IItemDefinition spatialCell2;
-    private IItemDefinition spatialCell16;
-    private IItemDefinition spatialCell128;
+    private final IItemDefinition spatialCell2;
+    private final IItemDefinition spatialCell16;
+    private final IItemDefinition spatialCell128;
 
-    private IItemDefinition facade;
-    private IItemDefinition certusCrystalSeed;
-    private IItemDefinition fluixCrystalSeed;
-    private IItemDefinition netherQuartzSeed;
+    private final IItemDefinition facade;
+    private final IItemDefinition certusCrystalSeed;
+    private final IItemDefinition fluixCrystalSeed;
+    private final IItemDefinition netherQuartzSeed;
 
     // rv1
-    private IItemDefinition encodedPattern;
-    private IItemDefinition colorApplicator;
+    private final IItemDefinition encodedPattern;
+    private final IItemDefinition colorApplicator;
 
-    private AEColoredItemDefinition coloredPaintBall;
-    private AEColoredItemDefinition coloredLumenPaintBall;
+    private final AEColoredItemDefinition coloredPaintBall;
+    private final AEColoredItemDefinition coloredLumenPaintBall;
 
     // unsupported dev tools
     private IItemDefinition toolEraser;
@@ -249,15 +249,15 @@ public final class ApiItems implements IItems {
                 .props(storageCellProps).build();
 
         FeatureFactory spatialCells = registry.features(AEFeature.SPATIAL_IO);
-// FIXME FABRIC        this.spatialCell2 = spatialCells
-// FIXME FABRIC                .item("2_cubed_spatial_storage_cell", props -> new SpatialStorageCellItem(props, 2))
-// FIXME FABRIC                .props(storageCellProps).build();
-// FIXME FABRIC        this.spatialCell16 = spatialCells
-// FIXME FABRIC                .item("16_cubed_spatial_storage_cell", props -> new SpatialStorageCellItem(props, 16))
-// FIXME FABRIC                .props(storageCellProps).build();
-// FIXME FABRIC        this.spatialCell128 = spatialCells
-// FIXME FABRIC                .item("128_cubed_spatial_storage_cell", props -> new SpatialStorageCellItem(props, 128))
-// FIXME FABRIC                .props(storageCellProps).build();
+        this.spatialCell2 = spatialCells
+                .item("2_cubed_spatial_storage_cell", props -> new SpatialStorageCellItem(props, 2))
+                .props(storageCellProps).build();
+        this.spatialCell16 = spatialCells
+                .item("16_cubed_spatial_storage_cell", props -> new SpatialStorageCellItem(props, 16))
+                .props(storageCellProps).build();
+        this.spatialCell128 = spatialCells
+                .item("128_cubed_spatial_storage_cell", props -> new SpatialStorageCellItem(props, 128))
+                .props(storageCellProps).build();
 
         this.facade = registry.item("facade", FacadeItem::new).features(AEFeature.FACADES).build();
 

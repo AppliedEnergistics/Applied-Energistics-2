@@ -35,11 +35,6 @@ import appeng.client.render.SpatialSkyRender;
 
 public class StorageCellDimension extends Dimension {
 
-    // A region file is 512x512 blocks (32x32 chunks),
-    // to avoid creating the 4 regions around 0,0,0,
-    // we move the origin to the middle of region 0,0
-    public static final BlockPos REGION_CENTER = new BlockPos(512 / 2, 64, 512 / 2);
-
     public StorageCellDimension(World world, DimensionType dimensionType) {
         // FIXME: check light value
         super(world, dimensionType, 1.0f);

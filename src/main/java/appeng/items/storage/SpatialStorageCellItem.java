@@ -30,8 +30,9 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.text.Text;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import net.fabricmc.api.Environment;
 
 import appeng.api.implementations.TransitionResult;
@@ -58,17 +59,17 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
     @Override
     public void appendTooltip(final ItemStack stack, final World world, final List<Text> lines,
             final TooltipContext advancedTooltips) {
-        final DimensionType dimType = this.getStoredDimension(stack);
-        if (dimType == null) {
-            lines.add(GuiText.Unformatted.text().formatted(Formatting.ITALIC));
+        final RegistryKey<World> worldId = this.getStoredDimension(stack);
+        if (worldId == null) {
+            lines.add(GuiText.Unformatted.text().copy().formatted(Formatting.ITALIC));
             lines.add(GuiText.SpatialCapacity.text(maxRegion, maxRegion, maxRegion));
         } else {
-            SpatialDimensionManager.INSTANCE.addCellDimensionTooltip(dimType, lines);
+            SpatialDimensionManager.INSTANCE.addCellDimensionTooltip(worldId, lines);
         }
 
         if (advancedTooltips.isAdvanced()) {
-            if (dimType != null && dimType.getRegistryName() != null) {
-                lines.add(new LiteralText("Dimension: " + dimType.getRegistryName()));
+            if (worldId != null && worldId.getValue() != null) {
+                lines.add(new LiteralText("Dimension: " + worldId.getValue()));
             }
         }
     }
@@ -84,12 +85,12 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
     }
 
     @Override
-    public DimensionType getStoredDimension(final ItemStack is) {
+    public RegistryKey<World> getStoredDimension(final ItemStack is) {
         final CompoundTag c = is.getTag();
         if (c != null && c.contains(TAG_DIMENSION_ID)) {
             try {
-                Identifier dimTypeId = new Identifier(c.getString(TAG_DIMENSION_ID));
-                return DimensionType.byName(dimTypeId);
+                Identifier worldId = new Identifier(c.getString(TAG_DIMENSION_ID));
+                return RegistryKey.of(Registry.DIMENSION, worldId);
             } catch (Exception e) {
                 AELog.warn("Failed to retrieve storage cell dimension.", e);
             }
@@ -109,27 +110,27 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
 
         ISpatialDimension manager = SpatialDimensionManager.INSTANCE;
 
-        DimensionType storedDim = this.getStoredDimension(is);
-        if (storedDim == null) {
-            storedDim = manager.createNewCellDimension(targetSize);
+        RegistryKey<World> worldId = this.getStoredDimension(is);
+        if (worldId == null || manager.getWorld(worldId) == null) {
+            worldId = manager.createNewCellDimension(targetSize);
         }
 
-        if (storedDim == null) {
+        if (worldId == null) {
             // Failed to create the dimension
             return new TransitionResult(false, 0);
         }
 
         try {
-            if (manager.isCellDimension(storedDim)) {
-                ServerWorld cellWorld = manager.getWorld(storedDim);
+            if (manager.isCellDimension(worldId)) {
+                ServerWorld cellWorld = manager.getWorld(worldId);
 
-                BlockPos scale = manager.getCellDimensionSize(storedDim);
+                BlockPos scale = manager.getCellDimensionSize(worldId);
 
                 if (scale.equals(targetSize)) {
                     if (targetX <= maxSize && targetY <= maxSize && targetZ <= maxSize) {
-                        BlockPos offset = manager.getCellDimensionOrigin(storedDim);
+                        BlockPos offset = manager.getCellDimensionOrigin(worldId);
 
-                        this.setStoredDimension(is, storedDim);
+                        this.setStoredDimension(is, worldId);
                         StorageHelper.getInstance().swapRegions(w, min.x + 1, min.y + 1, min.z + 1, cellWorld,
                                 offset.getX(), offset.getY(), offset.getZ(), targetX - 1, targetY - 1, targetZ - 1);
 
@@ -140,14 +141,14 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
             return new TransitionResult(false, 0);
         } finally {
             // clean up newly created dimensions that failed transfer
-            if (manager.isCellDimension(storedDim) && this.getStoredDimension(is) == null) {
-                manager.deleteCellDimension(storedDim);
+            if (manager.isCellDimension(worldId) && this.getStoredDimension(is) == null) {
+                manager.deleteCellDimension(worldId);
             }
         }
     }
 
-    private void setStoredDimension(final ItemStack is, DimensionType dim) {
+    private void setStoredDimension(final ItemStack is, RegistryKey<World> worldId) {
         final CompoundTag c = is.getOrCreateTag();
-        c.putString(TAG_DIMENSION_ID, dim.getRegistryName().toString());
+        c.putString(TAG_DIMENSION_ID, worldId.getValue().toString());
     }
 }
