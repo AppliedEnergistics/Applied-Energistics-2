@@ -29,6 +29,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -42,44 +43,24 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.registries.ForgeRegistries;
 
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.config.SecurityPermissions;
-import appeng.api.config.Settings;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.ViewItems;
+import appeng.api.config.*;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.implementations.tiles.IMEChest;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.events.MENetworkCellArrayUpdate;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
-import appeng.api.networking.events.MENetworkPowerStorage;
+import appeng.api.networking.events.*;
 import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.storage.IStorageGrid;
-import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.IStorageMonitorable;
-import appeng.api.storage.IStorageMonitorableAccessor;
-import appeng.api.storage.ITerminalHost;
-import appeng.api.storage.cells.CellState;
-import appeng.api.storage.cells.ICellGuiHandler;
-import appeng.api.storage.cells.ICellHandler;
-import appeng.api.storage.cells.ICellInventory;
-import appeng.api.storage.cells.ICellInventoryHandler;
+import appeng.api.storage.*;
+import appeng.api.storage.cells.*;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
@@ -133,6 +114,10 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
     private ChestMonitorHandler cellHandler;
     private Accessor accessor;
     private IFluidHandler fluidHandler;
+    // This is only used on the client to display the right cell model without
+    // synchronizing the entire
+    // cell's inventory when a chest comes into view.
+    private Item cellItem = Items.AIR;
 
     public ChestTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
@@ -273,6 +258,10 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         if (slot != 0) {
             return null;
         }
+        // Client-side we'll need to actually use the synced state
+        if (world == null || world.isRemote) {
+            return cellItem;
+        }
         ItemStack cell = getCell();
         return cell.isEmpty() ? null : cell.getItem();
     }
@@ -364,6 +353,12 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
 
         data.writeByte(this.state);
         data.writeByte(this.paintedColor.ordinal());
+
+        // Note that we trust that the change detection in recalculateDisplay will trip
+        // when it changes from
+        // empty->non-empty, so when the cell is changed, it should re-send the state
+        // because of that
+        data.writeRegistryIdUnsafe(ForgeRegistries.ITEMS, getCell().getItem().getRegistryName());
     }
 
     @Override
@@ -375,6 +370,7 @@ public class ChestTileEntity extends AENetworkPowerTileEntity
         this.state = data.readByte();
         final AEColor oldPaintedColor = this.paintedColor;
         this.paintedColor = AEColor.values()[data.readByte()];
+        this.cellItem = data.readRegistryIdUnsafe(ForgeRegistries.ITEMS);
 
         this.lastStateChange = this.world.getGameTime();
 
