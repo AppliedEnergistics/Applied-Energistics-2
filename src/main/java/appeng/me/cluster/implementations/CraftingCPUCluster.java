@@ -72,6 +72,7 @@ import appeng.crafting.CraftingWatcher;
 import appeng.crafting.MECraftingInventory;
 import appeng.me.cache.CraftingGridCache;
 import appeng.me.cluster.IAECluster;
+import appeng.me.cluster.MBCalculator;
 import appeng.me.helpers.MachineSource;
 import appeng.tile.crafting.CraftingMonitorTileEntity;
 import appeng.tile.crafting.CraftingTileEntity;
@@ -119,6 +120,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         this.max = max;
     }
 
+    @Override
     public boolean isDestroyed() {
         return this.isDestroyed;
     }
@@ -162,19 +164,24 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         }
         this.isDestroyed = true;
 
-        boolean posted = false;
+        MBCalculator.setModificationInProgress(this);
+        try {
+            boolean posted = false;
 
-        for (final CraftingTileEntity r : this.tiles) {
-            final IGridNode n = r.getActionableNode();
-            if (n != null && !posted) {
-                final IGrid g = n.getGrid();
-                if (g != null) {
-                    g.postEvent(new MENetworkCraftingCpuChange(n));
-                    posted = true;
+            for (final CraftingTileEntity r : this.tiles) {
+                final IGridNode n = r.getActionableNode();
+                if (n != null && !posted) {
+                    final IGrid g = n.getGrid();
+                    if (g != null) {
+                        g.postEvent(new MENetworkCraftingCpuChange(n));
+                        posted = true;
+                    }
                 }
-            }
 
-            r.updateStatus(null);
+                r.updateStatus(null);
+            }
+        } finally {
+            MBCalculator.setModificationInProgress(null);
         }
     }
 

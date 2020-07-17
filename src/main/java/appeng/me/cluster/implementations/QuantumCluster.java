@@ -40,6 +40,7 @@ import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.me.cache.helpers.ConnectionWrapper;
 import appeng.me.cluster.IAECluster;
+import appeng.me.cluster.MBCalculator;
 import appeng.tile.qnb.QuantumBridgeTileEntity;
 import appeng.util.iterators.ChainedIterator;
 
@@ -190,30 +191,40 @@ public class QuantumCluster implements ILocatable, IAECluster {
     }
 
     @Override
+    public boolean isDestroyed() {
+        return isDestroyed;
+    }
+
+    @Override
     public void destroy() {
         if (this.isDestroyed) {
             return;
         }
         this.isDestroyed = true;
 
-        if (this.registered) {
-            MinecraftForge.EVENT_BUS.unregister(this);
-            this.registered = false;
+        MBCalculator.setModificationInProgress(this);
+        try {
+            if (this.registered) {
+                MinecraftForge.EVENT_BUS.unregister(this);
+                this.registered = false;
+            }
+
+            if (this.thisSide != 0) {
+                this.updateStatus(true);
+                MinecraftForge.EVENT_BUS.post(new LocatableEventAnnounce(this, LocatableEvent.UNREGISTER));
+            }
+
+            this.center.updateStatus(null, (byte) -1, this.isUpdateStatus());
+
+            for (final QuantumBridgeTileEntity r : this.getRing()) {
+                r.updateStatus(null, (byte) -1, this.isUpdateStatus());
+            }
+
+            this.center = null;
+            this.setRing(new QuantumBridgeTileEntity[8]);
+        } finally {
+            MBCalculator.setModificationInProgress(null);
         }
-
-        if (this.thisSide != 0) {
-            this.updateStatus(true);
-            MinecraftForge.EVENT_BUS.post(new LocatableEventAnnounce(this, LocatableEvent.UNREGISTER));
-        }
-
-        this.center.updateStatus(null, (byte) -1, this.isUpdateStatus());
-
-        for (final QuantumBridgeTileEntity r : this.getRing()) {
-            r.updateStatus(null, (byte) -1, this.isUpdateStatus());
-        }
-
-        this.center = null;
-        this.setRing(new QuantumBridgeTileEntity[8]);
     }
 
     @Override
