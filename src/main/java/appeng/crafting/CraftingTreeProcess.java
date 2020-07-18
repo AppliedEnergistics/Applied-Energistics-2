@@ -18,7 +18,7 @@
 
 package appeng.crafting;
 
-import appeng.api.AEApi;
+import appeng.core.Api;
 import appeng.api.config.Actionable;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingPatternDetails;

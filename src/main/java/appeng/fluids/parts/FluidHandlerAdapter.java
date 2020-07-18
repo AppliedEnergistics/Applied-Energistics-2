@@ -23,7 +23,7 @@ import alexiil.mc.lib.attributes.fluid.GroupedFluidInv;
 import alexiil.mc.lib.attributes.fluid.filter.ExactFluidFilter;
 import alexiil.mc.lib.attributes.fluid.filter.FluidFilter;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
-import appeng.api.AEApi;
+import appeng.core.Api;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;

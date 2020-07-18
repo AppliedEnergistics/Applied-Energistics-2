@@ -27,7 +27,7 @@ import alexiil.mc.lib.attributes.fluid.filter.ConstantFluidFilter;
 import alexiil.mc.lib.attributes.fluid.filter.FluidFilter;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
-import appeng.api.AEApi;
+import appeng.core.Api;
 import appeng.api.config.*;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.implementations.tiles.IMEChest;
@@ -74,6 +74,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandlerType;
@@ -258,7 +259,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             return null;
         }
         // Client-side we'll need to actually use the synced state
-        if (world == null || world.isRemote) {
+        if (world == null || world.isClient) {
             return cellItem;
         }
         ItemStack cell = getCell();
@@ -357,7 +358,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         // when it changes from
         // empty->non-empty, so when the cell is changed, it should re-send the state
         // because of that
-        data.writeRegistryIdUnsafe(ForgeRegistries.ITEMS, getCell().getItem().getRegistryName());
+        data.writeVarInt(Item.getRawId(getCell().getItem()));
     }
 
     @Override
@@ -369,7 +370,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         this.state = data.readByte();
         final AEColor oldPaintedColor = this.paintedColor;
         this.paintedColor = AEColor.values()[data.readByte()];
-        this.cellItem = data.readRegistryIdUnsafe(ForgeRegistries.ITEMS);
+        this.cellItem = Item.byRawId(data.readVarInt());
 
         this.lastStateChange = this.world.getTime();
 

@@ -19,7 +19,7 @@
 package appeng.util;
 
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
-import appeng.api.AEApi;
+import appeng.core.Api;
 import appeng.api.config.*;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IMaterials;

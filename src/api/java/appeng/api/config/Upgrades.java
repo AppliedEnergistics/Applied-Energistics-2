@@ -40,7 +40,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.text.Text;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.text.TranslatableText;
 
 public enum Upgrades {
     /**
@@ -167,8 +167,8 @@ public enum Upgrades {
             return item != null && this.item == item;
         }
 
-        public ITextComponent getTooltipGroup() {
-            return this.tooltipGroup != null ? new TranslationTextComponent(this.tooltipGroup) : null;
+        public Text getTooltipGroup() {
+            return this.tooltipGroup != null ? new TranslatableText(this.tooltipGroup) : null;
         }
 
     }

@@ -364,10 +364,10 @@ public final class ApiBlocks implements IBlocks {
                .rendering(new DriveRendering()).build();
        this.chest = registry.block("chest", ChestBlock::new).features(AEFeature.STORAGE_CELLS, AEFeature.ME_CHEST)
                .tileEntity(registry.tileEntity("chest", ChestBlockEntity.class, ChestBlockEntity::new)
-                        .rendering(new TileEntityRenderingCustomizer<ChestTileEntity>() {
+                        .rendering(new TileEntityRenderingCustomizer<ChestBlockEntity>() {
                             @Override
-                            @OnlyIn(Dist.CLIENT)
-                            public void customize(TileEntityRendering<ChestTileEntity> rendering) {
+                            @Environment(EnvType.CLIENT)
+                            public void customize(TileEntityRendering<ChestBlockEntity> rendering) {
                                 rendering.tileEntityRenderer(ChestTileEntityRenderer::new);
                             }
                         }).build())

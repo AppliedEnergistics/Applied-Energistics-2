@@ -18,3 +18,5 @@ accessible method net/minecraft/data/server/BlockLootTableGenerator dropsWithSil
 accessible method net/minecraft/data/server/BlockLootTableGenerator applyExplosionDecay (Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/loot/function/LootFunctionConsumingBuilder;)Ljava/lang/Object;
 
 accessible method net/minecraft/world/dimension/DimensionType <init> (Ljava/util/OptionalLong;ZZZZZZZZZILnet/minecraft/util/Identifier;F)V
+
+accessible method net/minecraft/recipe/RecipeManager getAllOfType (Lnet/minecraft/recipe/RecipeType;)Ljava/util/Map;

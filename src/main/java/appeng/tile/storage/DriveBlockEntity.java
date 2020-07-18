@@ -30,6 +30,7 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
+import appeng.client.render.model.DriveModelData;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.screen.ScreenHandlerType;
@@ -37,7 +38,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
 
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.networking.GridFlags;
@@ -59,7 +59,6 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.block.storage.DriveSlotsState;
-import appeng.client.render.model.DriveModelData;
 import appeng.container.implementations.DriveContainer;
 import appeng.core.Api;
 import appeng.helpers.IPriorityHost;
@@ -70,9 +69,7 @@ import appeng.tile.grid.AENetworkInvBlockEntity;
 import appeng.tile.inventory.AppEngCellInventory;
 import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
-import appeng.util.inv.filter.IAEItemFilter;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.registry.Registry;
 
 public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestOrDrive, IPriorityHost {
 

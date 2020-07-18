@@ -18,7 +18,7 @@
 
 package appeng.parts;
 
-import appeng.api.AEApi;
+import appeng.core.Api;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.parts.*;
 import appeng.api.util.AEPartLocation;

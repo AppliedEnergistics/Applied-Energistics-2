@@ -20,10 +20,6 @@ package appeng.core.features.registries;
 
 import java.util.HashSet;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.dimension.Dimension;
-
 import appeng.api.features.IWorldGen;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;

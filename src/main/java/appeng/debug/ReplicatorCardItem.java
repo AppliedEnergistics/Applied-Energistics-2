@@ -30,14 +30,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.*;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.text.LiteralText;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
@@ -58,9 +56,9 @@ public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-        if (!worldIn.isRemote()) {
-            final CompoundNBT tag = playerIn.getHeldItem(handIn).getOrCreateTag();
+    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
+        if (!world.isClient()) {
+            final CompoundTag tag = user.getStackInHand(hand).getOrCreateTag();
             final int replications;
 
             if (tag.contains("r")) {
@@ -71,10 +69,10 @@ public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
 
             tag.putInt("r", replications);
 
-            playerIn.sendMessage(new StringTextComponent((replications + 1) + "³ Replications"));
+            user.sendMessage(new LiteralText((replications + 1) + "³ Replications"), true);
         }
 
-        return super.onItemRightClick(worldIn, playerIn, handIn);
+        return super.use(world, user, hand);
     }
 
     @Override
@@ -154,9 +152,9 @@ public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
                                 final int min_z = min.z;
 
                                 // Invert to maintain correct sign for west/east
-                                final int x_rot = (int) -Math.signum(MathHelper.wrapDegrees(player.rotationYaw));
+                                final int x_rot = (int) -Math.signum(MathHelper.wrapDegrees(player.yaw));
                                 // Rotate by 90 degree, so north/south are negative/positive
-                                final int z_rot = (int) Math.signum(MathHelper.wrapDegrees(player.rotationYaw + 90));
+                                final int z_rot = (int) Math.signum(MathHelper.wrapDegrees(player.yaw + 90));
 
                                 // Loops for replication in each direction
                                 for (int r_x = 0; r_x < replications; r_x++) {

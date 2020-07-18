@@ -18,7 +18,7 @@
 
 package appeng.entity;
 
-import appeng.api.AEApi;
+import appeng.core.Api;
 import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
 import appeng.core.sync.packets.ICustomEntity;
@@ -100,7 +100,7 @@ public final class TinyTNTPrimedEntity extends TntEntity implements ICustomEntit
             this.updateWaterState();
             if (this.isSubmergedInWater() && Platform.isServer()) // put out the fuse.
             {
-                AEApi.instance().definitions().blocks().tinyTNT().maybeStack(1).ifPresent(tntStack -> {
+                Api.instance().definitions().blocks().tinyTNT().maybeStack(1).ifPresent(tntStack -> {
                     final ItemEntity item = new ItemEntity(this.world, this.getX(), this.getY(), this.getZ(),
                             tntStack);
 

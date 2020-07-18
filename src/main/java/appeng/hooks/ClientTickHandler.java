@@ -1,6 +1,6 @@
 package appeng.hooks;
 
-import appeng.api.AEApi;
+import appeng.core.Api;
 import appeng.api.parts.CableRenderMode;
 import appeng.client.AppEngClient;
 import appeng.util.Platform;
@@ -31,7 +31,7 @@ public class ClientTickHandler extends TickHandler {
 
     private void onBeforeClientTick(MinecraftClient client) {
         this.tickColors(this.cliPlayerColors);
-        final CableRenderMode currentMode = AEApi.instance().partHelper().getCableRenderMode();
+        final CableRenderMode currentMode = Api.instance().partHelper().getCableRenderMode();
         if (currentMode != this.crm) {
             this.crm = currentMode;
             AppEngClient.instance().triggerUpdates();

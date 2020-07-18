@@ -18,7 +18,7 @@
 
 package appeng.spatial;
 
-import appeng.api.AEApi;
+import appeng.core.Api;
 import appeng.api.util.WorldCoord;
 import appeng.core.AppEng;
 import net.minecraft.block.Block;

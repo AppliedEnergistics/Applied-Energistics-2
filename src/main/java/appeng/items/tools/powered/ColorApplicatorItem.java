@@ -19,7 +19,7 @@
 package appeng.items.tools.powered;
 
 import alexiil.mc.lib.attributes.item.FixedItemInv;
-import appeng.api.AEApi;
+import appeng.core.Api;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.items.IStorageCell;

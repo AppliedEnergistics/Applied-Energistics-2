@@ -4,7 +4,7 @@ package appeng.fluids.parts;
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
-import appeng.api.AEApi;
+import appeng.core.Api;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.IncludeExclude;

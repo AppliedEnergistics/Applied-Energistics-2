@@ -28,6 +28,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingResultInventory;
 import net.minecraft.nbt.Tag;
+import net.minecraft.recipe.CraftingRecipe;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.screen.slot.CraftingResultSlot;
@@ -101,7 +102,7 @@ public class PatternTermContainer extends MEMonitorableContainer
     private final RestrictedInputSlot patternSlotOUT;
     private final ICraftingHelper craftingHelper = Api.INSTANCE.crafting();
 
-    private Recipe<CraftingInventory> currentRecipe;
+    private CraftingRecipe currentRecipe;
     @GuiSync(97)
     public boolean craftingMode = true;
     @GuiSync(96)
@@ -242,7 +243,7 @@ public class PatternTermContainer extends MEMonitorableContainer
         } else {
             output = craftingHelper.encodeProcessingPattern(output, in, out);
         }
-        this.patternSlotOUT.putStack(output);
+        this.patternSlotOUT.setStack(output);
 
     }
 

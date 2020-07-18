@@ -65,7 +65,6 @@ import appeng.parts.networking.GlassCablePart;
 import appeng.parts.networking.QuartzFiberPart;
 import appeng.parts.networking.SmartCablePart;
 import appeng.parts.networking.SmartDenseCablePart;
-import appeng.parts.p2p.FEP2PTunnelPart;
 import appeng.parts.p2p.FluidP2PTunnelPart;
 import appeng.parts.p2p.ItemP2PTunnelPart;
 import appeng.parts.p2p.LightP2PTunnelPart;

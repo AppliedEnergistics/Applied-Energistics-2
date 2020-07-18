@@ -18,15 +18,11 @@
 
 package appeng.client.render.effects;
 
+import net.minecraft.client.particle.*;
 import net.minecraft.client.render.VertexConsumer;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.particle.IAnimatedSprite;
-import net.minecraft.client.particle.IParticleFactory;
-import net.minecraft.client.particle.IParticleRenderType;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.MathHelper;

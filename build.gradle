@@ -140,7 +140,6 @@ jar {
     from "LICENSE"
 }
 
-apply from: 'gradle/scripts/artifacts.gradle'
 apply from: 'gradle/scripts/curseforge.gradle'
 
 publishing {

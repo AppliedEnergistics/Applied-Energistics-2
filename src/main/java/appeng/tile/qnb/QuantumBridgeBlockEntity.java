@@ -286,7 +286,7 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity implements
         // Since breaking the cluster will most likely also update the TE's state,
         // it's essential that we're not working with outdated block-state information,
         // since this particular TE's block might already have been removed (state=air)
-        updateContainingBlockInfo();
+        resetBlock();
 
         if (this.cluster != null) {
             this.cluster.destroy();

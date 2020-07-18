@@ -26,11 +26,11 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.RecipeManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.recipe.CraftingRecipe;
+import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.RecipeManager;
+import net.minecraft.recipe.RecipeType;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
 import appeng.api.crafting.ICraftingHelper;
@@ -64,8 +64,8 @@ public class ApiCrafting implements ICraftingHelper {
     }
 
     @Override
-    public ItemStack encodeCraftingPattern(@Nullable ItemStack stack, ICraftingRecipe recipe, ItemStack[] in,
-            ItemStack out, boolean allowSubstitutes) {
+    public ItemStack encodeCraftingPattern(@Nullable ItemStack stack, CraftingRecipe recipe, ItemStack[] in,
+                                           ItemStack out, boolean allowSubstitutes) {
         if (stack == null) {
             stack = encodedPattern.stack(1);
         } else {
@@ -102,10 +102,10 @@ public class ApiCrafting implements ICraftingHelper {
         // The recipe ids encoded in a pattern can go stale. This code attempts to find
         // the new id
         // based on the stored inputs/outputs if that happens.
-        ResourceLocation recipeId = patternItem.getCraftingRecipeId(is);
+        Identifier recipeId = patternItem.getCraftingRecipeId(is);
         if (recipeId != null) {
-            IRecipe<?> recipe = world.getRecipeManager().getRecipes(IRecipeType.CRAFTING).get(recipeId);
-            if (!(recipe instanceof ICraftingRecipe)) {
+            Recipe<?> recipe = world.getRecipeManager().getAllOfType(RecipeType.CRAFTING).get(recipeId);
+            if (!(recipe instanceof CraftingRecipe)) {
                 if (!autoRecovery || !attemptRecovery(patternItem, is, world)) {
                     return null;
                 }
@@ -128,22 +128,22 @@ public class ApiCrafting implements ICraftingHelper {
             return false;
         }
 
-        ResourceLocation currentRecipeId = patternItem.getCraftingRecipeId(itemStack);
+        Identifier currentRecipeId = patternItem.getCraftingRecipeId(itemStack);
 
         // Fill a crafting inventory with the ingredients to find a suitable recipe
         CraftingInventory testInventory = new CraftingInventory(new ContainerNull(), 3, 3);
         for (int x = 0; x < 9; x++) {
             final IAEItemStack ais = ingredients.get(x);
             final ItemStack gs = ais != null ? ais.createItemStack() : ItemStack.EMPTY;
-            testInventory.setInventorySlotContents(x, gs);
+            testInventory.setStack(x, gs);
         }
 
-        ICraftingRecipe potentialRecipe = recipeManager.getRecipe(IRecipeType.CRAFTING, testInventory, world)
+        CraftingRecipe potentialRecipe = recipeManager.getFirstMatch(RecipeType.CRAFTING, testInventory, world)
                 .orElse(null);
 
         if (potentialRecipe != null) {
             // Check that it matches the expected output
-            if (products.get(0).isSameType(potentialRecipe.getCraftingResult(testInventory))) {
+            if (products.get(0).isSameType(potentialRecipe.craft(testInventory))) {
                 // Yay we found a match, reencode the pattern
                 AELog.debug("Re-Encoding pattern from %s -> %s", currentRecipeId, potentialRecipe.getId());
                 ItemStack[] in = ingredients.stream().map(ais -> ais != null ? ais.createItemStack() : ItemStack.EMPTY)

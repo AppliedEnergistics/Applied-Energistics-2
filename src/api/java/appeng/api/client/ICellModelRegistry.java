@@ -28,9 +28,8 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.client.renderer.model.ModelBakery;
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Identifier;
 
 /**
  * A registry for 3D models used to render storage cells in the world, when they
@@ -46,8 +45,8 @@ public interface ICellModelRegistry {
      * the game. See
      * {@see net.minecraftforge.client.model.ModelLoader#addSpecialModel}.
      * 
-     * This method only maps an {@link Item} to a {@link ResourceLocation} which can
-     * be looked up from the {@link ModelBakery}. No validation about missing models
+     * This method only maps an {@link Item} to a {@link Identifier} which can
+     * be looked up from the {@link net.minecraft.client.render.model.BakedModelManager}. No validation about missing models
      * will be done.
      * 
      * Will throw an exception in case a model is already registered for an item.
@@ -55,20 +54,20 @@ public interface ICellModelRegistry {
      * For examples look at our cell part models within the drive model directory.
      * 
      * @param item  The cell item
-     * @param model The {@link ResourceLocation} representing the model.
+     * @param model The {@link net.minecraft.util.Identifier} representing the model.
      * @return
      */
-    void registerModel(@Nonnull Item item, @Nonnull ResourceLocation model);
+    void registerModel(@Nonnull Item item, @Nonnull Identifier model);
 
     /**
-     * The {@link ResourceLocation} of the model used to render the given storage
+     * The {@link Identifier} of the model used to render the given storage
      * cell {@link Item} when inserted into a drive or similar.
      * 
      * @param item
      * @return null, if no model is registered.
      */
     @Nullable
-    ResourceLocation model(@Nonnull Item item);
+    Identifier model(@Nonnull Item item);
 
     /**
      * An unmodifiable map of all registered mappings.
@@ -76,13 +75,13 @@ public interface ICellModelRegistry {
      * @return
      */
     @Nonnull
-    Map<Item, ResourceLocation> models();
+    Map<Item, Identifier> models();
 
     /**
      * Returns the default model, which can be used when no explicit model is
      * registered.
      */
     @Nonnull
-    ResourceLocation getDefaultModel();
+    Identifier getDefaultModel();
 
 }

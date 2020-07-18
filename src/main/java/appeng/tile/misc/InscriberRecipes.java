@@ -1,6 +1,6 @@
 package appeng.tile.misc;
 
-import appeng.api.AEApi;
+import appeng.core.Api;
 import appeng.api.definitions.IComparableDefinition;
 import appeng.api.features.InscriberProcessType;
 import appeng.core.Api;

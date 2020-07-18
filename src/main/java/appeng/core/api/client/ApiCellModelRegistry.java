@@ -19,10 +19,9 @@
 
 package appeng.core.api.client;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.IdentityHashMap;
-import java.util.Map;
+import java.lang.reflect.Array;
+import java.util.*;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -30,48 +29,47 @@ import javax.annotation.Nullable;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.ModelLoader;
 
 import appeng.api.client.ICellModelRegistry;
 import appeng.core.ApiDefinitions;
+import net.minecraft.util.Identifier;
 
 public class ApiCellModelRegistry implements ICellModelRegistry {
 
-    private static final ResourceLocation MODEL_BASE = new ResourceLocation(
+    private static final Identifier MODEL_BASE = new Identifier(
             "appliedenergistics2:block/drive/drive_base");
-    private static final ResourceLocation MODEL_CELL_EMPTY = new ResourceLocation(
+    private static final Identifier MODEL_CELL_EMPTY = new Identifier(
             "appliedenergistics2:block/drive/drive_cell_empty");
-    private static final ResourceLocation MODEL_CELL_DEFAULT = new ResourceLocation(
+    private static final Identifier MODEL_CELL_DEFAULT = new Identifier(
             "appliedenergistics2:block/drive/drive_cell");
-    private static final ResourceLocation MODEL_CELL_ITEMS_1K = new ResourceLocation(
+    private static final Identifier MODEL_CELL_ITEMS_1K = new Identifier(
             "appliedenergistics2:block/drive/cells/1k_item_cell");
-    private static final ResourceLocation MODEL_CELL_ITEMS_4K = new ResourceLocation(
+    private static final Identifier MODEL_CELL_ITEMS_4K = new Identifier(
             "appliedenergistics2:block/drive/cells/4k_item_cell");
-    private static final ResourceLocation MODEL_CELL_ITEMS_16K = new ResourceLocation(
+    private static final Identifier MODEL_CELL_ITEMS_16K = new Identifier(
             "appliedenergistics2:block/drive/cells/16k_item_cell");
-    private static final ResourceLocation MODEL_CELL_ITEMS_64K = new ResourceLocation(
+    private static final Identifier MODEL_CELL_ITEMS_64K = new Identifier(
             "appliedenergistics2:block/drive/cells/64k_item_cell");
-    private static final ResourceLocation MODEL_CELL_FLUIDS_1K = new ResourceLocation(
+    private static final Identifier MODEL_CELL_FLUIDS_1K = new Identifier(
             "appliedenergistics2:block/drive/cells/1k_fluid_cell");
-    private static final ResourceLocation MODEL_CELL_FLUIDS_4K = new ResourceLocation(
+    private static final Identifier MODEL_CELL_FLUIDS_4K = new Identifier(
             "appliedenergistics2:block/drive/cells/4k_fluid_cell");
-    private static final ResourceLocation MODEL_CELL_FLUIDS_16K = new ResourceLocation(
+    private static final Identifier MODEL_CELL_FLUIDS_16K = new Identifier(
             "appliedenergistics2:block/drive/cells/16k_fluid_cell");
-    private static final ResourceLocation MODEL_CELL_FLUIDS_64K = new ResourceLocation(
+    private static final Identifier MODEL_CELL_FLUIDS_64K = new Identifier(
             "appliedenergistics2:block/drive/cells/64k_fluid_cell");
-    private static final ResourceLocation MODEL_CELL_CREATIVE = new ResourceLocation(
+    private static final Identifier MODEL_CELL_CREATIVE = new Identifier(
             "appliedenergistics2:block/drive/cells/creative_cell");
 
-    private static final ResourceLocation[] MODELS = { MODEL_BASE, MODEL_CELL_EMPTY, MODEL_CELL_DEFAULT,
+    private static final Identifier[] MODELS = { MODEL_BASE, MODEL_CELL_EMPTY, MODEL_CELL_DEFAULT,
             MODEL_CELL_ITEMS_1K, MODEL_CELL_ITEMS_4K, MODEL_CELL_ITEMS_16K, MODEL_CELL_ITEMS_64K, MODEL_CELL_FLUIDS_1K,
             MODEL_CELL_FLUIDS_4K, MODEL_CELL_FLUIDS_16K, MODEL_CELL_FLUIDS_64K, MODEL_CELL_CREATIVE };
 
-    public static void registerModels() {
-        Arrays.stream(MODELS).forEach(ModelLoader::addSpecialModel);
+    public static Collection<Identifier> getModels() {
+        return Arrays.asList(MODELS);
     }
 
-    private final Map<Item, ResourceLocation> registry;
+    private final Map<Item, Identifier> registry;
 
     public ApiCellModelRegistry(ApiDefinitions definitions) {
         this.registry = new IdentityHashMap<>();
@@ -88,7 +86,7 @@ public class ApiCellModelRegistry implements ICellModelRegistry {
     }
 
     @Override
-    public void registerModel(Item item, ResourceLocation model) {
+    public void registerModel(Item item, Identifier model) {
         Preconditions.checkNotNull(item);
         Preconditions.checkNotNull(model);
         Preconditions.checkArgument(!this.registry.containsKey(item), "Cannot register an item twice.");
@@ -98,7 +96,7 @@ public class ApiCellModelRegistry implements ICellModelRegistry {
 
     @Override
     @Nullable
-    public ResourceLocation model(@Nonnull Item item) {
+    public Identifier model(@Nonnull Item item) {
         Preconditions.checkNotNull(item);
 
         return this.registry.get(item);
@@ -106,13 +104,13 @@ public class ApiCellModelRegistry implements ICellModelRegistry {
 
     @Override
     @Nonnull
-    public Map<Item, ResourceLocation> models() {
+    public Map<Item, Identifier> models() {
         return Collections.unmodifiableMap(this.registry);
     }
 
     @Override
     @Nonnull
-    public ResourceLocation getDefaultModel() {
+    public Identifier getDefaultModel() {
         return MODEL_CELL_DEFAULT;
     }
 

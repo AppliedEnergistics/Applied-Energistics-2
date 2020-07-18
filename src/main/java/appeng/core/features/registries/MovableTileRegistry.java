@@ -26,10 +26,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.block.Block;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.ResourceLocation;
 
 import appeng.api.exceptions.AppEngException;
 import appeng.api.movable.IMovableHandler;
@@ -38,11 +35,14 @@ import appeng.api.movable.IMovableTile;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.spatial.DefaultSpatialHandler;
+import net.minecraft.tag.BlockTags;
+import net.minecraft.tag.Tag;
+import net.minecraft.util.Identifier;
 
 public class MovableTileRegistry implements IMovableRegistry {
 
-    private static final ResourceLocation TAG_WHITELIST = new ResourceLocation(AppEng.MOD_ID, "spatial/whitelist");
-    private static final ResourceLocation TAG_BLACKLIST = new ResourceLocation(AppEng.MOD_ID, "spatial/blacklist");
+    private static final Identifier TAG_WHITELIST = new Identifier(AppEng.MOD_ID, "spatial/whitelist");
+    private static final Identifier TAG_BLACKLIST = new Identifier(AppEng.MOD_ID, "spatial/blacklist");
 
     private final Set<Block> blacklisted = new HashSet<>();
 
@@ -55,8 +55,8 @@ public class MovableTileRegistry implements IMovableRegistry {
     private final Tag<Block> blockTagBlackList;
 
     public MovableTileRegistry() {
-        this.blockTagWhiteList = BlockTags.getCollection().getOrCreate(TAG_WHITELIST);
-        this.blockTagBlackList = BlockTags.getCollection().getOrCreate(TAG_BLACKLIST);
+        this.blockTagWhiteList = BlockTags.getContainer().getOrCreate(TAG_WHITELIST);
+        this.blockTagBlackList = BlockTags.getContainer().getOrCreate(TAG_BLACKLIST);
     }
 
     @Override
@@ -120,7 +120,7 @@ public class MovableTileRegistry implements IMovableRegistry {
 
         // if the block itself is via block tags
         if (AEConfig.instance().getSpatialBlockTags()
-                && this.blockTagWhiteList.contains(te.getBlockState().getBlock())) {
+                && this.blockTagWhiteList.contains(te.getCachedState().getBlock())) {
             this.valid.put(myClass, this.dsh);
             return this.dsh;
         }

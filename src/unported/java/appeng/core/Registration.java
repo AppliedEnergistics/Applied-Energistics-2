@@ -38,7 +38,7 @@ import net.minecraft.world.gen.placement.CountRangeConfig;
 import net.minecraft.world.gen.placement.IPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
 
-import appeng.api.AEApi;
+import appeng.core.Api;
 import appeng.api.config.Upgrades;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IItems;

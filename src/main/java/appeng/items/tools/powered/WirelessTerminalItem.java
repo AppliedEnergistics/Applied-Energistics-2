@@ -35,7 +35,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.text.Text;
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
+import appeng.core.Api;
 import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;

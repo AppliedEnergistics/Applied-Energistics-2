@@ -18,7 +18,7 @@
 
 package appeng.spatial;
 
-import appeng.api.AEApi;
+import appeng.core.Api;
 import appeng.api.movable.IMovableHandler;
 import appeng.api.movable.IMovableRegistry;
 import appeng.api.util.AEPartLocation;

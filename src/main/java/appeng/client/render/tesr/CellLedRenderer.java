@@ -2,15 +2,13 @@ package appeng.client.render.tesr;
 
 import java.util.EnumMap;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.block.storage.DriveSlotState;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.Vector3f;
 
 /**
  * Utility class to render LEDs for storage cells from a Tile Entity Renderer.
@@ -53,11 +51,11 @@ class CellLedRenderer {
             // Bottom Face
             R, B, FR, L, B, FR, L, B, BA, R, B, BA, };
 
-    public static final RenderType RENDER_LAYER = RenderType.makeType("ae_drive_leds",
-            DefaultVertexFormats.POSITION_COLOR, 7, 32565, false, true, RenderType.State.getBuilder().build(false));
+    public static final RenderLayer RENDER_LAYER = RenderLayer.of("ae_drive_leds",
+            VertexFormats.POSITION_COLOR, 7, 32565, false, true, RenderLayer.MultiPhaseParameters.builder().build(false));
 
-    public static void renderLed(IChestOrDrive drive, int slot, IVertexBuilder buffer, MatrixStack ms,
-            float partialTicks) {
+    public static void renderLed(IChestOrDrive drive, int slot, VertexConsumer buffer, MatrixStack ms,
+                                 float partialTicks) {
 
         Vector3f color = getColorForSlot(drive, slot, partialTicks);
         if (color == null) {
@@ -68,8 +66,8 @@ class CellLedRenderer {
             float x = LED_QUADS[i];
             float y = LED_QUADS[i + 1];
             float z = LED_QUADS[i + 2];
-            buffer.pos(ms.getLast().getMatrix(), x, y, z).color(color.getX(), color.getY(), color.getZ(), 1.f)
-                    .endVertex();
+            buffer.vertex(ms.peek().getModel(), x, y, z).color(color.getX(), color.getY(), color.getZ(), 1.f)
+                    .next();
         }
     }
 

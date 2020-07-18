@@ -27,7 +27,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
+import net.minecraft.recipe.CraftingRecipe;
 import net.minecraft.world.World;
 
 import appeng.api.networking.crafting.ICraftingPatternDetails;
@@ -74,8 +74,8 @@ public interface ICraftingHelper {
      * @param allowSubstitutes Controls whether the ME system will allow the use of
      *                         equivalent items to craft this recipe.
      */
-    ItemStack encodeCraftingPattern(@Nullable ItemStack stack, ICraftingRecipe recipe, ItemStack[] in, ItemStack out,
-            boolean allowSubstitutes);
+    ItemStack encodeCraftingPattern(@Nullable ItemStack stack, CraftingRecipe recipe, ItemStack[] in, ItemStack out,
+                                    boolean allowSubstitutes);
 
     /**
      * Same as {@link #decodePattern(ItemStack, World, boolean)} with no auto
@@ -94,7 +94,7 @@ public interface ICraftingHelper {
      *
      * @param itemStack    pattern
      * @param world        world used to access the
-     *                     {@link net.minecraft.item.crafting.RecipeManager}.
+     *                     {@link net.minecraft.recipe.RecipeManager}.
      * @param autoRecovery If true, the method will try to recover from changed
      *                     recipe ids by searching the entire recipe manager for a
      *                     recipe matching the inputs. If this is successful, the

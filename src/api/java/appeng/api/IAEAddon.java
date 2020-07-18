@@ -23,8 +23,6 @@
 
 package appeng.api;
 
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-
 /**
  * Every AE2 addon requiring access to {@link IAppEngApi}, needs to provide at
  * least one class implementing this interface.
@@ -37,9 +35,7 @@ public interface IAEAddon {
     /**
      * This gets called once the API is successfully constructed and ready to be
      * used.
-     * 
-     * For now this happens during {@link FMLCommonSetupEvent}.
-     * 
+     *
      * Each addon is responsible to maintain a reference to {@link IAppEngApi} for
      * future use. Otherwise there is no alternative to access it later.
      * 

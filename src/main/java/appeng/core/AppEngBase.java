@@ -1,6 +1,6 @@
 package appeng.core;
 
-import appeng.api.AEApi;
+import appeng.core.Api;
 import appeng.api.features.AEFeature;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.networking.IGridCacheRegistry;
@@ -348,7 +348,7 @@ public abstract class AppEngBase implements AppEng {
             return;
         }
 
-        BlockState quartzOre = AEApi.instance().definitions().blocks().quartzOre().block().getDefaultState();
+        BlockState quartzOre = Api.instance().definitions().blocks().quartzOre().block().getDefaultState();
         b.addFeature(GenerationStep.Feature.UNDERGROUND_ORES,
                 Feature.ORE
                         .configure(new OreFeatureConfig(OreFeatureConfig.Target.NATURAL_STONE,
@@ -358,7 +358,7 @@ public abstract class AppEngBase implements AppEng {
 
         if (AEConfig.instance().isFeatureEnabled(AEFeature.CHARGED_CERTUS_ORE)) {
 
-            BlockState chargedQuartzOre = AEApi.instance().definitions().blocks().quartzOreCharged().block()
+            BlockState chargedQuartzOre = Api.instance().definitions().blocks().quartzOreCharged().block()
                     .getDefaultState();
             b.addFeature(GenerationStep.Feature.UNDERGROUND_DECORATION,
                     ChargedQuartzOreFeature.INSTANCE

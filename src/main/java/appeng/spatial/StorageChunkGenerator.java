@@ -18,7 +18,7 @@
 
 package appeng.spatial;
 
-import appeng.api.AEApi;
+import appeng.core.Api;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.block.BlockState;

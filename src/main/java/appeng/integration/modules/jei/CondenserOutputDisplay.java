@@ -1,6 +1,6 @@
 package appeng.integration.modules.jei;
 
-import appeng.api.AEApi;
+import appeng.core.Api;
 import appeng.api.config.CondenserOutput;
 import appeng.api.definitions.IMaterials;
 import appeng.api.implementations.items.IStorageComponent;
@@ -62,7 +62,7 @@ public class CondenserOutputDisplay implements RecipeDisplay {
     }
 
     private List<EntryStack> getViableStorageComponents(CondenserOutput condenserOutput) {
-        IMaterials materials = AEApi.instance().definitions().materials();
+        IMaterials materials = Api.instance().definitions().materials();
         List<EntryStack> viableComponents = new ArrayList<>();
         this.addViableComponent(condenserOutput, viableComponents, materials.cell1kPart().stack(1));
         this.addViableComponent(condenserOutput, viableComponents, materials.cell4kPart().stack(1));

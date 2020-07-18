@@ -16,7 +16,8 @@
   ],
   "client": [
     "ModelsReloadMixin",
-    "RenderPhaseMixin"
+    "RenderPhaseMixin",
+    "BakedModelManagerAccessor"
   ],
   "server": [],
   "injectors": {

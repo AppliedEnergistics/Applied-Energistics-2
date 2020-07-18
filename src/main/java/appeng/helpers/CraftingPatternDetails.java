@@ -31,9 +31,9 @@ import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.CraftingRecipe;
+import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeType;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
 import appeng.api.networking.crafting.ICraftingPatternDetails;
@@ -70,7 +70,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
 
         final List<IAEItemStack> ingredients = templateItem.getIngredients(itemStack);
         final List<IAEItemStack> products = templateItem.getProducts(itemStack);
-        final ResourceLocation recipeId = templateItem.getCraftingRecipeId(itemStack);
+        final Identifier recipeId = templateItem.getCraftingRecipeId(itemStack);
 
         this.pattern = is.copy();
         this.isCraftable = recipeId != null;
@@ -94,13 +94,13 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
         }
 
         if (this.isCraftable) {
-            IRecipe<?> recipe = w.getRecipeManager().getRecipes(IRecipeType.CRAFTING).get(recipeId);
+            Recipe<?> recipe = w.getRecipeManager().getAllOfType(RecipeType.CRAFTING).get(recipeId);
 
-            if (recipe == null || recipe.getType() != IRecipeType.CRAFTING) {
+            if (recipe == null || recipe.getType() != RecipeType.CRAFTING) {
                 throw new IllegalStateException("recipe id is not a crafting recipe");
             }
 
-            this.standardRecipe = (ICraftingRecipe) recipe;
+            this.standardRecipe = (CraftingRecipe) recipe;
             this.correctOutput = this.standardRecipe.craft(this.crafting);
 
             out.add(Api.instance().storage().getStorageChannel(IItemStorageChannel.class)

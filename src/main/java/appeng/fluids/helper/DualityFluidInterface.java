@@ -52,7 +52,6 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
-import appeng.capabilities.Capabilities;
 import appeng.core.Api;
 import appeng.core.settings.TickRates;
 import appeng.fluids.util.AEFluidInventory;

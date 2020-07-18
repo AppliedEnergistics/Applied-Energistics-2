@@ -18,7 +18,7 @@
 
 package appeng.integration.modules.jei;
 
-import appeng.api.AEApi;
+import appeng.core.Api;
 import appeng.api.config.CondenserOutput;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItemDefinition;
@@ -92,14 +92,14 @@ public class ReiPlugin implements REIPluginV0 {
 
     @Override
     public void postRegister() {
-        IDefinitions definitions = AEApi.instance().definitions();
+        IDefinitions definitions = Api.instance().definitions();
         registerDescriptions(definitions);
 
         ReiFacade.setInstance(new ReiRuntimeAdapter());
     }
 
     private void registerWorkingStations(RecipeHelper registration) {
-        IDefinitions definitions = AEApi.instance().definitions();
+        IDefinitions definitions = Api.instance().definitions();
 
         ItemStack grindstone = definitions.blocks().grindstone().stack(1);
         registration.registerWorkingStations(GrinderRecipeCategory.UID, EntryStack.create(grindstone));

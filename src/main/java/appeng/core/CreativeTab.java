@@ -18,7 +18,7 @@
 
 package appeng.core;
 
-import appeng.api.AEApi;
+import appeng.core.Api;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItemDefinition;
@@ -39,7 +39,7 @@ public final class CreativeTab {
     public static void init() {
         INSTANCE = FabricItemGroupBuilder.create(AppEng.makeId("main"))
                 .icon(() -> {
-                    final IDefinitions definitions = AEApi.instance().definitions();
+                    final IDefinitions definitions = Api.instance().definitions();
                     final IBlocks blocks = definitions.blocks();
                     return blocks.quartzOre().stack(1); // FIXME FABRIC blocks.controller().stack(1);
                 })
