@@ -59,7 +59,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingTileEntity> ex
             final BlockPos fromPos, boolean isMoving) {
         final CraftingTileEntity cp = this.getTileEntity(worldIn, pos);
         if (cp != null) {
-            cp.updateMultiBlock();
+            cp.updateMultiBlock(fromPos);
         }
     }
 

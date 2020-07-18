@@ -20,9 +20,22 @@ package appeng.me.cluster;
 
 import java.util.Iterator;
 
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+
 import appeng.api.networking.IGridHost;
 
 public interface IAECluster {
+
+    /**
+     * The minimum x,y,z position still within the bounds of the cluster.
+     */
+    BlockPos getBoundsMin();
+
+    /**
+     * The maximum x,y,z position still within the bounds of the cluster.
+     */
+    BlockPos getBoundsMax();
 
     void updateStatus(boolean updateGrid);
 

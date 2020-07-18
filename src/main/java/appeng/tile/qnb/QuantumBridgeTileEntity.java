@@ -32,6 +32,7 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
@@ -272,8 +273,8 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity implements I
         return AECableType.DENSE_SMART;
     }
 
-    public void neighborUpdate() {
-        this.calc.calculateMultiblock(this.world, this.getLocation());
+    public void neighborUpdate(BlockPos fromPos) {
+        this.calc.updateMultiblockAfterNeighborUpdate(this.world, this.getLocation(), fromPos);
     }
 
     @Override

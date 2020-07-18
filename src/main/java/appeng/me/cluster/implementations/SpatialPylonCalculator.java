@@ -22,7 +22,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import appeng.api.util.DimensionalCoord;
 import appeng.api.util.WorldCoord;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.IAEMultiBlock;
@@ -47,8 +46,7 @@ public class SpatialPylonCalculator extends MBCalculator {
 
     @Override
     public IAECluster createCluster(final World w, final WorldCoord min, final WorldCoord max) {
-        return new SpatialPylonCluster(new DimensionalCoord(w, min.x, min.y, min.z),
-                new DimensionalCoord(w, max.x, max.y, max.z));
+        return new SpatialPylonCluster(w, min.getBlockPos(), max.getBlockPos());
     }
 
     @Override
