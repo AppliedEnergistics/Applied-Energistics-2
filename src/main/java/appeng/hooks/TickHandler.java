@@ -198,8 +198,8 @@ public class TickHandler {
 
                 if (!jobSet.isEmpty()) {
                     final int jobSize = jobSet.size();
-                    final int configTime = AEConfig.instance().getCraftingCalculationTimePerTick();
-                    final int simTime = Math.max(1, configTime / jobSize);
+                    final int microSecondsPerTick = AEConfig.instance().getCraftingCalculationTimePerTick() * 1000;
+                    final int simTime = Math.max(1, microSecondsPerTick / jobSize);
 
                     final Iterator<CraftingJob> i = jobSet.iterator();
 
