@@ -22,9 +22,16 @@ import net.minecraft.tileentity.TileEntityType;
 
 public class DenseEnergyCellTileEntity extends EnergyCellTileEntity {
 
+    private final static double MAX_STORED = 200000 * 8;
+
     public DenseEnergyCellTileEntity(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
-        this.setInternalMaxPower(200000 * 8);
+        this.setInternalMaxPower(MAX_STORED);
+    }
+
+    @Override
+    public int getPriority() {
+        return 1600;
     }
 
 }
