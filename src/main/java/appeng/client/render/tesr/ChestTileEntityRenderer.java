@@ -151,7 +151,6 @@ public class ChestTileEntityRenderer extends BlockEntityRenderer<ChestBlockEntit
                 quads.set(i, new BakedQuad(quad.getVertexData(), quad.getColorIndex(), r.rotate(quad.getFace()),
                         /* FIXME FABRIC: sprite is protected but unused?? */ null, quad.hasShade()));
             }
-
             return quads;
         }
     }

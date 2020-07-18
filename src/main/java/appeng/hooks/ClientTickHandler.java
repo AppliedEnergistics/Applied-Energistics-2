@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @Environment(EnvType.CLIENT)
 public class ClientTickHandler extends TickHandler {
@@ -22,7 +23,7 @@ public class ClientTickHandler extends TickHandler {
     }
 
     @Override
-    public HashMap<Integer, PlayerColor> getPlayerColors() {
+    public Map<Integer, PlayerColor> getPlayerColors() {
         if (!Platform.isServer()) {
             return this.cliPlayerColors;
         }

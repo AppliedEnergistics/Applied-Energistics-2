@@ -19,12 +19,10 @@
 package appeng.hooks;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
@@ -35,20 +33,8 @@ import com.google.common.base.Stopwatch;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.event.TickEvent.ClientTickEvent;
-import net.minecraftforge.event.TickEvent.Phase;
-import net.minecraftforge.event.TickEvent.ServerTickEvent;
-import net.minecraftforge.event.TickEvent.WorldTickEvent;
-import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.DistExecutor.SafeRunnable;
 
-import appeng.api.networking.IGridNode;
-import appeng.api.parts.CableRenderMode;
 import appeng.api.util.AEColor;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -58,17 +44,10 @@ import appeng.me.Grid;
 import appeng.tile.AEBaseBlockEntity;
 import appeng.util.IWorldCallable;
 import appeng.util.Platform;
-import com.google.common.base.Stopwatch;
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Multimap;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
-
-import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class TickHandler {
 
@@ -90,24 +69,6 @@ public class TickHandler {
 
     public static TickHandler instance() {
         return INSTANCE;
-    }
-
-    public static void setup(IEventBus eventBus) {
-        eventBus.addListener(INSTANCE::onServerTick);
-        eventBus.addListener(INSTANCE::onWorldTick);
-        eventBus.addListener(INSTANCE::onUnloadWorld);
-
-        // DistExecutor does not like functional interfaces
-        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> new SafeRunnable() {
-
-            private static final long serialVersionUID = 5221919736953944125L;
-
-            @Override
-            public void run() {
-                eventBus.addListener(INSTANCE::onClientTick);
-
-            }
-        });
     }
 
     public Map<Integer, PlayerColor> getPlayerColors() {
