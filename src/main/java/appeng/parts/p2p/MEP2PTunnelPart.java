@@ -138,14 +138,14 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
             if (!this.getProxy().getPath().isNetworkBooting()) {
                 if (!this.getProxy().getEnergy().isNetworkPowered()) {
                     this.connection.markDestroy();
-                    TickHandler.INSTANCE.addCallable(this.getTile().getWorld(), this.connection);
+                    TickHandler.instance().addCallable(this.getTile().getWorld(), this.connection);
                 } else {
                     if (this.getProxy().isActive()) {
                         this.connection.markCreate();
-                        TickHandler.INSTANCE.addCallable(this.getTile().getWorld(), this.connection);
+                        TickHandler.instance().addCallable(this.getTile().getWorld(), this.connection);
                     } else {
                         this.connection.markDestroy();
-                        TickHandler.INSTANCE.addCallable(this.getTile().getWorld(), this.connection);
+                        TickHandler.instance().addCallable(this.getTile().getWorld(), this.connection);
                     }
                 }
 

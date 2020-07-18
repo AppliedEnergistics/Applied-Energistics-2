@@ -124,7 +124,7 @@ public class CableBusTileEntity extends AEBaseTileEntity implements AEMultiTile 
     @Override
     public void validate() {
         super.validate();
-        TickHandler.INSTANCE.addInit(this);
+        TickHandler.instance().addInit(this);
     }
 
     @Override

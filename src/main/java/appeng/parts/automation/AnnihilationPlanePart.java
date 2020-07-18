@@ -408,7 +408,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
                             performBreakBlock(w, pos, blockState, energy, requiredPower, items);
                         } else {
                             this.breaking = true;
-                            TickHandler.INSTANCE.addCallable(this.getTile().getWorld(), this);
+                            TickHandler.instance().addCallable(this.getTile().getWorld(), this);
                         }
                         return TickRateModulation.URGENT;
                     }
