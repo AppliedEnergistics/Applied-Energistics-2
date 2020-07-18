@@ -384,7 +384,7 @@ public class GridNode implements IGridNode, IPathItem {
                             GridConnection.create(node, this, f.getOpposite());
                         } catch (SecurityConnectionException e) {
                             AELog.debug(e);
-                            TickHandler.INSTANCE.addCallable(node.getWorld(), new MachineSecurityBreak(this));
+                            TickHandler.instance().addCallable(node.getWorld(), new MachineSecurityBreak(this));
 
                             return;
                         } catch (final FailedConnectionException e) {
@@ -411,7 +411,7 @@ public class GridNode implements IGridNode, IPathItem {
                 } catch (SecurityConnectionException e) {
                     AELog.debug(e);
 
-                    TickHandler.INSTANCE.addCallable(node.getWorld(), new MachineSecurityBreak(this));
+                    TickHandler.instance().addCallable(node.getWorld(), new MachineSecurityBreak(this));
 
                     return;
                 } catch (final FailedConnectionException e) {

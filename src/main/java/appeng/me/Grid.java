@@ -64,7 +64,7 @@ public class Grid implements IGrid {
 
         this.postEvent(new MENetworkPostCacheConstruction());
 
-        TickHandler.INSTANCE.addNetwork(this);
+        TickHandler.instance().addNetwork(this);
         center.setGrid(this);
     }
 
@@ -112,7 +112,7 @@ public class Grid implements IGrid {
                 this.pivot = (GridNode) n.next();
             } else {
                 this.pivot = null;
-                TickHandler.INSTANCE.removeNetwork(this);
+                TickHandler.instance().removeNetwork(this);
                 this.myStorage.remove();
             }
         }

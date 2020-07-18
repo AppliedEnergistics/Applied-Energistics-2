@@ -115,7 +115,7 @@ public final class AppEng {
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, AEConfig.CLIENT_SPEC);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, AEConfig.COMMON_SPEC);
 
-        proxy = DistExecutor.runForDist(() -> ClientHelper::new, () -> ServerHelper::new);
+        proxy = DistExecutor.safeRunForDist(() -> ClientHelper::new, () -> ServerHelper::new);
 
         CrashReportExtender.registerCrashCallable(new ModCrashEnhancement());
 
@@ -136,15 +136,14 @@ public final class AppEng {
         modEventBus.addGenericListener(ModDimension.class, registration::registerModDimension);
 
         modEventBus.addListener(Integrations::enqueueIMC);
-
         modEventBus.addListener(this::commonSetup);
 
         // Register client-only events
         DistExecutor.runWhenOn(Dist.CLIENT, () -> registration::registerClientEvents);
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> modEventBus.addListener(this::clientSetup));
 
-        MinecraftForge.EVENT_BUS.addListener(TickHandler.INSTANCE::unloadWorld);
-        MinecraftForge.EVENT_BUS.addListener(TickHandler.INSTANCE::onTick);
+        TickHandler.setup(MinecraftForge.EVENT_BUS);
+
         MinecraftForge.EVENT_BUS.addListener(this::onServerAboutToStart);
         MinecraftForge.EVENT_BUS.addListener(this::serverStopped);
         MinecraftForge.EVENT_BUS.addListener(this::serverStopping);
@@ -154,7 +153,6 @@ public final class AppEng {
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-
         ApiDefinitions definitions = Api.INSTANCE.definitions();
         definitions.getRegistry().getBootstrapComponents(IInitComponent.class)
                 .forEachRemaining(IInitComponent::initialize);
@@ -300,7 +298,7 @@ public final class AppEng {
 
     private void serverStopped(final FMLServerStoppedEvent event) {
         WorldData.instance().onServerStoppped();
-        TickHandler.INSTANCE.shutdown();
+        TickHandler.instance().shutdown();
     }
 
 }
