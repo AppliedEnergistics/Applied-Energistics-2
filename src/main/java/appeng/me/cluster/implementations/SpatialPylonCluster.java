@@ -25,6 +25,7 @@ import java.util.List;
 import appeng.api.networking.IGridHost;
 import appeng.api.util.DimensionalCoord;
 import appeng.me.cluster.IAECluster;
+import appeng.me.cluster.MBCalculator;
 import appeng.tile.spatial.SpatialPylonTileEntity;
 
 public class SpatialPylonCluster implements IAECluster {
@@ -60,6 +61,11 @@ public class SpatialPylonCluster implements IAECluster {
     }
 
     @Override
+    public boolean isDestroyed() {
+        return isDestroyed;
+    }
+
+    @Override
     public void destroy() {
 
         if (this.isDestroyed) {
@@ -67,8 +73,13 @@ public class SpatialPylonCluster implements IAECluster {
         }
         this.isDestroyed = true;
 
-        for (final SpatialPylonTileEntity r : this.getLine()) {
-            r.updateStatus(null);
+        MBCalculator.setModificationInProgress(this);
+        try {
+            for (final SpatialPylonTileEntity r : this.getLine()) {
+                r.updateStatus(null);
+            }
+        } finally {
+            MBCalculator.setModificationInProgress(null);
         }
     }
 

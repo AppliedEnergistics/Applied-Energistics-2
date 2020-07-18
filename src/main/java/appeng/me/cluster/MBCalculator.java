@@ -18,6 +18,8 @@
 
 package appeng.me.cluster;
 
+import java.lang.ref.WeakReference;
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -29,15 +31,38 @@ import appeng.util.Platform;
 
 public abstract class MBCalculator {
 
+    private static WeakReference<IAECluster> modificationInProgress = new WeakReference<>(null);
+
     private final IAEMultiBlock target;
 
     public MBCalculator(final IAEMultiBlock t) {
         this.target = t;
     }
 
-    public void calculateMultiblock(final World world, final WorldCoord loc) {
-        if (Platform.isClient()) {
+    public static void setModificationInProgress(IAECluster cluster) {
+        IAECluster inProgress = modificationInProgress.get();
+        if (inProgress == cluster) {
             return;
+        }
+        if (inProgress != null && cluster != null) {
+            throw new IllegalStateException("A modification is already in-progress for: " + inProgress);
+        }
+        modificationInProgress = new WeakReference<>(cluster);
+    }
+
+    public static boolean isModificationInProgress() {
+        return modificationInProgress.get() != null;
+    }
+
+    public void calculateMultiblock(final World world, final WorldCoord loc) {
+        if (Platform.isClient() || isModificationInProgress()) {
+            return;
+        }
+
+        IAECluster currentCluster = target.getCluster();
+        if (currentCluster != null && currentCluster.isDestroyed()) {
+            return; // If we're still part of a cluster that is in the process of being destroyed,
+                    // don't recalc.
         }
 
         try {
@@ -67,6 +92,7 @@ public abstract class MBCalculator {
             if (this.checkMultiblockScale(min, max)) {
                 if (this.verifyUnownedRegion(world, min, max)) {
                     IAECluster c = this.createCluster(world, min, max);
+                    setModificationInProgress(c);
 
                     try {
                         if (!this.verifyInternalStructure(world, min, max)) {
@@ -94,6 +120,8 @@ public abstract class MBCalculator {
             }
         } catch (final Throwable err) {
             AELog.debug(err);
+        } finally {
+            setModificationInProgress(null);
         }
 
         this.disconnect();
