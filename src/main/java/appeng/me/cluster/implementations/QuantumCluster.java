@@ -21,6 +21,7 @@ package appeng.me.cluster.implementations;
 import java.util.Iterator;
 
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 
@@ -36,13 +37,14 @@ import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.me.cache.helpers.ConnectionWrapper;
 import appeng.me.cluster.IAECluster;
+import appeng.me.cluster.MBCalculator;
 import appeng.tile.qnb.QuantumBridgeBlockEntity;
 import appeng.util.iterators.ChainedIterator;
 
 public class QuantumCluster implements ILocatable, IAECluster {
 
-    private final WorldCoord min;
-    private final WorldCoord max;
+    private final BlockPos boundsMin;
+    private final BlockPos boundsMax;
     private boolean isDestroyed = false;
     private boolean updateStatus = true;
     private QuantumBridgeBlockEntity[] Ring;
@@ -53,8 +55,8 @@ public class QuantumCluster implements ILocatable, IAECluster {
     private QuantumBridgeBlockEntity center;
 
     public QuantumCluster(final WorldCoord min, final WorldCoord max) {
-        this.min = min;
-        this.max = max;
+        this.boundsMin = min.getBlockPos();
+        this.boundsMax = max.getBlockPos();
         this.setRing(new QuantumBridgeBlockEntity[8]);
     }
 
@@ -186,31 +188,51 @@ public class QuantumCluster implements ILocatable, IAECluster {
     }
 
     @Override
+    public BlockPos getBoundsMin() {
+        return boundsMin;
+    }
+
+    @Override
+    public BlockPos getBoundsMax() {
+        return boundsMax;
+    }
+
+    @Override
+    public boolean isDestroyed() {
+        return isDestroyed;
+    }
+
+    @Override
     public void destroy() {
         if (this.isDestroyed) {
             return;
         }
         this.isDestroyed = true;
 
-        if (this.registered) {
-            // FIXME FABRIC -> onWorldUnload event
+        MBCalculator.setModificationInProgress(this);
+        try {
+            if (this.registered) {
+                // FIXME FABRIC -> onWorldUnload event
             // FIXME FABRIC MinecraftForge.EVENT_BUS.unregister(this);
             this.registered = false;
         }
 
-        if (this.thisSide != 0) {
-            this.updateStatus(true);
-            LocatableEventAnnounce.EVENT.invoker().onLocatableAnnounce(this, LocatableEvent.UNREGISTER);
+            if (this.thisSide != 0) {
+                this.updateStatus(true);
+                LocatableEventAnnounce.EVENT.invoker().onLocatableAnnounce(this, LocatableEvent.UNREGISTER);
+            }
+
+            this.center.updateStatus(null, (byte) -1, this.isUpdateStatus());
+
+            for (final QuantumBridgeBlockEntity r : this.getRing()) {
+                r.updateStatus(null, (byte) -1, this.isUpdateStatus());
+            }
+
+            this.center = null;
+            this.setRing(new QuantumBridgeBlockEntity[8]);
+        } finally {
+            MBCalculator.setModificationInProgress(null);
         }
-
-        this.center.updateStatus(null, (byte) -1, this.isUpdateStatus());
-
-        for (final QuantumBridgeBlockEntity r : this.getRing()) {
-            r.updateStatus(null, (byte) -1, this.isUpdateStatus());
-        }
-
-        this.center = null;
-        this.setRing(new QuantumBridgeBlockEntity[8]);
     }
 
     @Override

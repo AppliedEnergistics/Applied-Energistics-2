@@ -18,6 +18,8 @@
 
 package appeng.me.cluster;
 
+import java.lang.ref.WeakReference;
+
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -29,15 +31,64 @@ import appeng.util.Platform;
 
 public abstract class MBCalculator {
 
+    private static WeakReference<IAECluster> modificationInProgress = new WeakReference<>(null);
+
     private final IAEMultiBlock target;
 
     public MBCalculator(final IAEMultiBlock t) {
         this.target = t;
     }
 
-    public void calculateMultiblock(final World world, final WorldCoord loc) {
-        if (Platform.isClient()) {
+    public static void setModificationInProgress(IAECluster cluster) {
+        IAECluster inProgress = modificationInProgress.get();
+        if (inProgress == cluster) {
             return;
+        }
+        if (inProgress != null && cluster != null) {
+            throw new IllegalStateException("A modification is already in-progress for: " + inProgress);
+        }
+        modificationInProgress = new WeakReference<>(cluster);
+    }
+
+    public static boolean isModificationInProgress() {
+        return modificationInProgress.get() != null;
+    }
+
+    public void updateMultiblockAfterNeighborUpdate(final World world, final WorldCoord loc, BlockPos changedPos) {
+        boolean recheck;
+
+        IAECluster cluster = target.getCluster();
+        if (cluster != null) {
+            if (isWithinBounds(changedPos, cluster.getBoundsMin(), cluster.getBoundsMax())) {
+                // If the location is part of the current multiblock, always re-check
+                recheck = true;
+            } else {
+                // If the location is outside, only re-check if it would now be considered part
+                // of it
+                recheck = isValidTileAt(world, changedPos.getX(), changedPos.getY(), changedPos.getZ());
+            }
+        } else {
+            // Always recheck if the tile is not part of a cluster, because the adjacent
+            // block could have
+            // previously been a valid tile, but in a wrong placement, or the other way
+            // around.
+            recheck = true;
+        }
+
+        if (recheck) {
+            calculateMultiblock(world, loc);
+        }
+    }
+
+    public void calculateMultiblock(final World world, final WorldCoord loc) {
+        if (Platform.isClient() || isModificationInProgress()) {
+            return;
+        }
+
+        IAECluster currentCluster = target.getCluster();
+        if (currentCluster != null && currentCluster.isDestroyed()) {
+            return; // If we're still part of a cluster that is in the process of being destroyed,
+                    // don't recalc.
         }
 
         try {
@@ -67,6 +118,7 @@ public abstract class MBCalculator {
             if (this.checkMultiblockScale(min, max)) {
                 if (this.verifyUnownedRegion(world, min, max)) {
                     IAECluster c = this.createCluster(world, min, max);
+                    setModificationInProgress(c);
 
                     try {
                         if (!this.verifyInternalStructure(world, min, max)) {
@@ -94,9 +146,19 @@ public abstract class MBCalculator {
             }
         } catch (final Throwable err) {
             AELog.debug(err);
+        } finally {
+            setModificationInProgress(null);
         }
 
         this.disconnect();
+    }
+
+    private static boolean isWithinBounds(BlockPos pos, BlockPos boundsMin, BlockPos boundsMax) {
+        int x = pos.getX();
+        int y = pos.getY();
+        int z = pos.getZ();
+        return (x >= boundsMin.getX() && y >= boundsMin.getY() && z >= boundsMin.getZ() && x <= boundsMax.getX()
+                && y <= boundsMax.getY() && z <= boundsMax.getZ());
     }
 
     private boolean isValidTileAt(final World w, final int x, final int y, final int z) {

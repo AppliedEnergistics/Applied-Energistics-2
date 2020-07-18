@@ -423,7 +423,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
         if (this.world != null) {
             this.world.markDirty(this.pos, this);
             if (!this.markDirtyQueued) {
-                TickHandler.INSTANCE.addCallable(null, this::markDirtyAtEndOfTick);
+                TickHandler.instance().addCallable(null, this::markDirtyAtEndOfTick);
                 this.markDirtyQueued = true;
             }
         }

@@ -32,6 +32,7 @@ import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.text.Text;
 import net.minecraft.world.World;
 
@@ -70,6 +71,7 @@ import appeng.crafting.CraftingWatcher;
 import appeng.crafting.MECraftingInventory;
 import appeng.me.cache.CraftingGridCache;
 import appeng.me.cluster.IAECluster;
+import appeng.me.cluster.MBCalculator;
 import appeng.me.helpers.MachineSource;
 import appeng.tile.crafting.CraftingMonitorBlockEntity;
 import appeng.tile.crafting.CraftingBlockEntity;
@@ -80,8 +82,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
     private static final String LOG_MARK_AS_COMPLETE = "Completed job for %s.";
 
-    private final WorldCoord min;
-    private final WorldCoord max;
+    private final BlockPos boundsMin;
+    private final BlockPos boundsMax;
     private final int[] usedOps = new int[3];
     private final Map<ICraftingPatternDetails, TaskProgress> tasks = new HashMap<>();
     // INSTANCE sate
@@ -112,17 +114,28 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
     private long startItemCount;
     private long remainingItemCount;
 
-    public CraftingCPUCluster(final WorldCoord min, final WorldCoord max) {
-        this.min = min;
-        this.max = max;
+    public CraftingCPUCluster(final WorldCoord boundsMin, final WorldCoord boundsMax) {
+        this.boundsMin = boundsMin.getBlockPos();
+        this.boundsMax = boundsMax.getBlockPos();
     }
 
+    @Override
     public boolean isDestroyed() {
         return this.isDestroyed;
     }
 
     public ICraftingLink getLastCraftingLink() {
         return this.myLastLink;
+    }
+
+    @Override
+    public BlockPos getBoundsMin() {
+        return boundsMin;
+    }
+
+    @Override
+    public BlockPos getBoundsMax() {
+        return boundsMax;
     }
 
     /**
@@ -160,19 +173,24 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         }
         this.isDestroyed = true;
 
-        boolean posted = false;
+        MBCalculator.setModificationInProgress(this);
+        try {
+            boolean posted = false;
 
-        for (final CraftingBlockEntity r : this.tiles) {
-            final IGridNode n = r.getActionableNode();
-            if (n != null && !posted) {
-                final IGrid g = n.getGrid();
-                if (g != null) {
-                    g.postEvent(new MENetworkCraftingCpuChange(n));
-                    posted = true;
+            for (final CraftingBlockEntity r : this.tiles) {
+                final IGridNode n = r.getActionableNode();
+                if (n != null && !posted) {
+                    final IGrid g = n.getGrid();
+                    if (g != null) {
+                        g.postEvent(new MENetworkCraftingCpuChange(n));
+                        posted = true;
+                    }
                 }
-            }
 
-            r.updateStatus(null);
+                r.updateStatus(null);
+            }
+        } finally {
+            MBCalculator.setModificationInProgress(null);
         }
     }
 

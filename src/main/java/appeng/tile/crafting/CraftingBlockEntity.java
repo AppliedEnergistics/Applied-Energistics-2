@@ -118,11 +118,11 @@ public class CraftingBlockEntity extends AENetworkBlockEntity implements IAEMult
     public void onReady() {
         super.onReady();
         this.getProxy().setVisualRepresentation(this.getItemFromTile(this));
-        this.updateMultiBlock();
+        this.calc.calculateMultiblock(world, getLocation());
     }
 
-    public void updateMultiBlock() {
-        this.calc.calculateMultiblock(this.world, this.getLocation());
+    public void updateMultiBlock(BlockPos changedPos) {
+        this.calc.updateMultiblockAfterNeighborUpdate(this.world, this.getLocation(), changedPos);
     }
 
     public void updateStatus(final CraftingCPUCluster c) {

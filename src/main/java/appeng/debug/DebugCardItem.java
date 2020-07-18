@@ -78,7 +78,7 @@ public class DebugCardItem extends AEBaseItem implements AEToolItem {
             int grids = 0;
             int totalNodes = 0;
 
-            for (final Grid g : TickHandler.INSTANCE.getGridList()) {
+            for (final Grid g : TickHandler.instance().getGridList()) {
                 grids++;
                 totalNodes += g.getNodes().size();
             }

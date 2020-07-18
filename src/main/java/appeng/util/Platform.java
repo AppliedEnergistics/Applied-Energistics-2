@@ -1097,7 +1097,7 @@ public class Platform {
 
     public static void notifyBlocksOfNeighbors(final World world, final BlockPos pos) {
         if (!world.isClient) {
-            TickHandler.INSTANCE.addCallable(world, new BlockUpdate(pos));
+            TickHandler.instance().addCallable(world, new BlockUpdate(pos));
         }
     }
 

@@ -121,7 +121,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiTil
     @Override
     public void cancelRemoval() {
         super.cancelRemoval();
-        TickHandler.INSTANCE.addInit(this);
+        TickHandler.instance().addInit(this);
     }
 
     @Override

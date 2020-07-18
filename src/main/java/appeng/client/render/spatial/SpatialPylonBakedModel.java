@@ -214,7 +214,7 @@ class SpatialPylonBakedModel implements BakedModel, FabricBakedModel {
 
     @Override
     public boolean useAmbientOcclusion() {
-        return true;
+        return false;
     }
 
     @Override

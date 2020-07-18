@@ -245,7 +245,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
 
                 final int id = entityHit.getEntityId();
                 final PlayerColor marker = new PlayerColor(id, col, 20 * 30);
-                TickHandler.INSTANCE.getPlayerColors().put(id, marker);
+                TickHandler.instance().getPlayerColors().put(id, marker);
 
                 if (entityHit instanceof SheepEntity) {
                     final SheepEntity sh = (SheepEntity) entityHit;

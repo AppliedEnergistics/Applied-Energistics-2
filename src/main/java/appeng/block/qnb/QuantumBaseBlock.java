@@ -70,7 +70,7 @@ public abstract class QuantumBaseBlock extends AEBaseTileBlock<QuantumBridgeBloc
             boolean isMoving) {
         final QuantumBridgeBlockEntity bridge = this.getBlockEntity(world, pos);
         if (bridge != null) {
-            bridge.neighborUpdate();
+            bridge.neighborUpdate(fromPos);
         }
     }
 

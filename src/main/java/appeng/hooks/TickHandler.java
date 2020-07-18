@@ -18,6 +18,37 @@
 
 package appeng.hooks;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.WeakHashMap;
+import java.util.concurrent.TimeUnit;
+
+import com.google.common.base.Stopwatch;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
+
+import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
+import net.minecraftforge.event.TickEvent.Phase;
+import net.minecraftforge.event.TickEvent.ServerTickEvent;
+import net.minecraftforge.event.TickEvent.WorldTickEvent;
+import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.DistExecutor.SafeRunnable;
+
+import appeng.api.networking.IGridNode;
+import appeng.api.parts.CableRenderMode;
 import appeng.api.util.AEColor;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -41,10 +72,10 @@ import java.util.concurrent.TimeUnit;
 
 public class TickHandler {
 
-    public static final TickHandler INSTANCE = new TickHandler();
+    private static final TickHandler INSTANCE = new TickHandler();
     private final Queue<IWorldCallable<?>> serverQueue = new ArrayDeque<>();
     private final Multimap<World, CraftingJob> craftingJobs = LinkedListMultimap.create();
-    private final WeakHashMap<WorldAccess, Queue<IWorldCallable<?>>> callQueue = new WeakHashMap<>();
+    private final Map<WorldAccess, Queue<IWorldCallable<?>>> callQueue = new WeakHashMap<>();
     private final HandlerRep server = new HandlerRep();
     private final HandlerRep client = new HandlerRep();
     private final HashMap<Integer, PlayerColor> srvPlayerColors = new HashMap<>();
@@ -57,7 +88,29 @@ public class TickHandler {
 
     }
 
-    public HashMap<Integer, PlayerColor> getPlayerColors() {
+    public static TickHandler instance() {
+        return INSTANCE;
+    }
+
+    public static void setup(IEventBus eventBus) {
+        eventBus.addListener(INSTANCE::onServerTick);
+        eventBus.addListener(INSTANCE::onWorldTick);
+        eventBus.addListener(INSTANCE::onUnloadWorld);
+
+        // DistExecutor does not like functional interfaces
+        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> new SafeRunnable() {
+
+            private static final long serialVersionUID = 5221919736953944125L;
+
+            @Override
+            public void run() {
+                eventBus.addListener(INSTANCE::onClientTick);
+
+            }
+        });
+    }
+
+    public Map<Integer, PlayerColor> getPlayerColors() {
         return this.srvPlayerColors;
     }
 
@@ -77,8 +130,8 @@ public class TickHandler {
     }
 
     public void addInit(final AEBaseBlockEntity tile) {
-        if (Platform.isServer()) // for no there is no reason to care about this on the client...
-        {
+        // for no there is no reason to care about this on the client...
+        if (Platform.isServer()) {
             this.getRepo().tiles.add(tile);
         }
     }
@@ -91,15 +144,15 @@ public class TickHandler {
     }
 
     public void addNetwork(final Grid grid) {
-        if (Platform.isServer()) // for no there is no reason to care about this on the client...
-        {
+        // for no there is no reason to care about this on the client...
+        if (Platform.isServer()) {
             this.getRepo().addNetwork(grid);
         }
     }
 
     public void removeNetwork(final Grid grid) {
-        if (Platform.isServer()) // for no there is no reason to care about this on the client...
-        {
+        // for no there is no reason to care about this on the client...
+        if (Platform.isServer()) {
             this.getRepo().removeNetwork(grid);
         }
     }
@@ -142,9 +195,10 @@ public class TickHandler {
         synchronized (this.craftingJobs) {
             final Collection<CraftingJob> jobSet = this.craftingJobs.get(world);
             if (!jobSet.isEmpty()) {
-                final int simTime = Math.max(1,
-                        AEConfig.instance().getCraftingCalculationTimePerTick() / jobSet.size());
-                final Iterator<CraftingJob> i = jobSet.iterator();
+                final int jobSize = jobSet.size();
+                final int microSecondsPerTick = AEConfig.instance().getCraftingCalculationTimePerTick() * 1000;
+                final int simTime = Math.max(1, microSecondsPerTick / jobSize);
+               final Iterator<CraftingJob> i = jobSet.iterator();
                 while (i.hasNext()) {
                     final CraftingJob cj = i.next();
                     if (!cj.simulateFor(simTime)) {
@@ -176,8 +230,15 @@ public class TickHandler {
         this.processQueue(this.serverQueue, null);
     }
 
-    protected void tickColors(final HashMap<Integer, PlayerColor> playerSet) {
+    public void registerCraftingSimulation(final World world, final CraftingJob craftingJob) {
+        synchronized (this.craftingJobs) {
+            this.craftingJobs.put(world, craftingJob);
+        }
+    }
+
+    protected void tickColors(final Map<Integer, PlayerColor> playerSet) {
         final Iterator<PlayerColor> i = playerSet.values().iterator();
+
         while (i.hasNext()) {
             final PlayerColor pc = i.next();
             if (pc.ticksLeft <= 0) {
@@ -205,16 +266,6 @@ public class TickHandler {
             } catch (final Exception e) {
                 AELog.debug(e);
             }
-        }
-
-        // long time = sw.elapsed( TimeUnit.MILLISECONDS );
-        // if ( time > 0 )
-        // AELog.info( "processQueue Time: " + time + "ms" );
-    }
-
-    public void registerCraftingSimulation(final World world, final CraftingJob craftingJob) {
-        synchronized (this.craftingJobs) {
-            this.craftingJobs.put(world, craftingJob);
         }
     }
 

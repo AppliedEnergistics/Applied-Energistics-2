@@ -57,6 +57,6 @@ public class PaintedEntityPacket extends BasePacket {
     @Override
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         final PlayerColor pc = new PlayerColor(this.entityId, this.myColor, this.ticks);
-        TickHandler.INSTANCE.getPlayerColors().put(this.entityId, pc);
+        TickHandler.instance().getPlayerColors().put(this.entityId, pc);
     }
 }

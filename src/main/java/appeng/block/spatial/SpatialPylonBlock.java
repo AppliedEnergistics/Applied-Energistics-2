@@ -39,7 +39,7 @@ public class SpatialPylonBlock extends AEBaseTileBlock<SpatialPylonBlockEntity> 
             boolean isMoving) {
         final SpatialPylonBlockEntity tsp = this.getBlockEntity(world, pos);
         if (tsp != null) {
-            tsp.neighborUpdate();
+            tsp.neighborUpdate(fromPos);
         }
     }
 

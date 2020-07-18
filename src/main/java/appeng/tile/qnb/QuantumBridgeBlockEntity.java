@@ -33,6 +33,18 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.Direction;
 
 import alexiil.mc.lib.attributes.item.impl.EmptyFixedItemInv;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelProperty;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.networking.GridFlags;
@@ -266,8 +278,8 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity implements
         return AECableType.DENSE_SMART;
     }
 
-    public void neighborUpdate() {
-        this.calc.calculateMultiblock(this.world, this.getLocation());
+    public void neighborUpdate(BlockPos fromPos) {
+        this.calc.updateMultiblockAfterNeighborUpdate(this.world, this.getLocation(), fromPos);
     }
 
     @Override
