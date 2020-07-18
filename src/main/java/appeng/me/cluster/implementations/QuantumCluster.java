@@ -36,7 +36,6 @@ import appeng.api.features.ILocatable;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.me.cache.helpers.ConnectionWrapper;
@@ -58,9 +57,9 @@ public class QuantumCluster implements ILocatable, IAECluster {
     private long otherSide;
     private QuantumBridgeTileEntity center;
 
-    public QuantumCluster(final WorldCoord min, final WorldCoord max) {
-        this.boundsMin = min.getBlockPos();
-        this.boundsMax = max.getBlockPos();
+    public QuantumCluster(final BlockPos min, final BlockPos max) {
+        this.boundsMin = min.toImmutable();
+        this.boundsMax = max.toImmutable();
         this.setRing(new QuantumBridgeTileEntity[8]);
     }
 

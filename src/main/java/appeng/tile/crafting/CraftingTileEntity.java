@@ -18,11 +18,7 @@
 
 package appeng.tile.crafting;
 
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Optional;
+import java.util.*;
 
 import javax.annotation.Nonnull;
 
@@ -35,7 +31,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.common.util.Constants;
 
 import appeng.api.config.Actionable;
 import appeng.api.implementations.IPowerChannelState;
@@ -52,7 +47,6 @@ import appeng.api.util.WorldCoord;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.block.crafting.AbstractCraftingUnitBlock.CraftingUnitType;
 import appeng.core.Api;
-import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.CraftingCPUCalculator;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
@@ -61,7 +55,8 @@ import appeng.me.helpers.AENetworkProxyMultiblock;
 import appeng.tile.grid.AENetworkTileEntity;
 import appeng.util.Platform;
 
-public class CraftingTileEntity extends AENetworkTileEntity implements IAEMultiBlock, IPowerChannelState {
+public class CraftingTileEntity extends AENetworkTileEntity
+        implements IAEMultiBlock<CraftingCPUCluster>, IPowerChannelState {
 
     private final CraftingCPUCalculator calc = new CraftingCPUCalculator(this);
     private CompoundNBT previousState = null;
@@ -112,7 +107,7 @@ public class CraftingTileEntity extends AENetworkTileEntity implements IAEMultiB
             return false;
         }
 
-        final AbstractCraftingUnitBlock unit = (AbstractCraftingUnitBlock) this.world.getBlockState(this.pos)
+        final AbstractCraftingUnitBlock<?> unit = (AbstractCraftingUnitBlock<?>) this.world.getBlockState(this.pos)
                 .getBlock();
         return unit.type == CraftingUnitType.ACCELERATOR;
     }
@@ -121,11 +116,11 @@ public class CraftingTileEntity extends AENetworkTileEntity implements IAEMultiB
     public void onReady() {
         super.onReady();
         this.getProxy().setVisualRepresentation(this.getItemFromTile(this));
-        this.calc.calculateMultiblock(world, getLocation());
+        this.calc.calculateMultiblock(world, pos);
     }
 
     public void updateMultiBlock(BlockPos changedPos) {
-        this.calc.updateMultiblockAfterNeighborUpdate(this.world, this.getLocation(), changedPos);
+        this.calc.updateMultiblockAfterNeighborUpdate(this.world, pos, changedPos);
     }
 
     public void updateStatus(final CraftingCPUCluster c) {
@@ -160,7 +155,7 @@ public class CraftingTileEntity extends AENetworkTileEntity implements IAEMultiB
                 // Not using flag 2 here (only send to clients, prevent block update) will cause
                 // infinite loops
                 // In case there is an inconsistency in the crafting clusters.
-                this.world.setBlockState(this.pos, newState, Constants.BlockFlags.BLOCK_UPDATE);
+                this.world.setBlockState(this.pos, newState, 2);
             }
         }
 
@@ -214,7 +209,7 @@ public class CraftingTileEntity extends AENetworkTileEntity implements IAEMultiB
     }
 
     @Override
-    public IAECluster getCluster() {
+    public CraftingCPUCluster getCluster() {
         return this.cluster;
     }
 

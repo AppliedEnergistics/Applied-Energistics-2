@@ -18,11 +18,11 @@
 
 package appeng.me.cluster;
 
-public interface IAEMultiBlock {
+public interface IAEMultiBlock<Cluster extends IAECluster> {
 
     void disconnect(boolean b);
 
-    IAECluster getCluster();
+    Cluster getCluster();
 
     boolean isValid();
 }
