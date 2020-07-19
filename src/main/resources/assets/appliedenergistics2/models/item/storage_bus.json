@@ -3,7 +3,7 @@
   "textures": {
     "sides": "appliedenergistics2:parts/storage_bus_sides",
     "back": "appliedenergistics2:parts/storage_bus_back",
-    "front": "appliedenergistics2:item/part/storage_bus"
+    "front": "appliedenergistics2:parts/storage_bus"
   },
   "elements": [
     {

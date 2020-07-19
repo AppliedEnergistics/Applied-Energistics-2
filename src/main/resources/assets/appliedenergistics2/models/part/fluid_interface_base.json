@@ -3,7 +3,7 @@
     "sides": "appliedenergistics2:parts/export_bus_sides",
     "sidesStatus": "appliedenergistics2:parts/monitor_sides_status",
     "back": "appliedenergistics2:parts/monitor_back",
-    "front": "appliedenergistics2:item/part/fluid_interface",
+    "front": "appliedenergistics2:parts/fluid_interface",
     "particle": "appliedenergistics2:parts/monitor_back"
   },
   "elements": [

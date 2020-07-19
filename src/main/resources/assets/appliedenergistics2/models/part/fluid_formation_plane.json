@@ -1,6 +1,6 @@
 {
   "loader": "appliedenergistics2:part_plane",
-  "front": "appliedenergistics2:item/part/fluid_formation_plane",
+  "front": "appliedenergistics2:parts/fluid_formation_plane",
   "sides": "appliedenergistics2:parts/plane_sides",
   "back": "appliedenergistics2:parts/transition_plane_back"
 }

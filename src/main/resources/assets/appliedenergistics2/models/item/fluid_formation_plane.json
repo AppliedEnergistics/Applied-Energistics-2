@@ -1,6 +1,6 @@
 {
   "parent": "appliedenergistics2:item/annihilation_plane",
   "textures": {
-    "plane": "appliedenergistics2:item/part/fluid_formation_plane"
+    "plane": "appliedenergistics2:parts/fluid_formation_plane"
   }
 }

@@ -2,7 +2,7 @@
   "parent": "appliedenergistics2:item/part_base",
   "textures": {
     "sides": "appliedenergistics2:parts/plane_sides",
-    "plane": "appliedenergistics2:item/part/annihilation_plane"
+    "plane": "appliedenergistics2:parts/annihilation_plane"
   },
   "elements": [
     {

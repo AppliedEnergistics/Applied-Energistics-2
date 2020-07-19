@@ -3,7 +3,7 @@
   "textures": {
     "sides": "appliedenergistics2:parts/export_bus_sides",
     "back": "appliedenergistics2:parts/monitor_back",
-    "front": "appliedenergistics2:item/part/fluid_export_bus"
+    "front": "appliedenergistics2:parts/fluid_export_bus"
   },
   "elements": [
     {

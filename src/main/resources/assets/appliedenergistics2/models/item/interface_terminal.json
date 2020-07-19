@@ -1,7 +1,7 @@
 {
   "parent": "appliedenergistics2:item/display_base",
   "textures": {
-    "front": "appliedenergistics2:item/part/interface_terminal",
+    "front": "appliedenergistics2:parts/interface_terminal",
     "front_bright": "appliedenergistics2:parts/interface_terminal_bright",
     "front_medium": "appliedenergistics2:parts/interface_terminal_medium",
     "front_dark": "appliedenergistics2:parts/interface_terminal_dark"
