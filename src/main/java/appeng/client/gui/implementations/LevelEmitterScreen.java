@@ -20,6 +20,7 @@ package appeng.client.gui.implementations;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.LevelType;
+import appeng.api.config.PowerUnits;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
@@ -49,7 +50,7 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
         super.init();
 
         this.level = new NumberEntryWidget(this, 20, 17, 138, 62, NumberEntryType.LEVEL_ITEM_COUNT, this::onLevelChange);
-        this.level.setTextFieldBounds(25, 44, 79);
+        this.level.setTextFieldBounds(25, 44, 75);
         this.level.addButtons(children::add, this::addButton);
         container.setTextField(this.level);
     }
@@ -89,7 +90,14 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
         }
 
         if (this.levelMode != null) {
-            this.levelMode.set(((LevelEmitterContainer) this.cvb).getLevelMode());
+            LevelType currentLevelMode = ((LevelEmitterContainer) this.cvb).getLevelMode();
+            this.levelMode.set(currentLevelMode);
+
+            if (notCraftingMode) {
+                if (currentLevelMode == LevelType.ENERGY_LEVEL) {
+                    this.font.drawString(PowerUnits.AE.textComponent().getString(), 110, 44, COLOR_DARK_GRAY);
+                }
+            }
         }
     }
 

@@ -87,6 +87,9 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerScreen<T> {
+
+    public static final int COLOR_DARK_GRAY = 4210752;
+
     private final List<InternalSlotME> meSlots = new ArrayList<>();
     // drag y
     private final Set<Slot> drag_click = new HashSet<>();

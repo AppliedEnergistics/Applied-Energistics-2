@@ -18,7 +18,19 @@
 
 package appeng.container.implementations;
 
+import appeng.api.config.FuzzyMode;
+import appeng.api.config.LevelType;
+import appeng.api.config.RedstoneMode;
+import appeng.api.config.SecurityPermissions;
+import appeng.api.config.Settings;
+import appeng.api.config.YesNo;
 import appeng.client.gui.implementations.NumberEntryWidget;
+import appeng.container.ContainerLocator;
+import appeng.container.guisync.GuiSync;
+import appeng.container.slot.FakeTypeOnlySlot;
+import appeng.container.slot.RestrictedInputSlot;
+import appeng.parts.automation.LevelEmitterPart;
+import appeng.util.Platform;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -26,19 +38,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
-
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.LevelType;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.SecurityPermissions;
-import appeng.api.config.Settings;
-import appeng.api.config.YesNo;
-import appeng.container.ContainerLocator;
-import appeng.container.guisync.GuiSync;
-import appeng.container.slot.FakeTypeOnlySlot;
-import appeng.container.slot.RestrictedInputSlot;
-import appeng.parts.automation.LevelEmitterPart;
-import appeng.util.Platform;
 
 public class LevelEmitterContainer extends UpgradeableContainer {
 
@@ -104,7 +103,7 @@ public class LevelEmitterContainer extends UpgradeableContainer {
 
         final IItemHandler inv = this.getUpgradeable().getInventoryByName("config");
         final int y = 40;
-        final int x = 80 + 44;
+        final int x = 80 + 57;
         this.addSlot(new FakeTypeOnlySlot(inv, 0, x, y));
     }
 
