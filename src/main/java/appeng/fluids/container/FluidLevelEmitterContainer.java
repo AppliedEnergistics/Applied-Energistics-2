@@ -1,22 +1,21 @@
 package appeng.fluids.container;
 
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
+import appeng.client.gui.implementations.NumberEntryWidget;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.container.implementations.ContainerHelper;
 import appeng.fluids.parts.FluidLevelEmitterPart;
 import appeng.fluids.util.IAEFluidTank;
 import appeng.util.Platform;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class FluidLevelEmitterContainer extends FluidConfigurableContainer {
     public static ContainerType<FluidLevelEmitterContainer> TYPE;
@@ -35,7 +34,7 @@ public class FluidLevelEmitterContainer extends FluidConfigurableContainer {
     private final FluidLevelEmitterPart lvlEmitter;
 
     @OnlyIn(Dist.CLIENT)
-    private TextFieldWidget textField;
+    private NumberEntryWidget textField;
     @GuiSync(3)
     public long EmitterValue = -1;
 
@@ -45,9 +44,9 @@ public class FluidLevelEmitterContainer extends FluidConfigurableContainer {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void setTextField(final TextFieldWidget level) {
+    public void setTextField(final NumberEntryWidget level) {
         this.textField = level;
-        this.textField.setText(String.valueOf(this.EmitterValue));
+        this.textField.setValue(this.EmitterValue);
     }
 
     public void setLevel(final long l, final PlayerEntity player) {
@@ -87,7 +86,7 @@ public class FluidLevelEmitterContainer extends FluidConfigurableContainer {
     public void onUpdate(final String field, final Object oldValue, final Object newValue) {
         if (field.equals("EmitterValue")) {
             if (this.textField != null) {
-                this.textField.setText(String.valueOf(this.EmitterValue));
+                this.textField.setValue(this.EmitterValue);
             }
         }
     }

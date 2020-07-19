@@ -18,24 +18,20 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-
 import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.widgets.NumberBox;
+import appeng.client.gui.NumberEntryType;
 import appeng.container.implementations.PriorityContainer;
-import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 
 public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
 
     private final AESubScreen subGui;
 
-    private NumberBox priority;
+    private NumberEntryWidget priority;
 
     public PriorityScreen(PriorityContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
@@ -46,31 +42,17 @@ public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
     public void init() {
         super.init();
 
-        final int a = AEConfig.instance().priorityByStacksAmounts(0);
-        final int b = AEConfig.instance().priorityByStacksAmounts(1);
-        final int c = AEConfig.instance().priorityByStacksAmounts(2);
-        final int d = AEConfig.instance().priorityByStacksAmounts(3);
-
-        this.addButton(new Button(this.guiLeft + 20, this.guiTop + 32, 22, 20, "+" + a, btn -> addQty(a)));
-        this.addButton(new Button(this.guiLeft + 48, this.guiTop + 32, 28, 20, "+" + b, btn -> addQty(b)));
-        this.addButton(new Button(this.guiLeft + 82, this.guiTop + 32, 32, 20, "+" + c, btn -> addQty(c)));
-        this.addButton(new Button(this.guiLeft + 120, this.guiTop + 32, 38, 20, "+" + d, btn -> addQty(d)));
-
-        this.addButton(new Button(this.guiLeft + 20, this.guiTop + 69, 22, 20, "-" + a, btn -> addQty(-a)));
-        this.addButton(new Button(this.guiLeft + 48, this.guiTop + 69, 28, 20, "-" + b, btn -> addQty(-b)));
-        this.addButton(new Button(this.guiLeft + 82, this.guiTop + 69, 32, 20, "-" + c, btn -> addQty(-c)));
-        this.addButton(new Button(this.guiLeft + 120, this.guiTop + 69, 38, 20, "-" + d, btn -> addQty(-d)));
+        this.priority = new NumberEntryWidget(this, 20, 30, 138, 62, NumberEntryType.PRIORITY, this::onPriorityChange);
+        this.priority.setTextFieldBounds(62, 57, 50);
+        this.priority.setMinValue(Integer.MIN_VALUE);
+        container.setTextField(this.priority);
+        this.priority.addButtons(children::add, this::addButton);
 
         this.subGui.addBackButton(this::addButton, 154, 0);
+    }
 
-        this.priority = new NumberBox(this.font, this.guiLeft + 62, this.guiTop + 57, 59, this.font.FONT_HEIGHT,
-                Long.class, value -> NetworkHandler.instance().sendToServer(new ConfigValuePacket("PriorityHost.Priority", String.valueOf(value))));
-        this.priority.setEnableBackgroundDrawing(false);
-        this.priority.setMaxStringLength(16);
-        this.priority.setTextColor(0xFFFFFF);
-        this.priority.setVisible(true);
-        this.priority.setFocused2(true);
-        container.setTextField(this.priority);
+    private void onPriorityChange(long priority) {
+        NetworkHandler.instance().sendToServer(new ConfigValuePacket("PriorityHost.Priority", String.valueOf(priority)));
     }
 
     @Override
@@ -84,90 +66,6 @@ public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
         blit(offsetX, offsetY, 0, 0, this.xSize, this.ySize);
 
         this.priority.render(mouseX, mouseY, partialTicks);
-    }
-
-    private void addQty(final int i) {
-        try {
-            String out = this.priority.getText();
-
-            boolean fixed = false;
-            while (out.startsWith("0") && out.length() > 1) {
-                out = out.substring(1);
-                fixed = true;
-            }
-
-            if (fixed) {
-                this.priority.setText(out);
-            }
-
-            if (out.isEmpty()) {
-                out = "0";
-            }
-
-            long result = Long.parseLong(out);
-            result += i;
-
-            this.priority.setText(out = Long.toString(result));
-
-            NetworkHandler.instance().sendToServer(new ConfigValuePacket("PriorityHost.Priority", out));
-        } catch (final NumberFormatException e) {
-            // nope..
-            this.priority.setText("0");
-        }
-    }
-
-    @Override
-    public boolean charTyped(char character, int key) {
-        if (priority.charTyped(character, key)) {
-            String out = this.priority.getText();
-
-            boolean fixed = false;
-            while (out.startsWith("0") && out.length() > 1) {
-                out = out.substring(1);
-                fixed = true;
-            }
-
-            if (fixed) {
-                this.priority.setText(out);
-            }
-
-            if (out.isEmpty()) {
-                out = "0";
-            }
-
-            NetworkHandler.instance().sendToServer(new ConfigValuePacket("PriorityHost.Priority", out));
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
-        if (!this.checkHotbarKeys(InputMappings.getInputByCode(keyCode, scanCode))) {
-            if ((keyCode == 211 || keyCode == 205 || keyCode == 203 || keyCode == 14)
-                    && this.priority.keyPressed(keyCode, scanCode, p_keyPressed_3_)) {
-                String out = this.priority.getText();
-
-                boolean fixed = false;
-                while (out.startsWith("0") && out.length() > 1) {
-                    out = out.substring(1);
-                    fixed = true;
-                }
-
-                if (fixed) {
-                    this.priority.setText(out);
-                }
-
-                if (out.isEmpty()) {
-                    out = "0";
-                }
-
-                NetworkHandler.instance().sendToServer(new ConfigValuePacket("PriorityHost.Priority", out));
-                return true;
-            }
-        }
-
-        return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);
     }
 
     protected String getBackground() {

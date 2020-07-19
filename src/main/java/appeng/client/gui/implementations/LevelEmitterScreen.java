@@ -18,21 +18,21 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
-
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.LevelType;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
+import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.container.implementations.LevelEmitterContainer;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
 
 public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer> {
 
@@ -48,7 +48,8 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
     public void init() {
         super.init();
 
-        this.level = new NumberEntryWidget(this, 20, 17, 79, this::onLevelChange);
+        this.level = new NumberEntryWidget(this, 20, 17, 138, 62, NumberEntryType.LEVEL_ITEM_COUNT, this::onLevelChange);
+        this.level.setTextFieldBounds(25, 44, 79);
         this.level.addButtons(children::add, this::addButton);
         container.setTextField(this.level);
     }
@@ -112,16 +113,6 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
     @Override
     protected GuiText getName() {
         return GuiText.LevelEmitter;
-    }
-
-    @Override
-    public boolean charTyped(char character, int key) {
-        return super.charTyped(character, key);
-    }
-
-    public void tick() {
-        super.tick();
-        this.level.tick();
     }
 
 }

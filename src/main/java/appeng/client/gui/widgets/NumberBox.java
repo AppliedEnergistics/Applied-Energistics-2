@@ -22,29 +22,40 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 
 import java.util.function.LongConsumer;
-import java.util.regex.Pattern;
 
 public class NumberBox extends TextFieldWidget {
-
-    private final Class<?> type;
 
     private final LongConsumer changeListener;
 
     private long lastValue;
 
+    private long minValue = 0;
+
+    private long maxValue;
+
     public NumberBox(final FontRenderer fontRenderer, final int x, final int y, final int width, final int height,
                      final Class<?> type, LongConsumer changeListener) {
         super(fontRenderer, x, y, width, height, "0");
-        this.type = type;
         this.setText("0");
         setResponder(this::onTextChanged);
         this.lastValue = 0;
         this.changeListener = changeListener;
+        if (type == int.class || type == Integer.class) {
+            maxValue = Integer.MAX_VALUE;
+        } else {
+            maxValue = Long.MAX_VALUE;
+        }
     }
 
     private void onTextChanged(String text) {
-        if (text.isEmpty() || !isValidNumber()) {
+        if (text.isEmpty()) {
             setText("0"); // Will call onTextChanged recursively
+            return;
+        }
+
+        boolean canBeNegative = canBeNegative();
+        if (canBeNegative && text.equals("-")) {
+            // Allow this as a special case to make typing in a negative number easier
             return;
         }
 
@@ -52,6 +63,9 @@ public class NumberBox extends TextFieldWidget {
         boolean encounteredNonZero = false;
         for (int i = 0; i < sanitized.length(); i++) {
             char ch = sanitized.charAt(i);
+            if (canBeNegative && i == 0 && ch == '-') {
+                continue; // Allow leading minus sign
+            }
             if (ch >= '1' && ch <= '9') {
                 encounteredNonZero = true;
                 continue;
@@ -68,6 +82,14 @@ public class NumberBox extends TextFieldWidget {
             setText(sanitizedStr); // Will call onTextChanged recursively
             return;
         }
+        if (getValue() < minValue) {
+            setText(String.valueOf(minValue)); // Will call onTextChanged recursively
+            return;
+        }
+        if (getValue() > maxValue) {
+            setText(String.valueOf(maxValue)); // Will call onTextChanged recursively
+            return;
+        }
 
         reportChange();
     }
@@ -80,20 +102,23 @@ public class NumberBox extends TextFieldWidget {
         }
     }
 
-    private boolean isValidNumber() {
-        try {
-            if (this.type == int.class || this.type == Integer.class) {
-                Integer.parseInt(this.getText());
-            } else if (this.type == long.class || this.type == Long.class) {
-                Long.parseLong(this.getText());
-            }
-            return true;
-        } catch (final NumberFormatException e) {
-            return false;
+    public void setValue(long value, boolean skipNotify) {
+        // This check avoid changing the cursor position needlessly
+        if (value == this.getValue()) {
+            return;
         }
+
+        if (skipNotify) {
+            lastValue = value;
+        }
+        setText(String.valueOf(value));
     }
 
     public long getValue() {
+        if (getText().equals("-") && canBeNegative()) {
+            return lastValue; // Allow this as a special case to type in a negative number more easily
+        }
+
         return Long.parseLong(getText());
     }
 
@@ -106,4 +131,17 @@ public class NumberBox extends TextFieldWidget {
         // Swallow key presses for numbers because they would otherwise trigger the hotbar swapping unintentionally
         return isFocused() && p_keyPressed_1_ >= '0' && p_keyPressed_1_ <= '9';
     }
+
+    public void setMinValue(long minValue) {
+        this.minValue = minValue;
+    }
+
+    public long getMinValue() {
+        return minValue;
+    }
+
+    private boolean canBeNegative() {
+        return minValue < 0;
+    }
+
 }

@@ -1,6 +1,8 @@
 package appeng.client.gui.implementations;
 
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.NumberEntryType;
+import appeng.client.gui.widgets.ITickingWidget;
 import appeng.client.gui.widgets.NumberBox;
 import appeng.core.AEConfig;
 import net.minecraft.client.gui.FontRenderer;
@@ -14,7 +16,7 @@ import java.util.function.LongConsumer;
  * A utility widget that consists of a text-field to enter a number with attached buttons to
  * increment/decrement the number in fixed intervals.
  */
-public class NumberEntryWidget {
+public class NumberEntryWidget implements ITickingWidget {
 
     private final AEBaseScreen<?> parent;
 
@@ -22,6 +24,7 @@ public class NumberEntryWidget {
     private final int y;
 
     private final NumberBox level;
+    private final NumberEntryType type;
     private Button plus1;
     private Button plus10;
     private Button plus100;
@@ -31,14 +34,18 @@ public class NumberEntryWidget {
     private Button minus100;
     private Button minus1000;
 
-    public NumberEntryWidget(AEBaseScreen<?> parent, int x, int y, int width, LongConsumer changeListener) {
+    public NumberEntryWidget(AEBaseScreen<?> parent, int x, int y, int width, int height,
+                             NumberEntryType type,
+                             LongConsumer changeListener) {
         this.parent = parent;
         this.x = x;
         this.y = y;
+        this.type = type;
 
         FontRenderer font = parent.getMinecraft().fontRenderer;
-        this.level = new NumberBox(font, parent.getGuiLeft() + x + 5, parent.getGuiTop() + y + 27, width, font.FONT_HEIGHT,
-                Long.class, changeListener);
+        int inputX = parent.getGuiLeft() + x;
+        int inputY = parent.getGuiTop() + y;
+        this.level = new NumberBox(font, inputX, inputY, width, font.FONT_HEIGHT, type.getInputType(), changeListener);
         this.level.setEnableBackgroundDrawing(false);
         this.level.setMaxStringLength(16);
         this.level.setTextColor(0xFFFFFF);
@@ -59,11 +66,22 @@ public class NumberEntryWidget {
         this.minus1000.active = active;
     }
 
+    public void setTextFieldBounds(int x, int y, int width) {
+        this.level.x = parent.getGuiLeft() + x;
+        this.level.y = parent.getGuiTop() + y;
+        this.level.setWidth(width);
+    }
+
+    public void setMinValue(long minValue) {
+        this.level.setMinValue(minValue);
+    }
+
     public void addButtons(Consumer<IGuiEventListener> addChildren, Consumer<Button> addButton) {
-        final int a = AEConfig.instance().levelByStackAmounts(0);
-        final int b = AEConfig.instance().levelByStackAmounts(1);
-        final int c = AEConfig.instance().levelByStackAmounts(2);
-        final int d = AEConfig.instance().levelByStackAmounts(3);
+        final int[] steps = AEConfig.instance().getNumberEntrySteps(type);
+        int a = steps[0];
+        int b = steps[1];
+        int c = steps[2];
+        int d = steps[3];
 
         int left = parent.getGuiLeft() + x;
         int top = parent.getGuiTop() + y;
@@ -91,21 +109,29 @@ public class NumberEntryWidget {
 
     private void addQty(final long i) {
         long currentValue = this.level.getValue();
-        this.level.setText(String.valueOf(Math.max(0, currentValue + i)));
+        long minValue = this.level.getMinValue();
+        this.level.setText(String.valueOf(Math.max(minValue, currentValue + i)));
     }
 
     public void render(int mouseX, int mouseY, float partialTicks) {
         this.level.render(mouseX, mouseY, partialTicks);
     }
 
-    public void setValue(long value) {
-        // This check avoid changing the cursor position needlessly
-        if (value != this.level.getValue()) {
-            this.level.setText(String.valueOf(value));
-        }
+    public void setValue(long value, boolean skipNotify) {
+        this.level.setValue(value, skipNotify);
     }
 
+    public void setValue(long value) {
+        setValue(value, false);
+    }
+
+    public long getValue() {
+        return level.getValue();
+    }
+
+    @Override
     public void tick() {
         this.level.tick();
     }
+
 }
