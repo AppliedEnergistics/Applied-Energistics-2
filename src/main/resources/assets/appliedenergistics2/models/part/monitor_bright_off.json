@@ -1,6 +1,6 @@
 {
   "textures": {
-    "lights": "appliedenergistics2:parts/monitor_light"
+    "lights": "appliedenergistics2:part/monitor_light"
   },
   "elements": [
     {

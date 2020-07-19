@@ -1,6 +1,6 @@
 {
   "parent": "appliedenergistics2:item/glass_cable_base",
   "textures": {
-    "base": "appliedenergistics2:parts/cable/glass/pink"
+    "base": "appliedenergistics2:part/cable/glass/pink"
   }
 }

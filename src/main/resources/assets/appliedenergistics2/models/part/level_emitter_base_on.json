@@ -2,8 +2,8 @@
   "loader": "appliedenergistics2:uvlightmap",
   "ambientocclusion": false,
   "textures": {
-    "emitter": "appliedenergistics2:parts/level_emitter_on",
-    "particle": "appliedenergistics2:parts/level_emitter_on"
+    "emitter": "appliedenergistics2:part/level_emitter_on",
+    "particle": "appliedenergistics2:part/level_emitter_on"
   },
   "elements": [
     {

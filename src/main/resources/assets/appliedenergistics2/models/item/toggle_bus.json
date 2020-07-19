@@ -1,9 +1,9 @@
 {
   "parent": "appliedenergistics2:item/part_base",
   "textures": {
-    "bus": "appliedenergistics2:item/part/toggle_bus",
-    "status": "appliedenergistics2:parts/monitor_sides_status",
-    "lights": "appliedenergistics2:parts/monitor_sides_status_off"
+    "bus": "appliedenergistics2:part/toggle_bus",
+    "status": "appliedenergistics2:part/monitor_sides_status",
+    "lights": "appliedenergistics2:part/monitor_sides_status_off"
   },
   "elements": [
     {

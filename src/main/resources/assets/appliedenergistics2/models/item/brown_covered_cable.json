@@ -1,6 +1,6 @@
 {
   "parent": "appliedenergistics2:item/covered_cable_base",
   "textures": {
-    "base": "appliedenergistics2:parts/cable/covered/brown"
+    "base": "appliedenergistics2:part/cable/covered/brown"
   }
 }

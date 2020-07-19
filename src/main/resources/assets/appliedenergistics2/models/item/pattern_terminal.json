@@ -1,9 +1,9 @@
 {
   "parent": "appliedenergistics2:item/display_base",
   "textures": {
-    "front": "appliedenergistics2:item/part/pattern_terminal",
-    "front_bright": "appliedenergistics2:parts/pattern_terminal_bright",
-    "front_medium": "appliedenergistics2:parts/pattern_terminal_medium",
-    "front_dark": "appliedenergistics2:parts/pattern_terminal_dark"
+    "front": "appliedenergistics2:part/pattern_terminal",
+    "front_bright": "appliedenergistics2:part/pattern_terminal_bright",
+    "front_medium": "appliedenergistics2:part/pattern_terminal_medium",
+    "front_dark": "appliedenergistics2:part/pattern_terminal_dark"
   }
 }

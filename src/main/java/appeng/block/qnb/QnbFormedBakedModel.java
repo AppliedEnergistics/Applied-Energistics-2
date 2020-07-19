@@ -41,9 +41,9 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
     private static final Material TEXTURE_RING_LIGHT_CORNER = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
             new ResourceLocation(AppEng.MOD_ID, "block/quantum_ring_light_corner"));
     private static final Material TEXTURE_CABLE_GLASS = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
-            new ResourceLocation(AppEng.MOD_ID, "parts/cable/glass/transparent"));
+            new ResourceLocation(AppEng.MOD_ID, "part/cable/glass/transparent"));
     private static final Material TEXTURE_COVERED_CABLE = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
-            new ResourceLocation(AppEng.MOD_ID, "parts/cable/covered/transparent"));
+            new ResourceLocation(AppEng.MOD_ID, "part/cable/covered/transparent"));
 
     private static final float DEFAULT_RENDER_MIN = 2.0f;
     private static final float DEFAULT_RENDER_MAX = 14.0f;
