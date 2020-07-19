@@ -176,7 +176,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 }
 
                 final String msg = tooltip.getMessage();
-                if (msg != null) {
+                if (msg != null && !msg.isEmpty()) {
                     this.drawTooltip(x + 11, y + 4, msg);
                 }
             }
