@@ -1,6 +1,6 @@
 {
   "parent": "appliedenergistics2:item/annihilation_plane",
   "textures": {
-    "plane": "appliedenergistics2:parts/identity_annihilation_plane"
+    "plane": "appliedenergistics2:part/identity_annihilation_plane"
   }
 }

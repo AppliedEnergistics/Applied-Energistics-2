@@ -1,7 +1,7 @@
 {
   "parent": "appliedenergistics2:item/part_base",
   "textures": {
-    "cable": "appliedenergistics2:parts/quartz_fiber"
+    "cable": "appliedenergistics2:part/quartz_fiber"
   },
   "elements": [
     {

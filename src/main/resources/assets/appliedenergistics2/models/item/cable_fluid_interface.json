@@ -1,9 +1,9 @@
 {
   "parent": "appliedenergistics2:item/part_base",
   "textures": {
-    "sides": "appliedenergistics2:parts/monitor_sides",
-    "back": "appliedenergistics2:parts/monitor_back",
-    "front": "appliedenergistics2:parts/fluid_interface"
+    "sides": "appliedenergistics2:part/monitor_sides",
+    "back": "appliedenergistics2:part/monitor_back",
+    "front": "appliedenergistics2:part/fluid_interface"
   },
   "elements": [
     {

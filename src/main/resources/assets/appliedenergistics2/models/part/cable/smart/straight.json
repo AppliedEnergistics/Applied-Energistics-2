@@ -1,7 +1,7 @@
 {
   "textures": {
-    "base": "appliedenergistics2:parts/cable/smart/${color}",
-    "channels": "appliedenergistics2:parts/cable/smart/${channels}"
+    "base": "appliedenergistics2:part/cable/smart/${color}",
+    "channels": "appliedenergistics2:part/cable/smart/${channels}"
   },
   "elements": [
     {

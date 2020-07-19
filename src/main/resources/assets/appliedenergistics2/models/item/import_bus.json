@@ -1,9 +1,9 @@
 {
   "parent": "appliedenergistics2:item/part_base",
   "textures": {
-    "sides": "appliedenergistics2:parts/import_bus_sides",
-    "back": "appliedenergistics2:parts/monitor_back",
-    "front": "appliedenergistics2:parts/import_bus"
+    "sides": "appliedenergistics2:part/import_bus_sides",
+    "back": "appliedenergistics2:part/monitor_back",
+    "front": "appliedenergistics2:part/import_bus"
   },
   "elements": [
     {

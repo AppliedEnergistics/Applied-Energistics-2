@@ -1,9 +1,9 @@
 {
   "loader": "appliedenergistics2:uvlightmap",
   "textures": {
-    "lightsBright": "appliedenergistics2:parts/pattern_terminal_bright",
-    "lightsMedium": "appliedenergistics2:parts/pattern_terminal_medium",
-    "lightsDark": "appliedenergistics2:parts/pattern_terminal_dark"
+    "lightsBright": "appliedenergistics2:part/pattern_terminal_bright",
+    "lightsMedium": "appliedenergistics2:part/pattern_terminal_medium",
+    "lightsDark": "appliedenergistics2:part/pattern_terminal_dark"
   },
   "elements": [
     {

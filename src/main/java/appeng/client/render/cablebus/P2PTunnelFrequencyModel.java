@@ -23,7 +23,7 @@ import appeng.core.AppEng;
 
 public class P2PTunnelFrequencyModel implements IModelGeometry<P2PTunnelFrequencyModel> {
     private static final Material TEXTURE = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
-            new ResourceLocation(AppEng.MOD_ID, "parts/p2p_tunnel_frequency"));
+            new ResourceLocation(AppEng.MOD_ID, "part/p2p_tunnel_frequency"));
 
     @Override
     public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,

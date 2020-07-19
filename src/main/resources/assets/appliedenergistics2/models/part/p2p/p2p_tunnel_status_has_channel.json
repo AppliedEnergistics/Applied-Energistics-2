@@ -1,7 +1,7 @@
 {
   "loader": "appliedenergistics2:uvlightmap",
   "textures": {
-    "indicator": "appliedenergistics2:parts/monitor_sides_status_has_channel"
+    "indicator": "appliedenergistics2:part/monitor_sides_status_has_channel"
   },
   "elements": [
     {

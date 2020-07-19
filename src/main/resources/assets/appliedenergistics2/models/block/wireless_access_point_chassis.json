@@ -4,8 +4,8 @@
     "particle": "appliedenergistics2:block/wireless_access_point_inside",
     "inside": "appliedenergistics2:block/wireless_access_point_inside",
     "1": "appliedenergistics2:block/wireless_access_point",
-    "sides": "appliedenergistics2:parts/monitor_sides",
-    "sidesStatus": "appliedenergistics2:parts/monitor_sides_status"
+    "sides": "appliedenergistics2:part/monitor_sides",
+    "sidesStatus": "appliedenergistics2:part/monitor_sides_status"
   },
   "elements": [
     {

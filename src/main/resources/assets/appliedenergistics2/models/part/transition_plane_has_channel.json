@@ -1,9 +1,9 @@
 {
   "loader": "appliedenergistics2:uvlightmap",
   "textures": {
-    "sides": "appliedenergistics2:parts/monitor_sides_status",
-    "back": "appliedenergistics2:parts/transition_plane_back",
-    "indicator": "appliedenergistics2:parts/monitor_sides_status_has_channel"
+    "sides": "appliedenergistics2:part/monitor_sides_status",
+    "back": "appliedenergistics2:part/transition_plane_back",
+    "indicator": "appliedenergistics2:part/monitor_sides_status_has_channel"
   },
   "elements": [
     {
