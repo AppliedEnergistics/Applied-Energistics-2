@@ -1,16 +1,17 @@
 package appeng.client.gui.implementations;
 
+import java.util.function.Consumer;
+import java.util.function.LongConsumer;
+
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.IGuiEventListener;
+import net.minecraft.client.gui.widget.button.Button;
+
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.widgets.ITickingWidget;
 import appeng.client.gui.widgets.NumberBox;
 import appeng.core.AEConfig;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.widget.button.Button;
-
-import java.util.function.Consumer;
-import java.util.function.LongConsumer;
 
 /**
  * A utility widget that consists of a text-field to enter a number with

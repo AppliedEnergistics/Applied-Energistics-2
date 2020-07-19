@@ -18,10 +18,10 @@
 
 package appeng.client.gui.widgets;
 
+import java.util.function.LongConsumer;
+
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-
-import java.util.function.LongConsumer;
 
 public class NumberBox extends TextFieldWidget {
 

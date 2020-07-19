@@ -1,6 +1,9 @@
 
 package appeng.fluids.client.gui;
 
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.text.ITextComponent;
+
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.client.gui.NumberEntryType;
@@ -12,8 +15,6 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.fluids.client.gui.widgets.FluidSlotWidget;
 import appeng.fluids.container.FluidLevelEmitterContainer;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
 
 public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitterContainer> {
 

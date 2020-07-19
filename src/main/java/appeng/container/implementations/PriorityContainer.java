@@ -18,6 +18,14 @@
 
 package appeng.container.implementations;
 
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
 import appeng.api.config.SecurityPermissions;
 import appeng.api.parts.IPart;
 import appeng.client.gui.implementations.NumberEntryWidget;
@@ -26,13 +34,6 @@ import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.helpers.IPriorityHost;
 import appeng.util.Platform;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class PriorityContainer extends AEBaseContainer {
 

@@ -18,29 +18,6 @@
 
 package appeng.core;
 
-import appeng.api.config.CondenserOutput;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.config.PowerUnits;
-import appeng.api.config.SearchBoxMode;
-import appeng.api.config.Settings;
-import appeng.api.config.TerminalStyle;
-import appeng.api.config.YesNo;
-import appeng.api.features.AEFeature;
-import appeng.client.gui.NumberEntryType;
-import appeng.core.settings.TickRates;
-import appeng.util.EnumCycler;
-import com.google.common.base.Strings;
-import net.minecraft.world.dimension.DimensionType;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
-import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
-import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
-import net.minecraftforge.common.ForgeConfigSpec.EnumValue;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import org.apache.commons.lang3.tuple.Pair;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -53,6 +30,32 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.DoubleSupplier;
 import java.util.stream.Collectors;
+
+import com.google.common.base.Strings;
+
+import org.apache.commons.lang3.tuple.Pair;
+
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
+import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
+import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
+import net.minecraftforge.common.ForgeConfigSpec.EnumValue;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
+
+import appeng.api.config.CondenserOutput;
+import appeng.api.config.PowerMultiplier;
+import appeng.api.config.PowerUnits;
+import appeng.api.config.SearchBoxMode;
+import appeng.api.config.Settings;
+import appeng.api.config.TerminalStyle;
+import appeng.api.config.YesNo;
+import appeng.api.features.AEFeature;
+import appeng.client.gui.NumberEntryType;
+import appeng.core.settings.TickRates;
+import appeng.util.EnumCycler;
 
 @Mod.EventBusSubscriber(modid = AppEng.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class AEConfig {
@@ -272,8 +275,8 @@ public final class AEConfig {
     }
 
     /**
-     * Returns an array with the quantity-steps for the +/- buttons in number entry dialogs of the given type.
-     * Guaranteed to have 4 entries.
+     * Returns an array with the quantity-steps for the +/- buttons in number entry
+     * dialogs of the given type. Guaranteed to have 4 entries.
      */
     public int[] getNumberEntrySteps(NumberEntryType type) {
         switch (type) {

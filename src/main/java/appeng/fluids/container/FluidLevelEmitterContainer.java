@@ -1,5 +1,12 @@
 package appeng.fluids.container;
 
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
@@ -10,12 +17,6 @@ import appeng.container.implementations.ContainerHelper;
 import appeng.fluids.parts.FluidLevelEmitterPart;
 import appeng.fluids.util.IAEFluidTank;
 import appeng.util.Platform;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class FluidLevelEmitterContainer extends FluidConfigurableContainer {
     public static ContainerType<FluidLevelEmitterContainer> TYPE;
