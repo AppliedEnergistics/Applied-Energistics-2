@@ -28,7 +28,8 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
     public void init() {
         super.init();
 
-        this.level = new NumberEntryWidget(this, 20, 17, 138, 62, NumberEntryType.LEVEL_FLUID_VOLUME, this::onLevelChange);
+        this.level = new NumberEntryWidget(this, 20, 17, 138, 62, NumberEntryType.LEVEL_FLUID_VOLUME,
+                this::onLevelChange);
         this.level.setTextFieldBounds(25, 44, 75);
         container.setTextField(this.level);
         this.level.addButtons(children::add, this::addButton);

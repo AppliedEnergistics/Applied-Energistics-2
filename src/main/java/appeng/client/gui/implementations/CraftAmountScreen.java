@@ -45,7 +45,8 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
     public void init() {
         super.init();
 
-        this.amountToCraft = new NumberEntryWidget(this, 20, 30, 138, 62, NumberEntryType.CRAFT_ITEM_COUNT, value -> {});
+        this.amountToCraft = new NumberEntryWidget(this, 20, 30, 138, 62, NumberEntryType.CRAFT_ITEM_COUNT, value -> {
+        });
         this.amountToCraft.setValue(1);
         this.amountToCraft.setTextFieldBounds(62, 57, 50);
         this.amountToCraft.setMinValue(1);

@@ -34,7 +34,7 @@ public class NumberBox extends TextFieldWidget {
     private long maxValue;
 
     public NumberBox(final FontRenderer fontRenderer, final int x, final int y, final int width, final int height,
-                     final Class<?> type, LongConsumer changeListener) {
+            final Class<?> type, LongConsumer changeListener) {
         super(fontRenderer, x, y, width, height, "0");
         this.setText("0");
         setResponder(this::onTextChanged);
@@ -128,7 +128,8 @@ public class NumberBox extends TextFieldWidget {
             return true;
         }
 
-        // Swallow key presses for numbers because they would otherwise trigger the hotbar swapping unintentionally
+        // Swallow key presses for numbers because they would otherwise trigger the
+        // hotbar swapping unintentionally
         return isFocused() && p_keyPressed_1_ >= '0' && p_keyPressed_1_ <= '9';
     }
 

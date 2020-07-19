@@ -13,8 +13,8 @@ import java.util.function.Consumer;
 import java.util.function.LongConsumer;
 
 /**
- * A utility widget that consists of a text-field to enter a number with attached buttons to
- * increment/decrement the number in fixed intervals.
+ * A utility widget that consists of a text-field to enter a number with
+ * attached buttons to increment/decrement the number in fixed intervals.
  */
 public class NumberEntryWidget implements ITickingWidget {
 
@@ -34,9 +34,8 @@ public class NumberEntryWidget implements ITickingWidget {
     private Button minus100;
     private Button minus1000;
 
-    public NumberEntryWidget(AEBaseScreen<?> parent, int x, int y, int width, int height,
-                             NumberEntryType type,
-                             LongConsumer changeListener) {
+    public NumberEntryWidget(AEBaseScreen<?> parent, int x, int y, int width, int height, NumberEntryType type,
+            LongConsumer changeListener) {
         this.parent = parent;
         this.x = x;
         this.y = y;
@@ -87,24 +86,17 @@ public class NumberEntryWidget implements ITickingWidget {
         int top = parent.getGuiTop() + y;
 
         addButton.accept(this.plus1 = new Button(left, top, 22, 20, "+" + a, btn -> addQty(a)));
-        addButton.accept(
-                this.plus10 = new Button(left + 28, top, 28, 20, "+" + b, btn -> addQty(b)));
-        addButton.accept(
-                this.plus100 = new Button(left + 62, top, 32, 20, "+" + c, btn -> addQty(c)));
-        addButton.accept(
-                this.plus1000 = new Button(left + 100, top, 38, 20, "+" + d, btn -> addQty(d)));
+        addButton.accept(this.plus10 = new Button(left + 28, top, 28, 20, "+" + b, btn -> addQty(b)));
+        addButton.accept(this.plus100 = new Button(left + 62, top, 32, 20, "+" + c, btn -> addQty(c)));
+        addButton.accept(this.plus1000 = new Button(left + 100, top, 38, 20, "+" + d, btn -> addQty(d)));
 
         // Placing this here will give a sensible tab order
         addChildren.accept(this.level);
 
-        addButton.accept(
-                this.minus1 = new Button(left, top + 42, 22, 20, "-" + a, btn -> addQty(-a)));
-        addButton.accept(
-                this.minus10 = new Button(left + 28, top + 42, 28, 20, "-" + b, btn -> addQty(-b)));
-        addButton.accept(
-                this.minus100 = new Button(left + 62, top + 42, 32, 20, "-" + c, btn -> addQty(-c)));
-        addButton.accept(
-                this.minus1000 = new Button(left + 100, top + 42, 38, 20, "-" + d, btn -> addQty(-d)));
+        addButton.accept(this.minus1 = new Button(left, top + 42, 22, 20, "-" + a, btn -> addQty(-a)));
+        addButton.accept(this.minus10 = new Button(left + 28, top + 42, 28, 20, "-" + b, btn -> addQty(-b)));
+        addButton.accept(this.minus100 = new Button(left + 62, top + 42, 32, 20, "-" + c, btn -> addQty(-c)));
+        addButton.accept(this.minus1000 = new Button(left + 100, top + 42, 38, 20, "-" + d, btn -> addQty(-d)));
     }
 
     private void addQty(final long i) {

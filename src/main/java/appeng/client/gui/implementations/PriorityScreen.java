@@ -52,7 +52,8 @@ public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
     }
 
     private void onPriorityChange(long priority) {
-        NetworkHandler.instance().sendToServer(new ConfigValuePacket("PriorityHost.Priority", String.valueOf(priority)));
+        NetworkHandler.instance()
+                .sendToServer(new ConfigValuePacket("PriorityHost.Priority", String.valueOf(priority)));
     }
 
     @Override
