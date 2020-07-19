@@ -18,14 +18,17 @@
 
 package appeng.tile.crafting;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -35,15 +38,12 @@ import net.minecraftforge.client.model.data.IModelData;
 import appeng.api.config.Actionable;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
-import appeng.api.networking.IGridHost;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.WorldCoord;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.block.crafting.AbstractCraftingUnitBlock.CraftingUnitType;
 import appeng.core.Api;
@@ -90,7 +90,7 @@ public class CraftingTileEntity extends AENetworkTileEntity
     @Override
     public boolean canBeRotated() {
         return true;// return BlockCraftingUnit.checkType( world.getBlockMetadata( xCoord, yCoord,
-                    // zCoord ),
+        // zCoord ),
         // BlockCraftingUnit.BASE_MONITOR );
     }
 
@@ -250,21 +250,18 @@ public class CraftingTileEntity extends AENetworkTileEntity
             this.cluster.cancel();
             final IMEInventory<IAEItemStack> inv = this.cluster.getInventory();
 
-            final LinkedList<WorldCoord> places = new LinkedList<>();
+            final LinkedList<BlockPos> places = new LinkedList<>();
 
-            final Iterator<IGridHost> i = this.cluster.getTiles();
+            final Iterator<CraftingTileEntity> i = this.cluster.getTiles();
             while (i.hasNext()) {
-                final IGridHost h = i.next();
+                final CraftingTileEntity h = i.next();
                 if (h == this) {
-                    places.add(new WorldCoord(this));
+                    places.add(pos);
                 } else {
-                    final TileEntity te = (TileEntity) h;
-
-                    for (final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS) {
-                        final WorldCoord wc = new WorldCoord(te);
-                        wc.add(d, 1);
-                        if (this.world.isAirBlock(wc.getPos())) {
-                            places.add(wc);
+                    for (Direction d : Direction.values()) {
+                        BlockPos p = h.pos.offset(d);
+                        if (this.world.isAirBlock(p)) {
+                            places.add(p);
                         }
                     }
                 }
@@ -288,10 +285,10 @@ public class CraftingTileEntity extends AENetworkTileEntity
                         break;
                     }
 
-                    final WorldCoord wc = places.poll();
-                    places.add(wc);
+                    final BlockPos pos = places.poll();
+                    places.add(pos);
 
-                    Platform.spawnDrops(this.world, wc.getPos(), Collections.singletonList(g.createItemStack()));
+                    Platform.spawnDrops(this.world, pos, Collections.singletonList(g.createItemStack()));
                 }
             }
 

@@ -90,7 +90,7 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingTileEntity, Craf
 
         c.done();
 
-        final Iterator<IGridHost> i = c.getTiles();
+        final Iterator<CraftingTileEntity> i = c.getTiles();
         while (i.hasNext()) {
             final IGridHost gh = i.next();
             final IGridNode n = gh.getGridNode(AEPartLocation.INTERNAL);
