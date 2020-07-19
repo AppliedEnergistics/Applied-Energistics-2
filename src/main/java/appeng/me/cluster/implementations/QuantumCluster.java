@@ -33,10 +33,8 @@ import appeng.api.events.LocatableEventAnnounce;
 import appeng.api.events.LocatableEventAnnounce.LocatableEvent;
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.features.ILocatable;
-import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.me.cache.helpers.ConnectionWrapper;
@@ -58,9 +56,9 @@ public class QuantumCluster implements ILocatable, IAECluster {
     private long otherSide;
     private QuantumBridgeTileEntity center;
 
-    public QuantumCluster(final WorldCoord min, final WorldCoord max) {
-        this.boundsMin = min.getBlockPos();
-        this.boundsMax = max.getBlockPos();
+    public QuantumCluster(final BlockPos min, final BlockPos max) {
+        this.boundsMin = min.toImmutable();
+        this.boundsMax = max.toImmutable();
         this.setRing(new QuantumBridgeTileEntity[8]);
     }
 
@@ -239,7 +237,7 @@ public class QuantumCluster implements ILocatable, IAECluster {
     }
 
     @Override
-    public Iterator<IGridHost> getTiles() {
+    public Iterator<QuantumBridgeTileEntity> getTiles() {
         return new ChainedIterator<>(this.getRing()[0], this.getRing()[1], this.getRing()[2], this.getRing()[3],
                 this.getRing()[4], this.getRing()[5], this.getRing()[6], this.getRing()[7], this.center);
     }

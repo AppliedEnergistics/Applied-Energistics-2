@@ -49,7 +49,6 @@ import appeng.api.util.DimensionalCoord;
 import appeng.block.qnb.QnbFormedState;
 import appeng.core.Api;
 import appeng.me.GridAccessException;
-import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.QuantumCalculator;
 import appeng.me.cluster.implementations.QuantumCluster;
@@ -57,7 +56,8 @@ import appeng.tile.grid.AENetworkInvTileEntity;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.inv.InvOperation;
 
-public class QuantumBridgeTileEntity extends AENetworkInvTileEntity implements IAEMultiBlock, ITickableTileEntity {
+public class QuantumBridgeTileEntity extends AENetworkInvTileEntity
+        implements IAEMultiBlock<QuantumCluster>, ITickableTileEntity {
 
     public static final ModelProperty<QnbFormedState> FORMED_STATE = new ModelProperty<>();
 
@@ -191,7 +191,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity implements I
     }
 
     @Override
-    public IAECluster getCluster() {
+    public QuantumCluster getCluster() {
         return this.cluster;
     }
 
@@ -210,11 +210,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity implements I
             }
 
             if (this.isCorner() || this.isCenter()) {
-                final EnumSet<Direction> sides = EnumSet.noneOf(Direction.class);
-                for (final Direction dir : this.getAdjacentQuantumBridges()) {
-                    sides.add(dir);
-                }
-
+                EnumSet<Direction> sides = EnumSet.copyOf(this.getAdjacentQuantumBridges());
                 this.getProxy().setValidSides(sides);
             } else {
                 this.getProxy().setValidSides(EnumSet.allOf(Direction.class));
@@ -274,7 +270,7 @@ public class QuantumBridgeTileEntity extends AENetworkInvTileEntity implements I
     }
 
     public void neighborUpdate(BlockPos fromPos) {
-        this.calc.updateMultiblockAfterNeighborUpdate(this.world, this.getLocation(), fromPos);
+        this.calc.updateMultiblockAfterNeighborUpdate(this.world, this.pos, fromPos);
     }
 
     @Override
