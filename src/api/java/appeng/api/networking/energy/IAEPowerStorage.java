@@ -79,7 +79,7 @@ public interface IAEPowerStorage extends IEnergySource {
      * A higher value means it is more likely to be extracted from first, and less
      * likely to be inserted into first.
      * 
-     * The value needs to be static once added to a {@link IGrid}. Should it ever
+     * The value needs to be constant once added to a {@link IGrid}. Should it ever
      * need to be changed, it has to be removed from the grid, then update the
      * value, and finally added back to the grid.
      * 
