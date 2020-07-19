@@ -1,20 +1,3 @@
 {
-  "parent": "appliedenergistics2:item/part_base",
-  "textures": {
-    "emitter": "appliedenergistics2:part/level_emitter_off"
-  },
-  "elements": [
-    {
-      "from": [7, 6, 7],
-      "to": [9, 10, 9],
-      "faces": {
-        "north": { "uv": [6, 7, 10, 9], "rotation": 90, "texture": "#emitter" },
-        "east": { "uv": [6, 7, 10, 9], "rotation": 90, "texture": "#emitter" },
-        "south": { "uv": [6, 7, 10, 9], "rotation": 90, "texture": "#emitter" },
-        "west": { "uv": [6, 7, 10, 9], "rotation": 90, "texture": "#emitter" },
-        "up": { "uv": [6, 7, 8, 9], "texture": "#emitter" },
-        "down": { "uv": [8, 7, 10, 9], "texture": "#emitter" }
-      }
-    }
-  ]
+  "parent": "appliedenergistics2:item/level_emitter"
 }
