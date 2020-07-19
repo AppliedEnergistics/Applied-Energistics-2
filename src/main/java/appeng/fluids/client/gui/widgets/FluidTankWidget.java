@@ -93,7 +93,7 @@ public class FluidTankWidget extends Widget implements ITooltip {
 
             return desc + "\n" + amountToText;
         }
-        return null;
+        return "";
     }
 
     @Override

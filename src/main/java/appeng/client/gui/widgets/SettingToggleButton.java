@@ -314,7 +314,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
 
             return name + '\n' + sb;
         }
-        return null;
+        return "";
     }
 
     public String getFillVar() {

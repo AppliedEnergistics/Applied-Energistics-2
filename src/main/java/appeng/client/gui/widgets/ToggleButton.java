@@ -99,7 +99,7 @@ public class ToggleButton extends Button implements ITooltip {
 
             return name + '\n' + sb;
         }
-        return null;
+        return "";
     }
 
     @Override
