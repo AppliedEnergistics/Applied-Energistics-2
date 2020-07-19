@@ -74,10 +74,13 @@ public class EnergyGridCache implements IEnergyGrid {
         return Double.compare(percent1, percent2);
     };
 
-    private static final Comparator<IAEPowerStorage> COMPARATOR_HIGHEST_PRIORITY_FIRST = (o1, o2) -> Integer
-            .compare(o2.getPriority(), o1.getPriority());
-    private static final Comparator<IAEPowerStorage> COMPARATOR_LOWEST_PRIORITY_FIRST = (o1, o2) -> Integer
-            .compare(o1.getPriority(), o2.getPriority());
+    private static final Comparator<IAEPowerStorage> COMPARATOR_HIGHEST_PRIORITY_FIRST = (o1, o2) -> {
+        final int cmp = Integer.compare(o2.getPriority(), o1.getPriority());
+        return cmp != 0 ? cmp : Integer.compare(System.identityHashCode(o2), System.identityHashCode(o1));
+    };
+
+    private static final Comparator<IAEPowerStorage> COMPARATOR_LOWEST_PRIORITY_FIRST = (o1,
+            o2) -> -COMPARATOR_HIGHEST_PRIORITY_FIRST.compare(o1, o2);
 
     private final NavigableSet<EnergyThreshold> interests = Sets.newTreeSet();
     private final double averageLength = 40.0;
