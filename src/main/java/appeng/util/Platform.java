@@ -839,17 +839,19 @@ public class Platform {
                 energy.extractAEPower(stored / energyFactor, Actionable.MODULATE, PowerMultiplier.CONFIG);
                 if (itemToAdd < input.getStackSize()) {
                     final long original = input.getStackSize();
+                    final T leftover = input.copy();
                     final T split = input.copy();
-                    split.decStackSize(itemToAdd);
-                    input.setStackSize(itemToAdd);
-                    split.add(cell.injectItems(input, Actionable.MODULATE, src));
+
+                    leftover.decStackSize(itemToAdd);
+                    split.setStackSize(itemToAdd);
+                    leftover.add(cell.injectItems(split, Actionable.MODULATE, src));
 
                     src.player().ifPresent(player -> {
-                        final long diff = original - split.getStackSize();
+                        final long diff = original - leftover.getStackSize();
                         AeStats.ItemsInserted.addToPlayer(player, (int) diff);
                     });
 
-                    return split;
+                    return leftover;
                 }
 
                 final T ret = cell.injectItems(input, Actionable.MODULATE, src);
