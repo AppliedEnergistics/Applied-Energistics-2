@@ -64,7 +64,7 @@ public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
         this.subGui.addBackButton(this::addButton, 154, 0);
 
         this.priority = new NumberBox(this.font, this.guiLeft + 62, this.guiTop + 57, 59, this.font.FONT_HEIGHT,
-                Long.class);
+                Long.class, value -> NetworkHandler.instance().sendToServer(new ConfigValuePacket("PriorityHost.Priority", String.valueOf(value))));
         this.priority.setEnableBackgroundDrawing(false);
         this.priority.setMaxStringLength(16);
         this.priority.setTextColor(0xFFFFFF);

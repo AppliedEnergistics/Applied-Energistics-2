@@ -31,7 +31,7 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
         super.init();
 
         this.level = new NumberBox(this.font, this.guiLeft + 24, this.guiTop + 43, 79, this.font.FONT_HEIGHT,
-                Long.class);
+                Long.class, value -> NetworkHandler.instance().sendToServer(new ConfigValuePacket("FluidLevelEmitter.Value", String.valueOf(value))));
         this.level.setEnableBackgroundDrawing(false);
         this.level.setMaxStringLength(16);
         this.level.setTextColor(0xFFFFFF);

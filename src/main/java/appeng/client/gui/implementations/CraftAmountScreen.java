@@ -69,7 +69,7 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
         subGui.addBackButton(this::addButton, 154, 0);
 
         this.amountToCraft = new NumberBox(this.font, this.guiLeft + 62, this.guiTop + 57, 59, this.font.FONT_HEIGHT,
-                Integer.class);
+                Integer.class, value -> {});
         this.amountToCraft.setEnableBackgroundDrawing(false);
         this.amountToCraft.setMaxStringLength(16);
         this.amountToCraft.setTextColor(0xFFFFFF);
@@ -80,7 +80,7 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
 
     private void confirm(Button button) {
         NetworkHandler.instance()
-                .sendToServer(new CraftRequestPacket(Integer.parseInt(this.amountToCraft.getText()), hasShiftDown()));
+                .sendToServer(new CraftRequestPacket((int) this.amountToCraft.getValue(), hasShiftDown()));
     }
 
     @Override
