@@ -152,7 +152,7 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassBlockEntity> {
 
     @Override
     public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.ENTITYBLOCK_ANIMATED;
+        return BlockRenderType.MODEL;
     }
 
 }

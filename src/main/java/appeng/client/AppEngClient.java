@@ -1,6 +1,9 @@
 package appeng.client;
 
 import appeng.api.parts.CableRenderMode;
+import appeng.block.crafting.AbstractCraftingUnitBlock;
+import appeng.block.paint.PaintSplotchesModel;
+import appeng.block.qnb.QnbFormedModel;
 import appeng.bootstrap.ModelsReloadCallback;
 import appeng.bootstrap.components.IClientSetupComponent;
 import appeng.bootstrap.components.IItemColorRegistrationComponent;
@@ -8,9 +11,9 @@ import appeng.bootstrap.components.IModelBakeComponent;
 import appeng.client.gui.implementations.*;
 import appeng.client.render.SimpleModelLoader;
 import appeng.client.render.cablebus.CableBusModelLoader;
+import appeng.client.render.crafting.CraftingCubeModel;
 import appeng.client.render.effects.*;
-import appeng.client.render.model.DriveModel;
-import appeng.client.render.model.SkyCompassModel;
+import appeng.client.render.model.*;
 import appeng.client.render.spatial.SpatialPylonModel;
 import appeng.client.render.tesr.InscriberTESR;
 import appeng.client.render.tesr.SkyChestTESR;
@@ -239,28 +242,29 @@ public final class AppEngClient extends AppEngBase {
 
         ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> new CableBusModelLoader((PartModels) Api.INSTANCE.registries().partModels()));
 
-// FIXME FABRIC       addBuiltInModel("glass", GlassModel::new);
+       addBuiltInModel("block/quartz_glass", GlassModel::new);
        addBuiltInModel("block/sky_compass", SkyCompassModel::new);
        addBuiltInModel("item/sky_compass", SkyCompassModel::new);
 // FIXME FABRIC       addBuiltInModel("item/dummy_fluid_item", DummyFluidItemModel::new);
-// FIXME FABRIC       addBuiltInModel("memory_card", MemoryCardModel::new);
-// FIXME FABRIC       addBuiltInModel("biometric_card", BiometricCardModel::new);
+       addBuiltInModel("item/memory_card", MemoryCardModel::new);
+       addBuiltInModel("item/biometric_card", BiometricCardModel::new);
        addBuiltInModel("block/drive", DriveModel::new);
-// FIXME FABRIC       addBuiltInModel("color_applicator", ColorApplicatorModel::new);
+       addBuiltInModel("color_applicator", ColorApplicatorModel::new); // FIXME need to wire this up
        addBuiltInModel("block/spatial_pylon", SpatialPylonModel::new);
-// FIXME FABRIC       addBuiltInModel("paint_splotches", PaintSplotchesModel::new);
-// FIXME FABRIC       addBuiltInModel("quantum_bridge_formed", QnbFormedModel::new);
+       addBuiltInModel("block/paint", PaintSplotchesModel::new);
+        addBuiltInModel("block/qnb/qnb_formed", QnbFormedModel::new);
 // FIXME FABRIC       addBuiltInModel("p2p_tunnel_frequency", P2PTunnelFrequencyModel::new);
 // FIXME FABRIC       addBuiltInModel("facade", FacadeItemModel::new);
-// FIXME FABRIC       ModelLoaderRegistry.registerLoader(new Identifier(AppEng.MOD_ID, "encoded_pattern"),
-// FIXME FABRIC               EncodedPatternModelLoader.INSTANCE);
 // FIXME FABRIC       ModelLoaderRegistry.registerLoader(new Identifier(AppEng.MOD_ID, "part_plane"),
 // FIXME FABRIC               PlaneModelLoader.INSTANCE);
-// FIXME FABRIC       ModelLoaderRegistry.registerLoader(new Identifier(AppEng.MOD_ID, "crafting_cube"),
-// FIXME FABRIC               CraftingCubeModelLoader.INSTANCE);
+        addBuiltInModel("block/crafting/1k_storage_formed", () -> new CraftingCubeModel(AbstractCraftingUnitBlock.CraftingUnitType.STORAGE_1K));
+        addBuiltInModel("block/crafting/4k_storage_formed", () -> new CraftingCubeModel(AbstractCraftingUnitBlock.CraftingUnitType.STORAGE_4K));
+        addBuiltInModel("block/crafting/16k_storage_formed", () -> new CraftingCubeModel(AbstractCraftingUnitBlock.CraftingUnitType.STORAGE_16K));
+        addBuiltInModel("block/crafting/64k_storage_formed", () -> new CraftingCubeModel(AbstractCraftingUnitBlock.CraftingUnitType.STORAGE_64K));
+        addBuiltInModel("block/crafting/accelerator_formed", () -> new CraftingCubeModel(AbstractCraftingUnitBlock.CraftingUnitType.ACCELERATOR));
+        addBuiltInModel("block/crafting/monitor_formed", () -> new CraftingCubeModel(AbstractCraftingUnitBlock.CraftingUnitType.MONITOR));
+        addBuiltInModel("block/crafting/unit_formed", () -> new CraftingCubeModel(AbstractCraftingUnitBlock.CraftingUnitType.UNIT));
 // FIXME FABRIC       ModelLoaderRegistry.registerLoader(new Identifier(AppEng.MOD_ID, "uvlightmap"), UVLModelLoader.INSTANCE);
-// FIXME FABRIC       ModelLoaderRegistry.registerLoader(new Identifier(AppEng.MOD_ID, "cable_bus"),
-// FIXME FABRIC               new CableBusModelLoader());
     }
 
     private static <T extends UnbakedModel> void addBuiltInModel(String id, Supplier<T> modelFactory) {

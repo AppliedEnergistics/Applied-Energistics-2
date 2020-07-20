@@ -18,6 +18,7 @@
 
 package appeng.client.render.crafting;
 
+import appeng.tile.crafting.CraftingCubeModelData;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
@@ -26,7 +27,6 @@ import net.minecraft.util.math.Direction;
 import appeng.api.util.AEColor;
 import appeng.block.crafting.CraftingMonitorBlock;
 import appeng.client.render.cablebus.CubeBuilder;
-import appeng.client.render.model.AEModelData;
 import appeng.tile.crafting.CraftingMonitorModelData;
 
 /**
@@ -60,9 +60,9 @@ public class MonitorBakedModel extends CraftingCubeBakedModel {
     }
 
     @Override
-    protected void addInnerCube(Direction side, BlockState state, IModelData modelData, CubeBuilder builder, float x1,
-            float y1, float z1, float x2, float y2, float z2) {
-        Direction forward = getForward(modelData);
+    protected void addInnerCube(Direction side, BlockState state, CraftingCubeModelData modelData, CubeBuilder builder, float x1,
+                                float y1, float z1, float x2, float y2, float z2) {
+        Direction forward = modelData.getForward();
 
         // For sides other than the front, use the chassis texture
         if (side != forward) {
@@ -94,17 +94,11 @@ public class MonitorBakedModel extends CraftingCubeBakedModel {
 
     }
 
-    private static AEColor getColor(IModelData modelData) {
+    private static AEColor getColor(CraftingCubeModelData modelData) {
         if (modelData instanceof CraftingMonitorModelData) {
             return ((CraftingMonitorModelData) modelData).getColor();
         }
         return AEColor.TRANSPARENT;
     }
 
-    private static Direction getForward(IModelData modelData) {
-        if (modelData instanceof AEModelData) {
-            return ((AEModelData) modelData).getForward();
-        }
-        return Direction.NORTH;
-    }
 }

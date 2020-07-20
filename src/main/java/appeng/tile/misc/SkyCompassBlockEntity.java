@@ -18,6 +18,7 @@
 
 package appeng.tile.misc;
 
+import appeng.client.render.model.AEModelData;
 import net.minecraft.block.entity.BlockEntityType;
 
 import appeng.tile.AEBaseBlockEntity;
@@ -28,4 +29,9 @@ public class SkyCompassBlockEntity extends AEBaseBlockEntity {
         super(tileEntityTypeIn);
     }
 
+    @Override
+    public Object getRenderAttachmentData() {
+        // For compasses, the forward/up are flipped
+        return new AEModelData(getForward(), getUp());
+    }
 }

@@ -61,7 +61,9 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
     private static final int POWER_THRESHOLD = POWER_MAXIMUM_AMOUNT - 1;
     private static final int POWER_PER_CRANK_TURN = 160;
 
-    private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 1, 1, new ChargerInvFilter());
+    private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 1, 1);
+
+    private final FixedItemInv externalInv = inv.createFiltered(new ChargerInvFilter());
 
     public ChargerBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
@@ -134,7 +136,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements ICr
 
     @Override
     public FixedItemInv getInternalInventory() {
-        return this.inv;
+        return externalInv;
     }
 
     @Override

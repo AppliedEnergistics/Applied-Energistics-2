@@ -35,7 +35,6 @@ import appeng.api.util.DimensionalCoord;
 import appeng.block.networking.CableBusBlock;
 import appeng.block.paint.PaintSplotchesBlock;
 import appeng.core.AEConfig;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.helpers.IMouseWheelItem;
@@ -118,7 +117,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public ActionResult onItemUse(ItemUsageContext context) {
+    public ActionResult useOnBlock(ItemUsageContext context) {
         World w = context.getWorld();
         BlockPos pos = context.getBlockPos();
         ItemStack is = context.getStack();

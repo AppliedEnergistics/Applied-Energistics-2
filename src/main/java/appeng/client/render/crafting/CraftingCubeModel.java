@@ -18,32 +18,25 @@
 
 package appeng.client.render.crafting;
 
-import java.util.Collection;
-import java.util.Set;
-import java.util.function.Function;
-
-import com.google.common.collect.ImmutableList;
-import com.mojang.datafixers.util.Pair;
-
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.IModelTransform;
-import net.minecraft.client.render.model.IUnbakedModel;
-import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.util.Identifier;
-import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.geometry.IModelGeometry;
-
 import appeng.block.crafting.AbstractCraftingUnitBlock;
+import appeng.client.render.BasicUnbakedModel;
 import appeng.core.AppEng;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.ModelBakeSettings;
+import net.minecraft.client.render.model.ModelLoader;
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.util.SpriteIdentifier;
+import net.minecraft.util.Identifier;
+
+import javax.annotation.Nullable;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * The built-in model for the connected texture crafting cube.
  */
-class CraftingCubeModel implements IModelGeometry<CraftingCubeModel> {
+public class CraftingCubeModel implements BasicUnbakedModel {
 
     private final static SpriteIdentifier RING_CORNER = texture("ring_corner");
     private final static SpriteIdentifier RING_SIDE_HOR = texture("ring_side_hor");
@@ -62,41 +55,39 @@ class CraftingCubeModel implements IModelGeometry<CraftingCubeModel> {
 
     private final AbstractCraftingUnitBlock.CraftingUnitType type;
 
-    CraftingCubeModel(AbstractCraftingUnitBlock.CraftingUnitType type) {
+    public CraftingCubeModel(AbstractCraftingUnitBlock.CraftingUnitType type) {
         this.type = type;
     }
 
     @Override
-    public Collection<SpriteIdentifier> getTextures(IModelConfiguration owner,
-                                                    Function<Identifier, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-        return ImmutableList.of(RING_CORNER, RING_SIDE_HOR, RING_SIDE_VER, UNIT_BASE, LIGHT_BASE, ACCELERATOR_LIGHT,
+    public Stream<SpriteIdentifier> getAdditionalTextures() {
+        return Stream.of(RING_CORNER, RING_SIDE_HOR, RING_SIDE_VER, UNIT_BASE, LIGHT_BASE, ACCELERATOR_LIGHT,
                 STORAGE_1K_LIGHT, STORAGE_4K_LIGHT, STORAGE_16K_LIGHT, STORAGE_64K_LIGHT, MONITOR_BASE,
                 MONITOR_LIGHT_DARK, MONITOR_LIGHT_MEDIUM, MONITOR_LIGHT_BRIGHT);
     }
 
+    @Nullable
     @Override
-    public BakedModel bake(IModelConfiguration owner, ModelLoader bakery,
-                           Function<SpriteIdentifier, Sprite> spriteGetter, IModelTransform modelTransform,
-                           ModelOverrideList overrides, Identifier modelLocation) {
+    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
         // Retrieve our textures and pass them on to the baked model
-        Sprite ringCorner = spriteGetter.apply(RING_CORNER);
-        Sprite ringSideHor = spriteGetter.apply(RING_SIDE_HOR);
-        Sprite ringSideVer = spriteGetter.apply(RING_SIDE_VER);
+        Sprite ringCorner = textureGetter.apply(RING_CORNER);
+        Sprite ringSideHor = textureGetter.apply(RING_SIDE_HOR);
+        Sprite ringSideVer = textureGetter.apply(RING_SIDE_VER);
 
         switch (this.type) {
             case UNIT:
-                return new UnitBakedModel(ringCorner, ringSideHor, ringSideVer, spriteGetter.apply(UNIT_BASE));
+                return new UnitBakedModel(ringCorner, ringSideHor, ringSideVer, textureGetter.apply(UNIT_BASE));
             case ACCELERATOR:
             case STORAGE_1K:
             case STORAGE_4K:
             case STORAGE_16K:
             case STORAGE_64K:
-                return new LightBakedModel(ringCorner, ringSideHor, ringSideVer, spriteGetter.apply(LIGHT_BASE),
-                        getLightTexture(spriteGetter, this.type));
+                return new LightBakedModel(ringCorner, ringSideHor, ringSideVer, textureGetter.apply(LIGHT_BASE),
+                        getLightTexture(textureGetter, this.type));
             case MONITOR:
-                return new MonitorBakedModel(ringCorner, ringSideHor, ringSideVer, spriteGetter.apply(UNIT_BASE),
-                        spriteGetter.apply(MONITOR_BASE), spriteGetter.apply(MONITOR_LIGHT_DARK),
-                        spriteGetter.apply(MONITOR_LIGHT_MEDIUM), spriteGetter.apply(MONITOR_LIGHT_BRIGHT));
+                return new MonitorBakedModel(ringCorner, ringSideHor, ringSideVer, textureGetter.apply(UNIT_BASE),
+                        textureGetter.apply(MONITOR_BASE), textureGetter.apply(MONITOR_LIGHT_DARK),
+                        textureGetter.apply(MONITOR_LIGHT_MEDIUM), textureGetter.apply(MONITOR_LIGHT_BRIGHT));
             default:
                 throw new IllegalArgumentException("Unsupported crafting unit type: " + this.type);
         }

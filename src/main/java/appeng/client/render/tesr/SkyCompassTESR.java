@@ -67,7 +67,6 @@ public class SkyCompassTESR extends BlockEntityRenderer<SkyCompassBlockEntity> {
             return;
         }
 
-        BakedModel baseModel = skyCompassModel.getBase();
         BakedModel pointerModel = skyCompassModel.getPointer();
 
         Direction forward = te.getForward();
@@ -78,17 +77,14 @@ public class SkyCompassTESR extends BlockEntityRenderer<SkyCompassBlockEntity> {
         if (forward == Direction.UP || forward == Direction.DOWN) {
             up = Direction.NORTH;
         }
-        // Flip forward/up for rendering, the base model is facing up without any
-        // rotation
         ms.push();
 
         VertexConsumer buffer = buffers.getBuffer(RenderLayer.getSolid());
 
-        modelRenderer.render(te.getWorld(), model, blockState, te.getPos(), ms, buffer, false, new Random(), 42L, combinedOverlayIn);
-//        modelRenderer.render(ms.peek(), buffer, null, baseModel, 1, 1, 1, combinedLightIn, combinedOverlayIn);
-
         float rotation = getRotation(te);
         ms.translate(0.5D, 0.5D, 0.5D);
+        // Flip forward/up for rendering, the base model
+        // is facing up without any rotation
         FacingToRotation.get(up, forward).push(ms);
         ms.multiply(new Quaternion(0, rotation, 0, false));
         ms.translate(-0.5D, -0.5D, -0.5D);

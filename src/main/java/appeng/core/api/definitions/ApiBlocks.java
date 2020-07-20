@@ -43,6 +43,8 @@ import static appeng.block.crafting.AbstractCraftingUnitBlock.CraftingUnitType;
 import appeng.bootstrap.components.IInitComponent;
 import appeng.bootstrap.definitions.TileEntityDefinition;
 import appeng.client.render.crafting.CraftingCubeRendering;
+import appeng.client.render.crafting.CraftingMonitorTESR;
+import appeng.client.render.crafting.MonitorBakedModel;
 import appeng.client.render.model.AutoRotatingBakedModel;
 import appeng.client.render.spatial.SpatialPylonRendering;
 import appeng.client.render.tesr.ChestTileEntityRenderer;
@@ -465,7 +467,7 @@ public final class ApiBlocks implements IBlocks {
                            @Environment(EnvType.CLIENT)
                            @Override
                            public void customize(TileEntityRendering<CraftingMonitorBlockEntity> rendering) {
-                               // FIXME FABRIC rendering.tileEntityRenderer(CraftingMonitorTESR::new);
+                               rendering.tileEntityRenderer(CraftingMonitorTESR::new);
                            }
                        }).build())
                .rendering(new BlockRenderingCustomizer() {
@@ -475,9 +477,9 @@ public final class ApiBlocks implements IBlocks {
                        rendering.renderType(RenderLayer.getCutout());
                        rendering.modelCustomizer((path, model) -> {
                            // The formed model handles rotations itself, the unformed one does not
-                           // FIXME FABRIC if (model instanceof MonitorBakedModel) {
-                           // FIXME FABRIC     return model;
-                           // FIXME FABRIC }
+                           if (model instanceof MonitorBakedModel) {
+                               return model;
+                           }
                            return new AutoRotatingBakedModel(model);
                        });
                    }

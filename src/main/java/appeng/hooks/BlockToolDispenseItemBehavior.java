@@ -42,7 +42,7 @@ public final class BlockToolDispenseItemBehavior extends ItemDispenserBehavior {
             if (w instanceof ServerWorld) {
                 ItemUsageContext context = new AutomaticItemPlacementContext(w, dispenser.getBlockPos().offset(direction),
                         direction, dispensedItem, direction.getOpposite());
-                tm.onItemUse(context);
+                tm.useOnBlock(context);
             }
         }
         return dispensedItem;

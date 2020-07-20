@@ -40,7 +40,7 @@ import net.minecraftforge.client.model.geometry.IModelGeometry;
 /**
  * Built-in model for annihilation planes that supports connected textures.
  */
-public class PlaneModel implements IModelGeometry<PlaneModel> {
+public class PlaneModel implements BasicUnbakedModel {
 
     private final SpriteIdentifier frontTexture;
     private final SpriteIdentifier sidesTexture;

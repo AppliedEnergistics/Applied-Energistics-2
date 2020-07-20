@@ -20,10 +20,6 @@ package appeng.client.render.model;
 
 import appeng.hooks.CompassManager;
 import appeng.hooks.CompassResult;
-import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
-import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.block.BlockState;
@@ -47,7 +43,6 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -85,30 +80,18 @@ public class SkyCompassBakedModel implements BakedModel, FabricBakedModel {
 
     @Override
     public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
-
-        MeshBuilder mb = RendererAccess.INSTANCE.getRenderer().meshBuilder();
-        mb.getEmitter().square(Direction.UP, 0, 0, 1, 1, 0).emit();
-        Mesh build = mb.build();
-        context.meshConsumer().accept(build);
-
-        float rotation = getAnimatedRotation(pos, false);
-        emitQuads(context, rotation);
+        // Pre-compute the quad count to avoid list resizes
+        context.fallbackConsumer().accept(this.base);
     }
 
     @Override
     public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
-        // This is used to render a compass pointing in a specific direction when being
-        // held in hand
-        emitQuads(context, this.fallbackRotation);
-    }
+        context.fallbackConsumer().accept(base);
 
-    private void emitQuads(RenderContext context, float rotation) {
-        // Pre-compute the quad count to avoid list resizes
-        context.fallbackConsumer().accept(this.base);
-
+        // This is used to render a compass pointing in a specific direction when being held in hand
         // Set up the rotation around the Y-axis for the pointer
         context.pushTransform(quad -> {
-            Quaternion quaternion = new Quaternion(0, rotation, 0, false);
+            Quaternion quaternion = new Quaternion(0, this.fallbackRotation, 0, false);
             Vector3f pos = new Vector3f();
             for (int i = 0; i < 4; i++) {
                 quad.copyPos(i, pos);

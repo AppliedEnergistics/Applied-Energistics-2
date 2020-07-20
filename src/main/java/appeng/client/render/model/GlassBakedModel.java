@@ -18,48 +18,43 @@
 
 package appeng.client.render.model;
 
-import java.util.ArrayList;
+import appeng.decorative.solid.GlassState;
+import appeng.decorative.solid.QuartzGlassBlock;
+import com.google.common.base.Strings;
+import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
+import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
+import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.render.model.json.ModelOverrideList;
+import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.util.SpriteIdentifier;
+import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.BlockView;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import com.google.common.base.Strings;
-
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormatElement;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.BlockRenderView;
-import net.minecraft.world.BlockView;
-import net.minecraftforge.client.model.data.IDynamicBakedModel;
-
-import net.minecraftforge.client.model.data.ModelDataMap;
-import net.minecraftforge.client.model.data.ModelProperty;
-import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
-
-import appeng.decorative.solid.GlassState;
-import appeng.decorative.solid.QuartzGlassBlock;
-
-class GlassBakedModel implements IDynamicBakedModel {
-
-    // This unlisted property is used to determine the actual block that should be
-    // rendered
-    public static final ModelProperty<GlassState> GLASS_STATE = new ModelProperty<>();
+class GlassBakedModel implements BakedModel, FabricBakedModel {
 
     private static final byte[][][] OFFSETS = generateOffsets();
 
@@ -75,6 +70,12 @@ class GlassBakedModel implements IDynamicBakedModel {
 
     // Frame texture
     static final SpriteIdentifier[] TEXTURES_FRAME = generateTexturesFrame();
+    private final RenderMaterial material = RendererAccess.INSTANCE.getRenderer().materialFinder()
+            .disableDiffuse(0, true)
+            .disableAo(0, true)
+            .disableColorIndex(0, true)
+            .blendMode(0, BlendMode.TRANSLUCENT)
+            .find();
 
     // Generates the required textures for the frame
     private static SpriteIdentifier[] generateTexturesFrame() {
@@ -101,17 +102,13 @@ class GlassBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand,
-            IModelData extraData) {
-        if (side == null) {
-            return Collections.emptyList();
-        }
+    public boolean isVanillaAdapter() {
+        return false;
+    }
 
-        final GlassState glassState = extraData.getData(GLASS_STATE);
-
-        if (glassState == null) {
-            return Collections.emptyList();
-        }
+    @Override
+    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+        final GlassState glassState = getGlassState(blockView, pos);
 
         // TODO: This could just use the Random instance we're given...
         final int cx = Math.abs(glassState.getX() % 10);
@@ -130,36 +127,51 @@ class GlassBakedModel implements IDynamicBakedModel {
 
         final Sprite glassTexture = this.glassTextures[texIdx];
 
+        QuadEmitter emitter = context.getEmitter();
+
         // Render the glass side
-        final List<BakedQuad> quads = new ArrayList<>(5); // At most 5
+        for (Direction side : Direction.values()) {
+            final List<Vector3f> corners = RenderHelper.getFaceCorners(side);
+            this.emitQuad(emitter, side, corners, glassTexture, u, v);
 
-        final List<Vec3d> corners = RenderHelper.getFaceCorners(side);
-        quads.add(this.createQuad(side, corners, glassTexture, u, v));
+            /*
+             * This needs some explanation: The bit-field contains 4-bits, one for each
+             * direction that a frame may be drawn. Converted to a number, the bit-field is
+             * then used as an index into the list of frame textures, which have been
+             * created in such a way that their filenames indicate, in which directions they
+             * contain borders. i.e. bitmask = 0101 means a border should be drawn up and
+             * down (in terms of u,v space). Converted to a number, this bitmask is 5. So
+             * the texture at index 5 is used. That texture had "0101" in its filename to
+             * indicate this.
+             */
+            final int edgeBitmask = makeBitmask(glassState, side);
+            final Sprite sideSprite = this.frameTextures[edgeBitmask];
 
-        /*
-         * This needs some explanation: The bit-field contains 4-bits, one for each
-         * direction that a frame may be drawn. Converted to a number, the bit-field is
-         * then used as an index into the list of frame textures, which have been
-         * created in such a way that their filenames indicate, in which directions they
-         * contain borders. i.e. bitmask = 0101 means a border should be drawn up and
-         * down (in terms of u,v space). Converted to a number, this bitmask is 5. So
-         * the texture at index 5 is used. That texture had "0101" in its filename to
-         * indicate this.
-         */
-        final int edgeBitmask = makeBitmask(glassState, side);
-        final Sprite sideSprite = this.frameTextures[edgeBitmask];
-
-        if (sideSprite != null) {
-            quads.add(this.createQuad(side, corners, sideSprite, 0, 0));
+            if (sideSprite != null) {
+                this.emitQuad(emitter, side, corners, sideSprite, 0, 0);
+            }
         }
 
-        return quads;
+    }
+
+    @Override
+    public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
+
+    }
+
+    @Override
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction face, Random random) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public ModelTransformation getTransformation() {
+        return ModelTransformation.NONE;
     }
 
     @Override
     public boolean isSideLit() {
-        // TODO: Forge: Auto-generated method stub
-        return false;
+        return false; // Irrelvant because not used as item model
     }
 
     /**
@@ -204,65 +216,31 @@ class GlassBakedModel implements IDynamicBakedModel {
         return bitmask;
     }
 
-    private BakedQuad createQuad(Direction side, List<Vec3d> corners, Sprite sprite, float uOffset,
+    private void emitQuad(QuadEmitter emitter, Direction side, List<Vector3f> corners, Sprite sprite, float uOffset,
                                  float vOffset) {
-        return this.createQuad(side, corners.get(0), corners.get(1), corners.get(2), corners.get(3), sprite, uOffset,
+        this.emitQuad(emitter, side, corners.get(0), corners.get(1), corners.get(2), corners.get(3), sprite, uOffset,
                 vOffset);
     }
 
-    private BakedQuad createQuad(Direction side, Vec3d c1, Vec3d c2, Vec3d c3, Vec3d c4, Sprite sprite,
+    private void emitQuad(QuadEmitter emitter, Direction side, Vector3f c1, Vector3f c2, Vector3f c3, Vector3f c4, Sprite sprite,
             float uOffset, float vOffset) {
-        Vec3d normal = new Vec3d(side.getVector());
 
         // Apply the u,v shift.
         // This mirrors the logic from OffsetIcon from 1.7
-        float u1 = MathHelper.clamp(0 - uOffset, 0, 16);
-        float u2 = MathHelper.clamp(16 - uOffset, 0, 16);
-        float v1 = MathHelper.clamp(0 - vOffset, 0, 16);
-        float v2 = MathHelper.clamp(16 - vOffset, 0, 16);
+        float u1 = sprite.getFrameU(MathHelper.clamp(0 - uOffset, 0, 16));
+        float u2 = sprite.getFrameU(MathHelper.clamp(16 - uOffset, 0, 16));
+        float v1 = sprite.getFrameV(MathHelper.clamp(0 - vOffset, 0, 16));
+        float v2 = sprite.getFrameV(MathHelper.clamp(16 - vOffset, 0, 16));
 
-        BakedQuadBuilder builder = new BakedQuadBuilder(sprite);
-        builder.setQuadOrientation(side);
-        this.putVertex(builder, normal, c1.x, c1.y, c1.z, sprite, u1, v1);
-        this.putVertex(builder, normal, c2.x, c2.y, c2.z, sprite, u1, v2);
-        this.putVertex(builder, normal, c3.x, c3.y, c3.z, sprite, u2, v2);
-        this.putVertex(builder, normal, c4.x, c4.y, c4.z, sprite, u2, v1);
-        return builder.build();
-    }
-
-    /*
-     * This method is as complicated as it is, because the order in which we push
-     * data into the vertexbuffer actually has to be precisely the order in which
-     * the vertex elements had been declared in the vertex format.
-     */
-    private void putVertex(BakedQuadBuilder builder, Vec3d normal, double x, double y, double z,
-                           Sprite sprite, float u, float v) {
-        VertexFormat vertexFormat = builder.getVertexFormat();
-        for (int e = 0; e < vertexFormat.getElements().size(); e++) {
-            VertexFormatElement el = vertexFormat.getElements().get(e);
-            switch (el.getType()) {
-                case POSITION:
-                    builder.put(e, (float) x, (float) y, (float) z, 1.0f);
-                    break;
-                case COLOR:
-                    builder.put(e, 1.0f, 1.0f, 1.0f, 1.0f);
-                    break;
-                case NORMAL:
-                    builder.put(e, (float) normal.x, (float) normal.y, (float) normal.z, 0f);
-                    break;
-                case UV:
-                    if (el.getIndex() == 0) {
-                        u = sprite.getFrameU(u);
-                        v = sprite.getFrameV(v);
-                        builder.put(e, u, v, 0f, 1f);
-                        break;
-                    }
-                    // Important: Fall through for getIndex() != 0
-                default:
-                    builder.put(e);
-                    break;
-            }
-        }
+        emitter.nominalFace(side);
+        emitter.cullFace(side);
+        emitter.material(material);
+        emitter.pos(0, c1).sprite(0, 0, u1, v1);
+        emitter.pos(1, c2).sprite(1, 0, u1, v2);
+        emitter.pos(2, c3).sprite(2, 0, u2, v2);
+        emitter.pos(3, c4).sprite(3, 0, u2, v1);
+        emitter.spriteColor(0, -1, -1, -1, -1);
+        emitter.emit();
     }
 
     @Override
@@ -304,10 +282,7 @@ class GlassBakedModel implements IDynamicBakedModel {
     }
 
     @Nonnull
-    @Override
-    public IModelData getModelData(@Nonnull BlockRenderView world, @Nonnull BlockPos pos, @Nonnull BlockState state,
-                                   @Nonnull IModelData tileData) {
-
+    private static GlassState getGlassState(BlockRenderView world, BlockPos pos) {
         EnumSet<Direction> flushWith = EnumSet.noneOf(Direction.class);
         // Test every direction for another glass block
         for (Direction facing : Direction.values()) {
@@ -316,9 +291,7 @@ class GlassBakedModel implements IDynamicBakedModel {
             }
         }
 
-        GlassState glassState = new GlassState(pos.getX(), pos.getY(), pos.getZ(), flushWith);
-        return new ModelDataMap.Builder().withInitial(GLASS_STATE, glassState).build();
-
+        return new GlassState(pos.getX(), pos.getY(), pos.getZ(), flushWith);
     }
 
     private static boolean isGlassBlock(BlockView world, BlockPos pos, Direction facing) {

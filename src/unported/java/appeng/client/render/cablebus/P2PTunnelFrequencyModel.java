@@ -21,7 +21,7 @@ import net.minecraftforge.client.model.geometry.IModelGeometry;
 
 import appeng.core.AppEng;
 
-public class P2PTunnelFrequencyModel implements IModelGeometry<P2PTunnelFrequencyModel> {
+public class P2PTunnelFrequencyModel implements BasicUnbakedModel {
     private static final SpriteIdentifier TEXTURE = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier(AppEng.MOD_ID, "parts/p2p_tunnel_frequency"));
 

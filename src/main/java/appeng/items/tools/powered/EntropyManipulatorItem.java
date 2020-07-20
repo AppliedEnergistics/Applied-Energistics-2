@@ -219,7 +219,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             if (state.getMaterial() == Material.LAVA || state.getMaterial() == Material.WATER) {
                 if (Platform.hasPermissions(new DimensionalCoord(w, pos), p)) {
                     ItemUsageContext context = new ItemUsageContext(p, hand, target);
-                    this.onItemUse(context);
+                    this.useOnBlock(context);
                 }
             }
         }
@@ -228,7 +228,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     }
 
     @Override
-    public ActionResult onItemUse(ItemUsageContext context) {
+    public ActionResult useOnBlock(ItemUsageContext context) {
         World w = context.getWorld();
         ItemStack item = context.getStack();
         BlockPos pos = context.getBlockPos();

@@ -18,30 +18,42 @@
 
 package appeng.client.render.crafting;
 
+import appeng.tile.crafting.CraftingCubeModelData;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
 
 
+import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.client.render.cablebus.CubeBuilder;
 
 /**
- * A simple crafting unit model that uses an un-lit texture for the inner block.
+ * Crafting cube baked model that adds a full-bright light texture on top of a
+ * normal base texture onto the inner cube. The light texture is only drawn
+ * fullbright if the multiblock is currently powered.
  */
-class UnitBakedModel extends CraftingCubeBakedModel {
+class LightBakedModel extends CraftingCubeBakedModel {
 
-    private final Sprite unitTexture;
+    private final Sprite baseTexture;
 
-    UnitBakedModel(Sprite ringCorner, Sprite ringHor, Sprite ringVer,
-                   Sprite unitTexture) {
+    private final Sprite lightTexture;
+
+    LightBakedModel(Sprite ringCorner, Sprite ringHor, Sprite ringVer,
+                    Sprite baseTexture, Sprite lightTexture) {
         super(ringCorner, ringHor, ringVer);
-        this.unitTexture = unitTexture;
+        this.baseTexture = baseTexture;
+        this.lightTexture = lightTexture;
     }
 
     @Override
-    protected void addInnerCube(Direction facing, BlockState state, IModelData modelData, CubeBuilder builder, float x1,
-            float y1, float z1, float x2, float y2, float z2) {
-        builder.setTexture(this.unitTexture);
+    protected void addInnerCube(Direction facing, BlockState state, CraftingCubeModelData modelData, CubeBuilder builder, float x1,
+                                float y1, float z1, float x2, float y2, float z2) {
+        builder.setTexture(this.baseTexture);
+        builder.addCube(x1, y1, z1, x2, y2, z2);
+
+        boolean powered = state.get(AbstractCraftingUnitBlock.POWERED);
+        builder.setRenderFullBright(powered);
+        builder.setTexture(this.lightTexture);
         builder.addCube(x1, y1, z1, x2, y2, z2);
     }
 }

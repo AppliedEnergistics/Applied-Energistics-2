@@ -1,34 +1,38 @@
 
 package appeng.block.qnb;
 
-import java.util.Collections;
+import appeng.client.render.cablebus.CubeBuilder;
+import appeng.core.Api;
+import appeng.core.AppEng;
+import com.google.common.collect.ImmutableList;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.render.model.json.ModelOverrideList;
+import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.util.SpriteIdentifier;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.BlockRenderView;
+
+import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
-import javax.annotation.Nullable;
-
-import com.google.common.collect.ImmutableList;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
-
-import appeng.client.render.cablebus.CubeBuilder;
-import appeng.core.Api;
-import appeng.core.AppEng;
-import appeng.tile.qnb.QuantumBridgeBlockEntity;
-
-class QnbFormedBakedModel implements IDynamicBakedModel {
+class QnbFormedBakedModel implements BakedModel, FabricBakedModel {
 
     private static final SpriteIdentifier TEXTURE_LINK = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier(AppEng.MOD_ID, "block/quantum_link"));
@@ -75,23 +79,46 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand,
-            IModelData modelData) {
-        QnbFormedState formedState = modelData.getData(QuantumBridgeBlockEntity.FORMED_STATE);
-
-        if (formedState == null) {
-            return this.baseModel.getQuads(state, side, rand);
-        }
-
-        if (side != null) {
-            return Collections.emptyList();
-        }
-
-        return this.getQuads(formedState, state);
+    public boolean isVanillaAdapter() {
+        return false;
     }
 
-    private List<BakedQuad> getQuads(QnbFormedState formedState, BlockState state) {
-        CubeBuilder builder = new CubeBuilder();
+    @Override
+    public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
+
+    }
+
+    @Override
+    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+        QnbFormedState formedState = getState(blockView, pos);
+
+        if (formedState == null) {
+            context.fallbackConsumer().accept(this.baseModel);
+            return;
+        }
+
+        buildQuads(context.getEmitter(), formedState, state);
+
+    }
+
+    @Override
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction face, Random random) {
+        return baseModel.getQuads(state, face, random);
+    }
+
+    private static QnbFormedState getState(BlockRenderView view, BlockPos pos) {
+        if (!(view instanceof RenderAttachedBlockView)) {
+            return null;
+        }
+        Object attachment = ((RenderAttachedBlockView) view).getBlockEntityRenderAttachment(pos);
+        if (attachment instanceof QnbFormedState) {
+            return (QnbFormedState) attachment;
+        }
+        return null;
+    }
+
+    private void buildQuads(QuadEmitter emitter, QnbFormedState formedState, BlockState state) {
+        CubeBuilder builder = new CubeBuilder(emitter);
 
         if (state.getBlock() == this.linkBlock) {
             Set<Direction> sides = formedState.getAdjacentQuantumBridges();
@@ -155,8 +182,6 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
                 }
             }
         }
-
-        return builder.getOutput();
     }
 
     private void renderCableAt(CubeBuilder builder, float thickness, Sprite texture, float pull,
@@ -186,6 +211,11 @@ class QnbFormedBakedModel implements IDynamicBakedModel {
         if (connections.contains(Direction.UP)) {
             builder.addCube(8 - thickness, 8 + thickness + pull, 8 - thickness, 8 + thickness, 16, 8 + thickness);
         }
+    }
+
+    @Override
+    public ModelTransformation getTransformation() {
+        return ModelTransformation.NONE;
     }
 
     @Override

@@ -20,6 +20,7 @@ package appeng.block;
 
 import java.util.List;
 
+import appeng.block.networking.WirelessBlock;
 import net.fabricmc.api.EnvType;
 import net.minecraft.block.Block;
 import net.minecraft.client.item.TooltipContext;
@@ -84,7 +85,7 @@ public class AEBaseBlockItem extends BlockItem {
                 } else {
                     forward = Direction.UP;
                 }
-            } else if (/* FIXME FABRIC this.blockType instanceof WirelessBlock || */ this.blockType instanceof SkyCompassBlock) {
+            } else if (this.blockType instanceof WirelessBlock || this.blockType instanceof SkyCompassBlock) {
                 forward = side;
                 if (forward == Direction.UP || forward == Direction.DOWN) {
                     up = Direction.SOUTH;

@@ -134,7 +134,7 @@ public class UVLModelLoader implements IModelLoader<UVLModelLoader.UVLModelWrapp
         }
     }
 
-    public static class UVLModelWrapper implements IModelGeometry<UVLModelWrapper> {
+    public static class UVLModelWrapper implements BasicUnbakedModel {
         private final BlockModel parent;
 
         public UVLModelWrapper(BlockModel parent) {
