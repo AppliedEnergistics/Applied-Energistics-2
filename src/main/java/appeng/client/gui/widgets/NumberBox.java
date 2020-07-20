@@ -18,35 +18,131 @@
 
 package appeng.client.gui.widgets;
 
+import java.util.function.LongConsumer;
+
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 
-// FIXME: Fix this piece of crap (i.e. onChange listener)
 public class NumberBox extends TextFieldWidget {
 
-    private final Class type;
+    private final LongConsumer changeListener;
+
+    private long lastValue;
+
+    private long minValue = 0;
+
+    private long maxValue;
 
     public NumberBox(final FontRenderer fontRenderer, final int x, final int y, final int width, final int height,
-            final Class type) {
+            final Class<?> type, LongConsumer changeListener) {
         super(fontRenderer, x, y, width, height, "0");
-        this.type = type;
+        this.setText("0");
+        setResponder(this::onTextChanged);
+        this.lastValue = 0;
+        this.changeListener = changeListener;
+        if (type == int.class || type == Integer.class) {
+            maxValue = Integer.MAX_VALUE;
+        } else {
+            maxValue = Long.MAX_VALUE;
+        }
+    }
+
+    private void onTextChanged(String text) {
+        if (text.isEmpty()) {
+            setText("0"); // Will call onTextChanged recursively
+            return;
+        }
+
+        boolean canBeNegative = canBeNegative();
+        if (canBeNegative && text.equals("-")) {
+            // Allow this as a special case to make typing in a negative number easier
+            return;
+        }
+
+        StringBuilder sanitized = new StringBuilder(text);
+        boolean encounteredNonZero = false;
+        for (int i = 0; i < sanitized.length(); i++) {
+            char ch = sanitized.charAt(i);
+            if (canBeNegative && i == 0 && ch == '-') {
+                continue; // Allow leading minus sign
+            }
+            if (ch >= '1' && ch <= '9') {
+                encounteredNonZero = true;
+                continue;
+            }
+            if (ch != '0' || !encounteredNonZero) {
+                sanitized.deleteCharAt(i--);
+            }
+        }
+        if (sanitized.length() == 0) {
+            sanitized.append('0');
+        }
+        String sanitizedStr = sanitized.toString();
+        if (!sanitizedStr.equals(text)) {
+            setText(sanitizedStr); // Will call onTextChanged recursively
+            return;
+        }
+        if (getValue() < minValue) {
+            setText(String.valueOf(minValue)); // Will call onTextChanged recursively
+            return;
+        }
+        if (getValue() > maxValue) {
+            setText(String.valueOf(maxValue)); // Will call onTextChanged recursively
+            return;
+        }
+
+        reportChange();
+    }
+
+    private void reportChange() {
+        long value = getValue();
+        if (value != lastValue) {
+            lastValue = value;
+            changeListener.accept(value);
+        }
+    }
+
+    public void setValue(long value, boolean skipNotify) {
+        // This check avoid changing the cursor position needlessly
+        if (value == this.getValue()) {
+            return;
+        }
+
+        if (skipNotify) {
+            lastValue = value;
+        }
+        setText(String.valueOf(value));
+    }
+
+    public long getValue() {
+        if (getText().equals("-") && canBeNegative()) {
+            return lastValue; // Allow this as a special case to type in a negative number more easily
+        }
+
+        return Long.parseLong(getText());
     }
 
     @Override
-    public void writeText(final String selectedText) {
-        final String original = this.getText();
-        super.writeText(selectedText);
-
-        try {
-            if (this.type == int.class || this.type == Integer.class) {
-                Integer.parseInt(this.getText());
-            } else if (this.type == long.class || this.type == Long.class) {
-                Long.parseLong(this.getText());
-            } else if (this.type == double.class || this.type == Double.class) {
-                Double.parseDouble(this.getText());
-            }
-        } catch (final NumberFormatException e) {
-            this.setText(original);
+    public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
+        if (super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_)) {
+            return true;
         }
+
+        // Swallow key presses for numbers because they would otherwise trigger the
+        // hotbar swapping unintentionally
+        return isFocused() && p_keyPressed_1_ >= '0' && p_keyPressed_1_ <= '9';
     }
+
+    public void setMinValue(long minValue) {
+        this.minValue = minValue;
+    }
+
+    public long getMinValue() {
+        return minValue;
+    }
+
+    private boolean canBeNegative() {
+        return minValue < 0;
+    }
+
 }

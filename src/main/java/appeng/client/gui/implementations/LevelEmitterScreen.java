@@ -18,39 +18,27 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.LevelType;
+import appeng.api.config.PowerUnits;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
 import appeng.api.config.YesNo;
-import appeng.client.gui.widgets.NumberBox;
+import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.container.implementations.LevelEmitterContainer;
-import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 
 public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer> {
 
-    private NumberBox level;
-
-    private Button plus1;
-    private Button plus10;
-    private Button plus100;
-    private Button plus1000;
-    private Button minus1;
-    private Button minus10;
-    private Button minus100;
-    private Button minus1000;
-
+    private NumberEntryWidget level;
     private SettingToggleButton<LevelType> levelMode;
     private SettingToggleButton<YesNo> craftingMode;
 
@@ -62,14 +50,15 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
     public void init() {
         super.init();
 
-        this.level = new NumberBox(this.font, this.guiLeft + 24, this.guiTop + 43, 79, this.font.FONT_HEIGHT,
-                Long.class);
-        this.level.setEnableBackgroundDrawing(false);
-        this.level.setMaxStringLength(16);
-        this.level.setTextColor(0xFFFFFF);
-        this.level.setVisible(true);
-        this.level.setFocused2(true);
+        this.level = new NumberEntryWidget(this, 20, 17, 138, 62, NumberEntryType.LEVEL_ITEM_COUNT,
+                this::onLevelChange);
+        this.level.setTextFieldBounds(25, 44, 75);
+        this.level.addButtons(children::add, this::addButton);
         container.setTextField(this.level);
+    }
+
+    private void onLevelChange(long level) {
+        NetworkHandler.instance().sendToServer(new ConfigValuePacket("LevelEmitter.Value", String.valueOf(level)));
     }
 
     @Override
@@ -82,29 +71,6 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
                 FuzzyMode.IGNORE_ALL);
         this.craftingMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 48,
                 Settings.CRAFT_VIA_REDSTONE, YesNo.NO);
-
-        final int a = AEConfig.instance().levelByStackAmounts(0);
-        final int b = AEConfig.instance().levelByStackAmounts(1);
-        final int c = AEConfig.instance().levelByStackAmounts(2);
-        final int d = AEConfig.instance().levelByStackAmounts(3);
-
-        this.addButton(this.plus1 = new Button(this.guiLeft + 20, this.guiTop + 17, 22, 20, "+" + a, btn -> addQty(a)));
-        this.addButton(
-                this.plus10 = new Button(this.guiLeft + 48, this.guiTop + 17, 28, 20, "+" + b, btn -> addQty(b)));
-        this.addButton(
-                this.plus100 = new Button(this.guiLeft + 82, this.guiTop + 17, 32, 20, "+" + c, btn -> addQty(c)));
-        this.addButton(
-                this.plus1000 = new Button(this.guiLeft + 120, this.guiTop + 17, 38, 20, "+" + d, btn -> addQty(d)));
-
-        this.addButton(
-                this.minus1 = new Button(this.guiLeft + 20, this.guiTop + 59, 22, 20, "-" + a, btn -> addQty(-a)));
-        this.addButton(
-                this.minus10 = new Button(this.guiLeft + 48, this.guiTop + 59, 28, 20, "-" + b, btn -> addQty(-b)));
-        this.addButton(
-                this.minus100 = new Button(this.guiLeft + 82, this.guiTop + 59, 32, 20, "-" + c, btn -> addQty(-c)));
-        this.addButton(
-                this.minus1000 = new Button(this.guiLeft + 120, this.guiTop + 59, 38, 20, "-" + d, btn -> addQty(-d)));
-
         this.addButton(this.levelMode);
         this.addButton(this.redstoneMode);
         this.addButton(this.craftingMode);
@@ -115,15 +81,7 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
         final boolean notCraftingMode = this.bc.getInstalledUpgrades(Upgrades.CRAFTING) == 0;
 
         // configure enabled status...
-        this.level.setEnabled(notCraftingMode);
-        this.plus1.active = notCraftingMode;
-        this.plus10.active = notCraftingMode;
-        this.plus100.active = notCraftingMode;
-        this.plus1000.active = notCraftingMode;
-        this.minus1.active = notCraftingMode;
-        this.minus10.active = notCraftingMode;
-        this.minus100.active = notCraftingMode;
-        this.minus1000.active = notCraftingMode;
+        this.level.setActive(notCraftingMode);
         this.levelMode.active = notCraftingMode;
         this.redstoneMode.active = notCraftingMode;
 
@@ -134,7 +92,14 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
         }
 
         if (this.levelMode != null) {
-            this.levelMode.set(((LevelEmitterContainer) this.cvb).getLevelMode());
+            LevelType currentLevelMode = ((LevelEmitterContainer) this.cvb).getLevelMode();
+            this.levelMode.set(currentLevelMode);
+
+            if (notCraftingMode) {
+                if (currentLevelMode == LevelType.ENERGY_LEVEL) {
+                    this.font.drawString(PowerUnits.AE.textComponent().getString(), 110, 44, COLOR_DARK_GRAY);
+                }
+            }
         }
     }
 
@@ -160,70 +125,4 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
         return GuiText.LevelEmitter;
     }
 
-    private void addQty(final long i) {
-        try {
-            String Out = this.level.getText();
-
-            boolean Fixed = false;
-            while (Out.startsWith("0") && Out.length() > 1) {
-                Out = Out.substring(1);
-                Fixed = true;
-            }
-
-            if (Fixed) {
-                this.level.setText(Out);
-            }
-
-            if (Out.isEmpty()) {
-                Out = "0";
-            }
-
-            long result = Long.parseLong(Out);
-            result += i;
-            if (result < 0) {
-                result = 0;
-            }
-
-            this.level.setText(Out = Long.toString(result));
-
-            NetworkHandler.instance().sendToServer(new ConfigValuePacket("LevelEmitter.Value", Out));
-        } catch (final NumberFormatException e) {
-            // nope..
-            this.level.setText("0");
-        }
-    }
-
-    @Override
-    public boolean charTyped(char character, int key) {
-        // Forward entered characters to the number-text-field
-        return level.charTyped(character, key);
-    }
-
-    @Override
-    public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
-        if (!this.checkHotbarKeys(InputMappings.getInputByCode(keyCode, scanCode))) {
-            if (keyCode == 211 || keyCode == 205 || keyCode == 203 || keyCode == 14) {
-                String Out = this.level.getText();
-
-                boolean Fixed = false;
-                while (Out.startsWith("0") && Out.length() > 1) {
-                    Out = Out.substring(1);
-                    Fixed = true;
-                }
-
-                if (Fixed) {
-                    this.level.setText(Out);
-                }
-
-                if (Out.isEmpty()) {
-                    Out = "0";
-                }
-
-                NetworkHandler.instance().sendToServer(new ConfigValuePacket("LevelEmitter.Value", Out));
-                return true;
-            }
-        }
-
-        return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);
-    }
 }

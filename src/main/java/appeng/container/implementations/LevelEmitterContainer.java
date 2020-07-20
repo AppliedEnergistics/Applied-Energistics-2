@@ -18,7 +18,6 @@
 
 package appeng.container.implementations;
 
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -33,6 +32,7 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
+import appeng.client.gui.implementations.NumberEntryWidget;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.FakeTypeOnlySlot;
@@ -58,7 +58,7 @@ public class LevelEmitterContainer extends UpgradeableContainer {
     private final LevelEmitterPart lvlEmitter;
 
     @OnlyIn(Dist.CLIENT)
-    private TextFieldWidget textField;
+    private NumberEntryWidget textField;
     @GuiSync(2)
     public LevelType lvType;
     @GuiSync(3)
@@ -72,9 +72,9 @@ public class LevelEmitterContainer extends UpgradeableContainer {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void setTextField(final TextFieldWidget level) {
+    public void setTextField(final NumberEntryWidget level) {
         this.textField = level;
-        this.textField.setText(String.valueOf(this.EmitterValue));
+        this.textField.setValue(this.EmitterValue);
     }
 
     public void setLevel(final long l, final PlayerEntity player) {
@@ -104,7 +104,7 @@ public class LevelEmitterContainer extends UpgradeableContainer {
 
         final IItemHandler inv = this.getUpgradeable().getInventoryByName("config");
         final int y = 40;
-        final int x = 80 + 44;
+        final int x = 80 + 57;
         this.addSlot(new FakeTypeOnlySlot(inv, 0, x, y));
     }
 
@@ -140,7 +140,7 @@ public class LevelEmitterContainer extends UpgradeableContainer {
     public void onUpdate(final String field, final Object oldValue, final Object newValue) {
         if (field.equals("EmitterValue")) {
             if (this.textField != null) {
-                this.textField.setText(String.valueOf(this.EmitterValue));
+                this.textField.setValue(this.EmitterValue);
             }
         }
     }
