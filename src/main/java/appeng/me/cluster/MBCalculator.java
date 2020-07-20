@@ -25,17 +25,21 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
 import appeng.util.Platform;
 
-public abstract class MBCalculator {
+public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TCluster extends IAECluster> {
 
+    /**
+     * To avoid recursive cluster rebuilds, we use a global field to prevent this
+     * from happening. This is set to the cluster that is currently causing a
+     * Multiblock modification.
+     */
     private static WeakReference<IAECluster> modificationInProgress = new WeakReference<>(null);
 
-    private final IAEMultiBlock target;
+    protected final TTile target;
 
-    public MBCalculator(final IAEMultiBlock t) {
+    public MBCalculator(final TTile t) {
         this.target = t;
     }
 
@@ -54,10 +58,10 @@ public abstract class MBCalculator {
         return modificationInProgress.get() != null;
     }
 
-    public void updateMultiblockAfterNeighborUpdate(final World world, final WorldCoord loc, BlockPos changedPos) {
+    public void updateMultiblockAfterNeighborUpdate(final World world, final BlockPos loc, BlockPos changedPos) {
         boolean recheck;
 
-        IAECluster cluster = target.getCluster();
+        TCluster cluster = target.getCluster();
         if (cluster != null) {
             if (isWithinBounds(changedPos, cluster.getBoundsMin(), cluster.getBoundsMax())) {
                 // If the location is part of the current multiblock, always re-check
@@ -69,9 +73,8 @@ public abstract class MBCalculator {
             }
         } else {
             // Always recheck if the tile is not part of a cluster, because the adjacent
-            // block could have
-            // previously been a valid tile, but in a wrong placement, or the other way
-            // around.
+            // block could have previously been a valid tile, but in a wrong placement,
+            // or the other way around.
             recheck = true;
         }
 
@@ -80,7 +83,7 @@ public abstract class MBCalculator {
         }
     }
 
-    public void calculateMultiblock(final World world, final WorldCoord loc) {
+    public void calculateMultiblock(final World world, final BlockPos loc) {
         if (Platform.isClient() || isModificationInProgress()) {
             return;
         }
@@ -92,34 +95,31 @@ public abstract class MBCalculator {
         }
 
         try {
-            final WorldCoord min = loc.copy();
-            final WorldCoord max = loc.copy();
+            final BlockPos.Mutable min = new BlockPos.Mutable(loc);
+            final BlockPos.Mutable max = new BlockPos.Mutable(loc);
 
             // find size of MB structure...
-            while (this.isValidTileAt(world, min.x - 1, min.y, min.z)) {
-                min.x--;
+            while (this.isValidTileAt(world, min.getX() - 1, min.getY(), min.getZ())) {
+                min.setX(min.getX() - 1);
             }
-            while (this.isValidTileAt(world, min.x, min.y - 1, min.z)) {
-                min.y--;
+            while (this.isValidTileAt(world, min.getX(), min.getY() - 1, min.getZ())) {
+                min.setY(min.getY() - 1);
             }
-            while (this.isValidTileAt(world, min.x, min.y, min.z - 1)) {
-                min.z--;
+            while (this.isValidTileAt(world, min.getX(), min.getY(), min.getZ() - 1)) {
+                min.setZ(min.getZ() - 1);
             }
-            while (this.isValidTileAt(world, max.x + 1, max.y, max.z)) {
-                max.x++;
+            while (this.isValidTileAt(world, max.getX() + 1, max.getY(), max.getZ())) {
+                max.setX(max.getX() + 1);
             }
-            while (this.isValidTileAt(world, max.x, max.y + 1, max.z)) {
-                max.y++;
+            while (this.isValidTileAt(world, max.getX(), max.getY() + 1, max.getZ())) {
+                max.setY(max.getY() + 1);
             }
-            while (this.isValidTileAt(world, max.x, max.y, max.z + 1)) {
-                max.z++;
+            while (this.isValidTileAt(world, max.getX(), max.getY(), max.getZ() + 1)) {
+                max.setZ(max.getZ() + 1);
             }
 
             if (this.checkMultiblockScale(min, max)) {
                 if (this.verifyUnownedRegion(world, min, max)) {
-                    IAECluster c = this.createCluster(world, min, max);
-                    setModificationInProgress(c);
-
                     try {
                         if (!this.verifyInternalStructure(world, min, max)) {
                             this.disconnect();
@@ -131,16 +131,19 @@ public abstract class MBCalculator {
                     }
 
                     boolean updateGrid = false;
-                    final IAECluster cluster = this.target.getCluster();
-                    if (cluster == null) {
-                        this.updateTiles(c, world, min, max);
+                    TCluster cluster = this.target.getCluster();
+                    if (cluster == null || !cluster.getBoundsMin().equals(min) || !cluster.getBoundsMax().equals(max)) {
+                        cluster = this.createCluster(world, min, max);
+                        setModificationInProgress(cluster);
+                        // NOTE: The following will break existing clusters within the bounds
+                        this.updateTiles(cluster, world, min, max);
 
                         updateGrid = true;
                     } else {
-                        c = cluster;
+                        setModificationInProgress(cluster);
                     }
 
-                    c.updateStatus(updateGrid);
+                    cluster.updateStatus(updateGrid);
                     return;
                 }
             }
@@ -173,11 +176,12 @@ public abstract class MBCalculator {
      *
      * @return true if structure has correct dimensions or size
      */
-    public abstract boolean checkMultiblockScale(WorldCoord min, WorldCoord max);
+    public abstract boolean checkMultiblockScale(BlockPos min, BlockPos max);
 
-    private boolean verifyUnownedRegion(final World w, final WorldCoord min, final WorldCoord max) {
+    private boolean verifyUnownedRegion(final World w, final BlockPos min, final BlockPos max) {
         for (final AEPartLocation side : AEPartLocation.SIDE_LOCATIONS) {
-            if (this.verifyUnownedRegionInner(w, min.x, min.y, min.z, max.x, max.y, max.z, side)) {
+            if (this.verifyUnownedRegionInner(w, min.getX(), min.getY(), min.getZ(), max.getX(), max.getY(), max.getZ(),
+                    side)) {
                 return false;
             }
         }
@@ -194,14 +198,16 @@ public abstract class MBCalculator {
      *
      * @return created cluster
      */
-    public abstract IAECluster createCluster(World w, WorldCoord min, WorldCoord max);
+    public abstract TCluster createCluster(World w, BlockPos min, BlockPos max);
 
-    public abstract boolean verifyInternalStructure(World world, WorldCoord min, WorldCoord max);
+    public abstract boolean verifyInternalStructure(World world, BlockPos min, BlockPos max);
 
     /**
      * disassembles the multi-block.
      */
-    public abstract void disconnect();
+    public void disconnect() {
+        this.target.disconnect(true);
+    }
 
     /**
      * configure the multi-block tiles, most of the important stuff is in here.
@@ -211,7 +217,7 @@ public abstract class MBCalculator {
      * @param min min world coord
      * @param max max world coord
      */
-    public abstract void updateTiles(IAECluster c, World w, WorldCoord min, WorldCoord max);
+    public abstract void updateTiles(TCluster c, World w, BlockPos min, BlockPos max);
 
     /**
      * check if the block entities are correct for the structure.
@@ -253,14 +259,10 @@ public abstract class MBCalculator {
                 return false;
         }
 
-        for (int x = minX; x <= maxX; x++) {
-            for (int y = minY; y <= maxY; y++) {
-                for (int z = minZ; z <= maxZ; z++) {
-                    final BlockEntity te = w.getBlockEntity(new BlockPos(x, y, z));
-                    if (this.isValidTile(te)) {
-                        return true;
-                    }
-                }
+        for (BlockPos p : BlockPos.getAllInBoxMutable(minX, minY, minZ, maxX, maxY, maxZ)) {
+            final BlockEntity te = w.getBlockEntity(p);
+            if (this.isValidTile(te)) {
+                return true;
             }
         }
 

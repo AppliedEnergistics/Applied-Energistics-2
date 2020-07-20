@@ -21,6 +21,7 @@ package appeng.core;
 import appeng.api.config.*;
 import appeng.api.features.AEFeature;
 import appeng.core.config.*;
+import appeng.client.gui.NumberEntryType;
 import appeng.core.settings.TickRates;
 import appeng.util.EnumCycler;
 import net.minecraft.world.dimension.DimensionType;
@@ -249,20 +250,23 @@ public final class AEConfig {
         clientConfig.selectedPowerUnit.set(this.selectedPowerUnit);
     }
 
-    public int craftItemsByStackAmounts(final int i) {
-        return this.craftByStacks[i];
-    }
-
-    public int priorityByStacksAmounts(final int i) {
-        return this.priorityByStacks[i];
-    }
-
-    public int levelByStackAmounts(final int i) {
-        return this.levelByStacks[i];
-    }
-
-    public int levelByMillyBuckets(final int i) {
-        return this.levelByMillibuckets[i];
+    /**
+     * Returns an array with the quantity-steps for the +/- buttons in number entry
+     * dialogs of the given type. Guaranteed to have 4 entries.
+     */
+    public int[] getNumberEntrySteps(NumberEntryType type) {
+        switch (type) {
+            case CRAFT_ITEM_COUNT:
+                return craftByStacks;
+            case PRIORITY:
+                return priorityByStacks;
+            case LEVEL_ITEM_COUNT:
+                return levelByStacks;
+            case LEVEL_FLUID_VOLUME:
+                return levelByMillibuckets;
+            default:
+                throw new IllegalArgumentException("Unknown number entry: " + type);
+        }
     }
 
     public PowerUnits getSelectedPowerUnit() {

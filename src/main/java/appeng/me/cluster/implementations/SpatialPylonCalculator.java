@@ -22,45 +22,36 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import appeng.api.util.WorldCoord;
-import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
 import appeng.tile.spatial.SpatialPylonBlockEntity;
 
-public class SpatialPylonCalculator extends MBCalculator {
+public class SpatialPylonCalculator extends MBCalculator<SpatialPylonTileEntity, SpatialPylonCluster> {
 
-    private final SpatialPylonBlockEntity tqb;
-
-    public SpatialPylonCalculator(final IAEMultiBlock t) {
+    public SpatialPylonCalculator(final SpatialPylonTileEntity t) {
         super(t);
-        this.tqb = (SpatialPylonBlockEntity) t;
     }
 
     @Override
-    public boolean checkMultiblockScale(final WorldCoord min, final WorldCoord max) {
-        return (min.x == max.x && min.y == max.y && min.z != max.z)
-                || (min.x == max.x && min.y != max.y && min.z == max.z)
-                || (min.x != max.x && min.y == max.y && min.z == max.z);
+    public boolean checkMultiblockScale(final BlockPos min, final BlockPos max) {
+        return (min.getX() == max.getX() && min.getY() == max.getY() && min.getZ() != max.getZ())
+                || (min.getX() == max.getX() && min.getY() != max.getY() && min.getZ() == max.getZ())
+                || (min.getX() != max.getX() && min.getY() == max.getY() && min.getZ() == max.getZ());
     }
 
     @Override
-    public IAECluster createCluster(final World w, final WorldCoord min, final WorldCoord max) {
-        return new SpatialPylonCluster(w, min.getBlockPos(), max.getBlockPos());
+    public SpatialPylonCluster createCluster(final World w, final BlockPos min, final BlockPos max) {
+        return new SpatialPylonCluster(w, min, max);
     }
 
     @Override
-    public boolean verifyInternalStructure(final World w, final WorldCoord min, final WorldCoord max) {
+    public boolean verifyInternalStructure(final World w, final BlockPos min, final BlockPos max) {
 
-        for (int x = min.x; x <= max.x; x++) {
-            for (int y = min.y; y <= max.y; y++) {
-                for (int z = min.z; z <= max.z; z++) {
-                    final IAEMultiBlock te = (IAEMultiBlock) w.getBlockEntity(new BlockPos(x, y, z));
+        for (BlockPos p : BlockPos.getAllInBoxMutable(min, max)) {
+            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) w.getTileEntity(p);
 
-                    if (!te.isValid()) {
-                        return false;
-                    }
-                }
+            if (te == null || !te.isValid()) {
+                return false;
             }
         }
 
@@ -68,22 +59,11 @@ public class SpatialPylonCalculator extends MBCalculator {
     }
 
     @Override
-    public void disconnect() {
-        this.tqb.disconnect(true);
-    }
-
-    @Override
-    public void updateTiles(final IAECluster cl, final World w, final WorldCoord min, final WorldCoord max) {
-        final SpatialPylonCluster c = (SpatialPylonCluster) cl;
-
-        for (int x = min.x; x <= max.x; x++) {
-            for (int y = min.y; y <= max.y; y++) {
-                for (int z = min.z; z <= max.z; z++) {
-                    final SpatialPylonBlockEntity te = (SpatialPylonBlockEntity) w.getBlockEntity(new BlockPos(x, y, z));
-                    te.updateStatus(c);
-                    c.getLine().add((te));
-                }
-            }
+    public void updateTiles(final SpatialPylonCluster c, final World w, final BlockPos min, final BlockPos max) {
+        for (BlockPos p : BlockPos.getAllInBoxMutable(min, max)) {
+            final SpatialPylonTileEntity te = (SpatialPylonTileEntity) w.getTileEntity(p);
+            te.updateStatus(c);
+            c.getLine().add(te);
         }
     }
 

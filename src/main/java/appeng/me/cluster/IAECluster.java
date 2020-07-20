@@ -46,5 +46,5 @@ public interface IAECluster {
      */
     boolean isDestroyed();
 
-    Iterator<IGridHost> getTiles();
+    Iterator<? extends IGridHost> getTiles();
 }

@@ -29,32 +29,27 @@ import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkCraftingCpuChange;
 import appeng.api.util.AEPartLocation;
-import appeng.api.util.WorldCoord;
-import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
 import appeng.tile.crafting.CraftingBlockEntity;
 
-public class CraftingCPUCalculator extends MBCalculator {
+public class CraftingCPUCalculator extends MBCalculator<CraftingTileEntity, CraftingCPUCluster> {
 
-    private final CraftingBlockEntity tqb;
-
-    public CraftingCPUCalculator(final IAEMultiBlock t) {
+    public CraftingCPUCalculator(final CraftingTileEntity t) {
         super(t);
-        this.tqb = (CraftingBlockEntity) t;
     }
 
     @Override
-    public boolean checkMultiblockScale(final WorldCoord min, final WorldCoord max) {
-        if (max.x - min.x > 16) {
+    public boolean checkMultiblockScale(final BlockPos min, final BlockPos max) {
+        if (max.getX() - min.getX() > 16) {
             return false;
         }
 
-        if (max.y - min.y > 16) {
+        if (max.getY() - min.getY() > 16) {
             return false;
         }
 
-        if (max.z - min.z > 16) {
+        if (max.getZ() - min.getZ() > 16) {
             return false;
         }
 
@@ -62,27 +57,23 @@ public class CraftingCPUCalculator extends MBCalculator {
     }
 
     @Override
-    public IAECluster createCluster(final World w, final WorldCoord min, final WorldCoord max) {
+    public CraftingCPUCluster createCluster(final World w, final BlockPos min, final BlockPos max) {
         return new CraftingCPUCluster(min, max);
     }
 
     @Override
-    public boolean verifyInternalStructure(final World w, final WorldCoord min, final WorldCoord max) {
+    public boolean verifyInternalStructure(final World w, final BlockPos min, final BlockPos max) {
         boolean storage = false;
 
-        for (int x = min.x; x <= max.x; x++) {
-            for (int y = min.y; y <= max.y; y++) {
-                for (int z = min.z; z <= max.z; z++) {
-                    final IAEMultiBlock te = (IAEMultiBlock) w.getBlockEntity(new BlockPos(x, y, z));
+        for (BlockPos blockPos : BlockPos.getAllInBoxMutable(min, max)) {
+            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) w.getBlockEntity(blockPos);
 
-                    if (!te.isValid()) {
-                        return false;
-                    }
+            if (te == null || !te.isValid()) {
+                return false;
+            }
 
-                    if (!storage && te instanceof CraftingBlockEntity) {
-                        storage = ((CraftingBlockEntity) te).getStorageBytes() > 0;
-                    }
-                }
+            if (!storage && te instanceof CraftingBlockEntity) {
+                storage = ((CraftingBlockEntity) te).getStorageBytes() > 0;
             }
         }
 
@@ -90,27 +81,16 @@ public class CraftingCPUCalculator extends MBCalculator {
     }
 
     @Override
-    public void disconnect() {
-        this.tqb.disconnect(true);
-    }
-
-    @Override
-    public void updateTiles(final IAECluster cl, final World w, final WorldCoord min, final WorldCoord max) {
-        final CraftingCPUCluster c = (CraftingCPUCluster) cl;
-
-        for (int x = min.x; x <= max.x; x++) {
-            for (int y = min.y; y <= max.y; y++) {
-                for (int z = min.z; z <= max.z; z++) {
-                    final CraftingBlockEntity te = (CraftingBlockEntity) w.getBlockEntity(new BlockPos(x, y, z));
-                    te.updateStatus(c);
-                    c.addTile(te);
-                }
-            }
+    public void updateTiles(final CraftingCPUCluster c, final World w, final BlockPos min, final BlockPos max) {
+        for (BlockPos blockPos : BlockPos.getAllInBoxMutable(min, max)) {
+            final CraftingBlockEntity te = (CraftingBlockEntity) w.getBlockEntity(blockPos);
+            te.updateStatus(c);
+            c.addTile(te);
         }
 
         c.done();
 
-        final Iterator<IGridHost> i = c.getTiles();
+        final Iterator<CraftingTileEntity> i = c.getTiles();
         while (i.hasNext()) {
             final IGridHost gh = i.next();
             final IGridNode n = gh.getGridNode(AEPartLocation.INTERNAL);

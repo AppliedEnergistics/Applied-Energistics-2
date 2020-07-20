@@ -1,56 +1,7 @@
 {
-  "parent": "appliedenergistics2:item/part_base",
+  "parent": "appliedenergistics2:item/annihilation_plane",
   "textures": {
-    "sides": "appliedenergistics2:parts/plane_sides",
-    "plane": "appliedenergistics2:item/part/fluid_annihilation_plane"
-  },
-  "elements": [
-    {
-      "name": "Front",
-      "from": [1, 1, 8],
-      "to": [15, 15, 9],
-      "faces": {
-        "north": {
-          "texture": "plane"
-        },
-        "south": {
-          "texture": "sides"
-        },
-        "east": {
-          "texture": "sides"
-        },
-        "west": {
-          "texture": "sides"
-        },
-        "up": {
-          "texture": "sides"
-        },
-        "down": {
-          "texture": "sides"
-        }
-      }
-    },
-    {
-      "name": "Back",
-      "from": [5, 5, 9],
-      "to": [11, 11, 10],
-      "faces": {
-        "east": {
-          "texture": "sides"
-        },
-        "south": {
-          "texture": "sides"
-        },
-        "west": {
-          "texture": "sides"
-        },
-        "up": {
-          "texture": "sides"
-        },
-        "down": {
-          "texture": "sides"
-        }
-      }
-    }
-  ]
+    "sides": "appliedenergistics2:part/plane_sides",
+    "plane": "appliedenergistics2:part/fluid_annihilation_plane"
+  }
 }

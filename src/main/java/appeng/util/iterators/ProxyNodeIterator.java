@@ -25,9 +25,9 @@ import appeng.api.networking.IGridNode;
 import appeng.api.util.AEPartLocation;
 
 public final class ProxyNodeIterator implements Iterator<IGridNode> {
-    private final Iterator<IGridHost> hosts;
+    private final Iterator<? extends IGridHost> hosts;
 
-    public ProxyNodeIterator(final Iterator<IGridHost> hosts) {
+    public ProxyNodeIterator(final Iterator<? extends IGridHost> hosts) {
         this.hosts = hosts;
     }
 

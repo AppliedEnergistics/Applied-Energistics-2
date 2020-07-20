@@ -43,9 +43,9 @@ class QnbFormedBakedModel implements BakedModel, FabricBakedModel {
     private static final SpriteIdentifier TEXTURE_RING_LIGHT_CORNER = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier(AppEng.MOD_ID, "block/quantum_ring_light_corner"));
     private static final SpriteIdentifier TEXTURE_CABLE_GLASS = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
-            new Identifier(AppEng.MOD_ID, "parts/cable/glass/transparent"));
+            new Identifier(AppEng.MOD_ID, "part/cable/glass/transparent"));
     private static final SpriteIdentifier TEXTURE_COVERED_CABLE = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
-            new Identifier(AppEng.MOD_ID, "parts/cable/covered/transparent"));
+            new Identifier(AppEng.MOD_ID, "part/cable/covered/transparent"));
 
     private static final float DEFAULT_RENDER_MIN = 2.0f;
     private static final float DEFAULT_RENDER_MAX = 14.0f;

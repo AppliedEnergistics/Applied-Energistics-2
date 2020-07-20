@@ -27,7 +27,7 @@ public enum GuiText {
 
     Chest, StoredEnergy, Of, Condenser, Drive, GrindStone, SkyChest,
 
-    VibrationChamber, SpatialIOPort, LevelEmitter, FluidLevelEmitter, Terminal,
+    VibrationChamber, SpatialIOPort, LevelEmitter, FluidLevelEmitter, FluidLevelEmitterUnit, Terminal,
 
     Interface, FluidInterface, Config, StoredItems, StoredFluids, Patterns, ImportBus, ImportBusFluids, ExportBus,
     ExportBusFluids,

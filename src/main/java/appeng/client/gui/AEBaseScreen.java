@@ -58,6 +58,7 @@ import net.minecraft.text.Text;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.widgets.CustomSlotWidget;
+import appeng.client.gui.widgets.ITickingWidget;
 import appeng.client.gui.widgets.ITooltip;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.me.InternalSlotME;
@@ -86,6 +87,8 @@ import appeng.fluids.container.slots.IMEFluidSlot;
 import appeng.helpers.InventoryAction;
 
 public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScreen<T> {
+
+    public static final int COLOR_DARK_GRAY = 4210752;
     private final List<InternalSlotME> meSlots = new ArrayList<>();
     // drag y
     private final Set<Slot> drag_click = new HashSet<>();
@@ -186,7 +189,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
                 }
 
                 final Text msg = tooltip.getMessage();
-                if (msg != null) {
+                if (msg != null && !msg.isEmpty()) {
                     this.drawTooltip(matrices, x + 11, y + 4, msg);
                 }
             }
@@ -780,4 +783,14 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
     protected List<InternalSlotME> getMeSlots() {
         return this.meSlots;
     }
+
+    public void tick() {
+        super.tick();
+        for (IGuiEventListener child : children) {
+            if (child instanceof ITickingWidget) {
+                ((ITickingWidget) child).tick();
+            }
+        }
+    }
+
 }

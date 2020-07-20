@@ -37,16 +37,16 @@ import appeng.core.AppEng;
 public class SmartCableTextures {
 
     public static final SpriteIdentifier[] SMART_CHANNELS_TEXTURES = Arrays
-            .stream(new Identifier[] { new Identifier(AppEng.MOD_ID, "parts/cable/smart/channels_00"), //
-                    new Identifier(AppEng.MOD_ID, "parts/cable/smart/channels_01"), //
-                    new Identifier(AppEng.MOD_ID, "parts/cable/smart/channels_02"), //
-                    new Identifier(AppEng.MOD_ID, "parts/cable/smart/channels_03"), //
-                    new Identifier(AppEng.MOD_ID, "parts/cable/smart/channels_04"), //
-                    new Identifier(AppEng.MOD_ID, "parts/cable/smart/channels_10"), //
-                    new Identifier(AppEng.MOD_ID, "parts/cable/smart/channels_11"), //
-                    new Identifier(AppEng.MOD_ID, "parts/cable/smart/channels_12"), //
-                    new Identifier(AppEng.MOD_ID, "parts/cable/smart/channels_13"), //
-                    new Identifier(AppEng.MOD_ID, "parts/cable/smart/channels_14")//
+            .stream(new Identifier[] { new Identifier(AppEng.MOD_ID, "part/cable/smart/channels_00"), //
+                    new Identifier(AppEng.MOD_ID, "part/cable/smart/channels_01"), //
+                    new Identifier(AppEng.MOD_ID, "part/cable/smart/channels_02"), //
+                    new Identifier(AppEng.MOD_ID, "part/cable/smart/channels_03"), //
+                    new Identifier(AppEng.MOD_ID, "part/cable/smart/channels_04"), //
+                    new Identifier(AppEng.MOD_ID, "part/cable/smart/channels_10"), //
+                    new Identifier(AppEng.MOD_ID, "part/cable/smart/channels_11"), //
+                    new Identifier(AppEng.MOD_ID, "part/cable/smart/channels_12"), //
+                    new Identifier(AppEng.MOD_ID, "part/cable/smart/channels_13"), //
+                    new Identifier(AppEng.MOD_ID, "part/cable/smart/channels_14")//
             }).map(e -> new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, e)).toArray(SpriteIdentifier[]::new);
 
     // Textures used to display channels on smart cables. There's two sets of 5

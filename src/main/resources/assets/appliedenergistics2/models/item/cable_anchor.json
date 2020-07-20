@@ -1,8 +1,8 @@
 {
   "parent": "appliedenergistics2:item/part_base",
   "textures": {
-    "all": "appliedenergistics2:parts/cable_anchor",
-    "particle": "appliedenergistics2:parts/cable_anchor"
+    "all": "appliedenergistics2:part/cable_anchor",
+    "particle": "appliedenergistics2:part/cable_anchor"
   },
   "elements": [
     {

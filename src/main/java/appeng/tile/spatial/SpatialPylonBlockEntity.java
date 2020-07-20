@@ -39,7 +39,7 @@ import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.AENetworkProxyMultiblock;
 import appeng.tile.grid.AENetworkBlockEntity;
 
-public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAEMultiBlock {
+public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAEMultiBlock<SpatialPylonCluster> {
 
     public static final int DISPLAY_END_MIN = 0x01;
     public static final int DISPLAY_END_MAX = 0x02;
@@ -79,7 +79,7 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
     @Override
     public void onReady() {
         super.onReady();
-        this.calc.calculateMultiblock(world, getLocation());
+        this.calc.calculateMultiblock(world, pos);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
     }
 
     public void neighborUpdate(BlockPos changedPos) {
-        this.calc.updateMultiblockAfterNeighborUpdate(this.world, this.getLocation(), changedPos);
+        this.calc.updateMultiblockAfterNeighborUpdate(this.world, pos, changedPos);
     }
 
     @Override
@@ -122,9 +122,9 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
         this.displayBits = 0;
 
         if (this.cluster != null) {
-            if (this.cluster.getBoundsMin().equals(this.getLocation())) {
+            if (this.cluster.getBoundsMin().equals(this.pos)) {
                 this.displayBits = DISPLAY_END_MIN;
-            } else if (this.cluster.getBoundsMax().equals(this.getLocation())) {
+            } else if (this.cluster.getBoundsMax().equals(this.pos)) {
                 this.displayBits = DISPLAY_END_MAX;
             } else {
                 this.displayBits = DISPLAY_MIDDLE;

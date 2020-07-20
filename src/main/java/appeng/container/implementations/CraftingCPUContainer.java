@@ -47,7 +47,6 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.MEInventoryUpdatePacket;
 import appeng.helpers.ICustomNameObject;
-import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.tile.crafting.CraftingBlockEntity;
 import appeng.util.Platform;
@@ -82,7 +81,7 @@ public class CraftingCPUContainer extends AEBaseContainer
         }
 
         if (te instanceof CraftingBlockEntity) {
-            this.setCPU((ICraftingCPU) ((IAEMultiBlock) te).getCluster());
+            this.setCPU(((CraftingTileEntity) te).getCluster());
         }
 
         if (this.getNetwork() == null && Platform.isServer()) {

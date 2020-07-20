@@ -1,8 +1,8 @@
 {
   "parent": "appliedenergistics2:part/display_off",
   "textures": {
-    "lightsBright": "appliedenergistics2:parts/fluid_terminal/lights_bright",
-    "lightsMedium": "appliedenergistics2:parts/fluid_terminal/lights_medium",
-    "lightsDark": "appliedenergistics2:parts/fluid_terminal/lights_dark"
+    "lightsBright": "appliedenergistics2:part/fluid_terminal_bright",
+    "lightsMedium": "appliedenergistics2:part/fluid_terminal_medium",
+    "lightsDark": "appliedenergistics2:part/fluid_terminal_dark"
   }
 }

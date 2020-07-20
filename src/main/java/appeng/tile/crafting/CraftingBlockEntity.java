@@ -37,19 +37,15 @@ import net.minecraft.world.BlockView;
 import appeng.api.config.Actionable;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
-import appeng.api.networking.IGridHost;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.WorldCoord;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.block.crafting.AbstractCraftingUnitBlock.CraftingUnitType;
 import appeng.core.Api;
-import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.CraftingCPUCalculator;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
@@ -58,7 +54,8 @@ import appeng.me.helpers.AENetworkProxyMultiblock;
 import appeng.tile.grid.AENetworkBlockEntity;
 import appeng.util.Platform;
 
-public class CraftingBlockEntity extends AENetworkBlockEntity implements IAEMultiBlock, IPowerChannelState {
+public class CraftingBlockEntity extends AENetworkBlockEntity
+        implements IAEMultiBlock<CraftingCPUCluster>, IPowerChannelState {
 
     private final CraftingCPUCalculator calc = new CraftingCPUCalculator(this);
     private CompoundTag previousState = null;
@@ -92,7 +89,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity implements IAEMult
     @Override
     public boolean canBeRotated() {
         return true;// return BlockCraftingUnit.checkType( world.getBlockMetadata( xCoord, yCoord,
-                    // zCoord ),
+        // zCoord ),
         // BlockCraftingUnit.BASE_MONITOR );
     }
 
@@ -109,7 +106,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity implements IAEMult
             return false;
         }
 
-        final AbstractCraftingUnitBlock unit = (AbstractCraftingUnitBlock) this.world.getBlockState(this.pos)
+        final AbstractCraftingUnitBlock<?> unit = (AbstractCraftingUnitBlock<?>) this.world.getBlockState(this.pos)
                 .getBlock();
         return unit.type == CraftingUnitType.ACCELERATOR;
     }
@@ -118,11 +115,11 @@ public class CraftingBlockEntity extends AENetworkBlockEntity implements IAEMult
     public void onReady() {
         super.onReady();
         this.getProxy().setVisualRepresentation(this.getItemFromTile(this));
-        this.calc.calculateMultiblock(world, getLocation());
+        this.calc.calculateMultiblock(world, pos);
     }
 
     public void updateMultiBlock(BlockPos changedPos) {
-        this.calc.updateMultiblockAfterNeighborUpdate(this.world, this.getLocation(), changedPos);
+        this.calc.updateMultiblockAfterNeighborUpdate(this.world, pos, changedPos);
     }
 
     public void updateStatus(final CraftingCPUCluster c) {
@@ -157,7 +154,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity implements IAEMult
                 // Not using flag 2 here (only send to clients, prevent block update) will cause
                 // infinite loops
                 // In case there is an inconsistency in the crafting clusters.
-                this.world.setBlockState(this.pos, newState, BlockUpdateFlag.BLOCK_UPDATE);
+                this.world.setBlockState(this.pos, newState, 2);
             }
         }
 
@@ -211,7 +208,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity implements IAEMult
     }
 
     @Override
-    public IAECluster getCluster() {
+    public CraftingCPUCluster getCluster() {
         return this.cluster;
     }
 
@@ -252,21 +249,18 @@ public class CraftingBlockEntity extends AENetworkBlockEntity implements IAEMult
             this.cluster.cancel();
             final IMEInventory<IAEItemStack> inv = this.cluster.getInventory();
 
-            final LinkedList<WorldCoord> places = new LinkedList<>();
+            final LinkedList<BlockPos> places = new LinkedList<>();
 
-            final Iterator<IGridHost> i = this.cluster.getTiles();
+            final Iterator<CraftingTileEntity> i = this.cluster.getTiles();
             while (i.hasNext()) {
-                final IGridHost h = i.next();
+                final CraftingTileEntity h = i.next();
                 if (h == this) {
-                    places.add(new WorldCoord(this));
+                    places.add(pos);
                 } else {
-                    final BlockEntity te = (BlockEntity) h;
-
-                    for (final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS) {
-                        final WorldCoord wc = new WorldCoord(te);
-                        wc.add(d, 1);
-                        if (this.world.isAir(wc.getPos())) {
-                            places.add(wc);
+                    for (Direction d : Direction.values()) {
+                        BlockPos p = h.pos.offset(d);
+                        if (this.world.isAirBlock(p)) {
+                            places.add(p);
                         }
                     }
                 }
@@ -290,10 +284,10 @@ public class CraftingBlockEntity extends AENetworkBlockEntity implements IAEMult
                         break;
                     }
 
-                    final WorldCoord wc = places.poll();
-                    places.add(wc);
+                    final BlockPos pos = places.poll();
+                    places.add(pos);
 
-                    Platform.spawnDrops(this.world, wc.getPos(), Collections.singletonList(g.createItemStack()));
+                    Platform.spawnDrops(this.world, pos, Collections.singletonList(g.createItemStack()));
                 }
             }
 

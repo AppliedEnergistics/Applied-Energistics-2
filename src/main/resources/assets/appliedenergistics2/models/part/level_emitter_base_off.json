@@ -1,8 +1,8 @@
 {
   "textures": {
-    "emitter": "appliedenergistics2:parts/level_emitter_off",
-    "sides": "appliedenergistics2:parts/monitor_sides",
-    "particle": "appliedenergistics2:parts/level_emitter_off"
+    "emitter": "appliedenergistics2:part/level_emitter_off",
+    "sides": "appliedenergistics2:part/monitor_sides",
+    "particle": "appliedenergistics2:part/level_emitter_off"
   },
   "elements": [
     {

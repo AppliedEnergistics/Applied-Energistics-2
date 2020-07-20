@@ -25,7 +25,6 @@ import java.util.List;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import appeng.api.networking.IGridHost;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.MBCalculator;
 import appeng.tile.spatial.SpatialPylonBlockEntity;
@@ -88,8 +87,8 @@ public class SpatialPylonCluster implements IAECluster {
     }
 
     @Override
-    public Iterator<IGridHost> getTiles() {
-        return (Iterator) this.getLine().iterator();
+    public Iterator<SpatialPylonTileEntity> getTiles() {
+        return this.getLine().iterator();
     }
 
     public int tileCount() {

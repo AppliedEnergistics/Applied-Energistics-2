@@ -37,7 +37,7 @@ import appeng.core.AppEng;
  * Covered (also used by the Smart Cable) - Dense
  */
 public enum CableCoreType {
-    GLASS("parts/cable/core/glass"), COVERED("parts/cable/core/covered"), DENSE("parts/cable/core/dense_smart");
+    GLASS("part/cable/core/glass"), COVERED("part/cable/core/covered"), DENSE("part/cable/core/dense_smart");
 
     private static final Map<AECableType, CableCoreType> cableMapping = generateCableMapping();
 

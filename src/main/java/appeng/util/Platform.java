@@ -794,34 +794,36 @@ public class Platform {
         Preconditions.checkNotNull(src);
         Preconditions.checkNotNull(mode);
 
-        final T possible = cell.injectItems(input.copy(), Actionable.SIMULATE, src);
+        final T overflow = cell.injectItems(input.copy(), Actionable.SIMULATE, src);
 
-        long stored = input.getStackSize();
-        if (possible != null) {
-            stored -= possible.getStackSize();
+        long transferAmount = input.getStackSize();
+        if (overflow != null) {
+            transferAmount -= overflow.getStackSize();
         }
 
         final double energyFactor = Math.max(1.0, cell.getChannel().transferFactor());
-        final double availablePower = energy.extractAEPower(stored / energyFactor, Actionable.SIMULATE,
+        final double availablePower = energy.extractAEPower(transferAmount / energyFactor, Actionable.SIMULATE,
                 PowerMultiplier.CONFIG);
-        final long itemToAdd = Math.min((long) ((availablePower * energyFactor) + 0.9), stored);
+        final long itemToAdd = Math.min((long) ((availablePower * energyFactor) + 0.9), transferAmount);
 
         if (itemToAdd > 0) {
             if (mode == Actionable.MODULATE) {
-                energy.extractAEPower(stored / energyFactor, Actionable.MODULATE, PowerMultiplier.CONFIG);
+                energy.extractAEPower(transferAmount / energyFactor, Actionable.MODULATE, PowerMultiplier.CONFIG);
                 if (itemToAdd < input.getStackSize()) {
                     final long original = input.getStackSize();
+                    final T leftover = input.copy();
                     final T split = input.copy();
-                    split.decStackSize(itemToAdd);
-                    input.setStackSize(itemToAdd);
-                    split.add(cell.injectItems(input, Actionable.MODULATE, src));
+
+                    leftover.decStackSize(itemToAdd);
+                    split.setStackSize(itemToAdd);
+                    leftover.add(cell.injectItems(split, Actionable.MODULATE, src));
 
                     src.player().ifPresent(player -> {
-                        final long diff = original - split.getStackSize();
+                        final long diff = original - leftover.getStackSize();
                         AeStats.ItemsInserted.addToPlayer(player, (int) diff);
                     });
 
-                    return split;
+                    return leftover;
                 }
 
                 final T ret = cell.injectItems(input, Actionable.MODULATE, src);

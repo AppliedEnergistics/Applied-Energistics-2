@@ -85,19 +85,19 @@ class CableBuilder {
         String textureFolder;
         switch (cableType) {
             case GLASS:
-                textureFolder = "parts/cable/glass/";
+                textureFolder = "part/cable/glass/";
                 break;
             case COVERED:
-                textureFolder = "parts/cable/covered/";
+                textureFolder = "part/cable/covered/";
                 break;
             case SMART:
-                textureFolder = "parts/cable/smart/";
+                textureFolder = "part/cable/smart/";
                 break;
             case DENSE_COVERED:
-                textureFolder = "parts/cable/dense_covered/";
+                textureFolder = "part/cable/dense_covered/";
                 break;
             case DENSE_SMART:
-                textureFolder = "parts/cable/dense_smart/";
+                textureFolder = "part/cable/dense_smart/";
                 break;
             default:
                 throw new IllegalStateException("Cable type " + cableType + " does not support connections.");

@@ -29,6 +29,7 @@ import net.fabricmc.api.Environment;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.parts.IPart;
+import appeng.client.gui.implementations.NumberEntryWidget;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
 import appeng.container.guisync.GuiSync;
@@ -53,7 +54,7 @@ public class PriorityContainer extends AEBaseContainer {
     private final IPriorityHost priHost;
 
     @Environment(EnvType.CLIENT)
-    private TextFieldWidget textField;
+    private NumberEntryWidget textField;
     @GuiSync(2)
     public long PriorityValue = -1;
 
@@ -64,9 +65,9 @@ public class PriorityContainer extends AEBaseContainer {
     }
 
     @Environment(EnvType.CLIENT)
-    public void setTextField(final TextFieldWidget level) {
+    public void setTextField(final NumberEntryWidget level) {
         this.textField = level;
-        this.textField.setText(String.valueOf(this.PriorityValue));
+        this.textField.setValue(this.PriorityValue, true);
     }
 
     public void setPriority(final int newValue, final PlayerEntity player) {
@@ -88,7 +89,7 @@ public class PriorityContainer extends AEBaseContainer {
     public void onUpdate(final String field, final Object oldValue, final Object newValue) {
         if (field.equals("PriorityValue")) {
             if (this.textField != null) {
-                this.textField.setText(String.valueOf(this.PriorityValue));
+                this.textField.setValue(this.PriorityValue, true);
             }
         }
 

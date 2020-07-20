@@ -20,15 +20,15 @@ package appeng.client.gui.implementations;
 
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
 
 import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.widgets.NumberBox;
+import appeng.client.gui.NumberEntryType;
 import appeng.container.implementations.CraftAmountContainer;
-import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.CraftRequestPacket;
@@ -36,7 +36,7 @@ import appeng.core.sync.packets.CraftRequestPacket;
 public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
     private final AESubScreen subGui;
 
-    private NumberBox amountToCraft;
+    private NumberEntryWidget amountToCraft;
 
     private ButtonWidget next;
 
@@ -49,39 +49,22 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
     public void init() {
         super.init();
 
-        final int a = AEConfig.instance().craftItemsByStackAmounts(0);
-        final int b = AEConfig.instance().craftItemsByStackAmounts(1);
-        final int c = AEConfig.instance().craftItemsByStackAmounts(2);
-        final int d = AEConfig.instance().craftItemsByStackAmounts(3);
-
-        this.addButton(new ButtonWidget(this.x + 20, this.y + 26, 22, 20, new LiteralText("+" + a), btn -> addQty(a)));
-        this.addButton(new ButtonWidget(this.x + 48, this.y + 26, 28, 20, new LiteralText("+" + b), btn -> addQty(b)));
-        this.addButton(new ButtonWidget(this.x + 82, this.y + 26, 32, 20, new LiteralText("+" + c), btn -> addQty(c)));
-        this.addButton(new ButtonWidget(this.x + 120, this.y + 26, 38, 20, new LiteralText("+" + d), btn -> addQty(d)));
-
-        this.addButton(new ButtonWidget(this.x + 20, this.y + 75, 22, 20, new LiteralText("-" + a), btn -> addQty(-a)));
-        this.addButton(new ButtonWidget(this.x + 48, this.y + 75, 28, 20, new LiteralText("-" + b), btn -> addQty(-b)));
-        this.addButton(new ButtonWidget(this.x + 82, this.y + 75, 32, 20, new LiteralText("-" + c), btn -> addQty(-c)));
-        this.addButton(new ButtonWidget(this.x + 120, this.y + 75, 38, 20, new LiteralText("-" + d), btn -> addQty(-d)));
+        this.amountToCraft = new NumberEntryWidget(this, 20, 30, 138, 62, NumberEntryType.CRAFT_ITEM_COUNT, value -> {
+        });
+        this.amountToCraft.setValue(1);
+        this.amountToCraft.setTextFieldBounds(62, 57, 50);
+        this.amountToCraft.setMinValue(1);
+        this.amountToCraft.addButtons(children::add, this::addButton);
 
         this.next = this.addButton(
                 new ButtonWidget(this.x + 128, this.y + 51, 38, 20, GuiText.Next.text(), this::confirm));
 
         subGui.addBackButton(this::addButton, 154, 0);
-
-        this.amountToCraft = new NumberBox(this.textRenderer, this.x + 62, this.y + 57, 59, this.textRenderer.fontHeight,
-                Integer.class);
-        this.amountToCraft.setHasBorder(false);
-        this.amountToCraft.setMaxLength(16);
-        this.amountToCraft.setEditableColor(0xFFFFFF);
-        this.amountToCraft.setVisible(true);
-        this.amountToCraft.setFocused(true);
-        this.amountToCraft.setText("1");
     }
 
     private void confirm(ButtonWidget button) {
         NetworkHandler.instance()
-                .sendToServer(new CraftRequestPacket(Integer.parseInt(this.amountToCraft.getText()), hasShiftDown()));
+                .sendToServer(new CraftRequestPacket((int) this.amountToCraft.getValue(), hasShiftDown()));
     }
 
     @Override
@@ -96,99 +79,23 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
         this.bindTexture("guis/craft_amt.png");
         drawTexture(matrices, offsetX, offsetY, 0, 0, this.backgroundWidth, this.backgroundHeight);
 
-        try {
-            Long.parseLong(this.amountToCraft.getText());
-            this.next.active = !this.amountToCraft.getText().isEmpty();
-        } catch (final NumberFormatException e) {
-            this.next.active = false;
-        }
+        this.next.active = this.amountToCraft.getValue() > 0;
 
         this.amountToCraft.render(matrices, offsetX, offsetY, partialTicks);
     }
 
     @Override
-    public boolean charTyped(char ch, int p_charTyped_2_) {
-        // Forward entered text to the craft amount text-field
-        return this.amountToCraft.charTyped(ch, p_charTyped_2_);
-    }
-
-    @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
-        if (!this.checkHotbarKeys(keyCode, scanCode)) {
-            if (keyCode == 28) {
-                this.next.onPress();
-            }
-            if ((keyCode == 211 || keyCode == 205 || keyCode == 203 || keyCode == 14)
-                    && this.amountToCraft.keyPressed(keyCode, scanCode, p_keyPressed_3_)) {
-                try {
-                    String out = this.amountToCraft.getText();
-
-                    boolean fixed = false;
-                    while (out.startsWith("0") && out.length() > 1) {
-                        out = out.substring(1);
-                        fixed = true;
-                    }
-
-                    if (fixed) {
-                        this.amountToCraft.setText(out);
-                    }
-
-                    if (out.isEmpty()) {
-                        out = "0";
-                    }
-
-                    final long result = Long.parseLong(out);
-                    if (result < 0) {
-                        this.amountToCraft.setText("1");
-                    }
-                } catch (final NumberFormatException e) {
-                    // :P
-                }
-                return true;
-            }
-        }
-
-        return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);
-    }
-
-    private void addQty(final int i) {
-        try {
-            String out = this.amountToCraft.getText();
-
-            boolean fixed = false;
-            while (out.startsWith("0") && out.length() > 1) {
-                out = out.substring(1);
-                fixed = true;
-            }
-
-            if (fixed) {
-                this.amountToCraft.setText(out);
-            }
-
-            if (out.isEmpty()) {
-                out = "0";
-            }
-
-            long result = Integer.parseInt(out);
-
-            if (result == 1 && i > 1) {
-                result = 0;
-            }
-
-            result += i;
-            if (result < 1) {
-                result = 1;
-            }
-
-            out = Long.toString(result);
-            Integer.parseInt(out);
-            this.amountToCraft.setText(out);
-        } catch (final NumberFormatException e) {
-            // :P
+        if (keyCode == 28) {
+            this.next.onPress();
+            return true;
+        } else {
+            return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);
         }
     }
 
     protected String getBackground() {
         return "guis/craftAmt.png";
     }
+
 }

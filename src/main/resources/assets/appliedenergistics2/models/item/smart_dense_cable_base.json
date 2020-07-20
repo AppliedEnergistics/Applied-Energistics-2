@@ -1,7 +1,7 @@
 {
   "parent": "appliedenergistics2:item/part_base",
   "textures": {
-    "channels": "appliedenergistics2:parts/cable/dense_smart/0"
+    "channels": "appliedenergistics2:part/cable/dense_smart/0"
   },
   "elements": [
     {
