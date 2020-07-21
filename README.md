@@ -45,7 +45,7 @@ A Mod about Matter, Energy and using them to conquer the world..
 
 ## Downloads
 
-Downloads can be found on [CurseForge](http://www.curse.com/mc-mods/minecraft/223794-applied-energistics-2) or on the [official website](http://ae-mod.info/Downloads/).
+Downloads can be found on [CurseForge](https://www.curseforge.com/minecraft/mc-mods/applied-energistics-2) or on the [official website](http://ae-mod.info/Downloads/).
 
 ## Installation
 
