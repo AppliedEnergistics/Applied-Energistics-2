@@ -65,6 +65,7 @@ import appeng.block.storage.DriveSlotsState;
 import appeng.client.render.model.DriveModelData;
 import appeng.container.implementations.DriveContainer;
 import appeng.core.Api;
+import appeng.core.sync.BasePacket;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
@@ -188,7 +189,7 @@ public class DriveTileEntity extends AENetworkInvTileEntity implements IChestOrD
         int uniqueStrCount = data.readByte();
         String[] uniqueStrs = new String[uniqueStrCount];
         for (int i = 0; i < uniqueStrCount; i++) {
-            uniqueStrs[i] = data.readString();
+            uniqueStrs[i] = data.readString(BasePacket.MAX_STRING_LENGTH);
         }
 
         boolean changed = false;

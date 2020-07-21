@@ -15,6 +15,7 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import appeng.api.features.InscriberProcessType;
 import appeng.core.AppEng;
+import appeng.core.sync.BasePacket;
 
 public class InscriberRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>>
         implements IRecipeSerializer<InscriberRecipe> {
@@ -67,7 +68,7 @@ public class InscriberRecipeSerializer extends ForgeRegistryEntry<IRecipeSeriali
     @Nullable
     @Override
     public InscriberRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
-        String group = buffer.readString();
+        String group = buffer.readString(BasePacket.MAX_STRING_LENGTH);
         Ingredient middle = Ingredient.read(buffer);
         ItemStack result = buffer.readItemStack();
         Ingredient top = Ingredient.read(buffer);

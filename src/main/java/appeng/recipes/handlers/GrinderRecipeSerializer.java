@@ -21,6 +21,7 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
+import appeng.core.sync.BasePacket;
 
 public class GrinderRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>>
         implements IRecipeSerializer<GrinderRecipe> {
@@ -70,7 +71,7 @@ public class GrinderRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
     @Override
     public GrinderRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
 
-        String group = buffer.readString();
+        String group = buffer.readString(BasePacket.MAX_STRING_LENGTH);
         Ingredient ingredient = Ingredient.read(buffer);
         int ingredientCount = buffer.readVarInt();
         ItemStack result = buffer.readItemStack();
