@@ -37,7 +37,7 @@ public class NumberBox extends TextFieldWidget {
             final Class<?> type, LongConsumer changeListener) {
         super(fontRenderer, x, y, width, height, "0");
         this.setText("0");
-        setResponder(this::onTextChanged);
+        setResponder(this::handleTextChanged);
         this.lastValue = 0;
         this.changeListener = changeListener;
         if (type == int.class || type == Integer.class) {
@@ -47,7 +47,11 @@ public class NumberBox extends TextFieldWidget {
         }
     }
 
-    private void onTextChanged(String text) {
+    // NOTE: This method MUST NOT BE NAMED like a method in the superclass because
+    // of a ForgeGradle remapping bug
+    // since it'll not remap this method's name, but it will remap the name of the
+    // method reference above.
+    private void handleTextChanged(String text) {
         if (text.isEmpty()) {
             setText("0"); // Will call onTextChanged recursively
             return;
