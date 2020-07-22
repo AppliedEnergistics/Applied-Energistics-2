@@ -32,8 +32,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -618,12 +618,12 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     }
 
     public static boolean isBlockBlacklisted(Block b) {
-        Tag<Block> tag = BlockTags.getCollection().getOrCreate(TAG_BLACKLIST);
+        ITag<Block> tag = BlockTags.getCollection().getOrCreate(TAG_BLACKLIST);
         return b.isIn(tag);
     }
 
     public static boolean isItemBlacklisted(Item i) {
-        Tag<Item> tag = ItemTags.getCollection().getOrCreate(TAG_BLACKLIST);
+        ITag<Item> tag = ItemTags.getCollection().getOrCreate(TAG_BLACKLIST);
         return i.isIn(tag);
     }
 

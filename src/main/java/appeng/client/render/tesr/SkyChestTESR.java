@@ -25,12 +25,12 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.model.Material;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -44,9 +44,9 @@ import appeng.tile.storage.SkyChestTileEntity;
 @OnlyIn(Dist.CLIENT)
 public class SkyChestTESR extends TileEntityRenderer<SkyChestTileEntity> {
 
-    public static final Material TEXTURE_STONE = new Material(Atlases.CHEST_ATLAS,
+    public static final RenderMaterial TEXTURE_STONE = new RenderMaterial(Atlases.CHEST_ATLAS,
             new ResourceLocation(AppEng.MOD_ID, "models/skychest"));
-    public static final Material TEXTURE_BLOCK = new Material(Atlases.CHEST_ATLAS,
+    public static final RenderMaterial TEXTURE_BLOCK = new RenderMaterial(Atlases.CHEST_ATLAS,
             new ResourceLocation(AppEng.MOD_ID, "models/skyblockchest"));
 
     private final ModelRenderer singleLid;
@@ -79,7 +79,7 @@ public class SkyChestTESR extends TileEntityRenderer<SkyChestTileEntity> {
         float f1 = tileEntityIn.getLidAngle(partialTicks);
         f1 = 1.0F - f1;
         f1 = 1.0F - f1 * f1 * f1;
-        Material material = this.getMaterial(tileEntityIn);
+        RenderMaterial material = this.getRenderMaterial(tileEntityIn);
         IVertexBuilder ivertexbuilder = material.getBuffer(bufferIn, RenderType::getEntityCutout);
         this.renderModels(matrixStackIn, ivertexbuilder, this.singleLid, this.singleLatch, this.singleBottom, f1,
                 combinedLightIn, combinedOverlayIn);
@@ -97,7 +97,7 @@ public class SkyChestTESR extends TileEntityRenderer<SkyChestTileEntity> {
         chestBottom.render(matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
     }
 
-    protected Material getMaterial(SkyChestTileEntity tileEntity) {
+    protected RenderMaterial getRenderMaterial(SkyChestTileEntity tileEntity) {
         SkyChestType type = SkyChestType.BLOCK;
         if (tileEntity.getWorld() != null) {
             Block blockType = tileEntity.getBlockState().getBlock();

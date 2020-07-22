@@ -18,6 +18,8 @@
 
 package appeng.client.gui.implementations;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
@@ -58,16 +60,18 @@ public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
     }
 
     @Override
-    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.font.drawString(GuiText.Priority.getLocal(), 8, 6, 4210752);
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
+        this.font.drawString(matrixStack, GuiText.Priority.getLocal(), 8, 6, 4210752);
     }
 
     @Override
-    public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY, float partialTicks) {
         this.bindTexture(getBackground());
-        blit(offsetX, offsetY, 0, 0, this.xSize, this.ySize);
+        blit(matrixStack, offsetX, offsetY, 0, 0, this.xSize, this.ySize);
 
-        this.priority.render(mouseX, mouseY, partialTicks);
+        this.priority.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
     protected String getBackground() {

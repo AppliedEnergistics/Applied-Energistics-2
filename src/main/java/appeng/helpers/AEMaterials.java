@@ -24,7 +24,7 @@ import net.minecraft.block.material.PushReaction;
 
 public class AEMaterials {
 
-    public static final Material GLASS = make(MaterialColor.AIR, false, false, true, false, true, false, false,
+    public static final Material GLASS = make(MaterialColor.AIR, false, false, true, false, false, false,
             PushReaction.NORMAL);
 
     /**
@@ -42,10 +42,8 @@ public class AEMaterials {
      * @return
      */
     private static Material make(MaterialColor color, boolean isLiquid, boolean isSolid, boolean blocksMovement,
-            boolean isOpaque, boolean requiresNoTool, boolean flammable, boolean replaceable,
-            PushReaction pushReaction) {
-        return new Material(color, isLiquid, isSolid, blocksMovement, isOpaque, requiresNoTool, flammable, replaceable,
-                pushReaction);
+            boolean isOpaque, boolean flammable, boolean replaceable, PushReaction pushReaction) {
+        return new Material(color, isLiquid, isSolid, blocksMovement, isOpaque, flammable, replaceable, pushReaction);
     }
 
 }

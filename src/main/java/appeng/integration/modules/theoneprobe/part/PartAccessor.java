@@ -22,7 +22,7 @@ import java.util.Optional;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import mcjty.theoneprobe.api.IProbeHitData;
 
@@ -35,7 +35,7 @@ public final class PartAccessor {
     public Optional<IPart> getMaybePart(final TileEntity te, final IProbeHitData data) {
         if (te instanceof IPartHost) {
             BlockPos pos = data.getPos();
-            final Vec3d position = data.getHitVec().add(-pos.getX(), -pos.getY(), -pos.getZ());
+            final Vector3d position = data.getHitVec().add(-pos.getX(), -pos.getY(), -pos.getZ());
             final IPartHost host = (IPartHost) te;
             final SelectedPart sp = host.selectPart(position);
 

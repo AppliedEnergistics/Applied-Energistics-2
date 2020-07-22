@@ -28,19 +28,19 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.util.math.vector.TransformationMatrix;
 import net.minecraftforge.client.model.ItemLayerModel;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
@@ -53,10 +53,10 @@ import appeng.fluids.items.FluidDummyItem;
  * Override List is used to accomplish this.
  */
 public class DummyFluidDispatcherBakedModel extends DelegateBakedModel {
-    private final Function<Material, TextureAtlasSprite> bakedTextureGetter;
+    private final Function<RenderMaterial, TextureAtlasSprite> bakedTextureGetter;
 
     public DummyFluidDispatcherBakedModel(IBakedModel baseModel,
-            Function<Material, TextureAtlasSprite> bakedTextureGetter) {
+            Function<RenderMaterial, TextureAtlasSprite> bakedTextureGetter) {
         super(baseModel);
         this.bakedTextureGetter = bakedTextureGetter;
     }
@@ -86,7 +86,7 @@ public class DummyFluidDispatcherBakedModel extends DelegateBakedModel {
     public ItemOverrideList getOverrides() {
         return new ItemOverrideList() {
             @Override
-            public IBakedModel getModelWithOverrides(IBakedModel originalModel, ItemStack stack, World world,
+            public IBakedModel func_239290_a_(IBakedModel originalModel, ItemStack stack, ClientWorld world,
                     LivingEntity entity) {
                 if (!(stack.getItem() instanceof FluidDummyItem)) {
                     return originalModel;
@@ -101,7 +101,7 @@ public class DummyFluidDispatcherBakedModel extends DelegateBakedModel {
 
                 FluidAttributes attributes = fluidStack.getFluid().getAttributes();
                 ResourceLocation stillTexture = attributes.getStillTexture(fluidStack);
-                Material stillMaterial = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, stillTexture);
+                RenderMaterial stillMaterial = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE, stillTexture);
                 TextureAtlasSprite sprite = DummyFluidDispatcherBakedModel.this.bakedTextureGetter.apply(stillMaterial);
                 if (sprite == null) {
                     return new DummyFluidBakedModel(ImmutableList.of());

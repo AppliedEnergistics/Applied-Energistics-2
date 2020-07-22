@@ -29,7 +29,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import appeng.api.definitions.IComparableDefinition;
 import appeng.api.definitions.IItems;
@@ -131,7 +131,7 @@ public class ClickPacket extends BasePacket {
             final Block block = player.world.getBlockState(pos).getBlock();
             if (block instanceof CableBusBlock) {
                 ((CableBusBlock) block).onBlockClickPacket(player.world, pos, player, this.hand,
-                        new Vec3d(this.hitX, this.hitY, this.hitZ));
+                        new Vector3d(this.hitX, this.hitY, this.hitZ));
             }
         } else {
             if (!is.isEmpty()) {
@@ -141,7 +141,7 @@ public class ClickPacket extends BasePacket {
                     if (hasBlockContext()) {
                         // Reconstruct an item use context
                         ItemUseContext useContext = new ItemUseContext(player, hand,
-                                new BlockRayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos, false));
+                                new BlockRayTraceResult(new Vector3d(hitX, hitY, hitZ), side, pos, false));
                         tnt.serverSideToolLogic(useContext);
                     } else {
                         ContainerOpener.openContainer(NetworkToolContainer.TYPE, player,

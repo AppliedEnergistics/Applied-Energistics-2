@@ -18,6 +18,8 @@
 
 package appeng.client.gui.implementations;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
@@ -49,21 +51,21 @@ public class CondenserScreen extends AEBaseScreen<CondenserContainer> {
                 this.container.getOutput());
 
         this.addButton(new ProgressBar(this.container, "guis/condenser.png", 120 + this.guiLeft, 25 + this.guiTop, 178,
-                25, 6, 18, Direction.VERTICAL, GuiText.StoredEnergy.getLocal()));
+                25, 6, 18, Direction.VERTICAL, GuiText.StoredEnergy.textComponent()));
         this.addButton(this.mode);
     }
 
     @Override
-    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.font.drawString(this.getGuiDisplayName(GuiText.Condenser.getLocal()), 8, 6, 4210752);
-        this.font.drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Condenser.textComponent()).getString(), 8, 6, 4210752);
+        this.font.drawString(matrixStack, GuiText.inventory.textComponent().getString(), 8, this.ySize - 96 + 3, 4210752);
 
         this.mode.set(this.container.getOutput());
         this.mode.setFillVar(String.valueOf(this.container.getOutput().requiredPower));
     }
 
     @Override
-    public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
         this.bindTexture("guis/condenser.png");
 
         GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());

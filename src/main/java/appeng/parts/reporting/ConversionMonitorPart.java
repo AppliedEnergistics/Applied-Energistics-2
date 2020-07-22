@@ -26,7 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
@@ -73,7 +73,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
     }
 
     @Override
-    public boolean onPartActivate(PlayerEntity player, Hand hand, Vec3d pos) {
+    public boolean onPartActivate(PlayerEntity player, Hand hand, Vector3d pos) {
         if (Platform.isClient()) {
             return true;
         }
@@ -107,7 +107,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
     }
 
     @Override
-    public boolean onClicked(PlayerEntity player, Hand hand, Vec3d pos) {
+    public boolean onClicked(PlayerEntity player, Hand hand, Vector3d pos) {
         if (Platform.isClient()) {
             return true;
         }
@@ -128,7 +128,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
     }
 
     @Override
-    public boolean onShiftClicked(PlayerEntity player, Hand hand, Vec3d pos) {
+    public boolean onShiftClicked(PlayerEntity player, Hand hand, Vector3d pos) {
         if (Platform.isClient()) {
             return true;
         }

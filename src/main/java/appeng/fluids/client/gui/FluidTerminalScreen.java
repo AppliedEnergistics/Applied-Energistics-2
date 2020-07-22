@@ -24,6 +24,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.util.InputMappings;
@@ -125,13 +127,13 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
     }
 
     @Override
-    public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY) {
-        this.font.drawString(this.getGuiDisplayName("Fluid Terminal"), 8, 6, 4210752);
-        this.font.drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+    public void drawFG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY) {
+        this.font.drawString(matrixStack, "Fluid Terminal", 8, 6, 4210752);
+        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
     }
 
     @Override
-    public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks) {
         this.bindTexture(this.getBackground());
         final int x_width = 197;
         GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, x_width, 18, getBlitOffset());
@@ -144,7 +146,7 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
                 getBlitOffset());
 
         if (this.searchField != null) {
-            this.searchField.render(mouseX, mouseY, partialTicks);
+            this.searchField.render(matrixStack, mouseX, mouseY, partialTicks);
         }
     }
 
@@ -155,7 +157,7 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
     }
 
     @Override
-    protected void renderHoveredToolTip(int mouseX, int mouseY) {
+    protected void renderHoveredToolTip(MatrixStack matrixStack, int mouseX, int mouseY) {
         final Slot slot = this.getSlot(mouseX, mouseY);
 
         if (slot instanceof IMEFluidSlot && slot.isEnabled()) {
@@ -170,16 +172,16 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
 
                 final List<String> list = new ArrayList<>();
 
-                list.add(fluidStack.getFluidStack().getDisplayName().getFormattedText());
+                list.add(fluidStack.getFluidStack().getDisplayName().getString());
                 list.add(formattedAmount);
                 list.add(modName);
 
-                this.renderTooltip(list, mouseX, mouseY);
+                this.renderTooltip(matrixStack, list, mouseX, mouseY);
 
                 return;
             }
         }
-        super.renderHoveredToolTip(mouseX, mouseY);
+        super.renderHoveredToolTip(matrixStack, mouseX, mouseY);
     }
 
     private <S extends Enum<S>> void toggleServerSetting(SettingToggleButton<S> btn, boolean backwards) {

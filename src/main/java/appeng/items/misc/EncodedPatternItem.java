@@ -116,34 +116,35 @@ public class EncodedPatternItem extends AEBaseItem {
                 return;
             }
 
-            stack.setDisplayName(GuiText.InvalidPattern.textComponent().applyTextStyle(TextFormatting.RED));
+            stack.setDisplayName(GuiText.InvalidPattern.textComponent().deepCopy().func_240701_a_(TextFormatting.RED));
 
             InvalidPatternHelper invalid = new InvalidPatternHelper(stack);
 
             final ITextComponent label = (invalid.isCraftable() ? GuiText.Crafts.textComponent()
-                    : GuiText.Creates.textComponent()).appendText(": ");
-            final ITextComponent and = new StringTextComponent(" ").appendSibling(GuiText.And.textComponent())
-                    .appendText(" ");
-            final ITextComponent with = GuiText.With.textComponent().appendText(": ");
+                    : GuiText.Creates.textComponent()).deepCopy().func_240702_b_(": ");
+            final ITextComponent and = new StringTextComponent(" ").deepCopy()
+                    .func_230529_a_(GuiText.And.textComponent()).deepCopy().func_240702_b_(" ");
+            final ITextComponent with = GuiText.With.textComponent().deepCopy().func_240702_b_(": ");
 
             boolean first = true;
             for (final InvalidPatternHelper.PatternIngredient output : invalid.getOutputs()) {
-                lines.add((first ? label : and).deepCopy().appendSibling(output.getFormattedToolTip()));
+                lines.add((first ? label : and).deepCopy().func_230529_a_(output.getFormattedToolTip()));
                 first = false;
             }
 
             first = true;
             for (final InvalidPatternHelper.PatternIngredient input : invalid.getInputs()) {
-                lines.add((first ? with : and).deepCopy().appendSibling(input.getFormattedToolTip()));
+                lines.add((first ? with : and).deepCopy().func_230529_a_(input.getFormattedToolTip()));
                 first = false;
             }
 
             if (invalid.isCraftable()) {
-                final ITextComponent substitutionLabel = GuiText.Substitute.textComponent().appendText(" ");
+                final ITextComponent substitutionLabel = GuiText.Substitute.textComponent().deepCopy()
+                        .func_240702_b_(" ");
                 final ITextComponent canSubstitute = invalid.canSubstitute() ? GuiText.Yes.textComponent()
                         : GuiText.No.textComponent();
 
-                lines.add(substitutionLabel.appendSibling(canSubstitute));
+                lines.add(substitutionLabel.deepCopy().func_230529_a_(canSubstitute));
             }
 
             return;
@@ -160,10 +161,10 @@ public class EncodedPatternItem extends AEBaseItem {
         final Collection<IAEItemStack> out = details.getOutputs();
 
         final ITextComponent label = (isCrafting ? GuiText.Crafts.textComponent() : GuiText.Creates.textComponent())
-                .appendText(": ");
-        final ITextComponent and = new StringTextComponent(" ").appendSibling(GuiText.And.textComponent())
-                .appendText(" ");
-        final ITextComponent with = GuiText.With.textComponent().appendText(": ");
+                .deepCopy().func_240702_b_(": ");
+        final ITextComponent and = new StringTextComponent(" ").deepCopy().func_230529_a_(GuiText.And.textComponent())
+                .func_240702_b_(" ");
+        final ITextComponent with = GuiText.With.textComponent().deepCopy().func_240702_b_(": ");
 
         boolean first = true;
         for (final IAEItemStack anOut : out) {
@@ -171,8 +172,8 @@ public class EncodedPatternItem extends AEBaseItem {
                 continue;
             }
 
-            lines.add((first ? label : and).deepCopy().appendText(anOut.getStackSize() + "x ")
-                    .appendSibling(Platform.getItemDisplayName(anOut)));
+            lines.add((first ? label : and).deepCopy().func_240702_b_(anOut.getStackSize() + "x ")
+                    .func_230529_a_(Platform.getItemDisplayName(anOut)));
             first = false;
         }
 
@@ -182,16 +183,16 @@ public class EncodedPatternItem extends AEBaseItem {
                 continue;
             }
 
-            lines.add((first ? with : and).deepCopy().appendText(anIn.getStackSize() + "x ")
-                    .appendSibling(Platform.getItemDisplayName(anIn)));
+            lines.add((first ? with : and).deepCopy().func_240702_b_(anIn.getStackSize() + "x ")
+                    .func_230529_a_(Platform.getItemDisplayName(anIn)));
             first = false;
         }
 
         if (isCrafting) {
-            final ITextComponent substitutionLabel = GuiText.Substitute.textComponent().appendText(" ");
+            final ITextComponent substitutionLabel = GuiText.Substitute.textComponent().deepCopy().func_240702_b_(" ");
             final ITextComponent canSubstitute = substitute ? GuiText.Yes.textComponent() : GuiText.No.textComponent();
 
-            lines.add(substitutionLabel.appendSibling(canSubstitute));
+            lines.add(substitutionLabel.deepCopy().func_230529_a_(canSubstitute));
         }
     }
 

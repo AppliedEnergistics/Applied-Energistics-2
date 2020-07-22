@@ -21,6 +21,7 @@ package appeng.integration.modules.theoneprobe.tile;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 
@@ -43,7 +44,7 @@ public class ChargerInfoProvider implements ITileProbInfoProvider {
             final ItemStack chargingItem = chargerInventory.getStackInSlot(0);
 
             if (!chargingItem.isEmpty()) {
-                final String currentInventory = chargingItem.getDisplayName().getString();
+                final ITextComponent currentInventory = chargingItem.getDisplayName();
                 final IProbeInfo centerAlignedHorizontalLayout = probeInfo
                         .horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
 

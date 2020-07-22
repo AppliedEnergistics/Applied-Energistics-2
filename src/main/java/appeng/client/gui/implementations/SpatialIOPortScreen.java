@@ -18,6 +18,8 @@
 
 package appeng.client.gui.implementations;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
@@ -43,33 +45,37 @@ public class SpatialIOPortScreen extends AEBaseScreen<SpatialIOPortContainer> {
     }
 
     @Override
-    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.font.drawString(GuiText.StoredPower.getLocal() + ": "
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
+        this.font.drawString(matrixStack, GuiText.StoredPower.getLocal() + ": "
                 + Platform.formatPowerLong(this.container.getCurrentPower(), false), 13, 21, 4210752);
-        this.font.drawString(
+        this.font.drawString(matrixStack,
                 GuiText.MaxPower.getLocal() + ": " + Platform.formatPowerLong(this.container.getMaxPower(), false), 13,
                 31, 4210752);
-        this.font.drawString(GuiText.RequiredPower.getLocal() + ": "
+        this.font.drawString(matrixStack, GuiText.RequiredPower.getLocal() + ": "
                 + Platform.formatPowerLong(this.container.getRequiredPower(), false), 13, 73, 4210752);
-        this.font.drawString(
+        this.font.drawString(matrixStack,
                 GuiText.Efficiency.getLocal() + ": " + (((float) this.container.getEfficency()) / 100) + '%', 13, 83,
                 4210752);
 
-        this.font.drawString(this.getGuiDisplayName(GuiText.SpatialIOPort.getLocal()), 8, 6, 4210752);
-        this.font.drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96, 4210752);
+        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.SpatialIOPort.textComponent()).getString(), 8,
+                6, 4210752);
+        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96, 4210752);
 
         if (this.container.xSize != 0 && this.container.ySize != 0 && this.container.zSize != 0) {
             final String text = GuiText.SCSSize.getLocal() + ": " + this.container.xSize + "x" + this.container.ySize
                     + "x" + this.container.zSize;
-            this.font.drawString(text, 13, 93, 4210752);
+            this.font.drawString(matrixStack, text, 13, 93, 4210752);
         } else {
-            this.font.drawString(GuiText.SCSSize.getLocal() + ": " + GuiText.SCSInvalid.getLocal(), 13, 93, 4210752);
+            this.font.drawString(matrixStack, GuiText.SCSSize.getLocal() + ": " + GuiText.SCSInvalid.getLocal(), 13, 93,
+                    4210752);
         }
 
     }
 
     @Override
-    public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY, float partialTicks) {
         this.bindTexture("guis/spatialio.png");
         GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());
     }

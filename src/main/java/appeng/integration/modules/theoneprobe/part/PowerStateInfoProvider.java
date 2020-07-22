@@ -20,6 +20,7 @@ package appeng.integration.modules.theoneprobe.part;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
 import mcjty.theoneprobe.api.IProbeHitData;
@@ -37,22 +38,22 @@ public class PowerStateInfoProvider implements IPartProbInfoProvider {
             BlockState blockState, IProbeHitData data) {
         if (part instanceof IPowerChannelState) {
             final IPowerChannelState state = (IPowerChannelState) part;
-            final String tooltip = this.getToolTip(state.isActive(), state.isPowered());
+            final ITextComponent tooltip = this.getToolTip(state.isActive(), state.isPowered());
 
             probeInfo.text(tooltip);
         }
 
     }
 
-    private String getToolTip(final boolean isActive, final boolean isPowered) {
-        final String result;
+    private ITextComponent getToolTip(final boolean isActive, final boolean isPowered) {
+        final ITextComponent result;
 
         if (isActive && isPowered) {
-            result = TheOneProbeText.DEVICE_ONLINE.getTranslationString();
+            result = TheOneProbeText.DEVICE_ONLINE.getTranslationComponent();
         } else if (isPowered) {
-            result = TheOneProbeText.DEVICE_MISSING_CHANNEL.getTranslationString();
+            result = TheOneProbeText.DEVICE_MISSING_CHANNEL.getTranslationComponent();
         } else {
-            result = TheOneProbeText.DEVICE_OFFLINE.getTranslationString();
+            result = TheOneProbeText.DEVICE_OFFLINE.getTranslationComponent();
         }
 
         return result;

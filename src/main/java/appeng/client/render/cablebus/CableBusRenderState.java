@@ -28,7 +28,7 @@ import java.util.Objects;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ILightReader;
+import net.minecraft.world.IBlockDisplayReader;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 
@@ -80,7 +80,7 @@ public class CableBusRenderState {
     private EnumMap<Direction, FacadeRenderState> facades = new EnumMap<>(Direction.class);
 
     // Used for Facades.
-    private WeakReference<ILightReader> world;
+    private WeakReference<IBlockDisplayReader> world;
     private BlockPos pos;
 
     // Contains the bounding boxes of all parts on the cable bus to allow facades to
@@ -152,11 +152,11 @@ public class CableBusRenderState {
         return this.facades;
     }
 
-    public ILightReader getWorld() {
+    public IBlockDisplayReader getWorld() {
         return this.world.get();
     }
 
-    public void setWorld(ILightReader world) {
+    public void setWorld(IBlockDisplayReader world) {
         this.world = new WeakReference<>(world);
     }
 

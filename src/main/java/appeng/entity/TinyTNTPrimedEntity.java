@@ -172,7 +172,7 @@ public final class TinyTNTPrimedEntity extends TNTEntity implements IEntityAddit
                             strength -= (resistance + 0.3F) * 0.11f;
 
                             if (strength > 0.01) {
-                                if (block.getMaterial(state) != Material.AIR) {
+                                if (block.getRenderMaterial(state) != Material.AIR) {
                                     if (block.canDropFromExplosion(ex)) {
                                         block.spawnDrops(state, this.world, point);
                                     }

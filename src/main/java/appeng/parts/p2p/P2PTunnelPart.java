@@ -28,7 +28,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.api.config.Actionable;
@@ -157,7 +157,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     }
 
     @Override
-    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
+    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         if (Platform.isClient()) {
             return true;
         }
@@ -280,7 +280,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart> extends BasicStateP
     }
 
     @Override
-    public boolean onPartShiftActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
+    public boolean onPartShiftActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         final ItemStack is = player.inventory.getCurrentItem();
         if (!is.isEmpty() && is.getItem() instanceof IMemoryCard) {
             if (Platform.isClient()) {

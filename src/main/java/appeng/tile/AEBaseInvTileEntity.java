@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
@@ -45,8 +46,8 @@ public abstract class AEBaseInvTileEntity extends AEBaseTileEntity implements IA
     }
 
     @Override
-    public void read(final CompoundNBT data) {
-        super.read(data);
+    public void read(BlockState blockState, final CompoundNBT data) {
+        super.read(blockState, data);
         final IItemHandler inv = this.getInternalInventory();
         if (inv != EmptyHandler.INSTANCE) {
             final CompoundNBT opt = data.getCompound("inv");

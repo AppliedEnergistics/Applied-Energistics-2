@@ -18,6 +18,7 @@
 
 package appeng.tile.grid;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 
@@ -39,8 +40,8 @@ public class AENetworkTileEntity extends AEBaseTileEntity implements IActionHost
     }
 
     @Override
-    public void read(final CompoundNBT data) {
-        super.read(data);
+    public void read(BlockState blockState, final CompoundNBT data) {
+        super.read(blockState, data);
         this.getProxy().readFromNBT(data);
     }
 

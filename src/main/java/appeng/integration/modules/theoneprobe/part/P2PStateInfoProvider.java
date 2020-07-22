@@ -22,6 +22,8 @@ import com.google.common.collect.Iterators;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 import mcjty.theoneprobe.api.IProbeHitData;
@@ -69,10 +71,10 @@ public class P2PStateInfoProvider implements IPartProbInfoProvider {
 
             switch (state) {
                 case STATE_UNLINKED:
-                    probeInfo.text(TheOneProbeText.P2P_UNLINKED.getTranslationString());
+                    probeInfo.text(TheOneProbeText.P2P_UNLINKED.getTranslationComponent());
                     break;
                 case STATE_OUTPUT:
-                    probeInfo.text(TheOneProbeText.P2P_OUTPUT.getTranslationString());
+                    probeInfo.text(TheOneProbeText.P2P_OUTPUT.getTranslationComponent());
                     break;
                 case STATE_INPUT:
                     probeInfo.text(getOutputText(outputCount));
@@ -80,7 +82,7 @@ public class P2PStateInfoProvider implements IPartProbInfoProvider {
             }
 
             final short freq = tunnel.getFrequency();
-            final String freqTooltip = Platform.p2p().toHexString(freq);
+            final ITextComponent freqTooltip = new StringTextComponent(Platform.p2p().toHexString(freq));
 
             probeInfo.text(freqTooltip);
         }
@@ -95,11 +97,11 @@ public class P2PStateInfoProvider implements IPartProbInfoProvider {
         }
     }
 
-    private static String getOutputText(int outputs) {
+    private static ITextComponent getOutputText(int outputs) {
         if (outputs <= 1) {
-            return TheOneProbeText.P2P_INPUT_ONE_OUTPUT.getTranslationString();
+            return TheOneProbeText.P2P_INPUT_ONE_OUTPUT.getTranslationComponent();
         } else {
-            return TheOneProbeText.P2P_INPUT_MANY_OUTPUTS.getTranslationString(outputs);
+            return TheOneProbeText.P2P_INPUT_MANY_OUTPUTS.getTranslationComponent(outputs);
         }
     }
 

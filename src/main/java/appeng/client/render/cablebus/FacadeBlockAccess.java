@@ -21,11 +21,11 @@ package appeng.client.render.cablebus;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ILightReader;
+import net.minecraft.world.IBlockDisplayReader;
 import net.minecraft.world.level.ColorResolver;
 import net.minecraft.world.lighting.WorldLightManager;
 
@@ -35,14 +35,14 @@ import net.minecraft.world.lighting.WorldLightManager;
  *
  * @author covers1624
  */
-public class FacadeBlockAccess implements ILightReader {
+public class FacadeBlockAccess implements IBlockDisplayReader {
 
-    private final ILightReader world;
+    private final IBlockDisplayReader world;
     private final BlockPos pos;
     private final Direction side;
     private final BlockState state;
 
-    public FacadeBlockAccess(ILightReader world, BlockPos pos, Direction side, BlockState state) {
+    public FacadeBlockAccess(IBlockDisplayReader world, BlockPos pos, Direction side, BlockState state) {
         this.world = world;
         this.pos = pos;
         this.side = side;
@@ -64,7 +64,7 @@ public class FacadeBlockAccess implements ILightReader {
     }
 
     @Override
-    public IFluidState getFluidState(BlockPos pos) {
+    public FluidState getFluidState(BlockPos pos) {
         return world.getFluidState(pos);
     }
 

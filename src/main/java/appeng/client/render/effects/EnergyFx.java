@@ -26,8 +26,8 @@ import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -38,7 +38,7 @@ public class EnergyFx extends SpriteTexturedParticle {
     private final int startBlkY;
     private final int startBlkZ;
 
-    public EnergyFx(final World par1World, final double par2, final double par4, final double par6,
+    public EnergyFx(final ClientWorld par1World, final double par2, final double par4, final double par6,
             final IAnimatedSprite sprite) {
         super(par1World, par2, par4, par6);
         this.particleGravity = 0;
@@ -109,7 +109,7 @@ public class EnergyFx extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle makeParticle(EnergyParticleData data, World worldIn, double x, double y, double z,
+        public Particle makeParticle(EnergyParticleData data, ClientWorld worldIn, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
             EnergyFx result = new EnergyFx(worldIn, x, y, z, spriteSet);
             result.setMotionX((float) xSpeed);

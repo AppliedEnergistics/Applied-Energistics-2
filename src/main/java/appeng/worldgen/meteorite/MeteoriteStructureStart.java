@@ -8,7 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
@@ -26,8 +26,8 @@ import appeng.worldgen.meteorite.fallout.FalloutMode;
 
 public class MeteoriteStructureStart extends StructureStart {
 
-    private final Tag<Block> sandTag = BlockTags.getCollection().getOrCreate(new ResourceLocation("minecraft:sand"));
-    private final Tag<Block> terracottaTag = BlockTags.getCollection()
+    private final ITag<Block> sandTag = BlockTags.getCollection().getOrCreate(new ResourceLocation("minecraft:sand"));
+    private final ITag<Block> terracottaTag = BlockTags.getCollection()
             .getOrCreate(new ResourceLocation("forge:terracotta"));
 
     public MeteoriteStructureStart(Structure<?> p_i225815_1_, int p_i225815_2_, int p_i225815_3_,
@@ -87,7 +87,7 @@ public class MeteoriteStructureStart extends StructureStart {
      * 
      * @return true, if it found a single block of water
      */
-    private boolean locateWaterAroundTheCrater(ChunkGenerator<?> generator, BlockPos pos, float radius) {
+    private boolean locateWaterAroundTheCrater(ChunkGenerator generator, BlockPos pos, float radius) {
         final int seaLevel = generator.getSeaLevel();
         final int maxY = seaLevel - 1;
         BlockPos.Mutable blockPos = new BlockPos.Mutable();

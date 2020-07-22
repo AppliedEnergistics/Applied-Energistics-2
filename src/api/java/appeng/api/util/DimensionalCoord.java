@@ -25,8 +25,9 @@ package appeng.api.util;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.Dimension;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.dimension.Dimension;
 
 /**
  * Represents a location in the Minecraft Universe
@@ -34,7 +35,7 @@ import net.minecraft.world.dimension.Dimension;
 public class DimensionalCoord extends WorldCoord {
 
     private final IWorld world;
-    private final Dimension dimension;
+    private final DimensionType dimension;
 
     public DimensionalCoord(final DimensionalCoord coordinate) {
         super(coordinate.x, coordinate.y, coordinate.z);
@@ -45,19 +46,19 @@ public class DimensionalCoord extends WorldCoord {
     public DimensionalCoord(final TileEntity tileEntity) {
         super(tileEntity);
         this.world = tileEntity.getWorld();
-        this.dimension = this.world.getDimension();
+        this.dimension = this.world.func_230315_m_();
     }
 
     public DimensionalCoord(final IWorld world, final int x, final int y, final int z) {
         super(x, y, z);
         this.world = world;
-        this.dimension = world.getDimension();
+        this.dimension = world.func_230315_m_();
     }
 
     public DimensionalCoord(final IWorld world, final BlockPos pos) {
         super(pos);
         this.world = world;
-        this.dimension = world.getDimension();
+        this.dimension = world.func_230315_m_();
     }
 
     @Override

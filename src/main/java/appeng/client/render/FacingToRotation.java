@@ -20,13 +20,13 @@ package appeng.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 
-import net.minecraft.client.renderer.Matrix4f;
-import net.minecraft.client.renderer.Quaternion;
-import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.util.math.vector.Vector4f;
 
 /**
  * TODO: Removed useless stuff.
@@ -90,7 +90,7 @@ public enum FacingToRotation implements IStringSerializable {
     }
 
     public Direction rotate(Direction facing) {
-        Vec3i dir = facing.getDirectionVec();
+        Vector3i dir = facing.getDirectionVec();
         Vector4f vec = new Vector4f(dir.getX(), dir.getY(), dir.getZ(), 1);
         vec.transform(mat);
         return Direction.getFacingFromVector(vec.getX(), vec.getY(), vec.getZ());

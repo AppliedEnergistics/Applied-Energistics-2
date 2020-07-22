@@ -18,6 +18,8 @@
 
 package appeng.client.gui.implementations;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
@@ -46,7 +48,7 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
 
     @Override
     protected void addButtons() {
-        this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(),
+        this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.textComponent(),
                 this.itemRenderer, btn -> openPriorityGui()));
 
         this.blockMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 8, Settings.BLOCK, YesNo.NO);
@@ -59,7 +61,7 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
     }
 
     @Override
-    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
         if (this.blockMode != null) {
             this.blockMode.set(((InterfaceContainer) this.cvb).getBlockingMode());
         }
@@ -68,13 +70,13 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
             this.interfaceMode.setState(((InterfaceContainer) this.cvb).getInterfaceTerminalMode() == YesNo.YES);
         }
 
-        this.font.drawString(this.getGuiDisplayName(GuiText.Interface.getLocal()), 8, 6, 4210752);
+        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Interface.textComponent()).getString(), 8, 6, 4210752);
 
-        this.font.drawString(GuiText.Config.getLocal(), 8, 6 + 11 + 7, 4210752);
-        this.font.drawString(GuiText.StoredItems.getLocal(), 8, 6 + 60 + 7, 4210752);
-        this.font.drawString(GuiText.Patterns.getLocal(), 8, 6 + 73 + 7, 4210752);
+        this.font.drawString(matrixStack, GuiText.Config.getLocal(), 8, 6 + 11 + 7, 4210752);
+        this.font.drawString(matrixStack, GuiText.StoredItems.getLocal(), 8, 6 + 60 + 7, 4210752);
+        this.font.drawString(matrixStack, GuiText.Patterns.getLocal(), 8, 6 + 73 + 7, 4210752);
 
-        this.font.drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
     }
 
     @Override

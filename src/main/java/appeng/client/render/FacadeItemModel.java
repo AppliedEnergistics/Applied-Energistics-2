@@ -28,8 +28,8 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.Material;
 import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
@@ -49,7 +49,7 @@ public class FacadeItemModel implements IModelGeometry<FacadeItemModel> {
 
     @Override
     public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
-            Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
+            Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
             ItemOverrideList overrides, ResourceLocation modelLocation) {
         IBakedModel bakedBaseModel = bakery.getBakedModel(MODEL_BASE, modelTransform, spriteGetter);
         FacadeBuilder facadeBuilder = new FacadeBuilder();
@@ -58,7 +58,7 @@ public class FacadeItemModel implements IModelGeometry<FacadeItemModel> {
     }
 
     @Override
-    public Collection<Material> getTextures(IModelConfiguration owner,
+    public Collection<RenderMaterial> getTextures(IModelConfiguration owner,
             Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
         return modelGetter.apply(MODEL_BASE).getTextures(modelGetter, missingTextureErrors);
     }

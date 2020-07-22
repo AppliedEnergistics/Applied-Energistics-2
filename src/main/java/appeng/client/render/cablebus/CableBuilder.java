@@ -25,8 +25,9 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.function.Function;
 
+import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
@@ -49,7 +50,7 @@ class CableBuilder {
 
     private final SmartCableTextures smartCableTextures;
 
-    CableBuilder(Function<Material, TextureAtlasSprite> bakedTextureGetter) {
+    CableBuilder(Function<RenderMaterial, TextureAtlasSprite> bakedTextureGetter) {
         this.coreTextures = new EnumMap<>(CableCoreType.class);
 
         for (CableCoreType type : CableCoreType.values()) {
@@ -77,7 +78,7 @@ class CableBuilder {
         this.smartCableTextures = new SmartCableTextures(bakedTextureGetter);
     }
 
-    static Material getConnectionTexture(AECableType cableType, AEColor color) {
+    static RenderMaterial getConnectionTexture(AECableType cableType, AEColor color) {
         String textureFolder;
         switch (cableType) {
             case GLASS:
@@ -99,7 +100,7 @@ class CableBuilder {
                 throw new IllegalStateException("Cable type " + cableType + " does not support connections.");
         }
 
-        return new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+        return new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
                 new ResourceLocation(AppEng.MOD_ID, textureFolder + color.name().toLowerCase()));
     }
 
@@ -701,8 +702,8 @@ class CableBuilder {
     }
 
     // Get all textures needed for building the actual cable quads
-    public static List<Material> getTextures() {
-        List<Material> locations = new ArrayList<>();
+    public static List<RenderMaterial> getTextures() {
+        List<RenderMaterial> locations = new ArrayList<>();
 
         for (CableCoreType coreType : CableCoreType.values()) {
             for (AEColor color : AEColor.values()) {

@@ -23,6 +23,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -219,8 +220,8 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
     }
 
     @Override
-    public void read(final CompoundNBT data) {
-        super.read(data);
+    public void read(BlockState blockState, final CompoundNBT data) {
+        super.read(blockState, data);
         if (data.contains("myPlan")) {
             final ItemStack myPat = ItemStack.read(data.getCompound("myPlan"));
 
@@ -425,7 +426,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
                 final IAEItemStack item = AEItemStack.fromItemStack(output);
                 if (item != null) {
                     final TargetPoint where = new TargetPoint(this.pos.getX(), this.pos.getY(), this.pos.getZ(), 32,
-                            this.world.getDimension().getType());
+                            this.world.func_230315_m_());
                     NetworkHandler.instance()
                             .sendToAllAround(new AssemblerAnimationPacket(this.pos, (byte) speed, item), where);
                 }

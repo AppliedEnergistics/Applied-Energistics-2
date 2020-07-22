@@ -37,7 +37,6 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.BlockFaceUV;
 import net.minecraft.client.renderer.model.BlockModel;
@@ -50,13 +49,14 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ItemOverride;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.model.ItemTransformVec3f;
-import net.minecraft.client.renderer.model.Material;
 import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.Direction;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.TransformationMatrix;
 import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
@@ -143,7 +143,7 @@ public class UVLModelLoader implements IModelLoader<UVLModelLoader.UVLModelWrapp
 
         @Override
         public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
-                Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
+                Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
                 ItemOverrideList overrides, ResourceLocation modelLocation) {
             TextureAtlasSprite particle = spriteGetter.apply(owner.resolveTexture("particle"));
 
@@ -199,7 +199,7 @@ public class UVLModelLoader implements IModelLoader<UVLModelLoader.UVLModelWrapp
         }
 
         @Override
-        public Collection<Material> getTextures(IModelConfiguration owner,
+        public Collection<RenderMaterial> getTextures(IModelConfiguration owner,
                 Function<ResourceLocation, IUnbakedModel> modelGetter,
                 Set<com.mojang.datafixers.util.Pair<String, String>> missingTextureErrors) {
             return parent.getTextures(modelGetter, missingTextureErrors);

@@ -18,6 +18,7 @@
 
 package appeng.client.gui.widgets;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -26,6 +27,7 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.text.StringTextComponent;
 
 /**
  * A modified version of the Minecraft text field. You can initialize it over
@@ -52,10 +54,11 @@ public class AETextField extends TextFieldWidget {
      */
     public AETextField(final FontRenderer fontRenderer, final int xPos, final int yPos, final int width,
             final int height) {
-        super(fontRenderer, xPos + PADDING, yPos + PADDING, width - 2 * PADDING - (int) fontRenderer.getCharWidth('_'),
-                height - 2 * PADDING, "");
+        super(fontRenderer, xPos + PADDING, yPos + PADDING,
+                width - 2 * PADDING - (int) fontRenderer.getStringWidth("_"), height - 2 * PADDING,
+                new StringTextComponent(""));
 
-        this._fontPad = (int) fontRenderer.getCharWidth('_');
+        this._fontPad = (int) fontRenderer.getStringWidth("_");
     }
 
     public void selectAll() {
@@ -68,16 +71,18 @@ public class AETextField extends TextFieldWidget {
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partial) {
+    public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
         if (this.getVisible()) {
             if (this.isFocused()) {
-                fill(this.x - PADDING + 1, this.y - PADDING + 1, this.x + this.width + this._fontPad + PADDING - 1,
-                        this.y + this.height + PADDING - 1, 0xFF606060);
+                fill(matrixStack, this.x - PADDING + 1, this.y - PADDING + 1,
+                        this.x + this.width + this._fontPad + PADDING - 1, this.y + this.height + PADDING - 1,
+                        0xFF606060);
             } else {
-                fill(this.x - PADDING + 1, this.y - PADDING + 1, this.x + this.width + this._fontPad + PADDING - 1,
-                        this.y + this.height + PADDING - 1, 0xFFA8A8A8);
+                fill(matrixStack, this.x - PADDING + 1, this.y - PADDING + 1,
+                        this.x + this.width + this._fontPad + PADDING - 1, this.y + this.height + PADDING - 1,
+                        0xFFA8A8A8);
             }
-            super.renderButton(mouseX, mouseY, partial);
+            super.renderButton(matrixStack, mouseX, mouseY, partial);
         }
     }
 

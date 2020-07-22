@@ -18,6 +18,7 @@
 
 package appeng.fluids.client.gui.widgets;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
@@ -25,6 +26,8 @@ import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -40,17 +43,17 @@ public class FluidTankWidget extends Widget implements ITooltip {
     private final int slot;
 
     public FluidTankWidget(IAEFluidTank tank, int slot, int x, int y, int w, int h) {
-        super(x, y, w, h, "");
+        super(x, y, w, h, new StringTextComponent(""));
         this.tank = tank;
         this.slot = slot;
     }
-
+    
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
             RenderSystem.disableBlend();
 
-            fill(this.x, this.y, this.x + this.width, this.y + this.height, AEColor.GRAY.blackVariant | 0xFF000000);
+            fill(matrixStack, this.x, this.y, this.x + this.width, this.y + this.height, AEColor.GRAY.blackVariant | 0xFF000000);
 
             final IAEFluidStack fluidStack = this.tank.getFluidInSlot(this.slot);
             if (fluidStack != null && fluidStack.getStackSize() > 0) {
@@ -72,11 +75,11 @@ public class FluidTankWidget extends Widget implements ITooltip {
 
                 int iconHeightRemainder = scaledHeight % 16;
                 if (iconHeightRemainder > 0) {
-                    blit(this.x, this.y + this.height - iconHeightRemainder, getBlitOffset(), 16, iconHeightRemainder,
+                    blit(matrixStack, this.x, this.y + this.height - iconHeightRemainder, getBlitOffset(), 16, iconHeightRemainder,
                             sprite);
                 }
                 for (int i = 0; i < scaledHeight / 16; i++) {
-                    blit(this.x, this.y + this.height - iconHeightRemainder - (i + 1) * 16, getBlitOffset(), 16, 16,
+                    blit(matrixStack, this.x, this.y + this.height - iconHeightRemainder - (i + 1) * 16, getBlitOffset(), 16, 16,
                             sprite);
                 }
             }
@@ -85,15 +88,15 @@ public class FluidTankWidget extends Widget implements ITooltip {
     }
 
     @Override
-    public String getMessage() {
+    public ITextComponent getMessage() {
         final IAEFluidStack fluid = this.tank.getFluidInSlot(this.slot);
         if (fluid != null && fluid.getStackSize() > 0) {
             String desc = fluid.getFluid().getAttributes().getDisplayName(fluid.getFluidStack()).getFormattedText();
             String amountToText = fluid.getStackSize() + "mB";
 
-            return desc + "\n" + amountToText;
+            return new StringTextComponent(desc + "\n" + amountToText);
         }
-        return "";
+        return new StringTextComponent("");
     }
 
     @Override

@@ -32,7 +32,6 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
@@ -42,8 +41,9 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.ILightReader;
+import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.util.math.vector.Vector4f;
+import net.minecraft.world.IBlockDisplayReader;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
@@ -174,7 +174,7 @@ public class AutoRotatingBakedModel implements IBakedModel {
 
     @Nonnull
     @Override
-    public IModelData getModelData(@Nonnull ILightReader world, @Nonnull BlockPos pos, @Nonnull BlockState state,
+    public IModelData getModelData(@Nonnull IBlockDisplayReader world, @Nonnull BlockPos pos, @Nonnull BlockState state,
             @Nonnull IModelData tileData) {
         return this.parent.getModelData(world, pos, state, tileData);
     }
@@ -262,11 +262,11 @@ public class AutoRotatingBakedModel implements IBakedModel {
             } else {
                 switch (fs.length) {
                     case 3:
-                        Vec3i vec = this.f2r.rotate(this.face).getDirectionVec();
+                        Vector3i vec = this.f2r.rotate(this.face).getDirectionVec();
                         return new float[] { vec.getX(), vec.getY(), vec.getZ() };
                     case 4:
                         Vector4f veccc = new Vector4f(fs[0], fs[1], fs[2], fs[3]);
-                        Vec3i vecc = this.f2r.rotate(this.face).getDirectionVec();
+                        Vector3i vecc = this.f2r.rotate(this.face).getDirectionVec();
                         return new float[] { vecc.getX(), vecc.getY(), vecc.getZ(), veccc.getW() };
 
                     default:

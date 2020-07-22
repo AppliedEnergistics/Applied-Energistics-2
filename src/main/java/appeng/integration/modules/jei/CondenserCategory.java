@@ -25,11 +25,14 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.client.gui.HoverChecker;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -40,6 +43,7 @@ import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import mezz.jei.gui.HoverChecker;
 
 import appeng.api.config.CondenserOutput;
 import appeng.api.definitions.IMaterials;
@@ -90,7 +94,7 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
                 guiHelper.drawableBuilder(statesLocation, 16, 112, 14, 14).addPadding(28, 0, 78, 0).build());
         this.buttonIcons.put(CondenserOutput.SINGULARITY,
                 guiHelper.drawableBuilder(statesLocation, 32, 112, 14, 14).addPadding(28, 0, 78, 0).build());
-        this.buttonHoverChecker = new HoverChecker(28, 28 + 16, 78, 78 + 16, 0);
+        this.buttonHoverChecker = new HoverChecker(28, 28 + 16, 78, 78 + 16);
     }
 
     private ItemStack getOutput(CondenserOutput recipe) {
@@ -135,14 +139,14 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
     }
 
     @Override
-    public void draw(CondenserOutput recipe, double mouseX, double mouseY) {
-        this.progress.draw();
-        this.iconTrash.draw();
-        this.iconButton.draw();
+    public void draw(CondenserOutput recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+        this.progress.draw(matrixStack);
+        this.iconTrash.draw(matrixStack);
+        this.iconButton.draw(matrixStack);
 
         IDrawable buttonIcon = this.buttonIcons.get(recipe);
         if (buttonIcon != null) {
-            buttonIcon.draw();
+            buttonIcon.draw(matrixStack);
         }
     }
 
@@ -183,7 +187,7 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
     }
 
     @Override
-    public List<String> getTooltipStrings(CondenserOutput output, double mouseX, double mouseY) {
+    public List<ITextComponent> getTooltipStrings(CondenserOutput output, double mouseX, double mouseY) {
 
         if (this.buttonHoverChecker.checkHover((int) mouseX, (int) mouseY)) {
             String key;
@@ -199,7 +203,7 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
                     return Collections.emptyList();
             }
 
-            return Splitter.on("\\n").splitToList(I18n.format(key, output.requiredPower));
+            return Lists.newArrayList(new TranslationTextComponent(key));
         }
         return Collections.emptyList();
     }

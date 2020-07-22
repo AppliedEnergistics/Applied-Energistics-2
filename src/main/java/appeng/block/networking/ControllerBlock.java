@@ -38,7 +38,7 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerTileEntity> {
         offline, online, conflicted;
 
         @Override
-        public String getName() {
+        public String getString() {
             return this.name();
         }
 
@@ -54,7 +54,7 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerTileEntity> {
         block, column_x, column_y, column_z, inside_a, inside_b;
 
         @Override
-        public String getName() {
+        public String getString() {
             return this.name();
         }
 

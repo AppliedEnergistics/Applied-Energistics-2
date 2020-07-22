@@ -42,7 +42,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -966,11 +966,11 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                 final Block directedBlock = directedBlockState.getBlock();
                 ItemStack what = new ItemStack(directedBlock, 1);
                 try {
-                    Vec3d from = new Vec3d(hostTile.getPos().getX() + 0.5, hostTile.getPos().getY() + 0.5,
+                    Vector3d from = new Vector3d(hostTile.getPos().getX() + 0.5, hostTile.getPos().getY() + 0.5,
                             hostTile.getPos().getZ() + 0.5);
                     from = from.add(direction.getXOffset() * 0.501, direction.getYOffset() * 0.501,
                             direction.getZOffset() * 0.501);
-                    final Vec3d to = from.add(direction.getXOffset(), direction.getYOffset(), direction.getZOffset());
+                    final Vector3d to = from.add(direction.getXOffset(), direction.getYOffset(), direction.getZOffset());
                     final BlockRayTraceResult hit = null;// hostWorld.rayTraceBlocks( from, to ); //FIXME:
                                                          // https://github.com/MinecraftForge/MinecraftForge/pull/6708
                     if (hit != null && !BAD_BLOCKS.contains(directedBlock)) {

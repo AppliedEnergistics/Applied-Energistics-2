@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.google.common.base.Joiner;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.gui.widget.button.Button;
@@ -31,6 +32,7 @@ import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.api.storage.channels.IItemStorageChannel;
@@ -82,22 +84,23 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     public void init() {
         super.init();
 
-        this.start = new Button(this.guiLeft + 162, this.guiTop + this.ySize - 25, 50, 20, GuiText.Start.getLocal(),
-                btn -> start());
+        this.start = new Button(this.guiLeft + 162, this.guiTop + this.ySize - 25, 50, 20,
+                GuiText.Start.textComponent(), btn -> start());
         this.start.active = false;
         this.addButton(this.start);
 
         this.selectCPU = new Button(this.guiLeft + (219 - 180) / 2, this.guiTop + this.ySize - 68, 180, 20,
-                GuiText.CraftingCPU.getLocal() + ": " + GuiText.Automatic, btn -> selectNextCpu());
+                new StringTextComponent(GuiText.CraftingCPU.getLocal() + ": " + GuiText.Automatic),
+                btn -> selectNextCpu());
         this.selectCPU.active = false;
         this.addButton(this.selectCPU);
 
-        addButton(new Button(this.guiLeft + 6, this.guiTop + this.ySize - 25, 50, 20, GuiText.Cancel.getLocal(),
+        addButton(new Button(this.guiLeft + 6, this.guiTop + this.ySize - 25, 50, 20, GuiText.Cancel.textComponent(),
                 btn -> subGui.goBack()));
     }
 
     @Override
-    public void render(final int mouseX, final int mouseY, final float btn) {
+    public void render(MatrixStack matrixStack, final int mouseX, final int mouseY, final float btn) {
         this.updateCPUButtonText();
 
         this.start.active = !(this.container.hasNoCPU() || this.isSimulation());
@@ -130,7 +133,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
             }
         }
 
-        super.render(mouseX, mouseY, btn);
+        super.render(matrixStack, mouseX, mouseY, btn);
     }
 
     private void updateCPUButtonText() {
@@ -149,7 +152,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
             btnTextText = GuiText.NoCraftingCPUs.getLocal();
         }
 
-        this.selectCPU.setMessage(btnTextText);
+        this.selectCPU.setMessage(new StringTextComponent(btnTextText));
     }
 
     private boolean isSimulation() {
@@ -157,12 +160,13 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     }
 
     @Override
-    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
         final long BytesUsed = this.container.getUsedBytes();
         final String byteUsed = NumberFormat.getInstance().format(BytesUsed);
         final String Add = BytesUsed > 0 ? (byteUsed + ' ' + GuiText.BytesUsed.getLocal())
                 : GuiText.CalculatingWait.getLocal();
-        this.font.drawString(GuiText.CraftingPlan.getLocal() + " - " + Add, 8, 7, 4210752);
+        this.font.drawString(matrixStack, GuiText.CraftingPlan.getLocal() + " - " + Add, 8, 7, 4210752);
 
         String dsp = null;
 
@@ -176,7 +180,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
         }
 
         final int offset = (219 - this.font.getStringWidth(dsp)) / 2;
-        this.font.drawString(dsp, offset, 165, 4210752);
+        this.font.drawString(matrixStack, dsp, offset, 165, 4210752);
 
         final int sectionLength = 67;
 
@@ -230,7 +234,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
 
                     str = GuiText.FromStorage.getLocal() + ": " + str;
                     final int w = 4 + this.font.getStringWidth(str);
-                    this.font.drawString(str,
+                    this.font.drawString(matrixStack, str,
                             (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2),
                             (y * offY + yo + 6 - negY + downY) * 2, 4210752);
 
@@ -251,9 +255,9 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
                         str = Long.toString(missingStack.getStackSize() / 1000000) + 'm';
                     }
 
-                    str = GuiText.Missing.getLocal() + ": " + str;
+                    str = GuiText.Missing.textComponent().getString() + ": " + str;
                     final int w = 4 + this.font.getStringWidth(str);
-                    this.font.drawString(str,
+                    this.font.drawString(matrixStack, str,
                             (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2),
                             (y * offY + yo + 6 - negY + downY) * 2, 4210752);
 
@@ -276,7 +280,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
 
                     str = GuiText.ToCraft.getLocal() + ": " + str;
                     final int w = 4 + this.font.getStringWidth(str);
-                    this.font.drawString(str,
+                    this.font.drawString(matrixStack, str,
                             (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2),
                             (y * offY + yo + 6 - negY + downY) * 2, 4210752);
 
@@ -292,7 +296,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
                 final ItemStack is = refStack.asItemStackRepresentation();
 
                 if (this.tooltip == z - viewStart) {
-                    dspToolTip = Platform.getItemDisplayName(refStack).getFormattedText();
+                    dspToolTip = Platform.getItemDisplayName(refStack).getString();
 
                     if (lineList.size() > 0) {
                         dspToolTip = dspToolTip + '\n' + Joiner.on("\n").join(lineList);
@@ -307,7 +311,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
                 if (red) {
                     final int startX = x * (1 + sectionLength) + xo;
                     final int startY = posY - 4;
-                    fill(startX, startY, startX + sectionLength, startY + offY, 0x1AFF0000);
+                    fill(matrixStack, startX, startY, startX + sectionLength, startY + offY, 0x1AFF0000);
                 }
 
                 x++;
@@ -320,12 +324,13 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
         }
 
         if (this.tooltip >= 0 && !dspToolTip.isEmpty()) {
-            this.drawTooltip(toolPosX, toolPosY + 10, dspToolTip);
+            this.drawTooltip(matrixStack, toolPosX, toolPosY + 10, new StringTextComponent(dspToolTip));
         }
     }
 
     @Override
-    public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY, float partialTicks) {
         this.setScrollBar();
         this.bindTexture("guis/craftingreport.png");
         GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());

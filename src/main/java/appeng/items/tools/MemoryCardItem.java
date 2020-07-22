@@ -145,19 +145,19 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
 
         switch (msg) {
             case SETTINGS_CLEARED:
-                player.sendMessage(PlayerMessages.SettingCleared.get());
+                player.sendMessage(PlayerMessages.SettingCleared.get(), player.getUniqueID());
                 break;
             case INVALID_MACHINE:
-                player.sendMessage(PlayerMessages.InvalidMachine.get());
+                player.sendMessage(PlayerMessages.InvalidMachine.get(), player.getUniqueID());
                 break;
             case SETTINGS_LOADED:
-                player.sendMessage(PlayerMessages.LoadedSettings.get());
+                player.sendMessage(PlayerMessages.LoadedSettings.get(), player.getUniqueID());
                 break;
             case SETTINGS_SAVED:
-                player.sendMessage(PlayerMessages.SavedSettings.get());
+                player.sendMessage(PlayerMessages.SavedSettings.get(), player.getUniqueID());
                 break;
             case SETTINGS_RESET:
-                player.sendMessage(PlayerMessages.ResetSettings.get());
+                player.sendMessage(PlayerMessages.ResetSettings.get(), player.getUniqueID());
                 break;
             default:
         }

@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 
 import com.google.common.collect.ImmutableSet;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
@@ -85,8 +86,8 @@ public abstract class AEBasePoweredTileEntity extends AEBaseInvTileEntity
     }
 
     @Override
-    public void read(final CompoundNBT data) {
-        super.read(data);
+    public void read(BlockState blockState, final CompoundNBT data) {
+        super.read(blockState, data);
         this.setInternalCurrentPower(data.getDouble("internalCurrentPower"));
     }
 

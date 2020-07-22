@@ -29,8 +29,8 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.Material;
 import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
@@ -42,19 +42,19 @@ import net.minecraftforge.client.model.geometry.IModelGeometry;
  */
 public class PlaneModel implements IModelGeometry<PlaneModel> {
 
-    private final Material frontTexture;
-    private final Material sidesTexture;
-    private final Material backTexture;
+    private final RenderMaterial frontTexture;
+    private final RenderMaterial sidesTexture;
+    private final RenderMaterial backTexture;
 
     public PlaneModel(ResourceLocation frontTexture, ResourceLocation sidesTexture, ResourceLocation backTexture) {
-        this.frontTexture = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, frontTexture);
-        this.sidesTexture = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, sidesTexture);
-        this.backTexture = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, backTexture);
+        this.frontTexture = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE, frontTexture);
+        this.sidesTexture = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE, sidesTexture);
+        this.backTexture = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE, backTexture);
     }
 
     @Override
     public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
-            Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
+            Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
             ItemOverrideList overrides, ResourceLocation modelLocation) {
         TextureAtlasSprite frontSprite = spriteGetter.apply(this.frontTexture);
         TextureAtlasSprite sidesSprite = spriteGetter.apply(this.sidesTexture);
@@ -64,7 +64,7 @@ public class PlaneModel implements IModelGeometry<PlaneModel> {
     }
 
     @Override
-    public Collection<Material> getTextures(IModelConfiguration owner,
+    public Collection<RenderMaterial> getTextures(IModelConfiguration owner,
             Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
         return Arrays.asList(frontTexture, sidesTexture, backTexture);
     }

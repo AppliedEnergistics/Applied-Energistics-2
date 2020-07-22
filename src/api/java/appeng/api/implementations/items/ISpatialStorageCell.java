@@ -25,8 +25,8 @@ package appeng.api.implementations.items;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 
 import appeng.api.implementations.TransitionResult;
 import appeng.api.util.WorldCoord;

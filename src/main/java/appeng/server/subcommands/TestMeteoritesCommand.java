@@ -40,9 +40,10 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
+import net.minecraft.world.DimensionType;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.IChunk;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.structure.StructureStart;
@@ -86,13 +87,13 @@ public class TestMeteoritesCommand implements ISubCommand {
             world = player.getServerWorld();
             centerBlock = new BlockPos(player.getPosX(), 0, player.getPosZ());
         } else {
-            world = srv.getWorld(DimensionType.OVERWORLD);
-            centerBlock = world.getSpawnPoint();
+            world = srv.getWorld(World.field_234918_g_);
+            centerBlock = world.func_241135_u_();
         }
 
         ChunkPos center = new ChunkPos(centerBlock);
 
-        ChunkGenerator<?> generator = world.getChunkProvider().getChunkGenerator();
+        ChunkGenerator generator = world.getChunkProvider().getChunkGenerator();
 
         // Find all meteorites in the given rectangle
         List<PlacedMeteoriteSettings> found = new ArrayList<>();
@@ -168,11 +169,11 @@ public class TestMeteoritesCommand implements ISubCommand {
             }
 
             ITextComponent msg = new StringTextComponent(" #" + (i + 1) + " ");
-            msg.appendSibling(getClickablePosition(world, settings, pos)).appendSibling(restOfLine);
+            msg.deepCopy().func_230529_a_(getClickablePosition(world, settings, pos)).appendSibling(restOfLine);
 
             // Add a tooltip
-            ITextComponent tooltip = new StringTextComponent(settings.toString() + "\nBiome: ")
-                    .appendSibling(world.getBiome(pos).getDisplayName());
+            ITextComponent tooltip = new StringTextComponent(settings.toString() + "\nBiome: ").deepCopy()
+                    .func_230529_a_(world.getBiome(pos).getDisplayName());
             msg.applyTextStyle(style -> style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
 
             sender.sendFeedback(msg, true);

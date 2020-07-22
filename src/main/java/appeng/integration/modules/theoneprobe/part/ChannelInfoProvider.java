@@ -21,6 +21,7 @@ package appeng.integration.modules.theoneprobe.part;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
 import mcjty.theoneprobe.api.IProbeHitData;
@@ -49,7 +50,7 @@ public class ChannelInfoProvider implements IPartProbInfoProvider {
                 usedChannels = 0;
             }
 
-            final String formattedChannelString = TheOneProbeText.CHANNELS.getTranslationString(usedChannels,
+            final ITextComponent formattedChannelString = TheOneProbeText.CHANNELS.getTranslationComponent(usedChannels,
                     maxChannels);
 
             probeInfo.text(formattedChannelString);

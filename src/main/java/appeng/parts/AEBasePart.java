@@ -38,7 +38,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -402,7 +402,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
     }
 
     @Override
-    public final boolean onActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
+    public final boolean onActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         if (this.useMemoryCard(player)) {
             return true;
         }
@@ -411,7 +411,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
     }
 
     @Override
-    public final boolean onShiftActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
+    public final boolean onShiftActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         if (this.useMemoryCard(player)) {
             return true;
         }
@@ -419,11 +419,11 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
         return this.onPartShiftActivate(player, hand, pos);
     }
 
-    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
+    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         return false;
     }
 
-    public boolean onPartShiftActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
+    public boolean onPartShiftActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         return false;
     }
 

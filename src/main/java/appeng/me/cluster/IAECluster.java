@@ -20,7 +20,6 @@ package appeng.me.cluster;
 
 import java.util.Iterator;
 
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
 import appeng.api.networking.IGridHost;

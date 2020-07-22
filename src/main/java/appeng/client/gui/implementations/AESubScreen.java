@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IParts;
@@ -92,10 +93,11 @@ final class AESubScreen {
         return addBackButton(buttonAdder, x, y, null);
     }
 
-    public final TabButton addBackButton(Consumer<TabButton> buttonAdder, int x, int y, @Nullable String label) {
+    public final TabButton addBackButton(Consumer<TabButton> buttonAdder, int x, int y,
+            @Nullable ITextComponent label) {
         if (this.previousContainerType != null && !previousContainerIcon.isEmpty()) {
             if (label == null) {
-                label = previousContainerIcon.getDisplayName().getString();
+                label = previousContainerIcon.getDisplayName();
             }
             ItemRenderer itemRenderer = gui.getMinecraft().getItemRenderer();
             TabButton button = new TabButton(gui.getGuiLeft() + x, gui.getGuiTop() + y, previousContainerIcon, label,

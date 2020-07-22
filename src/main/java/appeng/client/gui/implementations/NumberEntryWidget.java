@@ -3,9 +3,13 @@ package appeng.client.gui.implementations;
 import java.util.function.Consumer;
 import java.util.function.LongConsumer;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.NumberEntryType;
@@ -18,6 +22,9 @@ import appeng.core.AEConfig;
  * attached buttons to increment/decrement the number in fixed intervals.
  */
 public class NumberEntryWidget implements ITickingWidget {
+
+    private static final ITextComponent PLUS = new StringTextComponent("+");
+    private static final ITextComponent MINUS = new StringTextComponent("+");
 
     private final AEBaseScreen<?> parent;
 
@@ -86,18 +93,18 @@ public class NumberEntryWidget implements ITickingWidget {
         int left = parent.getGuiLeft() + x;
         int top = parent.getGuiTop() + y;
 
-        addButton.accept(this.plus1 = new Button(left, top, 22, 20, "+" + a, btn -> addQty(a)));
-        addButton.accept(this.plus10 = new Button(left + 28, top, 28, 20, "+" + b, btn -> addQty(b)));
-        addButton.accept(this.plus100 = new Button(left + 62, top, 32, 20, "+" + c, btn -> addQty(c)));
-        addButton.accept(this.plus1000 = new Button(left + 100, top, 38, 20, "+" + d, btn -> addQty(d)));
+        addButton.accept(this.plus1 = new Button(left, top, 22, 20, PLUS /* + a */, btn -> addQty(a)));
+        addButton.accept(this.plus10 = new Button(left + 28, top, 28, 20, PLUS /* + b */, btn -> addQty(b)));
+        addButton.accept(this.plus100 = new Button(left + 62, top, 32, 20, PLUS /* + c */, btn -> addQty(c)));
+        addButton.accept(this.plus1000 = new Button(left + 100, top, 38, 20, PLUS/* + d */, btn -> addQty(d)));
 
         // Placing this here will give a sensible tab order
         addChildren.accept(this.level);
 
-        addButton.accept(this.minus1 = new Button(left, top + 42, 22, 20, "-" + a, btn -> addQty(-a)));
-        addButton.accept(this.minus10 = new Button(left + 28, top + 42, 28, 20, "-" + b, btn -> addQty(-b)));
-        addButton.accept(this.minus100 = new Button(left + 62, top + 42, 32, 20, "-" + c, btn -> addQty(-c)));
-        addButton.accept(this.minus1000 = new Button(left + 100, top + 42, 38, 20, "-" + d, btn -> addQty(-d)));
+        addButton.accept(this.minus1 = new Button(left, top + 42, 22, 20, MINUS /* + a */, btn -> addQty(-a)));
+        addButton.accept(this.minus10 = new Button(left + 28, top + 42, 28, 20, MINUS /* + b */, btn -> addQty(-b)));
+        addButton.accept(this.minus100 = new Button(left + 62, top + 42, 32, 20, MINUS /* + c */, btn -> addQty(-c)));
+        addButton.accept(this.minus1000 = new Button(left + 100, top + 42, 38, 20, MINUS /* + d */, btn -> addQty(-d)));
     }
 
     private void addQty(final long i) {
@@ -106,8 +113,8 @@ public class NumberEntryWidget implements ITickingWidget {
         this.level.setText(String.valueOf(Math.max(minValue, currentValue + i)));
     }
 
-    public void render(int mouseX, int mouseY, float partialTicks) {
-        this.level.render(mouseX, mouseY, partialTicks);
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        this.level.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
     public void setValue(long value, boolean skipNotify) {

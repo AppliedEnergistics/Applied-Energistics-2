@@ -105,8 +105,8 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     }
 
     @Override
-    public void read(final CompoundNBT data) {
-        super.read(data);
+    public void read(BlockState blockState, final CompoundNBT data) {
+        super.read(blockState, data);
 
         if (data.contains("customName")) {
             this.customName = data.getString("customName");
@@ -148,7 +148,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
     public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt) {
         // / pkt.actionType
         if (pkt.getTileEntityType() == 64) {
-            this.handleUpdateTag(pkt.getNbtCompound());
+            this.handleUpdateTag(null, pkt.getNbtCompound());
         }
     }
 
@@ -220,7 +220,7 @@ public class AEBaseTileEntity extends TileEntity implements IOrientable, ICommon
      * chunk.
      */
     @Override
-    public void handleUpdateTag(CompoundNBT tag) {
+    public void handleUpdateTag(BlockState state, CompoundNBT tag) {
         final PacketBuffer stream = new PacketBuffer(Unpooled.copiedBuffer(tag.getByteArray("X")));
 
         if (this.readUpdateData(stream)) {

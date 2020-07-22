@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import org.lwjgl.glfw.GLFW;
@@ -54,6 +55,7 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fml.client.gui.GuiUtils;
@@ -126,51 +128,52 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     @Override
-    public void render(final int mouseX, final int mouseY, final float partialTicks) {
-        super.renderBackground();
-        super.render(mouseX, mouseY, partialTicks);
+    public void render(MatrixStack matrixStack, final int mouseX, final int mouseY, final float partialTicks) {
+        super.renderBackground(matrixStack);
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
 
         RenderSystem.pushMatrix();
         RenderSystem.translatef(this.guiLeft, this.guiTop, 0.0F);
         RenderSystem.enableDepthTest();
         for (final CustomSlotWidget c : this.guiSlots) {
-            this.drawGuiSlot(c, mouseX, mouseY, partialTicks);
+            this.drawGuiSlot(matrixStack, c, mouseX, mouseY, partialTicks);
         }
         RenderSystem.disableDepthTest();
         for (final CustomSlotWidget c : this.guiSlots) {
-            this.drawTooltip(c, mouseX - this.guiLeft, mouseY - this.guiTop);
+            this.drawTooltip(matrixStack, c, mouseX - this.guiLeft, mouseY - this.guiTop);
         }
         RenderSystem.popMatrix();
         RenderSystem.enableDepthTest();
 
-        this.renderHoveredToolTip(mouseX, mouseY);
+        this.renderHoveredToolTip(matrixStack, mouseX, mouseY);
 
         for (final Object c : this.buttons) {
             if (c instanceof ITooltip) {
-                this.drawTooltip((ITooltip) c, mouseX, mouseY);
+                this.drawTooltip(matrixStack, (ITooltip) c, mouseX, mouseY);
             }
         }
     }
 
-    protected void drawGuiSlot(CustomSlotWidget slot, int mouseX, int mouseY, float partialTicks) {
+    protected void drawGuiSlot(MatrixStack matrixStack, CustomSlotWidget slot, int mouseX, int mouseY,
+            float partialTicks) {
         if (slot.isSlotEnabled()) {
             final int left = slot.xPos();
             final int top = slot.yPos();
             final int right = left + slot.getWidth();
             final int bottom = top + slot.getHeight();
 
-            slot.drawContent(getMinecraft(), mouseX, mouseY, partialTicks);
+            slot.drawContent(matrixStack, getMinecraft(), mouseX, mouseY, partialTicks);
 
             if (this.isPointInRegion(left, top, slot.getWidth(), slot.getHeight(), mouseX, mouseY)
                     && slot.canClick(getPlayer())) {
                 RenderSystem.colorMask(true, true, true, false);
-                this.fillGradient(left, top, right, bottom, -2130706433, -2130706433);
+                this.fillGradient(matrixStack, left, top, right, bottom, -2130706433, -2130706433);
                 RenderSystem.colorMask(true, true, true, true);
             }
         }
     }
 
-    private void drawTooltip(ITooltip tooltip, int mouseX, int mouseY) {
+    private void drawTooltip(MatrixStack matrixStack, ITooltip tooltip, int mouseX, int mouseY) {
         final int x = tooltip.xPos(); // ((GuiImgButton) c).x;
         int y = tooltip.yPos(); // ((GuiImgButton) c).y;
 
@@ -180,20 +183,18 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                     y = 15;
                 }
 
-                final String msg = tooltip.getMessage();
-                if (msg != null && !msg.isEmpty()) {
-                    this.drawTooltip(x + 11, y + 4, msg);
-                }
+                final ITextComponent msg = tooltip.getMessage();
+                this.drawTooltip(matrixStack, x + 11, y + 4, msg);
             }
         }
     }
 
-    protected void drawTooltip(int x, int y, String message) {
+    protected void drawTooltip(MatrixStack matrixStack, int x, int y, ITextComponent message) {
         String[] lines = message.split("\n");
-        this.drawTooltip(x, y, Arrays.asList(lines));
+        this.drawTooltip(matrixStack, x, y, Arrays.asList(lines));
     }
 
-    protected void drawTooltip(int x, int y, List<String> lines) {
+    protected void drawTooltip(MatrixStack matrixStack, int x, int y, List<String> lines) {
         if (lines.isEmpty()) {
             return;
         }
@@ -210,11 +211,11 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
             lines.set(i, TextFormatting.GRAY + lines.get(i));
         }
 
-        this.renderTooltip(lines, x, y, this.font);
+        this.renderTooltip(matrixStack, lines, x, y, this.font);
     }
 
     @Override
-    protected final void drawGuiContainerForegroundLayer(final int x, final int y) {
+    protected final void drawGuiContainerForegroundLayer(MatrixStack matrixStack, final int x, final int y) {
         final int ox = this.guiLeft; // (width - xSize) / 2;
         final int oy = this.guiTop; // (height - ySize) / 2;
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -223,17 +224,18 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
             this.getScrollBar().draw(this);
         }
 
-        this.drawFG(ox, oy, x, y);
+        this.drawFG(matrixStack, ox, oy, x, y);
     }
 
-    public abstract void drawFG(int offsetX, int offsetY, int mouseX, int mouseY);
+    public abstract void drawFG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY);
 
     @Override
-    protected final void drawGuiContainerBackgroundLayer(final float f, final int x, final int y) {
+    protected final void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, final float f, final int x,
+            final int y) {
         final int ox = this.guiLeft; // (width - xSize) / 2;
         final int oy = this.guiTop; // (height - ySize) / 2;
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.drawBG(ox, oy, x, y, f);
+        this.drawBG(matrixStack, ox, oy, x, y, f);
 
         final List<Slot> slots = this.getInventorySlots();
         for (final Slot slot : slots) {
@@ -556,7 +558,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         return null;
     }
 
-    public abstract void drawBG(int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks);
+    public abstract void drawBG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY,
+            float partialTicks);
 
     @Override
     public boolean mouseScrolled(double x, double y, double wheelDelta) {
@@ -607,8 +610,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         this.itemRenderer.zLevel = 0.0F;
     }
 
-    protected String getGuiDisplayName(final String in) {
-        return this.hasCustomInventoryName() ? this.getInventoryName() : in;
+    protected ITextComponent getGuiDisplayName(final ITextComponent in) {
+        return this.hasCustomInventoryName() ? new StringTextComponent(this.getInventoryName()) : in;
     }
 
     private boolean hasCustomInventoryName() {
@@ -624,12 +627,12 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
      * hackery...
      */
     @Override
-    public void drawSlot(Slot s) {
+    public void drawSlot(MatrixStack matrixStack, Slot s) {
         if (s instanceof SlotME) {
 
             try {
                 if (!this.isPowered()) {
-                    fill(s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66111111);
+                    fill(matrixStack, s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66111111);
                 }
 
                 // Annoying but easier than trying to splice into render item
@@ -662,12 +665,13 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 float blue = (fluidAttributes.getColor() & 255) / 255.0F;
                 RenderSystem.color3f(red, green, blue);
 
-                blit(s.xPos, s.yPos, 0 /* FIXME: Validate this was previous the controls zindex */, 16, 16, sprite);
+                blit(matrixStack, s.xPos, s.yPos, 0 /* FIXME: Validate this was previous the controls zindex */, 16, 16,
+                        sprite);
                 RenderSystem.enableBlend();
 
                 this.fluidStackSizeRenderer.renderStackSize(this.font, fs, s.xPos, s.yPos);
             } else if (!this.isPowered()) {
-                fill(s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66111111);
+                fill(matrixStack, s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66111111);
             }
 
             return;
@@ -739,7 +743,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                         setBlitOffset(100);
                         this.itemRenderer.zLevel = 100.0F;
 
-                        fill(s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66ff6666);
+                        fill(matrixStack, s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66ff6666);
 
                         setBlitOffset(0);
                         this.itemRenderer.zLevel = 0.0F;
@@ -794,6 +798,12 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 ((ITickingWidget) child).tick();
             }
         }
+    }
+
+    @Override
+    protected void func_230450_a_(MatrixStack p_230450_1_, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

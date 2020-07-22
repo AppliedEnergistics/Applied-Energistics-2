@@ -20,6 +20,8 @@ package appeng.client.gui.implementations;
 
 import java.util.List;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.util.InputMappings;
@@ -234,7 +236,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
 
         if (this.viewCell || this instanceof WirelessTermScreen) {
             this.craftingStatusBtn = this.addButton(new TabButton(this.guiLeft + 170, this.guiTop - 4, 2 + 11 * 16,
-                    GuiText.CraftingStatus.getLocal(), this.itemRenderer, btn -> showCraftingStatus()));
+                    GuiText.CraftingStatus.textComponent(), this.itemRenderer, btn -> showCraftingStatus()));
             this.craftingStatusBtn.setHideEdge(13);
         }
 
@@ -284,9 +286,9 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
     }
 
     @Override
-    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.font.drawString(this.getGuiDisplayName(this.myName.getLocal()), 8, 6, 4210752);
-        this.font.drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+        this.font.drawString(matrixStack, this.getGuiDisplayName(this.myName.textComponent()).getString(), 8, 6, 4210752);
+        this.font.drawString(matrixStack, GuiText.inventory.textComponent().getString(), 8, this.ySize - 96 + 3, 4210752);
 
         this.currentMouseX = mouseX;
         this.currentMouseY = mouseY;
@@ -318,21 +320,21 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
     }
 
     @Override
-    public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
 
         this.bindTexture(this.getBackground());
         final int x_width = 197;
-        blit(offsetX, offsetY, 0, 0, x_width, 18);
+        blit(matrixStack, offsetX, offsetY, 0, 0, x_width, 18);
 
         if (this.viewCell || (this instanceof SecurityStationScreen)) {
-            blit(offsetX + x_width, offsetY, x_width, 0, 46, 128);
+            blit(matrixStack, offsetX + x_width, offsetY, x_width, 0, 46, 128);
         }
 
         for (int x = 0; x < this.rows; x++) {
-            blit(offsetX, offsetY + 18 + x * 18, 0, 18, x_width, 18);
+            blit(matrixStack, offsetX, offsetY + 18 + x * 18, 0, 18, x_width, 18);
         }
 
-        blit(offsetX, offsetY + 16 + this.rows * 18 + this.lowerTextureOffset, 0, 106 - 18 - 18, x_width,
+        blit(matrixStack, offsetX, offsetY + 16 + this.rows * 18 + this.lowerTextureOffset, 0, 106 - 18 - 18, x_width,
                 99 + this.reservedSpace - this.lowerTextureOffset);
 
         if (this.viewCell) {
@@ -351,7 +353,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         }
 
         if (this.searchField != null) {
-            this.searchField.render(mouseX, mouseY, partialTicks);
+            this.searchField.render(matrixStack, mouseX, mouseY, partialTicks);
         }
     }
 

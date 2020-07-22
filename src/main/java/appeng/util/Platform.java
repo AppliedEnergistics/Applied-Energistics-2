@@ -53,7 +53,7 @@ import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -687,8 +687,8 @@ public class Platform {
         final float eyeRayX = yawRayX * pitchMultiplier;
         final float eyeRayZ = yawRayZ * pitchMultiplier;
 
-        final Vec3d from = new Vec3d(x, y, z);
-        final Vec3d to = from.add(eyeRayX * reachDistance, eyeRayY * reachDistance, eyeRayZ * reachDistance);
+        final Vector3d from = new Vector3d(x, y, z);
+        final Vector3d to = from.add(eyeRayX * reachDistance, eyeRayY * reachDistance, eyeRayZ * reachDistance);
 
         return new LookDirection(from, to);
     }
@@ -702,7 +702,7 @@ public class Platform {
         final double d0 = p.prevPosX + (p.getPosX() - p.prevPosX) * f;
         final double d1 = p.prevPosY + (p.getPosY() - p.prevPosY) * f + 1.62D - p.getYOffset();
         final double d2 = p.prevPosZ + (p.getPosZ() - p.prevPosZ) * f;
-        final Vec3d vec3 = new Vec3d(d0, d1, d2);
+        final Vector3d vec3 = new Vector3d(d0, d1, d2);
         final float f3 = MathHelper.cos(-f2 * 0.017453292F - (float) Math.PI);
         final float f4 = MathHelper.sin(-f2 * 0.017453292F - (float) Math.PI);
         final float f5 = -MathHelper.cos(-f1 * 0.017453292F);
@@ -711,7 +711,7 @@ public class Platform {
         final float f8 = f3 * f5;
         final double d3 = 32.0D;
 
-        final Vec3d vec31 = vec3.add(f7 * d3, f6 * d3, f8 * d3);
+        final Vector3d vec31 = vec3.add(f7 * d3, f6 * d3, f8 * d3);
 
         final AxisAlignedBB bb = new AxisAlignedBB(Math.min(vec3.x, vec31.x), Math.min(vec3.y, vec31.y),
                 Math.min(vec3.z, vec31.z), Math.max(vec3.x, vec31.x), Math.max(vec3.y, vec31.y),
@@ -732,7 +732,7 @@ public class Platform {
                     f1 = 0.3F;
                     // FIXME: Three different bounding boxes available, should double-check
                     final AxisAlignedBB boundingBox = entity1.getBoundingBox().grow(f1, f1, f1);
-                    final Vec3d rtResult = boundingBox.rayTrace(vec3, vec31).orElse(null);
+                    final Vector3d rtResult = boundingBox.rayTrace(vec3, vec31).orElse(null);
 
                     if (rtResult != null) {
                         final double nd = vec3.squareDistanceTo(rtResult);
@@ -747,10 +747,10 @@ public class Platform {
         }
 
         RayTraceResult pos = null;
-        Vec3d vec = null;
+        Vector3d vec = null;
 
         if (hitBlocks) {
-            vec = new Vec3d(d0, d1, d2);
+            vec = new Vector3d(d0, d1, d2);
             // FIXME: passing p as entity here might be incorrect
             pos = w.rayTraceBlocks(new RayTraceContext(vec3, vec31, RayTraceContext.BlockMode.COLLIDER,
                     RayTraceContext.FluidMode.ANY, p));

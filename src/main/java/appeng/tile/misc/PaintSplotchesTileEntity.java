@@ -36,7 +36,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.LightType;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
@@ -91,8 +91,8 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
     }
 
     @Override
-    public void read(final CompoundNBT data) {
-        super.read(data);
+    public void read(BlockState blockState, final CompoundNBT data) {
+        super.read(blockState, data);
         if (data.contains("dots")) {
             this.readBuffer(new PacketBuffer(Unpooled.copiedBuffer(data.getByteArray("dots"))));
         }
@@ -211,7 +211,7 @@ public class PaintSplotchesTileEntity extends AEBaseTileEntity {
         return this.isLit;
     }
 
-    public void addBlot(final ItemStack type, final Direction side, final Vec3d hitVec) {
+    public void addBlot(final ItemStack type, final Direction side, final Vector3d hitVec) {
         final BlockPos p = this.pos.offset(side);
 
         final BlockState blk = this.world.getBlockState(p);

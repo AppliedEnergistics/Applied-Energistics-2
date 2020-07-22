@@ -18,9 +18,13 @@
 
 package appeng.client.gui.widgets;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.container.interfaces.IProgressProvider;
@@ -33,8 +37,8 @@ public class ProgressBar extends Widget implements ITooltip {
     private final int fill_u;
     private final int fill_v;
     private final Direction layout;
-    private final String titleName;
-    private String fullMsg;
+    private final ITextComponent titleName;
+    private ITextComponent fullMsg;
 
     public ProgressBar(final IProgressProvider source, final String texture, final int posX, final int posY,
             final int u, final int y, final int width, final int height, final Direction dir) {
@@ -42,8 +46,9 @@ public class ProgressBar extends Widget implements ITooltip {
     }
 
     public ProgressBar(final IProgressProvider source, final String texture, final int posX, final int posY,
-            final int u, final int y, final int width, final int height, final Direction dir, final String title) {
-        super(posX, posY, width, height, "");
+            final int u, final int y, final int width, final int height, final Direction dir,
+            final ITextComponent title) {
+        super(posX, posY, width, height, new StringTextComponent(""));
         this.source = source;
         this.texture = new ResourceLocation("appliedenergistics2", "textures/" + texture);
         this.fill_u = u;
@@ -53,7 +58,7 @@ public class ProgressBar extends Widget implements ITooltip {
     }
 
     @Override
-    public void renderButton(final int par2, final int par3, final float partial) {
+    public void renderButton(MatrixStack matrixStack, final int par2, final int par3, final float partial) {
         if (this.visible) {
             Minecraft.getInstance().getTextureManager().bindTexture(this.texture);
             final int max = this.source.getMaxProgress();
@@ -71,18 +76,20 @@ public class ProgressBar extends Widget implements ITooltip {
         }
     }
 
-    public void setFullMsg(final String msg) {
+    public void setFullMsg(final ITextComponent msg) {
         this.fullMsg = msg;
     }
 
     @Override
-    public String getMessage() {
+    public ITextComponent getMessage() {
         if (this.fullMsg != null) {
             return this.fullMsg;
         }
+        ITextComponent result = this.titleName != null ? this.titleName : new StringTextComponent("");
 
-        return (this.titleName != null ? this.titleName : "") + '\n' + this.source.getCurrentProgress() + ' '
-                + GuiText.Of.getLocal() + ' ' + this.source.getMaxProgress();
+        return result.deepCopy().func_240702_b_("\n").func_240702_b_(this.source.getCurrentProgress() + " ")
+                .func_230529_a_(
+                        GuiText.Of.textComponent().deepCopy().func_240702_b_(" " + this.source.getMaxProgress()));
     }
 
     @Override

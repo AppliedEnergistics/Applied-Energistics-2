@@ -23,15 +23,15 @@ import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.SpriteTexturedParticle;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particles.BasicParticleType;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class VibrantFX extends SpriteTexturedParticle {
 
-    public VibrantFX(final World par1World, final double x, final double y, final double z, final double par8,
+    public VibrantFX(final ClientWorld par1World, final double x, final double y, final double z, final double par8,
             final double par10, final double par12, IAnimatedSprite sprite) {
         super(par1World, x, y, z, par8, par10, par12);
         final float f = this.rand.nextFloat() * 0.1F + 0.8F;
@@ -88,7 +88,7 @@ public class VibrantFX extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle makeParticle(BasicParticleType typeIn, World worldIn, double x, double y, double z,
+        public Particle makeParticle(BasicParticleType typeIn, ClientWorld worldIn, double x, double y, double z,
                 double xSpeed, double ySpeed, double zSpeed) {
             return new VibrantFX(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet);
         }

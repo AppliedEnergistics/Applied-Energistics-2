@@ -22,6 +22,7 @@ import java.util.function.LongConsumer;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.util.text.StringTextComponent;
 
 public class NumberBox extends TextFieldWidget {
 
@@ -35,7 +36,7 @@ public class NumberBox extends TextFieldWidget {
 
     public NumberBox(final FontRenderer fontRenderer, final int x, final int y, final int width, final int height,
             final Class<?> type, LongConsumer changeListener) {
-        super(fontRenderer, x, y, width, height, "0");
+        super(fontRenderer, x, y, width, height, new StringTextComponent("0"));
         this.setText("0");
         setResponder(this::handleTextChanged);
         this.lastValue = 0;

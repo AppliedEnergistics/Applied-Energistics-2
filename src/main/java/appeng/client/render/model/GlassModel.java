@@ -29,8 +29,8 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.Material;
 import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
@@ -43,16 +43,16 @@ public class GlassModel implements IModelGeometry<GlassModel> {
 
     @Override
     public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
-            Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
+            Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
             ItemOverrideList overrides, ResourceLocation modelLocation) {
         return new GlassBakedModel(spriteGetter);
     }
 
     @Override
-    public Collection<Material> getTextures(IModelConfiguration owner,
+    public Collection<RenderMaterial> getTextures(IModelConfiguration owner,
             Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
         return ImmutableSet
-                .<Material>builder().add(GlassBakedModel.TEXTURE_A, GlassBakedModel.TEXTURE_B,
+                .<RenderMaterial>builder().add(GlassBakedModel.TEXTURE_A, GlassBakedModel.TEXTURE_B,
                         GlassBakedModel.TEXTURE_C, GlassBakedModel.TEXTURE_D)
                 .add(GlassBakedModel.TEXTURES_FRAME).build();
     }

@@ -32,8 +32,8 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.Material;
 import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
@@ -46,7 +46,7 @@ public class SpatialPylonModel implements IModelGeometry<SpatialPylonModel> {
 
     @Override
     public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery,
-            Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
+            Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
             ItemOverrideList overrides, ResourceLocation modelLocation) {
         Map<SpatialPylonTextureType, TextureAtlasSprite> textures = new EnumMap<>(SpatialPylonTextureType.class);
 
@@ -58,14 +58,14 @@ public class SpatialPylonModel implements IModelGeometry<SpatialPylonModel> {
     }
 
     @Override
-    public Collection<Material> getTextures(IModelConfiguration owner,
+    public Collection<RenderMaterial> getTextures(IModelConfiguration owner,
             Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
         return Arrays.stream(SpatialPylonTextureType.values()).map(SpatialPylonModel::getTexturePath)
                 .collect(Collectors.toList());
     }
 
-    private static Material getTexturePath(SpatialPylonTextureType type) {
-        return new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    private static RenderMaterial getTexturePath(SpatialPylonTextureType type) {
+        return new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
                 new ResourceLocation(AppEng.MOD_ID, "block/spatial_pylon/" + type.name().toLowerCase()));
     }
 

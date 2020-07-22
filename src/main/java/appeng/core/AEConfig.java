@@ -35,7 +35,8 @@ import com.google.common.base.Strings;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.DimensionType;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
@@ -579,7 +580,7 @@ public final class AEConfig {
             this.spawnChargedChance = builder.defineInRange("spawnChargedChance", 0.08, 0.0, 1.0);
             this.meteoriteMaximumSpawnHeight = builder.define("meteoriteMaximumSpawnHeight", 180);
             List<String> defaultDimensionWhitelist = new ArrayList<>();
-            defaultDimensionWhitelist.add(DimensionType.getKey(DimensionType.OVERWORLD).toString());
+            defaultDimensionWhitelist.add(World.field_234918_g_.getRegistryName().toString());
             this.meteoriteDimensionWhitelist = builder.defineList("meteoriteDimensionWhitelist",
                     defaultDimensionWhitelist, obj -> true);
 

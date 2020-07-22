@@ -18,8 +18,11 @@
 
 package appeng.client.gui.implementations;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
@@ -56,16 +59,18 @@ public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssembl
     }
 
     @Override
-    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.pb.setFullMsg(this.container.getCurrentProgress() + "%");
-        super.drawFG(offsetX, offsetY, mouseX, mouseY);
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
+        this.pb.setFullMsg(new StringTextComponent(this.container.getCurrentProgress() + "%"));
+        super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
     }
 
     @Override
-    public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY, float partialTicks) {
         this.pb.x = 148 + this.guiLeft;
         this.pb.y = 48 + this.guiTop;
-        super.drawBG(offsetX, offsetY, mouseX, mouseY, partialTicks);
+        super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
     }
 
     @Override

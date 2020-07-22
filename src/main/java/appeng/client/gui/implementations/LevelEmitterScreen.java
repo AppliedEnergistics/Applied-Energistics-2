@@ -18,6 +18,8 @@
 
 package appeng.client.gui.implementations;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
@@ -77,7 +79,8 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
     }
 
     @Override
-    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
         final boolean notCraftingMode = this.bc.getInstalledUpgrades(Upgrades.CRAFTING) == 0;
 
         // configure enabled status...
@@ -85,7 +88,7 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
         this.levelMode.active = notCraftingMode;
         this.redstoneMode.active = notCraftingMode;
 
-        super.drawFG(offsetX, offsetY, mouseX, mouseY);
+        super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
 
         if (this.craftingMode != null) {
             this.craftingMode.set(this.cvb.getCraftingMode());
@@ -97,16 +100,18 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
 
             if (notCraftingMode) {
                 if (currentLevelMode == LevelType.ENERGY_LEVEL) {
-                    this.font.drawString(PowerUnits.AE.textComponent().getString(), 110, 44, COLOR_DARK_GRAY);
+                    this.font.drawString(matrixStack, PowerUnits.AE.textComponent().getString(), 110, 44,
+                            COLOR_DARK_GRAY);
                 }
             }
         }
     }
 
     @Override
-    public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
-        super.drawBG(offsetX, offsetY, mouseX, mouseY, partialTicks);
-        this.level.render(mouseX, mouseY, partialTicks);
+    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY, float partialTicks) {
+        super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
+        this.level.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
     @Override

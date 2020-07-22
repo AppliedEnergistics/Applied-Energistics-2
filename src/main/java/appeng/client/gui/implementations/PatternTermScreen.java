@@ -18,6 +18,8 @@
 
 package appeng.client.gui.implementations;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -58,12 +60,12 @@ public class PatternTermScreen extends MEMonitorableScreen<PatternTermContainer>
         super.init();
 
         this.tabCraftButton = new TabButton(this.guiLeft + 173, this.guiTop + this.ySize - 177,
-                new ItemStack(Blocks.CRAFTING_TABLE), GuiText.CraftingPattern.getLocal(), this.itemRenderer,
+                new ItemStack(Blocks.CRAFTING_TABLE), GuiText.CraftingPattern.textComponent(), this.itemRenderer,
                 btn -> toggleCraftMode(CRAFTMODE_PROCESSING));
         this.addButton(this.tabCraftButton);
 
         this.tabProcessButton = new TabButton(this.guiLeft + 173, this.guiTop + this.ySize - 177,
-                new ItemStack(Blocks.FURNACE), GuiText.ProcessingPattern.getLocal(), this.itemRenderer,
+                new ItemStack(Blocks.FURNACE), GuiText.ProcessingPattern.textComponent(), this.itemRenderer,
                 btn -> toggleCraftMode(CRAFTMODE_CRFTING));
         this.addButton(this.tabProcessButton);
 
@@ -104,7 +106,8 @@ public class PatternTermScreen extends MEMonitorableScreen<PatternTermContainer>
     }
 
     @Override
-    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
         if (this.container.isCraftingMode()) {
             this.tabCraftButton.visible = true;
             this.tabProcessButton.visible = false;
@@ -123,9 +126,9 @@ public class PatternTermScreen extends MEMonitorableScreen<PatternTermContainer>
             this.substitutionsDisabledBtn.visible = false;
         }
 
-        super.drawFG(offsetX, offsetY, mouseX, mouseY);
-        this.font.drawString(GuiText.PatternTerminal.getLocal(), 8, this.ySize - 96 + 2 - this.getReservedSpace(),
-                4210752);
+        super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
+        this.font.drawString(matrixStack, GuiText.PatternTerminal.getLocal(), 8,
+                this.ySize - 96 + 2 - this.getReservedSpace(), 4210752);
     }
 
     @Override

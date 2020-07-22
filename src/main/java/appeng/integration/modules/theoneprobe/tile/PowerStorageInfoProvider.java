@@ -20,6 +20,7 @@ package appeng.integration.modules.theoneprobe.tile;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
 import mcjty.theoneprobe.api.IProbeHitData;
@@ -48,8 +49,8 @@ public class PowerStorageInfoProvider implements ITileProbInfoProvider {
 
                     final String formatCurrentPower = Platform.formatPowerLong(internalCurrentPower, false);
                     final String formatMaxPower = Platform.formatPowerLong(internalMaxPower, false);
-                    final String formattedString = TheOneProbeText.STORED_ENERGY
-                            .getTranslationComponent(formatCurrentPower, formatMaxPower).getFormattedText();
+                    final ITextComponent formattedString = TheOneProbeText.STORED_ENERGY
+                            .getTranslationComponent(formatCurrentPower, formatMaxPower);
 
                     probeInfo.text(formattedString);
                 }

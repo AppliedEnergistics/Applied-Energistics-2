@@ -36,9 +36,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.SnowballItem;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -205,7 +205,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             extra = new TranslationTextComponent(selected.translationKey);
         }
 
-        return super.getDisplayName(is).appendText(" - ").appendSibling(extra);
+        return super.getDisplayName(is).deepCopy().func_240702_b_(" - ").func_230529_a_(extra);
     }
 
     public AEColor getActiveColor(final ItemStack tol) {
@@ -226,7 +226,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             return ipb.getColor();
         } else {
             for (Map.Entry<ResourceLocation, AEColor> entry : TAG_TO_COLOR.entrySet()) {
-                Tag<Item> tag = ItemTags.getCollection().get(entry.getKey());
+                ITag<Item> tag = ItemTags.getCollection().get(entry.getKey());
                 if (tag != null && paintBall.getItem().isIn(tag)) {
                     return entry.getValue();
                 }
@@ -326,7 +326,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         Block recolored = BlockRecolorer.recolor(blk, newColor);
         if (recolored != blk) {
             BlockState newState = recolored.getDefaultState();
-            for (IProperty<?> prop : newState.getProperties()) {
+            for (Property<?> prop : newState.func_235904_r_()) {
                 newState = copyProp(state, newState, prop);
             }
 
@@ -341,8 +341,8 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     private static <T extends Comparable<T>> BlockState copyProp(BlockState oldState, BlockState newState,
-            IProperty<T> prop) {
-        if (newState.has(prop)) {
+            Property<T> prop) {
+        if (newState.func_235901_b_(prop)) {
             return newState.with(prop, oldState.get(prop));
         }
         return newState;

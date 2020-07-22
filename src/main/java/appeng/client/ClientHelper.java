@@ -30,7 +30,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
@@ -107,7 +107,7 @@ public class ClientHelper extends ServerHelper {
                     this.spawnLightning(world, posX, posY, posZ);
                     return;
                 case LightningArc:
-                    this.spawnLightningArc(world, posX, posY, posZ, (Vec3d) o);
+                    this.spawnLightningArc(world, posX, posY, posZ, (Vector3d) o);
                     return;
                 default:
             }
@@ -206,7 +206,7 @@ public class ClientHelper extends ServerHelper {
     }
 
     private void spawnLightningArc(final World world, final double posX, final double posY, final double posZ,
-            final Vec3d second) {
+            final Vector3d second) {
         final LightningFX fx = new LightningArcFX(world, posX, posY, posZ, second.x, second.y, second.z, 0.0f, 0.0f,
                 0.0f);
         Minecraft.getInstance().particles.addEffect(fx);

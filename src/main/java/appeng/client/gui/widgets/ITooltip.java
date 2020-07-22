@@ -18,6 +18,8 @@
 
 package appeng.client.gui.widgets;
 
+import net.minecraft.util.text.ITextComponent;
+
 /**
  * AEBaseGui controlled Tooltip Interface.
  */
@@ -28,7 +30,7 @@ public interface ITooltip {
      *
      * @return tooltip message
      */
-    String getMessage();
+    ITextComponent getMessage();
 
     /**
      * x Location for the object that triggers the tooltip.

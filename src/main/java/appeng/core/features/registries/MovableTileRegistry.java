@@ -27,7 +27,7 @@ import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
@@ -51,8 +51,8 @@ public class MovableTileRegistry implements IMovableRegistry {
     private final List<IMovableHandler> handlers = new ArrayList<>();
     private final DefaultSpatialHandler dsh = new DefaultSpatialHandler();
     private final IMovableHandler nullHandler = new DefaultSpatialHandler();
-    private final Tag<Block> blockTagWhiteList;
-    private final Tag<Block> blockTagBlackList;
+    private final ITag<Block> blockTagWhiteList;
+    private final ITag<Block> blockTagBlackList;
 
     public MovableTileRegistry() {
         this.blockTagWhiteList = BlockTags.getCollection().getOrCreate(TAG_WHITELIST);

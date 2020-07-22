@@ -34,7 +34,7 @@ import com.google.common.base.Strings;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -43,9 +43,9 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.IBlockDisplayReader;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.ILightReader;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
@@ -64,30 +64,30 @@ class GlassBakedModel implements IDynamicBakedModel {
     private static final byte[][][] OFFSETS = generateOffsets();
 
     // Alternating textures based on position
-    static final Material TEXTURE_A = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    static final RenderMaterial TEXTURE_A = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
             new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_a"));
-    static final Material TEXTURE_B = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    static final RenderMaterial TEXTURE_B = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
             new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_b"));
-    static final Material TEXTURE_C = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    static final RenderMaterial TEXTURE_C = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
             new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_c"));
-    static final Material TEXTURE_D = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    static final RenderMaterial TEXTURE_D = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
             new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_d"));
 
     // Frame texture
-    static final Material[] TEXTURES_FRAME = generateTexturesFrame();
+    static final RenderMaterial[] TEXTURES_FRAME = generateTexturesFrame();
 
     // Generates the required textures for the frame
-    private static Material[] generateTexturesFrame() {
+    private static RenderMaterial[] generateTexturesFrame() {
         return IntStream.range(1, 16).mapToObj(Integer::toBinaryString).map(s -> Strings.padStart(s, 4, '0'))
                 .map(s -> new ResourceLocation("appliedenergistics2:block/glass/quartz_glass_frame" + s))
-                .map(rl -> new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, rl)).toArray(Material[]::new);
+                .map(rl -> new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE, rl)).toArray(RenderMaterial[]::new);
     }
 
     private final TextureAtlasSprite[] glassTextures;
 
     private final TextureAtlasSprite[] frameTextures;
 
-    public GlassBakedModel(Function<Material, TextureAtlasSprite> bakedTextureGetter) {
+    public GlassBakedModel(Function<RenderMaterial, TextureAtlasSprite> bakedTextureGetter) {
         this.glassTextures = new TextureAtlasSprite[] { bakedTextureGetter.apply(TEXTURE_A),
                 bakedTextureGetter.apply(TEXTURE_B), bakedTextureGetter.apply(TEXTURE_C),
                 bakedTextureGetter.apply(TEXTURE_D) };
@@ -133,7 +133,7 @@ class GlassBakedModel implements IDynamicBakedModel {
         // Render the glass side
         final List<BakedQuad> quads = new ArrayList<>(5); // At most 5
 
-        final List<Vec3d> corners = RenderHelper.getFaceCorners(side);
+        final List<Vector3d> corners = RenderHelper.getFaceCorners(side);
         quads.add(this.createQuad(side, corners, glassTexture, u, v));
 
         /*
@@ -204,15 +204,16 @@ class GlassBakedModel implements IDynamicBakedModel {
         return bitmask;
     }
 
-    private BakedQuad createQuad(Direction side, List<Vec3d> corners, TextureAtlasSprite sprite, float uOffset,
+    private BakedQuad createQuad(Direction side, List<Vector3d> corners, TextureAtlasSprite sprite, float uOffset,
             float vOffset) {
         return this.createQuad(side, corners.get(0), corners.get(1), corners.get(2), corners.get(3), sprite, uOffset,
                 vOffset);
     }
 
-    private BakedQuad createQuad(Direction side, Vec3d c1, Vec3d c2, Vec3d c3, Vec3d c4, TextureAtlasSprite sprite,
-            float uOffset, float vOffset) {
-        Vec3d normal = new Vec3d(side.getDirectionVec());
+    private BakedQuad createQuad(Direction side, Vector3d c1, Vector3d c2, Vector3d c3, Vector3d c4,
+            TextureAtlasSprite sprite, float uOffset, float vOffset) {
+        Vector3d normal = new Vector3d(side.getDirectionVec().getX(), side.getDirectionVec().getY(),
+                side.getDirectionVec().getZ());
 
         // Apply the u,v shift.
         // This mirrors the logic from OffsetIcon from 1.7
@@ -235,7 +236,7 @@ class GlassBakedModel implements IDynamicBakedModel {
      * data into the vertexbuffer actually has to be precisely the order in which
      * the vertex elements had been declared in the vertex format.
      */
-    private void putVertex(BakedQuadBuilder builder, Vec3d normal, double x, double y, double z,
+    private void putVertex(BakedQuadBuilder builder, Vector3d normal, double x, double y, double z,
             TextureAtlasSprite sprite, float u, float v) {
         VertexFormat vertexFormat = builder.getVertexFormat();
         for (int e = 0; e < vertexFormat.getElements().size(); e++) {
@@ -305,7 +306,7 @@ class GlassBakedModel implements IDynamicBakedModel {
 
     @Nonnull
     @Override
-    public IModelData getModelData(@Nonnull ILightReader world, @Nonnull BlockPos pos, @Nonnull BlockState state,
+    public IModelData getModelData(@Nonnull IBlockDisplayReader world, @Nonnull BlockPos pos, @Nonnull BlockState state,
             @Nonnull IModelData tileData) {
 
         EnumSet<Direction> flushWith = EnumSet.noneOf(Direction.class);

@@ -18,6 +18,7 @@
 
 package appeng.client.gui.widgets;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
@@ -26,6 +27,7 @@ import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 
 public class TabButton extends Button implements ITooltip {
     public static final ResourceLocation TEXTURE_STATES = new ResourceLocation("appliedenergistics2",
@@ -35,7 +37,7 @@ public class TabButton extends Button implements ITooltip {
     private int myIcon = -1;
     private ItemStack myItem;
 
-    public TabButton(final int x, final int y, final int ico, final String message, final ItemRenderer ir,
+    public TabButton(final int x, final int y, final int ico, final ITextComponent message, final ItemRenderer ir,
             IPressable onPress) {
         super(x, y, 22, 22, message, onPress);
 
@@ -52,7 +54,7 @@ public class TabButton extends Button implements ITooltip {
      * @param message mouse over message
      * @param ir      renderer
      */
-    public TabButton(final int x, final int y, final ItemStack ico, final String message, final ItemRenderer ir,
+    public TabButton(final int x, final int y, final ItemStack ico, final ITextComponent message, final ItemRenderer ir,
             IPressable onPress) {
         super(x, y, 22, 22, message, onPress);
         this.myItem = ico;
@@ -60,7 +62,7 @@ public class TabButton extends Button implements ITooltip {
     }
 
     @Override
-    public void renderButton(final int x, final int y, float partial) {
+    public void renderButton(MatrixStack matrixStack, final int x, final int y, float partial) {
         final Minecraft minecraft = Minecraft.getInstance();
 
         if (this.visible) {
@@ -73,13 +75,13 @@ public class TabButton extends Button implements ITooltip {
 
             final int offsetX = this.hideEdge > 0 ? 1 : 0;
 
-            blit(this.x, this.y, uv_x * 16, 0, 25, 22);
+            blit(matrixStack, this.x, this.y, uv_x * 16, 0, 25, 22);
 
             if (this.myIcon >= 0) {
                 final int uv_y = this.myIcon / 16;
                 uv_x = this.myIcon - uv_y * 16;
 
-                blit(offsetX + this.x + 3, this.y + 3, uv_x * 16, uv_y * 16, 16, 16);
+                blit(matrixStack, offsetX + this.x + 3, this.y + 3, uv_x * 16, uv_y * 16, 16, 16);
             }
 
             RenderSystem.disableAlphaTest();

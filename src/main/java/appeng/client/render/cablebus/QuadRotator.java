@@ -21,11 +21,11 @@ package appeng.client.render.cablebus;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.client.renderer.Matrix4f;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Vector3f;
 
 import appeng.client.render.FacingToRotation;
 import appeng.thirdparty.codechicken.lib.model.CachedFormat;

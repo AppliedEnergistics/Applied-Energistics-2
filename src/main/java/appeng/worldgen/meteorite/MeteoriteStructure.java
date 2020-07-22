@@ -1,38 +1,34 @@
 package appeng.worldgen.meteorite;
 
 import java.util.Random;
-import java.util.function.Function;
 
-import com.mojang.datafixers.Dynamic;
+import com.mojang.serialization.Codec;
 
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeManager;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.EndChunkGenerator;
-import net.minecraft.world.gen.NetherChunkGenerator;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.structure.ScatteredStructure;
 import net.minecraft.world.gen.feature.structure.Structure;
 
 import appeng.core.AELog;
 import appeng.core.AppEng;
 
-public class MeteoriteStructure extends ScatteredStructure<NoFeatureConfig> {
+public class MeteoriteStructure extends Structure<NoFeatureConfig> {
 
-    public static final Structure<NoFeatureConfig> INSTANCE = new MeteoriteStructure(NoFeatureConfig::deserialize);
+    public static final Structure<NoFeatureConfig> INSTANCE = new MeteoriteStructure(NoFeatureConfig.field_236558_a_);
 
     static {
         INSTANCE.setRegistryName(AppEng.MOD_ID, "meteorite");
     }
 
-    public MeteoriteStructure(Function<Dynamic<?>, ? extends NoFeatureConfig> configFactoryIn) {
-        super(configFactoryIn);
+    public MeteoriteStructure(Codec<NoFeatureConfig> p_i231997_1_) {
+        super(p_i231997_1_);
     }
 
     @Override
-    public boolean canBeGenerated(BiomeManager biomeManagerIn, ChunkGenerator<?> generator, Random randIn, int chunkX,
+    public boolean func_230363_a_(BiomeManager biomeManagerIn, ChunkGenerator generator, Random randIn, int chunkX,
             int chunkZ, Biome biomeIn) {
-        if (super.canBeGenerated(biomeManagerIn, generator, randIn, chunkX, chunkZ, biomeIn)) {
+        if (super.func_230363_a_(biomeManagerIn, generator, randIn, chunkX, chunkZ, biomeIn)) {
             // In case the biome blacklist fails, we still double-check here that we're not
             // generating chunks for
             // the nether or end.

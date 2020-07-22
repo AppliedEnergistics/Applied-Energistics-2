@@ -81,7 +81,7 @@ public class ChestBlock extends AEBaseTileBlock<ChestTileEntity> {
 
             if (hit.getFace() == tg.getUp()) {
                 if (!tg.openGui(p)) {
-                    p.sendMessage(PlayerMessages.ChestCannotReadStorageCell.get());
+                    p.sendMessage(PlayerMessages.ChestCannotReadStorageCell.get(), p.getUniqueID());
                 }
             } else {
                 ContainerOpener.openContainer(ChestContainer.TYPE, p,

@@ -50,7 +50,7 @@ public class WirelessBlock extends AEBaseTileBlock<WirelessTileEntity> {
         OFF, ON, HAS_CHANNEL;
 
         @Override
-        public String getName() {
+        public String getString() {
             return this.name().toLowerCase();
         }
     }

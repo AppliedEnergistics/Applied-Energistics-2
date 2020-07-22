@@ -20,7 +20,7 @@ package appeng.helpers;
 
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import appeng.api.util.AEColor;
 
@@ -31,7 +31,7 @@ public class Splotch {
     private final AEColor color;
     private final int pos;
 
-    public Splotch(final AEColor col, final boolean lit, final Direction side, final Vec3d position) {
+    public Splotch(final AEColor col, final boolean lit, final Direction side, final Vector3d position) {
         this.color = col;
         this.lumen = lit;
 

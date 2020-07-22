@@ -18,8 +18,11 @@
 
 package appeng.client.gui.implementations;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.client.gui.AEBaseScreen;
@@ -51,15 +54,18 @@ public class InscriberScreen extends AEBaseScreen<InscriberContainer> {
     }
 
     @Override
-    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.pb.setFullMsg(this.container.getCurrentProgress() * 100 / this.container.getMaxProgress() + "%");
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
+        this.pb.setFullMsg(new StringTextComponent(
+                this.container.getCurrentProgress() * 100 / this.container.getMaxProgress() + "%"));
 
-        this.font.drawString(this.getGuiDisplayName(GuiText.Inscriber.getLocal()), 8, 6, 4210752);
-        this.font.drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Inscriber.textComponent()).getString(), 8, 6, 4210752);
+        this.font.drawString(matrixStack, GuiText.inventory.textComponent().getString(), 8, this.ySize - 96 + 3, 4210752);
     }
 
     @Override
-    public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY, float partialTicks) {
         this.bindTexture("guis/inscriber.png");
         this.pb.x = 135 + this.guiLeft;
         this.pb.y = 39 + this.guiTop;

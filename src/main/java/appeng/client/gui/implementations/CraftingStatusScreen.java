@@ -22,9 +22,12 @@
 
 package appeng.client.gui.implementations;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 import appeng.container.implementations.CraftingStatusContainer;
 import appeng.core.localization.GuiText;
@@ -48,7 +51,8 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
         super.init();
 
         this.selectCPU = new Button(this.guiLeft + 8, this.guiTop + this.ySize - 25, 150, 20,
-                GuiText.CraftingCPU.getLocal() + ": " + GuiText.NoCraftingCPUs, btn -> selectNextCpu());
+                new StringTextComponent(GuiText.CraftingCPU.getLocal() + ": " + GuiText.NoCraftingCPUs),
+                btn -> selectNextCpu());
         this.addButton(this.selectCPU);
 
         subGui.addBackButton(btn -> {
@@ -58,9 +62,9 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
     }
 
     @Override
-    public void render(final int mouseX, final int mouseY, final float btn) {
+    public void render(MatrixStack matrixStack, final int mouseX, final int mouseY, final float btn) {
         this.updateCPUButtonText();
-        super.render(mouseX, mouseY, btn);
+        super.render(matrixStack, mouseX, mouseY, btn);
     }
 
     private void updateCPUButtonText() {
@@ -80,11 +84,11 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
             btnTextText = GuiText.NoCraftingJobs.getLocal();
         }
 
-        this.selectCPU.setMessage(btnTextText);
+        this.selectCPU.setMessage(new StringTextComponent(btnTextText));
     }
 
     @Override
-    protected String getGuiDisplayName(final String in) {
+    protected ITextComponent getGuiDisplayName(final ITextComponent in) {
         return in; // the cup name is on the button
     }
 

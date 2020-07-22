@@ -20,12 +20,15 @@ package appeng.client.gui.widgets;
 
 import java.util.regex.Pattern;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 public class ToggleButton extends Button implements ITooltip {
@@ -42,7 +45,7 @@ public class ToggleButton extends Button implements ITooltip {
 
     public ToggleButton(final int x, final int y, final int on, final int off, final String displayName,
             final String displayHint, IPressable onPress) {
-        super(x, y, 16, 16, "", onPress);
+        super(x, y, 16, 16, new StringTextComponent(""), onPress);
         this.iconIdxOn = on;
         this.iconIdxOff = off;
         this.displayName = displayName;
@@ -54,7 +57,7 @@ public class ToggleButton extends Button implements ITooltip {
     }
 
     @Override
-    public void renderButton(final int mouseX, final int mouseY, final float partial) {
+    public void renderButton(MatrixStack matrixStack, final int mouseX, final int mouseY, final float partial) {
         if (this.visible) {
             final int iconIndex = this.getIconIndex();
 
@@ -74,7 +77,7 @@ public class ToggleButton extends Button implements ITooltip {
     }
 
     @Override
-    public String getMessage() {
+    public ITextComponent getMessage() {
         if (this.displayName != null) {
             String name = I18n.format(this.displayName);
             String value = I18n.format(this.displayHint);
@@ -97,9 +100,9 @@ public class ToggleButton extends Button implements ITooltip {
                 sb.replace(i, i + 1, "\n");
             }
 
-            return name + '\n' + sb;
+            return new StringTextComponent(name + '\n' + sb);
         }
-        return "";
+        return new StringTextComponent("");
     }
 
     @Override

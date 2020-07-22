@@ -22,11 +22,11 @@ import javax.annotation.Nullable;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.Dimension;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.dimension.Dimension;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -68,8 +68,8 @@ public class StorageCellDimension extends Dimension {
     }
 
     @Override
-    public Vec3d getFogColor(final float par1, final float par2) {
-        return new Vec3d(0.07, 0.07, 0.07);
+    public Vector3d getFogColor(final float par1, final float par2) {
+        return new Vector3d(0.07, 0.07, 0.07);
     }
 
     @Override

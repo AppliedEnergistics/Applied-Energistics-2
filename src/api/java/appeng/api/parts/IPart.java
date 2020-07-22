@@ -42,7 +42,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -221,7 +221,7 @@ public interface IPart extends ICustomCableConnection {
      *
      * @return if your activate method performed something.
      */
-    boolean onActivate(PlayerEntity player, Hand hand, Vec3d pos);
+    boolean onActivate(PlayerEntity player, Hand hand, Vector3d pos);
 
     /**
      * Called when you right click the part, very similar to Block.onActivateBlock
@@ -233,7 +233,7 @@ public interface IPart extends ICustomCableConnection {
      * @return if your activate method performed something, you should use false
      *         unless you really need it.
      */
-    boolean onShiftActivate(PlayerEntity player, Hand hand, Vec3d pos);
+    boolean onShiftActivate(PlayerEntity player, Hand hand, Vector3d pos);
 
     /**
      * Called when you left click the part, very similar to Block.onBlockClicked
@@ -245,7 +245,7 @@ public interface IPart extends ICustomCableConnection {
      * @return if your activate method performed something, you should use false
      *         unless you really need it.
      */
-    default boolean onClicked(PlayerEntity player, Hand hand, Vec3d pos) {
+    default boolean onClicked(PlayerEntity player, Hand hand, Vector3d pos) {
         return false;
     }
 
@@ -260,7 +260,7 @@ public interface IPart extends ICustomCableConnection {
      * @return if your activate method performed something, you should use false
      *         unless you really need it.
      */
-    default boolean onShiftClicked(PlayerEntity player, Hand hand, Vec3d pos) {
+    default boolean onShiftClicked(PlayerEntity player, Hand hand, Vector3d pos) {
         return false;
     }
 

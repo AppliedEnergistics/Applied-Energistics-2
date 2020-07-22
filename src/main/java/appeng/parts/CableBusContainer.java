@@ -40,9 +40,9 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
@@ -354,7 +354,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     }
 
     @Override
-    public SelectedPart selectPart(final Vec3d pos) {
+    public SelectedPart selectPart(final Vector3d pos) {
         for (final AEPartLocation side : AEPartLocation.values()) {
             final IPart p = this.getPart(side);
             if (p != null) {
@@ -651,7 +651,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     }
 
     @Override
-    public boolean activate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
+    public boolean activate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         final SelectedPart p = this.selectPart(pos);
         if (p != null && p.part != null) {
             // forge sends activate even when sneaking in some cases (eg emtpy hand)
@@ -665,7 +665,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
     }
 
     @Override
-    public boolean clicked(PlayerEntity player, Hand hand, Vec3d hitVec) {
+    public boolean clicked(PlayerEntity player, Hand hand, Vector3d hitVec) {
         final SelectedPart p = this.selectPart(hitVec);
         if (p != null && p.part != null) {
             if (player.isCrouching()) {

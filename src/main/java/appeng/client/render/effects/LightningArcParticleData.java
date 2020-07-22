@@ -8,7 +8,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 /**
  * Contains the target point of the lightning arc (the source point is infered
@@ -16,9 +16,9 @@ import net.minecraft.util.math.Vec3d;
  */
 public class LightningArcParticleData implements IParticleData {
 
-    public final Vec3d target;
+    public final Vector3d target;
 
-    public LightningArcParticleData(Vec3d target) {
+    public LightningArcParticleData(Vector3d target) {
         this.target = target;
     }
 
@@ -32,7 +32,7 @@ public class LightningArcParticleData implements IParticleData {
             float y = reader.readFloat();
             reader.expect(' ');
             float z = reader.readFloat();
-            return new LightningArcParticleData(new Vec3d(x, y, z));
+            return new LightningArcParticleData(new Vector3d(x, y, z));
         }
 
         @Override
@@ -41,7 +41,7 @@ public class LightningArcParticleData implements IParticleData {
             float x = buffer.readFloat();
             float y = buffer.readFloat();
             float z = buffer.readFloat();
-            return new LightningArcParticleData(new Vec3d(x, y, z));
+            return new LightningArcParticleData(new Vector3d(x, y, z));
         }
     };
 

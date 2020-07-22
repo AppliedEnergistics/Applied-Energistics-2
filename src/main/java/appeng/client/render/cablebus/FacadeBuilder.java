@@ -44,7 +44,7 @@ import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ILightReader;
+import net.minecraft.world.IBlockDisplayReader;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
@@ -112,7 +112,7 @@ public class FacadeBuilder {
         Map<Direction, FacadeRenderState> facadeStates = renderState.getFacades();
         List<AxisAlignedBB> partBoxes = renderState.getBoundingBoxes();
         Set<Direction> sidesWithParts = renderState.getAttachments().keySet();
-        ILightReader parentWorld = renderState.getWorld();
+        IBlockDisplayReader parentWorld = renderState.getWorld();
         BlockPos pos = renderState.getPos();
         BlockColors blockColors = Minecraft.getInstance().getBlockColors();
         boolean thinFacades = isUseThinFacades(partBoxes);
@@ -189,7 +189,7 @@ public class FacadeBuilder {
 
             AEAxisAlignedBB cutOutBox = getCutOutBox(facadeBox, partBoxes);
             List<AxisAlignedBB> holeStrips = getBoxes(facadeBox, cutOutBox, side.getAxis());
-            ILightReader facadeAccess = new FacadeBlockAccess(parentWorld, pos, side, blockState);
+            IBlockDisplayReader facadeAccess = new FacadeBlockAccess(parentWorld, pos, side, blockState);
 
             BlockRendererDispatcher dispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
             IBakedModel model = dispatcher.getModelForState(blockState);

@@ -18,10 +18,12 @@
 
 package appeng.client.gui.implementations;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.client.gui.AEBaseScreen;
@@ -50,12 +52,14 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContain
     }
 
     @Override
-    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.font.drawString(this.getGuiDisplayName(GuiText.VibrationChamber.getLocal()), 8, 6, 4210752);
-        this.font.drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+    public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY) {
+        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.VibrationChamber.textComponent()).getString(),
+                8, 6, 4210752);
+        this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
 
-        this.pb.setFullMsg(VibrationChamberTileEntity.POWER_PER_TICK * this.container.getCurrentProgress()
-                / VibrationChamberTileEntity.DILATION_SCALING + " AE/t");
+        this.pb.setFullMsg(new StringTextComponent(VibrationChamberTileEntity.POWER_PER_TICK
+                * this.container.getCurrentProgress() / VibrationChamberTileEntity.DILATION_SCALING + " AE/t"));
 
         if (this.container.getRemainingBurnTime() > 0) {
             final int i1 = this.container.getRemainingBurnTime() * 12 / 100;
@@ -68,7 +72,8 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContain
     }
 
     @Override
-    public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY, float partialTicks) {
         this.bindTexture("guis/vibchamber.png");
         this.pb.x = 99 + this.guiLeft;
         this.pb.y = 36 + this.guiTop;

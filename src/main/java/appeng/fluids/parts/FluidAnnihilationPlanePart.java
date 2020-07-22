@@ -9,9 +9,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.IBucketPickupHandler;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -231,7 +232,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
 
         BlockState blockstate = w.getBlockState(pos);
         if (blockstate.getBlock() instanceof IBucketPickupHandler) {
-            IFluidState fluidState = blockstate.getFluidState();
+            FluidState fluidState = blockstate.getFluidState();
 
             Fluid fluid = fluidState.getFluid();
             if (isFluidBlacklisted(fluid)) {
@@ -313,7 +314,7 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
     }
 
     private boolean isFluidBlacklisted(Fluid fluid) {
-        Tag<Fluid> tag = FluidTags.getCollection().getOrCreate(TAG_BLACKLIST);
+        ITag<Fluid> tag = FluidTags.getCollection().getOrCreate(TAG_BLACKLIST);
         return fluid.isIn(tag);
     }
 

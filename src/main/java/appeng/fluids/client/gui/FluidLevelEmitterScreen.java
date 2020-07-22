@@ -1,6 +1,8 @@
 
 package appeng.fluids.client.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
@@ -48,16 +50,17 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
     }
 
     @Override
-    public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
-        super.drawBG(offsetX, offsetY, mouseX, mouseY, partialTicks);
-        this.level.render(mouseX, mouseY, partialTicks);
+    public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
+            final int mouseY, float partialTicks) {
+        super.drawBG(matrixStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
+        this.level.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
     @Override
-    public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY) {
-        super.drawFG(offsetX, offsetY, mouseX, mouseY);
+    public void drawFG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY) {
+        super.drawFG(matrixStack, offsetX, offsetY, mouseX, mouseY);
 
-        this.font.drawString(GuiText.FluidLevelEmitterUnit.getLocal(), 110, 44, COLOR_DARK_GRAY);
+        this.font.drawString(matrixStack, GuiText.FluidLevelEmitterUnit.getLocal(), 110, 44, COLOR_DARK_GRAY);
     }
 
     @Override

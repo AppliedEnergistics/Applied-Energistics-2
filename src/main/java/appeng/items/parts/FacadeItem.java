@@ -32,7 +32,7 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -105,7 +105,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
         BlockState blockState = block.getDefaultState();
 
         final boolean areTileEntitiesEnabled = AEConfig.instance().isFeatureEnabled(AEFeature.TILE_ENTITY_FACADES);
-        Tag<Block> whitelistTag = BlockTags.getCollection().getOrCreate(TAG_WHITELISTED);
+        ITag<Block> whitelistTag = BlockTags.getCollection().getOrCreate(TAG_WHITELISTED);
         final boolean isWhiteListed = block.isIn(whitelistTag);
         final boolean isModel = blockState.getRenderType() == BlockRenderType.MODEL;
 

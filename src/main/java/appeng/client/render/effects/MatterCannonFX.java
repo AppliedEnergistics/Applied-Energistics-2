@@ -23,8 +23,8 @@ import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.SpriteTexturedParticle;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particles.BasicParticleType;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -32,7 +32,7 @@ import appeng.api.util.AEPartLocation;
 
 public class MatterCannonFX extends SpriteTexturedParticle {
 
-    public MatterCannonFX(final World par1World, final double x, final double y, final double z,
+    public MatterCannonFX(final ClientWorld par1World, final double x, final double y, final double z,
             IAnimatedSprite sprite) {
         super(par1World, x, y, z);
         this.particleGravity = 0;
@@ -85,7 +85,7 @@ public class MatterCannonFX extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle makeParticle(BasicParticleType data, World world, double x, double y, double z, double xSpeed,
+        public Particle makeParticle(BasicParticleType data, ClientWorld world, double x, double y, double z, double xSpeed,
                 double ySpeed, double zSpeed) {
             return new MatterCannonFX(world, x, y, z, spriteSet);
         }

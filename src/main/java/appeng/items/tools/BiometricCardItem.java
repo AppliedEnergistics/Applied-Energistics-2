@@ -30,6 +30,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -61,7 +62,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
     }
 
     @Override
-    public boolean itemInteractionForEntity(ItemStack is, final PlayerEntity player, final LivingEntity target,
+    public ActionResultType itemInteractionForEntity(ItemStack is, final PlayerEntity player, final LivingEntity target,
             final Hand hand) {
         if (target instanceof PlayerEntity && !player.isCrouching()) {
             if (player.isCreative()) {
@@ -69,15 +70,15 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
             }
             this.encode(is, (PlayerEntity) target);
             player.swingArm(hand);
-            return true;
+            return ActionResultType.SUCCESS;
         }
-        return false;
+        return ActionResultType.PASS;
     }
 
     @Override
     public ITextComponent getDisplayName(final ItemStack is) {
         final GameProfile username = this.getProfile(is);
-        return username != null ? super.getDisplayName(is).appendText(" - " + username.getName())
+        return username != null ? super.getDisplayName(is).deepCopy().func_240702_b_(" - " + username.getName())
                 : super.getDisplayName(is);
     }
 
@@ -166,7 +167,8 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
                 if (msg == null) {
                     msg = new TranslationTextComponent(sp.getTranslatedName());
                 } else {
-                    msg = msg.appendText(", ").appendSibling(new TranslationTextComponent(sp.getTranslatedName()));
+                    msg = msg.deepCopy().func_240702_b_(", ")
+                            .func_230529_a_(new TranslationTextComponent(sp.getTranslatedName()));
                 }
             }
             lines.add(msg);

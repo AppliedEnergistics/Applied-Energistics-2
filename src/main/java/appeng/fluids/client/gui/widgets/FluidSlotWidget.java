@@ -2,15 +2,17 @@ package appeng.fluids.client.gui.widgets;
 
 import java.util.Collections;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
@@ -35,7 +37,7 @@ public class FluidSlotWidget extends CustomSlotWidget {
     }
 
     @Override
-    public void drawContent(final Minecraft mc, final int mouseX, final int mouseY, final float partialTicks) {
+    public void drawContent(MatrixStack matrixStack, final Minecraft mc, final int mouseX, final int mouseY, final float partialTicks) {
         final IAEFluidStack fs = this.getFluidStack();
         if (fs != null) {
             RenderSystem.disableBlend();
@@ -52,7 +54,7 @@ public class FluidSlotWidget extends CustomSlotWidget {
             final float blue = (attributes.getColor() & 255) / 255.0F;
             RenderSystem.color3f(red, green, blue);
 
-            blit(xPos(), yPos(), this.getBlitOffset(), getWidth(), getHeight(), sprite);
+            blit(matrixStack, xPos(), yPos(), this.getBlitOffset(), getWidth(), getHeight(), sprite);
         }
     }
 
@@ -76,10 +78,10 @@ public class FluidSlotWidget extends CustomSlotWidget {
     }
 
     @Override
-    public String getMessage() {
+    public ITextComponent getMessage() {
         final IAEFluidStack fluid = this.getFluidStack();
         if (fluid != null) {
-            return I18n.format(fluid.getFluidStack().getTranslationKey());
+            return new TranslationTextComponent(fluid.getFluidStack().getTranslationKey());
         }
         return null;
     }

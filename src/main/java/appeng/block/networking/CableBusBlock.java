@@ -33,7 +33,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemGroup;
@@ -47,10 +47,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
@@ -146,7 +146,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
 
     @Override
     public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player,
-            boolean willHarvest, IFluidState fluid) {
+            boolean willHarvest, FluidState fluid) {
         if (player.abilities.isCreativeMode) {
             final AEBaseTileEntity tile = this.getTileEntity(world, pos);
             if (tile != null) {
@@ -171,7 +171,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     @Override
     public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos,
             PlayerEntity player) {
-        final Vec3d v3 = target.getHitVec().subtract(pos.getX(), pos.getY(), pos.getZ());
+        final Vector3d v3 = target.getHitVec().subtract(pos.getX(), pos.getY(), pos.getZ());
         final SelectedPart sp = this.cb(world, pos).selectPart(v3);
 
         if (sp.part != null) {
@@ -223,7 +223,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
             // FIXME: Check how this looks, probably like shit, maybe provide parts the
             // ability to supply particle textures???
             effectRenderer
-                    .addEffect(new CableBusBreakingParticle(world, x, y, z, texture).multiplyParticleScaleBy(0.8F));
+                    .addEffect(new CableBusBreakingParticle(world, x, y, z, texture).multipleParticleScaleBy(0.8F));
         }
 
         return true;
@@ -313,7 +313,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
             if (rtr instanceof BlockRayTraceResult) {
                 BlockRayTraceResult brtr = (BlockRayTraceResult) rtr;
                 if (brtr.getPos().equals(pos)) {
-                    final Vec3d hitVec = rtr.getHitVec().subtract(new Vec3d(pos));
+                    final Vector3d hitVec = rtr.getHitVec().subtract(new Vector3d(pos.getX(), pos.getY(), pos.getZ()));
 
                     if (this.cb(worldIn, pos).clicked(player, Hand.MAIN_HAND, hitVec)) {
                         NetworkHandler.instance().sendToServer(new ClickPacket(pos, brtr.getFace(), (float) hitVec.x,
@@ -324,7 +324,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
         }
     }
 
-    public void onBlockClickPacket(World worldIn, BlockPos pos, PlayerEntity playerIn, Hand hand, Vec3d hitVec) {
+    public void onBlockClickPacket(World worldIn, BlockPos pos, PlayerEntity playerIn, Hand hand, Vector3d hitVec) {
         this.cb(worldIn, pos).clicked(playerIn, hand, hitVec);
     }
 
@@ -332,8 +332,8 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
     public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
             final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
         // Transform from world into block space
-        Vec3d hitVec = hit.getHitVec();
-        Vec3d hitInBlock = new Vec3d(hitVec.x - pos.getX(), hitVec.y - pos.getY(), hitVec.z - pos.getZ());
+        Vector3d hitVec = hit.getHitVec();
+        Vector3d hitInBlock = new Vector3d(hitVec.x - pos.getX(), hitVec.y - pos.getY(), hitVec.z - pos.getZ());
         return this.cb(w, pos).activate(player, hand, hitInBlock) ? ActionResultType.SUCCESS : ActionResultType.PASS;
     }
 

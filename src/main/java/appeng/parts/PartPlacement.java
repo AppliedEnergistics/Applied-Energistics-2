@@ -40,7 +40,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -181,7 +181,7 @@ public class PartPlacement {
         if (held.isEmpty()) {
             if (host != null && player.isCrouching() && world.isAirBlock(pos)) {
                 if (mop.getType() == RayTraceResult.Type.BLOCK) {
-                    Vec3d hitVec = mop.getHitVec().add(-mop.getPos().getX(), -mop.getPos().getY(),
+                    Vector3d hitVec = mop.getHitVec().add(-mop.getPos().getX(), -mop.getPos().getY(),
                             -mop.getPos().getZ());
                     final SelectedPart sPart = selectPart(player, host, hitVec);
                     if (sPart != null && sPart.part != null) {
@@ -329,7 +329,7 @@ public class PartPlacement {
         return getEyeHeight();
     }
 
-    private static SelectedPart selectPart(final PlayerEntity player, final IPartHost host, final Vec3d pos) {
+    private static SelectedPart selectPart(final PlayerEntity player, final IPartHost host, final Vector3d pos) {
         AppEng.proxy.updateRenderMode(player);
         final SelectedPart sp = host.selectPart(pos);
         AppEng.proxy.updateRenderMode(null);
@@ -365,7 +365,7 @@ public class PartPlacement {
 
             final float f = 1.0F;
             final double d0 = mc.playerController.getBlockReachDistance();
-            final Vec3d vec3 = mc.getRenderViewEntity().getEyePosition(f);
+            final Vector3d vec3 = mc.getRenderViewEntity().getEyePosition(f);
 
             if (mop instanceof BlockRayTraceResult && mop.getHitVec().distanceTo(vec3) < d0) {
                 BlockRayTraceResult brtr = (BlockRayTraceResult) mop;

@@ -10,7 +10,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -66,7 +66,7 @@ public class DebugPartPlacerItem extends AEBaseItem {
         }
 
         Direction face = context.getFace();
-        Vec3i offset = face.getDirectionVec();
+        Vector3i offset = face.getDirectionVec();
         Direction[] perpendicularFaces = Arrays.stream(Direction.values()).filter(d -> d.getAxis() != face.getAxis())
                 .toArray(Direction[]::new);
 

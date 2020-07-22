@@ -26,10 +26,11 @@ import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -43,7 +44,7 @@ public class CraftingFx extends SpriteTexturedParticle {
     private final float offsetY;
     private final float offsetZ;
 
-    public CraftingFx(final World par1World, final double x, final double y, final double z,
+    public CraftingFx(final ClientWorld par1World, final double x, final double y, final double z,
             final IAnimatedSprite sprite) {
         super(par1World, x, y, z);
 
@@ -78,10 +79,10 @@ public class CraftingFx extends SpriteTexturedParticle {
         // I believe this particle is same as breaking particle, but should not exit the
         // original block it was
         // spawned in (which is encased in glass)
-        Vec3d vec3d = renderInfo.getProjectedView();
-        offX -= vec3d.x;
-        offY -= vec3d.y;
-        offZ -= vec3d.z;
+        Vector3d Vector3d = renderInfo.getProjectedView();
+        offX -= Vector3d.x;
+        offY -= Vector3d.y;
+        offZ -= Vector3d.z;
 
         Vector3f[] avector3f = new Vector3f[] { new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F),
                 new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F) };

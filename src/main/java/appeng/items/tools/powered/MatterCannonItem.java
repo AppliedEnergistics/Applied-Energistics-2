@@ -44,7 +44,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -143,9 +143,9 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
 
                         final LookDirection dir = Platform.getPlayerRay(p, 32);
 
-                        final Vec3d rayFrom = dir.getA();
-                        final Vec3d rayTo = dir.getB();
-                        final Vec3d direction = rayTo.subtract(rayFrom);
+                        final Vector3d rayFrom = dir.getA();
+                        final Vector3d rayTo = dir.getB();
+                        final Vector3d direction = rayTo.subtract(rayFrom);
                         direction.normalize();
 
                         final double d0 = rayFrom.x;
@@ -174,14 +174,14 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
         return new ActionResult<>(ActionResultType.FAIL, p.getHeldItem(hand));
     }
 
-    private void shootPaintBalls(final ItemStack type, final World w, final PlayerEntity p, final Vec3d Vec3d,
-            final Vec3d Vec3d1, final Vec3d direction, final double d0, final double d1, final double d2) {
-        final AxisAlignedBB bb = new AxisAlignedBB(Math.min(Vec3d.x, Vec3d1.x), Math.min(Vec3d.y, Vec3d1.y),
-                Math.min(Vec3d.z, Vec3d1.z), Math.max(Vec3d.x, Vec3d1.x), Math.max(Vec3d.y, Vec3d1.y),
-                Math.max(Vec3d.z, Vec3d1.z)).grow(16, 16, 16);
+    private void shootPaintBalls(final ItemStack type, final World w, final PlayerEntity p, final Vector3d Vector3d,
+            final Vector3d Vector3d1, final Vector3d direction, final double d0, final double d1, final double d2) {
+        final AxisAlignedBB bb = new AxisAlignedBB(Math.min(Vector3d.x, Vector3d1.x), Math.min(Vector3d.y, Vector3d1.y),
+                Math.min(Vector3d.z, Vector3d1.z), Math.max(Vector3d.x, Vector3d1.x), Math.max(Vector3d.y, Vector3d1.y),
+                Math.max(Vector3d.z, Vector3d1.z)).grow(16, 16, 16);
 
         Entity entity = null;
-        Vec3d entityIntersection = null;
+        Vector3d entityIntersection = null;
         final List list = w.getEntitiesWithinAABBExcludingEntity(p, bb);
         double closest = 9999999.0D;
 
@@ -197,10 +197,10 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                 final float f1 = 0.3F;
 
                 final AxisAlignedBB boundingBox = entity1.getBoundingBox().grow(f1, f1, f1);
-                final Vec3d intersection = boundingBox.rayTrace(Vec3d, Vec3d1).orElse(null);
+                final Vector3d intersection = boundingBox.rayTrace(Vector3d, Vector3d1).orElse(null);
 
                 if (intersection != null) {
-                    final double nd = Vec3d.squareDistanceTo(intersection);
+                    final double nd = Vector3d.squareDistanceTo(intersection);
 
                     if (nd < closest) {
                         entity = entity1;
@@ -211,11 +211,11 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
             }
         }
 
-        RayTraceContext rayTraceContext = new RayTraceContext(Vec3d, Vec3d1, RayTraceContext.BlockMode.COLLIDER,
+        RayTraceContext rayTraceContext = new RayTraceContext(Vector3d, Vector3d1, RayTraceContext.BlockMode.COLLIDER,
                 RayTraceContext.FluidMode.NONE, p);
         RayTraceResult pos = w.rayTraceBlocks(rayTraceContext);
 
-        final Vec3d vec = new Vec3d(d0, d1, d2);
+        final Vector3d vec = new Vector3d(d0, d1, d2);
         if (entity != null && pos.getType() != RayTraceResult.Type.MISS
                 && pos.getHitVec().squareDistanceTo(vec) > closest) {
             pos = new EntityRayTraceResult(entity, entityIntersection);
@@ -271,25 +271,25 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
 
                 final TileEntity te = w.getTileEntity(hitPos);
                 if (te instanceof PaintSplotchesTileEntity) {
-                    final Vec3d hp = pos.getHitVec().subtract(hitPos.getX(), hitPos.getY(), hitPos.getZ());
+                    final Vector3d hp = pos.getHitVec().subtract(hitPos.getX(), hitPos.getY(), hitPos.getZ());
                     ((PaintSplotchesTileEntity) te).addBlot(type, side.getOpposite(), hp);
                 }
             }
         }
     }
 
-    private void standardAmmo(float penetration, final World w, final PlayerEntity p, final Vec3d Vec3d,
-            final Vec3d Vec3d1, final Vec3d direction, final double d0, final double d1, final double d2) {
+    private void standardAmmo(float penetration, final World w, final PlayerEntity p, final Vector3d Vector3d,
+            final Vector3d Vector3d1, final Vector3d direction, final double d0, final double d1, final double d2) {
         boolean hasDestroyed = true;
         while (penetration > 0 && hasDestroyed) {
             hasDestroyed = false;
 
-            final AxisAlignedBB bb = new AxisAlignedBB(Math.min(Vec3d.x, Vec3d1.x), Math.min(Vec3d.y, Vec3d1.y),
-                    Math.min(Vec3d.z, Vec3d1.z), Math.max(Vec3d.x, Vec3d1.x), Math.max(Vec3d.y, Vec3d1.y),
-                    Math.max(Vec3d.z, Vec3d1.z)).grow(16, 16, 16);
+            final AxisAlignedBB bb = new AxisAlignedBB(Math.min(Vector3d.x, Vector3d1.x), Math.min(Vector3d.y, Vector3d1.y),
+                    Math.min(Vector3d.z, Vector3d1.z), Math.max(Vector3d.x, Vector3d1.x), Math.max(Vector3d.y, Vector3d1.y),
+                    Math.max(Vector3d.z, Vector3d1.z)).grow(16, 16, 16);
 
             Entity entity = null;
-            Vec3d entityIntersection = null;
+            Vector3d entityIntersection = null;
             final List list = w.getEntitiesWithinAABBExcludingEntity(p, bb);
             double closest = 9999999.0D;
 
@@ -306,10 +306,10 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                         final float f1 = 0.3F;
 
                         final AxisAlignedBB boundingBox = entity1.getBoundingBox().grow(f1, f1, f1);
-                        final Vec3d intersection = boundingBox.rayTrace(Vec3d, Vec3d1).orElse(null);
+                        final Vector3d intersection = boundingBox.rayTrace(Vector3d, Vector3d1).orElse(null);
 
                         if (intersection != null) {
-                            final double nd = Vec3d.squareDistanceTo(intersection);
+                            final double nd = Vector3d.squareDistanceTo(intersection);
 
                             if (nd < closest) {
                                 entity = entity1;
@@ -321,9 +321,9 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                 }
             }
 
-            RayTraceContext rayTraceContext = new RayTraceContext(Vec3d, Vec3d1, RayTraceContext.BlockMode.COLLIDER,
+            RayTraceContext rayTraceContext = new RayTraceContext(Vector3d, Vector3d1, RayTraceContext.BlockMode.COLLIDER,
                     RayTraceContext.FluidMode.NONE, p);
-            final Vec3d vec = new Vec3d(d0, d1, d2);
+            final Vector3d vec = new Vector3d(d0, d1, d2);
             RayTraceResult pos = w.rayTraceBlocks(rayTraceContext);
             if (entity != null && pos.getType() != RayTraceResult.Type.MISS
                     && pos.getHitVec().squareDistanceTo(vec) > closest) {
@@ -353,8 +353,8 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                         final LivingEntity el = (LivingEntity) entityHit;
                         penetration -= dmg;
                         el.knockBack(p, 0, -direction.x, -direction.z);
-                        // el.knockBack( p, 0, Vec3d.x,
-                        // Vec3d.z );
+                        // el.knockBack( p, 0, Vector3d.x,
+                        // Vector3d.z );
                         el.attackEntityFrom(dmgSrc, dmg);
                         if (!el.isAlive()) {
                             hasDestroyed = true;

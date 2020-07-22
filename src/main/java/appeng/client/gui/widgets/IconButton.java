@@ -18,12 +18,14 @@
 
 package appeng.client.gui.widgets;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 public abstract class IconButton extends Button implements ITooltip {
@@ -33,7 +35,7 @@ public abstract class IconButton extends Button implements ITooltip {
     private boolean halfSize = false;
 
     public IconButton(final int x, final int y, IPressable onPress) {
-        super(x, y, 16, 16, "", onPress);
+        super(x, y, 16, 16, new StringTextComponent(""), onPress);
     }
 
     public void setVisibility(final boolean vis) {
@@ -42,7 +44,7 @@ public abstract class IconButton extends Button implements ITooltip {
     }
 
     @Override
-    public void renderButton(final int mouseX, final int mouseY, float partial) {
+    public void renderButton(MatrixStack matrixStack, final int mouseX, final int mouseY, float partial) {
 
         Minecraft minecraft = Minecraft.getInstance();
 

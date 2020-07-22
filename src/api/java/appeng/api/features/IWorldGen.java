@@ -24,8 +24,8 @@
 package appeng.api.features;
 
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.Dimension;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.dimension.Dimension;
 
 public interface IWorldGen {
 

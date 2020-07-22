@@ -1,8 +1,8 @@
 package appeng.worldgen;
 
 import com.google.common.collect.ImmutableMap;
-import com.mojang.datafixers.Dynamic;
-import com.mojang.datafixers.types.DynamicOps;
+import com.mojang.serialization.Dynamic;
+import com.mojang.serialization.DynamicOps;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;

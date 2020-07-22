@@ -26,7 +26,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -46,15 +46,15 @@ public interface ICableBusContainer {
 
     void onEntityCollision(Entity e);
 
-    boolean activate(PlayerEntity player, Hand hand, Vec3d vecFromPool);
+    boolean activate(PlayerEntity player, Hand hand, Vector3d vecFromPool);
 
-    boolean clicked(PlayerEntity player, Hand hand, Vec3d hitVec);
+    boolean clicked(PlayerEntity player, Hand hand, Vector3d hitVec);
 
     void onNeighborChanged(IBlockReader w, BlockPos pos, BlockPos neighbor);
 
     boolean isEmpty();
 
-    SelectedPart selectPart(Vec3d v3);
+    SelectedPart selectPart(Vector3d v3);
 
     boolean recolourBlock(Direction side, AEColor colour, PlayerEntity who);
 

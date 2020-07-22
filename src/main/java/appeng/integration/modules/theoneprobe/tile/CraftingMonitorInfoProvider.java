@@ -21,6 +21,7 @@ package appeng.integration.modules.theoneprobe.tile;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
 import mcjty.theoneprobe.api.ElementAlignment;
@@ -46,8 +47,7 @@ public class CraftingMonitorInfoProvider implements ITileProbInfoProvider {
                 // TODO: check if OK
                 final ItemStack itemStack = displayStack.asItemStackRepresentation();
                 final String itemName = itemStack.getDisplayName().getString();
-                final String formattedCrafting = TheOneProbeText.CRAFTING.getTranslationComponent(itemName)
-                        .getFormattedText();
+                final ITextComponent formattedCrafting = TheOneProbeText.CRAFTING.getTranslationComponent(itemName);
 
                 final IProbeInfo centerAlignedHorizontalLayout = probeInfo
                         .horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));

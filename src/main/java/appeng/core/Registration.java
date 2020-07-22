@@ -31,8 +31,9 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.DimensionType;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.IFeatureConfig;
@@ -632,7 +633,7 @@ final class Registration {
             // FIXME: registries.worldgen().disableWorldGenForProviderID( type,
             // StorageWorldProvider.class );
 
-            registries.worldgen().disableWorldGenForDimension(type, DimensionType.THE_NETHER.getRegistryName());
+            registries.worldgen().disableWorldGenForDimension(type, World.field_234919_h_.getRegistryName());
         }
 
         // whitelist from config
@@ -657,10 +658,11 @@ final class Registration {
             return;
         }
 
-        b.addStructure(MeteoriteStructure.INSTANCE.withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG));
+        b.func_235063_a_(MeteoriteStructure.INSTANCE.func_236391_a_(IFeatureConfig.NO_FEATURE_CONFIG));
         b.addFeature(GenerationStage.Decoration.TOP_LAYER_MODIFICATION,
-                MeteoriteStructure.INSTANCE.withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG)
-                        .withPlacement(Placement.NOPE.configure(IPlacementConfig.NO_PLACEMENT_CONFIG)));
+                MeteoriteStructure.INSTANCE.func_236391_a_(IFeatureConfig.NO_FEATURE_CONFIG)
+                        //.withPlacement(Placement.NOPE.configure(IPlacementConfig.NO_PLACEMENT_CONFIG))
+                );
     }
 
     private static void addQuartzWorldGen(Biome b) {

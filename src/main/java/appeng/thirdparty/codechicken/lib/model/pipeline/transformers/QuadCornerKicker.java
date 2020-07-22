@@ -24,7 +24,7 @@ import static net.minecraft.util.Direction.AxisDirection.POSITIVE;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.AxisDirection;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 
 import appeng.thirdparty.codechicken.lib.model.Quad.Vertex;
 import appeng.thirdparty.codechicken.lib.model.pipeline.IPipelineElementFactory;
@@ -121,7 +121,7 @@ public class QuadCornerKicker extends QuadTransformer {
                             float z = vertex.vec[2];
                             if (epsComp(x, corner.pX(this.box)) && epsComp(y, corner.pY(this.box))
                                     && epsComp(z, corner.pZ(this.box))) {
-                                Vec3i vec = Direction.values()[hoz].getDirectionVec();
+                                Vector3i vec = Direction.values()[hoz].getDirectionVec();
                                 x -= vec.getX() * this.thickness;
                                 y -= vec.getY() * this.thickness;
                                 z -= vec.getZ() * this.thickness;

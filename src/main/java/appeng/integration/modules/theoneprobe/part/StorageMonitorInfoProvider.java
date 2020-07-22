@@ -21,6 +21,7 @@ package appeng.integration.modules.theoneprobe.part;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
 import mcjty.theoneprobe.api.IProbeHitData;
@@ -48,18 +49,18 @@ public class StorageMonitorInfoProvider implements IPartProbInfoProvider {
             // TODO: generalize
             if (displayed instanceof IAEItemStack) {
                 final IAEItemStack ais = (IAEItemStack) displayed;
-                probeInfo.text(TheOneProbeText.SHOWING.getTranslationComponent() + ": "
-                        + ais.asItemStackRepresentation().getDisplayName());
+                probeInfo.text(TheOneProbeText.SHOWING
+                        .getTranslationComponent(ais.asItemStackRepresentation().getDisplayName()));
             } else if (displayed instanceof IAEFluidStack) {
                 final IAEFluidStack ais = (IAEFluidStack) displayed;
                 final String fluidName = I18n.format(ais.getFluidStack().getTranslationKey());
-                final String text = TheOneProbeText.SHOWING.getTranslationComponent() + ": " + fluidName;
+                final ITextComponent text = TheOneProbeText.SHOWING.getTranslationComponent(fluidName);
 
                 probeInfo.text(text);
             }
 
-            probeInfo.text(isLocked ? TheOneProbeText.LOCKED.getTranslationString()
-                    : TheOneProbeText.UNLOCKED.getTranslationString());
+            probeInfo.text(isLocked ? TheOneProbeText.LOCKED.getTranslationComponent()
+                    : TheOneProbeText.UNLOCKED.getTranslationComponent());
         }
     }
 
