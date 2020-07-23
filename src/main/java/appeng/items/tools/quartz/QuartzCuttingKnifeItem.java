@@ -72,10 +72,12 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
 
     @Override
     public ItemStack getContainerItem(final ItemStack itemStack) {
-        ItemStack copy = itemStack.copy();
-        copy.setDamage(itemStack.getDamage() + 1);
-
-        return copy;
+        ItemStack damagedStack = itemStack.copy();
+        if (damagedStack.attemptDamageItem(1, random, null)) {
+            return ItemStack.EMPTY;
+        } else {
+            return damagedStack;
+        }
     }
 
     @Override
