@@ -41,7 +41,7 @@ public class MatrixFrameBlock extends AEBaseBlock {
     private static final Material MATERIAL = new Material(MaterialColor.CLEAR, false, true, true, false, false, false, PistonBehavior.PUSH_ONLY);
 
     public MatrixFrameBlock() {
-        super(Settings.of(MATERIAL).strength(-1.0F, 6000000.0F).solidBlock((state, world, pos) -> false).dropsNothing());
+        super(Settings.of(MATERIAL).strength(-1.0F, 6000000.0F).nonOpaque().dropsNothing());
     }
 
     @Override

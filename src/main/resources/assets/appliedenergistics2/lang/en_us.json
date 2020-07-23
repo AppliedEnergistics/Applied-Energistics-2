@@ -671,7 +671,7 @@
   "item.appliedenergistics2.yellow_paint_ball": "Yellow Paint Ball",
   "item.appliedenergistics2.yellow_smart_cable": "Yellow ME Smart Cable",
   "item.appliedenergistics2.yellow_smart_dense_cable": "Yellow ME Dense Smart Cable",
-  "itemGroup.appliedenergistics2": "Applied Energistics 2",
+  "itemGroup.appliedenergistics2.main": "Applied Energistics 2",
   "itemGroup.appliedenergistics2.facades": "Applied Energistics 2 - Facades",
   "key.appliedenergistics2.category": "Applied Energistics 2",
   "key.toggle_focus.desc": "Toggle search box focus",

@@ -18,23 +18,7 @@
 
 package appeng.hooks;
 
-import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-import java.util.WeakHashMap;
-import java.util.concurrent.TimeUnit;
-
-import com.google.common.base.Stopwatch;
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Multimap;
-
-import net.minecraft.world.World;
-
+import appeng.api.networking.IGridNode;
 import appeng.api.util.AEColor;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -44,14 +28,32 @@ import appeng.me.Grid;
 import appeng.tile.AEBaseBlockEntity;
 import appeng.util.IWorldCallable;
 import appeng.util.Platform;
+import com.google.common.base.Stopwatch;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
+
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.WeakHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class TickHandler {
 
-    private static final TickHandler INSTANCE = new TickHandler();
+    private static TickHandler INSTANCE;
     private final Queue<IWorldCallable<?>> serverQueue = new ArrayDeque<>();
     private final Multimap<World, CraftingJob> craftingJobs = LinkedListMultimap.create();
     private final Map<WorldAccess, Queue<IWorldCallable<?>>> callQueue = new WeakHashMap<>();
@@ -60,11 +62,16 @@ public class TickHandler {
     private final HashMap<Integer, PlayerColor> srvPlayerColors = new HashMap<>();
 
     public TickHandler() {
+        if (INSTANCE != null) {
+            throw new IllegalStateException("There can only be a single tick handler.");
+        }
+        INSTANCE = this;
+
         // Register for all the tick events we care about
         ServerTickEvents.END_SERVER_TICK.register(this::onAfterServerTick);
         ServerTickEvents.START_WORLD_TICK.register(this::onBeforeWorldTick);
         ServerTickEvents.END_WORLD_TICK.register(this::onAfterWorldTick);
-
+        ServerLifecycleEvents.SERVER_STOPPING.register(this::onServerStopping);
     }
 
     public static TickHandler instance() {
@@ -146,6 +153,27 @@ public class TickHandler {
 // FIXME FABRIC            }
 // FIXME FABRIC        }
 // FIXME FABRIC    }
+
+    /**
+     * This is primarily useful for an integrated server being stopped, and can be fully replaced by the event
+     * above once world unload events hit.
+     */
+    private void onServerStopping(MinecraftServer server) {
+        final List<IGridNode> toDestroy = new ArrayList<>();
+        this.server.updateNetworks();
+        for (final Grid g : this.server.networks) {
+            for (final IGridNode n : g.getNodes()) {
+                WorldAccess nodeWorld = n.getWorld();
+                if (nodeWorld instanceof ServerWorld && ((ServerWorld) nodeWorld).getServer() == server) {
+                    toDestroy.add(n);
+                }
+            }
+        }
+
+        for (final IGridNode n : toDestroy) {
+            n.destroy();
+        }
+    }
 
     private void onBeforeWorldTick(ServerWorld world) {
         final Queue<IWorldCallable<?>> queue = this.callQueue.get(world);

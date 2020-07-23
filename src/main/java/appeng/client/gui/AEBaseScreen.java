@@ -18,43 +18,9 @@
 
 package appeng.client.gui;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import appeng.mixins.SlotMixin;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Stopwatch;
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Style;
-import net.minecraft.util.Formatting;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
-import net.minecraft.text.Text;
-
+import alexiil.mc.lib.attributes.fluid.render.FluidRenderFace;
+import alexiil.mc.lib.attributes.fluid.render.FluidVolumeRenderer;
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.widgets.CustomSlotWidget;
@@ -85,6 +51,41 @@ import appeng.core.sync.packets.SwapSlotsPacket;
 import appeng.fluids.client.render.FluidStackSizeRenderer;
 import appeng.fluids.container.slots.IMEFluidSlot;
 import appeng.helpers.InventoryAction;
+import appeng.mixins.SlotMixin;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Stopwatch;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.slot.Slot;
+import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL11;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScreen<T> {
 
@@ -189,7 +190,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
                 }
 
                 final Text msg = tooltip.getMessage();
-                if (msg != null && !msg.isEmpty()) {
+                if (msg != null && !msg.getString().isEmpty()) {
                     this.drawTooltip(matrices, x + 11, y + 4, msg);
                 }
             }
@@ -328,7 +329,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
     // TODO 1.9.4 aftermath - Whole SlotActionType thing, to be checked.
     @Override
     protected void onMouseClick(final Slot slot, final int slotIdx, final int mouseButton,
-            final SlotActionType clickType) {
+                                final SlotActionType clickType) {
         final PlayerEntity player = getPlayer();
 
         if (slot instanceof FakeSlot) {
@@ -510,7 +511,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
     }
 
     protected int getSlotIndex(Slot slot) {
-        return ((SlotMixin)slot).getIndex();
+        return ((SlotMixin) slot).getIndex();
     }
 
     protected boolean checkHotbarKeys(int keyCode, int scanCode) {
@@ -652,7 +653,16 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
             final IAEFluidStack fs = slot.getAEFluidStack();
 
             if (fs != null && this.isPowered()) {
-                fs.getFluidStack().renderGuiRect(s.x, s.y, s.x + 16, s.y + 16);
+                List<FluidRenderFace> faces = new ArrayList<>();
+                faces.add(FluidRenderFace.createFlatFaceZ(0, 0, 0, 16, 16, 0, 1 / 16., false, false));
+
+                matrices.push();
+                matrices.translate(s.x, s.y, 0);
+
+                FluidVolume fluidStack = fs.getFluidStack();
+                fluidStack.render(faces, FluidVolumeRenderer.VCPS, matrices);
+                RenderSystem.runAsFancy(FluidVolumeRenderer.VCPS::draw);
+                matrices.pop();
 
                 this.fluidStackSizeRenderer.renderStackSize(this.textRenderer, fs, s.x, s.y);
             } else if (!this.isPowered()) {
@@ -786,7 +796,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
 
     public void tick() {
         super.tick();
-        for (IGuiEventListener child : children) {
+        for (Element child : children) {
             if (child instanceof ITickingWidget) {
                 ((ITickingWidget) child).tick();
             }

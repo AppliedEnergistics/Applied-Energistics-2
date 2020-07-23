@@ -24,9 +24,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Optional;
 
-import appeng.util.BlockUpdateFlag;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.block.entity.BlockEntityType;
@@ -251,15 +249,15 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
 
             final LinkedList<BlockPos> places = new LinkedList<>();
 
-            final Iterator<CraftingTileEntity> i = this.cluster.getTiles();
+            final Iterator<CraftingBlockEntity> i = this.cluster.getTiles();
             while (i.hasNext()) {
-                final CraftingTileEntity h = i.next();
+                final CraftingBlockEntity h = i.next();
                 if (h == this) {
                     places.add(pos);
                 } else {
                     for (Direction d : Direction.values()) {
                         BlockPos p = h.pos.offset(d);
-                        if (this.world.isAirBlock(p)) {
+                        if (this.world.isAir(p)) {
                             places.add(p);
                         }
                     }

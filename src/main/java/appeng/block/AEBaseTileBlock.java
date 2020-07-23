@@ -28,6 +28,8 @@ import javax.annotation.Nullable;
 import alexiil.mc.lib.attributes.AttributeList;
 import alexiil.mc.lib.attributes.AttributeProvider;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
+import appeng.block.networking.CableBusBlock;
+import appeng.tile.networking.CableBusBlockEntity;
 import com.google.common.collect.Lists;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
@@ -206,7 +208,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBas
                     return ActionResult.FAIL;
                 }
 
-                if (/* FIXME FABRIC tile instanceof CableBusBlockEntity || */ tile instanceof SkyChestBlockEntity) {
+                if (tile instanceof CableBusBlockEntity || tile instanceof SkyChestBlockEntity) {
                     return ActionResult.FAIL;
                 }
 
@@ -233,7 +235,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBas
                 return ActionResult.FAIL;
             }
 
-            if (heldItem.getItem() instanceof IMemoryCard /* FIXME FABRIC && !(this instanceof CableBusBlock)*/) {
+            if (heldItem.getItem() instanceof IMemoryCard && !(this instanceof CableBusBlock)) {
                 final IMemoryCard memoryCard = (IMemoryCard) heldItem.getItem();
                 final AEBaseBlockEntity tileEntity = this.getBlockEntity(world, pos);
 

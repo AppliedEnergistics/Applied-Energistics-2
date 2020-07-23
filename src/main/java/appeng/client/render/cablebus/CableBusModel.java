@@ -67,7 +67,7 @@ public class CableBusModel implements BasicUnbakedModel {
         Map<Identifier, BakedModel> partModels = this.loadPartModels(loader, rotationContainer);
 
         CableBuilder cableBuilder = new CableBuilder(textureGetter);
-        FacadeBuilder facadeBuilder = new FacadeBuilder();
+        FacadeBuilder facadeBuilder = new FacadeBuilder(loader);
 
         // This should normally not be used, but we *have* to provide a particle texture
         // or otherwise damage models will

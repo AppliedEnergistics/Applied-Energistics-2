@@ -88,7 +88,7 @@ public class FluidTankWidget extends AbstractButtonWidget implements ITooltip {
 
             return desc.copy().append("\n").append(amountToText);
         }
-        return "";
+        return LiteralText.EMPTY;
     }
 
     @Override

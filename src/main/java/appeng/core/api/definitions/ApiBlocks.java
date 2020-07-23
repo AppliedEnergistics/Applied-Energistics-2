@@ -173,7 +173,7 @@ public final class ApiBlocks implements IBlocks {
                 .sounds(BlockSoundGroup.GLASS)
                 .nonOpaque()
                 .allowsSpawning((state, world, pos, type) -> false)
-                .solidBlock((state, world, pos) -> false)
+                .nonOpaque()
                 .suffocates((state, world, pos) -> false)
                 .blockVision((state, world, pos) -> false);
     }
@@ -249,7 +249,7 @@ public final class ApiBlocks implements IBlocks {
 
         AbstractBlock.Settings skyStoneChestProps = defaultProps(Material.STONE)
                 .strength(50, 150)
-                .solidBlock((state, world, pos) -> false);
+                .nonOpaque();
 
         TileEntityDefinition skyChestTile = registry
                 .tileEntity("sky_chest", SkyChestBlockEntity.class, SkyChestBlockEntity::new)
@@ -281,7 +281,7 @@ public final class ApiBlocks implements IBlocks {
         this.crank = registry
                 .block("crank",
                         () -> new CrankBlock(
-                                defaultProps(Material.WOOD).breakByTool(FabricToolTags.AXES, 0).solidBlock((state, world, pos) -> false)))
+                                defaultProps(Material.WOOD).breakByTool(FabricToolTags.AXES, 0).nonOpaque()))
                 .features(AEFeature.GRIND_STONE)
                 .tileEntity(registry.tileEntity("crank", CrankBlockEntity.class, CrankBlockEntity::new)
                         .rendering(new TileEntityRenderingCustomizer<CrankBlockEntity>() {
@@ -292,7 +292,7 @@ public final class ApiBlocks implements IBlocks {
                             }
                         }).build())
                 .build();
-        this.inscriber = registry.block("inscriber", () -> new InscriberBlock(defaultProps(Material.METAL).solidBlock((state, world, pos) -> false)))
+        this.inscriber = registry.block("inscriber", () -> new InscriberBlock(defaultProps(Material.METAL).nonOpaque()))
                 .features(AEFeature.INSCRIBER)
                 .tileEntity(registry.tileEntity("inscriber", InscriberBlockEntity.class, InscriberBlockEntity::new)
                         .rendering(new InscriberRendering()).build())
@@ -486,7 +486,7 @@ public final class ApiBlocks implements IBlocks {
                }).build();
 
        this.molecularAssembler = registry
-               .block("molecular_assembler", () -> new MolecularAssemblerBlock(defaultProps(Material.METAL).solidBlock((state, world, pos) -> false)))
+               .block("molecular_assembler", () -> new MolecularAssemblerBlock(defaultProps(Material.METAL).nonOpaque()))
                .features(AEFeature.MOLECULAR_ASSEMBLER).rendering(new BlockRenderingCustomizer() {
                    @Environment(EnvType.CLIENT)
                    @Override

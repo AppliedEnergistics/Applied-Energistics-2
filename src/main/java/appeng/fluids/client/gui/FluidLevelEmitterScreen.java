@@ -35,12 +35,12 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
         this.level = new NumberEntryWidget(this, 20, 17, 138, 62, NumberEntryType.LEVEL_FLUID_VOLUME,
                 this::onLevelChange);
         this.level.setTextFieldBounds(25, 44, 75);
-        container.setTextField(this.level);
+        handler.setTextField(this.level);
         this.level.addButtons(children::add, this::addButton);
 
         final int y = 40;
         final int x = 80 + 57;
-        this.guiSlots.add(new FluidSlotWidget(this.container.getFluidConfigInventory(), 0, 0, x, y));
+        this.guiSlots.add(new FluidSlotWidget(this.handler.getFluidConfigInventory(), 0, 0, x, y));
     }
 
     @Override
@@ -57,10 +57,10 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
     }
 
     @Override
-    public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY) {
-        super.drawFG(offsetX, offsetY, mouseX, mouseY);
+    public void drawFG(MatrixStack matrices, int offsetX, int offsetY, int mouseX, int mouseY) {
+        super.drawFG(matrices, offsetX, offsetY, mouseX, mouseY);
 
-        this.font.drawString(GuiText.FluidLevelEmitterUnit.getLocal(), 110, 44, COLOR_DARK_GRAY);
+        this.textRenderer.draw(matrices, GuiText.FluidLevelEmitterUnit.getLocal(), 110, 44, COLOR_DARK_GRAY);
     }
 
     @Override

@@ -18,8 +18,42 @@
 
 package appeng.client.render.cablebus;
 
+import appeng.api.util.AEAxisAlignedBB;
+import appeng.core.Api;
+import appeng.parts.misc.CableAnchorPart;
+import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadClamper;
+import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadCornerKicker;
+import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadFaceStripper;
+import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadReInterpolator;
+import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadTinter;
+import net.fabricmc.fabric.api.renderer.v1.Renderer;
+import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
+import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
+import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.client.render.block.BlockRenderManager;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.render.model.ModelLoader;
+import net.minecraft.client.render.model.ModelRotation;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Direction.Axis;
+import net.minecraft.world.BlockRenderView;
+
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -28,31 +62,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import javax.annotation.Nullable;
-
-import net.fabricmc.fabric.api.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.RenderLayers;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.color.block.BlockColors;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Direction.Axis;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockRenderView;
-
-
-import appeng.api.util.AEAxisAlignedBB;
-import appeng.core.Api;
-import appeng.parts.misc.CableAnchorPart;
 /**
  * The FacadeBuilder builds for facades..
  *
@@ -60,43 +69,93 @@ import appeng.parts.misc.CableAnchorPart;
  */
 public class FacadeBuilder {
 
+    private final Renderer renderer = RendererAccess.INSTANCE.getRenderer();
+
     public static final double THICK_THICKNESS = 2D / 16D;
     public static final double THIN_THICKNESS = 1D / 16D;
 
-    public static final Box[] THICK_FACADE_BOXES = new Box[] {
+    public static final Box[] THICK_FACADE_BOXES = new Box[]{
             new Box(0.0, 0.0, 0.0, 1.0, THICK_THICKNESS, 1.0),
             new Box(0.0, 1.0 - THICK_THICKNESS, 0.0, 1.0, 1.0, 1.0),
             new Box(0.0, 0.0, 0.0, 1.0, 1.0, THICK_THICKNESS),
             new Box(0.0, 0.0, 1.0 - THICK_THICKNESS, 1.0, 1.0, 1.0),
             new Box(0.0, 0.0, 0.0, THICK_THICKNESS, 1.0, 1.0),
-            new Box(1.0 - THICK_THICKNESS, 0.0, 0.0, 1.0, 1.0, 1.0) };
+            new Box(1.0 - THICK_THICKNESS, 0.0, 0.0, 1.0, 1.0, 1.0)};
 
-    public static final Box[] THIN_FACADE_BOXES = new Box[] {
+    public static final Box[] THIN_FACADE_BOXES = new Box[]{
             new Box(0.0, 0.0, 0.0, 1.0, THIN_THICKNESS, 1.0),
             new Box(0.0, 1.0 - THIN_THICKNESS, 0.0, 1.0, 1.0, 1.0),
             new Box(0.0, 0.0, 0.0, 1.0, 1.0, THIN_THICKNESS),
             new Box(0.0, 0.0, 1.0 - THIN_THICKNESS, 1.0, 1.0, 1.0),
             new Box(0.0, 0.0, 0.0, THIN_THICKNESS, 1.0, 1.0),
-            new Box(1.0 - THIN_THICKNESS, 0.0, 0.0, 1.0, 1.0, 1.0) };
+            new Box(1.0 - THIN_THICKNESS, 0.0, 0.0, 1.0, 1.0, 1.0)};
 
-//FIXME    private final ThreadLocal<BakedPipeline> pipelines = ThreadLocal.withInitial(() -> BakedPipeline.builder()
-//FIXME            // Clamper is responsible for clamping the vertex to the bounds specified.
-//FIXME            .addElement("clamper", QuadClamper.FACTORY)
-//FIXME            // Strips faces if they match a mask.
-//FIXME            .addElement("face_stripper", QuadFaceStripper.FACTORY)
-//FIXME            // Kicks the edge inner corners in, solves Z fighting
-//FIXME            .addElement("corner_kicker", QuadCornerKicker.FACTORY)
-//FIXME            // Re-Interpolates the UV's for the quad.
-//FIXME            .addElement("interp", QuadReInterpolator.FACTORY)
-//FIXME            // Tints the quad if we need it to. Disabled by default.
-//FIXME            .addElement("tinter", QuadTinter.FACTORY, false)
-//FIXME            // Overrides the quad's alpha if we are forcing transparent facades.
-//FIXME            .addElement("transparent", QuadAlphaOverride.FACTORY, false, e -> e.setAlphaOverride(0x4C / 255F)).build()//
-//FIXME    );
-//FIXME      private final ThreadLocal<Quad> collectors = ThreadLocal.withInitial(Quad::new);
+    private final Map<Direction, Mesh> cableAnchorStilts;
 
-    public void buildFacadeQuads(RenderLayer layer, CableBusRenderState renderState, Supplier<Random> rand,
-                                 RenderContext context, Function<Identifier, BakedModel> modelLookup) {
+    public FacadeBuilder(ModelLoader modelLoader) {
+        cableAnchorStilts = buildCableAnchorStems(modelLoader);
+    }
+
+    /**
+     * Build a map of pre-rotated cable anchor stilts, which are the shortened cable anchors that
+     * will still be visible for facades attached to a cable.
+     */
+    private Map<Direction, Mesh> buildCableAnchorStems(ModelLoader modelLoader) {
+        Map<Direction, Mesh> stems = new EnumMap<>(Direction.class);
+
+        List<BakedModel> cableAnchorParts = new ArrayList<>();
+        for (Identifier model : CableAnchorPart.FACADE_MODELS.getModels()) {
+            BakedModel cableAnchor = modelLoader.bake(model, ModelRotation.X0_Y0);
+            cableAnchorParts.add(cableAnchor);
+        }
+
+        // Create pre-rotated variants of the cable anchor stems
+        for (Direction side : Direction.values()) {
+            RenderContext.QuadTransform rotator = QuadRotator.get(side, Direction.UP);
+
+            MeshBuilder meshBuilder = renderer.meshBuilder();
+            QuadEmitter emitter = meshBuilder.getEmitter();
+
+            for (BakedModel model : cableAnchorParts) {
+                for (int cullFaceIdx = 0; cullFaceIdx <= ModelHelper.NULL_FACE_ID; cullFaceIdx++) {
+                    Direction cullFace = ModelHelper.faceFromIndex(cullFaceIdx);
+                    List<BakedQuad> quads = model.getQuads(null, cullFace, new Random());
+                    for (BakedQuad quad : quads) {
+                        emitter.fromVanilla(quad.getVertexData(), 0, false);
+                        emitter.cullFace(cullFace);
+                        emitter.nominalFace(quad.getFace());
+                        if (!rotator.transform(emitter)) {
+                            continue;
+                        }
+                        emitter.emit();
+                    }
+                }
+            }
+
+            stems.put(side, meshBuilder.build());
+        }
+
+        return stems;
+    }
+
+    //        private final ThreadLocal<BakedPipeline> pipelines = ThreadLocal.withInitial(() -> BakedPipeline.builder()
+//                // Clamper is responsible for clamping the vertex to the bounds specified.
+//                .addElement("clamper", QuadClamper.FACTORY)
+//                // Strips faces if they match a mask.
+//                .addElement("face_stripper", QuadFaceStripper.FACTORY)
+//                // Kicks the edge inner corners in, solves Z fighting
+//                .addElement("corner_kicker", QuadCornerKicker.FACTORY)
+//                // Re-Interpolates the UV's for the quad.
+//                .addElement("interp", QuadReInterpolator.FACTORY)
+//                // Tints the quad if we need it to. Disabled by default.
+//                .addElement("tinter", QuadTinter.FACTORY, false)
+//                // Overrides the quad's alpha if we are forcing transparent facades.
+//                .addElement("transparent", QuadAlphaOverride.FACTORY, false, e -> e.setAlphaOverride(0x4C / 255F)).build()//
+//        );
+
+    public Mesh getFacadeMesh(CableBusRenderState renderState,
+                              Supplier<Random> rand,
+                              Function<Identifier, BakedModel> modelLookup) {
 //FIXME        BakedPipeline pipeline = this.pipelines.get();
 //FIXME          Quad collectorQuad = this.collectors.get();
         boolean transparent = Api.instance().partHelper().getCableRenderMode().transparentFacades;
@@ -108,32 +167,29 @@ public class FacadeBuilder {
         BlockColors blockColors = MinecraftClient.getInstance().getBlockColors();
         boolean thinFacades = isUseThinFacades(partBoxes);
 
+        MeshBuilder meshBuilder = renderer.meshBuilder();
+        QuadEmitter emitter = meshBuilder.getEmitter();
+
         for (Entry<Direction, FacadeRenderState> entry : facadeStates.entrySet()) {
             Direction side = entry.getKey();
             int sideIndex = side.ordinal();
             FacadeRenderState facadeRenderState = entry.getValue();
             boolean renderStilt = !sidesWithParts.contains(side);
-            if (layer == RenderLayer.getCutout() && renderStilt) {
-                context.pushTransform(QuadRotator.get(side, Direction.UP));
-                for (Identifier part : CableAnchorPart.FACADE_MODELS.getModels()) {
-                    BakedModel partModel = modelLookup.apply(part);
-                    context.fallbackConsumer().accept(partModel);
-                }
-                context.popTransform();
-            }
-            // If we are forcing transparency and this isn't the Translucent layer.
-            if (transparent && layer != RenderLayer.getTranslucent()) {
-                continue;
+            if (renderStilt) {
+                cableAnchorStilts.get(entry.getKey()).forEach(quad -> {
+                    quad.copyTo(emitter);
+                    emitter.emit();
+                });
             }
 
             BlockState blockState = facadeRenderState.getSourceBlock();
             // If we aren't forcing transparency let the block decide if it should render.
-            if (!transparent && layer != null) {
+// FIXME FABRIC            if (!transparent && layer != null) {
 // FIXME FABRIC only one layer per block
 // FIXME FABRIC               if (!RenderLayers.canRenderInLayer(blockState, layer)) {
 // FIXME FABRIC                   continue;
 // FIXME FABRIC               }
-            }
+// FIXME FABRIC            }
 
             Box fullBounds = thinFacades ? THIN_FACADE_BOXES[sideIndex] : THICK_FACADE_BOXES[sideIndex];
             Box facadeBox = fullBounds;
@@ -179,97 +235,114 @@ public class FacadeBuilder {
                 }
             }
 
+            // calculate the side mask.
+            int facadeMask = 0;
+            for (Entry<Direction, FacadeRenderState> ent : facadeStates.entrySet()) {
+                Direction s = ent.getKey();
+                if (s.getAxis() != side.getAxis()) {
+                    FacadeRenderState otherState = ent.getValue();
+                    if (!otherState.isTransparent()) {
+                        facadeMask |= 1 << s.ordinal();
+                    }
+                }
+            }
+
             AEAxisAlignedBB cutOutBox = getCutOutBox(facadeBox, partBoxes);
             List<Box> holeStrips = getBoxes(facadeBox, cutOutBox, side.getAxis());
-// FIXME            BlockRenderView facadeAccess = new FacadeBlockAccess(parentWorld, pos, side, blockState);
+            BlockRenderView facadeAccess = new FacadeBlockAccess(parentWorld, pos, side, blockState);
 
- // FIXME FABRIC            BlockRenderManager dispatcher = MinecraftClient.getInstance().getBlockRenderManager();
- // FIXME FABRIC            BakedModel model = dispatcher.getModel(blockState);
- // FIXME FABRIC            IModelData modelData = model.getModelData(facadeAccess, pos, blockState, EmptyModelData.INSTANCE);
- // FIXME FABRIC
- // FIXME FABRIC            List<BakedQuad> modelQuads = new ArrayList<>();
- // FIXME FABRIC            // If we are forcing transparent facades, fake the render layer, and grab all
- // FIXME FABRIC            // quads.
- // FIXME FABRIC            if (transparent || layer == null) {
- // FIXME FABRIC                for (RenderLayer forcedLayer : RenderLayer.getBlockRenderTypes()) {
- // FIXME FABRIC                    // Check if the block renders on the layer we want to force.
- // FIXME FABRIC                    if (RenderLayers.canRenderInLayer(blockState, forcedLayer)) {
- // FIXME FABRIC                        // Force the layer and gather quads.
- // FIXME FABRIC                        ForgeHooksClient.setRenderLayer(forcedLayer);
- // FIXME FABRIC                        modelQuads.addAll(gatherQuads(model, blockState, rand, modelData));
- // FIXME FABRIC                    }
- // FIXME FABRIC                }
- // FIXME FABRIC
- // FIXME FABRIC                // Reset.
- // FIXME FABRIC                ForgeHooksClient.setRenderLayer(layer);
- // FIXME FABRIC            } else {
- // FIXME FABRIC                modelQuads.addAll(gatherQuads(model, blockState, rand, modelData));
- // FIXME FABRIC            }
- // FIXME FABRIC
- // FIXME FABRIC            // No quads.. Cool, next!
- // FIXME FABRIC            if (modelQuads.isEmpty()) {
- // FIXME FABRIC                continue;
- // FIXME FABRIC            }
- // FIXME FABRIC
- // FIXME FABRIC            // Grab out pipeline elements.
- // FIXME FABRIC            QuadClamper clamper = pipeline.getElement("clamper", QuadClamper.class);
- // FIXME FABRIC            QuadFaceStripper edgeStripper = pipeline.getElement("face_stripper", QuadFaceStripper.class);
- // FIXME FABRIC            QuadTinter tinter = pipeline.getElement("tinter", QuadTinter.class);
- // FIXME FABRIC            QuadCornerKicker kicker = pipeline.getElement("corner_kicker", QuadCornerKicker.class);
- // FIXME FABRIC
- // FIXME FABRIC            // Set global element states.
- // FIXME FABRIC
- // FIXME FABRIC            // calculate the side mask.
- // FIXME FABRIC            int facadeMask = 0;
- // FIXME FABRIC            for (Entry<Direction, FacadeRenderState> ent : facadeStates.entrySet()) {
- // FIXME FABRIC                Direction s = ent.getKey();
- // FIXME FABRIC                if (s.getAxis() != side.getAxis()) {
- // FIXME FABRIC                    FacadeRenderState otherState = ent.getValue();
- // FIXME FABRIC                    if (!otherState.isTransparent()) {
- // FIXME FABRIC                        facadeMask |= 1 << s.ordinal();
- // FIXME FABRIC                    }
- // FIXME FABRIC                }
- // FIXME FABRIC            }
- // FIXME FABRIC            // Setup the edge stripper.
- // FIXME FABRIC            edgeStripper.setBounds(fullBounds);
- // FIXME FABRIC            edgeStripper.setMask(facadeMask);
- // FIXME FABRIC
- // FIXME FABRIC            // Setup the kicker.
- // FIXME FABRIC            kicker.setSide(sideIndex);
- // FIXME FABRIC            kicker.setFacadeMask(facadeMask);
- // FIXME FABRIC            kicker.setBox(fullBounds);
- // FIXME FABRIC            kicker.setThickness(thinFacades ? THIN_THICKNESS : THICK_THICKNESS);
- // FIXME FABRIC
- // FIXME FABRIC            for (BakedQuad quad : modelQuads) {
- // FIXME FABRIC                // lookup the format in CachedFormat.
- // FIXME FABRIC                CachedFormat format = CachedFormat.lookup(VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL);
- // FIXME FABRIC                // If this quad has a tint index, setup the tinter.
- // FIXME FABRIC                if (quad.hasTintIndex()) {
- // FIXME FABRIC                    tinter.setTint(blockColors.getColor(blockState, facadeAccess, pos, quad.getColorIndex()));
- // FIXME FABRIC                }
- // FIXME FABRIC                for (Box box : holeStrips) {
- // FIXME FABRIC                    // setup the clamper for this box
- // FIXME FABRIC                    clamper.setClampBounds(box);
- // FIXME FABRIC                    // Reset the pipeline, clears all enabled/disabled states.
- // FIXME FABRIC                    pipeline.reset(format);
- // FIXME FABRIC                    // Reset out collector.
- // FIXME FABRIC                    collectorQuad.reset(format);
- // FIXME FABRIC                    // Enable / disable the optional elements
- // FIXME FABRIC                    pipeline.setElementState("tinter", quad.hasTintIndex());
- // FIXME FABRIC                    pipeline.setElementState("transparent", transparent);
- // FIXME FABRIC                    // Prepare the pipeline for a quad.
- // FIXME FABRIC                    pipeline.prepare(collectorQuad);
- // FIXME FABRIC
- // FIXME FABRIC                    // Pipe our quad into the pipeline.
- // FIXME FABRIC                    quad.pipe(pipeline);
- // FIXME FABRIC                    // Check if the collector got any data.
- // FIXME FABRIC                    if (collectorQuad.full) {
- // FIXME FABRIC                        // Add the result.
- // FIXME FABRIC                        quads.add(collectorQuad.bake());
- // FIXME FABRIC                    }
- // FIXME FABRIC                }
- // FIXME FABRIC            }
+            BlockRenderManager dispatcher = MinecraftClient.getInstance().getBlockRenderManager();
+            BakedModel model = dispatcher.getModel(blockState);
+
+            QuadFaceStripper faceStripper = new QuadFaceStripper(fullBounds, facadeMask);
+            // Setup the kicker.
+            QuadCornerKicker kicker = new QuadCornerKicker();
+            kicker.setSide(sideIndex);
+            kicker.setFacadeMask(facadeMask);
+            kicker.setBox(fullBounds);
+            kicker.setThickness(thinFacades ? THIN_THICKNESS : THICK_THICKNESS);
+
+            QuadReInterpolator interpolator = new QuadReInterpolator();
+
+            for (int cullFaceIdx = 0; cullFaceIdx <= ModelHelper.NULL_FACE_ID; cullFaceIdx++) {
+                Direction cullFace = ModelHelper.faceFromIndex(cullFaceIdx);
+                List<BakedQuad> quads = model.getQuads(blockState, cullFace, rand.get());
+
+                for (BakedQuad quad : quads) {
+                    QuadTinter quadTinter = null;
+
+                    // Prebake the color tint into the quad
+                    if (quad.getColorIndex() != -1) {
+                        quadTinter = new QuadTinter(blockColors.getColor(blockState, facadeAccess, pos, quad.getColorIndex()));
+                    }
+
+                    for (Box box : holeStrips) {
+                        emitter.fromVanilla(quad.getVertexData(), 0, false);
+                        emitter.cullFace(cullFace);
+                        emitter.nominalFace(quad.getFace());
+                        interpolator.setInputQuad(emitter);
+
+                        QuadClamper clamper = new QuadClamper(box);
+                        if (!clamper.transform(emitter)) {
+                            continue;
+                        }
+
+                        // Strips faces if they match a mask.
+                        if (!faceStripper.transform(emitter)) {
+                            continue;
+                        }
+
+                        // Kicks the edge inner corners in, solves Z fighting
+                        if (!kicker.transform(emitter)) {
+                            continue;
+                        }
+
+                        interpolator.transform(emitter);
+
+                    // Tints the quad if we need it to. Disabled by default.
+                    if (quadTinter != null) {
+                        quadTinter.transform(emitter);
+                    }
+
+//                // Overrides the quad's alpha if we are forcing transparent facades.
+//                .addElement("transparent", QuadAlphaOverride.FACTORY, false, e -> e.setAlphaOverride(0x4C / 255F)).build()//
+
+                        emitter.emit();
+                    }
+                }
+            }
+
+// FIXME FABRIC           List<BakedQuad> modelQuads = new ArrayList<>();
+// FIXME FABRIC           modelQuads.addAll(gatherQuads(model, blockState, rand));
+
+// FIXME FABRIC            // No quads.. Cool, next!
+// FIXME FABRIC            if (modelQuads.isEmpty()) {
+// FIXME FABRIC                continue;
+// FIXME FABRIC            }
+// FIXME FABRIC
+// FIXME FABRIC            // Grab out pipeline elements.
+// FIXME FABRIC            QuadClamper clamper = pipeline.getElement("clamper", QuadClamper.class);
+// FIXME FABRIC            QuadFaceStripper edgeStripper = pipeline.getElement("face_stripper", QuadFaceStripper.class);
+// FIXME FABRIC            QuadTinter tinter = pipeline.getElement("tinter", QuadTinter.class);
+// FIXME FABRIC            QuadCornerKicker kicker = pipeline.getElement("corner_kicker", QuadCornerKicker.class);
+// FIXME FABRIC
+// FIXME FABRIC            // Set global element states.
+// FIXME FABRIC
+// FIXME FABRIC            // Setup the kicker.
+// FIXME FABRIC            kicker.setSide(sideIndex);
+// FIXME FABRIC            kicker.setFacadeMask(facadeMask);
+// FIXME FABRIC            kicker.setBox(fullBounds);
+// FIXME FABRIC            kicker.setThickness(thinFacades ? THIN_THICKNESS : THICK_THICKNESS);
+// FIXME FABRIC
+// FIXME FABRIC            for (BakedQuad quad : modelQuads) {
+// FIXME FABRIC                // lookup the format in CachedFormat.
+// FIXME FABRIC                CachedFormat format = CachedFormat.lookup(VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL);
+
+// FIXME FABRIC            }
         }
+
+        return meshBuilder.build();
+
     }
 
     /**
@@ -362,7 +435,6 @@ public class FacadeBuilder {
      * @param fb   The Facade's box.
      * @param hole The hole to 'cut'.
      * @param axis The axis the facade is on.
-     *
      * @return The box segments.
      */
     private static List<Box> getBoxes(Box fb, AEAxisAlignedBB hole, Axis axis) {

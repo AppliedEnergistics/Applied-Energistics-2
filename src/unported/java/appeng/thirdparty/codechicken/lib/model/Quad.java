@@ -18,6 +18,8 @@
 
 package appeng.thirdparty.codechicken.lib.model;
 
+import appeng.thirdparty.codechicken.lib.model.pipeline.VertexConsumer;
+import appeng.thirdparty.codechicken.lib.model.pipeline.VertexProducer;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.client.render.model.BakedQuad;
@@ -26,9 +28,6 @@ import net.minecraft.client.render.VertexFormat;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.client.model.pipeline.IVertexConsumer;
-import net.minecraftforge.client.model.pipeline.IVertexProducer;
-import net.minecraftforge.client.model.pipeline.LightUtil;
 
 import appeng.thirdparty.codechicken.lib.math.InterpHelper;
 
@@ -38,7 +37,7 @@ import appeng.thirdparty.codechicken.lib.math.InterpHelper;
  *
  * @author covers1624
  */
-public class Quad implements IVertexProducer, ISmartVertexConsumer {
+public class Quad implements VertexProducer, ISmartVertexConsumer {
 
     public CachedFormat format;
 
@@ -127,7 +126,7 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
     }
 
     @Override
-    public void pipe(IVertexConsumer consumer) {
+    public void pipe(VertexConsumer consumer) {
         if (consumer instanceof ISmartVertexConsumer) {
             ((ISmartVertexConsumer) consumer).put(this);
         } else {
@@ -175,19 +174,23 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
         this.calculateOrientation(true);
     }
 
+    private static void setVector(Vector3f to, float[] from) {
+        to.set(from[0], from[1], from[2]);
+    }
+
     /**
      * Re-calculates the Orientation of this quad, optionally the normal vector.
      *
      * @param setNormal If the normal vector should be updated.
      */
     public void calculateOrientation(boolean setNormal) {
-        this.v1.set(this.vertices[3].vec);
-        this.t.set(this.vertices[1].vec);
-        this.v1.sub(this.t);
+        setVector(this.v1, this.vertices[3].vec);
+        setVector(this.t, this.vertices[1].vec);
+        this.v1.subtract(this.t);
 
-        this.v2.set(this.vertices[2].vec);
-        this.t.set(this.vertices[0].vec);
-        this.v2.sub(this.t);
+        setVector(this.v2, this.vertices[2].vec);
+        setVector(this.t, this.vertices[0].vec);
+        this.v2.subtract(this.t);
 
         this.normal.set(this.v2.getX(), this.v2.getY(), this.v2.getZ());
         this.normal.cross(this.v1);
@@ -278,10 +281,10 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
         if (format.format != VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL) {
             throw new IllegalStateException("Unable to bake this quad to the specified format. " + format.format);
         }
-        int[] packedData = new int[this.format.format.getSize()];
+        int[] packedData = new int[this.format.format.getVertexSizeInteger()];
         for (int v = 0; v < 4; v++) {
             for (int e = 0; e < this.format.elementCount; e++) {
-                LightUtil.pack(this.vertices[v].raw[e], packedData, this.format.format, v, e);
+                // FIXME FABRIC LightUtil.pack(this.vertices[v].raw[e], packedData, this.format.format, v, e);
             }
         }
         return new BakedQuad(packedData, this.tintIndex, this.orientation, this.sprite, this.diffuseLighting);

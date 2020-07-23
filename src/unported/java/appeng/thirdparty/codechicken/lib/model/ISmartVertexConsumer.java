@@ -18,14 +18,14 @@
 
 package appeng.thirdparty.codechicken.lib.model;
 
-import net.minecraftforge.client.model.pipeline.IVertexConsumer;
+import appeng.thirdparty.codechicken.lib.model.pipeline.VertexConsumer;
 
 /**
  * Marks a standard IVertexConsumer as compatible with {@link Quad}.
  *
  * @author covers1624
  */
-public interface ISmartVertexConsumer extends IVertexConsumer {
+public interface ISmartVertexConsumer extends VertexConsumer {
 
     /**
      * Assumes the data is already completely unpacked. You must always copy the

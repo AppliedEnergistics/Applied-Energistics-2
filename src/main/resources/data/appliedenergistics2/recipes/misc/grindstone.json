@@ -12,7 +12,7 @@
       "item": "minecraft:stone"
     },
     "d": {
-      "item": "minecraft:cobblestone"
+      "tag": "minecraft:stone_tool_materials"
     },
     "b": {
       "tag": "appliedenergistics2:gears/wooden"

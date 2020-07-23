@@ -20,7 +20,10 @@ package appeng.items.tools;
 
 import java.util.List;
 
+import appeng.block.AEBaseTileBlock;
+import appeng.hooks.AEToolItem;
 import net.fabricmc.api.EnvType;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -29,6 +32,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.*;
 import net.minecraft.text.Text;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.world.World;
 import net.fabricmc.api.Environment;
 
@@ -40,7 +44,7 @@ import appeng.core.localization.PlayerMessages;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 
-public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
+public class MemoryCardItem extends AEBaseItem implements AEToolItem, IMemoryCard {
 
     private static final AEColor[] DEFAULT_COLOR_CODE = new AEColor[] { AEColor.TRANSPARENT, AEColor.TRANSPARENT,
             AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT,
@@ -158,15 +162,21 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
     }
 
     @Override
-    public ActionResult useOnBlock(ItemUsageContext context) {
+    public ActionResult onItemUseFirst(ItemStack stack, ItemUsageContext context) {
         if (context.getPlayer().isInSneakingPose()) {
+            // Bypass the memory card's own use handler and go straight to the block
             if (!context.getPlayer().world.isClient) {
-                this.clearCard(context.getPlayer(), context.getWorld(), context.getHand());
+                BlockState state = context.getWorld().getBlockState(context.getBlockPos());
+                ActionResult useResult = state.onUse(context.getWorld(), context.getPlayer(), context.getHand(),
+                        new BlockHitResult(context.getHitPos(), context.getSide(), context.getBlockPos(), context.hitsInsideBlock()));
+                if (!useResult.isAccepted()) {
+                    clearCard(context.getPlayer(), context.getWorld(), context.getHand());
+                }
             }
             return ActionResult.SUCCESS;
-        } else {
-            return super.useOnBlock(context);
         }
+
+        return ActionResult.PASS;
     }
 
     @Override
@@ -180,15 +190,10 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
         return super.use(w, player, hand);
     }
 
-// FIXME FABRIC probably needs a custom mixin
-// FIXME FABRIC    @Override
-// FIXME FABRIC    public boolean doesSneakBypassUse(ItemStack stack, WorldView world, BlockPos pos, PlayerEntity player) {
-// FIXME FABRIC        return true;
-// FIXME FABRIC    }
-
     private void clearCard(final PlayerEntity player, final World w, final Hand hand) {
         final IMemoryCard mem = (IMemoryCard) player.getStackInHand(hand).getItem();
         mem.notifyUser(player, MemoryCardMessages.SETTINGS_CLEARED);
         player.getStackInHand(hand).setTag(null);
     }
+
 }

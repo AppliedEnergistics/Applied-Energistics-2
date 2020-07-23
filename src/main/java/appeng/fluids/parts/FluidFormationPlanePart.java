@@ -4,7 +4,7 @@ package appeng.fluids.parts;
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
-import appeng.core.Api;
+import alexiil.mc.lib.attributes.fluid.world.FluidWorldUtil;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.IncludeExclude;
@@ -42,16 +42,14 @@ import net.minecraft.block.FluidBlock;
 import net.minecraft.block.FluidFillable;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
 
 import javax.annotation.Nonnull;
 import java.math.RoundingMode;
@@ -116,7 +114,7 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
         final BlockPos pos = te.getPos().offset(side.getFacing());
 
         FluidVolume volume = input.getFluidStack();
-        FluidVolume remainder = fill(w, pos, volume, type == Actionable.MODULATE ? Simulation.ACTION : Simulation.SIMULATE);
+        FluidVolume remainder = FluidWorldUtil.fill(w, pos, volume, type == Actionable.MODULATE ? Simulation.ACTION : Simulation.SIMULATE);
         if (remainder.getAmount_F().isLessThan(volume.getAmount_F())) {
             // calculate the effective amount consumed
             // round UP here because we might otherwise duplicate fluids
@@ -132,67 +130,18 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
         }
     }
 
-    // FIXME https://github.com/AlexIIL/LibBlockAttributes/pull/21
-    /**
-     * Attempts to fill the given block with a bucket's worth of fluid
-     * @return The remainder of the given fluid volume after placing a bucket
-     */
-    public static FluidVolume fill(WorldAccess world, BlockPos pos, FluidVolume volume, Simulation simulation) {
-
-        if (volume.getAmount_F().isLessThan(FluidAmount.BUCKET)) {
-            return volume; // Need at least a buckets worth
-        }
-
-        Fluid fluid = volume.getRawFluid();
-        if (fluid == null) {
-            return volume; // Can't be placed if it doesn't have an associated vanilla fluid
-        }
-
-        // This code assumes that placing a fluid in the world will always consume a bucket's worth
-        boolean success = false;
-
-        BlockState state = world.getBlockState(pos);
-        Block block = state.getBlock();
-        if (state.isAir()) {
-            // The easiest case, probably
-            if (simulation == Simulation.ACTION) {
-                BlockState fluidStillState = fluid.getDefaultState().getBlockState();
-                world.setBlockState(pos, fluidStillState, 3);
-            }
-            success = true;
-
-        } else if (block instanceof FluidFillable) {
-            // FluidFillable includes waterloggable blocks, but not cauldrons, etc.
-            FluidFillable fillable = (FluidFillable) block;
-            if (simulation == Simulation.SIMULATE) {
-                success = fillable.canFillWithFluid(world, pos, state, fluid);
-            } else {
-                success = fillable.tryFillWithFluid(world, pos, state, fluid.getDefaultState());
-            }
-        } else if (block instanceof FluidBlock) {
-            FluidState fluidState = world.getFluidState(pos);
-            // Top up a non-still fluid block, but this consumes a full bucket regardless of the level
-            if (!fluidState.isStill() && fluidState.getFluid() == fluid) {
-                if (simulation == Simulation.ACTION) {
-                    world.setBlockState(pos, fluid.getDefaultState().getBlockState(), 3);
-                }
-                success = true;
-            }
-        }
-
-        if (success) {
-            // Reduce by one bucket
-            return volume.copy().withAmount(volume.getAmount_F().roundedSub(FluidAmount.ONE, RoundingMode.DOWN));
-        } else {
-            return volume;
-        }
-    }
-
     @Override
     public void onFluidInventoryChanged(IAEFluidTank inv, int slot) {
         if (inv == this.config) {
             this.updateHandler();
         }
+    }
+
+    protected boolean isBlocking(BlockView w, BlockPos pos) {
+        // Mirror the restrictions from the fill method
+        BlockState state = w.getBlockState(pos);
+        Block block = state.getBlock();
+        return !state.isAir() && !(block instanceof FluidFillable) && !(block instanceof FluidBlock);
     }
 
     @Override

@@ -39,6 +39,9 @@ import net.minecraft.util.math.Direction;
  */
 public abstract class InventoryAdaptor implements Iterable<ItemSlot> {
     public static InventoryAdaptor getAdaptor(final BlockEntity te, final Direction d) {
+        if (te == null) {
+            return null;
+        }
         FixedItemInv inv = ItemAttributes.FIXED_INV.get(te.getWorld(), te.getPos(), SearchOptions.inDirection(d.getOpposite()));
 
         if (inv == ItemAttributes.FIXED_INV.defaultValue) {

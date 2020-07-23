@@ -27,6 +27,7 @@ import alexiil.mc.lib.attributes.fluid.FluidAttributes;
 import alexiil.mc.lib.attributes.fluid.FluidExtractable;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
+import appeng.crafting.CraftingLink;
 import appeng.fluids.util.FluidList;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ClassToInstanceMap;
@@ -99,8 +100,7 @@ public class ApiStorage implements IStorageHelper {
         Preconditions.checkNotNull(data);
         Preconditions.checkNotNull(req);
 
-        // FIXME FABRIC return new CraftingLink(data, req);
-        throw new IllegalStateException();
+        return new CraftingLink(data, req);
     }
 
     @Override

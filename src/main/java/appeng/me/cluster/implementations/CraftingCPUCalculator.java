@@ -33,9 +33,9 @@ import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
 import appeng.tile.crafting.CraftingBlockEntity;
 
-public class CraftingCPUCalculator extends MBCalculator<CraftingTileEntity, CraftingCPUCluster> {
+public class CraftingCPUCalculator extends MBCalculator<CraftingBlockEntity, CraftingCPUCluster> {
 
-    public CraftingCPUCalculator(final CraftingTileEntity t) {
+    public CraftingCPUCalculator(final CraftingBlockEntity t) {
         super(t);
     }
 
@@ -65,7 +65,7 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingTileEntity, Craf
     public boolean verifyInternalStructure(final World w, final BlockPos min, final BlockPos max) {
         boolean storage = false;
 
-        for (BlockPos blockPos : BlockPos.getAllInBoxMutable(min, max)) {
+        for (BlockPos blockPos : BlockPos.iterate(min, max)) {
             final IAEMultiBlock<?> te = (IAEMultiBlock<?>) w.getBlockEntity(blockPos);
 
             if (te == null || !te.isValid()) {
@@ -82,7 +82,7 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingTileEntity, Craf
 
     @Override
     public void updateTiles(final CraftingCPUCluster c, final World w, final BlockPos min, final BlockPos max) {
-        for (BlockPos blockPos : BlockPos.getAllInBoxMutable(min, max)) {
+        for (BlockPos blockPos : BlockPos.iterate(min, max)) {
             final CraftingBlockEntity te = (CraftingBlockEntity) w.getBlockEntity(blockPos);
             te.updateStatus(c);
             c.addTile(te);
@@ -90,7 +90,7 @@ public class CraftingCPUCalculator extends MBCalculator<CraftingTileEntity, Craf
 
         c.done();
 
-        final Iterator<CraftingTileEntity> i = c.getTiles();
+        final Iterator<CraftingBlockEntity> i = c.getTiles();
         while (i.hasNext()) {
             final IGridHost gh = i.next();
             final IGridNode n = gh.getGridNode(AEPartLocation.INTERNAL);

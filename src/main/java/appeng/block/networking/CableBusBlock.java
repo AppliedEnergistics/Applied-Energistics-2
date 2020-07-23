@@ -29,6 +29,8 @@ import appeng.client.render.cablebus.CableBusBakedModel;
 import appeng.client.render.cablebus.CableBusBreakingParticle;
 import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.core.AppEng;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.ClickPacket;
 import appeng.helpers.AEMaterials;
 import appeng.integration.abstraction.IAEFacade;
 import appeng.parts.ICableBusContainer;
@@ -331,9 +333,8 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusBlockEntity> implemen
                     final Vec3d hitVec = rtr.getPos().subtract(new Vec3d(pos.getX(), pos.getY(), pos.getZ()));
 
                     if (this.cb(worldIn, pos).clicked(player, Hand.MAIN_HAND, hitVec)) {
-                        throw new IllegalStateException();
-                        // FIXME FABRIC NetworkHandler.instance().sendToServer(new ClickPacket(pos, brtr.getSide(), (float) hitVec.x,
-                        // FIXME FABRIC         (float) hitVec.y, (float) hitVec.z, Hand.MAIN_HAND, true));
+                        NetworkHandler.instance().sendToServer(new ClickPacket(pos, brtr.getSide(), (float) hitVec.x,
+                                 (float) hitVec.y, (float) hitVec.z, Hand.MAIN_HAND, true));
                     }
                 }
             }

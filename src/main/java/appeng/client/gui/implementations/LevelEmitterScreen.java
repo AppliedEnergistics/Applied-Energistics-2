@@ -57,7 +57,7 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
                 this::onLevelChange);
         this.level.setTextFieldBounds(25, 44, 75);
         this.level.addButtons(children::add, this::addButton);
-        container.setTextField(this.level);
+        handler.setTextField(this.level);
     }
 
     private void onLevelChange(long level) {
@@ -100,7 +100,7 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
 
             if (notCraftingMode) {
                 if (currentLevelMode == LevelType.ENERGY_LEVEL) {
-                    this.font.drawString(PowerUnits.AE.textComponent().getString(), 110, 44, COLOR_DARK_GRAY);
+                    this.textRenderer.draw(matrices, PowerUnits.AE.textComponent().getString(), 110, 44, COLOR_DARK_GRAY);
                 }
             }
         }

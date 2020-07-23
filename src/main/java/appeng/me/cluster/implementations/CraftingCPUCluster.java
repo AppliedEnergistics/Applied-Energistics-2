@@ -183,7 +183,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
     }
 
     @Override
-    public Iterator<CraftingTileEntity> getTiles() {
+    public Iterator<CraftingBlockEntity> getTiles() {
         return this.tiles.iterator();
     }
 

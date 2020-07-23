@@ -64,11 +64,10 @@ public class GridStorage implements IGridStorage {
     }
 
     public void saveState() {
-        throw new IllegalStateException();
-        // FIXME FABRIC final Grid currentGrid = (Grid) this.getGrid();
-        // FIXME FABRIC if (currentGrid != null) {
-        // FIXME FABRIC     currentGrid.saveState();
-        // FIXME FABRIC }
+        final Grid currentGrid = (Grid) this.getGrid();
+        if (currentGrid != null) {
+             currentGrid.saveState();
+        }
     }
 
     public IGrid getGrid() {

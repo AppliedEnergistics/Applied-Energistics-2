@@ -141,7 +141,7 @@ public class AEBaseBlockItem extends BlockItem {
             }
 
             if (tile instanceof IGridProxyable) {
-                // FIXME FABRIC ((IGridProxyable) tile).getProxy().setOwner(player);
+                ((IGridProxyable) tile).getProxy().setOwner(player);
             }
 
             tile.onPlacement(context);

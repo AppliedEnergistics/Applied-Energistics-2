@@ -19,7 +19,6 @@
 package appeng.fluids.util;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
@@ -48,10 +47,8 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
     private static final String NBT_REQUESTABLE = "req";
     private static final String NBT_CRAFTABLE = "craft";
     private static final String NBT_FLUID_ID = "f";
-    private static final String NBT_FLUID_TAG = "ft";
 
     private final FluidKey fluid;
-    private CompoundTag tagCompound;
 
     private AEFluidStack(final AEFluidStack fluidStack) {
         this.fluid = fluidStack.fluid;
@@ -60,18 +57,13 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
         // priority = is.priority;
         this.setCraftable(fluidStack.isCraftable());
         this.setCountRequestable(fluidStack.getCountRequestable());
-
-        if (fluidStack.hasTagCompound()) {
-            this.tagCompound = fluidStack.tagCompound.copy();
-        }
     }
 
-    private AEFluidStack(@Nonnull FluidKey fluid, long amount, @Nullable CompoundTag tag) {
+    private AEFluidStack(@Nonnull FluidKey fluid, long amount) {
         this.fluid = Preconditions.checkNotNull(fluid);
         this.setStackSize(amount);
         this.setCraftable(false);
         this.setCountRequestable(0);
-        this.tagCompound = tag;
     }
 
     public static AEFluidStack fromFluidVolume(final FluidVolume input, RoundingMode roundingMode) {
@@ -84,14 +76,9 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
             throw new IllegalArgumentException("Fluid is null.");
         }
 
-        CompoundTag tag = input.toTag();
-        if (tag.isEmpty()) {
-            tag = null;
-        }
-
         long amount = input.amount().asLong(1000, roundingMode);
 
-        return new AEFluidStack(fluid, amount, tag);
+        return new AEFluidStack(fluid, amount);
     }
 
     public static IAEFluidStack fromNBT(final CompoundTag data) {
@@ -101,14 +88,9 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
             return null;
         }
 
-        CompoundTag tag = null;
-        if (data.contains(NBT_FLUID_TAG, NbtType.COMPOUND)) {
-            tag = data.getCompound(NBT_FLUID_TAG);
-        }
-
         long amount = data.getLong(NBT_STACKSIZE);
 
-        AEFluidStack fluidStack = new AEFluidStack(fluid, amount, tag);
+        AEFluidStack fluidStack = new AEFluidStack(fluid, amount);
         fluidStack.setCountRequestable(data.getLong(NBT_REQUESTABLE));
         fluidStack.setCraftable(data.getBoolean(NBT_CRAFTABLE));
         return fluidStack;
@@ -127,9 +109,6 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
     @Override
     public void writeToNBT(final CompoundTag data) {
         data.put(NBT_FLUID_ID, this.fluid.toTag());
-        if (this.hasTagCompound()) {
-            data.put(NBT_FLUID_TAG, this.tagCompound);
-        }
         data.putLong(NBT_STACKSIZE, this.getStackSize());
         data.putLong(NBT_REQUESTABLE, this.getCountRequestable());
         data.putBoolean(NBT_CRAFTABLE, this.isCraftable());
@@ -162,12 +141,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
         if (this.fluid != other.fluid) {
             return this.fluid.entry.getId().compareTo(other.fluid.entry.getId());
         }
-
-        if (Platform.itemComparisons().isNbtTagEqual(this.tagCompound, other.tagCompound)) {
-            return 0;
-        }
-
-        return this.tagCompound.hashCode() - other.tagCompound.hashCode();
+        return 0;
     }
 
     @Override
@@ -175,7 +149,6 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
         final int prime = 31;
         int result = 1;
         result = prime * result + ((this.fluid == null) ? 0 : this.fluid.hashCode());
-        result = prime * result + ((this.tagCompound == null) ? 0 : this.tagCompound.hashCode());
 
         return result;
     }
@@ -184,29 +157,28 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
     public boolean equals(final Object other) {
         if (other instanceof AEFluidStack) {
             final AEFluidStack is = (AEFluidStack) other;
-            return is.fluid == this.fluid && Platform.itemComparisons().isNbtTagEqual(this.tagCompound, is.tagCompound);
+            return is.fluid == this.fluid;
         } else if (other instanceof FluidVolume) {
             final FluidVolume is = (FluidVolume) other;
-            return is.getFluidKey() == this.fluid
-                    && Platform.itemComparisons().isNbtTagEqual(this.tagCompound, is.toTag());
+            return is.getFluidKey() == this.fluid;
         }
         return false;
     }
 
     @Override
     public String toString() {
-        return this.getStackSize() + "x" + this.getFluidStack().getFluidKey().entry.getId() + " " + this.tagCompound;
+        return this.getStackSize() + "x" + this.getFluidStack().getFluidKey().entry.getId();
     }
 
     @Override
     public boolean hasTagCompound() {
-        return this.tagCompound != null;
+        return false;
     }
 
     @Override
     public FluidVolume getFluidStack() {
         FluidAmount amount = FluidAmount.of(this.getStackSize(), 1000);
-        return this.fluid.readVolume(tagCompound).withAmount(amount);
+        return this.fluid.withAmount(amount);
     }
 
     @Override
@@ -234,11 +206,10 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
         final boolean isCraftable = buffer.readBoolean();
 
         FluidKey fluid = FluidKey.fromTag(buffer.readCompoundTag());
-        CompoundTag compoundTag = buffer.readCompoundTag();
         final long amount = buffer.readVarLong();
         final long countRequestable = buffer.readVarLong();
 
-        final AEFluidStack fluidStack = new AEFluidStack(fluid, amount, compoundTag);
+        final AEFluidStack fluidStack = new AEFluidStack(fluid, amount);
         fluidStack.setCountRequestable(countRequestable);
         fluidStack.setCraftable(isCraftable);
         return fluidStack;
@@ -248,7 +219,6 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
     public void writeToPacket(final PacketByteBuf buffer) {
         buffer.writeBoolean(this.isCraftable());
         buffer.writeCompoundTag(fluid.toTag());
-        buffer.writeCompoundTag(tagCompound);
         buffer.writeVarLong(this.getStackSize());
         buffer.writeVarLong(this.getCountRequestable());
     }

@@ -8,16 +8,94 @@ import appeng.bootstrap.ModelsReloadCallback;
 import appeng.bootstrap.components.IClientSetupComponent;
 import appeng.bootstrap.components.IItemColorRegistrationComponent;
 import appeng.bootstrap.components.IModelBakeComponent;
-import appeng.client.gui.implementations.*;
+import appeng.client.gui.implementations.CellWorkbenchScreen;
+import appeng.client.gui.implementations.ChestScreen;
+import appeng.client.gui.implementations.CondenserScreen;
+import appeng.client.gui.implementations.CraftAmountScreen;
+import appeng.client.gui.implementations.CraftConfirmScreen;
+import appeng.client.gui.implementations.CraftingCPUScreen;
+import appeng.client.gui.implementations.CraftingStatusScreen;
+import appeng.client.gui.implementations.CraftingTermScreen;
+import appeng.client.gui.implementations.DriveScreen;
+import appeng.client.gui.implementations.FormationPlaneScreen;
+import appeng.client.gui.implementations.GrinderScreen;
+import appeng.client.gui.implementations.IOPortScreen;
+import appeng.client.gui.implementations.InscriberScreen;
+import appeng.client.gui.implementations.InterfaceScreen;
+import appeng.client.gui.implementations.InterfaceTerminalScreen;
+import appeng.client.gui.implementations.LevelEmitterScreen;
+import appeng.client.gui.implementations.MEMonitorableScreen;
+import appeng.client.gui.implementations.MEPortableCellScreen;
+import appeng.client.gui.implementations.MolecularAssemblerScreen;
+import appeng.client.gui.implementations.NetworkStatusScreen;
+import appeng.client.gui.implementations.NetworkToolScreen;
+import appeng.client.gui.implementations.PatternTermScreen;
+import appeng.client.gui.implementations.PriorityScreen;
+import appeng.client.gui.implementations.QNBScreen;
+import appeng.client.gui.implementations.QuartzKnifeScreen;
+import appeng.client.gui.implementations.SecurityStationScreen;
+import appeng.client.gui.implementations.SkyChestScreen;
+import appeng.client.gui.implementations.SpatialIOPortScreen;
+import appeng.client.gui.implementations.StorageBusScreen;
+import appeng.client.gui.implementations.UpgradeableScreen;
+import appeng.client.gui.implementations.VibrationChamberScreen;
+import appeng.client.gui.implementations.WirelessScreen;
+import appeng.client.gui.implementations.WirelessTermScreen;
+import appeng.client.render.FacadeItemModel;
 import appeng.client.render.SimpleModelLoader;
 import appeng.client.render.cablebus.CableBusModelLoader;
+import appeng.client.render.cablebus.P2PTunnelFrequencyModel;
 import appeng.client.render.crafting.CraftingCubeModel;
-import appeng.client.render.effects.*;
-import appeng.client.render.model.*;
+import appeng.client.render.effects.ChargedOreFX;
+import appeng.client.render.effects.CraftingFx;
+import appeng.client.render.effects.EnergyFx;
+import appeng.client.render.effects.LightningArcFX;
+import appeng.client.render.effects.LightningFX;
+import appeng.client.render.effects.MatterCannonFX;
+import appeng.client.render.effects.ParticleTypes;
+import appeng.client.render.effects.VibrantFX;
+import appeng.client.render.model.BiometricCardModel;
+import appeng.client.render.model.ColorApplicatorModel;
+import appeng.client.render.model.DriveModel;
+import appeng.client.render.model.GlassModel;
+import appeng.client.render.model.MemoryCardModel;
+import appeng.client.render.model.SkyCompassModel;
 import appeng.client.render.spatial.SpatialPylonModel;
 import appeng.client.render.tesr.InscriberTESR;
 import appeng.client.render.tesr.SkyChestTESR;
-import appeng.container.implementations.*;
+import appeng.container.implementations.CellWorkbenchContainer;
+import appeng.container.implementations.ChestContainer;
+import appeng.container.implementations.CondenserContainer;
+import appeng.container.implementations.CraftAmountContainer;
+import appeng.container.implementations.CraftConfirmContainer;
+import appeng.container.implementations.CraftingCPUContainer;
+import appeng.container.implementations.CraftingStatusContainer;
+import appeng.container.implementations.CraftingTermContainer;
+import appeng.container.implementations.DriveContainer;
+import appeng.container.implementations.FormationPlaneContainer;
+import appeng.container.implementations.GrinderContainer;
+import appeng.container.implementations.IOPortContainer;
+import appeng.container.implementations.InscriberContainer;
+import appeng.container.implementations.InterfaceContainer;
+import appeng.container.implementations.InterfaceTerminalContainer;
+import appeng.container.implementations.LevelEmitterContainer;
+import appeng.container.implementations.MEMonitorableContainer;
+import appeng.container.implementations.MEPortableCellContainer;
+import appeng.container.implementations.MolecularAssemblerContainer;
+import appeng.container.implementations.NetworkStatusContainer;
+import appeng.container.implementations.NetworkToolContainer;
+import appeng.container.implementations.PatternTermContainer;
+import appeng.container.implementations.PriorityContainer;
+import appeng.container.implementations.QNBContainer;
+import appeng.container.implementations.QuartzKnifeContainer;
+import appeng.container.implementations.SecurityStationContainer;
+import appeng.container.implementations.SkyChestContainer;
+import appeng.container.implementations.SpatialIOPortContainer;
+import appeng.container.implementations.StorageBusContainer;
+import appeng.container.implementations.UpgradeableContainer;
+import appeng.container.implementations.VibrationChamberContainer;
+import appeng.container.implementations.WirelessContainer;
+import appeng.container.implementations.WirelessTermContainer;
 import appeng.core.Api;
 import appeng.core.ApiDefinitions;
 import appeng.core.AppEng;
@@ -25,10 +103,26 @@ import appeng.core.AppEngBase;
 import appeng.core.features.registries.PartModels;
 import appeng.core.sync.network.ClientNetworkHandler;
 import appeng.core.worlddata.WorldData;
-import appeng.entity.*;
-import appeng.fluids.client.gui.*;
-import appeng.fluids.container.*;
+import appeng.entity.ChargedQuartzEntity;
+import appeng.entity.GrowingCrystalEntity;
+import appeng.entity.SingularityEntity;
+import appeng.entity.TinyTNTPrimedEntity;
+import appeng.entity.TinyTNTPrimedRenderer;
+import appeng.fluids.client.gui.FluidFormationPlaneScreen;
+import appeng.fluids.client.gui.FluidIOScreen;
+import appeng.fluids.client.gui.FluidInterfaceScreen;
+import appeng.fluids.client.gui.FluidLevelEmitterScreen;
+import appeng.fluids.client.gui.FluidStorageBusScreen;
+import appeng.fluids.client.gui.FluidTerminalScreen;
+import appeng.fluids.container.FluidFormationPlaneContainer;
+import appeng.fluids.container.FluidIOContainer;
+import appeng.fluids.container.FluidInterfaceContainer;
+import appeng.fluids.container.FluidLevelEmitterContainer;
+import appeng.fluids.container.FluidStorageBusContainer;
+import appeng.fluids.container.FluidTerminalContainer;
 import appeng.hooks.ClientTickHandler;
+import appeng.parts.automation.PlaneModel;
+import appeng.tile.crafting.MolecularAssemblerRenderer;
 import appeng.util.Platform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -53,7 +147,11 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -240,6 +338,18 @@ public final class AppEngClient extends AppEngBase {
 
     private void registerModelProviders() {
 
+        ModelLoadingRegistry.INSTANCE.registerAppender((resourceManager, consumer) -> {
+            consumer.accept(MolecularAssemblerRenderer.LIGHTS_MODEL);
+        });
+        ModelLoadingRegistry.INSTANCE.registerVariantProvider((resourceManager) -> {
+            return (modelIdentifier, modelProviderContext) -> {
+                if (MolecularAssemblerRenderer.LIGHTS_MODEL.equals(modelIdentifier)) {
+                    return modelProviderContext.loadModel(new Identifier(modelIdentifier.getNamespace(), modelIdentifier.getPath()));
+                }
+                return null;
+            };
+        });
+
         ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> new CableBusModelLoader((PartModels) Api.INSTANCE.registries().partModels()));
 
        addBuiltInModel("block/quartz_glass", GlassModel::new);
@@ -249,14 +359,24 @@ public final class AppEngClient extends AppEngBase {
        addBuiltInModel("item/memory_card", MemoryCardModel::new);
        addBuiltInModel("item/biometric_card", BiometricCardModel::new);
        addBuiltInModel("block/drive", DriveModel::new);
-       addBuiltInModel("color_applicator", ColorApplicatorModel::new); // FIXME need to wire this up
+       addBuiltInModel("color_applicator", ColorApplicatorModel::new); // FIXME need to wire this up (this might just not be needed)
        addBuiltInModel("block/spatial_pylon", SpatialPylonModel::new);
        addBuiltInModel("block/paint", PaintSplotchesModel::new);
-        addBuiltInModel("block/qnb/qnb_formed", QnbFormedModel::new);
-// FIXME FABRIC       addBuiltInModel("p2p_tunnel_frequency", P2PTunnelFrequencyModel::new);
-// FIXME FABRIC       addBuiltInModel("facade", FacadeItemModel::new);
-// FIXME FABRIC       ModelLoaderRegistry.registerLoader(new Identifier(AppEng.MOD_ID, "part_plane"),
-// FIXME FABRIC               PlaneModelLoader.INSTANCE);
+       addBuiltInModel("block/qnb/qnb_formed", QnbFormedModel::new);
+       addBuiltInModel("part/p2p/p2p_tunnel_frequency", P2PTunnelFrequencyModel::new);
+       addBuiltInModel("item/facade", FacadeItemModel::new);
+
+        addPlaneModel("part/annihilation_plane", "part/annihilation_plane");
+        addPlaneModel("part/annihilation_plane_on", "part/annihilation_plane_on");
+        addPlaneModel("part/identity_annihilation_plane", "part/identity_annihilation_plane");
+        addPlaneModel("part/identity_annihilation_plane_on", "part/identity_annihilation_plane_on");
+        addPlaneModel("part/fluid_annihilation_plane", "part/fluid_annihilation_plane");
+        addPlaneModel("part/fluid_annihilation_plane_on", "part/fluid_annihilation_plane_on");
+        addPlaneModel("part/fluid_formation_plane", "part/fluid_formation_plane");
+        addPlaneModel("part/fluid_formation_plane_on", "part/fluid_formation_plane_on");
+        addPlaneModel("part/formation_plane", "part/formation_plane");
+        addPlaneModel("part/formation_plane_on", "part/formation_plane_on");
+
         addBuiltInModel("block/crafting/1k_storage_formed", () -> new CraftingCubeModel(AbstractCraftingUnitBlock.CraftingUnitType.STORAGE_1K));
         addBuiltInModel("block/crafting/4k_storage_formed", () -> new CraftingCubeModel(AbstractCraftingUnitBlock.CraftingUnitType.STORAGE_4K));
         addBuiltInModel("block/crafting/16k_storage_formed", () -> new CraftingCubeModel(AbstractCraftingUnitBlock.CraftingUnitType.STORAGE_16K));
@@ -267,9 +387,16 @@ public final class AppEngClient extends AppEngBase {
 // FIXME FABRIC       ModelLoaderRegistry.registerLoader(new Identifier(AppEng.MOD_ID, "uvlightmap"), UVLModelLoader.INSTANCE);
     }
 
+    private static void addPlaneModel(String planeName, String frontTexture) {
+        Identifier frontTextureId = AppEng.makeId(frontTexture);
+        Identifier sidesTextureId = AppEng.makeId("part/plane_sides");
+        Identifier backTextureId = AppEng.makeId("part/transition_plane_back");
+        addBuiltInModel(planeName, () -> new PlaneModel(frontTextureId, sidesTextureId, backTextureId));
+    }
+
     private static <T extends UnbakedModel> void addBuiltInModel(String id, Supplier<T> modelFactory) {
         ModelLoadingRegistry.INSTANCE.registerResourceProvider(
-                resourceManager -> new SimpleModelLoader<T>(AppEng.makeId(id), modelFactory)
+                resourceManager -> new SimpleModelLoader<>(AppEng.makeId(id), modelFactory)
         );
     }
 

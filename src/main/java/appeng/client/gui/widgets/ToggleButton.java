@@ -93,7 +93,7 @@ public class ToggleButton extends ButtonWidget implements ITooltip {
 
             return new LiteralText(name + '\n' + sb);
         }
-        return "";
+        return LiteralText.EMPTY;
     }
 
     @Override

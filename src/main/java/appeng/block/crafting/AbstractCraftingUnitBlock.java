@@ -18,25 +18,21 @@
 
 package appeng.block.crafting;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.StateManager;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-
 import appeng.block.AEBaseTileBlock;
 import appeng.container.ContainerLocator;
 import appeng.container.ContainerOpener;
 import appeng.container.implementations.CraftingCPUContainer;
 import appeng.tile.crafting.CraftingBlockEntity;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.state.StateManager;
+import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> extends AEBaseTileBlock<T> {
     public static final BooleanProperty FORMED = BooleanProperty.of("formed");
@@ -55,16 +51,6 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
         super.appendProperties(builder);
         builder.add(POWERED);
         builder.add(FORMED);
-    }
-
-    @Override
-    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn,
-            BlockPos currentPos, BlockPos facingPos) {
-        TileEntity te = worldIn.getTileEntity(currentPos);
-        if (te != null) {
-            te.requestModelDataUpdate();
-        }
-        return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
     }
 
     @Override

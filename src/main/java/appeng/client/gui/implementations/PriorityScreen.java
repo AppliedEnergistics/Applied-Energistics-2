@@ -49,7 +49,7 @@ public class PriorityScreen extends AEBaseScreen<PriorityContainer> {
         this.priority = new NumberEntryWidget(this, 20, 30, 138, 62, NumberEntryType.PRIORITY, this::onPriorityChange);
         this.priority.setTextFieldBounds(62, 57, 50);
         this.priority.setMinValue(Integer.MIN_VALUE);
-        container.setTextField(this.priority);
+        handler.setTextField(this.priority);
         this.priority.addButtons(children::add, this::addButton);
 
         this.subGui.addBackButton(this::addButton, 154, 0);

@@ -53,6 +53,7 @@ import appeng.api.util.AEColor;
 import appeng.api.util.IConfigManager;
 import appeng.container.implementations.MEMonitorableContainer;
 import appeng.core.Api;
+import appeng.fluids.container.FluidTerminalContainer;
 import appeng.fluids.util.AEFluidStack;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
@@ -782,8 +783,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             }
             if (this.cellHandler.getChannel() == Api.instance().storage()
                     .getStorageChannel(IFluidStorageChannel.class)) {
-                throw new IllegalStateException();
-                // FIXME FABRIC return FluidTerminalContainer.TYPE;
+                return FluidTerminalContainer.TYPE;
             }
         }
         return null;

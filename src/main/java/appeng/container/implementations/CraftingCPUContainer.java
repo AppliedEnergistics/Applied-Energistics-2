@@ -81,7 +81,7 @@ public class CraftingCPUContainer extends AEBaseContainer
         }
 
         if (te instanceof CraftingBlockEntity) {
-            this.setCPU(((CraftingTileEntity) te).getCluster());
+            this.setCPU(((CraftingBlockEntity) te).getCluster());
         }
 
         if (this.getNetwork() == null && Platform.isServer()) {

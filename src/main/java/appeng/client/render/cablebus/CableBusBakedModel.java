@@ -18,6 +18,7 @@
 
 package appeng.client.render.cablebus;
 
+import appeng.api.parts.IDynamicPartBakedModel;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
@@ -25,17 +26,13 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
-import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
-import net.fabricmc.fabric.impl.client.indigo.renderer.IndigoRenderer;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.ModelOverrideList;
@@ -49,8 +46,14 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.function.Supplier;
 
 @Environment(EnvType.CLIENT)
@@ -125,7 +128,11 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
                 }
 
                 context.pushTransform(QuadRotator.get(facing, Direction.UP));
-                if (bakedModel instanceof FabricBakedModel) {
+                if (bakedModel instanceof IDynamicPartBakedModel) {
+                    ((IDynamicPartBakedModel) bakedModel).emitQuads(blockView, state, pos, randomSupplier, context,
+                            facing, partModelData);
+                }
+                else if (bakedModel instanceof FabricBakedModel) {
                     ((FabricBakedModel) bakedModel).emitBlockQuads(blockView, state, pos, randomSupplier, context);
                 } else {
                     context.fallbackConsumer().accept(bakedModel);
@@ -134,7 +141,8 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
             }
         }
 
-        // FIXME this.facadeBuilder.buildFacadeQuads(layer, renderState, randomSupplier, context, this.partModels::get);
+        Mesh mesh = this.facadeBuilder.getFacadeMesh(renderState, randomSupplier, this.partModels::get);
+        context.meshConsumer().accept(mesh);
     }
 
     // Determines whether a cable is connected to exactly two sides that are

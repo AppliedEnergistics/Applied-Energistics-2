@@ -109,6 +109,7 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench, 
     }
 
 // FIXME FABRIC: No direct equivalent
+// FIXME FABRIC: Might already be handled by onItemUseFirst though
 // FIXME FABRIC    @Override
 // FIXME FABRIC    public boolean doesSneakBypassUse(ItemStack stack, WorldView world, BlockPos pos, PlayerEntity player) {
 // FIXME FABRIC        return true;

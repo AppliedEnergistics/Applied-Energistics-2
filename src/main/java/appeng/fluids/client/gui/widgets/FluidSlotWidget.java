@@ -1,24 +1,23 @@
 package appeng.fluids.client.gui.widgets;
 
-import java.math.RoundingMode;
-import java.util.Collections;
-
-import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.fluid.FluidAttributes;
-import alexiil.mc.lib.attributes.fluid.FluidExtractable;
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
+import alexiil.mc.lib.attributes.fluid.GroupedFluidInvView;
+import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
-
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.client.gui.widgets.CustomSlotWidget;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.FluidSlotPacket;
 import appeng.fluids.util.AEFluidStack;
 import appeng.fluids.util.IAEFluidTank;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
+
+import java.math.RoundingMode;
+import java.util.Collections;
+import java.util.Set;
 
 public class FluidSlotWidget extends CustomSlotWidget {
     private final IAEFluidTank fluids;
@@ -50,9 +49,11 @@ public class FluidSlotWidget extends CustomSlotWidget {
         if (clickStack.isEmpty() || mouseButton == 1) {
             this.setFluidStack(null);
         } else if (mouseButton == 0) {
-            FluidExtractable extractable = FluidAttributes.EXTRACTABLE.getFirstOrNull(clickStack);
-            if (extractable != null && extractable.couldExtractAnything()) {
-                FluidVolume volume = extractable.attemptAnyExtraction(FluidAmount.MAX_VALUE, Simulation.ACTION);
+            GroupedFluidInvView groupView = FluidAttributes.GROUPED_INV_VIEW.get(clickStack);
+            Set<FluidKey> fluids = groupView.getStoredFluids();
+            if (!fluids.isEmpty()) {
+                FluidKey firstFluid = groupView.getStoredFluids().iterator().next();
+                FluidVolume volume = firstFluid.withAmount(groupView.getAmount_F(firstFluid));
                 this.setFluidStack(AEFluidStack.fromFluidVolume(volume, RoundingMode.DOWN));
             }
         }

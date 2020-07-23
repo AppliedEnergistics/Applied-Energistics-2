@@ -38,7 +38,7 @@ public class NumberBox extends TextFieldWidget {
                      final Class<?> type, LongConsumer changeListener) {
         super(fontRenderer, x, y, width, height, new LiteralText("0"));
         this.setText("0");
-        setResponder(this::onTextChanged);
+        setChangedListener(this::onTextChanged);
         this.lastValue = 0;
         this.changeListener = changeListener;
         if (type == int.class || type == Integer.class) {

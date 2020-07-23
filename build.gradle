@@ -101,7 +101,7 @@ dependencies {
 
     modImplementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
 
-    modImplementation "alexiil.mc.lib:libblockattributes-all:0.7.0"
+    modImplementation "alexiil.mc.lib:libblockattributes-all:0.7.1-pre.4"
     modImplementation "me.shedaniel:RoughlyEnoughItems:4.6.6"
     modImplementation "mcp.mobius.waila:Hwyla:1.16.1-1.9.22-75"
 

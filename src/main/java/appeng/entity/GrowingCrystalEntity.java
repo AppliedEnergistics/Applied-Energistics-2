@@ -18,6 +18,8 @@
 
 package appeng.entity;
 
+import appeng.client.EffectType;
+import appeng.items.misc.CrystalSeedItem;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntity;
@@ -116,8 +118,8 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
 
                 if (this.progress_1000 >= len) {
                     this.progress_1000 = 0;
-                    // FIXME FABRIC AppEng.instance().spawnEffect(EffectType.Vibrant, this.world, this.getX(), this.getY() + 0.2,
-                    // FIXME FABRIC         this.getZ(), null);
+                    AppEng.instance().spawnEffect(EffectType.Vibrant, this.world, this.getX(), this.getY() + 0.2,
+                             this.getZ(), null);
                 }
             } else {
                 if (this.progress_1000 > 1000) {
@@ -174,11 +176,10 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
     @Override
     public void applyBuoyancy() {
         ItemStack item = getStack();
-        throw new IllegalStateException();
-        // FIXME FABRIC if (item.getItem() instanceof CrystalSeedItem) {
-        // FIXME FABRIC     return;
-        // FIXME FABRIC }
-        // FIXME FABRIC super.applyBuoyancy();
+        if (item.getItem() instanceof CrystalSeedItem) {
+             return;
+        }
+        super.applyBuoyancy();
     }
 
 }

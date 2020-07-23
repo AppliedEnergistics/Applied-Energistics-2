@@ -20,6 +20,7 @@ package appeng.me.cluster.implementations;
 
 import java.util.Iterator;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -234,7 +235,7 @@ public class QuantumCluster implements ILocatable, IAECluster {
     }
 
     @Override
-    public Iterator<QuantumBridgeTileEntity> getTiles() {
+    public Iterator<QuantumBridgeBlockEntity> getTiles() {
         return new ChainedIterator<>(this.getRing()[0], this.getRing()[1], this.getRing()[2], this.getRing()[3],
                 this.getRing()[4], this.getRing()[5], this.getRing()[6], this.getRing()[7], this.center);
     }

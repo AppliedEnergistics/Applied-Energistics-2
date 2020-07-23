@@ -171,8 +171,12 @@ public abstract class AbstractFormationPlanePart<T extends IAEStack<T>> extends 
 
             final BlockPos tePos = te.getPos().offset(side.getFacing());
 
-            this.blocked = !w.getBlockState(tePos).getMaterial().isReplaceable();
+            this.blocked = isBlocking(w, tePos);
         }
+    }
+
+    protected boolean isBlocking(BlockView w, BlockPos pos) {
+        return !w.getBlockState(pos).getMaterial().isReplaceable();
     }
 
     @Override

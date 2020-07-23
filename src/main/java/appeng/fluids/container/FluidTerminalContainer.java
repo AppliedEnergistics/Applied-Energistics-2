@@ -25,9 +25,12 @@ import java.nio.BufferOverflowException;
 import javax.annotation.Nonnull;
 
 import alexiil.mc.lib.attributes.Simulation;
+import alexiil.mc.lib.attributes.fluid.FixedFluidInv;
 import alexiil.mc.lib.attributes.fluid.FluidAttributes;
 import alexiil.mc.lib.attributes.fluid.FluidExtractable;
 import alexiil.mc.lib.attributes.fluid.FluidInsertable;
+import alexiil.mc.lib.attributes.fluid.GroupedFluidInv;
+import alexiil.mc.lib.attributes.fluid.SingleFluidTank;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.filter.ExactFluidFilter;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
@@ -327,9 +330,10 @@ public class FluidTerminalContainer extends AEBaseContainer
             }
 
             // Check how much we can store in the item
-            FluidVolume volumeAllowed = insertable.attemptInsertion(this.clientRequestedTargetFluid.getFluidStack().withAmount(FluidAmount.MAX_VALUE), Simulation.SIMULATE);
+            FluidVolume volumeOverflow = insertable.attemptInsertion(this.clientRequestedTargetFluid.getFluidStack().withAmount(FluidAmount.ofWhole(Long.MAX_VALUE)), Simulation.SIMULATE);
+            FluidAmount amountAllowed = FluidAmount.ofWhole(Long.MAX_VALUE).saturatedSub(volumeOverflow.amount());
 
-            final IAEFluidStack stack = AEFluidStack.fromFluidVolume(this.clientRequestedTargetFluid.getFluidStack().withAmount(volumeAllowed.amount()), RoundingMode.DOWN);
+            final IAEFluidStack stack = AEFluidStack.fromFluidVolume(this.clientRequestedTargetFluid.getFluidStack().withAmount(amountAllowed), RoundingMode.DOWN);
             if (stack == null) {
                 return; // Might be nothing allowed...
             }
@@ -342,13 +346,13 @@ public class FluidTerminalContainer extends AEBaseContainer
             }
 
             // How much could fit into the container
-            volumeAllowed = insertable.attemptInsertion(canPull.getFluidStack(), Simulation.SIMULATE);
-            if (volumeAllowed.isEmpty()) {
+            volumeOverflow = insertable.attemptInsertion(canPull.getFluidStack(), Simulation.SIMULATE);
+            if (!volumeOverflow.isEmpty()) {
                 return;
             }
 
             // Now actually pull out of the system
-            stack.setStackSize(volumeAllowed.amount().asLong(1000, RoundingMode.DOWN));
+            stack.setStackSize(canPull.getStackSize());
             final IAEFluidStack pulled = Platform.poweredExtraction(this.getPowerSource(), this.monitor, stack,
                     this.getActionSource());
             if (pulled == null || pulled.getStackSize() < 1) {
@@ -358,11 +362,11 @@ public class FluidTerminalContainer extends AEBaseContainer
             }
 
             // Actually fill
-            final FluidVolume reallyFilled = insertable.attemptInsertion(pulled.getFluidStack(), Simulation.ACTION);
+            volumeOverflow = insertable.attemptInsertion(pulled.getFluidStack(), Simulation.ACTION);
 
-            if (!reallyFilled.amount().equals(volumeAllowed.amount())) {
-                AELog.error("Fluid item [%s] reported a different possible amount than it actually accepted.",
-                        held.getName());
+            if (!volumeOverflow.isEmpty()) {
+                AELog.error("Fluid item [%s] reported a different possible amount than it actually accepted. Overflow: %s.",
+                        held, volumeOverflow);
             }
 
             player.inventory.setCursorStack(container.get());

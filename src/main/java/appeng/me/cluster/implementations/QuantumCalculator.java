@@ -30,9 +30,9 @@ import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
 import appeng.tile.qnb.QuantumBridgeBlockEntity;
 
-public class QuantumCalculator extends MBCalculator<QuantumBridgeTileEntity, QuantumCluster> {
+public class QuantumCalculator extends MBCalculator<QuantumBridgeBlockEntity, QuantumCluster> {
 
-    public QuantumCalculator(final QuantumBridgeTileEntity t) {
+    public QuantumCalculator(final QuantumBridgeBlockEntity t) {
         super(t);
     }
 
@@ -60,8 +60,8 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeTileEntity, Qua
 
         byte num = 0;
 
-        for (BlockPos p : BlockPos.getAllInBoxMutable(min, max)) {
-            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) w.getTileEntity(p);
+        for (BlockPos p : BlockPos.iterate(min, max)) {
+            final IAEMultiBlock<?> te = (IAEMultiBlock<?>) w.getBlockEntity(p);
 
             if (te == null || !te.isValid()) {
                 return false;
@@ -87,7 +87,7 @@ public class QuantumCalculator extends MBCalculator<QuantumBridgeTileEntity, Qua
         byte num = 0;
         byte ringNum = 0;
 
-        for (BlockPos p : BlockPos.getAllInBoxMutable(min, max)) {
+        for (BlockPos p : BlockPos.iterate(min, max)) {
             final QuantumBridgeBlockEntity te = (QuantumBridgeBlockEntity) w.getBlockEntity(p);
 
             num++;

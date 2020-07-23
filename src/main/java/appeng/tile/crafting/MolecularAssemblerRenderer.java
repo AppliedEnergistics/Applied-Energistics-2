@@ -50,8 +50,8 @@ import appeng.core.AppEng;
 @Environment(EnvType.CLIENT)
 public class MolecularAssemblerRenderer extends BlockEntityRenderer<MolecularAssemblerBlockEntity> {
 
-    public static final Identifier LIGHTS_MODEL = new Identifier(AppEng.MOD_ID,
-            "block/molecular_assembler_lights");
+    public static final ModelIdentifier LIGHTS_MODEL = new ModelIdentifier(AppEng.makeId(
+            "block/molecular_assembler_lights"), "");
 
     private static final RenderLayer MC_161917_RENDERTYPE_FIX = createRenderType();
 
@@ -93,7 +93,7 @@ public class MolecularAssemblerRenderer extends BlockEntityRenderer<MolecularAss
         // even the fully transparent part)
         // https://bugs.mojang.com/browse/MC-161917
         MinecraftClient minecraft = MinecraftClient.getInstance();
-        BakedModel lightsModel = minecraft.getBakedModelManager().getModel(new ModelIdentifier(LIGHTS_MODEL, ""));
+        BakedModel lightsModel = minecraft.getBakedModelManager().getModel(LIGHTS_MODEL);
         VertexConsumer buffer = bufferIn.getBuffer(MC_161917_RENDERTYPE_FIX);
 
         minecraft.getBlockRenderManager().getModelRenderer().render(ms.peek(), buffer, null,
