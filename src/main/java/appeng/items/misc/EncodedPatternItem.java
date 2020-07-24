@@ -226,7 +226,9 @@ public class EncodedPatternItem extends AEBaseItem {
         final CompoundNBT tag = itemStack.getTag();
         Preconditions.checkArgument(tag != null, "itemStack missing a NBT tag");
 
-        return new ResourceLocation(tag.getString(NBT_RECIPE_ID));
+        return tag.contains(NBT_RECIPE_ID, Constants.NBT.TAG_STRING)
+                ? new ResourceLocation(tag.getString(NBT_RECIPE_ID))
+                : null;
     }
 
     public List<IAEItemStack> getIngredients(ItemStack itemStack) {

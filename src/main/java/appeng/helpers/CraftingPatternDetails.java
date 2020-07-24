@@ -109,7 +109,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
             this.standardRecipe = null;
             this.correctOutput = ItemStack.EMPTY;
 
-            for (int x = 0; x < 3; x++) {
+            for (int x = 0; x < products.size(); x++) {
                 final IAEItemStack ais = products.get(x);
                 final ItemStack gs = ais.createItemStack();
 
