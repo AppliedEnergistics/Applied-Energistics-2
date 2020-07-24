@@ -32,6 +32,7 @@ import appeng.core.features.ItemStackSrc;
 import appeng.debug.DebugCardItem;
 import appeng.debug.DebugPartPlacerItem;
 import appeng.debug.EraserItem;
+import appeng.debug.MeteoritePlacerItem;
 import appeng.debug.ReplicatorCardItem;
 import appeng.entity.GrowingCrystalEntity;
 import appeng.fluids.items.BasicFluidStorageCell;
@@ -287,7 +288,7 @@ public final class ApiItems implements IItems {
 
         FeatureFactory debugTools = registry.features(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE);
         this.toolEraser = debugTools.item("debug_eraser", EraserItem::new).build();
-// FIXME FABRIC        this.toolMeteoritePlacer = debugTools.item("debug_meteorite_placer", MeteoritePlacerItem::new).build();
+        this.toolMeteoritePlacer = debugTools.item("debug_meteorite_placer", MeteoritePlacerItem::new).build();
         this.toolDebugCard = debugTools.item("debug_card", DebugCardItem::new).build();
         this.toolReplicatorCard = debugTools.item("debug_replicator_card", ReplicatorCardItem::new).build();
         debugTools.item("debug_part_placer", DebugPartPlacerItem::new).build();

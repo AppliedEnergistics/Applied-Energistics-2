@@ -25,6 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.Tickable;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.text.LiteralText;
@@ -38,7 +39,6 @@ public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements Ticka
     private int size = 3;
     private ItemStack is = ItemStack.EMPTY;
     private int countdown = 20 * 10;
-    private PlayerEntity who = null;
 
     public CubeGeneratorBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
@@ -50,9 +50,9 @@ public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements Ticka
             this.countdown--;
 
             if (this.countdown % 20 == 0) {
-                for (final PlayerEntity e : AppEng.instance().getPlayers()) {
+                AppEng.instance().getPlayers().forEach(e -> {
                     e.sendSystemMessage(new LiteralText("Spawning in... " + (this.countdown / 20)), Util.NIL_UUID);
-                }
+                });
             }
 
             if (this.countdown <= 0) {
@@ -75,7 +75,7 @@ public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements Ticka
                     final BlockPos p = this.pos.add(x, y - 1, z);
                     ItemUsageContext useContext = new AutomaticItemPlacementContext(this.world, p, side, this.is,
                             side.getOpposite());
-                    i.onItemUse(useContext);
+                    i.useOnBlock(useContext);
                 }
             }
         }
@@ -84,7 +84,6 @@ public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements Ticka
     void click(final PlayerEntity player) {
         if (Platform.isServer()) {
             final ItemStack hand = player.inventory.getMainHandStack();
-            this.who = player;
 
             if (hand.isEmpty()) {
                 this.is = ItemStack.EMPTY;

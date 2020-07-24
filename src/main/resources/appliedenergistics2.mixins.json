@@ -19,7 +19,9 @@
     "RenderPhaseMixin",
     "BakedModelManagerAccessor",
     "RenderEncodedPatternMixin",
-    "ItemRendererAccessor"
+    "ItemRendererAccessor",
+    "SkyRenderMixin",
+    "SkyPropertiesMixin"
   ],
   "server": [],
   "injectors": {

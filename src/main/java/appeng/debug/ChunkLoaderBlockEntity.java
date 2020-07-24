@@ -34,22 +34,25 @@ public class ChunkLoaderBlockEntity extends AEBaseBlockEntity implements Tickabl
     }
 
     @Override
-    public void onLoad() {
-        super.onLoad();
+    public void onReady() {
+        if (world.isClient) {
+            return;
+        }
 
         World world = getWorld();
         if (world instanceof ServerWorld) {
             ChunkPos chunkPos = new ChunkPos(getPos());
-            ((ServerWorld) world).forceChunk(chunkPos.x, chunkPos.z, true);
+            ((ServerWorld) world).setChunkForced(chunkPos.x, chunkPos.z, true);
         }
     }
 
     @Override
-    public void remove() {
+    public void markRemoved() {
+        super.markRemoved();
         World world = getWorld();
         if (world instanceof ServerWorld) {
             ChunkPos chunkPos = new ChunkPos(getPos());
-            ((ServerWorld) world).forceChunk(chunkPos.x, chunkPos.z, false);
+            ((ServerWorld) world).setChunkForced(chunkPos.x, chunkPos.z, false);
         }
     }
 
@@ -61,10 +64,10 @@ public class ChunkLoaderBlockEntity extends AEBaseBlockEntity implements Tickabl
             ChunkPos chunkPos = new ChunkPos(getPos());
             ServerWorld serverWorld = (ServerWorld) world;
 
-            if (!serverWorld.getForcedChunks().contains(chunkPos.asLong())) {
-                AELog.debug("Force-loading chunk @ %d,%d in %s", chunkPos.x, chunkPos.z,
-                        serverWorld.dimension.getType().getRegistryName());
-                serverWorld.forceChunk(chunkPos.x, chunkPos.z, false);
+            if (!serverWorld.getForcedChunks().contains(chunkPos.toLong())) {
+                AELog.debug("Force-loading chunk @ %d,%d in world %s", chunkPos.x, chunkPos.z,
+                        serverWorld.getRegistryKey().getValue());
+                serverWorld.setChunkForced(chunkPos.x, chunkPos.z, true);
             }
         }
     }

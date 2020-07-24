@@ -18,16 +18,18 @@
 
 package appeng.debug;
 
+import appeng.hooks.AEToolItem;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.packet.s2c.play.ChunkDataS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.play.server.SChunkDataPacket;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -41,8 +43,9 @@ import appeng.worldgen.meteorite.CraterType;
 import appeng.worldgen.meteorite.MeteoritePlacer;
 import appeng.worldgen.meteorite.PlacedMeteoriteSettings;
 import appeng.worldgen.meteorite.debug.MeteoriteSpawner;
+import net.minecraft.world.chunk.WorldChunk;
 
-public class MeteoritePlacerItem extends AEBaseItem {
+public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
 
     private static final String MODE_TAG = "mode";
 
@@ -53,7 +56,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
         if (world.isClient()) {
-            return TypedActionResult.resultPass(player.getStackInHand(hand));
+            return TypedActionResult.pass(player.getStackInHand(hand));
         }
 
         if (player.isSneaking()) {
@@ -71,7 +74,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
 
             player.sendSystemMessage(new LiteralText(craterType.name()), Util.NIL_UUID);
 
-            return TypedActionResult.resultSuccess(itemStack);
+            return TypedActionResult.success(itemStack);
         }
 
         return super.use(world, player, hand);
@@ -106,7 +109,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
                 pureCrater, false);
 
         if (spawned == null) {
-            player.sendMessage(new LiteralText("Un-suitable Location."));
+            player.sendMessage(new LiteralText("Un-suitable Location."), false);
             return ActionResult.FAIL;
         }
 
@@ -121,14 +124,14 @@ public class MeteoritePlacerItem extends AEBaseItem {
         placer.place();
 
         player.sendMessage(new LiteralText("Spawned at y=" + spawned.getPos().getY() + " range=" + range
-                + " biomeCategory=" + world.getBiome(pos).getCategory()));
+                + " biomeCategory=" + world.getBiome(pos).getCategory()), false);
 
         // The placer will not send chunks to the player since it's used as part
         // of world-gen normally, so we'll have to do it ourselves. Since this
         // is a debug tool, we'll not care about being terribly efficient here
-        ChunkPos.getAllInBox(new ChunkPos(spawned.getPos()), 1).forEach(cp -> {
-            Chunk c = world.getChunk(cp.x, cp.z);
-            player.connection.sendPacket(new SChunkDataPacket(c, 65535)); // 65535 == full chunk
+        ChunkPos.stream(new ChunkPos(spawned.getPos()), 2).forEach(cp -> {
+            WorldChunk c = world.getChunk(cp.x, cp.z);
+            player.networkHandler.sendPacket(new ChunkDataS2CPacket(c, 65535, false)); // 65535 == full chunk
         });
 
         return ActionResult.SUCCESS;

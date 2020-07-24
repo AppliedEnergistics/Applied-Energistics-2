@@ -51,6 +51,14 @@ import appeng.client.render.tesr.ChestTileEntityRenderer;
 import appeng.client.render.tesr.CrankTESR;
 import appeng.client.render.tesr.DriveLedTileEntityRenderer;
 import appeng.client.render.tesr.SkyChestTESR;
+import appeng.debug.ChunkLoaderBlock;
+import appeng.debug.ChunkLoaderBlockEntity;
+import appeng.debug.CubeGeneratorBlock;
+import appeng.debug.CubeGeneratorBlockEntity;
+import appeng.debug.ItemGenBlock;
+import appeng.debug.ItemGenBlockEntity;
+import appeng.debug.PhantomNodeBlock;
+import appeng.debug.PhantomNodeBlockEntity;
 import appeng.decorative.AEDecorativeBlock;
 import appeng.decorative.solid.*;
 import appeng.decorative.solid.SkyStoneBlock.SkystoneType;
@@ -586,35 +594,35 @@ public final class ApiBlocks implements IBlocks {
         this.quartzPillarSlab = deco.block("quartz_pillar_slab", () -> new SlabBlock(QUARTZ_PROPERTIES))
                 .addFeatures(AEFeature.CERTUS).build();
 
-// FIXME        this.itemGen = registry.block("debug_item_gen", ItemGenBlock::new)
-// FIXME                .features(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE)
-// FIXME                .tileEntity(
-// FIXME                        registry.tileEntity("debug_item_gen", ItemGenBlockEntity.class, ItemGenBlockEntity::new).build())
-// FIXME                .build();
-// FIXME        this.chunkLoader = registry.block("debug_chunk_loader", ChunkLoaderBlock::new)
-// FIXME                .features(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE)
-// FIXME                .tileEntity(registry
-// FIXME                        .tileEntity("debug_chunk_loader", ChunkLoaderBlockEntity.class, ChunkLoaderBlockEntity::new)
-// FIXME                        .build())
-// FIXME                .build();
-// FIXME        this.phantomNode = registry.block("debug_phantom_node", PhantomNodeBlock::new)
-// FIXME                .features(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE)
-// FIXME                .tileEntity(registry
-// FIXME                        .tileEntity("debug_phantom_node", PhantomNodeBlockEntity.class, PhantomNodeBlockEntity::new)
-// FIXME                        .build())
-// FIXME                .build();
-// FIXME        this.cubeGenerator = registry.block("debug_cube_gen", CubeGeneratorBlock::new)
-// FIXME                .features(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE)
-// FIXME                .tileEntity(registry
-// FIXME                        .tileEntity("debug_cube_gen", CubeGeneratorBlockEntity.class, CubeGeneratorBlockEntity::new)
-// FIXME                        .build())
-// FIXME                .build();
-// FIXME        this.energyGenerator = registry.block("debug_energy_gen", EnergyGeneratorBlock::new)
-// FIXME                .features(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE)
-// FIXME                .tileEntity(registry
-// FIXME                        .tileEntity("debug_energy_gen", EnergyGeneratorBlockEntity.class, EnergyGeneratorBlockEntity::new)
-// FIXME                        .build())
-// FIXME                .build();
+        this.itemGen = registry.block("debug_item_gen", ItemGenBlock::new)
+                .features(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE)
+                .tileEntity(
+                        registry.tileEntity("debug_item_gen", ItemGenBlockEntity.class, ItemGenBlockEntity::new).build())
+                .build();
+        this.chunkLoader = registry.block("debug_chunk_loader", ChunkLoaderBlock::new)
+                .features(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE)
+                .tileEntity(registry
+                        .tileEntity("debug_chunk_loader", ChunkLoaderBlockEntity.class, ChunkLoaderBlockEntity::new)
+                        .build())
+                .build();
+        this.phantomNode = registry.block("debug_phantom_node", PhantomNodeBlock::new)
+                .features(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE)
+                .tileEntity(registry
+                        .tileEntity("debug_phantom_node", PhantomNodeBlockEntity.class, PhantomNodeBlockEntity::new)
+                        .build())
+                .build();
+        this.cubeGenerator = registry.block("debug_cube_gen", CubeGeneratorBlock::new)
+                .features(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE)
+                .tileEntity(registry
+                        .tileEntity("debug_cube_gen", CubeGeneratorBlockEntity.class, CubeGeneratorBlockEntity::new)
+                        .build())
+                .build();
+// FIXME FABRIC        this.energyGenerator = registry.block("debug_energy_gen", EnergyGeneratorBlock::new)
+// FIXME FABRIC                .features(AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE)
+// FIXME FABRIC                .tileEntity(registry
+// FIXME FABRIC                        .tileEntity("debug_energy_gen", EnergyGeneratorBlockEntity.class, EnergyGeneratorBlockEntity::new)
+// FIXME FABRIC                        .build())
+// FIXME FABRIC                .build();
     }
 
     @Override

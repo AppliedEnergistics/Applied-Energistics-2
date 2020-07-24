@@ -18,31 +18,30 @@
 
 package appeng.debug;
 
-import java.util.ArrayDeque;
-import java.util.Queue;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import alexiil.mc.lib.attributes.item.FixedItemInv;
+import alexiil.mc.lib.attributes.AttributeList;
+import alexiil.mc.lib.attributes.Simulation;
+import alexiil.mc.lib.attributes.item.ItemExtractable;
+import alexiil.mc.lib.attributes.item.filter.ExactItemStackFilter;
+import alexiil.mc.lib.attributes.item.filter.ItemFilter;
+import appeng.tile.AEBaseBlockEntity;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.Direction;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
 
-import appeng.tile.AEBaseBlockEntity;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 public class ItemGenBlockEntity extends AEBaseBlockEntity {
 
     private static final Queue<ItemStack> POSSIBLE_ITEMS = new ArrayDeque<>();
 
-    private final FixedItemInv handler = new QueuedItemHandler();
+    private final ItemExtractable handler = new QueuedItemHandler();
 
     public ItemGenBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
@@ -71,55 +70,27 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    @Nullable
-    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-        if (CapabilityItemHandler.ITEM_HANDLER_CAPABILITY == capability) {
-            return (LazyOptional<T>) LazyOptional.of(() -> this.handler);
-        }
-        return super.getCapability(capability, facing);
+    public void addAllAttributes(World world, BlockPos pos, BlockState state, AttributeList<?> to) {
+        to.offer(handler);
     }
 
-    class QueuedItemHandler implements FixedItemInv {
+    class QueuedItemHandler implements ItemExtractable {
 
         @Override
-        @Nonnull
-        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-            return stack;
-        }
+        public ItemStack attemptExtraction(ItemFilter itemFilter, int maxAmount, Simulation simulation) {
+            // When item filter asks for a specific item, just return that
+            if (itemFilter instanceof ExactItemStackFilter) {
+                return ((ExactItemStackFilter) itemFilter).stack.copy();
+            }
 
-        @Override
-        @Nonnull
-        public ItemStack getStackInSlot(int slot) {
-            return POSSIBLE_ITEMS.peek() != null ? POSSIBLE_ITEMS.peek().copy() : ItemStack.EMPTY;
-        }
-
-        @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            return false;
-        }
-
-        @Override
-        public int getSlots() {
-            return 1;
-        }
-
-        @Override
-        public int getMaxAmount(int slot, ItemStack stack) {
-            return 1;
-        }
-
-        @Override
-        @Nonnull
-        public ItemStack extractItem(int slot, int amount, boolean simulate) {
             final ItemStack is = POSSIBLE_ITEMS.peek();
 
-            if (is == null) {
+            if (is == null || !itemFilter.matches(is)) {
                 return ItemStack.EMPTY;
             }
 
-            return simulate ? is.copy() : this.getNextItem();
+            return simulation == Simulation.SIMULATE ? is.copy() : this.getNextItem();
         }
 
         private ItemStack getNextItem() {
@@ -128,5 +99,7 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity {
             POSSIBLE_ITEMS.add(is);
             return is.copy();
         }
-    };
+    }
+
+    ;
 }

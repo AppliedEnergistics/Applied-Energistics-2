@@ -26,17 +26,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.util.math.Quaternion;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraftforge.client.IRenderHandler;
-import net.minecraftforge.client.SkyRenderHandler;
 
-//TODO https://github.com/MinecraftForge/MinecraftForge/pull/6537
-public class SpatialSkyRender implements SkyRenderHandler {
+public class SpatialSkyRender {
 
     private static final SpatialSkyRender INSTANCE = new SpatialSkyRender();
 
@@ -48,16 +42,15 @@ public class SpatialSkyRender implements SkyRenderHandler {
         this.dspList = GL11.glGenLists(1);
     }
 
-    public static IRenderHandler getInstance() {
+    public static SpatialSkyRender getInstance() {
         return INSTANCE;
     }
 
-    private static final Quaternion[] SKYBOX_SIDE_ROTATIONS = { Quaternion.ONE, new Quaternion(90.0F, 0.0F, 0.0F, true),
+    private static final Quaternion[] SKYBOX_SIDE_ROTATIONS = { Quaternion.IDENTITY, new Quaternion(90.0F, 0.0F, 0.0F, true),
             new Quaternion(-90.0F, 0.0F, 0.0F, true), new Quaternion(180.0F, 0.0F, 0.0F, true),
             new Quaternion(0.0F, 0.0F, 90.0F, true), new Quaternion(0.0F, 0.0F, -90.0F, true), };
 
-    @Override
-    public void render(int ticks, float partialTicks, MatrixStack matrixStack, ClientWorld world, MinecraftClient mc) {
+    public void render(MatrixStack matrixStack) {
         final long now = System.currentTimeMillis();
         if (now - this.cycle > 2000) {
             this.cycle = now;
@@ -86,10 +79,10 @@ public class SpatialSkyRender implements SkyRenderHandler {
 
             RenderSystem.disableTexture();
             VertexBuffer.begin(GL11.GL_QUADS, VertexFormats.POSITION);
-            VertexBuffer.pos(-100.0D, -100.0D, -100.0D).next();
-            VertexBuffer.pos(-100.0D, -100.0D, 100.0D).next();
-            VertexBuffer.pos(100.0D, -100.0D, 100.0D).next();
-            VertexBuffer.pos(100.0D, -100.0D, -100.0D).next();
+            VertexBuffer.vertex(-100.0D, -100.0D, -100.0D).next();
+            VertexBuffer.vertex(-100.0D, -100.0D, 100.0D).next();
+            VertexBuffer.vertex(100.0D, -100.0D, 100.0D).next();
+            VertexBuffer.vertex(100.0D, -100.0D, -100.0D).next();
             tessellator.draw();
             RenderSystem.enableTexture();
             matrixStack.pop();
@@ -104,8 +97,6 @@ public class SpatialSkyRender implements SkyRenderHandler {
             RenderSystem.disableTexture();
             RenderSystem.depthMask(false);
             RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
-
-            RenderHelper.disableStandardItemLighting();
 
             RenderSystem.color4f(fade, fade, fade, 1.0f);
             GL11.glCallList(this.dspList);
@@ -160,7 +151,7 @@ public class SpatialSkyRender implements SkyRenderHandler {
                     final double d23 = d17 * d12 - d20 * d13;
                     final double d24 = d23 * d9 - d21 * d10;
                     final double d25 = d21 * d9 + d23 * d10;
-                    vb.pos(x + d24, y + d22, z + d25).next();
+                    vb.vertex(x + d24, y + d22, z + d25).next();
                 }
             }
         }
