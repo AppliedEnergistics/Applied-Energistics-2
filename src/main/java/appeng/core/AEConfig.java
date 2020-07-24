@@ -96,7 +96,7 @@ public final class AEConfig {
     private boolean useColoredCraftingStatus;
     private boolean disableColoredCableRecipesInJEI;
     private int craftingCalculationTimePerTick;
-    private PowerUnits selectedPowerUnit;
+    private PowerUnits selectedPowerUnit = PowerUnits.AE;
 
     // GUI Buttons
     private final int[] craftByStacks = new int[4];
