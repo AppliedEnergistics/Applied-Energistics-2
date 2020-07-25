@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2018, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,70 +18,61 @@
 
 package appeng.client.render;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-import java.util.function.Supplier;
-
-import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
+import appeng.client.render.cablebus.FacadeBuilder;
+import appeng.items.parts.FacadeItem;
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.json.ModelOverrideList;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
 
-
-import appeng.client.render.cablebus.FacadeBuilder;
+import java.util.Objects;
+import java.util.Random;
+import java.util.function.Supplier;
 
 /**
- * This model used the provided FacadeBuilder to "slice" the item quads for the
- * facade provided.
- *
- * @author covers1624
+ * This baked model class is used as a dispatcher to redirect the renderer to
+ * the *real* model that should be used based on the item stack. A custom Item
+ * Override List is used to accomplish this.
  */
-public class FacadeBakedItemModel extends ForwardingBakedModel implements FabricBakedModel {
-
-    private final ItemStack textureStack;
+public class FacadeBakedItemModel extends ForwardingBakedModel {
     private final FacadeBuilder facadeBuilder;
-    private List<BakedQuad> quads = null;
+    private final Int2ObjectMap<Mesh> cache = new Int2ObjectArrayMap<>();
 
-    protected FacadeBakedItemModel(BakedModel base, ItemStack textureStack, FacadeBuilder facadeBuilder) {
-        this.wrapped = base;
-        this.textureStack = textureStack;
+    public FacadeBakedItemModel(BakedModel baseModel, FacadeBuilder facadeBuilder) {
+        this.wrapped = baseModel;
         this.facadeBuilder = facadeBuilder;
     }
 
     @Override
+    public boolean isVanillaAdapter() {
+        return false;
+    }
+
+    @Override
     public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
+        if (!(stack.getItem() instanceof FacadeItem)) {
+            return;
+        }
+
         super.emitItemQuads(stack, randomSupplier, context);
 
-        if (quads == null) {
-            quads = new ArrayList<>();
-            quads.addAll(this.facadeBuilder.buildFacadeItemQuads(this.textureStack, Direction.NORTH));
-            quads = Collections.unmodifiableList(quads);
+        FacadeItem itemFacade = (FacadeItem) stack.getItem();
+        ItemStack textureItem = itemFacade.getTextureItem(stack);
+
+        int itemId = Item.getRawId(textureItem.getItem());
+        int hash = Objects.hash(itemId, textureItem.getTag());
+        Mesh mesh = this.cache.get(hash);
+        if (mesh == null) {
+            mesh = this.facadeBuilder.buildFacadeItemQuads(textureItem, Direction.NORTH);
+            this.cache.put(hash, mesh);
         }
-    }
 
-    @Override
-    public boolean hasDepth() {
-        return false;
-    }
+        context.meshConsumer().accept(mesh);
 
-    @Override
-    public boolean isSideLit() {
-        return false;
-    }
-
-    @Override
-    public boolean isBuiltin() {
-        return false;
-    }
-
-    @Override
-    public ModelOverrideList getOverrides() {
-        return ModelOverrideList.EMPTY;
     }
 }

@@ -69,6 +69,12 @@ sourceSets {
             srcDir 'src/generated/resources'
         }
     }
+    datagen {
+        compileClasspath += sourceSets.api.output
+        runtimeClasspath += sourceSets.api.output
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
     unported {
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output
@@ -84,6 +90,7 @@ sourceSets {
 
 configurations {
     apiCompile.extendsFrom(compileClasspath)
+    datagenCompile.extendsFrom(compileClasspath)
     unportedCompile.extendsFrom(compileClasspath)
 }
 
@@ -169,4 +176,16 @@ publishing {
             url = "https://maven.pkg.github.com/AppliedEnergistics/Applied-Energistics-2"
         }
     }
+
 }
+
+import net.fabricmc.loom.task.RunClientTask;
+
+task generateData(type: RunClientTask, dependsOn: downloadAssets, group: "ae2") {
+    classpath sourceSets.datagen.runtimeClasspath
+    doFirst {
+        sourceSets.datagen.runtimeClasspath.each { println it }
+        sourceSets.main.runtimeClasspath.each { println it }
+    }
+}
+

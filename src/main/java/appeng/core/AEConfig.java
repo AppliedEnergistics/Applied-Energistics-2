@@ -72,7 +72,7 @@ public final class AEConfig {
     // Config instance
     private static AEConfig instance;
 
-    static void load(File configFolder) {
+    public static void load(File configFolder) {
         if (instance != null) {
             throw new IllegalStateException();
         }

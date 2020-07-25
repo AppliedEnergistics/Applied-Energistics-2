@@ -1,7 +1,7 @@
-package appeng.forge.data.providers.tags;
+package appeng.data.providers.tags;
 
 import appeng.core.AppEng;
-import appeng.forge.data.providers.IAE2DataProvider;
+import appeng.data.providers.IAE2DataProvider;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -10,7 +10,6 @@ import net.minecraft.block.Block;
 import net.minecraft.data.DataCache;
 import net.minecraft.data.DataProvider;
 import net.minecraft.item.ItemConvertible;
-import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 

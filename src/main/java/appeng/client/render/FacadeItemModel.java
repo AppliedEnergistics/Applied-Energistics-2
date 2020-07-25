@@ -47,7 +47,7 @@ public class FacadeItemModel implements BasicUnbakedModel {
         BakedModel bakedBaseModel = loader.bake(MODEL_BASE, rotationContainer);
         FacadeBuilder facadeBuilder = new FacadeBuilder(loader);
 
-        return new FacadeDispatcherBakedModel(bakedBaseModel, facadeBuilder);
+        return new FacadeBakedItemModel(bakedBaseModel, facadeBuilder);
     }
 
     @Override

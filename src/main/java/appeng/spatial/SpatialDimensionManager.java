@@ -51,8 +51,8 @@ public final class SpatialDimensionManager implements ISpatialDimension {
     public static final SkyProperties STORAGE_SKY = new SkyProperties(
             Float.NaN /* disables clouds */,
             false,
-            SkyProperties.SkyType.NORMAL /* we use a custom render mixin */,
-            false,
+            SkyProperties.SkyType.NONE /* we use a custom render mixin */,
+            true,
             false
             ) {
         @Override

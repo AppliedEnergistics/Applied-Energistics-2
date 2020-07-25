@@ -21,7 +21,8 @@
     "RenderEncodedPatternMixin",
     "ItemRendererAccessor",
     "SkyRenderMixin",
-    "SkyPropertiesMixin"
+    "SkyPropertiesMixin",
+    "MinecraftClientAccessor"
   ],
   "server": [],
   "injectors": {

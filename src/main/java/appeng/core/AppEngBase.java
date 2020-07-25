@@ -73,7 +73,6 @@ import appeng.fluids.container.FluidLevelEmitterContainer;
 import appeng.fluids.container.FluidStorageBusContainer;
 import appeng.fluids.container.FluidTerminalContainer;
 import appeng.fluids.registries.BasicFluidCellGuiHandler;
-import appeng.forge.data.AE2DataGenerators;
 import appeng.hooks.RegisterDimensionTypeCallback;
 import appeng.hooks.ToolItemHook;
 import appeng.items.parts.FacadeItem;
@@ -168,7 +167,7 @@ public abstract class AppEngBase implements AppEng {
         AEConfig.load(FabricLoader.getInstance().getConfigDirectory());
 
         CreativeTab.init();
-        // FIXME FABRIC new FacadeItemGroup(); // This call has a side-effect (adding it to the creative screen)
+        FacadeCreativeTab.init() ;// This call has a side-effect (adding it to the creative screen)
 
         AeStats.register();
         advancementTriggers = new AdvancementTriggers(CriteriaRegisterMixin::callRegister);
@@ -187,11 +186,6 @@ public abstract class AppEngBase implements AppEng {
         registerDimension();
 
         setupInternalRegistries();
-
-        if (System.getProperty("appeng2.generatedataendexit", "false").equals("true")) {
-            AE2DataGenerators.dump();
-            System.exit(0);
-        }
 
     }
 
@@ -643,11 +637,11 @@ public abstract class AppEngBase implements AppEng {
                             false,
                             false,
                             true,
-                            true,
+                            false,
                             false,
                             256,
                             BlockTags.INFINIBURN_OVERWORLD.getId(),
-                            0.5f
+                            1.0f
                     )
             );
         });

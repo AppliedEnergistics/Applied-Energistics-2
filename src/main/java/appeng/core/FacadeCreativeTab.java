@@ -18,53 +18,48 @@
 
 package appeng.core;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import appeng.items.parts.FacadeItem;
+import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.collection.DefaultedList;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.util.registry.Registry;
 
-import appeng.items.parts.FacadeItem;
+import java.util.ArrayList;
+import java.util.List;
 
-public final class FacadeItemGroup extends ItemGroup {
+public final class FacadeCreativeTab {
 
-    private final FacadeItem itemFacade;
+    private static List<ItemStack> subTypes = null;
 
-    private List<ItemStack> subTypes = null;
-
-    public FacadeItemGroup() {
-        super("appliedenergistics2.facades");
-
-        itemFacade = (FacadeItem) Api.INSTANCE.definitions().items().facade().item();
+    public static void init() {
+        FabricItemGroupBuilder.create(AppEng.makeId("facades"))
+                .icon(() -> {
+                    calculateSubTypes();
+                    if (subTypes.isEmpty()) {
+                        return new ItemStack(Items.CAKE);
+                    }
+                    return subTypes.get(0);
+                })
+                .appendItems(FacadeCreativeTab::fill)
+                .build();
     }
 
-    @Override
-    public ItemStack createIcon() {
-        this.calculateSubTypes();
-        if (this.subTypes.isEmpty()) {
-            return new ItemStack(Items.CAKE);
-        }
-        return this.subTypes.get(0);
-    }
-
-    @Override
-    public void fill(DefaultedList<ItemStack> items) {
-        this.calculateSubTypes();
+    private static void fill(List<ItemStack> items) {
+        calculateSubTypes();
         items.addAll(subTypes);
     }
 
-    private void calculateSubTypes() {
-        if (this.subTypes != null) {
+    private static void calculateSubTypes() {
+        if (subTypes != null) {
             return;
         }
-        this.subTypes = new ArrayList<>(1000);
+        subTypes = new ArrayList<>(1000);
 
-        for (final Block b : ForgeRegistries.BLOCKS) {
+        FacadeItem itemFacade = (FacadeItem) Api.INSTANCE.definitions().items().facade().item();
+        for (final Block b : Registry.BLOCK) {
             try {
                 final Item item = Item.fromBlock(b);
                 if (item == Items.AIR) {
@@ -78,7 +73,7 @@ public final class FacadeItemGroup extends ItemGroup {
                     for (final ItemStack l : tmpList) {
                         final ItemStack facade = itemFacade.createFacadeForItem(l, false);
                         if (!facade.isEmpty()) {
-                            this.subTypes.add(facade);
+                            subTypes.add(facade);
                         }
                     }
                 }

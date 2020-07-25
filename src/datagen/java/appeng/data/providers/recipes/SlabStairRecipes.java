@@ -1,8 +1,8 @@
-package appeng.forge.data.providers.recipes;
+package appeng.data.providers.recipes;
 
 import appeng.api.definitions.IBlockDefinition;
 import appeng.core.AppEng;
-import appeng.forge.data.providers.IAE2DataProvider;
+import appeng.data.providers.IAE2DataProvider;
 import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataCache;

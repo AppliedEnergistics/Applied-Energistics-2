@@ -1,4 +1,4 @@
-package appeng.forge.data.providers.tags;
+package appeng.data.providers.tags;
 
 import appeng.core.AppEng;
 import net.minecraft.block.Blocks;

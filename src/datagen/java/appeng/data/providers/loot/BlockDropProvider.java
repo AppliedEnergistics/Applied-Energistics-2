@@ -1,4 +1,4 @@
-package appeng.forge.data.providers.loot;
+package appeng.data.providers.loot;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -7,6 +7,7 @@ import java.util.function.Function;
 
 import javax.annotation.Nonnull;
 
+import appeng.data.providers.IAE2DataProvider;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -27,7 +28,6 @@ import net.minecraft.loot.function.SetCountLootFunction;
 import net.minecraft.util.Identifier;
 
 import appeng.core.AppEng;
-import appeng.forge.data.providers.IAE2DataProvider;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 

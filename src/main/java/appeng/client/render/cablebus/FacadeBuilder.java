@@ -20,6 +20,7 @@ package appeng.client.render.cablebus;
 
 import appeng.api.util.AEAxisAlignedBB;
 import appeng.core.Api;
+import appeng.mixins.MinecraftClientAccessor;
 import appeng.parts.misc.CableAnchorPart;
 import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadClamper;
 import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadCornerKicker;
@@ -33,10 +34,10 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
@@ -138,26 +139,9 @@ public class FacadeBuilder {
         return stems;
     }
 
-    //        private final ThreadLocal<BakedPipeline> pipelines = ThreadLocal.withInitial(() -> BakedPipeline.builder()
-//                // Clamper is responsible for clamping the vertex to the bounds specified.
-//                .addElement("clamper", QuadClamper.FACTORY)
-//                // Strips faces if they match a mask.
-//                .addElement("face_stripper", QuadFaceStripper.FACTORY)
-//                // Kicks the edge inner corners in, solves Z fighting
-//                .addElement("corner_kicker", QuadCornerKicker.FACTORY)
-//                // Re-Interpolates the UV's for the quad.
-//                .addElement("interp", QuadReInterpolator.FACTORY)
-//                // Tints the quad if we need it to. Disabled by default.
-//                .addElement("tinter", QuadTinter.FACTORY, false)
-//                // Overrides the quad's alpha if we are forcing transparent facades.
-//                .addElement("transparent", QuadAlphaOverride.FACTORY, false, e -> e.setAlphaOverride(0x4C / 255F)).build()//
-//        );
-
     public Mesh getFacadeMesh(CableBusRenderState renderState,
                               Supplier<Random> rand,
                               Function<Identifier, BakedModel> modelLookup) {
-//FIXME        BakedPipeline pipeline = this.pipelines.get();
-//FIXME          Quad collectorQuad = this.collectors.get();
         boolean transparent = Api.instance().partHelper().getCableRenderMode().transparentFacades;
         Map<Direction, FacadeRenderState> facadeStates = renderState.getFacades();
         List<Box> partBoxes = renderState.getBoundingBoxes();
@@ -225,7 +209,7 @@ public class FacadeBuilder {
                                     tmpBB.maxX -= offset;
                                     break;
                                 default:
-                                    throw new RuntimeException("Switch falloff. " + String.valueOf(face));
+                                    throw new RuntimeException("Switch falloff. " + face);
                             }
                         }
                     }
@@ -299,10 +283,10 @@ public class FacadeBuilder {
 
                         interpolator.transform(emitter);
 
-                    // Tints the quad if we need it to. Disabled by default.
-                    if (quadTinter != null) {
-                        quadTinter.transform(emitter);
-                    }
+                        // Tints the quad if we need it to. Disabled by default.
+                        if (quadTinter != null) {
+                            quadTinter.transform(emitter);
+                        }
 
 //                // Overrides the quad's alpha if we are forcing transparent facades.
 //                .addElement("transparent", QuadAlphaOverride.FACTORY, false, e -> e.setAlphaOverride(0x4C / 255F)).build()//
@@ -311,34 +295,6 @@ public class FacadeBuilder {
                     }
                 }
             }
-
-// FIXME FABRIC           List<BakedQuad> modelQuads = new ArrayList<>();
-// FIXME FABRIC           modelQuads.addAll(gatherQuads(model, blockState, rand));
-
-// FIXME FABRIC            // No quads.. Cool, next!
-// FIXME FABRIC            if (modelQuads.isEmpty()) {
-// FIXME FABRIC                continue;
-// FIXME FABRIC            }
-// FIXME FABRIC
-// FIXME FABRIC            // Grab out pipeline elements.
-// FIXME FABRIC            QuadClamper clamper = pipeline.getElement("clamper", QuadClamper.class);
-// FIXME FABRIC            QuadFaceStripper edgeStripper = pipeline.getElement("face_stripper", QuadFaceStripper.class);
-// FIXME FABRIC            QuadTinter tinter = pipeline.getElement("tinter", QuadTinter.class);
-// FIXME FABRIC            QuadCornerKicker kicker = pipeline.getElement("corner_kicker", QuadCornerKicker.class);
-// FIXME FABRIC
-// FIXME FABRIC            // Set global element states.
-// FIXME FABRIC
-// FIXME FABRIC            // Setup the kicker.
-// FIXME FABRIC            kicker.setSide(sideIndex);
-// FIXME FABRIC            kicker.setFacadeMask(facadeMask);
-// FIXME FABRIC            kicker.setBox(fullBounds);
-// FIXME FABRIC            kicker.setThickness(thinFacades ? THIN_THICKNESS : THICK_THICKNESS);
-// FIXME FABRIC
-// FIXME FABRIC            for (BakedQuad quad : modelQuads) {
-// FIXME FABRIC                // lookup the format in CachedFormat.
-// FIXME FABRIC                CachedFormat format = CachedFormat.lookup(VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL);
-
-// FIXME FABRIC            }
         }
 
         return meshBuilder.build();
@@ -350,12 +306,14 @@ public class FacadeBuilder {
      *
      * @return The model.
      */
-    public List<BakedQuad> buildFacadeItemQuads(ItemStack textureItem, Direction side) {
-        List<BakedQuad> facadeQuads = new ArrayList<>();
+    public Mesh buildFacadeItemQuads(ItemStack textureItem, Direction side) {
+
+        MeshBuilder meshBuilder = renderer.meshBuilder();
+        QuadEmitter emitter = meshBuilder.getEmitter();
 
         BakedModel model = MinecraftClient.getInstance().getItemRenderer().getHeldItemModel(textureItem, null,
                 null);
-        List<BakedQuad> modelQuads = gatherQuads(model, null, new Random());
+        List<BakedQuad> modelQuads = model.getQuads(null, null, new Random());
 
         //FIXME       BakedPipeline pipeline = this.pipelines.get();
 //FIXME          Quad collectorQuad = this.collectors.get();
@@ -364,7 +322,45 @@ public class FacadeBuilder {
         // FIXME QuadClamper clamper = pipeline.getElement("clamper", QuadClamper.class);
         // FIXME QuadTinter tinter = pipeline.getElement("tinter", QuadTinter.class);
 
+        QuadReInterpolator interpolator = new QuadReInterpolator();
+
+        ItemColors itemColors = ((MinecraftClientAccessor) MinecraftClient.getInstance()).getItemColors();
+        QuadClamper clamper = new QuadClamper(THICK_FACADE_BOXES[side.ordinal()]);
+
+        for (int cullFaceIdx = 0; cullFaceIdx <= ModelHelper.NULL_FACE_ID; cullFaceIdx++) {
+            Direction cullFace = ModelHelper.faceFromIndex(cullFaceIdx);
+            List<BakedQuad> quads = model.getQuads(null, cullFace, new Random());
+
+            for (BakedQuad quad : quads) {
+                QuadTinter quadTinter = null;
+
+                // Prebake the color tint into the quad
+                if (quad.getColorIndex() != -1) {
+                    quadTinter = new QuadTinter(itemColors.getColorMultiplier(textureItem, quad.getColorIndex()));
+                }
+
+                emitter.fromVanilla(quad.getVertexData(), 0, false);
+                emitter.cullFace(cullFace);
+                emitter.nominalFace(quad.getFace());
+                interpolator.setInputQuad(emitter);
+
+                if (!clamper.transform(emitter)) {
+                    continue;
+                }
+
+                interpolator.transform(emitter);
+
+                // Tints the quad if we need it to. Disabled by default.
+                if (quadTinter != null) {
+                    quadTinter.transform(emitter);
+                }
+
+                emitter.emit();
+            }
+        }
+
         for (BakedQuad quad : modelQuads) {
+
             // Lookup the CachedFormat for this quads format.
             // FIXME CachedFormat format = CachedFormat.lookup(VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL);
             // Reset the pipeline.
@@ -390,17 +386,7 @@ public class FacadeBuilder {
             // FIXME     facadeQuads.add(collectorQuad.bake());
             // FIXME }
         }
-        return facadeQuads;
-    }
-
-    // Helper to gather all quads from a model into a list.
-    private static List<BakedQuad> gatherQuads(BakedModel model, BlockState state, Random rand) {
-        List<BakedQuad> modelQuads = new ArrayList<>();
-        for (Direction face : Direction.values()) {
-            modelQuads.addAll(model.getQuads(state, face, rand));
-        }
-        modelQuads.addAll(model.getQuads(state, null, rand));
-        return modelQuads;
+        return meshBuilder.build();
     }
 
     /**
