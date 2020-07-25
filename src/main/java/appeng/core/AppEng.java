@@ -44,7 +44,6 @@ import net.minecraftforge.client.model.geometry.IModelGeometry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ModDimension;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.CrashReportExtender;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -79,7 +78,6 @@ import appeng.client.render.model.MemoryCardModel;
 import appeng.client.render.model.SkyCompassModel;
 import appeng.client.render.model.UVLModelLoader;
 import appeng.client.render.spatial.SpatialPylonModel;
-import appeng.core.crash.ModCrashEnhancement;
 import appeng.core.features.registries.PartModels;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.core.sync.network.NetworkHandler;
@@ -116,8 +114,6 @@ public final class AppEng {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, AEConfig.COMMON_SPEC);
 
         proxy = DistExecutor.safeRunForDist(() -> ClientHelper::new, () -> ServerHelper::new);
-
-        CrashReportExtender.registerCrashCallable(new ModCrashEnhancement());
 
         CreativeTab.init();
         new FacadeItemGroup(); // This call has a side-effect (adding it to the creative screen)
