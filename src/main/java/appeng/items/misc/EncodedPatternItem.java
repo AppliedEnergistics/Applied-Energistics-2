@@ -281,7 +281,7 @@ public class EncodedPatternItem extends AEBaseItem {
 
         Preconditions.checkArgument(tag != null, "itemStack missing a NBT tag");
 
-        return getCraftingRecipeId(itemStack) == null && tag.getBoolean(NBT_SUBSITUTE);
+        return getCraftingRecipeId(itemStack) != null && tag.getBoolean(NBT_SUBSITUTE);
     }
 
     /**
