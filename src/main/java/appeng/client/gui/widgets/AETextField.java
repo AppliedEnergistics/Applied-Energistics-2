@@ -60,7 +60,9 @@ public class AETextField extends TextFieldWidget {
 
     @Override
     public boolean mouseClicked(final double xPos, final double yPos, final int button) {
-        if (!super.mouseClicked(xPos, yPos, button)) {
+        // super will always return false, if button is != 0, however super should still
+        // be called.
+        if (!super.mouseClicked(xPos, yPos, button) && button == 0) {
             return false;
         }
 
