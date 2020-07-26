@@ -429,7 +429,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         return null;
     }
 
-    private boolean canCraft(final ICraftingPatternDetails details, final IAEItemStack[] condensedInputs) {
+    private boolean canCraft(final ICraftingPatternDetails details, final Collection<IAEItemStack> condensedInputs) {
         for (IAEItemStack g : condensedInputs) {
 
             if (details.isCraftable()) {
@@ -557,7 +557,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
             final ICraftingPatternDetails details = e.getKey();
 
-            if (this.canCraft(details, details.getCondensedInputs())) {
+            if (this.canCraft(details, details.getInputs())) {
                 CraftingInventory ic = null;
 
                 for (final ICraftingMedium m : cc.getMediums(e.getKey())) {
@@ -567,7 +567,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
                     if (!m.isBusy()) {
                         if (ic == null) {
-                            final IAEItemStack[] input = details.getInputs();
+                            final IAEItemStack[] input = details.getSparseInputs();
                             double sum = 0;
 
                             for (final IAEItemStack anInput : input) {
@@ -663,7 +663,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
                             this.somethingChanged = true;
                             this.remainingOperations--;
 
-                            for (final IAEItemStack out : details.getCondensedOutputs()) {
+                            for (final IAEItemStack out : details.getOutputs()) {
                                 this.postChange(out, this.machineSrc);
                                 this.waitingFor.add(out.copy());
                                 this.postCraftingStatusChange(out.copy());
@@ -896,7 +896,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
                 break;
             case PENDING:
                 for (final Entry<ICraftingPatternDetails, TaskProgress> t : this.tasks.entrySet()) {
-                    for (IAEItemStack ais : t.getKey().getCondensedOutputs()) {
+                    for (IAEItemStack ais : t.getKey().getOutputs()) {
                         ais = ais.copy();
                         ais.setStackSize(ais.getStackSize() * t.getValue().value);
                         list.add(ais);
@@ -915,7 +915,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
                 }
 
                 for (final Entry<ICraftingPatternDetails, TaskProgress> t : this.tasks.entrySet()) {
-                    for (IAEItemStack ais : t.getKey().getCondensedOutputs()) {
+                    for (IAEItemStack ais : t.getKey().getOutputs()) {
                         ais = ais.copy();
                         ais.setStackSize(ais.getStackSize() * t.getValue().value);
                         list.add(ais);
@@ -960,7 +960,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
                 is.setStackSize(0);
 
                 for (final Entry<ICraftingPatternDetails, TaskProgress> t : this.tasks.entrySet()) {
-                    for (final IAEItemStack ais : t.getKey().getCondensedOutputs()) {
+                    for (final IAEItemStack ais : t.getKey().getOutputs()) {
                         if (ais.equals(is)) {
                             is.setStackSize(is.getStackSize() + ais.getStackSize() * t.getValue().value);
                         }

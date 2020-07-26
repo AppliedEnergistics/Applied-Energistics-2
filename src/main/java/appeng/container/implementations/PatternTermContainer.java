@@ -18,9 +18,6 @@
 
 package appeng.container.implementations;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -264,21 +261,13 @@ public class PatternTermContainer extends MEMonitorableContainer
                 return new ItemStack[] { out };
             }
         } else {
-            final List<ItemStack> list = new ArrayList<>(3);
-            boolean hasValue = false;
+            final ItemStack[] list = new ItemStack[3];
 
-            for (final OptionalFakeSlot outputSlot : this.outputSlots) {
-                final ItemStack out = outputSlot.getStack();
-
-                if (!out.isEmpty() && out.getCount() > 0) {
-                    list.add(out);
-                    hasValue = true;
-                }
+            for (int i = 0; i < this.outputSlots.length; i++) {
+                final ItemStack out = this.outputSlots[i].getStack();
+                list[i] = out;
             }
-
-            if (hasValue) {
-                return list.toArray(new ItemStack[list.size()]);
-            }
+            return list;
         }
 
         return null;

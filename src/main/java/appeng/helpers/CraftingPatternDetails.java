@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
@@ -50,8 +51,8 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
     private final CraftingInventory testFrame = new CraftingInventory(new ContainerNull(), 3, 3);
     private final ItemStack correctOutput;
     private final ICraftingRecipe standardRecipe;
-    private final IAEItemStack[] condensedInputs;
-    private final IAEItemStack[] condensedOutputs;
+    private final List<IAEItemStack> condensedInputs;
+    private final List<IAEItemStack> condensedOutputs;
     private final IAEItemStack[] inputs;
     private final IAEItemStack[] outputs;
     private final boolean isCraftable;
@@ -109,13 +110,10 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
             this.standardRecipe = null;
             this.correctOutput = ItemStack.EMPTY;
 
-            for (int x = 0; x < products.size(); x++) {
+            for (int x = 0; x < 3; x++) {
                 final IAEItemStack ais = products.get(x);
-                final ItemStack gs = ais.createItemStack();
 
-                if (!gs.isEmpty()) {
-                    out.add(ais.copy());
-                }
+                out.add(ais != null ? ais.copy() : null);
             }
         }
 
@@ -124,55 +122,28 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
 
         final Map<IAEItemStack, IAEItemStack> tmpOutputs = new HashMap<>();
 
-        for (final IAEItemStack io : this.outputs) {
-            if (io == null) {
-                continue;
-            }
-
-            final IAEItemStack g = tmpOutputs.get(io);
-
-            if (g == null) {
-                tmpOutputs.put(io, io.copy());
-            } else {
-                g.add(io);
-            }
-        }
+        out.stream().filter(p -> p != null).forEach(io -> {
+            tmpOutputs.merge(io, io.copy(), (a, b) -> {
+                final long stacksize = a.getStackSize() + b.getStackSize();
+                return a.setStackSize(stacksize);
+            });
+        });
 
         final Map<IAEItemStack, IAEItemStack> tmpInputs = new HashMap<>();
 
-        for (final IAEItemStack io : this.inputs) {
-            if (io == null) {
-                continue;
-            }
-
-            final IAEItemStack g = tmpInputs.get(io);
-
-            if (g == null) {
-                tmpInputs.put(io, io.copy());
-            } else {
-                g.add(io);
-            }
-        }
+        in.stream().filter(p -> p != null).forEach(io -> {
+            tmpInputs.merge(io, io.copy(), (a, b) -> {
+                final long stacksize = a.getStackSize() + b.getStackSize();
+                return a.setStackSize(stacksize);
+            });
+        });
 
         if (tmpOutputs.isEmpty() || tmpInputs.isEmpty()) {
             throw new IllegalStateException("No pattern here!");
         }
 
-        this.condensedInputs = new IAEItemStack[tmpInputs.size()];
-        int offset = 0;
-
-        for (final IAEItemStack io : tmpInputs.values()) {
-            this.condensedInputs[offset] = io;
-            offset++;
-        }
-
-        offset = 0;
-        this.condensedOutputs = new IAEItemStack[tmpOutputs.size()];
-
-        for (final IAEItemStack io : tmpOutputs.values()) {
-            this.condensedOutputs[offset] = io;
-            offset++;
-        }
+        this.condensedInputs = ImmutableList.copyOf(tmpInputs.values());
+        this.condensedOutputs = ImmutableList.copyOf(tmpOutputs.values());
     }
 
     private void markItemAs(final int slotIndex, final ItemStack i, final TestStatus b) {
@@ -240,22 +211,22 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
     }
 
     @Override
-    public IAEItemStack[] getInputs() {
+    public IAEItemStack[] getSparseInputs() {
         return this.inputs;
     }
 
     @Override
-    public IAEItemStack[] getCondensedInputs() {
+    public List<IAEItemStack> getInputs() {
         return this.condensedInputs;
     }
 
     @Override
-    public IAEItemStack[] getCondensedOutputs() {
+    public List<IAEItemStack> getOutputs() {
         return this.condensedOutputs;
     }
 
     @Override
-    public IAEItemStack[] getOutputs() {
+    public IAEItemStack[] getSparseOutputs() {
         return this.outputs;
     }
 

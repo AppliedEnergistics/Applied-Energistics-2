@@ -19,6 +19,7 @@
 package appeng.items.misc;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -155,8 +156,8 @@ public class EncodedPatternItem extends AEBaseItem {
         final boolean isCrafting = details.isCraftable();
         final boolean substitute = details.canSubstitute();
 
-        final IAEItemStack[] in = details.getCondensedInputs();
-        final IAEItemStack[] out = details.getCondensedOutputs();
+        final Collection<IAEItemStack> in = details.getInputs();
+        final Collection<IAEItemStack> out = details.getOutputs();
 
         final ITextComponent label = (isCrafting ? GuiText.Crafts.textComponent() : GuiText.Creates.textComponent())
                 .appendText(": ");
@@ -208,7 +209,7 @@ public class EncodedPatternItem extends AEBaseItem {
 
         final ICraftingPatternDetails details = Api.instance().crafting().decodePattern(item, w);
 
-        out = details != null ? details.getOutputs()[0].createItemStack() : ItemStack.EMPTY;
+        out = details != null ? details.getOutputs().get(0).createItemStack() : ItemStack.EMPTY;
 
         SIMPLE_CACHE.put(item, out);
         return out;
