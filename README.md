@@ -103,7 +103,7 @@ However the dependency might need to be wrapped in `fg.deobf()` like `runtimeOnl
 1. Clone this repository via 
   - SSH `git clone git@github.com:AppliedEnergistics/Applied-Energistics-2.git` or 
   - HTTPS `git clone https://github.com/AppliedEnergistics/Applied-Energistics-2.git`
-2. Build using the gradle `build` task. Jar will be in `build/libs`
+2. Build using the `gradlew runData build` command. Jar will be in `build/libs`
 3. For core developer: Setup IDE
   - IntelliJ: Import as gradle project
   - Eclipse: Import as gradle project or execute gradle task `eclipse` and potentially `genEclipseRuns`
