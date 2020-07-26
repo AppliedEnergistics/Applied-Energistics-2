@@ -46,6 +46,8 @@ public class ChunkLoaderTileEntity extends AEBaseTileEntity implements ITickable
 
     @Override
     public void remove() {
+        super.remove();
+
         World world = getWorld();
         if (world instanceof ServerWorld) {
             ChunkPos chunkPos = new ChunkPos(getPos());
