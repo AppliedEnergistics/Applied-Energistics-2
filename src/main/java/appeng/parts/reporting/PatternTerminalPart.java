@@ -122,6 +122,10 @@ public class PatternTerminalPart extends AbstractTerminalPart {
                     final IAEItemStack item = details.getOutputs()[x];
                     this.output.setStackInSlot(x, item == null ? ItemStack.EMPTY : item.createItemStack());
                 }
+                // Clear the remaining slots
+                for (int x = details.getOutputs().length; x < this.output.getSlots(); x++) {
+                    this.output.setStackInSlot(x, ItemStack.EMPTY);
+                }
             }
         } else if (inv == this.crafting) {
             this.fixCraftingRecipes();
