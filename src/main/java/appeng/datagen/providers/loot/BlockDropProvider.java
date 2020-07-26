@@ -1,4 +1,4 @@
-package appeng.forge.data.providers.loot;
+package appeng.datagen.providers.loot;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -33,7 +33,7 @@ import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.core.AppEng;
-import appeng.forge.data.providers.IAE2DataProvider;
+import appeng.datagen.providers.IAE2DataProvider;
 
 public class BlockDropProvider extends BlockLootTables implements IAE2DataProvider {
     private Map<Block, Function<Block, LootTable.Builder>> overrides = ImmutableMap.<Block, Function<Block, LootTable.Builder>>builder()
