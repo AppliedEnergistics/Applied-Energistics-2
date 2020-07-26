@@ -58,22 +58,6 @@ public class AETextField extends TextFieldWidget {
         this._fontPad = (int) fontRenderer.getCharWidth('_');
     }
 
-    @Override
-    public boolean mouseClicked(final double xPos, final double yPos, final int button) {
-        // super will always return false, if button is != 0, however super should still
-        // be called.
-        if (!super.mouseClicked(xPos, yPos, button) && button == 0) {
-            return false;
-        }
-
-        final boolean requiresFocus = this.isMouseOver(xPos, yPos);
-        if (!this.isFocused()) {
-            this.setFocused2(requiresFocus);
-        }
-
-        return true;
-    }
-
     public void selectAll() {
         this.setCursorPosition(0);
         this.setSelectionPos(this.getMaxStringLength());
