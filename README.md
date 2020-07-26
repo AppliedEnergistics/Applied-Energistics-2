@@ -132,12 +132,13 @@ Here are a few things to keep in mind that will help get your PR approved.
   * SSH `git clone git@github.com:<your username>/Applied-Energistics-2.git` or 
   * HTTPS `git clone https://github.com/<your username>/Applied-Energistics-2.git`
 3. Change code base
-4. Add changes to git `git add -A`
-5. Commit changes to your clone `git commit -m "<summary of made changes>"`
-6. Push to your fork `git push`
-7. Create a Pull-Request on GitHub
-8. Wait for review
-9. Squash commits for cleaner history
+4. Run `gradlew spotlessApply` to apply automatic code formatting
+5. Add changes to git `git add -A`
+6. Commit changes to your clone `git commit -m "<summary of made changes>"`
+7. Push to your fork `git push`
+8. Create a Pull-Request on GitHub
+9. Wait for review
+10. Squash commits for cleaner history
 
 If you are only doing single file pull requests, GitHub supports using a quick way without the need of cloning your fork. Also read up about [synching](https://help.github.com/articles/syncing-a-fork) if you plan to contribute on regular basis.
 
