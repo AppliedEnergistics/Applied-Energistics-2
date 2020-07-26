@@ -300,8 +300,8 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
                 this.repo.setSearchString("");
                 this.repo.updateView();
                 this.setScrollBar();
+                return true;
             }
-            return true;
         }
 
         return super.mouseClicked(xCoord, yCoord, btn);
