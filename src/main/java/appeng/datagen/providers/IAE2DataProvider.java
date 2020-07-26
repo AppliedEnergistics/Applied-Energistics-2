@@ -1,4 +1,4 @@
-package appeng.forge.data.providers;
+package appeng.datagen.providers;
 
 import net.minecraft.data.IDataProvider;
 

@@ -1,4 +1,4 @@
-package appeng.forge.data.providers.recipes;
+package appeng.datagen.providers.recipes;
 
 import java.util.function.Consumer;
 
@@ -15,7 +15,7 @@ import net.minecraft.util.ResourceLocation;
 
 import appeng.api.definitions.IBlockDefinition;
 import appeng.core.AppEng;
-import appeng.forge.data.providers.IAE2DataProvider;
+import appeng.datagen.providers.IAE2DataProvider;
 
 public class SlabStairRecipes extends RecipeProvider implements IAE2DataProvider {
 
