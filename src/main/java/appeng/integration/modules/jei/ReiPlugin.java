@@ -30,16 +30,14 @@ import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.integration.abstraction.ReiFacade;
+import appeng.items.parts.FacadeItem;
 import appeng.recipes.handlers.GrinderRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
-import com.google.common.collect.ImmutableList;
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.RecipeHelper;
 import me.shedaniel.rei.api.plugins.REIPluginV0;
 import me.shedaniel.rei.plugin.information.DefaultInformationDisplay;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.RecipeManager;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
@@ -66,6 +64,7 @@ public class ReiPlugin implements REIPluginV0 {
         recipeHelper.registerCategory(new GrinderRecipeCategory());
         recipeHelper.registerCategory(new CondenserCategory());
         recipeHelper.registerCategory(new InscriberRecipeCategory());
+        recipeHelper.registerCategory(new FacadeRecipeCategory());
     }
 
     @Override
@@ -88,6 +87,12 @@ public class ReiPlugin implements REIPluginV0 {
         recipeHelper.removeAutoCraftButton(CondenserCategory.UID);
 
         registerWorkingStations(recipeHelper);
+
+        IDefinitions definitions = Api.instance().definitions();
+        recipeHelper.registerLiveRecipeGenerator(new FacadeRegistryGenerator(
+                (FacadeItem) definitions.items().facade().item(),
+                definitions.parts().cableAnchor().stack(1)
+        ));
     }
 
     @Override

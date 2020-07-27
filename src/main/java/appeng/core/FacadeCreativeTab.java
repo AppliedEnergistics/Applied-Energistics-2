@@ -19,9 +19,11 @@
 package appeng.core;
 
 import appeng.items.parts.FacadeItem;
+import com.google.common.base.Preconditions;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.collection.DefaultedList;
@@ -34,8 +36,11 @@ public final class FacadeCreativeTab {
 
     private static List<ItemStack> subTypes = null;
 
+    private static ItemGroup group;
+
     public static void init() {
-        FabricItemGroupBuilder.create(AppEng.makeId("facades"))
+        Preconditions.checkState(group == null);
+        group = FabricItemGroupBuilder.create(AppEng.makeId("facades"))
                 .icon(() -> {
                     calculateSubTypes();
                     if (subTypes.isEmpty()) {
@@ -45,6 +50,13 @@ public final class FacadeCreativeTab {
                 })
                 .appendItems(FacadeCreativeTab::fill)
                 .build();
+    }
+
+    public static ItemGroup getGroup() {
+        if (group == null) {
+            init();
+        }
+        return group;
     }
 
     private static void fill(List<ItemStack> items) {
