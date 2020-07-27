@@ -64,37 +64,36 @@ public interface ICraftingPatternDetails {
     /**
      * Equal itemstacks will be aggregated into one, respectively 3*64 will be
      * returned as one stack of 192, up to 576 of a single type.
-     * 
+     * <p>
      * This should be the preferred way to deal with the list of inputs.
-     * 
-     * There is no guarantee about maintaining the placement order of the input or
-     * output slots.
+     * <p>
+     * There is no guarantee about maintaining the placement order of the inputs.
      * 
      * @return an immutable list of inputs without nulls
      */
     List<IAEItemStack> getInputs();
 
     /**
-     * * Equal itemstacks will be aggregated into one, respectively 2*32 will be
+     * Equal itemstacks will be aggregated into one, respectively 2*32 will be
      * returned as one stack of 64, up to 192 of a single type.
-     * 
+     * <p>
      * This should be the preferred way to deal with the list of outputs.
-     * 
-     * There is no guarantee about maintaining the placement order of the input or
-     * output slots.
+     * <p>
+     * There is no guarantee about maintaining the placement order of the output slots.
      * 
      * @return an immutable list of outputs without nulls
      */
     List<IAEItemStack> getOutputs();
 
     /**
-     * A sparse list representing the placement order of a crafting grid.
-     * 
+     * A sparse list representing the placement order of a crafting grid,
+     * left to right, then top to bottom.
+     * <p>
      * Only use when absolutely necessary, always prefer
      * {@link ICraftingPatternDetails#getInputs()}
-     * 
+     * <p>
      * This will contain exactly 9 entries.
-     * 
+     * <p>
      * This can return a copy from the internal structure, so there are no
      * guarantees about modifications.
      * 
@@ -105,12 +104,12 @@ public interface ICraftingPatternDetails {
     /**
      * A sparse list representing the placement order of the respective output
      * slots.
-     * 
+     * <p>
      * Only use when absolutely necessary, always prefer
      * {@link ICraftingPatternDetails#getOutputs()}
-     * 
+     * <p>
      * This will either contain 1 entry for crafting patterns or 3 for processing.
-     * 
+     * <p>
      * This can return a copy from the internal structure, so there are no
      * guarantees about modifications.
      * 
