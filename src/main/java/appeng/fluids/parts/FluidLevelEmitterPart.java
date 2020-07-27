@@ -11,7 +11,7 @@ import net.minecraft.particle.DustParticleEffect;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import appeng.api.config.RedstoneMode;
@@ -281,7 +281,7 @@ public class FluidLevelEmitterPart extends UpgradeablePart
     }
 
     @Override
-    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
+    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
         if (Platform.isServer()) {
             ContainerOpener.openContainer(FluidLevelEmitterContainer.TYPE, player, ContainerLocator.forPart(this));
         }

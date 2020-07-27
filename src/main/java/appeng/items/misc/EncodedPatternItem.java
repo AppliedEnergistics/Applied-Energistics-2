@@ -219,7 +219,7 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
         final CompoundTag tag = itemStack.getTag();
         Preconditions.checkArgument(tag != null, "itemStack missing a NBT tag");
 
-        return tag.contains(NBT_RECIPE_ID, Constants.NBT.TAG_STRING)
+        return tag.contains(NBT_RECIPE_ID, NbtType.STRING)
                 ? new Identifier(tag.getString(NBT_RECIPE_ID))
                 : null;
     }

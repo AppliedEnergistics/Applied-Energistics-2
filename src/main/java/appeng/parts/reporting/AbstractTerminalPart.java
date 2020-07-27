@@ -26,7 +26,6 @@ import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.vector.Vector3d;
 
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
@@ -47,6 +46,7 @@ import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
+import net.minecraft.util.math.Vec3d;
 
 /**
  * Anything resembling an network terminal with view cells can reuse this.
@@ -104,7 +104,7 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     }
 
     @Override
-    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
+    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
         if (!super.onPartActivate(player, hand, pos)) {
             if (!player.world.isClient) {
                 ContainerOpener.openContainer(getContainerType(player), player, ContainerLocator.forPart(this));
