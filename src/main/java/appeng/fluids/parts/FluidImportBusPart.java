@@ -18,6 +18,15 @@
 
 package appeng.fluids.parts;
 
+import java.math.RoundingMode;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.annotation.Nonnull;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Identifier;
+
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.fluid.FluidAttributes;
 import alexiil.mc.lib.attributes.fluid.FluidExtractable;
@@ -26,6 +35,7 @@ import alexiil.mc.lib.attributes.fluid.filter.ConstantFluidFilter;
 import alexiil.mc.lib.attributes.fluid.filter.FluidFilter;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
+
 import appeng.api.config.*;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionSource;
@@ -42,13 +52,6 @@ import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.PartModel;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
-
-import javax.annotation.Nonnull;
-import java.math.RoundingMode;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author BrockWS
@@ -114,14 +117,14 @@ public class FluidImportBusPart extends SharedFluidBusPart {
                 final AEFluidStack aeFluidStack = AEFluidStack.fromFluidVolume(extractableVolume, RoundingMode.DOWN);
 
                 if (aeFluidStack != null) {
-                    final IAEFluidStack notInserted = inv.injectItems(aeFluidStack, Actionable.MODULATE,
-                            this.source);
+                    final IAEFluidStack notInserted = inv.injectItems(aeFluidStack, Actionable.MODULATE, this.source);
 
                     if (notInserted != null && notInserted.getStackSize() > 0) {
                         aeFluidStack.decStackSize(notInserted.getStackSize());
                     }
 
-                    // Now we need to actually drain the fluid, and use the actual amount we just inserted
+                    // Now we need to actually drain the fluid, and use the actual amount we just
+                    // inserted
                     extractable.extract(filter, aeFluidStack.getAmount()); // FIXME: If there's a mismatch here, log?
 
                     return TickRateModulation.FASTER;
@@ -141,7 +144,8 @@ public class FluidImportBusPart extends SharedFluidBusPart {
         return this.getProxy().isActive();
     }
 
-    // Returns a filter for fluid extraction based on the configured filter for this bus
+    // Returns a filter for fluid extraction based on the configured filter for this
+    // bus
     private FluidFilter getFilter() {
         Set<FluidKey> allowedFluids = null;
 

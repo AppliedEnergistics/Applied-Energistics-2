@@ -6,11 +6,12 @@ import net.minecraft.util.registry.RegistryTracker;
 
 public interface RegisterDimensionTypeCallback {
 
-    Event<RegisterDimensionTypeCallback> EVENT = EventFactory.createArrayBacked(RegisterDimensionTypeCallback.class, (listeners) -> (registryTracker) -> {
-        for (RegisterDimensionTypeCallback listener : listeners) {
-            listener.addDimensionTypes(registryTracker);
-        }
-    });
+    Event<RegisterDimensionTypeCallback> EVENT = EventFactory.createArrayBacked(RegisterDimensionTypeCallback.class,
+            (listeners) -> (registryTracker) -> {
+                for (RegisterDimensionTypeCallback listener : listeners) {
+                    listener.addDimensionTypes(registryTracker);
+                }
+            });
 
     void addDimensionTypes(RegistryTracker.Modifiable registryTracker);
 

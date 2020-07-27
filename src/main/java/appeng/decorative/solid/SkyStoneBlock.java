@@ -18,8 +18,6 @@
 
 package appeng.decorative.solid;
 
-import appeng.block.AEBaseBlock;
-import appeng.core.worlddata.WorldData;
 import net.minecraft.block.BlockState;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -27,6 +25,9 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
+
+import appeng.block.AEBaseBlock;
+import appeng.core.worlddata.WorldData;
 
 public class SkyStoneBlock extends AEBaseBlock {
     private static final float BREAK_SPEAK_SCALAR = 0.1f;
@@ -56,8 +57,8 @@ public class SkyStoneBlock extends AEBaseBlock {
 //    }
 
     @Override
-    public BlockState getStateForNeighborUpdate(BlockState stateIn, Direction facing, BlockState facingState, WorldAccess worldIn,
-            BlockPos currentPos, BlockPos facingPos) {
+    public BlockState getStateForNeighborUpdate(BlockState stateIn, Direction facing, BlockState facingState,
+            WorldAccess worldIn, BlockPos currentPos, BlockPos facingPos) {
         if (worldIn instanceof ServerWorld) {
             ServerWorld serverWorld = (ServerWorld) worldIn;
             WorldData.instance().compassData().service().notifyBlockChange(serverWorld, currentPos);
@@ -65,8 +66,6 @@ public class SkyStoneBlock extends AEBaseBlock {
 
         return super.getStateForNeighborUpdate(stateIn, facing, facingState, worldIn, currentPos, facingPos);
     }
-
-
 
     @Override
     public void onStateReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {

@@ -19,6 +19,7 @@
 package appeng.container.slot;
 
 import net.minecraft.item.ItemStack;
+
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 public class OutputSlot extends AppEngSlot {

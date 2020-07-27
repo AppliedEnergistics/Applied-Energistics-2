@@ -20,10 +20,10 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.screen.ScreenHandlerType;
 
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.container.AEBaseContainer;
@@ -80,8 +80,7 @@ public class NetworkToolContainer extends AEBaseContainer {
         if (currentItem != this.toolInv.getItemStack()) {
             if (!currentItem.isEmpty()) {
                 if (ItemStack.areItemsEqual(this.toolInv.getItemStack(), currentItem)) {
-                    this.getPlayerInv().setStack(this.getPlayerInv().selectedSlot,
-                            this.toolInv.getItemStack());
+                    this.getPlayerInv().setStack(this.getPlayerInv().selectedSlot, this.toolInv.getItemStack());
                 } else {
                     this.setValidContainer(false);
                 }

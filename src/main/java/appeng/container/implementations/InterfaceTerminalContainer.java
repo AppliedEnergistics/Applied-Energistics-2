@@ -25,12 +25,13 @@ import java.util.Map.Entry;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.SecurityPermissions;
@@ -195,8 +196,8 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
 
             final InventoryAdaptor playerHand = new AdaptorFixedInv(new WrapperCursorItemHandler(player.inventory));
 
-            final FixedItemInv theSlot = new WrapperFilteredItemHandler(
-                    inv.server.getSubInv(slot, slot + 1), new PatternSlotFilter());
+            final FixedItemInv theSlot = new WrapperFilteredItemHandler(inv.server.getSubInv(slot, slot + 1),
+                    new PatternSlotFilter());
             final InventoryAdaptor interfaceSlot = new AdaptorFixedInv(theSlot);
 
             switch (action) {
@@ -259,8 +260,7 @@ public final class InterfaceTerminalContainer extends AEBaseContainer {
 
                     final InventoryAdaptor playerInvAd = InventoryAdaptor.getAdaptor(player);
                     for (int x = 0; x < inv.server.getSlotCount(); x++) {
-                        ItemHandlerUtil.setStackInSlot(inv.server, x,
-                                playerInvAd.addItems(inv.server.getInvStack(x)));
+                        ItemHandlerUtil.setStackInSlot(inv.server, x, playerInvAd.addItems(inv.server.getInvStack(x)));
                     }
 
                     break;

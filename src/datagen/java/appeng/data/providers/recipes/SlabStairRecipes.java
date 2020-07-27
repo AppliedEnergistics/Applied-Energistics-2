@@ -1,9 +1,14 @@
 package appeng.data.providers.recipes;
 
-import appeng.api.definitions.IBlockDefinition;
-import appeng.core.AppEng;
-import appeng.data.providers.IAE2DataProvider;
+import static net.minecraft.data.server.RecipesProvider.conditionsFromItem;
+import static net.minecraft.data.server.RecipesProvider.saveRecipe;
+import static net.minecraft.data.server.RecipesProvider.saveRecipeAdvancement;
+
+import java.nio.file.Path;
+import java.util.function.Consumer;
+
 import com.google.gson.JsonObject;
+
 import net.minecraft.block.Block;
 import net.minecraft.data.DataCache;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
@@ -12,23 +17,20 @@ import net.minecraft.data.server.recipe.SingleItemRecipeJsonFactory;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
 
-import java.nio.file.Path;
-import java.util.function.Consumer;
-
-import static net.minecraft.data.server.RecipesProvider.conditionsFromItem;
-import static net.minecraft.data.server.RecipesProvider.saveRecipe;
-import static net.minecraft.data.server.RecipesProvider.saveRecipeAdvancement;
+import appeng.api.definitions.IBlockDefinition;
+import appeng.core.AppEng;
+import appeng.data.providers.IAE2DataProvider;
 
 public class SlabStairRecipes implements IAE2DataProvider {
 
-    IBlockDefinition[][] blocks = {{BLOCKS.skyStoneBlock(), BLOCKS.skyStoneSlab(), BLOCKS.skyStoneStairs()},
-            {BLOCKS.smoothSkyStoneBlock(), BLOCKS.smoothSkyStoneSlab(), BLOCKS.smoothSkyStoneStairs()},
-            {BLOCKS.skyStoneBrick(), BLOCKS.skyStoneBrickSlab(), BLOCKS.skyStoneBrickStairs()},
-            {BLOCKS.skyStoneSmallBrick(), BLOCKS.skyStoneSmallBrickSlab(), BLOCKS.skyStoneSmallBrickStairs()},
-            {BLOCKS.fluixBlock(), BLOCKS.fluixSlab(), BLOCKS.fluixStairs()},
-            {BLOCKS.quartzBlock(), BLOCKS.quartzSlab(), BLOCKS.quartzStairs()},
-            {BLOCKS.chiseledQuartzBlock(), BLOCKS.chiseledQuartzSlab(), BLOCKS.chiseledQuartzStairs()},
-            {BLOCKS.quartzPillar(), BLOCKS.quartzPillarSlab(), BLOCKS.quartzPillarStairs()},};
+    IBlockDefinition[][] blocks = { { BLOCKS.skyStoneBlock(), BLOCKS.skyStoneSlab(), BLOCKS.skyStoneStairs() },
+            { BLOCKS.smoothSkyStoneBlock(), BLOCKS.smoothSkyStoneSlab(), BLOCKS.smoothSkyStoneStairs() },
+            { BLOCKS.skyStoneBrick(), BLOCKS.skyStoneBrickSlab(), BLOCKS.skyStoneBrickStairs() },
+            { BLOCKS.skyStoneSmallBrick(), BLOCKS.skyStoneSmallBrickSlab(), BLOCKS.skyStoneSmallBrickStairs() },
+            { BLOCKS.fluixBlock(), BLOCKS.fluixSlab(), BLOCKS.fluixStairs() },
+            { BLOCKS.quartzBlock(), BLOCKS.quartzSlab(), BLOCKS.quartzStairs() },
+            { BLOCKS.chiseledQuartzBlock(), BLOCKS.chiseledQuartzSlab(), BLOCKS.chiseledQuartzStairs() },
+            { BLOCKS.quartzPillar(), BLOCKS.quartzPillarSlab(), BLOCKS.quartzPillarStairs() }, };
 
     private final Path outputPath;
 
@@ -77,10 +79,14 @@ public class SlabStairRecipes implements IAE2DataProvider {
     }
 
     private void provideRecipe(RecipeJsonProvider recipeJsonProvider) {
-        saveRecipe(cache, recipeJsonProvider.toJson(), outputPath.resolve("data/" + recipeJsonProvider.getRecipeId().getNamespace() + "/recipes/" + recipeJsonProvider.getRecipeId().getPath() + ".json"));
+        saveRecipe(cache, recipeJsonProvider.toJson(),
+                outputPath.resolve("data/" + recipeJsonProvider.getRecipeId().getNamespace() + "/recipes/"
+                        + recipeJsonProvider.getRecipeId().getPath() + ".json"));
         JsonObject jsonObject = recipeJsonProvider.toAdvancementJson();
         if (jsonObject != null) {
-            saveRecipeAdvancement(cache, jsonObject, outputPath.resolve("data/" + recipeJsonProvider.getRecipeId().getNamespace() + "/advancements/" + recipeJsonProvider.getAdvancementId().getPath() + ".json"));
+            saveRecipeAdvancement(cache, jsonObject,
+                    outputPath.resolve("data/" + recipeJsonProvider.getRecipeId().getNamespace() + "/advancements/"
+                            + recipeJsonProvider.getAdvancementId().getPath() + ".json"));
         }
     }
 

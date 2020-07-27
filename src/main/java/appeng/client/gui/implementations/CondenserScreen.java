@@ -22,7 +22,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 
-
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
 import appeng.client.gui.AEBaseScreen;
@@ -49,8 +48,8 @@ public class CondenserScreen extends AEBaseScreen<CondenserContainer> {
         this.mode = new ServerSettingToggleButton<>(128 + this.x, 52 + this.y, Settings.CONDENSER_OUTPUT,
                 this.handler.getOutput());
 
-        this.addButton(new ProgressBar(this.handler, "guis/condenser.png", 120 + this.x, 25 + this.y, 178,
-                25, 6, 18, Direction.VERTICAL, GuiText.StoredEnergy.text()));
+        this.addButton(new ProgressBar(this.handler, "guis/condenser.png", 120 + this.x, 25 + this.y, 178, 25, 6, 18,
+                Direction.VERTICAL, GuiText.StoredEnergy.text()));
         this.addButton(this.mode);
     }
 
@@ -64,7 +63,8 @@ public class CondenserScreen extends AEBaseScreen<CondenserContainer> {
     }
 
     @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
+            float partialTicks) {
         this.bindTexture("guis/condenser.png");
 
         drawTexture(matrices, offsetX, offsetY, 0, 0, this.backgroundWidth, this.backgroundHeight);

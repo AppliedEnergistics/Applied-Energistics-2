@@ -1,7 +1,12 @@
 package appeng.client.render.model;
 
-import appeng.client.render.BasicUnbakedModel;
-import appeng.core.AppEng;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.render.model.ModelLoader;
@@ -10,11 +15,8 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.Identifier;
 
-import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.function.Function;
-import java.util.stream.Stream;
+import appeng.client.render.BasicUnbakedModel;
+import appeng.core.AppEng;
 
 /**
  * A color applicator uses the base model, and extends it with additional layers
@@ -22,8 +24,7 @@ import java.util.stream.Stream;
  */
 public class ColorApplicatorModel implements BasicUnbakedModel {
 
-    private static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID,
-            "item/color_applicator_colored");
+    private static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID, "item/color_applicator_colored");
 
     private static final SpriteIdentifier TEXTURE_DARK = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier(AppEng.MOD_ID, "item/color_applicator_tip_dark"));
@@ -44,7 +45,8 @@ public class ColorApplicatorModel implements BasicUnbakedModel {
 
     @Nullable
     @Override
-    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
+    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter,
+            ModelBakeSettings rotationContainer, Identifier modelId) {
         BakedModel baseModel = loader.bake(MODEL_BASE, rotationContainer);
 
         Sprite texDark = textureGetter.apply(TEXTURE_DARK);

@@ -18,7 +18,6 @@
 
 package appeng.block.spatial;
 
-import appeng.block.AEBaseBlock;
 import net.minecraft.block.*;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.item.ItemGroup;
@@ -32,13 +31,16 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 import net.minecraft.world.explosion.Explosion;
 
+import appeng.block.AEBaseBlock;
+
 /**
  * This block is used to fill empty space in spatial dimensions and delinates
  * the border of a spatial dimensions's usable space.
  */
 public class MatrixFrameBlock extends AEBaseBlock {
 
-    private static final Material MATERIAL = new Material(MaterialColor.CLEAR, false, true, true, false, false, false, PistonBehavior.PUSH_ONLY);
+    private static final Material MATERIAL = new Material(MaterialColor.CLEAR, false, true, true, false, false, false,
+            PistonBehavior.PUSH_ONLY);
 
     public MatrixFrameBlock() {
         super(Settings.of(MATERIAL).strength(-1.0F, 6000000.0F).nonOpaque().dropsNothing());
@@ -55,8 +57,7 @@ public class MatrixFrameBlock extends AEBaseBlock {
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockView worldIn, BlockPos pos,
-            ShapeContext context) {
+    public VoxelShape getCollisionShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
         return VoxelShapes.fullCube();
     }
 

@@ -23,8 +23,8 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.util.Objects;
 
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.screen.ScreenHandlerListener;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
 import appeng.container.AEBaseContainer;

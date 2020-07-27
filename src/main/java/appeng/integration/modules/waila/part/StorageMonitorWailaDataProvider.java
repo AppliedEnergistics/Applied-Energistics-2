@@ -18,17 +18,19 @@
 
 package appeng.integration.modules.waila.part;
 
+import java.util.List;
+
+import net.minecraft.text.Text;
+
+import mcp.mobius.waila.api.IDataAccessor;
+import mcp.mobius.waila.api.IPluginConfig;
+
 import appeng.api.implementations.parts.IStorageMonitorPart;
 import appeng.api.parts.IPart;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.core.localization.WailaText;
-import mcp.mobius.waila.api.IDataAccessor;
-import mcp.mobius.waila.api.IPluginConfig;
-import net.minecraft.text.Text;
-
-import java.util.List;
 
 /**
  * Storage monitor provider for WAILA
@@ -49,7 +51,7 @@ public final class StorageMonitorWailaDataProvider extends BasePartWailaDataProv
      */
     @Override
     public void appendBody(final IPart part, final List<Text> tooltip, final IDataAccessor accessor,
-                           final IPluginConfig config) {
+            final IPluginConfig config) {
         if (part instanceof IStorageMonitorPart) {
             final IStorageMonitorPart monitor = (IStorageMonitorPart) part;
 
@@ -59,12 +61,11 @@ public final class StorageMonitorWailaDataProvider extends BasePartWailaDataProv
             // TODO: generalize
             if (displayed instanceof IAEItemStack) {
                 final IAEItemStack ais = (IAEItemStack) displayed;
-                tooltip.add(WailaText.Showing.text().copy().append(": ")
-                        .append(ais.asItemStackRepresentation().getName()));
+                tooltip.add(
+                        WailaText.Showing.text().copy().append(": ").append(ais.asItemStackRepresentation().getName()));
             } else if (displayed instanceof IAEFluidStack) {
                 final IAEFluidStack ais = (IAEFluidStack) displayed;
-                tooltip.add(WailaText.Showing.text().copy().append(": ")
-                        .append(ais.getFluidStack().getName()));
+                tooltip.add(WailaText.Showing.text().copy().append(": ").append(ais.getFluidStack().getName()));
             }
 
             tooltip.add((isLocked) ? WailaText.Locked.text() : WailaText.Unlocked.text());

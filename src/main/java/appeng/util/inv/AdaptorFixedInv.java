@@ -18,17 +18,20 @@
 
 package appeng.util.inv;
 
+import java.util.Iterator;
+
+import org.jetbrains.annotations.NotNull;
+
+import net.minecraft.item.ItemStack;
+
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.ItemTransferable;
 import alexiil.mc.lib.attributes.item.filter.ItemFilter;
+
 import appeng.api.config.FuzzyMode;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
-import net.minecraft.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Iterator;
 
 public class AdaptorFixedInv extends InventoryAdaptor {
     protected final FixedItemInv itemHandler;
@@ -63,7 +66,8 @@ public class AdaptorFixedInv extends InventoryAdaptor {
         ItemFilter itemFilter = destination != null ? destination::canInsert : stack -> true;
         if (!filter.isEmpty()) {
             if (destination != null) {
-                itemFilter = stack -> Platform.itemComparisons().isSameItem(stack, filter) && destination.canInsert(stack);    
+                itemFilter = stack -> Platform.itemComparisons().isSameItem(stack, filter)
+                        && destination.canInsert(stack);
             } else {
                 itemFilter = stack -> Platform.itemComparisons().isSameItem(stack, filter);
             }
@@ -76,7 +80,8 @@ public class AdaptorFixedInv extends InventoryAdaptor {
         ItemFilter itemFilter = destination != null ? destination::canInsert : stack -> true;
         if (!filter.isEmpty()) {
             if (destination != null) {
-                itemFilter = stack -> Platform.itemComparisons().isFuzzyEqualItem(stack, filter, fuzzyMode) && destination.canInsert(stack);
+                itemFilter = stack -> Platform.itemComparisons().isFuzzyEqualItem(stack, filter, fuzzyMode)
+                        && destination.canInsert(stack);
             } else {
                 itemFilter = stack -> Platform.itemComparisons().isFuzzyEqualItem(stack, filter, fuzzyMode);
             }
@@ -119,7 +124,7 @@ public class AdaptorFixedInv extends InventoryAdaptor {
             return ItemStack.EMPTY;
         }
 
-       return this.transferable.attemptInsertion(itemsToAdd, simulate ? Simulation.SIMULATE : Simulation.ACTION);
+        return this.transferable.attemptInsertion(itemsToAdd, simulate ? Simulation.SIMULATE : Simulation.ACTION);
     }
 
     @Override

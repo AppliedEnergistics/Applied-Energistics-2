@@ -46,7 +46,8 @@ class ItemHandlerIterator implements Iterator<ItemSlot> {
         if (this.slot >= this.itemHandler.getSlotCount()) {
             throw new NoSuchElementException();
         }
-        this.itemSlot.setExtractable(!this.itemHandler.getSlot(this.slot).attemptAnyExtraction(1, Simulation.SIMULATE).isEmpty());
+        this.itemSlot.setExtractable(
+                !this.itemHandler.getSlot(this.slot).attemptAnyExtraction(1, Simulation.SIMULATE).isEmpty());
         this.itemSlot.setItemStack(this.itemHandler.getInvStack(this.slot));
         this.itemSlot.setSlot(this.slot);
         this.slot++;

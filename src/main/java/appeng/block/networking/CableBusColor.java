@@ -20,13 +20,13 @@ package appeng.block.networking;
 
 import javax.annotation.Nullable;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 
 import appeng.api.util.AEColor;
 import appeng.parts.CableBusContainer;

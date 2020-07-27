@@ -23,28 +23,28 @@ import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.render.model.json.Transformation;
-import net.minecraft.client.util.math.AffineTransformation;
-import net.minecraft.util.math.Box;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.math.Vector3f;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
+import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.model.json.Transformation;
+import net.minecraft.client.util.math.AffineTransformation;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.block.ShapeContext;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
@@ -110,8 +110,9 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerBlockEntity> {
 
                 for (int bolts = 0; bolts < 3; bolts++) {
                     if (AppEng.instance().shouldAddParticles(r)) {
-                        MinecraftClient.getInstance().particleManager.addParticle(ParticleTypes.LIGHTNING, xOff + 0.5 + pos.getX(),
-                                yOff + 0.5 + pos.getY(), zOff + 0.5 + pos.getZ(), 0.0, 0.0, 0.0);
+                        MinecraftClient.getInstance().particleManager.addParticle(ParticleTypes.LIGHTNING,
+                                xOff + 0.5 + pos.getX(), yOff + 0.5 + pos.getY(), zOff + 0.5 + pos.getZ(), 0.0, 0.0,
+                                0.0);
                     }
                 }
             }
@@ -171,8 +172,7 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerBlockEntity> {
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockView worldIn, BlockPos pos,
-            ShapeContext context) {
+    public VoxelShape getCollisionShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
         return VoxelShapes.cuboid(new Box(0.0, 0.0, 0.0, 1.0, 1.0, 1.0));
     }
 
@@ -183,7 +183,8 @@ public class ChargerBlock extends AEBaseTileBlock<ChargerBlockEntity> {
 
     @Environment(EnvType.CLIENT)
     private static Pair<ItemStack, Transformation> getRenderedItem(ChargerBlockEntity tile) {
-        Transformation transform = new Transformation(new Vector3f(), new Vector3f(0.5f, 0.375f, 0.5f), new Vector3f(1f, 1f, 1f));
+        Transformation transform = new Transformation(new Vector3f(), new Vector3f(0.5f, 0.375f, 0.5f),
+                new Vector3f(1f, 1f, 1f));
         return new ImmutablePair<>(tile.getInternalInventory().getInvStack(0), transform);
     }
 

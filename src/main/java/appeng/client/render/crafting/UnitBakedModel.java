@@ -18,13 +18,12 @@
 
 package appeng.client.render.crafting;
 
-import appeng.tile.crafting.CraftingCubeModelData;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
 
-
 import appeng.client.render.cablebus.CubeBuilder;
+import appeng.tile.crafting.CraftingCubeModelData;
 
 /**
  * A simple crafting unit model that uses an un-lit texture for the inner block.
@@ -33,15 +32,14 @@ class UnitBakedModel extends CraftingCubeBakedModel {
 
     private final Sprite unitTexture;
 
-    UnitBakedModel(Sprite ringCorner, Sprite ringHor, Sprite ringVer,
-                   Sprite unitTexture) {
+    UnitBakedModel(Sprite ringCorner, Sprite ringHor, Sprite ringVer, Sprite unitTexture) {
         super(ringCorner, ringHor, ringVer);
         this.unitTexture = unitTexture;
     }
 
     @Override
-    protected void addInnerCube(Direction facing, BlockState state, CraftingCubeModelData modelData, CubeBuilder builder, float x1,
-                                float y1, float z1, float x2, float y2, float z2) {
+    protected void addInnerCube(Direction facing, BlockState state, CraftingCubeModelData modelData,
+            CubeBuilder builder, float x1, float y1, float z1, float x2, float y2, float z2) {
         builder.setTexture(this.unitTexture);
         builder.addCube(x1, y1, z1, x2, y2, z2);
     }

@@ -25,8 +25,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import appeng.mixins.TntAccessor;
-import appeng.util.FakePlayer;
 import net.minecraft.block.*;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -34,9 +32,10 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.*;
-import net.minecraft.recipe.RecipeType;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.recipe.RecipeType;
 import net.minecraft.recipe.SmeltingRecipe;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
@@ -44,12 +43,11 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.RayTraceContext;
-import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
-import net.minecraft.server.world.ServerWorld;
 
 import appeng.api.config.Actionable;
 import appeng.api.util.DimensionalCoord;
@@ -58,6 +56,8 @@ import appeng.container.ContainerNull;
 import appeng.core.AEConfig;
 import appeng.hooks.IBlockTool;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
+import appeng.mixins.TntAccessor;
+import appeng.util.FakePlayer;
 import appeng.util.InWorldToolOperationResult;
 import appeng.util.Platform;
 
@@ -287,7 +287,8 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
                 for (final ItemStack i : stack) {
                     CraftingInventory tempInv = new CraftingInventory(new ContainerNull(), 1, 1);
                     tempInv.setStack(0, i);
-                    Optional<SmeltingRecipe> recipe = w.getRecipeManager().getFirstMatch(RecipeType.SMELTING, tempInv, w);
+                    Optional<SmeltingRecipe> recipe = w.getRecipeManager().getFirstMatch(RecipeType.SMELTING, tempInv,
+                            w);
 
                     if (recipe.isPresent()) {
                         ItemStack result = recipe.get().craft(tempInv);

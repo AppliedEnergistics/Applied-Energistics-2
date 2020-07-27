@@ -28,10 +28,6 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
-import alexiil.mc.lib.attributes.AttributeList;
-import alexiil.mc.lib.attributes.AttributeProvider;
-import alexiil.mc.lib.attributes.Simulation;
-import alexiil.mc.lib.attributes.item.FixedItemInv;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.block.Block;
@@ -43,14 +39,19 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.text.Text;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+
+import alexiil.mc.lib.attributes.AttributeList;
+import alexiil.mc.lib.attributes.AttributeProvider;
+import alexiil.mc.lib.attributes.Simulation;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
@@ -166,7 +167,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
     @Override
     public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
-                                  final ItemStack removed, final ItemStack added) {
+            final ItemStack removed, final ItemStack added) {
         if (this.isWorking == slot) {
             return;
         }
@@ -970,12 +971,14 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                             direction.getOffsetZ() * 0.501);
                     final Vec3d to = from.add(direction.getOffsetX(), direction.getOffsetY(), direction.getOffsetZ());
                     final BlockHitResult hit = null;// hostWorld.rayTraceBlocks( from, to ); //FIXME:
-                                                         // https://github.com/MinecraftForge/MinecraftForge/pull/6708
+                                                    // https://github.com/MinecraftForge/MinecraftForge/pull/6708
                     if (hit != null && !BAD_BLOCKS.contains(directedBlock)) {
                         if (hit.getBlockPos().equals(directedTile.getPos())) {
-                            // FIXME FABRIC: Either add "getName" to the interface adaptor, or special-case cable buses here
-                            // FIXME FABRIC final ItemStack g = directedBlock.getPickBlock(directedBlockState, hit, hostWorld,
-                            // FIXME FABRIC         directedTile.getPos(), null);
+                            // FIXME FABRIC: Either add "getName" to the interface adaptor, or special-case
+                            // cable buses here
+                            // FIXME FABRIC final ItemStack g =
+                            // directedBlock.getPickBlock(directedBlockState, hit, hostWorld,
+                            // FIXME FABRIC directedTile.getPos(), null);
                             // FIXME FABRIC if (!g.isEmpty()) {
                             // FIXME FABRIC what = g;
                             // FIXME FABRIC }

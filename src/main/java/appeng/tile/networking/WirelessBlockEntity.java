@@ -21,11 +21,12 @@ package appeng.tile.networking;
 import java.io.IOException;
 import java.util.EnumSet;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.Direction;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.tiles.IWirelessAccessPoint;
@@ -123,7 +124,7 @@ public class WirelessBlockEntity extends AENetworkInvBlockEntity implements IWir
 
     @Override
     public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
-                                  final ItemStack removed, final ItemStack added) {
+            final ItemStack removed, final ItemStack added) {
         // :P
     }
 

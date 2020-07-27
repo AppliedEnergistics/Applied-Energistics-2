@@ -20,10 +20,10 @@ package appeng.bootstrap;
 
 import java.util.function.Function;
 
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
+import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 
 import appeng.tile.AEBaseBlockEntity;
 

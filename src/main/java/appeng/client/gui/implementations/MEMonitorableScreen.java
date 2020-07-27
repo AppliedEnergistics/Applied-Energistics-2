@@ -20,13 +20,12 @@ package appeng.client.gui.implementations;
 
 import java.util.List;
 
-import appeng.mixins.SlotMixin;
-import net.minecraft.client.util.math.MatrixStack;
 import org.lwjgl.glfw.GLFW;
 
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.screen.slot.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 
 import appeng.api.config.SearchBoxMode;
@@ -63,6 +62,7 @@ import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.integration.abstraction.ReiFacade;
+import appeng.mixins.SlotMixin;
 import appeng.parts.reporting.AbstractTerminalPart;
 import appeng.tile.misc.SecurityStationBlockEntity;
 import appeng.util.IConfigManagerHost;
@@ -205,13 +205,13 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
         }
 
         if (this.viewCell || this instanceof WirelessTermScreen) {
-            this.viewModeToggle = this.addButton(new SettingToggleButton<>(this.x - 18, offset,
-                    Settings.VIEW_MODE, getSortDisplay(), this::toggleServerSetting));
+            this.viewModeToggle = this.addButton(new SettingToggleButton<>(this.x - 18, offset, Settings.VIEW_MODE,
+                    getSortDisplay(), this::toggleServerSetting));
             offset += 20;
         }
 
-        this.addButton(this.sortDirToggle = new SettingToggleButton<>(this.x - 18, offset,
-                Settings.SORT_DIRECTION, getSortDir(), this::toggleServerSetting));
+        this.addButton(this.sortDirToggle = new SettingToggleButton<>(this.x - 18, offset, Settings.SORT_DIRECTION,
+                getSortDir(), this::toggleServerSetting));
         offset += 20;
 
         SearchBoxMode searchMode = AEConfig.instance().getTerminalSearchMode();
@@ -225,8 +225,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
                     this::toggleTerminalStyle));
         }
 
-        this.searchField = new AETextField(this.textRenderer, this.x + Math.max(80, this.offsetX), this.y + 4, 90,
-                12);
+        this.searchField = new AETextField(this.textRenderer, this.x + Math.max(80, this.offsetX), this.y + 4, 90, 12);
         this.searchField.setHasBorder(false);
         this.searchField.setMaxLength(25);
         this.searchField.setEditableColor(0xFFFFFF);
@@ -319,7 +318,8 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
     }
 
     @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
+            float partialTicks) {
 
         this.bindTexture(this.getBackground());
         final int x_width = 197;
@@ -333,8 +333,8 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
             drawTexture(matrices, offsetX, offsetY + 18 + x * 18, 0, 18, x_width, 18);
         }
 
-        drawTexture(matrices, offsetX, offsetY + 16 + this.rows * 18 + this.lowerTextureOffset, 0, 106 - 18 - 18, x_width,
-                99 + this.reservedSpace - this.lowerTextureOffset);
+        drawTexture(matrices, offsetX, offsetY + 16 + this.rows * 18 + this.lowerTextureOffset, 0, 106 - 18 - 18,
+                x_width, 99 + this.reservedSpace - this.lowerTextureOffset);
 
         if (this.viewCell) {
             boolean update = false;

@@ -20,24 +20,24 @@ package appeng.block;
 
 import java.util.List;
 
-import appeng.block.networking.WirelessBlock;
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.Direction;
-import net.minecraft.text.Text;
 import net.minecraft.world.World;
-import net.fabricmc.api.Environment;
 
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.misc.LightDetectorBlock;
 import appeng.block.misc.SkyCompassBlock;
+import appeng.block.networking.WirelessBlock;
 import appeng.me.helpers.IGridProxyable;
 import appeng.tile.AEBaseBlockEntity;
 

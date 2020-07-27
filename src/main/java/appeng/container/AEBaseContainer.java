@@ -24,19 +24,19 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
-import alexiil.mc.lib.attributes.item.compat.FixedInventoryVanillaWrapper;
-import appeng.mixins.ScreenHandlerListeners;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ScreenHandlerListener;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.screen.ScreenHandlerListener;
-import net.minecraft.item.ItemStack;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
+import alexiil.mc.lib.attributes.item.compat.FixedInventoryVanillaWrapper;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
@@ -72,6 +72,7 @@ import appeng.core.sync.packets.TargetItemStackPacket;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.InventoryAction;
 import appeng.me.helpers.PlayerSource;
+import appeng.mixins.ScreenHandlerListeners;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.AdaptorFixedInv;
@@ -97,13 +98,13 @@ public abstract class AEBaseContainer extends ScreenHandler {
     // Slots that were created to represent the player inventory
     private List<Slot> playerInventorySlots = null;
 
-    public AEBaseContainer(ScreenHandlerType<?> containerType, int id, final PlayerInventory ip, final BlockEntity myTile,
-                           final IPart myPart) {
+    public AEBaseContainer(ScreenHandlerType<?> containerType, int id, final PlayerInventory ip,
+            final BlockEntity myTile, final IPart myPart) {
         this(containerType, id, ip, myTile, myPart, null);
     }
 
-    public AEBaseContainer(ScreenHandlerType<?> containerType, int id, final PlayerInventory ip, final BlockEntity myTile,
-                           final IPart myPart, final IGuiItemObject gio) {
+    public AEBaseContainer(ScreenHandlerType<?> containerType, int id, final PlayerInventory ip,
+            final BlockEntity myTile, final IPart myPart, final IGuiItemObject gio) {
         super(containerType, id);
         this.invPlayer = ip;
         this.tileEntity = myTile;
@@ -299,7 +300,7 @@ public abstract class AEBaseContainer extends ScreenHandler {
     }
 
     public List<ScreenHandlerListener> getListeners() {
-        return ((ScreenHandlerListeners)this).ae2_getListeners();
+        return ((ScreenHandlerListeners) this).ae2_getListeners();
     }
 
     @Override
@@ -672,8 +673,7 @@ public abstract class AEBaseContainer extends ScreenHandler {
                     ais = Platform.poweredInsert(this.getPowerSource(), this.getCellInventory(), ais,
                             this.getActionSource());
                     if (ais == null) {
-                        final InventoryAdaptor ia = new AdaptorFixedInv(
-                                new WrapperCursorItemHandler(player.inventory));
+                        final InventoryAdaptor ia = new AdaptorFixedInv(new WrapperCursorItemHandler(player.inventory));
 
                         final ItemStack fail = ia.removeItems(1, extracted.getDefinition(), null);
                         if (fail.isEmpty()) {

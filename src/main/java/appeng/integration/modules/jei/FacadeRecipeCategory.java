@@ -1,11 +1,13 @@
 package appeng.integration.modules.jei;
 
-import appeng.core.AppEng;
-import appeng.core.FacadeCreativeTab;
-import me.shedaniel.rei.api.EntryStack;
-import me.shedaniel.rei.plugin.crafting.DefaultCraftingCategory;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.Identifier;
+
+import me.shedaniel.rei.api.EntryStack;
+import me.shedaniel.rei.plugin.crafting.DefaultCraftingCategory;
+
+import appeng.core.AppEng;
+import appeng.core.FacadeCreativeTab;
 
 /**
  * A simple copy of the crafting category to separate out the facade recipes.

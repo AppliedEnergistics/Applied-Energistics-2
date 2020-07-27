@@ -18,13 +18,10 @@
 
 package appeng.integration.modules.jei;
 
-import appeng.core.AppEng;
-import appeng.core.FacadeCreativeTab;
-import appeng.items.parts.FacadeItem;
-import me.shedaniel.rei.api.ClientHelper;
-import me.shedaniel.rei.api.EntryStack;
-import me.shedaniel.rei.api.LiveRecipeGenerator;
-import me.shedaniel.rei.plugin.crafting.DefaultShapedDisplay;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
@@ -32,9 +29,14 @@ import net.minecraft.recipe.ShapedRecipe;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import me.shedaniel.rei.api.ClientHelper;
+import me.shedaniel.rei.api.EntryStack;
+import me.shedaniel.rei.api.LiveRecipeGenerator;
+import me.shedaniel.rei.plugin.crafting.DefaultShapedDisplay;
+
+import appeng.core.AppEng;
+import appeng.core.FacadeCreativeTab;
+import appeng.items.parts.FacadeItem;
 
 /**
  * This plugin will dynamically add facade recipes for any item that can be

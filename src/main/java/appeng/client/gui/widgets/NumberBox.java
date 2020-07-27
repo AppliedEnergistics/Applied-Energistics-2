@@ -35,7 +35,7 @@ public class NumberBox extends TextFieldWidget {
     private long maxValue;
 
     public NumberBox(final TextRenderer fontRenderer, final int x, final int y, final int width, final int height,
-                     final Class<?> type, LongConsumer changeListener) {
+            final Class<?> type, LongConsumer changeListener) {
         super(fontRenderer, x, y, width, height, new LiteralText("0"));
         this.setText("0");
         setChangedListener(this::handleTextChanged);

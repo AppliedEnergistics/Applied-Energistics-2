@@ -4,6 +4,8 @@ package appeng.fluids.util;
 import java.math.RoundingMode;
 import java.util.Objects;
 
+import net.minecraft.nbt.CompoundTag;
+
 import alexiil.mc.lib.attributes.ListenerRemovalToken;
 import alexiil.mc.lib.attributes.ListenerToken;
 import alexiil.mc.lib.attributes.Simulation;
@@ -12,7 +14,6 @@ import alexiil.mc.lib.attributes.fluid.FluidVolumeUtil;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
-import net.minecraft.nbt.CompoundTag;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.AELog;

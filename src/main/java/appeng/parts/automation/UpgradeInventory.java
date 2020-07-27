@@ -18,11 +18,12 @@
 
 package appeng.parts.automation;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundTag;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.items.IUpgradeModule;
@@ -137,7 +138,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 
     @Override
     public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
-                                  final ItemStack removedStack, final ItemStack newStack) {
+            final ItemStack removedStack, final ItemStack newStack) {
         this.cached = false;
         if (this.parent != null && Platform.isServer()) {
             this.parent.onChangeInventory(inv, slot, mc, removedStack, newStack);

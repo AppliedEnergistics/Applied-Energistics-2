@@ -18,7 +18,6 @@
 
 package appeng.items.parts;
 
-import appeng.hooks.AEToolItem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.EnvironmentInterface;
@@ -32,12 +31,12 @@ import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.Tag;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.text.Text;
 import net.minecraft.world.EmptyBlockView;
 
 import appeng.api.exceptions.MissingDefinitionException;
@@ -49,9 +48,10 @@ import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.facade.FacadePart;
 import appeng.facade.IFacadeItem;
+import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 
-@EnvironmentInterface(value = EnvType.CLIENT, itf=IAlphaPassItem.class)
+@EnvironmentInterface(value = EnvType.CLIENT, itf = IAlphaPassItem.class)
 public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassItem, AEToolItem {
 
     /**
@@ -67,8 +67,8 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
     @Override
     public ActionResult onItemUseFirst(ItemStack stack, ItemUsageContext context) {
-        return Api.instance().partHelper().placeBus(stack, context.getBlockPos(), context.getSide(), context.getPlayer(),
-                context.getHand(), context.getWorld());
+        return Api.instance().partHelper().placeBus(stack, context.getBlockPos(), context.getSide(),
+                context.getPlayer(), context.getHand(), context.getWorld());
     }
 
     @Override

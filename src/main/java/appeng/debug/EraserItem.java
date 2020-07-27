@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
 
-import appeng.hooks.AEToolItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
@@ -35,6 +34,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.core.AELog;
+import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 
 public class EraserItem extends AEBaseItem implements AEToolItem {

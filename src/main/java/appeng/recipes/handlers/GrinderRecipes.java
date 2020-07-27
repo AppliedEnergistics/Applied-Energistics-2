@@ -1,10 +1,11 @@
 package appeng.recipes.handlers;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import java.util.List;
 
 import javax.annotation.Nullable;
-import java.util.List;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 
 public final class GrinderRecipes {
 

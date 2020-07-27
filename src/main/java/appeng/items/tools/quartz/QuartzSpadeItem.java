@@ -20,8 +20,8 @@ package appeng.items.tools.quartz;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ToolMaterials;
 import net.minecraft.item.ShovelItem;
+import net.minecraft.item.ToolMaterials;
 
 import appeng.api.features.AEFeature;
 import appeng.util.Platform;

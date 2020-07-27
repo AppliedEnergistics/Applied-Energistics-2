@@ -18,32 +18,32 @@
 
 package appeng.debug;
 
-import appeng.hooks.AEToolItem;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.packet.s2c.play.ChunkDataS2CPacket;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.packet.s2c.play.ChunkDataS2CPacket;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.chunk.WorldChunk;
 
+import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 import appeng.worldgen.meteorite.CraterType;
 import appeng.worldgen.meteorite.MeteoritePlacer;
 import appeng.worldgen.meteorite.PlacedMeteoriteSettings;
 import appeng.worldgen.meteorite.debug.MeteoriteSpawner;
-import net.minecraft.world.chunk.WorldChunk;
 
 public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
 
@@ -117,8 +117,8 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
         // we have to assume maximum size
         int range = (int) Math.ceil((coreRadius * 2 + 5) * 5f);
 
-        BlockBox boundingBox = new BlockBox(pos.getX() - range, pos.getY(), pos.getZ() - range,
-                pos.getX() + range, pos.getY(), pos.getZ() + range);
+        BlockBox boundingBox = new BlockBox(pos.getX() - range, pos.getY(), pos.getZ() - range, pos.getX() + range,
+                pos.getY(), pos.getZ() + range);
 
         final MeteoritePlacer placer = new MeteoritePlacer(world, spawned, boundingBox);
         placer.place();

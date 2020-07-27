@@ -19,8 +19,8 @@
 package appeng.block.misc;
 
 import net.fabricmc.api.EnvType;
-import net.minecraft.client.render.RenderLayer;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.render.RenderLayer;
 
 import appeng.api.util.AEColor;
 import appeng.bootstrap.BlockRenderingCustomizer;

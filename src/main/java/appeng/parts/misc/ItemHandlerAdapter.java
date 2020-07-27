@@ -25,9 +25,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.item.ItemStack;
+
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
-import net.minecraft.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
@@ -74,7 +75,8 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
         // This uses a brute force approach and tries to jam it in every slot the
         // inventory exposes.
         for (int i = 0; i < slotCount && !remaining.isEmpty(); i++) {
-            remaining = this.itemHandler.getSlot(i).attemptInsertion(remaining, simulate ? Simulation.SIMULATE : Simulation.ACTION);
+            remaining = this.itemHandler.getSlot(i).attemptInsertion(remaining,
+                    simulate ? Simulation.SIMULATE : Simulation.ACTION);
         }
 
         // At this point, we still have some items left...
@@ -94,7 +96,8 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
         return AEItemStack.fromItemStack(remaining);
     }
 
-    // FIXME FABRIC: this really needs to be rewritten to use the other interface types and not do slot iterations
+    // FIXME FABRIC: this really needs to be rewritten to use the other interface
+    // types and not do slot iterations
     @Override
     public IAEItemStack extractItems(IAEItemStack request, Actionable mode, IActionSource src) {
 
@@ -122,7 +125,8 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
             // maxSize, even if we request more. So even if it returns a valid stack, it
             // might have more stuff.
             do {
-                extracted = this.itemHandler.getSlot(i).attemptAnyExtraction(remainingCurrentSlot, simulate ? Simulation.SIMULATE : Simulation.ACTION);
+                extracted = this.itemHandler.getSlot(i).attemptAnyExtraction(remainingCurrentSlot,
+                        simulate ? Simulation.SIMULATE : Simulation.ACTION);
                 if (!extracted.isEmpty()) {
                     if (extracted.getCount() > remainingCurrentSlot) {
                         // Something broke. It should never return more than we requested...

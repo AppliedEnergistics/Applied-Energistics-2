@@ -29,6 +29,7 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.block.Block;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.BlockView;
@@ -36,7 +37,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.server.world.ServerWorld;
 
 import appeng.api.util.DimensionalCoord;
 import appeng.core.Api;
@@ -71,12 +71,12 @@ public final class CompassService {
     // FIXME FABRIC this is never registered
     // FIXME @SubscribeEvent
     // FIXME public void unloadWorld(final WorldEvent.Unload event) {
-    // FIXME     DimensionType dim = event.getWorld().getDimension().getType();
+    // FIXME DimensionType dim = event.getWorld().getDimension().getType();
     // FIXME
-    // FIXME     if (Platform.isServer() && this.worldSet.containsKey(dim)) {
-    // FIXME         final CompassReader compassReader = this.worldSet.remove(dim);
-    // FIXME         compassReader.close();
-    // FIXME     }
+    // FIXME if (Platform.isServer() && this.worldSet.containsKey(dim)) {
+    // FIXME final CompassReader compassReader = this.worldSet.remove(dim);
+    // FIXME compassReader.close();
+    // FIXME }
     // FIXME }
 
     private int jobSize() {
@@ -90,8 +90,10 @@ public final class CompassService {
     }
 
     public void tryUpdateArea(final WorldAccess w, ChunkPos chunkPos) {
-        // If this seems weird: during worldgen, WorldAccess is a specific region, but getWorld is
-        // still the server world. We do need to use the world access to get the chunk in question
+        // If this seems weird: during worldgen, WorldAccess is a specific region, but
+        // getWorld is
+        // still the server world. We do need to use the world access to get the chunk
+        // in question
         // though, since during worldgen, it's not comitted to the actual world yet.
         World world = w.getWorld();
         if (!(world instanceof ServerWorld)) {
@@ -114,8 +116,8 @@ public final class CompassService {
     }
 
     /**
-     * Notifies the compass service that a skystone block has either been placed or replaced
-     * at the give position.
+     * Notifies the compass service that a skystone block has either been placed or
+     * replaced at the give position.
      */
     public void notifyBlockChange(final ServerWorld w, BlockPos pos) {
         Chunk chunk = w.getChunk(pos);

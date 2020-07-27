@@ -1,14 +1,16 @@
 
 package appeng.tile.inventory;
 
+import net.minecraft.item.ItemStack;
+
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.filter.ItemFilter;
 import alexiil.mc.lib.attributes.item.impl.DelegatingFixedItemInv;
-import appeng.core.Api;
+
 import appeng.api.storage.cells.ICellInventory;
 import appeng.api.storage.cells.ICellInventoryHandler;
+import appeng.core.Api;
 import appeng.util.inv.IAEAppEngInventory;
-import net.minecraft.item.ItemStack;
 
 public class AppEngCellInventory extends DelegatingFixedItemInv {
     private static final ItemFilter CELL_FILTER = stack -> !stack.isEmpty()

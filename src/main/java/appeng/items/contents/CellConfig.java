@@ -18,8 +18,9 @@
 
 package appeng.items.contents;
 
-import alexiil.mc.lib.attributes.item.FixedItemInvView;
 import net.minecraft.item.ItemStack;
+
+import alexiil.mc.lib.attributes.item.FixedItemInvView;
 
 import appeng.tile.inventory.AppEngInternalInventory;
 

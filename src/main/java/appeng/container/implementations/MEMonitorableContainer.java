@@ -23,14 +23,14 @@ import java.nio.BufferOverflowException;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandlerListener;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.block.entity.BlockEntity;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -110,7 +110,7 @@ public class MEMonitorableContainer extends AEBaseContainer
     }
 
     public MEMonitorableContainer(ScreenHandlerType<?> containerType, int id, PlayerInventory ip,
-                                  final ITerminalHost monitorable, final boolean bindInventory) {
+            final ITerminalHost monitorable, final boolean bindInventory) {
         super(containerType, id, ip, monitorable instanceof BlockEntity ? (BlockEntity) monitorable : null,
                 monitorable instanceof IPart ? (IPart) monitorable : null,
                 monitorable instanceof IGuiItemObject ? (IGuiItemObject) monitorable : null);

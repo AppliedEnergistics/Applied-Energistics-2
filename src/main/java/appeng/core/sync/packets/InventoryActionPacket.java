@@ -18,12 +18,14 @@
 
 package appeng.core.sync.packets;
 
+import java.util.Optional;
+
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.network.ServerPlayerEntity;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.AEBaseContainer;
@@ -36,8 +38,6 @@ import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.InventoryAction;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
-
-import java.util.Optional;
 
 public class InventoryActionPacket extends BasePacket {
 

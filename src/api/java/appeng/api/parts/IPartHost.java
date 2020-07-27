@@ -25,16 +25,16 @@ package appeng.api.parts;
 
 import java.util.Set;
 
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
-import net.minecraft.util.math.Vec3d;
 
 /**
  * Implemented on AE's TileEntity.
@@ -115,8 +115,8 @@ public interface IPartHost extends ICustomCableConnection {
     DimensionalCoord getLocation();
 
     /**
-     * @return the block entity for the host, this can either be an FMP tile, or a AE
-     *         tile
+     * @return the block entity for the host, this can either be an FMP tile, or a
+     *         AE tile
      */
     BlockEntity getTile();
 

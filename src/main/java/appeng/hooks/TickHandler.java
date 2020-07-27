@@ -18,26 +18,6 @@
 
 package appeng.hooks;
 
-import appeng.api.networking.IGridNode;
-import appeng.api.util.AEColor;
-import appeng.core.AEConfig;
-import appeng.core.AELog;
-import appeng.core.sync.packets.PaintedEntityPacket;
-import appeng.crafting.CraftingJob;
-import appeng.me.Grid;
-import appeng.tile.AEBaseBlockEntity;
-import appeng.util.IWorldCallable;
-import appeng.util.Platform;
-import com.google.common.base.Stopwatch;
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Multimap;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
-
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,6 +30,28 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.TimeUnit;
+
+import com.google.common.base.Stopwatch;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
+
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
+
+import appeng.api.networking.IGridNode;
+import appeng.api.util.AEColor;
+import appeng.core.AEConfig;
+import appeng.core.AELog;
+import appeng.core.sync.packets.PaintedEntityPacket;
+import appeng.crafting.CraftingJob;
+import appeng.me.Grid;
+import appeng.tile.AEBaseBlockEntity;
+import appeng.util.IWorldCallable;
+import appeng.util.Platform;
 
 public class TickHandler {
 
@@ -155,8 +157,8 @@ public class TickHandler {
 // FIXME FABRIC    }
 
     /**
-     * This is primarily useful for an integrated server being stopped, and can be fully replaced by the event
-     * above once world unload events hit.
+     * This is primarily useful for an integrated server being stopped, and can be
+     * fully replaced by the event above once world unload events hit.
      */
     private void onServerStopping(MinecraftServer server) {
         final List<IGridNode> toDestroy = new ArrayList<>();
@@ -187,7 +189,7 @@ public class TickHandler {
                 final int jobSize = jobSet.size();
                 final int microSecondsPerTick = AEConfig.instance().getCraftingCalculationTimePerTick() * 1000;
                 final int simTime = Math.max(1, microSecondsPerTick / jobSize);
-               final Iterator<CraftingJob> i = jobSet.iterator();
+                final Iterator<CraftingJob> i = jobSet.iterator();
                 while (i.hasNext()) {
                     final CraftingJob cj = i.next();
                     if (!cj.simulateFor(simTime)) {

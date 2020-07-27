@@ -18,20 +18,23 @@
 
 package appeng.integration.modules.jei;
 
-import appeng.core.Api;
-import appeng.core.AppEng;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.common.collect.ImmutableList;
+
+import net.minecraft.util.Identifier;
+import net.minecraft.util.Language;
+
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.RecipeCategory;
 import me.shedaniel.rei.api.widgets.Widgets;
 import me.shedaniel.rei.gui.widget.Widget;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Language;
 
-import java.util.ArrayList;
-import java.util.List;
+import appeng.core.Api;
+import appeng.core.AppEng;
 
 class InscriberRecipeCategory implements RecipeCategory<InscriberRecipeWrapper> {
 
@@ -76,21 +79,13 @@ class InscriberRecipeCategory implements RecipeCategory<InscriberRecipeWrapper> 
         List<List<EntryStack>> ingredients = recipeDisplay.getInputEntries();
         EntryStack output = recipeDisplay.getOutputEntries().get(0);
 
-        widgets.add(Widgets.createSlot(new Point(bounds.x + 1, bounds.y + 1))
-                .disableBackground()
-                .markInput()
+        widgets.add(Widgets.createSlot(new Point(bounds.x + 1, bounds.y + 1)).disableBackground().markInput()
                 .entries(ingredients.get(SLOT_INPUT_TOP)));
-        widgets.add(Widgets.createSlot(new Point(bounds.x + 19, bounds.y + 24))
-                .disableBackground()
-                .markInput()
+        widgets.add(Widgets.createSlot(new Point(bounds.x + 19, bounds.y + 24)).disableBackground().markInput()
                 .entries(ingredients.get(SLOT_INPUT_MIDDLE)));
-        widgets.add(Widgets.createSlot(new Point(bounds.x + 1, bounds.y + 47))
-                .disableBackground()
-                .markInput()
+        widgets.add(Widgets.createSlot(new Point(bounds.x + 1, bounds.y + 47)).disableBackground().markInput()
                 .entries(ingredients.get(SLOT_INPUT_BOTTOM)));
-        widgets.add(Widgets.createSlot(new Point(bounds.x + 69, bounds.y + 25))
-                .disableBackground()
-                .markOutput()
+        widgets.add(Widgets.createSlot(new Point(bounds.x + 69, bounds.y + 25)).disableBackground().markOutput()
                 .entry(output));
 
         return widgets;

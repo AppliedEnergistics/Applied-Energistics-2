@@ -22,7 +22,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 
-
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SchedulingMode;
@@ -68,17 +67,16 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
     }
 
     protected void addButtons() {
-        this.redstoneMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 8,
-                Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
+        this.redstoneMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 8, Settings.REDSTONE_CONTROLLED,
+                RedstoneMode.IGNORE);
         addButton(this.redstoneMode);
         this.fuzzyMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 28, Settings.FUZZY_MODE,
                 FuzzyMode.IGNORE_ALL);
         addButton(this.fuzzyMode);
-        this.craftMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 48, Settings.CRAFT_ONLY,
-                YesNo.NO);
+        this.craftMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 48, Settings.CRAFT_ONLY, YesNo.NO);
         addButton(this.craftMode);
-        this.schedulingMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 68,
-                Settings.SCHEDULING_MODE, SchedulingMode.DEFAULT);
+        this.schedulingMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 68, Settings.SCHEDULING_MODE,
+                SchedulingMode.DEFAULT);
         addButton(this.schedulingMode);
     }
 
@@ -105,7 +103,8 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
     }
 
     @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
+            float partialTicks) {
         this.handleButtonVisibility();
 
         this.bindTexture(this.getBackground());
@@ -114,7 +113,8 @@ public class UpgradeableScreen<T extends UpgradeableContainer> extends AEBaseScr
             drawTexture(matrices, offsetX + 177, offsetY, 177, 0, 35, 14 + this.cvb.availableUpgrades() * 18);
         }
         if (this.hasToolbox()) {
-            drawTexture(matrices, offsetX + 178, offsetY + this.backgroundHeight - 90, 178, this.backgroundHeight - 90, 68, 68);
+            drawTexture(matrices, offsetX + 178, offsetY + this.backgroundHeight - 90, 178, this.backgroundHeight - 90,
+                    68, 68);
         }
     }
 

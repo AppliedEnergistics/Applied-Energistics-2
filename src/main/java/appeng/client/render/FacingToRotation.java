@@ -19,13 +19,12 @@
 package appeng.client.render;
 
 import net.minecraft.client.util.math.MatrixStack;
-
-import net.minecraft.client.util.math.Vector4f;
-import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Quaternion;
 import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Matrix4f;
+import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.math.Vec3i;
 
 /**

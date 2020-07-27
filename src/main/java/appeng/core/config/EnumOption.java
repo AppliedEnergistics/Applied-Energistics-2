@@ -1,11 +1,11 @@
 package appeng.core.config;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
-
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 public class EnumOption<T extends Enum<T>> extends BaseOption {
 
@@ -55,8 +55,7 @@ public class EnumOption<T extends Enum<T>> extends BaseOption {
             }
         }
 
-        String allowedValues = Arrays.stream(enumConstants)
-                .map(e -> e.name().toLowerCase())
+        String allowedValues = Arrays.stream(enumConstants).map(e -> e.name().toLowerCase())
                 .collect(Collectors.joining(", "));
         throw new ConfigValidationException(this, "Expected one of: " + allowedValues);
     }

@@ -40,7 +40,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
 
-
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.tile.crafting.CraftingCubeModelData;
 import appeng.util.Platform;
@@ -71,7 +70,8 @@ abstract class CraftingCubeBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos,
+            Supplier<Random> randomSupplier, RenderContext context) {
         CraftingCubeModelData modelData = getModelData(blockView, pos);
         EnumSet<Direction> connections = modelData.getConnections();
 
@@ -275,8 +275,8 @@ abstract class CraftingCubeBakedModel implements BakedModel, FabricBakedModel {
         return null;
     }
 
-    protected abstract void addInnerCube(Direction facing, BlockState state, CraftingCubeModelData modelData, CubeBuilder builder,
-            float x1, float y1, float z1, float x2, float y2, float z2);
+    protected abstract void addInnerCube(Direction facing, BlockState state, CraftingCubeModelData modelData,
+            CubeBuilder builder, float x1, float y1, float z1, float x2, float y2, float z2);
 
     @Override
     public boolean useAmbientOcclusion() {

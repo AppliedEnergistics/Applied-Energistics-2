@@ -20,10 +20,11 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.screen.ScreenHandlerListener;
-import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.screen.ScreenHandlerListener;
+import net.minecraft.screen.ScreenHandlerType;
+
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.SecurityPermissions;
@@ -140,7 +141,7 @@ public class SecurityStationContainer extends MEMonitorableContainer implements 
 
     @Override
     public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
-                                  final ItemStack removedStack, final ItemStack newStack) {
+            final ItemStack removedStack, final ItemStack newStack) {
         if (!this.wirelessOut.hasStack()) {
             if (this.wirelessIn.hasStack()) {
                 final ItemStack term = this.wirelessIn.getStack().copy();

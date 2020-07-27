@@ -18,18 +18,9 @@
 
 package appeng.parts;
 
-import appeng.core.Api;
-import appeng.api.definitions.IBlockDefinition;
-import appeng.api.parts.*;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
-import appeng.core.Api;
-import appeng.core.AppEng;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PartPlacementPacket;
-import appeng.facade.IFacadeItem;
-import appeng.util.LookDirection;
-import appeng.util.Platform;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -49,8 +40,17 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RayTraceContext;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.List;
+import appeng.api.definitions.IBlockDefinition;
+import appeng.api.parts.*;
+import appeng.api.util.AEPartLocation;
+import appeng.api.util.DimensionalCoord;
+import appeng.core.Api;
+import appeng.core.AppEng;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PartPlacementPacket;
+import appeng.facade.IFacadeItem;
+import appeng.util.LookDirection;
+import appeng.util.Platform;
 
 public class PartPlacement {
 
@@ -58,14 +58,14 @@ public class PartPlacement {
     private static final ThreadLocal<Object> placing = new ThreadLocal<>();
     private static boolean wasCanceled = false;
 
-    static  {
+    static {
 
         UseBlockCallback.EVENT.register(PartPlacement::onPlayerUseBlock);
 
     }
 
     public static ActionResult place(final ItemStack held, final BlockPos pos, Direction side,
-                                     final PlayerEntity player, final Hand hand, final World world, PlaceType pass, final int depth) {
+            final PlayerEntity player, final Hand hand, final World world, PlaceType pass, final int depth) {
         if (depth > 3) {
             return ActionResult.FAIL;
         }
@@ -150,8 +150,7 @@ public class PartPlacement {
                                 if (!player.isCreative()) {
                                     held.increment(-1);
                                     if (held.getCount() == 0) {
-                                        player.inventory.main.set(player.inventory.selectedSlot,
-                                                ItemStack.EMPTY);
+                                        player.inventory.main.set(player.inventory.selectedSlot, ItemStack.EMPTY);
                                     }
                                 }
                                 return ActionResult.CONSUME;
@@ -171,8 +170,7 @@ public class PartPlacement {
         if (held.isEmpty()) {
             if (host != null && player.isInSneakingPose() && world.isAir(pos)) {
                 if (mop.getType() == HitResult.Type.BLOCK) {
-                    Vec3d hitVec = mop.getPos().add(-mop.getPos().getX(), -mop.getPos().getY(),
-                            -mop.getPos().getZ());
+                    Vec3d hitVec = mop.getPos().add(-mop.getPos().getX(), -mop.getPos().getY(), -mop.getPos().getZ());
                     final SelectedPart sPart = selectPart(player, host, hitVec);
                     if (sPart != null && sPart.part != null) {
                         if (sPart.part.onShiftActivate(player, hand, hitVec)) {
@@ -228,8 +226,7 @@ public class PartPlacement {
 
             // FIXME: This is super-fishy and all needs to be re-checked. what does this
             // even do???
-            if (hostIsNotPresent && canMultiPartBePlaced
-                    && multiPartBlockItem.place(mpUseCtx).isAccepted()) {
+            if (hostIsNotPresent && canMultiPartBePlaced && multiPartBlockItem.place(mpUseCtx).isAccepted()) {
                 if (!world.isClient) {
                     tile = world.getBlockEntity(te_pos);
 
@@ -351,8 +348,8 @@ public class PartPlacement {
         placing.set(true);
 
         final ItemStack held = player.getStackInHand(hand);
-        if (place(held, hit.getBlockPos(), hit.getSide(), player, hand,
-                player.world, PlaceType.INTERACT_FIRST_PASS, 0) == ActionResult.SUCCESS) {
+        if (place(held, hit.getBlockPos(), hit.getSide(), player, hand, player.world, PlaceType.INTERACT_FIRST_PASS,
+                0) == ActionResult.SUCCESS) {
             return ActionResult.SUCCESS;
         }
 

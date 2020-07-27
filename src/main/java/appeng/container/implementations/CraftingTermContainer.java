@@ -18,18 +18,19 @@
 
 package appeng.container.implementations;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
-import alexiil.mc.lib.attributes.item.compat.FixedInventoryVanillaWrapper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeType;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.world.World;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
+import alexiil.mc.lib.attributes.item.compat.FixedInventoryVanillaWrapper;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.storage.ITerminalHost;
@@ -121,7 +122,7 @@ public class CraftingTermContainer extends MEMonitorableContainer
 
     @Override
     public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
-                                  final ItemStack removedStack, final ItemStack newStack) {
+            final ItemStack removedStack, final ItemStack newStack) {
 
     }
 

@@ -25,9 +25,9 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
 
 import appeng.api.parts.IPartModel;

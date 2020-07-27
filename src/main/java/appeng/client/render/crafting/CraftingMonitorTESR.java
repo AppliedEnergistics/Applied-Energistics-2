@@ -18,14 +18,13 @@
 
 package appeng.client.render.crafting;
 
-import net.fabricmc.api.Environment;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
-import net.minecraft.client.util.math.MatrixStack;
-
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.util.math.Direction;
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
+import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.Direction;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.render.TesrRenderHelper;
@@ -43,7 +42,7 @@ public class CraftingMonitorTESR extends BlockEntityRenderer<CraftingMonitorBloc
 
     @Override
     public void render(CraftingMonitorBlockEntity te, float partialTicks, MatrixStack matrixStack,
-                       VertexConsumerProvider buffers, int combinedLight, int combinedOverlay) {
+            VertexConsumerProvider buffers, int combinedLight, int combinedOverlay) {
 
         Direction facing = te.getForward();
 

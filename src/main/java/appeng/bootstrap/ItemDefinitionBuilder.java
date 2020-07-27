@@ -26,12 +26,14 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.dispenser.DispenserBehavior;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 import appeng.api.features.AEFeature;
 import appeng.bootstrap.components.IInitComponent;
@@ -39,8 +41,6 @@ import appeng.core.AppEng;
 import appeng.core.CreativeTab;
 import appeng.core.features.ItemDefinition;
 import appeng.util.Platform;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 class ItemDefinitionBuilder implements IItemBuilder {
 

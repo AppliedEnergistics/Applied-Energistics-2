@@ -1,15 +1,17 @@
 package appeng.mixins;
 
-import appeng.bootstrap.ModelsReloadCallback;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.util.Identifier;
+import java.util.Map;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Map;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.ModelLoader;
+import net.minecraft.util.Identifier;
+
+import appeng.bootstrap.ModelsReloadCallback;
 
 @Mixin(ModelLoader.class)
 public class ModelsReloadMixin {

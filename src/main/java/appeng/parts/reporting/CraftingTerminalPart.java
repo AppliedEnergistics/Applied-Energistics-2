@@ -20,12 +20,13 @@ package appeng.parts.reporting;
 
 import java.util.List;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.parts.IPartModel;

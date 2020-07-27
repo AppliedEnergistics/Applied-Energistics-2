@@ -1,6 +1,8 @@
 package appeng.client.render.model;
 
-import appeng.client.render.cablebus.QuadRotator;
+import java.util.Random;
+import java.util.function.Supplier;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
@@ -13,8 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
 
-import java.util.Random;
-import java.util.function.Supplier;
+import appeng.client.render.cablebus.QuadRotator;
 
 @Environment(EnvType.CLIENT)
 public class AutoRotatingBakedModel extends ForwardingBakedModel implements FabricBakedModel {
@@ -33,7 +34,8 @@ public class AutoRotatingBakedModel extends ForwardingBakedModel implements Fabr
     }
 
     @Override
-    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos,
+            Supplier<Random> randomSupplier, RenderContext context) {
         RenderContext.QuadTransform transform = getTransform(blockView, pos);
 
         if (transform != null) {

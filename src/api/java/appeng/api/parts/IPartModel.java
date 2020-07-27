@@ -31,8 +31,8 @@ import javax.annotation.Nonnull;
 import net.minecraft.util.Identifier;
 
 /**
- * A container to store a collection of {@link Identifier} as models for a
- * part as well as other properties.
+ * A container to store a collection of {@link Identifier} as models for a part
+ * as well as other properties.
  */
 public interface IPartModel {
 

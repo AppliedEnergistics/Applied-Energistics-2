@@ -24,18 +24,19 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
+
 import alexiil.mc.lib.attributes.fluid.FluidAttributes;
 import alexiil.mc.lib.attributes.fluid.GroupedFluidInv;
 import alexiil.mc.lib.attributes.fluid.GroupedFluidInvView;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.Vec3d;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.FuzzyMode;
@@ -91,8 +92,7 @@ import appeng.util.prioritylist.PrecisePriorityList;
  */
 public class FluidStorageBusPart extends SharedStorageBusPart
         implements IMEMonitorHandlerReceiver<IAEFluidStack>, IAEFluidInventory {
-    public static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID,
-            "part/fluid_storage_bus_base");
+    public static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID, "part/fluid_storage_bus_base");
     @PartModels
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
             new Identifier(AppEng.MOD_ID, "part/fluid_storage_bus_off"));
@@ -121,7 +121,8 @@ public class FluidStorageBusPart extends SharedStorageBusPart
 
     private IMEInventory<IAEFluidStack> getInventoryWrapper(BlockEntity target) {
         // Prioritize a handler to directly link to another ME network
-        IStorageMonitorableAccessor accessor = MEAttributes.getAttributeInFrontOfPart(MEAttributes.STORAGE_MONITORABLE_ACCESSOR, this);
+        IStorageMonitorableAccessor accessor = MEAttributes
+                .getAttributeInFrontOfPart(MEAttributes.STORAGE_MONITORABLE_ACCESSOR, this);
         if (accessor != null) {
             IStorageMonitorable inventory = accessor.getInventory(this.source);
             if (inventory != null) {
@@ -379,14 +380,13 @@ public class FluidStorageBusPart extends SharedStorageBusPart
             return 0;
         }
 
-        IStorageMonitorableAccessor accessor = MEAttributes.getAttributeInFrontOfPart(
-                MEAttributes.STORAGE_MONITORABLE_ACCESSOR, this);
+        IStorageMonitorableAccessor accessor = MEAttributes
+                .getAttributeInFrontOfPart(MEAttributes.STORAGE_MONITORABLE_ACCESSOR, this);
         if (accessor != null) {
             return Objects.hash(target, accessor);
         }
 
-        final GroupedFluidInv groupedInv = MEAttributes.getAttributeInFrontOfPart(
-                FluidAttributes.GROUPED_INV, this);
+        final GroupedFluidInv groupedInv = MEAttributes.getAttributeInFrontOfPart(FluidAttributes.GROUPED_INV, this);
         if (groupedInv != null) {
             return Objects.hash(target, groupedInv);
         }

@@ -24,7 +24,7 @@ import net.minecraft.block.piston.PistonBehavior;
 
 public class AEMaterials {
 
-    public static final Material GLASS = new Material(MaterialColor.CLEAR, false, false, true, false, false,
-            false, PistonBehavior.NORMAL);
+    public static final Material GLASS = new Material(MaterialColor.CLEAR, false, false, true, false, false, false,
+            PistonBehavior.NORMAL);
 
 }

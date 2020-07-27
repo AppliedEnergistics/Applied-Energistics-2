@@ -68,12 +68,12 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
     protected void addButtons() {
         this.levelMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 8, Settings.LEVEL_TYPE,
                 LevelType.ITEM_LEVEL);
-        this.redstoneMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 28,
-                Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL);
+        this.redstoneMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 28, Settings.REDSTONE_EMITTER,
+                RedstoneMode.LOW_SIGNAL);
         this.fuzzyMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 48, Settings.FUZZY_MODE,
                 FuzzyMode.IGNORE_ALL);
-        this.craftingMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 48,
-                Settings.CRAFT_VIA_REDSTONE, YesNo.NO);
+        this.craftingMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 48, Settings.CRAFT_VIA_REDSTONE,
+                YesNo.NO);
         this.addButton(this.levelMode);
         this.addButton(this.redstoneMode);
         this.addButton(this.craftingMode);
@@ -100,14 +100,16 @@ public class LevelEmitterScreen extends UpgradeableScreen<LevelEmitterContainer>
 
             if (notCraftingMode) {
                 if (currentLevelMode == LevelType.ENERGY_LEVEL) {
-                    this.textRenderer.draw(matrices, PowerUnits.AE.textComponent().getString(), 110, 44, COLOR_DARK_GRAY);
+                    this.textRenderer.draw(matrices, PowerUnits.AE.textComponent().getString(), 110, 44,
+                            COLOR_DARK_GRAY);
                 }
             }
         }
     }
 
     @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
+            float partialTicks) {
         super.drawBG(matrices, offsetX, offsetY, mouseX, mouseY, partialTicks);
         this.level.render(matrices, mouseX, mouseY, partialTicks);
     }

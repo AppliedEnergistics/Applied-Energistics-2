@@ -22,9 +22,9 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.world.World;
 
 import appeng.api.config.SecurityPermissions;

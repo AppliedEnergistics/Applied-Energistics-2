@@ -18,8 +18,47 @@
 
 package appeng.util;
 
+import java.text.DecimalFormat;
+import java.util.*;
+
+import javax.annotation.Nullable;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.recipe.Recipe;
+import net.minecraft.server.integrated.IntegratedServer;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
+import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.*;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.RayTraceContext;
+import net.minecraft.world.World;
+
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
-import appeng.core.Api;
+
 import appeng.api.config.*;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IMaterials;
@@ -58,42 +97,6 @@ import appeng.util.helpers.ItemComparisonHelper;
 import appeng.util.helpers.P2PHelper;
 import appeng.util.item.AEItemStack;
 import appeng.util.prioritylist.IPartitionList;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Iterables;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.*;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.RayTraceContext;
-import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
-import java.text.DecimalFormat;
-import java.util.*;
 
 /**
  * @author AlgorithmX2
@@ -193,7 +196,7 @@ public class Platform {
      * @return True if client-side classes (such as Renderers) are available.
      */
     public static boolean hasClientClasses() {
-        return FABRIC.getEnvironmentType() ==  EnvType.CLIENT;
+        return FABRIC.getEnvironmentType() == EnvType.CLIENT;
     }
 
     /*
@@ -239,8 +242,9 @@ public class Platform {
 
                     final ISecurityGrid sg = g.getCache(ISecurityGrid.class);
                     if (!sg.hasPermission(player, requiredPermission)) {
-                        player.sendSystemMessage(new TranslatableText("appliedenergistics2.permission_denied")
-                                .formatted(Formatting.RED), Util.NIL_UUID);
+                        player.sendSystemMessage(
+                                new TranslatableText("appliedenergistics2.permission_denied").formatted(Formatting.RED),
+                                Util.NIL_UUID);
                         // FIXME trace logging?
                         return false;
                     }
@@ -635,14 +639,16 @@ public class Platform {
     }
 
     public static LookDirection getPlayerRay(final PlayerEntity playerIn) {
-        // FIXME this currently cant be modded in Fabric, see net.minecraft.server.network.ServerPlayerInteractionManager.processBlockBreakingAction
+        // FIXME this currently cant be modded in Fabric, see
+        // net.minecraft.server.network.ServerPlayerInteractionManager.processBlockBreakingAction
         double reachDistance = 36.0D;
         return getPlayerRay(playerIn, reachDistance);
     }
 
     public static LookDirection getPlayerRay(final PlayerEntity playerIn, double reachDistance) {
         final double x = playerIn.prevX + (playerIn.getX() - playerIn.prevX);
-        final double y = playerIn.prevY + (playerIn.getY() - playerIn.prevY) + playerIn.getEyeHeight(playerIn.getPose());
+        final double y = playerIn.prevY + (playerIn.getY() - playerIn.prevY)
+                + playerIn.getEyeHeight(playerIn.getPose());
         final double z = playerIn.prevZ + (playerIn.getZ() - playerIn.prevZ);
 
         final float playerPitch = playerIn.prevPitch + (playerIn.pitch - playerIn.prevPitch);
@@ -682,9 +688,8 @@ public class Platform {
 
         final Vec3d vec31 = vec3.add(f7 * d3, f6 * d3, f8 * d3);
 
-        final Box bb = new Box(Math.min(vec3.x, vec31.x), Math.min(vec3.y, vec31.y),
-                Math.min(vec3.z, vec31.z), Math.max(vec3.x, vec31.x), Math.max(vec3.y, vec31.y),
-                Math.max(vec3.z, vec31.z)).expand(16, 16, 16);
+        final Box bb = new Box(Math.min(vec3.x, vec31.x), Math.min(vec3.y, vec31.y), Math.min(vec3.z, vec31.z),
+                Math.max(vec3.x, vec31.x), Math.max(vec3.y, vec31.y), Math.max(vec3.z, vec31.z)).expand(16, 16, 16);
 
         Entity entity = null;
         double closest = 9999999.0D;
@@ -986,8 +991,8 @@ public class Platform {
                 break;
         }
 
-        player.refreshPositionAndAngles(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5,
-                yaw, pitch);
+        player.refreshPositionAndAngles(tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5,
+                tile.getPos().getZ() + 0.5, yaw, pitch);
     }
 
     public static boolean canAccess(final AENetworkProxy gridProxy, final IActionSource src) {
@@ -1143,7 +1148,7 @@ public class Platform {
 
     public static boolean isSearchModeAvailable(SearchBoxMode mode) {
         if (mode.isRequiresJei()) {
-           return ReiFacade.instance().isEnabled();
+            return ReiFacade.instance().isEnabled();
         }
         return true;
     }

@@ -18,11 +18,15 @@
 
 package appeng.client.render.cablebus;
 
-import appeng.api.util.AEColor;
-import appeng.client.render.BasicUnbakedModel;
-import appeng.core.AELog;
-import appeng.core.features.registries.PartModels;
+import java.util.Collection;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
+import javax.annotation.Nullable;
+
 import com.google.common.collect.ImmutableMap;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.model.BakedModel;
@@ -32,11 +36,10 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.Identifier;
 
-import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Stream;
+import appeng.api.util.AEColor;
+import appeng.client.render.BasicUnbakedModel;
+import appeng.core.AELog;
+import appeng.core.features.registries.PartModels;
 
 /**
  * The built-in model for the cable bus block.
@@ -63,7 +66,8 @@ public class CableBusModel implements BasicUnbakedModel {
 
     @Nullable
     @Override
-    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
+    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter,
+            ModelBakeSettings rotationContainer, Identifier modelId) {
         Map<Identifier, BakedModel> partModels = this.loadPartModels(loader, rotationContainer);
 
         CableBuilder cableBuilder = new CableBuilder(textureGetter);
@@ -77,9 +81,7 @@ public class CableBusModel implements BasicUnbakedModel {
         return new CableBusBakedModel(cableBuilder, facadeBuilder, partModels, particleTexture);
     }
 
-
-    private Map<Identifier, BakedModel> loadPartModels(ModelLoader loader,
-                                                       ModelBakeSettings rotationContainer) {
+    private Map<Identifier, BakedModel> loadPartModels(ModelLoader loader, ModelBakeSettings rotationContainer) {
         ImmutableMap.Builder<Identifier, BakedModel> result = ImmutableMap.builder();
 
         for (Identifier location : this.partModels.getModels()) {

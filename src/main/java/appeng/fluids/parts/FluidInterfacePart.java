@@ -20,16 +20,17 @@ package appeng.fluids.parts;
 
 import java.util.EnumSet;
 
-import alexiil.mc.lib.attributes.AttributeList;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.math.Direction;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
+
+import alexiil.mc.lib.attributes.AttributeList;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.Upgrades;
@@ -56,7 +57,6 @@ import appeng.fluids.container.FluidInterfaceContainer;
 import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.helper.IFluidInterfaceHost;
 import appeng.helpers.IPriorityHost;
-
 import appeng.items.parts.PartModels;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;

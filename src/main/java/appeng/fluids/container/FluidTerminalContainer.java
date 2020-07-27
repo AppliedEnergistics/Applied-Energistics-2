@@ -24,6 +24,14 @@ import java.nio.BufferOverflowException;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.screen.ScreenHandlerListener;
+import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.server.network.ServerPlayerEntity;
+
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.fluid.FixedFluidInv;
 import alexiil.mc.lib.attributes.fluid.FluidAttributes;
@@ -35,13 +43,6 @@ import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.filter.ExactFluidFilter;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import alexiil.mc.lib.attributes.misc.Ref;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.screen.ScreenHandlerListener;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -234,8 +235,8 @@ public class FluidTerminalContainer extends AEBaseContainer
             if (stack == null && this.clientRequestedTargetFluid == null) {
                 return;
             }
-            if (stack != null && this.clientRequestedTargetFluid != null
-                    && FluidVolume.areEqualExceptAmounts(stack.getFluidStack(), this.clientRequestedTargetFluid.getFluidStack())) {
+            if (stack != null && this.clientRequestedTargetFluid != null && FluidVolume
+                    .areEqualExceptAmounts(stack.getFluidStack(), this.clientRequestedTargetFluid.getFluidStack())) {
                 return;
             }
             NetworkHandler.instance().sendToServer(new TargetFluidStackPacket((AEFluidStack) stack));
@@ -330,10 +331,13 @@ public class FluidTerminalContainer extends AEBaseContainer
             }
 
             // Check how much we can store in the item
-            FluidVolume volumeOverflow = insertable.attemptInsertion(this.clientRequestedTargetFluid.getFluidStack().withAmount(FluidAmount.ofWhole(Long.MAX_VALUE)), Simulation.SIMULATE);
+            FluidVolume volumeOverflow = insertable.attemptInsertion(
+                    this.clientRequestedTargetFluid.getFluidStack().withAmount(FluidAmount.ofWhole(Long.MAX_VALUE)),
+                    Simulation.SIMULATE);
             FluidAmount amountAllowed = FluidAmount.ofWhole(Long.MAX_VALUE).saturatedSub(volumeOverflow.amount());
 
-            final IAEFluidStack stack = AEFluidStack.fromFluidVolume(this.clientRequestedTargetFluid.getFluidStack().withAmount(amountAllowed), RoundingMode.DOWN);
+            final IAEFluidStack stack = AEFluidStack.fromFluidVolume(
+                    this.clientRequestedTargetFluid.getFluidStack().withAmount(amountAllowed), RoundingMode.DOWN);
             if (stack == null) {
                 return; // Might be nothing allowed...
             }
@@ -365,7 +369,8 @@ public class FluidTerminalContainer extends AEBaseContainer
             volumeOverflow = insertable.attemptInsertion(pulled.getFluidStack(), Simulation.ACTION);
 
             if (!volumeOverflow.isEmpty()) {
-                AELog.error("Fluid item [%s] reported a different possible amount than it actually accepted. Overflow: %s.",
+                AELog.error(
+                        "Fluid item [%s] reported a different possible amount than it actually accepted. Overflow: %s.",
                         held, volumeOverflow);
             }
 
@@ -386,13 +391,14 @@ public class FluidTerminalContainer extends AEBaseContainer
             }
 
             // Check if we can push into the system
-            final IAEFluidStack notStorable = Platform.poweredInsert(this.getPowerSource(), this.monitor,
-                    aeStack, this.getActionSource(), Actionable.SIMULATE);
+            final IAEFluidStack notStorable = Platform.poweredInsert(this.getPowerSource(), this.monitor, aeStack,
+                    this.getActionSource(), Actionable.SIMULATE);
 
             // Adjust the amount if needed
             if (notStorable != null && notStorable.getStackSize() > 0) {
                 final FluidAmount toStore = aeStack.getAmount().sub(notStorable.getAmount());
-                extract = extractable.attemptExtraction(new ExactFluidFilter(aeStack.getFluid()), toStore, Simulation.SIMULATE);
+                extract = extractable.attemptExtraction(new ExactFluidFilter(aeStack.getFluid()), toStore,
+                        Simulation.SIMULATE);
 
                 if (extract.isEmpty()) {
                     return;
@@ -407,8 +413,8 @@ public class FluidTerminalContainer extends AEBaseContainer
                 return; // I guess the extractable decided to return a different amount upon execution
             }
 
-            final IAEFluidStack notInserted = Platform.poweredInsert(this.getPowerSource(), this.monitor,
-                    aeStack, this.getActionSource());
+            final IAEFluidStack notInserted = Platform.poweredInsert(this.getPowerSource(), this.monitor, aeStack,
+                    this.getActionSource());
 
             if (notInserted != null && notInserted.getStackSize() > 0) {
                 AELog.error("Fluid item [%s] reported a different possible amount to drain than it actually provided.",

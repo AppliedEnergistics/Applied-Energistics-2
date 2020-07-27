@@ -24,9 +24,9 @@ import java.util.Map;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.screen.ScreenHandler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.screen.ScreenHandler;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.sync.BasePacket;

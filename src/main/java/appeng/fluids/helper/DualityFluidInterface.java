@@ -20,11 +20,12 @@ package appeng.fluids.helper;
 
 import java.util.Optional;
 
-import alexiil.mc.lib.attributes.AttributeList;
-import alexiil.mc.lib.attributes.item.FixedItemInv;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.nbt.CompoundTag;
+
+import alexiil.mc.lib.attributes.AttributeList;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Settings;

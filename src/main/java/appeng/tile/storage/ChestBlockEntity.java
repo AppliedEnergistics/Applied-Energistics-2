@@ -18,6 +18,28 @@
 
 package appeng.tile.storage;
 
+import java.io.IOException;
+import java.math.RoundingMode;
+import java.util.Collections;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.util.Tickable;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
+
 import alexiil.mc.lib.attributes.AttributeList;
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.fluid.FluidInsertable;
@@ -27,7 +49,7 @@ import alexiil.mc.lib.attributes.fluid.filter.ConstantFluidFilter;
 import alexiil.mc.lib.attributes.fluid.filter.FluidFilter;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
-import appeng.core.Api;
+
 import appeng.api.config.*;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.implementations.tiles.IMEChest;
@@ -70,26 +92,6 @@ import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperChainedItemHandler;
 import appeng.util.inv.filter.IAEItemFilter;
 import appeng.util.item.AEItemStack;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.util.Tickable;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.io.IOException;
-import java.math.RoundingMode;
-import java.util.Collections;
-import java.util.List;
 
 public class ChestBlockEntity extends AENetworkPowerBlockEntity
         implements IMEChest, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableTile, Tickable {
@@ -425,7 +427,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
     @Override
     public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
-                                  final ItemStack removed, final ItemStack added) {
+            final ItemStack removed, final ItemStack added) {
         if (inv == this.cellInventory) {
             this.cellHandler = null;
             this.isCached = false; // recalculate the storage cell.
@@ -715,10 +717,8 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
                 return fluidVolume;
             }
 
-            IAEFluidStack remaining = Platform.poweredInsert(ChestBlockEntity.this,
-                    ChestBlockEntity.this.cellHandler,
-                    toInsert,
-                    ChestBlockEntity.this.mySrc,
+            IAEFluidStack remaining = Platform.poweredInsert(ChestBlockEntity.this, ChestBlockEntity.this.cellHandler,
+                    toInsert, ChestBlockEntity.this.mySrc,
                     simulation == Simulation.ACTION ? Actionable.MODULATE : Actionable.SIMULATE);
 
             FluidAmount filledAmt = remaining != null ? remaining.getAmount() : toInsert.getAmount();
@@ -747,8 +747,8 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         public boolean allowInsert(FixedItemInv inv, int slot, ItemStack stack) {
             if (ChestBlockEntity.this.isPowered()) {
                 ChestBlockEntity.this.updateHandler();
-                return ChestBlockEntity.this.cellHandler != null && ChestBlockEntity.this.cellHandler.getChannel() == Api
-                        .instance().storage().getStorageChannel(IItemStorageChannel.class);
+                return ChestBlockEntity.this.cellHandler != null && ChestBlockEntity.this.cellHandler
+                        .getChannel() == Api.instance().storage().getStorageChannel(IItemStorageChannel.class);
             }
             return false;
         }

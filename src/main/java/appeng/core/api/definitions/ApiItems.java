@@ -18,6 +18,15 @@
 
 package appeng.core.api.definitions;
 
+import java.util.function.Consumer;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.entity.EntityDimensions;
+import net.minecraft.entity.SpawnGroup;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IItems;
 import appeng.api.features.AEFeature;
@@ -55,14 +64,6 @@ import appeng.items.tools.MemoryCardItem;
 import appeng.items.tools.NetworkToolItem;
 import appeng.items.tools.powered.*;
 import appeng.items.tools.quartz.*;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.entity.EntityDimensions;
-import net.minecraft.entity.SpawnGroup;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-
-import java.util.function.Consumer;
 
 /**
  * Internal implementation for the API items
@@ -183,7 +184,7 @@ public final class ApiItems implements IItems {
 
         Consumer<Item.Settings> chargedDefaults = props -> props.maxCount(1).maxDamage(32);
 
-      FeatureFactory powerTools = registry.features(AEFeature.POWERED_TOOLS);
+        FeatureFactory powerTools = registry.features(AEFeature.POWERED_TOOLS);
         this.entropyManipulator = powerTools.item("entropy_manipulator", EntropyManipulatorItem::new)
                 .props(chargedDefaults).addFeatures(AEFeature.ENTROPY_MANIPULATOR)
                 .dispenserBehavior(BlockToolDispenseItemBehavior::new).build();
@@ -195,16 +196,23 @@ public final class ApiItems implements IItems {
                 .addFeatures(AEFeature.MATTER_CANNON).dispenserBehavior(MatterCannonDispenseItemBehavior::new).build();
         this.portableCell = powerTools.item("portable_cell", PortableCellItem::new).props(chargedDefaults)
                 .addFeatures(AEFeature.PORTABLE_CELL, AEFeature.STORAGE_CELLS).build();
-      this.colorApplicator = powerTools.item("color_applicator", ColorApplicatorItem::new).props(chargedDefaults)
-              .addFeatures(AEFeature.COLOR_APPLICATOR).dispenserBehavior(BlockToolDispenseItemBehavior::new)
-              .rendering(new ColorApplicatorItemRendering()).build();
+        this.colorApplicator = powerTools.item("color_applicator", ColorApplicatorItem::new).props(chargedDefaults)
+                .addFeatures(AEFeature.COLOR_APPLICATOR).dispenserBehavior(BlockToolDispenseItemBehavior::new)
+                .rendering(new ColorApplicatorItemRendering()).build();
 
-        this.biometricCard = registry.item("biometric_card", BiometricCardItem::new)
-                .props(props -> props.maxCount(1)).features(AEFeature.SECURITY).build();
+        this.biometricCard = registry.item("biometric_card", BiometricCardItem::new).props(props -> props.maxCount(1))
+                .features(AEFeature.SECURITY).build();
         this.memoryCard = registry.item("memory_card", MemoryCardItem::new).props(props -> props.maxCount(1))
                 .features(AEFeature.MEMORY_CARD).build();
-        this.networkTool = registry.item("network_tool", NetworkToolItem::new)
-                .props(props -> props.maxCount(1)) // FIXME FABRIC .addToolType(FabricToolTags.get("wrench"), 0) (how???, just add a tag???)
+        this.networkTool = registry.item("network_tool", NetworkToolItem::new).props(props -> props.maxCount(1)) // FIXME
+                                                                                                                 // FABRIC
+                                                                                                                 // .addToolType(FabricToolTags.get("wrench"),
+                                                                                                                 // 0)
+                                                                                                                 // (how???,
+                                                                                                                 // just
+                                                                                                                 // add
+                                                                                                                 // a
+                                                                                                                 // tag???)
                 .features(AEFeature.NETWORK_TOOL).build();
 
         this.cellCreative = registry.item("creative_storage_cell", CreativeStorageCellItem::new)
@@ -280,7 +288,7 @@ public final class ApiItems implements IItems {
                 .customize(builder -> builder.dimensions(EntityDimensions.fixed(0.25F, 0.25F))).build();
 
         // rv1
-         this.encodedPattern = registry.item("encoded_pattern", EncodedPatternItem::new)
+        this.encodedPattern = registry.item("encoded_pattern", EncodedPatternItem::new)
                 .props(props -> props.maxCount(1)).features(AEFeature.PATTERNS).build();
 
         this.coloredPaintBall = createPaintBalls(registry, "_paint_ball", false);
@@ -300,8 +308,7 @@ public final class ApiItems implements IItems {
                     public void customize(IItemRendering rendering) {
                         rendering.color(new FluidDummyItemColor());
                     }
-                })
-                .build();
+                }).build();
     }
 
     private static AEColoredItemDefinition createPaintBalls(FeatureFactory registry, String idSuffix, boolean lumen) {

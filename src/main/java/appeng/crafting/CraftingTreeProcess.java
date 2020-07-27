@@ -18,7 +18,14 @@
 
 package appeng.crafting;
 
-import appeng.core.Api;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
@@ -30,13 +37,6 @@ import appeng.container.ContainerNull;
 import appeng.core.Api;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.util.Platform;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
 public class CraftingTreeProcess {
 
@@ -71,8 +71,9 @@ public class CraftingTreeProcess {
             }
 
             // FIXME FABRIC Hooks don't exist
-            // FIXME FABRIC BasicEventHooks.firePlayerCraftingEvent((PlayerEntity) FakePlayer.getOrCreate((ServerWorld) world),
-            // FIXME FABRIC         details.getOutput(ic, world), ic);
+            // FIXME FABRIC BasicEventHooks.firePlayerCraftingEvent((PlayerEntity)
+            // FakePlayer.getOrCreate((ServerWorld) world),
+            // FIXME FABRIC details.getOutput(ic, world), ic);
 
             for (int x = 0; x < ic.size(); x++) {
                 final ItemStack g = ic.getStack(x);
@@ -173,8 +174,9 @@ public class CraftingTreeProcess {
             }
 
             // FIXME FABRIC Hook doesn't exist
-            // FIXME FABRIC BasicEventHooks.firePlayerCraftingEvent((PlayerEntity) FakePlayer.getOrCreate((ServerWorld) this.world),
-            // FIXME FABRIC         this.details.getOutput(ic, this.world), ic);
+            // FIXME FABRIC BasicEventHooks.firePlayerCraftingEvent((PlayerEntity)
+            // FakePlayer.getOrCreate((ServerWorld) this.world),
+            // FIXME FABRIC this.details.getOutput(ic, this.world), ic);
 
             for (int x = 0; x < ic.size(); x++) {
                 ItemStack is = ic.getStack(x);

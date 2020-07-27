@@ -30,8 +30,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 public class ToggleButton extends ButtonWidget implements ITooltip {
-    public static final Identifier TEXTURE_STATES = new Identifier("appliedenergistics2",
-            "textures/guis/states.png");
+    public static final Identifier TEXTURE_STATES = new Identifier("appliedenergistics2", "textures/guis/states.png");
     private static final Pattern PATTERN_NEW_LINE = Pattern.compile("\\n", Pattern.LITERAL);
     private final int iconIdxOn;
     private final int iconIdxOff;

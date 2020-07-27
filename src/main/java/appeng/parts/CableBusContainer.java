@@ -38,10 +38,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
@@ -845,8 +845,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
             String defKey = "def:" + side.ordinal();
             String extraKey = "extra:" + side.ordinal();
-            if (data.contains(defKey, NbtType.COMPOUND)
-                    && data.contains(extraKey, NbtType.COMPOUND)) {
+            if (data.contains(defKey, NbtType.COMPOUND) && data.contains(extraKey, NbtType.COMPOUND)) {
                 final CompoundTag def = data.getCompound(defKey);
                 final CompoundTag extra = data.getCompound(extraKey);
                 IPart p = this.getPart(side);

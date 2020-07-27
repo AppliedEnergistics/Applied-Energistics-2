@@ -43,8 +43,7 @@ public class ApiClientHelper implements IClientHelper {
     }
 
     @Override
-    public <T extends IAEStack<T>> void addCellInformation(ICellInventoryHandler<T> handler,
-            List<Text> lines) {
+    public <T extends IAEStack<T>> void addCellInformation(ICellInventoryHandler<T> handler, List<Text> lines) {
         if (handler == null) {
             return;
         }
@@ -52,13 +51,11 @@ public class ApiClientHelper implements IClientHelper {
         final ICellInventory<?> cellInventory = handler.getCellInv();
 
         if (cellInventory != null) {
-            lines.add(new LiteralText(cellInventory.getUsedBytes() + " ")
-                    .append(GuiText.Of.text()).append(" " + cellInventory.getTotalBytes() + " ")
-                    .append(GuiText.BytesUsed.text()));
+            lines.add(new LiteralText(cellInventory.getUsedBytes() + " ").append(GuiText.Of.text())
+                    .append(" " + cellInventory.getTotalBytes() + " ").append(GuiText.BytesUsed.text()));
 
-            lines.add(new LiteralText(cellInventory.getStoredItemTypes() + " ")
-                    .append(GuiText.Of.text()).append(" " + cellInventory.getTotalItemTypes() + " ")
-                    .append(GuiText.Types.text()));
+            lines.add(new LiteralText(cellInventory.getStoredItemTypes() + " ").append(GuiText.Of.text())
+                    .append(" " + cellInventory.getTotalItemTypes() + " ").append(GuiText.Types.text()));
         }
 
         if (handler.isPreformatted()) {
@@ -66,11 +63,9 @@ public class ApiClientHelper implements IClientHelper {
                     : GuiText.Excluded).getLocal();
 
             if (handler.isFuzzy()) {
-                lines.add(GuiText.Partitioned.text().copy().append(" - " + list + " ")
-                        .append(GuiText.Fuzzy.text()));
+                lines.add(GuiText.Partitioned.text().copy().append(" - " + list + " ").append(GuiText.Fuzzy.text()));
             } else {
-                lines.add(GuiText.Partitioned.text().copy().append(" - " + list + " ")
-                        .append(GuiText.Precise.text()));
+                lines.add(GuiText.Partitioned.text().copy().append(" - " + list + " ").append(GuiText.Precise.text()));
             }
         }
 

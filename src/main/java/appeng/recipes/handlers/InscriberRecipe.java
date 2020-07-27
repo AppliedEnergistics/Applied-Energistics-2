@@ -5,8 +5,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.*;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 
 import appeng.api.features.InscriberProcessType;
@@ -25,7 +25,7 @@ public class InscriberRecipe implements Recipe<Inventory> {
     private final InscriberProcessType processType;
 
     public InscriberRecipe(Identifier id, String group, Ingredient middleInput, ItemStack output,
-                           Ingredient topOptional, Ingredient bottomOptional, InscriberProcessType processType) {
+            Ingredient topOptional, Ingredient bottomOptional, InscriberProcessType processType) {
         this.id = id;
         this.group = group;
         this.middleInput = middleInput;

@@ -20,12 +20,13 @@ package appeng.container.implementations;
 
 import java.util.Iterator;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.screen.ScreenHandlerType;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.FuzzyMode;

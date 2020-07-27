@@ -20,9 +20,9 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.screen.ScreenHandlerType;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -56,7 +56,7 @@ public class MEPortableCellContainer extends MEMonitorableContainer {
     }
 
     protected MEPortableCellContainer(ScreenHandlerType<? extends MEPortableCellContainer> type, int id,
-                                      final PlayerInventory ip, final IPortableCell monitorable) {
+            final PlayerInventory ip, final IPortableCell monitorable) {
         super(type, id, ip, monitorable, false);
         if (monitorable instanceof IInventorySlotAware) {
             final int slotIndex = ((IInventorySlotAware) monitorable).getInventorySlot();

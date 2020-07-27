@@ -25,11 +25,6 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import alexiil.mc.lib.attributes.AttributeList;
-import alexiil.mc.lib.attributes.AttributeProvider;
-import alexiil.mc.lib.attributes.item.FixedItemInv;
-import appeng.block.networking.CableBusBlock;
-import appeng.tile.networking.CableBusBlockEntity;
 import com.google.common.collect.Lists;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
@@ -39,28 +34,35 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.LiteralText;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
+import alexiil.mc.lib.attributes.AttributeList;
+import alexiil.mc.lib.attributes.AttributeProvider;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
+
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.util.IOrientable;
-import appeng.tile.AEBaseInvBlockEntity;
+import appeng.block.networking.CableBusBlock;
 import appeng.tile.AEBaseBlockEntity;
+import appeng.tile.AEBaseInvBlockEntity;
+import appeng.tile.networking.CableBusBlockEntity;
 import appeng.tile.storage.SkyChestBlockEntity;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
-public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBaseBlock implements BlockEntityProvider, AttributeProvider {
+public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBaseBlock
+        implements BlockEntityProvider, AttributeProvider {
 
     @Nonnull
     private Class<T> blockEntityClass;
@@ -141,22 +143,21 @@ public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBas
     }
 
     /**
-     * Calculate redstone output level.
-     * 0 if completely empty, 1 if _any_ item is present, up to 15 if all slots are full.
+     * Calculate redstone output level. 0 if completely empty, 1 if _any_ item is
+     * present, up to 15 if all slots are full.
      */
     private int getRedstoneFromFixedItemInv(FixedItemInv inv) {
         boolean foundAnything = false; // ANY slots non-empty?
         float fillRatio = 0;
 
-        for (int i = 0; i < inv.getSlotCount(); ++i)
-        {
+        for (int i = 0; i < inv.getSlotCount(); ++i) {
             ItemStack stack = inv.getInvStack(i);
             if (stack.isEmpty()) {
                 continue;
             }
 
             int slotMaxCount = inv.getMaxAmount(i, stack);
-            fillRatio += stack.getCount() / (float)Math.min(slotMaxCount, stack.getMaxCount());
+            fillRatio += stack.getCount() / (float) Math.min(slotMaxCount, stack.getMaxCount());
             foundAnything = true;
         }
 
@@ -192,8 +193,8 @@ public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBas
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player,
-                              Hand hand, BlockHitResult hit) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
+            BlockHitResult hit) {
         ItemStack heldItem;
         if (player != null && !player.getStackInHand(hand).isEmpty()) {
             heldItem = player.getStackInHand(hand);
@@ -271,7 +272,7 @@ public abstract class AEBaseTileBlock<T extends AEBaseBlockEntity> extends AEBas
     }
 
     public ActionResult onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand,
-                                        final @Nullable ItemStack heldItem, final BlockHitResult hit) {
+            final @Nullable ItemStack heldItem, final BlockHitResult hit) {
         return ActionResult.PASS;
     }
 

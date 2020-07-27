@@ -6,10 +6,10 @@ import com.google.common.collect.ImmutableList;
 
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.RecipeType;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
+import net.minecraft.recipe.RecipeType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
@@ -26,8 +26,8 @@ public class GrinderRecipe implements Recipe<Inventory> {
     private final List<GrinderOptionalResult> optionalResults;
     private final int turns;
 
-    public GrinderRecipe(Identifier id, String group, Ingredient ingredient, int ingredientCount,
-                         ItemStack result, int turns, List<GrinderOptionalResult> optionalResults) {
+    public GrinderRecipe(Identifier id, String group, Ingredient ingredient, int ingredientCount, ItemStack result,
+            int turns, List<GrinderOptionalResult> optionalResults) {
         this.id = id;
         this.group = group;
         this.ingredient = ingredient;

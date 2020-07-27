@@ -26,8 +26,7 @@ import appeng.container.implementations.MEPortableCellContainer;
 // FIXME: Extended from GuiPortableCell before... Why?
 public class WirelessTermScreen extends MEMonitorableScreen<MEPortableCellContainer> {
 
-    public WirelessTermScreen(MEPortableCellContainer container, PlayerInventory playerInventory,
-            Text title) {
+    public WirelessTermScreen(MEPortableCellContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
     }
 

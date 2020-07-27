@@ -18,11 +18,13 @@
 
 package appeng.util.inv;
 
-import alexiil.mc.lib.attributes.Simulation;
-import alexiil.mc.lib.attributes.item.compat.FixedInventoryVanillaWrapper;
-import appeng.util.Platform;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+
+import alexiil.mc.lib.attributes.Simulation;
+import alexiil.mc.lib.attributes.item.compat.FixedInventoryVanillaWrapper;
+
+import appeng.util.Platform;
 
 public class AdaptorItemHandlerPlayerInv extends AdaptorFixedInv {
 

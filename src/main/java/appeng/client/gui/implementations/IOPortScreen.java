@@ -47,13 +47,13 @@ public class IOPortScreen extends UpgradeableScreen<IOPortContainer> {
     protected void addButtons() {
         this.fullMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 8, Settings.FULLNESS_MODE,
                 FullnessMode.EMPTY);
-        this.operationMode = new ServerSettingToggleButton<>(this.x + 80, this.y + 17,
-                Settings.OPERATION_MODE, OperationMode.EMPTY);
+        this.operationMode = new ServerSettingToggleButton<>(this.x + 80, this.y + 17, Settings.OPERATION_MODE,
+                OperationMode.EMPTY);
 
         this.addButton(this.operationMode);
         this.addButton(this.fullMode);
-        this.redstoneMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 28,
-                Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
+        this.redstoneMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 28, Settings.REDSTONE_CONTROLLED,
+                RedstoneMode.IGNORE);
         addButton(this.redstoneMode);
     }
 
@@ -76,7 +76,8 @@ public class IOPortScreen extends UpgradeableScreen<IOPortContainer> {
     }
 
     @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
+            float partialTicks) {
         super.drawBG(matrices, offsetX, offsetY, mouseX, mouseY, partialTicks);
 
         final IDefinitions definitions = Api.instance().definitions();

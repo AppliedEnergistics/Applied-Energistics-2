@@ -20,6 +20,7 @@ package appeng.fluids.items;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.storage.IStorageChannel;

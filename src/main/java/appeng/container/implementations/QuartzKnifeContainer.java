@@ -20,13 +20,14 @@ package appeng.container.implementations;
 
 import javax.annotation.Nonnull;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.screen.ScreenHandlerType;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerLocator;
@@ -82,8 +83,7 @@ public class QuartzKnifeContainer extends AEBaseContainer {
         if (currentItem != this.toolInv.getItemStack()) {
             if (!currentItem.isEmpty()) {
                 if (ItemStack.areItemsEqual(this.toolInv.getItemStack(), currentItem)) {
-                    this.getPlayerInv().setStack(this.getPlayerInv().selectedSlot,
-                            this.toolInv.getItemStack());
+                    this.getPlayerInv().setStack(this.getPlayerInv().selectedSlot, this.toolInv.getItemStack());
                 } else {
                     this.setValidContainer(false);
                 }
@@ -147,11 +147,11 @@ public class QuartzKnifeContainer extends AEBaseContainer {
                     final ItemStack item = QuartzKnifeContainer.this.toolInv.getItemStack();
                     final ItemStack before = item.copy();
                     item.damage(1, QuartzKnifeContainer.this.getPlayerInv().player, p -> {
-                        QuartzKnifeContainer.this.getPlayerInv().setStack(
-                                QuartzKnifeContainer.this.getPlayerInv().selectedSlot, ItemStack.EMPTY);
+                        QuartzKnifeContainer.this.getPlayerInv()
+                                .setStack(QuartzKnifeContainer.this.getPlayerInv().selectedSlot, ItemStack.EMPTY);
                         // FIXME FABRIC equivalent??
                         // FIXME FABRIC MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(
-                        // FIXME FABRIC         QuartzKnifeContainer.this.getPlayerInv().player, before, null));
+                        // FIXME FABRIC QuartzKnifeContainer.this.getPlayerInv().player, before, null));
                     });
 
                     QuartzKnifeContainer.this.sendContentUpdates();

@@ -18,10 +18,6 @@
 
 package appeng.core.sync;
 
-import appeng.api.features.AEFeature;
-import appeng.core.AEConfig;
-import appeng.core.AELog;
-import appeng.core.sync.network.INetworkInfo;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.entity.player.PlayerEntity;
@@ -29,6 +25,11 @@ import net.minecraft.network.NetworkSide;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
+
+import appeng.api.features.AEFeature;
+import appeng.core.AEConfig;
+import appeng.core.AELog;
+import appeng.core.sync.network.INetworkInfo;
 
 public abstract class BasePacket {
 

@@ -2,7 +2,6 @@ package appeng.debug;
 
 import java.util.Arrays;
 
-import appeng.hooks.AEToolItem;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -11,8 +10,8 @@ import net.minecraft.item.ItemUsageContext;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Util;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
@@ -21,6 +20,7 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.PartItemStack;
 import appeng.api.util.AEPartLocation;
+import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.items.parts.ColoredPartItem;
 import appeng.items.parts.PartItem;

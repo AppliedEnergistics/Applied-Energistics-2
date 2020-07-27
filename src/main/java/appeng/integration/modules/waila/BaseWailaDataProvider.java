@@ -18,18 +18,19 @@
 
 package appeng.integration.modules.waila;
 
+import java.util.List;
+
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.world.World;
+
 import mcp.mobius.waila.api.IComponentProvider;
 import mcp.mobius.waila.api.IDataAccessor;
 import mcp.mobius.waila.api.IPluginConfig;
 import mcp.mobius.waila.api.IServerDataProvider;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.text.Text;
-import net.minecraft.world.World;
-
-import java.util.List;
 
 /**
  * Base implementation for {@link mcp.mobius.waila.api.IComponentProvider}

@@ -34,8 +34,7 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
 
     private ButtonWidget selectCPU;
 
-    public CraftingStatusScreen(CraftingStatusContainer container, PlayerInventory playerInventory,
-            Text title) {
+    public CraftingStatusScreen(CraftingStatusContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
         this.subGui = new AESubScreen(this, container.getTarget());
     }

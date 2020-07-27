@@ -20,9 +20,10 @@ package appeng.client.gui.widgets;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import appeng.client.gui.AEBaseScreen;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
+
+import appeng.client.gui.AEBaseScreen;
 
 public class Scrollbar implements IScrollSource {
 
@@ -36,7 +37,8 @@ public class Scrollbar implements IScrollSource {
     private int minScroll = 0;
     private int currentScroll = 0;
 
-    private final DrawableHelper drawable = new DrawableHelper(){};
+    private final DrawableHelper drawable = new DrawableHelper() {
+    };
 
     public void draw(MatrixStack matrices, final AEBaseScreen<?> g) {
         g.bindTexture("minecraft", "gui/container/creative_inventory/tabs.png");

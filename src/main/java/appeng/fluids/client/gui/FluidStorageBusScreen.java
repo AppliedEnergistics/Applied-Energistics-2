@@ -51,8 +51,7 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusCont
     private SettingToggleButton<AccessRestriction> rwMode;
     private SettingToggleButton<StorageFilter> storageFilter;
 
-    public FluidStorageBusScreen(FluidStorageBusContainer container, PlayerInventory playerInventory,
-            Text title) {
+    public FluidStorageBusScreen(FluidStorageBusContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
         this.backgroundHeight = 251;
     }
@@ -84,8 +83,8 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusCont
         addButton(new ActionButton(this.x - 18, this.y + 28, ActionItems.WRENCH, btn -> partition()));
         this.rwMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 48, Settings.ACCESS,
                 AccessRestriction.READ_WRITE);
-        this.storageFilter = new ServerSettingToggleButton<>(this.x - 18, this.y + 68,
-                Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
+        this.storageFilter = new ServerSettingToggleButton<>(this.x - 18, this.y + 68, Settings.STORAGE_FILTER,
+                StorageFilter.EXTRACTABLE_ONLY);
         this.fuzzyMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 88, Settings.FUZZY_MODE,
                 FuzzyMode.IGNORE_ALL);
 

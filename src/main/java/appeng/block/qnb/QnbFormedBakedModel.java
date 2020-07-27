@@ -1,10 +1,17 @@
 
 package appeng.block.qnb;
 
-import appeng.client.render.cablebus.CubeBuilder;
-import appeng.core.Api;
-import appeng.core.AppEng;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import javax.annotation.Nullable;
+
 import com.google.common.collect.ImmutableList;
+
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
@@ -24,13 +31,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
 
-import javax.annotation.Nullable;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import appeng.client.render.cablebus.CubeBuilder;
+import appeng.core.Api;
+import appeng.core.AppEng;
 
 class QnbFormedBakedModel implements BakedModel, FabricBakedModel {
 
@@ -40,12 +43,12 @@ class QnbFormedBakedModel implements BakedModel, FabricBakedModel {
             new Identifier(AppEng.MOD_ID, "block/quantum_ring"));
     private static final SpriteIdentifier TEXTURE_RING_LIGHT = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier(AppEng.MOD_ID, "block/quantum_ring_light"));
-    private static final SpriteIdentifier TEXTURE_RING_LIGHT_CORNER = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
-            new Identifier(AppEng.MOD_ID, "block/quantum_ring_light_corner"));
+    private static final SpriteIdentifier TEXTURE_RING_LIGHT_CORNER = new SpriteIdentifier(
+            SpriteAtlasTexture.BLOCK_ATLAS_TEX, new Identifier(AppEng.MOD_ID, "block/quantum_ring_light_corner"));
     private static final SpriteIdentifier TEXTURE_CABLE_GLASS = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier(AppEng.MOD_ID, "part/cable/glass/transparent"));
-    private static final SpriteIdentifier TEXTURE_COVERED_CABLE = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
-            new Identifier(AppEng.MOD_ID, "part/cable/covered/transparent"));
+    private static final SpriteIdentifier TEXTURE_COVERED_CABLE = new SpriteIdentifier(
+            SpriteAtlasTexture.BLOCK_ATLAS_TEX, new Identifier(AppEng.MOD_ID, "part/cable/covered/transparent"));
 
     private static final float DEFAULT_RENDER_MIN = 2.0f;
     private static final float DEFAULT_RENDER_MAX = 14.0f;
@@ -89,7 +92,8 @@ class QnbFormedBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos,
+            Supplier<Random> randomSupplier, RenderContext context) {
         QnbFormedState formedState = getState(blockView, pos);
 
         if (formedState == null) {
@@ -185,7 +189,7 @@ class QnbFormedBakedModel implements BakedModel, FabricBakedModel {
     }
 
     private void renderCableAt(CubeBuilder builder, float thickness, Sprite texture, float pull,
-                               Set<Direction> connections) {
+            Set<Direction> connections) {
         builder.setTexture(texture);
 
         if (connections.contains(Direction.WEST)) {

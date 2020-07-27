@@ -1,5 +1,56 @@
 package appeng.core;
 
+import java.util.OptionalLong;
+import java.util.function.Consumer;
+
+import net.earthcomputer.libstructure.LibStructure;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BannerBlockEntity;
+import net.minecraft.block.entity.BeaconBlockEntity;
+import net.minecraft.block.entity.BrewingStandBlockEntity;
+import net.minecraft.block.entity.ChestBlockEntity;
+import net.minecraft.block.entity.CommandBlockBlockEntity;
+import net.minecraft.block.entity.ComparatorBlockEntity;
+import net.minecraft.block.entity.DaylightDetectorBlockEntity;
+import net.minecraft.block.entity.DispenserBlockEntity;
+import net.minecraft.block.entity.DropperBlockEntity;
+import net.minecraft.block.entity.EnchantingTableBlockEntity;
+import net.minecraft.block.entity.EndPortalBlockEntity;
+import net.minecraft.block.entity.EnderChestBlockEntity;
+import net.minecraft.block.entity.FurnaceBlockEntity;
+import net.minecraft.block.entity.HopperBlockEntity;
+import net.minecraft.block.entity.MobSpawnerBlockEntity;
+import net.minecraft.block.entity.PistonBlockEntity;
+import net.minecraft.block.entity.ShulkerBoxBlockEntity;
+import net.minecraft.block.entity.SignBlockEntity;
+import net.minecraft.block.entity.SkullBlockEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.RecipeType;
+import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.tag.BlockTags;
+import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.chunk.StructureConfig;
+import net.minecraft.world.gen.decorator.Decorator;
+import net.minecraft.world.gen.decorator.NopeDecoratorConfig;
+import net.minecraft.world.gen.decorator.RangeDecoratorConfig;
+import net.minecraft.world.gen.feature.DefaultFeatureConfig;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.FeatureConfig;
+import net.minecraft.world.gen.feature.OreFeatureConfig;
+
 import appeng.api.config.Upgrades;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IItems;
@@ -101,56 +152,6 @@ import appeng.tile.AEBaseBlockEntity;
 import appeng.worldgen.ChargedQuartzOreConfig;
 import appeng.worldgen.ChargedQuartzOreFeature;
 import appeng.worldgen.meteorite.MeteoriteStructure;
-import net.earthcomputer.libstructure.LibStructure;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BannerBlockEntity;
-import net.minecraft.block.entity.BeaconBlockEntity;
-import net.minecraft.block.entity.BrewingStandBlockEntity;
-import net.minecraft.block.entity.ChestBlockEntity;
-import net.minecraft.block.entity.CommandBlockBlockEntity;
-import net.minecraft.block.entity.ComparatorBlockEntity;
-import net.minecraft.block.entity.DaylightDetectorBlockEntity;
-import net.minecraft.block.entity.DispenserBlockEntity;
-import net.minecraft.block.entity.DropperBlockEntity;
-import net.minecraft.block.entity.EnchantingTableBlockEntity;
-import net.minecraft.block.entity.EndPortalBlockEntity;
-import net.minecraft.block.entity.EnderChestBlockEntity;
-import net.minecraft.block.entity.FurnaceBlockEntity;
-import net.minecraft.block.entity.HopperBlockEntity;
-import net.minecraft.block.entity.MobSpawnerBlockEntity;
-import net.minecraft.block.entity.PistonBlockEntity;
-import net.minecraft.block.entity.ShulkerBoxBlockEntity;
-import net.minecraft.block.entity.SignBlockEntity;
-import net.minecraft.block.entity.SkullBlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.tag.BlockTags;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.chunk.StructureConfig;
-import net.minecraft.world.gen.decorator.Decorator;
-import net.minecraft.world.gen.decorator.NopeDecoratorConfig;
-import net.minecraft.world.gen.decorator.RangeDecoratorConfig;
-import net.minecraft.world.gen.feature.DefaultFeatureConfig;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.FeatureConfig;
-import net.minecraft.world.gen.feature.OreFeatureConfig;
-
-import java.util.OptionalLong;
-import java.util.function.Consumer;
 
 public abstract class AppEngBase implements AppEng {
 
@@ -167,7 +168,7 @@ public abstract class AppEngBase implements AppEng {
         AEConfig.load(FabricLoader.getInstance().getConfigDirectory());
 
         CreativeTab.init();
-        FacadeCreativeTab.init() ;// This call has a side-effect (adding it to the creative screen)
+        FacadeCreativeTab.init();// This call has a side-effect (adding it to the creative screen)
 
         AeStats.register();
         advancementTriggers = new AdvancementTriggers(CriteriaRegisterMixin::callRegister);
@@ -409,7 +410,8 @@ public abstract class AppEngBase implements AppEng {
     }
 
     private void registerRecipeSerializers() {
-        Registry.register(Registry.RECIPE_SERIALIZER, AppEng.makeId("quartz_knife"), QuartzKnifeRecipeSerializer.INSTANCE);
+        Registry.register(Registry.RECIPE_SERIALIZER, AppEng.makeId("quartz_knife"),
+                QuartzKnifeRecipeSerializer.INSTANCE);
         Registry.register(Registry.RECIPE_SERIALIZER, AppEng.makeId("grinder"), GrinderRecipeSerializer.INSTANCE);
         Registry.register(Registry.RECIPE_SERIALIZER, AppEng.makeId("inscriber"), InscriberRecipeSerializer.INSTANCE);
         Registry.register(Registry.RECIPE_SERIALIZER, AppEng.makeId("disassemble"), DisassembleRecipe.SERIALIZER);
@@ -424,14 +426,12 @@ public abstract class AppEngBase implements AppEng {
 
     @Override
     public void sendToAllNearExcept(final PlayerEntity p, final double x, final double y, final double z,
-                                    final double dist, final World w, final BasePacket packet) {
+            final double dist, final World w, final BasePacket packet) {
         if (w.isClient()) {
             return;
         }
 
-        NetworkHandler.instance().sendToAllAround(packet, new TargetPoint(
-                x, y, z, dist, w
-        ));
+        NetworkHandler.instance().sendToAllAround(packet, new TargetPoint(x, y, z, dist, w));
     }
 
     @Override
@@ -449,10 +449,10 @@ public abstract class AppEngBase implements AppEng {
         this.renderModeBased = player;
     }
 
-    protected final <T extends IBootstrapComponent> void callDeferredBootstrapComponents(Class<T> componentClass, Consumer<T> invoker) {
+    protected final <T extends IBootstrapComponent> void callDeferredBootstrapComponents(Class<T> componentClass,
+            Consumer<T> invoker) {
         final ApiDefinitions definitions = Api.INSTANCE.definitions();
-        definitions.getRegistry().getBootstrapComponents(componentClass)
-                .forEachRemaining(invoker);
+        definitions.getRegistry().getBootstrapComponents(componentClass).forEachRemaining(invoker);
     }
 
     protected CableRenderMode renderModeForPlayer(final PlayerEntity player) {
@@ -485,31 +485,29 @@ public abstract class AppEngBase implements AppEng {
                 CraftConfirmContainer::open);
         CraftingCPUContainer.TYPE = registerScreenHandler("craftingcpu", CraftingCPUContainer::fromNetwork,
                 CraftingCPUContainer::open);
-        CraftingStatusContainer.TYPE = registerScreenHandler("craftingstatus",
-                CraftingStatusContainer::fromNetwork, CraftingStatusContainer::open);
+        CraftingStatusContainer.TYPE = registerScreenHandler("craftingstatus", CraftingStatusContainer::fromNetwork,
+                CraftingStatusContainer::open);
         CraftingTermContainer.TYPE = registerScreenHandler("craftingterm", CraftingTermContainer::fromNetwork,
                 CraftingTermContainer::open);
         DriveContainer.TYPE = registerScreenHandler("drive", DriveContainer::fromNetwork, DriveContainer::open);
-        FormationPlaneContainer.TYPE = registerScreenHandler("formationplane",
-                FormationPlaneContainer::fromNetwork, FormationPlaneContainer::open);
-        GrinderContainer.TYPE = registerScreenHandler("grinder", GrinderContainer::fromNetwork,
-                GrinderContainer::open);
+        FormationPlaneContainer.TYPE = registerScreenHandler("formationplane", FormationPlaneContainer::fromNetwork,
+                FormationPlaneContainer::open);
+        GrinderContainer.TYPE = registerScreenHandler("grinder", GrinderContainer::fromNetwork, GrinderContainer::open);
         InscriberContainer.TYPE = registerScreenHandler("inscriber", InscriberContainer::fromNetwork,
                 InscriberContainer::open);
         InterfaceContainer.TYPE = registerScreenHandler("interface", InterfaceContainer::fromNetwork,
                 InterfaceContainer::open);
         InterfaceTerminalContainer.TYPE = registerScreenHandler("interfaceterminal",
                 InterfaceTerminalContainer::fromNetwork, InterfaceTerminalContainer::open);
-        IOPortContainer.TYPE = registerScreenHandler("ioport", IOPortContainer::fromNetwork,
-                IOPortContainer::open);
+        IOPortContainer.TYPE = registerScreenHandler("ioport", IOPortContainer::fromNetwork, IOPortContainer::open);
         LevelEmitterContainer.TYPE = registerScreenHandler("levelemitter", LevelEmitterContainer::fromNetwork,
                 LevelEmitterContainer::open);
         MolecularAssemblerContainer.TYPE = registerScreenHandler("molecular_assembler",
                 MolecularAssemblerContainer::fromNetwork, MolecularAssemblerContainer::open);
         MEMonitorableContainer.TYPE = registerScreenHandler("memonitorable", MEMonitorableContainer::fromNetwork,
                 MEMonitorableContainer::open);
-        MEPortableCellContainer.TYPE = registerScreenHandler("meportablecell",
-                MEPortableCellContainer::fromNetwork, MEPortableCellContainer::open);
+        MEPortableCellContainer.TYPE = registerScreenHandler("meportablecell", MEPortableCellContainer::fromNetwork,
+                MEPortableCellContainer::open);
         NetworkStatusContainer.TYPE = registerScreenHandler("networkstatus", NetworkStatusContainer::fromNetwork,
                 NetworkStatusContainer::open);
         NetworkToolContainer.TYPE = registerScreenHandler("networktool", NetworkToolContainer::fromNetwork,
@@ -521,8 +519,8 @@ public abstract class AppEngBase implements AppEng {
         QNBContainer.TYPE = registerScreenHandler("qnb", QNBContainer::fromNetwork, QNBContainer::open);
         QuartzKnifeContainer.TYPE = registerScreenHandler("quartzknife", QuartzKnifeContainer::fromNetwork,
                 QuartzKnifeContainer::open);
-        SecurityStationContainer.TYPE = registerScreenHandler("securitystation",
-                SecurityStationContainer::fromNetwork, SecurityStationContainer::open);
+        SecurityStationContainer.TYPE = registerScreenHandler("securitystation", SecurityStationContainer::fromNetwork,
+                SecurityStationContainer::open);
         SkyChestContainer.TYPE = registerScreenHandler("skychest", SkyChestContainer::fromNetwork,
                 SkyChestContainer::open);
         SpatialIOPortContainer.TYPE = registerScreenHandler("spatialioport", SpatialIOPortContainer::fromNetwork,
@@ -542,8 +540,8 @@ public abstract class AppEngBase implements AppEng {
                 FluidFormationPlaneContainer::fromNetwork, FluidFormationPlaneContainer::open);
         FluidIOContainer.TYPE = registerScreenHandler("fluid_io", FluidIOContainer::fromNetwork,
                 FluidIOContainer::open);
-        FluidInterfaceContainer.TYPE = registerScreenHandler("fluid_interface",
-                FluidInterfaceContainer::fromNetwork, FluidInterfaceContainer::open);
+        FluidInterfaceContainer.TYPE = registerScreenHandler("fluid_interface", FluidInterfaceContainer::fromNetwork,
+                FluidInterfaceContainer::open);
         FluidLevelEmitterContainer.TYPE = registerScreenHandler("fluid_level_emitter",
                 FluidLevelEmitterContainer::fromNetwork, FluidLevelEmitterContainer::open);
         FluidStorageBusContainer.TYPE = registerScreenHandler("fluid_storage_bus",
@@ -553,21 +551,19 @@ public abstract class AppEngBase implements AppEng {
 
     }
 
-    private <T extends AEBaseContainer> ScreenHandlerType<T> registerScreenHandler(String id, ScreenHandlerRegistry.ExtendedClientHandlerFactory<T> factory, ContainerOpener.Opener<T> opener) {
+    private <T extends AEBaseContainer> ScreenHandlerType<T> registerScreenHandler(String id,
+            ScreenHandlerRegistry.ExtendedClientHandlerFactory<T> factory, ContainerOpener.Opener<T> opener) {
         ScreenHandlerType<T> type = ScreenHandlerRegistry.registerExtended(AppEng.makeId(id), factory);
         ContainerOpener.addOpener(type, opener);
         return type;
     }
 
     private void registerWorldGen() {
-        LibStructure.registerStructure(
-                MeteoriteStructure.ID,
-                MeteoriteStructure.INSTANCE,
-                GenerationStep.Feature.TOP_LAYER_MODIFICATION,
-                new StructureConfig(32, 8, 124895654),
-                new MeteoriteStructure(DefaultFeatureConfig.CODEC).configure(DefaultFeatureConfig.INSTANCE)
-        );
-        Registry.register(Registry.FEATURE, AppEng.makeId("charged_quartz_ore"), new ChargedQuartzOreFeature(ChargedQuartzOreConfig.CODEC));
+        LibStructure.registerStructure(MeteoriteStructure.ID, MeteoriteStructure.INSTANCE,
+                GenerationStep.Feature.TOP_LAYER_MODIFICATION, new StructureConfig(32, 8, 124895654),
+                new MeteoriteStructure(DefaultFeatureConfig.CODEC).configure(DefaultFeatureConfig.INSTANCE));
+        Registry.register(Registry.FEATURE, AppEng.makeId("charged_quartz_ore"),
+                new ChargedQuartzOreFeature(ChargedQuartzOreConfig.CODEC));
 
         Biome.BIOMES.forEach(b -> {
             addMeteoriteWorldGen(b);
@@ -593,12 +589,11 @@ public abstract class AppEngBase implements AppEng {
         }
 
         BlockState quartzOre = Api.instance().definitions().blocks().quartzOre().block().getDefaultState();
-        b.addFeature(GenerationStep.Feature.UNDERGROUND_ORES,
-                Feature.ORE
-                        .configure(new OreFeatureConfig(OreFeatureConfig.Target.NATURAL_STONE,
-                                quartzOre, AEConfig.instance().getQuartzOresPerCluster()))
-                        .createDecoratedFeature(Decorator.COUNT_RANGE.configure(
-                                new RangeDecoratorConfig(AEConfig.instance().getQuartzOresClusterAmount(), 12, 12, 72))));
+        b.addFeature(GenerationStep.Feature.UNDERGROUND_ORES, Feature.ORE
+                .configure(new OreFeatureConfig(OreFeatureConfig.Target.NATURAL_STONE, quartzOre,
+                        AEConfig.instance().getQuartzOresPerCluster()))
+                .createDecoratedFeature(Decorator.COUNT_RANGE.configure(
+                        new RangeDecoratorConfig(AEConfig.instance().getQuartzOresClusterAmount(), 12, 12, 72))));
 
         if (AEConfig.instance().isFeatureEnabled(AEFeature.CHARGED_CERTUS_ORE)) {
 
@@ -626,24 +621,9 @@ public abstract class AppEngBase implements AppEng {
 
         RegisterDimensionTypeCallback.EVENT.register(registryTracker -> {
 
-            registryTracker.addDimensionType(
-                    SpatialDimensionManager.STORAGE_DIMENSION_TYPE,
-                    new DimensionType(
-                            OptionalLong.of(12000),
-                            false,
-                            false,
-                            false,
-                            false,
-                            false,
-                            false,
-                            true,
-                            false,
-                            false,
-                            256,
-                            BlockTags.INFINIBURN_OVERWORLD.getId(),
-                            1.0f
-                    )
-            );
+            registryTracker.addDimensionType(SpatialDimensionManager.STORAGE_DIMENSION_TYPE,
+                    new DimensionType(OptionalLong.of(12000), false, false, false, false, false, false, true, false,
+                            false, 256, BlockTags.INFINIBURN_OVERWORLD.getId(), 1.0f));
         });
     }
 

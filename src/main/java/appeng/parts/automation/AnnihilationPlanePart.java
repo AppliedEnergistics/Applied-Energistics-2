@@ -24,7 +24,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import appeng.util.FakePlayer;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.Block;
@@ -38,16 +37,16 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.ToolMaterials;
-import net.minecraft.tag.Tag;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.ItemTags;
+import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import net.minecraft.server.world.ServerWorld;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -79,14 +78,14 @@ import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.BasicStatePart;
+import appeng.util.FakePlayer;
 import appeng.util.IWorldCallable;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
 public class AnnihilationPlanePart extends BasicStatePart implements IGridTickable, IWorldCallable<TickRateModulation> {
 
-    public static final Identifier TAG_BLACKLIST = new Identifier(AppEng.MOD_ID,
-            "blacklisted/annihilation_plane");
+    public static final Identifier TAG_BLACKLIST = new Identifier(AppEng.MOD_ID, "blacklisted/annihilation_plane");
 
     private static final PlaneModels MODELS = new PlaneModels("part/annihilation_plane", "part/annihilation_plane_on");
 
@@ -258,8 +257,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
                     if (entity.getX() > pos.getX() && entity.getX() < pos.getX() + 1) {
                         if (posYMiddle > pos.getY() && posYMiddle < pos.getY() + 1) {
                             if ((entity.getZ() > pos.getZ() + 0.9 && this.getSide() == AEPartLocation.SOUTH)
-                                    || (entity.getZ() < pos.getZ() + 0.1
-                                            && this.getSide() == AEPartLocation.NORTH)) {
+                                    || (entity.getZ() < pos.getZ() + 0.1 && this.getSide() == AEPartLocation.NORTH)) {
                                 capture = true;
                             }
                         }
@@ -286,8 +284,8 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
                 if (changed) {
                     AppEng.instance().sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64,
-                            this.getTile().getWorld(), new ItemTransitionEffectPacket(entity.getX(),
-                                    entity.getY(), entity.getZ(), this.getSide().getOpposite()));
+                            this.getTile().getWorld(), new ItemTransitionEffectPacket(entity.getX(), entity.getY(),
+                                    entity.getZ(), this.getSide().getOpposite()));
                 }
             }
         }
@@ -598,11 +596,8 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         return getConnections();
     }
 
-    private static final Item[] SUPPORTED_HARVEST_TOOLS = {
-            Items.DIAMOND_AXE,
-            Items.DIAMOND_PICKAXE,
-            Items.DIAMOND_SHOVEL,
-    };
+    private static final Item[] SUPPORTED_HARVEST_TOOLS = { Items.DIAMOND_AXE, Items.DIAMOND_PICKAXE,
+            Items.DIAMOND_SHOVEL, };
 
     /**
      * Creates the fake (and temporary) tool that will be used to calculate the loot

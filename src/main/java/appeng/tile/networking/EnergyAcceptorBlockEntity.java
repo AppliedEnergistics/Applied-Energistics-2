@@ -18,10 +18,11 @@
 
 package appeng.tile.networking;
 
-import alexiil.mc.lib.attributes.item.impl.EmptyFixedItemInv;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
+
 import alexiil.mc.lib.attributes.item.FixedItemInv;
+import alexiil.mc.lib.attributes.item.impl.EmptyFixedItemInv;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.energy.IEnergyGrid;
@@ -74,7 +75,7 @@ public class EnergyAcceptorBlockEntity extends AENetworkPowerBlockEntity {
 
     @Override
     public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
-                                  final ItemStack removed, final ItemStack added) {
+            final ItemStack removed, final ItemStack added) {
 
     }
 }

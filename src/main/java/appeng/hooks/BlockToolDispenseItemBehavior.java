@@ -20,14 +20,14 @@ package appeng.hooks;
 
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.dispenser.ItemDispenserBehavior;
-import net.minecraft.util.math.BlockPointer;
 import net.minecraft.item.AutomaticItemPlacementContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.BlockPointer;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
-import net.minecraft.server.world.ServerWorld;
 
 public final class BlockToolDispenseItemBehavior extends ItemDispenserBehavior {
 
@@ -40,8 +40,8 @@ public final class BlockToolDispenseItemBehavior extends ItemDispenserBehavior {
 
             final World w = dispenser.getWorld();
             if (w instanceof ServerWorld) {
-                ItemUsageContext context = new AutomaticItemPlacementContext(w, dispenser.getBlockPos().offset(direction),
-                        direction, dispensedItem, direction.getOpposite());
+                ItemUsageContext context = new AutomaticItemPlacementContext(w,
+                        dispenser.getBlockPos().offset(direction), direction, dispensedItem, direction.getOpposite());
                 tm.useOnBlock(context);
             }
         }

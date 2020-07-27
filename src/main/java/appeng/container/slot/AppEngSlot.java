@@ -18,9 +18,8 @@
 
 package appeng.container.slot;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
-import alexiil.mc.lib.attributes.item.SingleItemSlot;
-import appeng.container.AEBaseContainer;
+import javax.annotation.Nonnull;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.entity.player.PlayerEntity;
@@ -29,7 +28,10 @@ import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 
-import javax.annotation.Nonnull;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
+import alexiil.mc.lib.attributes.item.SingleItemSlot;
+
+import appeng.container.AEBaseContainer;
 
 public class AppEngSlot extends Slot {
     private static Inventory emptyInventory = new SimpleInventory(0);
@@ -151,8 +153,6 @@ public class AppEngSlot extends Slot {
     public boolean hasStack() {
         return !backingSlot.get().isEmpty();
     }
-
-
 
     @Override
     @Environment(EnvType.CLIENT)

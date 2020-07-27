@@ -18,7 +18,8 @@
 
 package appeng.client.render.cablebus;
 
-import appeng.client.render.FacingToRotation;
+import java.util.EnumMap;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
@@ -28,7 +29,7 @@ import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Quaternion;
 
-import java.util.EnumMap;
+import appeng.client.render.FacingToRotation;
 
 /**
  * Assuming a default-orientation of forward=NORTH and up=UP, this class rotates
@@ -39,8 +40,8 @@ public class QuadRotator implements RenderContext.QuadTransform {
 
     public static final RenderContext.QuadTransform NULL_TRANSFORM = quad -> true;
 
-    private static final EnumMap<FacingToRotation, RenderContext.QuadTransform> TRANSFORMS
-            = new EnumMap<>(FacingToRotation.class);
+    private static final EnumMap<FacingToRotation, RenderContext.QuadTransform> TRANSFORMS = new EnumMap<>(
+            FacingToRotation.class);
 
     static {
         for (FacingToRotation rotation : FacingToRotation.values()) {

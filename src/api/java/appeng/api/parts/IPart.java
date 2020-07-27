@@ -23,11 +23,13 @@
 
 package appeng.api.parts;
 
-import alexiil.mc.lib.attributes.AttributeList;
-import appeng.api.networking.IGridNode;
-import appeng.api.util.AECableType;
-import appeng.api.util.AEColor;
-import appeng.api.util.AEPartLocation;
+import java.io.IOException;
+import java.util.List;
+import java.util.Random;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.entity.BlockEntity;
@@ -46,11 +48,12 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.io.IOException;
-import java.util.List;
-import java.util.Random;
+import alexiil.mc.lib.attributes.AttributeList;
+
+import appeng.api.networking.IGridNode;
+import appeng.api.util.AECableType;
+import appeng.api.util.AEColor;
+import appeng.api.util.AEPartLocation;
 
 public interface IPart extends ICustomCableConnection {
 
@@ -343,14 +346,14 @@ public interface IPart extends ICustomCableConnection {
      *
      * @see alexiil.mc.lib.attributes.AttributeProvider
      */
-    default void addAllAttributes(AttributeList<?> to) {}
-
+    default void addAllAttributes(AttributeList<?> to) {
+    }
 
     /**
      * Additional rendering data to be passed to the models for rendering this part.
      *
-     * @return The rendering data to pass to the model. Only useful if custom models are
-     *         used. Can be null to not pass anything.
+     * @return The rendering data to pass to the model. Only useful if custom models
+     *         are used. Can be null to not pass anything.
      */
     @Nullable
     default Object getModelData() {

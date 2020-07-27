@@ -18,8 +18,13 @@
 
 package appeng.client.render.model;
 
-import appeng.hooks.CompassManager;
-import appeng.hooks.CompassResult;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+import java.util.function.Supplier;
+
+import javax.annotation.Nullable;
+
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.block.BlockState;
@@ -39,11 +44,8 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Quaternion;
 import net.minecraft.world.BlockRenderView;
 
-import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-import java.util.function.Supplier;
+import appeng.hooks.CompassManager;
+import appeng.hooks.CompassResult;
 
 /**
  * This baked model combines the quads of a compass base and the quads of a
@@ -79,7 +81,8 @@ public class SkyCompassBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos,
+            Supplier<Random> randomSupplier, RenderContext context) {
         // Pre-compute the quad count to avoid list resizes
         context.fallbackConsumer().accept(this.base);
     }
@@ -88,7 +91,8 @@ public class SkyCompassBakedModel implements BakedModel, FabricBakedModel {
     public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
         context.fallbackConsumer().accept(base);
 
-        // This is used to render a compass pointing in a specific direction when being held in hand
+        // This is used to render a compass pointing in a specific direction when being
+        // held in hand
         // Set up the rotation around the Y-axis for the pointer
         context.pushTransform(quad -> {
             Quaternion quaternion = new Quaternion(0, this.fallbackRotation, 0, false);
@@ -151,7 +155,7 @@ public class SkyCompassBakedModel implements BakedModel, FabricBakedModel {
         return new ModelOverrideList(null, null, null, Collections.emptyList()) {
             @Override
             public BakedModel apply(BakedModel originalModel, ItemStack stack, @Nullable ClientWorld world,
-                                                    @Nullable LivingEntity entity) {
+                    @Nullable LivingEntity entity) {
                 // FIXME: This check prevents compasses being held by OTHERS from getting the
                 // rotation, BUT do we actually still need this???
                 if (world != null && entity instanceof ClientPlayerEntity) {

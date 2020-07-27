@@ -1,13 +1,13 @@
 package appeng.core.config;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class StringListOption extends BaseOption {
 

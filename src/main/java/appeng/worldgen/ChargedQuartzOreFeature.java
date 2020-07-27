@@ -1,6 +1,10 @@
 package appeng.worldgen;
 
+import java.util.Random;
+import java.util.function.Predicate;
+
 import com.mojang.serialization.Codec;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -10,12 +14,10 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.Feature;
 
-import java.util.Random;
-import java.util.function.Predicate;
-
 /**
- * Extends {@link net.minecraft.world.gen.feature.OreFeature} by also allowing for a replacement
- * chance. In addition, the feature will check every block in the chunk.
+ * Extends {@link net.minecraft.world.gen.feature.OreFeature} by also allowing
+ * for a replacement chance. In addition, the feature will check every block in
+ * the chunk.
  */
 public class ChargedQuartzOreFeature extends Feature<ChargedQuartzOreConfig> {
 
@@ -26,12 +28,8 @@ public class ChargedQuartzOreFeature extends Feature<ChargedQuartzOreConfig> {
     }
 
     @Override
-    public boolean generate(ServerWorldAccess worldIn,
-                            net.minecraft.world.gen.StructureAccessor structureAccessor,
-                            ChunkGenerator generator,
-                            Random rand,
-                            BlockPos pos,
-                            ChargedQuartzOreConfig config) {
+    public boolean generate(ServerWorldAccess worldIn, net.minecraft.world.gen.StructureAccessor structureAccessor,
+            ChunkGenerator generator, Random rand, BlockPos pos, ChargedQuartzOreConfig config) {
         ChunkPos chunkPos = new ChunkPos(pos);
 
         BlockPos.Mutable bpos = new BlockPos.Mutable();

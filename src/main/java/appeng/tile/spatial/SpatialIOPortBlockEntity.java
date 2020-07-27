@@ -20,15 +20,16 @@ package appeng.tile.spatial;
 
 import javax.annotation.Nonnull;
 
-import alexiil.mc.lib.attributes.Simulation;
-import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+
+import alexiil.mc.lib.attributes.Simulation;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -141,8 +142,8 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity implements
                             playerId = this.getProxy().getSecurity().getOwner();
                         }
 
-                        final TransitionResult tr = sc.doSpatialTransition(cell, serverWorld, spc.getMin(), spc.getMax(),
-                                playerId);
+                        final TransitionResult tr = sc.doSpatialTransition(cell, serverWorld, spc.getMin(),
+                                spc.getMax(), playerId);
                         if (tr.success) {
                             energy.extractAEPower(req, Actionable.MODULATE, PowerMultiplier.CONFIG);
                             this.inv.setInvStack(0, ItemStack.EMPTY, Simulation.ACTION);
@@ -167,8 +168,7 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity implements
     }
 
     @Override
-    protected @Nonnull
-    FixedItemInv getItemHandlerForSide(@Nonnull Direction side) {
+    protected @Nonnull FixedItemInv getItemHandlerForSide(@Nonnull Direction side) {
         return this.invExt;
     }
 
@@ -179,7 +179,7 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity implements
 
     @Override
     public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
-                                  final ItemStack removed, final ItemStack added) {
+            final ItemStack removed, final ItemStack added) {
 
     }
 

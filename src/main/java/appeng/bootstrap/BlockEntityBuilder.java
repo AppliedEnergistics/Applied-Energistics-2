@@ -55,7 +55,7 @@ public class BlockEntityBuilder<T extends AEBaseBlockEntity> {
     private final EnumSet<AEFeature> features = EnumSet.noneOf(AEFeature.class);
 
     public BlockEntityBuilder(FeatureFactory factory, String id, Class<T> tileClass,
-                              Function<BlockEntityType<T>, T> supplier) {
+            Function<BlockEntityType<T>, T> supplier) {
         this.factory = factory;
         this.id = AppEng.makeId(id);
         this.tileClass = tileClass;

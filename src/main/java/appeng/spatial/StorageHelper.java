@@ -18,9 +18,9 @@
 
 package appeng.spatial;
 
-import appeng.core.Api;
-import appeng.api.util.WorldCoord;
-import appeng.core.AppEng;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -36,8 +36,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.dimension.DimensionType;
 
-import java.util.ArrayList;
-import java.util.List;
 import appeng.api.util.WorldCoord;
 import appeng.core.Api;
 import appeng.core.AppEng;
@@ -100,7 +98,8 @@ public class StorageHelper {
         newWorld.getChunkManager().getChunk(MathHelper.floor(link.x) >> 4, MathHelper.floor(link.z) >> 4,
                 ChunkStatus.FULL, true);
 
-        if (entity instanceof ServerPlayerEntity && link.dim.getDimensionRegistryKey().equals(SpatialDimensionManager.STORAGE_DIMENSION_TYPE)) {
+        if (entity instanceof ServerPlayerEntity
+                && link.dim.getDimensionRegistryKey().equals(SpatialDimensionManager.STORAGE_DIMENSION_TYPE)) {
             AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger((ServerPlayerEntity) entity);
         }
 
@@ -144,18 +143,17 @@ public class StorageHelper {
         }
     }
 
-    public void swapRegions(final ServerWorld srcWorld, final int srcX, final int srcY, final int srcZ, final ServerWorld dstWorld,
-            final int dstX, final int dstY, final int dstZ, final int scaleX, final int scaleY, final int scaleZ) {
+    public void swapRegions(final ServerWorld srcWorld, final int srcX, final int srcY, final int srcZ,
+            final ServerWorld dstWorld, final int dstX, final int dstY, final int dstZ, final int scaleX,
+            final int scaleY, final int scaleZ) {
         Api.instance().definitions().blocks().matrixFrame().maybeBlock()
                 .ifPresent(matrixFrameBlock -> this.transverseEdges(dstX - 1, dstY - 1, dstZ - 1, dstX + scaleX + 1,
                         dstY + scaleY + 1, dstZ + scaleZ + 1,
                         new WrapInMatrixFrame(matrixFrameBlock.getDefaultState(), dstWorld)));
 
-        final Box srcBox = new Box(srcX, srcY, srcZ, srcX + scaleX + 1, srcY + scaleY + 1,
-                srcZ + scaleZ + 1);
+        final Box srcBox = new Box(srcX, srcY, srcZ, srcX + scaleX + 1, srcY + scaleY + 1, srcZ + scaleZ + 1);
 
-        final Box dstBox = new Box(dstX, dstY, dstZ, dstX + scaleX + 1, dstY + scaleY + 1,
-                dstZ + scaleZ + 1);
+        final Box dstBox = new Box(dstX, dstY, dstZ, dstX + scaleX + 1, dstY + scaleY + 1, dstZ + scaleZ + 1);
 
         final CachedPlane cDst = new CachedPlane(dstWorld, dstX, dstY, dstZ, dstX + scaleX, dstY + scaleY,
                 dstZ + scaleZ);
@@ -169,13 +167,13 @@ public class StorageHelper {
         final List<Entity> dstE = dstWorld.getEntitiesIncludingUngeneratedChunks(Entity.class, dstBox);
 
         for (final Entity e : dstE) {
-            this.teleportEntity(e, new TelDestination(srcWorld, srcBox, e.getX(), e.getY(), e.getZ(),
-                    -dstX + srcX, -dstY + srcY, -dstZ + srcZ));
+            this.teleportEntity(e, new TelDestination(srcWorld, srcBox, e.getX(), e.getY(), e.getZ(), -dstX + srcX,
+                    -dstY + srcY, -dstZ + srcZ));
         }
 
         for (final Entity e : srcE) {
-            this.teleportEntity(e, new TelDestination(dstWorld, dstBox, e.getX(), e.getY(), e.getZ(),
-                    -srcX + dstX, -srcY + dstY, -srcZ + dstZ));
+            this.teleportEntity(e, new TelDestination(dstWorld, dstBox, e.getX(), e.getY(), e.getZ(), -srcX + dstX,
+                    -srcY + dstY, -srcZ + dstZ));
         }
 
         for (final WorldCoord wc : cDst.getUpdates()) {
@@ -235,8 +233,8 @@ public class StorageHelper {
         private final double y;
         private final double z;
 
-        TelDestination(final ServerWorld dimension, final Box srcBox, final double x, final double y,
-                       final double z, final int tileX, final int tileY, final int tileZ) {
+        TelDestination(final ServerWorld dimension, final Box srcBox, final double x, final double y, final double z,
+                final int tileX, final int tileY, final int tileZ) {
             this.dim = dimension;
             this.x = Math.min(srcBox.maxX - 0.5, Math.max(srcBox.minX + 0.5, x + tileX));
             this.y = Math.min(srcBox.maxY - 0.5, Math.max(srcBox.minY + 0.5, y + tileY));

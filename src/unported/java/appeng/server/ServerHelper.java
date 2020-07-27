@@ -25,8 +25,8 @@ import java.util.Random;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -41,7 +41,6 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.util.Platform;
 
 public class ServerHelper extends CommonHelper {
-
 
     @Override
     public World getWorld() {

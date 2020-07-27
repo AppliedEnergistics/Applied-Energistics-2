@@ -23,13 +23,14 @@ import java.util.Iterator;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+
 import alexiil.mc.lib.attributes.ListenerRemovalToken;
 import alexiil.mc.lib.attributes.ListenerToken;
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.InvMarkDirtyListener;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
 
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
@@ -124,7 +125,8 @@ public class AppEngInternalAEInventory implements FixedItemInv, Iterable<ItemSta
             return false;
         }
 
-        // FIXME: We need to implement the actual checks here, stacking /caninsert/canremove
+        // FIXME: We need to implement the actual checks here, stacking
+        // /caninsert/canremove
         if (true) {
             throw new IllegalStateException();
         }
@@ -134,8 +136,7 @@ public class AppEngInternalAEInventory implements FixedItemInv, Iterable<ItemSta
         }
 
         ItemStack oldStack = this.getInvStack(slot).copy();
-        this.inv[slot] = Api.instance().storage().getStorageChannel(IItemStorageChannel.class)
-                .createStack(to);
+        this.inv[slot] = Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(to);
 
         ItemStack newStack = to.copy();
         InvOperation op = InvOperation.SET;

@@ -28,8 +28,7 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
 
 public abstract class IconButton extends ButtonWidget implements ITooltip {
-    public static final Identifier TEXTURE_STATES = new Identifier("appliedenergistics2",
-            "textures/guis/states.png");
+    public static final Identifier TEXTURE_STATES = new Identifier("appliedenergistics2", "textures/guis/states.png");
 
     private boolean halfSize = false;
 

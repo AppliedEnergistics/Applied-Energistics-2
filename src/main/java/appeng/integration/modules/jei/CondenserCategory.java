@@ -18,10 +18,18 @@
 
 package appeng.integration.modules.jei;
 
-import appeng.api.config.CondenserOutput;
-import appeng.core.Api;
-import appeng.core.AppEng;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.google.common.base.Splitter;
+
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.Language;
+
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.EntryStack;
@@ -30,15 +38,10 @@ import me.shedaniel.rei.api.widgets.Slot;
 import me.shedaniel.rei.api.widgets.Tooltip;
 import me.shedaniel.rei.api.widgets.Widgets;
 import me.shedaniel.rei.gui.widget.Widget;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Language;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import appeng.api.config.CondenserOutput;
+import appeng.core.Api;
+import appeng.core.AppEng;
 
 class CondenserCategory implements RecipeCategory<CondenserOutputDisplay> {
 
@@ -85,10 +88,12 @@ class CondenserCategory implements RecipeCategory<CondenserOutputDisplay> {
         widgets.add(Widgets.createTexturedWidget(statesLocation, origin.x + 2, origin.y + 28, 241, 81, 14, 14));
         widgets.add(Widgets.createTexturedWidget(statesLocation, origin.x + 78, origin.y + 28, 240, 240, 16, 16));
 
-        // FIXME IDrawableStatic progressDrawable = guiHelper.drawableBuilder(location, 178, 25, 6, 18).addPadding(0, 0, 70, 0)
-        // FIXME         .build();
-        // FIXME this.progress = guiHelper.createAnimatedDrawable(progressDrawable, 40, IDrawableAnimated.StartDirection.BOTTOM,
-        // FIXME         false);
+        // FIXME IDrawableStatic progressDrawable = guiHelper.drawableBuilder(location,
+        // 178, 25, 6, 18).addPadding(0, 0, 70, 0)
+        // FIXME .build();
+        // FIXME this.progress = guiHelper.createAnimatedDrawable(progressDrawable, 40,
+        // IDrawableAnimated.StartDirection.BOTTOM,
+        // FIXME false);
 
         if (recipeDisplay.getType() == CondenserOutput.MATTER_BALLS) {
             widgets.add(Widgets.createTexturedWidget(statesLocation, origin.x + 78, origin.y + 28, 16, 112, 14, 14));
@@ -98,27 +103,23 @@ class CondenserCategory implements RecipeCategory<CondenserOutputDisplay> {
         widgets.add(Widgets.createDrawableWidget((helper, matrices, mouseX, mouseY, delta) -> {
             Rectangle rect = new Rectangle(origin.x + 78, origin.y + 28, 16, 16);
             if (rect.contains(mouseX, mouseY)) {
-                Tooltip.create(getTooltip(recipeDisplay.getType()).stream().map(LiteralText::new).collect(Collectors.toList()))
+                Tooltip.create(
+                        getTooltip(recipeDisplay.getType()).stream().map(LiteralText::new).collect(Collectors.toList()))
                         .queue();
             }
         }));
 
-        Slot outputSlot = Widgets.createSlot(new Point(origin.x + 55, origin.y + 27))
-                .disableBackground()
-                .markOutput()
+        Slot outputSlot = Widgets.createSlot(new Point(origin.x + 55, origin.y + 27)).disableBackground().markOutput()
                 .entries(recipeDisplay.getOutputEntries());
         widgets.add(outputSlot);
 
-        Slot storageCellSlot = Widgets.createSlot(new Point(origin.x + 51, origin.y + 1))
-                .disableBackground()
-                .markInput()
-                .entries(recipeDisplay.getViableStorageComponents());
+        Slot storageCellSlot = Widgets.createSlot(new Point(origin.x + 51, origin.y + 1)).disableBackground()
+                .markInput().entries(recipeDisplay.getViableStorageComponents());
         widgets.add(storageCellSlot);
 
         return widgets;
 
     }
-
 
     @Override
     public int getDisplayWidth(CondenserOutputDisplay display) {

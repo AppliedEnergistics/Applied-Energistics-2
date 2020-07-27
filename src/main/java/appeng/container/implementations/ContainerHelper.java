@@ -1,17 +1,19 @@
 package appeng.container.implementations;
 
+import javax.annotation.Nullable;
+
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.text.Text;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.api.config.SecurityPermissions;
@@ -27,8 +29,6 @@ import appeng.core.Api;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.util.Platform;
-
-import javax.annotation.Nullable;
 
 /**
  * Helper for containers that can be opened for a part <em>or</em> tile given
@@ -142,8 +142,7 @@ public final class ContainerHelper<C extends AEBaseContainer, I> {
         // FIXME: Should move this up, because at this point, it's hard to know where
         // the terminal host came from (part or tile)
         if (locator.hasBlockPos()) {
-            return new TranslatableText(
-                    world.getBlockState(locator.getBlockPos()).getBlock().getTranslationKey());
+            return new TranslatableText(world.getBlockState(locator.getBlockPos()).getBlock().getTranslationKey());
         }
 
         return new LiteralText("Unknown");

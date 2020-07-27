@@ -26,8 +26,8 @@ import javax.annotation.Nullable;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.dimension.DimensionType;
 
 import appeng.services.CompassService;
 import appeng.services.compass.CompassThreadFactory;
@@ -67,8 +67,10 @@ public final class WorldData implements IWorldData {
                     "The server doesn't have an Overworld dimension we could store our data on!");
         }
 
-        final PlayerData playerData = overworld.getPersistentStateManager().getOrCreate(PlayerData::new, PlayerData.NAME);
-        final StorageData storageData = overworld.getPersistentStateManager().getOrCreate(StorageData::new, StorageData.NAME);
+        final PlayerData playerData = overworld.getPersistentStateManager().getOrCreate(PlayerData::new,
+                PlayerData.NAME);
+        final StorageData storageData = overworld.getPersistentStateManager().getOrCreate(StorageData::new,
+                StorageData.NAME);
 
         final ThreadFactory compassThreadFactory = new CompassThreadFactory();
         final CompassService compassService = new CompassService(server, compassThreadFactory);

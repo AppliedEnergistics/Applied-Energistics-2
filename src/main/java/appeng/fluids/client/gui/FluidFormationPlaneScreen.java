@@ -45,8 +45,8 @@ public class FluidFormationPlaneScreen extends UpgradeableScreen<FluidFormationP
 
     @Override
     protected void addButtons() {
-        this.addButton(new TabButton(this.x + 154, this.y, 2 + 4 * 16, GuiText.Priority.text(),
-                this.itemRenderer, btn -> openPriorityGui()));
+        this.addButton(new TabButton(this.x + 154, this.y, 2 + 4 * 16, GuiText.Priority.text(), this.itemRenderer,
+                btn -> openPriorityGui()));
     }
 
     private void openPriorityGui() {

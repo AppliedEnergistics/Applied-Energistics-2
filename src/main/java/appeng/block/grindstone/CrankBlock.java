@@ -20,33 +20,33 @@ package appeng.block.grindstone;
 
 import javax.annotation.Nullable;
 
-import appeng.util.FakePlayer;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.block.ShapeContext;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
-import net.minecraft.world.World;
 
 import appeng.api.implementations.tiles.ICrankable;
 import appeng.block.AEBaseTileBlock;
 import appeng.core.stats.AeStats;
 import appeng.tile.AEBaseBlockEntity;
 import appeng.tile.grindstone.CrankBlockEntity;
+import appeng.util.FakePlayer;
 
 public class CrankBlock extends AEBaseTileBlock<CrankBlockEntity> {
 
@@ -79,8 +79,8 @@ public class CrankBlock extends AEBaseTileBlock<CrankBlockEntity> {
     }
 
     @Override
-    public void onPlaced(final World world, final BlockPos pos, final BlockState state,
-            final LivingEntity placer, final ItemStack stack) {
+    public void onPlaced(final World world, final BlockPos pos, final BlockState state, final LivingEntity placer,
+            final ItemStack stack) {
         final AEBaseBlockEntity tile = this.getBlockEntity(world, pos);
         if (tile != null) {
             final Direction mnt = this.findCrankable(world, pos);
@@ -95,7 +95,8 @@ public class CrankBlock extends AEBaseTileBlock<CrankBlockEntity> {
     }
 
     @Override
-    public boolean isValidOrientation(final WorldAccess w, final BlockPos pos, final Direction forward, final Direction up) {
+    public boolean isValidOrientation(final WorldAccess w, final BlockPos pos, final Direction forward,
+            final Direction up) {
         final BlockEntity te = w.getBlockEntity(pos);
         return !(te instanceof CrankBlockEntity) || this.isCrankable(w, pos, up.getOpposite());
     }
@@ -155,8 +156,8 @@ public class CrankBlock extends AEBaseTileBlock<CrankBlockEntity> {
             final double xOff = -0.15 * up.getOffsetX();
             final double yOff = -0.15 * up.getOffsetY();
             final double zOff = -0.15 * up.getOffsetZ();
-            return VoxelShapes.cuboid(
-                    new Box(xOff + 0.15, yOff + 0.15, zOff + 0.15, xOff + 0.85, yOff + 0.85, zOff + 0.85));
+            return VoxelShapes
+                    .cuboid(new Box(xOff + 0.15, yOff + 0.15, zOff + 0.15, xOff + 0.85, yOff + 0.85, zOff + 0.85));
         }
 
     }

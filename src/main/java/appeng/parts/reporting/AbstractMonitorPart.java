@@ -20,20 +20,19 @@ package appeng.parts.reporting;
 
 import java.io.IOException;
 
-import net.minecraft.client.util.math.MatrixStack;
-
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 
 import appeng.api.implementations.parts.IStorageMonitorPart;
 import appeng.api.networking.security.IActionSource;
@@ -49,7 +48,6 @@ import appeng.api.storage.data.IItemList;
 import appeng.client.render.TesrRenderHelper;
 import appeng.core.Api;
 import appeng.core.localization.PlayerMessages;
-
 import appeng.me.GridAccessException;
 import appeng.util.IWideReadableNumberConverter;
 import appeng.util.Platform;
@@ -76,7 +74,6 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     private String lastHumanReadableText;
     private boolean isLocked;
     private IStackWatcher myWatcher;
-
 
     public AbstractMonitorPart(final ItemStack is) {
         super(is);
@@ -179,7 +176,8 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
 
         if (player.getStackInHand(hand).isEmpty()) {
             this.isLocked = !this.isLocked;
-            player.sendSystemMessage((this.isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked).get(), Util.NIL_UUID);
+            player.sendSystemMessage((this.isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked).get(),
+                    Util.NIL_UUID);
             this.getHost().markForSave();
             this.getHost().markForUpdate();
         }

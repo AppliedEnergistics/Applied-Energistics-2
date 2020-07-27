@@ -20,13 +20,14 @@ package appeng.tile.misc;
 
 import java.util.List;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.CopyMode;
 import appeng.api.config.Settings;
@@ -131,7 +132,7 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
 
     @Override
     public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
-                                  final ItemStack removedStack, final ItemStack newStack) {
+            final ItemStack removedStack, final ItemStack newStack) {
         if (inv == this.cell && !this.locked) {
             this.locked = true;
 

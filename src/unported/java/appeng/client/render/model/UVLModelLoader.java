@@ -31,18 +31,12 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.util.math.AffineTransformation;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.math.MatrixStack;
 
-import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.BlockFaceUV;
 import net.minecraft.client.render.model.BlockModel;
@@ -51,12 +45,18 @@ import net.minecraft.client.render.model.BlockPartFace;
 import net.minecraft.client.render.model.IModelTransform;
 import net.minecraft.client.render.model.IUnbakedModel;
 import net.minecraft.client.render.model.ItemOverride;
-import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.ItemTransformVec3f;
+import net.minecraft.client.render.model.ModelLoader;
+import net.minecraft.client.render.model.json.ModelOverrideList;
+import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.SpriteIdentifier;
+import net.minecraft.client.util.math.AffineTransformation;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
+import net.minecraft.util.math.Direction;
 import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
@@ -143,16 +143,15 @@ public class UVLModelLoader implements IModelLoader<UVLModelLoader.UVLModelWrapp
 
         @Override
         public BakedModel bake(IModelConfiguration owner, ModelLoader bakery,
-                               Function<SpriteIdentifier, Sprite> spriteGetter, IModelTransform modelTransform,
-                               ModelOverrideList overrides, Identifier modelLocation) {
+                Function<SpriteIdentifier, Sprite> spriteGetter, IModelTransform modelTransform,
+                ModelOverrideList overrides, Identifier modelLocation) {
             Sprite particle = spriteGetter.apply(owner.resolveTexture("particle"));
 
             IModelBuilder<?> builder = IModelBuilder.of(owner, overrides, particle);
             for (BlockPart blockpart : parent.getElements()) {
                 for (Direction direction : blockpart.mapFaces.keySet()) {
                     BlockPartFace blockpartface = blockpart.mapFaces.get(direction);
-                    Sprite textureatlassprite1 = spriteGetter
-                            .apply(owner.resolveTexture(blockpartface.texture));
+                    Sprite textureatlassprite1 = spriteGetter.apply(owner.resolveTexture(blockpartface.texture));
                     BakedQuad quad = BlockModel.makeBakedQuad(blockpart, blockpartface, textureatlassprite1, direction,
                             modelTransform, modelLocation);
 
@@ -200,8 +199,8 @@ public class UVLModelLoader implements IModelLoader<UVLModelLoader.UVLModelWrapp
 
         @Override
         public Collection<SpriteIdentifier> getTextures(IModelConfiguration owner,
-                                                        Function<Identifier, IUnbakedModel> modelGetter,
-                                                        Set<com.mojang.datafixers.util.Pair<String, String>> missingTextureErrors) {
+                Function<Identifier, IUnbakedModel> modelGetter,
+                Set<com.mojang.datafixers.util.Pair<String, String>> missingTextureErrors) {
             return parent.getTextures(modelGetter, missingTextureErrors);
         }
 

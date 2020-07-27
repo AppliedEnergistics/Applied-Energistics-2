@@ -22,7 +22,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 
-
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.widgets.TabButton;
 import appeng.container.implementations.PriorityContainer;
@@ -36,8 +35,7 @@ import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.util.IAEFluidTank;
 
 public class FluidInterfaceScreen extends UpgradeableScreen<FluidInterfaceContainer> {
-    public FluidInterfaceScreen(FluidInterfaceContainer container, PlayerInventory playerInventory,
-            Text title) {
+    public FluidInterfaceScreen(FluidInterfaceContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
         this.backgroundHeight = 231;
     }

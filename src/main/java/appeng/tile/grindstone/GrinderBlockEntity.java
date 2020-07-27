@@ -21,12 +21,13 @@ package appeng.tile.grindstone;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.Direction;
+
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.util.math.Direction;
 
 import appeng.api.implementations.tiles.ICrankable;
 import appeng.recipes.handlers.GrinderOptionalResult;
@@ -71,7 +72,7 @@ public class GrinderBlockEntity extends AEBaseInvBlockEntity implements ICrankab
 
     @Override
     public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
-                                  final ItemStack removed, final ItemStack added) {
+            final ItemStack removed, final ItemStack added) {
 
     }
 

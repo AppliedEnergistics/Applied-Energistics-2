@@ -18,9 +18,10 @@
 
 package appeng.me.storage;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.items.IStorageCell;

@@ -18,8 +18,8 @@
 
 package appeng.tile.misc;
 
-import net.minecraft.util.Tickable;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.util.Tickable;
 
 import appeng.tile.AEBaseBlockEntity;
 import appeng.util.Platform;

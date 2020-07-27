@@ -18,15 +18,14 @@
 
 package appeng.client.render.crafting;
 
-import appeng.tile.crafting.CraftingCubeModelData;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
 
-
 import appeng.api.util.AEColor;
 import appeng.block.crafting.CraftingMonitorBlock;
 import appeng.client.render.cablebus.CubeBuilder;
+import appeng.tile.crafting.CraftingCubeModelData;
 import appeng.tile.crafting.CraftingMonitorModelData;
 
 /**
@@ -48,9 +47,8 @@ public class MonitorBakedModel extends CraftingCubeBakedModel {
 
     private final Sprite lightBrightTexture;
 
-    MonitorBakedModel(Sprite ringCorner, Sprite ringHor, Sprite ringVer,
-                      Sprite chassisTexture, Sprite baseTexture, Sprite lightDarkTexture,
-                      Sprite lightMediumTexture, Sprite lightBrightTexture) {
+    MonitorBakedModel(Sprite ringCorner, Sprite ringHor, Sprite ringVer, Sprite chassisTexture, Sprite baseTexture,
+            Sprite lightDarkTexture, Sprite lightMediumTexture, Sprite lightBrightTexture) {
         super(ringCorner, ringHor, ringVer);
         this.chassisTexture = chassisTexture;
         this.baseTexture = baseTexture;
@@ -60,8 +58,8 @@ public class MonitorBakedModel extends CraftingCubeBakedModel {
     }
 
     @Override
-    protected void addInnerCube(Direction side, BlockState state, CraftingCubeModelData modelData, CubeBuilder builder, float x1,
-                                float y1, float z1, float x2, float y2, float z2) {
+    protected void addInnerCube(Direction side, BlockState state, CraftingCubeModelData modelData, CubeBuilder builder,
+            float x1, float y1, float z1, float x2, float y2, float z2) {
         Direction forward = modelData.getForward();
 
         // For sides other than the front, use the chassis texture

@@ -20,33 +20,32 @@ package appeng.block.misc;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.block.ShapeContext;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.explosion.Explosion;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import net.minecraft.world.explosion.Explosion;
 
 import appeng.block.AEBaseBlock;
 import appeng.entity.TinyTNTPrimedEntity;
 
 public class TinyTNTBlock extends AEBaseBlock {
 
-    private static final VoxelShape SHAPE = VoxelShapes
-            .cuboid(new Box(0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f));
+    private static final VoxelShape SHAPE = VoxelShapes.cuboid(new Box(0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f));
 
     public TinyTNTBlock(Settings props) {
         super(props);
@@ -80,16 +79,17 @@ public class TinyTNTBlock extends AEBaseBlock {
 
     public void startFuse(final World w, final BlockPos pos, final LivingEntity igniter) {
         if (!w.isClient) {
-            final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(w, pos.getX() + 0.5F,
-                    pos.getY(), pos.getZ() + 0.5F, igniter);
+            final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(w, pos.getX() + 0.5F, pos.getY(),
+                    pos.getZ() + 0.5F, igniter);
             w.spawnEntity(primedTinyTNTEntity);
-            w.playSound(null, primedTinyTNTEntity.getX(), primedTinyTNTEntity.getY(),
-                    primedTinyTNTEntity.getZ(), SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1, 1);
+            w.playSound(null, primedTinyTNTEntity.getX(), primedTinyTNTEntity.getY(), primedTinyTNTEntity.getZ(),
+                    SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1, 1);
         }
     }
 
     @Override
-    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean notify) {
+    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos,
+            boolean notify) {
         if (world.isReceivingRedstonePower(pos)) {
             this.startFuse(world, pos, null);
             world.removeBlock(pos, false);

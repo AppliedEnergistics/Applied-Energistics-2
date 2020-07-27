@@ -21,13 +21,13 @@ package appeng.client.render.tesr;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 
 import appeng.client.render.FacingToRotation;
 import appeng.client.render.renderable.Renderable;
@@ -46,7 +46,7 @@ public class ModularTESR<T extends AEBaseBlockEntity> extends BlockEntityRendere
 
     @Override
     public void render(T te, float partialTicks, MatrixStack ms, VertexConsumerProvider buffers, int combinedLight,
-                       int combinedOverlay) {
+            int combinedOverlay) {
         ms.push();
         ms.translate(0.5, 0.5, 0.5);
         FacingToRotation.get(te.getForward(), te.getUp()).push(ms);

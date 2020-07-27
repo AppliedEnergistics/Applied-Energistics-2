@@ -18,15 +18,15 @@
 
 package appeng.client.render.effects;
 
+import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.particle.ParticleFactory;
-import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.particle.RedDustParticle;
+import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.DustParticleEffect;
-import net.fabricmc.api.EnvType;
 
 @Environment(EnvType.CLIENT)
 public class ChargedOreFX extends RedDustParticle {
@@ -59,7 +59,7 @@ public class ChargedOreFX extends RedDustParticle {
 
         @Override
         public Particle createParticle(DefaultParticleType effect, ClientWorld world, double x, double y, double z,
-                                       double xSpeed, double ySpeed, double zSpeed) {
+                double xSpeed, double ySpeed, double zSpeed) {
             return new ChargedOreFX(world, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet);
         }
     }

@@ -65,7 +65,7 @@ public class ApiCrafting implements ICraftingHelper {
 
     @Override
     public ItemStack encodeCraftingPattern(@Nullable ItemStack stack, CraftingRecipe recipe, ItemStack[] in,
-                                           ItemStack out, boolean allowSubstitutes) {
+            ItemStack out, boolean allowSubstitutes) {
         if (stack == null) {
             stack = encodedPattern.stack(1);
         } else {

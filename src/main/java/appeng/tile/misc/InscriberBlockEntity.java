@@ -25,16 +25,17 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import alexiil.mc.lib.attributes.Simulation;
-import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+
+import alexiil.mc.lib.attributes.Simulation;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -96,8 +97,8 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
 
     private InscriberRecipe cachedTask = null;
 
-    private final FixedItemInv inv = new WrapperChainedItemHandler(this.topItemHandler,
-            this.bottomItemHandler, this.sideItemHandler);
+    private final FixedItemInv inv = new WrapperChainedItemHandler(this.topItemHandler, this.bottomItemHandler,
+            this.sideItemHandler);
 
     public InscriberBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
@@ -213,7 +214,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
 
     @Override
     public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
-                                  final ItemStack removed, final ItemStack added) {
+            final ItemStack removed, final ItemStack added) {
         try {
             if (slot == 0) {
                 this.setProcessingTime(0);

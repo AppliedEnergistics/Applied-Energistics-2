@@ -67,11 +67,9 @@ public class QuadClamper implements RenderContext.QuadTransform {
     private void clamp(MutableQuadView quad, Box bb) {
         for (int i = 0; i < 4; i++) {
             quad.copyPos(i, pos);
-            pos.set(
-                    (float) MathHelper.clamp(pos.getX(), bb.minX, bb.maxX),
+            pos.set((float) MathHelper.clamp(pos.getX(), bb.minX, bb.maxX),
                     (float) MathHelper.clamp(pos.getY(), bb.minY, bb.maxY),
-                    (float) MathHelper.clamp(pos.getZ(), bb.minZ, bb.maxZ)
-            );
+                    (float) MathHelper.clamp(pos.getZ(), bb.minZ, bb.maxZ));
             quad.pos(i, pos);
         }
     }

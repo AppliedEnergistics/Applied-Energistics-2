@@ -18,11 +18,11 @@
 
 package appeng.util.inv;
 
+import java.util.Arrays;
+
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.impl.CombinedFixedItemInv;
 import alexiil.mc.lib.attributes.item.impl.DelegatingFixedItemInv;
-
-import java.util.Arrays;
 
 // FIXME could be replaced by CombinedFixedItemInv directly
 public class WrapperChainedItemHandler extends DelegatingFixedItemInv {

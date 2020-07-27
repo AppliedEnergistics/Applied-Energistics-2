@@ -18,8 +18,14 @@
 
 package appeng.client.render.spatial;
 
-import appeng.client.render.BasicUnbakedModel;
-import appeng.core.AppEng;
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.render.model.ModelLoader;
@@ -28,18 +34,15 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.Identifier;
 
-import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Stream;
+import appeng.client.render.BasicUnbakedModel;
+import appeng.core.AppEng;
 
 public class SpatialPylonModel implements BasicUnbakedModel {
 
     @Nullable
     @Override
-    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
+    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter,
+            ModelBakeSettings rotationContainer, Identifier modelId) {
         Map<SpatialPylonTextureType, Sprite> textures = new EnumMap<>(SpatialPylonTextureType.class);
 
         for (SpatialPylonTextureType type : SpatialPylonTextureType.values()) {

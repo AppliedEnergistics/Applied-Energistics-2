@@ -18,6 +18,12 @@
 
 package appeng.tile.inventory;
 
+import java.util.Arrays;
+import java.util.Iterator;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.LimitedFixedItemInv;
@@ -25,15 +31,11 @@ import alexiil.mc.lib.attributes.item.compat.FixedInventoryVanillaWrapper;
 import alexiil.mc.lib.attributes.item.filter.ConstantItemFilter;
 import alexiil.mc.lib.attributes.item.filter.ItemFilter;
 import alexiil.mc.lib.attributes.item.impl.DirectFixedItemInv;
+
 import appeng.util.Platform;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.IAEItemFilter;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-
-import java.util.Arrays;
-import java.util.Iterator;
 
 // FIXME: the filtering is not correctly implemented and need to be reworked
 public class AppEngInternalInventory extends DirectFixedItemInv implements Iterable<ItemStack> {
@@ -68,20 +70,18 @@ public class AppEngInternalInventory extends DirectFixedItemInv implements Itera
         LimitedFixedItemInv limitedFixedInv = this.createLimitedFixedInv();
         for (int i = 0; i < getSlotCount(); i++) {
             final int slot = i;
-            limitedFixedInv.getRule(i)
-                .filterExtracts(stack -> filter.allowExtract(this, slot, stack.getCount()));
-            limitedFixedInv.getRule(i)
-                .filterInserts(stack -> {
-                    if (stack.isEmpty()) {
-                        ItemStack current = this.getInvStack(slot);
-                        if (current.isEmpty()) {
-                            return true; // Replacing empty with empty... okay
-                        }
-                        return filter.allowExtract(this, slot, current.getCount());
-                    } else {
-                        return filter.allowInsert(this, slot, stack);
+            limitedFixedInv.getRule(i).filterExtracts(stack -> filter.allowExtract(this, slot, stack.getCount()));
+            limitedFixedInv.getRule(i).filterInserts(stack -> {
+                if (stack.isEmpty()) {
+                    ItemStack current = this.getInvStack(slot);
+                    if (current.isEmpty()) {
+                        return true; // Replacing empty with empty... okay
                     }
-                });
+                    return filter.allowExtract(this, slot, current.getCount());
+                } else {
+                    return filter.allowInsert(this, slot, stack);
+                }
+            });
         }
 
         return limitedFixedInv;

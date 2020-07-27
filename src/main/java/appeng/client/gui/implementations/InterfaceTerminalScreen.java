@@ -27,20 +27,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import alexiil.mc.lib.attributes.Simulation;
 import com.google.common.collect.HashMultimap;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.client.util.math.MatrixStack;
 import org.lwjgl.glfw.GLFW;
 
+import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.text.Text;
 
+import alexiil.mc.lib.attributes.Simulation;
 
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.client.ActionKey;
@@ -69,8 +69,7 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     private boolean refreshList = false;
     private AETextField searchField;
 
-    public InterfaceTerminalScreen(InterfaceTerminalContainer container, PlayerInventory playerInventory,
-            Text title) {
+    public InterfaceTerminalScreen(InterfaceTerminalContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
         final Scrollbar scrollbar = new Scrollbar();
         this.setScrollBar(scrollbar);
@@ -142,7 +141,8 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
     }
 
     @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
+            float partialTicks) {
         this.bindTexture("guis/interfaceterminal.png");
         drawTexture(matrices, offsetX, offsetY, 0, 0, this.backgroundWidth, this.backgroundHeight);
 
@@ -223,7 +223,8 @@ public class InterfaceTerminalScreen extends AEBaseScreen<InterfaceTerminalConta
                     for (int x = 0; x < current.getInventory().getSlotCount(); x++) {
                         final String which = Integer.toString(x);
                         if (invData.contains(which)) {
-                            current.getInventory().setInvStack(x, ItemStack.fromTag(invData.getCompound(which)), Simulation.ACTION);
+                            current.getInventory().setInvStack(x, ItemStack.fromTag(invData.getCompound(which)),
+                                    Simulation.ACTION);
                         }
                     }
                 } catch (final NumberFormatException ignored) {

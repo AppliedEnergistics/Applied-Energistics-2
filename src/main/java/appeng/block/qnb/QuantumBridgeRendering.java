@@ -1,9 +1,9 @@
 
 package appeng.block.qnb;
 
-import net.minecraft.client.render.RenderLayer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.render.RenderLayer;
 
 import appeng.bootstrap.BlockRenderingCustomizer;
 import appeng.bootstrap.IBlockRendering;

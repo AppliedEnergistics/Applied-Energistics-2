@@ -18,7 +18,12 @@
 
 package appeng.client.render.model;
 
-import appeng.block.storage.DriveSlotsState;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.function.Supplier;
+
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
@@ -40,11 +45,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
 
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.function.Supplier;
+import appeng.block.storage.DriveSlotsState;
 
 public class DriveBakedModel extends ForwardingBakedModel implements FabricBakedModel {
     private final Map<Item, BakedModel> cellModels;
@@ -77,7 +78,8 @@ public class DriveBakedModel extends ForwardingBakedModel implements FabricBaked
     }
 
     @Override
-    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos,
+            Supplier<Random> randomSupplier, RenderContext context) {
 
         super.emitBlockQuads(blockView, state, pos, randomSupplier, context);
 
@@ -150,7 +152,8 @@ public class DriveBakedModel extends ForwardingBakedModel implements FabricBaked
                 Vector3f translation = new Vector3f();
                 getSlotOrigin(row, col, translation);
 
-                result[getSlotIndex(row, col)] = new QuadTranslator(translation.getX(), translation.getY(), translation.getZ());
+                result[getSlotIndex(row, col)] = new QuadTranslator(translation.getX(), translation.getY(),
+                        translation.getZ());
             }
         }
 

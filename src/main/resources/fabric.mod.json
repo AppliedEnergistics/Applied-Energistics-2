@@ -5,9 +5,7 @@
 
   "name": "Applied Energistics 2",
   "description": "A Mod about matter, energy and using them to conquer the world..",
-  "authors": [
-    "TeamAppliedEnergistics"
-  ],
+  "authors": ["TeamAppliedEnergistics"],
   "contact": {
     "homepage": "https://ae-mod.info/",
     "sources": "https://github.com/AppliedEnergistics/Applied-Energistics-2/"
@@ -18,18 +16,11 @@
 
   "environment": "*",
   "entrypoints": {
-    "main": [
-    ],
-    "client": [
-      "appeng.core.AppEngClientStartup"
-    ],
-    "rei_plugins": [
-      "appeng.integration.modules.jei.ReiPlugin"
-    ]
+    "main": [],
+    "client": ["appeng.core.AppEngClientStartup"],
+    "rei_plugins": ["appeng.integration.modules.jei.ReiPlugin"]
   },
-  "mixins": [
-    "appliedenergistics2.mixins.json"
-  ],
+  "mixins": ["appliedenergistics2.mixins.json"],
   "depends": {
     "fabricloader": ">=0.7.1",
     "fabric": "*",
@@ -39,7 +30,7 @@
   "suggests": {
     "flamingo": "*"
   },
-  "accessWidener" : "appliedenergistics2.accesswidener",
+  "accessWidener": "appliedenergistics2.accesswidener",
   "custom": {
     "waila:plugins": {
       "id": "appliedenergistics2:hwyla",

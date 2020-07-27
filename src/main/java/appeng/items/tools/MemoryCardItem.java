@@ -20,27 +20,27 @@ package appeng.items.tools;
 
 import java.util.List;
 
-import appeng.block.AEBaseTileBlock;
-import appeng.hooks.AEToolItem;
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.*;
-import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.world.World;
-import net.fabricmc.api.Environment;
 
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.util.AEColor;
+import appeng.block.AEBaseTileBlock;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
+import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 
@@ -168,7 +168,8 @@ public class MemoryCardItem extends AEBaseItem implements AEToolItem, IMemoryCar
             if (!context.getPlayer().world.isClient) {
                 BlockState state = context.getWorld().getBlockState(context.getBlockPos());
                 ActionResult useResult = state.onUse(context.getWorld(), context.getPlayer(), context.getHand(),
-                        new BlockHitResult(context.getHitPos(), context.getSide(), context.getBlockPos(), context.hitsInsideBlock()));
+                        new BlockHitResult(context.getHitPos(), context.getSide(), context.getBlockPos(),
+                                context.hitsInsideBlock()));
                 if (!useResult.isAccepted()) {
                     clearCard(context.getPlayer(), context.getWorld(), context.getHand());
                 }

@@ -18,10 +18,8 @@
 
 package appeng.client.render.tesr;
 
-import appeng.client.render.BakedModelUnwrapper;
-import appeng.client.render.FacingToRotation;
-import appeng.client.render.model.SkyCompassBakedModel;
-import appeng.tile.misc.SkyCompassBlockEntity;
+import java.util.Random;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
@@ -40,7 +38,10 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Quaternion;
 
-import java.util.Random;
+import appeng.client.render.BakedModelUnwrapper;
+import appeng.client.render.FacingToRotation;
+import appeng.client.render.model.SkyCompassBakedModel;
+import appeng.tile.misc.SkyCompassBlockEntity;
 
 @Environment(EnvType.CLIENT)
 public class SkyCompassTESR extends BlockEntityRenderer<SkyCompassBlockEntity> {
@@ -53,7 +54,7 @@ public class SkyCompassTESR extends BlockEntityRenderer<SkyCompassBlockEntity> {
 
     @Override
     public void render(SkyCompassBlockEntity te, float partialTicks, MatrixStack ms, VertexConsumerProvider buffers,
-                       int combinedLightIn, int combinedOverlayIn) {
+            int combinedLightIn, int combinedOverlayIn) {
         if (blockRenderer == null) {
             blockRenderer = MinecraftClient.getInstance().getBlockRenderManager();
         }

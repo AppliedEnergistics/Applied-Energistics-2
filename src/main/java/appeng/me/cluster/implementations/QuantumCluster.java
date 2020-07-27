@@ -212,9 +212,9 @@ public class QuantumCluster implements ILocatable, IAECluster {
         try {
             if (this.registered) {
                 // FIXME FABRIC -> onWorldUnload event
-            // FIXME FABRIC MinecraftForge.EVENT_BUS.unregister(this);
-            this.registered = false;
-        }
+                // FIXME FABRIC MinecraftForge.EVENT_BUS.unregister(this);
+                this.registered = false;
+            }
 
             if (this.thisSide != 0) {
                 this.updateStatus(true);

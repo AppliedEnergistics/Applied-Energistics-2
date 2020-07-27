@@ -18,18 +18,19 @@
 
 package appeng.core;
 
-import appeng.api.config.*;
-import appeng.api.features.AEFeature;
-import appeng.core.config.*;
-import appeng.client.gui.NumberEntryType;
-import appeng.core.settings.TickRates;
-import appeng.util.EnumCycler;
-import net.minecraft.world.dimension.DimensionType;
-
 import java.io.File;
 import java.util.*;
 import java.util.function.DoubleSupplier;
 import java.util.stream.Collectors;
+
+import net.minecraft.world.dimension.DimensionType;
+
+import appeng.api.config.*;
+import appeng.api.features.AEFeature;
+import appeng.client.gui.NumberEntryType;
+import appeng.core.config.*;
+import appeng.core.settings.TickRates;
+import appeng.util.EnumCycler;
 
 public final class AEConfig {
 
@@ -51,7 +52,8 @@ public final class AEConfig {
         syncCommonConfig();
     }
 
-    private static ConfigFileManager createConfigFileManager(ConfigSection commonRoot, File configDir, String filename) {
+    private static ConfigFileManager createConfigFileManager(ConfigSection commonRoot, File configDir,
+            String filename) {
         File configFile = new File(configDir, filename);
         ConfigFileManager result = new ConfigFileManager(commonRoot, configFile);
         if (!configFile.exists()) {
@@ -95,7 +97,7 @@ public final class AEConfig {
     private final int[] craftByStacks = new int[4];
     private final int[] priorityByStacks = new int[4];
     private final int[] levelByStacks = new int[4];
-    private final int[] levelByMillibuckets = {10, 100, 1000, 10000};
+    private final int[] levelByMillibuckets = { 10, 100, 1000, 10000 };
 
     // Spatial IO/Dimension
     private double spatialPowerExponent;
@@ -178,7 +180,8 @@ public final class AEConfig {
 
         for (final AEFeature feature : AEFeature.values()) {
             if (feature.isVisible() && feature.isConfig()) {
-                if (commonConfig.enabledFeatures.containsKey(feature) && commonConfig.enabledFeatures.get(feature).get()) {
+                if (commonConfig.enabledFeatures.containsKey(feature)
+                        && commonConfig.enabledFeatures.get(feature).get()) {
                     this.featureFlags.add(feature);
                 }
             } else {
@@ -381,7 +384,7 @@ public final class AEConfig {
         public final EnumOption<PowerUnits> selectedPowerUnit;
 
         // GUI Buttons
-        private static final int[] BTN_BY_STACK_DEFAULTS = {1, 10, 100, 1000};
+        private static final int[] BTN_BY_STACK_DEFAULTS = { 1, 10, 100, 1000 };
         public final List<IntegerOption> craftByStacks;
         public final List<IntegerOption> priorityByStacks;
         public final List<IntegerOption> levelByStacks;
@@ -393,8 +396,7 @@ public final class AEConfig {
 
         public ClientConfig(ConfigSection root) {
             ConfigSection client = root.subsection("client");
-            this.disableColoredCableRecipesInJEI = client.addBoolean("disableColoredCableRecipesInJEI",
-                    true);
+            this.disableColoredCableRecipesInJEI = client.addBoolean("disableColoredCableRecipesInJEI", true);
             this.enableEffects = client.addBoolean("enableEffects", true);
             this.useLargeFonts = client.addBoolean("useTerminalUseLargeFont", false);
             this.useColoredCraftingStatus = client.addBoolean("useColoredCraftingStatus", true);
@@ -408,17 +410,17 @@ public final class AEConfig {
                 int defaultValue = BTN_BY_STACK_DEFAULTS[btnNum];
                 final int buttonCap = (int) (Math.pow(10, btnNum + 1) - 1);
 
-                this.craftByStacks.add(client
-                        .addInt("craftByStacks" + btnNum, defaultValue, 1, buttonCap, "Controls buttons on Crafting Screen"));
-                this.priorityByStacks.add(client
-                        .addInt("priorityByStacks" + btnNum, defaultValue, 1, buttonCap, "Controls buttons on Priority Screen"));
-                this.levelByStacks.add(client
-                        .addInt("levelByStacks" + btnNum, defaultValue, 1, buttonCap, "Controls buttons on Level Emitter Screen"));
+                this.craftByStacks.add(client.addInt("craftByStacks" + btnNum, defaultValue, 1, buttonCap,
+                        "Controls buttons on Crafting Screen"));
+                this.priorityByStacks.add(client.addInt("priorityByStacks" + btnNum, defaultValue, 1, buttonCap,
+                        "Controls buttons on Priority Screen"));
+                this.levelByStacks.add(client.addInt("levelByStacks" + btnNum, defaultValue, 1, buttonCap,
+                        "Controls buttons on Level Emitter Screen"));
             }
 
             ConfigSection terminals = root.subsection("terminals");
-            this.searchTooltips = terminals
-                    .addEnum("searchTooltips", YesNo.YES, "Should tooltips be searched. Performance impact");
+            this.searchTooltips = terminals.addEnum("searchTooltips", YesNo.YES,
+                    "Should tooltips be searched. Performance impact");
             this.terminalStyle = terminals.addEnum("terminalStyle", TerminalStyle.TALL);
             this.terminalSearchMode = terminals.addEnum("terminalSearchMode", SearchBoxMode.AUTOSEARCH);
         }
@@ -484,7 +486,8 @@ public final class AEConfig {
         public CommonConfig(ConfigSection root) {
 
             // Feature switches
-            ConfigSection features = root.subsection("features", "Warning: Disabling a feature may disable other features depending on it.");
+            ConfigSection features = root.subsection("features",
+                    "Warning: Disabling a feature may disable other features depending on it.");
 
             // We need to group by feature category
             Map<String, List<AEFeature>> groupedFeatures = Arrays.stream(AEFeature.values())
@@ -497,13 +500,15 @@ public final class AEConfig {
                 ConfigSection categorySection = features.subsection(category);
                 for (AEFeature feature : featuresInGroup) {
                     if (feature.isConfig()) {
-                        enabledFeatures.put(feature, categorySection.addBoolean(feature.key(), feature.isEnabled(), feature.comment()));
+                        enabledFeatures.put(feature,
+                                categorySection.addBoolean(feature.key(), feature.isEnabled(), feature.comment()));
                     }
                 }
             }
 
             ConfigSection general = root.subsection("general");
-            removeCrashingItemsOnLoad = general.addBoolean("removeCrashingItemsOnLoad", false, "Will auto-remove items that crash when being loaded from storage. This will destroy those items instead of crashing the game!");
+            removeCrashingItemsOnLoad = general.addBoolean("removeCrashingItemsOnLoad", false,
+                    "Will auto-remove items that crash when being loaded from storage. This will destroy those items instead of crashing the game!");
 
             ConfigSection automation = root.subsection("automation");
             formationPlaneEntityLimit = automation.addInt("formationPlaneEntityLimit", 128);
@@ -511,15 +516,15 @@ public final class AEConfig {
             ConfigSection craftingCPU = root.subsection("craftingCPU");
             this.craftingCalculationTimePerTick = craftingCPU.addInt("craftingCalculationTimePerTick", 5);
 
-
             ConfigSection spatialio = root.subsection("spatialio");
             this.spatialPowerMultiplier = spatialio.addDouble("spatialPowerMultiplier", 1250.0);
             this.spatialPowerExponent = spatialio.addDouble("spatialPowerExponent", 1.35);
-            this.spatialBlockTags = spatialio
-                    .addBoolean("spatialBlockTags", false, "BE CAREFUL, CAN CORRUPT YOUR WORLD! Will use #spatial/whitelist as whitelist.");
+            this.spatialBlockTags = spatialio.addBoolean("spatialBlockTags", false,
+                    "BE CAREFUL, CAN CORRUPT YOUR WORLD! Will use #spatial/whitelist as whitelist.");
 
             ConfigSection grindStone = root.subsection("GrindStone");
-            this.oreDoublePercentage = grindStone.addDouble("oreDoublePercentage", 90.0, 0.0, 100.0, "Chance to actually get an output with stacksize > 1.");
+            this.oreDoublePercentage = grindStone.addDouble("oreDoublePercentage", 90.0, 0.0, 100.0,
+                    "Chance to actually get an output with stacksize > 1.");
 
             ConfigSection battery = root.subsection("battery");
             this.wirelessTerminalBattery = battery.addInt("wirelessTerminal", 1600000);
@@ -559,7 +564,8 @@ public final class AEConfig {
             condenserMatterBallsPower = Condenser.addInt("MatterBalls", 256);
             condenserSingularityPower = Condenser.addInt("Singularity", 256000);
 
-            ConfigSection tickrates = root.subsection("tickRates", " Min / Max Tickrates for dynamic ticking, most of these components also use sleeping, to prevent constant ticking, adjust with care, non standard rates are not supported or tested.");
+            ConfigSection tickrates = root.subsection("tickRates",
+                    " Min / Max Tickrates for dynamic ticking, most of these components also use sleeping, to prevent constant ticking, adjust with care, non standard rates are not supported or tested.");
             for (TickRates tickRate : TickRates.values()) {
                 tickRateMin.put(tickRate, tickrates.addInt(tickRate.name() + "Min", tickRate.getDefaultMin()));
                 tickRateMax.put(tickRate, tickrates.addInt(tickRate.name() + "Max", tickRate.getDefaultMax()));

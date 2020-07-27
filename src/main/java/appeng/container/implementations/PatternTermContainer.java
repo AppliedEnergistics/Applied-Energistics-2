@@ -21,27 +21,27 @@ package appeng.container.implementations;
 import java.util.ArrayList;
 import java.util.List;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
-import alexiil.mc.lib.attributes.item.compat.FixedInventoryVanillaWrapper;
-import appeng.mixins.SlotMixin;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.CraftingResultInventory;
-import net.minecraft.nbt.Tag;
-import net.minecraft.recipe.CraftingRecipe;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.screen.slot.CraftingResultSlot;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.screen.ScreenHandlerListener;
+import net.minecraft.inventory.CraftingResultInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.recipe.CraftingRecipe;
+import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.RecipeType;
+import net.minecraft.screen.ScreenHandlerListener;
+import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.screen.slot.CraftingResultSlot;
+import net.minecraft.screen.slot.Slot;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
+import alexiil.mc.lib.attributes.item.compat.FixedInventoryVanillaWrapper;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
@@ -66,6 +66,7 @@ import appeng.core.sync.packets.PatternSlotPacket;
 import appeng.helpers.IContainerCraftingPacket;
 import appeng.items.storage.ViewCellItem;
 import appeng.me.helpers.MachineSource;
+import appeng.mixins.SlotMixin;
 import appeng.parts.reporting.PatternTerminalPart;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.InventoryAdaptor;
@@ -165,7 +166,6 @@ public class PatternTermContainer extends MEMonitorableContainer
         }
     }
 
-
     @Override
     public void setStackInSlot(int slotID, ItemStack stack) {
         super.setStackInSlot(slotID, stack);
@@ -203,7 +203,7 @@ public class PatternTermContainer extends MEMonitorableContainer
 
     @Override
     public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
-                                  final ItemStack removedStack, final ItemStack newStack) {
+            final ItemStack removedStack, final ItemStack newStack) {
 
     }
 
@@ -341,8 +341,8 @@ public class PatternTermContainer extends MEMonitorableContainer
                         : packetPatternSlot.pattern[x].createItemStack());
             }
 
-            final Recipe<CraftingInventory> r = p.world.getRecipeManager().getFirstMatch(RecipeType.CRAFTING, ic, p.world)
-                    .orElse(null);
+            final Recipe<CraftingInventory> r = p.world.getRecipeManager()
+                    .getFirstMatch(RecipeType.CRAFTING, ic, p.world).orElse(null);
 
             if (r == null) {
                 return;

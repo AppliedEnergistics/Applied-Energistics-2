@@ -18,9 +18,10 @@
 
 package appeng.util.inv;
 
+import net.minecraft.entity.player.PlayerEntity;
+
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.compat.InventoryFixedWrapper;
-import net.minecraft.entity.player.PlayerEntity;
 
 public class WrapperInvItemHandler extends InventoryFixedWrapper {
 

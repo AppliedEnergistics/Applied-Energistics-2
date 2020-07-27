@@ -24,6 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.RedstoneMode;

@@ -34,10 +34,8 @@ import appeng.parts.PartModel;
  */
 public class PlaneModels {
 
-    public static final Identifier MODEL_CHASSIS_OFF = new Identifier(AppEng.MOD_ID,
-            "part/transition_plane_off");
-    public static final Identifier MODEL_CHASSIS_ON = new Identifier(AppEng.MOD_ID,
-            "part/transition_plane_on");
+    public static final Identifier MODEL_CHASSIS_OFF = new Identifier(AppEng.MOD_ID, "part/transition_plane_off");
+    public static final Identifier MODEL_CHASSIS_ON = new Identifier(AppEng.MOD_ID, "part/transition_plane_on");
     public static final Identifier MODEL_CHASSIS_HAS_CHANNEL = new Identifier(AppEng.MOD_ID,
             "part/transition_plane_has_channel");
 

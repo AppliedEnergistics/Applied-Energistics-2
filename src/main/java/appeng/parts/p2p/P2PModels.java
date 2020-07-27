@@ -32,14 +32,11 @@ import appeng.parts.PartModel;
  */
 class P2PModels {
 
-    public static final Identifier MODEL_STATUS_OFF = new Identifier(AppEng.MOD_ID,
-            "part/p2p/p2p_tunnel_status_off");
-    public static final Identifier MODEL_STATUS_ON = new Identifier(AppEng.MOD_ID,
-            "part/p2p/p2p_tunnel_status_on");
+    public static final Identifier MODEL_STATUS_OFF = new Identifier(AppEng.MOD_ID, "part/p2p/p2p_tunnel_status_off");
+    public static final Identifier MODEL_STATUS_ON = new Identifier(AppEng.MOD_ID, "part/p2p/p2p_tunnel_status_on");
     public static final Identifier MODEL_STATUS_HAS_CHANNEL = new Identifier(AppEng.MOD_ID,
             "part/p2p/p2p_tunnel_status_has_channel");
-    public static final Identifier MODEL_FREQUENCY = new Identifier(AppEng.MOD_ID,
-            "part/p2p/p2p_tunnel_frequency");
+    public static final Identifier MODEL_FREQUENCY = new Identifier(AppEng.MOD_ID, "part/p2p/p2p_tunnel_frequency");
 
     private final IPartModel modelsOff;
     private final IPartModel modelsOn;

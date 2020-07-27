@@ -21,10 +21,11 @@ package appeng.parts.reporting;
 import java.util.List;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
+
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.SecurityPermissions;
@@ -102,7 +103,7 @@ public class PatternTerminalPart extends AbstractTerminalPart {
 
     @Override
     public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
-                                  final ItemStack removedStack, final ItemStack newStack) {
+            final ItemStack removedStack, final ItemStack newStack) {
         if (inv == this.pattern && slot == 1) {
             final ItemStack is = this.pattern.getInvStack(1);
             final ICraftingPatternDetails details = Api.instance().crafting().decodePattern(is,

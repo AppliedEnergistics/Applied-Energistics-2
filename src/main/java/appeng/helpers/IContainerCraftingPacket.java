@@ -18,8 +18,9 @@
 
 package appeng.helpers;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.item.ItemStack;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionSource;

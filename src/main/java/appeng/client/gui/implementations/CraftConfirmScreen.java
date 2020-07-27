@@ -33,7 +33,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
-
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
@@ -171,8 +170,8 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
             dsp = GuiText.Simulation.text();
         } else {
             dsp = this.handler.getCpuAvailableBytes() > 0
-                    ? (GuiText.Bytes.withSuffix(": " + this.handler.getCpuAvailableBytes() + " : ").append(
-                            GuiText.CoProcessors.text()).append(": " + this.handler.getCpuCoProcessors()))
+                    ? (GuiText.Bytes.withSuffix(": " + this.handler.getCpuAvailableBytes() + " : ")
+                            .append(GuiText.CoProcessors.text()).append(": " + this.handler.getCpuCoProcessors()))
                     : GuiText.Bytes.withSuffix(": N/A : ").append(GuiText.CoProcessors.text()).append(": N/A");
         }
 
@@ -326,7 +325,8 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
     }
 
     @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
+            float partialTicks) {
         this.setScrollBar();
         this.bindTexture("guis/craftingreport.png");
         drawTexture(matrices, offsetX, offsetY, 0, 0, this.backgroundWidth, this.backgroundHeight);

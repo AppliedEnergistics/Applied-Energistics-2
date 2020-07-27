@@ -18,16 +18,18 @@
 
 package appeng.integration.modules.waila.tile;
 
+import java.util.List;
+
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.text.Text;
+
+import mcp.mobius.waila.api.IDataAccessor;
+import mcp.mobius.waila.api.IPluginConfig;
+
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.localization.WailaText;
 import appeng.integration.modules.waila.BaseWailaDataProvider;
 import appeng.tile.crafting.CraftingMonitorBlockEntity;
-import mcp.mobius.waila.api.IDataAccessor;
-import mcp.mobius.waila.api.IPluginConfig;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.text.Text;
-
-import java.util.List;
 
 /**
  * Crafting-monitor provider for WAILA

@@ -88,7 +88,7 @@ public class VibrantFX extends SpriteBillboardParticle {
 
         @Override
         public Particle createParticle(DefaultParticleType effect, ClientWorld world, double x, double y, double z,
-                                       double xSpeed, double ySpeed, double zSpeed) {
+                double xSpeed, double ySpeed, double zSpeed) {
             return new VibrantFX(world, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet);
         }
     }

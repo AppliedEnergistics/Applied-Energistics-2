@@ -22,9 +22,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import net.minecraft.item.ItemStack;
+
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.filter.ConstantItemFilter;
-import net.minecraft.item.ItemStack;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -69,7 +70,8 @@ class CondenserItemInventory implements IMEMonitor<IAEItemStack>, ITickingMonito
         if (!slotItem.isEmpty() && request.isSameType(slotItem)) {
             int count = (int) Math.min(request.getStackSize(), Integer.MAX_VALUE);
             ret = AEItemStack
-                    .fromItemStack(this.target.getOutputSlot().getSlot(0).attemptExtraction(ConstantItemFilter.ANYTHING, count, mode == Actionable.SIMULATE ? Simulation.SIMULATE : Simulation.ACTION));
+                    .fromItemStack(this.target.getOutputSlot().getSlot(0).attemptExtraction(ConstantItemFilter.ANYTHING,
+                            count, mode == Actionable.SIMULATE ? Simulation.SIMULATE : Simulation.ACTION));
         }
         return ret;
     }

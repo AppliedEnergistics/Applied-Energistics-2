@@ -23,10 +23,10 @@ import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.Hand;
 
 import appeng.api.exceptions.FailedConnectionException;

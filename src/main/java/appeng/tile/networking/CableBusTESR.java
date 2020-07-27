@@ -18,11 +18,10 @@
 
 package appeng.tile.networking;
 
-import net.minecraft.client.util.math.MatrixStack;
-
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
+import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Direction;
 
 import appeng.api.parts.IPart;
@@ -35,7 +34,7 @@ public class CableBusTESR extends BlockEntityRenderer<CableBusBlockEntity> {
 
     @Override
     public void render(CableBusBlockEntity te, float partialTicks, MatrixStack ms, VertexConsumerProvider buffers,
-                       int combinedLightIn, int combinedOverlayIn) {
+            int combinedLightIn, int combinedOverlayIn) {
         if (!te.getCableBus().isRequiresDynamicRender()) {
             return;
         }

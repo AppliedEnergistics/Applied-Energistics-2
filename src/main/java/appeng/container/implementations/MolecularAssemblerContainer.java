@@ -18,14 +18,15 @@
 
 package appeng.container.implementations;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.screen.slot.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.world.World;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;

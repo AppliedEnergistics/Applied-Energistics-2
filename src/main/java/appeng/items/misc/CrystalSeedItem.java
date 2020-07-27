@@ -22,7 +22,6 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import appeng.core.AppEng;
 import com.google.common.base.Preconditions;
 
 import net.fabricmc.api.EnvType;
@@ -37,13 +36,14 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.text.Text;
 import net.minecraft.world.World;
 
 import appeng.api.implementations.items.IGrowableCrystal;
+import appeng.core.AppEng;
 import appeng.core.localization.ButtonToolTips;
 import appeng.entity.GrowingCrystalEntity;
 import appeng.items.AEBaseItem;
@@ -73,11 +73,8 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
         super(properties);
         this.grownItem = Preconditions.checkNotNull(grownItem);
         // Expose the growth of the seed to the model system
-        FabricModelPredicateProviderRegistry.register(
-                this,
-                new Identifier(AppEng.MOD_ID, "growth"),
-                (is, w, p) -> getGrowthTicks(is) / (float) GROWTH_TICKS_REQUIRED
-        );
+        FabricModelPredicateProviderRegistry.register(this, new Identifier(AppEng.MOD_ID, "growth"),
+                (is, w, p) -> getGrowthTicks(is) / (float) GROWTH_TICKS_REQUIRED);
     }
 
     @Nullable

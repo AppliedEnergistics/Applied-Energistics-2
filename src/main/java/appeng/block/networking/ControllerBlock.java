@@ -18,19 +18,19 @@
 
 package appeng.block.networking;
 
-import appeng.tile.networking.ControllerBlockEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
-import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.StateManager;
+import net.minecraft.state.property.EnumProperty;
 import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.WorldAccess;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 
 import appeng.block.AEBaseTileBlock;
+import appeng.tile.networking.ControllerBlockEntity;
 
 public class ControllerBlock extends AEBaseTileBlock<ControllerBlockEntity> {
 
@@ -86,8 +86,8 @@ public class ControllerBlock extends AEBaseTileBlock<ControllerBlockEntity> {
      * texture feel for the controller based on how it is placed.
      */
     @Override
-    public BlockState getStateForNeighborUpdate(BlockState state, Direction facing, BlockState facingState, WorldAccess world,
-            BlockPos pos, BlockPos facingPos) {
+    public BlockState getStateForNeighborUpdate(BlockState state, Direction facing, BlockState facingState,
+            WorldAccess world, BlockPos pos, BlockPos facingPos) {
 
         // FIXME: this might work, or might _NOT_ work, but needs to be investigated
 

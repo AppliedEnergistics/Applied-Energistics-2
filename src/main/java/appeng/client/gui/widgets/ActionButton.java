@@ -21,10 +21,11 @@ package appeng.client.gui.widgets;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
-import appeng.api.config.ActionItems;
-import appeng.core.localization.ButtonToolTips;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+
+import appeng.api.config.ActionItems;
+import appeng.core.localization.ButtonToolTips;
 
 public class ActionButton extends IconButton implements ITooltip {
     private static final Pattern PATTERN_NEW_LINE = Pattern.compile("\\n", Pattern.LITERAL);

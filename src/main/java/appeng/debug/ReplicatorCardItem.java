@@ -18,23 +18,22 @@
 
 package appeng.debug;
 
-import appeng.hooks.AEToolItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.*;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.text.LiteralText;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -47,6 +46,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
+import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 
 public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
@@ -118,7 +118,8 @@ public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
                 final int src_z = ish.getInt("z");
                 final int src_side = ish.getInt("side");
                 final String worldId = ish.getString("w");
-                final World src_w = world.getServer().getWorld(RegistryKey.of(Registry.DIMENSION, new Identifier(worldId)));
+                final World src_w = world.getServer()
+                        .getWorld(RegistryKey.of(Registry.DIMENSION, new Identifier(worldId)));
                 final int replications = ish.getInt("r") + 1;
 
                 final BlockEntity te = src_w.getBlockEntity(new BlockPos(src_x, src_y, src_z));
@@ -182,9 +183,10 @@ public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
 
                                                         world.setBlockState(d, state);
                                                         if (blk instanceof BlockEntityProvider) {
-                                                BlockEntityProvider blkEntityProvider = (BlockEntityProvider)blk;
+                                                            BlockEntityProvider blkEntityProvider = (BlockEntityProvider) blk;
                                                             final BlockEntity ote = src_w.getBlockEntity(p);
-                                                            final BlockEntity nte = blkEntityProvider.createBlockEntity(world);
+                                                            final BlockEntity nte = blkEntityProvider
+                                                                    .createBlockEntity(world);
                                                             final CompoundTag data = new CompoundTag();
                                                             ote.toTag(data);
                                                             nte.fromTag(state, data.copy());

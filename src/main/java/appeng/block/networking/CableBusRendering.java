@@ -20,11 +20,11 @@ package appeng.block.networking;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.render.RenderLayer;
 
 import appeng.bootstrap.BlockRenderingCustomizer;
 import appeng.bootstrap.IBlockRendering;
 import appeng.bootstrap.IItemRendering;
-import net.minecraft.client.render.RenderLayer;
 
 /**
  * Customizes the rendering behavior for cable busses, which are the biggest
@@ -35,7 +35,8 @@ public class CableBusRendering extends BlockRenderingCustomizer {
     @Override
     @Environment(EnvType.CLIENT)
     public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
-        // FIXME This is straight up impossible in Vanilla, and questionable if it's actually needed.
+        // FIXME This is straight up impossible in Vanilla, and questionable if it's
+        // actually needed.
         // FIXME rendering.renderType(rt -> true);
         rendering.renderType(RenderLayer.getCutout());
 

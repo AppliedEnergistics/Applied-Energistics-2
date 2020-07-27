@@ -1,9 +1,14 @@
 
 package appeng.block.qnb;
 
-import appeng.client.render.BasicUnbakedModel;
-import appeng.core.AppEng;
+import java.util.Collection;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
+import javax.annotation.Nullable;
+
 import com.google.common.collect.ImmutableSet;
+
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.render.model.ModelLoader;
@@ -11,10 +16,8 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.Identifier;
 
-import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.function.Function;
-import java.util.stream.Stream;
+import appeng.client.render.BasicUnbakedModel;
+import appeng.core.AppEng;
 
 public class QnbFormedModel implements BasicUnbakedModel {
 
@@ -22,7 +25,8 @@ public class QnbFormedModel implements BasicUnbakedModel {
 
     @Nullable
     @Override
-    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
+    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter,
+            ModelBakeSettings rotationContainer, Identifier modelId) {
         BakedModel ringModel = loader.bake(MODEL_RING, rotationContainer);
         return new QnbFormedBakedModel(ringModel, textureGetter);
     }

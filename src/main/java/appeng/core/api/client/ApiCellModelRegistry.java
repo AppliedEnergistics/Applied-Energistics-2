@@ -29,19 +29,17 @@ import javax.annotation.Nullable;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.item.Item;
+import net.minecraft.util.Identifier;
 
 import appeng.api.client.ICellModelRegistry;
 import appeng.core.ApiDefinitions;
-import net.minecraft.util.Identifier;
 
 public class ApiCellModelRegistry implements ICellModelRegistry {
 
-    private static final Identifier MODEL_BASE = new Identifier(
-            "appliedenergistics2:block/drive/drive_base");
+    private static final Identifier MODEL_BASE = new Identifier("appliedenergistics2:block/drive/drive_base");
     private static final Identifier MODEL_CELL_EMPTY = new Identifier(
             "appliedenergistics2:block/drive/drive_cell_empty");
-    private static final Identifier MODEL_CELL_DEFAULT = new Identifier(
-            "appliedenergistics2:block/drive/drive_cell");
+    private static final Identifier MODEL_CELL_DEFAULT = new Identifier("appliedenergistics2:block/drive/drive_cell");
     private static final Identifier MODEL_CELL_ITEMS_1K = new Identifier(
             "appliedenergistics2:block/drive/cells/1k_item_cell");
     private static final Identifier MODEL_CELL_ITEMS_4K = new Identifier(
@@ -61,9 +59,9 @@ public class ApiCellModelRegistry implements ICellModelRegistry {
     private static final Identifier MODEL_CELL_CREATIVE = new Identifier(
             "appliedenergistics2:block/drive/cells/creative_cell");
 
-    private static final Identifier[] MODELS = { MODEL_BASE, MODEL_CELL_EMPTY, MODEL_CELL_DEFAULT,
-            MODEL_CELL_ITEMS_1K, MODEL_CELL_ITEMS_4K, MODEL_CELL_ITEMS_16K, MODEL_CELL_ITEMS_64K, MODEL_CELL_FLUIDS_1K,
-            MODEL_CELL_FLUIDS_4K, MODEL_CELL_FLUIDS_16K, MODEL_CELL_FLUIDS_64K, MODEL_CELL_CREATIVE };
+    private static final Identifier[] MODELS = { MODEL_BASE, MODEL_CELL_EMPTY, MODEL_CELL_DEFAULT, MODEL_CELL_ITEMS_1K,
+            MODEL_CELL_ITEMS_4K, MODEL_CELL_ITEMS_16K, MODEL_CELL_ITEMS_64K, MODEL_CELL_FLUIDS_1K, MODEL_CELL_FLUIDS_4K,
+            MODEL_CELL_FLUIDS_16K, MODEL_CELL_FLUIDS_64K, MODEL_CELL_CREATIVE };
 
     public static Collection<Identifier> getModels() {
         return Arrays.asList(MODELS);

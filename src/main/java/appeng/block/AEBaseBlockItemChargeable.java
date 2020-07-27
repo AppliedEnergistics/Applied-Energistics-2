@@ -18,14 +18,9 @@
 
 package appeng.block;
 
-import appeng.core.Api;
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerUnits;
-import appeng.api.definitions.IBlockDefinition;
-import appeng.api.implementations.items.IAEItemPowerStorage;
-import appeng.core.AppEng;
-import appeng.core.localization.GuiText;
+import java.text.MessageFormat;
+import java.util.List;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
@@ -38,24 +33,27 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
-import java.text.MessageFormat;
-import java.util.List;
+import appeng.api.config.AccessRestriction;
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerUnits;
+import appeng.api.definitions.IBlockDefinition;
+import appeng.api.implementations.items.IAEItemPowerStorage;
+import appeng.core.Api;
+import appeng.core.AppEng;
+import appeng.core.localization.GuiText;
 
 public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEItemPowerStorage {
 
     public AEBaseBlockItemChargeable(Block id, Settings props) {
         super(id, props);
 
-        FabricModelPredicateProviderRegistry.register(
-                this,
-                new Identifier(AppEng.MOD_ID, "fill_level"),
+        FabricModelPredicateProviderRegistry.register(this, new Identifier(AppEng.MOD_ID, "fill_level"),
                 (is, world, entity) -> {
                     double curPower = getAECurrentPower(is);
                     double maxPower = getAEMaxPower(is);
 
                     return (int) Math.round(100 * curPower / maxPower);
-                }
-        );
+                });
     }
 
     @Override
@@ -73,8 +71,7 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
 
             final double percent = internalCurrentPower / internalMaxPower;
 
-            lines.add(GuiText.StoredEnergy.text()
-                    .copy()
+            lines.add(GuiText.StoredEnergy.text().copy()
                     .append(':' + MessageFormat.format(" {0,number,#} ", internalCurrentPower))
                     .append(new TranslatableText(PowerUnits.AE.unlocalizedName))
                     .append(" - " + MessageFormat.format("{0,number,#.##%}", percent)));

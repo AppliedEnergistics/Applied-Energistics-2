@@ -18,11 +18,11 @@
 
 package appeng.debug;
 
-import net.minecraft.util.Tickable;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Tickable;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import net.minecraft.server.world.ServerWorld;
 
 import appeng.core.AELog;
 import appeng.tile.AEBaseBlockEntity;

@@ -1,11 +1,16 @@
 package appeng.data.providers.tags;
 
-import appeng.core.AppEng;
-import appeng.data.providers.IAE2DataProvider;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
 import net.minecraft.block.Block;
 import net.minecraft.data.DataCache;
 import net.minecraft.data.DataProvider;
@@ -13,11 +18,8 @@ import net.minecraft.item.ItemConvertible;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import appeng.core.AppEng;
+import appeng.data.providers.IAE2DataProvider;
 
 public abstract class TagProvider implements IAE2DataProvider {
 
@@ -47,23 +49,19 @@ public abstract class TagProvider implements IAE2DataProvider {
     protected abstract void generate() throws IOException;
 
     protected void addItemTag(String name, ItemConvertible... items) throws IOException {
-        List<String> itemIds = Arrays.stream(items)
-                .map(ItemConvertible::asItem)
-                .map(Registry.ITEM::getId)
-                .map(Identifier::toString)
-                .collect(Collectors.toList());
+        List<String> itemIds = Arrays.stream(items).map(ItemConvertible::asItem).map(Registry.ITEM::getId)
+                .map(Identifier::toString).collect(Collectors.toList());
         writeTagFile(CONVENTION_NAMESPACE, TYPE_ITEMS, name, itemIds);
     }
 
     protected void addBlockTag(String name, Block... blocks) throws IOException {
-        List<String> itemIds = Arrays.stream(blocks)
-                .map(Registry.BLOCK::getId)
-                .map(Identifier::toString)
+        List<String> itemIds = Arrays.stream(blocks).map(Registry.BLOCK::getId).map(Identifier::toString)
                 .collect(Collectors.toList());
         writeTagFile(CONVENTION_NAMESPACE, TYPE_BLOCKS, name, itemIds);
     }
 
-    protected void writeTagFile(String namespace, String tagType, String tagName, List<String> entries) throws IOException {
+    protected void writeTagFile(String namespace, String tagType, String tagName, List<String> entries)
+            throws IOException {
         JsonObject rootObj = new JsonObject();
         JsonArray valuesArr = new JsonArray();
         for (String entry : entries) {

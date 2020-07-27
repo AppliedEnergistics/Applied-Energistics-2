@@ -18,24 +18,24 @@
 
 package appeng.items.tools.quartz;
 
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.QuartzKnifeContainer;
-import appeng.items.contents.QuartzKnifeObj;
-import appeng.mixins.RemainderSetter;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.api.features.AEFeature;
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.QuartzKnifeContainer;
 import appeng.items.AEBaseItem;
+import appeng.items.contents.QuartzKnifeObj;
+import appeng.mixins.RemainderSetter;
 import appeng.util.Platform;
 
 public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
@@ -45,13 +45,13 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IGuiItem {
         super(props);
         this.type = type;
         // See below for reasoning
-        ((RemainderSetter)this).setRecipeRemainder(this);
+        ((RemainderSetter) this).setRecipeRemainder(this);
     }
 
     @Override
     public TypedActionResult<ItemStack> use(final World w, final PlayerEntity p, final Hand hand) {
         if (Platform.isServer()) {
-           ContainerOpener.openContainer(QuartzKnifeContainer.TYPE, p, ContainerLocator.forHand(p, hand));
+            ContainerOpener.openContainer(QuartzKnifeContainer.TYPE, p, ContainerLocator.forHand(p, hand));
         }
         p.swingHand(hand);
         return new TypedActionResult<>(ActionResult.SUCCESS, p.getStackInHand(hand));

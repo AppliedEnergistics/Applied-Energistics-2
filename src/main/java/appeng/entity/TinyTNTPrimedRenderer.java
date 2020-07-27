@@ -40,7 +40,7 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
 
     @Override
     public void render(TinyTNTPrimedEntity tnt, float entityYaw, float partialTicks, MatrixStack mStack,
-                       VertexConsumerProvider buffers, int packedLight) {
+            VertexConsumerProvider buffers, int packedLight) {
         mStack.push();
         mStack.translate(0, 0.25F, 0);
         float f2;

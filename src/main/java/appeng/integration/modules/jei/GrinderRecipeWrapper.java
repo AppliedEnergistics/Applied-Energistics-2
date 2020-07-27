@@ -18,20 +18,23 @@
 
 package appeng.integration.modules.jei;
 
-import appeng.recipes.handlers.GrinderOptionalResult;
-import appeng.recipes.handlers.GrinderRecipe;
-import com.google.common.collect.ImmutableList;
-import me.shedaniel.rei.api.EntryStack;
-import me.shedaniel.rei.api.TransferRecipeDisplay;
-import me.shedaniel.rei.server.ContainerInfo;
-import me.shedaniel.rei.utils.CollectionUtils;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.util.Identifier;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import com.google.common.collect.ImmutableList;
+
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.util.Identifier;
+
+import me.shedaniel.rei.api.EntryStack;
+import me.shedaniel.rei.api.TransferRecipeDisplay;
+import me.shedaniel.rei.server.ContainerInfo;
+import me.shedaniel.rei.utils.CollectionUtils;
+
+import appeng.recipes.handlers.GrinderOptionalResult;
+import appeng.recipes.handlers.GrinderRecipe;
 
 class GrinderRecipeWrapper implements TransferRecipeDisplay {
 
@@ -42,7 +45,8 @@ class GrinderRecipeWrapper implements TransferRecipeDisplay {
 
     public GrinderRecipeWrapper(GrinderRecipe recipe) {
         this.recipe = recipe;
-        this.input = CollectionUtils.map(recipe.getPreviewInputs(), i -> CollectionUtils.map(i.getMatchingStacksClient(), EntryStack::create));
+        this.input = CollectionUtils.map(recipe.getPreviewInputs(),
+                i -> CollectionUtils.map(i.getMatchingStacksClient(), EntryStack::create));
 
         List<EntryStack> outputs = new ArrayList<>();
         List<Double> outputChances = new ArrayList<>();
@@ -97,7 +101,8 @@ class GrinderRecipeWrapper implements TransferRecipeDisplay {
     }
 
     @Override
-    public List<List<EntryStack>> getOrganisedInputEntries(ContainerInfo<ScreenHandler> containerInfo, ScreenHandler container) {
+    public List<List<EntryStack>> getOrganisedInputEntries(ContainerInfo<ScreenHandler> containerInfo,
+            ScreenHandler container) {
         return input;
     }
 

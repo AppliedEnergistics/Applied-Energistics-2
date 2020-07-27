@@ -18,13 +18,14 @@
 
 package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
-import appeng.thirdparty.codechicken.lib.math.InterpHelper;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
+
+import appeng.thirdparty.codechicken.lib.math.InterpHelper;
 
 /**
  * This transformer Re-Interpolates the Color, UV's and LightMaps. Use this

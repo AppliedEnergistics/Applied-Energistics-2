@@ -18,10 +18,12 @@
 
 package appeng.integration.modules.waila.part;
 
+import net.minecraft.item.ItemStack;
+
+import mcp.mobius.waila.api.IPluginConfig;
+
 import appeng.api.parts.IPart;
 import appeng.api.parts.PartItemStack;
-import mcp.mobius.waila.api.IPluginConfig;
-import net.minecraft.item.ItemStack;
 
 /**
  * Part ItemStack provider for WAILA

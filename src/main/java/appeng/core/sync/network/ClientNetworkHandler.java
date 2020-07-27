@@ -1,12 +1,13 @@
 package appeng.core.sync.network;
 
-import appeng.core.AELog;
-import appeng.core.sync.BasePacket;
-import appeng.core.sync.BasePacketHandler;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.PacketByteBuf;
+
+import appeng.core.AELog;
+import appeng.core.sync.BasePacket;
+import appeng.core.sync.BasePacketHandler;
 
 public class ClientNetworkHandler extends ServerNetworkHandler {
 

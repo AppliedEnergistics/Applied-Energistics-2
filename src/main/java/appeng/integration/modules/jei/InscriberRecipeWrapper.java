@@ -18,17 +18,20 @@
 
 package appeng.integration.modules.jei;
 
-import appeng.recipes.handlers.InscriberRecipe;
+import java.util.List;
+import java.util.Optional;
+
 import com.google.common.collect.ImmutableList;
+
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.util.Identifier;
+
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.TransferRecipeDisplay;
 import me.shedaniel.rei.server.ContainerInfo;
 import me.shedaniel.rei.utils.CollectionUtils;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.util.Identifier;
 
-import java.util.List;
-import java.util.Optional;
+import appeng.recipes.handlers.InscriberRecipe;
 
 class InscriberRecipeWrapper implements TransferRecipeDisplay {
 
@@ -42,15 +45,14 @@ class InscriberRecipeWrapper implements TransferRecipeDisplay {
         this.recipe = recipe;
         this.topOptional = CollectionUtils.map(recipe.getTopOptional().getMatchingStacksClient(), EntryStack::create);
         this.middleInput = CollectionUtils.map(recipe.getMiddleInput().getMatchingStacksClient(), EntryStack::create);
-        this.bottomOptional = CollectionUtils.map(recipe.getBottomOptional().getMatchingStacksClient(), EntryStack::create);
+        this.bottomOptional = CollectionUtils.map(recipe.getBottomOptional().getMatchingStacksClient(),
+                EntryStack::create);
         this.output = EntryStack.create(recipe.getOutput());
     }
 
     @Override
     public List<List<EntryStack>> getInputEntries() {
-        return ImmutableList.of(
-                topOptional, middleInput, bottomOptional
-        );
+        return ImmutableList.of(topOptional, middleInput, bottomOptional);
     }
 
     @Override
@@ -84,7 +86,8 @@ class InscriberRecipeWrapper implements TransferRecipeDisplay {
     }
 
     @Override
-    public List<List<EntryStack>> getOrganisedInputEntries(ContainerInfo<ScreenHandler> containerInfo, ScreenHandler container) {
+    public List<List<EntryStack>> getOrganisedInputEntries(ContainerInfo<ScreenHandler> containerInfo,
+            ScreenHandler container) {
         return getInputEntries();
     }
 

@@ -53,7 +53,7 @@ public class AETextField extends TextFieldWidget {
      * @param height       absolute height
      */
     public AETextField(final TextRenderer fontRenderer, final int xPos, final int yPos, final int width,
-                       final int height) {
+            final int height) {
         super(fontRenderer, xPos + PADDING, yPos + PADDING, width - 2 * PADDING - (int) fontRenderer.getWidth("_"),
                 height - 2 * PADDING, LiteralText.EMPTY);
 
@@ -87,11 +87,13 @@ public class AETextField extends TextFieldWidget {
     public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float partial) {
         if (this.isVisible()) {
             if (this.isFocused()) {
-                fill(matrices, this.x - PADDING + 1, this.y - PADDING + 1, this.x + this.width + this._fontPad + PADDING - 1,
-                        this.y + this.height + PADDING - 1, 0xFF606060);
+                fill(matrices, this.x - PADDING + 1, this.y - PADDING + 1,
+                        this.x + this.width + this._fontPad + PADDING - 1, this.y + this.height + PADDING - 1,
+                        0xFF606060);
             } else {
-                fill(matrices, this.x - PADDING + 1, this.y - PADDING + 1, this.x + this.width + this._fontPad + PADDING - 1,
-                        this.y + this.height + PADDING - 1, 0xFFA8A8A8);
+                fill(matrices, this.x - PADDING + 1, this.y - PADDING + 1,
+                        this.x + this.width + this._fontPad + PADDING - 1, this.y + this.height + PADDING - 1,
+                        0xFFA8A8A8);
             }
             super.renderButton(matrices, mouseX, mouseY, partial);
         }

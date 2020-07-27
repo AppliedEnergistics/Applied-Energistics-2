@@ -23,6 +23,8 @@ import java.util.List;
 
 import com.mojang.authlib.GameProfile;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -30,14 +32,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.text.Text;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.features.IPlayerRegistry;
@@ -62,7 +62,8 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
         return TypedActionResult.pass(p.getStackInHand(hand));
     }
 
-    // FIXME FABRIC: Validate that this actually works about as well as the forge hook does
+    // FIXME FABRIC: Validate that this actually works about as well as the forge
+    // hook does
     @Override
     public ActionResult useOnEntity(ItemStack stack, PlayerEntity user, LivingEntity target, Hand hand) {
         if (target instanceof PlayerEntity && !user.isInSneakingPose()) {
@@ -79,8 +80,7 @@ public class BiometricCardItem extends AEBaseItem implements IBiometricCard {
     @Override
     public Text getName(final ItemStack is) {
         final GameProfile username = this.getProfile(is);
-        return username != null ? super.getName(is).copy().append(" - " + username.getName())
-                : super.getName(is);
+        return username != null ? super.getName(is).copy().append(" - " + username.getName()) : super.getName(is);
     }
 
     private void encode(final ItemStack is, final PlayerEntity p) {

@@ -20,10 +20,10 @@ package appeng.parts.misc;
 
 import java.util.EnumSet;
 
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -50,11 +50,9 @@ public class ToggleBusPart extends BasicStatePart {
     @PartModels
     public static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID, "part/toggle_bus_base");
     @PartModels
-    public static final Identifier MODEL_STATUS_OFF = new Identifier(AppEng.MOD_ID,
-            "part/toggle_bus_status_off");
+    public static final Identifier MODEL_STATUS_OFF = new Identifier(AppEng.MOD_ID, "part/toggle_bus_status_off");
     @PartModels
-    public static final Identifier MODEL_STATUS_ON = new Identifier(AppEng.MOD_ID,
-            "part/toggle_bus_status_on");
+    public static final Identifier MODEL_STATUS_ON = new Identifier(AppEng.MOD_ID, "part/toggle_bus_status_on");
     @PartModels
     public static final Identifier MODEL_STATUS_HAS_CHANNEL = new Identifier(AppEng.MOD_ID,
             "part/toggle_bus_status_has_channel");

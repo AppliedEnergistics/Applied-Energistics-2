@@ -18,7 +18,31 @@
 
 package appeng.parts.automation;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import javax.annotation.Nullable;
+
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.*;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
+
 import alexiil.mc.lib.attributes.item.FixedItemInv;
+
 import appeng.api.config.*;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
 import appeng.api.networking.events.MENetworkChannelsChanged;
@@ -47,27 +71,6 @@ import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack> {
 
@@ -124,7 +127,7 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
     @Override
     public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
-                                  final ItemStack removedStack, final ItemStack newStack) {
+            final ItemStack removedStack, final ItemStack newStack) {
         super.onChangeInventory(inv, slot, mc, removedStack, newStack);
 
         if (inv == this.Config) {
@@ -205,8 +208,8 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
         final BlockPos placePos = te.getPos().offset(side.getFacing());
 
         if (w.getBlockState(placePos).getMaterial().isReplaceable()) {
-            if (placeBlock == YesNo.YES && (i instanceof BlockItem
-                    || i instanceof FireworkChargeItem || i instanceof FireworkItem || i instanceof IPartItem)) {
+            if (placeBlock == YesNo.YES && (i instanceof BlockItem || i instanceof FireworkChargeItem
+                    || i instanceof FireworkItem || i instanceof IPartItem)) {
                 final PlayerEntity player = FakePlayer.getOrCreate((ServerWorld) w);
                 Platform.configurePlayer(player, side, this.getTile());
                 Hand hand = player.getActiveHand();
@@ -225,8 +228,9 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
                         // Up or Down, Attempt 1??
                         if (side.xOffset == 0 && side.zOffset == 0) {
-                            Worked = i.useOnBlock(new AutomaticItemPlacementContext(w, placePos.offset(side.getFacing()),
-                                    lookDirection, is, side.getFacing())) == ActionResult.SUCCESS;
+                            Worked = i
+                                    .useOnBlock(new AutomaticItemPlacementContext(w, placePos.offset(side.getFacing()),
+                                            lookDirection, is, side.getFacing())) == ActionResult.SUCCESS;
                         }
 
                         // Up or Down, Attempt 2??
@@ -282,12 +286,12 @@ public class FormationPlanePart extends AbstractFormationPlanePart<IAEItemStack>
 
                         // FIXME FABRIC No custom item entity support
                         // FIXME FABRIC if (is.getItem().hasCustomEntity(is)) {
-                        // FIXME FABRIC     result = is.getItem().createEntity(w, ei, is);
-                        // FIXME FABRIC     if (result != null) {
-                        // FIXME FABRIC         ei.remove();
-                        // FIXME FABRIC     } else {
-                        // FIXME FABRIC         result = ei;
-                        // FIXME FABRIC     }
+                        // FIXME FABRIC result = is.getItem().createEntity(w, ei, is);
+                        // FIXME FABRIC if (result != null) {
+                        // FIXME FABRIC ei.remove();
+                        // FIXME FABRIC } else {
+                        // FIXME FABRIC result = ei;
+                        // FIXME FABRIC }
                         // FIXME FABRIC }
 
                         if (!w.spawnEntity(result)) {

@@ -20,14 +20,13 @@ package appeng.client.render.effects;
 
 import java.util.Random;
 
-import net.minecraft.client.render.VertexConsumer;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.particle.ParticleTextureSheet;
 import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particle.DefaultParticleType;
@@ -46,14 +45,14 @@ public class LightningFX extends SpriteBillboardParticle {
     private final double[] verticesWithUV = new double[3];
     private boolean hasData = false;
 
-    private LightningFX(ClientWorld world, final double x, final double y, final double z, final double r, final double g,
-            final double b) {
+    private LightningFX(ClientWorld world, final double x, final double y, final double z, final double r,
+            final double g, final double b) {
         this(world, x, y, z, r, g, b, 6);
         this.regen();
     }
 
-    protected LightningFX(ClientWorld world, final double x, final double y, final double z, final double r, final double g,
-            final double b, final int maxAge) {
+    protected LightningFX(ClientWorld world, final double x, final double y, final double z, final double r,
+            final double g, final double b, final int maxAge) {
         super(world, x, y, z, r, g, b);
         this.precomputedSteps = new double[LightningFX.STEPS][3];
         this.velocityX = 0;
@@ -219,7 +218,7 @@ public class LightningFX extends SpriteBillboardParticle {
     }
 
     private void draw(float red, float green, float blue, final VertexConsumer tess, final double[] a, final double[] b,
-                      final float u, final float v) {
+            final float u, final float v) {
         if (this.hasData) {
             tess.vertex(a[0], a[1], a[2]).texture(u, v).color(red, green, blue, this.colorAlpha)
                     .light(BRIGHTNESS, BRIGHTNESS).next();
@@ -251,7 +250,7 @@ public class LightningFX extends SpriteBillboardParticle {
 
         @Override
         public Particle createParticle(DefaultParticleType type, ClientWorld world, double x, double y, double z,
-                                       double xSpeed, double ySpeed, double zSpeed) {
+                double xSpeed, double ySpeed, double zSpeed) {
             LightningFX lightningFX = new LightningFX(world, x, y, z, xSpeed, ySpeed, zSpeed);
             lightningFX.setSprite(this.spriteSet);
             return lightningFX;

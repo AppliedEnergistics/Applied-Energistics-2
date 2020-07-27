@@ -20,8 +20,9 @@ package appeng.util.iterators;
 
 import java.util.Iterator;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.item.ItemStack;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 public final class InvIterator implements Iterator<ItemStack> {
     private final FixedItemInv inventory;

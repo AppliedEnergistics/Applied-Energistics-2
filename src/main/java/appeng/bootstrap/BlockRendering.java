@@ -20,7 +20,6 @@ package appeng.bootstrap;
 
 import java.util.function.BiFunction;
 
-import appeng.client.render.model.AutoRotatingBakedModel;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
@@ -33,6 +32,7 @@ import net.minecraft.util.Identifier;
 import appeng.block.AEBaseTileBlock;
 import appeng.bootstrap.components.BlockColorComponent;
 import appeng.bootstrap.components.RenderTypeComponent;
+import appeng.client.render.model.AutoRotatingBakedModel;
 
 class BlockRendering implements IBlockRendering {
 

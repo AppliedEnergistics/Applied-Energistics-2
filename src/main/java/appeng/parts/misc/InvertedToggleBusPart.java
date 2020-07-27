@@ -28,8 +28,7 @@ import appeng.parts.PartModel;
 
 public class InvertedToggleBusPart extends ToggleBusPart {
     @PartModels
-    public static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID,
-            "part/inverted_toggle_bus_base");
+    public static final Identifier MODEL_BASE = new Identifier(AppEng.MOD_ID, "part/inverted_toggle_bus_base");
 
     public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_STATUS_OFF);
     public static final PartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_STATUS_ON);

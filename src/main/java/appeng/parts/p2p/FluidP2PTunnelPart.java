@@ -18,6 +18,12 @@
 
 package appeng.parts.p2p;
 
+import java.util.*;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.BlockView;
+
 import alexiil.mc.lib.attributes.AttributeList;
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.fluid.FluidAttributes;
@@ -26,14 +32,10 @@ import alexiil.mc.lib.attributes.fluid.FluidVolumeUtil;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
+
 import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
-
-import java.util.*;
 
 public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> implements FluidInsertable {
 
@@ -141,16 +143,15 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> implem
         while (i.hasNext() && !remaining.isZero()) {
             final FluidP2PTunnelPart l = i.next();
 
-            FluidVolume insert = fluid.withAmount(
-                    fluid.amount().div(list.size())
-            );
+            FluidVolume insert = fluid.withAmount(fluid.amount().div(list.size()));
             if (insert.amount().isGreaterThan(remaining)) {
                 insert = insert.withAmount(remaining);
             }
 
             FluidInsertable tank = l.getTarget();
             if (tank != null) {
-                 remaining = remaining.sub(insert.amount().sub(tank.attemptInsertion(insert, Simulation.ACTION).amount()));
+                remaining = remaining
+                        .sub(insert.amount().sub(tank.attemptInsertion(insert, Simulation.ACTION).amount()));
             }
         }
 
@@ -198,7 +199,8 @@ public class FluidP2PTunnelPart extends P2PTunnelPart<FluidP2PTunnelPart> implem
             return this.cachedTank;
         }
 
-        return this.cachedTank = FluidAttributes.INSERTABLE.getFirstOrNullFromNeighbour(this.getTile(), this.getSide().getFacing());
+        return this.cachedTank = FluidAttributes.INSERTABLE.getFirstOrNullFromNeighbour(this.getTile(),
+                this.getSide().getFacing());
     }
 
 }

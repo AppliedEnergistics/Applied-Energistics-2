@@ -6,24 +6,25 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import alexiil.mc.lib.attributes.fluid.FluidAttributes;
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
-import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
-import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidDrainable;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+
+import alexiil.mc.lib.attributes.fluid.FluidAttributes;
+import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
+import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -249,8 +250,8 @@ public class FluidAnnihilationPlanePart extends BasicStatePart implements IGridT
                     // This _MIGHT_ change the liquid, and if it does, and we dont have enough
                     // space, tough luck. you loose the source block.
                     fluid = ((FluidDrainable) blockstate.getBlock()).tryDrainFluid(w, pos, blockstate);
-                    this.storeFluid(AEFluidStack.fromFluidVolume(FluidKeys.get(fluid).withAmount(FluidAmount.ONE), RoundingMode.DOWN),
-                            true);
+                    this.storeFluid(AEFluidStack.fromFluidVolume(FluidKeys.get(fluid).withAmount(FluidAmount.ONE),
+                            RoundingMode.DOWN), true);
 
                     AppEng.instance().sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64, w,
                             new BlockTransitionEffectPacket(pos, blockstate, this.getSide().getOpposite(),

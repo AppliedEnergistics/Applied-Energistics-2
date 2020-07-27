@@ -4,9 +4,7 @@
   "version": "1.0.0",
   "name": "Applied Energistics 2 Datagen",
   "description": "",
-  "authors": [
-    "TeamAppliedEnergistics"
-  ],
+  "authors": ["TeamAppliedEnergistics"],
   "contact": {
     "homepage": "https://ae-mod.info/",
     "sources": "https://github.com/AppliedEnergistics/Applied-Energistics-2/"
@@ -17,9 +15,7 @@
 
   "environment": "*",
   "entrypoints": {
-    "preLaunch": [
-      "appeng.data.Entrypoint"
-    ]
+    "preLaunch": ["appeng.data.Entrypoint"]
   },
   "depends": {
     "fabricloader": ">=0.7.1",

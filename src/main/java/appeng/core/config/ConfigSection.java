@@ -1,9 +1,9 @@
 package appeng.core.config;
 
-import com.google.gson.JsonObject;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gson.JsonObject;
 
 public class ConfigSection {
 
@@ -160,4 +160,3 @@ public class ConfigSection {
 
     }
 }
-

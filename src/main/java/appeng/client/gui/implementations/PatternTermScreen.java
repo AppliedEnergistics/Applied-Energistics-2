@@ -18,7 +18,6 @@
 
 package appeng.client.gui.implementations;
 
-import appeng.mixins.SlotMixin;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
@@ -33,6 +32,7 @@ import appeng.container.slot.AppEngSlot;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigValuePacket;
+import appeng.mixins.SlotMixin;
 
 public class PatternTermScreen extends MEMonitorableScreen<PatternTermContainer> {
 
@@ -126,8 +126,8 @@ public class PatternTermScreen extends MEMonitorableScreen<PatternTermContainer>
         }
 
         super.drawFG(matrices, offsetX, offsetY, mouseX, mouseY);
-        this.textRenderer.draw(matrices, GuiText.PatternTerminal.text(), 8, this.backgroundHeight - 96 + 2 - this.getReservedSpace(),
-                4210752);
+        this.textRenderer.draw(matrices, GuiText.PatternTerminal.text(), 8,
+                this.backgroundHeight - 96 + 2 - this.getReservedSpace(), 4210752);
     }
 
     @Override

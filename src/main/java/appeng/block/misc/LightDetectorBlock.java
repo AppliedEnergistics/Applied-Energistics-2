@@ -19,18 +19,18 @@
 package appeng.block.misc;
 
 import net.minecraft.block.*;
-import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.StateManager;
+import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
-import net.minecraft.world.World;
 
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
@@ -56,7 +56,8 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorBlockEntity
     }
 
     @Override
-    public int getWeakRedstonePower(final BlockState state, final BlockView w, final BlockPos pos, final Direction side) {
+    public int getWeakRedstonePower(final BlockState state, final BlockView w, final BlockPos pos,
+            final Direction side) {
         if (w instanceof World && this.getBlockEntity(w, pos).isReady()) {
             // FIXME: This is ... uhm... fishy
             return ((World) w).getLightLevel(pos) - 6;
@@ -70,7 +71,8 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorBlockEntity
         return true;
     }
 
-    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState newState, WorldAccess world, BlockPos pos, BlockPos posFrom) {
+    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState newState,
+            WorldAccess world, BlockPos pos, BlockPos posFrom) {
         final Direction up = this.getOrientable(world, pos).getUp();
         if (!this.canPlaceAt(world, pos, up.getOpposite())) {
             // FIXME: Double check that this actually updates neighbors
@@ -86,7 +88,8 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorBlockEntity
     }
 
     @Override
-    public boolean isValidOrientation(final WorldAccess w, final BlockPos pos, final Direction forward, final Direction up) {
+    public boolean isValidOrientation(final WorldAccess w, final BlockPos pos, final Direction forward,
+            final Direction up) {
         return this.canPlaceAt(w, pos, up.getOpposite());
     }
 
@@ -106,13 +109,11 @@ public class LightDetectorBlock extends AEBaseTileBlock<LightDetectorBlockEntity
         final double xOff = -0.3 * up.getOffsetX();
         final double yOff = -0.3 * up.getOffsetY();
         final double zOff = -0.3 * up.getOffsetZ();
-        return VoxelShapes
-                .cuboid(new Box(xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7));
+        return VoxelShapes.cuboid(new Box(xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7));
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockView worldIn, BlockPos pos,
-            ShapeContext context) {
+    public VoxelShape getCollisionShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
         return VoxelShapes.empty();
     }
 

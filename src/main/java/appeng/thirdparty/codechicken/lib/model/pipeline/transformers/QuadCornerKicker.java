@@ -18,15 +18,15 @@
 
 package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
+import static net.minecraft.util.math.Direction.AxisDirection.NEGATIVE;
+import static net.minecraft.util.math.Direction.AxisDirection.POSITIVE;
+
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Direction.AxisDirection;
 import net.minecraft.util.math.Vec3i;
-
-import static net.minecraft.util.math.Direction.AxisDirection.NEGATIVE;
-import static net.minecraft.util.math.Direction.AxisDirection.POSITIVE;
 
 /**
  * This transformer is a little complicated. Basically a Facade / Cover can use
@@ -43,18 +43,18 @@ public class QuadCornerKicker implements RenderContext.QuadTransform {
     public static final QuadCornerKicker INSTANCE = new QuadCornerKicker();
 
     // Simple horizonal lookups.
-    public static int[][] horizonals = new int[][]{
+    public static int[][] horizonals = new int[][] {
             // Around Y axis, NSWE.
-            {2, 3, 4, 5}, //
-            {2, 3, 4, 5}, //
+            { 2, 3, 4, 5 }, //
+            { 2, 3, 4, 5 }, //
 
             // Around Z axis, DUWE.
-            {0, 1, 4, 5}, //
-            {0, 1, 4, 5}, //
+            { 0, 1, 4, 5 }, //
+            { 0, 1, 4, 5 }, //
 
             // Around X axis, DUNS.
-            {0, 1, 2, 3}, //
-            {0, 1, 2, 3}};
+            { 0, 1, 2, 3 }, //
+            { 0, 1, 2, 3 } };
 
     private int mySide;
     private int facadeMask;
@@ -144,7 +144,7 @@ public class QuadCornerKicker implements RenderContext.QuadTransform {
         private AxisDirection yAxis;
         private AxisDirection zAxis;
 
-        private static final int[] sideMask = {0, 2, 0, 1, 0, 4};
+        private static final int[] sideMask = { 0, 2, 0, 1, 0, 4 };
 
         Corner(AxisDirection xAxis, AxisDirection yAxis, AxisDirection zAxis) {
             this.xAxis = xAxis;

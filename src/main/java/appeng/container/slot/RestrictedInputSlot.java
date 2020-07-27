@@ -20,20 +20,21 @@ package appeng.container.slot;
 
 import java.util.List;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
 import com.google.common.collect.ImmutableList;
 
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
-import net.minecraft.screen.slot.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.crafting.ICraftingHelper;
 import appeng.api.definitions.IDefinitions;
@@ -60,12 +61,10 @@ import appeng.util.Platform;
  */
 public class RestrictedInputSlot extends AppEngSlot {
 
-    private static final List<Identifier> METAL_INGOT_TAGS = ImmutableList.of(
-            new Identifier("c:copper_ingots"), new Identifier("c:tin_ingots"),
-            new Identifier("c:iron_ingots"), new Identifier("c:gold_ingots"),
-            new Identifier("c:lead_ingots"), new Identifier("c:bronze_ingots"),
-            new Identifier("c:brass_ingots"), new Identifier("c:nickel_ingots"),
-            new Identifier("c:aluminium_ingots"));
+    private static final List<Identifier> METAL_INGOT_TAGS = ImmutableList.of(new Identifier("c:copper_ingots"),
+            new Identifier("c:tin_ingots"), new Identifier("c:iron_ingots"), new Identifier("c:gold_ingots"),
+            new Identifier("c:lead_ingots"), new Identifier("c:bronze_ingots"), new Identifier("c:brass_ingots"),
+            new Identifier("c:nickel_ingots"), new Identifier("c:aluminium_ingots"));
 
     private final PlacableItemType which;
     private final PlayerInventory p;
@@ -73,7 +72,7 @@ public class RestrictedInputSlot extends AppEngSlot {
     private int stackLimit = -1;
 
     public RestrictedInputSlot(final PlacableItemType valid, final FixedItemInv i, final int slotIndex, final int x,
-                               final int y, final PlayerInventory p) {
+            final int y, final PlayerInventory p) {
         super(i, slotIndex, x, y);
         this.which = valid;
         this.setIIcon(valid.IIcon);

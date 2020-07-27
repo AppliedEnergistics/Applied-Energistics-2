@@ -18,9 +18,47 @@
 
 package appeng.client.gui;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import com.google.common.base.Preconditions;
+import com.google.common.base.Stopwatch;
+import com.mojang.blaze3d.systems.RenderSystem;
+
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL11;
+
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.slot.Slot;
+import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
+
 import alexiil.mc.lib.attributes.fluid.render.FluidRenderFace;
 import alexiil.mc.lib.attributes.fluid.render.FluidVolumeRenderer;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
+
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.widgets.CustomSlotWidget;
@@ -52,40 +90,6 @@ import appeng.fluids.client.render.FluidStackSizeRenderer;
 import appeng.fluids.container.slots.IMEFluidSlot;
 import appeng.helpers.InventoryAction;
 import appeng.mixins.SlotMixin;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Stopwatch;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScreen<T> {
 
@@ -161,7 +165,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
         }
     }
 
-    protected void drawGuiSlot(MatrixStack matrices, CustomSlotWidget slot, int mouseX, int mouseY, float partialTicks) {
+    protected void drawGuiSlot(MatrixStack matrices, CustomSlotWidget slot, int mouseX, int mouseY,
+            float partialTicks) {
         if (slot.isSlotEnabled()) {
             final int left = slot.xPos();
             final int top = slot.yPos();
@@ -252,13 +257,13 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
                 if (optionalSlot.isRenderDisabled()) {
                     final AppEngSlot aeSlot = (AppEngSlot) slot;
                     if (aeSlot.isSlotEnabled()) {
-                        drawTexture(matrices, ox + aeSlot.x - 1, oy + aeSlot.y - 1,
-                                optionalSlot.getSourceX() - 1, optionalSlot.getSourceY() - 1, 18, 18);
+                        drawTexture(matrices, ox + aeSlot.x - 1, oy + aeSlot.y - 1, optionalSlot.getSourceX() - 1,
+                                optionalSlot.getSourceY() - 1, 18, 18);
                     } else {
                         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 0.4F);
                         RenderSystem.enableBlend();
-                        drawTexture(matrices, ox + aeSlot.x - 1, oy + aeSlot.y - 1,
-                                optionalSlot.getSourceX() - 1, optionalSlot.getSourceY() - 1, 18, 18);
+                        drawTexture(matrices, ox + aeSlot.x - 1, oy + aeSlot.y - 1, optionalSlot.getSourceX() - 1,
+                                optionalSlot.getSourceY() - 1, 18, 18);
                         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
                     }
                 }
@@ -314,8 +319,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
             if (this.drag_click.size() > 1) {
                 for (final Slot dr : this.drag_click) {
                     final InventoryActionPacket p = new InventoryActionPacket(
-                            mouseButton == 0 ? InventoryAction.PICKUP_OR_SET_DOWN : InventoryAction.PLACE_SINGLE,
-                            dr.id, 0);
+                            mouseButton == 0 ? InventoryAction.PICKUP_OR_SET_DOWN : InventoryAction.PLACE_SINGLE, dr.id,
+                            0);
                     NetworkHandler.instance().sendToServer(p);
                 }
             }
@@ -329,7 +334,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
     // TODO 1.9.4 aftermath - Whole SlotActionType thing, to be checked.
     @Override
     protected void onMouseClick(final Slot slot, final int slotIdx, final int mouseButton,
-                                final SlotActionType clickType) {
+            final SlotActionType clickType) {
         final PlayerEntity player = getPlayer();
 
         if (slot instanceof FakeSlot) {
@@ -534,10 +539,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
                         return true;
                     } else {
                         for (final Slot s : slots) {
-                            if (getSlotIndex(s) == j
-                                    && s.inventory == this.handler.getPlayerInv()) {
-                                NetworkHandler.instance()
-                                        .sendToServer(new SwapSlotsPacket(s.id, theSlot.id));
+                            if (getSlotIndex(s) == j && s.inventory == this.handler.getPlayerInv()) {
+                                NetworkHandler.instance().sendToServer(new SwapSlotsPacket(s.id, theSlot.id));
                                 return true;
                             }
                         }
@@ -566,7 +569,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
         return null;
     }
 
-    public abstract void drawBG(MatrixStack matrices, int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks);
+    public abstract void drawBG(MatrixStack matrices, int offsetX, int offsetY, int mouseX, int mouseY,
+            float partialTicks);
 
     @Override
     public boolean mouseScrolled(double x, double y, double wheelDelta) {
@@ -702,21 +706,16 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
                             final float par6 = 16;
                             vb.vertex(par1 + 0, par2 + par6, getZOffset())
                                     .color(1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon())
-                                    .texture((par3 + 0) * f, (par4 + par6) * f1)
-                                    .next();
+                                    .texture((par3 + 0) * f, (par4 + par6) * f1).next();
                             final float par5 = 16;
                             vb.vertex(par1 + par5, par2 + par6, getZOffset())
                                     .color(1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon())
-                                    .texture((par3 + par5) * f, (par4 + par6) * f1)
-                                    .next();
+                                    .texture((par3 + par5) * f, (par4 + par6) * f1).next();
                             vb.vertex(par1 + par5, par2 + 0, getZOffset())
                                     .color(1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon())
-                                    .texture((par3 + par5) * f, (par4 + 0) * f1)
-                                    .next();
-                            vb.vertex(par1 + 0, par2 + 0, getZOffset())
-                                    .color(1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon())
-                                    .texture((par3 + 0) * f, (par4 + 0) * f1)
-                                    .next();
+                                    .texture((par3 + par5) * f, (par4 + 0) * f1).next();
+                            vb.vertex(par1 + 0, par2 + 0, getZOffset()).color(1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon())
+                                    .texture((par3 + 0) * f, (par4 + 0) * f1).next();
                             tessellator.draw();
 
                         } catch (final Exception err) {
@@ -728,9 +727,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends HandledScr
                 if (!is.isEmpty() && s instanceof AppEngSlot) {
                     AppEngSlot aeSlot = (AppEngSlot) s;
                     if (aeSlot.getIsValid() == CalculatedValidity.NotAvailable) {
-                        boolean isValid = s.canInsert(is) || s instanceof OutputSlot
-                                || s instanceof AppEngCraftingSlot || s instanceof DisabledSlot
-                                || s instanceof InaccessibleSlot || s instanceof FakeSlot
+                        boolean isValid = s.canInsert(is) || s instanceof OutputSlot || s instanceof AppEngCraftingSlot
+                                || s instanceof DisabledSlot || s instanceof InaccessibleSlot || s instanceof FakeSlot
                                 || s instanceof RestrictedInputSlot || s instanceof SlotDisconnected;
                         if (isValid && s instanceof RestrictedInputSlot) {
                             try {

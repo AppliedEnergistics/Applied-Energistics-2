@@ -43,7 +43,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
 
-
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.tile.spatial.SpatialPylonBlockEntity;
 
@@ -64,7 +63,8 @@ class SpatialPylonBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos,
+            Supplier<Random> randomSupplier, RenderContext context) {
         int flags = getFlags(blockView, pos);
 
         CubeBuilder builder = new CubeBuilder(context.getEmitter());
@@ -80,7 +80,8 @@ class SpatialPylonBakedModel implements BakedModel, FabricBakedModel {
                     builder.setUvRotation(Direction.NORTH, 1);
                     builder.setUvRotation(Direction.UP, 2);
                     builder.setUvRotation(Direction.DOWN, 2);
-                } else if ((flags & SpatialPylonBlockEntity.DISPLAY_MIDDLE) == SpatialPylonBlockEntity.DISPLAY_END_MIN) {
+                } else if ((flags
+                        & SpatialPylonBlockEntity.DISPLAY_MIDDLE) == SpatialPylonBlockEntity.DISPLAY_END_MIN) {
                     builder.setUvRotation(Direction.SOUTH, 2);
                     builder.setUvRotation(Direction.NORTH, 2);
                     builder.setUvRotation(Direction.UP, 1);
@@ -108,7 +109,8 @@ class SpatialPylonBakedModel implements BakedModel, FabricBakedModel {
                 if ((flags & SpatialPylonBlockEntity.DISPLAY_MIDDLE) == SpatialPylonBlockEntity.DISPLAY_END_MAX) {
                     builder.setUvRotation(Direction.EAST, 2);
                     builder.setUvRotation(Direction.WEST, 1);
-                } else if ((flags & SpatialPylonBlockEntity.DISPLAY_MIDDLE) == SpatialPylonBlockEntity.DISPLAY_END_MIN) {
+                } else if ((flags
+                        & SpatialPylonBlockEntity.DISPLAY_MIDDLE) == SpatialPylonBlockEntity.DISPLAY_END_MIN) {
                     builder.setUvRotation(Direction.EAST, 1);
                     builder.setUvRotation(Direction.WEST, 2);
                     builder.setUvRotation(Direction.UP, 3);
@@ -190,7 +192,8 @@ class SpatialPylonBakedModel implements BakedModel, FabricBakedModel {
     }
 
     private static SpatialPylonTextureType getTextureTypeFromSideInside(int flags, Direction ori, Direction dir) {
-        final boolean good = (flags & SpatialPylonBlockEntity.DISPLAY_ENABLED) == SpatialPylonBlockEntity.DISPLAY_ENABLED;
+        final boolean good = (flags
+                & SpatialPylonBlockEntity.DISPLAY_ENABLED) == SpatialPylonBlockEntity.DISPLAY_ENABLED;
 
         if (ori == dir || ori.getOpposite() == dir) {
             return good ? SpatialPylonTextureType.DIM : SpatialPylonTextureType.RED;

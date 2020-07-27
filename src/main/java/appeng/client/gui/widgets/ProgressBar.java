@@ -18,14 +18,15 @@
 
 package appeng.client.gui.widgets;
 
-import appeng.container.interfaces.IProgressProvider;
-import appeng.core.localization.GuiText;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+
+import appeng.container.interfaces.IProgressProvider;
+import appeng.core.localization.GuiText;
 
 public class ProgressBar extends AbstractButtonWidget implements ITooltip {
 
@@ -66,8 +67,7 @@ public class ProgressBar extends AbstractButtonWidget implements ITooltip {
                         this.height - diff);
             } else {
                 final int diff = this.width - (max > 0 ? (this.width * current) / max : 0);
-                drawTexture(matrices, this.x, this.y, this.fill_u + diff, this.fill_v, this.width - diff,
-                        this.height);
+                drawTexture(matrices, this.x, this.y, this.fill_u + diff, this.fill_v, this.width - diff, this.height);
             }
         }
     }
@@ -83,8 +83,7 @@ public class ProgressBar extends AbstractButtonWidget implements ITooltip {
         }
 
         Text text = this.titleName != null ? this.titleName : LiteralText.EMPTY;
-        return text.copy().append("\n" + this.source.getCurrentProgress() + " ")
-                .append(GuiText.Of.text())
+        return text.copy().append("\n" + this.source.getCurrentProgress() + " ").append(GuiText.Of.text())
                 .append(" " + this.source.getMaxProgress());
     }
 

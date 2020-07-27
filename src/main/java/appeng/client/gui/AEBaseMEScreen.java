@@ -24,8 +24,8 @@ import java.util.Locale;
 
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.screen.slot.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -61,8 +61,7 @@ public abstract class AEBaseMEScreen<T extends AEBaseContainer> extends AEBaseSc
                 if (myStack.getStackSize() > bigNumber || (myStack.getStackSize() > 1 && stack.isDamaged())) {
                     final String formattedAmount = NumberFormat.getNumberInstance(Locale.US)
                             .format(myStack.getStackSize());
-                    currentToolTip.add(ButtonToolTips.ItemsStored.text(formattedAmount)
-                            .formatted(Formatting.GRAY));
+                    currentToolTip.add(ButtonToolTips.ItemsStored.text(formattedAmount).formatted(Formatting.GRAY));
                 }
 
                 if (myStack.getCountRequestable() > 0) {

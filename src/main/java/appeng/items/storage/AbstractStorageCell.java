@@ -20,20 +20,20 @@ package appeng.items.storage;
 
 import java.util.List;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
-import appeng.hooks.AEToolItem;
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
-import net.minecraft.util.TypedActionResult;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.text.Text;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
-import net.fabricmc.api.Environment;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.exceptions.MissingDefinitionException;
@@ -46,6 +46,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.AEConfig;
 import appeng.core.Api;
+import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
@@ -58,7 +59,8 @@ import appeng.util.Platform;
  * @version rv6 - 2018-01-17
  * @since rv6 2018-01-17
  */
-public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseItem implements IStorageCell<T>, AEToolItem {
+public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseItem
+        implements IStorageCell<T>, AEToolItem {
     protected final MaterialType component;
     protected final int totalBytes;
 

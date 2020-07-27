@@ -18,17 +18,17 @@
 
 package appeng.debug;
 
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AutomaticItemPlacementContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
-import net.minecraft.util.Tickable;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.text.LiteralText;
+import net.minecraft.util.Tickable;
+import net.minecraft.util.Util;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 
 import appeng.core.AppEng;
 import appeng.tile.AEBaseBlockEntity;

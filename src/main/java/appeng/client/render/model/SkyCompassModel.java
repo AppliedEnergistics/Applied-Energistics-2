@@ -18,10 +18,18 @@
 
 package appeng.client.render.model;
 
-import appeng.client.render.BasicUnbakedModel;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
+
+import javax.annotation.Nullable;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
+
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.render.model.ModelLoader;
@@ -30,12 +38,7 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.Identifier;
 
-import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Function;
+import appeng.client.render.BasicUnbakedModel;
 
 /**
  * The parent model for the compass baked model. Declares the dependencies for
@@ -43,17 +46,16 @@ import java.util.function.Function;
  */
 public class SkyCompassModel implements BasicUnbakedModel {
 
-    private static final Identifier MODEL_BASE = new Identifier(
-            "appliedenergistics2:block/sky_compass_base");
+    private static final Identifier MODEL_BASE = new Identifier("appliedenergistics2:block/sky_compass_base");
 
-    private static final Identifier MODEL_POINTER = new Identifier(
-            "appliedenergistics2:block/sky_compass_pointer");
+    private static final Identifier MODEL_POINTER = new Identifier("appliedenergistics2:block/sky_compass_pointer");
 
     public static final List<Identifier> DEPENDENCIES = ImmutableList.of(MODEL_BASE, MODEL_POINTER);
 
     @Nullable
     @Override
-    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
+    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter,
+            ModelBakeSettings rotationContainer, Identifier modelId) {
         BakedModel baseModel = loader.bake(MODEL_BASE, rotationContainer);
         BakedModel pointerModel = loader.bake(MODEL_POINTER, rotationContainer);
         return new SkyCompassBakedModel(baseModel, pointerModel);

@@ -23,9 +23,10 @@
 
 package appeng.api.events;
 
-import appeng.api.features.ILocatable;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+
+import appeng.api.features.ILocatable;
 
 /**
  * Input Event:
@@ -34,11 +35,12 @@ import net.fabricmc.fabric.api.event.EventFactory;
  */
 public interface LocatableEventAnnounce {
 
-    Event<LocatableEventAnnounce> EVENT = EventFactory.createArrayBacked(LocatableEventAnnounce.class, listeners -> (ILocatable target, LocatableEvent change) -> {
-        for (LocatableEventAnnounce listener : listeners) {
-            listener.onLocatableAnnounce(target, change);
-        }
-    });
+    Event<LocatableEventAnnounce> EVENT = EventFactory.createArrayBacked(LocatableEventAnnounce.class,
+            listeners -> (ILocatable target, LocatableEvent change) -> {
+                for (LocatableEventAnnounce listener : listeners) {
+                    listener.onLocatableAnnounce(target, change);
+                }
+            });
 
     void onLocatableAnnounce(final ILocatable target, final LocatableEvent change);
 

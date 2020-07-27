@@ -18,10 +18,10 @@
 
 package appeng.client.render;
 
-import appeng.client.render.cablebus.FacadeBuilder;
-import appeng.items.parts.FacadeItem;
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import java.util.Objects;
+import java.util.Random;
+import java.util.function.Supplier;
+
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
@@ -30,9 +30,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
 
-import java.util.Objects;
-import java.util.Random;
-import java.util.function.Supplier;
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+
+import appeng.client.render.cablebus.FacadeBuilder;
+import appeng.items.parts.FacadeItem;
 
 /**
  * This baked model class is used as a dispatcher to redirect the renderer to

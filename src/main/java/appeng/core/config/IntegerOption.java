@@ -10,7 +10,8 @@ public class IntegerOption extends BaseOption {
     private final int maxValue;
     private int currentValue;
 
-    public IntegerOption(ConfigSection parent, String id, String comment, int defaultValue, int minValue, int maxValue) {
+    public IntegerOption(ConfigSection parent, String id, String comment, int defaultValue, int minValue,
+            int maxValue) {
         super(parent, id, comment);
         this.defaultValue = defaultValue;
         this.currentValue = defaultValue;

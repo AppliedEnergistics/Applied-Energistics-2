@@ -18,22 +18,24 @@
 
 package appeng.integration.modules.jei;
 
-import appeng.container.slot.CraftingMatrixSlot;
-import appeng.container.slot.FakeCraftingMatrixSlot;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.JEIRecipePacket;
-import appeng.mixins.SlotMixin;
-import appeng.util.Platform;
-import me.shedaniel.rei.api.AutoTransferHandler;
-import me.shedaniel.rei.api.EntryStack;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 
-import java.util.ArrayList;
-import java.util.List;
+import me.shedaniel.rei.api.AutoTransferHandler;
+import me.shedaniel.rei.api.EntryStack;
+
+import appeng.container.slot.CraftingMatrixSlot;
+import appeng.container.slot.FakeCraftingMatrixSlot;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.JEIRecipePacket;
+import appeng.mixins.SlotMixin;
+import appeng.util.Platform;
 
 class RecipeTransferHandler<T extends ScreenHandler> implements AutoTransferHandler {
 

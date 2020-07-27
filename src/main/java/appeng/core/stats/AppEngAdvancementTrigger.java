@@ -18,8 +18,10 @@
 
 package appeng.core.stats;
 
-import appeng.core.AppEng;
+import java.util.*;
+
 import com.google.gson.JsonObject;
+
 import net.minecraft.advancement.PlayerAdvancementTracker;
 import net.minecraft.advancement.criterion.Criterion;
 import net.minecraft.advancement.criterion.CriterionConditions;
@@ -29,10 +31,9 @@ import net.minecraft.predicate.entity.AdvancementEntityPredicateSerializer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
-import java.util.*;
+import appeng.core.AppEng;
 
-public class AppEngAdvancementTrigger
-        implements Criterion<AppEngAdvancementTrigger.Instance>, IAdvancementTrigger {
+public class AppEngAdvancementTrigger implements Criterion<AppEngAdvancementTrigger.Instance>, IAdvancementTrigger {
     private final Identifier ID;
     private final Map<PlayerAdvancementTracker, AppEngAdvancementTrigger.Listeners> listeners = new HashMap<>();
 
@@ -48,7 +49,7 @@ public class AppEngAdvancementTrigger
 
     @Override
     public void beginTrackingCondition(PlayerAdvancementTracker playerAdvancementsIn,
-                            Criterion.ConditionsContainer<AppEngAdvancementTrigger.Instance> listener) {
+            Criterion.ConditionsContainer<AppEngAdvancementTrigger.Instance> listener) {
         AppEngAdvancementTrigger.Listeners l = this.listeners.get(playerAdvancementsIn);
 
         if (l == null) {
@@ -61,7 +62,7 @@ public class AppEngAdvancementTrigger
 
     @Override
     public void endTrackingCondition(PlayerAdvancementTracker playerAdvancementsIn,
-                               Criterion.ConditionsContainer<AppEngAdvancementTrigger.Instance> listener) {
+            Criterion.ConditionsContainer<AppEngAdvancementTrigger.Instance> listener) {
         AppEngAdvancementTrigger.Listeners l = this.listeners.get(playerAdvancementsIn);
 
         if (l != null) {
@@ -79,7 +80,8 @@ public class AppEngAdvancementTrigger
     }
 
     @Override
-    public AppEngAdvancementTrigger.Instance conditionsFromJson(JsonObject json, AdvancementEntityPredicateDeserializer context) {
+    public AppEngAdvancementTrigger.Instance conditionsFromJson(JsonObject json,
+            AdvancementEntityPredicateDeserializer context) {
         return new AppEngAdvancementTrigger.Instance(this.getId());
     }
 

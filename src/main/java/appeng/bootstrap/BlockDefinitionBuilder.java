@@ -18,6 +18,24 @@
 
 package appeng.bootstrap;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
+
+import javax.annotation.Nullable;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.block.Block;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.features.AEFeature;
 import appeng.block.AEBaseBlock;
@@ -29,22 +47,6 @@ import appeng.core.CreativeTab;
 import appeng.core.features.BlockDefinition;
 import appeng.core.features.TileDefinition;
 import appeng.util.Platform;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.block.Block;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Supplier;
 
 class BlockDefinitionBuilder implements IBlockBuilder {
 

@@ -22,7 +22,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 
-
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.widgets.ToggleButton;
 import appeng.container.implementations.NetworkToolContainer;
@@ -43,9 +42,8 @@ public class NetworkToolScreen extends AEBaseScreen<NetworkToolContainer> {
     public void init() {
         super.init();
 
-        this.tFacades = new ToggleButton(this.x - 18, this.y + 8, 23, 22,
-                GuiText.TransparentFacades.text(), GuiText.TransparentFacadesHint.text(),
-                btn -> toggleFacades());
+        this.tFacades = new ToggleButton(this.x - 18, this.y + 8, 23, 22, GuiText.TransparentFacades.text(),
+                GuiText.TransparentFacadesHint.text(), btn -> toggleFacades());
 
         this.addButton(this.tFacades);
     }
@@ -65,7 +63,8 @@ public class NetworkToolScreen extends AEBaseScreen<NetworkToolContainer> {
     }
 
     @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
+            float partialTicks) {
         this.bindTexture("guis/toolbox.png");
         drawTexture(matrices, offsetX, offsetY, 0, 0, this.backgroundWidth, this.backgroundHeight);
     }

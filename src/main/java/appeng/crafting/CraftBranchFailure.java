@@ -18,8 +18,9 @@
 
 package appeng.crafting;
 
-import appeng.api.storage.data.IAEItemStack;
 import net.minecraft.util.registry.Registry;
+
+import appeng.api.storage.data.IAEItemStack;
 
 public class CraftBranchFailure extends Exception {
 

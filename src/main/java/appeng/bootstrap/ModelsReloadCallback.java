@@ -1,11 +1,11 @@
 package appeng.bootstrap;
 
+import java.util.Map;
+
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.util.Identifier;
-
-import java.util.Map;
 
 @FunctionalInterface
 public interface ModelsReloadCallback {

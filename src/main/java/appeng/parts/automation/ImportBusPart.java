@@ -48,7 +48,6 @@ import appeng.container.implementations.UpgradeableContainer;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
-
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
@@ -74,7 +73,6 @@ public class ImportBusPart extends SharedItemBusPart implements IInventoryDestin
     private final IActionSource source;
     private int itemsToSend; // used in tickingRequest
     private boolean worked; // used in tickingRequest
-
 
     public ImportBusPart(final ItemStack is) {
         super(is);

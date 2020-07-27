@@ -18,11 +18,11 @@
 
 package appeng.spatial;
 
-import appeng.api.storage.ISpatialDimension;
-import appeng.core.AELog;
-import appeng.core.AppEng;
-import appeng.core.localization.GuiText;
-import appeng.hooks.DynamicDimensions;
+import java.util.List;
+import java.util.Locale;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.client.render.SkyProperties;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
@@ -35,9 +35,11 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Locale;
+import appeng.api.storage.ISpatialDimension;
+import appeng.core.AELog;
+import appeng.core.AppEng;
+import appeng.core.localization.GuiText;
+import appeng.hooks.DynamicDimensions;
 
 public final class SpatialDimensionManager implements ISpatialDimension {
 
@@ -46,15 +48,11 @@ public final class SpatialDimensionManager implements ISpatialDimension {
     // we move the origin to the middle of region 0,0
     public static final BlockPos REGION_CENTER = new BlockPos(512 / 2, 64, 512 / 2);
 
-    public static final RegistryKey<DimensionType> STORAGE_DIMENSION_TYPE = RegistryKey.of(Registry.DIMENSION_TYPE_KEY, AppEng.makeId("storage_cell"));
+    public static final RegistryKey<DimensionType> STORAGE_DIMENSION_TYPE = RegistryKey.of(Registry.DIMENSION_TYPE_KEY,
+            AppEng.makeId("storage_cell"));
 
-    public static final SkyProperties STORAGE_SKY = new SkyProperties(
-            Float.NaN /* disables clouds */,
-            false,
-            SkyProperties.SkyType.NONE /* we use a custom render mixin */,
-            true,
-            false
-            ) {
+    public static final SkyProperties STORAGE_SKY = new SkyProperties(Float.NaN /* disables clouds */, false,
+            SkyProperties.SkyType.NONE /* we use a custom render mixin */, true, false) {
         @Override
         public Vec3d adjustSkyColor(Vec3d color, float sunHeight) {
             return Vec3d.ZERO;
@@ -96,7 +94,8 @@ public final class SpatialDimensionManager implements ISpatialDimension {
 
         ServerWorld world = dynamicDimensions.addWorld(worldId, STORAGE_DIMENSION_TYPE, StorageChunkGenerator.INSTANCE);
 
-        SpatialDimensionExtraData spatialExtraData = world.getPersistentStateManager().getOrCreate(SpatialDimensionExtraData::new, SpatialDimensionExtraData.ID);
+        SpatialDimensionExtraData spatialExtraData = world.getPersistentStateManager()
+                .getOrCreate(SpatialDimensionExtraData::new, SpatialDimensionExtraData.ID);
         spatialExtraData.setSize(size);
 
         return worldId;

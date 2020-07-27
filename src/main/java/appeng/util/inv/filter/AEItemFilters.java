@@ -18,8 +18,9 @@
 
 package appeng.util.inv.filter;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.item.ItemStack;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 public class AEItemFilters {
     public static final IAEItemFilter INSERT_ONLY = new InsertOnlyFilter();

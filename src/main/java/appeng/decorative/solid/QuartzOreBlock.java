@@ -18,7 +18,6 @@
 
 package appeng.decorative.solid;
 
-import appeng.block.AEBaseBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
@@ -26,6 +25,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+
+import appeng.block.AEBaseBlock;
 
 public class QuartzOreBlock extends AEBaseBlock {
     public QuartzOreBlock(Settings props) {

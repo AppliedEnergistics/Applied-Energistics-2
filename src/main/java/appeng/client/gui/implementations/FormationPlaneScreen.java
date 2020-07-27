@@ -38,21 +38,19 @@ public class FormationPlaneScreen extends UpgradeableScreen<FormationPlaneContai
 
     private SettingToggleButton<YesNo> placeMode;
 
-    public FormationPlaneScreen(FormationPlaneContainer container, PlayerInventory playerInventory,
-            Text title) {
+    public FormationPlaneScreen(FormationPlaneContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
         this.backgroundHeight = 251;
     }
 
     @Override
     protected void addButtons() {
-        this.placeMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 28, Settings.PLACE_BLOCK,
-                YesNo.YES);
+        this.placeMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 28, Settings.PLACE_BLOCK, YesNo.YES);
         this.fuzzyMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 48, Settings.FUZZY_MODE,
                 FuzzyMode.IGNORE_ALL);
 
-        this.addButton(new TabButton(this.x + 154, this.y, 2 + 4 * 16, GuiText.Priority.text(),
-                this.itemRenderer, btn -> openPriorityGui()));
+        this.addButton(new TabButton(this.x + 154, this.y, 2 + 4 * 16, GuiText.Priority.text(), this.itemRenderer,
+                btn -> openPriorityGui()));
 
         this.addButton(this.placeMode);
         this.addButton(this.fuzzyMode);

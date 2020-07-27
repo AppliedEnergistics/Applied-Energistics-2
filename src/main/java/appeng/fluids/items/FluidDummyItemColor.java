@@ -1,12 +1,12 @@
 package appeng.fluids.items;
 
-import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.color.item.ItemColorProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 
 @Environment(EnvType.CLIENT)
 public class FluidDummyItemColor implements ItemColorProvider {

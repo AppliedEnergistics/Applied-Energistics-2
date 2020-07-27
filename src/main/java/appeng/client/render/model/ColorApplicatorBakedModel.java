@@ -7,22 +7,23 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import appeng.mixins.BakedQuadAccessor;
 import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.texture.Sprite;
-
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
 
+import appeng.mixins.BakedQuadAccessor;
+
 /**
- * This baked model will take the generated item model for the colored color applicator,
- * and associate tint indices with the added layers that correspond to the light/medium/dark
- * variants of the {@link appeng.api.util.AEColor}.
+ * This baked model will take the generated item model for the colored color
+ * applicator, and associate tint indices with the added layers that correspond
+ * to the light/medium/dark variants of the {@link appeng.api.util.AEColor}.
  * <p>
- * Using the color provider registered in {@link appeng.items.tools.powered.ColorApplicatorItemRendering},
- * this results in the right color being multiplied with the corresponding layer.
+ * Using the color provider registered in
+ * {@link appeng.items.tools.powered.ColorApplicatorItemRendering}, this results
+ * in the right color being multiplied with the corresponding layer.
  */
 class ColorApplicatorBakedModel extends ForwardingBakedModel {
 
@@ -30,8 +31,7 @@ class ColorApplicatorBakedModel extends ForwardingBakedModel {
 
     private final List<BakedQuad> generalQuads;
 
-    ColorApplicatorBakedModel(BakedModel baseModel, Sprite texDark,
-                              Sprite texMedium, Sprite texBright) {
+    ColorApplicatorBakedModel(BakedModel baseModel, Sprite texDark, Sprite texMedium, Sprite texBright) {
         this.wrapped = baseModel;
 
         // Put the tint indices in... Since this is an item model, we are ignoring rand
@@ -46,8 +46,7 @@ class ColorApplicatorBakedModel extends ForwardingBakedModel {
         return ((BakedQuadAccessor) quad).getSprite();
     }
 
-    private List<BakedQuad> fixQuadTint(Direction facing, Sprite texDark, Sprite texMedium,
-                                        Sprite texBright) {
+    private List<BakedQuad> fixQuadTint(Direction facing, Sprite texDark, Sprite texMedium, Sprite texBright) {
         List<BakedQuad> quads = this.wrapped.getQuads(null, facing, new Random(0));
         List<BakedQuad> result = new ArrayList<>(quads.size());
         for (BakedQuad quad : quads) {

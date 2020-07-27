@@ -18,8 +18,9 @@
 
 package appeng.items.storage;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.item.ItemStack;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Upgrades;

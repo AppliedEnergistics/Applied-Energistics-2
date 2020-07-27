@@ -20,12 +20,14 @@ package appeng.parts.reporting;
 
 import java.util.List;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.Vec3d;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
@@ -46,7 +48,6 @@ import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
-import net.minecraft.util.math.Vec3d;
 
 /**
  * Anything resembling an network terminal with view cells can reuse this.
@@ -139,7 +140,7 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
 
     @Override
     public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
-                                  final ItemStack removedStack, final ItemStack newStack) {
+            final ItemStack removedStack, final ItemStack newStack) {
         this.getHost().markForSave();
     }
 }

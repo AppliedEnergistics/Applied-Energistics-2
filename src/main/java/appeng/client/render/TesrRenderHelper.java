@@ -19,13 +19,12 @@
 package appeng.client.render;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.util.math.MatrixStack;
-
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
 
@@ -82,7 +81,7 @@ public class TesrRenderHelper {
      * Render an item in 2D.
      */
     public static void renderItem2d(MatrixStack matrixStack, VertexConsumerProvider buffers, ItemStack itemStack,
-                                    float scale, int combinedLightIn, int combinedOverlayIn) {
+            float scale, int combinedLightIn, int combinedOverlayIn) {
         if (!itemStack.isEmpty()) {
             matrixStack.push();
             // Push it out of the block face a bit to avoid z-fighting
@@ -127,8 +126,7 @@ public class TesrRenderHelper {
         matrixStack.scale(1.0f / 62.0f, -1.0f / 62.0f, 1.0f / 62.0f);
         matrixStack.scale(0.5f, 0.5f, 0);
         matrixStack.translate(-0.5f * width, 0.0f, 0.5f);
-        fr.draw(renderedStackSize, 0, 0, -1, false, matrixStack.peek().getModel(), buffers, false, 0,
-                15728880);
+        fr.draw(renderedStackSize, 0, 0, -1, false, matrixStack.peek().getModel(), buffers, false, 0, 15728880);
         matrixStack.pop();
 
     }

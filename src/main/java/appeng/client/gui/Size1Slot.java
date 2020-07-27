@@ -4,14 +4,16 @@ package appeng.client.gui;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import appeng.client.me.SlotME;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.item.ItemStack;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.Identifier;
+
+import appeng.client.me.SlotME;
 
 /**
  * A proxy for a slot that will always return an itemstack with size 1, if there

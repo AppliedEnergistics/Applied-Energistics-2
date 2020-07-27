@@ -18,13 +18,10 @@
 
 package appeng.spatial;
 
-import appeng.core.Api;
-import appeng.api.movable.IMovableHandler;
-import appeng.api.movable.IMovableRegistry;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.WorldCoord;
-import appeng.core.AELog;
-import appeng.core.worlddata.WorldData;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -42,9 +39,13 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
 import net.minecraft.world.chunk.WorldChunk;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import appeng.api.movable.IMovableHandler;
+import appeng.api.movable.IMovableRegistry;
+import appeng.api.util.AEPartLocation;
+import appeng.api.util.WorldCoord;
+import appeng.core.AELog;
+import appeng.core.Api;
+import appeng.core.worlddata.WorldData;
 
 public class CachedPlane {
     private final int x_size;
@@ -159,8 +160,8 @@ public class CachedPlane {
                         final BlockPos tePOS = entry.pos;
                         if (tePOS.getX() >= minX && tePOS.getX() <= maxX && tePOS.getY() >= minY && tePOS.getY() <= maxY
                                 && tePOS.getZ() >= minZ && tePOS.getZ() <= maxZ) {
-                            this.ticks.add(new ScheduledTick<>(tePOS, entry.getObject(),
-                                    entry.time - gameTime, entry.priority));
+                            this.ticks.add(new ScheduledTick<>(tePOS, entry.getObject(), entry.time - gameTime,
+                                    entry.priority));
                         }
                     }
                 }
@@ -264,8 +265,7 @@ public class CachedPlane {
 
     private void addTick(final int x, final int y, final int z, final ScheduledTick<Block> entry) {
         BlockPos where = new BlockPos(x + this.x_offset, y + this.y_offset, z + this.z_offset);
-        this.world.getBlockTickScheduler().schedule(where, entry.getObject(), (int) entry.time,
-                entry.priority);
+        this.world.getBlockTickScheduler().schedule(where, entry.getObject(), (int) entry.time, entry.priority);
     }
 
     private void addTile(final int x, final int y, final int z, final BlockEntity te,
@@ -320,8 +320,8 @@ public class CachedPlane {
 
                 // FIXME this was sending chunks to players...
                 ChunkDataS2CPacket cdp = new ChunkDataS2CPacket(c, verticalBits, false);
-                ((ServerChunkManager) world.getChunkManager()).threadedAnvilChunkStorage.getPlayersWatchingChunk(c.getPos(), false)
-                        .forEach(spe -> spe.networkHandler.sendPacket(cdp));
+                ((ServerChunkManager) world.getChunkManager()).threadedAnvilChunkStorage
+                        .getPlayersWatchingChunk(c.getPos(), false).forEach(spe -> spe.networkHandler.sendPacket(cdp));
 
             }
         }

@@ -23,7 +23,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
-
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
@@ -54,14 +53,16 @@ public class InscriberScreen extends AEBaseScreen<InscriberContainer> {
 
     @Override
     public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.pb.setFullMsg(new LiteralText(this.handler.getCurrentProgress() * 100 / this.handler.getMaxProgress() + "%"));
+        this.pb.setFullMsg(
+                new LiteralText(this.handler.getCurrentProgress() * 100 / this.handler.getMaxProgress() + "%"));
 
         this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.Inscriber.text()), 8, 6, 4210752);
         this.textRenderer.draw(matrices, GuiText.inventory.text(), 8, this.backgroundHeight - 96 + 3, 4210752);
     }
 
     @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
+            float partialTicks) {
         this.bindTexture("guis/inscriber.png");
         this.pb.x = 135 + this.x;
         this.pb.y = 39 + this.y;
@@ -69,11 +70,11 @@ public class InscriberScreen extends AEBaseScreen<InscriberContainer> {
         drawTexture(matrices, offsetX, offsetY, 0, 0, 211 - 34, this.backgroundHeight);
 
         if (this.drawUpgrades()) {
-            drawTexture(matrices, offsetX + 177, offsetY, 177, 0, 35,
-                    14 + this.handler.availableUpgrades() * 18);
+            drawTexture(matrices, offsetX + 177, offsetY, 177, 0, 35, 14 + this.handler.availableUpgrades() * 18);
         }
         if (this.hasToolbox()) {
-            drawTexture(matrices, offsetX + 178, offsetY + this.backgroundHeight - 90, 178, this.backgroundHeight - 90, 68, 68);
+            drawTexture(matrices, offsetX + 178, offsetY + this.backgroundHeight - 90, 178, this.backgroundHeight - 90,
+                    68, 68);
         }
     }
 

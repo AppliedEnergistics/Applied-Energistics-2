@@ -1,11 +1,15 @@
 
 package appeng.client.render.cablebus;
 
-import appeng.api.parts.IDynamicPartBakedModel;
-import appeng.api.util.AEColor;
-import appeng.util.Platform;
+import java.util.Random;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Supplier;
+
+import javax.annotation.Nullable;
+
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
@@ -19,10 +23,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
 
-import javax.annotation.Nullable;
-import java.util.Random;
-import java.util.concurrent.ExecutionException;
-import java.util.function.Supplier;
+import appeng.api.parts.IDynamicPartBakedModel;
+import appeng.api.util.AEColor;
+import appeng.util.Platform;
 
 public class P2PTunnelFrequencyBakedModel implements IDynamicPartBakedModel {
 
@@ -32,15 +35,15 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicPartBakedModel {
 
     private final static Cache<Long, Mesh> modelCache = CacheBuilder.newBuilder().maximumSize(100).build();
 
-    private static final int[][] QUAD_OFFSETS = new int[][]{{4, 10, 2}, {10, 10, 2}, {4, 4, 2}, {10, 4, 2}};
+    private static final int[][] QUAD_OFFSETS = new int[][] { { 4, 10, 2 }, { 10, 10, 2 }, { 4, 4, 2 }, { 10, 4, 2 } };
 
     public P2PTunnelFrequencyBakedModel(final Sprite texture) {
         this.texture = texture;
     }
 
     @Override
-    public void emitQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context,
-                          Direction partSide, @Nullable Object modelData) {
+    public void emitQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier,
+            RenderContext context, Direction partSide, @Nullable Object modelData) {
         if (!(modelData instanceof Long)) {
             return;
         }

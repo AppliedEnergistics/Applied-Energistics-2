@@ -18,12 +18,10 @@
 
 package appeng.container;
 
-import appeng.api.parts.IPartHost;
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.DimensionalCoord;
-import appeng.parts.AEBasePart;
 import com.google.common.base.Preconditions;
+
 import io.netty.handler.codec.DecoderException;
+
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -34,6 +32,11 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+
+import appeng.api.parts.IPartHost;
+import appeng.api.util.AEPartLocation;
+import appeng.api.util.DimensionalCoord;
+import appeng.parts.AEBasePart;
 
 /**
  * Describes how a container the player has opened was originally located. This
@@ -198,8 +201,8 @@ public final class ContainerLocator {
             case 0:
                 return new ContainerLocator(Type.PLAYER_INVENTORY, buf.readInt(), (Identifier) null, null, null);
             case 1:
-                return new ContainerLocator(Type.PLAYER_INVENTORY_WITH_BLOCK_CONTEXT, buf.readInt(), buf.readIdentifier(),
-                        buf.readBlockPos(), AEPartLocation.values()[buf.readByte()]);
+                return new ContainerLocator(Type.PLAYER_INVENTORY_WITH_BLOCK_CONTEXT, buf.readInt(),
+                        buf.readIdentifier(), buf.readBlockPos(), AEPartLocation.values()[buf.readByte()]);
             case 2:
                 return new ContainerLocator(Type.BLOCK, -1, buf.readIdentifier(), buf.readBlockPos(), null);
             case 3:

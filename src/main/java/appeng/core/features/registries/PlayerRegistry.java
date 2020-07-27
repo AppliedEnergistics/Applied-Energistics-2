@@ -18,14 +18,17 @@
 
 package appeng.core.features.registries;
 
+import java.util.UUID;
+
+import javax.annotation.Nullable;
+
+import com.mojang.authlib.GameProfile;
+
+import net.minecraft.entity.player.PlayerEntity;
+
 import appeng.api.features.IPlayerRegistry;
 import appeng.core.AppEng;
 import appeng.core.worlddata.WorldData;
-import com.mojang.authlib.GameProfile;
-import net.minecraft.entity.player.PlayerEntity;
-
-import javax.annotation.Nullable;
-import java.util.UUID;
 
 public class PlayerRegistry implements IPlayerRegistry {
 
@@ -51,9 +54,7 @@ public class PlayerRegistry implements IPlayerRegistry {
             return null;
         }
 
-        return AppEng.instance().getPlayers()
-                .filter(p -> p.getGameProfile().getId().equals(profileId))
-                .findFirst()
+        return AppEng.instance().getPlayers().filter(p -> p.getGameProfile().getId().equals(profileId)).findFirst()
                 .orElse(null);
     }
 }

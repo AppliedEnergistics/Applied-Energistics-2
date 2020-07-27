@@ -18,6 +18,10 @@
 
 package appeng.me.storage;
 
+import java.math.RoundingMode;
+import java.util.*;
+import java.util.Map.Entry;
+
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.fluid.FluidVolumeUtil;
 import alexiil.mc.lib.attributes.fluid.GroupedFluidInv;
@@ -25,7 +29,7 @@ import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.filter.ExactFluidFilter;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
-import appeng.core.Api;
+
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.StorageFilter;
@@ -37,12 +41,8 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
-import appeng.fluids.util.AEFluidStack;
-
-import java.math.RoundingMode;
-import java.util.*;
-import java.util.Map.Entry;
 import appeng.core.Api;
+import appeng.fluids.util.AEFluidStack;
 
 public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITickingMonitor {
     private final GroupedFluidInv handler;
@@ -68,7 +68,7 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
         this.listeners.remove(l);
     }
 
-    private Simulation getFluidAction(Actionable actionable){
+    private Simulation getFluidAction(Actionable actionable) {
         return actionable == Actionable.MODULATE ? Simulation.ACTION : Simulation.SIMULATE;
     }
 
@@ -153,7 +153,9 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
                 IAEFluidStack stack = null;
 
                 if (!newAmount.isZero()) {
-                    stack = (old == null || old.aeStack == null ? AEFluidStack.fromFluidVolume(storedFluid.withAmount(newAmount), RoundingMode.DOWN) : old.aeStack.copy());
+                    stack = (old == null || old.aeStack == null
+                            ? AEFluidStack.fromFluidVolume(storedFluid.withAmount(newAmount), RoundingMode.DOWN)
+                            : old.aeStack.copy());
                 }
                 if (stack != null) {
                     stack.setStackSize(newSize);

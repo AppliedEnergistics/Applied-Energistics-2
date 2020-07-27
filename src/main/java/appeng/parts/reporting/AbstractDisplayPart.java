@@ -44,11 +44,9 @@ public abstract class AbstractDisplayPart extends AbstractReportingPart {
 
     // Models that contain the status indicator light
     @PartModels
-    protected static final Identifier MODEL_STATUS_OFF = new Identifier(AppEng.MOD_ID,
-            "part/display_status_off");
+    protected static final Identifier MODEL_STATUS_OFF = new Identifier(AppEng.MOD_ID, "part/display_status_off");
     @PartModels
-    protected static final Identifier MODEL_STATUS_ON = new Identifier(AppEng.MOD_ID,
-            "part/display_status_on");
+    protected static final Identifier MODEL_STATUS_ON = new Identifier(AppEng.MOD_ID, "part/display_status_on");
     @PartModels
     protected static final Identifier MODEL_STATUS_HAS_CHANNEL = new Identifier(AppEng.MOD_ID,
             "part/display_status_has_channel");

@@ -18,8 +18,8 @@
 
 package appeng.helpers;
 
-import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.ScreenHandlerType;
 
 public interface IPriorityHost {
 

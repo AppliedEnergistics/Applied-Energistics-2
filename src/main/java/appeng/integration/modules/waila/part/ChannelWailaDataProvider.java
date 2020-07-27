@@ -18,22 +18,24 @@
 
 package appeng.integration.modules.waila.part;
 
-import appeng.api.parts.IPart;
-import appeng.core.localization.WailaText;
-import appeng.parts.networking.SmartCablePart;
-import appeng.parts.networking.SmartDenseCablePart;
+import java.util.List;
+
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
 import it.unimi.dsi.fastutil.objects.Object2ByteMap;
 import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
 import mcp.mobius.waila.api.IDataAccessor;
 import mcp.mobius.waila.api.IPluginConfig;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.text.Text;
-import net.minecraft.world.World;
 
-import java.util.List;
+import appeng.api.parts.IPart;
+import appeng.core.localization.WailaText;
+import appeng.parts.networking.SmartCablePart;
+import appeng.parts.networking.SmartDenseCablePart;
 
 /**
  * Channel-information provider for WAILA
@@ -69,7 +71,7 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider {
      */
     @Override
     public void appendBody(final IPart part, final List<Text> tooltip, final IDataAccessor accessor,
-                           final IPluginConfig config) {
+            final IPluginConfig config) {
         if (part instanceof SmartCablePart || part instanceof SmartDenseCablePart) {
             final CompoundTag tag = accessor.getServerData();
 
@@ -127,7 +129,7 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider {
      */
     @Override
     public void appendServerData(ServerPlayerEntity player, IPart part, BlockEntity te, CompoundTag tag, World world,
-                                 BlockPos pos) {
+            BlockPos pos) {
         if (part instanceof SmartCablePart || part instanceof SmartDenseCablePart) {
             final CompoundTag tempTag = new CompoundTag();
 

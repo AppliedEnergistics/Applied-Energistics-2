@@ -18,9 +18,10 @@
 
 package appeng.util.helpers;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 public class ItemHandlerUtil {
     private ItemHandlerUtil() {

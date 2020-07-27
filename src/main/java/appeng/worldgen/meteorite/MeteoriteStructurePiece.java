@@ -20,23 +20,22 @@ package appeng.worldgen.meteorite;
 import java.util.Random;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.StructurePiece;
 import net.minecraft.structure.StructurePieceType;
+import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.BlockBox;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.structure.StructureManager;
 
 import appeng.core.worlddata.WorldData;
 import appeng.worldgen.meteorite.fallout.FalloutMode;
 
 public class MeteoriteStructurePiece extends StructurePiece {
 
-    public static final StructurePieceType TYPE = StructurePieceType.register(MeteoriteStructurePiece::new,
-            "AE2MTRT");
+    public static final StructurePieceType TYPE = StructurePieceType.register(MeteoriteStructurePiece::new, "AE2MTRT");
 
     private final PlacedMeteoriteSettings settings;
 
@@ -50,8 +49,8 @@ public class MeteoriteStructurePiece extends StructurePiece {
         int range = 4 * 16;
 
         ChunkPos chunkPos = new ChunkPos(center);
-        this.boundingBox = new BlockBox(chunkPos.getStartX() - range, center.getY(),
-                chunkPos.getStartZ() - range, chunkPos.getEndX() + range, center.getY(), chunkPos.getEndZ() + range);
+        this.boundingBox = new BlockBox(chunkPos.getStartX() - range, center.getY(), chunkPos.getStartZ() - range,
+                chunkPos.getEndX() + range, center.getY(), chunkPos.getEndZ() + range);
     }
 
     public MeteoriteStructurePiece(StructureManager templateManager, CompoundTag tag) {
@@ -86,11 +85,13 @@ public class MeteoriteStructurePiece extends StructurePiece {
     }
 
     @Override
-    public boolean generate(ServerWorldAccess world, StructureAccessor structureAccessor, ChunkGenerator chunkGenerator, Random random, BlockBox bounds, ChunkPos chunkPos, BlockPos blockPos) {
+    public boolean generate(ServerWorldAccess world, StructureAccessor structureAccessor, ChunkGenerator chunkGenerator,
+            Random random, BlockBox bounds, ChunkPos chunkPos, BlockPos blockPos) {
         MeteoritePlacer placer = new MeteoritePlacer(world, settings, bounds);
         placer.place();
 
-        WorldData.instance().compassData().service().tryUpdateArea(world, chunkPos); // FIXME: We know the y-range here...
+        WorldData.instance().compassData().service().tryUpdateArea(world, chunkPos); // FIXME: We know the y-range
+                                                                                     // here...
         return true;
     }
 

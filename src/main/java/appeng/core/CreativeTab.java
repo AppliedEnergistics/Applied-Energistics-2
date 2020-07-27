@@ -18,17 +18,18 @@
 
 package appeng.core;
 
-import appeng.core.Api;
-import appeng.api.definitions.IBlocks;
-import appeng.api.definitions.IDefinitions;
-import appeng.api.definitions.IItemDefinition;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.collection.DefaultedList;
 
-import java.util.ArrayList;
-import java.util.List;
+import appeng.api.definitions.IBlocks;
+import appeng.api.definitions.IDefinitions;
+import appeng.api.definitions.IItemDefinition;
+import appeng.core.Api;
 
 public final class CreativeTab {
 
@@ -37,14 +38,11 @@ public final class CreativeTab {
     public static ItemGroup INSTANCE;
 
     public static void init() {
-        INSTANCE = FabricItemGroupBuilder.create(AppEng.makeId("main"))
-                .icon(() -> {
-                    final IDefinitions definitions = Api.instance().definitions();
-                    final IBlocks blocks = definitions.blocks();
-                    return blocks.controller().stack(1);
-                })
-                .appendItems(CreativeTab::fill)
-                .build();
+        INSTANCE = FabricItemGroupBuilder.create(AppEng.makeId("main")).icon(() -> {
+            final IDefinitions definitions = Api.instance().definitions();
+            final IBlocks blocks = definitions.blocks();
+            return blocks.controller().stack(1);
+        }).appendItems(CreativeTab::fill).build();
     }
 
     public static void add(IItemDefinition itemDef) {

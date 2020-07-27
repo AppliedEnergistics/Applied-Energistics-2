@@ -18,12 +18,12 @@
 
 package appeng.core;
 
-import appeng.api.parts.CableRenderMode;
-import appeng.block.AEBaseBlock;
-import appeng.client.ActionKey;
-import appeng.client.EffectType;
-import appeng.core.stats.AdvancementTriggers;
-import appeng.core.sync.BasePacket;
+import java.util.List;
+import java.util.Random;
+import java.util.stream.Stream;
+
+import javax.annotation.Nonnull;
+
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
@@ -32,10 +32,12 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
 
-import javax.annotation.Nonnull;
-import java.util.List;
-import java.util.Random;
-import java.util.stream.Stream;
+import appeng.api.parts.CableRenderMode;
+import appeng.block.AEBaseBlock;
+import appeng.client.ActionKey;
+import appeng.client.EffectType;
+import appeng.core.stats.AdvancementTriggers;
+import appeng.core.sync.BasePacket;
 
 public interface AppEng {
 
@@ -55,11 +57,9 @@ public interface AppEng {
 
     Stream<? extends PlayerEntity> getPlayers();
 
-    void sendToAllNearExcept(PlayerEntity p, double x, double y, double z, double dist, World w,
-                             BasePacket packet);
+    void sendToAllNearExcept(PlayerEntity p, double x, double y, double z, double dist, World w, BasePacket packet);
 
-    void spawnEffect(EffectType effect, World world, double posX, double posY, double posZ,
-                     Object extra);
+    void spawnEffect(EffectType effect, World world, double posX, double posY, double posZ, Object extra);
 
     boolean shouldAddParticles(Random r);
 
@@ -74,8 +74,8 @@ public interface AppEng {
     boolean isActionKey(@Nonnull final ActionKey key, int keyCode, int scanCode);
 
     /**
-     * Get the currently running server. On the client-side this may throw if no server
-     * is currently running or a remote server has been joined.
+     * Get the currently running server. On the client-side this may throw if no
+     * server is currently running or a remote server has been joined.
      *
      * @return The current server. Never null.
      */

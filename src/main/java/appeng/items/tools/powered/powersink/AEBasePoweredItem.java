@@ -22,16 +22,16 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.function.DoubleSupplier;
 
+import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.text.Text;
 import net.minecraft.world.World;
-import net.fabricmc.api.EnvType;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;

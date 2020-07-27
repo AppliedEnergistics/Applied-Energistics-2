@@ -1,5 +1,38 @@
 package appeng.client;
 
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.annotation.Nonnull;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
+import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.render.entity.ItemEntityRenderer;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.client.util.SpriteIdentifier;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.integrated.IntegratedServer;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.world.World;
+
 import appeng.api.parts.CableRenderMode;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.block.paint.PaintSplotchesModel;
@@ -124,37 +157,6 @@ import appeng.hooks.ClientTickHandler;
 import appeng.parts.automation.PlaneModel;
 import appeng.tile.crafting.MolecularAssemblerRenderer;
 import appeng.util.Platform;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
-import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
-import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.options.KeyBinding;
-import net.minecraft.client.render.entity.ItemEntityRenderer;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.world.World;
-
-import javax.annotation.Nonnull;
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Environment(EnvType.CLIENT)
 public final class AppEngClient extends AppEngBase {
@@ -182,8 +184,7 @@ public final class AppEngClient extends AppEngBase {
 
         ModelsReloadCallback.EVENT.register(this::onModelsReloaded);
 
-        callDeferredBootstrapComponents(IClientSetupComponent.class,
-                IClientSetupComponent::setup);
+        callDeferredBootstrapComponents(IClientSetupComponent.class, IClientSetupComponent::setup);
         registerModelProviders();
         registerParticleRenderers();
         registerEntityRenderers();
@@ -191,7 +192,8 @@ public final class AppEngClient extends AppEngBase {
         registerTextures();
         registerScreens();
 
-        // On the client, we'll register for server startup/shutdown to properly setup WorldData
+        // On the client, we'll register for server startup/shutdown to properly setup
+        // WorldData
         // each time the integrated server starts&stops
         ServerLifecycleEvents.SERVER_STARTED.register(WorldData::onServerStarting);
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> WorldData.instance().onServerStopping());
@@ -265,8 +267,7 @@ public final class AppEngClient extends AppEngBase {
 
         final int range = 16 * 16;
 
-        client.worldRenderer.scheduleBlockRenders(x - range, y - range, z - range, x + range, y + range,
-                z + range);
+        client.worldRenderer.scheduleBlockRenders(x - range, y - range, z - range, x + range, y + range, z + range);
     }
 
     @Override
@@ -295,7 +296,8 @@ public final class AppEngClient extends AppEngBase {
 
         registry.register(TinyTNTPrimedEntity.TYPE, (dispatcher, context) -> new TinyTNTPrimedRenderer(dispatcher));
 
-        EntityRendererRegistry.Factory itemEntityFactory = (dispatcher, context) -> new ItemEntityRenderer(dispatcher, context.getItemRenderer());
+        EntityRendererRegistry.Factory itemEntityFactory = (dispatcher, context) -> new ItemEntityRenderer(dispatcher,
+                context.getItemRenderer());
         registry.register(SingularityEntity.TYPE, itemEntityFactory);
         registry.register(GrowingCrystalEntity.TYPE, itemEntityFactory);
         registry.register(ChargedQuartzEntity.TYPE, itemEntityFactory);
@@ -316,10 +318,7 @@ public final class AppEngClient extends AppEngBase {
     }
 
     public void registerTextures() {
-        Stream<Collection<SpriteIdentifier>> sprites = Stream.of(
-                SkyChestTESR.SPRITES,
-                InscriberTESR.SPRITES
-        );
+        Stream<Collection<SpriteIdentifier>> sprites = Stream.of(SkyChestTESR.SPRITES, InscriberTESR.SPRITES);
 
         // Group every needed sprite by atlas, since every atlas has their own event
         Map<Identifier, List<SpriteIdentifier>> groupedByAtlas = sprites.flatMap(Collection::stream)
@@ -327,12 +326,11 @@ public final class AppEngClient extends AppEngBase {
 
         // Register to the stitch event for each atlas
         for (Map.Entry<Identifier, List<SpriteIdentifier>> entry : groupedByAtlas.entrySet()) {
-            ClientSpriteRegistryCallback.event(entry.getKey())
-                    .register((spriteAtlasTexture, registry) -> {
-                        for (SpriteIdentifier spriteIdentifier : entry.getValue()) {
-                            registry.register(spriteIdentifier.getTextureId());
-                        }
-                    });
+            ClientSpriteRegistryCallback.event(entry.getKey()).register((spriteAtlasTexture, registry) -> {
+                for (SpriteIdentifier spriteIdentifier : entry.getValue()) {
+                    registry.register(spriteIdentifier.getTextureId());
+                }
+            });
         }
     }
 
@@ -344,27 +342,30 @@ public final class AppEngClient extends AppEngBase {
         ModelLoadingRegistry.INSTANCE.registerVariantProvider((resourceManager) -> {
             return (modelIdentifier, modelProviderContext) -> {
                 if (MolecularAssemblerRenderer.LIGHTS_MODEL.equals(modelIdentifier)) {
-                    return modelProviderContext.loadModel(new Identifier(modelIdentifier.getNamespace(), modelIdentifier.getPath()));
+                    return modelProviderContext
+                            .loadModel(new Identifier(modelIdentifier.getNamespace(), modelIdentifier.getPath()));
                 }
                 return null;
             };
         });
 
-        ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> new CableBusModelLoader((PartModels) Api.INSTANCE.registries().partModels()));
+        ModelLoadingRegistry.INSTANCE.registerResourceProvider(
+                rm -> new CableBusModelLoader((PartModels) Api.INSTANCE.registries().partModels()));
 
-       addBuiltInModel("block/quartz_glass", GlassModel::new);
-       addBuiltInModel("block/sky_compass", SkyCompassModel::new);
-       addBuiltInModel("item/sky_compass", SkyCompassModel::new);
+        addBuiltInModel("block/quartz_glass", GlassModel::new);
+        addBuiltInModel("block/sky_compass", SkyCompassModel::new);
+        addBuiltInModel("item/sky_compass", SkyCompassModel::new);
 // FIXME FABRIC       addBuiltInModel("item/dummy_fluid_item", DummyFluidItemModel::new);
-       addBuiltInModel("item/memory_card", MemoryCardModel::new);
-       addBuiltInModel("item/biometric_card", BiometricCardModel::new);
-       addBuiltInModel("block/drive", DriveModel::new);
-       addBuiltInModel("color_applicator", ColorApplicatorModel::new); // FIXME need to wire this up (this might just not be needed)
-       addBuiltInModel("block/spatial_pylon", SpatialPylonModel::new);
-       addBuiltInModel("block/paint", PaintSplotchesModel::new);
-       addBuiltInModel("block/qnb/qnb_formed", QnbFormedModel::new);
-       addBuiltInModel("part/p2p/p2p_tunnel_frequency", P2PTunnelFrequencyModel::new);
-       addBuiltInModel("item/facade", FacadeItemModel::new);
+        addBuiltInModel("item/memory_card", MemoryCardModel::new);
+        addBuiltInModel("item/biometric_card", BiometricCardModel::new);
+        addBuiltInModel("block/drive", DriveModel::new);
+        addBuiltInModel("color_applicator", ColorApplicatorModel::new); // FIXME need to wire this up (this might just
+                                                                        // not be needed)
+        addBuiltInModel("block/spatial_pylon", SpatialPylonModel::new);
+        addBuiltInModel("block/paint", PaintSplotchesModel::new);
+        addBuiltInModel("block/qnb/qnb_formed", QnbFormedModel::new);
+        addBuiltInModel("part/p2p/p2p_tunnel_frequency", P2PTunnelFrequencyModel::new);
+        addBuiltInModel("item/facade", FacadeItemModel::new);
 
         addPlaneModel("part/annihilation_plane", "part/annihilation_plane");
         addPlaneModel("part/annihilation_plane_on", "part/annihilation_plane_on");
@@ -377,13 +378,20 @@ public final class AppEngClient extends AppEngBase {
         addPlaneModel("part/formation_plane", "part/formation_plane");
         addPlaneModel("part/formation_plane_on", "part/formation_plane_on");
 
-        addBuiltInModel("block/crafting/1k_storage_formed", () -> new CraftingCubeModel(AbstractCraftingUnitBlock.CraftingUnitType.STORAGE_1K));
-        addBuiltInModel("block/crafting/4k_storage_formed", () -> new CraftingCubeModel(AbstractCraftingUnitBlock.CraftingUnitType.STORAGE_4K));
-        addBuiltInModel("block/crafting/16k_storage_formed", () -> new CraftingCubeModel(AbstractCraftingUnitBlock.CraftingUnitType.STORAGE_16K));
-        addBuiltInModel("block/crafting/64k_storage_formed", () -> new CraftingCubeModel(AbstractCraftingUnitBlock.CraftingUnitType.STORAGE_64K));
-        addBuiltInModel("block/crafting/accelerator_formed", () -> new CraftingCubeModel(AbstractCraftingUnitBlock.CraftingUnitType.ACCELERATOR));
-        addBuiltInModel("block/crafting/monitor_formed", () -> new CraftingCubeModel(AbstractCraftingUnitBlock.CraftingUnitType.MONITOR));
-        addBuiltInModel("block/crafting/unit_formed", () -> new CraftingCubeModel(AbstractCraftingUnitBlock.CraftingUnitType.UNIT));
+        addBuiltInModel("block/crafting/1k_storage_formed",
+                () -> new CraftingCubeModel(AbstractCraftingUnitBlock.CraftingUnitType.STORAGE_1K));
+        addBuiltInModel("block/crafting/4k_storage_formed",
+                () -> new CraftingCubeModel(AbstractCraftingUnitBlock.CraftingUnitType.STORAGE_4K));
+        addBuiltInModel("block/crafting/16k_storage_formed",
+                () -> new CraftingCubeModel(AbstractCraftingUnitBlock.CraftingUnitType.STORAGE_16K));
+        addBuiltInModel("block/crafting/64k_storage_formed",
+                () -> new CraftingCubeModel(AbstractCraftingUnitBlock.CraftingUnitType.STORAGE_64K));
+        addBuiltInModel("block/crafting/accelerator_formed",
+                () -> new CraftingCubeModel(AbstractCraftingUnitBlock.CraftingUnitType.ACCELERATOR));
+        addBuiltInModel("block/crafting/monitor_formed",
+                () -> new CraftingCubeModel(AbstractCraftingUnitBlock.CraftingUnitType.MONITOR));
+        addBuiltInModel("block/crafting/unit_formed",
+                () -> new CraftingCubeModel(AbstractCraftingUnitBlock.CraftingUnitType.UNIT));
 // FIXME FABRIC       ModelLoaderRegistry.registerLoader(new Identifier(AppEng.MOD_ID, "uvlightmap"), UVLModelLoader.INSTANCE);
     }
 
@@ -395,9 +403,8 @@ public final class AppEngClient extends AppEngBase {
     }
 
     private static <T extends UnbakedModel> void addBuiltInModel(String id, Supplier<T> modelFactory) {
-        ModelLoadingRegistry.INSTANCE.registerResourceProvider(
-                resourceManager -> new SimpleModelLoader<>(AppEng.makeId(id), modelFactory)
-        );
+        ModelLoadingRegistry.INSTANCE
+                .registerResourceProvider(resourceManager -> new SimpleModelLoader<>(AppEng.makeId(id), modelFactory));
     }
 
     private void registerScreens() {
@@ -406,43 +413,43 @@ public final class AppEngClient extends AppEngBase {
         ScreenRegistry.register(SkyChestContainer.TYPE, SkyChestScreen::new);
         ScreenRegistry.register(ChestContainer.TYPE, ChestScreen::new);
         ScreenRegistry.register(WirelessContainer.TYPE, WirelessScreen::new);
-       ScreenRegistry.<MEMonitorableContainer, MEMonitorableScreen<MEMonitorableContainer>>register(
-               MEMonitorableContainer.TYPE, MEMonitorableScreen::new);
-       ScreenRegistry.register(MEPortableCellContainer.TYPE, MEPortableCellScreen::new);
-       ScreenRegistry.register(WirelessTermContainer.TYPE, WirelessTermScreen::new);
-       ScreenRegistry.register(NetworkStatusContainer.TYPE, NetworkStatusScreen::new);
-       ScreenRegistry.<CraftingCPUContainer, CraftingCPUScreen<CraftingCPUContainer>>register(
-               CraftingCPUContainer.TYPE, CraftingCPUScreen::new);
-       ScreenRegistry.register(NetworkToolContainer.TYPE, NetworkToolScreen::new);
-       ScreenRegistry.register(QuartzKnifeContainer.TYPE, QuartzKnifeScreen::new);
-       ScreenRegistry.register(DriveContainer.TYPE, DriveScreen::new);
-       ScreenRegistry.register(VibrationChamberContainer.TYPE, VibrationChamberScreen::new);
-       ScreenRegistry.register(CondenserContainer.TYPE, CondenserScreen::new);
-       ScreenRegistry.register(InterfaceContainer.TYPE, InterfaceScreen::new);
-       ScreenRegistry.register(FluidInterfaceContainer.TYPE, FluidInterfaceScreen::new);
-       ScreenRegistry.<UpgradeableContainer, UpgradeableScreen<UpgradeableContainer>>register(
-               UpgradeableContainer.TYPE, UpgradeableScreen::new);
-       ScreenRegistry.register(FluidIOContainer.TYPE, FluidIOScreen::new);
-       ScreenRegistry.register(IOPortContainer.TYPE, IOPortScreen::new);
-       ScreenRegistry.register(StorageBusContainer.TYPE, StorageBusScreen::new);
-       ScreenRegistry.register(FluidStorageBusContainer.TYPE, FluidStorageBusScreen::new);
-       ScreenRegistry.register(FormationPlaneContainer.TYPE, FormationPlaneScreen::new);
-       ScreenRegistry.register(FluidFormationPlaneContainer.TYPE, FluidFormationPlaneScreen::new);
-       ScreenRegistry.register(PriorityContainer.TYPE, PriorityScreen::new);
-       ScreenRegistry.register(SecurityStationContainer.TYPE, SecurityStationScreen::new);
-       ScreenRegistry.register(CraftingTermContainer.TYPE, CraftingTermScreen::new);
-       ScreenRegistry.register(PatternTermContainer.TYPE, PatternTermScreen::new);
-       ScreenRegistry.register(FluidTerminalContainer.TYPE, FluidTerminalScreen::new);
-       ScreenRegistry.register(LevelEmitterContainer.TYPE, LevelEmitterScreen::new);
-       ScreenRegistry.register(FluidLevelEmitterContainer.TYPE, FluidLevelEmitterScreen::new);
-       ScreenRegistry.register(SpatialIOPortContainer.TYPE, SpatialIOPortScreen::new);
-       ScreenRegistry.register(InscriberContainer.TYPE, InscriberScreen::new);
-       ScreenRegistry.register(CellWorkbenchContainer.TYPE, CellWorkbenchScreen::new);
-       ScreenRegistry.register(MolecularAssemblerContainer.TYPE, MolecularAssemblerScreen::new);
-       ScreenRegistry.register(CraftAmountContainer.TYPE, CraftAmountScreen::new);
-       ScreenRegistry.register(CraftConfirmContainer.TYPE, CraftConfirmScreen::new);
-       ScreenRegistry.register(InterfaceTerminalContainer.TYPE, InterfaceTerminalScreen::new);
-       ScreenRegistry.register(CraftingStatusContainer.TYPE, CraftingStatusScreen::new);
+        ScreenRegistry.<MEMonitorableContainer, MEMonitorableScreen<MEMonitorableContainer>>register(
+                MEMonitorableContainer.TYPE, MEMonitorableScreen::new);
+        ScreenRegistry.register(MEPortableCellContainer.TYPE, MEPortableCellScreen::new);
+        ScreenRegistry.register(WirelessTermContainer.TYPE, WirelessTermScreen::new);
+        ScreenRegistry.register(NetworkStatusContainer.TYPE, NetworkStatusScreen::new);
+        ScreenRegistry.<CraftingCPUContainer, CraftingCPUScreen<CraftingCPUContainer>>register(
+                CraftingCPUContainer.TYPE, CraftingCPUScreen::new);
+        ScreenRegistry.register(NetworkToolContainer.TYPE, NetworkToolScreen::new);
+        ScreenRegistry.register(QuartzKnifeContainer.TYPE, QuartzKnifeScreen::new);
+        ScreenRegistry.register(DriveContainer.TYPE, DriveScreen::new);
+        ScreenRegistry.register(VibrationChamberContainer.TYPE, VibrationChamberScreen::new);
+        ScreenRegistry.register(CondenserContainer.TYPE, CondenserScreen::new);
+        ScreenRegistry.register(InterfaceContainer.TYPE, InterfaceScreen::new);
+        ScreenRegistry.register(FluidInterfaceContainer.TYPE, FluidInterfaceScreen::new);
+        ScreenRegistry.<UpgradeableContainer, UpgradeableScreen<UpgradeableContainer>>register(
+                UpgradeableContainer.TYPE, UpgradeableScreen::new);
+        ScreenRegistry.register(FluidIOContainer.TYPE, FluidIOScreen::new);
+        ScreenRegistry.register(IOPortContainer.TYPE, IOPortScreen::new);
+        ScreenRegistry.register(StorageBusContainer.TYPE, StorageBusScreen::new);
+        ScreenRegistry.register(FluidStorageBusContainer.TYPE, FluidStorageBusScreen::new);
+        ScreenRegistry.register(FormationPlaneContainer.TYPE, FormationPlaneScreen::new);
+        ScreenRegistry.register(FluidFormationPlaneContainer.TYPE, FluidFormationPlaneScreen::new);
+        ScreenRegistry.register(PriorityContainer.TYPE, PriorityScreen::new);
+        ScreenRegistry.register(SecurityStationContainer.TYPE, SecurityStationScreen::new);
+        ScreenRegistry.register(CraftingTermContainer.TYPE, CraftingTermScreen::new);
+        ScreenRegistry.register(PatternTermContainer.TYPE, PatternTermScreen::new);
+        ScreenRegistry.register(FluidTerminalContainer.TYPE, FluidTerminalScreen::new);
+        ScreenRegistry.register(LevelEmitterContainer.TYPE, LevelEmitterScreen::new);
+        ScreenRegistry.register(FluidLevelEmitterContainer.TYPE, FluidLevelEmitterScreen::new);
+        ScreenRegistry.register(SpatialIOPortContainer.TYPE, SpatialIOPortScreen::new);
+        ScreenRegistry.register(InscriberContainer.TYPE, InscriberScreen::new);
+        ScreenRegistry.register(CellWorkbenchContainer.TYPE, CellWorkbenchScreen::new);
+        ScreenRegistry.register(MolecularAssemblerContainer.TYPE, MolecularAssemblerScreen::new);
+        ScreenRegistry.register(CraftAmountContainer.TYPE, CraftAmountScreen::new);
+        ScreenRegistry.register(CraftConfirmContainer.TYPE, CraftConfirmScreen::new);
+        ScreenRegistry.register(InterfaceTerminalContainer.TYPE, InterfaceTerminalScreen::new);
+        ScreenRegistry.register(CraftingStatusContainer.TYPE, CraftingStatusScreen::new);
     }
 
 }

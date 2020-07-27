@@ -8,9 +8,9 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleType;
+import net.minecraft.util.registry.Registry;
 
 import appeng.core.AppEng;
-import net.minecraft.util.registry.Registry;
 
 public final class ParticleTypes {
 
@@ -29,6 +29,5 @@ public final class ParticleTypes {
 
     public static void registerClient() {
     }
-
 
 }

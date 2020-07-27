@@ -23,7 +23,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 
-
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.NumberEntryType;
 import appeng.container.implementations.CraftAmountContainer;
@@ -54,8 +53,8 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
         this.amountToCraft.setMinValue(1);
         this.amountToCraft.addButtons(children::add, this::addButton);
 
-        this.next = this.addButton(
-                new ButtonWidget(this.x + 128, this.y + 51, 38, 20, GuiText.Next.text(), this::confirm));
+        this.next = this
+                .addButton(new ButtonWidget(this.x + 128, this.y + 51, 38, 20, GuiText.Next.text(), this::confirm));
 
         subGui.addBackButton(this::addButton, 154, 0);
     }
@@ -71,7 +70,8 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
     }
 
     @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
+            float partialTicks) {
         this.next.setMessage(hasShiftDown() ? GuiText.Start.text() : GuiText.Next.text());
 
         this.bindTexture("guis/craft_amt.png");

@@ -7,20 +7,20 @@ import com.google.common.math.StatsAccumulator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.StructureStart;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockBox;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Heightmap;
+import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
-import net.minecraft.structure.StructureManager;
 
 import appeng.worldgen.meteorite.fallout.FalloutMode;
 
@@ -30,13 +30,14 @@ public class MeteoriteStructureStart extends StructureStart<DefaultFeatureConfig
     private final Tag<Block> terracottaTag = BlockTags.getContainer()
             .getOrCreate(new Identifier("c:terracotta_blocks"));
 
-    public MeteoriteStructureStart(StructureFeature<DefaultFeatureConfig> feature, int chunkX, int chunkZ, BlockBox box, int references, long seed) {
+    public MeteoriteStructureStart(StructureFeature<DefaultFeatureConfig> feature, int chunkX, int chunkZ, BlockBox box,
+            int references, long seed) {
         super(feature, chunkX, chunkZ, box, references, seed);
     }
 
     @Override
-    public void init(ChunkGenerator generator, StructureManager templateManagerIn, int chunkX, int chunkZ,
-                     Biome biome, DefaultFeatureConfig config) {
+    public void init(ChunkGenerator generator, StructureManager templateManagerIn, int chunkX, int chunkZ, Biome biome,
+            DefaultFeatureConfig config) {
         final int centerX = chunkX * 16 + this.random.nextInt(16);
         final int centerZ = chunkZ * 16 + this.random.nextInt(16);
         final float meteoriteRadius = (this.random.nextFloat() * 6.0f) + 2;

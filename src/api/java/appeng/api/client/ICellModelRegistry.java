@@ -45,23 +45,25 @@ public interface ICellModelRegistry {
      * the game. See
      * {@see net.minecraftforge.client.model.ModelLoader#addSpecialModel}.
      * 
-     * This method only maps an {@link Item} to a {@link Identifier} which can
-     * be looked up from the {@link net.minecraft.client.render.model.BakedModelManager}. No validation about missing models
-     * will be done.
+     * This method only maps an {@link Item} to a {@link Identifier} which can be
+     * looked up from the
+     * {@link net.minecraft.client.render.model.BakedModelManager}. No validation
+     * about missing models will be done.
      * 
      * Will throw an exception in case a model is already registered for an item.
      * 
      * For examples look at our cell part models within the drive model directory.
      * 
      * @param item  The cell item
-     * @param model The {@link net.minecraft.util.Identifier} representing the model.
+     * @param model The {@link net.minecraft.util.Identifier} representing the
+     *              model.
      * @return
      */
     void registerModel(@Nonnull Item item, @Nonnull Identifier model);
 
     /**
-     * The {@link Identifier} of the model used to render the given storage
-     * cell {@link Item} when inserted into a drive or similar.
+     * The {@link Identifier} of the model used to render the given storage cell
+     * {@link Item} when inserted into a drive or similar.
      * 
      * @param item
      * @return null, if no model is registered.

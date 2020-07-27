@@ -18,12 +18,11 @@
 
 package appeng.client.render.effects;
 
-import net.minecraft.client.particle.*;
-import net.minecraft.client.render.VertexConsumer;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.particle.*;
 import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.MathHelper;
 
@@ -106,7 +105,7 @@ public class EnergyFx extends SpriteBillboardParticle {
 
         @Override
         public Particle createParticle(EnergyParticleData effect, ClientWorld world, double x, double y, double z,
-                                       double xSpeed, double ySpeed, double zSpeed) {
+                double xSpeed, double ySpeed, double zSpeed) {
             EnergyFx result = new EnergyFx(world, x, y, z, spriteSet);
             result.setVelocityX((float) xSpeed);
             result.setVelocityY((float) ySpeed);

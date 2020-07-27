@@ -18,8 +18,9 @@
 
 package appeng.util.inv;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.item.ItemStack;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 public interface IAEAppEngInventory {
     void saveChanges();

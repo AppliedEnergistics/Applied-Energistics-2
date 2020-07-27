@@ -22,12 +22,12 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.server.world.ServerWorld;
 
 public interface ISpatialDimension {
     ServerWorld getWorld(RegistryKey<World> cellDim);

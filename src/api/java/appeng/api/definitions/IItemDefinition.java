@@ -29,8 +29,8 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemConvertible;
+import net.minecraft.item.ItemStack;
 
 import appeng.api.features.AEFeature;
 

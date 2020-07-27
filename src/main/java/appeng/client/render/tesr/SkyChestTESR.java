@@ -18,11 +18,8 @@
 
 package appeng.client.render.tesr;
 
-import appeng.block.storage.SkyChestBlock;
-import appeng.block.storage.SkyChestBlock.SkyChestType;
-import appeng.core.AppEng;
-import appeng.tile.storage.SkyChestBlockEntity;
 import com.google.common.collect.ImmutableList;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
@@ -39,6 +36,11 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.Identifier;
 
+import appeng.block.storage.SkyChestBlock;
+import appeng.block.storage.SkyChestBlock.SkyChestType;
+import appeng.core.AppEng;
+import appeng.tile.storage.SkyChestBlockEntity;
+
 // This is mostly a copy&paste job of the vanilla chest TESR
 @Environment(EnvType.CLIENT)
 public class SkyChestTESR extends BlockEntityRenderer<SkyChestBlockEntity> {
@@ -48,10 +50,7 @@ public class SkyChestTESR extends BlockEntityRenderer<SkyChestBlockEntity> {
     public static final SpriteIdentifier TEXTURE_BLOCK = new SpriteIdentifier(TexturedRenderLayers.CHEST_ATLAS_TEXTURE,
             new Identifier(AppEng.MOD_ID, "models/skyblockchest"));
 
-    public static final ImmutableList<SpriteIdentifier> SPRITES = ImmutableList.of(
-            TEXTURE_STONE,
-            TEXTURE_BLOCK
-    );
+    public static final ImmutableList<SpriteIdentifier> SPRITES = ImmutableList.of(TEXTURE_STONE, TEXTURE_BLOCK);
 
     private final ModelPart singleLid;
     private final ModelPart singleBottom;
@@ -73,7 +72,7 @@ public class SkyChestTESR extends BlockEntityRenderer<SkyChestBlockEntity> {
 
     @Override
     public void render(SkyChestBlockEntity tileEntityIn, float partialTicks, MatrixStack matrixStackIn,
-                       VertexConsumerProvider bufferIn, int combinedLightIn, int combinedOverlayIn) {
+            VertexConsumerProvider bufferIn, int combinedLightIn, int combinedOverlayIn) {
         matrixStackIn.push();
         float f = tileEntityIn.getForward().asRotation();
         matrixStackIn.translate(0.5D, 0.5D, 0.5D);
@@ -93,8 +92,7 @@ public class SkyChestTESR extends BlockEntityRenderer<SkyChestBlockEntity> {
 
     // See ChestBlockEntityRenderer
     private void renderModels(MatrixStack matrixStackIn, VertexConsumer bufferIn, ModelPart chestLid,
-                              ModelPart chestLatch, ModelPart chestBottom, float lidAngle, int combinedLightIn,
-                              int combinedOverlayIn) {
+            ModelPart chestLatch, ModelPart chestBottom, float lidAngle, int combinedLightIn, int combinedOverlayIn) {
         chestLid.pitch = -(lidAngle * 1.5707964F);
         chestLatch.pitch = chestLid.pitch;
         chestLid.render(matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);

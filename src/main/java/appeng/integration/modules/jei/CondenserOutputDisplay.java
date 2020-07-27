@@ -1,19 +1,20 @@
 package appeng.integration.modules.jei;
 
-import appeng.core.Api;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Identifier;
+
+import me.shedaniel.rei.api.EntryStack;
+import me.shedaniel.rei.api.RecipeDisplay;
+
 import appeng.api.config.CondenserOutput;
 import appeng.api.definitions.IMaterials;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.core.Api;
 import appeng.tile.misc.CondenserBlockEntity;
-import me.shedaniel.rei.api.EntryStack;
-import me.shedaniel.rei.api.RecipeDisplay;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class CondenserOutputDisplay implements RecipeDisplay {
 
@@ -25,9 +26,7 @@ public class CondenserOutputDisplay implements RecipeDisplay {
 
     public CondenserOutputDisplay(CondenserOutput output) {
         this.type = output;
-        this.output = Collections.singletonList(
-                EntryStack.create(getOutput(type))
-        );
+        this.output = Collections.singletonList(EntryStack.create(getOutput(type)));
         this.viableStorageComponents = getViableStorageComponents(output);
     }
 
@@ -72,7 +71,7 @@ public class CondenserOutputDisplay implements RecipeDisplay {
     }
 
     private void addViableComponent(CondenserOutput condenserOutput, List<EntryStack> viableComponents,
-                                    ItemStack itemStack) {
+            ItemStack itemStack) {
         IStorageComponent comp = (IStorageComponent) itemStack.getItem();
         int storage = comp.getBytes(itemStack) * CondenserBlockEntity.BYTE_MULTIPLIER;
         if (storage >= condenserOutput.requiredPower) {

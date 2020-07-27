@@ -18,13 +18,13 @@
 
 package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
+import static net.minecraft.util.math.Direction.AxisDirection.POSITIVE;
+
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Direction.AxisDirection;
-
-import static net.minecraft.util.math.Direction.AxisDirection.POSITIVE;
 
 /**
  * This transformer strips quads that are on faces. Simply set the bounds for

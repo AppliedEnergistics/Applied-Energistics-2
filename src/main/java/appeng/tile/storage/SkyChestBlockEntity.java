@@ -21,15 +21,16 @@ package appeng.tile.storage;
 import java.io.IOException;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.block.ChestAnimationProgress;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Tickable;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.MathHelper;
+
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.block.storage.SkyChestBlock;
@@ -135,7 +136,7 @@ public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements Tickabl
 
     @Override
     public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
-                                  final ItemStack removed, final ItemStack added) {
+            final ItemStack removed, final ItemStack added) {
 
     }
 

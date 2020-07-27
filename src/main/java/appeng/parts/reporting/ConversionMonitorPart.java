@@ -21,16 +21,17 @@ package appeng.parts.reporting;
 import java.util.Collections;
 import java.util.List;
 
-import alexiil.mc.lib.attributes.Simulation;
-import alexiil.mc.lib.attributes.item.SingleItemSlot;
-import alexiil.mc.lib.attributes.item.compat.FixedInventoryVanillaWrapper;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
+
+import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
+import alexiil.mc.lib.attributes.item.SingleItemSlot;
+import alexiil.mc.lib.attributes.item.compat.FixedInventoryVanillaWrapper;
 
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.parts.IPartModel;
@@ -57,8 +58,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
     public static final Identifier MODEL_LOCKED_OFF = new Identifier(AppEng.MOD_ID,
             "part/conversion_monitor_locked_off");
     @PartModels
-    public static final Identifier MODEL_LOCKED_ON = new Identifier(AppEng.MOD_ID,
-            "part/conversion_monitor_locked_on");
+    public static final Identifier MODEL_LOCKED_ON = new Identifier(AppEng.MOD_ID, "part/conversion_monitor_locked_on");
 
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);
@@ -67,7 +67,6 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
     public static final IPartModel MODELS_LOCKED_ON = new PartModel(MODEL_BASE, MODEL_LOCKED_ON, MODEL_STATUS_ON);
     public static final IPartModel MODELS_LOCKED_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_LOCKED_ON,
             MODEL_STATUS_HAS_CHANNEL);
-
 
     public ConversionMonitorPart(final ItemStack is) {
         super(is);
@@ -164,7 +163,8 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
                         final ItemStack targetStack = inv.getInvStack(x);
                         if (input.equals(targetStack)) {
                             SingleItemSlot slot = inv.getSlot(x);
-                            final ItemStack canExtract = slot.attemptAnyExtraction(targetStack.getCount(), Simulation.SIMULATE);
+                            final ItemStack canExtract = slot.attemptAnyExtraction(targetStack.getCount(),
+                                    Simulation.SIMULATE);
                             if (!canExtract.isEmpty()) {
                                 input.setStackSize(canExtract.getCount());
                                 final IAEItemStack failedToInsert = Platform.poweredInsert(energy, cell, input,
@@ -179,7 +179,8 @@ public class ConversionMonitorPart extends AbstractMonitorPart {
                 final IAEItemStack input = AEItemStack.fromItemStack(player.getStackInHand(hand));
                 final IAEItemStack failedToInsert = Platform.poweredInsert(energy, cell, input,
                         new PlayerSource(player, this));
-                player.setStackInHand(hand, failedToInsert == null ? ItemStack.EMPTY : failedToInsert.createItemStack());
+                player.setStackInHand(hand,
+                        failedToInsert == null ? ItemStack.EMPTY : failedToInsert.createItemStack());
             }
         } catch (final GridAccessException e) {
             // :P

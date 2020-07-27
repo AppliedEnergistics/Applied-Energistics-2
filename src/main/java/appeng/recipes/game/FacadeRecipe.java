@@ -18,11 +18,8 @@
 
 package appeng.recipes.game;
 
-import appeng.api.definitions.IComparableDefinition;
-import appeng.api.definitions.IDefinitions;
-import appeng.core.Api;
-import appeng.core.AppEng;
-import appeng.items.parts.FacadeItem;
+import javax.annotation.Nonnull;
+
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
@@ -32,7 +29,11 @@ import net.minecraft.recipe.SpecialRecipeSerializer;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
-import javax.annotation.Nonnull;
+import appeng.api.definitions.IComparableDefinition;
+import appeng.api.definitions.IDefinitions;
+import appeng.core.Api;
+import appeng.core.AppEng;
+import appeng.items.parts.FacadeItem;
 
 public final class FacadeRecipe extends SpecialCraftingRecipe {
     public static SpecialRecipeSerializer<FacadeRecipe> SERIALIZER = null;

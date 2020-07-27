@@ -20,9 +20,8 @@ package appeng.client.gui.implementations;
 
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.Identifier;
 import net.minecraft.text.Text;
-
+import net.minecraft.util.Identifier;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.container.implementations.SkyChestContainer;
@@ -45,7 +44,8 @@ public class SkyChestScreen extends AEBaseScreen<SkyChestContainer> {
     }
 
     @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
+            float partialTicks) {
         bindTexture(TEXTURE);
         drawTexture(matrices, offsetX, offsetY, 0, 0, this.backgroundWidth, this.backgroundHeight);
     }

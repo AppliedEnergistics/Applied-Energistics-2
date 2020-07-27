@@ -18,23 +18,26 @@
 
 package appeng.integration.modules.waila.part;
 
+import java.util.List;
+
+import com.google.common.collect.Iterators;
+
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
+import mcp.mobius.waila.api.IDataAccessor;
+import mcp.mobius.waila.api.IPluginConfig;
+
 import appeng.api.parts.IPart;
 import appeng.core.localization.WailaText;
 import appeng.me.GridAccessException;
 import appeng.parts.p2p.P2PTunnelPart;
 import appeng.util.Platform;
-import com.google.common.collect.Iterators;
-import mcp.mobius.waila.api.IDataAccessor;
-import mcp.mobius.waila.api.IPluginConfig;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.text.Text;
-import net.minecraft.world.World;
-
-import java.util.List;
 
 /**
  * Provides information about a P2P tunnel to WAILA.
@@ -57,7 +60,7 @@ public final class P2PStateWailaDataProvider extends BasePartWailaDataProvider {
      */
     @Override
     public void appendBody(final IPart part, final List<Text> tooltip, final IDataAccessor accessor,
-                           final IPluginConfig config) {
+            final IPluginConfig config) {
         if (part instanceof P2PTunnelPart) {
             CompoundTag nbtData = accessor.getServerData();
             if (nbtData.contains(TAG_P2P_STATE)) {
@@ -88,7 +91,7 @@ public final class P2PStateWailaDataProvider extends BasePartWailaDataProvider {
 
     @Override
     public void appendServerData(ServerPlayerEntity player, IPart part, BlockEntity te, CompoundTag tag, World world,
-                                 BlockPos pos) {
+            BlockPos pos) {
         if (part instanceof P2PTunnelPart) {
             final P2PTunnelPart<?> tunnel = (P2PTunnelPart<?>) part;
 

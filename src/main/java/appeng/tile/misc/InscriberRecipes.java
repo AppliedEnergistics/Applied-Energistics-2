@@ -1,12 +1,7 @@
 package appeng.tile.misc;
 
-import appeng.core.Api;
-import appeng.api.definitions.IComparableDefinition;
-import appeng.api.features.InscriberProcessType;
-import appeng.core.Api;
-import appeng.core.AppEng;
-import appeng.items.materials.MaterialItem;
-import appeng.recipes.handlers.InscriberRecipe;
+import javax.annotation.Nullable;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.recipe.Ingredient;
@@ -14,7 +9,12 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
+import appeng.api.definitions.IComparableDefinition;
+import appeng.api.features.InscriberProcessType;
+import appeng.core.Api;
+import appeng.core.AppEng;
+import appeng.items.materials.MaterialItem;
+import appeng.recipes.handlers.InscriberRecipe;
 
 /**
  * This class indexes all inscriber recipes to find valid inputs for the top and

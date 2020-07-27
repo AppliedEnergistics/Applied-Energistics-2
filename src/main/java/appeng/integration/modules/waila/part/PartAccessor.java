@@ -18,16 +18,17 @@
 
 package appeng.integration.modules.waila.part;
 
+import java.util.Optional;
+
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.SelectedPart;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.Vec3d;
-
-import java.util.Optional;
 
 /**
  * Accessor to access specific parts for WAILA

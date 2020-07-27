@@ -18,15 +18,16 @@
 
 package appeng.integration.modules.waila.part;
 
-import appeng.util.LookDirection;
-import appeng.util.Platform;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+
+import appeng.util.LookDirection;
+import appeng.util.Platform;
 
 /**
  * Tracer for players hitting blocks

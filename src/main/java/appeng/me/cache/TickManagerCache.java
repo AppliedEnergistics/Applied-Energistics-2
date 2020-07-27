@@ -26,7 +26,6 @@ import com.google.common.base.Preconditions;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashReportSection;
-import net.minecraft.util.crash.CrashException;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;

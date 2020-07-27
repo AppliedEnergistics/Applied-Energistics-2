@@ -18,16 +18,18 @@
 
 package appeng.fluids.helper;
 
+import net.minecraft.item.ItemStack;
+
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.fluid.FluidAttributes;
 import alexiil.mc.lib.attributes.fluid.FluidExtractable;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import alexiil.mc.lib.attributes.item.filter.ItemFilter;
+
 import appeng.core.Api;
 import appeng.fluids.items.FluidDummyItem;
 import appeng.items.contents.CellConfig;
-import net.minecraft.item.ItemStack;
 
 /**
  * @author DrummerMC
@@ -44,7 +46,8 @@ public class FluidCellConfig extends CellConfig {
             return stack;
         }
 
-        // Try to auto-convert any fluid-containing item into a dummy item before insertion
+        // Try to auto-convert any fluid-containing item into a dummy item before
+        // insertion
         FluidExtractable fluidExtractable = FluidAttributes.EXTRACTABLE.getFirstOrNull(stack);
         if (fluidExtractable == null) {
             return ItemStack.EMPTY;

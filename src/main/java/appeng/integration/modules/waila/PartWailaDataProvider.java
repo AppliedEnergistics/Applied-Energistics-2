@@ -18,24 +18,27 @@
 
 package appeng.integration.modules.waila;
 
-import appeng.api.parts.IPart;
-import appeng.api.parts.PartItemStack;
-import appeng.integration.modules.waila.part.*;
+import java.util.List;
+import java.util.Optional;
+
 import com.google.common.collect.Lists;
+
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.world.World;
+
 import mcp.mobius.waila.Waila;
 import mcp.mobius.waila.api.*;
 import mcp.mobius.waila.api.impl.config.WailaConfig;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.text.LiteralText;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.text.Text;
-import net.minecraft.world.World;
 
-import java.util.List;
-import java.util.Optional;
+import appeng.api.parts.IPart;
+import appeng.api.parts.PartItemStack;
+import appeng.integration.modules.waila.part.*;
 
 /**
  * Delegation provider for parts through {@link IPartWailaDataProvider}
@@ -95,8 +98,7 @@ public final class PartWailaDataProvider implements IComponentProvider, IServerD
     }
 
     @Override
-    public void appendHead(List<Text> currentToolTip, final IDataAccessor accessor,
-            final IPluginConfig config) {
+    public void appendHead(List<Text> currentToolTip, final IDataAccessor accessor, final IPluginConfig config) {
         final BlockEntity te = accessor.getBlockEntity();
         final HitResult mop = accessor.getHitResult();
 

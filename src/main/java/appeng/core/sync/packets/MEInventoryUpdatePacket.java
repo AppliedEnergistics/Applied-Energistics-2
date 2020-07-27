@@ -29,22 +29,22 @@ import java.util.zip.GZIPOutputStream;
 
 import javax.annotation.Nullable;
 
-import appeng.client.gui.implementations.CraftConfirmScreen;
-import appeng.client.gui.implementations.CraftingCPUScreen;
-import appeng.client.gui.implementations.MEMonitorableScreen;
-import appeng.client.gui.implementations.NetworkStatusScreen;
 import io.netty.buffer.Unpooled;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 
 import appeng.api.storage.data.IAEItemStack;
+import appeng.client.gui.implementations.CraftConfirmScreen;
+import appeng.client.gui.implementations.CraftingCPUScreen;
+import appeng.client.gui.implementations.MEMonitorableScreen;
+import appeng.client.gui.implementations.NetworkStatusScreen;
 import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;

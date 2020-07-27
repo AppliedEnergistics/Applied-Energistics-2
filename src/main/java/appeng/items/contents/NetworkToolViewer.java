@@ -18,8 +18,9 @@
 
 package appeng.items.contents;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.item.ItemStack;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.implementations.items.IUpgradeModule;
@@ -53,7 +54,7 @@ public class NetworkToolViewer implements INetworkTool, IAEAppEngInventory {
 
     @Override
     public void onChangeInventory(FixedItemInv inv, int slot, InvOperation mc, ItemStack removedStack,
-                                  ItemStack newStack) {
+            ItemStack newStack) {
     }
 
     @Override

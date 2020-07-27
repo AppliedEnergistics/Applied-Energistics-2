@@ -22,35 +22,36 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.EntityDamageSource;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.TypedActionResult;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.Util;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.world.RayTraceContext;
-import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.text.Text;
+import net.minecraft.world.RayTraceContext;
 import net.minecraft.world.World;
-import net.fabricmc.api.Environment;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -116,7 +117,8 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
             }
 
             final ICellInventoryHandler<IAEItemStack> inv = Api.instance().registries().cell().getCellInventory(
-                    p.getStackInHand(hand), null, Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                    p.getStackInHand(hand), null,
+                    Api.instance().storage().getStorageChannel(IItemStorageChannel.class));
             if (inv != null) {
                 final IItemList<IAEItemStack> itemList = inv.getAvailableItems(
                         Api.instance().storage().getStorageChannel(IItemStorageChannel.class).createList());
@@ -177,9 +179,9 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
 
     private void shootPaintBalls(final ItemStack type, final World w, final PlayerEntity p, final Vec3d Vec3d,
             final Vec3d Vec3d1, final Vec3d direction, final double d0, final double d1, final double d2) {
-        final Box bb = new Box(Math.min(Vec3d.x, Vec3d1.x), Math.min(Vec3d.y, Vec3d1.y),
-                Math.min(Vec3d.z, Vec3d1.z), Math.max(Vec3d.x, Vec3d1.x), Math.max(Vec3d.y, Vec3d1.y),
-                Math.max(Vec3d.z, Vec3d1.z)).expand(16, 16, 16);
+        final Box bb = new Box(Math.min(Vec3d.x, Vec3d1.x), Math.min(Vec3d.y, Vec3d1.y), Math.min(Vec3d.z, Vec3d1.z),
+                Math.max(Vec3d.x, Vec3d1.x), Math.max(Vec3d.y, Vec3d1.y), Math.max(Vec3d.z, Vec3d1.z)).expand(16, 16,
+                        16);
 
         Entity entity = null;
         Vec3d entityIntersection = null;
@@ -217,18 +219,16 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
         HitResult pos = w.rayTrace(rayTraceContext);
 
         final Vec3d vec = new Vec3d(d0, d1, d2);
-        if (entity != null && pos.getType() != HitResult.Type.MISS
-                && pos.getPos().squaredDistanceTo(vec) > closest) {
+        if (entity != null && pos.getType() != HitResult.Type.MISS && pos.getPos().squaredDistanceTo(vec) > closest) {
             pos = new EntityHitResult(entity, entityIntersection);
         } else if (entity != null && pos.getType() == HitResult.Type.MISS) {
             pos = new EntityHitResult(entity, entityIntersection);
         }
 
         try {
-            AppEng.instance().sendToAllNearExcept(null, d0, d1, d2, 128, w,
-                    new MatterCannonPacket(d0, d1, d2, (float) direction.x, (float) direction.y, (float) direction.z,
-                            (byte) (pos.getType() == HitResult.Type.MISS ? 32
-                                    : pos.getPos().squaredDistanceTo(vec) + 1)));
+            AppEng.instance().sendToAllNearExcept(null, d0, d1, d2, 128, w, new MatterCannonPacket(d0, d1, d2,
+                    (float) direction.x, (float) direction.y, (float) direction.z,
+                    (byte) (pos.getType() == HitResult.Type.MISS ? 32 : pos.getPos().squaredDistanceTo(vec) + 1)));
         } catch (final Exception err) {
             AELog.debug(err);
         }
@@ -334,10 +334,9 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
             }
 
             try {
-                AppEng.instance().sendToAllNearExcept(null, d0, d1, d2, 128, w,
-                        new MatterCannonPacket(d0, d1, d2, (float) direction.x, (float) direction.y,
-                                (float) direction.z, (byte) (pos.getType() == HitResult.Type.MISS ? 32
-                                        : pos.getPos().squaredDistanceTo(vec) + 1)));
+                AppEng.instance().sendToAllNearExcept(null, d0, d1, d2, 128, w, new MatterCannonPacket(d0, d1, d2,
+                        (float) direction.x, (float) direction.y, (float) direction.z,
+                        (byte) (pos.getType() == HitResult.Type.MISS ? 32 : pos.getPos().squaredDistanceTo(vec) + 1)));
             } catch (final Exception err) {
                 AELog.debug(err);
             }

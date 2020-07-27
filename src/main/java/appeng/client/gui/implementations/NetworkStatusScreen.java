@@ -25,10 +25,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.screen.slot.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
-
 
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
@@ -50,8 +49,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
     private final int rows = 4;
     private int tooltip = -1;
 
-    public NetworkStatusScreen(NetworkStatusContainer container, PlayerInventory playerInventory,
-            Text title) {
+    public NetworkStatusScreen(NetworkStatusContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
         final Scrollbar scrollbar = new Scrollbar();
 
@@ -106,17 +104,18 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
         this.textRenderer.draw(matrices, GuiText.NetworkDetails.text(), 8, 6, 4210752);
 
         this.textRenderer.draw(matrices,
-                GuiText.StoredPower.text() + ": " + Platform.formatPowerLong(handler.getCurrentPower(), false),
-                13, 16, 4210752);
+                GuiText.StoredPower.text() + ": " + Platform.formatPowerLong(handler.getCurrentPower(), false), 13, 16,
+                4210752);
         this.textRenderer.draw(matrices,
                 GuiText.MaxPower.text() + ": " + Platform.formatPowerLong(handler.getMaxPower(), false), 13, 26,
                 4210752);
 
-        this.textRenderer.draw(matrices, GuiText.PowerInputRate.text() + ": "
-                + Platform.formatPowerLong(handler.getAverageAddition(), true), 13, 143 - 10, 4210752);
         this.textRenderer.draw(matrices,
-                GuiText.PowerUsageRate.text() + ": " + Platform.formatPowerLong(handler.getPowerUsage(), true),
-                13, 143 - 20, 4210752);
+                GuiText.PowerInputRate.text() + ": " + Platform.formatPowerLong(handler.getAverageAddition(), true), 13,
+                143 - 10, 4210752);
+        this.textRenderer.draw(matrices,
+                GuiText.PowerUsageRate.text() + ": " + Platform.formatPowerLong(handler.getPowerUsage(), true), 13,
+                143 - 20, 4210752);
 
         final int sectionLength = 30;
 
@@ -143,8 +142,9 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
                 }
 
                 final int w = this.textRenderer.getWidth(str);
-                this.textRenderer.draw(matrices, str, (int) ((x * sectionLength + xo + sectionLength - 19 - (w * 0.5)) * 2),
-                        (y * 18 + yo + 6) * 2, 4210752);
+                this.textRenderer.draw(matrices, str,
+                        (int) ((x * sectionLength + xo + sectionLength - 19 - (w * 0.5)) * 2), (y * 18 + yo + 6) * 2,
+                        4210752);
 
                 RenderSystem.popMatrix();
                 final int posX = x * sectionLength + xo + sectionLength - 18;
@@ -155,8 +155,8 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
 
                     toolTip.add(GuiText.Installed.withSuffix(": " + (refStack.getStackSize())));
                     if (refStack.getCountRequestable() > 0) {
-                        toolTip.add(GuiText.EnergyDrain.withSuffix(": "
-                                + Platform.formatPowerLong(refStack.getCountRequestable(), true)));
+                        toolTip.add(GuiText.EnergyDrain
+                                .withSuffix(": " + Platform.formatPowerLong(refStack.getCountRequestable(), true)));
                     }
 
                     toolPosX = x * sectionLength + xo + sectionLength - 8;
@@ -180,7 +180,8 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
     }
 
     @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
+            float partialTicks) {
         this.bindTexture("guis/networkstatus.png");
         drawTexture(matrices, offsetX, offsetY, 0, 0, this.backgroundWidth, this.backgroundHeight);
     }
@@ -223,8 +224,8 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
                 }
 
                 currentToolTip.add(GuiText.Installed.withSuffix(": " + myStack.getStackSize()));
-                currentToolTip.add(GuiText.EnergyDrain.withSuffix(": "
-                        + Platform.formatPowerLong(myStack.getCountRequestable(), true)));
+                currentToolTip.add(GuiText.EnergyDrain
+                        .withSuffix(": " + Platform.formatPowerLong(myStack.getCountRequestable(), true)));
 
                 this.drawTooltip(matrices, x, y, currentToolTip);
             }

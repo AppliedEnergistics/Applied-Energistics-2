@@ -18,8 +18,6 @@
 
 package appeng.fluids.parts;
 
-import alexiil.mc.lib.attributes.Attribute;
-import alexiil.mc.lib.attributes.SearchOptions;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -28,6 +26,9 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.*;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+
+import alexiil.mc.lib.attributes.Attribute;
+import alexiil.mc.lib.attributes.SearchOptions;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Upgrades;

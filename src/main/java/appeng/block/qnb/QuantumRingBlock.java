@@ -20,9 +20,9 @@ package appeng.block.qnb;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.block.ShapeContext;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
@@ -51,7 +51,7 @@ public class QuantumRingBlock extends QuantumBaseBlock {
     }
 
     private static VoxelShape createShape(double onePixel) {
-        return VoxelShapes.cuboid(
-                new Box(onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel));
+        return VoxelShapes
+                .cuboid(new Box(onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel));
     }
 }

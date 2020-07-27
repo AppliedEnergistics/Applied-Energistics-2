@@ -18,9 +18,10 @@
 
 package appeng.util.inv;
 
+import net.minecraft.entity.player.PlayerInventory;
+
 import alexiil.mc.lib.attributes.item.compat.FixedInventoryVanillaWrapper;
 import alexiil.mc.lib.attributes.item.impl.DelegatingFixedItemInv;
-import net.minecraft.entity.player.PlayerInventory;
 
 public class WrapperCursorItemHandler extends DelegatingFixedItemInv {
 

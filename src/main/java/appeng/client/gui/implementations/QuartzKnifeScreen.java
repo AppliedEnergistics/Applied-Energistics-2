@@ -18,15 +18,14 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-
 
 import appeng.client.ActionKey;
 import appeng.client.gui.AEBaseScreen;
@@ -49,7 +48,8 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
     public void init() {
         super.init();
 
-        this.name = new TextFieldWidget(this.textRenderer, this.x + 24, this.y + 32, 79, this.textRenderer.fontHeight, LiteralText.EMPTY);
+        this.name = new TextFieldWidget(this.textRenderer, this.x + 24, this.y + 32, 79, this.textRenderer.fontHeight,
+                LiteralText.EMPTY);
         this.name.setHasBorder(false);
         this.name.setMaxLength(32);
         this.name.setEditableColor(0xFFFFFF);
@@ -64,7 +64,8 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
     }
 
     @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
+            float partialTicks) {
         this.bindTexture("guis/quartzknife.png");
         drawTexture(matrices, offsetX, offsetY, 0, 0, this.backgroundWidth, this.backgroundHeight);
         this.name.render(matrices, mouseX, mouseY, partialTicks);

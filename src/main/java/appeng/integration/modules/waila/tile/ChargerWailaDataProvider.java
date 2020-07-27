@@ -18,20 +18,22 @@
 
 package appeng.integration.modules.waila.tile;
 
-import alexiil.mc.lib.attributes.item.FixedItemInvView;
-import appeng.core.localization.WailaText;
-import appeng.integration.modules.waila.BaseWailaDataProvider;
-import appeng.tile.misc.ChargerBlockEntity;
-import mcp.mobius.waila.api.IDataAccessor;
-import mcp.mobius.waila.api.IPluginConfig;
+import java.util.List;
+
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.text.Text;
 
-import java.util.List;
+import alexiil.mc.lib.attributes.item.FixedItemInvView;
+import mcp.mobius.waila.api.IDataAccessor;
+import mcp.mobius.waila.api.IPluginConfig;
+
+import appeng.core.localization.WailaText;
+import appeng.integration.modules.waila.BaseWailaDataProvider;
+import appeng.tile.misc.ChargerBlockEntity;
 
 /**
  * Charger provider for WAILA

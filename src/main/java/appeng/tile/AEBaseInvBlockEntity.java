@@ -23,18 +23,19 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import alexiil.mc.lib.attributes.AttributeList;
-import alexiil.mc.lib.attributes.item.FixedItemInv;
-import alexiil.mc.lib.attributes.item.impl.EmptyFixedItemInv;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.World;
+
+import alexiil.mc.lib.attributes.AttributeList;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
+import alexiil.mc.lib.attributes.item.impl.EmptyFixedItemInv;
 
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.IAEAppEngInventory;
@@ -59,8 +60,7 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
         }
     }
 
-    public abstract @Nonnull
-    FixedItemInv getInternalInventory();
+    public abstract @Nonnull FixedItemInv getInternalInventory();
 
     @Override
     public CompoundTag toTag(final CompoundTag data) {
@@ -95,10 +95,9 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
 
     @Override
     public abstract void onChangeInventory(FixedItemInv inv, int slot, InvOperation mc, ItemStack removed,
-                                           ItemStack added);
+            ItemStack added);
 
-    protected @Nonnull
-    FixedItemInv getItemHandlerForSide(@Nonnull Direction side) {
+    protected @Nonnull FixedItemInv getItemHandlerForSide(@Nonnull Direction side) {
         return this.getInternalInventory();
     }
 

@@ -54,13 +54,13 @@ public class StorageBusScreen extends UpgradeableScreen<StorageBusContainer> {
         addButton(new ActionButton(this.x - 18, this.y + 28, ActionItems.WRENCH, btn -> partition()));
         this.rwMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 48, Settings.ACCESS,
                 AccessRestriction.READ_WRITE);
-        this.storageFilter = new ServerSettingToggleButton<>(this.x - 18, this.y + 68,
-                Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
+        this.storageFilter = new ServerSettingToggleButton<>(this.x - 18, this.y + 68, Settings.STORAGE_FILTER,
+                StorageFilter.EXTRACTABLE_ONLY);
         this.fuzzyMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 88, Settings.FUZZY_MODE,
                 FuzzyMode.IGNORE_ALL);
 
-        this.addButton(new TabButton(this.x + 154, this.y, 2 + 4 * 16, GuiText.Priority.text(),
-                this.itemRenderer, btn -> openPriorityGui()));
+        this.addButton(new TabButton(this.x + 154, this.y, 2 + 4 * 16, GuiText.Priority.text(), this.itemRenderer,
+                btn -> openPriorityGui()));
 
         this.addButton(this.storageFilter);
         this.addButton(this.fuzzyMode);

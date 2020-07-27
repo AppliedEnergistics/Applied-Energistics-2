@@ -5,14 +5,15 @@ import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.Map;
 
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.screen.ScreenHandlerListener;
+import net.minecraft.screen.ScreenHandlerType;
+
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.fluid.FluidAttributes;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.screen.ScreenHandlerListener;
-import net.minecraft.item.ItemStack;
 
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
@@ -26,7 +27,8 @@ import appeng.util.Platform;
 public abstract class FluidConfigurableContainer extends UpgradeableContainer implements IFluidSyncContainer {
     private FluidSyncHelper sync = null;
 
-    public FluidConfigurableContainer(ScreenHandlerType<?> containerType, int id, PlayerInventory ip, IUpgradeableHost te) {
+    public FluidConfigurableContainer(ScreenHandlerType<?> containerType, int id, PlayerInventory ip,
+            IUpgradeableHost te) {
         super(containerType, id, ip, te);
     }
 
@@ -41,8 +43,8 @@ public abstract class FluidConfigurableContainer extends UpgradeableContainer im
 
     @Override
     protected ItemStack transferStackToContainer(ItemStack input) {
-        FluidVolume fluid = FluidAttributes.EXTRACTABLE.get(input)
-                .attemptAnyExtraction(FluidAmount.MAX_VALUE, Simulation.ACTION);
+        FluidVolume fluid = FluidAttributes.EXTRACTABLE.get(input).attemptAnyExtraction(FluidAmount.MAX_VALUE,
+                Simulation.ACTION);
 
         if (!fluid.isEmpty()) {
             final IAEFluidTank t = this.getFluidConfigInventory();

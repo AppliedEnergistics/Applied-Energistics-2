@@ -29,9 +29,8 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.server.world.ServerWorld;
-
+import net.minecraft.util.math.BlockPos;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;

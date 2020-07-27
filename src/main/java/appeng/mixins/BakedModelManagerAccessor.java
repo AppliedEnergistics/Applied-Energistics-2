@@ -1,12 +1,13 @@
 package appeng.mixins;
 
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedModelManager;
-import net.minecraft.util.Identifier;
+import java.util.Map;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import java.util.Map;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.BakedModelManager;
+import net.minecraft.util.Identifier;
 
 @Mixin(BakedModelManager.class)
 public interface BakedModelManagerAccessor {

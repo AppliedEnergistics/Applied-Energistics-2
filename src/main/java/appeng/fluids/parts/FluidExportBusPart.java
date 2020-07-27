@@ -18,16 +18,18 @@
 
 package appeng.fluids.parts;
 
+import java.math.RoundingMode;
+
 import javax.annotation.Nonnull;
+
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Identifier;
 
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.fluid.FluidAttributes;
 import alexiil.mc.lib.attributes.fluid.FluidInsertable;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
-import appeng.attributes.MEAttributes;
-import net.minecraft.item.ItemStack;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.Identifier;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -43,14 +45,13 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.attributes.MEAttributes;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.PartModel;
-
-import java.math.RoundingMode;
 
 /**
  * @author BrockWS

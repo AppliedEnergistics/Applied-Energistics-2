@@ -2,13 +2,14 @@ package appeng.client.render.tesr;
 
 import java.util.EnumMap;
 
-import appeng.api.implementations.tiles.IChestOrDrive;
-import appeng.block.storage.DriveSlotState;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
+
+import appeng.api.implementations.tiles.IChestOrDrive;
+import appeng.block.storage.DriveSlotState;
 
 /**
  * Utility class to render LEDs for storage cells from a Tile Entity Renderer.
@@ -51,11 +52,11 @@ class CellLedRenderer {
             // Bottom Face
             R, B, FR, L, B, FR, L, B, BA, R, B, BA, };
 
-    public static final RenderLayer RENDER_LAYER = RenderLayer.of("ae_drive_leds",
-            VertexFormats.POSITION_COLOR, 7, 32565, false, true, RenderLayer.MultiPhaseParameters.builder().build(false));
+    public static final RenderLayer RENDER_LAYER = RenderLayer.of("ae_drive_leds", VertexFormats.POSITION_COLOR, 7,
+            32565, false, true, RenderLayer.MultiPhaseParameters.builder().build(false));
 
     public static void renderLed(IChestOrDrive drive, int slot, VertexConsumer buffer, MatrixStack ms,
-                                 float partialTicks) {
+            float partialTicks) {
 
         Vector3f color = getColorForSlot(drive, slot, partialTicks);
         if (color == null) {
@@ -66,8 +67,7 @@ class CellLedRenderer {
             float x = LED_QUADS[i];
             float y = LED_QUADS[i + 1];
             float z = LED_QUADS[i + 2];
-            buffer.vertex(ms.peek().getModel(), x, y, z).color(color.getX(), color.getY(), color.getZ(), 1.f)
-                    .next();
+            buffer.vertex(ms.peek().getModel(), x, y, z).color(color.getX(), color.getY(), color.getZ(), 1.f).next();
         }
     }
 

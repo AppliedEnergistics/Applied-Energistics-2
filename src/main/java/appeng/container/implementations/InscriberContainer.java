@@ -20,10 +20,11 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.screen.slot.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.screen.slot.Slot;
+
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.definitions.IItemDefinition;
@@ -33,8 +34,8 @@ import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.OutputSlot;
 import appeng.container.slot.RestrictedInputSlot;
 import appeng.core.Api;
-import appeng.tile.misc.InscriberRecipes;
 import appeng.tile.misc.InscriberBlockEntity;
+import appeng.tile.misc.InscriberRecipes;
 import appeng.util.Platform;
 
 /**

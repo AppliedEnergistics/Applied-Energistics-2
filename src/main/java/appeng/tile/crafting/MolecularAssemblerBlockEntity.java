@@ -18,8 +18,27 @@
 
 package appeng.tile.crafting;
 
+import java.io.IOException;
+import java.util.List;
+
+import javax.annotation.Nullable;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
+
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
+
 import appeng.api.config.*;
 import appeng.api.definitions.ITileDefinition;
 import appeng.api.implementations.IPowerChannelState;
@@ -58,22 +77,6 @@ import appeng.util.inv.WrapperChainedItemHandler;
 import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.filter.IAEItemFilter;
 import appeng.util.item.AEItemStack;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
-import java.io.IOException;
-import java.util.List;
 
 public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         implements IUpgradeableHost, IConfigManagerHost, IGridTickable, ICraftingMachine, IPowerChannelState {
@@ -310,7 +313,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
     @Override
     public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
-                                  final ItemStack removed, final ItemStack added) {
+            final ItemStack removed, final ItemStack added) {
         if (inv == this.gridInv || inv == this.patternInv) {
             this.recalculatePlan();
         }
@@ -399,13 +402,15 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             this.progress = 0;
             final ItemStack output = this.myPlan.getOutput(this.craftingInv, this.getWorld());
             if (!output.isEmpty()) {
-                // FIXME FABRIC BasicEventHooks.firePlayerCraftingEvent((PlayerEntity) FakePlayer.getOrCreate((ServerWorld) this.getWorld()), output,
-                // FIXME FABRIC       this.craftingInv);
+                // FIXME FABRIC BasicEventHooks.firePlayerCraftingEvent((PlayerEntity)
+                // FakePlayer.getOrCreate((ServerWorld) this.getWorld()), output,
+                // FIXME FABRIC this.craftingInv);
 
                 this.pushOut(output.copy());
 
                 for (int x = 0; x < this.craftingInv.size(); x++) {
-                    this.gridInv.setInvStack(x, Platform.getRecipeRemainder(this.craftingInv.getStack(x)), Simulation.ACTION);
+                    this.gridInv.setInvStack(x, Platform.getRecipeRemainder(this.craftingInv.getStack(x)),
+                            Simulation.ACTION);
                 }
 
                 if (ItemHandlerUtil.isEmpty(this.patternInv)) {

@@ -18,10 +18,9 @@
 
 package appeng.client.render.renderable;
 
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
-
-import net.minecraft.block.entity.BlockEntity;
 
 public interface Renderable<T extends BlockEntity> {
 

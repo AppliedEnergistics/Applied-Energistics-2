@@ -24,28 +24,28 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.Material;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.block.Material;
+import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
-import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.block.ShapeContext;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
-import net.minecraft.world.World;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
@@ -80,8 +80,7 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock 
     public static final BooleanProperty ODD = BooleanProperty.of("odd");
 
     public QuartzFixtureBlock() {
-        super(defaultProps(Material.SUPPORTED).noCollision().strength(0).lightLevel(14)
-                .sounds(BlockSoundGroup.GLASS));
+        super(defaultProps(Material.SUPPORTED).noCollision().strength(0).lightLevel(14).sounds(BlockSoundGroup.GLASS));
 
         this.setDefaultState(getDefaultState().with(FACING, Direction.UP).with(ODD, false));
     }
@@ -117,8 +116,8 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock 
     // Break the fixture if the block it is attached to is changed so that it could
     // no longer be placed
     @Override
-    public BlockState getStateForNeighborUpdate(BlockState state, Direction facing, BlockState facingState, WorldAccess worldIn,
-            BlockPos pos, BlockPos facingPos) {
+    public BlockState getStateForNeighborUpdate(BlockState state, Direction facing, BlockState facingState,
+            WorldAccess worldIn, BlockPos pos, BlockPos facingPos) {
         Direction fixtureFacing = state.get(FACING);
         if (facing.getOpposite() == fixtureFacing && !canPlaceAt(worldIn, pos, facing)) {
             return Blocks.AIR.getDefaultState();
@@ -127,7 +126,8 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock 
     }
 
     @Override
-    public boolean isValidOrientation(final WorldAccess w, final BlockPos pos, final Direction forward, final Direction up) {
+    public boolean isValidOrientation(final WorldAccess w, final BlockPos pos, final Direction forward,
+            final Direction up) {
         // FIXME: I think this entire method -> not required, but not sure... are quartz
         // fixtures rotateable???
         return this.canPlaceAt(w, pos, up.getOpposite());

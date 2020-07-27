@@ -18,21 +18,23 @@
 
 package appeng.integration.modules.waila.tile;
 
-import appeng.api.networking.energy.IAEPowerStorage;
-import appeng.core.localization.WailaText;
-import appeng.integration.modules.waila.BaseWailaDataProvider;
-import appeng.util.Platform;
+import java.util.List;
+
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.world.World;
+
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import mcp.mobius.waila.api.IDataAccessor;
 import mcp.mobius.waila.api.IPluginConfig;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.text.Text;
-import net.minecraft.world.World;
 
-import java.util.List;
+import appeng.api.networking.energy.IAEPowerStorage;
+import appeng.core.localization.WailaText;
+import appeng.integration.modules.waila.BaseWailaDataProvider;
+import appeng.util.Platform;
 
 /**
  * Power storage provider for WAILA
@@ -90,8 +92,8 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider {
      * Called on server to transfer information from server to client.
      * <p/>
      * If the {@link net.minecraft.block.entity.BlockEntity} is a
-     * {@link IAEPowerStorage}, it writes the power
-     * information to the {@code #tag} using the {@code #ID_CURRENT_POWER} key.
+     * {@link IAEPowerStorage}, it writes the power information to the {@code #tag}
+     * using the {@code #ID_CURRENT_POWER} key.
      *
      * @param serverPlayerEntity player looking at the power storage
      * @param te                 power storage

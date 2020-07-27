@@ -24,13 +24,14 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
-import net.fabricmc.api.EnvType;
+import net.minecraft.util.registry.Registry;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.IStorageChannel;
@@ -38,7 +39,6 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.Api;
 import appeng.util.Platform;
-import net.minecraft.util.registry.Registry;
 
 public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemStack {
     private static final String NBT_STACKSIZE = "cnt";
@@ -159,8 +159,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
     @Override
     public ItemStack createItemStack() {
-        return Platform.copyStackWithSize(this.getDefinition(),
-                (int) Math.min(Integer.MAX_VALUE, this.getStackSize()));
+        return Platform.copyStackWithSize(this.getDefinition(), (int) Math.min(Integer.MAX_VALUE, this.getStackSize()));
     }
 
     @Override

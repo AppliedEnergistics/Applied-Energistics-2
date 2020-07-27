@@ -29,16 +29,16 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnGroup;
 import net.minecraft.item.Item;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.Identifier;
-import net.fabricmc.api.EnvType;
 
 import appeng.api.features.AEFeature;
 import appeng.bootstrap.components.ModelOverrideComponent;
@@ -86,7 +86,7 @@ public class FeatureFactory {
     }
 
     public <T extends AEBaseBlockEntity> BlockEntityBuilder<T> tileEntity(String id, Class<T> teClass,
-                                                                          Function<BlockEntityType<T>, T> factory) {
+            Function<BlockEntityType<T>, T> factory) {
         return new BlockEntityBuilder<>(this, id, teClass, factory).features(this.defaultFeatures);
     }
 

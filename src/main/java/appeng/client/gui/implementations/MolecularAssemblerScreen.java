@@ -52,8 +52,8 @@ public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssembl
 
     @Override
     protected void addButtons() {
-        this.redstoneMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 8,
-                Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
+        this.redstoneMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 8, Settings.REDSTONE_CONTROLLED,
+                RedstoneMode.IGNORE);
         addButton(this.redstoneMode);
     }
 
@@ -64,7 +64,8 @@ public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssembl
     }
 
     @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
+            float partialTicks) {
         this.pb.x = 148 + this.x;
         this.pb.y = 48 + this.y;
         super.drawBG(matrices, offsetX, offsetY, mouseX, mouseY, partialTicks);

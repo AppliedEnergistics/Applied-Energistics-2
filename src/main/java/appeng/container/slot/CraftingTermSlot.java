@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
@@ -32,6 +31,8 @@ import net.minecraft.recipe.RecipeType;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.energy.IEnergySource;
@@ -66,8 +67,8 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
     private final IContainerCraftingPacket container;
 
     public CraftingTermSlot(final PlayerEntity player, final IActionSource mySrc, final IEnergySource energySrc,
-                            final IStorageMonitorable storage, final FixedItemInv cMatrix, final FixedItemInv secondMatrix,
-                            final FixedItemInv output, final int x, final int y, final IContainerCraftingPacket ccp) {
+            final IStorageMonitorable storage, final FixedItemInv cMatrix, final FixedItemInv secondMatrix,
+            final FixedItemInv output, final int x, final int y, final IContainerCraftingPacket ccp) {
         super(player, cMatrix, output, 0, x, y);
         this.energySrc = energySrc;
         this.storage = storage;
@@ -138,8 +139,8 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
                 if (!extra.isEmpty()) {
                     final List<ItemStack> drops = new ArrayList<>();
                     drops.add(extra);
-                    Platform.spawnDrops(who.world,
-                            new BlockPos((int) who.getX(), (int) who.getY(), (int) who.getZ()), drops);
+                    Platform.spawnDrops(who.world, new BlockPos((int) who.getX(), (int) who.getY(), (int) who.getZ()),
+                            drops);
                     return;
                 }
             }
@@ -201,8 +202,9 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
 
                 if (r == null) {
                     final Item target = request.getItem();
-                    // FIXME FABRIC: This entire code-path may be pointless because RepairItemRecipe is of type CRAFTING
-                    if (target.isDamageable() /* FIXME FABRIC  && target.isRepairable(request) */) {
+                    // FIXME FABRIC: This entire code-path may be pointless because RepairItemRecipe
+                    // is of type CRAFTING
+                    if (target.isDamageable() /* FIXME FABRIC && target.isRepairable(request) */) {
                         boolean isBad = false;
                         for (int x = 0; x < ic.size(); x++) {
                             final ItemStack pis = ic.getStack(x);

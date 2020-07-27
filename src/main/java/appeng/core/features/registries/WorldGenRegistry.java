@@ -20,11 +20,10 @@ package appeng.core.features.registries;
 
 import java.util.HashSet;
 
-import appeng.api.features.IWorldGen;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 
-import java.util.HashSet;
+import appeng.api.features.IWorldGen;
 
 public final class WorldGenRegistry implements IWorldGen {
 

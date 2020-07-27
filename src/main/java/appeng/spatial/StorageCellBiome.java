@@ -30,15 +30,12 @@ public class StorageCellBiome extends Biome {
     public static final StorageCellBiome INSTANCE = new StorageCellBiome();
 
     public StorageCellBiome() {
-        super(new Biome.Settings().surfaceBuilder(new ConfiguredSurfaceBuilder<>(SurfaceBuilder.NOPE, SurfaceBuilder.STONE_CONFIG))
+        super(new Biome.Settings()
+                .surfaceBuilder(new ConfiguredSurfaceBuilder<>(SurfaceBuilder.NOPE, SurfaceBuilder.STONE_CONFIG))
                 .precipitation(Precipitation.NONE).category(Category.NONE).depth(0).scale(1)
                 // Copied from the vanilla void biome
                 .temperature(0.5F).downfall(0.5F)
-                .effects(new BiomeEffects.Builder()
-                        .waterColor(4159204)
-                        .waterFogColor(329011)
-                        .fogColor(0)
-                        .build())
+                .effects(new BiomeEffects.Builder().waterColor(4159204).waterFogColor(329011).fogColor(0).build())
                 .parent(null));
     }
 

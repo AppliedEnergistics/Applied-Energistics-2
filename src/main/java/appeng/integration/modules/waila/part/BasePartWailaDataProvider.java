@@ -18,22 +18,23 @@
 
 package appeng.integration.modules.waila.part;
 
-import appeng.api.parts.IPart;
-import mcp.mobius.waila.api.IDataAccessor;
-import mcp.mobius.waila.api.IPluginConfig;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.text.Text;
-import net.minecraft.world.World;
-
 import java.util.List;
 
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
+import mcp.mobius.waila.api.IDataAccessor;
+import mcp.mobius.waila.api.IPluginConfig;
+
+import appeng.api.parts.IPart;
+
 /**
- * Default implementation of
- * {@link IPartWailaDataProvider}
+ * Default implementation of {@link IPartWailaDataProvider}
  *
  * @author thatsIch
  * @version rv2
@@ -47,21 +48,21 @@ public abstract class BasePartWailaDataProvider implements IPartWailaDataProvide
 
     @Override
     public void appendHead(final IPart part, final List<Text> tooltip, final IDataAccessor accessor,
-                           final IPluginConfig config) {
+            final IPluginConfig config) {
     }
 
     @Override
     public void appendBody(final IPart part, final List<Text> tooltip, final IDataAccessor accessor,
-                           final IPluginConfig config) {
+            final IPluginConfig config) {
     }
 
     @Override
     public void appendTail(final IPart part, final List<Text> tooltip, final IDataAccessor accessor,
-                           final IPluginConfig config) {
+            final IPluginConfig config) {
     }
 
     @Override
     public void appendServerData(ServerPlayerEntity player, IPart part, BlockEntity te, CompoundTag tag, World world,
-                                 BlockPos pos) {
+            BlockPos pos) {
     }
 }

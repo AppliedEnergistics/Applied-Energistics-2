@@ -25,7 +25,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
-
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
@@ -37,8 +36,7 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContain
 
     private ProgressBar pb;
 
-    public VibrationChamberScreen(VibrationChamberContainer container, PlayerInventory playerInventory,
-            Text title) {
+    public VibrationChamberScreen(VibrationChamberContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
         this.backgroundHeight = 166;
     }
@@ -56,8 +54,8 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContain
         this.textRenderer.draw(matrices, this.getGuiDisplayName(GuiText.VibrationChamber.text()), 8, 6, 4210752);
         this.textRenderer.draw(matrices, GuiText.inventory.text(), 8, this.backgroundHeight - 96 + 3, 4210752);
 
-        this.pb.setFullMsg(new LiteralText(VibrationChamberBlockEntity.POWER_PER_TICK * this.handler.getCurrentProgress()
-                / VibrationChamberBlockEntity.DILATION_SCALING + " AE/t"));
+        this.pb.setFullMsg(new LiteralText(VibrationChamberBlockEntity.POWER_PER_TICK
+                * this.handler.getCurrentProgress() / VibrationChamberBlockEntity.DILATION_SCALING + " AE/t"));
 
         if (this.handler.getRemainingBurnTime() > 0) {
             final int i1 = this.handler.getRemainingBurnTime() * 12 / 100;
@@ -70,7 +68,8 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberContain
     }
 
     @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
+            float partialTicks) {
         this.bindTexture("guis/vibchamber.png");
         this.pb.x = 99 + this.x;
         this.pb.y = 36 + this.y;

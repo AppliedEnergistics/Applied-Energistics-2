@@ -83,8 +83,8 @@ public class MatterCannonPacket extends BasePacket {
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         try {
             for (int a = 1; a < this.len; a++) {
-                MinecraftClient.getInstance().particleManager.addParticle(ParticleTypes.MATTER_CANNON, this.x + this.dx * a,
-                        this.y + this.dy * a, this.z + this.dz * a, 0, 0, 0);
+                MinecraftClient.getInstance().particleManager.addParticle(ParticleTypes.MATTER_CANNON,
+                        this.x + this.dx * a, this.y + this.dy * a, this.z + this.dz * a, 0, 0, 0);
             }
         } catch (final Exception ignored) {
         }

@@ -18,18 +18,17 @@
 
 package appeng.client.render.effects;
 
-import net.minecraft.client.render.VertexConsumer;
-
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.particle.ParticleTextureSheet;
 import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
 public class CraftingFx extends SpriteBillboardParticle {
@@ -40,8 +39,7 @@ public class CraftingFx extends SpriteBillboardParticle {
     private final float offsetY;
     private final float offsetZ;
 
-    public CraftingFx(ClientWorld world, final double x, final double y, final double z,
-            final SpriteProvider sprite) {
+    public CraftingFx(ClientWorld world, final double x, final double y, final double z, final SpriteProvider sprite) {
         super(world, x, y, z);
 
         // Pick a random normal, offset it by 0.35 and use that as the particle origin
@@ -60,8 +58,6 @@ public class CraftingFx extends SpriteBillboardParticle {
         this.maxAge /= 1.2;
         this.collidesWithWorld = false; // we're INSIDE the block anyway
     }
-
-
 
     @Override
     public void buildGeometry(VertexConsumer buffer, Camera camera, float partialTicks) {
@@ -133,8 +129,8 @@ public class CraftingFx extends SpriteBillboardParticle {
         }
 
         @Override
-        public Particle createParticle(DefaultParticleType effect, ClientWorld world, double x, double y, double z, double xSpeed,
-                                       double ySpeed, double zSpeed) {
+        public Particle createParticle(DefaultParticleType effect, ClientWorld world, double x, double y, double z,
+                double xSpeed, double ySpeed, double zSpeed) {
             return new CraftingFx(world, x, y, z, spriteSet);
         }
     }

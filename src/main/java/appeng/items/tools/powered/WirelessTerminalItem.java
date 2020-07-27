@@ -20,7 +20,6 @@ package appeng.items.tools.powered;
 
 import java.util.List;
 
-import appeng.api.config.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.item.TooltipContext;
@@ -28,14 +27,14 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.text.Text;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 
-import appeng.core.Api;
+import appeng.api.config.*;
 import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;

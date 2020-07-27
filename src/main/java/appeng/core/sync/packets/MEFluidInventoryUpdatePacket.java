@@ -31,14 +31,14 @@ import javax.annotation.Nullable;
 
 import io.netty.buffer.Unpooled;
 
+import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.NetworkSide;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
-import net.fabricmc.api.EnvType;
-import net.minecraft.network.NetworkSide;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.AELog;

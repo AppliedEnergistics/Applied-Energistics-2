@@ -25,8 +25,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.RedstoneWireBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
@@ -141,7 +141,8 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
                 }
 
                 this.power = b.getWeakRedstonePower(state, this.getTile().getWorld(), target, srcSide);
-                this.power = Math.max(this.power, b.getWeakRedstonePower(state, this.getTile().getWorld(), target, srcSide));
+                this.power = Math.max(this.power,
+                        b.getWeakRedstonePower(state, this.getTile().getWorld(), target, srcSide));
                 this.sendToOutput(this.power);
             } else {
                 this.sendToOutput(0);

@@ -18,8 +18,9 @@
 
 package appeng.integration.modules.waila;
 
-import appeng.tile.AEBaseBlockEntity;
 import mcp.mobius.waila.api.*;
+
+import appeng.tile.AEBaseBlockEntity;
 
 public class WailaModule implements IWailaPlugin {
 

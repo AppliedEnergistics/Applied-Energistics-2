@@ -1,17 +1,16 @@
 package appeng.client.render.tesr;
 
-import appeng.client.render.model.DriveBakedModel;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-
-import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.Vector3f;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 
 import appeng.client.render.FacingToRotation;
+import appeng.client.render.model.DriveBakedModel;
 import appeng.tile.storage.DriveBlockEntity;
 
 /**
@@ -26,7 +25,7 @@ public class DriveLedTileEntityRenderer extends BlockEntityRenderer<DriveBlockEn
 
     @Override
     public void render(DriveBlockEntity drive, float partialTicks, MatrixStack ms, VertexConsumerProvider buffers,
-                       int combinedLightIn, int combinedOverlayIn) {
+            int combinedLightIn, int combinedOverlayIn) {
 
         if (drive.getCellCount() != 10) {
             throw new IllegalStateException("Expected drive to have 10 slots");

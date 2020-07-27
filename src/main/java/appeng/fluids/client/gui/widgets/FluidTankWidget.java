@@ -18,18 +18,20 @@
 
 package appeng.fluids.client.gui.widgets;
 
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
-import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.util.AEColor;
-import appeng.client.gui.widgets.ITooltip;
-import appeng.fluids.util.IAEFluidTank;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+
+import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
+
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.util.AEColor;
+import appeng.client.gui.widgets.ITooltip;
+import appeng.fluids.util.IAEFluidTank;
 
 @Environment(EnvType.CLIENT)
 public class FluidTankWidget extends AbstractButtonWidget implements ITooltip {
@@ -45,7 +47,8 @@ public class FluidTankWidget extends AbstractButtonWidget implements ITooltip {
     @Override
     public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
-            fill(matrices, this.x, this.y, this.x + this.width, this.y + this.height, AEColor.GRAY.blackVariant | 0xFF000000);
+            fill(matrices, this.x, this.y, this.x + this.width, this.y + this.height,
+                    AEColor.GRAY.blackVariant | 0xFF000000);
 
             final IAEFluidStack fluidStack = this.tank.getFluidInSlot(this.slot);
             if (fluidStack != null && fluidStack.getStackSize() > 0) {

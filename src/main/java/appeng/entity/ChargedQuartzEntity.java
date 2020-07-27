@@ -20,7 +20,6 @@ package appeng.entity;
 
 import java.util.List;
 
-import appeng.client.render.effects.ParticleTypes;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.client.MinecraftClient;
@@ -29,13 +28,14 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 import appeng.api.definitions.IMaterials;
 import appeng.api.features.AEFeature;
+import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.AppEng;
@@ -65,8 +65,8 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
         }
 
         if (world.isClient && this.delay > 30 && AEConfig.instance().isEnableEffects()) {
-            MinecraftClient.getInstance().particleManager.addParticle(ParticleTypes.LIGHTNING, this.getX(), this.getY() + 0.3f, this.getZ(), 0.0f, 0.0f,
-                    0.0f);
+            MinecraftClient.getInstance().particleManager.addParticle(ParticleTypes.LIGHTNING, this.getX(),
+                    this.getY() + 0.3f, this.getZ(), 0.0f, 0.0f, 0.0f);
             this.delay = 0;
         }
 
@@ -96,8 +96,8 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
         final IMaterials materials = Api.instance().definitions().materials();
 
         if (materials.certusQuartzCrystalCharged().isSameAs(item)) {
-            final Box region = new Box(this.getX() - 1, this.getY() - 1, this.getZ() - 1,
-                    this.getX() + 1, this.getY() + 1, this.getZ() + 1);
+            final Box region = new Box(this.getX() - 1, this.getY() - 1, this.getZ() - 1, this.getX() + 1,
+                    this.getY() + 1, this.getZ() + 1);
             final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity(region);
 
             ItemEntity redstone = null;
@@ -136,8 +136,7 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
                 }
 
                 materials.fluixCrystal().maybeStack(2).ifPresent(is -> {
-                    final ItemEntity entity = new ItemEntity(this.world, this.getX(), this.getY(), this.getZ(),
-                            is);
+                    final ItemEntity entity = new ItemEntity(this.world, this.getX(), this.getY(), this.getZ(), is);
 
                     this.world.spawnEntity(entity);
                 });

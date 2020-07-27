@@ -25,14 +25,16 @@ import java.util.Map.Entry;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import alexiil.mc.lib.attributes.Attribute;
-import alexiil.mc.lib.attributes.fluid.FluidAttributes;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.registry.Registry;
+
+import alexiil.mc.lib.attributes.Attribute;
+import alexiil.mc.lib.attributes.fluid.FluidAttributes;
 
 import appeng.api.config.TunnelType;
 import appeng.api.definitions.IBlocks;
@@ -41,7 +43,6 @@ import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IParts;
 import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.util.AEColor;
-import net.minecraft.util.registry.Registry;
 import appeng.core.Api;
 
 public final class P2PTunnelRegistry implements IP2PTunnelRegistry {
@@ -154,7 +155,8 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry {
         /**
          * attune based caps
          */
-        // FIXME FABRIC this.addNewAttunement(Capabilities.FORGE_ENERGY, TunnelType.FE_POWER);
+        // FIXME FABRIC this.addNewAttunement(Capabilities.FORGE_ENERGY,
+        // TunnelType.FE_POWER);
         this.addNewAttunement(FluidAttributes.EXTRACTABLE, TunnelType.FLUID);
         this.addNewAttunement(FluidAttributes.INSERTABLE, TunnelType.FLUID);
         this.addNewAttunement(FluidAttributes.FIXED_INV, TunnelType.FLUID);

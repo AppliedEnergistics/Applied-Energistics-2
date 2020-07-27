@@ -1,9 +1,5 @@
 package appeng.core.sync.network;
 
-import appeng.core.AELog;
-import appeng.core.AppEng;
-import appeng.core.sync.BasePacket;
-import appeng.core.sync.BasePacketHandler;
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.server.PlayerStream;
@@ -15,6 +11,11 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+
+import appeng.core.AELog;
+import appeng.core.AppEng;
+import appeng.core.sync.BasePacket;
+import appeng.core.sync.BasePacketHandler;
 
 public class ServerNetworkHandler implements NetworkHandler {
 
@@ -39,18 +40,16 @@ public class ServerNetworkHandler implements NetworkHandler {
 
     public void sendToAllAround(final BasePacket message, final TargetPoint point) {
         Packet<?> packet = message.toPacket(NetworkSide.CLIENTBOUND);
-        PlayerStream.around(point.world, new Vec3d(point.x, point.y, point.z), point.radius)
-                .forEach(player -> {
-                    if (player != point.excluded) {
-                        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, packet);
-                    }
-                });
+        PlayerStream.around(point.world, new Vec3d(point.x, point.y, point.z), point.radius).forEach(player -> {
+            if (player != point.excluded) {
+                ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, packet);
+            }
+        });
     }
 
     public void sendToDimension(final BasePacket message, final World world) {
         Packet<?> packet = message.toPacket(NetworkSide.CLIENTBOUND);
-        PlayerStream.world(world)
-                .forEach(player -> ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, packet));
+        PlayerStream.world(world).forEach(player -> ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, packet));
     }
 
     @Override

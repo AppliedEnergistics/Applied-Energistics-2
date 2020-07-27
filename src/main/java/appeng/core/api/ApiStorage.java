@@ -22,13 +22,6 @@ import java.math.RoundingMode;
 import java.util.Collection;
 import java.util.Collections;
 
-import alexiil.mc.lib.attributes.Simulation;
-import alexiil.mc.lib.attributes.fluid.FluidAttributes;
-import alexiil.mc.lib.attributes.fluid.FluidExtractable;
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
-import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
-import appeng.crafting.CraftingLink;
-import appeng.fluids.util.FluidList;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.MutableClassToInstanceMap;
@@ -36,6 +29,12 @@ import com.google.common.collect.MutableClassToInstanceMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
+
+import alexiil.mc.lib.attributes.Simulation;
+import alexiil.mc.lib.attributes.fluid.FluidAttributes;
+import alexiil.mc.lib.attributes.fluid.FluidExtractable;
+import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.crafting.ICraftingLink;
@@ -52,8 +51,10 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+import appeng.crafting.CraftingLink;
 import appeng.fluids.items.FluidDummyItem;
 import appeng.fluids.util.AEFluidStack;
+import appeng.fluids.util.FluidList;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import appeng.util.item.ItemList;
@@ -184,10 +185,12 @@ public class ApiStorage implements IStorageHelper {
             if (input instanceof ItemStack) {
                 final ItemStack is = (ItemStack) input;
                 if (is.getItem() instanceof FluidDummyItem) {
-                    return AEFluidStack.fromFluidVolume(((FluidDummyItem) is.getItem()).getFluidStack(is), RoundingMode.DOWN);
+                    return AEFluidStack.fromFluidVolume(((FluidDummyItem) is.getItem()).getFluidStack(is),
+                            RoundingMode.DOWN);
                 } else {
                     FluidExtractable fluidExtractable = FluidAttributes.EXTRACTABLE.get(is);
-                    FluidVolume fluidVolume = fluidExtractable.attemptAnyExtraction(FluidAmount.MAX_VALUE, Simulation.ACTION);
+                    FluidVolume fluidVolume = fluidExtractable.attemptAnyExtraction(FluidAmount.MAX_VALUE,
+                            Simulation.ACTION);
                     if (!fluidVolume.isEmpty()) {
                         return AEFluidStack.fromFluidVolume(fluidVolume, RoundingMode.DOWN);
                     }

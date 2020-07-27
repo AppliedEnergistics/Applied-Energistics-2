@@ -18,8 +18,9 @@
 
 package appeng.container.slot;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.item.ItemStack;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 public class FakeTypeOnlySlot extends FakeSlot {
 

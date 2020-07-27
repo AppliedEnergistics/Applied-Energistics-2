@@ -20,11 +20,12 @@ package appeng.tile.networking;
 
 import java.util.EnumSet;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.util.math.Direction;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.Direction;
+
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.impl.EmptyFixedItemInv;
 
@@ -174,7 +175,7 @@ public class ControllerBlockEntity extends AENetworkPowerBlockEntity {
 
     @Override
     public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
-                                  final ItemStack removed, final ItemStack added) {
+            final ItemStack removed, final ItemStack added) {
     }
 
     /**

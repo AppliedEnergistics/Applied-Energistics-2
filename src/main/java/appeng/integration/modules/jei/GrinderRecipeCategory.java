@@ -18,8 +18,15 @@
 
 package appeng.integration.modules.jei;
 
-import appeng.core.Api;
-import appeng.core.AppEng;
+import java.awt.*;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.text.LiteralText;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.Language;
+
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.EntryStack;
@@ -27,14 +34,9 @@ import me.shedaniel.rei.api.RecipeCategory;
 import me.shedaniel.rei.api.widgets.Slot;
 import me.shedaniel.rei.api.widgets.Widgets;
 import me.shedaniel.rei.gui.widget.Widget;
-import net.minecraft.text.LiteralText;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Language;
 
-import java.awt.*;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
+import appeng.core.Api;
+import appeng.core.AppEng;
 
 class GrinderRecipeCategory implements RecipeCategory<GrinderRecipeWrapper> {
 
@@ -85,7 +87,8 @@ class GrinderRecipeCategory implements RecipeCategory<GrinderRecipeWrapper> {
 
         // Add the input
         List<EntryStack> input = recipe.getInputEntries().get(0);
-        widgets.add(Widgets.createSlot(new Point(bounds.x + 1, bounds.y + 1)).backgroundEnabled(false).markInput().entries(input));
+        widgets.add(Widgets.createSlot(new Point(bounds.x + 1, bounds.y + 1)).backgroundEnabled(false).markInput()
+                .entries(input));
 
         // Add the output slots and their chances (if <100%)
         List<EntryStack> output = recipe.getOutputEntries();
@@ -93,16 +96,14 @@ class GrinderRecipeCategory implements RecipeCategory<GrinderRecipeWrapper> {
         DecimalFormat df = new DecimalFormat("###.##");
         int offset = bounds.x + 101;
         for (int i = 0; i < output.size(); i++) {
-            Slot slot = Widgets.createSlot(new Point(offset, bounds.y + 47))
-                    .backgroundEnabled(false)
+            Slot slot = Widgets.createSlot(new Point(offset, bounds.y + 47)).backgroundEnabled(false)
                     .entry(output.get(i));
             widgets.add(slot);
 
             double chance = outputChances.get(i);
             if (chance < 100) {
                 Point p = new Point(slot.getBounds().getCenterX(), slot.getBounds().getMaxY() + 2);
-                widgets.add(Widgets.createLabel(p, new LiteralText(df.format(chance) + "%"))
-                        .shadow(false)
+                widgets.add(Widgets.createLabel(p, new LiteralText(df.format(chance) + "%")).shadow(false)
                         .color(Color.gray.getRGB()));
             }
             offset += 18;

@@ -32,8 +32,8 @@ import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.api.config.Actionable;
@@ -71,8 +71,8 @@ import appeng.me.cache.CraftingGridCache;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.MBCalculator;
 import appeng.me.helpers.MachineSource;
-import appeng.tile.crafting.CraftingMonitorBlockEntity;
 import appeng.tile.crafting.CraftingBlockEntity;
+import appeng.tile.crafting.CraftingMonitorBlockEntity;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
@@ -683,8 +683,9 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
                             }
 
                             if (details.isCraftable()) {
-                                // FIXME FABRIC BasicEventHooks.firePlayerCraftingEvent((PlayerEntity) FakePlayer.getOrCreate((ServerWorld) getWorld()),
-                                // FIXME FABRIC         details.getOutput(ic, this.getWorld()), ic);
+                                // FIXME FABRIC BasicEventHooks.firePlayerCraftingEvent((PlayerEntity)
+                                // FakePlayer.getOrCreate((ServerWorld) getWorld()),
+                                // FIXME FABRIC details.getOutput(ic, this.getWorld()), ic);
 
                                 for (int x = 0; x < ic.size(); x++) {
                                     final ItemStack output = Platform.getRecipeRemainder(ic.getStack(x));

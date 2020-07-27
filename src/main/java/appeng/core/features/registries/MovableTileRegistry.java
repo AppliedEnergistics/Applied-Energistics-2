@@ -27,6 +27,9 @@ import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.tag.BlockTags;
+import net.minecraft.tag.Tag;
+import net.minecraft.util.Identifier;
 
 import appeng.api.exceptions.AppEngException;
 import appeng.api.movable.IMovableHandler;
@@ -35,9 +38,6 @@ import appeng.api.movable.IMovableTile;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.spatial.DefaultSpatialHandler;
-import net.minecraft.tag.BlockTags;
-import net.minecraft.tag.Tag;
-import net.minecraft.util.Identifier;
 
 public class MovableTileRegistry implements IMovableRegistry {
 

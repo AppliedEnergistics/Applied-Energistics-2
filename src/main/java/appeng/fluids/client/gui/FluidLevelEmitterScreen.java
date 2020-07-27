@@ -23,8 +23,7 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
 
     private NumberEntryWidget level;
 
-    public FluidLevelEmitterScreen(FluidLevelEmitterContainer container, PlayerInventory playerInventory,
-            Text title) {
+    public FluidLevelEmitterScreen(FluidLevelEmitterContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
     }
 
@@ -45,13 +44,14 @@ public class FluidLevelEmitterScreen extends UpgradeableScreen<FluidLevelEmitter
 
     @Override
     protected void addButtons() {
-        this.redstoneMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 28,
-                Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL);
+        this.redstoneMode = new ServerSettingToggleButton<>(this.x - 18, this.y + 28, Settings.REDSTONE_EMITTER,
+                RedstoneMode.LOW_SIGNAL);
         this.addButton(this.redstoneMode);
     }
 
     @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
+            float partialTicks) {
         super.drawBG(matrices, offsetX, offsetY, mouseX, mouseY, partialTicks);
         this.level.render(matrices, mouseX, mouseY, partialTicks);
     }

@@ -21,18 +21,19 @@ package appeng.parts.automation;
 import java.util.Collection;
 import java.util.Random;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.particle.DustParticleEffect;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.LevelType;
@@ -85,17 +86,13 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
         ICraftingWatcherHost, IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingProvider {
 
     @PartModels
-    public static final Identifier MODEL_BASE_OFF = new Identifier(AppEng.MOD_ID,
-            "part/level_emitter_base_off");
+    public static final Identifier MODEL_BASE_OFF = new Identifier(AppEng.MOD_ID, "part/level_emitter_base_off");
     @PartModels
-    public static final Identifier MODEL_BASE_ON = new Identifier(AppEng.MOD_ID,
-            "part/level_emitter_base_on");
+    public static final Identifier MODEL_BASE_ON = new Identifier(AppEng.MOD_ID, "part/level_emitter_base_on");
     @PartModels
-    public static final Identifier MODEL_STATUS_OFF = new Identifier(AppEng.MOD_ID,
-            "part/level_emitter_status_off");
+    public static final Identifier MODEL_STATUS_OFF = new Identifier(AppEng.MOD_ID, "part/level_emitter_status_off");
     @PartModels
-    public static final Identifier MODEL_STATUS_ON = new Identifier(AppEng.MOD_ID,
-            "part/level_emitter_status_on");
+    public static final Identifier MODEL_STATUS_ON = new Identifier(AppEng.MOD_ID, "part/level_emitter_status_on");
     @PartModels
     public static final Identifier MODEL_STATUS_HAS_CHANNEL = new Identifier(AppEng.MOD_ID,
             "part/level_emitter_status_has_channel");
@@ -416,7 +413,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
 
     @Override
     public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
-                                  final ItemStack removedStack, final ItemStack newStack) {
+            final ItemStack removedStack, final ItemStack newStack) {
         if (inv == this.config) {
             this.configureWatchers();
         }

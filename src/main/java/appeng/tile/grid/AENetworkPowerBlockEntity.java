@@ -18,11 +18,14 @@
 
 package appeng.tile.grid;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
 import alexiil.mc.lib.attributes.AttributeList;
 import alexiil.mc.lib.attributes.AttributeProvider;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.block.entity.BlockEntityType;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
@@ -32,10 +35,9 @@ import appeng.api.util.DimensionalCoord;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.IGridProxyable;
 import appeng.tile.powersink.AEBasePoweredBlockEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
-public abstract class AENetworkPowerBlockEntity extends AEBasePoweredBlockEntity implements IActionHost, IGridProxyable {
+public abstract class AENetworkPowerBlockEntity extends AEBasePoweredBlockEntity
+        implements IActionHost, IGridProxyable {
 
     private final AENetworkProxy gridProxy = new AENetworkProxy(this, "proxy", this.getItemFromTile(this), true);
 

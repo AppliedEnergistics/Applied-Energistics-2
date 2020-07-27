@@ -75,7 +75,6 @@ public enum SecurityPermissions {
         return this.translationKey + ".tip";
     }
 
-
     public Text tooltipText() {
         return new TranslatableText(getTranslatedTip());
     }

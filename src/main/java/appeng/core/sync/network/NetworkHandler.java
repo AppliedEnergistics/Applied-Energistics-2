@@ -18,9 +18,10 @@
 
 package appeng.core.sync.network;
 
-import appeng.core.sync.BasePacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
+
+import appeng.core.sync.BasePacket;
 
 public interface NetworkHandler {
 

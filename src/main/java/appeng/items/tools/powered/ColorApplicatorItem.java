@@ -18,37 +18,12 @@
 
 package appeng.items.tools.powered;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
-import appeng.core.Api;
-import appeng.api.config.Actionable;
-import appeng.api.config.FuzzyMode;
-import appeng.api.implementations.items.IStorageCell;
-import appeng.api.implementations.tiles.IColorableTile;
-import appeng.api.storage.IMEInventory;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.cells.ICellInventoryHandler;
-import appeng.api.storage.channels.IItemStorageChannel;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
-import appeng.api.util.AEColor;
-import appeng.api.util.DimensionalCoord;
-import appeng.block.networking.CableBusBlock;
-import appeng.block.paint.PaintSplotchesBlock;
-import appeng.core.AEConfig;
-import appeng.core.AppEng;
-import appeng.core.localization.GuiText;
-import appeng.helpers.IMouseWheelItem;
-import appeng.hooks.IBlockTool;
-import appeng.items.contents.CellConfig;
-import appeng.items.contents.CellUpgrades;
-import appeng.items.misc.PaintBallItem;
-import appeng.items.tools.powered.powersink.AEBasePoweredItem;
-import appeng.me.helpers.BaseActionSource;
-import appeng.tile.misc.PaintSplotchesBlockEntity;
-import appeng.util.FakePlayer;
-import appeng.util.Platform;
-import appeng.util.item.AEItemStack;
+import java.util.*;
+
+import javax.annotation.Nullable;
+
 import com.google.common.collect.ImmutableMap;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
@@ -74,37 +49,58 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
-import java.util.*;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
+
+import appeng.api.config.Actionable;
+import appeng.api.config.FuzzyMode;
+import appeng.api.implementations.items.IStorageCell;
+import appeng.api.implementations.tiles.IColorableTile;
+import appeng.api.storage.IMEInventory;
+import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.cells.ICellInventoryHandler;
+import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IItemList;
+import appeng.api.util.AEColor;
+import appeng.api.util.DimensionalCoord;
+import appeng.block.networking.CableBusBlock;
+import appeng.block.paint.PaintSplotchesBlock;
+import appeng.core.AEConfig;
+import appeng.core.Api;
+import appeng.core.AppEng;
+import appeng.core.localization.GuiText;
+import appeng.helpers.IMouseWheelItem;
+import appeng.hooks.IBlockTool;
+import appeng.items.contents.CellConfig;
+import appeng.items.contents.CellUpgrades;
+import appeng.items.misc.PaintBallItem;
+import appeng.items.tools.powered.powersink.AEBasePoweredItem;
+import appeng.me.helpers.BaseActionSource;
+import appeng.tile.misc.PaintSplotchesBlockEntity;
+import appeng.util.FakePlayer;
+import appeng.util.Platform;
+import appeng.util.item.AEItemStack;
 
 public class ColorApplicatorItem extends AEBasePoweredItem
         implements IStorageCell<IAEItemStack>, IBlockTool, IMouseWheelItem {
 
     private static final Map<Identifier, AEColor> TAG_TO_COLOR = ImmutableMap.<Identifier, AEColor>builder()
-            .put(new Identifier("c:black_dyes"), AEColor.BLACK)
-            .put(new Identifier("c:blue_dyes"), AEColor.BLUE)
-            .put(new Identifier("c:brown_dyes"), AEColor.BROWN)
-            .put(new Identifier("c:cyan_dyes"), AEColor.CYAN)
-            .put(new Identifier("c:gray_dyes"), AEColor.GRAY)
-            .put(new Identifier("c:green_dyes"), AEColor.GREEN)
+            .put(new Identifier("c:black_dyes"), AEColor.BLACK).put(new Identifier("c:blue_dyes"), AEColor.BLUE)
+            .put(new Identifier("c:brown_dyes"), AEColor.BROWN).put(new Identifier("c:cyan_dyes"), AEColor.CYAN)
+            .put(new Identifier("c:gray_dyes"), AEColor.GRAY).put(new Identifier("c:green_dyes"), AEColor.GREEN)
             .put(new Identifier("c:light_blue_dyes"), AEColor.LIGHT_BLUE)
             .put(new Identifier("c:light_gray_dyes"), AEColor.LIGHT_GRAY)
-            .put(new Identifier("c:lime_dyes"), AEColor.LIME)
-            .put(new Identifier("c:magenta_dyes"), AEColor.MAGENTA)
-            .put(new Identifier("c:orange_dyes"), AEColor.ORANGE)
-            .put(new Identifier("c:pink_dyes"), AEColor.PINK)
-            .put(new Identifier("c:purple_dyes"), AEColor.PURPLE)
-            .put(new Identifier("c:red_dyes"), AEColor.RED)
-            .put(new Identifier("c:white_dyes"), AEColor.WHITE)
-            .put(new Identifier("c:yellow_dyes"), AEColor.YELLOW).build();
+            .put(new Identifier("c:lime_dyes"), AEColor.LIME).put(new Identifier("c:magenta_dyes"), AEColor.MAGENTA)
+            .put(new Identifier("c:orange_dyes"), AEColor.ORANGE).put(new Identifier("c:pink_dyes"), AEColor.PINK)
+            .put(new Identifier("c:purple_dyes"), AEColor.PURPLE).put(new Identifier("c:red_dyes"), AEColor.RED)
+            .put(new Identifier("c:white_dyes"), AEColor.WHITE).put(new Identifier("c:yellow_dyes"), AEColor.YELLOW)
+            .build();
 
     private static final String TAG_COLOR = "color";
 
     public ColorApplicatorItem(Item.Settings props) {
         super(AEConfig.instance().getColorApplicatorBattery(), props);
-        FabricModelPredicateProviderRegistry.register(
-                this,
-                new Identifier(AppEng.MOD_ID, "colored"),
+        FabricModelPredicateProviderRegistry.register(this, new Identifier(AppEng.MOD_ID, "colored"),
                 (itemStack, world, entity) -> {
                     // If the stack has no color, don't use the colored model since the impact of
                     // calling getColor for every quad is extremely high, if the stack tries to
@@ -112,8 +108,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                     // inventory for a new paintball everytime
                     AEColor col = getActiveColor(itemStack);
                     return (col != null) ? 1 : 0;
-                }
-        );
+                });
     }
 
     @Override

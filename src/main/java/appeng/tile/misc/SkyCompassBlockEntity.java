@@ -18,9 +18,9 @@
 
 package appeng.tile.misc;
 
-import appeng.client.render.model.AEModelData;
 import net.minecraft.block.entity.BlockEntityType;
 
+import appeng.client.render.model.AEModelData;
 import appeng.tile.AEBaseBlockEntity;
 
 public class SkyCompassBlockEntity extends AEBaseBlockEntity {

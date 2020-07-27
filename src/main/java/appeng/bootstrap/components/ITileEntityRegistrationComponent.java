@@ -1,6 +1,5 @@
 package appeng.bootstrap.components;
 
-
 import appeng.bootstrap.IBootstrapComponent;
 
 @FunctionalInterface

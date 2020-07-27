@@ -18,23 +18,26 @@
 
 package appeng.integration.modules.waila;
 
-import appeng.integration.modules.waila.tile.ChargerWailaDataProvider;
-import appeng.integration.modules.waila.tile.CraftingMonitorWailaDataProvider;
-import appeng.integration.modules.waila.tile.PowerStateWailaDataProvider;
-import appeng.integration.modules.waila.tile.PowerStorageWailaDataProvider;
+import java.util.List;
+
 import com.google.common.collect.Lists;
+
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.world.World;
+
 import mcp.mobius.waila.api.IComponentProvider;
 import mcp.mobius.waila.api.IDataAccessor;
 import mcp.mobius.waila.api.IPluginConfig;
 import mcp.mobius.waila.api.IServerDataProvider;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.text.Text;
-import net.minecraft.world.World;
 
-import java.util.List;
+import appeng.integration.modules.waila.tile.ChargerWailaDataProvider;
+import appeng.integration.modules.waila.tile.CraftingMonitorWailaDataProvider;
+import appeng.integration.modules.waila.tile.PowerStateWailaDataProvider;
+import appeng.integration.modules.waila.tile.PowerStorageWailaDataProvider;
 
 /**
  * Delegation provider for tiles through
@@ -68,24 +71,21 @@ public final class TileWailaDataProvider implements IComponentProvider, IServerD
     }
 
     @Override
-    public void appendHead(List<Text> currentToolTip, final IDataAccessor accessor,
-            final IPluginConfig config) {
+    public void appendHead(List<Text> currentToolTip, final IDataAccessor accessor, final IPluginConfig config) {
         for (final BaseWailaDataProvider provider : this.providers) {
             provider.appendHead(currentToolTip, accessor, config);
         }
     }
 
     @Override
-    public void appendBody(List<Text> currentToolTip, final IDataAccessor accessor,
-            final IPluginConfig config) {
+    public void appendBody(List<Text> currentToolTip, final IDataAccessor accessor, final IPluginConfig config) {
         for (final BaseWailaDataProvider provider : this.providers) {
             provider.appendBody(currentToolTip, accessor, config);
         }
     }
 
     @Override
-    public void appendTail(List<Text> currentToolTip, final IDataAccessor accessor,
-            final IPluginConfig config) {
+    public void appendTail(List<Text> currentToolTip, final IDataAccessor accessor, final IPluginConfig config) {
         for (final BaseWailaDataProvider provider : this.providers) {
             provider.appendTail(currentToolTip, accessor, config);
         }

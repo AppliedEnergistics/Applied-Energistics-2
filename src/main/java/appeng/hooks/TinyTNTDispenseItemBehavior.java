@@ -20,8 +20,8 @@ package appeng.hooks;
 
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.dispenser.ItemDispenserBehavior;
-import net.minecraft.util.math.BlockPointer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPointer;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 

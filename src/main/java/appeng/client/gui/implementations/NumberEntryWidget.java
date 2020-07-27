@@ -6,14 +6,14 @@ import java.util.function.LongConsumer;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.widgets.ITickingWidget;
 import appeng.client.gui.widgets.NumberBox;
 import appeng.core.AEConfig;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 
 /**
  * A utility widget that consists of a text-field to enter a number with
@@ -88,17 +88,24 @@ public class NumberEntryWidget implements ITickingWidget {
         int top = parent.getY() + y;
 
         addButton.accept(this.plus1 = new ButtonWidget(left, top, 22, 20, new LiteralText("+" + a), btn -> addQty(a)));
-        addButton.accept(this.plus10 = new ButtonWidget(left + 28, top, 28, 20, new LiteralText("+" + b), btn -> addQty(b)));
-        addButton.accept(this.plus100 = new ButtonWidget(left + 62, top, 32, 20, new LiteralText("+" + c), btn -> addQty(c)));
-        addButton.accept(this.plus1000 = new ButtonWidget(left + 100, top, 38, 20, new LiteralText("+" + d), btn -> addQty(d)));
+        addButton.accept(
+                this.plus10 = new ButtonWidget(left + 28, top, 28, 20, new LiteralText("+" + b), btn -> addQty(b)));
+        addButton.accept(
+                this.plus100 = new ButtonWidget(left + 62, top, 32, 20, new LiteralText("+" + c), btn -> addQty(c)));
+        addButton.accept(
+                this.plus1000 = new ButtonWidget(left + 100, top, 38, 20, new LiteralText("+" + d), btn -> addQty(d)));
 
         // Placing this here will give a sensible tab order
         addChildren.accept(this.level);
 
-        addButton.accept(this.minus1 = new ButtonWidget(left, top + 42, 22, 20, new LiteralText("-" + a), btn -> addQty(-a)));
-        addButton.accept(this.minus10 = new ButtonWidget(left + 28, top + 42, 28, 20, new LiteralText("-" + b), btn -> addQty(-b)));
-        addButton.accept(this.minus100 = new ButtonWidget(left + 62, top + 42, 32, 20, new LiteralText("-" + c), btn -> addQty(-c)));
-        addButton.accept(this.minus1000 = new ButtonWidget(left + 100, top + 42, 38, 20, new LiteralText("-" + d), btn -> addQty(-d)));
+        addButton.accept(
+                this.minus1 = new ButtonWidget(left, top + 42, 22, 20, new LiteralText("-" + a), btn -> addQty(-a)));
+        addButton.accept(this.minus10 = new ButtonWidget(left + 28, top + 42, 28, 20, new LiteralText("-" + b),
+                btn -> addQty(-b)));
+        addButton.accept(this.minus100 = new ButtonWidget(left + 62, top + 42, 32, 20, new LiteralText("-" + c),
+                btn -> addQty(-c)));
+        addButton.accept(this.minus1000 = new ButtonWidget(left + 100, top + 42, 38, 20, new LiteralText("-" + d),
+                btn -> addQty(-d)));
     }
 
     private void addQty(final long i) {

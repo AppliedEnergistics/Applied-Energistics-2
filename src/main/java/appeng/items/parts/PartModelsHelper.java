@@ -70,8 +70,7 @@ public class PartModelsHelper {
 
             // Make sure we can handle the return type
             Class<?> returnType = method.getReturnType();
-            if (!Identifier.class.isAssignableFrom(returnType)
-                    && !Collection.class.isAssignableFrom(returnType)) {
+            if (!Identifier.class.isAssignableFrom(returnType) && !Collection.class.isAssignableFrom(returnType)) {
                 AELog.error(
                         "The @PartModels annotation can only be used on static methods that return a ResourceLocation or Collection of "
                                 + "ResourceLocations. Was seen on: " + method);

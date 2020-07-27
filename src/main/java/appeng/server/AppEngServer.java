@@ -1,12 +1,10 @@
 package appeng.server;
 
-import appeng.api.parts.CableRenderMode;
-import appeng.client.ActionKey;
-import appeng.client.EffectType;
-import appeng.core.AppEngBase;
-import appeng.core.sync.network.ServerNetworkHandler;
-import appeng.core.worlddata.WorldData;
-import appeng.hooks.TickHandler;
+import java.util.Random;
+import java.util.stream.Stream;
+
+import javax.annotation.Nonnull;
+
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.server.PlayerStream;
 import net.minecraft.client.util.InputUtil;
@@ -15,9 +13,13 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
 
-import javax.annotation.Nonnull;
-import java.util.Random;
-import java.util.stream.Stream;
+import appeng.api.parts.CableRenderMode;
+import appeng.client.ActionKey;
+import appeng.client.EffectType;
+import appeng.core.AppEngBase;
+import appeng.core.sync.network.ServerNetworkHandler;
+import appeng.core.worlddata.WorldData;
+import appeng.hooks.TickHandler;
 
 public final class AppEngServer extends AppEngBase {
 

@@ -21,8 +21,8 @@ package appeng.block.crafting;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.StateManager;
+import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -56,8 +56,7 @@ public class MolecularAssemblerBlock extends AEBaseTileBlock<MolecularAssemblerB
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand,
-                              BlockHitResult hit) {
+    public ActionResult onUse(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand, BlockHitResult hit) {
         final MolecularAssemblerBlockEntity tg = this.getBlockEntity(w, pos);
         if (tg != null && !p.isInSneakingPose()) {
             if (!tg.isClient()) {

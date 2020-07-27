@@ -18,12 +18,9 @@
 
 package appeng.debug;
 
-import alexiil.mc.lib.attributes.AttributeList;
-import alexiil.mc.lib.attributes.Simulation;
-import alexiil.mc.lib.attributes.item.ItemExtractable;
-import alexiil.mc.lib.attributes.item.filter.ExactItemStackFilter;
-import alexiil.mc.lib.attributes.item.filter.ItemFilter;
-import appeng.tile.AEBaseBlockEntity;
+import java.util.ArrayDeque;
+import java.util.Queue;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.Item;
@@ -34,8 +31,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
-import java.util.ArrayDeque;
-import java.util.Queue;
+import alexiil.mc.lib.attributes.AttributeList;
+import alexiil.mc.lib.attributes.Simulation;
+import alexiil.mc.lib.attributes.item.ItemExtractable;
+import alexiil.mc.lib.attributes.item.filter.ExactItemStackFilter;
+import alexiil.mc.lib.attributes.item.filter.ItemFilter;
+
+import appeng.tile.AEBaseBlockEntity;
 
 public class ItemGenBlockEntity extends AEBaseBlockEntity {
 

@@ -24,8 +24,8 @@ public class LightningArcParticleData implements ParticleEffect {
 
     public static final Factory<LightningArcParticleData> DESERIALIZER = new Factory<LightningArcParticleData>() {
         @Override
-        public LightningArcParticleData read(ParticleType<LightningArcParticleData> particleTypeIn,
-                                                    StringReader reader) throws CommandSyntaxException {
+        public LightningArcParticleData read(ParticleType<LightningArcParticleData> particleTypeIn, StringReader reader)
+                throws CommandSyntaxException {
             reader.expect(' ');
             float x = reader.readFloat();
             reader.expect(' ');

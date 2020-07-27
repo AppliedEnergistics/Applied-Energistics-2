@@ -23,9 +23,9 @@ import java.util.Random;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
 
@@ -42,10 +42,10 @@ public abstract class CommonHelper {
     public abstract List<? extends PlayerEntity> getPlayers();
 
     public abstract void sendToAllNearExcept(PlayerEntity p, double x, double y, double z, double dist, World w,
-                                             BasePacket packet);
+            BasePacket packet);
 
     public abstract void spawnEffect(EffectType effect, World world, double posX, double posY, double posZ,
-                                     Object extra);
+            Object extra);
 
     public abstract boolean shouldAddParticles(Random r);
 

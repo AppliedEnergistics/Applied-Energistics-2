@@ -18,7 +18,6 @@
 
 package appeng.items.tools;
 
-import appeng.hooks.AEToolItem;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
@@ -27,9 +26,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.*;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 import appeng.api.implementations.guiobjects.IGuiItem;
@@ -48,6 +47,7 @@ import appeng.container.implementations.NetworkToolContainer;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ClickPacket;
+import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.NetworkToolViewer;
 import appeng.util.Platform;
@@ -83,8 +83,8 @@ public class NetworkToolItem extends AEBaseItem implements IGuiItem, IAEWrench, 
 
     @Override
     public ActionResult onItemUseFirst(ItemStack stack, ItemUsageContext context) {
-        final BlockHitResult mop = new BlockHitResult(context.getHitPos(), context.getSide(),
-                context.getBlockPos(), context.hitsInsideBlock());
+        final BlockHitResult mop = new BlockHitResult(context.getHitPos(), context.getSide(), context.getBlockPos(),
+                context.hitsInsideBlock());
         final BlockEntity te = context.getWorld().getBlockEntity(context.getBlockPos());
 
         if (te instanceof IPartHost) {

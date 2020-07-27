@@ -20,16 +20,17 @@ package appeng.util.inv;
 
 import java.util.function.Supplier;
 
+import javax.annotation.Nullable;
+
+import net.minecraft.item.ItemStack;
+
 import alexiil.mc.lib.attributes.ListenerRemovalToken;
 import alexiil.mc.lib.attributes.ListenerToken;
 import alexiil.mc.lib.attributes.Simulation;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.GroupedItemInv;
 import alexiil.mc.lib.attributes.item.InvMarkDirtyListener;
 import alexiil.mc.lib.attributes.item.impl.DelegatingGroupedItemInv;
-import net.minecraft.item.ItemStack;
-import alexiil.mc.lib.attributes.item.FixedItemInv;
-
-import javax.annotation.Nullable;
 
 public class WrapperSupplierItemHandler implements FixedItemInv {
     private final Supplier<FixedItemInv> sourceHandler;

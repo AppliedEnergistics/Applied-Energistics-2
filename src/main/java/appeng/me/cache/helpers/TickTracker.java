@@ -20,7 +20,6 @@ package appeng.me.cache.helpers;
 
 import javax.annotation.Nonnull;
 
-import appeng.api.parts.IPart;
 import net.minecraft.util.crash.CrashReportSection;
 
 import appeng.api.networking.IGridNode;

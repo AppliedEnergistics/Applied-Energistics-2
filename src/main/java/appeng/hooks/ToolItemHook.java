@@ -11,8 +11,8 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.world.World;
 
 /**
- * This hooks allows item-specific behavior to be triggered when an item is used on a block,
- * without shift being held or the block being called first.
+ * This hooks allows item-specific behavior to be triggered when an item is used
+ * on a block, without shift being held or the block being called first.
  */
 public class ToolItemHook {
 
@@ -20,7 +20,8 @@ public class ToolItemHook {
         UseBlockCallback.EVENT.register(ToolItemHook::handleItemUse);
     }
 
-    private static ActionResult handleItemUse(PlayerEntity playerEntity, World world, Hand hand, BlockHitResult blockHitResult) {
+    private static ActionResult handleItemUse(PlayerEntity playerEntity, World world, Hand hand,
+            BlockHitResult blockHitResult) {
 
         if (playerEntity.isSpectator()) {
             return ActionResult.PASS;

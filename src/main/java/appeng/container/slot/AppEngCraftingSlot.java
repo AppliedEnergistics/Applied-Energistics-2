@@ -18,15 +18,16 @@
 
 package appeng.container.slot;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.world.World;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.util.helpers.ItemHandlerUtil;
-import net.minecraft.world.World;
 
 public class AppEngCraftingSlot extends AppEngSlot {
 
@@ -47,7 +48,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
     private int amountCrafted;
 
     public AppEngCraftingSlot(final PlayerEntity par1PlayerEntity, final FixedItemInv par2IInventory,
-                              final FixedItemInv par3IInventory, final int par4, final int par5, final int par6) {
+            final FixedItemInv par3IInventory, final int par4, final int par5, final int par6) {
         super(par3IInventory, par4, par5, par6);
         this.thePlayer = par1PlayerEntity;
         this.craftMatrix = par2IInventory;
@@ -85,9 +86,11 @@ public class AppEngCraftingSlot extends AppEngSlot {
 
     @Override
     public ItemStack onTakeItem(final PlayerEntity playerIn, final ItemStack stack) {
-        // FIXME FABRIC BasicEventHooks.firePlayerCraftingEvent(playerIn, stack, new WrapperInvItemHandler(this.craftMatrix));
+        // FIXME FABRIC BasicEventHooks.firePlayerCraftingEvent(playerIn, stack, new
+        // WrapperInvItemHandler(this.craftMatrix));
         this.onCrafted(stack);
-        // FIXME FABRIC: net.minecraftforge.common.ForgeHooks.setCraftingPlayer(playerIn);
+        // FIXME FABRIC:
+        // net.minecraftforge.common.ForgeHooks.setCraftingPlayer(playerIn);
         final CraftingInventory ic = new CraftingInventory(this.getContainer(), 3, 3);
 
         for (int x = 0; x < this.craftMatrix.getSlotCount(); x++) {

@@ -43,35 +43,33 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
 
     private ToggleButton copyMode;
 
-    public CellWorkbenchScreen(CellWorkbenchContainer container, PlayerInventory playerInventory,
-            Text title) {
+    public CellWorkbenchScreen(CellWorkbenchContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
         this.backgroundHeight = 251;
     }
 
     @Override
     protected void addButtons() {
-        this.fuzzyMode = this.addButton(new SettingToggleButton<>(this.x - 18, this.y + 68,
-                Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL, this::toggleFuzzyMode));
-        this.addButton(
-                new ActionButton(this.x - 18, this.y + 28, ActionItems.WRENCH, act1 -> action("Partition")));
+        this.fuzzyMode = this.addButton(new SettingToggleButton<>(this.x - 18, this.y + 68, Settings.FUZZY_MODE,
+                FuzzyMode.IGNORE_ALL, this::toggleFuzzyMode));
+        this.addButton(new ActionButton(this.x - 18, this.y + 28, ActionItems.WRENCH, act1 -> action("Partition")));
         this.addButton(new ActionButton(this.x - 18, this.y + 8, ActionItems.CLOSE, act -> action("Clear")));
         this.copyMode = this.addButton(new ToggleButton(this.x - 18, this.y + 48, 11 * 16 + 5, 12 * 16 + 5,
                 GuiText.CopyMode.text(), GuiText.CopyModeDesc.text(), act -> action("CopyMode")));
     }
 
     @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
+            float partialTicks) {
         this.handleButtonVisibility();
 
         this.bindTexture(this.getBackground());
         drawTexture(matrices, offsetX, offsetY, 0, 0, 211 - 34, this.backgroundHeight);
         if (this.drawUpgrades()) {
             if (this.handler.availableUpgrades() <= 8) {
-                drawTexture(matrices, offsetX + 177, offsetY, 177, 0, 35,
-                        7 + this.handler.availableUpgrades() * 18);
-                drawTexture(matrices, offsetX + 177, offsetY + (7 + (this.handler.availableUpgrades()) * 18),
-                        177, 151, 35, 7);
+                drawTexture(matrices, offsetX + 177, offsetY, 177, 0, 35, 7 + this.handler.availableUpgrades() * 18);
+                drawTexture(matrices, offsetX + 177, offsetY + (7 + (this.handler.availableUpgrades()) * 18), 177, 151,
+                        35, 7);
             } else if (this.handler.availableUpgrades() <= 16) {
                 drawTexture(matrices, offsetX + 177, offsetY, 177, 0, 35, 7 + 8 * 18);
                 drawTexture(matrices, offsetX + 177, offsetY + (7 + (8) * 18), 177, 151, 35, 7);
@@ -81,8 +79,7 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
                 if (dx == 8) {
                     drawTexture(matrices, offsetX + 177 + 27, offsetY + (7 + (dx) * 18), 186, 151, 35 - 8, 7);
                 } else {
-                    drawTexture(matrices, offsetX + 177 + 27 + 4, offsetY + (7 + (dx) * 18), 186 + 4, 151,
-                            35 - 8, 7);
+                    drawTexture(matrices, offsetX + 177 + 27 + 4, offsetY + (7 + (dx) * 18), 186 + 4, 151, 35 - 8, 7);
                 }
             } else {
                 drawTexture(matrices, offsetX + 177, offsetY, 177, 0, 35, 7 + 8 * 18);
@@ -94,11 +91,10 @@ public class CellWorkbenchScreen extends UpgradeableScreen<CellWorkbenchContaine
                 final int dx = this.handler.availableUpgrades() - 16;
                 drawTexture(matrices, offsetX + 177 + 27 + 18, offsetY, 186, 0, 35 - 8, 7 + dx * 18);
                 if (dx == 8) {
-                    drawTexture(matrices, offsetX + 177 + 27 + 18, offsetY + (7 + (dx) * 18), 186, 151, 35 - 8,
-                            7);
+                    drawTexture(matrices, offsetX + 177 + 27 + 18, offsetY + (7 + (dx) * 18), 186, 151, 35 - 8, 7);
                 } else {
-                    drawTexture(matrices, offsetX + 177 + 27 + 18 + 4, offsetY + (7 + (dx) * 18), 186 + 4, 151,
-                            35 - 8, 7);
+                    drawTexture(matrices, offsetX + 177 + 27 + 18 + 4, offsetY + (7 + (dx) * 18), 186 + 4, 151, 35 - 8,
+                            7);
                 }
             }
         }

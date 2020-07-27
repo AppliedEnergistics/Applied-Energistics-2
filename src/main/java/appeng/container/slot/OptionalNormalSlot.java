@@ -26,7 +26,7 @@ public class OptionalNormalSlot extends AppEngSlot implements IOptionalSlot {
     private final IOptionalSlotHost host;
 
     public OptionalNormalSlot(final FixedItemInv inv, final IOptionalSlotHost containerBus, final int slot,
-                              final int xPos, final int yPos, final int groupNum) {
+            final int xPos, final int yPos, final int groupNum) {
         super(inv, slot, xPos, yPos);
         this.groupNum = groupNum;
         this.host = containerBus;

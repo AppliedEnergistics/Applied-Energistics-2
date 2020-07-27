@@ -38,8 +38,7 @@ public class SecurityStationScreen extends MEMonitorableScreen<SecurityStationCo
     private ToggleButton build;
     private ToggleButton security;
 
-    public SecurityStationScreen(SecurityStationContainer container, PlayerInventory playerInventory,
-            Text title) {
+    public SecurityStationScreen(SecurityStationContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
         this.setCustomSortOrder(false);
         this.setReservedSpace(33);
@@ -59,9 +58,9 @@ public class SecurityStationScreen extends MEMonitorableScreen<SecurityStationCo
         super.init();
 
         final int top = this.y + this.backgroundHeight - 116;
-        this.inject = this.addButton(new ToggleButton(this.x + 56, top, 11 * 16, 12 * 16,
-                SecurityPermissions.INJECT.nameText(), SecurityPermissions.INJECT.tooltipText(),
-                btn -> toggleOption(SecurityPermissions.INJECT)));
+        this.inject = this
+                .addButton(new ToggleButton(this.x + 56, top, 11 * 16, 12 * 16, SecurityPermissions.INJECT.nameText(),
+                        SecurityPermissions.INJECT.tooltipText(), btn -> toggleOption(SecurityPermissions.INJECT)));
 
         this.extract = this.addButton(new ToggleButton(this.x + 56 + 18, top, 11 * 16 + 1, 12 * 16 + 1,
                 SecurityPermissions.EXTRACT.nameText(), SecurityPermissions.EXTRACT.tooltipText(),
@@ -83,8 +82,8 @@ public class SecurityStationScreen extends MEMonitorableScreen<SecurityStationCo
     @Override
     public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
         super.drawFG(matrices, offsetX, offsetY, mouseX, mouseY);
-        this.textRenderer.draw(matrices, GuiText.SecurityCardEditor.text(), 8, this.backgroundHeight - 96 + 1 - this.getReservedSpace(),
-                4210752);
+        this.textRenderer.draw(matrices, GuiText.SecurityCardEditor.text(), 8,
+                this.backgroundHeight - 96 + 1 - this.getReservedSpace(), 4210752);
     }
 
     @Override

@@ -25,11 +25,6 @@ import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-
-import appeng.client.render.BakedModelUnwrapper;
-import appeng.client.render.model.AutoRotatingBakedModel;
-import appeng.client.render.model.DriveBakedModel;
-import appeng.tile.storage.ChestBlockEntity;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.minecraft.block.BlockState;
@@ -51,8 +46,12 @@ import net.minecraft.world.World;
 
 import appeng.api.client.ICellModelRegistry;
 import appeng.block.storage.DriveSlotsState;
+import appeng.client.render.BakedModelUnwrapper;
 import appeng.client.render.FacingToRotation;
+import appeng.client.render.model.AutoRotatingBakedModel;
+import appeng.client.render.model.DriveBakedModel;
 import appeng.core.Api;
+import appeng.tile.storage.ChestBlockEntity;
 
 /**
  * The tile entity renderer for ME chests takes care of rendering the right
@@ -75,7 +74,7 @@ public class ChestTileEntityRenderer extends BlockEntityRenderer<ChestBlockEntit
 
     @Override
     public void render(ChestBlockEntity chest, float partialTicks, MatrixStack matrices, VertexConsumerProvider buffers,
-                       int combinedLight, int combinedOverlay) {
+            int combinedLight, int combinedOverlay) {
 
         World world = chest.getWorld();
         if (world == null) {
@@ -89,7 +88,8 @@ public class ChestTileEntityRenderer extends BlockEntityRenderer<ChestBlockEntit
             return; // No cell inserted into chest
         }
 
-        // Try to get the right cell chassis model from the drive model since it already loads them all
+        // Try to get the right cell chassis model from the drive model since it already
+        // loads them all
         DriveBakedModel driveModel = getDriveModel();
         if (driveModel == null) {
             return;
@@ -121,7 +121,8 @@ public class ChestTileEntityRenderer extends BlockEntityRenderer<ChestBlockEntit
     }
 
     private DriveBakedModel getDriveModel() {
-        BakedModel driveModel = modelManager.getBlockModels().getModel(Api.instance().definitions().blocks().drive().block().getDefaultState());
+        BakedModel driveModel = modelManager.getBlockModels()
+                .getModel(Api.instance().definitions().blocks().drive().block().getDefaultState());
         return BakedModelUnwrapper.unwrap(driveModel, DriveBakedModel.class);
     }
 

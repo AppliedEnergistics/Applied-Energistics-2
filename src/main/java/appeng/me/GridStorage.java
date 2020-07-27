@@ -66,7 +66,7 @@ public class GridStorage implements IGridStorage {
     public void saveState() {
         final Grid currentGrid = (Grid) this.getGrid();
         if (currentGrid != null) {
-             currentGrid.saveState();
+            currentGrid.saveState();
         }
     }
 

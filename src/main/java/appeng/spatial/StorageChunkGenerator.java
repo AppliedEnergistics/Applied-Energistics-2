@@ -18,9 +18,13 @@
 
 package appeng.spatial;
 
-import appeng.core.Api;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Optional;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
@@ -37,9 +41,7 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.StructuresConfig;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Optional;
+import appeng.core.Api;
 
 public class StorageChunkGenerator extends ChunkGenerator {
 
@@ -47,8 +49,8 @@ public class StorageChunkGenerator extends ChunkGenerator {
 
     public static final StorageChunkGenerator INSTANCE = new StorageChunkGenerator();
 
-    public static final Codec<StorageChunkGenerator> CODEC = RecordCodecBuilder.create((instance) ->
-            instance.stable(INSTANCE));
+    public static final Codec<StorageChunkGenerator> CODEC = RecordCodecBuilder
+            .create((instance) -> instance.stable(INSTANCE));
 
     private final BlockState defaultBlockState;
 
@@ -56,7 +58,8 @@ public class StorageChunkGenerator extends ChunkGenerator {
         super(createBiomeProvider(), createSettings());
         this.defaultBlockState = Api.instance().definitions().blocks().matrixFrame().block().getDefaultState();
 
-        // Vertical sample is mostly used for Feature generation, for those purposes we're all filled with matrix blocks
+        // Vertical sample is mostly used for Feature generation, for those purposes
+        // we're all filled with matrix blocks
         BlockState[] columnSample = new BlockState[256];
         Arrays.fill(columnSample, this.defaultBlockState);
         this.columnSample = new VerticalBlockSample(columnSample);

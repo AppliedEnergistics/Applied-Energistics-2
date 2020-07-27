@@ -18,14 +18,8 @@
 
 package appeng.core.sync.packets;
 
-import appeng.api.util.AEPartLocation;
-import appeng.client.render.effects.EnergyParticleData;
-import appeng.core.AELog;
-import appeng.core.AppEng;
-import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
-import appeng.util.Platform;
 import io.netty.buffer.Unpooled;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
@@ -42,6 +36,14 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
+
+import appeng.api.util.AEPartLocation;
+import appeng.client.render.effects.EnergyParticleData;
+import appeng.core.AELog;
+import appeng.core.AppEng;
+import appeng.core.sync.BasePacket;
+import appeng.core.sync.network.INetworkInfo;
+import appeng.util.Platform;
 
 /**
  * Plays the block breaking or fluid pickup sound and a transition particle
@@ -145,8 +147,8 @@ public class BlockTransitionEffectPacket extends BasePacket {
             return;
         }
 
-        PositionedSoundInstance sound = new PositionedSoundInstance(soundEvent, SoundCategory.BLOCKS, (volume + 1.0F) / 2.0F, pitch * 0.8F,
-                pos);
+        PositionedSoundInstance sound = new PositionedSoundInstance(soundEvent, SoundCategory.BLOCKS,
+                (volume + 1.0F) / 2.0F, pitch * 0.8F, pos);
         MinecraftClient.getInstance().getSoundManager().play(sound);
     }
 

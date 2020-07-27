@@ -21,12 +21,6 @@ package appeng.worldgen.meteorite;
 import java.util.ArrayList;
 import java.util.List;
 
-import alexiil.mc.lib.attributes.AttributeList;
-import alexiil.mc.lib.attributes.AttributeProvider;
-import alexiil.mc.lib.attributes.AttributeUtil;
-import alexiil.mc.lib.attributes.item.ItemAttributes;
-import appeng.tile.storage.SkyChestBlockEntity;
-import appeng.util.inv.AdaptorFixedInv;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -35,11 +29,16 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockBox;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockBox;
 import net.minecraft.world.WorldAccess;
+
+import alexiil.mc.lib.attributes.AttributeList;
+import alexiil.mc.lib.attributes.AttributeProvider;
+import alexiil.mc.lib.attributes.AttributeUtil;
+import alexiil.mc.lib.attributes.item.ItemAttributes;
 
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
@@ -48,8 +47,10 @@ import appeng.api.features.AEFeature;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.worlddata.WorldData;
+import appeng.tile.storage.SkyChestBlockEntity;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
+import appeng.util.inv.AdaptorFixedInv;
 import appeng.worldgen.meteorite.fallout.Fallout;
 import appeng.worldgen.meteorite.fallout.FalloutCopy;
 import appeng.worldgen.meteorite.fallout.FalloutMode;
@@ -192,7 +193,8 @@ public final class MeteoritePlacer {
             }
         }
 
-        for (final Object o : world.getEntities(ItemEntity.class, new Box(minX(x - 30), y - 5, minZ(z - 30), maxX(x + 30), y + 30, maxZ(z + 30)), null)) {
+        for (final Object o : world.getEntities(ItemEntity.class,
+                new Box(minX(x - 30), y - 5, minZ(z - 30), maxX(x + 30), y + 30, maxZ(z + 30)), null)) {
             final Entity e = (Entity) o;
             e.remove();
         }

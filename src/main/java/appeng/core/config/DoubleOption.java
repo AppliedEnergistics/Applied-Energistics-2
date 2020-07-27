@@ -10,7 +10,8 @@ public class DoubleOption extends BaseOption {
     private final double maxValue;
     private double currentValue;
 
-    public DoubleOption(ConfigSection parent, String id, String comment, double defaultValue, double minValue, double maxValue) {
+    public DoubleOption(ConfigSection parent, String id, String comment, double defaultValue, double minValue,
+            double maxValue) {
         super(parent, id, comment);
         this.defaultValue = defaultValue;
         this.currentValue = defaultValue;

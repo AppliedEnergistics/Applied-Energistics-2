@@ -26,12 +26,12 @@ import java.util.Deque;
 import java.util.EnumSet;
 import java.util.List;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.math.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.WorldAccess;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.exceptions.SecurityConnectionException;

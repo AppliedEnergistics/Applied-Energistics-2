@@ -18,9 +18,9 @@
 
 package appeng.bootstrap;
 
-import net.minecraft.client.color.item.ItemColorProvider;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.color.item.ItemColorProvider;
 
 /**
  * Allows the rendering of an item to be customized.

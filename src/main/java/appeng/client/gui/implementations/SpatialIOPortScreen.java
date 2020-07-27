@@ -22,7 +22,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 
-
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.widgets.CommonButtons;
 import appeng.container.implementations.SpatialIOPortContainer;
@@ -31,8 +30,7 @@ import appeng.util.Platform;
 
 public class SpatialIOPortScreen extends AEBaseScreen<SpatialIOPortContainer> {
 
-    public SpatialIOPortScreen(SpatialIOPortContainer container, PlayerInventory playerInventory,
-            Text title) {
+    public SpatialIOPortScreen(SpatialIOPortContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
         this.backgroundHeight = 199;
     }
@@ -45,13 +43,14 @@ public class SpatialIOPortScreen extends AEBaseScreen<SpatialIOPortContainer> {
 
     @Override
     public void drawFG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.textRenderer.draw(matrices, GuiText.StoredPower.withSuffix(": "
-                + Platform.formatPowerLong(this.handler.getCurrentPower(), false)), 13, 21, 4210752);
         this.textRenderer.draw(matrices,
-                GuiText.MaxPower.withSuffix(": " + Platform.formatPowerLong(this.handler.getMaxPower(), false)), 13,
-                31, 4210752);
-        this.textRenderer.draw(matrices, GuiText.RequiredPower.withSuffix(": "
-                + Platform.formatPowerLong(this.handler.getRequiredPower(), false)), 13, 73, 4210752);
+                GuiText.StoredPower.withSuffix(": " + Platform.formatPowerLong(this.handler.getCurrentPower(), false)),
+                13, 21, 4210752);
+        this.textRenderer.draw(matrices,
+                GuiText.MaxPower.withSuffix(": " + Platform.formatPowerLong(this.handler.getMaxPower(), false)), 13, 31,
+                4210752);
+        this.textRenderer.draw(matrices, GuiText.RequiredPower
+                .withSuffix(": " + Platform.formatPowerLong(this.handler.getRequiredPower(), false)), 13, 73, 4210752);
         this.textRenderer.draw(matrices,
                 GuiText.Efficiency.withSuffix(": " + (((float) this.handler.getEfficency()) / 100) + '%'), 13, 83,
                 4210752);
@@ -60,17 +59,19 @@ public class SpatialIOPortScreen extends AEBaseScreen<SpatialIOPortContainer> {
         this.textRenderer.draw(matrices, GuiText.inventory.text(), 8, this.backgroundHeight - 96, 4210752);
 
         if (this.handler.xSize != 0 && this.handler.ySize != 0 && this.handler.zSize != 0) {
-            final Text text = GuiText.SCSSize.withSuffix(": " + this.handler.xSize + "x" + this.handler.ySize
-                    + "x" + this.handler.zSize);
+            final Text text = GuiText.SCSSize
+                    .withSuffix(": " + this.handler.xSize + "x" + this.handler.ySize + "x" + this.handler.zSize);
             this.textRenderer.draw(matrices, text, 13, 93, 4210752);
         } else {
-            this.textRenderer.draw(matrices, GuiText.SCSSize.withSuffix(": ").append(GuiText.SCSInvalid.text()), 13, 93, 4210752);
+            this.textRenderer.draw(matrices, GuiText.SCSSize.withSuffix(": ").append(GuiText.SCSInvalid.text()), 13, 93,
+                    4210752);
         }
 
     }
 
     @Override
-    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
+    public void drawBG(MatrixStack matrices, final int offsetX, final int offsetY, final int mouseX, final int mouseY,
+            float partialTicks) {
         this.bindTexture("guis/spatialio.png");
         drawTexture(matrices, offsetX, offsetY, 0, 0, this.backgroundWidth, this.backgroundHeight);
     }

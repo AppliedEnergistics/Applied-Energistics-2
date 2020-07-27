@@ -26,8 +26,8 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.minecraft.client.render.*;
-import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.math.Direction;
 
 /**
@@ -87,8 +87,7 @@ public class CubeBuilder {
         Sprite texture = this.textures.get(face);
 
         QuadEmitter emitter = this.emitter;
-        emitter.colorIndex(-1)
-                .nominalFace(face);
+        emitter.colorIndex(-1).nominalFace(face);
 
         UvVector uv = new UvVector();
 
@@ -155,8 +154,8 @@ public class CubeBuilder {
         this.vertexIndex = 0;
     }
 
-    private UvVector getDefaultUv(Direction face, Sprite texture, float x1, float y1, float z1, float x2,
-                                  float y2, float z2) {
+    private UvVector getDefaultUv(Direction face, Sprite texture, float x1, float y1, float z1, float x2, float y2,
+            float z2) {
 
         UvVector uv = new UvVector();
 
@@ -202,8 +201,8 @@ public class CubeBuilder {
         return uv;
     }
 
-    private UvVector getStandardUv(Direction face, Sprite texture, float x1, float y1, float z1, float x2,
-                                   float y2, float z2) {
+    private UvVector getStandardUv(Direction face, Sprite texture, float x1, float y1, float z1, float x2, float y2,
+            float z2) {
         UvVector uv = new UvVector();
         switch (face) {
             case DOWN:
@@ -376,8 +375,7 @@ public class CubeBuilder {
         }
     }
 
-    public void setTextures(Sprite up, Sprite down, Sprite north,
-                            Sprite south, Sprite east, Sprite west) {
+    public void setTextures(Sprite up, Sprite down, Sprite north, Sprite south, Sprite east, Sprite west) {
         this.textures.put(Direction.UP, up);
         this.textures.put(Direction.DOWN, down);
         this.textures.put(Direction.NORTH, north);

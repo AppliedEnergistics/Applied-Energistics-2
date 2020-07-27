@@ -18,9 +18,19 @@
 
 package appeng.client.render.model;
 
-import appeng.decorative.solid.GlassState;
-import appeng.decorative.solid.QuartzGlassBlock;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Random;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.IntStream;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.google.common.base.Strings;
+
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
@@ -44,15 +54,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.BlockRenderView;
 import net.minecraft.world.BlockView;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Random;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.IntStream;
+import appeng.decorative.solid.GlassState;
+import appeng.decorative.solid.QuartzGlassBlock;
 
 class GlassBakedModel implements BakedModel, FabricBakedModel {
 
@@ -71,17 +74,15 @@ class GlassBakedModel implements BakedModel, FabricBakedModel {
     // Frame texture
     static final SpriteIdentifier[] TEXTURES_FRAME = generateTexturesFrame();
     private final RenderMaterial material = RendererAccess.INSTANCE.getRenderer().materialFinder()
-            .disableDiffuse(0, true)
-            .disableAo(0, true)
-            .disableColorIndex(0, true)
-            .blendMode(0, BlendMode.TRANSLUCENT)
+            .disableDiffuse(0, true).disableAo(0, true).disableColorIndex(0, true).blendMode(0, BlendMode.TRANSLUCENT)
             .find();
 
     // Generates the required textures for the frame
     private static SpriteIdentifier[] generateTexturesFrame() {
         return IntStream.range(1, 16).mapToObj(Integer::toBinaryString).map(s -> Strings.padStart(s, 4, '0'))
                 .map(s -> new Identifier("appliedenergistics2:block/glass/quartz_glass_frame" + s))
-                .map(rl -> new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, rl)).toArray(SpriteIdentifier[]::new);
+                .map(rl -> new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, rl))
+                .toArray(SpriteIdentifier[]::new);
     }
 
     private final Sprite[] glassTextures;
@@ -89,9 +90,8 @@ class GlassBakedModel implements BakedModel, FabricBakedModel {
     private final Sprite[] frameTextures;
 
     public GlassBakedModel(Function<SpriteIdentifier, Sprite> bakedTextureGetter) {
-        this.glassTextures = new Sprite[] { bakedTextureGetter.apply(TEXTURE_A),
-                bakedTextureGetter.apply(TEXTURE_B), bakedTextureGetter.apply(TEXTURE_C),
-                bakedTextureGetter.apply(TEXTURE_D) };
+        this.glassTextures = new Sprite[] { bakedTextureGetter.apply(TEXTURE_A), bakedTextureGetter.apply(TEXTURE_B),
+                bakedTextureGetter.apply(TEXTURE_C), bakedTextureGetter.apply(TEXTURE_D) };
 
         // The first frame texture would be empty, so we simply leave it set to null
         // here
@@ -107,7 +107,8 @@ class GlassBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos,
+            Supplier<Random> randomSupplier, RenderContext context) {
         final GlassState glassState = getGlassState(blockView, pos);
 
         // TODO: This could just use the Random instance we're given...
@@ -217,13 +218,13 @@ class GlassBakedModel implements BakedModel, FabricBakedModel {
     }
 
     private void emitQuad(QuadEmitter emitter, Direction side, List<Vector3f> corners, Sprite sprite, float uOffset,
-                                 float vOffset) {
+            float vOffset) {
         this.emitQuad(emitter, side, corners.get(0), corners.get(1), corners.get(2), corners.get(3), sprite, uOffset,
                 vOffset);
     }
 
-    private void emitQuad(QuadEmitter emitter, Direction side, Vector3f c1, Vector3f c2, Vector3f c3, Vector3f c4, Sprite sprite,
-            float uOffset, float vOffset) {
+    private void emitQuad(QuadEmitter emitter, Direction side, Vector3f c1, Vector3f c2, Vector3f c3, Vector3f c4,
+            Sprite sprite, float uOffset, float vOffset) {
 
         // Apply the u,v shift.
         // This mirrors the logic from OffsetIcon from 1.7

@@ -1,8 +1,10 @@
 package appeng.core.sync.packets;
 
-import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
+import java.util.UUID;
+import java.util.function.Consumer;
+
 import io.netty.buffer.Unpooled;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.world.ClientWorld;
@@ -15,8 +17,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 
-import java.util.UUID;
-import java.util.function.Consumer;
+import appeng.core.sync.BasePacket;
+import appeng.core.sync.network.INetworkInfo;
 
 // This is essentially a copy of EntitySpawnS2CPacket, supporting custom entities
 public class SpawnEntityPacket extends BasePacket {
@@ -48,7 +50,8 @@ public class SpawnEntityPacket extends BasePacket {
         this.extraData = new PacketByteBuf(buf.copy());
     }
 
-    public SpawnEntityPacket(int id, UUID uuid, double x, double y, double z, float pitch, float yaw, EntityType<?> entityTypeId, Vec3d velocity, Consumer<PacketByteBuf> extraSpawnData) {
+    public SpawnEntityPacket(int id, UUID uuid, double x, double y, double z, float pitch, float yaw,
+            EntityType<?> entityTypeId, Vec3d velocity, Consumer<PacketByteBuf> extraSpawnData) {
         this.id = id;
         this.uuid = uuid;
         this.x = x;
@@ -57,9 +60,9 @@ public class SpawnEntityPacket extends BasePacket {
         this.pitch = MathHelper.floor(pitch * 256.0F / 360.0F);
         this.yaw = MathHelper.floor(yaw * 256.0F / 360.0F);
         this.entityTypeId = entityTypeId;
-        this.velocityX = (int)(MathHelper.clamp(velocity.x, -3.9D, 3.9D) * 8000.0D);
-        this.velocityY = (int)(MathHelper.clamp(velocity.y, -3.9D, 3.9D) * 8000.0D);
-        this.velocityZ = (int)(MathHelper.clamp(velocity.z, -3.9D, 3.9D) * 8000.0D);
+        this.velocityX = (int) (MathHelper.clamp(velocity.x, -3.9D, 3.9D) * 8000.0D);
+        this.velocityY = (int) (MathHelper.clamp(velocity.y, -3.9D, 3.9D) * 8000.0D);
+        this.velocityZ = (int) (MathHelper.clamp(velocity.z, -3.9D, 3.9D) * 8000.0D);
 
         final PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
         data.writeInt(this.getPacketID());
@@ -80,7 +83,8 @@ public class SpawnEntityPacket extends BasePacket {
     }
 
     public SpawnEntityPacket(Entity entity, Consumer<PacketByteBuf> extraSpawnData) {
-        this(entity.getEntityId(), entity.getUuid(), entity.getX(), entity.getY(), entity.getZ(), entity.pitch, entity.yaw, entity.getType(), entity.getVelocity(), extraSpawnData);
+        this(entity.getEntityId(), entity.getUuid(), entity.getX(), entity.getY(), entity.getZ(), entity.pitch,
+                entity.yaw, entity.getType(), entity.getVelocity(), extraSpawnData);
     }
 
     @Override
@@ -93,11 +97,12 @@ public class SpawnEntityPacket extends BasePacket {
 
         if (entity != null) {
             entity.updateTrackedPosition(x, y, z);
-            // NOTE: Vanilla doesn't do this for all spawned entities, but why transfer the velocity???
+            // NOTE: Vanilla doesn't do this for all spawned entities, but why transfer the
+            // velocity???
             entity.setVelocityClient(velocityX, velocityY, velocityZ);
             entity.refreshPositionAfterTeleport(x, y, z);
-            entity.pitch = (float)(pitch * 360) / 256.0F;
-            entity.yaw = (float)(yaw * 360) / 256.0F;
+            entity.pitch = (float) (pitch * 360) / 256.0F;
+            entity.yaw = (float) (yaw * 360) / 256.0F;
             entity.setEntityId(id);
             entity.setUuid(uuid);
 
@@ -111,8 +116,10 @@ public class SpawnEntityPacket extends BasePacket {
 
     public static <T extends Entity & ICustomEntity> Packet<?> create(T entity) {
         // Not having this typed local variable will lead to a JVM bug because
-        // the method reference will have a target type of "Entity" and not "ICustomEntity"
-        @SuppressWarnings("UnnecessaryLocalVariable") ICustomEntity customEntity = entity;
+        // the method reference will have a target type of "Entity" and not
+        // "ICustomEntity"
+        @SuppressWarnings("UnnecessaryLocalVariable")
+        ICustomEntity customEntity = entity;
         SpawnEntityPacket packet = new SpawnEntityPacket(entity, customEntity::writeAdditionalSpawnData);
         return packet.toPacket(NetworkSide.CLIENTBOUND);
     }

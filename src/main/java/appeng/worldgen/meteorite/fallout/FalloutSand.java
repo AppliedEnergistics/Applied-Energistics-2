@@ -29,7 +29,8 @@ public class FalloutSand extends FalloutCopy {
     private static final double GLASS_THRESHOLD = 0.66;
     private final MeteoriteBlockPutter putter;
 
-    public FalloutSand(final WorldAccess w, BlockPos pos, final MeteoriteBlockPutter putter, final BlockState skyStone) {
+    public FalloutSand(final WorldAccess w, BlockPos pos, final MeteoriteBlockPutter putter,
+            final BlockState skyStone) {
         super(w, pos, putter, skyStone);
         this.putter = putter;
     }

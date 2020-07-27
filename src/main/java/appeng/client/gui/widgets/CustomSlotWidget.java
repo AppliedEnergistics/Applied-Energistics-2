@@ -30,7 +30,8 @@ public abstract class CustomSlotWidget extends DrawableHelper implements IToolti
     public void slotClicked(final ItemStack clickStack, final int mouseButton) {
     }
 
-    public abstract void drawContent(final MinecraftClient mc, final int mouseX, final int mouseY, final float partialTicks);
+    public abstract void drawContent(final MinecraftClient mc, final int mouseX, final int mouseY,
+            final float partialTicks);
 
     public void drawBackground(MatrixStack matrices, int guileft, int guitop, int currentZIndex) {
     }

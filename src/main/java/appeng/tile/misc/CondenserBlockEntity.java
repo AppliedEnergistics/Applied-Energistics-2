@@ -20,6 +20,13 @@ package appeng.tile.misc;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
 import alexiil.mc.lib.attributes.AttributeList;
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.fluid.FluidInsertable;
@@ -28,12 +35,6 @@ import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.ItemInsertable;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
@@ -70,8 +71,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     private final FluidInsertable externalFluidInput = new FluidHandler();
     private final MEHandler meHandler = new MEHandler();
 
-    private final FixedItemInv combinedInv = new WrapperChainedItemHandler(this.outputSlot,
-            this.storageSlot);
+    private final FixedItemInv combinedInv = new WrapperChainedItemHandler(this.outputSlot, this.storageSlot);
 
     private double storedPower = 0;
 
@@ -168,7 +168,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
     @Override
     public void onChangeInventory(final FixedItemInv inv, final int slot, final InvOperation mc,
-                                  final ItemStack removed, final ItemStack added) {
+            final ItemStack removed, final ItemStack added) {
         if (inv == this.outputSlot) {
             this.meHandler.outputChanged(added, removed);
         }
@@ -226,7 +226,8 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
                 final IStorageChannel<IAEFluidStack> chan = Api.instance().storage()
                         .getStorageChannel(IFluidStorageChannel.class);
                 CondenserBlockEntity.this
-                        .addPower((fluid.isEmpty() ? 0.0 : fluid.getAmount_F().asInexactDouble() * 1000.0) / chan.transferFactor());
+                        .addPower((fluid.isEmpty() ? 0.0 : fluid.getAmount_F().asInexactDouble() * 1000.0)
+                                / chan.transferFactor());
             }
 
             return FluidVolumeUtil.EMPTY;

@@ -25,26 +25,26 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
-import appeng.core.AppEng;
 import com.google.common.math.StatsAccumulator;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureStart;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.Heightmap;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.Heightmap;
-import net.minecraft.server.world.ServerWorld;
 
+import appeng.core.AppEng;
 import appeng.server.ISubCommand;
 import appeng.worldgen.meteorite.MeteoriteStructure;
 import appeng.worldgen.meteorite.MeteoriteStructurePiece;
@@ -65,7 +65,8 @@ public class TestMeteoritesCommand implements ISubCommand {
     }
 
     @Override
-    public void call(final MinecraftServer srv, final CommandContext<ServerCommandSource> ctx, final ServerCommandSource sender) {
+    public void call(final MinecraftServer srv, final CommandContext<ServerCommandSource> ctx,
+            final ServerCommandSource sender) {
         test(srv, sender, false);
     }
 
@@ -177,8 +178,7 @@ public class TestMeteoritesCommand implements ISubCommand {
     }
 
     // Add a clickable link to teleport the user to the Meteorite
-    private static Text getClickablePosition(ServerWorld world, PlacedMeteoriteSettings settings,
-            BlockPos pos) {
+    private static Text getClickablePosition(ServerWorld world, PlacedMeteoriteSettings settings, BlockPos pos) {
         BlockPos tpPos = pos.up((int) Math.ceil(settings.getMeteoriteRadius()));
         int surfaceY = world.getTopY(Heightmap.Type.WORLD_SURFACE, tpPos.getX(), tpPos.getZ());
         if (surfaceY > tpPos.getY()) {
@@ -188,8 +188,7 @@ public class TestMeteoritesCommand implements ISubCommand {
         String displayText = String.format(Locale.ROOT, "pos=%d,%d,%d", tpPos.getX(), tpPos.getY(), tpPos.getZ());
         String tpCommand = String.format(Locale.ROOT, "/tp @s %d %d %d", tpPos.getX(), tpPos.getY(), tpPos.getZ());
 
-        return new LiteralText(displayText)
-                .formatted(Formatting.UNDERLINE)
+        return new LiteralText(displayText).formatted(Formatting.UNDERLINE)
                 .styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, tpCommand)));
     }
 

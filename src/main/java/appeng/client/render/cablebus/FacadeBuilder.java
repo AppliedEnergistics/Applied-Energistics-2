@@ -18,15 +18,19 @@
 
 package appeng.client.render.cablebus;
 
-import appeng.api.util.AEAxisAlignedBB;
-import appeng.core.Api;
-import appeng.mixins.MinecraftClientAccessor;
-import appeng.parts.misc.CableAnchorPart;
-import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadClamper;
-import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadCornerKicker;
-import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadFaceStripper;
-import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadReInterpolator;
-import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadTinter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import javax.annotation.Nullable;
+
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
@@ -51,17 +55,15 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Direction.Axis;
 import net.minecraft.world.BlockRenderView;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Random;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import appeng.api.util.AEAxisAlignedBB;
+import appeng.core.Api;
+import appeng.mixins.MinecraftClientAccessor;
+import appeng.parts.misc.CableAnchorPart;
+import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadClamper;
+import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadCornerKicker;
+import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadFaceStripper;
+import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadReInterpolator;
+import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadTinter;
 
 /**
  * The FacadeBuilder builds for facades..
@@ -75,21 +77,15 @@ public class FacadeBuilder {
     public static final double THICK_THICKNESS = 2D / 16D;
     public static final double THIN_THICKNESS = 1D / 16D;
 
-    public static final Box[] THICK_FACADE_BOXES = new Box[]{
-            new Box(0.0, 0.0, 0.0, 1.0, THICK_THICKNESS, 1.0),
-            new Box(0.0, 1.0 - THICK_THICKNESS, 0.0, 1.0, 1.0, 1.0),
-            new Box(0.0, 0.0, 0.0, 1.0, 1.0, THICK_THICKNESS),
-            new Box(0.0, 0.0, 1.0 - THICK_THICKNESS, 1.0, 1.0, 1.0),
-            new Box(0.0, 0.0, 0.0, THICK_THICKNESS, 1.0, 1.0),
-            new Box(1.0 - THICK_THICKNESS, 0.0, 0.0, 1.0, 1.0, 1.0)};
+    public static final Box[] THICK_FACADE_BOXES = new Box[] { new Box(0.0, 0.0, 0.0, 1.0, THICK_THICKNESS, 1.0),
+            new Box(0.0, 1.0 - THICK_THICKNESS, 0.0, 1.0, 1.0, 1.0), new Box(0.0, 0.0, 0.0, 1.0, 1.0, THICK_THICKNESS),
+            new Box(0.0, 0.0, 1.0 - THICK_THICKNESS, 1.0, 1.0, 1.0), new Box(0.0, 0.0, 0.0, THICK_THICKNESS, 1.0, 1.0),
+            new Box(1.0 - THICK_THICKNESS, 0.0, 0.0, 1.0, 1.0, 1.0) };
 
-    public static final Box[] THIN_FACADE_BOXES = new Box[]{
-            new Box(0.0, 0.0, 0.0, 1.0, THIN_THICKNESS, 1.0),
-            new Box(0.0, 1.0 - THIN_THICKNESS, 0.0, 1.0, 1.0, 1.0),
-            new Box(0.0, 0.0, 0.0, 1.0, 1.0, THIN_THICKNESS),
-            new Box(0.0, 0.0, 1.0 - THIN_THICKNESS, 1.0, 1.0, 1.0),
-            new Box(0.0, 0.0, 0.0, THIN_THICKNESS, 1.0, 1.0),
-            new Box(1.0 - THIN_THICKNESS, 0.0, 0.0, 1.0, 1.0, 1.0)};
+    public static final Box[] THIN_FACADE_BOXES = new Box[] { new Box(0.0, 0.0, 0.0, 1.0, THIN_THICKNESS, 1.0),
+            new Box(0.0, 1.0 - THIN_THICKNESS, 0.0, 1.0, 1.0, 1.0), new Box(0.0, 0.0, 0.0, 1.0, 1.0, THIN_THICKNESS),
+            new Box(0.0, 0.0, 1.0 - THIN_THICKNESS, 1.0, 1.0, 1.0), new Box(0.0, 0.0, 0.0, THIN_THICKNESS, 1.0, 1.0),
+            new Box(1.0 - THIN_THICKNESS, 0.0, 0.0, 1.0, 1.0, 1.0) };
 
     private final Map<Direction, Mesh> cableAnchorStilts;
 
@@ -98,8 +94,8 @@ public class FacadeBuilder {
     }
 
     /**
-     * Build a map of pre-rotated cable anchor stilts, which are the shortened cable anchors that
-     * will still be visible for facades attached to a cable.
+     * Build a map of pre-rotated cable anchor stilts, which are the shortened cable
+     * anchors that will still be visible for facades attached to a cable.
      */
     private Map<Direction, Mesh> buildCableAnchorStems(ModelLoader modelLoader) {
         Map<Direction, Mesh> stems = new EnumMap<>(Direction.class);
@@ -139,9 +135,8 @@ public class FacadeBuilder {
         return stems;
     }
 
-    public Mesh getFacadeMesh(CableBusRenderState renderState,
-                              Supplier<Random> rand,
-                              Function<Identifier, BakedModel> modelLookup) {
+    public Mesh getFacadeMesh(CableBusRenderState renderState, Supplier<Random> rand,
+            Function<Identifier, BakedModel> modelLookup) {
         boolean transparent = Api.instance().partHelper().getCableRenderMode().transparentFacades;
         Map<Direction, FacadeRenderState> facadeStates = renderState.getFacades();
         List<Box> partBoxes = renderState.getBoundingBoxes();
@@ -257,7 +252,8 @@ public class FacadeBuilder {
 
                     // Prebake the color tint into the quad
                     if (quad.getColorIndex() != -1) {
-                        quadTinter = new QuadTinter(blockColors.getColor(blockState, facadeAccess, pos, quad.getColorIndex()));
+                        quadTinter = new QuadTinter(
+                                blockColors.getColor(blockState, facadeAccess, pos, quad.getColorIndex()));
                     }
 
                     for (Box box : holeStrips) {
@@ -311,15 +307,15 @@ public class FacadeBuilder {
         MeshBuilder meshBuilder = renderer.meshBuilder();
         QuadEmitter emitter = meshBuilder.getEmitter();
 
-        BakedModel model = MinecraftClient.getInstance().getItemRenderer().getHeldItemModel(textureItem, null,
-                null);
+        BakedModel model = MinecraftClient.getInstance().getItemRenderer().getHeldItemModel(textureItem, null, null);
         List<BakedQuad> modelQuads = model.getQuads(null, null, new Random());
 
-        //FIXME       BakedPipeline pipeline = this.pipelines.get();
+        // FIXME BakedPipeline pipeline = this.pipelines.get();
 //FIXME          Quad collectorQuad = this.collectors.get();
 
         // Grab pipeline elements.
-        // FIXME QuadClamper clamper = pipeline.getElement("clamper", QuadClamper.class);
+        // FIXME QuadClamper clamper = pipeline.getElement("clamper",
+        // QuadClamper.class);
         // FIXME QuadTinter tinter = pipeline.getElement("tinter", QuadTinter.class);
 
         QuadReInterpolator interpolator = new QuadReInterpolator();
@@ -362,15 +358,18 @@ public class FacadeBuilder {
         for (BakedQuad quad : modelQuads) {
 
             // Lookup the CachedFormat for this quads format.
-            // FIXME CachedFormat format = CachedFormat.lookup(VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL);
+            // FIXME CachedFormat format =
+            // CachedFormat.lookup(VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL);
             // Reset the pipeline.
             // FIXME pipeline.reset(format);
             // Reset the collector.
-            //FIXME             collectorQuad.reset(format);
+            // FIXME collectorQuad.reset(format);
             // If we have a tint index, setup the tinter and enable it.
             // FIXME if (quad.hasTintIndex()) {
-            // FIXME     tinter.setTint(MinecraftClient.getInstance().getItemColors().getColor(textureItem, quad.getColorIndex()));
-            // FIXME     pipeline.enableElement("tinter");
+            // FIXME
+            // tinter.setTint(MinecraftClient.getInstance().getItemColors().getColor(textureItem,
+            // quad.getColorIndex()));
+            // FIXME pipeline.enableElement("tinter");
             // FIXME }
             // Disable elements we don't need for items.
             // FIXME pipeline.disableElement("face_stripper");
@@ -383,7 +382,7 @@ public class FacadeBuilder {
             // FIXME quad.pipe(pipeline);
             // FIXME // Check the collector for data and add the quad if there was.
             // FIXME if (collectorQuad.full) {
-            // FIXME     facadeQuads.add(collectorQuad.bake());
+            // FIXME facadeQuads.add(collectorQuad.bake());
             // FIXME }
         }
         return meshBuilder.build();

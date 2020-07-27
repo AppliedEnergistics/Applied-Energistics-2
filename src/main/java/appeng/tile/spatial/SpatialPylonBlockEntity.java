@@ -23,9 +23,8 @@ import java.util.EnumSet;
 
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.math.Direction;
-
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkChannelsChanged;

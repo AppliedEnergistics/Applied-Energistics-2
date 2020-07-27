@@ -23,7 +23,6 @@ import net.minecraft.util.Identifier;
 
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
-
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 
@@ -40,11 +39,9 @@ public class StorageMonitorPart extends AbstractMonitorPart {
     @PartModels
     public static final Identifier MODEL_ON = new Identifier(AppEng.MOD_ID, "part/storage_monitor_on");
     @PartModels
-    public static final Identifier MODEL_LOCKED_OFF = new Identifier(AppEng.MOD_ID,
-            "part/storage_monitor_locked_off");
+    public static final Identifier MODEL_LOCKED_OFF = new Identifier(AppEng.MOD_ID, "part/storage_monitor_locked_off");
     @PartModels
-    public static final Identifier MODEL_LOCKED_ON = new Identifier(AppEng.MOD_ID,
-            "part/storage_monitor_locked_on");
+    public static final Identifier MODEL_LOCKED_ON = new Identifier(AppEng.MOD_ID, "part/storage_monitor_locked_on");
 
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);
@@ -54,7 +51,6 @@ public class StorageMonitorPart extends AbstractMonitorPart {
     public static final IPartModel MODELS_LOCKED_ON = new PartModel(MODEL_BASE, MODEL_LOCKED_ON, MODEL_STATUS_ON);
     public static final IPartModel MODELS_LOCKED_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_LOCKED_ON,
             MODEL_STATUS_HAS_CHANNEL);
-
 
     public StorageMonitorPart(final ItemStack is) {
         super(is);

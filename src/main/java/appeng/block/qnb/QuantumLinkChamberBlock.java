@@ -23,14 +23,14 @@ import java.util.Random;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.block.ShapeContext;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
@@ -51,8 +51,8 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
 
     static {
         final double onePixel = 2.0 / 16.0;
-        SHAPE = VoxelShapes.cuboid(
-                new Box(onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel));
+        SHAPE = VoxelShapes
+                .cuboid(new Box(onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel));
     }
 
     public QuantumLinkChamberBlock() {
@@ -65,8 +65,8 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
         if (bridge != null) {
             if (bridge.hasQES()) {
                 if (AppEng.instance().shouldAddParticles(rand)) {
-                    AppEng.instance().spawnEffect(EffectType.Energy, w, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
-                            null);
+                    AppEng.instance().spawnEffect(EffectType.Energy, w, pos.getX() + 0.5, pos.getY() + 0.5,
+                            pos.getZ() + 0.5, null);
                 }
             }
         }

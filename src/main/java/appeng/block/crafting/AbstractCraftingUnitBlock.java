@@ -18,11 +18,6 @@
 
 package appeng.block.crafting;
 
-import appeng.block.AEBaseTileBlock;
-import appeng.container.ContainerLocator;
-import appeng.container.ContainerOpener;
-import appeng.container.implementations.CraftingCPUContainer;
-import appeng.tile.crafting.CraftingBlockEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -33,6 +28,12 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import appeng.block.AEBaseTileBlock;
+import appeng.container.ContainerLocator;
+import appeng.container.ContainerOpener;
+import appeng.container.implementations.CraftingCPUContainer;
+import appeng.tile.crafting.CraftingBlockEntity;
 
 public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> extends AEBaseTileBlock<T> {
     public static final BooleanProperty FORMED = BooleanProperty.of("formed");
@@ -77,8 +78,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand,
-                              BlockHitResult hit) {
+    public ActionResult onUse(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand, BlockHitResult hit) {
         final CraftingBlockEntity tg = this.getBlockEntity(w, pos);
 
         if (tg != null && !p.isInSneakingPose() && tg.isFormed() && tg.isActive()) {

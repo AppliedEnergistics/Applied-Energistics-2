@@ -18,18 +18,20 @@
 
 package appeng.util;
 
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.Direction;
+
 import alexiil.mc.lib.attributes.SearchOptions;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.ItemAttributes;
+
 import appeng.api.config.FuzzyMode;
 import appeng.util.inv.AdaptorFixedInv;
 import appeng.util.inv.AdaptorItemHandlerPlayerInv;
 import appeng.util.inv.IInventoryDestination;
 import appeng.util.inv.ItemSlot;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Direction;
 
 /**
  * Universal Facade for other inventories. Used to conveniently interact with
@@ -42,7 +44,8 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot> {
         if (te == null) {
             return null;
         }
-        FixedItemInv inv = ItemAttributes.FIXED_INV.get(te.getWorld(), te.getPos(), SearchOptions.inDirection(d.getOpposite()));
+        FixedItemInv inv = ItemAttributes.FIXED_INV.get(te.getWorld(), te.getPos(),
+                SearchOptions.inDirection(d.getOpposite()));
 
         if (inv == ItemAttributes.FIXED_INV.defaultValue) {
             return null;
@@ -65,10 +68,10 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot> {
 
     // return what was extracted.
     public abstract ItemStack removeSimilarItems(int amount, ItemStack filter, FuzzyMode fuzzyMode,
-                                                 IInventoryDestination destination);
+            IInventoryDestination destination);
 
     public abstract ItemStack simulateSimilarRemove(int amount, ItemStack filter, FuzzyMode fuzzyMode,
-                                                    IInventoryDestination destination);
+            IInventoryDestination destination);
 
     // return what isn't used...
     public abstract ItemStack addItems(ItemStack toBeAdded);

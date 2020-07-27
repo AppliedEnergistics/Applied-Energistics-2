@@ -18,8 +18,9 @@
 
 package appeng.container.slot;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
 import net.minecraft.entity.player.PlayerInventory;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 public class OptionalRestrictedInputSlot extends RestrictedInputSlot {
 
@@ -27,7 +28,7 @@ public class OptionalRestrictedInputSlot extends RestrictedInputSlot {
     private final IOptionalSlotHost host;
 
     public OptionalRestrictedInputSlot(final PlacableItemType valid, final FixedItemInv i, final IOptionalSlotHost host,
-                                       final int slotIndex, final int x, final int y, final int grpNum, final PlayerInventory invPlayer) {
+            final int slotIndex, final int x, final int y, final int grpNum, final PlayerInventory invPlayer) {
         super(valid, i, slotIndex, x, y, invPlayer);
         this.groupNum = grpNum;
         this.host = host;

@@ -1,26 +1,27 @@
 
 package appeng.client.render.tesr;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
 import com.google.common.collect.ImmutableList;
+
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
+import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
-
-import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.item.BlockItem;
-import net.minecraft.util.math.Quaternion;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Quaternion;
+
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.api.features.InscriberProcessType;
 import appeng.client.render.FacingToRotation;
@@ -39,9 +40,7 @@ public final class InscriberTESR extends BlockEntityRenderer<InscriberBlockEntit
     private static final SpriteIdentifier TEXTURE_INSIDE = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX,
             new Identifier(AppEng.MOD_ID, "block/inscriber_inside"));
 
-    public static final ImmutableList<SpriteIdentifier> SPRITES = ImmutableList.of(
-            TEXTURE_INSIDE
-    );
+    public static final ImmutableList<SpriteIdentifier> SPRITES = ImmutableList.of(TEXTURE_INSIDE);
 
     public InscriberTESR(BlockEntityRenderDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
@@ -49,7 +48,7 @@ public final class InscriberTESR extends BlockEntityRenderer<InscriberBlockEntit
 
     @Override
     public void render(InscriberBlockEntity tile, float partialTicks, MatrixStack ms, VertexConsumerProvider buffers,
-                       int combinedLight, int combinedOverlay) {
+            int combinedLight, int combinedOverlay) {
 
         // render inscriber
 
@@ -176,8 +175,8 @@ public final class InscriberTESR extends BlockEntityRenderer<InscriberBlockEntit
         ms.pop();
     }
 
-    private static void addVertex(VertexConsumer vb, MatrixStack ms, Sprite sprite, float x, float y,
-                                  float z, double texU, double texV, int overlayUV, int lightmapUV, Direction front) {
+    private static void addVertex(VertexConsumer vb, MatrixStack ms, Sprite sprite, float x, float y, float z,
+            double texU, double texV, int overlayUV, int lightmapUV, Direction front) {
         vb.vertex(ms.peek().getModel(), x, y, z);
         vb.color(1.0f, 1.0f, 1.0f, 1.0f);
         vb.texture(sprite.getFrameU(texU), sprite.getFrameV(texV));
@@ -205,8 +204,7 @@ public final class InscriberTESR extends BlockEntityRenderer<InscriberBlockEntit
                 ms.scale(0.5f, 0.5f, 0.5f);
             }
 
-            itemRenderer.renderItem(stack, ModelTransformation.Mode.FIXED, combinedLight, combinedOverlay, ms,
-                    buffers);
+            itemRenderer.renderItem(stack, ModelTransformation.Mode.FIXED, combinedLight, combinedOverlay, ms, buffers);
             ms.pop();
         }
     }

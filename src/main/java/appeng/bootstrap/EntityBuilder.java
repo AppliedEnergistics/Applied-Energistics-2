@@ -1,6 +1,9 @@
 package appeng.bootstrap;
 
-import appeng.api.features.AEFeature;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.function.Consumer;
+
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.fabricmc.fabric.impl.object.builder.FabricEntityType;
 import net.minecraft.entity.Entity;
@@ -8,9 +11,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.util.registry.Registry;
 
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.function.Consumer;
+import appeng.api.features.AEFeature;
 
 /**
  * Helper to register a custom Entity with Minecraft.

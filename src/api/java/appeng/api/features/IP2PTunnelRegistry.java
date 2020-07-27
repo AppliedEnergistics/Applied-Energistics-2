@@ -26,8 +26,9 @@ package appeng.api.features;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import alexiil.mc.lib.attributes.Attribute;
 import net.minecraft.item.ItemStack;
+
+import alexiil.mc.lib.attributes.Attribute;
 
 import appeng.api.config.TunnelType;
 

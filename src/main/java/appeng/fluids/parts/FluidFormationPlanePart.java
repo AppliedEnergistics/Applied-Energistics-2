@@ -1,10 +1,33 @@
 
 package appeng.fluids.parts;
 
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.FluidBlock;
+import net.minecraft.block.FluidFillable;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
+
 import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import alexiil.mc.lib.attributes.fluid.world.FluidWorldUtil;
+
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.IncludeExclude;
@@ -36,26 +59,6 @@ import appeng.parts.automation.AbstractFormationPlanePart;
 import appeng.parts.automation.PlaneModels;
 import appeng.util.Platform;
 import appeng.util.prioritylist.PrecisePriorityList;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.FluidBlock;
-import net.minecraft.block.FluidFillable;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
-
-import javax.annotation.Nonnull;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluidStack> implements IAEFluidInventory {
     private static final PlaneModels MODELS = new PlaneModels("part/fluid_formation_plane",
@@ -114,7 +117,8 @@ public class FluidFormationPlanePart extends AbstractFormationPlanePart<IAEFluid
         final BlockPos pos = te.getPos().offset(side.getFacing());
 
         FluidVolume volume = input.getFluidStack();
-        FluidVolume remainder = FluidWorldUtil.fill(w, pos, volume, type == Actionable.MODULATE ? Simulation.ACTION : Simulation.SIMULATE);
+        FluidVolume remainder = FluidWorldUtil.fill(w, pos, volume,
+                type == Actionable.MODULATE ? Simulation.ACTION : Simulation.SIMULATE);
         if (remainder.getAmount_F().isLessThan(volume.getAmount_F())) {
             // calculate the effective amount consumed
             // round UP here because we might otherwise duplicate fluids

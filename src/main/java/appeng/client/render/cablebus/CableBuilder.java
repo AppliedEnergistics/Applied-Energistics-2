@@ -28,11 +28,11 @@ import java.util.function.Function;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.util.math.Direction;
+import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Direction;
 
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
@@ -216,7 +216,7 @@ class CableBuilder {
     }
 
     public void addConstrainedGlassConnection(Direction facing, AEColor cableColor, int distanceFromEdge,
-                                              QuadEmitter emitter) {
+            QuadEmitter emitter) {
 
         // Glass connections reach only 6 voxels from the edge
         if (distanceFromEdge >= 6) {
@@ -307,7 +307,7 @@ class CableBuilder {
     }
 
     public void addConstrainedCoveredConnection(Direction facing, AEColor cableColor, int distanceFromEdge,
-                                                QuadEmitter emitter) {
+            QuadEmitter emitter) {
         // The core of a covered cable reaches up to 5 voxels from the block edge, so
         // drawing a connection can only occur from there onwards
         if (distanceFromEdge >= 5) {
@@ -374,8 +374,7 @@ class CableBuilder {
         addCoveredCableSizedCube(facing, cubeBuilder);
     }
 
-    public void addStraightSmartConnection(Direction facing, AEColor cableColor, int channels,
-                                           QuadEmitter emitter) {
+    public void addStraightSmartConnection(Direction facing, AEColor cableColor, int channels, QuadEmitter emitter) {
         CubeBuilder cubeBuilder = new CubeBuilder(emitter);
 
         Sprite texture = this.connectionTextures.get(AECableType.SMART).get(cableColor);
@@ -401,7 +400,7 @@ class CableBuilder {
     }
 
     public void addConstrainedSmartConnection(Direction facing, AEColor cableColor, int distanceFromEdge, int channels,
-                                              QuadEmitter emitter) {
+            QuadEmitter emitter) {
         // Same as with covered cables, the smart cable's core extends up to 5 voxels
         // away from the edge.
         // Drawing a connection to any point before that point is fruitless
@@ -515,7 +514,7 @@ class CableBuilder {
     }
 
     public void addStraightDenseSmartConnection(Direction facing, AEColor cableColor, int channels,
-                                                QuadEmitter emitter) {
+            QuadEmitter emitter) {
         CubeBuilder cubeBuilder = new CubeBuilder(emitter);
 
         Sprite texture = this.connectionTextures.get(AECableType.DENSE_SMART).get(cableColor);

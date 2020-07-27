@@ -20,11 +20,11 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
+import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
-import net.fabricmc.api.EnvType;
 
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
@@ -65,8 +65,8 @@ public class LightningPacket extends BasePacket {
     public void clientPacketData(final INetworkInfo network, final PlayerEntity player) {
         try {
             if (Platform.isClient() && AEConfig.instance().isEnableEffects()) {
-                MinecraftClient.getInstance().world.addParticle(ParticleTypes.LIGHTNING, this.x, this.y, this.z, 0.0f, 0.0f,
-                        0.0f);
+                MinecraftClient.getInstance().world.addParticle(ParticleTypes.LIGHTNING, this.x, this.y, this.z, 0.0f,
+                        0.0f, 0.0f);
             }
         } catch (final Exception ignored) {
         }

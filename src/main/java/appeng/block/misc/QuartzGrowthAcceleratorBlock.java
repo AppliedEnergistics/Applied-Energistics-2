@@ -21,17 +21,17 @@ package appeng.block.misc;
 import java.util.Random;
 
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.block.Material;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.state.StateManager;
-import net.minecraft.util.math.Direction;
+import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
-import net.fabricmc.api.Environment;
 
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseTileBlock;
@@ -52,7 +52,8 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
     }
 
     @Override
-    protected BlockState updateBlockStateFromTileEntity(BlockState currentState, QuartzGrowthAcceleratorBlockEntity te) {
+    protected BlockState updateBlockStateFromTileEntity(BlockState currentState,
+            QuartzGrowthAcceleratorBlockEntity te) {
         return currentState.with(POWERED, te.isPowered());
     }
 
@@ -134,7 +135,8 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseTileBlock<QuartzGrowthAc
             ry += dz * forward.getOffsetY();
             rz += dz * forward.getOffsetZ();
 
-            MinecraftClient.getInstance().particleManager.addParticle(ParticleTypes.LIGHTNING, rx, ry, rz, 0.0D, 0.0D, 0.0D);
+            MinecraftClient.getInstance().particleManager.addParticle(ParticleTypes.LIGHTNING, rx, ry, rz, 0.0D, 0.0D,
+                    0.0D);
         }
     }
 

@@ -24,12 +24,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import appeng.core.Api;
-import appeng.hooks.AEToolItem;
-import net.fabricmc.fabric.api.util.NbtType;
-import net.minecraft.client.item.TooltipContext;
 import com.google.common.base.Preconditions;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.util.NbtType;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -39,17 +39,17 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
-import net.minecraft.util.*;
 import net.minecraft.text.Text;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.core.Api;
 import appeng.core.localization.GuiText;
 import appeng.helpers.InvalidPatternHelper;
+import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 
@@ -117,10 +117,9 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
 
             InvalidPatternHelper invalid = new InvalidPatternHelper(stack);
 
-            final Text label = (invalid.isCraftable() ? GuiText.Crafts.text()
-                    : GuiText.Creates.text()).copy().append(": ");
-            final Text and = new LiteralText(" ").append(GuiText.And.text())
-                    .append(" ");
+            final Text label = (invalid.isCraftable() ? GuiText.Crafts.text() : GuiText.Creates.text()).copy()
+                    .append(": ");
+            final Text and = new LiteralText(" ").append(GuiText.And.text()).append(" ");
             final Text with = GuiText.With.text().copy().append(": ");
 
             boolean first = true;
@@ -137,8 +136,7 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
 
             if (invalid.isCraftable()) {
                 final MutableText substitutionLabel = GuiText.Substitute.text().copy().append(" ");
-                final Text canSubstitute = invalid.canSubstitute() ? GuiText.Yes.text()
-                        : GuiText.No.text();
+                final Text canSubstitute = invalid.canSubstitute() ? GuiText.Yes.text() : GuiText.No.text();
 
                 lines.add(substitutionLabel.append(canSubstitute));
             }
@@ -156,10 +154,8 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
         final Collection<IAEItemStack> in = details.getInputs();
         final Collection<IAEItemStack> out = details.getOutputs();
 
-        final Text label = (isCrafting ? GuiText.Crafts.text() : GuiText.Creates.text())
-                .copy().append(": ");
-        final Text and = new LiteralText(" ").append(GuiText.And.text())
-                .append(" ");
+        final Text label = (isCrafting ? GuiText.Crafts.text() : GuiText.Creates.text()).copy().append(": ");
+        final Text and = new LiteralText(" ").append(GuiText.And.text()).append(" ");
         final Text with = GuiText.With.text().copy().append(": ");
 
         boolean first = true;
@@ -219,9 +215,7 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
         final CompoundTag tag = itemStack.getTag();
         Preconditions.checkArgument(tag != null, "itemStack missing a NBT tag");
 
-        return tag.contains(NBT_RECIPE_ID, NbtType.STRING)
-                ? new Identifier(tag.getString(NBT_RECIPE_ID))
-                : null;
+        return tag.contains(NBT_RECIPE_ID, NbtType.STRING) ? new Identifier(tag.getString(NBT_RECIPE_ID)) : null;
     }
 
     public List<IAEItemStack> getIngredients(ItemStack itemStack) {
@@ -280,8 +274,8 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
     /**
      * Use the public API instead {@link appeng.core.api.ApiCrafting}
      */
-    public static void encodeCraftingPattern(ItemStack stack, ItemStack[] in, ItemStack[] out,
-            Identifier recipeId, boolean allowSubstitutes) {
+    public static void encodeCraftingPattern(ItemStack stack, ItemStack[] in, ItemStack[] out, Identifier recipeId,
+            boolean allowSubstitutes) {
         CompoundTag encodedValue = encodeInputsAndOutputs(in, out);
         encodedValue.putString(EncodedPatternItem.NBT_RECIPE_ID, recipeId.toString());
         encodedValue.putBoolean(EncodedPatternItem.NBT_SUBSITUTE, allowSubstitutes);

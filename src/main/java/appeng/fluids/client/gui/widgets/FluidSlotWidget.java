@@ -1,23 +1,25 @@
 package appeng.fluids.client.gui.widgets;
 
+import java.math.RoundingMode;
+import java.util.Collections;
+import java.util.Set;
+
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
+
 import alexiil.mc.lib.attributes.fluid.FluidAttributes;
 import alexiil.mc.lib.attributes.fluid.GroupedFluidInvView;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
+
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.client.gui.widgets.CustomSlotWidget;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.FluidSlotPacket;
 import appeng.fluids.util.AEFluidStack;
 import appeng.fluids.util.IAEFluidTank;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-
-import java.math.RoundingMode;
-import java.util.Collections;
-import java.util.Set;
 
 public class FluidSlotWidget extends CustomSlotWidget {
     private final IAEFluidTank fluids;
@@ -40,8 +42,7 @@ public class FluidSlotWidget extends CustomSlotWidget {
     @Override
     public boolean canClick(final PlayerEntity player) {
         final ItemStack mouseStack = player.inventory.getCursorStack();
-        return mouseStack.isEmpty()
-                || FluidAttributes.EXTRACTABLE.getFirstOrNull(mouseStack) != null;
+        return mouseStack.isEmpty() || FluidAttributes.EXTRACTABLE.getFirstOrNull(mouseStack) != null;
     }
 
     @Override

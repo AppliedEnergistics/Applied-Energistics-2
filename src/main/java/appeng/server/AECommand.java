@@ -18,16 +18,17 @@
 
 package appeng.server;
 
-import appeng.api.features.AEFeature;
-import appeng.core.AEConfig;
-import appeng.core.AppEng;
+import static net.minecraft.server.command.CommandManager.literal;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 
-import static net.minecraft.server.command.CommandManager.literal;
+import appeng.api.features.AEFeature;
+import appeng.core.AEConfig;
+import appeng.core.AppEng;
 
 public final class AECommand {
 

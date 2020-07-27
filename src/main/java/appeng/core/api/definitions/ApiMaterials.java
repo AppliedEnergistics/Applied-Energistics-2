@@ -120,13 +120,11 @@ public final class ApiMaterials implements IMaterials {
 
         SingularityEntity.TYPE = registry
                 .<SingularityEntity>entity("singularity", SingularityEntity::new, SpawnGroup.MISC)
-                .customize(b -> b.trackable(16, 4, true).dimensions(EntityDimensions.fixed(0.2f, 0.2f)))
-                .build();
+                .customize(b -> b.trackable(16, 4, true).dimensions(EntityDimensions.fixed(0.2f, 0.2f))).build();
 
         ChargedQuartzEntity.TYPE = registry
                 .<ChargedQuartzEntity>entity("charged_quartz", ChargedQuartzEntity::new, SpawnGroup.MISC)
-                .customize(b -> b.trackable(16, 4, true).dimensions(EntityDimensions.fixed(0.2f, 0.2f)))
-                .build();
+                .customize(b -> b.trackable(16, 4, true).dimensions(EntityDimensions.fixed(0.2f, 0.2f))).build();
 
         this.cell2SpatialPart = createMaterial(MaterialType.SPATIAL_2_CELL_COMPONENT);
         this.cell16SpatialPart = createMaterial(MaterialType.SPATIAL_16_CELL_COMPONENT);

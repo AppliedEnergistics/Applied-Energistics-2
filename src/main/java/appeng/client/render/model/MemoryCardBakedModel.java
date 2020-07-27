@@ -1,8 +1,8 @@
 package appeng.client.render.model;
 
-import appeng.api.implementations.items.IMemoryCard;
-import appeng.api.util.AEColor;
-import appeng.client.render.cablebus.CubeBuilder;
+import java.util.Random;
+import java.util.function.Supplier;
+
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
@@ -10,8 +10,9 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.item.ItemStack;
 
-import java.util.Random;
-import java.util.function.Supplier;
+import appeng.api.implementations.items.IMemoryCard;
+import appeng.api.util.AEColor;
+import appeng.client.render.cablebus.CubeBuilder;
 
 class MemoryCardBakedModel extends ForwardingBakedModel implements FabricBakedModel {
     private static final AEColor[] DEFAULT_COLOR_CODE = new AEColor[] { AEColor.TRANSPARENT, AEColor.TRANSPARENT,

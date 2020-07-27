@@ -18,15 +18,17 @@
 
 package appeng.integration.modules.waila.tile;
 
-import appeng.api.implementations.IPowerChannelState;
-import appeng.core.localization.WailaText;
-import appeng.integration.modules.waila.BaseWailaDataProvider;
-import mcp.mobius.waila.api.IDataAccessor;
-import mcp.mobius.waila.api.IPluginConfig;
+import java.util.List;
+
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.text.Text;
 
-import java.util.List;
+import mcp.mobius.waila.api.IDataAccessor;
+import mcp.mobius.waila.api.IPluginConfig;
+
+import appeng.api.implementations.IPowerChannelState;
+import appeng.core.localization.WailaText;
+import appeng.integration.modules.waila.BaseWailaDataProvider;
 
 /**
  * Power state provider for WAILA

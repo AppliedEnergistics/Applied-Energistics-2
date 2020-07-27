@@ -1,12 +1,7 @@
 package appeng.hooks;
 
-import alexiil.mc.lib.attributes.fluid.FluidAttributes;
-import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
-import appeng.client.render.DummyFluidBakedModel;
-import appeng.fluids.items.FluidDummyItem;
-import appeng.items.misc.EncodedPatternItem;
-import appeng.mixins.ItemRendererAccessor;
 import com.google.common.collect.ImmutableList;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.item.ItemRenderer;
@@ -20,6 +15,14 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
+import alexiil.mc.lib.attributes.fluid.FluidAttributes;
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
+
+import appeng.client.render.DummyFluidBakedModel;
+import appeng.fluids.items.FluidDummyItem;
+import appeng.items.misc.EncodedPatternItem;
+import appeng.mixins.ItemRendererAccessor;
+
 public final class ItemRendererHooks {
 
     // Prevents recursion in the hook below
@@ -29,8 +32,8 @@ public final class ItemRendererHooks {
     }
 
     /**
-     * This hook will exchange the rendered item model for encoded patterns to the item being crafted by them
-     * if shift is held.
+     * This hook will exchange the rendered item model for encoded patterns to the
+     * item being crafted by them if shift is held.
      */
     public static boolean onRenderGuiItemModel(ItemRenderer renderer, ItemStack stack, int x, int y, BakedModel model) {
         if (OVERRIDING_FOR.get() == stack) {
@@ -44,8 +47,7 @@ public final class ItemRendererHooks {
                 EncodedPatternItem iep = (EncodedPatternItem) stack.getItem();
                 ItemStack output = iep.getOutput(world, stack);
                 if (!output.isEmpty()) {
-                    BakedModel realModel = MinecraftClient.getInstance().getItemRenderer().getModels()
-                            .getModel(output);
+                    BakedModel realModel = MinecraftClient.getInstance().getItemRenderer().getModels().getModel(output);
                     renderInstead(renderer, stack, x, y, realModel);
                     return true;
                 }

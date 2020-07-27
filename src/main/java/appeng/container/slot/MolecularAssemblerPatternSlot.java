@@ -19,6 +19,7 @@
 package appeng.container.slot;
 
 import net.minecraft.item.ItemStack;
+
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 
 import appeng.container.implementations.MolecularAssemblerContainer;
@@ -30,7 +31,7 @@ public class MolecularAssemblerPatternSlot extends AppEngSlot {
     private final int slotIdx;
 
     public MolecularAssemblerPatternSlot(final MolecularAssemblerContainer mac, final FixedItemInv i, final int slotIdx,
-                                         final int x, final int y) {
+            final int x, final int y) {
         super(i, slotIdx, x, y);
         this.mac = mac;
         this.slotIdx = slotIdx;

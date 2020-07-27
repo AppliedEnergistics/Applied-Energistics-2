@@ -18,12 +18,10 @@
 
 package appeng.entity;
 
-import appeng.core.Api;
-import appeng.api.features.AEFeature;
-import appeng.core.AEConfig;
-import appeng.core.sync.packets.ICustomEntity;
-import appeng.core.sync.packets.SpawnEntityPacket;
-import appeng.util.Platform;
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -40,8 +38,12 @@ import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
 
-import javax.annotation.Nullable;
-import java.util.List;
+import appeng.api.features.AEFeature;
+import appeng.core.AEConfig;
+import appeng.core.Api;
+import appeng.core.sync.packets.ICustomEntity;
+import appeng.core.sync.packets.SpawnEntityPacket;
+import appeng.util.Platform;
 
 public final class TinyTNTPrimedEntity extends TntEntity implements ICustomEntity {
 
@@ -55,7 +57,7 @@ public final class TinyTNTPrimedEntity extends TntEntity implements ICustomEntit
     }
 
     public TinyTNTPrimedEntity(final World world, final double x, final double y, final double z,
-                               final LivingEntity igniter) {
+            final LivingEntity igniter) {
         super(TYPE, world);
         this.updatePosition(x, y, z);
         double d = world.random.nextDouble() * 6.2831854820251465D;
@@ -101,8 +103,7 @@ public final class TinyTNTPrimedEntity extends TntEntity implements ICustomEntit
             if (this.isSubmergedInWater() && Platform.isServer()) // put out the fuse.
             {
                 Api.instance().definitions().blocks().tinyTNT().maybeStack(1).ifPresent(tntStack -> {
-                    final ItemEntity item = new ItemEntity(this.world, this.getX(), this.getY(), this.getZ(),
-                            tntStack);
+                    final ItemEntity item = new ItemEntity(this.world, this.getX(), this.getY(), this.getZ(), tntStack);
 
                     item.setVelocity(this.getVelocity());
                     item.prevX = this.prevX;
@@ -114,8 +115,7 @@ public final class TinyTNTPrimedEntity extends TntEntity implements ICustomEntit
                 });
             }
 
-            this.world.addParticle(ParticleTypes.SMOKE, this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D,
-                    0.0D);
+            this.world.addParticle(ParticleTypes.SMOKE, this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D);
         }
         this.setFuse(this.getFuse() - 1);
     }
@@ -129,11 +129,11 @@ public final class TinyTNTPrimedEntity extends TntEntity implements ICustomEntit
             return;
         }
 
-        final Explosion ex = new Explosion(this.world, this, this.getX(), this.getY(), this.getZ(), 0.2f,
-                false, Explosion.DestructionType.BREAK);
+        final Explosion ex = new Explosion(this.world, this, this.getX(), this.getY(), this.getZ(), 0.2f, false,
+                Explosion.DestructionType.BREAK);
 
-        final Box area = new Box(this.getX() - 1.5, this.getY() - 1.5f, this.getZ() - 1.5,
-                this.getX() + 1.5, this.getY() + 1.5, this.getZ() + 1.5);
+        final Box area = new Box(this.getX() - 1.5, this.getY() - 1.5f, this.getZ() - 1.5, this.getX() + 1.5,
+                this.getY() + 1.5, this.getZ() + 1.5);
         final List<Entity> list = this.world.getEntities(this, area);
 
         for (final Entity e : list) {
@@ -152,8 +152,7 @@ public final class TinyTNTPrimedEntity extends TntEntity implements ICustomEntit
                         final Block block = state.getBlock();
 
                         if (block != null && !state.isAir()) {
-                            float strength = (float) (2.3f
-                                    - (((x + 0.5f) - this.getX()) * ((x + 0.5f) - this.getX())
+                            float strength = (float) (2.3f - (((x + 0.5f) - this.getX()) * ((x + 0.5f) - this.getX())
                                     + ((y + 0.5f) - this.getY()) * ((y + 0.5f) - this.getY())
                                     + ((z + 0.5f) - this.getZ()) * ((z + 0.5f) - this.getZ())));
 

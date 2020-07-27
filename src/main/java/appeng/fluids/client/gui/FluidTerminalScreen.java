@@ -24,15 +24,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.LiteralText;
 import org.lwjgl.glfw.GLFW;
 
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-
 
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
@@ -81,8 +80,7 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
     private SettingToggleButton<SortOrder> sortByBox;
     private SettingToggleButton<SortDir> sortDirBox;
 
-    public FluidTerminalScreen(FluidTerminalContainer container, PlayerInventory playerInventory,
-            Text title) {
+    public FluidTerminalScreen(FluidTerminalContainer container, PlayerInventory playerInventory, Text title) {
         super(container, playerInventory, title);
         this.backgroundWidth = 185;
         this.backgroundHeight = 222;
@@ -107,8 +105,8 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
 
         int offset = this.y;
 
-        this.sortByBox = this.addButton(new SettingToggleButton<>(this.x - 18, offset, Settings.SORT_BY,
-                getSortBy(), Platform::isSortOrderAvailable, this::toggleServerSetting));
+        this.sortByBox = this.addButton(new SettingToggleButton<>(this.x - 18, offset, Settings.SORT_BY, getSortBy(),
+                Platform::isSortOrderAvailable, this::toggleServerSetting));
         offset += 20;
 
         this.sortDirBox = this.addButton(new SettingToggleButton<>(this.x - 18, offset, Settings.SORT_DIRECTION,

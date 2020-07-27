@@ -75,7 +75,7 @@ public interface ICraftingHelper {
      *                         equivalent items to craft this recipe.
      */
     ItemStack encodeCraftingPattern(@Nullable ItemStack stack, CraftingRecipe recipe, ItemStack[] in, ItemStack out,
-                                    boolean allowSubstitutes);
+            boolean allowSubstitutes);
 
     /**
      * Same as {@link #decodePattern(ItemStack, World, boolean)} with no auto

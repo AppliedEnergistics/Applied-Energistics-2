@@ -18,25 +18,18 @@
 
 package appeng.tile;
 
-import alexiil.mc.lib.attributes.AttributeList;
-import alexiil.mc.lib.attributes.AttributeProvider;
-import alexiil.mc.lib.attributes.item.FixedItemInv;
-import appeng.api.implementations.tiles.ISegmentedInventory;
-import appeng.api.util.ICommonTile;
-import appeng.api.util.IConfigManager;
-import appeng.api.util.IConfigurableObject;
-import appeng.api.util.IOrientable;
-import appeng.block.AEBaseTileBlock;
-import appeng.client.render.model.AEModelData;
-import appeng.core.AELog;
-import appeng.core.features.IStackSrc;
-import appeng.helpers.ICustomNameObject;
-import appeng.helpers.IPriorityHost;
-import appeng.hooks.TickHandler;
-import appeng.tile.inventory.AppEngInternalAEInventory;
-import appeng.util.Platform;
-import appeng.util.SettingsFrom;
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import io.netty.buffer.Unpooled;
+
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
@@ -53,16 +46,28 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import alexiil.mc.lib.attributes.AttributeList;
+import alexiil.mc.lib.attributes.AttributeProvider;
+import alexiil.mc.lib.attributes.item.FixedItemInv;
 
-public class AEBaseBlockEntity extends BlockEntity implements IOrientable, ICommonTile, ICustomNameObject, BlockEntityClientSerializable, RenderAttachmentBlockEntity, AttributeProvider {
+import appeng.api.implementations.tiles.ISegmentedInventory;
+import appeng.api.util.ICommonTile;
+import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigurableObject;
+import appeng.api.util.IOrientable;
+import appeng.block.AEBaseTileBlock;
+import appeng.client.render.model.AEModelData;
+import appeng.core.AELog;
+import appeng.core.features.IStackSrc;
+import appeng.helpers.ICustomNameObject;
+import appeng.helpers.IPriorityHost;
+import appeng.hooks.TickHandler;
+import appeng.tile.inventory.AppEngInternalAEInventory;
+import appeng.util.Platform;
+import appeng.util.SettingsFrom;
+
+public class AEBaseBlockEntity extends BlockEntity implements IOrientable, ICommonTile, ICustomNameObject,
+        BlockEntityClientSerializable, RenderAttachmentBlockEntity, AttributeProvider {
 
     // FIXME: should probably remove at start of next server tick!
     static {
@@ -336,8 +341,8 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
     }
 
     /**
-     * returns the contents of the block entity, into the world, defaults to dropping
-     * everything in the inventory.
+     * returns the contents of the block entity, into the world, defaults to
+     * dropping everything in the inventory.
      *
      * @param w     world
      * @param pos   block position
@@ -392,8 +397,7 @@ public class AEBaseBlockEntity extends BlockEntity implements IOrientable, IComm
 
     @Override
     public Text getCustomInventoryName() {
-        return new LiteralText(
-                this.hasCustomInventoryName() ? this.customName : this.getClass().getSimpleName());
+        return new LiteralText(this.hasCustomInventoryName() ? this.customName : this.getClass().getSimpleName());
     }
 
     @Override

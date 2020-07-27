@@ -18,10 +18,10 @@
 
 package appeng.bootstrap;
 
+import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.color.item.ItemColorProvider;
 import net.minecraft.item.Item;
-import net.fabricmc.api.EnvType;
 
 import appeng.bootstrap.components.ItemColorComponent;
 

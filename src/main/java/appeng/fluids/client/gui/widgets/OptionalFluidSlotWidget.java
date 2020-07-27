@@ -3,12 +3,11 @@ package appeng.fluids.client.gui.widgets;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-
+import net.minecraft.client.util.math.MatrixStack;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.container.slot.IOptionalSlotHost;
 import appeng.fluids.util.IAEFluidTank;
-import net.minecraft.client.util.math.MatrixStack;
 
 public class OptionalFluidSlotWidget extends FluidSlotWidget {
     private final IOptionalSlotHost containerBus;
@@ -51,8 +50,8 @@ public class OptionalFluidSlotWidget extends FluidSlotWidget {
         }
         int oldZOffset = getZOffset();
         setZOffset(currentZIndex);
-        drawTexture(matrices, guileft + this.xPos() - 1, guitop + this.yPos() - 1, this.srcX - 1,
-                this.srcY - 1, this.getWidth() + 2, this.getHeight() + 2);
+        drawTexture(matrices, guileft + this.xPos() - 1, guitop + this.yPos() - 1, this.srcX - 1, this.srcY - 1,
+                this.getWidth() + 2, this.getHeight() + 2);
         setZOffset(oldZOffset);
     }
 }

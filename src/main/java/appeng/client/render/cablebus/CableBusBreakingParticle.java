@@ -1,11 +1,11 @@
 package appeng.client.render.cablebus;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.ParticleTextureSheet;
 import net.minecraft.client.particle.SpriteBillboardParticle;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.world.ClientWorld;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 
 // Derived from Vanilla's BreakingParticle, but allows
 // a texture to be specified directly rather than via an itemstack
@@ -16,7 +16,7 @@ public class CableBusBreakingParticle extends SpriteBillboardParticle {
     private final float field_217572_F;
 
     public CableBusBreakingParticle(ClientWorld world, double x, double y, double z, double speedX, double speedY,
-                                    double speedZ, Sprite sprite) {
+            double speedZ, Sprite sprite) {
         super(world, x, y, z, speedX, speedY, speedZ);
         this.setSprite(sprite);
         this.gravityStrength = 1.0F;

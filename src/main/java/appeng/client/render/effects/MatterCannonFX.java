@@ -19,17 +19,16 @@
 package appeng.client.render.effects;
 
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.DefaultParticleType;
-import net.fabricmc.api.Environment;
 
 import appeng.api.util.AEPartLocation;
 
 public class MatterCannonFX extends SpriteBillboardParticle {
 
-    public MatterCannonFX(ClientWorld world, final double x, final double y, final double z,
-            SpriteProvider sprite) {
+    public MatterCannonFX(ClientWorld world, final double x, final double y, final double z, SpriteProvider sprite) {
         super(world, x, y, z);
         this.gravityStrength = 0;
         this.colorBlue = 1;
@@ -81,8 +80,8 @@ public class MatterCannonFX extends SpriteBillboardParticle {
         }
 
         @Override
-        public Particle createParticle(DefaultParticleType effect, ClientWorld world, double x, double y, double z, double xSpeed,
-                                       double ySpeed, double zSpeed) {
+        public Particle createParticle(DefaultParticleType effect, ClientWorld world, double x, double y, double z,
+                double xSpeed, double ySpeed, double zSpeed) {
             return new MatterCannonFX(world, x, y, z, spriteSet);
         }
     }

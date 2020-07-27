@@ -21,16 +21,16 @@ package appeng.block.misc;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.block.ShapeContext;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
-import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.tile.misc.SkyCompassBlockEntity;
@@ -42,7 +42,8 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassBlockEntity> {
     }
 
     @Override
-    public boolean isValidOrientation(final WorldAccess w, final BlockPos pos, final Direction forward, final Direction up) {
+    public boolean isValidOrientation(final WorldAccess w, final BlockPos pos, final Direction forward,
+            final Direction up) {
         final SkyCompassBlockEntity sc = this.getBlockEntity(w, pos);
         if (sc != null) {
             return false;
@@ -145,8 +146,7 @@ public class SkyCompassBlock extends AEBaseTileBlock<SkyCompassBlockEntity> {
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockView worldIn, BlockPos pos,
-            ShapeContext context) {
+    public VoxelShape getCollisionShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
         return VoxelShapes.empty();
     }
 

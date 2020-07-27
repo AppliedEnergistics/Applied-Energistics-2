@@ -23,11 +23,11 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -109,7 +109,6 @@ public class ClientHelper extends ServerHelper {
     public void postInit() {
     }
 
-
     private void postPlayerRender(final RenderLivingEvent.Pre p) {
 //	FIXME	final PlayerColor player = TickHandler.INSTANCE.getPlayerColors().get( p.getEntity().getEntityId() );
 //	FIXME	if( player != null )
@@ -129,8 +128,8 @@ public class ClientHelper extends ServerHelper {
             final double d1 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
             final double d2 = (Platform.getRandomFloat() - 0.5F) * 0.26D;
 
-            MinecraftClient.getInstance().particleManager.addParticle(ParticleTypes.VIBRANT, x + d0, y + d1, z + d2, 0.0D, 0.0D,
-                    0.0D);
+            MinecraftClient.getInstance().particleManager.addParticle(ParticleTypes.VIBRANT, x + d0, y + d1, z + d2,
+                    0.0D, 0.0D, 0.0D);
         }
     }
 
@@ -139,8 +138,8 @@ public class ClientHelper extends ServerHelper {
         final float y = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
         final float z = (float) (((Platform.getRandomInt() % 100) * 0.01) - 0.5) * 0.7f;
 
-        MinecraftClient.getInstance().particleManager.addParticle(EnergyParticleData.FOR_BLOCK, posX + x, posY + y, posZ + z,
-                -x * 0.1, -y * 0.1, -z * 0.1);
+        MinecraftClient.getInstance().particleManager.addParticle(EnergyParticleData.FOR_BLOCK, posX + x, posY + y,
+                posZ + z, -x * 0.1, -y * 0.1, -z * 0.1);
     }
 
     private void spawnLightningArc(final World world, final double posX, final double posY, final double posZ,

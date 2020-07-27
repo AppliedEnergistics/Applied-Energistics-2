@@ -80,8 +80,8 @@ public final class SingularityEntity extends AEBaseItemEntity {
         final IMaterials materials = Api.instance().definitions().materials();
 
         if (materials.singularity().isSameAs(item)) {
-            final Box region = new Box(this.getX() - 4, this.getY() - 4, this.getZ() - 4,
-                    this.getX() + 4, this.getY() + 4, this.getZ() + 4);
+            final Box region = new Box(this.getX() - 4, this.getY() - 4, this.getZ() - 4, this.getX() + 4,
+                    this.getY() + 4, this.getZ() + 4);
             final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity(region);
 
             for (final Entity e : l) {

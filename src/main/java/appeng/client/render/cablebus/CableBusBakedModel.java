@@ -18,10 +18,18 @@
 
 package appeng.client.render.cablebus;
 
-import appeng.api.parts.IDynamicPartBakedModel;
-import appeng.api.parts.IPartModel;
-import appeng.api.util.AECableType;
-import appeng.api.util.AEColor;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
+import java.util.function.Supplier;
+
+import javax.annotation.Nullable;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
@@ -45,16 +53,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Random;
-import java.util.function.Supplier;
+import appeng.api.parts.IDynamicPartBakedModel;
+import appeng.api.parts.IPartModel;
+import appeng.api.util.AECableType;
+import appeng.api.util.AEColor;
 
 @Environment(EnvType.CLIENT)
 public class CableBusBakedModel implements BakedModel, FabricBakedModel {
@@ -72,8 +74,8 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
 
     private final Sprite particleTexture;
 
-    CableBusBakedModel(CableBuilder cableBuilder, FacadeBuilder facadeBuilder,
-                       Map<Identifier, BakedModel> partModels, Sprite particleTexture) {
+    CableBusBakedModel(CableBuilder cableBuilder, FacadeBuilder facadeBuilder, Map<Identifier, BakedModel> partModels,
+            Sprite particleTexture) {
         this.cableBuilder = cableBuilder;
         this.facadeBuilder = facadeBuilder;
         this.partModels = partModels;
@@ -97,7 +99,8 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos,
+            Supplier<Random> randomSupplier, RenderContext context) {
 
         CableBusRenderState renderState = getRenderState(blockView, pos);
 
@@ -131,8 +134,7 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
                 if (bakedModel instanceof IDynamicPartBakedModel) {
                     ((IDynamicPartBakedModel) bakedModel).emitQuads(blockView, state, pos, randomSupplier, context,
                             facing, partModelData);
-                }
-                else if (bakedModel instanceof FabricBakedModel) {
+                } else if (bakedModel instanceof FabricBakedModel) {
                     ((FabricBakedModel) bakedModel).emitBlockQuads(blockView, state, pos, randomSupplier, context);
                 } else {
                     context.fallbackConsumer().accept(bakedModel);
@@ -253,8 +255,7 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
 
             switch (cableType) {
                 case GLASS:
-                    this.cableBuilder.addGlassConnection(facing, cableColor, connectionType, cableBusAdjacent,
-                            emitter);
+                    this.cableBuilder.addGlassConnection(facing, cableColor, connectionType, cableBusAdjacent, emitter);
                     break;
                 case COVERED:
                     this.cableBuilder.addCoveredConnection(facing, cableColor, connectionType, cableBusAdjacent,
@@ -322,7 +323,6 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
     private boolean isMissingTexture(Sprite particleTexture) {
         return particleTexture instanceof MissingSprite;
     }
-
 
     @Override
     public boolean useAmbientOcclusion() {

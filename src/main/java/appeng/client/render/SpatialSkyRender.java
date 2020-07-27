@@ -20,15 +20,15 @@ package appeng.client.render;
 
 import java.util.Random;
 
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.math.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.util.math.Quaternion;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.Quaternion;
 
 public class SpatialSkyRender {
 
@@ -46,9 +46,10 @@ public class SpatialSkyRender {
         return INSTANCE;
     }
 
-    private static final Quaternion[] SKYBOX_SIDE_ROTATIONS = { Quaternion.IDENTITY, new Quaternion(90.0F, 0.0F, 0.0F, true),
-            new Quaternion(-90.0F, 0.0F, 0.0F, true), new Quaternion(180.0F, 0.0F, 0.0F, true),
-            new Quaternion(0.0F, 0.0F, 90.0F, true), new Quaternion(0.0F, 0.0F, -90.0F, true), };
+    private static final Quaternion[] SKYBOX_SIDE_ROTATIONS = { Quaternion.IDENTITY,
+            new Quaternion(90.0F, 0.0F, 0.0F, true), new Quaternion(-90.0F, 0.0F, 0.0F, true),
+            new Quaternion(180.0F, 0.0F, 0.0F, true), new Quaternion(0.0F, 0.0F, 90.0F, true),
+            new Quaternion(0.0F, 0.0F, -90.0F, true), };
 
     public void render(MatrixStack matrixStack) {
         final long now = System.currentTimeMillis();

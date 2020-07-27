@@ -18,8 +18,8 @@
 
 package appeng.bootstrap;
 
-import net.fabricmc.api.Environment;
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 /**
  * A callback that allows the rendering of a item to be customized. Sadly this

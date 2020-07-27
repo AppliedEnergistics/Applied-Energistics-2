@@ -1,9 +1,13 @@
 package appeng.client.render.model;
 
-import appeng.api.implementations.items.IBiometricCard;
-import appeng.api.util.AEColor;
-import appeng.client.render.cablebus.CubeBuilder;
+import java.util.List;
+import java.util.Random;
+import java.util.function.Supplier;
+
+import javax.annotation.Nullable;
+
 import com.mojang.authlib.GameProfile;
+
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
@@ -18,10 +22,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
 
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Random;
-import java.util.function.Supplier;
+import appeng.api.implementations.items.IBiometricCard;
+import appeng.api.util.AEColor;
+import appeng.client.render.cablebus.CubeBuilder;
 
 class BiometricCardBakedModel implements BakedModel, FabricBakedModel {
 
@@ -40,7 +43,8 @@ class BiometricCardBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos,
+            Supplier<Random> randomSupplier, RenderContext context) {
         // Not intended as a block
     }
 

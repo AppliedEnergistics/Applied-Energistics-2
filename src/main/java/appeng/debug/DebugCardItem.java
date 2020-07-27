@@ -21,18 +21,16 @@ package appeng.debug;
 import java.util.HashSet;
 import java.util.Set;
 
-import appeng.hooks.AEToolItem;
-import appeng.tile.networking.ControllerBlockEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Util;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 import appeng.api.networking.IGridConnection;
@@ -46,12 +44,14 @@ import appeng.api.networking.ticking.ITickManager;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.AEPartLocation;
+import appeng.hooks.AEToolItem;
 import appeng.hooks.TickHandler;
 import appeng.items.AEBaseItem;
 import appeng.me.Grid;
 import appeng.me.GridNode;
 import appeng.me.cache.TickManagerCache;
 import appeng.parts.p2p.P2PTunnelPart;
+import appeng.tile.networking.ControllerBlockEntity;
 
 public class DebugCardItem extends AEBaseItem implements AEToolItem {
 

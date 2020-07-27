@@ -8,6 +8,7 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 public interface DynamicDimensions {
 
-    ServerWorld addWorld(RegistryKey<World> worldId, RegistryKey<DimensionType> dimensionTypeId, ChunkGenerator chunkGenerator);
+    ServerWorld addWorld(RegistryKey<World> worldId, RegistryKey<DimensionType> dimensionTypeId,
+            ChunkGenerator chunkGenerator);
 
 }

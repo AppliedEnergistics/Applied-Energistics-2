@@ -5,8 +5,9 @@ import java.util.function.Consumer;
 import javax.annotation.Nullable;
 
 import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.text.Text;
 
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IParts;
@@ -26,7 +27,6 @@ import appeng.parts.reporting.CraftingTerminalPart;
 import appeng.parts.reporting.PatternTerminalPart;
 import appeng.parts.reporting.TerminalPart;
 import appeng.tile.storage.ChestBlockEntity;
-import net.minecraft.text.Text;
 
 /**
  * Utility class for sub-screens of other containers that allow returning to the
@@ -99,8 +99,8 @@ final class AESubScreen {
                 label = previousContainerIcon.getName();
             }
             ItemRenderer itemRenderer = gui.getClient().getItemRenderer();
-            TabButton button = new TabButton(gui.getX() + x, gui.getY() + y, previousContainerIcon, label,
-                    itemRenderer, btn -> goBack());
+            TabButton button = new TabButton(gui.getX() + x, gui.getY() + y, previousContainerIcon, label, itemRenderer,
+                    btn -> goBack());
             buttonAdder.accept(button);
             return button;
         }

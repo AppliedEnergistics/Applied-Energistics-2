@@ -1,14 +1,15 @@
 package appeng.fluids.helper;
 
+import java.math.RoundingMode;
+import java.util.*;
+
 import alexiil.mc.lib.attributes.fluid.GroupedFluidInv;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
+
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
 import appeng.fluids.util.AEFluidStack;
-
-import java.math.RoundingMode;
-import java.util.*;
 
 public class GroupedFluidInvCache {
 
@@ -38,7 +39,8 @@ public class GroupedFluidInvCache {
             FluidAmount oldAmount = old == null ? FluidAmount.ZERO : old.getAmount();
 
             if (!newAmount.equals(oldAmount)) {
-                AEFluidStack newStack = AEFluidStack.fromFluidVolume(storedFluid.withAmount(newAmount), RoundingMode.DOWN);
+                AEFluidStack newStack = AEFluidStack.fromFluidVolume(storedFluid.withAmount(newAmount),
+                        RoundingMode.DOWN);
 
                 if (old != null) {
                     old = old.copy();

@@ -18,8 +18,6 @@
 
 package appeng.entity;
 
-import appeng.client.EffectType;
-import appeng.items.misc.CrystalSeedItem;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntity;
@@ -33,8 +31,10 @@ import net.minecraft.world.World;
 import appeng.api.features.AEFeature;
 import appeng.api.implementations.items.IGrowableCrystal;
 import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;
+import appeng.client.EffectType;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
+import appeng.items.misc.CrystalSeedItem;
 import appeng.util.Platform;
 
 public final class GrowingCrystalEntity extends AEBaseItemEntity {
@@ -50,7 +50,8 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
     public GrowingCrystalEntity(final World w, final double x, final double y, final double z, final ItemStack is) {
         super(TYPE, w, x, y, z, is);
         this.setCovetedItem();
-        // FIXME FABRIC This does not actually fix despawning, we need to Mixin, probably.
+        // FIXME FABRIC This does not actually fix despawning, we need to Mixin,
+        // probably.
     }
 
     @Override
@@ -119,7 +120,7 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
                 if (this.progress_1000 >= len) {
                     this.progress_1000 = 0;
                     AppEng.instance().spawnEffect(EffectType.Vibrant, this.world, this.getX(), this.getY() + 0.2,
-                             this.getZ(), null);
+                            this.getZ(), null);
                 }
             } else {
                 if (this.progress_1000 > 1000) {
@@ -177,7 +178,7 @@ public final class GrowingCrystalEntity extends AEBaseItemEntity {
     public void applyBuoyancy() {
         ItemStack item = getStack();
         if (item.getItem() instanceof CrystalSeedItem) {
-             return;
+            return;
         }
         super.applyBuoyancy();
     }

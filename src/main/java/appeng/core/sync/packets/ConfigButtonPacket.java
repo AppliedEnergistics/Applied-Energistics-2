@@ -23,8 +23,8 @@ import java.util.EnumSet;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.network.ServerPlayerEntity;
 
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;

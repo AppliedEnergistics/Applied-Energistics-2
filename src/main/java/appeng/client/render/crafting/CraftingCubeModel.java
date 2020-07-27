@@ -18,9 +18,11 @@
 
 package appeng.client.render.crafting;
 
-import appeng.block.crafting.AbstractCraftingUnitBlock;
-import appeng.client.render.BasicUnbakedModel;
-import appeng.core.AppEng;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.render.model.ModelLoader;
@@ -29,9 +31,9 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.Identifier;
 
-import javax.annotation.Nullable;
-import java.util.function.Function;
-import java.util.stream.Stream;
+import appeng.block.crafting.AbstractCraftingUnitBlock;
+import appeng.client.render.BasicUnbakedModel;
+import appeng.core.AppEng;
 
 /**
  * The built-in model for the connected texture crafting cube.
@@ -68,7 +70,8 @@ public class CraftingCubeModel implements BasicUnbakedModel {
 
     @Nullable
     @Override
-    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
+    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter,
+            ModelBakeSettings rotationContainer, Identifier modelId) {
         // Retrieve our textures and pass them on to the baked model
         Sprite ringCorner = textureGetter.apply(RING_CORNER);
         Sprite ringSideHor = textureGetter.apply(RING_SIDE_HOR);
@@ -94,7 +97,7 @@ public class CraftingCubeModel implements BasicUnbakedModel {
     }
 
     private static Sprite getLightTexture(Function<SpriteIdentifier, Sprite> textureGetter,
-                                          AbstractCraftingUnitBlock.CraftingUnitType type) {
+            AbstractCraftingUnitBlock.CraftingUnitType type) {
         switch (type) {
             case ACCELERATOR:
                 return textureGetter.apply(ACCELERATOR_LIGHT);

@@ -18,11 +18,20 @@
 
 package appeng.parts.p2p;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.BlockView;
+
 import alexiil.mc.lib.attributes.AttributeList;
 import alexiil.mc.lib.attributes.CacheInfo;
 import alexiil.mc.lib.attributes.item.FixedItemInv;
 import alexiil.mc.lib.attributes.item.ItemAttributes;
 import alexiil.mc.lib.attributes.item.impl.CombinedFixedItemInv;
+
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkBootingStatusChange;
 import appeng.api.networking.events.MENetworkChannelsChanged;
@@ -37,13 +46,6 @@ import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.TunnelCollection;
 import appeng.util.Platform;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implements IGridTickable {
     private static final float POWER_DRAIN = 2.0f;
@@ -111,10 +113,7 @@ public class ItemP2PTunnelPart extends P2PTunnelPart<ItemP2PTunnelPart> implemen
             this.partVisited = true;
             if (this.getProxy().isActive()) {
                 final Direction facing = this.getSide().getFacing();
-                ret = ItemAttributes.FIXED_INV.getFirstOrNullFromNeighbour(
-                        this.getTile(),
-                        facing
-                );
+                ret = ItemAttributes.FIXED_INV.getFirstOrNullFromNeighbour(this.getTile(), facing);
             }
             this.partVisited = false;
         }

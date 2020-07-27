@@ -18,7 +18,18 @@
 
 package appeng.integration.modules.jei;
 
-import appeng.core.Api;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Identifier;
+
+import me.shedaniel.rei.api.EntryStack;
+import me.shedaniel.rei.api.RecipeHelper;
+import me.shedaniel.rei.api.plugins.REIPluginV0;
+import me.shedaniel.rei.plugin.information.DefaultInformationDisplay;
+
 import appeng.api.config.CondenserOutput;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItemDefinition;
@@ -27,22 +38,13 @@ import appeng.api.features.AEFeature;
 import appeng.container.implementations.CraftingTermContainer;
 import appeng.container.implementations.PatternTermContainer;
 import appeng.core.AEConfig;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.integration.abstraction.ReiFacade;
 import appeng.items.parts.FacadeItem;
 import appeng.recipes.handlers.GrinderRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
-import me.shedaniel.rei.api.EntryStack;
-import me.shedaniel.rei.api.RecipeHelper;
-import me.shedaniel.rei.api.plugins.REIPluginV0;
-import me.shedaniel.rei.plugin.information.DefaultInformationDisplay;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
-
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 public class ReiPlugin implements REIPluginV0 {
     private static final Identifier ID = new Identifier(AppEng.MOD_ID, "core");
@@ -52,12 +54,13 @@ public class ReiPlugin implements REIPluginV0 {
         return ID;
     }
 
-    // FIXME FABRIC   @Override
-    // FIXME FABRIC   public void registerItemSubtypes(ISubtypeRegistration subtypeRegistry) {
-    // FIXME FABRIC       final Optional<Item> maybeFacade = AEApi.instance().definitions().items().facade().maybeItem();
-    // FIXME FABRIC       maybeFacade.ifPresent(subtypeRegistry::useNbtForSubtypes);
-    // FIXME FABRIC   }
-
+    // FIXME FABRIC @Override
+    // FIXME FABRIC public void registerItemSubtypes(ISubtypeRegistration
+    // subtypeRegistry) {
+    // FIXME FABRIC final Optional<Item> maybeFacade =
+    // AEApi.instance().definitions().items().facade().maybeItem();
+    // FIXME FABRIC maybeFacade.ifPresent(subtypeRegistry::useNbtForSubtypes);
+    // FIXME FABRIC }
 
     @Override
     public void registerPluginCategories(RecipeHelper recipeHelper) {
@@ -90,9 +93,7 @@ public class ReiPlugin implements REIPluginV0 {
 
         IDefinitions definitions = Api.instance().definitions();
         recipeHelper.registerLiveRecipeGenerator(new FacadeRegistryGenerator(
-                (FacadeItem) definitions.items().facade().item(),
-                definitions.parts().cableAnchor().stack(1)
-        ));
+                (FacadeItem) definitions.items().facade().item(), definitions.parts().cableAnchor().stack(1)));
     }
 
     @Override
@@ -121,20 +122,17 @@ public class ReiPlugin implements REIPluginV0 {
 
         final String[] message;
         if (AEConfig.instance().isFeatureEnabled(AEFeature.CERTUS_QUARTZ_WORLD_GEN)) {
-            message = new String[]{GuiText.ChargedQuartz.getTranslationKey(), "",
-                    GuiText.ChargedQuartzFind.getTranslationKey()};
+            message = new String[] { GuiText.ChargedQuartz.getTranslationKey(), "",
+                    GuiText.ChargedQuartzFind.getTranslationKey() };
         } else {
-            message = new String[]{GuiText.ChargedQuartzFind.getTranslationKey()};
+            message = new String[] { GuiText.ChargedQuartzFind.getTranslationKey() };
         }
         addDescription(materials.certusQuartzCrystalCharged(), message);
 
         if (AEConfig.instance().isFeatureEnabled(AEFeature.METEORITE_WORLD_GEN)) {
-            addDescription(materials.logicProcessorPress(),
-                    GuiText.inWorldCraftingPresses.getTranslationKey());
-            addDescription(materials.calcProcessorPress(),
-                    GuiText.inWorldCraftingPresses.getTranslationKey());
-            addDescription(materials.engProcessorPress(),
-                    GuiText.inWorldCraftingPresses.getTranslationKey());
+            addDescription(materials.logicProcessorPress(), GuiText.inWorldCraftingPresses.getTranslationKey());
+            addDescription(materials.calcProcessorPress(), GuiText.inWorldCraftingPresses.getTranslationKey());
+            addDescription(materials.engProcessorPress(), GuiText.inWorldCraftingPresses.getTranslationKey());
         }
 
         if (AEConfig.instance().isFeatureEnabled(AEFeature.IN_WORLD_FLUIX)) {
@@ -150,17 +148,14 @@ public class ReiPlugin implements REIPluginV0 {
                     GuiText.inWorldPurificationCertus.getTranslationKey());
             addDescription(materials.purifiedNetherQuartzCrystal(),
                     GuiText.inWorldPurificationNether.getTranslationKey());
-            addDescription(materials.purifiedFluixCrystal(),
-                    GuiText.inWorldPurificationFluix.getTranslationKey());
+            addDescription(materials.purifiedFluixCrystal(), GuiText.inWorldPurificationFluix.getTranslationKey());
         }
 
     }
 
     private static void addDescription(IItemDefinition itemDefinition, String... message) {
-        DefaultInformationDisplay info = DefaultInformationDisplay.createFromEntry(
-                EntryStack.create(itemDefinition),
-                itemDefinition.item().getName()
-        );
+        DefaultInformationDisplay info = DefaultInformationDisplay.createFromEntry(EntryStack.create(itemDefinition),
+                itemDefinition.item().getName());
         info.lines(Arrays.stream(message).map(TranslatableText::new).collect(Collectors.toList()));
         RecipeHelper.getInstance().registerDisplay(info);
     }

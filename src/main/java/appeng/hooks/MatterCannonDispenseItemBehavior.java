@@ -18,19 +18,19 @@
 
 package appeng.hooks;
 
-import appeng.util.FakePlayer;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.dispenser.ItemDispenserBehavior;
-import net.minecraft.util.math.BlockPointer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.BlockPointer;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
-import net.minecraft.server.world.ServerWorld;
 
 import appeng.api.util.AEPartLocation;
 import appeng.items.tools.powered.MatterCannonItem;
+import appeng.util.FakePlayer;
 import appeng.util.Platform;
 
 public final class MatterCannonDispenseItemBehavior extends ItemDispenserBehavior {

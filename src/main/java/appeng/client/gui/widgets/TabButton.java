@@ -29,15 +29,14 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 public class TabButton extends ButtonWidget implements ITooltip {
-    public static final Identifier TEXTURE_STATES = new Identifier("appliedenergistics2",
-            "textures/guis/states.png");
+    public static final Identifier TEXTURE_STATES = new Identifier("appliedenergistics2", "textures/guis/states.png");
     private final ItemRenderer itemRenderer;
     private int hideEdge = 0;
     private int myIcon = -1;
     private ItemStack myItem;
 
     public TabButton(final int x, final int y, final int ico, final Text message, final ItemRenderer ir,
-                     PressAction onPress) {
+            PressAction onPress) {
         super(x, y, 22, 22, message, onPress);
 
         this.myIcon = ico;

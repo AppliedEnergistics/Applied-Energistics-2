@@ -53,17 +53,13 @@ import appeng.util.Platform;
 public class FluidLevelEmitterPart extends UpgradeablePart
         implements IStackWatcherHost, IConfigManagerHost, IAEFluidInventory, IMEMonitorHandlerReceiver<IAEFluidStack> {
     @PartModels
-    public static final Identifier MODEL_BASE_OFF = new Identifier(AppEng.MOD_ID,
-            "part/level_emitter_base_off");
+    public static final Identifier MODEL_BASE_OFF = new Identifier(AppEng.MOD_ID, "part/level_emitter_base_off");
     @PartModels
-    public static final Identifier MODEL_BASE_ON = new Identifier(AppEng.MOD_ID,
-            "part/level_emitter_base_on");
+    public static final Identifier MODEL_BASE_ON = new Identifier(AppEng.MOD_ID, "part/level_emitter_base_on");
     @PartModels
-    public static final Identifier MODEL_STATUS_OFF = new Identifier(AppEng.MOD_ID,
-            "part/level_emitter_status_off");
+    public static final Identifier MODEL_STATUS_OFF = new Identifier(AppEng.MOD_ID, "part/level_emitter_status_off");
     @PartModels
-    public static final Identifier MODEL_STATUS_ON = new Identifier(AppEng.MOD_ID,
-            "part/level_emitter_status_on");
+    public static final Identifier MODEL_STATUS_ON = new Identifier(AppEng.MOD_ID, "part/level_emitter_status_on");
     @PartModels
     public static final Identifier MODEL_STATUS_HAS_CHANNEL = new Identifier(AppEng.MOD_ID,
             "part/level_emitter_status_has_channel");

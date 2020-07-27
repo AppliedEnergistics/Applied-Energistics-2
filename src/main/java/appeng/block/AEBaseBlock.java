@@ -21,24 +21,24 @@ package appeng.block;
 import javax.annotation.Nullable;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.block.Material;
 import net.minecraft.block.MaterialColor;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.WorldAccess;
 import net.minecraft.world.World;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
+import net.minecraft.world.WorldAccess;
 
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
@@ -68,8 +68,7 @@ public abstract class AEBaseBlock extends Block {
     public static FabricBlockSettings defaultProps(Material material, MaterialColor color) {
         return FabricBlockSettings.of(material, color)
                 // These values previousls were encoded in AEBaseBlock
-                .strength(2.2f, 11.f)
-                .breakByTool(FabricToolTags.PICKAXES, 0)
+                .strength(2.2f, 11.f).breakByTool(FabricToolTags.PICKAXES, 0)
                 .sounds(getDefaultSoundByMaterial(material));
     }
 

@@ -1,10 +1,16 @@
 
 package appeng.block.paint;
 
-import appeng.client.render.cablebus.CubeBuilder;
-import appeng.core.AppEng;
-import appeng.helpers.Splotch;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import javax.annotation.Nullable;
+
 import com.google.common.collect.ImmutableList;
+
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
@@ -22,12 +28,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
 
-import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import appeng.client.render.cablebus.CubeBuilder;
+import appeng.core.AppEng;
+import appeng.helpers.Splotch;
 
 /**
  * Renders paint blocks, which render multiple "splotches" that have been
@@ -56,7 +59,8 @@ class PaintSplotchesBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos,
+            Supplier<Random> randomSupplier, RenderContext context) {
 
         Object renderAttachment = ((RenderAttachedBlockView) blockView).getBlockEntityRenderAttachment(pos);
         if (!(renderAttachment instanceof PaintSplotches)) {
