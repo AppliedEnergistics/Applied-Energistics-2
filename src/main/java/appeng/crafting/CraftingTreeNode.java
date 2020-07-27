@@ -85,7 +85,7 @@ public class CraftingTreeNode {
     }
 
     boolean notRecursive(final ICraftingPatternDetails details) {
-        IAEItemStack[] o = details.getCondensedOutputs();
+        Collection<IAEItemStack> o = details.getOutputs();
 
         for (final IAEItemStack i : o) {
             if (i.equals(this.what)) {
@@ -93,7 +93,7 @@ public class CraftingTreeNode {
             }
         }
 
-        o = details.getCondensedInputs();
+        o = details.getInputs();
 
         for (final IAEItemStack i : o) {
             if (i.equals(this.what)) {
