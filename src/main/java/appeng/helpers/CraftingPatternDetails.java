@@ -19,11 +19,13 @@
 package appeng.helpers;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -46,6 +48,10 @@ import appeng.items.misc.EncodedPatternItem;
 import appeng.util.Platform;
 
 public class CraftingPatternDetails implements ICraftingPatternDetails, Comparable<CraftingPatternDetails> {
+
+    private static final int ALL_INPUT_LIMIT = 9;
+    private static final int CRAFTING_OUTPUT_LIMIT = 1;
+    private static final int PROCESSING_OUTPUT_LIMIT = 3;
 
     private final CraftingInventory crafting = new CraftingInventory(new ContainerNull(), 3, 3);
     private final CraftingInventory testFrame = new CraftingInventory(new ContainerNull(), 3, 3);
@@ -80,7 +86,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
         final List<IAEItemStack> in = new ArrayList<>();
         final List<IAEItemStack> out = new ArrayList<>();
 
-        for (int x = 0; x < 9; x++) {
+        for (int x = 0; x < ALL_INPUT_LIMIT; x++) {
             final IAEItemStack ais = ingredients.get(x);
             final ItemStack gs = ais != null ? ais.createItemStack() : ItemStack.EMPTY;
 
@@ -110,40 +116,33 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
             this.standardRecipe = null;
             this.correctOutput = ItemStack.EMPTY;
 
-            for (int x = 0; x < 3; x++) {
+            for (int x = 0; x < PROCESSING_OUTPUT_LIMIT; x++) {
                 final IAEItemStack ais = products.get(x);
 
                 out.add(ais != null ? ais.copy() : null);
             }
         }
 
-        this.inputs = in.toArray(new IAEItemStack[0]);
-        this.outputs = out.toArray(new IAEItemStack[0]);
+        final int outputLength = this.isCraftable ? CRAFTING_OUTPUT_LIMIT : PROCESSING_OUTPUT_LIMIT;
+        this.inputs = in.toArray(new IAEItemStack[ALL_INPUT_LIMIT]);
+        this.outputs = out.toArray(new IAEItemStack[outputLength]);
 
-        final Map<IAEItemStack, IAEItemStack> tmpOutputs = new HashMap<>();
+        final Collection<IAEItemStack> tmpInputs = in.stream().filter(Objects::nonNull)
+                .collect(Collectors.toMap(Function.identity(), IAEItemStack::copy,
+                        (left, right) -> left.setStackSize(left.getStackSize() + right.getStackSize())))
+                .values();
 
-        out.stream().filter(p -> p != null).forEach(io -> {
-            tmpOutputs.merge(io, io.copy(), (a, b) -> {
-                final long stacksize = a.getStackSize() + b.getStackSize();
-                return a.setStackSize(stacksize);
-            });
-        });
-
-        final Map<IAEItemStack, IAEItemStack> tmpInputs = new HashMap<>();
-
-        in.stream().filter(p -> p != null).forEach(io -> {
-            tmpInputs.merge(io, io.copy(), (a, b) -> {
-                final long stacksize = a.getStackSize() + b.getStackSize();
-                return a.setStackSize(stacksize);
-            });
-        });
+        final Collection<IAEItemStack> tmpOutputs = out.stream().filter(Objects::nonNull)
+                .collect(Collectors.toMap(Function.identity(), IAEItemStack::copy,
+                        (left, right) -> left.setStackSize(left.getStackSize() + right.getStackSize())))
+                .values();
 
         if (tmpOutputs.isEmpty() || tmpInputs.isEmpty()) {
             throw new IllegalStateException("No pattern here!");
         }
 
-        this.condensedInputs = ImmutableList.copyOf(tmpInputs.values());
-        this.condensedOutputs = ImmutableList.copyOf(tmpOutputs.values());
+        this.condensedInputs = ImmutableList.copyOf(tmpInputs);
+        this.condensedOutputs = ImmutableList.copyOf(tmpOutputs);
     }
 
     private void markItemAs(final int slotIndex, final ItemStack i, final TestStatus b) {
