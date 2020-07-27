@@ -79,15 +79,16 @@ public interface ICraftingPatternDetails {
      * <p>
      * This should be the preferred way to deal with the list of outputs.
      * <p>
-     * There is no guarantee about maintaining the placement order of the output slots.
+     * There is no guarantee about maintaining the placement order of the output
+     * slots.
      * 
      * @return an immutable list of outputs without nulls
      */
     List<IAEItemStack> getOutputs();
 
     /**
-     * A sparse list representing the placement order of a crafting grid,
-     * left to right, then top to bottom.
+     * A sparse list representing the placement order of a crafting grid, left to
+     * right, then top to bottom.
      * <p>
      * Only use when absolutely necessary, always prefer
      * {@link ICraftingPatternDetails#getInputs()}
