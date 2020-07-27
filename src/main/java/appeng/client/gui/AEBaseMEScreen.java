@@ -61,31 +61,23 @@ public abstract class AEBaseMEScreen<T extends AEBaseContainer> extends AEBaseSc
 
             if (myStack != null) {
                 if (myStack.getStackSize() > bigNumber || (myStack.getStackSize() > 1 && stack.isDamaged())) {
-                    final String local = ButtonToolTips.ItemsStored.getLocal();
                     final String formattedAmount = NumberFormat.getNumberInstance(Locale.US)
                             .format(myStack.getStackSize());
-                    final String format = String.format(local, formattedAmount);
-
-                    currentToolTip.add(new StringTextComponent(TextFormatting.GRAY + format));
+                    currentToolTip.add(ButtonToolTips.ItemsStored.text(formattedAmount).func_240699_a_(TextFormatting.GRAY));
                 }
 
                 if (myStack.getCountRequestable() > 0) {
-                    final String local = ButtonToolTips.ItemsRequestable.getLocal();
                     final String formattedAmount = NumberFormat.getNumberInstance(Locale.US)
                             .format(myStack.getCountRequestable());
-                    final String format = String.format(local, formattedAmount);
-
-                    currentToolTip.add(new StringTextComponent(format));
+                    currentToolTip.add(ButtonToolTips.ItemsRequestable.text(formattedAmount));
                 }
+
                 this.renderToolTip(matrixStack, currentToolTip, x, y, this.font);
 
                 return;
             } else if (stack.getCount() > bigNumber) {
-                final String local = ButtonToolTips.ItemsStored.getLocal();
                 final String formattedAmount = NumberFormat.getNumberInstance(Locale.US).format(stack.getCount());
-                final String format = String.format(local, formattedAmount);
-
-                currentToolTip.add(new StringTextComponent(TextFormatting.GRAY + format));
+                currentToolTip.add(ButtonToolTips.ItemsStored.text(formattedAmount).func_240699_a_(TextFormatting.GRAY));
 
                 this.renderToolTip(matrixStack, currentToolTip, x, y, this.font);
 

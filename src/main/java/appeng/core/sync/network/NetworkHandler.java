@@ -25,8 +25,10 @@ import net.minecraft.network.IPacket;
 import net.minecraft.network.ThreadQuickExitException;
 import net.minecraft.network.play.ServerPlayNetHandler;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.DimensionType;
+import net.minecraft.world.World;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.LogicalSide;
@@ -119,13 +121,8 @@ public class NetworkHandler {
 
     public void sendToAllAround(final BasePacket message, final TargetPoint point) {
         IPacket<?> pkt = message.toPacket(NetworkDirection.PLAY_TO_CLIENT);
-        getServer().getPlayerList().sendToAllNearExcept(point.excluded, point.x, point.y, point.z, point.r2, point.dim,
+        getServer().getPlayerList().sendToAllNearExcept(point.excluded, point.x, point.y, point.z, point.r2, point.world.func_234923_W_(),
                 pkt);
-    }
-
-    public void sendToDimension(final BasePacket message, final DimensionType dim) {
-        getServer().getPlayerList().sendPacketToAllPlayersInDimension(message.toPacket(NetworkDirection.PLAY_TO_CLIENT),
-                dim);
     }
 
     public void sendToServer(final BasePacket message) {

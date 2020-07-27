@@ -60,7 +60,7 @@ public class StorageBusScreen extends UpgradeableScreen<StorageBusContainer> {
         this.fuzzyMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 88, Settings.FUZZY_MODE,
                 FuzzyMode.IGNORE_ALL);
 
-        this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.textComponent(),
+        this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(),
                 this.itemRenderer, btn -> openPriorityGui()));
 
         this.addButton(this.storageFilter);
@@ -71,7 +71,7 @@ public class StorageBusScreen extends UpgradeableScreen<StorageBusContainer> {
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.StorageBus.textComponent()).getString(), 8, 6,
+        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.StorageBus.text()).getString(), 8, 6,
                 4210752);
         this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
 

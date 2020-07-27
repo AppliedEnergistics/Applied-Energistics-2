@@ -32,6 +32,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.SnowballItem;
@@ -106,7 +107,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     public ColorApplicatorItem(Item.Properties props) {
         super(AEConfig.instance().getColorApplicatorBattery(), props);
-        addPropertyOverride(new ResourceLocation(AppEng.MOD_ID, "colored"), (itemStack, world, entity) -> {
+        ItemModelsProperties.func_239418_a_(this, new ResourceLocation(AppEng.MOD_ID, "colored"), (itemStack, world, entity) -> {
             // If the stack has no color, don't use the colored model since the impact of
             // calling getColor for every quad is extremely high, if the stack tries to
             // re-search its
@@ -197,7 +198,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     @Override
     public ITextComponent getDisplayName(final ItemStack is) {
-        ITextComponent extra = GuiText.Empty.textComponent();
+        ITextComponent extra = GuiText.Empty.text();
 
         final AEColor selected = this.getActiveColor(is);
 
@@ -320,7 +321,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     private boolean recolourBlock(final Block blk, final Direction side, final World w, final BlockPos pos,
-            final AEColor newColor, @Nullable final PlayerEntity p) {
+                                  final AEColor newColor, @Nullable final PlayerEntity p) {
         final BlockState state = w.getBlockState(pos);
 
         Block recolored = BlockRecolorer.recolor(blk, newColor);
@@ -333,11 +334,22 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             return w.setBlockState(pos, newState);
         }
 
+        TileEntity be = w.getTileEntity(pos);
+        if (be instanceof IColorableTile) {
+            IColorableTile ct = (IColorableTile) be;
+            AEColor c = ct.getColor();
+            if (c != newColor) {
+                ct.recolourBlock(side, newColor, null);
+                return true;
+            }
+            return false;
+        }
+
         if (blk instanceof CableBusBlock && p != null) {
             return ((CableBusBlock) blk).recolorBlock(w, pos, side, newColor.dye, p);
         }
 
-        return blk.recolorBlock(state, w, pos, side, newColor.dye);
+        return false;
     }
 
     private static <T extends Comparable<T>> BlockState copyProp(BlockState oldState, BlockState newState,

@@ -28,6 +28,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
+import jdk.nashorn.internal.objects.annotations.Function;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -43,7 +44,6 @@ import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import mezz.jei.gui.HoverChecker;
 
 import appeng.api.config.CondenserOutput;
 import appeng.api.definitions.IMaterials;
@@ -67,8 +67,6 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
     private final IDrawable iconButton;
 
     private final IDrawable icon;
-
-    private final HoverChecker buttonHoverChecker;
 
     private final Map<CondenserOutput, IDrawable> buttonIcons;
 
@@ -94,7 +92,6 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
                 guiHelper.drawableBuilder(statesLocation, 16, 112, 14, 14).addPadding(28, 0, 78, 0).build());
         this.buttonIcons.put(CondenserOutput.SINGULARITY,
                 guiHelper.drawableBuilder(statesLocation, 32, 112, 14, 14).addPadding(28, 0, 78, 0).build());
-        this.buttonHoverChecker = new HoverChecker(28, 28 + 16, 78, 78 + 16);
     }
 
     private ItemStack getOutput(CondenserOutput recipe) {
@@ -189,7 +186,7 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
     @Override
     public List<ITextComponent> getTooltipStrings(CondenserOutput output, double mouseX, double mouseY) {
 
-        if (this.buttonHoverChecker.checkHover((int) mouseX, (int) mouseY)) {
+        if (mouseX >= 28 && mouseX < 28 + 16 && mouseY >= 78 && mouseY < 78 + 16) {
             String key;
 
             switch (output) {

@@ -26,6 +26,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
@@ -115,6 +116,11 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity implements I
 
     @Override
     public Void call(final World world) throws Exception {
+        if (!(this.world instanceof ServerWorld)) {
+            return null;
+        }
+        ServerWorld serverWorld = (ServerWorld) this.world;
+
         final ItemStack cell = this.inv.getStackInSlot(0);
         if (this.isSpatialCell(cell) && this.inv.getStackInSlot(1).isEmpty()) {
             final IGrid gi = this.getProxy().getGrid();
@@ -134,7 +140,7 @@ public class SpatialIOPortTileEntity extends AENetworkInvTileEntity implements I
                             playerId = this.getProxy().getSecurity().getOwner();
                         }
 
-                        final TransitionResult tr = sc.doSpatialTransition(cell, this.world, spc.getMin(), spc.getMax(),
+                        final TransitionResult tr = sc.doSpatialTransition(cell, serverWorld, spc.getMin(), spc.getMax(),
                                 playerId);
                         if (tr.success) {
                             energy.extractAEPower(req, Actionable.MODULATE, PowerMultiplier.CONFIG);

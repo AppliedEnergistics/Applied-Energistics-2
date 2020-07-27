@@ -18,6 +18,7 @@
 
 package appeng.core.localization;
 
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
@@ -70,23 +71,18 @@ public enum ButtonToolTips {
 
     FilterMode, FilterModeKeep, FilterModeClear;
 
-    private final String root;
+    private final TranslationTextComponent text;
 
     ButtonToolTips() {
-        this.root = "gui.tooltips.appliedenergistics2";
+        this.text = new TranslationTextComponent("gui.tooltips.appliedenergistics2." + this.name());
     }
 
-    ButtonToolTips(final String r) {
-        this.root = r;
+    public ITextComponent text() {
+        return text;
     }
 
-    @Deprecated
-    public String getLocal() {
-        return getTranslationKey().getFormattedText();
-    }
-
-    public ITextComponent getTranslationKey() {
-        return new TranslationTextComponent(this.root + '.' + this.toString());
+    public IFormattableTextComponent text(Object... args) {
+        return new TranslationTextComponent(text.getKey(), args);
     }
 
 }

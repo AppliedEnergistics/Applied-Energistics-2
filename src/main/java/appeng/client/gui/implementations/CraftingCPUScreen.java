@@ -117,7 +117,7 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
         super.init();
         this.setScrollBar();
         this.cancel = new Button(this.guiLeft + CANCEL_LEFT_OFFSET, this.guiTop + this.ySize - CANCEL_TOP_OFFSET,
-                CANCEL_WIDTH, CANCEL_HEIGHT, GuiText.Cancel.textComponent(), btn -> cancel());
+                CANCEL_WIDTH, CANCEL_HEIGHT, GuiText.Cancel.text(), btn -> cancel());
         this.addButton(this.cancel);
     }
 
@@ -165,7 +165,7 @@ public class CraftingCPUScreen<T extends CraftingCPUContainer> extends AEBaseScr
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        String title = this.getGuiDisplayName(GuiText.CraftingStatus.textComponent()).getString();
+        String title = this.getGuiDisplayName(GuiText.CraftingStatus.text()).getString();
 
         if (this.container.getEstimatedTime() > 0 && !this.visual.isEmpty()) {
             final long etaInMilliseconds = TimeUnit.MILLISECONDS.convert(this.container.getEstimatedTime(),

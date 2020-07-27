@@ -36,7 +36,7 @@ public class ClientDCInternalInv implements Comparable<ClientDCInternalInv> {
     public ClientDCInternalInv(final int size, final long id, final long sortBy, final ITextComponent name) {
         this.inventory = new AppEngInternalInventory(null, size);
         this.searchName = name.getString().toLowerCase();
-        this.formattedName = name.getFormattedText();
+        this.formattedName = name.getString(); // FIXME FABRIC no longer formatted!
         this.id = id;
         this.sortBy = sortBy;
     }

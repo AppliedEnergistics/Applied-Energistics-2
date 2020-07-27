@@ -18,14 +18,9 @@
 
 package appeng.spatial;
 
-import net.minecraft.util.SharedSeedRandom;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationSettings;
-import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.biome.BiomeAmbience;
+import net.minecraft.world.gen.surfacebuilders.ConfiguredSurfaceBuilder;
 import net.minecraft.world.gen.surfacebuilders.SurfaceBuilder;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -34,15 +29,14 @@ public class StorageCellBiome extends Biome {
 
     public static final StorageCellBiome INSTANCE = new StorageCellBiome();
 
-    static {
-        INSTANCE.setRegistryName("appliedenergistics2:storage");
-    }
-
     public StorageCellBiome() {
-        super(new Biome.Builder().surfaceBuilder(SurfaceBuilder.NOPE, SurfaceBuilder.STONE_STONE_GRAVEL_CONFIG)
+        super(new Biome.Builder()
+                .surfaceBuilder(new ConfiguredSurfaceBuilder<>(SurfaceBuilder.NOPE, SurfaceBuilder.STONE_STONE_GRAVEL_CONFIG))
                 .precipitation(RainType.NONE).category(Category.NONE).depth(0).scale(1)
                 // Copied from the vanilla void biome
-                .temperature(0.5F).downfall(0.5F).waterColor(4159204).waterFogColor(329011).parent(null));
+                .temperature(0.5F).downfall(0.5F)
+                .func_235097_a_(new BiomeAmbience.Builder().func_235246_b_(4159204).func_235248_c_(329011).func_235239_a_(0).func_235238_a_())
+                .parent(null));
     }
 
     @Override
@@ -51,24 +45,4 @@ public class StorageCellBiome extends Biome {
         return 0x111111;
     }
 
-    @Override
-    public boolean doesWaterFreeze(IWorldReader worldIn, BlockPos pos) {
-        return false;
-    }
-
-    @Override
-    public boolean doesWaterFreeze(IWorldReader worldIn, BlockPos water, boolean mustBeAtEdge) {
-        return false;
-    }
-
-    @Override
-    public boolean doesSnowGenerate(IWorldReader worldIn, BlockPos pos) {
-        return false;
-    }
-
-    @Override
-    public void decorate(GenerationStage.Decoration stage, ChunkGenerator<? extends GenerationSettings> chunkGenerator,
-            IWorld worldIn, long seed, SharedSeedRandom random, BlockPos pos) {
-        // Nothing should ever generate here...
-    }
 }

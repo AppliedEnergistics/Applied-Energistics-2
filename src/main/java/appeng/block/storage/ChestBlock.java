@@ -29,6 +29,7 @@ import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
@@ -81,7 +82,7 @@ public class ChestBlock extends AEBaseTileBlock<ChestTileEntity> {
 
             if (hit.getFace() == tg.getUp()) {
                 if (!tg.openGui(p)) {
-                    p.sendMessage(PlayerMessages.ChestCannotReadStorageCell.get(), p.getUniqueID());
+                    p.sendMessage(PlayerMessages.ChestCannotReadStorageCell.get(), Util.DUMMY_UUID);
                 }
             } else {
                 ContainerOpener.openContainer(ChestContainer.TYPE, p,

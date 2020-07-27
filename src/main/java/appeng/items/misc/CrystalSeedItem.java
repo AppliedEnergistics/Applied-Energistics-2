@@ -29,6 +29,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.IItemProvider;
@@ -71,7 +72,7 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
         super(properties);
         this.grownItem = Preconditions.checkNotNull(grownItem);
         // Expose the growth of the seed to the model system
-        addPropertyOverride(new ResourceLocation("appliedenergistics2:growth"),
+        ItemModelsProperties.func_239418_a_(this, new ResourceLocation("appliedenergistics2:growth"),
                 (is, w, p) -> getGrowthTicks(is) / (float) GROWTH_TICKS_REQUIRED);
     }
 
@@ -106,7 +107,7 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal {
     @OnlyIn(Dist.CLIENT)
     public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines,
             final ITooltipFlag advancedTooltips) {
-        lines.add(ButtonToolTips.DoesntDespawn.getTranslationKey());
+        lines.add(ButtonToolTips.DoesntDespawn.text());
         lines.add(getGrowthTooltipItem(stack));
 
         super.addInformation(stack, world, lines, advancedTooltips);

@@ -26,16 +26,15 @@ package appeng.api.features;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.Dimension;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.server.ServerWorld;
 
 public interface IWorldGen {
-
-    void disableWorldGenForProviderID(WorldGenType type, Class<? extends Dimension> provider);
 
     void enableWorldGenForDimension(WorldGenType type, ResourceLocation dimID);
 
     void disableWorldGenForDimension(WorldGenType type, ResourceLocation dimID);
 
-    boolean isWorldGenEnabled(WorldGenType type, IWorld w);
+    boolean isWorldGenEnabled(WorldGenType type, ServerWorld w);
 
     enum WorldGenType {
         CERTUS_QUARTZ, CHARGED_CERTUS_QUARTZ, METEORITES

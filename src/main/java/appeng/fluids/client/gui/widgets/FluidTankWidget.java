@@ -91,10 +91,8 @@ public class FluidTankWidget extends Widget implements ITooltip {
     public ITextComponent getMessage() {
         final IAEFluidStack fluid = this.tank.getFluidInSlot(this.slot);
         if (fluid != null && fluid.getStackSize() > 0) {
-            String desc = fluid.getFluid().getAttributes().getDisplayName(fluid.getFluidStack()).getFormattedText();
-            String amountToText = fluid.getStackSize() + "mB";
-
-            return new StringTextComponent(desc + "\n" + amountToText);
+            return fluid.getFluid().getAttributes().getDisplayName(fluid.getFluidStack()).deepCopy()
+                    .func_240702_b_("\n" + (fluid.getStackSize() + "mB"));
         }
         return new StringTextComponent("");
     }

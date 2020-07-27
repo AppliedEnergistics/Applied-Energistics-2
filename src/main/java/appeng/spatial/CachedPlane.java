@@ -45,6 +45,7 @@ import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.worlddata.WorldData;
+import net.minecraft.world.server.ServerWorld;
 
 public class CachedPlane {
     private final int x_size;
@@ -59,13 +60,13 @@ public class CachedPlane {
     private final Column[][] myColumns;
     private final List<TileEntity> tiles = new ArrayList<>();
     private final List<NextTickListEntry<Block>> ticks = new ArrayList<>();
-    private final World world;
+    private final ServerWorld world;
     private final IMovableRegistry reg = Api.instance().registries().movable();
     private final List<WorldCoord> updates = new ArrayList<>();
     private int verticalBits;
     private final BlockState matrixBlockState;
 
-    public CachedPlane(final World w, final int minX, final int minY, final int minZ, final int maxX, final int maxY,
+    public CachedPlane(final ServerWorld w, final int minX, final int minY, final int minZ, final int maxX, final int maxY,
             final int maxZ) {
 
         Block matrixFrameBlock = Api.instance().definitions().blocks().matrixFrame().maybeBlock().orElse(null);
@@ -159,7 +160,7 @@ public class CachedPlane {
                         if (tePOS.getX() >= minX && tePOS.getX() <= maxX && tePOS.getY() >= minY && tePOS.getY() <= maxY
                                 && tePOS.getZ() >= minZ && tePOS.getZ() <= maxZ) {
                             this.ticks.add(new NextTickListEntry<>(tePOS, entry.getTarget(),
-                                    entry.scheduledTime - gameTime, entry.priority));
+                                    entry.field_235017_b_ - gameTime, entry.priority));
                         }
                     }
                 }
@@ -263,7 +264,7 @@ public class CachedPlane {
 
     private void addTick(final int x, final int y, final int z, final NextTickListEntry<Block> entry) {
         BlockPos where = new BlockPos(x + this.x_offset, y + this.y_offset, z + this.z_offset);
-        this.world.getPendingBlockTicks().scheduleTick(where, entry.getTarget(), (int) entry.scheduledTime,
+        this.world.getPendingBlockTicks().scheduleTick(where, entry.getTarget(), (int) entry.field_235017_b_,
                 entry.priority);
     }
 
@@ -315,12 +316,10 @@ public class CachedPlane {
 
                 final Chunk c = this.myChunks[x][z];
 
-                for (int y = 1; y < 255; y += 32) {
-                    WorldData.instance().compassData().service().updateArea(this.getWorld(), c.getPos(), y);
-                }
+                WorldData.instance().compassData().service().updateArea(this.getWorld(), c);
 
                 // FIXME this was sending chunks to players...
-                SChunkDataPacket cdp = new SChunkDataPacket(c, verticalBits);
+                SChunkDataPacket cdp = new SChunkDataPacket(c, verticalBits, false);
                 ((ServerChunkProvider) world.getChunkProvider()).chunkManager.getTrackingPlayers(c.getPos(), false)
                         .forEach(spe -> spe.connection.sendPacket(cdp));
 
@@ -336,7 +335,7 @@ public class CachedPlane {
         return this.updates;
     }
 
-    World getWorld() {
+    ServerWorld getWorld() {
         return this.world;
     }
 

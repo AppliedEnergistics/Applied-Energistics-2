@@ -116,15 +116,15 @@ public class EncodedPatternItem extends AEBaseItem {
                 return;
             }
 
-            stack.setDisplayName(GuiText.InvalidPattern.textComponent().deepCopy().func_240701_a_(TextFormatting.RED));
+            stack.setDisplayName(GuiText.InvalidPattern.text().deepCopy().func_240701_a_(TextFormatting.RED));
 
             InvalidPatternHelper invalid = new InvalidPatternHelper(stack);
 
-            final ITextComponent label = (invalid.isCraftable() ? GuiText.Crafts.textComponent()
-                    : GuiText.Creates.textComponent()).deepCopy().func_240702_b_(": ");
+            final ITextComponent label = (invalid.isCraftable() ? GuiText.Crafts.text()
+                    : GuiText.Creates.text()).deepCopy().func_240702_b_(": ");
             final ITextComponent and = new StringTextComponent(" ").deepCopy()
-                    .func_230529_a_(GuiText.And.textComponent()).deepCopy().func_240702_b_(" ");
-            final ITextComponent with = GuiText.With.textComponent().deepCopy().func_240702_b_(": ");
+                    .func_230529_a_(GuiText.And.text()).deepCopy().func_240702_b_(" ");
+            final ITextComponent with = GuiText.With.text().deepCopy().func_240702_b_(": ");
 
             boolean first = true;
             for (final InvalidPatternHelper.PatternIngredient output : invalid.getOutputs()) {
@@ -139,10 +139,10 @@ public class EncodedPatternItem extends AEBaseItem {
             }
 
             if (invalid.isCraftable()) {
-                final ITextComponent substitutionLabel = GuiText.Substitute.textComponent().deepCopy()
+                final ITextComponent substitutionLabel = GuiText.Substitute.text().deepCopy()
                         .func_240702_b_(" ");
-                final ITextComponent canSubstitute = invalid.canSubstitute() ? GuiText.Yes.textComponent()
-                        : GuiText.No.textComponent();
+                final ITextComponent canSubstitute = invalid.canSubstitute() ? GuiText.Yes.text()
+                        : GuiText.No.text();
 
                 lines.add(substitutionLabel.deepCopy().func_230529_a_(canSubstitute));
             }
@@ -160,11 +160,11 @@ public class EncodedPatternItem extends AEBaseItem {
         final Collection<IAEItemStack> in = details.getInputs();
         final Collection<IAEItemStack> out = details.getOutputs();
 
-        final ITextComponent label = (isCrafting ? GuiText.Crafts.textComponent() : GuiText.Creates.textComponent())
+        final ITextComponent label = (isCrafting ? GuiText.Crafts.text() : GuiText.Creates.text())
                 .deepCopy().func_240702_b_(": ");
-        final ITextComponent and = new StringTextComponent(" ").deepCopy().func_230529_a_(GuiText.And.textComponent())
+        final ITextComponent and = new StringTextComponent(" ").deepCopy().func_230529_a_(GuiText.And.text())
                 .func_240702_b_(" ");
-        final ITextComponent with = GuiText.With.textComponent().deepCopy().func_240702_b_(": ");
+        final ITextComponent with = GuiText.With.text().deepCopy().func_240702_b_(": ");
 
         boolean first = true;
         for (final IAEItemStack anOut : out) {
@@ -189,8 +189,8 @@ public class EncodedPatternItem extends AEBaseItem {
         }
 
         if (isCrafting) {
-            final ITextComponent substitutionLabel = GuiText.Substitute.textComponent().deepCopy().func_240702_b_(" ");
-            final ITextComponent canSubstitute = substitute ? GuiText.Yes.textComponent() : GuiText.No.textComponent();
+            final ITextComponent substitutionLabel = GuiText.Substitute.text().deepCopy().func_240702_b_(" ");
+            final ITextComponent canSubstitute = substitute ? GuiText.Yes.text() : GuiText.No.text();
 
             lines.add(substitutionLabel.deepCopy().func_230529_a_(canSubstitute));
         }

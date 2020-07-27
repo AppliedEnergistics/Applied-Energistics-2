@@ -55,7 +55,7 @@ public class SkyCompassTESR extends TileEntityRenderer<SkyCompassTileEntity> {
             blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
         }
 
-        IVertexBuilder buffer = buffers.getBuffer(Atlases.getTranslucentBlockType());
+        IVertexBuilder buffer = buffers.getBuffer(Atlases.getCutoutBlockType());
 
         BlockState blockState = te.getBlockState();
         IBakedModel model = blockRenderer.getBlockModelShapes().getModel(blockState);

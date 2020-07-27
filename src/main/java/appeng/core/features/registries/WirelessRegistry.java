@@ -24,6 +24,7 @@ import java.util.List;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.world.IBlockReader;
 
 import appeng.api.features.ILocatable;
@@ -77,28 +78,28 @@ public final class WirelessRegistry implements IWirelessTermRegistry {
         }
 
         if (!this.isWirelessTerminal(item)) {
-            player.sendMessage(PlayerMessages.DeviceNotWirelessTerminal.get());
+            player.sendMessage(PlayerMessages.DeviceNotWirelessTerminal.get(), Util.DUMMY_UUID);
             return;
         }
 
         final IWirelessTermHandler handler = this.getWirelessTerminalHandler(item);
         final String unparsedKey = handler.getEncryptionKey(item);
         if (unparsedKey.isEmpty()) {
-            player.sendMessage(PlayerMessages.DeviceNotLinked.get());
+            player.sendMessage(PlayerMessages.DeviceNotLinked.get(), Util.DUMMY_UUID);
             return;
         }
 
         final long parsedKey = Long.parseLong(unparsedKey);
         final ILocatable securityStation = Api.instance().registries().locatable().getLocatableBy(parsedKey);
         if (securityStation == null) {
-            player.sendMessage(PlayerMessages.StationCanNotBeLocated.get());
+            player.sendMessage(PlayerMessages.StationCanNotBeLocated.get(), Util.DUMMY_UUID);
             return;
         }
 
         if (handler.hasPower(player, 0.5, item)) {
             ContainerOpener.openContainer(WirelessTermContainer.TYPE, player, ContainerLocator.forHand(player, hand));
         } else {
-            player.sendMessage(PlayerMessages.DeviceNotPowered.get());
+            player.sendMessage(PlayerMessages.DeviceNotPowered.get(), Util.DUMMY_UUID);
         }
     }
 }

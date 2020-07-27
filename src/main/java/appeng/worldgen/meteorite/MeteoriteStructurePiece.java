@@ -23,9 +23,11 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
+import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 
@@ -85,12 +87,11 @@ public class MeteoriteStructurePiece extends StructurePiece {
     }
 
     @Override
-    public boolean create(IWorld world, ChunkGenerator<?> chunkGeneratorIn, Random rand, MutableBoundingBox bounds,
-            ChunkPos chunkPos) {
+    public boolean func_230383_a_(ISeedReader world, StructureManager p_230383_2_, ChunkGenerator chunkGeneratorIn, Random rand, MutableBoundingBox bounds, ChunkPos chunkPos, BlockPos p_230383_7_) {
         MeteoritePlacer placer = new MeteoritePlacer(world, settings, bounds);
         placer.place();
 
-        WorldData.instance().compassData().service().updateArea(world, chunkPos); // FIXME: We know the y-range here...
+        WorldData.instance().compassData().service().tryUpdateArea(world, chunkPos); // FIXME: We know the y-range here...
         return true;
     }
 }

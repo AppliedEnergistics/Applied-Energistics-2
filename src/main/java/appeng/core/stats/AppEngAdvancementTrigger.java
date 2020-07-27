@@ -28,11 +28,14 @@ import java.util.Set;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 
+import net.minecraft.advancements.ICriterionInstance;
 import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.advancements.PlayerAdvancements;
 import net.minecraft.advancements.criterion.CriterionInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.loot.ConditionArrayParser;
+import net.minecraft.loot.ConditionArraySerializer;
 import net.minecraft.util.ResourceLocation;
 
 import appeng.core.AppEng;
@@ -85,7 +88,7 @@ public class AppEngAdvancementTrigger
     }
 
     @Override
-    public AppEngAdvancementTrigger.Instance deserializeInstance(JsonObject json, JsonDeserializationContext context) {
+    public Instance func_230307_a_(JsonObject p_230307_1_, ConditionArrayParser p_230307_2_) {
         return new AppEngAdvancementTrigger.Instance(this.getId());
     }
 
@@ -98,13 +101,25 @@ public class AppEngAdvancementTrigger
         }
     }
 
-    public static class Instance extends CriterionInstance {
-        public Instance(ResourceLocation parID) {
-            super(parID);
+    public static class Instance implements ICriterionInstance {
+        private final ResourceLocation id;
+
+        public Instance(ResourceLocation id) {
+            this.id = id;
         }
 
         public boolean test() {
             return true;
+        }
+
+        @Override
+        public ResourceLocation getId() {
+            return id;
+        }
+
+        @Override
+        public JsonObject func_230240_a_(ConditionArraySerializer p_230240_1_) {
+            return new JsonObject();
         }
     }
 

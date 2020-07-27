@@ -62,7 +62,7 @@ class ColorApplicatorBakedModel implements IBakedModel {
             }
 
             BakedQuad newQuad = new BakedQuad(quad.getVertexData(), tint, quad.getFace(), quad.func_187508_a(),
-                    quad.shouldApplyDiffuseLighting());
+                    quad.func_239287_f_());
             result.add(newQuad);
         }
 

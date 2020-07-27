@@ -23,6 +23,8 @@ import java.util.regex.Pattern;
 
 import appeng.api.config.ActionItems;
 import appeng.core.localization.ButtonToolTips;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 public class ActionButton extends IconButton implements ITooltip {
     private static final Pattern PATTERN_NEW_LINE = Pattern.compile("\\n", Pattern.LITERAL);
@@ -76,9 +78,9 @@ public class ActionButton extends IconButton implements ITooltip {
         return iconIndex;
     }
 
-    private String buildMessage(ButtonToolTips displayName, ButtonToolTips displayValue) {
-        String name = displayName.getTranslationKey().getString();
-        String value = displayValue.getTranslationKey().getString();
+    private ITextComponent buildMessage(ButtonToolTips displayName, ButtonToolTips displayValue) {
+        String name = displayName.text().getString();
+        String value = displayValue.text().getString();
 
         value = PATTERN_NEW_LINE.matcher(value).replaceAll("\n");
         final StringBuilder sb = new StringBuilder(value);
@@ -91,7 +93,7 @@ public class ActionButton extends IconButton implements ITooltip {
             sb.replace(i, i + 1, "\n");
         }
 
-        return name + '\n' + sb;
+        return new StringTextComponent(name + '\n' + sb);
     }
 
 }

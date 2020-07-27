@@ -30,6 +30,7 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -223,7 +224,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
             // FIXME: Check how this looks, probably like shit, maybe provide parts the
             // ability to supply particle textures???
             effectRenderer
-                    .addEffect(new CableBusBreakingParticle(world, x, y, z, texture).multipleParticleScaleBy(0.8F));
+                    .addEffect(new CableBusBreakingParticle((ClientWorld) world, x, y, z, texture).multipleParticleScaleBy(0.8F));
         }
 
         return true;
@@ -264,7 +265,7 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
 
                         // FIXME: Check how this looks, probably like shit, maybe provide parts the
                         // ability to supply particle textures???
-                        Particle effect = new CableBusBreakingParticle(world, x, y, z, x - pos.getX() - 0.5D,
+                        Particle effect = new CableBusBreakingParticle((ClientWorld) world, x, y, z, x - pos.getX() - 0.5D,
                                 y - pos.getY() - 0.5D, z - pos.getZ() - 0.5D, texture);
                         effectRenderer.addEffect(effect);
                     }
@@ -335,11 +336,6 @@ public class CableBusBlock extends AEBaseTileBlock<CableBusTileEntity> implement
         Vector3d hitVec = hit.getHitVec();
         Vector3d hitInBlock = new Vector3d(hitVec.x - pos.getX(), hitVec.y - pos.getY(), hitVec.z - pos.getZ());
         return this.cb(w, pos).activate(player, hand, hitInBlock) ? ActionResultType.SUCCESS : ActionResultType.PASS;
-    }
-
-    @Override
-    public boolean recolorBlock(BlockState state, IWorld world, BlockPos pos, Direction side, DyeColor color) {
-        return recolorBlock(world, pos, side, color, null);
     }
 
     public boolean recolorBlock(final IBlockReader world, final BlockPos pos, final Direction side,

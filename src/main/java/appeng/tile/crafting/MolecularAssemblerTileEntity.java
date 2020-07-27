@@ -426,7 +426,7 @@ public class MolecularAssemblerTileEntity extends AENetworkInvTileEntity
                 final IAEItemStack item = AEItemStack.fromItemStack(output);
                 if (item != null) {
                     final TargetPoint where = new TargetPoint(this.pos.getX(), this.pos.getY(), this.pos.getZ(), 32,
-                            this.world.func_230315_m_());
+                            this.world);
                     NetworkHandler.instance()
                             .sendToAllAround(new AssemblerAnimationPacket(this.pos, (byte) speed, item), where);
                 }

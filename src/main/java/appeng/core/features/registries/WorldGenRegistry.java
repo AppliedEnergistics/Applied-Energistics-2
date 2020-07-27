@@ -25,6 +25,7 @@ import net.minecraft.world.Dimension;
 import net.minecraft.world.IWorld;
 
 import appeng.api.features.IWorldGen;
+import net.minecraft.world.server.ServerWorld;
 
 public final class WorldGenRegistry implements IWorldGen {
 
@@ -38,19 +39,6 @@ public final class WorldGenRegistry implements IWorldGen {
         for (final WorldGenType type : WorldGenType.values()) {
             this.types[type.ordinal()] = new TypeSet();
         }
-    }
-
-    @Override
-    public void disableWorldGenForProviderID(WorldGenType type, Class<? extends Dimension> provider) {
-        if (type == null) {
-            throw new IllegalArgumentException("Bad Type Passed");
-        }
-
-        if (provider == null) {
-            throw new IllegalArgumentException("Bad Provider Passed");
-        }
-
-        this.types[type.ordinal()].badProviders.add(provider);
     }
 
     @Override
@@ -72,7 +60,7 @@ public final class WorldGenRegistry implements IWorldGen {
     }
 
     @Override
-    public boolean isWorldGenEnabled(final WorldGenType type, final IWorld w) {
+    public boolean isWorldGenEnabled(final WorldGenType type, final ServerWorld w) {
         if (type == null) {
             throw new IllegalArgumentException("Bad Type Passed");
         }
@@ -81,12 +69,11 @@ public final class WorldGenRegistry implements IWorldGen {
             throw new IllegalArgumentException("Bad Provider Passed");
         }
 
-        ResourceLocation id = w.getDimension().getType().getRegistryName();
-        final boolean isBadProvider = this.types[type.ordinal()].badProviders.contains(w.getDimension().getClass());
+        ResourceLocation id = w.func_234923_W_().func_240901_a_();
         final boolean isBadDimension = this.types[type.ordinal()].badDimensions.contains(id);
         final boolean isGoodDimension = this.types[type.ordinal()].enabledDimensions.contains(id);
 
-        if (isBadProvider || isBadDimension) {
+        if (isBadDimension) {
             return false;
         }
 
@@ -99,7 +86,6 @@ public final class WorldGenRegistry implements IWorldGen {
 
     private static class TypeSet {
 
-        final HashSet<Class<? extends Dimension>> badProviders = new HashSet<>();
         final HashSet<ResourceLocation> badDimensions = new HashSet<>();
         final HashSet<ResourceLocation> enabledDimensions = new HashSet<>();
     }

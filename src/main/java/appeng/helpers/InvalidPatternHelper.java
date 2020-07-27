@@ -24,6 +24,7 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -125,10 +126,10 @@ public class InvalidPatternHelper {
         }
 
         public ITextComponent getFormattedToolTip() {
-            ITextComponent result = new StringTextComponent(this.getCount() + " ").appendSibling(this.getName());
+            IFormattableTextComponent result = new StringTextComponent(this.getCount() + " ").func_230529_a_(this.getName());
 
             if (!this.isValid()) {
-                result.applyTextStyle(TextFormatting.RED);
+                result.func_240699_a_(TextFormatting.RED);
             }
 
             return result;

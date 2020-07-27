@@ -28,6 +28,7 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
@@ -186,7 +187,7 @@ public class DebugCardItem extends AEBaseItem {
     }
 
     private void outputMsg(final Entity player, final String string) {
-        player.sendMessage(new StringTextComponent(string));
+        player.sendMessage(new StringTextComponent(string), Util.DUMMY_UUID);
     }
 
     private String timeMeasurement(final long nanos) {

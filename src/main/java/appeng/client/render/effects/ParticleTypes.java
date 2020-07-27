@@ -1,5 +1,6 @@
 package appeng.client.render.effects;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.particles.ParticleType;
 
@@ -12,10 +13,19 @@ public final class ParticleTypes {
 
     public static final BasicParticleType CHARGED_ORE = new BasicParticleType(false);
     public static final BasicParticleType CRAFTING = new BasicParticleType(false);
-    public static final ParticleType<EnergyParticleData> ENERGY = new ParticleType<>(false,
-            EnergyParticleData.DESERIALIZER);
-    public static final ParticleType<LightningArcParticleData> LIGHTNING_ARC = new ParticleType<>(false,
-            LightningArcParticleData.DESERIALIZER);
+    public static final ParticleType<EnergyParticleData> ENERGY = new ParticleType<EnergyParticleData>(false,
+            EnergyParticleData.DESERIALIZER) {
+        public Codec<EnergyParticleData> func_230522_e_() {
+            return null;
+        }
+    };
+    public static final ParticleType<LightningArcParticleData> LIGHTNING_ARC = new ParticleType<LightningArcParticleData>(false,
+            LightningArcParticleData.DESERIALIZER) {
+        @Override
+        public Codec<LightningArcParticleData> func_230522_e_() {
+            return null;
+        }
+    };
     public static final BasicParticleType LIGHTNING = new BasicParticleType(false);
     public static final BasicParticleType MATTER_CANNON = new BasicParticleType(false);
     public static final BasicParticleType VIBRANT = new BasicParticleType(false);

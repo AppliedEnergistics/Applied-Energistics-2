@@ -30,8 +30,12 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
@@ -64,7 +68,7 @@ public class ReplicatorCardItem extends AEBaseItem {
 
             tag.putInt("r", replications);
 
-            playerIn.sendMessage(new StringTextComponent((replications + 1) + "³ Replications"));
+            playerIn.sendMessage(new StringTextComponent((replications + 1) + "³ Replications"), Util.DUMMY_UUID);
         }
 
         return super.onItemRightClick(worldIn, playerIn, handIn);
@@ -98,7 +102,7 @@ public class ReplicatorCardItem extends AEBaseItem {
                 tag.putInt("y", y);
                 tag.putInt("z", z);
                 tag.putInt("side", side.ordinal());
-                tag.putInt("dimid", world.getDimension().getType().getId());
+                tag.putString("w", world.func_234923_W_().func_240901_a_().toString());
                 tag.putInt("r", 0);
 
                 this.outputMsg(player, "Set replicator source");
@@ -112,8 +116,9 @@ public class ReplicatorCardItem extends AEBaseItem {
                 final int src_y = ish.getInt("y");
                 final int src_z = ish.getInt("z");
                 final int src_side = ish.getInt("side");
-                final int dimid = ish.getInt("dimid");
-                final World src_w = world.getServer().getWorld(DimensionType.getById(dimid));
+                final String worldId = ish.getString("w");
+                final World src_w = world.getServer()
+                        .getWorld(RegistryKey.func_240903_a_(Registry.WORLD_KEY, new ResourceLocation(worldId)));
                 final int replications = ish.getInt("r") + 1;
 
                 final TileEntity te = src_w.getTileEntity(new BlockPos(src_x, src_y, src_z));
@@ -182,7 +187,7 @@ public class ReplicatorCardItem extends AEBaseItem {
                                                             final TileEntity nte = blk.createTileEntity(state, world);
                                                             final CompoundNBT data = new CompoundNBT();
                                                             ote.write(data);
-                                                            nte.read(data.copy());
+                                                            nte.read(state, data.copy());
                                                             world.setTileEntity(d, nte);
                                                         }
                                                         world.notifyBlockUpdate(d, prev, state, 3);
@@ -212,6 +217,6 @@ public class ReplicatorCardItem extends AEBaseItem {
     }
 
     private void outputMsg(final Entity player, final String string) {
-        player.sendMessage(new StringTextComponent(string));
+        player.sendMessage(new StringTextComponent(string), Util.DUMMY_UUID);
     }
 }

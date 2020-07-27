@@ -28,6 +28,7 @@ import appeng.core.AEConfig;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.util.Platform;
+import net.minecraft.util.Util;
 
 public class WirelessTermContainer extends MEPortableCellContainer {
 
@@ -57,7 +58,7 @@ public class WirelessTermContainer extends MEPortableCellContainer {
 
         if (!this.wirelessTerminalGUIObject.rangeCheck()) {
             if (Platform.isServer() && this.isValidContainer()) {
-                this.getPlayerInv().player.sendMessage(PlayerMessages.OutOfRange.get());
+                this.getPlayerInv().player.sendMessage(PlayerMessages.OutOfRange.get(), Util.DUMMY_UUID);
             }
 
             this.setValidContainer(false);

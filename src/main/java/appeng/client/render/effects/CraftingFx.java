@@ -135,7 +135,7 @@ public class CraftingFx extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle makeParticle(BasicParticleType data, World worldIn, double x, double y, double z, double xSpeed,
+        public Particle makeParticle(BasicParticleType data, ClientWorld worldIn, double x, double y, double z, double xSpeed,
                 double ySpeed, double zSpeed) {
             return new CraftingFx(worldIn, x, y, z, spriteSet);
         }

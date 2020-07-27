@@ -58,7 +58,7 @@ public class SpatialIOPortScreen extends AEBaseScreen<SpatialIOPortContainer> {
                 GuiText.Efficiency.getLocal() + ": " + (((float) this.container.getEfficency()) / 100) + '%', 13, 83,
                 4210752);
 
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.SpatialIOPort.textComponent()).getString(), 8,
+        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.SpatialIOPort.text()).getString(), 8,
                 6, 4210752);
         this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96, 4210752);
 

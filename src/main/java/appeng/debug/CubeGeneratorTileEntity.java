@@ -26,6 +26,7 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 
@@ -51,7 +52,7 @@ public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ITickab
 
             if (this.countdown % 20 == 0) {
                 for (final PlayerEntity e : AppEng.proxy.getPlayers()) {
-                    e.sendMessage(new StringTextComponent("Spawning in... " + (this.countdown / 20)));
+                    e.sendMessage(new StringTextComponent("Spawning in... " + (this.countdown / 20)), Util.DUMMY_UUID);
                 }
             }
 
@@ -102,7 +103,7 @@ public class CubeGeneratorTileEntity extends AEBaseTileEntity implements ITickab
                     this.size = 64;
                 }
 
-                player.sendMessage(new StringTextComponent("Size: " + this.size));
+                player.sendMessage(new StringTextComponent("Size: " + this.size), Util.DUMMY_UUID);
             } else {
                 this.countdown = 20 * 10;
                 this.is = hand;

@@ -62,9 +62,9 @@ public final class WorldData implements IWorldData {
         Preconditions.checkNotNull(overworld);
 
         // Attach shared data to the server's overworld dimension
-        if (overworld.getDimension().getType() != DimensionType.OVERWORLD) {
+        if (overworld.func_234923_W_() != ServerWorld.field_234918_g_) {
             throw new IllegalStateException(
-                    "The server doesn't have an Overworld dimension we could store our data on!");
+                    "The server doesn't have an overworld we could store our data on!");
         }
 
         final PlayerData playerData = overworld.getSavedData().getOrCreate(PlayerData::new, PlayerData.NAME);
@@ -96,7 +96,7 @@ public final class WorldData implements IWorldData {
                 throw new IllegalStateException("No server set.");
             }
 
-            ServerWorld overworld = server.getWorld(DimensionType.OVERWORLD);
+            ServerWorld overworld = server.getWorld(ServerWorld.field_234918_g_);
             instance = new WorldData(overworld);
         }
         return instance;

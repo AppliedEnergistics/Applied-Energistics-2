@@ -26,6 +26,7 @@ import java.util.Locale;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 
+import net.minecraft.util.text.StringTextComponent;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.util.InputMappings;
@@ -157,7 +158,7 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
     }
 
     @Override
-    protected void renderHoveredToolTip(MatrixStack matrixStack, int mouseX, int mouseY) {
+    protected void func_230459_a_(MatrixStack matrixStack, int mouseX, int mouseY) {
         final Slot slot = this.getSlot(mouseX, mouseY);
 
         if (slot instanceof IMEFluidSlot && slot.isEnabled()) {
@@ -170,18 +171,17 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
 
                 final String modName = Platform.getModName(Platform.getModId(fluidStack));
 
-                final List<String> list = new ArrayList<>();
-
-                list.add(fluidStack.getFluidStack().getDisplayName().getString());
-                list.add(formattedAmount);
-                list.add(modName);
+                final List<ITextComponent> list = new ArrayList<>();
+                list.add(fluidStack.getFluidStack().getDisplayName());
+                list.add(new StringTextComponent(formattedAmount));
+                list.add(new StringTextComponent(modName));
 
                 this.renderTooltip(matrixStack, list, mouseX, mouseY);
 
                 return;
             }
         }
-        super.renderHoveredToolTip(matrixStack, mouseX, mouseY);
+        super.func_230459_a_(matrixStack, mouseX, mouseY);
     }
 
     private <S extends Enum<S>> void toggleServerSetting(SettingToggleButton<S> btn, boolean backwards) {

@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
@@ -31,6 +32,7 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import net.minecraft.util.text.Style;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
@@ -145,7 +147,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         RenderSystem.popMatrix();
         RenderSystem.enableDepthTest();
 
-        this.renderHoveredToolTip(matrixStack, mouseX, mouseY);
+        this.func_230459_a_(matrixStack, mouseX, mouseY);
 
         for (final Object c : this.buttons) {
             if (c instanceof ITooltip) {
@@ -189,33 +191,35 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         }
     }
 
-    protected void drawTooltip(MatrixStack matrixStack, int x, int y, ITextComponent message) {
-        String[] lines = message.split("\n");
-        this.drawTooltip(matrixStack, x, y, Arrays.asList(lines));
+    protected void drawTooltip(MatrixStack matrices, int x, int y, ITextComponent message) {
+        String[] lines = message.getString().split("\n"); // FIXME FABRIC
+        List<ITextComponent> textLines = Arrays.stream(lines).map(StringTextComponent::new).collect(Collectors.toList());
+        this.drawTooltip(matrices, x, y, textLines);
     }
 
-    protected void drawTooltip(MatrixStack matrixStack, int x, int y, List<String> lines) {
+    // FIXME FABRIC: move out to json (?)
+    private static final Style TOOLTIP_HEADER = Style.EMPTY.applyFormatting(TextFormatting.WHITE);
+    private static final Style TOOLTIP_BODY = Style.EMPTY.applyFormatting(TextFormatting.GRAY);
+
+    protected void drawTooltip(MatrixStack matrices, int x, int y, List<ITextComponent> lines) {
         if (lines.isEmpty()) {
             return;
         }
 
-        // For an explanation of the formatting codes, see
-        // http://minecraft.gamepedia.com/Formatting_codes
-        lines = Lists.newArrayList(lines); // Make a copy
-
         // Make the first line white
-        lines.set(0, TextFormatting.WHITE + lines.get(0));
-
         // All lines after the first are colored gray
-        for (int i = 1; i < lines.size(); i++) {
-            lines.set(i, TextFormatting.GRAY + lines.get(i));
+        List<ITextComponent> styledLines = new ArrayList<>(lines.size());
+        for (int i = 0; i < lines.size(); i++) {
+            Style style = (i == 0) ? TOOLTIP_HEADER : TOOLTIP_BODY;
+            styledLines.add(lines.get(i).deepCopy().func_240700_a_(s -> style));
         }
 
-        this.renderTooltip(matrixStack, lines, x, y, this.font);
+        this.renderTooltip(matrices, styledLines, x, y);
+
     }
 
     @Override
-    protected final void drawGuiContainerForegroundLayer(MatrixStack matrixStack, final int x, final int y) {
+    protected final void func_230451_b_(MatrixStack matrixStack, final int x, final int y) {
         final int ox = this.guiLeft; // (width - xSize) / 2;
         final int oy = this.guiTop; // (height - ySize) / 2;
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -230,7 +234,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     public abstract void drawFG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY);
 
     @Override
-    protected final void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, final float f, final int x,
+    protected final void func_230450_a_(MatrixStack matrixStack, final float f, final int x,
             final int y) {
         final int ox = this.guiLeft; // (width - xSize) / 2;
         final int oy = this.guiTop; // (height - ySize) / 2;
@@ -627,16 +631,16 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
      * hackery...
      */
     @Override
-    public void drawSlot(MatrixStack matrixStack, Slot s) {
+    public void func_238746_a_(MatrixStack matrices, Slot s) {
         if (s instanceof SlotME) {
 
             try {
                 if (!this.isPowered()) {
-                    fill(matrixStack, s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66111111);
+                    fill(matrices, s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66111111);
                 }
 
                 // Annoying but easier than trying to splice into render item
-                super.drawSlot(new Size1Slot((SlotME) s));
+                super.func_238746_a_(matrices, new Size1Slot((SlotME) s));
 
                 this.stackSizeRenderer.renderStackSize(this.font, ((SlotME) s).getAEStack(), s.xPos, s.yPos);
 
@@ -665,13 +669,13 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 float blue = (fluidAttributes.getColor() & 255) / 255.0F;
                 RenderSystem.color3f(red, green, blue);
 
-                blit(matrixStack, s.xPos, s.yPos, 0 /* FIXME: Validate this was previous the controls zindex */, 16, 16,
+                blit(matrices, s.xPos, s.yPos, 0 /* FIXME: Validate this was previous the controls zindex */, 16, 16,
                         sprite);
                 RenderSystem.enableBlend();
 
                 this.fluidStackSizeRenderer.renderStackSize(this.font, fs, s.xPos, s.yPos);
             } else if (!this.isPowered()) {
-                fill(matrixStack, s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66111111);
+                fill(matrices, s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66111111);
             }
 
             return;
@@ -743,7 +747,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                         setBlitOffset(100);
                         this.itemRenderer.zLevel = 100.0F;
 
-                        fill(matrixStack, s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66ff6666);
+                        fill(matrices, s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66ff6666);
 
                         setBlitOffset(0);
                         this.itemRenderer.zLevel = 0.0F;
@@ -752,9 +756,9 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
                 if (s instanceof AppEngSlot) {
                     ((AppEngSlot) s).setDisplay(true);
-                    super.drawSlot(s);
+                    super.func_238746_a_(matrices, s);
                 } else {
-                    super.drawSlot(s);
+                    super.func_238746_a_(matrices, s);
                 }
 
                 return;
@@ -763,7 +767,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
             }
         }
         // do the usual for non-ME Slots.
-        super.drawSlot(s);
+        super.func_238746_a_(matrices, s);
     }
 
     protected boolean isPowered() {
@@ -798,12 +802,6 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 ((ITickingWidget) child).tick();
             }
         }
-    }
-
-    @Override
-    protected void func_230450_a_(MatrixStack p_230450_1_, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
-        // TODO Auto-generated method stub
-        
     }
 
 }

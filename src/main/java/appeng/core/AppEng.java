@@ -42,7 +42,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.ModDimension;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -102,6 +101,10 @@ public final class AppEng {
 
     private static AppEng INSTANCE;
 
+    public static ResourceLocation makeId(String id) {
+        return new ResourceLocation(MOD_ID, id);
+    }
+
     private final Registration registration;
 
     public AppEng() {
@@ -129,7 +132,6 @@ public final class AppEng {
         modEventBus.addGenericListener(IRecipeSerializer.class, registration::registerRecipeSerializers);
         modEventBus.addGenericListener(Feature.class, registration::registerWorldGen);
         modEventBus.addGenericListener(Biome.class, registration::registerBiomes);
-        modEventBus.addGenericListener(ModDimension.class, registration::registerModDimension);
 
         modEventBus.addListener(Integrations::enqueueIMC);
         modEventBus.addListener(this::commonSetup);

@@ -68,6 +68,12 @@ public class FacadeBlockAccess implements IBlockDisplayReader {
         return world.getFluidState(pos);
     }
 
+    // This is for diffuse lighting
+    @Override
+    public float func_230487_a_(Direction p_230487_1_, boolean p_230487_2_) {
+        return world.func_230487_a_(p_230487_1_, p_230487_2_);
+    }
+
     @Override
     public WorldLightManager getLightManager() {
         return world.getLightManager();

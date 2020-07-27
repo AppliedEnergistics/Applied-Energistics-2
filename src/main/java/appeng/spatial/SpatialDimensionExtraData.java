@@ -1,70 +1,70 @@
 package appeng.spatial;
 
-import javax.annotation.Nullable;
-
-import io.netty.buffer.Unpooled;
-
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
-
-import appeng.core.AELog;
+import net.minecraft.world.storage.WorldSavedData;
 
 /**
- * Helps with encoding and decoding the extra data we attach to the spatial
- * {@link net.minecraft.world.dimension.DimensionType} as "extra data". Keep in
- * mind this data will also be sent to the client unless
- * {@link net.minecraftforge.common.ModDimension#write(PacketBuffer, boolean)}
- * is overridden.
+ * Helps with encoding and decoding the extra data we attach to each created
+ * storage dimension world as persistent state.
  */
-public final class SpatialDimensionExtraData {
+public final class SpatialDimensionExtraData extends WorldSavedData {
+
+    /**
+     * ID of this data when it is attached to a world.
+     */
+    public static final String ID = "ae2_spatial_info";
 
     // Used to allow forward compatibility
     private static final int CURRENT_FORMAT = 1;
+
+    private static final String TAG_FORMAT = "format";
+
+    private static final String TAG_SIZE = "size";
 
     /**
      * The storage size of this dimension. This is dicateted by the pylon structure
      * size used to perform the first transfer into this dimension. Once it's set,
      * it cannot be changed anymore.
      */
-    private final BlockPos size;
+    private BlockPos size = BlockPos.ZERO;
 
-    public SpatialDimensionExtraData(BlockPos size) {
-        this.size = size;
+    public SpatialDimensionExtraData() {
+        super(ID);
     }
 
-    public PacketBuffer write() {
-        PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
-        buf.writeByte(CURRENT_FORMAT);
-        buf.writeBlockPos(size);
-        buf.capacity(buf.writerIndex()); // This cuts the backing buffer to the required size
-        return buf;
+    public SpatialDimensionExtraData(BlockPos size) {
+        super(ID);
+        this.size = size;
     }
 
     public BlockPos getSize() {
         return size;
     }
 
-    @Nullable
-    public static SpatialDimensionExtraData read(@Nullable PacketBuffer buf) {
-        if (buf == null) {
-            return null;
+    public void setSize(BlockPos size) {
+        this.size = size;
+        setDirty(true);
+    }
+
+    @Override
+    public void read(CompoundNBT tag) {
+        int version = tag.getInt(TAG_FORMAT);
+        if (version != CURRENT_FORMAT) {
+            // Currently no new format has been defined, as such anything but the current
+            // version is invalid
+            throw new IllegalStateException("Invalid AE2 spatial info version: " + version);
         }
 
-        try {
-            buf.readerIndex(0);
-            byte version = buf.readByte();
-            if (version != CURRENT_FORMAT) {
-                // Currently no new format has been defined, as such anything but the current
-                // version is invalid
-                return null;
-            }
+        size = NBTUtil.readBlockPos(tag.getCompound(TAG_SIZE));
+    }
 
-            BlockPos size = buf.readBlockPos();
-            return new SpatialDimensionExtraData(size);
-        } catch (IndexOutOfBoundsException e) {
-            AELog.warn(e, "Failed to read spatial storage dimension data.");
-            return null;
-        }
+    @Override
+    public CompoundNBT write(CompoundNBT tag) {
+        tag.putInt(TAG_FORMAT, CURRENT_FORMAT);
+        tag.put(TAG_SIZE, NBTUtil.writeBlockPos(size));
+        return tag;
     }
 
 }

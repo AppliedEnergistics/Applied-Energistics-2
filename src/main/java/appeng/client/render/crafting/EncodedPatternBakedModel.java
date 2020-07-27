@@ -10,6 +10,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.vector.TransformationMatrix;
@@ -112,7 +113,7 @@ public class EncodedPatternBakedModel extends DelegateBakedModel {
 
         @Nullable
         @Override
-        public IBakedModel getModelWithOverrides(IBakedModel originalModel, ItemStack stack, @Nullable World world,
+        public IBakedModel func_239290_a_(IBakedModel originalModel, ItemStack stack, @Nullable ClientWorld world,
                 @Nullable LivingEntity entity) {
             boolean shiftHeld = Screen.hasShiftDown();
             if (shiftHeld) {
@@ -122,12 +123,12 @@ public class EncodedPatternBakedModel extends DelegateBakedModel {
                     IBakedModel realModel = Minecraft.getInstance().getItemRenderer().getItemModelMesher()
                             .getItemModel(output);
                     // Give the item model a chance to handle the overrides as well
-                    realModel = realModel.getOverrides().getModelWithOverrides(realModel, output, world, entity);
+                    realModel = realModel.getOverrides().func_239290_a_(realModel, output, world, entity);
                     return new ShiftHoldingModelWrapper(getBaseModel(), realModel);
                 }
             }
 
-            return getBaseModel().getOverrides().getModelWithOverrides(originalModel, stack, world, entity);
+            return getBaseModel().getOverrides().func_239290_a_(originalModel, stack, world, entity);
         }
     }
 

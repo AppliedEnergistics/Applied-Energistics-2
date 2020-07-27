@@ -18,25 +18,26 @@ import net.minecraft.world.biome.Biome.TempCategory;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.Heightmap.Type;
+import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 
 import appeng.worldgen.meteorite.fallout.FalloutMode;
 
-public class MeteoriteStructureStart extends StructureStart {
+public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
 
     private final ITag<Block> sandTag = BlockTags.getCollection().getOrCreate(new ResourceLocation("minecraft:sand"));
     private final ITag<Block> terracottaTag = BlockTags.getCollection()
             .getOrCreate(new ResourceLocation("forge:terracotta"));
 
-    public MeteoriteStructureStart(Structure<?> p_i225815_1_, int p_i225815_2_, int p_i225815_3_,
+    public MeteoriteStructureStart(Structure<NoFeatureConfig> p_i225815_1_, int p_i225815_2_, int p_i225815_3_,
             MutableBoundingBox p_i225815_4_, int p_i225815_5_, long p_i225815_6_) {
         super(p_i225815_1_, p_i225815_2_, p_i225815_3_, p_i225815_4_, p_i225815_5_, p_i225815_6_);
     }
 
-    public void init(ChunkGenerator<?> generator, TemplateManager templateManagerIn, int chunkX, int chunkZ,
-            Biome biome) {
+    public void func_230364_a_(ChunkGenerator generator, TemplateManager templateManagerIn, int chunkX, int chunkZ,
+            Biome biome, NoFeatureConfig config) {
         final int centerX = chunkX * 16 + this.rand.nextInt(16);
         final int centerZ = chunkZ * 16 + this.rand.nextInt(16);
         final float meteoriteRadius = (this.rand.nextFloat() * 6.0f) + 2;
@@ -53,7 +54,7 @@ public class MeteoriteStructureStart extends StructureStart {
         int scanRadius = (int) Math.max(1, meteoriteRadius * 2);
         for (int x = -scanRadius; x <= scanRadius; x++) {
             for (int z = -scanRadius; z <= scanRadius; z++) {
-                int h = generator.getHeight(centerX + x, centerZ + z, heightmapType);
+                int h = generator.func_222529_a(centerX + x, centerZ + z, heightmapType);
                 stats.add(h);
             }
         }
@@ -88,7 +89,7 @@ public class MeteoriteStructureStart extends StructureStart {
      * @return true, if it found a single block of water
      */
     private boolean locateWaterAroundTheCrater(ChunkGenerator generator, BlockPos pos, float radius) {
-        final int seaLevel = generator.getSeaLevel();
+        final int seaLevel = generator.func_230356_f_();
         final int maxY = seaLevel - 1;
         BlockPos.Mutable blockPos = new BlockPos.Mutable();
 
@@ -105,7 +106,7 @@ public class MeteoriteStructureStart extends StructureStart {
                 final double distanceFrom = dx * dx + dz * dz;
 
                 if (maxY > h + distanceFrom * 0.0175 && maxY < h + distanceFrom * 0.02) {
-                    int heigth = generator.getHeight(blockPos.getX(), blockPos.getZ(), Heightmap.Type.OCEAN_FLOOR);
+                    int heigth = generator.func_222529_a(blockPos.getX(), blockPos.getZ(), Heightmap.Type.OCEAN_FLOOR);
                     if (heigth < seaLevel) {
                         return true;
                     }

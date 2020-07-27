@@ -59,8 +59,8 @@ public class InscriberScreen extends AEBaseScreen<InscriberContainer> {
         this.pb.setFullMsg(new StringTextComponent(
                 this.container.getCurrentProgress() * 100 / this.container.getMaxProgress() + "%"));
 
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Inscriber.textComponent()).getString(), 8, 6, 4210752);
-        this.font.drawString(matrixStack, GuiText.inventory.textComponent().getString(), 8, this.ySize - 96 + 3, 4210752);
+        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Inscriber.text()).getString(), 8, 6, 4210752);
+        this.font.drawString(matrixStack, GuiText.inventory.text().getString(), 8, this.ySize - 96 + 3, 4210752);
     }
 
     @Override

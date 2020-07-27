@@ -118,12 +118,10 @@ public class TinyTNTBlock extends AEBaseBlock {
                 LivingEntity igniter = null;
                 // Check if the shooter still exists
                 if (w instanceof ServerWorld) {
-                    ServerWorld serverWorld = (ServerWorld) w;
-                    Entity shooter = serverWorld.getEntityByUuid(entityarrow.shootingEntity);
+                    Entity shooter = entityarrow.func_234616_v_();
                     if (shooter instanceof LivingEntity) {
                         igniter = (LivingEntity) shooter;
                     }
-
                 }
                 this.startFuse(w, pos, igniter);
                 w.removeBlock(pos, false);

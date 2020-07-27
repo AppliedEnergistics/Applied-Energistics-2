@@ -27,6 +27,7 @@ import net.minecraft.network.play.server.SChunkDataPacket;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
@@ -69,7 +70,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
 
             CraterType craterType = CraterType.values()[tag.getByte(MODE_TAG)];
 
-            player.sendMessage(new StringTextComponent(craterType.name()));
+            player.sendMessage(new StringTextComponent(craterType.name()), Util.DUMMY_UUID);
 
             return ActionResult.resultSuccess(itemStack);
         }
@@ -106,7 +107,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
                 pureCrater, false);
 
         if (spawned == null) {
-            player.sendMessage(new StringTextComponent("Un-suitable Location."));
+            player.sendMessage(new StringTextComponent("Un-suitable Location."), Util.DUMMY_UUID);
             return ActionResultType.FAIL;
         }
 
@@ -121,14 +122,14 @@ public class MeteoritePlacerItem extends AEBaseItem {
         placer.place();
 
         player.sendMessage(new StringTextComponent("Spawned at y=" + spawned.getPos().getY() + " range=" + range
-                + " biomeCategory=" + world.getBiome(pos).getCategory()));
+                + " biomeCategory=" + world.getBiome(pos).getCategory()), Util.DUMMY_UUID);
 
         // The placer will not send chunks to the player since it's used as part
         // of world-gen normally, so we'll have to do it ourselves. Since this
         // is a debug tool, we'll not care about being terribly efficient here
         ChunkPos.getAllInBox(new ChunkPos(spawned.getPos()), 1).forEach(cp -> {
             Chunk c = world.getChunk(cp.x, cp.z);
-            player.connection.sendPacket(new SChunkDataPacket(c, 65535)); // 65535 == full chunk
+            player.connection.sendPacket(new SChunkDataPacket(c, 65535, false)); // 65535 == full chunk
         });
 
         return ActionResultType.SUCCESS;

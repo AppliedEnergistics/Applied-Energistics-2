@@ -24,6 +24,7 @@ import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.SpriteTexturedParticle;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -37,7 +38,7 @@ public class LightningArcFX extends LightningFX {
     private final double ry;
     private final double rz;
 
-    public LightningArcFX(final World w, final double x, final double y, final double z, final double ex,
+    public LightningArcFX(final ClientWorld w, final double x, final double y, final double z, final double ex,
             final double ey, final double ez, final double r, final double g, final double b) {
         super(w, x, y, z, r, g, b, 6);
 
@@ -75,8 +76,8 @@ public class LightningArcFX extends LightningFX {
         }
 
         @Override
-        public Particle makeParticle(LightningArcParticleData data, World worldIn, double x, double y, double z,
-                double xSpeed, double ySpeed, double zSpeed) {
+        public Particle makeParticle(LightningArcParticleData data, ClientWorld worldIn, double x, double y, double z,
+                                     double xSpeed, double ySpeed, double zSpeed) {
             SpriteTexturedParticle lightningFX = new LightningArcFX(worldIn, x, y, z, data.target.x, data.target.y,
                     data.target.z, 0, 0, 0);
             lightningFX.selectSpriteRandomly(this.spriteSet);

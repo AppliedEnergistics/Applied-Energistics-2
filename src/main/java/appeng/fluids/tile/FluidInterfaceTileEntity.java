@@ -22,6 +22,7 @@ import java.util.EnumSet;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -102,8 +103,8 @@ public class FluidInterfaceTileEntity extends AENetworkTileEntity
     }
 
     @Override
-    public void read(final CompoundNBT data) {
-        super.read(data);
+    public void read(BlockState state, final CompoundNBT data) {
+        super.read(state, data);
         this.duality.readFromNBT(data);
     }
 

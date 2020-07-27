@@ -25,11 +25,13 @@ package appeng.api.implementations.items;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 
 import appeng.api.implementations.TransitionResult;
 import appeng.api.util.WorldCoord;
+import net.minecraft.world.server.ServerWorld;
 
 /**
  * Implemented on a {@link Item}
@@ -57,7 +59,7 @@ public interface ISpatialStorageCell {
      *
      * @return dimension id or -1
      */
-    DimensionType getStoredDimension(ItemStack is);
+    RegistryKey<World> getStoredDimension(ItemStack is);
 
     /**
      * Perform a spatial swap with the contents of the cell, and the world.
@@ -70,5 +72,5 @@ public interface ISpatialStorageCell {
      *
      * @return result of transition
      */
-    TransitionResult doSpatialTransition(ItemStack is, World w, WorldCoord min, WorldCoord max, int playerId);
+    TransitionResult doSpatialTransition(ItemStack is, ServerWorld w, WorldCoord min, WorldCoord max, int playerId);
 }

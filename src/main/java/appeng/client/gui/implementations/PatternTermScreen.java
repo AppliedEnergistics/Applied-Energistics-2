@@ -60,12 +60,12 @@ public class PatternTermScreen extends MEMonitorableScreen<PatternTermContainer>
         super.init();
 
         this.tabCraftButton = new TabButton(this.guiLeft + 173, this.guiTop + this.ySize - 177,
-                new ItemStack(Blocks.CRAFTING_TABLE), GuiText.CraftingPattern.textComponent(), this.itemRenderer,
+                new ItemStack(Blocks.CRAFTING_TABLE), GuiText.CraftingPattern.text(), this.itemRenderer,
                 btn -> toggleCraftMode(CRAFTMODE_PROCESSING));
         this.addButton(this.tabCraftButton);
 
         this.tabProcessButton = new TabButton(this.guiLeft + 173, this.guiTop + this.ySize - 177,
-                new ItemStack(Blocks.FURNACE), GuiText.ProcessingPattern.textComponent(), this.itemRenderer,
+                new ItemStack(Blocks.FURNACE), GuiText.ProcessingPattern.text(), this.itemRenderer,
                 btn -> toggleCraftMode(CRAFTMODE_CRFTING));
         this.addButton(this.tabProcessButton);
 

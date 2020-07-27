@@ -23,8 +23,10 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -44,12 +46,12 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
     public AEBaseBlockItemChargeable(Block id, Properties props) {
         super(id, props);
 
-        /*addPropertyOverride(new ResourceLocation("appliedenergistics2:fill_level"), (is, world, entity) -> {
+        ItemModelsProperties.func_239418_a_(this, new ResourceLocation("appliedenergistics2:fill_level"), (is, world, entity) -> {
             double curPower = getAECurrentPower(is);
             double maxPower = getAEMaxPower(is);
 
             return (int) Math.round(100 * curPower / maxPower);
-        });*/
+        });
     }
 
     @Override
@@ -67,7 +69,7 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
 
             final double percent = internalCurrentPower / internalMaxPower;
 
-            lines.add(GuiText.StoredEnergy.textComponent().deepCopy()
+            lines.add(GuiText.StoredEnergy.text().deepCopy()
                     .func_240702_b_(':' + MessageFormat.format(" {0,number,#} ", internalCurrentPower))
                     .func_230529_a_(new TranslationTextComponent(PowerUnits.AE.unlocalizedName))
                     .func_240702_b_(" - " + MessageFormat.format("{0,number,#.##%}", percent)));

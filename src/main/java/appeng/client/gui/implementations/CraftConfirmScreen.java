@@ -85,7 +85,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
         super.init();
 
         this.start = new Button(this.guiLeft + 162, this.guiTop + this.ySize - 25, 50, 20,
-                GuiText.Start.textComponent(), btn -> start());
+                GuiText.Start.text(), btn -> start());
         this.start.active = false;
         this.addButton(this.start);
 
@@ -95,7 +95,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
         this.selectCPU.active = false;
         this.addButton(this.selectCPU);
 
-        addButton(new Button(this.guiLeft + 6, this.guiTop + this.ySize - 25, 50, 20, GuiText.Cancel.textComponent(),
+        addButton(new Button(this.guiLeft + 6, this.guiTop + this.ySize - 25, 50, 20, GuiText.Cancel.text(),
                 btn -> subGui.goBack()));
     }
 
@@ -255,7 +255,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmContainer> {
                         str = Long.toString(missingStack.getStackSize() / 1000000) + 'm';
                     }
 
-                    str = GuiText.Missing.textComponent().getString() + ": " + str;
+                    str = GuiText.Missing.text().getString() + ": " + str;
                     final int w = 4 + this.font.getStringWidth(str);
                     this.font.drawString(matrixStack, str,
                             (int) ((x * (1 + sectionLength) + xo + sectionLength - 19 - (w * 0.5)) * 2),

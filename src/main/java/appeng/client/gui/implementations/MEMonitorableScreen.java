@@ -236,7 +236,7 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
 
         if (this.viewCell || this instanceof WirelessTermScreen) {
             this.craftingStatusBtn = this.addButton(new TabButton(this.guiLeft + 170, this.guiTop - 4, 2 + 11 * 16,
-                    GuiText.CraftingStatus.textComponent(), this.itemRenderer, btn -> showCraftingStatus()));
+                    GuiText.CraftingStatus.text(), this.itemRenderer, btn -> showCraftingStatus()));
             this.craftingStatusBtn.setHideEdge(13);
         }
 
@@ -287,8 +287,8 @@ public class MEMonitorableScreen<T extends MEMonitorableContainer> extends AEBas
 
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(this.myName.textComponent()).getString(), 8, 6, 4210752);
-        this.font.drawString(matrixStack, GuiText.inventory.textComponent().getString(), 8, this.ySize - 96 + 3, 4210752);
+        this.font.drawString(matrixStack, this.getGuiDisplayName(this.myName.text()).getString(), 8, 6, 4210752);
+        this.font.drawString(matrixStack, GuiText.inventory.text().getString(), 8, this.ySize - 96 + 3, 4210752);
 
         this.currentMouseX = mouseX;
         this.currentMouseY = mouseY;

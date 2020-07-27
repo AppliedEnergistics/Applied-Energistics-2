@@ -481,7 +481,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
                 || material == Material.WATER || material.isLiquid();
 
         return !ignoreMaterials && hardness >= 0f && w.isBlockLoaded(pos)
-                && w.canMineBlockBody(Platform.getPlayer(w), pos);
+                && w.isBlockModifiable(Platform.getPlayer(w), pos);
     }
 
     protected List<ItemStack> obtainBlockDrops(final ServerWorld w, final BlockPos pos) {
@@ -493,7 +493,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         ItemStack harvestTool = createHarvestTool(state);
 
         if (harvestTool == null) {
-            if (!state.getMaterial().isToolNotRequired()) {
+            if (!state.getRequiresTool()) {
                 harvestTool = ItemStack.EMPTY;
             } else {
                 // In case the block does NOT allow us to harvest it without a tool, or the

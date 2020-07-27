@@ -97,11 +97,11 @@ public class StorageHelper {
         newWorld.getChunkProvider().getChunk(MathHelper.floor(link.x) >> 4, MathHelper.floor(link.z) >> 4,
                 ChunkStatus.FULL, true);
 
-        if (entity instanceof ServerPlayerEntity && link.dim.getDimension() instanceof StorageCellDimension) {
+        if (entity instanceof ServerPlayerEntity && link.dim.func_234922_V_() == SpatialDimensionManager.STORAGE_DIMENSION_TYPE) {
             AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger((ServerPlayerEntity) entity);
         }
 
-        entity.changeDimension(link.dim.getDimension().getType(), new METeleporter(link));
+        entity.changeDimension(link.dim, new METeleporter(link));
 
         if (!passengersOnOtherSide.isEmpty()) {
             for (Entity passanger : passengersOnOtherSide) {
@@ -136,7 +136,7 @@ public class StorageHelper {
         }
     }
 
-    public void swapRegions(final World srcWorld, final int srcX, final int srcY, final int srcZ, final World dstWorld,
+    public void swapRegions(final ServerWorld srcWorld, final int srcX, final int srcY, final int srcZ, final ServerWorld dstWorld,
             final int dstX, final int dstY, final int dstZ, final int scaleX, final int scaleY, final int scaleZ) {
         Api.instance().definitions().blocks().matrixFrame().maybeBlock()
                 .ifPresent(matrixFrameBlock -> this.transverseEdges(dstX - 1, dstY - 1, dstZ - 1, dstX + scaleX + 1,
@@ -222,12 +222,12 @@ public class StorageHelper {
     }
 
     private static class TelDestination {
-        private final World dim;
+        private final ServerWorld dim;
         private final double x;
         private final double y;
         private final double z;
 
-        TelDestination(final World dimension, final AxisAlignedBB srcBox, final double x, final double y,
+        TelDestination(final ServerWorld dimension, final AxisAlignedBB srcBox, final double x, final double y,
                 final double z, final int tileX, final int tileY, final int tileZ) {
             this.dim = dimension;
             this.x = Math.min(srcBox.maxX - 0.5, Math.max(srcBox.minX + 0.5, x + tileX));

@@ -29,6 +29,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -145,19 +146,19 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
 
         switch (msg) {
             case SETTINGS_CLEARED:
-                player.sendMessage(PlayerMessages.SettingCleared.get(), player.getUniqueID());
+                player.sendMessage(PlayerMessages.SettingCleared.get(), Util.DUMMY_UUID);
                 break;
             case INVALID_MACHINE:
-                player.sendMessage(PlayerMessages.InvalidMachine.get(), player.getUniqueID());
+                player.sendMessage(PlayerMessages.InvalidMachine.get(), Util.DUMMY_UUID);
                 break;
             case SETTINGS_LOADED:
-                player.sendMessage(PlayerMessages.LoadedSettings.get(), player.getUniqueID());
+                player.sendMessage(PlayerMessages.LoadedSettings.get(), Util.DUMMY_UUID);
                 break;
             case SETTINGS_SAVED:
-                player.sendMessage(PlayerMessages.SavedSettings.get(), player.getUniqueID());
+                player.sendMessage(PlayerMessages.SavedSettings.get(), Util.DUMMY_UUID);
                 break;
             case SETTINGS_RESET:
-                player.sendMessage(PlayerMessages.ResetSettings.get(), player.getUniqueID());
+                player.sendMessage(PlayerMessages.ResetSettings.get(), Util.DUMMY_UUID);
                 break;
             default:
         }

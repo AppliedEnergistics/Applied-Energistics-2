@@ -9,6 +9,7 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.text.StringTextComponent;
@@ -49,19 +50,19 @@ public class DebugPartPlacerItem extends AEBaseItem {
         }
 
         if (!player.abilities.isCreativeMode) {
-            player.sendMessage(new StringTextComponent("Only usable in creative mode"));
+            player.sendMessage(new StringTextComponent("Only usable in creative mode"), Util.DUMMY_UUID);
             return ActionResultType.FAIL;
         }
 
         TileEntity te = world.getTileEntity(pos);
         if (!(te instanceof IPartHost)) {
-            player.sendMessage(new StringTextComponent("Right-click something that will accept parts"));
+            player.sendMessage(new StringTextComponent("Right-click something that will accept parts"), Util.DUMMY_UUID);
             return ActionResultType.FAIL;
         }
         IPartHost center = (IPartHost) te;
         IPart cable = center.getPart(AEPartLocation.INTERNAL);
         if (cable == null) {
-            player.sendMessage(new StringTextComponent("Clicked part host must have an INSIDE part"));
+            player.sendMessage(new StringTextComponent("Clicked part host must have an INSIDE part"), Util.DUMMY_UUID);
             return ActionResultType.FAIL;
         }
 

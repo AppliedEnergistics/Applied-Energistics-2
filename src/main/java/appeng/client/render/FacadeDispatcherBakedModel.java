@@ -22,6 +22,7 @@ import java.util.Objects;
 
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -50,7 +51,7 @@ public class FacadeDispatcherBakedModel extends DelegateBakedModel {
     public ItemOverrideList getOverrides() {
         return new ItemOverrideList() {
             @Override
-            public IBakedModel getModelWithOverrides(IBakedModel originalModel, ItemStack stack, World world,
+            public IBakedModel func_239290_a_(IBakedModel originalModel, ItemStack stack, ClientWorld world,
                     LivingEntity entity) {
                 if (!(stack.getItem() instanceof FacadeItem)) {
                     return originalModel;

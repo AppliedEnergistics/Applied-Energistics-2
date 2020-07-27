@@ -90,7 +90,7 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusCont
         this.fuzzyMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 88, Settings.FUZZY_MODE,
                 FuzzyMode.IGNORE_ALL);
 
-        addButton(this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.textComponent(),
+        addButton(this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(),
                 this.itemRenderer, btn -> openPriorityGui())));
 
         this.addButton(this.storageFilter);
@@ -100,8 +100,8 @@ public class FluidStorageBusScreen extends UpgradeableScreen<FluidStorageBusCont
 
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(this.getName().textComponent()).getString(), 8, 6, 4210752);
-        this.font.drawString(matrixStack, GuiText.inventory.textComponent().getString(), 8, this.ySize - 96 + 3, 4210752);
+        this.font.drawString(matrixStack, this.getGuiDisplayName(this.getName().text()).getString(), 8, 6, 4210752);
+        this.font.drawString(matrixStack, GuiText.inventory.text().getString(), 8, this.ySize - 96 + 3, 4210752);
 
         if (this.fuzzyMode != null) {
             this.fuzzyMode.set(this.cvb.getFuzzyMode());

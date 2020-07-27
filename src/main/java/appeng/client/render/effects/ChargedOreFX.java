@@ -22,6 +22,7 @@ import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.RedstoneParticle;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.world.World;
@@ -33,7 +34,7 @@ public class ChargedOreFX extends RedstoneParticle {
 
     private static final RedstoneParticleData PARTICLE_DATA = new RedstoneParticleData(0.21f, 0.61f, 1.0f, 1.0f);
 
-    private ChargedOreFX(World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed,
+    private ChargedOreFX(ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed,
             IAnimatedSprite spriteSet) {
         super(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, PARTICLE_DATA, spriteSet);
     }
@@ -58,8 +59,8 @@ public class ChargedOreFX extends RedstoneParticle {
         }
 
         @Override
-        public Particle makeParticle(BasicParticleType typeIn, World worldIn, double x, double y, double z,
-                double xSpeed, double ySpeed, double zSpeed) {
+        public Particle makeParticle(BasicParticleType typeIn, ClientWorld worldIn, double x, double y, double z,
+                                     double xSpeed, double ySpeed, double zSpeed) {
             return new ChargedOreFX(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet);
         }
     }

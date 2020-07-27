@@ -62,7 +62,7 @@ public class CrankTESR extends TileEntityRenderer<CrankTileEntity> {
         BlockState blockState = te.getBlockState();
         BlockRendererDispatcher dispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
         IBakedModel model = dispatcher.getModelForState(blockState);
-        IVertexBuilder buffer = buffers.getBuffer(Atlases.getTranslucentBlockType());
+        IVertexBuilder buffer = buffers.getBuffer(Atlases.getCutoutBlockType());
         dispatcher.getBlockModelRenderer().renderModelBrightnessColor(ms.getLast(), buffer, null, model, 1, 1, 1,
                 combinedLightIn, combinedOverlayIn);
         ms.pop();

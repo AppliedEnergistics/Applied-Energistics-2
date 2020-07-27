@@ -224,9 +224,9 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusContainer> im
                     currentToolTip.remove(1);
                 }
 
-                currentToolTip.add(GuiText.Installed.getLocal() + ": " + (myStack.getStackSize()));
-                currentToolTip.add(GuiText.EnergyDrain.getLocal() + ": "
-                        + Platform.formatPowerLong(myStack.getCountRequestable(), true));
+                currentToolTip.add(GuiText.Installed.withSuffix(": " + (myStack.getStackSize())));
+                currentToolTip.add(GuiText.EnergyDrain.withSuffix(": "
+                        + Platform.formatPowerLong(myStack.getCountRequestable(), true)));
 
                 this.drawTooltip(matrixStack, x, y, currentToolTip);
             }

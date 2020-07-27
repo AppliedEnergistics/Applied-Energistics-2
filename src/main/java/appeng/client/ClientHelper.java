@@ -26,6 +26,7 @@ import java.util.Random;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
@@ -207,7 +208,7 @@ public class ClientHelper extends ServerHelper {
 
     private void spawnLightningArc(final World world, final double posX, final double posY, final double posZ,
             final Vector3d second) {
-        final LightningFX fx = new LightningArcFX(world, posX, posY, posZ, second.x, second.y, second.z, 0.0f, 0.0f,
+        final LightningFX fx = new LightningArcFX((ClientWorld) world, posX, posY, posZ, second.x, second.y, second.z, 0.0f, 0.0f,
                 0.0f);
         Minecraft.getInstance().particles.addEffect(fx);
     }

@@ -33,6 +33,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
@@ -256,7 +257,7 @@ public class CraftConfirmContainer extends AEBaseContainer {
                     // :P
                 }
             } catch (final Throwable e) {
-                this.getPlayerInv().player.sendMessage(new StringTextComponent("Error: " + e.toString()));
+                this.getPlayerInv().player.sendMessage(new StringTextComponent("Error: " + e.toString()), Util.DUMMY_UUID);
                 AELog.debug(e);
                 this.setValidContainer(false);
                 this.result = null;

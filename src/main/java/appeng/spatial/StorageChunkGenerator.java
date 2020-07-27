@@ -18,38 +18,63 @@
 
 package appeng.spatial;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.Blockreader;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.biome.BiomeManager;
 import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.biome.provider.SingleBiomeProvider;
-import net.minecraft.world.biome.provider.SingleBiomeProviderSettings;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationSettings;
+import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.WorldGenRegion;
 
 import appeng.core.Api;
+import net.minecraft.world.gen.feature.structure.StructureManager;
+import net.minecraft.world.gen.settings.DimensionStructuresSettings;
 
-public class StorageChunkGenerator extends ChunkGenerator<GenerationSettings> {
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Optional;
+
+public class StorageChunkGenerator extends ChunkGenerator {
+
+    private final Blockreader columnSample;
+
+    public static final StorageChunkGenerator INSTANCE = new StorageChunkGenerator();
+
+    public static final Codec<StorageChunkGenerator> CODEC = RecordCodecBuilder
+            .create((instance) -> instance.stable(INSTANCE));
 
     private final BlockState defaultBlockState;
 
-    public StorageChunkGenerator(final World world) {
-        super(world, createBiomeProvider(), createSettings());
+    private StorageChunkGenerator() {
+        super(createBiomeProvider(), createSettings());
         this.defaultBlockState = Api.instance().definitions().blocks().matrixFrame().block().getDefaultState();
+
+        // Vertical sample is mostly used for Feature generation, for those purposes
+        // we're all filled with matrix blocks
+        BlockState[] columnSample = new BlockState[256];
+        Arrays.fill(columnSample, this.defaultBlockState);
+        this.columnSample = new Blockreader(columnSample);
+    }
+
+    @Override
+    protected Codec<? extends ChunkGenerator> func_230347_a_() {
+        return CODEC;
     }
 
     private static BiomeProvider createBiomeProvider() {
-        SingleBiomeProviderSettings biomeSettings = new SingleBiomeProviderSettings(null);
-        biomeSettings.setBiome(StorageCellBiome.INSTANCE);
-        return new SingleBiomeProvider(biomeSettings);
+        return new SingleBiomeProvider(StorageCellBiome.INSTANCE);
     }
 
-    private static GenerationSettings createSettings() {
-        return new GenerationSettings();
+    private static DimensionStructuresSettings createSettings() {
+        return new DimensionStructuresSettings(Optional.empty(), Collections.emptyMap());
     }
 
     @Override
@@ -75,22 +100,34 @@ public class StorageChunkGenerator extends ChunkGenerator<GenerationSettings> {
     }
 
     @Override
-    public int getGroundHeight() {
+    public int func_230356_f_() {
         return 0;
     }
 
     @Override
-    public void makeBase(IWorld worldIn, IChunk chunkIn) {
+    public ChunkGenerator func_230349_a_(long p_230349_1_) {
+        return this;
     }
 
     @Override
-    public int getHeight(int p_222529_1_, int p_222529_2_, Heightmap.Type heightmapType) {
+    public void func_230352_b_(IWorld world, StructureManager accessor, IChunk chunk) {
+    }
+
+    public IBlockReader func_230348_a_(int x, int z) {
+        return columnSample;
+    }
+
+    @Override
+    public int func_222529_a(int p_222529_1_, int p_222529_2_, Heightmap.Type heightmapType) {
         return 0;
     }
 
     @Override
-    public void decorate(WorldGenRegion region) {
-        // Do not decorate chunks at all
+    public void func_230351_a_(WorldGenRegion region, StructureManager accessor) {
+    }
+
+    @Override
+    public void func_230350_a_(long seed, BiomeManager access, IChunk chunk, GenerationStage.Carving carver) {
     }
 
 }

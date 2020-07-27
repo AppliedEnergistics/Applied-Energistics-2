@@ -31,11 +31,11 @@ import appeng.core.AppEng;
 public class MemoryCardModel implements IModelGeometry<MemoryCardModel> {
 
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "item/memory_card_base");
-    private static final Material TEXTURE = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
+    private static final RenderMaterial TEXTURE = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
             new ResourceLocation(AppEng.MOD_ID, "item/memory_card_hash"));
 
     @Override
-    public Collection<Material> getTextures(IModelConfiguration owner,
+    public Collection<RenderMaterial> getTextures(IModelConfiguration owner,
             Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
         return Collections.singleton(TEXTURE);
     }

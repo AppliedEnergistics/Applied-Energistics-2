@@ -38,6 +38,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -165,7 +166,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                     }
                 } else {
                     if (Platform.isServer()) {
-                        p.sendMessage(PlayerMessages.AmmoDepleted.get());
+                        p.sendMessage(PlayerMessages.AmmoDepleted.get(), Util.DUMMY_UUID);
                     }
                     return new ActionResult<>(ActionResultType.SUCCESS, p.getHeldItem(hand));
                 }
@@ -352,7 +353,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IStorageCell<
                     if (entityHit instanceof LivingEntity) {
                         final LivingEntity el = (LivingEntity) entityHit;
                         penetration -= dmg;
-                        el.knockBack(p, 0, -direction.x, -direction.z);
+                        el.applyKnockback(0, -direction.x, -direction.z);
                         // el.knockBack( p, 0, Vector3d.x,
                         // Vector3d.z );
                         el.attackEntityFrom(dmgSrc, dmg);

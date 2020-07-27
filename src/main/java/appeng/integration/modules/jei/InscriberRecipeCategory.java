@@ -18,6 +18,7 @@
 
 package appeng.integration.modules.jei;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 
@@ -109,7 +110,7 @@ class InscriberRecipeCategory implements IRecipeCategory<InscriberRecipe> {
     }
 
     @Override
-    public void draw(InscriberRecipe recipe, double mouseX, double mouseY) {
-        this.progress.draw();
+    public void draw(InscriberRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+        this.progress.draw(matrixStack);
     }
 }

@@ -18,6 +18,7 @@
 
 package appeng.core.localization;
 
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
@@ -85,27 +86,39 @@ public enum GuiText {
 
     private final String root;
 
+    private final ITextComponent text;
+
     GuiText() {
         this.root = "gui.appliedenergistics2";
+        this.text = new TranslationTextComponent(getTranslationKey());
     }
 
     GuiText(final String r) {
         this.root = r;
+        this.text = new TranslationTextComponent(getTranslationKey());
     }
-    
+
     public String getLocal() {
-        return this.textComponent().getString();
+        return text.getString();
     }
 
     public String getTranslationKey() {
         return this.root + '.' + this.toString();
     }
 
-    public ITextComponent textComponent() {
-        return new TranslationTextComponent(getTranslationKey());
+    public ITextComponent text() {
+        return text;
     }
 
-    public ITextComponent textComponent(Object... args) {
+    public IFormattableTextComponent withSuffix(String text) {
+        return text().deepCopy().func_240702_b_(text);
+    }
+
+    public IFormattableTextComponent withSuffix(ITextComponent text) {
+        return text().deepCopy().func_230529_a_(text);
+    }
+
+    public IFormattableTextComponent text(Object... args) {
         return new TranslationTextComponent(getTranslationKey(), args);
     }
 

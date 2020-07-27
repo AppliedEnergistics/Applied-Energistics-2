@@ -48,7 +48,7 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
 
     @Override
     protected void addButtons() {
-        this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.textComponent(),
+        this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(),
                 this.itemRenderer, btn -> openPriorityGui()));
 
         this.blockMode = new ServerSettingToggleButton<>(this.guiLeft - 18, this.guiTop + 8, Settings.BLOCK, YesNo.NO);
@@ -70,7 +70,7 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceContainer> {
             this.interfaceMode.setState(((InterfaceContainer) this.cvb).getInterfaceTerminalMode() == YesNo.YES);
         }
 
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Interface.textComponent()).getString(), 8, 6, 4210752);
+        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Interface.text()).getString(), 8, 6, 4210752);
 
         this.font.drawString(matrixStack, GuiText.Config.getLocal(), 8, 6 + 11 + 7, 4210752);
         this.font.drawString(matrixStack, GuiText.StoredItems.getLocal(), 8, 6 + 60 + 7, 4210752);

@@ -162,8 +162,7 @@ public class QuantumCluster implements ILocatable, IAECluster {
             if (!qc.isDestroyed) {
                 ChunkPos cPos = new ChunkPos(qc.center.getPos());
                 if (theWorld.getChunkProvider().isChunkLoaded(cPos)) {
-                    final DimensionType id = theWorld.dimension.getType();
-                    final World cur = theWorld.getServer().getWorld(id);
+                    final World cur = theWorld.getServer().getWorld(theWorld.func_234923_W_());
 
                     final TileEntity te = theWorld.getTileEntity(qc.center.getPos());
                     return te != qc.center || theWorld != cur;

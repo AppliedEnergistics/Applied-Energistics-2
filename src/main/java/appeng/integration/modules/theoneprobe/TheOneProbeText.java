@@ -32,10 +32,6 @@ public enum TheOneProbeText {
         this.root = "theoneprobe.appliedenergistics2";
     }
 
-    public String getTranslationString(Object... args) {
-        return getTranslationComponent(args).getFormattedText();
-    }
-
     public TranslationTextComponent getTranslationComponent(Object... args) {
         return new TranslationTextComponent(this.getUnlocalized(), args);
     }

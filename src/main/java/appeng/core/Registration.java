@@ -49,7 +49,6 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.common.ModDimension;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -204,7 +203,6 @@ import appeng.recipes.handlers.InscriberRecipe;
 import appeng.recipes.handlers.InscriberRecipeSerializer;
 import appeng.server.AECommand;
 import appeng.spatial.StorageCellBiome;
-import appeng.spatial.StorageCellModDimension;
 import appeng.tile.AEBaseTileEntity;
 import appeng.tile.crafting.MolecularAssemblerRenderer;
 import appeng.worldgen.ChargedQuartzOreConfig;
@@ -630,9 +628,6 @@ final class Registration {
          * world gen
          */
         for (final IWorldGen.WorldGenType type : IWorldGen.WorldGenType.values()) {
-            // FIXME: registries.worldgen().disableWorldGenForProviderID( type,
-            // StorageWorldProvider.class );
-
             registries.worldgen().disableWorldGenForDimension(type, World.field_234919_h_.getRegistryName());
         }
 
@@ -659,10 +654,6 @@ final class Registration {
         }
 
         b.func_235063_a_(MeteoriteStructure.INSTANCE.func_236391_a_(IFeatureConfig.NO_FEATURE_CONFIG));
-        b.addFeature(GenerationStage.Decoration.TOP_LAYER_MODIFICATION,
-                MeteoriteStructure.INSTANCE.func_236391_a_(IFeatureConfig.NO_FEATURE_CONFIG)
-                        //.withPlacement(Placement.NOPE.configure(IPlacementConfig.NO_PLACEMENT_CONFIG))
-                );
     }
 
     private static void addQuartzWorldGen(Biome b) {
@@ -694,17 +685,11 @@ final class Registration {
     public void registerWorldGen(RegistryEvent.Register<Feature<?>> evt) {
         IForgeRegistry<Feature<?>> r = evt.getRegistry();
 
-//        r.register(MeteoriteWorldGen.INSTANCE);
-        r.register(MeteoriteStructure.INSTANCE);
         r.register(ChargedQuartzOreFeature.INSTANCE);
     }
 
     public void registerBiomes(RegistryEvent.Register<Biome> evt) {
         evt.getRegistry().register(StorageCellBiome.INSTANCE);
-    }
-
-    public void registerModDimension(RegistryEvent.Register<ModDimension> evt) {
-        evt.getRegistry().register(StorageCellModDimension.INSTANCE);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -714,7 +699,7 @@ final class Registration {
     }
 
     public void registerCommands(final FMLServerStartingEvent evt) {
-        new AECommand().register(evt.getCommandDispatcher());
+        new AECommand().register(evt.getServer().getCommandManager().getDispatcher());
     }
 
     @OnlyIn(Dist.CLIENT)

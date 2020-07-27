@@ -62,7 +62,7 @@ public class NetworkToolScreen extends AEBaseScreen<NetworkToolContainer> {
             this.tFacades.setState(container.isFacadeMode());
         }
 
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.NetworkTool.textComponent()).getString(), 8, 6,
+        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.NetworkTool.text()).getString(), 8, 6,
                 4210752);
         this.font.drawString(matrixStack, GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
     }

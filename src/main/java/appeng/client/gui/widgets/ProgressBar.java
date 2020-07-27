@@ -89,7 +89,7 @@ public class ProgressBar extends Widget implements ITooltip {
 
         return result.deepCopy().func_240702_b_("\n").func_240702_b_(this.source.getCurrentProgress() + " ")
                 .func_230529_a_(
-                        GuiText.Of.textComponent().deepCopy().func_240702_b_(" " + this.source.getMaxProgress()));
+                        GuiText.Of.text().deepCopy().func_240702_b_(" " + this.source.getMaxProgress()));
     }
 
     @Override

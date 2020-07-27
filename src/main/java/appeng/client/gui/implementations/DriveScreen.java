@@ -43,7 +43,7 @@ public class DriveScreen extends AEBaseScreen<DriveContainer> {
     public void init() {
         super.init();
 
-        this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.textComponent(),
+        this.addButton(new TabButton(this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.text(),
                 this.itemRenderer, btn -> openPriorityGui()));
     }
 
@@ -54,9 +54,9 @@ public class DriveScreen extends AEBaseScreen<DriveContainer> {
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX,
             final int mouseY) {
-        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Drive.textComponent()).getString(), 8, 6,
+        this.font.drawString(matrixStack, this.getGuiDisplayName(GuiText.Drive.text()).getString(), 8, 6,
                 4210752);
-        this.font.drawString(matrixStack, GuiText.inventory.textComponent().getString(), 8, this.ySize - 96 + 3,
+        this.font.drawString(matrixStack, GuiText.inventory.text().getString(), 8, this.ySize - 96 + 3,
                 4210752);
     }
 

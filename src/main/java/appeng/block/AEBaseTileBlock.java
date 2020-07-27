@@ -145,26 +145,6 @@ public abstract class AEBaseTileBlock<T extends AEBaseTileEntity> extends AEBase
     }
 
     @Override
-    public boolean recolorBlock(BlockState state, final IWorld world, final BlockPos pos, final Direction side,
-            final DyeColor color) {
-        final TileEntity te = this.getTileEntity(world, pos);
-
-        if (te instanceof IColorableTile) {
-            final IColorableTile ct = (IColorableTile) te;
-            final AEColor c = ct.getColor();
-            final AEColor newColor = AEColor.values()[color.ordinal()];
-
-            if (c != newColor) {
-                ct.recolourBlock(side, newColor, null);
-                return true;
-            }
-            return false;
-        }
-
-        return super.recolorBlock(state, world, pos, side, color);
-    }
-
-    @Override
     public int getComparatorInputOverride(BlockState state, final World w, final BlockPos pos) {
         final TileEntity te = this.getTileEntity(w, pos);
         if (te instanceof AEBaseInvTileEntity) {

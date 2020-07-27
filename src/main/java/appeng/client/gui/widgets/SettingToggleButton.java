@@ -48,6 +48,7 @@ import appeng.api.config.ViewItems;
 import appeng.api.config.YesNo;
 import appeng.core.localization.ButtonToolTips;
 import appeng.util.EnumCycler;
+import net.minecraft.util.text.StringTextComponent;
 
 public class SettingToggleButton<T extends Enum<T>> extends IconButton {
     private static final Pattern COMPILE = Pattern.compile("%s");
@@ -236,7 +237,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
     private static void registerApp(final int iconIndex, final Settings setting, final Enum<?> val,
             final ButtonToolTips title, final ITextComponent hint) {
         final ButtonAppearance a = new ButtonAppearance();
-        a.displayName = title.getTranslationKey();
+        a.displayName = title.text();
         a.displayValue = hint;
         a.index = iconIndex;
         appearances.put(new EnumPair(setting, val), a);
@@ -244,7 +245,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
 
     private static void registerApp(final int iconIndex, final Settings setting, final Enum<?> val,
             final ButtonToolTips title, final ButtonToolTips hint) {
-        registerApp(iconIndex, setting, val, title, hint.getTranslationKey());
+        registerApp(iconIndex, setting, val, title, hint.text());
     }
 
     @Override
@@ -278,7 +279,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
     }
 
     @Override
-    public String getMessage() {
+    public ITextComponent getMessage() {
         ITextComponent displayName = null;
         ITextComponent displayValue = null;
 
@@ -286,7 +287,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
             final ButtonAppearance buttonAppearance = appearances
                     .get(new EnumPair(this.buttonSetting, this.currentValue));
             if (buttonAppearance == null) {
-                return "No Such Message";
+                return new StringTextComponent("No Such Message");
             }
 
             displayName = buttonAppearance.displayName;
@@ -312,9 +313,9 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
                 sb.replace(i, i + 1, "\n");
             }
 
-            return name + '\n' + sb;
+            return new StringTextComponent(name + '\n' + sb);
         }
-        return "";
+        return StringTextComponent.EMPTY;
     }
 
     public String getFillVar() {

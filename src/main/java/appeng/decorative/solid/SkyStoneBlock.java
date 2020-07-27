@@ -67,8 +67,8 @@ public class SkyStoneBlock extends AEBaseBlock {
     public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn,
             BlockPos currentPos, BlockPos facingPos) {
         if (worldIn instanceof ServerWorld) {
-            WorldData.instance().compassData().service().updateArea(worldIn, new ChunkPos(currentPos),
-                    currentPos.getY());
+            ServerWorld serverWorld = (ServerWorld) worldIn;
+            WorldData.instance().compassData().service().notifyBlockChange(serverWorld, currentPos);
         }
 
         return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
@@ -83,7 +83,8 @@ public class SkyStoneBlock extends AEBaseBlock {
         super.onReplaced(state, w, pos, newState, isMoving);
 
         if (w instanceof ServerWorld) {
-            WorldData.instance().compassData().service().updateArea(w, new ChunkPos(pos), pos.getY());
+            ServerWorld serverWorld = (ServerWorld) w;
+            WorldData.instance().compassData().service().notifyBlockChange(serverWorld, pos);
         }
     }
 

@@ -35,6 +35,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -103,7 +104,7 @@ public class TestMeteoritesCommand implements ISubCommand {
                 chunksChecked++;
                 ChunkPos cp = new ChunkPos(cx, cz);
                 BlockPos p = new BlockPos(cp.getXStart(), 0, cp.getZStart());
-                BlockPos nearest = MeteoriteStructure.INSTANCE.findNearest(world, generator, p, 0, false);
+                BlockPos nearest = generator.func_235956_a_(world, MeteoriteStructure.INSTANCE, p, 0, false);
                 if (nearest != null) {
                     IChunk chunk = world.getChunk(cx, cz, ChunkStatus.STRUCTURE_STARTS);
                     // The actual relevant information is in the structure piece
@@ -168,13 +169,13 @@ public class TestMeteoritesCommand implements ISubCommand {
                         settings.getFallout().name().toLowerCase()));
             }
 
-            ITextComponent msg = new StringTextComponent(" #" + (i + 1) + " ");
-            msg.deepCopy().func_230529_a_(getClickablePosition(world, settings, pos)).appendSibling(restOfLine);
+            IFormattableTextComponent msg = new StringTextComponent(" #" + (i + 1) + " ");
+            msg.func_230529_a_(getClickablePosition(world, settings, pos)).func_230529_a_(restOfLine);
 
             // Add a tooltip
             ITextComponent tooltip = new StringTextComponent(settings.toString() + "\nBiome: ").deepCopy()
                     .func_230529_a_(world.getBiome(pos).getDisplayName());
-            msg.applyTextStyle(style -> style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
+            msg.func_240700_a_(style -> style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
 
             sender.sendFeedback(msg, true);
         }
@@ -192,12 +193,12 @@ public class TestMeteoritesCommand implements ISubCommand {
         String displayText = String.format(Locale.ROOT, "pos=%d,%d,%d", tpPos.getX(), tpPos.getY(), tpPos.getZ());
         String tpCommand = String.format(Locale.ROOT, "/tp @s %d %d %d", tpPos.getX(), tpPos.getY(), tpPos.getZ());
 
-        return new StringTextComponent(displayText).applyTextStyle(TextFormatting.UNDERLINE)
-                .applyTextStyle(style -> style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, tpCommand)));
+        return new StringTextComponent(displayText).func_240699_a_(TextFormatting.UNDERLINE)
+                .func_240700_a_(style -> style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, tpCommand)));
     }
 
     private static MeteoriteStructurePiece getMeteoritePieceFromChunk(IChunk chunk) {
-        StructureStart start = chunk.getStructureStart(MeteoriteStructure.INSTANCE.getStructureName());
+        StructureStart<?> start = chunk.func_230342_a_(MeteoriteStructure.INSTANCE);
 
         if (start != null && start.getComponents().size() > 0
                 && start.getComponents().get(0) instanceof MeteoriteStructurePiece) {

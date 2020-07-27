@@ -18,38 +18,34 @@
 
 package appeng.services;
 
-import java.util.HashMap;
-import java.util.Map;
+import appeng.api.util.DimensionalCoord;
+import appeng.core.Api;
+import appeng.services.compass.CompassReader;
+import appeng.services.compass.ICompassCallback;
+import net.minecraft.block.Block;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
+import net.minecraft.world.chunk.IChunk;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+
+import javax.annotation.Nonnull;
+import java.util.WeakHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Nonnull;
-
-import net.minecraft.block.Block;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.DimensionType;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.chunk.IChunk;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-
-import appeng.api.util.DimensionalCoord;
-import appeng.core.Api;
-import appeng.services.compass.CompassReader;
-import appeng.services.compass.ICompassCallback;
-import appeng.util.Platform;
-
 public final class CompassService {
     private static final int CHUNK_SIZE = 16;
 
     private final MinecraftServer server;
-    private final Map<DimensionType, CompassReader> worldSet = new HashMap<>(10);
+    private final WeakHashMap<ServerWorld, CompassReader> worldSet = new WeakHashMap<>(10);
     private final ExecutorService executor;
 
     private int jobSize;
@@ -73,10 +69,13 @@ public final class CompassService {
     // FIXME this is never registered
     @SubscribeEvent
     public void unloadWorld(final WorldEvent.Unload event) {
-        DimensionType dim = event.getWorld().getDimension().getType();
+        if (!(event.getWorld() instanceof ServerWorld)) {
+            return;
+        }
 
-        if (Platform.isServer() && this.worldSet.containsKey(dim)) {
-            final CompassReader compassReader = this.worldSet.remove(dim);
+        ServerWorld world = (ServerWorld) event.getWorld();
+        if (this.worldSet.containsKey(world)) {
+            final CompassReader compassReader = this.worldSet.remove(world);
             compassReader.close();
         }
     }
@@ -91,32 +90,51 @@ public final class CompassService {
         }
     }
 
-    public void updateArea(final IWorld w, ChunkPos chunkPos) {
-        this.updateArea(w, chunkPos, CHUNK_SIZE);
-        this.updateArea(w, chunkPos, CHUNK_SIZE + 32);
-        this.updateArea(w, chunkPos, CHUNK_SIZE + 64);
-        this.updateArea(w, chunkPos, CHUNK_SIZE + 96);
-
-        this.updateArea(w, chunkPos, CHUNK_SIZE + 128);
-        this.updateArea(w, chunkPos, CHUNK_SIZE + 160);
-        this.updateArea(w, chunkPos, CHUNK_SIZE + 192);
-        this.updateArea(w, chunkPos, CHUNK_SIZE + 224);
+    public void tryUpdateArea(final IWorld w, ChunkPos chunkPos) {
+        // If this seems weird: during worldgen, WorldAccess is a specific region, but
+        // getWorld is
+        // still the server world. We do need to use the world access to get the chunk
+        // in question
+        // though, since during worldgen, it's not comitted to the actual world yet.
+        World world = w.getWorld();
+        if (!(world instanceof ServerWorld)) {
+            return;
+        }
+        IChunk chunk = w.getChunk(chunkPos.x, chunkPos.z);
+        updateArea((ServerWorld) world, chunk);
     }
 
-    public Future<?> updateArea(final IWorld w, ChunkPos chunkPos, int y) {
+    public void updateArea(final ServerWorld w, IChunk chunk) {
+        this.updateArea(w, chunk, CHUNK_SIZE);
+        this.updateArea(w, chunk, CHUNK_SIZE + 32);
+        this.updateArea(w, chunk, CHUNK_SIZE + 64);
+        this.updateArea(w, chunk, CHUNK_SIZE + 96);
+
+        this.updateArea(w, chunk, CHUNK_SIZE + 128);
+        this.updateArea(w, chunk, CHUNK_SIZE + 160);
+        this.updateArea(w, chunk, CHUNK_SIZE + 192);
+        this.updateArea(w, chunk, CHUNK_SIZE + 224);
+    }
+
+    /**
+     * Notifies the compass service that a skystone block has either been placed or
+     * replaced at the give position.
+     */
+    public void notifyBlockChange(final ServerWorld w, BlockPos pos) {
+        IChunk chunk = w.getChunk(pos);
+        updateArea(w, chunk, pos.getY());
+    }
+
+    private Future<?> updateArea(final ServerWorld w, IChunk c, int y) {
         this.jobSize++;
 
-        final int cx = chunkPos.x;
         final int cdy = y >> 5;
-        final int cz = chunkPos.z;
-
         final int low_y = cdy << 5;
         final int hi_y = low_y + 32;
 
         // lower level...
-        final IChunk c = w.getChunk(cx, cz);
-
-        DimensionType dim = w.getDimension().getType();
+        int cx = c.getPos().x;
+        int cz = c.getPos().z;
 
         Block skyStoneBlock = Api.instance().definitions().blocks().skyStoneBlock().block();
         BlockPos.Mutable pos = new BlockPos.Mutable();
@@ -128,13 +146,13 @@ public final class CompassService {
                     pos.setY(k);
                     final Block blk = c.getBlockState(pos).getBlock();
                     if (blk == skyStoneBlock) {
-                        return this.executor.submit(new CMUpdatePost(dim, cx, cz, cdy, true));
+                        return this.executor.submit(new CMUpdatePost(w, cx, cz, cdy, true));
                     }
                 }
             }
         }
 
-        return this.executor.submit(new CMUpdatePost(dim, cx, cz, cdy, false));
+        return this.executor.submit(new CMUpdatePost(w, cx, cz, cdy, false));
     }
 
     public void kill() {
@@ -154,13 +172,12 @@ public final class CompassService {
         }
     }
 
-    private CompassReader getReader(final DimensionType dim) {
-        CompassReader cr = this.worldSet.get(dim);
+    private CompassReader getReader(final ServerWorld world) {
+        CompassReader cr = this.worldSet.get(world);
 
         if (cr == null) {
-            ServerWorld sw = server.getWorld(dim);
-            cr = new CompassReader(sw);
-            this.worldSet.put(dim, cr);
+            cr = new CompassReader(world);
+            this.worldSet.put(world, cr);
         }
 
         return cr;
@@ -182,15 +199,15 @@ public final class CompassService {
 
     private class CMUpdatePost implements Runnable {
 
-        public final DimensionType dim;
+        public final ServerWorld world;
 
         public final int chunkX;
         public final int chunkZ;
         public final int doubleChunkY; // 32 blocks instead of 16.
         public final boolean value;
 
-        public CMUpdatePost(final DimensionType dim, final int cx, final int cz, final int dcy, final boolean val) {
-            this.dim = dim;
+        public CMUpdatePost(final ServerWorld world, final int cx, final int cz, final int dcy, final boolean val) {
+            this.world = world;
             this.chunkX = cx;
             this.doubleChunkY = dcy;
             this.chunkZ = cz;
@@ -201,7 +218,7 @@ public final class CompassService {
         public void run() {
             CompassService.this.jobSize--;
 
-            final CompassReader cr = CompassService.this.getReader(this.dim);
+            final CompassReader cr = CompassService.this.getReader(this.world);
             cr.setHasBeacon(this.chunkX, this.chunkZ, this.doubleChunkY, this.value);
 
             if (CompassService.this.jobSize() < 2) {
@@ -224,12 +241,15 @@ public final class CompassService {
 
         @Override
         public void run() {
+
+            ServerWorld world = (ServerWorld) this.coord.getWorld();
+
             CompassService.this.jobSize--;
 
             final int cx = this.coord.x >> 4;
             final int cz = this.coord.z >> 4;
 
-            final CompassReader cr = CompassService.this.getReader(this.coord.getWorld().getDimension().getType());
+            final CompassReader cr = CompassService.this.getReader(world);
 
             // Am I standing on it?
             if (cr.hasBeacon(cx, cz)) {

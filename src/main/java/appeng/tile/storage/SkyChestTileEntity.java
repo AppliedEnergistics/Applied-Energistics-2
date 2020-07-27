@@ -72,11 +72,6 @@ public class SkyChestTileEntity extends AEBaseInvTileEntity implements ITickable
     }
 
     @Override
-    public boolean canRenderBreaking() {
-        return true;
-    }
-
-    @Override
     public IItemHandler getInternalInventory() {
         return this.inv;
     }

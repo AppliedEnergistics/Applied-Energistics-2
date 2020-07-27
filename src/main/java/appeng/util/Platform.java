@@ -47,6 +47,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.EntityRayTraceResult;
@@ -62,6 +63,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.ModList;
@@ -232,7 +234,7 @@ public class Platform {
         if (!dc.isInWorld(player.world)) {
             return false;
         }
-        return player.world.canMineBlockBody(player, dc.getPos());
+        return player.world.isBlockModifiable(player, dc.getPos());
     }
 
     public static boolean checkPermissions(final PlayerEntity player, final Object accessInterface,
@@ -255,7 +257,7 @@ public class Platform {
                     final ISecurityGrid sg = g.getCache(ISecurityGrid.class);
                     if (!sg.hasPermission(player, requiredPermission)) {
                         player.sendMessage(new TranslationTextComponent("appliedenergistics2.permission_denied")
-                                .applyTextStyle(TextFormatting.RED));
+                                .func_240699_a_(TextFormatting.RED), Util.DUMMY_UUID);
                         // FIXME trace logging?
                         return false;
                     }
@@ -667,7 +669,7 @@ public class Platform {
     }
 
     public static LookDirection getPlayerRay(final PlayerEntity playerIn) {
-        double reachDistance = playerIn.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
+        double reachDistance = playerIn.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
         return getPlayerRay(playerIn, reachDistance);
     }
 

@@ -35,8 +35,7 @@ import net.minecraft.util.math.vector.Quaternion;
 import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.client.SkyRenderHandler;
 
-//TODO https://github.com/MinecraftForge/MinecraftForge/pull/6537
-public class SpatialSkyRender implements SkyRenderHandler {
+public class SpatialSkyRender {
 
     private static final SpatialSkyRender INSTANCE = new SpatialSkyRender();
 
@@ -48,7 +47,7 @@ public class SpatialSkyRender implements SkyRenderHandler {
         this.dspList = GL11.glGenLists(1);
     }
 
-    public static IRenderHandler getInstance() {
+    public static SpatialSkyRender getInstance() {
         return INSTANCE;
     }
 
@@ -56,8 +55,7 @@ public class SpatialSkyRender implements SkyRenderHandler {
             new Quaternion(-90.0F, 0.0F, 0.0F, true), new Quaternion(180.0F, 0.0F, 0.0F, true),
             new Quaternion(0.0F, 0.0F, 90.0F, true), new Quaternion(0.0F, 0.0F, -90.0F, true), };
 
-    @Override
-    public void render(int ticks, float partialTicks, MatrixStack matrixStack, ClientWorld world, Minecraft mc) {
+    public void render(MatrixStack matrixStack) {
         final long now = System.currentTimeMillis();
         if (now - this.cycle > 2000) {
             this.cycle = now;

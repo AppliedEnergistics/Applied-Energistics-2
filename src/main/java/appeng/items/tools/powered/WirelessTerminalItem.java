@@ -71,9 +71,9 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IWireless
                 final String encKey = tag.getString("encryptionKey");
 
                 if (encKey == null || encKey.isEmpty()) {
-                    lines.add(GuiText.Unlinked.textComponent());
+                    lines.add(GuiText.Unlinked.text());
                 } else {
-                    lines.add(GuiText.Linked.textComponent());
+                    lines.add(GuiText.Linked.text());
                 }
             }
         } else {

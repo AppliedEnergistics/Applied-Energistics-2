@@ -56,7 +56,7 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
         this.amountToCraft.addButtons(children::add, this::addButton);
 
         this.next = this.addButton(
-                new Button(this.guiLeft + 128, this.guiTop + 51, 38, 20, GuiText.Next.textComponent(), this::confirm));
+                new Button(this.guiLeft + 128, this.guiTop + 51, 38, 20, GuiText.Next.text(), this::confirm));
 
         subGui.addBackButton(this::addButton, 154, 0);
     }
@@ -68,12 +68,12 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountContainer> {
 
     @Override
     public void drawFG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.font.drawString(matrixStack, GuiText.SelectAmount.textComponent().getString(), 8, 6, 4210752);
+        this.font.drawString(matrixStack, GuiText.SelectAmount.text().getString(), 8, 6, 4210752);
     }
 
     @Override
     public void drawBG(MatrixStack matrixStack, final int offsetX, final int offsetY, final int mouseX, final int mouseY, float partialTicks) {
-        this.next.setMessage(hasShiftDown() ? GuiText.Start.textComponent() : GuiText.Next.textComponent());
+        this.next.setMessage(hasShiftDown() ? GuiText.Start.text() : GuiText.Next.text());
 
         this.bindTexture("guis/craft_amt.png");
         GuiUtils.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize, getBlitOffset());
