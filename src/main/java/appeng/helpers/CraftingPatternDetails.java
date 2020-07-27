@@ -20,14 +20,13 @@ package appeng.helpers;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -54,6 +53,9 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
     private static final int ALL_INPUT_LIMIT = 9;
     private static final int CRAFTING_OUTPUT_LIMIT = 1;
     private static final int PROCESSING_OUTPUT_LIMIT = 3;
+
+    private static final Comparator<IAEItemStack> COMPARE_BY_STACKSIZE = (left, right) -> Long
+            .compare(right.getStackSize(), left.getStackSize());
 
     private final CraftingInventory crafting = new CraftingInventory(new ContainerNull(), 3, 3);
     private final CraftingInventory testFrame = new CraftingInventory(new ContainerNull(), 3, 3);
@@ -313,16 +315,16 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
      * @return a non empty list of condensed stacks.
      */
     private List<IAEItemStack> condenseStacks(Collection<IAEItemStack> collection) {
-        final Collection<IAEItemStack> merged = collection.stream().filter(Objects::nonNull)
+        final List<IAEItemStack> merged = collection.stream().filter(Objects::nonNull)
                 .collect(Collectors.toMap(Function.identity(), IAEItemStack::copy,
                         (left, right) -> left.setStackSize(left.getStackSize() + right.getStackSize())))
-                .values();
+                .values().stream().sorted(COMPARE_BY_STACKSIZE).collect(ImmutableList.toImmutableList());
 
         if (merged.isEmpty()) {
             throw new IllegalStateException("No pattern here!");
         }
 
-        return ImmutableList.copyOf(merged);
+        return merged;
     }
 
     private enum TestStatus {

@@ -67,7 +67,9 @@ public interface ICraftingPatternDetails {
      * <p>
      * This should be the preferred way to deal with the list of inputs.
      * <p>
-     * There is no guarantee about maintaining the placement order of the inputs.
+     * The list will be sorted in descending order by stack size. However there is
+     * no guarantee about maintaining the placement order of the inputs in case of
+     * equal values.
      * 
      * @return an immutable list of inputs without nulls
      */
@@ -79,8 +81,10 @@ public interface ICraftingPatternDetails {
      * <p>
      * This should be the preferred way to deal with the list of outputs.
      * <p>
-     * There is no guarantee about maintaining the placement order of the output
-     * slots.
+     * 
+     * The list will be sorted in descending order by stack size. However there is
+     * no guarantee about maintaining the placement order of the outputs in case of
+     * equal values.
      * 
      * @return an immutable list of outputs without nulls
      */
