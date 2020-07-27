@@ -62,10 +62,10 @@ public class CraftingTreeProcess {
         final World world = job.getWorld();
 
         if (details.isCraftable()) {
-            final IAEItemStack[] list = details.getInputs();
+            final IAEItemStack[] list = details.getSparseInputs();
 
             final CraftingInventory ic = new CraftingInventory(new ContainerNull(), 3, 3);
-            final IAEItemStack[] is = details.getInputs();
+            final IAEItemStack[] is = details.getSparseInputs();
             for (int x = 0; x < ic.size(); x++) {
                 ic.setStack(x, is[x] == null ? ItemStack.EMPTY : is[x].createItemStack());
             }
@@ -81,11 +81,11 @@ public class CraftingTreeProcess {
                 }
             }
 
-            for (final IAEItemStack part : details.getCondensedInputs()) {
+            for (final IAEItemStack part : details.getInputs()) {
                 final ItemStack g = part.createItemStack();
 
                 boolean isAnInput = false;
-                for (final IAEItemStack a : details.getCondensedOutputs()) {
+                for (final IAEItemStack a : details.getOutputs()) {
                     if (!g.isEmpty() && a != null && a.equals(g)) {
                         isAnInput = true;
                     }
@@ -113,7 +113,7 @@ public class CraftingTreeProcess {
             } else {
                 // this is minor different then below, this slot uses the pattern, but kinda
                 // fudges it.
-                for (final IAEItemStack part : details.getCondensedInputs()) {
+                for (final IAEItemStack part : details.getInputs()) {
                     for (int x = 0; x < list.length; x++) {
                         final IAEItemStack comparePart = list[x];
                         if (part != null && part.equals(comparePart)) {
@@ -126,11 +126,11 @@ public class CraftingTreeProcess {
                 }
             }
         } else {
-            for (final IAEItemStack part : details.getCondensedInputs()) {
+            for (final IAEItemStack part : details.getInputs()) {
                 final ItemStack g = part.createItemStack();
 
                 boolean isAnInput = false;
-                for (final IAEItemStack a : details.getCondensedOutputs()) {
+                for (final IAEItemStack a : details.getOutputs()) {
                     if (!g.isEmpty() && a != null && a.equals(g)) {
                         isAnInput = true;
                     }
@@ -141,7 +141,7 @@ public class CraftingTreeProcess {
                 }
             }
 
-            for (final IAEItemStack part : details.getCondensedInputs()) {
+            for (final IAEItemStack part : details.getInputs()) {
                 this.nodes.put(new CraftingTreeNode(cc, job, part.copy(), this, -1, depth + 1), part.getStackSize());
             }
         }
@@ -208,7 +208,7 @@ public class CraftingTreeProcess {
         // assume its possible.
 
         // add crafting results..
-        for (final IAEItemStack out : this.details.getCondensedOutputs()) {
+        for (final IAEItemStack out : this.details.getOutputs()) {
             final IAEItemStack o = out.copy();
             o.setStackSize(o.getStackSize() * i);
             inv.injectItems(o, Actionable.MODULATE, src);
@@ -227,7 +227,7 @@ public class CraftingTreeProcess {
     }
 
     IAEItemStack getAmountCrafted(IAEItemStack what2) {
-        for (final IAEItemStack is : this.details.getCondensedOutputs()) {
+        for (final IAEItemStack is : this.details.getOutputs()) {
             if (is.equals(what2)) {
                 what2 = what2.copy();
                 what2.setStackSize(is.getStackSize());
@@ -236,7 +236,7 @@ public class CraftingTreeProcess {
         }
 
         // more fuzzy!
-        for (final IAEItemStack is : this.details.getCondensedOutputs()) {
+        for (final IAEItemStack is : this.details.getOutputs()) {
             if (is.getItem() == what2.getItem()
                     && (is.getItem().isDamageable() || is.getItemDamage() == what2.getItemDamage())) {
                 what2 = is.copy();

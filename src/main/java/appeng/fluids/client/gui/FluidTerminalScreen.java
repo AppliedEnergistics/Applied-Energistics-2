@@ -263,12 +263,15 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
     @Override
     public boolean mouseClicked(final double xCoord, final double yCoord, final int btn) {
         if (this.searchField.mouseClicked(xCoord, yCoord, btn)) {
-            if (btn == 1 && this.searchField.isMouseOver(xCoord, yCoord)) {
-                this.searchField.setText("");
-                this.repo.setSearchString("");
-                this.repo.updateView();
-                this.setScrollBar();
-            }
+            return true;
+        }
+
+        // Right-clicking on the search field should clear it
+        if (this.searchField.isMouseOver(xCoord, yCoord) && btn == 1) {
+            this.searchField.setText("");
+            this.repo.setSearchString("");
+            this.repo.updateView();
+            this.setScrollBar();
             return true;
         }
 
@@ -329,4 +332,5 @@ public class FluidTerminalScreen extends AEBaseMEScreen<FluidTerminalContainer>
     protected String getBackground() {
         return "guis/terminal.png";
     }
+
 }

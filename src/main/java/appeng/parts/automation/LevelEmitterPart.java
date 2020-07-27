@@ -31,7 +31,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import appeng.api.config.FuzzyMode;
@@ -402,7 +402,7 @@ public class LevelEmitterPart extends UpgradeablePart implements IEnergyWatcherH
     }
 
     @Override
-    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vec3d pos) {
+    public boolean onPartActivate(final PlayerEntity player, final Hand hand, final Vector3d pos) {
         if (Platform.isServer()) {
             ContainerOpener.openContainer(LevelEmitterContainer.TYPE, player, ContainerLocator.forPart(this));
         }

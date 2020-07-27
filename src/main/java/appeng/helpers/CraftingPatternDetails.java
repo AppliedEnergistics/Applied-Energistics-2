@@ -19,13 +19,17 @@
 package appeng.helpers;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
@@ -46,14 +50,21 @@ import appeng.util.Platform;
 
 public class CraftingPatternDetails implements ICraftingPatternDetails, Comparable<CraftingPatternDetails> {
 
+    private static final int ALL_INPUT_LIMIT = 9;
+    private static final int CRAFTING_OUTPUT_LIMIT = 1;
+    private static final int PROCESSING_OUTPUT_LIMIT = 3;
+
+    private static final Comparator<IAEItemStack> COMPARE_BY_STACKSIZE = (left, right) -> Long
+            .compare(right.getStackSize(), left.getStackSize());
+
     private final CraftingInventory crafting = new CraftingInventory(new ContainerNull(), 3, 3);
     private final CraftingInventory testFrame = new CraftingInventory(new ContainerNull(), 3, 3);
     private final ItemStack correctOutput;
     private final CraftingRecipe standardRecipe;
-    private final IAEItemStack[] condensedInputs;
-    private final IAEItemStack[] condensedOutputs;
-    private final IAEItemStack[] inputs;
-    private final IAEItemStack[] outputs;
+    private final List<IAEItemStack> inputs;
+    private final List<IAEItemStack> outputs;
+    private final IAEItemStack[] sparseInputs;
+    private final IAEItemStack[] sparseOutputs;
     private final boolean isCraftable;
     private final boolean canSubstitute;
     private final Set<TestLookup> failCache = new HashSet<>();
@@ -79,7 +90,7 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
         final List<IAEItemStack> in = new ArrayList<>();
         final List<IAEItemStack> out = new ArrayList<>();
 
-        for (int x = 0; x < 9; x++) {
+        for (int x = 0; x < ALL_INPUT_LIMIT; x++) {
             final IAEItemStack ais = ingredients.get(x);
             final ItemStack gs = ais != null ? ais.createItemStack() : ItemStack.EMPTY;
 
@@ -109,70 +120,19 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
             this.standardRecipe = null;
             this.correctOutput = ItemStack.EMPTY;
 
-            for (int x = 0; x < 3; x++) {
+            for (int x = 0; x < PROCESSING_OUTPUT_LIMIT; x++) {
                 final IAEItemStack ais = products.get(x);
-                final ItemStack gs = ais.createItemStack();
 
-                if (!gs.isEmpty()) {
-                    out.add(ais.copy());
-                }
+                out.add(ais != null ? ais.copy() : null);
             }
         }
 
-        this.inputs = in.toArray(new IAEItemStack[0]);
-        this.outputs = out.toArray(new IAEItemStack[0]);
+        final int outputLength = this.isCraftable ? CRAFTING_OUTPUT_LIMIT : PROCESSING_OUTPUT_LIMIT;
+        this.sparseInputs = in.toArray(new IAEItemStack[ALL_INPUT_LIMIT]);
+        this.sparseOutputs = out.toArray(new IAEItemStack[outputLength]);
 
-        final Map<IAEItemStack, IAEItemStack> tmpOutputs = new HashMap<>();
-
-        for (final IAEItemStack io : this.outputs) {
-            if (io == null) {
-                continue;
-            }
-
-            final IAEItemStack g = tmpOutputs.get(io);
-
-            if (g == null) {
-                tmpOutputs.put(io, io.copy());
-            } else {
-                g.add(io);
-            }
-        }
-
-        final Map<IAEItemStack, IAEItemStack> tmpInputs = new HashMap<>();
-
-        for (final IAEItemStack io : this.inputs) {
-            if (io == null) {
-                continue;
-            }
-
-            final IAEItemStack g = tmpInputs.get(io);
-
-            if (g == null) {
-                tmpInputs.put(io, io.copy());
-            } else {
-                g.add(io);
-            }
-        }
-
-        if (tmpOutputs.isEmpty() || tmpInputs.isEmpty()) {
-            throw new IllegalStateException("No pattern here!");
-        }
-
-        this.condensedInputs = new IAEItemStack[tmpInputs.size()];
-        int offset = 0;
-
-        for (final IAEItemStack io : tmpInputs.values()) {
-            this.condensedInputs[offset] = io;
-            offset++;
-        }
-
-        offset = 0;
-        this.condensedOutputs = new IAEItemStack[tmpOutputs.size()];
-
-        for (final IAEItemStack io : tmpOutputs.values()) {
-            this.condensedOutputs[offset] = io;
-            offset++;
-        }
+        this.inputs = this.condenseStacks(in);
+        this.outputs = this.condenseStacks(out);
     }
 
     private void markItemAs(final int slotIndex, final ItemStack i, final TestStatus b) {
@@ -213,8 +173,8 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
         this.testFrame.setStack(slotIndex, i);
 
         // If we cannot substitute, the items must match exactly
-        if (!canSubstitute && slotIndex < inputs.length) {
-            if (!inputs[slotIndex].isSameType(i)) {
+        if (!canSubstitute && slotIndex < sparseInputs.length) {
+            if (!sparseInputs[slotIndex].isSameType(i)) {
                 this.markItemAs(slotIndex, i, TestStatus.DECLINE);
                 return false;
             }
@@ -240,23 +200,23 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
     }
 
     @Override
-    public IAEItemStack[] getInputs() {
+    public IAEItemStack[] getSparseInputs() {
+        return this.sparseInputs;
+    }
+
+    @Override
+    public List<IAEItemStack> getInputs() {
         return this.inputs;
     }
 
     @Override
-    public IAEItemStack[] getCondensedInputs() {
-        return this.condensedInputs;
-    }
-
-    @Override
-    public IAEItemStack[] getCondensedOutputs() {
-        return this.condensedOutputs;
-    }
-
-    @Override
-    public IAEItemStack[] getOutputs() {
+    public List<IAEItemStack> getOutputs() {
         return this.outputs;
+    }
+
+    @Override
+    public IAEItemStack[] getSparseOutputs() {
+        return this.sparseOutputs;
     }
 
     @Override
@@ -276,8 +236,8 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
             }
         }
 
-        if (this.outputs != null && this.outputs.length > 0) {
-            return this.outputs[0].createItemStack();
+        if (this.sparseOutputs != null && this.sparseOutputs.length > 0) {
+            return this.sparseOutputs[0].createItemStack();
         }
 
         return ItemStack.EMPTY;
@@ -342,6 +302,29 @@ public class CraftingPatternDetails implements ICraftingPatternDetails, Comparab
             return this.pattern.equals(other.pattern);
         }
         return false;
+    }
+
+    /**
+     * Merges all equal entries into a single one while adding their total stack
+     * sizes.
+     *
+     * @throws IllegalStateException if the result would be empty.
+     *
+     * @param collection the collection to condense
+     *
+     * @return a non empty list of condensed stacks.
+     */
+    private List<IAEItemStack> condenseStacks(Collection<IAEItemStack> collection) {
+        final List<IAEItemStack> merged = collection.stream().filter(Objects::nonNull)
+                .collect(Collectors.toMap(Function.identity(), IAEItemStack::copy,
+                        (left, right) -> left.setStackSize(left.getStackSize() + right.getStackSize())))
+                .values().stream().sorted(COMPARE_BY_STACKSIZE).collect(ImmutableList.toImmutableList());
+
+        if (merged.isEmpty()) {
+            throw new IllegalStateException("No pattern here!");
+        }
+
+        return merged;
     }
 
     private enum TestStatus {

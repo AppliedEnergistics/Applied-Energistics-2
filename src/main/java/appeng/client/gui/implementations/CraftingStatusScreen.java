@@ -22,10 +22,13 @@
 
 package appeng.client.gui.implementations;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
+import net.minecraft.util.text.StringTextComponent;
 
 import appeng.container.implementations.CraftingStatusContainer;
 import appeng.core.localization.GuiText;
@@ -81,7 +84,7 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusContai
             btnTextText = GuiText.NoCraftingJobs.text();
         }
 
-        this.selectCPU.setMessage(btnTextText);
+        this.selectCPU.setMessage(new StringTextComponent(btnTextText));
     }
 
     @Override

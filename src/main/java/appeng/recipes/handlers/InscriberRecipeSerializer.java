@@ -13,6 +13,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 
 import appeng.api.features.InscriberProcessType;
+import appeng.core.sync.BasePacket;
 
 public class InscriberRecipeSerializer implements RecipeSerializer<InscriberRecipe> {
 
@@ -60,7 +61,7 @@ public class InscriberRecipeSerializer implements RecipeSerializer<InscriberReci
     @Nullable
     @Override
     public InscriberRecipe read(Identifier recipeId, PacketByteBuf buffer) {
-        String group = buffer.readString();
+        String group = buffer.readString(BasePacket.MAX_STRING_LENGTH);
         Ingredient middle = Ingredient.fromPacket(buffer);
         ItemStack result = buffer.readItemStack();
         Ingredient top = Ingredient.fromPacket(buffer);

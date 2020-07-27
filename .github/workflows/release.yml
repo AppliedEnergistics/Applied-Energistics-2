@@ -35,7 +35,7 @@ jobs:
         with:
           run: ./gradlew runData --no-daemon
       - name: Validate assets
-        run: test -d ./src/generated
+        run: test -d ./src/generated -a -f ./src/generated/resources/.cache/cache
       - name: Build with Gradle
         env:
           KEY_STORE_PASS: ${{ secrets.KEY_STORE_PASS }}

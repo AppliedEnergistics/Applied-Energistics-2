@@ -30,7 +30,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
@@ -146,7 +146,7 @@ public interface IPartHost extends ICustomCableConnection {
      *
      * @return a new SelectedPart, this is never null.
      */
-    SelectedPart selectPart(Vec3d pos);
+    SelectedPart selectPart(Vector3d pos);
 
     /**
      * can be used by parts to trigger the tile or part to save.

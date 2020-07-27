@@ -19,6 +19,7 @@
 package appeng.items.misc;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -152,8 +153,8 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
         final boolean isCrafting = details.isCraftable();
         final boolean substitute = details.canSubstitute();
 
-        final IAEItemStack[] in = details.getCondensedInputs();
-        final IAEItemStack[] out = details.getCondensedOutputs();
+        final Collection<IAEItemStack> in = details.getInputs();
+        final Collection<IAEItemStack> out = details.getOutputs();
 
         final Text label = (isCrafting ? GuiText.Crafts.text() : GuiText.Creates.text())
                 .copy().append(": ");
@@ -200,7 +201,7 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
 
         final ICraftingPatternDetails details = Api.instance().crafting().decodePattern(item, w);
 
-        out = details != null ? details.getOutputs()[0].createItemStack() : ItemStack.EMPTY;
+        out = details != null ? details.getOutputs().get(0).createItemStack() : ItemStack.EMPTY;
 
         SIMPLE_CACHE.put(item, out);
         return out;
@@ -218,7 +219,9 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
         final CompoundTag tag = itemStack.getTag();
         Preconditions.checkArgument(tag != null, "itemStack missing a NBT tag");
 
-        return new Identifier(tag.getString(NBT_RECIPE_ID));
+        return tag.contains(NBT_RECIPE_ID, Constants.NBT.TAG_STRING)
+                ? new Identifier(tag.getString(NBT_RECIPE_ID))
+                : null;
     }
 
     public List<IAEItemStack> getIngredients(ItemStack itemStack) {
@@ -271,7 +274,7 @@ public class EncodedPatternItem extends AEBaseItem implements AEToolItem {
 
         Preconditions.checkArgument(tag != null, "itemStack missing a NBT tag");
 
-        return getCraftingRecipeId(itemStack) == null && tag.getBoolean(NBT_SUBSITUTE);
+        return getCraftingRecipeId(itemStack) != null && tag.getBoolean(NBT_SUBSITUTE);
     }
 
     /**

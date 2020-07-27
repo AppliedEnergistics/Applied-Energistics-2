@@ -23,51 +23,6 @@ repositories {
         name 'modmaven'
         url "https://modmaven.k-4u.nl/"
     }
-
-    maven {
-        name "Mobius"
-        url "http://mobiusstrip.eu/maven"
-    }
-
-    maven {
-        name = "JEI repo"
-        url "http://dvs1.progwml6.com/files/maven"
-    }
-
-    maven {
-        name = "Tesla repo"
-        url "http://maven.mcmoddev.com"
-    }
-
-    maven {
-        name = "IC2 repo"
-        url = "http://maven.ic2.player.to"
-    }
-
-    maven {
-        name = "CoFH Maven"
-        url = "http://maven.covers1624.net"
-    }
-
-    maven { // TheOneProbe
-        name 'tterrag maven'
-        url "http://maven.tterrag.com/"
-    }
-
-    maven {
-        name 'mcjty'
-        url "http://maven.k-4u.nl/"
-    }
-
-   	maven { // CraftTweaker
-        name 'jared maven'
-        url "http://maven.blamejared.com/"
-    }
-
-    maven {
-		name = "CurseForge"
-		url = "https://minecraft.curseforge.com/api/maven/"
-	}
 }
 
 dependencies {
@@ -80,7 +35,7 @@ dependencies {
     // Runtime, Mods
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
     runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-${minecraft_release}:${minecraft_release}-${top_version}")
-    runtimeOnly fg.deobf("team.chisel.ctm:CTM:${ctm_version}")
+    //runtimeOnly fg.deobf("team.chisel.ctm:CTM:${ctm_version}")
 
     // unit test dependencies
     testCompile "junit:junit:4.13"

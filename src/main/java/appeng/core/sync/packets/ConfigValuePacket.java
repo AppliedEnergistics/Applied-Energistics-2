@@ -45,8 +45,8 @@ public class ConfigValuePacket extends BasePacket {
     private final String Value;
 
     public ConfigValuePacket(final PacketByteBuf stream) {
-        this.Name = stream.readString();
-        this.Value = stream.readString();
+        this.Name = stream.readString(MAX_STRING_LENGTH);
+        this.Value = stream.readString(MAX_STRING_LENGTH);
     }
 
     // api

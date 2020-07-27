@@ -19,6 +19,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 
 import appeng.core.AEConfig;
+import appeng.core.sync.BasePacket;
 
 public class GrinderRecipeSerializer implements RecipeSerializer<GrinderRecipe> {
 
@@ -63,7 +64,7 @@ public class GrinderRecipeSerializer implements RecipeSerializer<GrinderRecipe> 
     @Override
     public GrinderRecipe read(Identifier recipeId, PacketByteBuf buffer) {
 
-        String group = buffer.readString();
+        String group = buffer.readString(BasePacket.MAX_STRING_LENGTH);
         Ingredient ingredient = Ingredient.fromPacket(buffer);
         int ingredientCount = buffer.readVarInt();
         ItemStack result = buffer.readItemStack();

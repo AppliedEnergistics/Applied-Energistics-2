@@ -61,6 +61,7 @@ import appeng.api.util.DimensionalCoord;
 import appeng.block.storage.DriveSlotsState;
 import appeng.container.implementations.DriveContainer;
 import appeng.core.Api;
+import appeng.core.sync.BasePacket;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
@@ -183,7 +184,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity implements IChestO
         int uniqueIdCount = data.readByte();
         int[] uniqueIds = new int[uniqueIdCount];
         for (int i = 0; i < uniqueIdCount; i++) {
-            uniqueIds[i] = data.readVarInt();
+            uniqueIds[i] = data.readVarInt(BasePacket.MAX_STRING_LENGTH);
         }
 
         boolean changed = false;

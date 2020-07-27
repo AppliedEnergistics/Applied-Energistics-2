@@ -111,13 +111,13 @@ public class PatternTerminalPart extends AbstractTerminalPart {
                 this.setCraftingRecipe(details.isCraftable());
                 this.setSubstitution(details.canSubstitute());
 
-                for (int x = 0; x < this.crafting.getSlotCount() && x < details.getInputs().length; x++) {
-                    final IAEItemStack item = details.getInputs()[x];
+                for (int x = 0; x < this.crafting.getSlotCount() && x < details.getSparseInputs().length; x++) {
+                    final IAEItemStack item = details.getSparseInputs()[x];
                     this.crafting.forceSetInvStack(x, item == null ? ItemStack.EMPTY : item.createItemStack());
                 }
 
-                for (int x = 0; x < this.output.getSlotCount() && x < details.getOutputs().length; x++) {
-                    final IAEItemStack item = details.getOutputs()[x];
+                for (int x = 0; x < this.output.getSlotCount() && x < details.getSparseOutputs().length; x++) {
+                    final IAEItemStack item = details.getSparseOutputs()[x];
                     this.output.forceSetInvStack(x, item == null ? ItemStack.EMPTY : item.createItemStack());
                 }
             }
