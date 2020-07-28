@@ -23,7 +23,7 @@ public class ChargedQuartzOreFeature extends Feature<ChargedQuartzOreConfig> {
 
     public static final ChargedQuartzOreFeature INSTANCE = new ChargedQuartzOreFeature(ChargedQuartzOreConfig.CODEC);
 
-    public ChargedQuartzOreFeature(Codec<ChargedQuartzOreConfig> codec) {
+    private ChargedQuartzOreFeature(Codec<ChargedQuartzOreConfig> codec) {
         super(codec);
     }
 

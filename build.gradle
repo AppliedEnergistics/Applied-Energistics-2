@@ -29,7 +29,7 @@ repositories {
     mavenLocal()
     jcenter()
     mavenCentral()
-    maven { url = "http://maven.fabricmc.net/" }
+    maven { url = "https://maven.fabricmc.net/" }
     maven {
         name = "BuildCraft"
         url = "https://mod-buildcraft.com/maven"
@@ -37,6 +37,7 @@ repositories {
     maven {
         name = "HYWLA"
         url = "https://maven.tehnut.info/"
+
     }
     maven {
         name = 'Earthcomputer Mods'

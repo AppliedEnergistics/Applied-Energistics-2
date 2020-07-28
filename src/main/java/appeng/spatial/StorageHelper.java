@@ -99,7 +99,7 @@ public class StorageHelper {
                 ChunkStatus.FULL, true);
 
         if (entity instanceof ServerPlayerEntity
-                && link.dim.getDimensionRegistryKey().equals(SpatialDimensionManager.STORAGE_DIMENSION_TYPE)) {
+                && link.dim.getDimensionRegistryKey() == SpatialDimensionManager.STORAGE_DIMENSION_TYPE) {
             AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger((ServerPlayerEntity) entity);
         }
 

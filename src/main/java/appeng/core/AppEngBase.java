@@ -562,8 +562,7 @@ public abstract class AppEngBase implements AppEng {
         LibStructure.registerStructure(MeteoriteStructure.ID, MeteoriteStructure.INSTANCE,
                 GenerationStep.Feature.TOP_LAYER_MODIFICATION, new StructureConfig(32, 8, 124895654),
                 new MeteoriteStructure(DefaultFeatureConfig.CODEC).configure(DefaultFeatureConfig.INSTANCE));
-        Registry.register(Registry.FEATURE, AppEng.makeId("charged_quartz_ore"),
-                new ChargedQuartzOreFeature(ChargedQuartzOreConfig.CODEC));
+        Registry.register(Registry.FEATURE, AppEng.makeId("charged_quartz_ore"), ChargedQuartzOreFeature.INSTANCE);
 
         Biome.BIOMES.forEach(b -> {
             addMeteoriteWorldGen(b);
