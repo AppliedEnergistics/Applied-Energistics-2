@@ -30,10 +30,11 @@ jobs:
         run: chmod +x gradlew
       - name: Validate no assets
         run: test ! -d ./src/generated
+      # FG does appear to read the deps in runData before it has written it. Separate step to avoid it
+      - name: Compile Java and prepare runData
+        run: ./gradlew compileJava prepareRunData --no-daemon
       - name: Generate assets
-        uses: GabrielBB/xvfb-action@v1.2
-        with:
-          run: ./gradlew runData --no-daemon
+        run: ./gradlew runData --no-daemon
       - name: Validate assets
         run: test -d ./src/generated -a -f ./src/generated/resources/.cache/cache
       - name: Build with Gradle
