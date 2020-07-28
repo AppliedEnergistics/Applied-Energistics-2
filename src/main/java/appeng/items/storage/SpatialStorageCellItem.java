@@ -61,7 +61,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
             final ITooltipFlag advancedTooltips) {
         final RegistryKey<World> worldId = this.getStoredDimension(stack);
         if (worldId == null) {
-            lines.add(GuiText.Unformatted.text().deepCopy().func_240699_a_(TextFormatting.ITALIC));
+            lines.add(GuiText.Unformatted.text().deepCopy().mergeStyle(TextFormatting.ITALIC));
             lines.add(GuiText.SpatialCapacity.text(maxRegion, maxRegion, maxRegion));
         } else {
             SpatialDimensionManager.INSTANCE.addCellDimensionTooltip(worldId, lines);

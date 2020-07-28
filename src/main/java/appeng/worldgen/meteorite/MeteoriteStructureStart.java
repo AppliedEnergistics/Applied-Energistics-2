@@ -54,7 +54,7 @@ public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
         int scanRadius = (int) Math.max(1, meteoriteRadius * 2);
         for (int x = -scanRadius; x <= scanRadius; x++) {
             for (int z = -scanRadius; z <= scanRadius; z++) {
-                int h = generator.func_222529_a(centerX + x, centerZ + z, heightmapType);
+                int h = generator.getHeight(centerX + x, centerZ + z, heightmapType);
                 stats.add(h);
             }
         }
@@ -106,7 +106,7 @@ public class MeteoriteStructureStart extends StructureStart<NoFeatureConfig> {
                 final double distanceFrom = dx * dx + dz * dz;
 
                 if (maxY > h + distanceFrom * 0.0175 && maxY < h + distanceFrom * 0.02) {
-                    int heigth = generator.func_222529_a(blockPos.getX(), blockPos.getZ(), Heightmap.Type.OCEAN_FLOOR);
+                    int heigth = generator.getHeight(blockPos.getX(), blockPos.getZ(), Heightmap.Type.OCEAN_FLOOR);
                     if (heigth < seaLevel) {
                         return true;
                     }

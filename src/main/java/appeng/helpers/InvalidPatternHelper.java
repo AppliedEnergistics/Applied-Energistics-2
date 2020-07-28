@@ -126,11 +126,10 @@ public class InvalidPatternHelper {
         }
 
         public ITextComponent getFormattedToolTip() {
-            IFormattableTextComponent result = new StringTextComponent(this.getCount() + " ")
-                    .func_230529_a_(this.getName());
+            IFormattableTextComponent result = new StringTextComponent(this.getCount() + " ").append(this.getName());
 
             if (!this.isValid()) {
-                result.func_240699_a_(TextFormatting.RED);
+                result.mergeStyle(TextFormatting.RED);
             }
 
             return result;

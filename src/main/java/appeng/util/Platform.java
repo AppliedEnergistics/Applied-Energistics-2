@@ -257,7 +257,7 @@ public class Platform {
                     final ISecurityGrid sg = g.getCache(ISecurityGrid.class);
                     if (!sg.hasPermission(player, requiredPermission)) {
                         player.sendMessage(new TranslationTextComponent("appliedenergistics2.permission_denied")
-                                .func_240699_a_(TextFormatting.RED), Util.DUMMY_UUID);
+                                .mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
                         // FIXME trace logging?
                         return false;
                     }

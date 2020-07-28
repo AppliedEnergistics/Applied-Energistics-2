@@ -54,16 +54,16 @@ public class MinecraftServerMixin implements DynamicDimensions {
 
         // Each worlds must have a corresponding dimension options, otherwise they will
         // not be re-created on load
-        DimensionGeneratorSettings generatorOptions = this.field_240768_i_.func_230418_z_();
+        DimensionGeneratorSettings generatorOptions = this.field_240768_i_.getDimensionGeneratorSettings();
         Preconditions.checkArgument(!generatorOptions.func_236224_e_().containsKey(worldId.func_240901_a_()),
                 "Dimension config with id %s already exists.", worldId.func_240901_a_());
 
-        DimensionType dimensionType = field_240767_f_.func_230520_a_().func_230516_a_(dimensionTypeId);
+        DimensionType dimensionType = field_240767_f_.func_230520_a_().getValueForKey(dimensionTypeId);
         Preconditions.checkArgument(dimensionType != null, "dimensionTypeId %s is not registered", dimensionTypeId);
 
         // Create dimension options with the given world-id and chunk generator
         Dimension dimensionOptions = new Dimension(
-                () -> field_240767_f_.func_230520_a_().func_230516_a_(dimensionTypeId), chunkGenerator);
+                () -> field_240767_f_.func_230520_a_().getValueForKey(dimensionTypeId), chunkGenerator);
 
         IServerWorldInfo serverWorldProperties = this.field_240768_i_.func_230407_G_();
 

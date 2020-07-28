@@ -71,9 +71,9 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
             final double percent = internalCurrentPower / internalMaxPower;
 
             lines.add(GuiText.StoredEnergy.text().deepCopy()
-                    .func_240702_b_(':' + MessageFormat.format(" {0,number,#} ", internalCurrentPower))
-                    .func_230529_a_(new TranslationTextComponent(PowerUnits.AE.unlocalizedName))
-                    .func_240702_b_(" - " + MessageFormat.format("{0,number,#.##%}", percent)));
+                    .appendString(':' + MessageFormat.format(" {0,number,#} ", internalCurrentPower))
+                    .append(new TranslationTextComponent(PowerUnits.AE.unlocalizedName))
+                    .appendString(" - " + MessageFormat.format("{0,number,#.##%}", percent)));
         }
     }
 

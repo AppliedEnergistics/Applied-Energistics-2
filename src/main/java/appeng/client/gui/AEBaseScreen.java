@@ -211,7 +211,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         List<ITextComponent> styledLines = new ArrayList<>(lines.size());
         for (int i = 0; i < lines.size(); i++) {
             Style style = (i == 0) ? TOOLTIP_HEADER : TOOLTIP_BODY;
-            styledLines.add(lines.get(i).deepCopy().func_240700_a_(s -> style));
+            styledLines.add(lines.get(i).deepCopy().modifyStyle(s -> style));
         }
 
         this.renderTooltip(matrices, styledLines, x, y);
@@ -219,7 +219,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     }
 
     @Override
-    protected final void func_230451_b_(MatrixStack matrixStack, final int x, final int y) {
+    protected final void drawGuiContainerForegroundLayer(MatrixStack matrixStack, final int x, final int y) {
         final int ox = this.guiLeft; // (width - xSize) / 2;
         final int oy = this.guiTop; // (height - ySize) / 2;
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -234,7 +234,8 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
     public abstract void drawFG(MatrixStack matrixStack, int offsetX, int offsetY, int mouseX, int mouseY);
 
     @Override
-    protected final void func_230450_a_(MatrixStack matrixStack, final float f, final int x, final int y) {
+    protected final void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, final float f, final int x,
+            final int y) {
         final int ox = this.guiLeft; // (width - xSize) / 2;
         final int oy = this.guiTop; // (height - ySize) / 2;
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -544,11 +545,6 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
         return false;
     }
 
-    @Override
-    public void removed() {
-        super.removed();
-    }
-
     protected Slot getSlot(final int mouseX, final int mouseY) {
         final List<Slot> slots = this.getInventorySlots();
         for (final Slot slot : slots) {
@@ -630,7 +626,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
      * hackery...
      */
     @Override
-    public void func_238746_a_(MatrixStack matrices, Slot s) {
+    public void moveItems(MatrixStack matrices, Slot s) {
         if (s instanceof SlotME) {
 
             try {
@@ -639,7 +635,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
                 }
 
                 // Annoying but easier than trying to splice into render item
-                super.func_238746_a_(matrices, new Size1Slot((SlotME) s));
+                super.moveItems(matrices, new Size1Slot((SlotME) s));
 
                 this.stackSizeRenderer.renderStackSize(this.font, ((SlotME) s).getAEStack(), s.xPos, s.yPos);
 
@@ -755,9 +751,9 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
 
                 if (s instanceof AppEngSlot) {
                     ((AppEngSlot) s).setDisplay(true);
-                    super.func_238746_a_(matrices, s);
+                    super.moveItems(matrices, s);
                 } else {
-                    super.func_238746_a_(matrices, s);
+                    super.moveItems(matrices, s);
                 }
 
                 return;
@@ -766,7 +762,7 @@ public abstract class AEBaseScreen<T extends AEBaseContainer> extends ContainerS
             }
         }
         // do the usual for non-ME Slots.
-        super.func_238746_a_(matrices, s);
+        super.moveItems(matrices, s);
     }
 
     protected boolean isPowered() {

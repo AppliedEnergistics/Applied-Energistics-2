@@ -13,8 +13,8 @@ import net.minecraft.world.gen.feature.ReplaceBlockConfig;
 public class ChargedQuartzOreConfig implements IFeatureConfig {
 
     public static final Codec<ChargedQuartzOreConfig> CODEC = RecordCodecBuilder.create((instance) -> instance
-            .group(BlockState.field_235877_b_.fieldOf("target").forGetter((config) -> config.target),
-                    BlockState.field_235877_b_.fieldOf("state").forGetter((config) -> config.state),
+            .group(BlockState.BLOCKSTATE_CODEC.fieldOf("target").forGetter((config) -> config.target),
+                    BlockState.BLOCKSTATE_CODEC.fieldOf("state").forGetter((config) -> config.state),
                     Codec.FLOAT.fieldOf("chance").withDefault(0f).forGetter((config) -> config.chance))
             .apply(instance, ChargedQuartzOreConfig::new));
 

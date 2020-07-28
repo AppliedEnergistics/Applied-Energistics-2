@@ -169,12 +169,12 @@ public class TestMeteoritesCommand implements ISubCommand {
             }
 
             IFormattableTextComponent msg = new StringTextComponent(" #" + (i + 1) + " ");
-            msg.func_230529_a_(getClickablePosition(world, settings, pos)).func_230529_a_(restOfLine);
+            msg.append(getClickablePosition(world, settings, pos)).append(restOfLine);
 
             // Add a tooltip
             ITextComponent tooltip = new StringTextComponent(settings.toString() + "\nBiome: ").deepCopy()
-                    .func_230529_a_(world.getBiome(pos).getDisplayName());
-            msg.func_240700_a_(style -> style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
+                    .append(world.getBiome(pos).getDisplayName());
+            msg.modifyStyle(style -> style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
 
             sender.sendFeedback(msg, true);
         }
@@ -192,8 +192,8 @@ public class TestMeteoritesCommand implements ISubCommand {
         String displayText = String.format(Locale.ROOT, "pos=%d,%d,%d", tpPos.getX(), tpPos.getY(), tpPos.getZ());
         String tpCommand = String.format(Locale.ROOT, "/tp @s %d %d %d", tpPos.getX(), tpPos.getY(), tpPos.getZ());
 
-        return new StringTextComponent(displayText).func_240699_a_(TextFormatting.UNDERLINE)
-                .func_240700_a_(style -> style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, tpCommand)));
+        return new StringTextComponent(displayText).mergeStyle(TextFormatting.UNDERLINE)
+                .modifyStyle(style -> style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, tpCommand)));
     }
 
     private static MeteoriteStructurePiece getMeteoritePieceFromChunk(IChunk chunk) {

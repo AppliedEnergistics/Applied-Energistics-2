@@ -119,7 +119,7 @@ public enum Upgrades {
                 if (namesAdded.add(name)) {
                     // append the supported count only if its > 1
                     if (supported.maxCount > 1) {
-                        name = name.deepCopy().func_240702_b_(" (" + supported.maxCount + ")");
+                        name = name.deepCopy().appendString(" (" + supported.maxCount + ")");
                     }
                     supportedTooltipLines.add(name);
                 }
