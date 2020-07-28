@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[31,)"
+loaderVersion="[32,)"
 #updateJSONURL=""
 issueTrackerURL="https://github.com/AppliedEnergistics/Applied-Energistics-2/issues"
 displayURL="https://github.com/AppliedEnergistics/Applied-Energistics-2"
@@ -16,13 +16,13 @@ description="A Mod about Matter, Energy and using them to conquer the world.."
 [[dependencies.appliedenergistics2]]
     modId="forge"
     mandatory=true
-    versionRange="[31.2.31,32.0.0)"
+    versionRange="[32.0.75,33.0.0)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.appliedenergistics2]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.15.2]"
+    versionRange="[1.16.1]"
     ordering="NONE"
     side="BOTH"

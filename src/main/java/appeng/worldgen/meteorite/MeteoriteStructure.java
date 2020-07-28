@@ -1,22 +1,15 @@
 package appeng.worldgen.meteorite;
 
-import java.util.Random;
-
+import appeng.core.AppEng;
 import com.mojang.serialization.Codec;
-
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeManager;
 import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.structure.Structure;
-
-import appeng.core.AELog;
-import appeng.core.AppEng;
 
 public class MeteoriteStructure extends Structure<NoFeatureConfig> {
 
@@ -27,6 +20,12 @@ public class MeteoriteStructure extends Structure<NoFeatureConfig> {
 
     public MeteoriteStructure(Codec<NoFeatureConfig> configCodec) {
         super(configCodec);
+    }
+
+    @Override
+    public String getStructureName() {
+        String s = super.getStructureName();
+        return s;
     }
 
     @Override

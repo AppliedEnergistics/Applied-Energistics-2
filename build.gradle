@@ -19,11 +19,13 @@
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
+        maven { url = 'https://repo.spongepowered.org/maven' }
         jcenter()
         mavenCentral()
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
 
@@ -36,6 +38,7 @@ plugins {
 }
 
 apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.spongepowered.mixin'
 apply plugin: "eclipse"
 
 repositories {
@@ -112,6 +115,7 @@ minecraft {
         client {
             property 'forge.logging.console.level', 'debug'
             workingDirectory project.file('run')
+            property "mixin.debug.export", "true"
             mods {
                 appliedenergistics2 {
                     source sourceSets.main
@@ -140,6 +144,18 @@ minecraft {
                 }
             }
         }
+    }
+}
+
+mixin {
+    add sourceSets.main, "mixins.appliedenergistics2.refmap.json"
+}
+
+jar {
+    manifest {
+        attributes([
+                "MixinConfigs": "appliedenergistics2.mixins.json"
+        ])
     }
 }
 

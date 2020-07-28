@@ -14,7 +14,7 @@ import java.util.Optional;
 @Mixin(DimensionRenderInfo.class)
 public class SkyPropertiesMixin {
 
-    @Inject(method = "func_239215_a_", at = @At("HEAD"), cancellable = true, remap = false)
+    @Inject(method = "func_239215_a_", at = @At("HEAD"), cancellable = true)
     private static void byDimensionType(Optional<RegistryKey<DimensionType>> optional,
             CallbackInfoReturnable<DimensionRenderInfo> ci) {
         if (optional.orElse(null) == SpatialDimensionManager.STORAGE_DIMENSION_TYPE) {

@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.OptionalLong;
 
-@Mixin(DimensionType.class)
+@Mixin(value = DimensionType.class)
 public class DimensionTypeMixin {
 
     @Inject(method = "func_236027_a_", at = @At("TAIL"))

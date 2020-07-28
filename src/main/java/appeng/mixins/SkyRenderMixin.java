@@ -11,16 +11,16 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(WorldRenderer.class)
+@Mixin(value = WorldRenderer.class)
 public class SkyRenderMixin {
 
-    @Shadow(aliases = {"mc"})
-    private Minecraft client;
+    @Shadow
+    private Minecraft mc;
 
     @SuppressWarnings("ConstantConditions")
-    @Inject(method = "renderSky", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "renderSky(Lcom/mojang/blaze3d/matrix/MatrixStack;F)V", at = @At("HEAD"), cancellable = true)
     public void renderSky(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
-        if (client.world.func_234922_V_() == SpatialDimensionManager.STORAGE_DIMENSION_TYPE) {
+        if (mc.world.func_234922_V_() == SpatialDimensionManager.STORAGE_DIMENSION_TYPE) {
             SpatialSkyRender.getInstance().render(matrices);
             ci.cancel();
         }

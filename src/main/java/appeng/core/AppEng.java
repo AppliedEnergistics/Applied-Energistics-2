@@ -37,6 +37,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
@@ -130,7 +131,8 @@ public final class AppEng {
         modEventBus.addGenericListener(TileEntityType.class, registration::registerTileEntities);
         modEventBus.addGenericListener(ContainerType.class, registration::registerContainerTypes);
         modEventBus.addGenericListener(IRecipeSerializer.class, registration::registerRecipeSerializers);
-        modEventBus.addGenericListener(Feature.class, registration::registerWorldGen);
+        modEventBus.addGenericListener(Feature.class, registration::registerFeatures);
+        modEventBus.addGenericListener(Structure.class, registration::registerStructures);
         modEventBus.addGenericListener(Biome.class, registration::registerBiomes);
 
         modEventBus.addListener(Integrations::enqueueIMC);

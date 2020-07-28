@@ -18,48 +18,6 @@
 
 package appeng.core;
 
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.entity.EntityType;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.Item;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.particles.ParticleType;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.DimensionType;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.IFeatureConfig;
-import net.minecraft.world.gen.feature.OreFeatureConfig;
-import net.minecraft.world.gen.placement.CountRangeConfig;
-import net.minecraft.world.gen.placement.IPlacementConfig;
-import net.minecraft.world.gen.placement.Placement;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ColorHandlerEvent;
-import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.common.extensions.IForgeContainerType;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.fml.network.IContainerFactory;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
-
 import appeng.api.config.Upgrades;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IItems;
@@ -195,6 +153,7 @@ import appeng.me.cache.PathGridCache;
 import appeng.me.cache.SecurityCache;
 import appeng.me.cache.SpatialPylonCache;
 import appeng.me.cache.TickManagerCache;
+import appeng.mixins.StructureAccessor;
 import appeng.recipes.game.DisassembleRecipe;
 import appeng.recipes.game.FacadeRecipe;
 import appeng.recipes.handlers.GrinderRecipe;
@@ -208,15 +167,51 @@ import appeng.tile.crafting.MolecularAssemblerRenderer;
 import appeng.worldgen.ChargedQuartzOreConfig;
 import appeng.worldgen.ChargedQuartzOreFeature;
 import appeng.worldgen.meteorite.MeteoriteStructure;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.particle.ParticleManager;
+import net.minecraft.entity.EntityType;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.Item;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.particles.ParticleType;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.IFeatureConfig;
+import net.minecraft.world.gen.feature.OreFeatureConfig;
+import net.minecraft.world.gen.feature.structure.Structure;
+import net.minecraft.world.gen.placement.CountRangeConfig;
+import net.minecraft.world.gen.placement.IPlacementConfig;
+import net.minecraft.world.gen.placement.Placement;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
+import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.extensions.IForgeContainerType;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.network.IContainerFactory;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.IForgeRegistry;
 
 final class Registration {
 
-    public Registration() {
-        AeStats.register();
-        advancementTriggers = new AdvancementTriggers(CriteriaTriggers::register);
-    }
-
-    AdvancementTriggers advancementTriggers;
+    static AdvancementTriggers advancementTriggers;
 
     public static void setupInternalRegistries() {
         // TODO: Do not use the internal API
@@ -468,6 +463,9 @@ final class Registration {
 
     // FIXME LATER
     public static void postInit() {
+        AeStats.register();
+        advancementTriggers = new AdvancementTriggers(CriteriaTriggers::register);
+
         final IRegistryContainer registries = Api.instance().registries();
         // TODO: Do not use the internal API
         ApiDefinitions definitions = Api.INSTANCE.definitions();
@@ -682,14 +680,24 @@ final class Registration {
         }
     }
 
-    public void registerWorldGen(RegistryEvent.Register<Feature<?>> evt) {
+    public void registerFeatures(RegistryEvent.Register<Feature<?>> evt) {
         IForgeRegistry<Feature<?>> r = evt.getRegistry();
 
-        r.register(ChargedQuartzOreFeature.INSTANCE);
+        r.register(ChargedQuartzOreFeature.INSTANCE.setRegistryName(AppEng.makeId("charged_quartz_ore")));
+    }
+
+    public void registerStructures(RegistryEvent.Register<Structure<?>> evt) {
+        // Registering into the Forge registry is INSUFFICIENT!
+        // There's a bidirectional map in the Structure class itself primarily for the purposes of NBT serialization
+        StructureAccessor.register(
+                MeteoriteStructure.ID.toString(),
+                MeteoriteStructure.INSTANCE.setRegistryName(MeteoriteStructure.ID),
+                GenerationStage.Decoration.TOP_LAYER_MODIFICATION
+        );
     }
 
     public void registerBiomes(RegistryEvent.Register<Biome> evt) {
-        evt.getRegistry().register(StorageCellBiome.INSTANCE);
+        evt.getRegistry().register(StorageCellBiome.INSTANCE.setRegistryName(AppEng.makeId("storage")));
     }
 
     @OnlyIn(Dist.CLIENT)
