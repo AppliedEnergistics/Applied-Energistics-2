@@ -51,7 +51,7 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeContainer> {
         super.init();
 
         this.name = new TextFieldWidget(this.font, this.guiLeft + 24, this.guiTop + 32, 79, this.font.FONT_HEIGHT,
-                new StringTextComponent(""));
+                StringTextComponent.EMPTY);
         this.name.setEnableBackgroundDrawing(false);
         this.name.setMaxStringLength(32);
         this.name.setTextColor(0xFFFFFF);

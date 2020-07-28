@@ -45,7 +45,7 @@ public class ToggleButton extends Button implements ITooltip {
 
     public ToggleButton(final int x, final int y, final int on, final int off, final String displayName,
             final String displayHint, IPressable onPress) {
-        super(x, y, 16, 16, new StringTextComponent(""), onPress);
+        super(x, y, 16, 16, StringTextComponent.EMPTY, onPress);
         this.iconIdxOn = on;
         this.iconIdxOff = off;
         this.displayName = displayName;
@@ -102,7 +102,7 @@ public class ToggleButton extends Button implements ITooltip {
 
             return new StringTextComponent(name + '\n' + sb);
         }
-        return new StringTextComponent("");
+        return StringTextComponent.EMPTY;
     }
 
     @Override

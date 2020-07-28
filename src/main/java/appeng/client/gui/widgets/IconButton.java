@@ -35,7 +35,7 @@ public abstract class IconButton extends Button implements ITooltip {
     private boolean halfSize = false;
 
     public IconButton(final int x, final int y, IPressable onPress) {
-        super(x, y, 16, 16, new StringTextComponent(""), onPress);
+        super(x, y, 16, 16, StringTextComponent.EMPTY, onPress);
     }
 
     public void setVisibility(final boolean vis) {

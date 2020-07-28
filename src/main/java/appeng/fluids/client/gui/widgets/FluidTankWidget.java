@@ -43,7 +43,7 @@ public class FluidTankWidget extends Widget implements ITooltip {
     private final int slot;
 
     public FluidTankWidget(IAEFluidTank tank, int slot, int x, int y, int w, int h) {
-        super(x, y, w, h, new StringTextComponent(""));
+        super(x, y, w, h, StringTextComponent.EMPTY);
         this.tank = tank;
         this.slot = slot;
     }
@@ -95,7 +95,7 @@ public class FluidTankWidget extends Widget implements ITooltip {
             return fluid.getFluid().getAttributes().getDisplayName(fluid.getFluidStack()).deepCopy()
                     .appendString("\n" + (fluid.getStackSize() + "mB"));
         }
-        return new StringTextComponent("");
+        return StringTextComponent.EMPTY;
     }
 
     @Override

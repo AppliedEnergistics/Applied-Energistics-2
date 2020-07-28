@@ -48,7 +48,7 @@ public class ProgressBar extends Widget implements ITooltip {
     public ProgressBar(final IProgressProvider source, final String texture, final int posX, final int posY,
             final int u, final int y, final int width, final int height, final Direction dir,
             final ITextComponent title) {
-        super(posX, posY, width, height, new StringTextComponent(""));
+        super(posX, posY, width, height, StringTextComponent.EMPTY);
         this.source = source;
         this.texture = new ResourceLocation("appliedenergistics2", "textures/" + texture);
         this.fill_u = u;
@@ -85,7 +85,7 @@ public class ProgressBar extends Widget implements ITooltip {
         if (this.fullMsg != null) {
             return this.fullMsg;
         }
-        ITextComponent result = this.titleName != null ? this.titleName : new StringTextComponent("");
+        ITextComponent result = this.titleName != null ? this.titleName : StringTextComponent.EMPTY;
 
         return result.deepCopy().appendString("\n").appendString(this.source.getCurrentProgress() + " ")
                 .append(GuiText.Of.text().deepCopy().appendString(" " + this.source.getMaxProgress()));
