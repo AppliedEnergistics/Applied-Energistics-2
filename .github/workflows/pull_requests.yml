@@ -22,19 +22,17 @@ jobs:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
       - name: Clean gradle
-        run: ./gradlew clean --no-daemon
+        run: ./gradlew clean --no-daemon --max-workers 1
       - name: Validate no assets
         run: test ! -d ./src/generated
       - name: Generate assets
-        uses: GabrielBB/xvfb-action@v1.2
-        with:
-          run: ./gradlew runData --no-daemon
+        run: ./gradlew runData --no-daemon --max-workers 1
       - name: Validate assets
         run: test -d ./src/generated -a -f ./src/generated/resources/.cache/cache
       - name: Build with Gradle
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: ./gradlew build --no-daemon
+        run: ./gradlew build --no-daemon --max-workers 1
       - uses: actions/upload-artifact@v2
         with:
           name: dist

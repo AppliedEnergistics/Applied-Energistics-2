@@ -31,9 +31,7 @@ jobs:
       - name: Validate no assets
         run: test ! -d ./src/generated
       - name: Generate assets
-        uses: GabrielBB/xvfb-action@v1.2
-        with:
-          run: ./gradlew runData --no-daemon
+        run: ./gradlew runData --no-daemon --max-workers 1
       - name: Validate assets
         run: test -d ./src/generated -a -f ./src/generated/resources/.cache/cache
       - name: Build with Gradle
@@ -42,7 +40,7 @@ jobs:
           KEY_STORE_ALIAS: ${{ secrets.KEY_STORE_ALIAS }}
           KEY_STORE_KEY_PASS: ${{ secrets.KEY_STORE_KEY_PASS }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew build --no-daemon
+        run: ./gradlew build --no-daemon --max-workers 1
       - name: Upload to curseforge
         env:
           KEY_STORE_PASS: ${{ secrets.KEY_STORE_PASS }}
@@ -50,14 +48,14 @@ jobs:
           KEY_STORE_KEY_PASS: ${{ secrets.KEY_STORE_KEY_PASS }}
           CHANGELOG: ${{ github.event.release.body }}
           CURSEFORGE: ${{ secrets.CURSEFORGE }}
-        run: ./gradlew curseforge --no-daemon
+        run: ./gradlew curseforge --no-daemon --max-workers 1
       - name: Publish to github packages
         env:
           KEY_STORE_PASS: ${{ secrets.KEY_STORE_PASS }}
           KEY_STORE_ALIAS: ${{ secrets.KEY_STORE_ALIAS }}
           KEY_STORE_KEY_PASS: ${{ secrets.KEY_STORE_KEY_PASS }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew publish --no-daemon
+        run: ./gradlew publish --no-daemon --max-workers 1
       - name: Prepare artifact metadata
         id: prepare_artifact_metadata
         run: |
