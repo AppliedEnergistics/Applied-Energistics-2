@@ -18,7 +18,6 @@
 
 package appeng.core;
 
-import appeng.spatial.StorageChunkGenerator;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -207,6 +206,7 @@ import appeng.recipes.handlers.InscriberRecipe;
 import appeng.recipes.handlers.InscriberRecipeSerializer;
 import appeng.server.AECommand;
 import appeng.spatial.StorageCellBiome;
+import appeng.spatial.StorageChunkGenerator;
 import appeng.tile.AEBaseTileEntity;
 import appeng.tile.crafting.MolecularAssemblerRenderer;
 import appeng.worldgen.ChargedQuartzOreConfig;
