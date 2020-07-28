@@ -148,7 +148,7 @@ minecraft {
 }
 
 mixin {
-    add sourceSets.main, "mixins.appliedenergistics2.refmap.json"
+    add sourceSets.main, "appliedenergistics2.mixins.refmap.json"
 }
 
 jar {
