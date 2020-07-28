@@ -60,6 +60,10 @@ class FacadeRegistryGenerator implements LiveRecipeGenerator<DefaultShapedDispla
 
     @Override
     public Optional<List<DefaultShapedDisplay>> getRecipeFor(EntryStack entry) {
+        if (entry.getType() != EntryStack.Type.ITEM) {
+            return Optional.empty(); // We only have items
+        }
+
         // Looking up how a certain facade is crafted
         ItemStack itemStack = entry.getItemStack();
         if (itemStack.getItem() instanceof FacadeItem) {
@@ -73,6 +77,10 @@ class FacadeRegistryGenerator implements LiveRecipeGenerator<DefaultShapedDispla
 
     @Override
     public Optional<List<DefaultShapedDisplay>> getUsageFor(EntryStack entry) {
+        if (entry.getType() != EntryStack.Type.ITEM) {
+            return Optional.empty(); // We only have items
+        }
+
         // Looking up if a certain block can be used to make a facade
         ItemStack itemStack = entry.getItemStack();
         ItemStack facade = this.itemFacade.createFacadeForItem(itemStack, false);
