@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.CondenserOutput;
@@ -48,7 +49,6 @@ import appeng.api.config.ViewItems;
 import appeng.api.config.YesNo;
 import appeng.core.localization.ButtonToolTips;
 import appeng.util.EnumCycler;
-import net.minecraft.util.text.StringTextComponent;
 
 public class SettingToggleButton<T extends Enum<T>> extends IconButton {
     private static final Pattern COMPILE = Pattern.compile("%s");

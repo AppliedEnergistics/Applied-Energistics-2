@@ -1,15 +1,17 @@
 package appeng.mixins;
 
-import appeng.spatial.SpatialDimensionManager;
-import net.minecraft.client.world.DimensionRenderInfo;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.world.DimensionType;
+import java.util.Optional;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Optional;
+import net.minecraft.client.world.DimensionRenderInfo;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.world.DimensionType;
+
+import appeng.spatial.SpatialDimensionManager;
 
 @Mixin(DimensionRenderInfo.class)
 public class SkyPropertiesMixin {

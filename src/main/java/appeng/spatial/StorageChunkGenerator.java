@@ -18,8 +18,13 @@
 
 package appeng.spatial;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Optional;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Blockreader;
@@ -33,14 +38,10 @@ import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.WorldGenRegion;
-
-import appeng.core.Api;
 import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.settings.DimensionStructuresSettings;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Optional;
+import appeng.core.Api;
 
 public class StorageChunkGenerator extends ChunkGenerator {
 

@@ -26,7 +26,6 @@ import java.util.Locale;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 
-import net.minecraft.util.text.StringTextComponent;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.util.InputMappings;
@@ -34,6 +33,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import appeng.api.config.Settings;

@@ -31,12 +31,12 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import appeng.api.parts.IPartHost;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.parts.AEBasePart;
-import net.minecraft.world.World;
 
 /**
  * Describes how a container the player has opened was originally located. This

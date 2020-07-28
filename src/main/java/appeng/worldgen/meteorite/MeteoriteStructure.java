@@ -1,7 +1,7 @@
 package appeng.worldgen.meteorite;
 
-import appeng.core.AppEng;
 import com.mojang.serialization.Codec;
+
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.ChunkPos;
@@ -10,6 +10,8 @@ import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
+
+import appeng.core.AppEng;
 
 public class MeteoriteStructure extends Structure<NoFeatureConfig> {
 

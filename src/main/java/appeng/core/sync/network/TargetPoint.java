@@ -1,7 +1,6 @@
 package appeng.core.sync.network;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 
 /**

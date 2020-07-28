@@ -22,13 +22,13 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.Util;
 
 import appeng.container.ContainerLocator;
 import appeng.core.AEConfig;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.util.Platform;
-import net.minecraft.util.Util;
 
 public class WirelessTermContainer extends MEPortableCellContainer {
 

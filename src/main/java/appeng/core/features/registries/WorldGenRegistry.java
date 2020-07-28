@@ -21,11 +21,9 @@ package appeng.core.features.registries;
 import java.util.HashSet;
 
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.Dimension;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.server.ServerWorld;
 
 import appeng.api.features.IWorldGen;
-import net.minecraft.world.server.ServerWorld;
 
 public final class WorldGenRegistry implements IWorldGen {
 

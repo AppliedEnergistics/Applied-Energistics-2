@@ -9,7 +9,6 @@ import javax.annotation.Nullable;
 
 import com.mojang.datafixers.util.Pair;
 
-import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.model.IUnbakedModel;

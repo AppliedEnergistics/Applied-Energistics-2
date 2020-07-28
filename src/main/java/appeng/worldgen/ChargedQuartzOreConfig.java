@@ -1,17 +1,11 @@
 package appeng.worldgen;
 
-import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.Dynamic;
-import com.mojang.serialization.DynamicOps;
-
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.ReplaceBlockConfig;
-
-import appeng.core.AEConfig;
 
 /**
  * Extends a {@link ReplaceBlockConfig} with a chance.

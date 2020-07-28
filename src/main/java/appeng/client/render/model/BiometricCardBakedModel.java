@@ -23,7 +23,6 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
-import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
 import appeng.api.implementations.items.IBiometricCard;

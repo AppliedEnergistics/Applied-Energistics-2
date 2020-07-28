@@ -23,9 +23,7 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
-import appeng.hooks.DynamicDimensions;
 import net.minecraft.client.world.DimensionRenderInfo;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
@@ -42,6 +40,7 @@ import appeng.api.storage.ISpatialDimension;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
+import appeng.hooks.DynamicDimensions;
 
 public final class SpatialDimensionManager implements ISpatialDimension {
 

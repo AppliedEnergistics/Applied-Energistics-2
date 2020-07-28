@@ -25,7 +25,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.function.Function;
 
-import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.texture.AtlasTexture;

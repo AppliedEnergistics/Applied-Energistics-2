@@ -26,7 +26,6 @@ import javax.annotation.Nullable;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 
 import appeng.services.CompassService;

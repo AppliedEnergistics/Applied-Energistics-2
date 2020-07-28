@@ -1,6 +1,7 @@
 package appeng.client.render.effects;
 
 import com.mojang.serialization.Codec;
+
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.particles.ParticleType;
 

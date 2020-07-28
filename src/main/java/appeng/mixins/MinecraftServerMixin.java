@@ -1,8 +1,14 @@
 package appeng.mixins;
 
-import appeng.hooks.DynamicDimensions;
+import java.util.Map;
+import java.util.concurrent.Executor;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+
 import net.minecraft.server.IDynamicRegistries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RegistryKey;
@@ -20,12 +26,8 @@ import net.minecraft.world.storage.DerivedWorldInfo;
 import net.minecraft.world.storage.IServerConfiguration;
 import net.minecraft.world.storage.IServerWorldInfo;
 import net.minecraft.world.storage.SaveFormat;
-import net.minecraft.world.storage.ServerWorldInfo;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 
-import java.util.Map;
-import java.util.concurrent.Executor;
+import appeng.hooks.DynamicDimensions;
 
 @Mixin(MinecraftServer.class)
 public class MinecraftServerMixin implements DynamicDimensions {

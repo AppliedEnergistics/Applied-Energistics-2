@@ -32,11 +32,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EmptyBlockReader;
 import net.minecraft.world.ITickList;
 import net.minecraft.world.NextTickListEntry;
-import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
 import net.minecraft.world.server.ServerChunkProvider;
 import net.minecraft.world.server.ServerTickList;
+import net.minecraft.world.server.ServerWorld;
 
 import appeng.api.movable.IMovableHandler;
 import appeng.api.movable.IMovableRegistry;
@@ -45,7 +45,6 @@ import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.worlddata.WorldData;
-import net.minecraft.world.server.ServerWorld;
 
 public class CachedPlane {
     private final int x_size;

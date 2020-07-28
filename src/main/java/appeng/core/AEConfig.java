@@ -35,7 +35,6 @@ import com.google.common.base.Strings;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;

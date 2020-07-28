@@ -18,10 +18,15 @@
 
 package appeng.services;
 
-import appeng.api.util.DimensionalCoord;
-import appeng.core.Api;
-import appeng.services.compass.CompassReader;
-import appeng.services.compass.ICompassCallback;
+import java.util.WeakHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.Nonnull;
+
 import net.minecraft.block.Block;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -33,13 +38,10 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import javax.annotation.Nonnull;
-import java.util.WeakHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
+import appeng.api.util.DimensionalCoord;
+import appeng.core.Api;
+import appeng.services.compass.CompassReader;
+import appeng.services.compass.ICompassCallback;
 
 public final class CompassService {
     private static final int CHUNK_SIZE = 16;

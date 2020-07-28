@@ -1,15 +1,17 @@
 package appeng.mixins;
 
-import appeng.spatial.SpatialDimensionManager;
-import net.minecraft.server.IDynamicRegistries;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.world.DimensionType;
+import java.util.OptionalLong;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.OptionalLong;
+import net.minecraft.server.IDynamicRegistries;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.DimensionType;
+
+import appeng.spatial.SpatialDimensionManager;
 
 @Mixin(value = DimensionType.class)
 public class DimensionTypeMixin {

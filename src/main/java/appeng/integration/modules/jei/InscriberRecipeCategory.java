@@ -19,6 +19,7 @@
 package appeng.integration.modules.jei;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 
