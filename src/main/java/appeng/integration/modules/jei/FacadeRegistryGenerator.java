@@ -35,7 +35,6 @@ import me.shedaniel.rei.api.LiveRecipeGenerator;
 import me.shedaniel.rei.plugin.crafting.DefaultShapedDisplay;
 
 import appeng.core.AppEng;
-import appeng.core.FacadeCreativeTab;
 import appeng.items.parts.FacadeItem;
 
 /**
