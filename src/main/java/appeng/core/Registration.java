@@ -18,6 +18,7 @@
 
 package appeng.core;
 
+import appeng.spatial.StorageChunkGenerator;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -31,6 +32,7 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
@@ -49,6 +51,7 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -694,6 +697,8 @@ final class Registration {
         StructureAccessor.register(MeteoriteStructure.ID.toString(),
                 MeteoriteStructure.INSTANCE.setRegistryName(MeteoriteStructure.ID),
                 GenerationStage.Decoration.TOP_LAYER_MODIFICATION);
+
+        Registry.register(Registry.CHUNK_GENERATOR_CODEC, AppEng.makeId("storage"), StorageChunkGenerator.CODEC);
     }
 
     public void registerBiomes(RegistryEvent.Register<Biome> evt) {
@@ -732,7 +737,7 @@ final class Registration {
 
         modEventBus.addListener(this::registerParticleFactories);
         modEventBus.addListener(this::registerTextures);
-        modEventBus.addListener(this::modelRegistryEvent);
+        MinecraftForge.EVENT_BUS.addListener(this::modelRegistryEvent);
         modEventBus.addListener(this::registerItemColors);
         modEventBus.addListener(this::handleModelBake);
     }
