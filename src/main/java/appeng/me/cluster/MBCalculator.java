@@ -95,8 +95,8 @@ public abstract class MBCalculator<TTile extends IAEMultiBlock<TCluster>, TClust
         }
 
         try {
-            final BlockPos.Mutable min = new BlockPos.Mutable(loc.getX(), loc.getY(), loc.getZ());
-            final BlockPos.Mutable max = new BlockPos.Mutable(loc.getX(), loc.getY(), loc.getZ());
+            final BlockPos.Mutable min = loc.toMutable();
+            final BlockPos.Mutable max = loc.toMutable();
 
             // find size of MB structure...
             while (this.isValidTileAt(world, min.getX() - 1, min.getY(), min.getZ())) {
