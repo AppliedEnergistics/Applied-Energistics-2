@@ -172,10 +172,8 @@ publishing {
 import net.fabricmc.loom.task.RunClientTask;
 
 task generateData(type: RunClientTask, dependsOn: downloadAssets, group: "ae2") {
+    classpath = configurations.runtimeClasspath
     classpath sourceSets.datagen.runtimeClasspath
-    doFirst {
-        sourceSets.datagen.runtimeClasspath.each { println it }
-        sourceSets.main.runtimeClasspath.each { println it }
-    }
+    systemProperty "appeng.generateData", "true"
 }
-
+build.dependsOn generateData
