@@ -24,8 +24,10 @@
   "depends": {
     "fabricloader": ">=0.7.1",
     "fabric": "*",
-    "fabric-language-kotlin": "*",
-    "minecraft": "1.16.x"
+    "minecraft": "1.16.x",
+    "libblockattributes_core": ">=0.7.1-pre.4",
+    "libblockattributes_items": ">=0.7.1-pre.4",
+    "libblockattributes_fluids": ">=0.7.1-pre.4"
   },
   "suggests": {
     "flamingo": "*"

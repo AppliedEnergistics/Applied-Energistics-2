@@ -195,7 +195,7 @@ public final class AppEngClient extends AppEngBase {
         // On the client, we'll register for server startup/shutdown to properly setup
         // WorldData
         // each time the integrated server starts&stops
-        ServerLifecycleEvents.SERVER_STARTED.register(WorldData::onServerStarting);
+        ServerLifecycleEvents.SERVER_STARTING.register(WorldData::onServerStarting);
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> WorldData.instance().onServerStopping());
         ServerLifecycleEvents.SERVER_STOPPED.register(server -> WorldData.instance().onServerStoppped());
 
